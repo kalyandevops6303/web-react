@@ -24,13 +24,14 @@ $gray-800: #1e1e1e !default; // $gray-dark
 $gray-900: #2a2e30 !default;
 $black: #22292f !default; // 231f48 22292f
 
-$purple: #7367f0 !default; //$primary
+$purple: #7367f0 !default;
 $green: #28c76f !default; //$success
 $blue: #00cfe8 !default; //$info
 $orange: #ff9f43 !default; //$warning
 $red: #ea5455 !default; //$danger
+$blueProduct: #0065C1 !default; //primary
 
-$primary: $purple !default;
+$primary: $blueProduct !default;
 $secondary: #82868b !default;
 $success: $green !default;
 $danger: $red !default;
@@ -129,7 +130,7 @@ $grid-gutter-width: 2rem !default;
 // Define common padding and border radius sizes and more.
 
 $border-width: 1px !default;
-$border-color: #ebe9f1 !default;
+$border-color: #BDBDBD !default;
 $border-radius: 0.357rem !default;
 $border-radius-lg: 0.6rem !default;
 $border-radius-sm: 0.25rem !default;
@@ -313,7 +314,8 @@ $form-check-radio-checked-bg-image: none !default;
 $form-check-input-indeterminate-color: $component-active-color !default;
 $form-check-input-indeterminate-bg-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#{$form-check-input-indeterminate-color}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-minus'><line x1='5' y1='12' x2='19' y2='12'></line></svg>") !default;
 
-$form-check-input-disabled-opacity: 0.65 !default;
+$form-check-input-disabled-opacity: 0.45 !default;
+$--bs-btn-disabled-opacity: 0.45 !default;
 
 $form-switch-color: $component-active-color !default;
 $form-switch-width: 3rem !default;

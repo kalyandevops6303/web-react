@@ -27,10 +27,16 @@ const DefaultRoute = "/home";
 
 const Home = lazy(() => import("../../views/Home"));
 const SecondPage = lazy(() => import("../../views/SecondPage"));
-const Login = lazy(() => import("../../views/Login"));
-const Register = lazy(() => import("../../views/Register"));
+const Login = lazy(() => import("../../views/auth/Login"));
+const Register = lazy(() => import("../../views/auth/RegisterEmail"));
 const ForgotPassword = lazy(() => import("../../views/ForgotPassword"));
 const Error = lazy(() => import("../../views/Error"));
+const UserType = lazy(() => import("../../views/auth/UserType"));
+const VerifyEmail = lazy(() => import("../../views/auth/EmailVerify"));
+const VerifyPhone = lazy(() => import("../../views/auth/PhoneVerify"));
+
+const SetPassword = lazy(() => import("../../views/auth/SetPassword"));
+const RegisterPhone = lazy(() => import("../../views/auth/RegisterPhone"));
 
 // ** Merge Routes
 const Routes = [
@@ -57,6 +63,42 @@ const Routes = [
   {
     path: "/register",
     element: <Register />,
+    meta: {
+      layout: "blank",
+    },
+  },
+  {
+    path: "/register-phone",
+    element: <RegisterPhone />,
+    meta: {
+      layout: "blank",
+    },
+  },
+  {
+    path: "/email-verify",
+    element: <VerifyEmail />,
+    meta: {
+      layout: "blank",
+    },
+  },
+  {
+    path: "/phone-verify",
+    element: <VerifyPhone />,
+    meta: {
+      layout: "blank",
+    },
+  },
+
+  {
+    path: "/set-password",
+    element: <SetPassword />,
+    meta: {
+      layout: "blank",
+    },
+  },
+  {
+    path: "/usertype",
+    element: <UserType />,
     meta: {
       layout: "blank",
     },

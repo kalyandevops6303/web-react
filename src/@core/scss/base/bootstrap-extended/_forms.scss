@@ -17,6 +17,10 @@
   margin-right: 1rem;
 }
 
+.invalid-feedback,.valid-feedback{
+  display: block;
+}
+
 //  Number Input style
 .btn.disabled-max-min,
 .btn.disabled-max-min:focus,

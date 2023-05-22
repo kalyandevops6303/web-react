@@ -83,3 +83,36 @@ export const selectThemeColors = (theme) => ({
     neutral30: "#ededed", // for input hover border-color
   },
 });
+
+import * as Yup from "yup";
+
+export const validations = {
+  email: Yup.string()
+    .trim()
+    .matches(
+      /^[a-zA-Z0-9.!#$%&*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+      "Invalid email address"
+    ),
+  password: Yup.string()
+    .trim()
+    .matches(
+      /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
+      "Incorrect password"
+    ),
+  newPassword: Yup.string()
+    .trim()
+    .matches(
+      /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
+      "Password must contain at least 8 characters, one uppercase, one number and one special case character."
+    ),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref("newPassword"), null],
+    "Password does not match"
+  ),
+  mobile: Yup.string()
+    .trim()
+    .matches(/^[0-9]/, "Min. 10 characters required"),
+  ssn: Yup.string()
+    .trim()
+    .matches(/^[0-9]{3}\-?[0-9]{2}\-?[0-9]{4}$/, "Invalid SSN."),
+};
