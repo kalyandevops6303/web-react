@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import { DefaultRoute } from '../router/routes';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -51,7 +50,9 @@ export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
  ** This is completely up to you and how you want to store the token in your frontend application
  *  ? e.g. If you are using cookies to store the application please update this function
  */
+// eslint-disable-next-line no-undef
 export const isUserLoggedIn = () => localStorage.getItem('userData');
+// eslint-disable-next-line no-undef
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'));
 
 /**
@@ -63,7 +64,7 @@ export const getUserData = () => JSON.parse(localStorage.getItem('userData'));
  * @param {String} userRole Role of user
  */
 export const getHomeRouteForLoggedInUser = (userRole) => {
-  if (userRole === 'admin') return DefaultRoute;
+  if (userRole === 'admin') return '/home';
   if (userRole === 'client') return '/access-control';
   return '/login';
 };

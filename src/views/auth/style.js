@@ -1,10 +1,41 @@
-import styled, { css } from "styled-components";
-import BgImage from "../../assets/images/onboard_bg.png";
-import theme from "../../configs/themeVariables";
+/* eslint-disable no-undef */
+import styled from 'styled-components';
+import BgImage from '../../assets/images/onboard_bg.png';
+import theme from '../../configs/themeVariables';
 
+export const PasswordStrengthBarWrap = styled.div`
+  .red {
+    p {
+      color: #ea5455 !important;
+    }
+  }
+  .orange {
+    p {
+      color: #fd7e14 !important;
+    }
+  }
+  .blue {
+    p {
+      color: #2b90ef !important;
+    }
+  }
+  .green {
+    p {
+      color: #28c76f !important;
+    }
+  }
+  .password-meter {
+    margin-top: 6px !important;
+    p {
+      text-align: left !important;
+      font-size: 12px !important;
+      margin: 2px 2px !important;
+    }
+  }
+`;
 export const OnBoardWrap = styled.div`
   .auth-edit {
-    color: ${theme["primary"]};
+    color: ${theme.primary};
     text-decoration: underline;
     font-weight: 600;
     cursor: pointer;
@@ -23,7 +54,7 @@ export const OnBoardWrap = styled.div`
     text-decoration: inherit; /* no underline */
   }
   .btn {
-    font-weight: 400 !important;
+    font-weight: 500 !important;
   }
 
   background-image: url(${BgImage});
@@ -35,14 +66,14 @@ export const OnBoardWrap = styled.div`
     background: white;
     border-radius: 32px;
     width: fit-content;
-    top: 5%;
     left: 12%;
     position: absolute;
-    height: 90%;
+    top: ${(props) => (props.isLoginPage ? '3' : '5')}%;
+    height: ${(props) => (props.isLoginPage ? '94' : '90')}%;
     width: 29%;
-    padding: 3.5rem 1.8rem;
+    padding: ${(props) => (props.isLoginPage ? '3rem 1.8rem' : ' 3.5rem 1.8rem')};
     .card-logo {
-      margin-bottom: 2rem;
+      margin-bottom: ${(props) => (props.isLoginPage ? '1' : '2')}rem;
       height: 2.5rem;
       width: fit-content;
     }
@@ -63,6 +94,7 @@ export const OnBoardWrap = styled.div`
     gap: 0.5rem;
     align-items: center;
     color: #0065c1;
+    font-weight: 600 !important;
     .google-img {
       height: 1.2rem;
     }
@@ -115,7 +147,7 @@ export const UserTypeCard = styled.div`
     border: 1px solid #0185e4;
   }
   .select-card-title {
-    color: ${theme["primary"]}; //to be replace with token
+    color: ${theme.primary}; //to be replace with token
     font-weight: 500 !important;
     margin-bottom: 0.5rem;
     font-size: 20px;
