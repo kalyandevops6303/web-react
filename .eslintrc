@@ -1,43 +1,64 @@
 {
-  "env": {
-    "browser": true,
-    "es6": true
-  },
-  "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 2019,
-    "sourceType": "module",
-    "allowImportExportEverywhere": true
-  },
-  "plugins": ["react", "import", "react-hooks"],
+  "extends": ["airbnb", "prettier"],
+  "root": true,
   "rules": {
-    "prettier/prettier": "error",
-    "import/no-named-as-default-member": 0,
-    "import/order": [2, { "groups": ["external", "index", "sibling", "parent", "internal", "builtin"] }],
-    "react/jsx-filename-extension": [
-      0,
+    "arrow-parens": ["error", "always"],
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0, "maxBOF": 0 }],
+    "object-curly-newline": ["error", { "consistent": true }],
+    "react/prop-types": ["error"],
+    "jsx-a11y/label-has-for": ["error", { "required": { "every": ["id"] }, "allowChildren": true }],
+    "react/forbid-prop-types": ["error", { "forbid": ["any"] }],
+    "react/jsx-filename-extension": ["error", { "extensions": [".js",".tsx"] }],
+    "no-unused-vars": ["error"],
+    "import/order": ["error"],
+    "radix": "error",
+    "semi": ["error", "always"],
+    "react/self-closing-comp": "error",
+    "react/require-default-props": ["error"],
+    "import/prefer-default-export": ["error"],
+    "no-plusplus": "error",
+    "no-nested-ternary": "error",
+    "no-console": [
+      "error",
       {
-        "extensions": [".js", ".jsx"]
+        "allow": ["warn", "error"]
       }
     ],
-    "import/prefer-default-export": 0,
-    //"react-hooks/rules-of-hooks": 0,
-    "import/no-extraneous-dependencies": 0,
-    "jsx-a11y/anchor-is-valid": 0,
-    "react/jsx-props-no-spreading": 0,
-    "react/forbid-prop-types": 0,
-    "react/require-default-props": 0,
-    "no-nested-ternary": 0,
-    "global-require": 0,
-    "import/no-dynamic-require": 0,
-    "react/no-array-index-key": 0
+    "camelcase": [
+      "error",
+      {
+        "allow": ["[a-z]+(_[a-z]+)*"]
+      }
+    ],
+
+    // Rules which will be changed to error eventually
+    "react/destructuring-assignment": ["warn"],
+    "no-alert": ["warn"],
+    "import/no-named-default": ["warn"],
+    "no-confusing-arrow": ["warn"],
+    "react/jsx-key": "warn",
+    "array-callback-return": "warn",
+    "no-unused-expressions": "warn",
+    "react/jsx-boolean-value": "warn",
+
+    // Rules which are off
+    "import/no-extraneous-dependencies": ["off"],
+    "import/no-unresolved": ["off"],
+    "prefer-promise-reject-errors": ["off"],
+    "no-underscore-dangle": ["off"],
+    "react-hooks/exhaustive-deps": "off",
+    "react/function-component-definition": ["off"],
+    "jsx-a11y/anchor-is-valid": ["off"],
+    "jsx-a11y/click-events-have-key-events": ["off"],
+    "jsx-a11y/no-noninteractive-element-interactions": ["off"],
+    "jsx-a11y/no-static-element-interactions": ["off"],
+    "react/react-in-jsx-scope": ["off"],
+    "react-hooks/rules-of-hooks": "off",
+    "import/extensions": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "react/jsx-props-no-spreading": "off"
+  },
+  "env": {
+    "jest": true
   }
 }

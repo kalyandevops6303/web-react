@@ -1,4 +1,5 @@
 node_modules
-build
+dist/
+build/
 public
 src/serviceWorker.js

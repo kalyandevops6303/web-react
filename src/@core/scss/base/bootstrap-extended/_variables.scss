@@ -314,8 +314,7 @@ $form-check-radio-checked-bg-image: none !default;
 $form-check-input-indeterminate-color: $component-active-color !default;
 $form-check-input-indeterminate-bg-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='#{$form-check-input-indeterminate-color}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-minus'><line x1='5' y1='12' x2='19' y2='12'></line></svg>") !default;
 
-$form-check-input-disabled-opacity: 0.45 !default;
-$--bs-btn-disabled-opacity: 0.45 !default;
+$form-check-input-disabled-opacity: 0.65 !default;
 
 $form-switch-color: $component-active-color !default;
 $form-switch-width: 3rem !default;
