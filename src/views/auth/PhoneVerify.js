@@ -1,39 +1,30 @@
 // ** React Imports
-import OtpInput from "react-otp-input";
-import { useState } from "react";
-import { CountryDropdown } from "../../@core/components/country-dropdown";
-import { useNavigate } from "react-router-dom";
+import OtpInput from 'react-otp-input';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // ** Icons Imports
-
-// ** Custom Components
-import { OnBoardWrap } from "./style";
+import Logo from '@src/assets/images/ic_trumio_logo.png';
 
 // ** Reactstrap Imports
-import {
-  CardTitle,
-  CardText,
-  Label,
-  Form,
-  Input,
-  Button,
-  FormFeedback,
-  FormGroup,
-} from "reactstrap";
+import { CardTitle, CardText, Label, Form, Input, Button, FormFeedback } from 'reactstrap';
+
+// ** Custom Components
+import { CountryDropdown } from '../../@core/components/country-dropdown';
 
 // ** Illustrations Imports
-import Logo from "@src/assets/images/ic_trumio_logo.png";
 // ** Styles
-import "@styles/react/pages/page-authentication.scss";
+import '@styles/react/pages/page-authentication.scss';
+import { OnBoardWrap } from './style';
 
 const VerifyPhone = () => {
   const navigate = useNavigate();
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState('');
   const [otpError, setOtpError] = useState(false);
 
   const [selectedCountry, setSelectedCountry] = useState({
-    label: "Afghanistan",
-    dial_code: "+93",
-    code: "AF",
+    label: 'Afghanistan',
+    dial_code: '+93',
+    code: 'AF',
   });
 
   const handleChange = (value) => {
@@ -43,12 +34,11 @@ const VerifyPhone = () => {
   // Function to handle dropdown change
   const handleCountryChange = (value) => {
     setSelectedCountry(value);
-    clearErrors();
   };
 
   const verifyOtp = () => {
-    console.log(code);
-    navigate("/login");
+    navigate('/login');
+    setOtpError(false);
   };
 
   return (
@@ -60,8 +50,7 @@ const VerifyPhone = () => {
         </CardTitle>
 
         <CardText className="mb-2 card-text">
-          We sent a verification code to your mobile number. Enter the code in
-          the field below.
+          We sent a verification code to your mobile number. Enter the code in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
             Edit
           </span>
@@ -73,11 +62,7 @@ const VerifyPhone = () => {
               Mobile number
             </Label>
             <div className="d-flex">
-              <CountryDropdown
-                selectedCountry={selectedCountry}
-                setSelectedCountry={handleCountryChange}
-                disabled
-              />
+              <CountryDropdown selectedCountry={selectedCountry} setSelectedCountry={handleCountryChange} disabled />
               <div className="mobile-input">
                 <Input type="number" placeholder="9090989080" disabled />
               </div>
@@ -87,34 +72,26 @@ const VerifyPhone = () => {
             value={code}
             onChange={handleChange}
             numInputs={4}
-            separator={<span style={{ width: "12px" }} />}
+            separator={<span style={{ width: '12px' }} />}
             isInputNum
             shouldAutoFocus
             inputStyle={{
               border: `1px solid #DCDBE2`,
-              borderRadius: "8px",
-              width: "50px",
-              height: "50px",
-              fontSize: "12px",
-              color: "#000",
-              fontWeight: "400",
-              caretColor: "blue",
+              borderRadius: '8px',
+              width: '50px',
+              height: '50px',
+              fontSize: '12px',
+              color: '#000',
+              fontWeight: '400',
+              caretColor: 'blue',
             }}
             focusStyle={{
-              border: "1px solid #0065C1",
-              outline: "none",
+              border: '1px solid #0065C1',
+              outline: 'none',
             }}
           />
-          {otpError && (
-            <FormFeedback className="mt-1">Invalid OTP</FormFeedback>
-          )}
-          <Button
-            color="primary"
-            block
-            className="mt-4"
-            disabled={code.length !== 4}
-            onClick={verifyOtp}
-          >
+          {otpError && <FormFeedback className="mt-1">Invalid OTP</FormFeedback>}
+          <Button color="primary" block className="mt-4" disabled={code.length !== 4} onClick={verifyOtp}>
             Verify OTP
           </Button>
         </Form>
