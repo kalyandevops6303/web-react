@@ -1,31 +1,28 @@
 // ** React Imports
-import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm } from "react-hook-form";
+import * as yup from 'yup';
+import { useNavigate, Link } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller, useForm } from 'react-hook-form';
 
 // ** Icons Imports
-import Logo from "@src/assets/images/ic_trumio_logo.png";
-
-// ** Custom Components
-import InputPasswordToggle from "@components/input-password-toggle";
-import { validations } from "../../utility/Utils";
+import Logo from '@src/assets/images/ic_trumio_logo.png';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Button, FormFeedback } from "reactstrap";
+import { CardTitle, Label, Form, Button, FormFeedback } from 'reactstrap';
+
+// ** Custom Components
+import InputPasswordToggle from '@components/input-password-toggle';
+import { validations } from '../../utility/Utils';
 
 // ** Styles
-import { OnBoardWrap } from "./style";
-import "@styles/react/pages/page-authentication.scss";
-import { Link } from "react-router-dom";
+import { OnBoardWrap } from './style';
+import '@styles/react/pages/page-authentication.scss';
 
 const SetPassword = () => {
   const navigate = useNavigate();
   const schema = yup.object().shape({
-    newPassword: validations.newPassword.required("Password is required"),
-    cnfPassword: validations.confirmPassword.required(
-      "Please Re-type your password"
-    ),
+    newPassword: validations.newPassword.required('Password is required'),
+    cnfPassword: validations.confirmPassword.required('Please Re-type your password'),
   });
 
   const {
@@ -36,16 +33,16 @@ const SetPassword = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      newPassword: "",
-      cnfPassword: "",
+      newPassword: '',
+      cnfPassword: '',
     },
   });
   const onSubmit = () => {
-    navigate("/register-phone");
+    navigate('/register-phone');
   };
 
-  const newPassword = watch("newPassword");
-  const cnfPassword = watch("cnfPassword");
+  const newPassword = watch('newPassword');
+  const cnfPassword = watch('cnfPassword');
 
   return (
     <OnBoardWrap>
@@ -54,10 +51,7 @@ const SetPassword = () => {
         <CardTitle tag="h1" className="card-title-onboard">
           Create Password! 🔐
         </CardTitle>
-        <Form
-          className="auth-login-form mt-2"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2">
             <Label className="form-label" for="login-email">
               New Password
@@ -73,16 +67,14 @@ const SetPassword = () => {
               render={({ field }) => (
                 <InputPasswordToggle
                   {...field}
-                  value={field.value || ""} // Set a default value for the input
+                  value={field.value || ''} // Set a default value for the input
                   className="input-group-merge"
                   id="newPassword"
                   placeholder="Confirm your new password"
                 />
               )}
             />
-            {errors?.newPassword && (
-              <FormFeedback>{errors?.newPassword.message}</FormFeedback>
-            )}
+            {errors.newPassword && <FormFeedback>{errors.newPassword.message}</FormFeedback>}
           </div>
           <div className="mb-3">
             <Label className="form-label" for="login-email">
@@ -99,23 +91,16 @@ const SetPassword = () => {
               render={({ field }) => (
                 <InputPasswordToggle
                   {...field}
-                  value={field.value || ""} // Set a default value for the input
+                  value={field.value || ''} // Set a default value for the input
                   className="input-group-merge"
                   id="cnfPassword"
                   placeholder="Confirm your new password"
                 />
               )}
             />
-            {errors?.cnfPassword && (
-              <FormFeedback>{errors?.cnfPassword.message}</FormFeedback>
-            )}
+            {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
           </div>
-          <Button
-            color="primary"
-            block
-            type="submit"
-            disabled={!newPassword || !cnfPassword}
-          >
+          <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword}>
             Save Password
           </Button>
         </Form>
