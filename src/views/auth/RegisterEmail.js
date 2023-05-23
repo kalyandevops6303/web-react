@@ -104,7 +104,7 @@ const RegisterEmail = () => {
                   />
                   Agree & Sign up
                 </small>
-                {!agreeTerms && <FormFeedback>{errors.agreeTerms.message}</FormFeedback>}
+                {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
               </Label>
               <Label color="primary" className="form-check-label">
                 <small>Privacy policy & terms</small>
