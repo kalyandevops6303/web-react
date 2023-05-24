@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-export const CountryDropdownWrapper = styled.div`
+const CountryDropdownWrapper = styled.div`
   .css-art2ul-ValueContainer2 {
     display: contents;
     padding-left: 10px;
@@ -13,6 +13,9 @@ export const CountryDropdownWrapper = styled.div`
   .css-t3ipsp-control,
   .css-13cymwt-control,
   .css-16xfy0z-control {
+    .css-hlgwow {
+      display: contents;
+    }
     padding-left: 12px;
     font-size: 12px;
     min-width: 110px;
@@ -21,6 +24,9 @@ export const CountryDropdownWrapper = styled.div`
     box-shadow: none;
     cursor: pointer;
   }
+
+  
+
   .css-w9q2zk-Input2,
   .css-42axt2-Input2 {
     margin: 0px;
@@ -46,7 +52,9 @@ export const CountryDropdownWrapper = styled.div`
     padding: 3px 0 3px 10px;
     font-size: 13px;
   }
-  #react-select-2-listbox{
+  #react-select-2-listbox, 
+  #react-select-3-listbox, 
+  #react-select-4-listbox{
     width: 220px;
   }
   .css-t3ipsp-control {
@@ -62,3 +70,4 @@ export const CountryDropdownWrapper = styled.div`
     padding-left: 0px;
   }
 `;
+export default CountryDropdownWrapper;

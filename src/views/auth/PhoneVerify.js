@@ -9,7 +9,7 @@ import Logo from '@src/assets/images/ic_trumio_logo.png';
 import { CardTitle, CardText, Label, Form, Input, Button, FormFeedback } from 'reactstrap';
 
 // ** Custom Components
-import { CountryDropdown } from '../../@core/components/country-dropdown';
+import CountryDropdown from '../../@core/components/country-dropdown';
 
 // ** Illustrations Imports
 // ** Styles
