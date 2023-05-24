@@ -119,14 +119,14 @@ const RegisterEmail = () => {
           <div className="divider-text">Or</div>
         </div>
 
-        <Button outline tag={Link} to="/" color="primary" block className="google-btn">
+        <Button outline tag={Link} to="#" color="primary" block className="google-btn">
           <img src={GoogleIcon} alt="google-img" className="google-img" /> Sign up with Google
         </Button>
         <div className="d-flex justify-content-center sign-info">
           <Label>
             <small>Already have an account?</small>
           </Label>
-          <Label className="primary">
+          <Label tag={Link} to="/login" className="primary">
             <small>Sign in</small>
           </Label>
         </div>
