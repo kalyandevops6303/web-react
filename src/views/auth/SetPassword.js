@@ -38,7 +38,7 @@ const SetPassword = () => {
     },
   });
   const onSubmit = () => {
-    navigate('/register-phone');
+    navigate('/auth/register-phone');
   };
 
   const newPassword = watch('newPassword');
@@ -109,7 +109,7 @@ const SetPassword = () => {
           <Label>
             <small>Already have an account?</small>
           </Label>
-          <Label tag={Link} to="/login" className="primary">
+          <Label tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
         </div>

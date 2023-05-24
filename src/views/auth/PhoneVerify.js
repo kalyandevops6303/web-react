@@ -1,7 +1,7 @@
 // ** React Imports
 import OtpInput from 'react-otp-input';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 // ** Icons Imports
 import Logo from '@src/assets/images/ic_trumio_logo.png';
 
@@ -37,7 +37,7 @@ const VerifyPhone = () => {
   };
 
   const verifyOtp = () => {
-    navigate('/login');
+    navigate('/auth/login');
     setOtpError(false);
   };
 
@@ -108,7 +108,7 @@ const VerifyPhone = () => {
           <Label>
             <small>Already have an account?</small>
           </Label>
-          <Label className="primary">
+          <Label tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
         </div>

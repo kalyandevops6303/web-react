@@ -23,7 +23,7 @@ const getLayout = {
 const TemplateTitle = '%s - Vuexy React Admin Template';
 
 // ** Default Route
-const DefaultRoute = '/register';
+const DefaultRoute = '/auth';
 
 const Home = lazy(() => import('../../views/Home'));
 const SecondPage = lazy(() => import('../../views/SecondPage'));
@@ -41,6 +41,7 @@ const SetPassword = lazy(() => import('../../views/auth/SetPassword'));
 const RegisterPhone = lazy(() => import('../../views/auth/RegisterPhone'));
 const SetNewPassword = lazy(() => import('../../views/auth/SetNewPassword'));
 const ForgotPasswordVerification = lazy(() => import('../../views/auth/ForgotPasswordVerification'));
+const AuthRoute = lazy(() => import('../../views/auth/index'));
 
 // ** Merge Routes
 const Routes = [
@@ -64,6 +65,14 @@ const Routes = [
       layout: 'blank',
     },
   },
+  {
+    path: '/auth/*',
+    element: <AuthRoute />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+
   {
     path: '/register',
     element: <Register />,

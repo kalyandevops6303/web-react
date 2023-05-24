@@ -39,7 +39,7 @@ const RegisterEmail = () => {
   });
 
   const onSubmit = () => {
-    navigate('/forgot-password-email-verify');
+    navigate('/auth/forgot-password-email-verify');
   };
 
   const emailValue = watch('email'); // track the value of the mobile field
@@ -93,7 +93,7 @@ const RegisterEmail = () => {
           <Label>
             <small>Already have an account?</small>
           </Label>
-          <Label tag={Link} to="/login" className="primary">
+          <Label tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
         </div>

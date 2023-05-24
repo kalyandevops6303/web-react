@@ -104,7 +104,13 @@ const Login = () => {
 
           <div className="form-check mb-1">
             <div className="d-flex justify-content-end fw-bold">
-              <Label tag={Link} to="/forgot-password" color="primary" className="form-check-label" for="remember-me">
+              <Label
+                tag={Link}
+                to="/auth/forgot-password"
+                color="primary"
+                className="form-check-label"
+                for="remember-me"
+              >
                 <small>Forgot password?</small>
               </Label>
             </div>
@@ -124,7 +130,7 @@ const Login = () => {
           <Label>
             <small>New to Trumio?</small>
           </Label>
-          <Label tag={Link} to="/register" className="primary">
+          <Label tag={Link} to="/auth/register" className="primary">
             <small>Create an account</small>
           </Label>
         </div>
