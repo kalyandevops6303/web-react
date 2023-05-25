@@ -104,12 +104,13 @@ const RegisterEmail = () => {
                   />
                   Agree & Sign up
                 </small>
-                {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
               </Label>
+
               <Label color="primary" className="form-check-label">
                 <small>Privacy policy & terms</small>
               </Label>
             </div>
+            {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
           </div>
           <Button color="primary" block className="auth-btn" type="submit" disabled={!emailValue}>
             Send OTP

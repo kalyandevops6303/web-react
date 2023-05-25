@@ -39,6 +39,7 @@ export const OnBoardWrap = styled.div`
     text-decoration: underline;
     font-weight: 600;
     cursor: pointer;
+    margin-left: 0.3rem;
   }
   .mobile-input {
     margin-left: 1rem;
