@@ -1,6 +1,15 @@
 {
   "extends": ["airbnb", "prettier"],
   "root": true,
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+  "sourceType": "module",
+  "allowImportExportEverywhere": true,
+  "requireConfigFile": false,
+  "babelOptions": {
+    "presets": ["@babel/preset-react"]
+    }
+  },
   "rules": {
     "arrow-parens": ["error", "always"],
     "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0, "maxBOF": 0 }],

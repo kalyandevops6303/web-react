@@ -28,9 +28,15 @@ const DefaultRoute = '/home';
 const Home = lazy(() => import('../../views/Home'));
 const SecondPage = lazy(() => import('../../views/SecondPage'));
 const Login = lazy(() => import('../../views/Login'));
-const Register = lazy(() => import('../../views/Register'));
+const Register = lazy(() => import('../../views/auth/RegisterEmail'));
 const ForgotPassword = lazy(() => import('../../views/ForgotPassword'));
 const Error = lazy(() => import('../../views/Error'));
+const UserType = lazy(() => import('../../views/auth/UserType'));
+const VerifyEmail = lazy(() => import('../../views/auth/EmailVerify'));
+const VerifyPhone = lazy(() => import('../../views/auth/PhoneVerify'));
+
+const SetPassword = lazy(() => import('../../views/auth/SetPassword'));
+const RegisterPhone = lazy(() => import('../../views/auth/RegisterPhone'));
 const Onboarding = lazy(() => import('../../views/Onboarding'));
 
 // ** Merge Routes
@@ -63,6 +69,42 @@ const Routes = [
     },
   },
   {
+    path: '/register-phone',
+    element: <RegisterPhone />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/email-verify',
+    element: <VerifyEmail />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/phone-verify',
+    element: <VerifyPhone />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+
+  {
+    path: '/set-password',
+    element: <SetPassword />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/usertype',
+    element: <UserType />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
     path: '/forgot-password',
     element: <ForgotPassword />,
     meta: {
@@ -85,13 +127,13 @@ const Routes = [
   },
 ];
 
+// eslint-disable-next-line consistent-return
 const getRouteMeta = (route) => {
   if (isObjEmpty(route.element.props)) {
     if (route.meta) {
       return { routeMeta: route.meta };
-    } else {
-      return {};
     }
+    return {};
   }
 };
 
@@ -105,13 +147,13 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
       // ** Checks if Route layout or Default layout matches current layout
       if (
         (route.meta && route.meta.layout && route.meta.layout === layout) ||
-        ((route.meta === undefined || route.meta.layout === undefined) &&
-          defaultLayout === layout)
+        ((route.meta === undefined || route.meta.layout === undefined) && defaultLayout === layout)
       ) {
         const RouteTag = PublicRoute;
 
         // ** Check for public or private route
         if (route.meta) {
+          // eslint-disable-next-line no-unused-expressions
           route.meta.layout === 'blank' ? (isBlank = true) : (isBlank = false);
         }
         if (route.element) {
@@ -122,6 +164,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
                 LayoutWrapper
               : Fragment;
 
+          // eslint-disable-next-line no-param-reassign
           route.element = (
             <Wrapper {...(isBlank === false ? getRouteMeta(route) : {})}>
               <RouteTag route={route}>{route.element}</RouteTag>
