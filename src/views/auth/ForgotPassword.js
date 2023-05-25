@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 
 // ** Icons Imports
 import Logo from '@src/assets/images/ic_trumio_logo.png';
-import GoogleIcon from '@src/assets/images/google.png';
 
 // ** Reactstrap Imports
 import { CardTitle, Label, Form, Input, Button, FormFeedback, CardText } from 'reactstrap';
@@ -18,6 +17,7 @@ import { validations } from '../../utility/Utils';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
+import SigninWithGoogle from './components/SigninWithGoogle';
 
 const RegisterEmail = () => {
   const navigate = useNavigate();
@@ -86,9 +86,8 @@ const RegisterEmail = () => {
           <div className="divider-text">Or</div>
         </div>
 
-        <Button outline tag={Link} to="#" color="primary" block className="google-btn">
-          <img src={GoogleIcon} alt="google-img" className="google-img" /> Sign up with Google
-        </Button>
+        <SigninWithGoogle />
+
         <div className="d-flex justify-content-center sign-info">
           <Label>
             <small>Already have an account?</small>

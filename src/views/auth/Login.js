@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 
 // ** Icons Imports
 import Logo from '@src/assets/images/ic_trumio_logo.png';
-import GoogleIcon from '@src/assets/images/google.png';
 
 // ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle';
@@ -20,6 +19,7 @@ import { CardTitle, Label, Form, Input, Button, FormFeedback } from 'reactstrap'
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { validations } from '../../utility/Utils';
+import SigninWithGoogle from './components/SigninWithGoogle';
 
 const Login = () => {
   const schema = yup.object().shape({
@@ -123,9 +123,7 @@ const Login = () => {
           <div className="divider-text">Or</div>
         </div>
 
-        <Button outline tag={Link} to="#" color="primary" block className="google-btn">
-          <img src={GoogleIcon} alt="google-img" className="google-img" /> Sign up with Google
-        </Button>
+        <SigninWithGoogle />
         <div className="d-flex justify-content-center sign-info">
           <Label>
             <small>New to Trumio?</small>
