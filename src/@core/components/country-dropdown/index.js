@@ -58,6 +58,7 @@ const CountryDropdown = ({ selectedCountry, setSelectedCountry, disabled }) => {
     <CountryDropdownWrapper>
       <Select
         className="select-class"
+        classNamePrefix="country__select"
         style={{
           fontSize: '13px',
           paddingLeft: '12px',

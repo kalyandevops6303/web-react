@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import styled from 'styled-components';
 import BgImage from '../../assets/images/onboard_bg.png';
 import theme from '../../configs/themeVariables';
@@ -145,10 +144,10 @@ export const UserTypeCard = styled.div`
   cursor: pointer;
   margin-top: 2rem;
   &:hover {
-    border: 1px solid #0185e4;
+    border: 1px solid ${theme.blueBorderColor};
   }
   .select-card-title {
-    color: ${theme.primary}; //to be replace with token
+    color: ${theme.primary};
     font-weight: 500 !important;
     margin-bottom: 0.5rem;
     font-size: 20px;

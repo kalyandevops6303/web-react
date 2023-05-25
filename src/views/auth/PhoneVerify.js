@@ -15,6 +15,7 @@ import CountryDropdown from '../../@core/components/country-dropdown';
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
 import { OnBoardWrap } from './style';
+import theme from '../../configs/themeVariables';
 
 const VerifyPhone = () => {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const VerifyPhone = () => {
             isInputNum
             shouldAutoFocus
             inputStyle={{
-              border: `1px solid #DCDBE2`,
+              border: `1px solid ${theme.OTPborderColor}`,
               borderRadius: '8px',
               width: '50px',
               height: '50px',
@@ -86,7 +87,7 @@ const VerifyPhone = () => {
               caretColor: 'blue',
             }}
             focusStyle={{
-              border: '1px solid #0065C1',
+              border: `1px solid ${theme.primary}`,
               outline: 'none',
             }}
           />

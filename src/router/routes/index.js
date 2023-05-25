@@ -42,6 +42,7 @@ const RegisterPhone = lazy(() => import('../../views/auth/RegisterPhone'));
 const SetNewPassword = lazy(() => import('../../views/auth/SetNewPassword'));
 const ForgotPasswordVerification = lazy(() => import('../../views/auth/ForgotPasswordVerification'));
 const AuthRoute = lazy(() => import('../../views/auth/index'));
+const Onboarding = lazy(() => import('../../views/Onboarding'));
 
 // ** Merge Routes
 const Routes = [
@@ -116,7 +117,6 @@ const Routes = [
       layout: 'blank',
     },
   },
-
   {
     path: '/usertype',
     element: <UserType />,
@@ -148,6 +148,13 @@ const Routes = [
   {
     path: '/error',
     element: <Error />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/onboarding',
+    element: <Onboarding />,
     meta: {
       layout: 'blank',
     },
