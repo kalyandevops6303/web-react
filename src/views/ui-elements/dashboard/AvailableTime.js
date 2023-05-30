@@ -5,7 +5,7 @@
 
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText } from 'reactstrap';
-import { CardWrapper } from './styled';
+import { CardWrapper } from '../styled';
 import { TimeWrapper } from './style';
 
 const AvailableTime = () => (
