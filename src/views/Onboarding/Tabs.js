@@ -1,28 +1,28 @@
-/* eslint-disable react/require-default-props */
 import React from 'react';
-import PropTypes from 'prop-types';
+import Proptypes from 'prop-types';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { Home, Shield, User } from 'react-feather';
 import { TabsContainer } from './style';
 import Account from './Account';
+import Profile from './Profile';
 
 const Tabs = ({ tabNames, toggleTab, active }) => (
   <TabsContainer className="pt-2">
     <Nav pills className="mb-2">
       <NavItem>
-        <NavLink active={active === tabNames.Account} onClick={() => toggleTab(tabNames.Account)}>
+        <NavLink active={active === tabNames.Account}>
           <Home className="font-medium-3 me-50" />
           <span className="fw-bold">Account</span>
         </NavLink>
       </NavItem>
       <NavItem>
-        <NavLink active={active === tabNames.Profile} onClick={() => toggleTab(tabNames.Profile)}>
+        <NavLink active={active === tabNames.Profile}>
           <User className="font-medium-3 me-50" />
           <span className="fw-bold">Profile</span>
         </NavLink>
       </NavItem>
       <NavItem>
-        <NavLink active={active === tabNames.Payment} onClick={() => toggleTab(tabNames.Payment)}>
+        <NavLink active={active === tabNames.Payment}>
           <Shield className="font-medium-3 me-50" />
           <span className="fw-bold">Payment</span>
         </NavLink>
@@ -30,18 +30,26 @@ const Tabs = ({ tabNames, toggleTab, active }) => (
     </Nav>
     <TabContent activeTab={active}>
       <TabPane tabId={tabNames.Account}>
-        <Account />
+        <Account tabNames={tabNames} toggleTab={toggleTab} />
       </TabPane>
-      <TabPane tabId={tabNames.Profile} />
-      <TabPane tabId={tabNames.Payment} />
+      <TabPane tabId={tabNames.Profile}>
+        <Profile tabNames={tabNames} toggleTab={toggleTab} />
+      </TabPane>
+      <TabPane tabId={tabNames.Payment}>Payment</TabPane>
     </TabContent>
   </TabsContainer>
 );
 
+export default Tabs;
+
 Tabs.propTypes = {
-  tabNames: PropTypes.object,
-  active: PropTypes.string,
-  toggleTab: PropTypes.func,
+  tabNames: Proptypes.object,
+  active: Proptypes.string,
+  toggleTab: Proptypes.func,
 };
 
-export default Tabs;
+Tabs.defaultProps = {
+  tabNames: {},
+  active: '',
+  toggleTab: () => {},
+};

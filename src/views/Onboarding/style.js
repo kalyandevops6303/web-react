@@ -36,11 +36,17 @@ export const TabsContainer = styled.div`
       color: ${theme.navPillText};
     }
   }
+
+  .nav-item {
+    .nav-link {
+      cursor: default;
+    }
+  }
 `;
 
 export const AccountDetailsFormContainer = styled.div`
   .label-asterisk {
-    color: ${theme.asterisk};
+    color: ${theme.red};
     margin-left: 4px;
   }
 
@@ -86,4 +92,79 @@ export const AccountImageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+export const ProfileFormContainer = styled.div`
+  .label-asterisk {
+    color: ${theme.red};
+    margin-left: 4px;
+  }
+
+  .select__control {
+    border-color: ${theme.inputBorderColor};
+
+    svg {
+      color: ${theme.textMuted};
+    }
+
+    .select__placeholder {
+      color: ${theme.textMuted};
+    }
+  }
+
+  .upload-button {
+    width: fit-content;
+
+    h5 {
+      margin: 0 0 0 8px;
+      color: ${theme.activeNavPillText};
+    }
+  }
+
+  .select__multi-value__remove {
+    svg {
+      color: ${theme.white};
+    }
+  }
+
+  .time-zone-border {
+    border-bottom: 2px solid ${theme.infoIcon};
+  }
+
+  .form-check-input:not(:disabled):checked {
+    box-shadow: 0px 2px 4px ${theme.checkboxShadow};
+  }
+
+  .form-check-input:checked {
+    background-color: ${theme.activeNavPillText};
+    border-color: ${theme.activeNavPillText};
+  }
+
+  .buttons-row-border {
+    border-bottom: 1px solid #6e6b7b;
+  }
+
+  .custom-checkbox-border {
+    .form-check-input {
+      border: 1.5px solid ${theme.inputBorderColor};
+    }
+    .form-check-input:checked {
+      border: 1.5px solid ${theme.activeNavPillText};
+    }
+  }
+
+  .form-check-label.form-label {
+    color: ${theme.checkboxLabel};
+  }
+
+  .checkbox-custom-margin {
+    margin-right: 50px;
+  }
+`;
+
+export const UploadIconContainer = styled.div`
+  background: ${theme.uploadIconBackground};
+  border-radius: 50%;
+  padding: 4px 5px;
+  width: fit-content;
 `;
