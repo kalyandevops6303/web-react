@@ -26,7 +26,6 @@ const LayoutWrapper = (props) => {
   const navbarStore = store.navbar;
   const layoutStored = store.layout.layout;
   // eslint-disable-next-line prefer-destructuring
-  const contentWidth = store.layout.contentWidth;
   //  Vars
   const appLayoutCondition =
     (layoutStored.layout === 'horizontal' && !routeMeta) ||
@@ -76,7 +75,6 @@ const LayoutWrapper = (props) => {
         className={classnames({
           'content-wrapper': routeMeta && !routeMeta.appLayout,
           'content-area-wrapper': routeMeta && routeMeta.appLayout,
-          'container-xxl p-0': contentWidth === 'boxed',
         })}
       >
         <Tag {...(appLayoutCondition ? { className: 'content-body' } : {})}>{children}</Tag>

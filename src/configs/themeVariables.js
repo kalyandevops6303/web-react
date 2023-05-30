@@ -13,6 +13,10 @@ const asteriskColor = '#EA5455';
 const inputBorderColor = '#1e88e5';
 const inputBackgroundColor = 'rgba(187, 222, 251, 0.1)';
 const infoIconColor = '#BDBDBD';
+const bodyBgColor = '#f8f8f8';
+const bodyColor = '#6e6b7b';
+const greenColor = '#28c76f';
+
 const theme = {
   primary: primaryColor, // primary color for all components
   headerShadow: headerShadowColor, // color for header shadow
@@ -24,9 +28,13 @@ const theme = {
   inputBorder: inputBorderColor, // color for input border
   inputBackground: inputBackgroundColor, // color for input border
   infoIcon: infoIconColor, // color for info icon
+  grayTitleColor: navPillTextColor,
+  bodyColor,
+  bodyBgColor,
   OTPborderColor,
   blueBorderColor,
   borderInputColor,
+  green: greenColor,
   gray,
   switchBgColor,
 };
