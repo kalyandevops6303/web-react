@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
 
 const CountryDropdownWrapper = styled.div`
-  background: $red;
   .country__select__control {
     padding-left: 12px;
     font-size: 12px;

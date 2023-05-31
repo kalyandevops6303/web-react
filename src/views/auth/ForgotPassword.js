@@ -1,5 +1,4 @@
 // ** React Imports
-import { useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router';
@@ -10,7 +9,7 @@ import { Link } from 'react-router-dom';
 import Logo from '@src/assets/images/ic_trumio_logo.png';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Input, Button, FormFeedback } from 'reactstrap';
+import { CardTitle, Label, Form, Input, Button, FormFeedback, CardText } from 'reactstrap';
 
 // ** Custom Components
 import { OnBoardWrap } from './style';
@@ -22,11 +21,9 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 
 const RegisterEmail = () => {
   const navigate = useNavigate();
-  const [agreeTerms, setAgreeTerms] = useState(false);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
-    agreeTerms: yup.boolean().oneOf([true], 'You must agree to the terms and conditions'),
   });
 
   const {
@@ -38,12 +35,11 @@ const RegisterEmail = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       email: '',
-      agreeTerms: false,
     },
   });
 
   const onSubmit = () => {
-    navigate('/auth/email-verify');
+    navigate('/auth/forgot-password-email-verify');
   };
 
   const emailValue = watch('email'); // track the value of the mobile field
@@ -52,8 +48,11 @@ const RegisterEmail = () => {
       <div className="card-onboard">
         <img alt="logo" src={Logo} className="card-logo" />
         <CardTitle tag="h1" className="card-title-onboard">
-          Sign up! 🔐
+          Forgot Password? 🔒
         </CardTitle>
+        <CardText className="mb-2">
+          Enter your email and we&apos;ll send you instructions to reset your password
+        </CardText>
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3">
             <Label className="form-label" for="email">
@@ -78,40 +77,7 @@ const RegisterEmail = () => {
             />
             {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
           </div>
-          <div className="form-check mb-1">
-            <div className="d-flex justify-content-between">
-              <Label color="primary" className="form-check-label" for="remember-me">
-                <small>
-                  <Controller
-                    type="checkbox"
-                    id="remember-me"
-                    name="agreeTerms"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        value={field.value || false}
-                        type="checkbox"
-                        id="remember-me"
-                        size="md"
-                        checked={field.value} // Use field.value to set the checked state
-                        onChange={(e) => {
-                          field.onChange(e); // Call field.onChange to update the form value
-                          setAgreeTerms(e.target.checked); // Update the local state
-                        }}
-                      />
-                    )}
-                  />
-                  Agree & Sign up
-                </small>
-              </Label>
 
-              <Label color="primary" className="form-check-label">
-                <small>Privacy policy & terms</small>
-              </Label>
-            </div>
-            {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
-          </div>
           <Button color="primary" block className="auth-btn" type="submit" disabled={!emailValue}>
             Send OTP
           </Button>

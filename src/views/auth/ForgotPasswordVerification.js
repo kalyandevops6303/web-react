@@ -1,47 +1,31 @@
-// ** React Imports
+import { Link, useNavigate } from 'react-router-dom';
 import OtpInput from 'react-otp-input';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+
 // ** Icons Imports
 import Logo from '@src/assets/images/ic_trumio_logo.png';
+
+// ** Custom Components
 
 // ** Reactstrap Imports
 import { CardTitle, CardText, Label, Form, Input, Button, FormFeedback } from 'reactstrap';
 
-// ** Custom Components
-import CountryDropdown from '../../@core/components/country-dropdown';
-
-// ** Illustrations Imports
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
 import { OnBoardWrap } from './style';
-import theme from '../../configs/themeVariables';
 
-const VerifyPhone = () => {
-  const navigate = useNavigate();
+const ForgotPasswordVerification = () => {
   const [code, setCode] = useState('');
   const [otpError, setOtpError] = useState(false);
-
-  const [selectedCountry, setSelectedCountry] = useState({
-    label: 'Afghanistan',
-    dial_code: '+93',
-    code: 'AF',
-  });
+  const navigate = useNavigate();
 
   const handleChange = (value) => {
     setCode(value);
-  };
-
-  // Function to handle dropdown change
-  const handleCountryChange = (value) => {
-    setSelectedCountry(value);
-  };
-
-  const verifyOtp = () => {
-    navigate('/auth/login');
     setOtpError(false);
   };
-
+  const verifyOtp = () => {
+    navigate('/auth/set-new-password');
+  };
   return (
     <OnBoardWrap>
       <div className="card-onboard">
@@ -49,26 +33,20 @@ const VerifyPhone = () => {
         <CardTitle tag="h1" className="card-title-onboard">
           Two Step Verification 💬
         </CardTitle>
-
         <CardText className="mb-2 card-text">
-          We sent a verification code to your mobile number. Enter the code in the field below.
+          We sent a verification code to your email ID. Enter the code in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
             Edit
           </span>
         </CardText>
-
-        <Form className="auth-login-form">
+        <Form className="auth-login-form" onSubmit={(e) => e.preventDefault()}>
           <div className="mb-3">
             <Label className="form-label" for="login-email">
-              Mobile number
+              Email
             </Label>
-            <div className="d-flex">
-              <CountryDropdown selectedCountry={selectedCountry} setSelectedCountry={handleCountryChange} disabled />
-              <div className="mobile-input">
-                <Input type="number" placeholder="9090989080" disabled />
-              </div>
-            </div>
+            <Input type="email" id="login-email" placeholder="john@example.com" autoFocus disabled />
           </div>
+
           <OtpInput
             value={code}
             onChange={handleChange}
@@ -77,7 +55,7 @@ const VerifyPhone = () => {
             isInputNum
             shouldAutoFocus
             inputStyle={{
-              border: `1px solid ${theme.OTPborderColor}`,
+              border: `1px solid #DCDBE2`,
               borderRadius: '8px',
               width: '50px',
               height: '50px',
@@ -87,7 +65,7 @@ const VerifyPhone = () => {
               caretColor: 'blue',
             }}
             focusStyle={{
-              border: `1px solid ${theme.primary}`,
+              border: '1px solid #0065C1',
               outline: 'none',
             }}
           />
@@ -118,4 +96,4 @@ const VerifyPhone = () => {
   );
 };
 
-export default VerifyPhone;
+export default ForgotPasswordVerification;

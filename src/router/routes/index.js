@@ -23,20 +23,11 @@ const getLayout = {
 const TemplateTitle = '%s - Vuexy React Admin Template';
 
 // ** Default Route
-const DefaultRoute = '/home';
+const DefaultRoute = '/auth';
 
 const Home = lazy(() => import('../../views/Home'));
 const SecondPage = lazy(() => import('../../views/SecondPage'));
-const Login = lazy(() => import('../../views/Login'));
-const Register = lazy(() => import('../../views/auth/RegisterEmail'));
-const ForgotPassword = lazy(() => import('../../views/ForgotPassword'));
-const Error = lazy(() => import('../../views/Error'));
-const UserType = lazy(() => import('../../views/auth/UserType'));
-const VerifyEmail = lazy(() => import('../../views/auth/EmailVerify'));
-const VerifyPhone = lazy(() => import('../../views/auth/PhoneVerify'));
-
-const SetPassword = lazy(() => import('../../views/auth/SetPassword'));
-const RegisterPhone = lazy(() => import('../../views/auth/RegisterPhone'));
+const AuthRoute = lazy(() => import('../../views/auth/index'));
 const Onboarding = lazy(() => import('../../views/Onboarding'));
 
 // ** Merge Routes
@@ -54,70 +45,15 @@ const Routes = [
     path: '/second-page',
     element: <SecondPage />,
   },
+
   {
-    path: '/login',
-    element: <Login />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: '/register',
-    element: <Register />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: '/register-phone',
-    element: <RegisterPhone />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: '/email-verify',
-    element: <VerifyEmail />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: '/phone-verify',
-    element: <VerifyPhone />,
+    path: '/auth/*',
+    element: <AuthRoute />,
     meta: {
       layout: 'blank',
     },
   },
 
-  {
-    path: '/set-password',
-    element: <SetPassword />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: '/usertype',
-    element: <UserType />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: '/forgot-password',
-    element: <ForgotPassword />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-  {
-    path: '/error',
-    element: <Error />,
-    meta: {
-      layout: 'blank',
-    },
-  },
   {
     path: '/onboarding',
     element: <Onboarding />,
