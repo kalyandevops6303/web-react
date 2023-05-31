@@ -2,8 +2,8 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { Home, Shield, User } from 'react-feather';
-import { TabsContainer } from './style';
-import Account from './Account';
+import { TabsContainer } from '../style';
+import Account from '../Account';
 import Profile from './Profile';
 
 const Tabs = ({ tabNames, toggleTab, active }) => (

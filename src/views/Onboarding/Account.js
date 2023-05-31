@@ -80,14 +80,14 @@ const Account = ({ tabNames, toggleTab }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <Card className="pb-3">
-        <CardHeader>
-          <h4 className="m-0 mt-1">Account Details</h4>
-        </CardHeader>
-        <hr className="m-0" />
-        <CardBody>
-          <AccountDetailsFormContainer>
+    <AccountDetailsFormContainer>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Card className="pb-3">
+          <CardHeader>
+            <h4 className="m-0 mt-1">Account Details</h4>
+          </CardHeader>
+          <hr className="m-0 card-header-border" />
+          <CardBody>
             <div className="d-flex align-items-center pb-2 image-container">
               {selectedImage && selectedImagePreview ? (
                 <img src={selectedImagePreview} alt="profile" className="selected-image" />
@@ -220,16 +220,16 @@ const Account = ({ tabNames, toggleTab }) => {
                 <span className="me-50">Save Changes</span>
               </Button>
             </div>
-          </AccountDetailsFormContainer>
-        </CardBody>
-      </Card>
-      <div className="d-flex justify-content-end">
-        <Button color="primary" disabled={!isSubmitSuccessful} onClick={() => toggleTab(tabNames.Profile)}>
-          <span className="me-50">Next</span>
-          <ChevronRight size={14} />
-        </Button>
-      </div>
-    </Form>
+          </CardBody>
+        </Card>
+        <div className="d-flex justify-content-end">
+          <Button color="primary" disabled={!isSubmitSuccessful} onClick={() => toggleTab(tabNames.Profile)}>
+            <span className="me-50">Next</span>
+            <ChevronRight size={14} />
+          </Button>
+        </div>
+      </Form>
+    </AccountDetailsFormContainer>
   );
 };
 

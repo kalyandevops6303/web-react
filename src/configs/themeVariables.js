@@ -19,6 +19,7 @@ const borderInputColor = '#d8d6de';
 const gray = '#b9b9c3';
 const switchBgColor = '#e2e2e2';
 const checkboxLabel = '#6E6B7B';
+const cardHeaderBorderColor = '#ebe9f1';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -42,5 +43,6 @@ const theme = {
   gray,
   switchBgColor,
   checkboxLabel,
+  cardHeaderBorderColor,
 };
 export default theme;

@@ -27,8 +27,9 @@ const DefaultRoute = '/auth';
 
 const Home = lazy(() => import('../../views/Home'));
 const SecondPage = lazy(() => import('../../views/SecondPage'));
+const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
+const ClientOnboarding = lazy(() => import('../../views/Onboarding/Client'));
 const AuthRoute = lazy(() => import('../../views/auth/index'));
-const Onboarding = lazy(() => import('../../views/Onboarding'));
 
 // ** Merge Routes
 const Routes = [
@@ -55,8 +56,15 @@ const Routes = [
   },
 
   {
-    path: '/onboarding',
-    element: <Onboarding />,
+    path: '/talent-onboarding',
+    element: <TalentOnboarding />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/client-onboarding',
+    element: <ClientOnboarding />,
     meta: {
       layout: 'blank',
     },

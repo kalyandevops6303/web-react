@@ -82,6 +82,10 @@ export const AccountDetailsFormContainer = styled.div`
       border-radius: 50%;
     }
   }
+
+  .card-header-border {
+    border: 1px solid ${theme.cardHeaderBorderColor};
+  }
 `;
 
 export const AccountImageContainer = styled.div`
@@ -141,7 +145,7 @@ export const ProfileFormContainer = styled.div`
   }
 
   .buttons-row-border {
-    border-bottom: 1px solid #6e6b7b;
+    border-bottom: 1px solid ${theme.checkboxLabel};
   }
 
   .custom-checkbox-border {
@@ -159,6 +163,27 @@ export const ProfileFormContainer = styled.div`
 
   .checkbox-custom-margin {
     margin-right: 50px;
+  }
+
+  .image-container {
+    .btn {
+      margin-left: 20px;
+      margin-right: 10px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .selected-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+    }
+  }
+
+  .card-header-border {
+    border: 1px solid ${theme.cardHeaderBorderColor};
   }
 `;
 
