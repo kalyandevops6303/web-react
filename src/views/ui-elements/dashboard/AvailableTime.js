@@ -5,11 +5,10 @@
 
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText } from 'reactstrap';
-import { CardWrapper } from '../styled';
-import { TimeWrapper } from './style';
+import { TimeCardWrapper, TimeWrapper } from './style';
 
 const AvailableTime = () => (
-  <CardWrapper>
+  <TimeCardWrapper>
     <Card className="time-card">
       <CardHeader>
         <CardTitle tag="h4">Available Time</CardTitle>
@@ -59,7 +58,7 @@ const AvailableTime = () => (
         </TimeWrapper>
       </CardBody>
     </Card>
-  </CardWrapper>
+  </TimeCardWrapper>
 );
 
 export default AvailableTime;

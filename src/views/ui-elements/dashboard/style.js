@@ -62,6 +62,18 @@ const EarningCardWrapper = styled(CardWrapper)`
   }
 `;
 
+const TimeCardWrapper = styled(CardWrapper)`
+  .card-body {
+    padding: 0.5rem 1.6rem 1rem 1.7rem !important;
+  }
+  .time-card {
+    min-height: 192px;
+    .card-body {
+      font-size: 13.5px;
+    }
+  }
+`;
+
 const EarningAmount = styled.div`
   background: ${theme.bodyBgColor};
   border-radius: 6px;
@@ -161,4 +173,140 @@ const TimeWrapper = styled.section`
     }
   }
 `;
-export { CardWrapper, EarningAmount, EarningCardWrapper, RewardCardWrapper, TimeWrapper };
+
+const ProjectWrapper = styled.div`
+  min-width: 20rem;
+  .row {
+    margin: 0;
+    > * {
+      padding: 0;
+    }
+  }
+  .card-body {
+    padding: 1.4rem 1rem 0.75rem;
+    .bg-light-success {
+      font-weight: 400;
+    }
+    .card-title {
+      font-weight: 400;
+      color: ${theme.headingTextColor};
+      font-size: 16px;
+      line-height: 20px;
+    }
+    .card-text {
+      font-weight: 300;
+      font-size: 14px;
+      color: ${theme.headingTextColor};
+      line-height: 18px;
+    }
+  }
+
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-section {
+    .rounded {
+      border-radius: 16px !important;
+      padding: 0.3rem 0.6rem;
+    }
+    .light-client {
+      background-color: #e0ecff !important;
+      color: #005eff;
+    }
+    .client-badge {
+      padding: 5px 6px 2px 6px;
+      background-color: #feffb8 !important;
+      border-radius: 50%;
+      margin-top: -2px;
+      margin-left: 4px;
+    }
+    width: 50%;
+    color: ${theme.headingTextColor};
+    .avatar-wrap {
+      .avatars {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+    }
+  }
+
+  .active-project-title {
+    height: 40px;
+  }
+  .active-project-users {
+    height: 34px;
+  }
+  .main-row {
+    display: flex;
+    gap: 12px;
+  }
+  .project-cta {
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  .empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .get-started {
+      font-size: 18px;
+      line-height: 24px;
+      color: #2963c3;
+      font-weight: 500;
+      text-align: center;
+    }
+    .empty-gif {
+      height: 15rem;
+    }
+  }
+  .empty-h-25 {
+    height: 25rem;
+  }
+`;
+
+const ProjectsListingWrap = styled.div`
+  display: flex;
+  gap: 14px;
+`;
+
+const Tagwrapper = styled.div`
+  display: flex;
+  .tag {
+    line-height: 17px;
+    border: 1.5px solid #093682;
+    font-weight: 600;
+    color: #093682;
+    font-size: 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    margin: 0 0.1rem 0 0.8rem;
+  }
+  .dot {
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    background: red;
+    display: block;
+    margin-top: -2px;
+  }
+`;
+export {
+  CardWrapper,
+  EarningAmount,
+  EarningCardWrapper,
+  RewardCardWrapper,
+  TimeWrapper,
+  TimeCardWrapper,
+  ProjectWrapper,
+  ProjectsListingWrap,
+  Tagwrapper,
+};

@@ -16,6 +16,7 @@ const infoIconColor = '#BDBDBD';
 const bodyBgColor = '#f8f8f8';
 const bodyColor = '#6e6b7b';
 const greenColor = '#28c76f';
+const headingTextColor = '#5E5873';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -37,5 +38,6 @@ const theme = {
   green: greenColor,
   gray,
   switchBgColor,
+  headingTextColor,
 };
 export default theme;

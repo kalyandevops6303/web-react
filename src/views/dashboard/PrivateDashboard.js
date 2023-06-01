@@ -1,22 +1,14 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Col, Row } from 'reactstrap';
 import EarningCard from '../ui-elements/dashboard/Earning';
 import RewardsCard from '../ui-elements/dashboard/Reward';
 import AvailableTime from '../ui-elements/dashboard/AvailableTime';
+import Projects from '../ui-elements/dashboard/Projects';
+import { Header } from '../ui-elements/styled';
 
-const Header = styled.div`
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 22px;
-  line-height: 29px;
-  color: #5e5873;
-  margin-bottom: 1.5rem;
-`;
 const PrivateDashboard = () => (
   <div>
-    <Header>Dashboard</Header>
+    <Header isTopCards>Dashboard</Header>
     <Row>
       <Col lg="4" sm="12">
         <EarningCard />
@@ -26,6 +18,15 @@ const PrivateDashboard = () => (
       </Col>
       <Col lg="4" sm="12">
         <AvailableTime />
+      </Col>
+    </Row>
+    <Row>
+      <Col lg="8" sm="12">
+        <Header>Projects</Header>
+        <Projects />
+      </Col>
+      <Col lg="4" sm="12">
+        Alerts
       </Col>
     </Row>
   </div>
