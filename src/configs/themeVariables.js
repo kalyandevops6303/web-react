@@ -20,6 +20,11 @@ const gray = '#b9b9c3';
 const switchBgColor = '#e2e2e2';
 const checkboxLabel = '#6E6B7B';
 const cardHeaderBorderColor = '#ebe9f1';
+const wizardStepSvgColor = '#757575';
+const wizardStepActiveBg = 'rgba(1, 133, 228, 0.15)';
+const wizardStepSubtitleColor = 'rgba(1, 133, 228, 0.6)';
+const bodyBg = '#f8f8f8';
+const cardShadow = 'rgba(34, 41, 4, 0.1)';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -44,5 +49,10 @@ const theme = {
   switchBgColor,
   checkboxLabel,
   cardHeaderBorderColor,
+  wizardStepSvgColor,
+  wizardStepActiveBg,
+  wizardStepSubtitleColor,
+  bodyBg,
+  cardShadow,
 };
 export default theme;

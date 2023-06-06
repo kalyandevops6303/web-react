@@ -29,6 +29,7 @@ const Home = lazy(() => import('../../views/Home'));
 const SecondPage = lazy(() => import('../../views/SecondPage'));
 const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
 const ClientOnboarding = lazy(() => import('../../views/Onboarding/Client'));
+const CreateProject = lazy(() => import('../../views/CreateProject'));
 const AuthRoute = lazy(() => import('../../views/auth/index'));
 
 // ** Merge Routes
@@ -68,6 +69,10 @@ const Routes = [
     meta: {
       layout: 'blank',
     },
+  },
+  {
+    path: '/create-project',
+    element: <CreateProject />,
   },
 ];
 
