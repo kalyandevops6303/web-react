@@ -50,7 +50,7 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 
 Bugsnag.start({
-  apiKey: 'fad92880f0bc76c77a15a659d5ac0c1d',
+  apiKey: import.meta.env.VITE_BUGSNAG_API_KEY,
   plugins: [new BugsnagPluginReact()],
 });
 const ErrorBoundary = Bugsnag.getPlugin('react').createErrorBoundary(React);
