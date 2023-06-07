@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // ** React Imports
 import React, { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -11,7 +12,7 @@ import BugsnagPluginReact from '@bugsnag/plugin-react';
 import { Toaster } from 'react-hot-toast';
 
 // ** Redux Imports
-import { store } from './redux/store';
+import store from './redux/store';
 
 // ** ThemeColors Context
 

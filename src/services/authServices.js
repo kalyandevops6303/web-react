@@ -1,0 +1,36 @@
+import API from '../configs/api';
+import DataService from '../configs/dataService/dataService';
+
+const loginService = (data) => DataService.post(API.auth.login, data);
+
+const loginServiceGoogle = (data) => DataService.post(API.auth.socialSignUpSingIn, data);
+
+const registerEmailService = (email, userType) =>
+  DataService.post(API.auth.registerEmail, { email, user_type: userType });
+
+const verifyEmailService = (data) => DataService.post(API.auth.verifyEmail, data);
+
+const setPasswordService = (password) => DataService.post(API.auth.createNewPassowrd, { password });
+
+const registerPhoneService = (phone, country_code) => DataService.post(API.auth.registerPhone, { phone, country_code });
+
+const verifyPhoneService = (data) => DataService.post(API.auth.verifyPhone, data);
+
+const forgotPasswordService = (email) => DataService.post(API.auth.forgotPassword, { email });
+
+const verifyOtpService = (email, otp) => DataService.post(API.auth.verifyOtp, { email, code: otp });
+
+const setNewPasswordService = (newPassword) => DataService.post(API.auth.setNewPassword, { new_password: newPassword });
+
+export {
+  loginService,
+  loginServiceGoogle,
+  registerEmailService,
+  verifyEmailService,
+  setPasswordService,
+  registerPhoneService,
+  verifyPhoneService,
+  forgotPasswordService,
+  verifyOtpService,
+  setNewPasswordService,
+};

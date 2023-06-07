@@ -1,5 +1,6 @@
 // ** React Imports
 import * as yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router';
 import { Controller, useForm } from 'react-hook-form';
@@ -9,7 +10,7 @@ import { Link } from 'react-router-dom';
 import Logo from '@src/assets/images/ic_trumio_logo.png';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Input, Button, FormFeedback, CardText } from 'reactstrap';
+import { CardTitle, Label, Form, Input, Button, FormFeedback, CardText, Spinner } from 'reactstrap';
 
 // ** Custom Components
 import { OnBoardWrap } from './style';
@@ -17,10 +18,14 @@ import { validations } from '../../utility/Utils';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
-import SigninWithGoogle from './components/SigninWithGoogle';
+import { forgotPassword } from '../../redux/actions/authActions';
+import { selectAuthLoading, selectEmail } from '../../redux/selectors/authSelectors';
 
 const RegisterEmail = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isLoading = useSelector(selectAuthLoading);
+  const emailData = useSelector(selectEmail);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -34,12 +39,16 @@ const RegisterEmail = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: '',
+      email: emailData || '',
     },
   });
 
-  const onSubmit = () => {
+  const onSuccess = () => {
     navigate('/auth/forgot-password-email-verify');
+  };
+
+  const onSubmit = (values) => {
+    dispatch(forgotPassword({ email: values.email, onSuccess }));
   };
 
   const emailValue = watch('email'); // track the value of the mobile field
@@ -78,15 +87,13 @@ const RegisterEmail = () => {
             {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
           </div>
 
-          <Button color="primary" block className="auth-btn" type="submit" disabled={!emailValue}>
-            Send OTP
+          <Button color="primary" block className="auth-btn" type="submit" disabled={!emailValue || isLoading}>
+            {isLoading ? <Spinner size="sm" /> : 'Send OTP'}
           </Button>
         </Form>
         <div className="divider my-2">
           <div className="divider-text">Or</div>
         </div>
-
-        <SigninWithGoogle />
 
         <div className="d-flex justify-content-center sign-info">
           <Label>

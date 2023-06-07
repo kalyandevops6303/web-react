@@ -1,15 +1,16 @@
 // ** React Imports
-import { useEffect, useState, Fragment, forwardRef } from "react";
+import { useEffect, useState, Fragment, forwardRef } from 'react';
 
 // ** Third Party Components
-import Stepper from "bs-stepper";
-import classnames from "classnames";
-import { PropTypes } from "prop-types";
-import { ChevronRight } from "react-feather";
+import Stepper from 'bs-stepper';
+import classnames from 'classnames';
+import { PropTypes } from 'prop-types';
+import { ChevronRight } from 'react-feather';
 
 // ** Styles
-import "bs-stepper/dist/css/bs-stepper.min.css";
-import "../../../@core/scss/base/plugins/forms/form-wizard.scss";
+import 'bs-stepper/dist/css/bs-stepper.min.css';
+import '../../../@core/scss/base/plugins/forms/form-wizard.scss';
+import { Progress } from 'reactstrap';
 
 const Wizard = forwardRef((props, ref) => {
   // ** Props
@@ -35,7 +36,7 @@ const Wizard = forwardRef((props, ref) => {
   useEffect(() => {
     stepper = new Stepper(ref.current, options);
 
-    ref.current.addEventListener("shown.bs-stepper", function (event) {
+    ref.current.addEventListener('shown.bs-stepper', function (event) {
       setActiveIndex(event.detail.indexStep);
     });
 
@@ -49,25 +50,19 @@ const Wizard = forwardRef((props, ref) => {
     return steps.map((step, index) => {
       return (
         <Fragment key={step.id}>
-          {index !== 0 && index !== steps.length ? (
-            <div className="line">{separator}</div>
-          ) : null}
+          {index !== 0 && index !== steps.length ? <div className="line">{separator}</div> : null}
           <div
-            className={classnames("step", {
+            className={classnames('step', {
               crossed: activeIndex > index,
               active: index === activeIndex,
             })}
             data-target={`#${step.id}`}
           >
             <button type="button" className="step-trigger">
-              <span className="bs-stepper-box">
-                {step.icon ? step.icon : index + 1}
-              </span>
+              <span className="bs-stepper-box">{step.icon ? step.icon : index + 1}</span>
               <span className="bs-stepper-label">
                 <span className="bs-stepper-title">{step.title}</span>
-                {step.subtitle ? (
-                  <span className="bs-stepper-subtitle">{step.subtitle}</span>
-                ) : null}
+                {step.subtitle ? <span className="bs-stepper-subtitle">{step.subtitle}</span> : null}
               </span>
             </button>
           </div>
@@ -81,9 +76,9 @@ const Wizard = forwardRef((props, ref) => {
     return steps.map((step, index) => {
       return (
         <div
-          className={classnames("content", {
+          className={classnames('content', {
             [contentClassName]: contentClassName,
-            "active dstepper-block": activeIndex === index,
+            'active dstepper-block': activeIndex === index,
           })}
           id={step.id}
           key={step.id}
@@ -97,22 +92,25 @@ const Wizard = forwardRef((props, ref) => {
   return (
     <div
       ref={ref}
-      className={classnames("bs-stepper", {
+      className={classnames('bs-stepper', {
         [className]: className,
-        vertical: type === "vertical",
-        "vertical wizard-modern": type === "modern-vertical",
-        "wizard-modern": type === "modern-horizontal",
+        vertical: type === 'vertical',
+        'vertical wizard-modern': type === 'modern-vertical',
+        'wizard-modern': type === 'modern-horizontal',
       })}
     >
       <div
-        className={classnames("bs-stepper-header", {
+        className={classnames('bs-stepper-header', {
           [headerClassName]: headerClassName,
         })}
       >
         {renderHeader()}
       </div>
+      <div className="custom-wizard-progress mb-1">
+        <Progress value={(activeIndex + 1) * 25}>{(activeIndex + 1) * 25}%</Progress>
+      </div>
       <div
-        className={classnames("bs-stepper-content", {
+        className={classnames('bs-stepper-content', {
           [contentWrapperClassName]: contentWrapperClassName,
         })}
       >
@@ -127,7 +125,7 @@ export default Wizard;
 // ** Default Props
 Wizard.defaultProps = {
   options: {},
-  type: "horizontal",
+  type: 'horizontal',
   separator: <ChevronRight size={17} />,
 };
 
@@ -148,6 +146,6 @@ Wizard.propTypes = {
       subtitle: PropTypes.string,
       icon: PropTypes.any,
       content: PropTypes.any.isRequired,
-    })
+    }),
   ).isRequired,
 };

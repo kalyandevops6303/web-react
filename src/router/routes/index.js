@@ -12,6 +12,7 @@ import PublicRoute from '@components/routes/PublicRoute';
 
 // ** Utils
 import { isObjEmpty } from '@utils';
+import ComingSoon from '../../views/auth/ComingSoon';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -28,7 +29,9 @@ const DefaultRoute = '/auth';
 const PrivateDashboard = lazy(() => import('../../views/dashboard/PrivateDashboard'));
 const SecondPage = lazy(() => import('../../views/SecondPage'));
 const AuthRoute = lazy(() => import('../../views/auth/index'));
-const Onboarding = lazy(() => import('../../views/Onboarding'));
+const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
+const ClientOnboarding = lazy(() => import('../../views/Onboarding/Client'));
+const CreateProject = lazy(() => import('../../views/CreateProject'));
 
 // ** Merge Routes
 const Routes = [
@@ -53,13 +56,39 @@ const Routes = [
       layout: 'blank',
     },
   },
-
   {
-    path: '/onboarding',
-    element: <Onboarding />,
+    path: '/coming-soon',
+    element: <ComingSoon />,
     meta: {
       layout: 'blank',
     },
+  },
+
+  {
+    path: '/auth/*',
+    element: <AuthRoute />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+
+  {
+    path: '/talent-onboarding',
+    element: <TalentOnboarding />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/client-onboarding',
+    element: <ClientOnboarding />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/create-project',
+    element: <CreateProject />,
   },
 ];
 

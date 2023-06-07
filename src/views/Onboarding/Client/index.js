@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Header from './Header';
+import Header from '../Header';
 import Tabs from './Tabs';
 
-const Onboarding = () => {
+const ClientOnboarding = () => {
   const tabNames = {
     Account: '1',
     Profile: '2',
@@ -31,4 +31,4 @@ const Onboarding = () => {
   );
 };
 
-export default Onboarding;
+export default ClientOnboarding;

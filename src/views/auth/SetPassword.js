@@ -1,5 +1,8 @@
 // ** React Imports
+import { useEffect, useState } from 'react';
+import PasswordStrengthBar from 'react-password-strength-bar';
 import * as yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
@@ -8,18 +11,32 @@ import { Controller, useForm } from 'react-hook-form';
 import Logo from '@src/assets/images/ic_trumio_logo.png';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Button, FormFeedback } from 'reactstrap';
+import { CardTitle, Label, Form, Button, FormFeedback, Spinner } from 'reactstrap';
 
 // ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle';
 import { validations } from '../../utility/Utils';
 
 // ** Styles
-import { OnBoardWrap } from './style';
+import { OnBoardWrap, PasswordStrengthBarWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
+import { setPassword } from '../../redux/actions/authActions';
+import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
 
 const SetPassword = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [score, setScore] = useState(0);
+
+  const isLoading = useSelector(selectAuthLoading);
+  const isPasswordSet = useSelector(selectIsPasswordSet);
+
+  useEffect(() => {
+    if (!isLoading && isPasswordSet) {
+      navigate('/auth/register-phone');
+    }
+  }, [isLoading, isPasswordSet, navigate]);
+
   const schema = yup.object().shape({
     newPassword: validations.newPassword.required('Password is required'),
     cnfPassword: validations.confirmPassword.required('Please Re-type your password'),
@@ -37,8 +54,23 @@ const SetPassword = () => {
       cnfPassword: '',
     },
   });
-  const onSubmit = () => {
-    navigate('/auth/register-phone');
+
+  const onSubmit = (values) => {
+    const { newPassword } = values;
+    dispatch(setPassword(newPassword));
+  };
+
+  const scoreColors = {
+    0: 'red',
+    1: 'red',
+    2: 'orange',
+    3: 'blue',
+    4: 'green',
+  };
+
+  const getColorName = (s) => scoreColors[s] || '';
+  const onChangeScore = (s) => {
+    setScore(s);
   };
 
   const newPassword = watch('newPassword');
@@ -74,6 +106,23 @@ const SetPassword = () => {
                 />
               )}
             />
+            {newPassword && (
+              <PasswordStrengthBarWrap>
+                <PasswordStrengthBar
+                  className={`password-meter ${getColorName(score)}`}
+                  scoreWords={[
+                    'Password strength: Weak',
+                    'Password strength: Weak',
+                    'Password strength: Fair',
+                    'Password strength: Good',
+                    'Password strength: Strong',
+                  ]}
+                  shortScoreWord="Too short"
+                  password={newPassword}
+                  onChangeScore={onChangeScore}
+                />
+              </PasswordStrengthBarWrap>
+            )}
             {errors.newPassword && <FormFeedback>{errors.newPassword.message}</FormFeedback>}
           </div>
           <div className="mb-3">
@@ -100,8 +149,8 @@ const SetPassword = () => {
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
           </div>
-          <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword}>
-            Save Password
+          <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
+            {isLoading ? <Spinner size="sm" /> : 'Save Password'}
           </Button>
         </Form>
 

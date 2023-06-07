@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import Proptypes from 'prop-types';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -23,8 +24,8 @@ import { AccountDetailsFormContainer, AccountImageContainer } from './style';
 import IndianFlag from '../../assets/images/indian-flag.png';
 import theme from '../../configs/themeVariables';
 
-const Account = () => {
-  const SignupSchema = yup.object().shape({
+const Account = ({ tabNames, toggleTab }) => {
+  const AccountDetailsSchema = yup.object().shape({
     firstName: yup.string().required('First name is required'),
     lastName: yup.string().required('Last name is required'),
     countryCode: yup.string().required(),
@@ -35,10 +36,10 @@ const Account = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid, isSubmitting, isSubmitSuccessful },
   } = useForm({
     mode: 'onChange',
-    resolver: yupResolver(SignupSchema),
+    resolver: yupResolver(AccountDetailsSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -79,14 +80,14 @@ const Account = () => {
   };
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <h4 className="m-0 mt-1">Account Details</h4>
-        </CardHeader>
-        <hr className="m-0" />
-        <CardBody>
-          <AccountDetailsFormContainer>
+    <AccountDetailsFormContainer>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Card className="pb-3">
+          <CardHeader>
+            <h4 className="m-0 mt-1">Account Details</h4>
+          </CardHeader>
+          <hr className="m-0 card-header-border" />
+          <CardBody>
             <div className="d-flex align-items-center pb-2 image-container">
               {selectedImage && selectedImagePreview ? (
                 <img src={selectedImagePreview} alt="profile" className="selected-image" />
@@ -116,116 +117,130 @@ const Account = () => {
                 </div>
               </UncontrolledTooltip>
             </div>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="firstName">
-                    First Name<span className="label-asterisk">*</span>
-                  </Label>
-                  <Controller
-                    id="firstName"
-                    name="firstName"
-                    control={control}
-                    render={({ field }) => (
-                      <Input {...field} placeholder="Enter first name" invalid={errors.firstName && true} />
-                    )}
-                  />
-                  {errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
-                </Col>
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="lastName">
-                    Last Name<span className="label-asterisk">*</span>
-                  </Label>
-                  <Controller
-                    id="lastName"
-                    name="lastName"
-                    control={control}
-                    render={({ field }) => (
-                      <Input {...field} placeholder="Enter last name" invalid={errors.lastName && true} />
-                    )}
-                  />
-                  {errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
-                </Col>
-              </Row>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="mobileNumber">
-                    Mobile number
-                  </Label>
-                  <Row>
-                    <Col sm="3" md="3" lg="3">
-                      <Controller
-                        id="countryCode"
-                        name="countryCode"
-                        control={control}
-                        render={({ field }) => (
-                          <InputGroup className="input-group-merge mb-2">
-                            <InputGroupText>
-                              <img src={IndianFlag} alt="flag" />
-                            </InputGroupText>
-                            <Input
-                              {...field}
-                              placeholder="Enter country code"
-                              className="filled-form-control"
-                              disabled
-                              invalid={errors.countryCode && true}
-                            />
-                          </InputGroup>
-                        )}
-                      />
-                    </Col>
-                    <Col sm="9" md="9" lg="9">
-                      <Controller
-                        id="mobileNumber"
-                        name="mobileNumber"
-                        control={control}
-                        render={({ field }) => (
+
+            <Row className="mb-1">
+              <Col sm="12" md="12" lg="6">
+                <Label className="form-label" for="firstName">
+                  First Name<span className="label-asterisk">*</span>
+                </Label>
+                <Controller
+                  id="firstName"
+                  name="firstName"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field} placeholder="Enter first name" invalid={errors.firstName && true} />
+                  )}
+                />
+                {errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
+              </Col>
+              <Col sm="12" md="12" lg="6">
+                <Label className="form-label" for="lastName">
+                  Last Name<span className="label-asterisk">*</span>
+                </Label>
+                <Controller
+                  id="lastName"
+                  name="lastName"
+                  control={control}
+                  render={({ field }) => (
+                    <Input {...field} placeholder="Enter last name" invalid={errors.lastName && true} />
+                  )}
+                />
+                {errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
+              </Col>
+            </Row>
+            <Row className="mb-1">
+              <Col sm="12" md="12" lg="6">
+                <Label className="form-label" for="mobileNumber">
+                  Mobile number
+                </Label>
+                <Row>
+                  <Col sm="3" md="3" lg="3">
+                    <Controller
+                      id="countryCode"
+                      name="countryCode"
+                      control={control}
+                      render={({ field }) => (
+                        <InputGroup className="input-group-merge mb-2">
+                          <InputGroupText>
+                            <img src={IndianFlag} alt="flag" />
+                          </InputGroupText>
                           <Input
                             {...field}
-                            placeholder="Enter mobile number"
+                            placeholder="Enter country code"
                             className="filled-form-control"
                             disabled
-                            invalid={errors.mobileNumber && true}
+                            invalid={errors.countryCode && true}
                           />
-                        )}
-                      />
-                    </Col>
-                  </Row>
-                  {errors.mobileNumber && <FormFeedback>{errors.mobileNumber.message}</FormFeedback>}
-                </Col>
-                <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="email">
-                    Email address
-                  </Label>
-                  <Controller
-                    id="email"
-                    name="email"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        placeholder="Enter email address"
-                        className="filled-form-control"
-                        disabled
-                        invalid={errors.email && true}
-                      />
-                    )}
-                  />
-                  {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
-                </Col>
-              </Row>
-            </Form>
-          </AccountDetailsFormContainer>
-        </CardBody>
-      </Card>
-      <div className="d-flex justify-content-end">
-        <Button color="primary" type="submit" onClick={handleSubmit(onSubmit)}>
-          <span className="me-50">Next</span>
-          <ChevronRight size={14} />
-        </Button>
-      </div>
-    </>
+                        </InputGroup>
+                      )}
+                    />
+                  </Col>
+                  <Col sm="9" md="9" lg="9">
+                    <Controller
+                      id="mobileNumber"
+                      name="mobileNumber"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          placeholder="Enter mobile number"
+                          className="filled-form-control"
+                          disabled
+                          invalid={errors.mobileNumber && true}
+                        />
+                      )}
+                    />
+                  </Col>
+                </Row>
+                {errors.mobileNumber && <FormFeedback>{errors.mobileNumber.message}</FormFeedback>}
+              </Col>
+              <Col sm="12" md="12" lg="6">
+                <Label className="form-label" for="email">
+                  Email address
+                </Label>
+                <Controller
+                  id="email"
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="Enter email address"
+                      className="filled-form-control"
+                      disabled
+                      invalid={errors.email && true}
+                    />
+                  )}
+                />
+                {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
+              </Col>
+            </Row>
+            <div className="d-flex justify-content-end mt-2">
+              <Button color="primary" type="submit" disabled={!isValid || isSubmitting}>
+                <span className="me-50">Save Changes</span>
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+        <div className="d-flex justify-content-end">
+          <Button color="primary" disabled={!isSubmitSuccessful} onClick={() => toggleTab(tabNames.Profile)}>
+            <span className="me-50">Next</span>
+            <ChevronRight size={14} />
+          </Button>
+        </div>
+      </Form>
+    </AccountDetailsFormContainer>
   );
 };
 
 export default Account;
+
+Account.propTypes = {
+  tabNames: Proptypes.object,
+  toggleTab: Proptypes.func,
+};
+
+Account.defaultProps = {
+  tabNames: {},
+  toggleTab: () => {},
+};

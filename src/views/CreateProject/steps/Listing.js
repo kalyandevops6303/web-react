@@ -1,0 +1,201 @@
+import Proptypes from 'prop-types';
+import { ChevronLeft, ChevronRight } from 'react-feather';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/flatpickr.css';
+import classNames from 'classnames';
+import { Label, Row, Col, Input, Form, Button, Card, CardHeader, CardBody, FormFeedback } from 'reactstrap';
+import * as yup from 'yup';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { RequirementsFormContainer } from '../style';
+import theme from '../../../configs/themeVariables';
+import { UploadIconContainer } from '../../Onboarding/style';
+
+const Listing = ({ stepper }) => {
+  const ListingDetailsSchema = yup.object().shape({
+    listingOption: yup.string().required('Choose one option'),
+    startDate: yup.date().required('Start date is required'),
+    endDate: yup.date().required('End date is required'),
+    duration: yup.string().required('Duration is required'),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(ListingDetailsSchema),
+    defaultValues: {},
+  });
+
+  const onSubmit = () => {
+    stepper.next();
+  };
+
+  return (
+    <RequirementsFormContainer>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Card>
+          <CardHeader>
+            <h4 className="m-0 mt-1">Listing Details</h4>
+          </CardHeader>
+          <hr className="m-0 card-header-border" />
+          <CardBody>
+            <Row className="mb-1">
+              <Controller
+                control={control}
+                name="listingOption"
+                render={({ field }) => (
+                  <div className="demo-inline-spacing mx-25">
+                    <div className="form-check form-check-inline checkbox-custom-margin">
+                      <Input
+                        type="radio"
+                        {...field}
+                        id="select-duration"
+                        checked={field.value === 'select-duration'}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          const value = 'select-duration';
+
+                          if (isChecked) {
+                            field.onChange(value);
+                          } else {
+                            field.onChange('');
+                          }
+                        }}
+                      />
+                      <Label for="select-duration" className="form-check-label fw-bold">
+                        <h5 className="m-0">Select your listing duration</h5>
+                      </Label>
+                    </div>
+                  </div>
+                )}
+              />
+            </Row>
+            <Row>
+              <Col sm="12" md="6" lg="4" className="ps-3">
+                <Label className="form-label" for="startDate">
+                  Start Date<span className="label-asterisk">*</span>
+                </Label>
+                <Controller
+                  control={control}
+                  id="startDate"
+                  name="startDate"
+                  render={({ field }) => (
+                    <Flatpickr
+                      {...field}
+                      placeholder="Select start date"
+                      options={{
+                        minDate: 'today',
+                        dateFormat: 'd-m-Y',
+                      }}
+                      className={classNames('form-control', {
+                        'is-invalid': errors && errors.startDate,
+                      })}
+                    />
+                  )}
+                />
+                {errors.startDate && <FormFeedback>{errors.startDate.message}</FormFeedback>}
+              </Col>
+              <Col sm="12" md="6" lg="4" className="ps-3">
+                <Label className="form-label" for="endDate">
+                  End Date<span className="label-asterisk">*</span>
+                </Label>
+                <Controller
+                  control={control}
+                  id="endDate"
+                  name="endDate"
+                  render={({ field }) => (
+                    <Flatpickr
+                      {...field}
+                      placeholder="Select end date"
+                      options={{
+                        minDate: 'today',
+                        dateFormat: 'd-m-Y',
+                      }}
+                      className={classNames('form-control', {
+                        'is-invalid': errors && errors.endDate,
+                      })}
+                    />
+                  )}
+                />
+                {errors.endDate && <FormFeedback>{errors.endDate.message}</FormFeedback>}
+              </Col>
+            </Row>
+            <Row className="mb-1 mt-2">
+              <Controller
+                control={control}
+                name="listingOption"
+                render={({ field }) => (
+                  <div className="demo-inline-spacing mx-25">
+                    <div className="form-check form-check-inline checkbox-custom-margin">
+                      <Input
+                        type="radio"
+                        {...field}
+                        id="enter-duration"
+                        checked={field.value === 'enter-duration'}
+                        onChange={(e) => {
+                          const isChecked = e.target.checked;
+                          const value = 'enter-duration';
+
+                          if (isChecked) {
+                            field.onChange(value);
+                          } else {
+                            field.onChange('');
+                          }
+                        }}
+                      />
+                      <Label for="enter-duration" className="form-check-label fw-bold">
+                        <h5 className="m-0">Enter listing duration</h5>
+                      </Label>
+                    </div>
+                  </div>
+                )}
+              />
+            </Row>
+            <Row className="d-flex align-items-center">
+              <Col sm="12" md="12" lg="8" className="d-flex align-items-center ps-3">
+                <h5 className="fw-light m-0">Ends after</h5>
+                <Col sm="2" md="2" lg="2" className="mx-1">
+                  <Controller
+                    id="duration"
+                    name="duration"
+                    control={control}
+                    render={({ field }) => (
+                      <Input {...field} type="number" min={0} placeholder="Enter" invalid={errors.duration && true} />
+                    )}
+                  />
+                </Col>
+                <h5 className="fw-light m-0">Days</h5>
+              </Col>
+            </Row>
+            {errors.listingOption && <FormFeedback>{errors.listingOption.message}</FormFeedback>}
+          </CardBody>
+        </Card>
+        <div className="d-flex justify-content-between">
+          <div className="d-flex align-items-center upload-btn cursor-pointer" onClick={() => stepper.previous()}>
+            <UploadIconContainer className="px-25 py-25 p-0">
+              <ChevronLeft size={18} color={theme.activeNavPillText} />
+            </UploadIconContainer>
+            <h5 className="fw-light mb-0 mx-75">Back</h5>
+          </div>
+          <Button color="primary">
+            <span className="me-50">Save & Continue</span>
+            <ChevronRight size={14} />
+          </Button>
+        </div>
+      </Form>
+    </RequirementsFormContainer>
+  );
+};
+
+export default Listing;
+
+Listing.propTypes = {
+  stepper: Proptypes.object,
+};
+
+Listing.defaultProps = {
+  stepper: {},
+};

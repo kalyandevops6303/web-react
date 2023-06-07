@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  trumio_frontend:
+    image: trumio_frontend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5000:5000
+    env_file: .env
+    restart: always

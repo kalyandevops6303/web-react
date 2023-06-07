@@ -76,8 +76,8 @@ export const selectThemeColors = (theme) => ({
   colors: {
     ...theme.colors,
     primary25: '#7367f01a', // for option hover bg-color
-    primary: '#7367f0', // for selected option bg-color
-    neutral10: '#7367f0', // for tags bg-color
+    primary: 'rgba(1, 133, 228, 0.7)', // for selected option bg-color
+    neutral10: 'rgba(1, 133, 228, 0.7)', // for tags bg-color
     neutral20: '#ededed', // for input border-color
     neutral30: '#ededed', // for input hover border-color
   },
