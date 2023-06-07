@@ -15,14 +15,16 @@ import { ProjectWrapper } from './style';
 
 const UserSection = ({ users, tagName, name, isClient }) => (
   <div className="user-section">
-    <Badge className={`rounded ${isClient && 'light-client'}`} color={`light-${isClient ? 'client' : 'info'}`}>
-      {tagName}
-    </Badge>
-    {isClient && (
-      <Badge className="client-badge">
-        <img src={hat} alt="client-badge" />
+    <div className="d-flex">
+      <Badge className={`rounded ${isClient && 'light-client'}`} color={`light-${isClient ? 'client' : 'info'}`}>
+        {tagName}
       </Badge>
-    )}
+      {isClient && (
+        <Badge className="client-badge">
+          <img src={hat} alt="client-badge" />
+        </Badge>
+      )}
+    </div>
     <CardText className="mt-50 truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
@@ -44,7 +46,7 @@ UserSection.propTypes = {
   tagName: PropTypes.string,
 };
 
-const Project = ({ data }) => {
+const Project = ({ data, className }) => {
   const avatarGroupArr = [
     {
       title: 'Billy Hopkins',
@@ -99,7 +101,7 @@ const Project = ({ data }) => {
     },
   ];
   return (
-    <ProjectWrapper>
+    <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
           <Badge color="light-success">In-Progress</Badge>
@@ -138,5 +140,6 @@ const Project = ({ data }) => {
 
 Project.propTypes = {
   data: PropTypes.object,
+  className: PropTypes.string,
 };
 export default Project;

@@ -3,8 +3,9 @@ import { Col, Row } from 'reactstrap';
 import EarningCard from '../ui-elements/dashboard/Earning';
 import RewardsCard from '../ui-elements/dashboard/Reward';
 import AvailableTime from '../ui-elements/dashboard/AvailableTime';
-import Projects from '../ui-elements/dashboard/Projects';
 import { Header } from '../ui-elements/styled';
+import Alerts from '../ui-elements/dashboard/Alerts';
+import ProjectListing from '../ui-elements/dashboard/ProjectListing';
 
 const PrivateDashboard = () => (
   <div>
@@ -23,10 +24,10 @@ const PrivateDashboard = () => (
     <Row>
       <Col lg="8" sm="12">
         <Header>Projects</Header>
-        <Projects />
+        <ProjectListing />
       </Col>
       <Col lg="4" sm="12">
-        Alerts
+        <Alerts />
       </Col>
     </Row>
   </div>

@@ -74,6 +74,37 @@ const TimeCardWrapper = styled(CardWrapper)`
   }
 `;
 
+const AlertCardWrapper = styled(CardWrapper)`
+  .card .card {
+    box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1) !important;
+    margin: 0 1.5rem 1.5rem;
+  }
+  .card-header {
+    padding: 1.6rem 1.5rem;
+  }
+  .card-body {
+    padding: 0.5rem 1.5rem 1rem !important;
+  }
+  .card-inside {
+    .card-header {
+      padding: 1.2rem 1.2rem;
+    }
+    .card-body {
+      padding: 0.5rem 1.2rem 1rem !important;
+    }
+  }
+
+  .add-det {
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  .percentage {
+    font-weight: bold;
+    font-size: 20px;
+  }
+`;
+
 const EarningAmount = styled.div`
   background: ${theme.bodyBgColor};
   border-radius: 6px;
@@ -175,7 +206,9 @@ const TimeWrapper = styled.section`
 `;
 
 const ProjectWrapper = styled.div`
-  min-width: 20rem;
+  @media (max-width: 768px) {
+    min-width: 20rem;
+  }
   .row {
     margin: 0;
     > * {
@@ -251,6 +284,11 @@ const ProjectWrapper = styled.div`
     font-size: 16px;
   }
 
+  .empty-card {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+
   .empty {
     display: flex;
     flex-direction: column;
@@ -267,38 +305,72 @@ const ProjectWrapper = styled.div`
     }
   }
   .empty-h-25 {
-    height: 25rem;
+    height: 25.5rem;
+  }
+
+  .card-app-design {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
   }
 `;
 
 const ProjectsListingWrap = styled.div`
-  display: flex;
-  gap: 14px;
+  .slide-0 {
+    .card-app-design {
+      margin-left: 0.5rem;
+    }
+  }
+  .slick-track {
+    display: flex;
+    gap: 1rem;
+    left: -12px !important;
+  }
+  .slick-slider {
+    display: flex;
+  }
+
+  .right-icon {
+    max-height: 25px;
+    min-width: 25px;
+    background: aquamarine;
+    padding: 5px 8px;
+    border-radius: 50%;
+  }
+  .left-icon {
+    max-height: 25px;
+    min-width: 25px;
+    background: aquamarine;
+    padding: 5px 8px;
+    border-radius: 50%;
+  }
+
+  .slick-next {
+    right: 0 !important;
+    &:before {
+      font-size: 30px;
+      line-height: 1;
+      opacity: 0.75;
+      color: #0185e44a;
+    }
+  }
+  .slick-prev {
+    left: -9px !important;
+    z-index: 1;
+    &:before {
+      font-size: 30px;
+      line-height: 1;
+      opacity: 0.75;
+      color: #0185e44a;
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+    gap: 10px;
+    overflow-y: scroll;
+  }
 `;
 
-const Tagwrapper = styled.div`
-  display: flex;
-  .tag {
-    line-height: 17px;
-    border: 1.5px solid #093682;
-    font-weight: 600;
-    color: #093682;
-    font-size: 12px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    padding: 0 6px;
-    margin: 0 0.1rem 0 0.8rem;
-  }
-  .dot {
-    height: 6px;
-    width: 6px;
-    border-radius: 50%;
-    background: red;
-    display: block;
-    margin-top: -2px;
-  }
-`;
 export {
   CardWrapper,
   EarningAmount,
@@ -308,5 +380,5 @@ export {
   TimeCardWrapper,
   ProjectWrapper,
   ProjectsListingWrap,
-  Tagwrapper,
+  AlertCardWrapper,
 };
