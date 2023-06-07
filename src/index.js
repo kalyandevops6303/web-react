@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // ** React Imports
 import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -9,7 +10,7 @@ import { Provider } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 
 // ** Redux Imports
-import { store } from './redux/store';
+import store from './redux/store';
 
 // ** ThemeColors Context
 

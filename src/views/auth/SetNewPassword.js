@@ -1,9 +1,10 @@
 // ** React Imports
 import * as yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 
 // ** Icons Imports
@@ -13,7 +14,7 @@ import Logo from '@src/assets/images/ic_trumio_logo.png';
 import InputPasswordToggle from '@components/input-password-toggle';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Button, FormFeedback } from 'reactstrap';
+import { CardTitle, Label, Form, Button, FormFeedback, Spinner } from 'reactstrap';
 
 // ** utitlity
 import { validations } from '../../utility/Utils';
@@ -21,10 +22,23 @@ import { validations } from '../../utility/Utils';
 // ** Styles
 import { OnBoardWrap, PasswordStrengthBarWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
+import { setNewPassword } from '../../redux/actions/authActions';
+import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
 
 const SetNewPassword = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [score, setScore] = useState(0);
+
+  const isLoading = useSelector(selectAuthLoading);
+  const isPasswordSet = useSelector(selectIsPasswordSet);
+
+  useEffect(() => {
+    if (isPasswordSet) {
+      navigate('/auth/login');
+    }
+  }, [isPasswordSet, navigate]);
+
   const schema = yup.object().shape({
     newPassword: validations.newPassword.required('Password is required'),
     cnfPassword: validations.confirmPassword.required('Please Re-type your password'),
@@ -42,8 +56,8 @@ const SetNewPassword = () => {
       cnfPassword: '',
     },
   });
-  const onSubmit = () => {
-    navigate('/auth/login');
+  const onSubmit = (values) => {
+    dispatch(setNewPassword(values?.newPassword));
   };
 
   const newPassword = watch('newPassword');
@@ -136,8 +150,8 @@ const SetNewPassword = () => {
             />
             {errors.cnfPassword && <FormFeedback>{errors.cnfPassword.message}</FormFeedback>}
           </div>
-          <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword}>
-            Save Password
+          <Button color="primary" block type="submit" disabled={!newPassword || !cnfPassword || isLoading}>
+            {isLoading ? <Spinner size="sm" /> : 'Save Password'}
           </Button>
         </Form>
         <div className="d-flex justify-content-center sign-info">

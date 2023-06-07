@@ -1,12 +1,13 @@
 // ** React Imports
 import OtpInput from 'react-otp-input';
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 // ** Icons Imports
 import Logo from '@src/assets/images/ic_trumio_logo.png';
 
 // ** Reactstrap Imports
-import { CardTitle, CardText, Label, Form, Input, Button, FormFeedback } from 'reactstrap';
+import { CardTitle, CardText, Label, Form, Input, Button } from 'reactstrap';
 
 // ** Custom Components
 import CountryDropdown from '../../@core/components/country-dropdown';
@@ -15,17 +16,42 @@ import CountryDropdown from '../../@core/components/country-dropdown';
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
 import { OnBoardWrap } from './style';
+import { verifyPhone } from '../../redux/actions/authActions';
 import theme from '../../configs/themeVariables';
+import {
+  selectAuthLoading,
+  selectIsPhoneVerified,
+  selectMobile,
+  selectUserType,
+} from '../../redux/selectors/authSelectors';
+import ResendOTPComp from './components/ResendOTP';
 
 const VerifyPhone = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [code, setCode] = useState('');
-  const [otpError, setOtpError] = useState(false);
+
+  const isLoading = useSelector(selectAuthLoading);
+  const isPhoneVerified = useSelector(selectIsPhoneVerified);
+  const phoneData = useSelector(selectMobile);
+
+  const userType = useSelector(selectUserType);
+
+  useEffect(() => {
+    if (!isLoading && isPhoneVerified && userType) {
+      navigate(`/${userType.toLowerCase()}-onboarding`);
+    } else if (isPhoneVerified && !userType) {
+      navigate('/auth');
+    }
+    if (!phoneData) {
+      navigate('/auth/register-phone');
+    }
+  }, [isLoading, isPhoneVerified, navigate]);
 
   const [selectedCountry, setSelectedCountry] = useState({
-    label: 'Afghanistan',
-    dial_code: '+93',
-    code: 'AF',
+    label: 'India',
+    dial_code: '+91',
+    code: 'IN',
   });
 
   const handleChange = (value) => {
@@ -38,8 +64,9 @@ const VerifyPhone = () => {
   };
 
   const verifyOtp = () => {
-    navigate('/auth/login');
-    setOtpError(false);
+    dispatch(
+      verifyPhone({ phone: phoneData.phone, country_code: phoneData?.selectedCountry.dial_code.slice(1), code }),
+    );
   };
 
   return (
@@ -63,9 +90,13 @@ const VerifyPhone = () => {
               Mobile number
             </Label>
             <div className="d-flex">
-              <CountryDropdown selectedCountry={selectedCountry} setSelectedCountry={handleCountryChange} disabled />
+              <CountryDropdown
+                selectedCountry={phoneData?.selectedCountry || selectedCountry}
+                setSelectedCountry={handleCountryChange}
+                disabled
+              />
               <div className="mobile-input">
-                <Input type="number" placeholder="9090989080" disabled />
+                <Input defaultValue={phoneData?.phone} type="number" placeholder="9090989080" disabled />
               </div>
             </div>
           </div>
@@ -91,20 +122,13 @@ const VerifyPhone = () => {
               outline: 'none',
             }}
           />
-          {otpError && <FormFeedback className="mt-1">Invalid OTP</FormFeedback>}
-          <Button color="primary" block className="mt-4" disabled={code.length !== 4} onClick={verifyOtp}>
+          <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
             Verify OTP
           </Button>
         </Form>
 
-        <div className="d-flex justify-content-center sign-info">
-          <Label>
-            <small>Resend</small>
-          </Label>
-          <Label className="primary">
-            <small>OTP</small>
-          </Label>
-        </div>
+        <ResendOTPComp isPhoneResend />
+
         <div className="d-flex justify-content-center sign-info last-row">
           <Label>
             <small>Already have an account?</small>

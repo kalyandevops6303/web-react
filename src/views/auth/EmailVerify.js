@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import OtpInput from 'react-otp-input';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // ** Icons Imports
 import Logo from '@src/assets/images/ic_trumio_logo.png';
@@ -8,24 +9,48 @@ import Logo from '@src/assets/images/ic_trumio_logo.png';
 // ** Custom Components
 
 // ** Reactstrap Imports
-import { CardTitle, CardText, Label, Form, Input, Button, FormFeedback } from 'reactstrap';
+import { CardTitle, CardText, Label, Form, Input, Button, FormFeedback, Spinner } from 'reactstrap';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
 import { OnBoardWrap } from './style';
+import { verifyEmail } from '../../redux/actions/authActions';
+import {
+  selectAuthLoading,
+  selectEmail,
+  selectIsEmailVerified,
+  selectUserType,
+} from '../../redux/selectors/authSelectors';
+import ResendOTPComp from './components/ResendOTP';
 
 const VerifyEmail = () => {
-  const [code, setCode] = useState('');
+  const dispatch = useDispatch();
   const [otpError, setOtpError] = useState(false);
   const navigate = useNavigate();
+  const [code, setCode] = useState('');
+  const isEmailVerified = useSelector(selectIsEmailVerified);
+  const userType = useSelector(selectUserType);
+  const isLoading = useSelector(selectAuthLoading);
+  const emailId = useSelector(selectEmail);
+
+  useEffect(() => {
+    if (!userType || !emailId) {
+      navigate('/auth');
+    }
+    if (!isLoading && isEmailVerified) {
+      navigate('/auth/set-password');
+    }
+  }, [isLoading, isEmailVerified, navigate]);
 
   const handleChange = (value) => {
     setCode(value);
     setOtpError(false);
   };
+
   const verifyOtp = () => {
-    navigate('/auth/set-password');
+    dispatch(verifyEmail({ email: emailId, user_type: userType, code }));
   };
+
   return (
     <OnBoardWrap>
       <div className="card-onboard">
@@ -44,7 +69,14 @@ const VerifyEmail = () => {
             <Label className="form-label" for="login-email">
               Email
             </Label>
-            <Input type="email" id="login-email" placeholder="john@example.com" autoFocus disabled />
+            <Input
+              defaultValue={emailId}
+              type="email"
+              id="login-email"
+              placeholder="john@example.com"
+              autoFocus
+              disabled
+            />
           </div>
 
           <OtpInput
@@ -70,19 +102,12 @@ const VerifyEmail = () => {
             }}
           />
           {otpError && <FormFeedback className="mt-1">Invalid OTP</FormFeedback>}
-          <Button color="primary" block className="mt-4" disabled={code.length !== 4} onClick={verifyOtp}>
-            Verify OTP
+          <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
+            {isLoading ? <Spinner size="sm" /> : 'Verify OTP'}
           </Button>
         </Form>
 
-        <div className="d-flex justify-content-center sign-info">
-          <Label>
-            <small>Resend</small>
-          </Label>
-          <Label className="primary">
-            <small>OTP</small>
-          </Label>
-        </div>
+        <ResendOTPComp isEmailResend />
         <div className="d-flex justify-content-center sign-info last-row">
           <Label>
             <small>Already have an account?</small>

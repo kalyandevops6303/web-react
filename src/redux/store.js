@@ -1,14 +1,20 @@
-// ** Redux Imports
-import rootReducer from "./rootReducer";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
+import authReducer from './reducers/auth';
+import layout from './layout';
+import navbar from './navbar';
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  layout,
+  navbar,
+
+  // Add more reducers if needed
+});
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware({
-      serializableCheck: false,
-    });
-  },
+  devTools: process.env.NODE_ENV !== 'production', // Enable Redux DevTools only in development
 });
 
-export { store };
+export default store;

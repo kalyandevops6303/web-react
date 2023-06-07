@@ -1,5 +1,6 @@
 // ** React Imports
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router';
@@ -10,7 +11,7 @@ import { Link } from 'react-router-dom';
 import Logo from '@src/assets/images/ic_trumio_logo.png';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Input, Button, FormFeedback } from 'reactstrap';
+import { CardTitle, Label, Form, Input, Button, FormFeedback, Spinner } from 'reactstrap';
 
 // ** Custom Components
 import { OnBoardWrap } from './style';
@@ -18,10 +19,23 @@ import { validations } from '../../utility/Utils';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
+import { registerEmail } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
+import { selectAuthLoading, selectEmail, selectUserType } from '../../redux/selectors/authSelectors';
 
 const RegisterEmail = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectAuthLoading);
+  const emailData = useSelector(selectEmail);
+  const userType = useSelector(selectUserType);
+
+  useEffect(() => {
+    if (!userType) {
+      navigate('/auth');
+    }
+  }, [userType, navigate]);
+
   const [agreeTerms, setAgreeTerms] = useState(false);
 
   const schema = yup.object().shape({
@@ -37,16 +51,22 @@ const RegisterEmail = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: '',
+      email: emailData || '',
       agreeTerms: false,
     },
   });
 
-  const onSubmit = () => {
+  const onSuccess = () => {
     navigate('/auth/email-verify');
   };
 
+  const onSubmit = (values) => {
+    const { email } = values;
+    dispatch(registerEmail({ email, userType, onSuccess }));
+  };
+
   const emailValue = watch('email'); // track the value of the mobile field
+
   return (
     <OnBoardWrap>
       <div className="card-onboard">
@@ -112,15 +132,15 @@ const RegisterEmail = () => {
             </div>
             {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
           </div>
-          <Button color="primary" block className="auth-btn" type="submit" disabled={!emailValue}>
-            Send OTP
+          <Button color="primary" block className="auth-btn" type="submit" disabled={!emailValue || isLoading}>
+            {isLoading ? <Spinner size="sm" /> : 'Send OTP'}
           </Button>
         </Form>
         <div className="divider my-2">
           <div className="divider-text">Or</div>
         </div>
 
-        <SigninWithGoogle />
+        <SigninWithGoogle title="Sign Up" />
 
         <div className="d-flex justify-content-center sign-info">
           <Label>

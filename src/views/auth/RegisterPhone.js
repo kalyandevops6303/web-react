@@ -1,5 +1,6 @@
 // ** React Imports
 import * as yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -10,7 +11,7 @@ import { Controller, useForm } from 'react-hook-form';
 import Logo from '@src/assets/images/ic_trumio_logo.png';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Input, Button, FormGroup, FormFeedback } from 'reactstrap';
+import { CardTitle, Label, Form, Input, Button, FormGroup, FormFeedback, Spinner } from 'reactstrap';
 
 // ** Custom Components
 import CountryDropdown from '../../@core/components/country-dropdown';
@@ -18,14 +19,23 @@ import { OnBoardWrap } from './style';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
+import { registerPhone } from '../../redux/actions/authActions';
+import { selectAuthLoading, selectMobile } from '../../redux/selectors/authSelectors';
 
 const RegisterPhone = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [selectedCountry, setSelectedCountry] = useState({
-    label: 'Afghanistan',
-    dial_code: '+93',
-    code: 'AF',
-  });
+
+  const isLoading = useSelector(selectAuthLoading);
+  const mobileData = useSelector(selectMobile);
+
+  const [selectedCountry, setSelectedCountry] = useState(
+    mobileData?.selectedCountry || {
+      label: 'India',
+      dial_code: '+91',
+      code: 'IN',
+    },
+  );
 
   const schema = yup.object().shape({
     mobile: yup.string().required('Mobile number is required'),
@@ -36,9 +46,13 @@ const RegisterPhone = () => {
     formState: { errors },
     setError,
     control,
+    watch,
     clearErrors,
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      mobile: mobileData?.phone || '',
+    },
   });
 
   const handleCountryChange = (value) => {
@@ -46,13 +60,26 @@ const RegisterPhone = () => {
     clearErrors();
   };
 
+  const onSuccess = () => {
+    navigate('/auth/phone-verify');
+  };
+
   const onSubmit = (values) => {
     if (!isValidPhoneNumber(values.mobile, selectedCountry.code)) {
       setError('mobile', { type: 'custom', message: 'Invalid phone number' });
     } else {
-      navigate('/auth/phone-verify');
+      dispatch(
+        registerPhone({
+          phone: values.mobile,
+          country_code: selectedCountry.dial_code.slice(1),
+          selectedCountry,
+          onSuccess,
+        }),
+      );
     }
   };
+
+  const mobileValue = watch('mobile');
 
   return (
     <OnBoardWrap>
@@ -91,8 +118,8 @@ const RegisterPhone = () => {
             {errors.mobile && <FormFeedback>{errors.mobile.message}</FormFeedback>}
           </FormGroup>
 
-          <Button color="primary" block type="submit">
-            Send OTP
+          <Button color="primary" block type="submit" disabled={!mobileValue || isLoading}>
+            {isLoading ? <Spinner size="sm" /> : 'Send OTP'}
           </Button>
         </Form>
         <div className="d-flex justify-content-center sign-info">

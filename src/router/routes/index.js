@@ -12,6 +12,7 @@ import PublicRoute from '@components/routes/PublicRoute';
 
 // ** Utils
 import { isObjEmpty } from '@utils';
+import ComingSoon from '../../views/auth/ComingSoon';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -27,10 +28,10 @@ const DefaultRoute = '/auth';
 
 const Home = lazy(() => import('../../views/Home'));
 const SecondPage = lazy(() => import('../../views/SecondPage'));
+const AuthRoute = lazy(() => import('../../views/auth/index'));
 const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
 const ClientOnboarding = lazy(() => import('../../views/Onboarding/Client'));
 const CreateProject = lazy(() => import('../../views/CreateProject'));
-const AuthRoute = lazy(() => import('../../views/auth/index'));
 
 // ** Merge Routes
 const Routes = [
@@ -46,6 +47,13 @@ const Routes = [
   {
     path: '/second-page',
     element: <SecondPage />,
+  },
+  {
+    path: '/coming-soon',
+    element: <ComingSoon />,
+    meta: {
+      layout: 'blank',
+    },
   },
 
   {
