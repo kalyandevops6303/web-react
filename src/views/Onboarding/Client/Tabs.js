@@ -33,7 +33,7 @@ const Tabs = ({ tabNames, toggleTab, active }) => (
         <Account tabNames={tabNames} toggleTab={toggleTab} />
       </TabPane>
       <TabPane tabId={tabNames.Profile}>
-        <Profile tabNames={tabNames} toggleTab={toggleTab} />
+        <Profile tabNames={tabNames} toggleTab={toggleTab} active={active} />
       </TabPane>
       <TabPane tabId={tabNames.Payment}>Payment</TabPane>
     </TabContent>

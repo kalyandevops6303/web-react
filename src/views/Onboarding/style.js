@@ -86,6 +86,25 @@ export const AccountDetailsFormContainer = styled.div`
   .card-header-border {
     border: 1px solid ${theme.cardHeaderBorderColor};
   }
+
+  .custom-country-disabled-dropdown {
+    .country__select__control--is-disabled {
+      background-color: ${theme.inputBackground};
+      border: 1px solid ${theme.inputBorder};
+
+      .country__select__indicators {
+        display: none;
+      }
+
+      .country__select__value-container--has-value {
+        .custom-value {
+          img {
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
 `;
 
 export const AccountImageContainer = styled.div`

@@ -49,6 +49,7 @@ import {
 } from '../reducers/auth';
 import { setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 
 const loginUser = (username, password, onSuccess) => async (dispatch) => {
   dispatch(loginRequest());
@@ -183,7 +184,7 @@ const setNewPassword = (newPassword) => async (dispatch) => {
   try {
     await setNewPasswordService(newPassword);
     dispatch(setNewPasswordSuccess());
-    ShowToastMessage('success', 'Password has been updated');
+    ShowToastMessage(SUCCESS, 'Password has been updated');
   } catch (error) {
     errorHandler(error, setNewPasswordFailure);
   }
