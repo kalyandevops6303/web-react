@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 
 // ** Checks if an object is empty (returns boolean)
@@ -106,3 +107,23 @@ export const validations = {
     .trim()
     .matches(/^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/, 'Invalid SSN.'),
 };
+
+const checkSize = (width) => {
+  // eslint-disable-next-line no-undef
+  const [isMobile, setIsMobile] = useState(window.innerWidth < width);
+  useEffect(() => {
+    // eslint-disable-next-line no-undef
+    window.addEventListener(
+      'resize',
+      () => {
+        // eslint-disable-next-line no-undef
+        const ismobile = window.innerWidth < width;
+        if (ismobile !== isMobile) setIsMobile(ismobile);
+      },
+      false,
+    );
+  }, [isMobile]);
+  return isMobile;
+};
+export const useIsMobile = () => checkSize(1024);
+export const useIsTab = () => checkSize(769);

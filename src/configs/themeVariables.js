@@ -8,6 +8,10 @@ const redColor = '#EA5455';
 const inputBorderColor = '#1e88e5';
 const inputBackgroundColor = 'rgba(187, 222, 251, 0.1)';
 const infoIconColor = '#BDBDBD';
+const bodyBgColor = '#f8f8f8';
+const bodyColor = '#6e6b7b';
+const greenColor = '#28c76f';
+const headingTextColor = '#5E5873';
 const themeInputBorderColor = '#d8d6de';
 const textMutedColor = '#b9b9c3';
 const uploadIconBackgroundColor = 'rgba(1, 133, 228, 0.12)';
@@ -37,6 +41,9 @@ const theme = {
   inputBorder: inputBorderColor, // color for input border
   inputBackground: inputBackgroundColor, // color for input border
   infoIcon: infoIconColor, // color for info icon
+  grayTitleColor: navPillTextColor,
+  bodyColor,
+  bodyBgColor,
   inputBorderColor: themeInputBorderColor, // color for theme input borders
   textMuted: textMutedColor, // color for theme input borders
   uploadIconBackground: uploadIconBackgroundColor, // color for upload icon background
@@ -45,8 +52,10 @@ const theme = {
   OTPborderColor,
   blueBorderColor,
   borderInputColor,
+  green: greenColor,
   gray,
   switchBgColor,
+  headingTextColor,
   checkboxLabel,
   cardHeaderBorderColor,
   wizardStepSvgColor,

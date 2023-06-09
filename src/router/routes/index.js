@@ -26,7 +26,7 @@ const TemplateTitle = '%s - Vuexy React Admin Template';
 // ** Default Route
 const DefaultRoute = '/auth';
 
-const Home = lazy(() => import('../../views/Home'));
+const PrivateDashboard = lazy(() => import('../../views/dashboard/PrivateDashboard'));
 const SecondPage = lazy(() => import('../../views/SecondPage'));
 const AuthRoute = lazy(() => import('../../views/auth/index'));
 const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
@@ -41,12 +41,20 @@ const Routes = [
     element: <Navigate replace to={DefaultRoute} />,
   },
   {
-    path: '/home',
-    element: <Home />,
+    path: '/dashboard',
+    element: <PrivateDashboard />,
   },
   {
     path: '/second-page',
     element: <SecondPage />,
+  },
+
+  {
+    path: '/auth/*',
+    element: <AuthRoute />,
+    meta: {
+      layout: 'blank',
+    },
   },
   {
     path: '/coming-soon',

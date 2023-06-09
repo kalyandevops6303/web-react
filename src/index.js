@@ -1,10 +1,12 @@
 /* eslint-disable no-undef */
 // ** React Imports
-import { Suspense, lazy } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Provider } from 'react-redux';
+import Bugsnag from '@bugsnag/js';
+import BugsnagPluginReact from '@bugsnag/plugin-react';
 
 // ** Toast
 import { Toaster } from 'react-hot-toast';
@@ -38,6 +40,7 @@ import './assets/scss/style.scss';
 
 // ** Service Worker
 import * as serviceWorker from './serviceWorker';
+import Error from './views/Error';
 
 // ** Lazy load app
 const LazyApp = lazy(() => import('./App'));
@@ -46,19 +49,27 @@ const LazyApp = lazy(() => import('./App'));
 const container = document.getElementById('root');
 const root = createRoot(container);
 
+Bugsnag.start({
+  apiKey: import.meta.env.VITE_BUGSNAG_API_KEY,
+  plugins: [new BugsnagPluginReact()],
+});
+const ErrorBoundary = Bugsnag.getPlugin('react').createErrorBoundary(React);
+
 root.render(
-  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-    <BrowserRouter>
-      <Provider store={store}>
-        <Suspense fallback={<Spinner />}>
-          <ThemeContext>
-            <LazyApp />
-            <Toaster position={themeConfig.layout.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
-          </ThemeContext>
-        </Suspense>
-      </Provider>
-    </BrowserRouter>
-  </GoogleOAuthProvider>,
+  <ErrorBoundary FallbackComponent={Error}>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <Provider store={store}>
+          <Suspense fallback={<Spinner />}>
+            <ThemeContext>
+              <LazyApp />
+              <Toaster position={themeConfig.layout.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+            </ThemeContext>
+          </Suspense>
+        </Provider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
+  </ErrorBoundary>,
 );
 
 // If you want your app to work offline and load faster, you can change
