@@ -35,6 +35,9 @@ const API = {
     accountDetails: '/client/account-details',
     profileDetails: '/client/profile-details',
   },
+  dashboard: {
+    userData: '/user/details',
+  },
 };
 
 export default API;
