@@ -18,7 +18,6 @@ import theme from '../../../../configs/themeVariables';
 const ThemeNavbar = (props) => {
   // ** Props
   const { skin, setSkin, setMenuVisibility } = props;
-
   // ** Function to toggle Theme (Light/Dark)
 
   const HeadWrapper = styled.div`

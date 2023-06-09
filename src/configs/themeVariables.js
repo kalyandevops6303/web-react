@@ -29,6 +29,11 @@ const wizardStepActiveBg = 'rgba(1, 133, 228, 0.15)';
 const wizardStepSubtitleColor = 'rgba(1, 133, 228, 0.6)';
 const bodyBg = '#f8f8f8';
 const cardShadow = 'rgba(34, 41, 4, 0.1)';
+const lightBlueColor = '#2196F3';
+const lightBlueBgColor = '#E3F2FD';
+const textColor = '#757575';
+const darkGreenColor = '#0097A7';
+const darkGreenBgColor = '#E0F7FA';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -53,6 +58,7 @@ const theme = {
   blueBorderColor,
   borderInputColor,
   green: greenColor,
+  textColor,
   gray,
   switchBgColor,
   headingTextColor,
@@ -63,5 +69,9 @@ const theme = {
   wizardStepSubtitleColor,
   bodyBg,
   cardShadow,
+  lightBlueBgColor,
+  lightBlueColor,
+  darkGreenColor,
+  darkGreenBgColor,
 };
 export default theme;

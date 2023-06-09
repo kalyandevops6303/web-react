@@ -1,0 +1,56 @@
+import { Briefcase, Calendar, Check, DollarSign } from 'react-feather';
+import React from 'react';
+import BreadCrumbs from '@components/breadcrumbs';
+import { Col, Row } from 'reactstrap';
+import Statbox from './overview/Statbox';
+import LeftSidebarProfile from './overview/LeftSidebarProfile';
+import UserBio from './overview/UserBio';
+import RecentProjects from './overview/RecentProjects';
+import Reviews from './overview/Reviews';
+
+const UserDetails = () => (
+  <>
+    <BreadCrumbs data={[{ title: 'User' }]} />
+    <Row>
+      <Col lg="3">
+        <LeftSidebarProfile isEditable />
+      </Col>
+      <Col lg="9">
+        <Row>
+          <Col>
+            <Statbox title="56" desc="Completed Projects" icon={<Check height={20} />} color="light-success" />
+          </Col>
+          <Col>
+            <Statbox title="$50" desc="Hourly Billing Rate" icon={<DollarSign height={20} />} color="light-warning" />
+          </Col>
+          <Col>
+            <Statbox title="10 yr" desc="Work Experience" icon={<Briefcase height={20} />} color="light-warning" />
+          </Col>
+          <Col>
+            <Statbox
+              title={
+                <>
+                  25 hours/week <br /> US PST (+9:00 UTC)
+                </>
+              }
+              desc="Availability"
+              icon={<Calendar height={20} />}
+              color="light-primary"
+            />
+          </Col>
+        </Row>
+        <Row>
+          <UserBio isEditable />
+        </Row>
+        <Row>
+          <RecentProjects />
+        </Row>
+        <Row>
+          <Reviews />
+        </Row>
+      </Col>
+    </Row>
+  </>
+);
+
+export default UserDetails;

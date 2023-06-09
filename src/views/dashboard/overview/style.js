@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
-import { CardWrapper } from '../styled';
+import { CardWrapper } from '../../styled';
 
 const RewardCardWrapper = styled(CardWrapper)`
   .reward-body {
