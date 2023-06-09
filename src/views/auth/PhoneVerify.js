@@ -20,7 +20,6 @@ import { verifyPhone } from '../../redux/actions/authActions';
 import theme from '../../configs/themeVariables';
 import {
   selectAuthLoading,
-  selectAuthUserData,
   selectIsPhoneVerified,
   selectMobile,
   selectUserType,
@@ -42,19 +41,6 @@ const VerifyPhone = () => {
     if (!isLoading && isPhoneVerified && userType) {
       navigate(`/${userType.toLowerCase()}-onboarding`);
     } else if (isPhoneVerified && !userType) {
-      navigate('/auth');
-    }
-    if (!phoneData) {
-      navigate('/auth/register-phone');
-    }
-  }, [isLoading, isPhoneVerified, navigate]);
-
-  const userData = useSelector(selectAuthUserData);
-
-  useEffect(() => {
-    if (!isLoading && isPhoneVerified && userData?.user_type) {
-      navigate(`/${userData?.user_type.toLowerCase()}-onboarding`);
-    } else if (isPhoneVerified && !userData?.user_type) {
       navigate('/auth');
     }
     if (!phoneData) {
