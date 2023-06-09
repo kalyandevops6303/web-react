@@ -1,0 +1,20 @@
+import { createSelector } from '@reduxjs/toolkit';
+
+const talentOnboardingSelector = (state) => state.talentOnboarding;
+
+export const userDetails = createSelector(talentOnboardingSelector, (talentOnboarding) => talentOnboarding.userDetails);
+
+export const userDetailsLoading = createSelector(
+  talentOnboardingSelector,
+  (talentOnboarding) => talentOnboarding.userDetailsLoading,
+);
+
+export const talentAccountDetailsLoading = createSelector(
+  talentOnboardingSelector,
+  (talentOnboarding) => talentOnboarding.accountDetailsLoading,
+);
+
+export const profileDetailsLoading = createSelector(
+  talentOnboardingSelector,
+  (talentOnboarding) => talentOnboarding.profileDetailsLoading,
+);

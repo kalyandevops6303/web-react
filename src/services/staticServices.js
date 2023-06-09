@@ -1,0 +1,44 @@
+import API from '../configs/api';
+import DataService from '../configs/dataService/dataService';
+
+const talentRolesService = () => DataService.get(API.static.talentRoles);
+
+const languagesService = () => DataService.get(API.static.languages);
+
+const countriesService = () => DataService.get(API.static.countries);
+
+const statesService = (countryId) => DataService.get(`${API.static.states}/${countryId}`);
+
+const citiesService = (stateId) => DataService.get(`${API.static.cities}/${stateId}`);
+
+const institutesService = () => DataService.get(API.static.institutes);
+
+const educationsService = () => DataService.get(API.static.educations);
+
+const toolsService = () => DataService.get(API.static.tools);
+
+const skillsService = () => DataService.get(API.static.skills);
+
+const timezonesService = () => DataService.get(API.static.timezones);
+
+const currenciesService = () => DataService.get(API.static.currencies);
+
+const companyIndustriesService = () => DataService.get(API.static.companyIndustries);
+
+const projectAreasService = () => DataService.get(API.static.projectAreas);
+
+export {
+  talentRolesService,
+  languagesService,
+  countriesService,
+  statesService,
+  citiesService,
+  institutesService,
+  educationsService,
+  toolsService,
+  skillsService,
+  timezonesService,
+  currenciesService,
+  companyIndustriesService,
+  projectAreasService,
+};

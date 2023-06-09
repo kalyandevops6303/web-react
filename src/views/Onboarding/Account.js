@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -12,17 +12,22 @@ import {
   Form,
   FormFeedback,
   Input,
-  InputGroup,
-  InputGroupText,
   Label,
   Row,
+  Spinner,
   UncontrolledTooltip,
 } from 'reactstrap';
 import { ChevronRight, Info, UserPlus } from 'react-feather';
-import { toast } from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
 import { AccountDetailsFormContainer, AccountImageContainer } from './style';
-import IndianFlag from '../../assets/images/indian-flag.png';
 import theme from '../../configs/themeVariables';
+import CountryDropdown from '../../@core/components/country-dropdown';
+import { getUserDetails, saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
+import { talentAccountDetailsLoading, userDetails } from '../../redux/selectors/talentOnboardingSelectors';
+import ShowToastMessage from '../../@core/components/toast';
+import { saveClientAccountDetails } from '../../redux/actions/clientOnboardingActions';
+import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
+import { ERROR } from '../../utility/constants/ToastTypes';
 
 const Account = ({ tabNames, toggleTab }) => {
   const AccountDetailsSchema = yup.object().shape({
@@ -36,20 +41,54 @@ const Account = ({ tabNames, toggleTab }) => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting, isSubmitSuccessful },
+    setValue,
+    formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(AccountDetailsSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
-      countryCode: '+91',
-      mobileNumber: '9876543210',
-      email: 'example@email.com',
+      countryCode: '',
+      mobileNumber: '',
+      email: '',
     },
   });
 
-  const onSubmit = () => {};
+  const dispatch = useDispatch();
+
+  const userDetailsData = useSelector(userDetails);
+  const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
+  const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
+
+  const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+
+  const onSuccess = () => {
+    setIsNextButtonDisabled(false);
+  };
+
+  const onSubmit = (data) => {
+    const { firstName, lastName } = data;
+    const reqData = { first_name: firstName, last_name: lastName };
+
+    if (userDetailsData.user_type === 'TALENT') {
+      dispatch(saveTalentAccountDetails(reqData, onSuccess));
+    } else {
+      dispatch(saveClientAccountDetails(reqData, onSuccess));
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getUserDetails());
+  }, []);
+
+  useEffect(() => {
+    if (userDetailsData) {
+      setValue('countryCode', userDetailsData.country_code);
+      setValue('mobileNumber', userDetailsData.phone);
+      setValue('email', userDetailsData.email);
+    }
+  }, [userDetailsData]);
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
@@ -60,11 +99,11 @@ const Account = ({ tabNames, toggleTab }) => {
     const maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Please select a valid image file (JPG, JPEG, or PNG).');
+      ShowToastMessage(ERROR, 'Please select a valid image file (JPG, JPEG, or PNG).');
       return false;
     }
     if (file.size > maxSize) {
-      toast.error('File size exceeds the maximum limit (5MB).');
+      ShowToastMessage(ERROR, 'File size exceeds the maximum limit (5MB).');
       return false;
     }
     return true;
@@ -155,25 +194,15 @@ const Account = ({ tabNames, toggleTab }) => {
                 </Label>
                 <Row>
                   <Col sm="3" md="3" lg="3">
-                    <Controller
-                      id="countryCode"
-                      name="countryCode"
-                      control={control}
-                      render={({ field }) => (
-                        <InputGroup className="input-group-merge mb-2">
-                          <InputGroupText>
-                            <img src={IndianFlag} alt="flag" />
-                          </InputGroupText>
-                          <Input
-                            {...field}
-                            placeholder="Enter country code"
-                            className="filled-form-control"
-                            disabled
-                            invalid={errors.countryCode && true}
-                          />
-                        </InputGroup>
-                      )}
-                    />
+                    <div className="custom-country-disabled-dropdown">
+                      <CountryDropdown
+                        selectedCountry={{
+                          dial_code: userDetailsData?.phone_country.dial_code,
+                          code: userDetailsData?.phone_country.code,
+                        }}
+                        disabled
+                      />
+                    </div>
                   </Col>
                   <Col sm="9" md="9" lg="9">
                     <Controller
@@ -216,14 +245,26 @@ const Account = ({ tabNames, toggleTab }) => {
               </Col>
             </Row>
             <div className="d-flex justify-content-end mt-2">
-              <Button color="primary" type="submit" disabled={!isValid || isSubmitting}>
-                <span className="me-50">Save Changes</span>
+              <Button
+                color="primary"
+                type="submit"
+                disabled={
+                  userDetailsData?.user_type === 'TALENT'
+                    ? !isValid || talentAccountDetailsIsLoading
+                    : !isValid || clientAccountDetailsIsLoading
+                }
+              >
+                {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <span className="me-50">Save Changes</span>
+                )}
               </Button>
             </div>
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end">
-          <Button color="primary" disabled={!isSubmitSuccessful} onClick={() => toggleTab(tabNames.Profile)}>
+          <Button color="primary" disabled={isNextButtonDisabled} onClick={() => toggleTab(tabNames.Profile)}>
             <span className="me-50">Next</span>
             <ChevronRight size={14} />
           </Button>

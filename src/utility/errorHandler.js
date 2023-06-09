@@ -2,6 +2,7 @@
 // import { logOut } from '../redux/authentication/actionCreator';
 import ShowToastMessage from '../@core/components/toast';
 import store from '../redux/store';
+import { ERROR } from './constants/ToastTypes';
 
 const { dispatch } = store;
 
@@ -12,7 +13,7 @@ let lastErrorTime = 0; // Timestamp of the last error notification
 const showErrorNotification = (errorMessage) => {
   const currentTime = Date.now();
   if (currentTime - lastErrorTime >= MIN_ERROR_INTERVAL_MS) {
-    ShowToastMessage('error', errorMessage);
+    ShowToastMessage(ERROR, errorMessage);
     lastErrorTime = currentTime;
   }
 };
@@ -38,7 +39,7 @@ const errorHandler = (err, callBack) => {
       err?.message === 'Network Error' ||
       err?.message === 'CORS error'
     ) {
-      ShowToastMessage('error', 'Unable to process request');
+      ShowToastMessage(ERROR, 'Unable to process request');
 
       handleError(err, callBack);
     } else {

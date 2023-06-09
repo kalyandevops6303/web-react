@@ -11,6 +11,30 @@ const API = {
     verifyOtp: '/user/forgot-password/verify',
     setNewPassword: '/user/forgot-password/change',
   },
+  static: {
+    talentRoles: '/talent-role',
+    languages: '/static/language/all',
+    countries: '/static/country',
+    states: '/static/state-by-id',
+    cities: '/static/city',
+    institutes: '/static/institute/all',
+    educations: '/static/education/all',
+    tools: '/static/tools/all',
+    skills: '/static/skills/all',
+    timezones: '/static/timezone/all',
+    currencies: '/static/currency/all',
+    companyIndustries: '/static/company-industry/all',
+    projectAreas: '/static/project-area/all',
+  },
+  talentOnboarding: {
+    userDetails: '/user/details',
+    accountDetails: '/talent/account-details',
+    profileDetails: '/talent/profile-details',
+  },
+  clientOnboarding: {
+    accountDetails: '/client/account-details',
+    profileDetails: '/client/profile-details',
+  },
 };
 
 export default API;

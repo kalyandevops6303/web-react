@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
@@ -14,17 +14,59 @@ import {
   Input,
   Label,
   Row,
+  Spinner,
   UncontrolledTooltip,
 } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info, Plus, UserPlus } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
 import { toast } from 'react-hot-toast';
 import { AccountImageContainer, ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
+import {
+  getCities,
+  getCompanyIndustries,
+  getCountries,
+  getCurrencies,
+  getEducations,
+  getInstitutes,
+  getProjectAreas,
+  getSkills,
+  getStates,
+  getTimezones,
+  getTools,
+} from '../../../redux/actions/staticActions';
+import {
+  cities,
+  citiesLoading,
+  companyIndustries,
+  companyIndustriesLoading,
+  countries,
+  countriesLoading,
+  currencies,
+  currenciesLoading,
+  educations,
+  educationsLoading,
+  institutes,
+  institutesLoading,
+  projectAreas,
+  projectAreasLoading,
+  skillsList,
+  skillsLoading,
+  states,
+  statesLoading,
+  timezones,
+  timezonesLoading,
+  toolsList,
+  toolsLoading,
+} from '../../../redux/selectors/staticSelectors';
+import timeOptions from '../../../utility/constants/TimeDropdownOptions';
+import { saveProfileDetails } from '../../../redux/actions/clientOnboardingActions';
+import { profileDetailsLoading } from '../../../redux/selectors/clientOnboardingSelectors';
 
-const Profile = ({ tabNames, toggleTab }) => {
+const Profile = ({ tabNames, toggleTab, active }) => {
   const ProfileSchema = yup.object().shape({
     companyName: yup.string().required('Company name is required'),
     title: yup.string().required('Title is required'),
@@ -39,7 +81,7 @@ const Profile = ({ tabNames, toggleTab }) => {
         value: yup.string().required('Company industry is required'),
       })
       .required('Company industry is required'),
-    totalStrength: yup.string(),
+    totalStrength: yup.number(),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
     zipCode: yup.number(),
@@ -94,12 +136,10 @@ const Profile = ({ tabNames, toggleTab }) => {
         link: yup.string().url('Please enter a valid url').nullable(),
       }),
     ),
-    area: yup.array().of(
-      yup.object().shape({
-        label: yup.string(),
-        value: yup.string(),
-      }),
-    ),
+    area: yup.object().shape({
+      label: yup.string(),
+      value: yup.string(),
+    }),
     skills: yup
       .array()
       .of(
@@ -201,7 +241,8 @@ const Profile = ({ tabNames, toggleTab }) => {
     control,
     handleSubmit,
     watch,
-    formState: { errors, isValid, isSubmitting, isSubmitSuccessful },
+    setValue,
+    formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(ProfileSchema),
@@ -229,32 +270,287 @@ const Profile = ({ tabNames, toggleTab }) => {
     name: 'otherSocialLinks',
   });
 
-  const onSubmit = () => {};
+  const dispatch = useDispatch();
 
-  const languageOptions = [
-    { value: 'English', label: 'English' },
-    { value: 'Hindi', label: 'Hindi' },
-    { value: 'Spanish', label: 'Spanish' },
-    { value: 'German', label: 'German' },
-    { value: 'Chinese', label: 'Chinese' },
-    { value: 'Japenese', label: 'Japenese' },
-  ];
+  const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
 
-  const addressOptions = [
-    { value: 'Address 1', label: 'Address 1' },
-    { value: 'Address 2', label: 'Address 2' },
-    { value: 'Address 3', label: 'Address 3' },
-    { value: 'Address 4', label: 'Address 4' },
-    { value: 'Address 5', label: 'Address 5' },
-  ];
+  const onSuccess = () => {
+    setIsNextButtonDisabled(false);
+  };
 
-  const timeZoneOptions = [
-    { value: 'IST', label: 'IST' },
-    { value: 'PST', label: 'PST' },
-    { value: 'ECT', label: 'ECT' },
-    { value: 'CAT', label: 'CAT' },
-    { value: 'AGT', label: 'AGT' },
-  ];
+  const isEmpty = (value) => {
+    if (value === undefined || value === null) {
+      return true;
+    }
+
+    if (typeof value === 'string' || Array.isArray(value)) {
+      return value.length === 0;
+    }
+
+    if (typeof value === 'object') {
+      return Object.keys(value).length === 0;
+    }
+
+    return false;
+  };
+
+  const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
+
+  const removeEmptyKeys = (obj) => {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      const filteredArray = obj.filter((item) => typeof item !== 'object' || !hasEmptyKeys(item));
+
+      return filteredArray.map((item) => removeEmptyKeys(item));
+    }
+
+    const filteredObj = {};
+    Object.keys(obj).forEach((key) => {
+      const value = obj[key];
+      if (typeof value === 'object') {
+        const cleanedValue = removeEmptyKeys(value);
+        if (!isEmpty(cleanedValue)) {
+          filteredObj[key] = cleanedValue;
+        }
+      } else if (!isEmpty(value)) {
+        filteredObj[key] = value;
+      }
+    });
+
+    if (isEmpty(filteredObj)) {
+      return undefined;
+    }
+
+    return filteredObj;
+  };
+
+  const onSubmit = (data) => {
+    const {
+      companyName,
+      title,
+      companyTagline,
+      companyIndustry,
+      totalStrength,
+      streetAddress,
+      houseNumber,
+      zipCode,
+      country,
+      state,
+      city,
+      educationDetails,
+      area,
+      skills,
+      tools,
+      preferredWorkingTimeZone,
+      weekdayStartTime,
+      weekdayEndTime,
+      weekdays,
+      weekendStartTime,
+      weekendEndTime,
+      weekends,
+      currencyPreference,
+      linkedInLink,
+      twitterLink,
+      githubLink,
+      otherSocialLinks,
+    } = data;
+
+    const company_name = companyName;
+    const company_tagline = companyTagline;
+    const company_industry = companyIndustry.value;
+    const company_strength = totalStrength;
+    const office_address = {
+      country: country.value,
+      state: state.value,
+      city: city.value,
+      street_address: streetAddress,
+      house_number: houseNumber,
+      zip_code: zipCode,
+    };
+    const educational_institute = educationDetails.map((educationDetail) => ({
+      institution: educationDetail.educationInstitution.value,
+      education: educationDetail.education.value,
+    }));
+    const project_area_of_interest = {
+      skills: skills.map((skill) => skill.value),
+      tools: tools?.map((tool) => tool.value),
+      area: area?.value,
+    };
+    const availability = {
+      timezone: preferredWorkingTimeZone.value,
+      weekdays_avl: {
+        start_time: weekdayStartTime?.value,
+        end_time: weekdayEndTime?.value,
+        days: weekdays,
+      },
+      weekends_avl: {
+        start_time: weekendStartTime?.value,
+        end_time: weekendEndTime?.value,
+        days: weekends,
+      },
+    };
+    const social_links = [
+      {
+        platform: 'linkedIn',
+        url: linkedInLink,
+      },
+      {
+        platform: 'twitter',
+        url: twitterLink,
+      },
+      {
+        platform: 'github',
+        url: githubLink,
+      },
+      // eslint-disable-next-line
+      ...otherSocialLinks?.map((link) => ({
+        platform: link.linkName,
+        url: link.link,
+      })),
+    ];
+    const currency_preference = currencyPreference.value;
+
+    const reqData = {
+      company_name,
+      title,
+      company_tagline,
+      company_industry,
+      company_strength,
+      office_address,
+      educational_institute,
+      project_area_of_interest,
+      availability,
+      social_links,
+      currency_preference,
+    };
+
+    dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+  };
+
+  const [companyIndutriesOptions, setCompanyIndutriesOptions] = useState(null);
+  const [countriesOptions, setCountriesOptions] = useState(null);
+  const [statesOptions, setStatesOptions] = useState(null);
+  const [citiesOptions, setCitiesOptions] = useState(null);
+  const [institutesOptions, setInstitutesOptions] = useState(null);
+  const [educationsOptions, setEducationsOptions] = useState(null);
+  const [projectAreasOptions, setProjectAreasOptions] = useState(null);
+  const [toolsOptions, setToolsOptions] = useState(null);
+  const [skillsOptions, setSkillsOptions] = useState(null);
+  const [timezonesOptions, setTimezonesOptions] = useState(null);
+  const [currenciesOptions, setCurrenciesOptions] = useState(null);
+
+  useEffect(() => {
+    if (active === tabNames.Profile) {
+      dispatch(getCompanyIndustries());
+      dispatch(getCountries());
+      dispatch(getInstitutes());
+      dispatch(getEducations());
+      dispatch(getProjectAreas());
+      dispatch(getTools());
+      dispatch(getSkills());
+      dispatch(getTimezones());
+      dispatch(getCurrencies());
+    }
+  }, [active]);
+
+  useEffect(() => {
+    setValue('state', null);
+    setValue('city', null);
+
+    if (watch('country')) {
+      dispatch(getStates(watch('country').value));
+    }
+  }, [watch('country')]);
+
+  useEffect(() => {
+    setValue('city', null);
+
+    if (watch('state')) {
+      dispatch(getCities(watch('state').value));
+    }
+  }, [watch('state')]);
+
+  const companyIndustriesData = useSelector(companyIndustries);
+  const companyIndustriesIsLoading = useSelector(companyIndustriesLoading);
+  const countriesData = useSelector(countries);
+  const countriesIsLoading = useSelector(countriesLoading);
+  const statesData = useSelector(states);
+  const statesIsLoading = useSelector(statesLoading);
+  const citiesData = useSelector(cities);
+  const citiesIsLoading = useSelector(citiesLoading);
+  const institutesData = useSelector(institutes);
+  const institutesIsLoading = useSelector(institutesLoading);
+  const educationsData = useSelector(educations);
+  const educationsIsLoading = useSelector(educationsLoading);
+  const projectAreasData = useSelector(projectAreas);
+  const projectAreasIsLoading = useSelector(projectAreasLoading);
+  const toolsData = useSelector(toolsList);
+  const toolsIsLoading = useSelector(toolsLoading);
+  const skillsData = useSelector(skillsList);
+  const skillsIsLoading = useSelector(skillsLoading);
+  const timezonesData = useSelector(timezones);
+  const timezonesIsLoading = useSelector(timezonesLoading);
+  const currenciesData = useSelector(currencies);
+  const currenciesIsLoading = useSelector(currenciesLoading);
+  const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+
+  useEffect(() => {
+    const requiredData = companyIndustriesData?.map((industry) => ({ label: industry.industry, value: industry._id }));
+    setCompanyIndutriesOptions(requiredData);
+  }, [companyIndustriesData]);
+
+  useEffect(() => {
+    const requiredData = countriesData?.map((country) => ({ label: country.name, value: country._id }));
+    setCountriesOptions(requiredData);
+  }, [countriesData]);
+
+  useEffect(() => {
+    const requiredData = statesData?.map((state) => ({ label: state.name, value: state._id }));
+    setStatesOptions(requiredData);
+  }, [statesData]);
+
+  useEffect(() => {
+    const requiredData = citiesData?.map((city) => ({ label: city.name, value: city._id }));
+    setCitiesOptions(requiredData);
+  }, [citiesData]);
+
+  useEffect(() => {
+    const requiredData = institutesData?.map((institute) => ({ label: institute.name, value: institute._id }));
+    setInstitutesOptions(requiredData);
+  }, [institutesData]);
+
+  useEffect(() => {
+    const requiredData = educationsData?.map((education) => ({ label: education.degree, value: education._id }));
+    setEducationsOptions(requiredData);
+  }, [educationsData]);
+
+  useEffect(() => {
+    const requiredData = projectAreasData?.map((area) => ({ label: area.area, value: area._id }));
+    setProjectAreasOptions(requiredData);
+  }, [projectAreasData]);
+
+  useEffect(() => {
+    const requiredData = toolsData?.map((tool) => ({ label: tool.name, value: tool._id }));
+    setToolsOptions(requiredData);
+  }, [toolsData]);
+
+  useEffect(() => {
+    const requiredData = skillsData?.map((skill) => ({ label: skill.name, value: skill._id }));
+    setSkillsOptions(requiredData);
+  }, [skillsData]);
+
+  useEffect(() => {
+    const requiredData = timezonesData?.map((timezone) => ({ label: timezone.name, value: timezone._id }));
+    setTimezonesOptions(requiredData);
+  }, [timezonesData]);
+
+  useEffect(() => {
+    const requiredData = currenciesData?.map((currency) => ({ label: currency.name, value: currency._id }));
+    setCurrenciesOptions(requiredData);
+  }, [currenciesData]);
 
   const isValidURL = (url) => {
     const urlPattern = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/;
@@ -421,7 +717,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                   invalid={errors.companyIndustry && true}
                   render={({ field }) => (
                     <Select
-                      options={addressOptions}
+                      isLoading={companyIndustriesIsLoading}
+                      options={companyIndutriesOptions}
                       classNamePrefix="select"
                       placeholder="Select your company industry"
                       theme={selectThemeColors}
@@ -450,10 +747,10 @@ const Profile = ({ tabNames, toggleTab }) => {
                           type="radio"
                           {...field}
                           id="1-100"
-                          checked={field.value === '1-100'}
+                          checked={field.value === 100}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
-                            const value = '1-100';
+                            const value = 100;
 
                             if (isChecked) {
                               field.onChange(value);
@@ -471,10 +768,10 @@ const Profile = ({ tabNames, toggleTab }) => {
                           type="radio"
                           {...field}
                           id="100-500"
-                          checked={field.value === '100-500'}
+                          checked={field.value === 500}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
-                            const value = '100-500';
+                            const value = 500;
 
                             if (isChecked) {
                               field.onChange(value);
@@ -492,10 +789,10 @@ const Profile = ({ tabNames, toggleTab }) => {
                           type="radio"
                           {...field}
                           id="500-1000"
-                          checked={field.value === '500-1000'}
+                          checked={field.value === 1000}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
-                            const value = '500-1000';
+                            const value = 1000;
 
                             if (isChecked) {
                               field.onChange(value);
@@ -513,10 +810,10 @@ const Profile = ({ tabNames, toggleTab }) => {
                           type="radio"
                           {...field}
                           id="1000+"
-                          checked={field.value === '1000+'}
+                          checked={field.value === 1001}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
-                            const value = '1000+';
+                            const value = 1001;
 
                             if (isChecked) {
                               field.onChange(value);
@@ -605,7 +902,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                   invalid={errors.country && true}
                   render={({ field }) => (
                     <Select
-                      options={addressOptions}
+                      isLoading={countriesIsLoading}
+                      options={countriesOptions}
                       classNamePrefix="select"
                       placeholder="Select your country"
                       theme={selectThemeColors}
@@ -629,7 +927,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                   invalid={errors.state && true}
                   render={({ field }) => (
                     <Select
-                      options={addressOptions}
+                      isLoading={statesIsLoading}
+                      options={statesOptions}
                       classNamePrefix="select"
                       placeholder="Select your state"
                       theme={selectThemeColors}
@@ -655,7 +954,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                   invalid={errors.city && true}
                   render={({ field }) => (
                     <Select
-                      options={addressOptions}
+                      isLoading={citiesIsLoading}
+                      options={citiesOptions}
                       classNamePrefix="select"
                       placeholder="Select your city"
                       theme={selectThemeColors}
@@ -697,7 +997,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                     }
                     render={({ field }) => (
                       <Select
-                        options={addressOptions}
+                        isLoading={institutesIsLoading}
+                        options={institutesOptions}
                         classNamePrefix="select"
                         placeholder="Enter your institution name"
                         theme={selectThemeColors}
@@ -741,7 +1042,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                     }
                     render={({ field }) => (
                       <Select
-                        options={addressOptions}
+                        isLoading={educationsIsLoading}
+                        options={educationsOptions}
                         classNamePrefix="select"
                         placeholder="Enter your education"
                         theme={selectThemeColors}
@@ -956,8 +1258,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                   invalid={errors.area && true}
                   render={({ field }) => (
                     <Select
-                      isMulti
-                      options={languageOptions}
+                      isLoading={projectAreasIsLoading}
+                      options={projectAreasOptions}
                       classNamePrefix="select"
                       placeholder="Select area"
                       theme={selectThemeColors}
@@ -982,7 +1284,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                   render={({ field }) => (
                     <Select
                       isMulti
-                      options={languageOptions}
+                      isLoading={skillsIsLoading}
+                      options={skillsOptions}
                       classNamePrefix="select"
                       placeholder="Select top 5 skills"
                       theme={selectThemeColors}
@@ -1009,7 +1312,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                   render={({ field }) => (
                     <Select
                       isMulti
-                      options={languageOptions}
+                      isLoading={toolsIsLoading}
+                      options={toolsOptions}
                       classNamePrefix="select"
                       placeholder="Select top 5 tools"
                       theme={selectThemeColors}
@@ -1043,7 +1347,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                   invalid={errors.preferredWorkingTimeZone && true}
                   render={({ field }) => (
                     <Select
-                      options={timeZoneOptions}
+                      isLoading={timezonesIsLoading}
+                      options={timezonesOptions}
                       classNamePrefix="select"
                       placeholder="Select preferred working time zone"
                       theme={selectThemeColors}
@@ -1153,7 +1458,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                             invalid={errors.weekdayStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={addressOptions}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
@@ -1179,7 +1484,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                             invalid={errors.weekdayEndTime && true}
                             render={({ field }) => (
                               <Select
-                                options={addressOptions}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select end time"
                                 theme={selectThemeColors}
@@ -1209,11 +1514,11 @@ const Profile = ({ tabNames, toggleTab }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Mon"
-                                  checked={field.value.includes('Mon')}
+                                  id="MONDAY"
+                                  checked={field.value.includes('MONDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Mon';
+                                    const value = 'MONDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -1222,7 +1527,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Mon" className="form-check-label">
+                                <Label for="MONDAY" className="form-check-label">
                                   Mon
                                 </Label>
                               </div>
@@ -1230,11 +1535,11 @@ const Profile = ({ tabNames, toggleTab }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Tue"
-                                  checked={field.value.includes('Tue')}
+                                  id="TUESDAY"
+                                  checked={field.value.includes('TUESDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Tue';
+                                    const value = 'TUESDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -1243,7 +1548,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Tue" className="form-check-label">
+                                <Label for="TUESDAY" className="form-check-label">
                                   Tue
                                 </Label>
                               </div>
@@ -1251,11 +1556,11 @@ const Profile = ({ tabNames, toggleTab }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Wed"
-                                  checked={field.value.includes('Wed')}
+                                  id="WEDNESDAY"
+                                  checked={field.value.includes('WEDNESDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Wed';
+                                    const value = 'WEDNESDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -1264,7 +1569,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Wed" className="form-check-label">
+                                <Label for="WEDNESDAY" className="form-check-label">
                                   Wed
                                 </Label>
                               </div>
@@ -1272,11 +1577,11 @@ const Profile = ({ tabNames, toggleTab }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Thu"
-                                  checked={field.value.includes('Thu')}
+                                  id="THURSDAY"
+                                  checked={field.value.includes('THURSDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Thu';
+                                    const value = 'THURSDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -1285,7 +1590,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Thu" className="form-check-label">
+                                <Label for="THURSDAY" className="form-check-label">
                                   Thu
                                 </Label>
                               </div>
@@ -1293,11 +1598,11 @@ const Profile = ({ tabNames, toggleTab }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Fri"
-                                  checked={field.value.includes('Fri')}
+                                  id="FRIDAY"
+                                  checked={field.value.includes('FRIDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Fri';
+                                    const value = 'FRIDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -1306,7 +1611,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Fri" className="form-check-label">
+                                <Label for="FRIDAY" className="form-check-label">
                                   Fri
                                 </Label>
                               </div>
@@ -1351,7 +1656,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                             invalid={errors.weekendStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={addressOptions}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
@@ -1377,7 +1682,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                             invalid={errors.weekendEndTime && true}
                             render={({ field }) => (
                               <Select
-                                options={addressOptions}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select end time"
                                 theme={selectThemeColors}
@@ -1407,11 +1712,11 @@ const Profile = ({ tabNames, toggleTab }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Sat"
-                                  checked={field.value.includes('Sat')}
+                                  id="SATURDAY"
+                                  checked={field.value.includes('SATURDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Sat';
+                                    const value = 'SATURDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -1420,7 +1725,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Sat" className="form-check-label">
+                                <Label for="SATURDAY" className="form-check-label">
                                   Sat
                                 </Label>
                               </div>
@@ -1428,11 +1733,11 @@ const Profile = ({ tabNames, toggleTab }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Sun"
-                                  checked={field.value.includes('Sun')}
+                                  id="SUNDAY"
+                                  checked={field.value.includes('SUNDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Sun';
+                                    const value = 'SUNDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -1441,7 +1746,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Sun" className="form-check-label">
+                                <Label for="SUNDAY" className="form-check-label">
                                   Sun
                                 </Label>
                               </div>
@@ -1475,7 +1780,8 @@ const Profile = ({ tabNames, toggleTab }) => {
                   invalid={errors.currencyPreference && true}
                   render={({ field }) => (
                     <Select
-                      options={addressOptions}
+                      isLoading={currenciesIsLoading}
+                      options={currenciesOptions}
                       classNamePrefix="select"
                       placeholder="Select currency"
                       theme={selectThemeColors}
@@ -1501,12 +1807,12 @@ const Profile = ({ tabNames, toggleTab }) => {
             </UploadIconContainer>
             <h5 className="fw-bold">Back</h5>
           </div>
-          <Button color="primary" type="submit" disabled={!isValid || isSubmitting}>
-            <span className="me-50">Save Changes</span>
+          <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+            {profileDetailsIsLoading ? <Spinner size="sm" /> : <span className="me-50">Save Changes</span>}
           </Button>
         </div>
         <div className="d-flex justify-content-end mt-2">
-          <Button color="primary" disabled={!isSubmitSuccessful} onClick={() => toggleTab(tabNames.Payment)}>
+          <Button color="primary" disabled={isNextButtonDisabled} onClick={() => toggleTab(tabNames.Payment)}>
             <span className="me-50">Next</span>
             <ChevronRight size={14} />
           </Button>
@@ -1521,9 +1827,11 @@ export default Profile;
 Profile.propTypes = {
   tabNames: Proptypes.object,
   toggleTab: Proptypes.func,
+  active: Proptypes.string,
 };
 
 Profile.defaultProps = {
   tabNames: {},
   toggleTab: () => {},
+  active: '',
 };
