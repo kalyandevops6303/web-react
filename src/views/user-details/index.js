@@ -1,6 +1,7 @@
 import { Briefcase, Calendar, Check, DollarSign } from 'react-feather';
+import { useParams } from 'react-router-dom';
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
 import Statbox from './overview/Statbox';
@@ -9,26 +10,26 @@ import UserBio from './overview/UserBio';
 import RecentProjects from './overview/RecentProjects';
 import Reviews from './overview/Reviews';
 import { getProfile } from '../../redux/actions/profileActions';
-
-const userID = '647f17976e95c12692c614a8';
-const user_type = 'TALENT';
+import { getItem } from '../../utility/localStorageControl';
+import { selectCurrentProfile } from '../../redux/selectors/profileSelectors';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
+  const param = useParams();
+  const userData = getItem('userData');
 
   useEffect(() => {
-    // if(userId===myID){
-    //   editable to be true
-    // }
-    dispatch(getProfile(userID, user_type));
+    dispatch(getProfile(param?.userId, param?.userType.toUpperCase()));
   }, []);
+
+  const currentProfile = useSelector(selectCurrentProfile);
 
   return (
     <>
       <BreadCrumbs data={[{ title: 'User' }]} />
       <Row>
         <Col lg="3">
-          <LeftSidebarProfile isEditable />
+          <LeftSidebarProfile data={currentProfile} isEditable={userData?._id === param?.userId} />
         </Col>
         <Col lg="9">
           <Row>
@@ -55,10 +56,10 @@ const UserDetails = () => {
             </Col>
           </Row>
           <Row>
-            <UserBio isEditable />
+            <UserBio isEditable={userData?._id === param?.userId} />
           </Row>
           <Row>
-            <RecentProjects />
+            <RecentProjects isEditable={userData?._id === param?.userId} />
           </Row>
           <Row>
             <Reviews />

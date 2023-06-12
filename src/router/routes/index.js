@@ -46,7 +46,7 @@ const Routes = [
     element: <PrivateDashboard />,
   },
   {
-    path: '/profile',
+    path: '/profile/:userType/:userId',
     element: <UserDetails />,
   },
   {

@@ -18,7 +18,7 @@ const getProfile = (id, user_type) => async (dispatch) => {
     if (user_type === 'CLIENT') {
       res = await getClientService(id);
     }
-    dispatch(getProfileSuccess(res));
+    dispatch(getProfileSuccess(res.data.data?.[0]));
   } catch (error) {
     errorHandler(error, getProfileFailure);
   }

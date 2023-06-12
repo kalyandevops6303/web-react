@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardText, CardTitle, Progress } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
@@ -18,23 +19,21 @@ import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
 
 const isLike = true;
-const LeftSidebarProfile = ({ isEditable }) => {
+const LeftSidebarProfile = ({ data, isEditable }) => {
   const dispatch = useDispatch();
-
-  const userID = '647f17976e95c12692c614a8';
-  const user_type = 'TALENT';
+  const param = useParams();
 
   const handleLike = () => {
-    dispatch(makeFavourite(userID, user_type));
+    dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
   const handleUnLike = () => {
-    dispatch(removeFavourite(userID, user_type));
+    dispatch(removeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
   return (
     <LeftSidebarProfileWrapper>
       <Card>
         <CardBody>
-          {isEditable &&
+          {!isEditable &&
             (isLike ? (
               <Heart className="d-flex ms-auto heart" onClick={handleUnLike} />
             ) : (
@@ -47,7 +46,7 @@ const LeftSidebarProfile = ({ isEditable }) => {
 
           {isEditable ? (
             <div className="private">
-              <CardText className="text-center user-name mb-50">Gertrude Barton</CardText>
+              <CardText className="text-center user-name mb-50">{`${data?.first_name} ${data?.last_name}`}</CardText>
               <Button size="sm" outline color="primary" className="d-flex m-auto outline-btn mt-2">
                 Front-End Developer
               </Button>
@@ -72,15 +71,22 @@ const LeftSidebarProfile = ({ isEditable }) => {
               56 Projects | 16 reviews
             </CardText>
           </div>
-          <div className="profile-completion mt-2">
-            <CardText className="mb-25">62%</CardText>
-            <Progress style={{ height: '0.4rem', borderRadius: '6px' }} className="progress-bar-warning" value={62} />
-            <CardText className="font-small-3 mt-25">Profile Completion</CardText>
-          </div>
-          <CardText className="text-center text-decoration-underline card-text me-25 mt-1 mb-1 text-primary">
-            Update Profile
-          </CardText>
-
+          {isEditable && (
+            <>
+              <div className="profile-completion mt-2">
+                <CardText className="mb-25">62%</CardText>
+                <Progress
+                  style={{ height: '0.4rem', borderRadius: '6px' }}
+                  className="progress-bar-warning"
+                  value={62}
+                />
+                <CardText className="font-small-3 mt-25">Profile Completion</CardText>
+              </div>
+              <CardText className="text-center text-decoration-underline card-text me-25 mt-1 mb-1 text-primary">
+                Update Profile
+              </CardText>
+            </>
+          )}
           <section className="user-details mt-2">
             <CardTitle className="info-detail-title main mb-75">Details</CardTitle>
             <div className="mb-50">
@@ -162,9 +168,11 @@ const LeftSidebarProfile = ({ isEditable }) => {
 
 LeftSidebarProfile.propTypes = {
   isEditable: PropTypes.bool,
+  data: PropTypes.object,
 };
 LeftSidebarProfile.defaultProps = {
-  isEditable: true,
+  isEditable: false,
+  data: {},
 };
 
 export default LeftSidebarProfile;

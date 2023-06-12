@@ -11,10 +11,10 @@ import { getItem } from '../../../utility/localStorageControl';
 const AvailableTime = () => {
   const userData = getItem('userData');
 
-  const { availability } = userData;
+  // const { availability } = userData;
 
-  const weekdaysData = availability?.weekdays_avl;
-  const weekendsData = availability?.weekends_avl;
+  const weekdaysData = userData?.availability?.weekdays_avl;
+  const weekendsData = userData?.availability?.weekends_avl;
 
   return (
     <TimeCardWrapper>
