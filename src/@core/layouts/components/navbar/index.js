@@ -14,6 +14,9 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import getUserData from '../../../../redux/actions/dashboardActions';
 
 const ThemeNavbar = (props) => {
   // ** Props
@@ -46,6 +49,12 @@ const ThemeNavbar = (props) => {
       }
     }
   `;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserData());
+  }, []);
 
   return (
     <HeadWrapper>

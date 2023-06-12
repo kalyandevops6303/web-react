@@ -65,6 +65,7 @@ import {
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
 import { saveProfileDetails } from '../../../redux/actions/clientOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/clientOnboardingSelectors';
+import AccountCreatedModal from '../AccountCreatedModal';
 
 const Profile = ({ tabNames, toggleTab, active }) => {
   const ProfileSchema = yup.object().shape({
@@ -272,10 +273,12 @@ const Profile = ({ tabNames, toggleTab, active }) => {
 
   const dispatch = useDispatch();
 
-  const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+  const [accountCreatedModal, setAccountCreatedModal] = useState(null);
+
+  const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onSuccess = () => {
-    setIsNextButtonDisabled(false);
+    setAccountCreatedModal(true);
   };
 
   const isEmpty = (value) => {
@@ -618,6 +621,9 @@ const Profile = ({ tabNames, toggleTab, active }) => {
 
   return (
     <ProfileFormContainer>
+      {accountCreatedModal && (
+        <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
+      )}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
@@ -1797,7 +1803,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 buttons-row-border">
+        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
           <div
             className="d-flex align-items-center upload-button cursor-pointer"
             onClick={() => toggleTab(tabNames.Account)}
@@ -1808,13 +1814,14 @@ const Profile = ({ tabNames, toggleTab, active }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
-            {profileDetailsIsLoading ? <Spinner size="sm" /> : <span className="me-50">Save Changes</span>}
-          </Button>
-        </div>
-        <div className="d-flex justify-content-end mt-2">
-          <Button color="primary" disabled={isNextButtonDisabled} onClick={() => toggleTab(tabNames.Payment)}>
-            <span className="me-50">Next</span>
-            <ChevronRight size={14} />
+            {profileDetailsIsLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span className="me-50">Create Account</span>
+                <ChevronRight size={14} />
+              </>
+            )}
           </Button>
         </div>
       </Form>

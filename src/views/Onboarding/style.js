@@ -212,3 +212,7 @@ export const UploadIconContainer = styled.div`
   padding: 4px 5px;
   width: fit-content;
 `;
+
+export const AccountCreatedImageContainer = styled.div`
+  margin: -30px 0 -70px 20px;
+`;

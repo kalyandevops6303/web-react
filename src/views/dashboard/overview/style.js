@@ -146,6 +146,8 @@ const TimeWrapper = styled.section`
   display: flex;
   .weekdays,
   .weekends {
+    width: 50%;
+
     ul {
       font-size: 11px;
       display: flex;
@@ -166,8 +168,8 @@ const TimeWrapper = styled.section`
     }
   }
   .dot {
-    height: 7px;
-    width: 7px;
+    height: 8px;
+    width: 8px;
     display: block;
     background: rgba(217, 217, 217, 0.5);
     border-radius: 50%;

@@ -43,6 +43,9 @@ const API = {
     addToFav: '4002/api/v1/favourite/set-user',
     removeFav: '4002/api/v1/favourite/remove',
   },
+  dashboard: {
+    userData: '/user/details',
+  },
 };
 
 export default API;

@@ -22,13 +22,12 @@ import '@styles/react/pages/page-authentication.scss';
 import { validations } from '../../utility/Utils';
 import { loginUser } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
-import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
+import { selectAuthLoading } from '../../redux/selectors/authSelectors';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
-  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -53,8 +52,8 @@ const Login = () => {
       navigate('/auth/register-phone');
     } else if (resp?.checkpoint === 'ACCOUNT_DETAILS') {
       navigate(`/${resp.user_type.toLowerCase()}-onboarding`);
-    } else if (isLoggedIn) {
-      navigate('/coming-soon');
+    } else if (resp?.checkpoint === 'COMPLETE') {
+      navigate('/dashboard');
     }
   };
 
