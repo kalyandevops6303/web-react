@@ -165,7 +165,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
       .object()
       .shape({
         label: yup.string().required('Preferred working time zone is required'),
-        value: yup.string().required('Preferred working time zone is required'),
+        value: yup.object().required('Preferred working time zone is required'),
       })
       .required('Preferred working time zone is required'),
     availabilityDays: yup
@@ -383,7 +383,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
       area: area?.value,
     };
     const availability = {
-      timezone: preferredWorkingTimeZone.value,
+      timezone: preferredWorkingTimeZone.value._id,
       weekdays_avl: {
         start_time: weekdayStartTime?.value,
         end_time: weekdayEndTime?.value,
@@ -546,7 +546,10 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   }, [skillsData]);
 
   useEffect(() => {
-    const requiredData = timezonesData?.map((timezone) => ({ label: timezone.name, value: timezone._id }));
+    const requiredData = timezonesData?.map((timezone) => ({
+      label: `${timezone.name} (${timezone.abbreviation})`,
+      value: timezone,
+    }));
     setTimezonesOptions(requiredData);
   }, [timezonesData]);
 
@@ -1439,7 +1442,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                             Weekday -<span className="fw-light"> Working time available</span>
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').label}
+                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekday" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
@@ -1637,7 +1640,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                             Weekend -<span className="fw-light"> Working time available</span>
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').label}
+                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekend" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekend">

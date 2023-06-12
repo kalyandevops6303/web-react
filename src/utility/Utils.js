@@ -128,14 +128,24 @@ const checkSize = (width) => {
 export const useIsMobile = () => checkSize(1024);
 export const useIsTab = () => checkSize(769);
 
-// eslint-disable-next-line consistent-return
 export const convertTo12HourFormat = (hourString) => {
-  let hour = parseInt(hourString, 10);
+  const hour = parseInt(hourString, 10);
 
-  if (!Number.isNaN(hour) && hour >= 0 && hour <= 23) {
-    const suffix = hour >= 12 ? 'pm' : 'am';
-    hour = hour % 12 || 12; // Convert 0 to 12
-
-    return `${hour}:00${suffix}`;
+  if (hour < 0 || hour > 24) {
+    return 'Invalid hour';
   }
+
+  if (hour === 24) {
+    return '12:00am';
+  }
+
+  if (hour < 12) {
+    return `${hour}:00am`;
+  }
+
+  if (hour === 12) {
+    return '12:00pm';
+  }
+
+  return `${hour - 12}:00pm`;
 };
