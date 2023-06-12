@@ -63,9 +63,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
           )}
           {isClient && (
             <div className="public">
-              <CardText className="text-center user-name mb-25 fw-300">{`${data?.company_name || '-'} ${
-                data?.last_name || '-'
-              }`}</CardText>
+              <CardText className="text-center user-name mb-25 fw-300">{`${data?.company_name || '-'}`}</CardText>
               <CardText className="text-center font-small-4 user-name mb-50 fw-300">{`${data?.first_name || '-'} ${
                 data?.last_name || '-'
               }`}</CardText>
