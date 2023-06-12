@@ -103,6 +103,10 @@ const AlertCardWrapper = styled(CardWrapper)`
     font-weight: bold;
     font-size: 20px;
   }
+
+  .no-meetings-gif {
+    height: 10vw;
+  }
 `;
 
 const EarningAmount = styled.div`

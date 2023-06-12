@@ -6,6 +6,8 @@ import AvailableTime from './overview/AvailableTime';
 import Alerts from './overview/Alerts';
 import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
+import Disputes from './overview/Disputes';
+import Meetings from './overview/Meetings';
 
 const PrivateDashboard = () => (
   <div>
@@ -28,6 +30,8 @@ const PrivateDashboard = () => (
       </Col>
       <Col lg="4" sm="12">
         <Alerts />
+        <Disputes />
+        <Meetings />
       </Col>
     </Row>
   </div>
