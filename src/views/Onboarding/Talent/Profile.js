@@ -28,7 +28,6 @@ import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
-import hourlyRateOptions from '../../../utility/constants/HourlyRateDropdownOptions';
 import {
   getCities,
   getCountries,
@@ -188,7 +187,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
       .object()
       .shape({
         label: yup.string().required('Preferred working time zone is required'),
-        value: yup.string().required('Preferred working time zone is required'),
+        value: yup.object().required('Preferred working time zone is required'),
       })
       .required('Preferred working time zone is required'),
     availabilityDays: yup
@@ -254,13 +253,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
         value: yup.string().required('Currency preference is required'),
       })
       .required('Currency preference is required'),
-    hourlyRate: yup
-      .object()
-      .shape({
-        label: yup.string().required('Hourly rate is required'),
-        value: yup.string().required('Hourly rate is required'),
-      })
-      .required('Hourly rate is required'),
+    hourlyRate: yup.number().typeError('Hourly rate must be a number').required('Hourly rate is required'),
     linkedInLink: yup.string().url('Please enter a valid url'),
     twitterLink: yup.string().url('Please enter a valid url'),
     githubLink: yup.string().url('Please enter a valid url'),
@@ -434,7 +427,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
       certificates: customCertificatesValue?.map((certificate) => certificate.value),
     };
     const availability = {
-      timezone: preferredWorkingTimeZone.value,
+      timezone: preferredWorkingTimeZone.value._id,
       weekdays_avl: {
         start_time: weekdayStartTime?.value,
         end_time: weekdayEndTime?.value,
@@ -447,7 +440,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
       },
     };
     const currency_preference = currencyPreference.value;
-    const hourly_rate = parseInt(hourlyRate.value, 10);
+    const hourly_rate = parseInt(hourlyRate, 10);
     const social_links = [
       {
         platform: 'linkedIn',
@@ -621,7 +614,10 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   }, [skillsData]);
 
   useEffect(() => {
-    const requiredData = timezonesData?.map((timezone) => ({ label: timezone.name, value: timezone._id }));
+    const requiredData = timezonesData?.map((timezone) => ({
+      label: `${timezone.name} (${timezone.abbreviation})`,
+      value: timezone,
+    }));
     setTimezonesOptions(requiredData);
   }, [timezonesData]);
 
@@ -1367,7 +1363,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                             Weekday -<span className="fw-light"> Working time available</span>
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').label}
+                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekday" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
@@ -1565,7 +1561,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                             Weekend -<span className="fw-light"> Working time available</span>
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').label}
+                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekend" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekend">
@@ -1739,19 +1735,16 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                   control={control}
                   invalid={errors.hourlyRate && true}
                   render={({ field }) => (
-                    <Select
-                      options={hourlyRateOptions}
-                      classNamePrefix="select"
-                      placeholder="Select your hourly rate"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.hourlyRate,
-                      })}
+                    <Input
                       {...field}
+                      type="number"
+                      min={0}
+                      placeholder="Enter your hourly rate"
+                      invalid={errors.workExperienceYear && true}
                     />
                   )}
                 />
-                {errors.hourlyRate && <FormFeedback>{errors.hourlyRate.label.message}</FormFeedback>}
+                {errors.hourlyRate && <FormFeedback>{errors.hourlyRate.message}</FormFeedback>}
               </Col>
             </Row>
           </CardBody>

@@ -5,16 +5,18 @@
 
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText } from 'reactstrap';
+import { useSelector } from 'react-redux';
 import { TimeCardWrapper, TimeWrapper } from './style';
-import { getItem } from '../../../utility/localStorageControl';
+import { convertTo12HourFormat } from '../../../utility/Utils';
+import { userData } from '../../../redux/selectors/dashboardSelectors';
 
 const AvailableTime = () => {
-  const userData = getItem('userData');
+  const userDetailsData = useSelector(userData);
 
   // const { availability } = userData;
 
-  const weekdaysData = userData?.availability?.weekdays_avl;
-  const weekendsData = userData?.availability?.weekends_avl;
+  const weekdaysData = userDetailsData?.availability?.weekdays_avl;
+  const weekendsData = userDetailsData?.availability?.weekends_avl;
 
   return (
     <TimeCardWrapper>
@@ -28,7 +30,7 @@ const AvailableTime = () => {
             {weekdaysData && (
               <section className="weekdays">
                 <CardText>
-                  {weekdaysData.start_time} - {weekdaysData.end_time} IST
+                  {convertTo12HourFormat(weekdaysData.start_time)} - {convertTo12HourFormat(weekdaysData.end_time)}
                 </CardText>
                 <ul>
                   <li>
@@ -59,7 +61,7 @@ const AvailableTime = () => {
                 <span className="line" />
                 <section className="weekends">
                   <CardText>
-                    {weekendsData.start_time} - {weekendsData.end_time} IST
+                    {convertTo12HourFormat(weekendsData.start_time)} - {convertTo12HourFormat(weekendsData.end_time)}
                   </CardText>
                   <ul>
                     <li>

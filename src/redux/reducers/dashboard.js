@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  userData: null,
   userDataLoading: false,
   error: null,
 };
@@ -14,8 +15,9 @@ const dashboardSlice = createSlice({
       userDataLoading: true,
       error: null,
     }),
-    userDataSuccess: (state) => ({
+    userDataSuccess: (state, action) => ({
       ...state,
+      userData: action.payload,
       userDataLoading: false,
     }),
     userDataFailure: (state, action) => ({

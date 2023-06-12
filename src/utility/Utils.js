@@ -127,3 +127,25 @@ const checkSize = (width) => {
 };
 export const useIsMobile = () => checkSize(1024);
 export const useIsTab = () => checkSize(769);
+
+export const convertTo12HourFormat = (hourString) => {
+  const hour = parseInt(hourString, 10);
+
+  if (hour < 0 || hour > 24) {
+    return 'Invalid hour';
+  }
+
+  if (hour === 24) {
+    return '12:00am';
+  }
+
+  if (hour < 12) {
+    return `${hour}:00am`;
+  }
+
+  if (hour === 12) {
+    return '12:00pm';
+  }
+
+  return `${hour - 12}:00pm`;
+};

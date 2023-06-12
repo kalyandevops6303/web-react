@@ -34,6 +34,7 @@ const lightBlueBgColor = '#E3F2FD';
 const textColor = '#757575';
 const darkGreenColor = '#0097A7';
 const darkGreenBgColor = '#E0F7FA';
+const orange = '#FF6D00';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -73,5 +74,6 @@ const theme = {
   lightBlueColor,
   darkGreenColor,
   darkGreenBgColor,
+  orange,
 };
 export default theme;
