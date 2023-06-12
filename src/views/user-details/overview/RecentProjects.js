@@ -11,7 +11,7 @@ const RecentProjects = ({ isEditable }) => (
         <div className="d-flex justify-content-between">
           <CardTitle className="fw-bolder">Recent Projects</CardTitle>
           <CardText className="text-decoration-underline fw-bolder card-text font-small-3 text-edit">
-            {isEditable ? 'Edit' : 'Voiew'} Portfolio
+            {isEditable ? 'Edit' : 'View'} Portfolio
           </CardText>
         </div>
         <Row>

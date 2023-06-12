@@ -7,6 +7,7 @@ import clientOnboardingReducer from './reducers/clientOnboarding';
 import dashboardReducer from './reducers/dashboard';
 import layout from './layout';
 import navbar from './navbar';
+import profile from './reducers/profile';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   talentOnboarding: talentOnboardingReducer,
   clientOnboarding: clientOnboardingReducer,
   dashboard: dashboardReducer,
+  currentProfile: profile,
   layout,
   navbar,
 

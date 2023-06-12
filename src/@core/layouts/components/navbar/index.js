@@ -17,8 +17,10 @@ import theme from '../../../../configs/themeVariables';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import getUserData from '../../../../redux/actions/dashboardActions';
+import { getItem } from '../../../../utility/localStorageControl';
 
 const ThemeNavbar = (props) => {
+  const userData = getItem('userData');
   // ** Props
   const { skin, setSkin, setMenuVisibility } = props;
   // ** Function to toggle Theme (Light/Dark)
@@ -68,7 +70,7 @@ const ThemeNavbar = (props) => {
         </ul>
       </div>
 
-      <Link to="/" className="navbar-brand">
+      <Link to={userData ? '/dashboard' : '/auth'} className="navbar-brand">
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
         </span>
