@@ -5,17 +5,18 @@
 
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText } from 'reactstrap';
+import { useSelector } from 'react-redux';
 import { TimeCardWrapper, TimeWrapper } from './style';
-import { getItem } from '../../../utility/localStorageControl';
 import { convertTo12HourFormat } from '../../../utility/Utils';
+import { userData } from '../../../redux/selectors/dashboardSelectors';
 
 const AvailableTime = () => {
-  const userData = getItem('userData');
+  const userDetailsData = useSelector(userData);
 
   // const { availability } = userData;
 
-  const weekdaysData = userData?.availability?.weekdays_avl;
-  const weekendsData = userData?.availability?.weekends_avl;
+  const weekdaysData = userDetailsData?.availability?.weekdays_avl;
+  const weekendsData = userDetailsData?.availability?.weekends_avl;
 
   return (
     <TimeCardWrapper>
