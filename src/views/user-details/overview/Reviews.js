@@ -42,13 +42,16 @@ const Reviews = () => (
   <ReviewsContainer>
     <Card>
       <CardBody>
-        <CardTitle className="review-title mb-1">Reviews (5)</CardTitle>
-        <div>
+        <CardTitle className="review-title mb-1">Reviews (0)</CardTitle>
+        <div className="d-none">
           <Review />
           <Review />
           <Review />
+          <h4 className="text-center empty">No reviews to show</h4>
         </div>
-        <CardText className="text-center text-decoration-underline card-text me-25 mb-0 text-primary">
+        <h4 className="text-center empty">No reviews to show</h4>
+
+        <CardText className="d-none text-center text-decoration-underline card-text me-25 mb-0 text-primary">
           View More
         </CardText>
       </CardBody>

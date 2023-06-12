@@ -131,6 +131,10 @@ const RecentProjectsWrap = styled.div`
   .card .card {
     box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1) !important;
   }
+  .empty {
+    padding-top: 1rem;
+    min-height: 5rem;
+  }
 `;
 const RecentProjectWrap = styled.div`
   .outline-btn {
@@ -171,6 +175,10 @@ const ReviewsContainer = styled.div`
     border-bottom: 1px solid ${theme.cardHeaderBorderColor};
     padding-bottom: 1rem;
     margin: 0 2.5rem;
+  }
+  .empty {
+    padding-top: 2rem;
+    min-height: 5rem;
   }
 `;
 const ReviewWrap = styled.div`

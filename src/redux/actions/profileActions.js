@@ -18,7 +18,7 @@ const getProfile = (id, user_type) => async (dispatch) => {
     if (user_type === 'CLIENT') {
       res = await getClientService(id);
     }
-    dispatch(getProfileSuccess(res.data.data?.[0]));
+    dispatch(getProfileSuccess(res.data.data));
   } catch (error) {
     errorHandler(error, getProfileFailure);
   }
@@ -33,9 +33,9 @@ const makeFavourite = (id, user_type) => async (dispatch) => {
     errorHandler(error);
   }
 };
-const removeFavourite = (id, user_type) => async (dispatch) => {
+const removeFavourite = (id) => async (dispatch) => {
   try {
-    await removeFavService(id, user_type);
+    await removeFavService(id);
     dispatch(removeFavSuccess(id));
   } catch (error) {
     errorHandler(error);

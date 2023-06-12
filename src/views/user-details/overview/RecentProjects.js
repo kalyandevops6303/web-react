@@ -14,7 +14,8 @@ const RecentProjects = ({ isEditable }) => (
             {isEditable ? 'Edit' : 'View'} Portfolio
           </CardText>
         </div>
-        <Row>
+        <h4 className="text-center empty">No projects to show</h4>
+        <Row className="d-none">
           <Col lg="6" sm="12">
             <Project
               title="WebBoost Application Development"

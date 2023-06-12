@@ -1,11 +1,11 @@
 // ** Router imports
-import { useRoutes } from "react-router-dom";
+import { useRoutes } from 'react-router-dom';
 
 // ** GetRoutes
-import { getRoutes } from "./routes";
+import { useLayout } from '@hooks/useLayout';
+import { getRoutes } from './routes';
 
 // ** Hooks Imports
-import { useLayout } from "@hooks/useLayout";
 
 const Router = () => {
   // ** Hooks

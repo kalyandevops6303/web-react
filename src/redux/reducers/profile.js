@@ -28,9 +28,11 @@ const profileSlice = createSlice({
 
     makeFavSuccess: (state) => ({
       ...state,
+      userProfile: { ...state.userProfile, is_favourited: true },
     }),
     removeFavSuccess: (state) => ({
       ...state,
+      userProfile: { ...state.userProfile, is_favourited: false },
     }),
   },
 });
