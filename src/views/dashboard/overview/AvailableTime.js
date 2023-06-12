@@ -7,6 +7,7 @@
 import { Card, CardHeader, CardTitle, CardBody, CardText } from 'reactstrap';
 import { TimeCardWrapper, TimeWrapper } from './style';
 import { getItem } from '../../../utility/localStorageControl';
+import { convertTo12HourFormat } from '../../../utility/Utils';
 
 const AvailableTime = () => {
   const userData = getItem('userData');
@@ -28,7 +29,7 @@ const AvailableTime = () => {
             {weekdaysData && (
               <section className="weekdays">
                 <CardText>
-                  {weekdaysData.start_time} - {weekdaysData.end_time} IST
+                  {convertTo12HourFormat(weekdaysData.start_time)} - {convertTo12HourFormat(weekdaysData.end_time)}
                 </CardText>
                 <ul>
                   <li>
@@ -59,7 +60,7 @@ const AvailableTime = () => {
                 <span className="line" />
                 <section className="weekends">
                   <CardText>
-                    {weekendsData.start_time} - {weekendsData.end_time} IST
+                    {convertTo12HourFormat(weekendsData.start_time)} - {convertTo12HourFormat(weekendsData.end_time)}
                   </CardText>
                   <ul>
                     <li>
