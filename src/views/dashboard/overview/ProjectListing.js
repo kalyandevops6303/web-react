@@ -91,25 +91,7 @@ const ProjectListing = () => {
           Active Projects <Tag>0</Tag>
         </AccordionHeader>
         <AccordionBody accordionId="1">
-          <ProjectsListingWrap>
-            {isTab ? (
-              <>
-                {/* {ProjectsArray.map((project) => (
-                  <Project key={project.id} data={project} />
-                ))} */}
-                <Empty active />
-              </>
-            ) : (
-              <>
-                {/* <Slider {...settings}> */}
-                {/* {ProjectsArray.map((project, index) => (
-                  <Project className={`slide-${index}`} key={project.id} data={project} />
-                ))} */}
-                <Empty active />
-                {/* </Slider> */}
-              </>
-            )}
-          </ProjectsListingWrap>
+          <ProjectsListingWrap>{isTab ? <Empty active /> : <Empty active />}</ProjectsListingWrap>
         </AccordionBody>
       </AccordionItem>
       <AccordionItem>
@@ -117,29 +99,13 @@ const ProjectListing = () => {
           Upcoming Projects <Tag hasNew>0 new</Tag>
         </AccordionHeader>
         <AccordionBody accordionId="2">
-          <ProjectsListingWrap>
-            {isTab ? (
-              <>
-                {/* {ProjectsArray.map((project) => (
-                  <Project key={project.id} data={project} />
-                ))} */}
-                <Empty active={false} />
-              </>
-            ) : (
-              <>
-                {/* <Slider {...settings}> */}
-                {/* {ProjectsArray.map((project, index) => (
-                  <Project className={`slide-${index}`} key={project.id} data={project} />
-                ))} */}
-                <Empty active={false} />
-                {/* </Slider> */}
-              </>
-            )}
-          </ProjectsListingWrap>
+          <ProjectsListingWrap>{isTab ? <Empty active={false} /> : <Empty active={false} />}</ProjectsListingWrap>
         </AccordionBody>
       </AccordionItem>
       <AccordionItem>
-        <AccordionHeader targetId="3">Recommended Projects</AccordionHeader>
+        <AccordionHeader targetId="3">
+          Recommended Projects <Tag hasNew>2 new</Tag>
+        </AccordionHeader>
         <AccordionBody accordionId="3">
           <ProjectsListingWrap>
             {isTab ? (
@@ -147,14 +113,12 @@ const ProjectListing = () => {
                 {ProjectsArray.map((project) => (
                   <Project key={project.id} data={project} recommended />
                 ))}
-                <Empty active={false} />
               </>
             ) : (
               <Slider {...settings}>
                 {ProjectsArray.map((project, index) => (
                   <Project className={`slide-${index}`} key={project.id} data={project} recommended />
                 ))}
-                <Empty active={false} />
               </Slider>
             )}
           </ProjectsListingWrap>
