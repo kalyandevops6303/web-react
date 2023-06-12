@@ -289,6 +289,7 @@ const ProjectWrapper = styled.div`
   .empty-card {
     margin-bottom: 1rem;
     margin-top: 1rem;
+    width: fit-content;
   }
 
   .empty {
@@ -313,6 +314,40 @@ const ProjectWrapper = styled.div`
   .card-app-design {
     margin-bottom: 1rem;
     margin-top: 1rem;
+  }
+
+  .circular-progressbar-container {
+    width: 46px;
+    height: 46px;
+
+    .percentage-text {
+      font-weight: 400;
+      font-size: 10px;
+      color: ${theme.headingTextColor};
+    }
+  }
+
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-left: 10px;
+
+    .bg-secondary {
+      background-color: ${theme.lightBlueBgColor} !important;
+      color: ${theme.lightBlueColor} !important;
+    }
+
+    .additional-text {
+      color: ${theme.lightBlueColor};
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .tag-margin {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
   }
 `;
 

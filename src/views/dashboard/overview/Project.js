@@ -1,6 +1,7 @@
 /* eslint-disable react/require-default-props */
 // ** Third Party Components
 import PropTypes from 'prop-types';
+import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 // ** Custom Components
 import AvatarGroup from '@components/avatar-group';
 
@@ -12,6 +13,7 @@ import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import hat from '@src/assets/images/hat.png';
 
 import { ProjectWrapper } from './style';
+import theme from '../../../configs/themeVariables';
 
 const UserSection = ({ users, tagName, name, isClient }) => (
   <div className="user-section">
@@ -46,7 +48,34 @@ UserSection.propTypes = {
   tagName: PropTypes.string,
 };
 
-const Project = ({ data, className }) => {
+const TagsSection = ({ tags }) => (
+  <div className="tags-container">
+    {tags.length > 4 ? (
+      <>
+        {tags.slice(0, 4).map((tag) => (
+          <Badge key={tag} className="tag-margin">
+            {tag}
+          </Badge>
+        ))}
+        <span className="additional-text">+3</span>
+      </>
+    ) : (
+      <>
+        {tags.slice(0, 4).map((tag) => (
+          <Badge key={tag} className="tag-margin">
+            {tag}
+          </Badge>
+        ))}
+      </>
+    )}
+  </div>
+);
+
+TagsSection.propTypes = {
+  tags: PropTypes.array,
+};
+
+const Project = ({ data, className, recommended }) => {
   const avatarGroupArr = [
     {
       title: 'Billy Hopkins',
@@ -100,6 +129,29 @@ const Project = ({ data, className }) => {
       subtitle: '12 Apr, 21',
     },
   ];
+
+  const AmountArr = [
+    {
+      title: 'Amount',
+      subtitle: '$ 12000',
+    },
+  ];
+
+  const tags = ['Polygon', 'Webflow', 'Figma', 'Webflow', 'Figma', 'Webflow', 'Webflow', 'Webflow'];
+
+  const percent = 71;
+
+  const giveStrokeColor = (percentage) => {
+    if (percentage <= 40) {
+      return theme.red;
+      // eslint-disable-next-line
+    } else if (percentage > 40 && percentage <= 70) {
+      return theme.orange;
+    } else {
+      return theme.green;
+    }
+  };
+
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
@@ -108,15 +160,43 @@ const Project = ({ data, className }) => {
           <CardTitle className="mt-50 active-project-title truncate-2 mb-1.5">
             {data.name || 'Project Infinity kUpdates Project Infinity Updates'}
           </CardTitle>
+          <div className="d-flex w-100 mb-1">
+            <div className="circular-progressbar-container">
+              <CircularProgressbarWithChildren
+                value={percent}
+                styles={{
+                  path: {
+                    stroke: giveStrokeColor(percent),
+                    strokeLinecap: 'round',
+                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                  trail: {
+                    stroke: '#E9ECEF',
+                    strokeLinecap: 'round',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                }}
+              >
+                <div className="d-flex justify-content-center align-items-center">
+                  <p className="percentage-text m-0">{percent}%</p>
+                </div>
+              </CircularProgressbarWithChildren>
+            </div>
+            <TagsSection tags={tags} />
+          </div>
           <div className="main-row">
             <UserSection tagName="Client" name={data.clientName} users={singleAvatar} isClient />
-            <UserSection tagName="Team" name={data.teamName} users={avatarGroupArr} />
+            {!recommended && <UserSection tagName="Team" name={data.teamName} users={avatarGroupArr} />}
           </div>
-
-          <div className="design-group mb-50 pt-2">
-            <h6 className="section-label">Milstone 2</h6>
-          </div>
-          <Row>
+          {!recommended && (
+            <div className="design-group mb-50 pt-2">
+              <h6 className="section-label">Milestone 2</h6>
+            </div>
+          )}
+          <Row className="mt-1">
             <Col lg="6">
               <div className="design-planning-wrapper">
                 {designPlanningArr.map((item) => (
@@ -128,7 +208,18 @@ const Project = ({ data, className }) => {
               </div>
             </Col>
             <Col lg="6">
-              <CardText>Quality control & audit</CardText>
+              {recommended ? (
+                <div className="design-planning-wrapper">
+                  {AmountArr.map((item) => (
+                    <div key={item.title} className="design-planning">
+                      <CardText className="mb-25">{item.title}</CardText>
+                      <h6 className="mb-0">{item.subtitle}</h6>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <CardText>Quality control & audit</CardText>
+              )}
             </Col>
           </Row>
           <div className="font-weight-normal text-center text-primary project-cta mt-25">View Project</div>
@@ -141,5 +232,6 @@ const Project = ({ data, className }) => {
 Project.propTypes = {
   data: PropTypes.object,
   className: PropTypes.string,
+  recommended: PropTypes.bool,
 };
 export default Project;
