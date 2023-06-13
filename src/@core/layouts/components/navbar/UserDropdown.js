@@ -12,13 +12,17 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from
 
 // ** Default Avatar Image
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../../../../redux/selectors/dashboardSelectors';
+import { clearData } from '../../../../redux/reducers/dashboard';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(userData);
 
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
+    dispatch(clearData());
     localStorage.clear();
   };
   return (
@@ -30,7 +34,7 @@ const UserDropdown = () => {
               ? userDetailsData?.talent_info?.first_name || 'User'
               : userDetailsData?.client_info?.first_name || 'User'}
           </span>
-          <span className="user-status">{userDetailsData?.user_type || 'Role'}</span>
+          <span className="user-status mt-50">{userDetailsData?.user_type || 'Role'}</span>
         </div>
         <Avatar img={defaultAvatar} imgHeight="40" imgWidth="40" status="online" />
       </DropdownToggle>

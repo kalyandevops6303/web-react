@@ -3,4 +3,6 @@ import DataService from '../configs/dataService/dataService';
 
 const userDataService = () => DataService.get(API.dashboard.userData);
 
-export default userDataService;
+const recommendedProjectsService = () => DataService.get(API.dashboard.recommendedProjects);
+
+export { userDataService, recommendedProjectsService };

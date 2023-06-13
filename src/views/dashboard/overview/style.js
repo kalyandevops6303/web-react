@@ -334,6 +334,7 @@ const ProjectWrapper = styled.div`
   .tags-container {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     width: 100%;
     margin-left: 10px;
 
