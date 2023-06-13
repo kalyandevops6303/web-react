@@ -12,7 +12,7 @@ import BehanceIcon from '@src/assets/images/behance.png';
 import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
-import { Heart, Linkedin, Twitter } from 'react-feather';
+import { GitHub, Heart, Link, Linkedin, Twitter } from 'react-feather';
 import { LeftSidebarProfileWrapper } from './style';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
@@ -188,7 +188,29 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                       />
                     </a>
                   );
-                return false;
+                if (item?.platform === 'github')
+                  return (
+                    <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                      <Avatar
+                        color="light-primary"
+                        icon={
+                          <GitHub fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
+                        }
+                        onClick={item?.url}
+                        className="me-1 p-25"
+                      />
+                    </a>
+                  );
+                return (
+                  <a key={item?.url} href={item?.url} target="_blank" rel="noopener noreferrer">
+                    <Avatar
+                      color="light-primary"
+                      icon={<Link fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />}
+                      onClick={item?.url}
+                      className="me-1 p-25"
+                    />
+                  </a>
+                );
               })}
 
               <Avatar
