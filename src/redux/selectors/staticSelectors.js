@@ -38,6 +38,10 @@ export const skillsList = createSelector(staticSelector, (staticData) => staticD
 
 export const skillsLoading = createSelector(staticSelector, (staticData) => staticData.skillsLoading);
 
+export const certificatesList = createSelector(staticSelector, (staticData) => staticData.certificates);
+
+export const certificatesLoading = createSelector(staticSelector, (staticData) => staticData.certificatesLoading);
+
 export const timezones = createSelector(staticSelector, (staticData) => staticData.timezones);
 
 export const timezonesLoading = createSelector(staticSelector, (staticData) => staticData.timezonesLoading);

@@ -19,6 +19,8 @@ const toolsService = () => DataService.get(API.static.tools);
 
 const skillsService = () => DataService.get(API.static.skills);
 
+const certificatesService = () => DataService.get(API.static.certificates);
+
 const timezonesService = () => DataService.get(API.static.timezones);
 
 const currenciesService = () => DataService.get(API.static.currencies);
@@ -37,6 +39,7 @@ export {
   educationsService,
   toolsService,
   skillsService,
+  certificatesService,
   timezonesService,
   currenciesService,
   companyIndustriesService,

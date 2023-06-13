@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
-import CreatableSelect from 'react-select/creatable';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -29,6 +28,7 @@ import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
 import {
+  getCertificates,
   getCities,
   getCountries,
   getCurrencies,
@@ -42,6 +42,8 @@ import {
   getTools,
 } from '../../../redux/actions/staticActions';
 import {
+  certificatesList,
+  certificatesLoading,
   cities,
   citiesLoading,
   countries,
@@ -305,9 +307,6 @@ const Profile = ({ tabNames, toggleTab, active }) => {
     name: 'otherSocialLinks',
   });
 
-  const [inputValue, setInputValue] = useState('');
-  const [customCertificatesValue, setCustomCertificatesValue] = useState([]);
-
   const isEmpty = (value) => {
     if (value === undefined || value === null) {
       return true;
@@ -386,6 +385,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
       educationDetails,
       skills,
       tools,
+      certificates,
       preferredWorkingTimeZone,
       weekdayStartTime,
       weekdayEndTime,
@@ -424,7 +424,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
     const expertise = {
       skills: skills.map((skill) => skill.value),
       tools: tools?.map((tool) => tool.value),
-      certificates: customCertificatesValue?.map((certificate) => certificate.value),
+      certificates: certificates?.map((certificate) => certificate.value),
     };
     const availability = {
       timezone: preferredWorkingTimeZone.value._id,
@@ -510,6 +510,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
+  const [certificatesOptions, setCertificatesOptions] = useState(null);
   const [timezonesOptions, setTimezonesOptions] = useState(null);
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
 
@@ -522,6 +523,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
       dispatch(getEducations());
       dispatch(getTools());
       dispatch(getSkills());
+      dispatch(getCertificates());
       dispatch(getTimezones());
       dispatch(getCurrencies());
     }
@@ -562,6 +564,8 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   const toolsIsLoading = useSelector(toolsLoading);
   const skillsData = useSelector(skillsList);
   const skillsIsLoading = useSelector(skillsLoading);
+  const certificatesData = useSelector(certificatesList);
+  const certificatesIsLoading = useSelector(certificatesLoading);
   const timezonesData = useSelector(timezones);
   const timezonesIsLoading = useSelector(timezonesLoading);
   const currenciesData = useSelector(currencies);
@@ -574,7 +578,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   }, [talentRolesData]);
 
   useEffect(() => {
-    const requiredData = languagesData?.map((language) => ({ label: language.language, value: language._id }));
+    const requiredData = languagesData?.map((language) => ({ label: language.name, value: language._id }));
     setLanguagesOptions(requiredData);
   }, [languagesData]);
 
@@ -614,6 +618,11 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   }, [skillsData]);
 
   useEffect(() => {
+    const requiredData = certificatesData?.map((certificate) => ({ label: certificate.name, value: certificate._id }));
+    setCertificatesOptions(requiredData);
+  }, [certificatesData]);
+
+  useEffect(() => {
     const requiredData = timezonesData?.map((timezone) => ({
       label: `${timezone.name} (${timezone.abbreviation})`,
       value: timezone,
@@ -625,31 +634,6 @@ const Profile = ({ tabNames, toggleTab, active }) => {
     const requiredData = currenciesData?.map((currency) => ({ label: currency.name, value: currency._id }));
     setCurrenciesOptions(requiredData);
   }, [currenciesData]);
-
-  const customSelectComponents = {
-    DropdownIndicator: null,
-  };
-
-  const createOption = (label, value) => ({
-    label,
-    value,
-  });
-
-  const handleKeyDown = (event) => {
-    if (!inputValue) return;
-    switch (event.key) {
-      case 'Enter':
-      case 'Tab':
-        if (!customCertificatesValue.find((cert) => cert.label === inputValue)) {
-          setCustomCertificatesValue((prev) => [...prev, createOption(inputValue, inputValue)]);
-          setInputValue('');
-          event.preventDefault();
-        }
-        break;
-      default:
-        break;
-    }
-  };
 
   const isValidURL = (url) => {
     const urlPattern = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/;
@@ -1200,29 +1184,25 @@ const Profile = ({ tabNames, toggleTab, active }) => {
               </Col>
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="certificates">
-                  Certificate
+                  Certificates
                 </Label>
                 <Controller
                   id="certificates"
                   name="certificates"
                   control={control}
                   invalid={errors.certificates && true}
-                  render={() => (
-                    <CreatableSelect
-                      classNamePrefix="select"
-                      theme={selectThemeColors}
-                      inputId="certificates"
-                      name="certificates"
-                      components={customSelectComponents}
-                      inputValue={inputValue}
-                      isClearable
+                  render={({ field }) => (
+                    <Select
                       isMulti
-                      menuIsOpen={false}
-                      onChange={(newValue) => setCustomCertificatesValue(newValue)}
-                      onInputChange={(newValue) => setInputValue(newValue)}
-                      onKeyDown={(e) => handleKeyDown(e)}
-                      placeholder="Enter certificates"
-                      value={customCertificatesValue}
+                      isLoading={certificatesIsLoading}
+                      options={certificatesOptions}
+                      classNamePrefix="select"
+                      placeholder="Select certificates"
+                      theme={selectThemeColors}
+                      className={classNames('react-select', {
+                        'is-invalid': errors && errors.certificates,
+                      })}
+                      {...field}
                     />
                   )}
                 />

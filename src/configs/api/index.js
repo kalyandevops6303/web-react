@@ -21,6 +21,7 @@ const API = {
     educations: `${import.meta.env.VITE_API_ENDPOINT}:4000/api/v1/static/education/all`,
     tools: `${import.meta.env.VITE_API_ENDPOINT}:4000/api/v1/static/tools/all`,
     skills: `${import.meta.env.VITE_API_ENDPOINT}:4000/api/v1/static/skills/all`,
+    certificates: `${import.meta.env.VITE_API_ENDPOINT}:4000/api/v1/static/certificates/all`,
     timezones: `${import.meta.env.VITE_API_ENDPOINT}:4000/api/v1/static/timezone/all`,
     currencies: `${import.meta.env.VITE_API_ENDPOINT}:4000/api/v1/static/currency/all`,
     companyIndustries: `${import.meta.env.VITE_API_ENDPOINT}:4000/api/v1/static/company-industry/all`,
