@@ -6,4 +6,11 @@ const userData = createSelector(dashboardSelector, (dashboard) => dashboard.user
 
 const userDataLoading = createSelector(dashboardSelector, (dashboard) => dashboard.userDataLoading);
 
-export { userData, userDataLoading };
+const recommendedProjects = createSelector(dashboardSelector, (dashboard) => dashboard.recommendedProjects);
+
+const recommendedProjectsLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.recommendedProjectsLoading,
+);
+
+export { userData, userDataLoading, recommendedProjects, recommendedProjectsLoading };

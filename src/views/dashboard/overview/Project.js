@@ -53,8 +53,8 @@ const TagsSection = ({ tags }) => (
     {tags.length > 4 ? (
       <>
         {tags.slice(0, 4).map((tag) => (
-          <Badge key={tag} className="tag-margin">
-            {tag}
+          <Badge key={tag.name} className="tag-margin">
+            {tag.name}
           </Badge>
         ))}
         <span className="additional-text">+3</span>
@@ -62,8 +62,8 @@ const TagsSection = ({ tags }) => (
     ) : (
       <>
         {tags.slice(0, 4).map((tag) => (
-          <Badge key={tag} className="tag-margin">
-            {tag}
+          <Badge key={tag.name} className="tag-margin">
+            {tag.name}
           </Badge>
         ))}
       </>
@@ -123,12 +123,6 @@ const Project = ({ data, className, recommended }) => {
       imgWidth: 33,
     },
   ];
-  const designPlanningArr = [
-    {
-      title: 'Due Date',
-      subtitle: '12 Apr, 21',
-    },
-  ];
 
   const AmountArr = [
     {
@@ -136,10 +130,6 @@ const Project = ({ data, className, recommended }) => {
       subtitle: '$ 12000',
     },
   ];
-
-  const tags = ['Polygon', 'Webflow', 'Figma', 'Webflow', 'Figma', 'Webflow', 'Webflow', 'Webflow'];
-
-  const percent = 71;
 
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
@@ -158,15 +148,16 @@ const Project = ({ data, className, recommended }) => {
         <CardBody>
           <Badge color="light-success">In-Progress</Badge>
           <CardTitle className="mt-50 active-project-title truncate-2 mb-1.5">
-            {data.name || 'Project Infinity kUpdates Project Infinity Updates'}
+            {/* {recommendedProjectsData?.data?.details?.name} */}
+            {data?.details.name}
           </CardTitle>
           <div className="d-flex w-100 mb-1">
             <div className="circular-progressbar-container">
               <CircularProgressbarWithChildren
-                value={percent}
+                value={data?.match_percentage}
                 styles={{
                   path: {
-                    stroke: giveStrokeColor(percent),
+                    stroke: giveStrokeColor(data?.match_percentage),
                     strokeLinecap: 'round',
                     transition: 'stroke-dashoffset 0.5s ease 0s',
                     transform: 'rotate(0turn)',
@@ -181,14 +172,14 @@ const Project = ({ data, className, recommended }) => {
                 }}
               >
                 <div className="d-flex justify-content-center align-items-center">
-                  <p className="percentage-text m-0">{percent}%</p>
+                  <p className="percentage-text m-0">{data?.match_percentage}%</p>
                 </div>
               </CircularProgressbarWithChildren>
             </div>
-            <TagsSection tags={tags} />
+            <TagsSection tags={data?.proficiency.skills} />
           </div>
           <div className="main-row">
-            <UserSection tagName="Client" name={data.clientName} users={singleAvatar} isClient />
+            <UserSection tagName="Client" name={data?.client_info?.company_name || '-'} users={singleAvatar} isClient />
             {!recommended && <UserSection tagName="Team" name={data.teamName} users={avatarGroupArr} />}
           </div>
           {!recommended && (
@@ -198,22 +189,12 @@ const Project = ({ data, className, recommended }) => {
           )}
           <Row className="mt-1">
             <Col lg="6">
-              <div className="design-planning-wrapper">
-                {designPlanningArr.map((item) => (
-                  <div key={item.title} className="design-planning">
-                    <CardText className="mb-25">{item.title}</CardText>
-                    <h6 className="mb-0">{item.subtitle}</h6>
-                  </div>
-                ))}
-              </div>
-            </Col>
-            <Col lg="6">
               {recommended ? (
                 <div className="design-planning-wrapper">
                   {AmountArr.map((item) => (
                     <div key={item.title} className="design-planning">
                       <CardText className="mb-25">{item.title}</CardText>
-                      <h6 className="mb-0">{item.subtitle}</h6>
+                      <h6 className="mb-0">{`${data?.pay_type.currency}-${data?.pay_type.fixed_cost}`}</h6>
                     </div>
                   ))}
                 </div>

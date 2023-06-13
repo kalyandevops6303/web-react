@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Slider from 'react-slick';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
@@ -15,7 +15,8 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useIsTab } from '../../../utility/Utils';
 import Tag from '../../../@core/components/tags';
-import { userData } from '../../../redux/selectors/dashboardSelectors';
+import { recommendedProjects, userData } from '../../../redux/selectors/dashboardSelectors';
+import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
 
 const Empty = ({ active, recommended, payment }) => (
   <ProjectWrapper>
@@ -43,46 +44,9 @@ const ProjectListing = () => {
   const [open, setOpen] = useState('1');
   const isTab = useIsTab();
 
-  const toggle = (id) => (open === id ? setOpen() : setOpen(id));
+  const dispatch = useDispatch();
 
-  const ProjectsArray = [
-    {
-      id: 1,
-      name: 'Project Infinity Updates Project Infinity Updates Project Infinity kUpdates Project Infinity Updates',
-      clientName: 'Mindtress PVT  ',
-      teamName: 'Asia research and development',
-    },
-    {
-      id: 2,
-      name: 'Project Infinity Updates Project Infinity Updates Project Infinity kUpdates Project Infinity Updates',
-      clientName: 'Mindtress PVT Mindtress Mindtress',
-      teamName: 'Asia research and development research',
-    },
-    {
-      id: 3,
-      name: 'Project Infinity Updates Project Infinity Updates Project Infinity kUpdates Project Infinity Updates',
-      clientName: 'Mindtress PVT  ',
-      teamName: 'Asia research and development',
-    },
-    {
-      id: 4,
-      name: 'Project Infinity Updates Project Infinity Updates Project Infinity kUpdates Project Infinity Updates',
-      clientName: 'Mindtress PVT Mindtress Mindtress',
-      teamName: 'Asia research and development research',
-    },
-    {
-      id: 5,
-      name: 'Project Infinity Updates Project Infinity Updates Project Infinity kUpdates Project Infinity Updates',
-      clientName: 'Mindtress PVT  ',
-      teamName: 'Asia research and development',
-    },
-    {
-      id: 6,
-      name: 'Project Infinity Updates Project Infinity Updates Project Infinity kUpdates Project Infinity Updates',
-      clientName: 'Mindtress PVT Mindtress Mindtress',
-      teamName: 'Asia research and development research',
-    },
-  ];
+  const toggle = (id) => (open === id ? setOpen() : setOpen(id));
 
   const settings = {
     dots: false,
@@ -94,6 +58,13 @@ const ProjectListing = () => {
   };
 
   const userDetailsData = useSelector(userData);
+  const recommendedProjectsData = useSelector(recommendedProjects);
+
+  useEffect(() => {
+    if (userDetailsData?.user_type === 'TALENT') {
+      dispatch(getRecommendedProjects());
+    }
+  }, [userDetailsData]);
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
@@ -129,19 +100,20 @@ const ProjectListing = () => {
         {userDetailsData?.user_type === 'TALENT' && (
           <>
             <AccordionHeader targetId="3">
-              Recommended Projects <Tag hasNew>2 new</Tag>
+              Recommended Projects <Tag hasNew>{recommendedProjectsData?.data?.length} new</Tag>
             </AccordionHeader>
             <AccordionBody accordionId="3">
               <ProjectsListingWrap>
                 {isTab ? (
+                  // eslint-disable-next-line
                   <>
-                    {ProjectsArray.map((project) => (
+                    {recommendedProjectsData?.data?.map((project) => (
                       <Project key={project.id} data={project} recommended />
                     ))}
                   </>
                 ) : (
                   <Slider {...settings}>
-                    {ProjectsArray.map((project, index) => (
+                    {recommendedProjectsData?.data?.map((project, index) => (
                       <Project className={`slide-${index}`} key={project.id} data={project} recommended />
                     ))}
                   </Slider>

@@ -501,7 +501,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
 
   useEffect(() => {
-    const requiredData = companyIndustriesData?.map((industry) => ({ label: industry.industry, value: industry._id }));
+    const requiredData = companyIndustriesData?.map((industry) => ({ label: industry.name, value: industry._id }));
     setCompanyIndutriesOptions(requiredData);
   }, [companyIndustriesData]);
 
@@ -526,12 +526,12 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   }, [institutesData]);
 
   useEffect(() => {
-    const requiredData = educationsData?.map((education) => ({ label: education.degree, value: education._id }));
+    const requiredData = educationsData?.map((education) => ({ label: education.name, value: education._id }));
     setEducationsOptions(requiredData);
   }, [educationsData]);
 
   useEffect(() => {
-    const requiredData = projectAreasData?.map((area) => ({ label: area.area, value: area._id }));
+    const requiredData = projectAreasData?.map((area) => ({ label: area.name, value: area._id }));
     setProjectAreasOptions(requiredData);
   }, [projectAreasData]);
 

@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   userData: null,
   userDataLoading: false,
+  recommendedProjects: null,
+  recommendedProjectsLoading: false,
   error: null,
 };
 
@@ -25,9 +27,42 @@ const dashboardSlice = createSlice({
       userDataLoading: false,
       error: action.payload,
     }),
+
+    recommendedProjectsRequest: (state) => ({
+      ...state,
+      recommendedProjectsLoading: true,
+      error: null,
+    }),
+    recommendedProjectsSuccess: (state, action) => ({
+      ...state,
+      recommendedProjects: action.payload,
+      recommendedProjectsLoading: false,
+    }),
+    recommendedProjectsFailure: (state, action) => ({
+      ...state,
+      recommendedProjectsLoading: false,
+      error: action.payload,
+    }),
+
+    clearData: (state) => ({
+      ...state,
+      userData: null,
+      userDataLoading: false,
+      recommendedProjects: null,
+      recommendedProjectsLoading: false,
+      error: null,
+    }),
   },
 });
 
-export const { userDataRequest, userDataSuccess, userDataFailure } = dashboardSlice.actions;
+export const {
+  userDataRequest,
+  userDataSuccess,
+  userDataFailure,
+  recommendedProjectsRequest,
+  recommendedProjectsSuccess,
+  recommendedProjectsFailure,
+  clearData,
+} = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

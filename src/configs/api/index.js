@@ -45,6 +45,7 @@ const API = {
   },
   dashboard: {
     userData: `${import.meta.env.VITE_API_ENDPOINT}:4000/api/v1/user/details`,
+    recommendedProjects: `${import.meta.env.VITE_API_ENDPOINT}:4002/api/v1/talent/get-recommended-projects`,
   },
 };
 

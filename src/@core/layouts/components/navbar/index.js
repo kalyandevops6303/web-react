@@ -16,8 +16,8 @@ import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import getUserData from '../../../../redux/actions/dashboardActions';
 import { getItem } from '../../../../utility/localStorageControl';
+import { getUserData } from '../../../../redux/actions/dashboardActions';
 
 const ThemeNavbar = (props) => {
   const userData = getItem('userData');
