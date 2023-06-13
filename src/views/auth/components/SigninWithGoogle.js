@@ -71,16 +71,6 @@ const SigninWithGoogle = () => {
 
   return (
     <GoogleWrap>
-      {/* <GoogleLogin
-        onSuccess={(credentialResponse) => {
-          dispatch(
-            loginUserWithGoogle({ id_token: credentialResponse.credential, user_type: userType, onError, onSuccess }),
-          );
-        }}
-        onError={() => {
-          console.error('Auth operation failed');
-        }}
-      /> */}
       <div id="buttonDiv" />
     </GoogleWrap>
   );

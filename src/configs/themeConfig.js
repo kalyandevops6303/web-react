@@ -1,5 +1,5 @@
 // Logo Import
-import logo from '@src/assets/images/logo/logo.svg';
+import logo from '@src/assets/images/ic_trumio_logo.png';
 
 // You can customize the template with the help of this file
 
@@ -12,11 +12,11 @@ const themeConfig = {
   layout: {
     isRTL: false,
     skin: 'light', // light, dark, bordered, semi-dark
-    type: 'vertical', // vertical, horizontal
+    type: 'horizontal', // vertical, horizontal
     contentWidth: 'boxed', // full, boxed
     menu: {
-      isHidden: true,
-      isCollapsed: false,
+      isHidden: false,
+      isCollapsed: true,
     },
     navbar: {
       // ? For horizontal menu, navbar type will work for navMenu type

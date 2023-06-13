@@ -1,49 +1,80 @@
+/* eslint-disable react/prop-types */
 // ** React Imports
-import { Fragment } from "react";
-
-// ** Custom Components
-import NavbarUser from "./NavbarUser";
 
 // ** Third Party Components
-import { Sun, Moon, Menu } from "react-feather";
+import { Menu } from 'react-feather';
 
 // ** Reactstrap Imports
-import { NavItem, NavLink } from "reactstrap";
+import { NavItem, NavLink } from 'reactstrap';
+
+import themeConfig from '@configs/themeConfig';
+
+// ** Custom Components
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import NavbarUser from './NavbarUser';
+import theme from '../../../../configs/themeVariables';
 
 const ThemeNavbar = (props) => {
   // ** Props
   const { skin, setSkin, setMenuVisibility } = props;
 
   // ** Function to toggle Theme (Light/Dark)
-  const ThemeToggler = () => {
-    if (skin === "dark") {
-      return <Sun className="ficon" onClick={() => setSkin("light")} />;
-    } else {
-      return <Moon className="ficon" onClick={() => setSkin("dark")} />;
+
+  const HeadWrapper = styled.div`
+    display: flex;
+    width: 100%;
+    .navbar-brand {
+      margin: auto 0;
+      .brand-logo {
+        img {
+          max-height: 30px;
+        }
+      }
     }
-  };
+    .menu-item {
+      padding: 1rem 0;
+      margin: 0 2rem;
+      border-bottom: 3px solid ${theme.primary};
+      margin-bottom: -11px;
+      font-size: 16px;
+      font-weight: 600;
+      color: ${theme.primary};
+    }
+    @media (max-width: 1200px) {
+      .menu-item {
+        display: none;
+      }
+    }
+  `;
 
   return (
-    <Fragment>
+    <HeadWrapper>
       <div className="bookmark-wrapper d-flex align-items-center">
         <ul className="navbar-nav d-xl-none">
           <NavItem className="mobile-menu me-auto">
-            <NavLink
-              className="nav-menu-main menu-toggle hidden-xs is-active"
-              onClick={() => setMenuVisibility(true)}
-            >
+            <NavLink className="nav-menu-main menu-toggle hidden-xs is-active" onClick={() => setMenuVisibility(true)}>
               <Menu className="ficon" />
             </NavLink>
           </NavItem>
         </ul>
-        <NavItem className="d-none d-lg-block">
-          <NavLink className="nav-link-style">
-            <ThemeToggler />
-          </NavLink>
-        </NavItem>
       </div>
+
+      <Link to="/" className="navbar-brand">
+        <span className="brand-logo">
+          <img src={themeConfig.app.appLogoImage} alt="logo" />
+        </span>
+      </Link>
+
+      <NavLink
+        className="menu-item nav-menu-main menu-toggle hidden-xs is-active"
+        onClick={() => setMenuVisibility(true)}
+      >
+        Dashboard
+      </NavLink>
+
       <NavbarUser skin={skin} setSkin={setSkin} />
-    </Fragment>
+    </HeadWrapper>
   );
 };
 

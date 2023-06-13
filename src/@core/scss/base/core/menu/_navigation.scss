@@ -69,6 +69,10 @@
     }
   }
 
+  .brand-logo img {
+    max-width: 36px;
+  }
+  
   .navbar-header {
     height: 100%;
     width: $menu-expanded-width;
