@@ -599,7 +599,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   }, [institutesData]);
 
   useEffect(() => {
-    const requiredData = educationsData?.map((education) => ({ label: education.degree, value: education._id }));
+    const requiredData = educationsData?.map((education) => ({ label: education.name, value: education._id }));
     setEducationsOptions(requiredData);
   }, [educationsData]);
 
