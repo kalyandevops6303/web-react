@@ -12,7 +12,7 @@ import BehanceIcon from '@src/assets/images/behance.png';
 import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
-import { Heart, Linkedin, Twitter } from 'react-feather';
+import { GitHub, Heart, Link, Linkedin, Twitter } from 'react-feather';
 import { LeftSidebarProfileWrapper } from './style';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
@@ -161,6 +161,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
             <div className="social-links">
               <CardText className="Info-key mt-50">Social Links</CardText>
               {data?.social_links?.length === 0 && <CardText className="Info-key font-small-3 mt-0">No links</CardText>}
+
               {data?.social_links?.map((item, index) => {
                 if (item?.platform === 'linkedIn')
                   return (
@@ -192,7 +193,34 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                       <UncontrolledTooltip target={`tooltip-${index}`}>{item?.platform}</UncontrolledTooltip>
                     </a>
                   );
-                return false;
+
+                if (item?.platform === 'github')
+                  return (
+                    <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                      <Avatar
+                        color="light-primary"
+                        icon={
+                          <GitHub fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
+                        }
+                        onClick={item?.url}
+                        className="me-1 p-25"
+                        id={`tooltip-${index}`}
+                      />
+                      <UncontrolledTooltip target={`tooltip-${index}`}>{item?.platform}</UncontrolledTooltip>
+                    </a>
+                  );
+                return (
+                  <a key={item?.url} href={item?.url} target="_blank" rel="noopener noreferrer">
+                    <Avatar
+                      color="light-primary"
+                      icon={<Link fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />}
+                      onClick={item?.url}
+                      className="me-1 p-25"
+                      id={`tooltip-${index}`}
+                    />
+                    <UncontrolledTooltip target={`tooltip-${index}`}>{item?.platform}</UncontrolledTooltip>
+                  </a>
+                );
               })}
 
               <Avatar
