@@ -18,10 +18,11 @@ import {
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 
-const getUserDetails = () => async (dispatch) => {
+const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   dispatch(userDetailsRequest());
   try {
     const res = await userDetailsService();
+    onGetUserDetailsSuccess(res.data.data);
     dispatch(userDetailsSuccess(res.data.data));
   } catch (error) {
     errorHandler(error, userDetailsFailure);

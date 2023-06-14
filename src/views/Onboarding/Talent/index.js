@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Header from '../Header';
 import Tabs from './Tabs';
 
@@ -16,6 +17,13 @@ const TalentOnboarding = () => {
       setActive(tab);
     }
   };
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/talent-onboarding/account-details') setActive(tabNames.Account);
+    else if (location.pathname === '/talent-onboarding/profile-details') setActive(tabNames.Profile);
+  }, [location]);
 
   return (
     <>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Proptypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -29,7 +29,7 @@ import { saveClientAccountDetails } from '../../redux/actions/clientOnboardingAc
 import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
 
-const Account = ({ tabNames, toggleTab }) => {
+const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
     firstName: yup.string().required('First name is required'),
     lastName: yup.string().required('Last name is required'),
@@ -56,6 +56,7 @@ const Account = ({ tabNames, toggleTab }) => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
@@ -78,17 +79,29 @@ const Account = ({ tabNames, toggleTab }) => {
     }
   };
 
-  useEffect(() => {
-    dispatch(getUserDetails());
-  }, []);
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) {
+      setValue('countryCode', res.country_code);
+      setValue('mobileNumber', res.phone);
+      setValue('email', res.email);
+
+      if (res.checkpoint === 'PROFILE_DETAILS') {
+        if (res.user_type === 'TALENT') {
+          setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
+          setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
+        } else if (res.user_type === 'CLIENT') {
+          setValue('firstName', res.client_info?.first_name, { shouldValidate: true });
+          setValue('lastName', res.client_info?.last_name, { shouldValidate: true });
+        }
+
+        setIsNextButtonDisabled(false);
+      }
+    }
+  };
 
   useEffect(() => {
-    if (userDetailsData) {
-      setValue('countryCode', userDetailsData.country_code);
-      setValue('mobileNumber', userDetailsData.phone);
-      setValue('email', userDetailsData.email);
-    }
-  }, [userDetailsData]);
+    dispatch(getUserDetails(onGetUserDetailsSuccess));
+  }, []);
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
@@ -264,7 +277,16 @@ const Account = ({ tabNames, toggleTab }) => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end">
-          <Button color="primary" disabled={isNextButtonDisabled} onClick={() => toggleTab(tabNames.Profile)}>
+          <Button
+            color="primary"
+            disabled={isNextButtonDisabled}
+            // eslint-disable-next-line
+            onClick={() =>
+              userDetailsData?.user_type === 'TALENT'
+                ? navigate('/talent-onboarding/profile-details')
+                : navigate('/client-onboarding/profile-details')
+            }
+          >
             <span className="me-50">Next</span>
             <ChevronRight size={14} />
           </Button>
@@ -275,13 +297,3 @@ const Account = ({ tabNames, toggleTab }) => {
 };
 
 export default Account;
-
-Account.propTypes = {
-  tabNames: Proptypes.object,
-  toggleTab: Proptypes.func,
-};
-
-Account.defaultProps = {
-  tabNames: {},
-  toggleTab: () => {},
-};

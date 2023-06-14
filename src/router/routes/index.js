@@ -78,14 +78,14 @@ const Routes = [
   },
 
   {
-    path: '/talent-onboarding',
+    path: '/talent-onboarding/:section-details',
     element: <TalentOnboarding />,
     meta: {
       layout: 'blank',
     },
   },
   {
-    path: '/client-onboarding',
+    path: '/client-onboarding/:section-details',
     element: <ClientOnboarding />,
     meta: {
       layout: 'blank',

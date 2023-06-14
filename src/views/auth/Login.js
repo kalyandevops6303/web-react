@@ -50,8 +50,10 @@ const Login = () => {
   const onSuccess = (resp) => {
     if (resp?.checkpoint === 'MOBILE_VERIFICATION') {
       navigate('/auth/register-phone');
-    } else if (resp?.checkpoint === 'ACCOUNT_DETAILS' || resp?.checkpoint === 'PROFILE_DETAILS') {
-      navigate(`/${resp.user_type.toLowerCase()}-onboarding`);
+    } else if (resp?.checkpoint === 'ACCOUNT_DETAILS') {
+      navigate(`/${resp.user_type.toLowerCase()}-onboarding/account-details`);
+    } else if (resp?.checkpoint === 'PROFILE_DETAILS') {
+      navigate(`/${resp.user_type.toLowerCase()}-onboarding/profile-details`);
     } else if (resp?.checkpoint === 'COMPLETE') {
       navigate('/dashboard');
     }

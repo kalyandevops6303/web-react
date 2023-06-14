@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
@@ -67,7 +68,7 @@ import { saveProfileDetails } from '../../../redux/actions/clientOnboardingActio
 import { profileDetailsLoading } from '../../../redux/selectors/clientOnboardingSelectors';
 import AccountCreatedModal from '../AccountCreatedModal';
 
-const Profile = ({ tabNames, toggleTab, active }) => {
+const Profile = ({ tabNames, active }) => {
   const ProfileSchema = yup.object().shape({
     companyName: yup.string().required('Company name is required'),
     title: yup.string().required('Title is required'),
@@ -272,6 +273,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
@@ -698,7 +700,10 @@ const Profile = ({ tabNames, toggleTab, active }) => {
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="companyTagline">
                   Company Tagline<span className="label-asterisk me-50">*</span>
-                  <Info size={18} color={theme.infoIcon} />
+                  <Info size={18} color={theme.infoIcon} id="tagline-info" />
+                  <UncontrolledTooltip placement="right" target="tagline-info">
+                    <p className="m-0 ">Give your company tagline in 60 character.</p>
+                  </UncontrolledTooltip>
                 </Label>
                 <Controller
                   id="companyTagline"
@@ -717,7 +722,6 @@ const Profile = ({ tabNames, toggleTab, active }) => {
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="companyIndustry">
                   Company Industry<span className="label-asterisk me-50">*</span>
-                  <Info size={18} color={theme.infoIcon} />
                 </Label>
                 <Controller
                   id="companyIndustry"
@@ -1809,7 +1813,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
           <div
             className="d-flex align-items-center upload-button cursor-pointer"
-            onClick={() => toggleTab(tabNames.Account)}
+            onClick={() => navigate('/client-onboarding/account-details')}
           >
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
@@ -1836,12 +1840,10 @@ export default Profile;
 
 Profile.propTypes = {
   tabNames: Proptypes.object,
-  toggleTab: Proptypes.func,
   active: Proptypes.string,
 };
 
 Profile.defaultProps = {
   tabNames: {},
-  toggleTab: () => {},
   active: '',
 };

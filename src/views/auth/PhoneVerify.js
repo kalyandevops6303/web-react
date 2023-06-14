@@ -39,7 +39,7 @@ const VerifyPhone = () => {
 
   useEffect(() => {
     if (!isLoading && isPhoneVerified && userType) {
-      navigate(`/${userType.toLowerCase()}-onboarding`);
+      navigate(`/${userType.toLowerCase()}-onboarding/account-details`);
     } else if (isPhoneVerified && !userType) {
       navigate('/auth');
     }

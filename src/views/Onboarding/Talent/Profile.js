@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -71,7 +72,7 @@ import { saveProfileDetails } from '../../../redux/actions/talentOnboardingActio
 import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import AccountCreatedModal from '../AccountCreatedModal';
 
-const Profile = ({ tabNames, toggleTab, active }) => {
+const Profile = ({ tabNames, active }) => {
   const ProfileSchema = yup.object().shape({
     tagline: yup.string().max(60, 'Tagline must be at most 60 characters').required('Tagline is required'),
     workExperienceYear: yup.number().min(0).integer('Year must be an integer').typeError('Year must be a number'),
@@ -357,6 +358,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   };
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
@@ -687,7 +689,10 @@ const Profile = ({ tabNames, toggleTab, active }) => {
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="tagline">
                   Tagline<span className="label-asterisk me-50">*</span>
-                  <Info size={18} color={theme.infoIcon} />
+                  <Info size={18} color={theme.infoIcon} id="tagline-info" />
+                  <UncontrolledTooltip placement="right" target="tagline-info">
+                    <p className="m-0">Give your tagline in 60 character.</p>
+                  </UncontrolledTooltip>
                 </Label>
                 <Controller
                   id="tagline"
@@ -758,7 +763,10 @@ const Profile = ({ tabNames, toggleTab, active }) => {
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="professionalIntroduction">
                   Professional Introduction<span className="label-asterisk me-50">*</span>
-                  <Info size={18} color={theme.infoIcon} />
+                  <Info size={18} color={theme.infoIcon} id="pro-intro-info" />
+                  <UncontrolledTooltip placement="right" target="pro-intro-info">
+                    <p className="m-0 ">Give your professional introduction in 150 character.</p>
+                  </UncontrolledTooltip>
                 </Label>
                 <Controller
                   id="professionalIntroduction"
@@ -1889,7 +1897,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
           <div
             className="d-flex align-items-center upload-button cursor-pointer"
-            onClick={() => toggleTab(tabNames.Account)}
+            onClick={() => navigate('/talent-onboarding/account-details')}
           >
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
@@ -1916,12 +1924,10 @@ export default Profile;
 
 Profile.propTypes = {
   tabNames: Proptypes.object,
-  toggleTab: Proptypes.func,
   active: Proptypes.string,
 };
 
 Profile.defaultProps = {
   tabNames: {},
-  toggleTab: () => {},
   active: '',
 };
