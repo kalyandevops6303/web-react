@@ -89,7 +89,7 @@ const UserDetails = () => {
                   <>
                     {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
                       ? 0
-                      : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
+                      : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}
                     hours/week <br /> {currentProfile?.availability?.timezone?.abbreviation} (
                     {currentProfile?.availability?.timezone?.offset_name})
                   </>

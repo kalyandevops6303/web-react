@@ -173,9 +173,9 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                         }
                         onClick={item?.url}
                         className="me-1 p-25 mb-1"
-                        id={`tooltip-${index}`}
+                        id={`tooltip-links-${index}`}
                       />
-                      <UncontrolledTooltip target={`tooltip-${index}`}>{item?.platform}</UncontrolledTooltip>
+                      <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
                     </a>
                   );
                 if (item?.platform === 'twitter')
@@ -188,9 +188,9 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                         }
                         onClick={item?.url}
                         className="me-1 p-25 mb-1"
-                        id={`tooltip-${index}`}
+                        id={`tooltip-links-${index}`}
                       />
-                      <UncontrolledTooltip target={`tooltip-${index}`}>{item?.platform}</UncontrolledTooltip>
+                      <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
                     </a>
                   );
 
@@ -203,10 +203,10 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                           <GitHub fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
                         }
                         onClick={item?.url}
-                        className="me-1 p-25"
-                        id={`tooltip-${index}`}
+                        className="me-1 p-25 mb-1"
+                        id={`tooltip-links-${index}`}
                       />
-                      <UncontrolledTooltip target={`tooltip-${index}`}>{item?.platform}</UncontrolledTooltip>
+                      <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
                     </a>
                   );
                 return (
@@ -215,10 +215,10 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                       color="light-primary"
                       icon={<Link fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />}
                       onClick={item?.url}
-                      className="me-1 p-25"
-                      id={`tooltip-${index}`}
+                      className="me-1 p-25 mb-1"
+                      id={`tooltip-links-${index}`}
                     />
-                    <UncontrolledTooltip target={`tooltip-${index}`}>{item?.platform}</UncontrolledTooltip>
+                    <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
                   </a>
                 );
               })}
