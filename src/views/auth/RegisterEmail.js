@@ -84,14 +84,14 @@ const RegisterEmail = () => {
               type="email"
               id="email"
               name="email"
-              placeholder="john@example.com"
+              placeholder="email@example.com"
               autoFocus
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
                   value={field.value || ''} // Set a default value for the input
-                  placeholder="john@example.com"
+                  placeholder="email@example.com"
                   invalid={errors.email && true}
                 />
               )}

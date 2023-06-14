@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Button, Card, CardBody, CardText, CardTitle, Progress } from 'reactstrap';
+import { Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
@@ -12,7 +12,7 @@ import BehanceIcon from '@src/assets/images/behance.png';
 import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
-import { GitHub, Heart, Link, Linkedin, Twitter } from 'react-feather';
+import { Heart, Linkedin, Twitter } from 'react-feather';
 import { LeftSidebarProfileWrapper } from './style';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
@@ -86,11 +86,11 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
           {isEditable && !isClient && (
             <>
               <div className="profile-completion mt-2">
-                <CardText className="mb-25">62%</CardText>
+                <CardText className="mb-25">0%</CardText>
                 <Progress
                   style={{ height: '0.4rem', borderRadius: '6px' }}
                   className="progress-bar-warning"
-                  value={62}
+                  value={0}
                 />
                 <CardText className="font-small-3 mt-25">Profile Completion</CardText>
               </div>
@@ -152,8 +152,8 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               data={[
                 {
                   name:
-                    `${data?.availability?.timezone?.abbreviation}(
-                      ${data?.availability?.timezone?.offset_name})` || '-',
+                    `${data?.availability?.timezone?.abbreviation}(${data?.availability?.timezone?.offset_name})` ||
+                    '-',
                 },
               ]}
             />
@@ -161,7 +161,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
             <div className="social-links">
               <CardText className="Info-key mt-50">Social Links</CardText>
               {data?.social_links?.length === 0 && <CardText className="Info-key font-small-3 mt-0">No links</CardText>}
-              {data?.social_links?.map((item) => {
+              {data?.social_links?.map((item, index) => {
                 if (item?.platform === 'linkedIn')
                   return (
                     <a href={item?.url} target="_blank" rel="noopener noreferrer">
@@ -171,8 +171,10 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                           <Linkedin fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
                         }
                         onClick={item?.url}
-                        className="me-1 p-25"
+                        className="me-1 p-25 mb-1"
+                        id={`tooltip-${index}`}
                       />
+                      <UncontrolledTooltip target={`tooltip-${index}`}>{item?.platform}</UncontrolledTooltip>
                     </a>
                   );
                 if (item?.platform === 'twitter')
@@ -184,33 +186,13 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                           <Twitter fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
                         }
                         onClick={item?.url}
-                        className="me-1 p-25"
+                        className="me-1 p-25 mb-1"
+                        id={`tooltip-${index}`}
                       />
+                      <UncontrolledTooltip target={`tooltip-${index}`}>{item?.platform}</UncontrolledTooltip>
                     </a>
                   );
-                if (item?.platform === 'github')
-                  return (
-                    <a href={item?.url} target="_blank" rel="noopener noreferrer">
-                      <Avatar
-                        color="light-primary"
-                        icon={
-                          <GitHub fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
-                        }
-                        onClick={item?.url}
-                        className="me-1 p-25"
-                      />
-                    </a>
-                  );
-                return (
-                  <a key={item?.url} href={item?.url} target="_blank" rel="noopener noreferrer">
-                    <Avatar
-                      color="light-primary"
-                      icon={<Link fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />}
-                      onClick={item?.url}
-                      className="me-1 p-25"
-                    />
-                  </a>
-                );
+                return false;
               })}
 
               <Avatar

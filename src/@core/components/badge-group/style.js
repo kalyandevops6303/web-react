@@ -21,5 +21,13 @@ const BadgeGroupWrap = styled.div`
       }
     }
   }
+
+  .truncate-1 {
+    display: block;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 export default BadgeGroupWrap;

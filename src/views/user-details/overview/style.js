@@ -4,7 +4,7 @@ import theme from '../../../configs/themeVariables';
 
 const StatboxWrap = styled(Card)`
   .card-body {
-    padding: ${(props) => (props.time ? '1.2rem' : '1.4rem 1.2rem')};
+    padding: ${(props) => (props.time ? '1.22rem' : '1.4rem 1.2rem')};
   }
   .stat-avatar {
     padding: 0.2rem;
