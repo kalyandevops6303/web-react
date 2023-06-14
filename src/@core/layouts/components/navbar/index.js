@@ -54,8 +54,12 @@ const ThemeNavbar = (props) => {
 
   const dispatch = useDispatch();
 
+  const token = getItem('access_token');
+
   useEffect(() => {
-    dispatch(getUserData());
+    if (token) {
+      dispatch(getUserData());
+    }
   }, []);
 
   return (
