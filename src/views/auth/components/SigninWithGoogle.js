@@ -28,10 +28,10 @@ const SigninWithGoogle = () => {
   const onSuccess = (resp) => {
     if (resp?.checkpoint === 'MOBILE_VERIFICATION') {
       navigate('/auth/register-phone');
-    } else if (resp?.checkpoint === 'ACCOUNT_DETAILS') {
+    } else if (resp?.checkpoint === 'ACCOUNT_DETAILS' || resp?.checkpoint === 'PROFILE_DETAILS') {
       navigate(`/${resp.user_type.toLowerCase()}-onboarding`);
-    } else if (isLoggedIn) {
-      navigate('/coming-soon');
+    } else if (resp?.checkpoint === 'COMPLETE') {
+      navigate('/dashboard');
     }
   };
   const onError = (error) => {
