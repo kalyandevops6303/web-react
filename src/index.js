@@ -12,7 +12,6 @@ import BugsnagPluginReact from '@bugsnag/plugin-react';
 import { Toaster } from 'react-hot-toast';
 
 // ** Redux Imports
-import store from './redux/store';
 
 // ** ThemeColors Context
 
@@ -41,6 +40,7 @@ import './assets/scss/style.scss';
 // ** Service Worker
 import * as serviceWorker from './serviceWorker';
 import Error from './views/Error';
+import store from './redux/store';
 
 // ** Lazy load app
 const LazyApp = lazy(() => import('./App'));

@@ -27,6 +27,7 @@ const TemplateTitle = '%s - Vuexy React Admin Template';
 const DefaultRoute = '/auth';
 
 const PrivateDashboard = lazy(() => import('../../views/dashboard/PrivateDashboard'));
+const UserDetails = lazy(() => import('../../views/user-details'));
 const SecondPage = lazy(() => import('../../views/SecondPage'));
 const AuthRoute = lazy(() => import('../../views/auth/index'));
 const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
@@ -43,6 +44,10 @@ const Routes = [
   {
     path: '/dashboard',
     element: <PrivateDashboard />,
+  },
+  {
+    path: '/profile/:userType/:userId',
+    element: <UserDetails />,
   },
   {
     path: '/second-page',

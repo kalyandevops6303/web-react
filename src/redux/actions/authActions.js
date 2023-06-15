@@ -15,7 +15,6 @@ import {
 
 import {
   setUserTypeSuccess,
-  clearDataSuccess,
   loginRequest,
   loginSuccess,
   loginFailure,
@@ -194,14 +193,9 @@ const setUserType = (type) => async (dispatch) => {
   dispatch(setUserTypeSuccess(type));
 };
 
-const clearData = () => async (dispatch) => {
-  dispatch(clearDataSuccess());
-};
-
 export {
   resendAction,
   loginUserWithGoogle,
-  clearData,
   setUserType,
   registerEmail,
   setPassword,

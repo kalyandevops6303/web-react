@@ -46,15 +46,15 @@ const EarningCard = () => (
             <span className="title">
               Total <Info size={14} />
             </span>
-            <span className="amount">$ 56,000</span>
-            <span className="change">+5.2%</span>
+            <span className="amount">$ 0</span>
+            <span className="change">+0%</span>
           </EarningAmount>
           <EarningAmount>
             <span className="title">
               Completed <Info size={14} />
             </span>
-            <span className="amount">$ 89,000</span>
-            <span className="change">+5.2%</span>
+            <span className="amount">$ 0</span>
+            <span className="change">+0%</span>
           </EarningAmount>
         </div>
       </CardBody>

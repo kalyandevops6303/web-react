@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 // ** Icons Imports
 import Logo from '@src/assets/images/ic_trumio_logo.png';
@@ -22,18 +23,22 @@ import '@styles/react/pages/page-authentication.scss';
 import { validations } from '../../utility/Utils';
 import { loginUser } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
-import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
+import { selectAuthLoading } from '../../redux/selectors/authSelectors';
+import { clearDataSuccess } from '../../redux/reducers/auth';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
-  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
     password: yup.string().required('Password is required'),
   });
+
+  useEffect(() => {
+    dispatch(clearDataSuccess());
+  }, []);
 
   const {
     handleSubmit,
@@ -51,10 +56,10 @@ const Login = () => {
   const onSuccess = (resp) => {
     if (resp?.checkpoint === 'MOBILE_VERIFICATION') {
       navigate('/auth/register-phone');
-    } else if (resp?.checkpoint === 'ACCOUNT_DETAILS') {
+    } else if (resp?.checkpoint === 'ACCOUNT_DETAILS' || resp?.checkpoint === 'PROFILE_DETAILS') {
       navigate(`/${resp.user_type.toLowerCase()}-onboarding`);
-    } else if (isLoggedIn) {
-      navigate('/coming-soon');
+    } else if (resp?.checkpoint === 'COMPLETE') {
+      navigate('/dashboard');
     }
   };
 

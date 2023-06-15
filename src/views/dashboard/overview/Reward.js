@@ -12,14 +12,14 @@ import { RewardCardWrapper } from './style';
 const RewardsCard = ({ cols }) => {
   const data = [
     {
-      title: '$9745',
+      title: '$0',
       subtitle: 'Referral Rewards',
       color: 'light-info',
       icon: <User size={24} />,
     },
 
     {
-      title: '$9745',
+      title: '$0',
       subtitle: 'Work Rewards',
       color: 'light-warning',
       icon: <Briefcase size={24} />,

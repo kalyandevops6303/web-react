@@ -4,14 +4,18 @@ import authReducer from './reducers/auth';
 import staticReducer from './reducers/static';
 import talentOnboardingReducer from './reducers/talentOnboarding';
 import clientOnboardingReducer from './reducers/clientOnboarding';
+import dashboardReducer from './reducers/dashboard';
 import layout from './layout';
 import navbar from './navbar';
+import profile from './reducers/profile';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   staticData: staticReducer,
   talentOnboarding: talentOnboardingReducer,
   clientOnboarding: clientOnboardingReducer,
+  dashboard: dashboardReducer,
+  currentProfile: profile,
   layout,
   navbar,
 

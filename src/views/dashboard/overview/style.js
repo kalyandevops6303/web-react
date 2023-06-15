@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
-import { CardWrapper } from '../styled';
+import { CardWrapper } from '../../styled';
 
 const RewardCardWrapper = styled(CardWrapper)`
   .reward-body {
@@ -103,6 +103,10 @@ const AlertCardWrapper = styled(CardWrapper)`
     font-weight: bold;
     font-size: 20px;
   }
+
+  .no-meetings-gif {
+    height: 10vw;
+  }
 `;
 
 const EarningAmount = styled.div`
@@ -146,6 +150,8 @@ const TimeWrapper = styled.section`
   display: flex;
   .weekdays,
   .weekends {
+    width: 50%;
+
     ul {
       font-size: 11px;
       display: flex;
@@ -166,8 +172,8 @@ const TimeWrapper = styled.section`
     }
   }
   .dot {
-    height: 7px;
-    width: 7px;
+    height: 8px;
+    width: 8px;
     display: block;
     background: rgba(217, 217, 217, 0.5);
     border-radius: 50%;
@@ -287,6 +293,7 @@ const ProjectWrapper = styled.div`
   .empty-card {
     margin-bottom: 1rem;
     margin-top: 1rem;
+    width: fit-content;
   }
 
   .empty {
@@ -311,6 +318,41 @@ const ProjectWrapper = styled.div`
   .card-app-design {
     margin-bottom: 1rem;
     margin-top: 1rem;
+  }
+
+  .circular-progressbar-container {
+    width: 46px;
+    height: 46px;
+
+    .percentage-text {
+      font-weight: 400;
+      font-size: 10px;
+      color: ${theme.headingTextColor};
+    }
+  }
+
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-left: 10px;
+
+    .bg-secondary {
+      background-color: ${theme.lightBlueBgColor} !important;
+      color: ${theme.lightBlueColor} !important;
+    }
+
+    .additional-text {
+      color: ${theme.lightBlueColor};
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .tag-margin {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
   }
 `;
 

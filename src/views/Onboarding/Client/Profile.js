@@ -65,6 +65,7 @@ import {
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
 import { saveProfileDetails } from '../../../redux/actions/clientOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/clientOnboardingSelectors';
+import AccountCreatedModal from '../AccountCreatedModal';
 
 const Profile = ({ tabNames, toggleTab, active }) => {
   const ProfileSchema = yup.object().shape({
@@ -164,7 +165,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
       .object()
       .shape({
         label: yup.string().required('Preferred working time zone is required'),
-        value: yup.string().required('Preferred working time zone is required'),
+        value: yup.object().required('Preferred working time zone is required'),
       })
       .required('Preferred working time zone is required'),
     availabilityDays: yup
@@ -272,10 +273,12 @@ const Profile = ({ tabNames, toggleTab, active }) => {
 
   const dispatch = useDispatch();
 
-  const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+  const [accountCreatedModal, setAccountCreatedModal] = useState(null);
+
+  const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onSuccess = () => {
-    setIsNextButtonDisabled(false);
+    setAccountCreatedModal(true);
   };
 
   const isEmpty = (value) => {
@@ -380,7 +383,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
       area: area?.value,
     };
     const availability = {
-      timezone: preferredWorkingTimeZone.value,
+      timezone: preferredWorkingTimeZone.value._id,
       weekdays_avl: {
         start_time: weekdayStartTime?.value,
         end_time: weekdayEndTime?.value,
@@ -498,7 +501,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
 
   useEffect(() => {
-    const requiredData = companyIndustriesData?.map((industry) => ({ label: industry.industry, value: industry._id }));
+    const requiredData = companyIndustriesData?.map((industry) => ({ label: industry.name, value: industry._id }));
     setCompanyIndutriesOptions(requiredData);
   }, [companyIndustriesData]);
 
@@ -523,12 +526,12 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   }, [institutesData]);
 
   useEffect(() => {
-    const requiredData = educationsData?.map((education) => ({ label: education.degree, value: education._id }));
+    const requiredData = educationsData?.map((education) => ({ label: education.name, value: education._id }));
     setEducationsOptions(requiredData);
   }, [educationsData]);
 
   useEffect(() => {
-    const requiredData = projectAreasData?.map((area) => ({ label: area.area, value: area._id }));
+    const requiredData = projectAreasData?.map((area) => ({ label: area.name, value: area._id }));
     setProjectAreasOptions(requiredData);
   }, [projectAreasData]);
 
@@ -543,7 +546,10 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   }, [skillsData]);
 
   useEffect(() => {
-    const requiredData = timezonesData?.map((timezone) => ({ label: timezone.name, value: timezone._id }));
+    const requiredData = timezonesData?.map((timezone) => ({
+      label: `${timezone.name} (${timezone.abbreviation})`,
+      value: timezone,
+    }));
     setTimezonesOptions(requiredData);
   }, [timezonesData]);
 
@@ -618,6 +624,9 @@ const Profile = ({ tabNames, toggleTab, active }) => {
 
   return (
     <ProfileFormContainer>
+      {accountCreatedModal && (
+        <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
+      )}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
@@ -1433,7 +1442,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                             Weekday -<span className="fw-light"> Working time available</span>
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').label}
+                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekday" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
@@ -1631,7 +1640,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                             Weekend -<span className="fw-light"> Working time available</span>
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').label}
+                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekend" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekend">
@@ -1797,7 +1806,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 buttons-row-border">
+        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
           <div
             className="d-flex align-items-center upload-button cursor-pointer"
             onClick={() => toggleTab(tabNames.Account)}
@@ -1808,13 +1817,14 @@ const Profile = ({ tabNames, toggleTab, active }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
-            {profileDetailsIsLoading ? <Spinner size="sm" /> : <span className="me-50">Save Changes</span>}
-          </Button>
-        </div>
-        <div className="d-flex justify-content-end mt-2">
-          <Button color="primary" disabled={isNextButtonDisabled} onClick={() => toggleTab(tabNames.Payment)}>
-            <span className="me-50">Next</span>
-            <ChevronRight size={14} />
+            {profileDetailsIsLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span className="me-50">Create Account</span>
+                <ChevronRight size={14} />
+              </>
+            )}
           </Button>
         </div>
       </Form>

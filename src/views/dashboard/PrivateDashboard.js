@@ -1,11 +1,13 @@
 import React from 'react';
 import { Col, Row } from 'reactstrap';
-import EarningCard from '../ui-elements/dashboard/Earning';
-import RewardsCard from '../ui-elements/dashboard/Reward';
-import AvailableTime from '../ui-elements/dashboard/AvailableTime';
-import { Header } from '../ui-elements/styled';
-import Alerts from '../ui-elements/dashboard/Alerts';
-import ProjectListing from '../ui-elements/dashboard/ProjectListing';
+import EarningCard from './overview/Earning';
+import RewardsCard from './overview/Reward';
+import AvailableTime from './overview/AvailableTime';
+import Alerts from './overview/Alerts';
+import ProjectListing from './overview/ProjectListing';
+import { Header } from '../styled';
+import Disputes from './overview/Disputes';
+import Meetings from './overview/Meetings';
 
 const PrivateDashboard = () => (
   <div>
@@ -28,6 +30,8 @@ const PrivateDashboard = () => (
       </Col>
       <Col lg="4" sm="12">
         <Alerts />
+        <Disputes />
+        <Meetings />
       </Col>
     </Row>
   </div>

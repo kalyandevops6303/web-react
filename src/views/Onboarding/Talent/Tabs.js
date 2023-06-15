@@ -1,7 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Home, Shield, User } from 'react-feather';
+import { Home, User } from 'react-feather';
 import { TabsContainer } from '../style';
 import Account from '../Account';
 import Profile from './Profile';
@@ -19,12 +19,6 @@ const Tabs = ({ tabNames, toggleTab, active }) => (
         <NavLink active={active === tabNames.Profile}>
           <User className="font-medium-3 me-50" />
           <span className="fw-bold">Profile</span>
-        </NavLink>
-      </NavItem>
-      <NavItem>
-        <NavLink active={active === tabNames.Payment}>
-          <Shield className="font-medium-3 me-50" />
-          <span className="fw-bold">Payment</span>
         </NavLink>
       </NavItem>
     </Nav>

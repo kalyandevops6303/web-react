@@ -14,11 +14,15 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getItem } from '../../../../utility/localStorageControl';
+import { getUserData } from '../../../../redux/actions/dashboardActions';
 
 const ThemeNavbar = (props) => {
+  const userData = getItem('userData');
   // ** Props
   const { skin, setSkin, setMenuVisibility } = props;
-
   // ** Function to toggle Theme (Light/Dark)
 
   const HeadWrapper = styled.div`
@@ -48,6 +52,12 @@ const ThemeNavbar = (props) => {
     }
   `;
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserData());
+  }, []);
+
   return (
     <HeadWrapper>
       <div className="bookmark-wrapper d-flex align-items-center">
@@ -60,7 +70,7 @@ const ThemeNavbar = (props) => {
         </ul>
       </div>
 
-      <Link to="/" className="navbar-brand">
+      <Link to={userData ? '/dashboard' : '/auth'} className="navbar-brand">
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
         </span>
