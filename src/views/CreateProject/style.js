@@ -29,6 +29,8 @@ export const FormWizardContainer = styled.div`
     }
 
     .step {
+      margin-right: 30px;
+
       .step-trigger {
         .bs-stepper-box {
           svg {

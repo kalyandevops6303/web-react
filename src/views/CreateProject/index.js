@@ -56,7 +56,7 @@ const CreateProject = () => {
         </BackButtonContainer>
       </Row>
       <Row>
-        <Col lg="8" md="12" sm="12">
+        <Col lg="9" md="12" sm="12">
           <FormWizardContainer className="modern-horizontal-wizard">
             <Wizard
               type="modern-horizontal"

@@ -223,29 +223,34 @@ const Requirements = ({ stepper }) => {
     .split(' ');
   const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
-  const fileList = files.map((file) => (
-    <div key={`${file.name}`} className="custom-card mb-1">
-      <Card>
-        <Row className="d-flex align-items-center">
-          <Col sm="6" md="6" lg="6">
-            {renderFilePreview(file)}
-            {file.name}
-          </Col>
-          <Col sm="2" md="2" lg="2">
-            {renderFileSize(file.size)}
-          </Col>
-          <Col sm="2" md="2" lg="2">
-            {requiredFormattedDate}
-          </Col>
-          <Col sm="2" md="2" lg="2">
-            <Button color="flat-danger" className="btn-left-margin" onClick={() => handleRemoveFile(file)}>
-              Remove
-            </Button>
-          </Col>
-        </Row>
+  const fileList = () => (
+    <div className="custom-card mb-1">
+      <Card className="p-1">
+        {files.map((file, index) => (
+          <Row
+            key={file.name}
+            className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
+          >
+            <Col sm="6" md="6" lg="6">
+              {renderFilePreview(file)}
+              {file.name}
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              {renderFileSize(file.size)}
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              {requiredFormattedDate}
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              <Button color="flat-danger" className="btn-left-margin" onClick={() => handleRemoveFile(file)}>
+                Remove
+              </Button>
+            </Col>
+          </Row>
+        ))}
       </Card>
     </div>
-  ));
+  );
 
   const languageOptions = [
     { value: 'English', label: 'English' },
@@ -382,7 +387,7 @@ const Requirements = ({ stepper }) => {
               <Label className="form-label">Upload detailed requirements document (optional)</Label>
               {files.length ? (
                 <>
-                  <div className="px-1">{fileList}</div>
+                  <div className="px-1">{fileList()}</div>
                   <div {...getRootProps({ className: 'dropzone' })}>
                     <input {...getInputProps()} />
                     <div className="d-flex align-items-center upload-btn cursor-pointer mt-1">
@@ -504,7 +509,7 @@ const Requirements = ({ stepper }) => {
                   <FormFeedback>{errors.preferredWorkingTimeZone.label.message}</FormFeedback>
                 )}
               </Col>
-              <Col sm="12" md="6" lg="4">
+              <Col sm="12" md="6" lg="3">
                 <Label className="form-label" for="minTimeOverlapHr">
                   Minimum Time Overlap Hr<span className="label-asterisk">*</span>
                 </Label>
