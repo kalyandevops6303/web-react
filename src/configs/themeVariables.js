@@ -29,6 +29,7 @@ const wizardStepActiveBg = 'rgba(1, 133, 228, 0.15)';
 const wizardStepSubtitleColor = 'rgba(1, 133, 228, 0.6)';
 const bodyBg = '#f8f8f8';
 const cardShadow = 'rgba(34, 41, 4, 0.1)';
+const dotBg = 'rgba(217, 217, 217, 0.5)';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -63,5 +64,6 @@ const theme = {
   wizardStepSubtitleColor,
   bodyBg,
   cardShadow,
+  dotBg,
 };
 export default theme;

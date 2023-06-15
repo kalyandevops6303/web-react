@@ -209,3 +209,66 @@ export const DropzoneContainer = styled.div`
     color: ${theme.inputBorder} !important;
   }
 `;
+
+export const TimeWrapper = styled.section`
+  display: flex;
+  .weekdays,
+  .weekends {
+    width: 50%;
+
+    ul {
+      font-size: 11px;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      padding-top: 7px;
+      list-style-type: none;
+    }
+  }
+  .weekdays {
+    padding-right: 20px;
+    border-right: 1px solid ${theme.borderInputColor};
+
+    ul {
+      justify-content: space-between;
+    }
+  }
+  .weekends {
+    padding-left: 20px;
+
+    ul {
+      gap: 14px;
+    }
+  }
+  .dot {
+    height: 8px;
+    width: 8px;
+    display: block;
+    background: ${theme.dotBg};
+    border-radius: 50%;
+    margin: auto;
+    margin-bottom: 6px;
+  }
+  .active {
+    background: ${theme.green};
+  }
+
+  @media only screen and (min-device-width: 990px) and (max-device-width: 1160px) {
+    flex-direction: column;
+    gap: 16px;
+    .weekends {
+      ul {
+        gap: 32px;
+      }
+    }
+  }
+  @media only screen and (max-device-width: 450px) {
+    flex-direction: column;
+    gap: 16px;
+    .weekends {
+      ul {
+        gap: 32px;
+      }
+    }
+  }
+`;
