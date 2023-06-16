@@ -274,3 +274,13 @@ export const TimeWrapper = styled.section`
     }
   }
 `;
+
+export const TagsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+
+  .bg-secondary {
+    background-color: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor} !important;
+  }
+`;

@@ -1,8 +1,8 @@
 import Proptypes from 'prop-types';
 import { capitalize } from 'lodash';
 import { ChevronLeft, ChevronRight } from 'react-feather';
-import { Card, CardHeader, CardBody, Row, Col, CardText, Button } from 'reactstrap';
-import { TimeWrapper } from '../style';
+import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge } from 'reactstrap';
+import { TagsContainer, TimeWrapper } from '../style';
 import { convertTo12HourFormat } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
@@ -29,6 +29,25 @@ const Preview = ({ stepper }) => {
     { name: 'abc.pdf', size: '5mb', date: '10 Feb 2020' },
   ];
 
+  const skills = [
+    'dfswwedf',
+    'dasfsdf',
+    'dfsdssddf',
+    'dfdddsdf',
+    'dfddsfsdf',
+    'dfdsadsdf',
+    'dfssdfsddf',
+    'dfssadsdf',
+    'dfsdsdf',
+    'dfssdsadf',
+    'dfssaddf',
+    'dfssaddf',
+    'dfasssdf',
+    'dfssaddf',
+    'dfsasadf',
+    'dfsasdf',
+  ];
+
   const fileList = () => (
     <div className="custom-card mb-1">
       <Card className="p-1">
@@ -50,6 +69,16 @@ const Preview = ({ stepper }) => {
         ))}
       </Card>
     </div>
+  );
+
+  const skillsList = () => (
+    <TagsContainer>
+      {skills.map((skill) => (
+        <Badge key={skill} className="me-75 mb-1">
+          {skill}
+        </Badge>
+      ))}
+    </TagsContainer>
   );
 
   return (
@@ -153,6 +182,26 @@ const Preview = ({ stepper }) => {
         </CardBody>
       </Card>
       {fileList()}
+      <Card>
+        <CardHeader>
+          <h4 className="m-0 mt-1">Requirements</h4>
+        </CardHeader>
+        <hr className="m-0 card-header-border" />
+        <CardBody>
+          <Row>
+            <p>Skills</p>
+            {skillsList()}
+          </Row>
+          <Row>
+            <p>Tools</p>
+            {skillsList()}
+          </Row>
+          <Row>
+            <p>Country - Include Countries</p>
+            {skillsList()}
+          </Row>
+        </CardBody>
+      </Card>
       <div className="d-flex justify-content-between">
         <div className="d-flex align-items-center upload-btn cursor-pointer" onClick={() => stepper.previous()}>
           <UploadIconContainer className="px-25 py-25 p-0">
