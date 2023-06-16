@@ -12,9 +12,14 @@ import { BackButtonContainer, BackIconContainer, FormWizardContainer } from './s
 const CreateProject = () => {
   const ref = useRef(null);
   const [stepper, setStepper] = useState(null);
+  const [youDidItModal, setYouDidItModal] = useState(null);
   const [projectDetails, setProjectDetails] = useState(null);
   const [listingDetails, setListingDetails] = useState(null);
   const [files, setFiles] = useState([]);
+
+  const toggleYouDidItModal = () => {
+    setYouDidItModal(!youDidItModal);
+  };
 
   const steps = [
     {
@@ -28,6 +33,9 @@ const CreateProject = () => {
           setProjectDetails={setProjectDetails}
           files={files}
           setFiles={setFiles}
+          youDidItModal={youDidItModal}
+          setYouDidItModal={setYouDidItModal}
+          toggleYouDidItModal={toggleYouDidItModal}
           type="wizard-modern"
         />
       ),

@@ -288,3 +288,8 @@ export const TagsContainer = styled.div`
     color: ${theme.lightBlueColor} !important;
   }
 `;
+
+export const YouDidItGifContainer = styled.div`
+  margin-bottom: -70px;
+  margin-top: -30px;
+`;
