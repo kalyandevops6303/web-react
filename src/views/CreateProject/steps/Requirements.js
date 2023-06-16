@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Proptypes from 'prop-types';
 import { ChevronRight, FileText, Info, Minus, Upload } from 'react-feather';
 import Select from 'react-select';
@@ -26,7 +25,7 @@ import { DropzoneContainer, RequirementsFormContainer } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 
-const Requirements = ({ stepper }) => {
+const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
     projectName: yup
       .string()
@@ -155,7 +154,7 @@ const Requirements = ({ stepper }) => {
       })
       .required('Currency type is required'),
     projectPayType: yup.string().required('Project pay type is required'),
-    projectFixedCost: yup.object().when('projectPayType', {
+    projectFixedCost: yup.number().when('projectPayType', {
       is: (projectPayType) => projectPayType === 'fixed-price',
       then: () => yup.number().required('Project fixed cost is required'),
     }),
@@ -181,11 +180,12 @@ const Requirements = ({ stepper }) => {
     },
   });
 
-  const onSubmit = () => {
+  const onSubmit = (data) => {
+    setProjectDetails(data);
     stepper.next();
   };
 
-  const [files, setFiles] = useState([]);
+  // const [files, setFiles] = useState([]);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -1314,8 +1314,14 @@ export default Requirements;
 
 Requirements.propTypes = {
   stepper: Proptypes.object,
+  setProjectDetails: Proptypes.func,
+  files: Proptypes.array,
+  setFiles: Proptypes.func,
 };
 
 Requirements.defaultProps = {
   stepper: {},
+  setProjectDetails: () => {},
+  files: [],
+  setFiles: () => {},
 };

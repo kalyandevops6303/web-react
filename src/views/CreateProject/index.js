@@ -11,8 +11,10 @@ import { BackButtonContainer, BackIconContainer, FormWizardContainer } from './s
 
 const CreateProject = () => {
   const ref = useRef(null);
-
   const [stepper, setStepper] = useState(null);
+  const [projectDetails, setProjectDetails] = useState(null);
+  const [listingDetails, setListingDetails] = useState(null);
+  const [files, setFiles] = useState([]);
 
   const steps = [
     {
@@ -20,21 +22,37 @@ const CreateProject = () => {
       title: 'Requirements',
       subtitle: 'Enter project details',
       icon: <FileText size={18} />,
-      content: <Requirements stepper={stepper} type="wizard-modern" />,
+      content: (
+        <Requirements
+          stepper={stepper}
+          setProjectDetails={setProjectDetails}
+          files={files}
+          setFiles={setFiles}
+          type="wizard-modern"
+        />
+      ),
     },
     {
       id: 'listing',
       title: 'Listing',
       subtitle: 'Add start and end date',
       icon: <Box size={18} />,
-      content: <Listing stepper={stepper} type="wizard-modern" />,
+      content: <Listing stepper={stepper} setListingDetails={setListingDetails} type="wizard-modern" />,
     },
     {
       id: 'preview',
       title: 'Preview',
       subtitle: 'Review before posting',
       icon: <Check size={18} />,
-      content: <Preview stepper={stepper} type="wizard-modern" />,
+      content: (
+        <Preview
+          stepper={stepper}
+          projectDetails={projectDetails}
+          listingDetails={listingDetails}
+          files={files}
+          type="wizard-modern"
+        />
+      ),
     },
     {
       id: 'invite',

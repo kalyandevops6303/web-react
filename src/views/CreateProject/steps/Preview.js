@@ -1,13 +1,13 @@
 import Proptypes from 'prop-types';
 import { capitalize } from 'lodash';
-import { ChevronLeft, ChevronRight } from 'react-feather';
+import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge } from 'reactstrap';
 import { TagsContainer, TimeWrapper } from '../style';
 import { convertTo12HourFormat } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 
-const Preview = ({ stepper }) => {
+const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
   const weekends = ['SATURDAY', 'SUNDAY'];
 
@@ -23,30 +23,41 @@ const Preview = ({ stepper }) => {
     days: ['SATURDAY', 'SUNDAY'],
   };
 
-  const files = [
-    { name: 'abc.pdf', size: '5mb', date: '10 Feb 2020' },
-    { name: 'abc.pdf', size: '5mb', date: '10 Feb 2020' },
-    { name: 'abc.pdf', size: '5mb', date: '10 Feb 2020' },
-  ];
+  const renderFilePreview = (file) => {
+    if (file.type.startsWith('image')) {
+      return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
+      // eslint-disable-next-line
+    } else {
+      return <FileText size="18" className="me-75 mb-50" />;
+    }
+  };
 
-  const skills = [
-    'dfswwedf',
-    'dasfsdf',
-    'dfsdssddf',
-    'dfdddsdf',
-    'dfddsfsdf',
-    'dfdsadsdf',
-    'dfssdfsddf',
-    'dfssadsdf',
-    'dfsdsdf',
-    'dfssdsadf',
-    'dfssaddf',
-    'dfssaddf',
-    'dfasssdf',
-    'dfssaddf',
-    'dfsasadf',
-    'dfsasdf',
-  ];
+  const renderFileSize = (size) => {
+    if (Math.round(size / 100) / 10 > 1000) {
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
+      // eslint-disable-next-line
+    } else {
+      return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
+    }
+  };
+
+  const renderFormattedDate = (date) => {
+    const formattedDate = date
+      .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+      .replace(',', '')
+      .split(' ');
+
+    return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+  };
+
+  const renderFormattedListingDate = (date) => {
+    const formattedDate = date
+      .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+      .replace(',', '')
+      .split(' ');
+
+    return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2].slice(2, 4)}`;
+  };
 
   const fileList = () => (
     <div className="custom-card mb-1">
@@ -57,13 +68,14 @@ const Preview = ({ stepper }) => {
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
             <Col sm="6" md="6" lg="6">
+              {renderFilePreview(file)}
               {file.name}
             </Col>
             <Col sm="2" md="2" lg="4">
-              {file.size}
+              {renderFileSize(file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {file.date}
+              {renderFormattedDate(new Date())}
             </Col>
           </Row>
         ))}
@@ -73,9 +85,29 @@ const Preview = ({ stepper }) => {
 
   const skillsList = () => (
     <TagsContainer>
-      {skills.map((skill) => (
-        <Badge key={skill} className="me-75 mb-1">
-          {skill}
+      {projectDetails?.skills.map((skill) => (
+        <Badge key={skill.label} className="me-75 mb-1">
+          {skill.label}
+        </Badge>
+      ))}
+    </TagsContainer>
+  );
+
+  const countriesList = (countries) => (
+    <TagsContainer>
+      {countries?.map((country) => (
+        <Badge key={country.label} className="me-75 mb-1">
+          {country.label}
+        </Badge>
+      ))}
+    </TagsContainer>
+  );
+
+  const toolsList = () => (
+    <TagsContainer>
+      {projectDetails?.tools.map((tools) => (
+        <Badge key={tools.label} className="me-75 mb-1">
+          {tools.label}
         </Badge>
       ))}
     </TagsContainer>
@@ -91,29 +123,42 @@ const Preview = ({ stepper }) => {
         <CardBody>
           <Row className="mb-2">
             <Col sm="12" md="12" lg="6">
-              <h4 className="fw-bolder">Usage Data Collection and Payment</h4>
+              <h4 className="fw-bolder">{projectDetails?.projectName}</h4>
               <p className="font-medium-2 fw-normal">Project Name</p>
             </Col>
             <Col sm="12" md="6" lg="3">
-              <h4 className="fw-bolder">115w</h4>
+              <h4 className="fw-bolder">
+                {projectDetails?.expectedDuration}
+                {projectDetails?.expectedDurationPeriod?.label[0].toLowerCase()}
+              </h4>
               <p className="font-medium-2 fw-normal">Expected Duration</p>
             </Col>
             <Col sm="12" md="6" lg="3">
-              <h4 className="fw-bolder">115w</h4>
+              <h4 className="fw-bolder">
+                {listingDetails?.listingOption === 'select-duration'
+                  ? `${renderFormattedListingDate(listingDetails?.startDate)} - ${renderFormattedListingDate(
+                      listingDetails?.endDate,
+                    )}`
+                  : `${listingDetails?.duration}d`}
+              </h4>
               <p className="font-medium-2 fw-normal">Listing Duration</p>
             </Col>
           </Row>
           <Row className="mb-2">
             <Col sm="12" md="12" lg="6">
-              <h4 className="fw-bolder">USD</h4>
+              <h4 className="fw-bolder">{projectDetails?.preferredWorkingTimeZone?.label}</h4>
               <p className="font-medium-2 fw-normal">Currency Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
-              <h4 className="fw-bolder">Fix Pay - $5000</h4>
+              <h4 className="fw-bolder">
+                {projectDetails?.projectPayType === 'variable-price'
+                  ? 'Variable Pay'
+                  : `Fixed Pay - ${projectDetails?.currencyType?.label}${projectDetails?.projectFixedCost}`}{' '}
+              </h4>
               <p className="font-medium-2 fw-normal">Payment Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
-              <h4 className="fw-bolder">No</h4>
+              <h4 className="fw-bolder">{projectDetails?.nda}</h4>
               <p className="font-medium-2 fw-normal">NDA</p>
             </Col>
           </Row>
@@ -153,7 +198,7 @@ const Preview = ({ stepper }) => {
               </TimeWrapper>
             </Col>
             <Col sm="12" md="6" lg="3">
-              <h4 className="fw-bolder">2.5 hr</h4>
+              <h4 className="fw-bolder">{projectDetails?.minTimeOverlapHr?.label} hr</h4>
               <p className="font-medium-2 fw-normal">Minimum Overlap</p>
             </Col>
           </Row>
@@ -165,23 +210,10 @@ const Preview = ({ stepper }) => {
         </CardHeader>
         <hr className="m-0 card-header-border" />
         <CardBody>
-          <p className="fw-light font-medium-1">
-            The data collection and payment system is designed to allow automotive companies to compensate users for
-            sharing their data. By collecting data such as driving habits, vehicle usage, road conditions and other
-            environmental data, valuable insights that can be created to support autonomous driving. The payment system
-            would be integrated into the vehicle software, allowing for seamless data collection and compensation for
-            users who opt-in. Users would be required to agree to the terms and conditions of the program before their
-            data could be collected and shared. The data collected would include driving behavior, vehicle usage,
-            location, and other environment data such as weather conditions and traffic patterns. The data would be
-            securely transmitted to the automotive company servers, where it would be analyzed and used to improve their
-            products and services. Compensation for the data would be based on factors such as the amount and quality of
-            data provided, as well as the specific needs of the automotive company. Payment options could include direct
-            monetary compensation, discounts on vehicle purchases or services, or other rewards such as gift cards or
-            exclusive access to new products.
-          </p>
+          <p className="fw-light font-medium-1">{projectDetails?.projectDescription}</p>
         </CardBody>
       </Card>
-      {fileList()}
+      {files && files.length > 0 && fileList()}
       <Card>
         <CardHeader>
           <h4 className="m-0 mt-1">Requirements</h4>
@@ -192,14 +224,27 @@ const Preview = ({ stepper }) => {
             <p>Skills</p>
             {skillsList()}
           </Row>
-          <Row>
-            <p>Tools</p>
-            {skillsList()}
-          </Row>
-          <Row>
-            <p>Country - Include Countries</p>
-            {skillsList()}
-          </Row>
+          {projectDetails?.tools && projectDetails?.tools.length > 0 && (
+            <Row>
+              <p>Tools</p>
+              {toolsList()}
+            </Row>
+          )}
+          {projectDetails?.includeOrExcludeCountries &&
+            (projectDetails?.includedCountriesSelection?.length > 0 ||
+              projectDetails?.excludedCountriesSelection?.length > 0) && (
+              <Row>
+                <p>
+                  Country -{' '}
+                  {projectDetails?.includeOrExcludeCountries === 'include-countries'
+                    ? 'Include Countries'
+                    : 'Exclude Countries'}
+                </p>
+                {projectDetails?.includeOrExcludeCountries === 'include-countries'
+                  ? countriesList(projectDetails?.includedCountriesSelection)
+                  : countriesList(projectDetails?.excludedCountriesSelection)}
+              </Row>
+            )}
         </CardBody>
       </Card>
       <div className="d-flex justify-content-between">
@@ -222,8 +267,14 @@ export default Preview;
 
 Preview.propTypes = {
   stepper: Proptypes.object,
+  projectDetails: Proptypes.object,
+  listingDetails: Proptypes.object,
+  files: Proptypes.array,
 };
 
 Preview.defaultProps = {
   stepper: {},
+  projectDetails: {},
+  listingDetails: {},
+  files: [],
 };

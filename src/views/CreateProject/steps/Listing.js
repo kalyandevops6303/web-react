@@ -11,7 +11,7 @@ import { RequirementsFormContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
 
-const Listing = ({ stepper }) => {
+const Listing = ({ stepper, setListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
     listingOption: yup.string().required('Choose one option'),
     startDate: yup.object().when('listingOption', {
@@ -40,6 +40,7 @@ const Listing = ({ stepper }) => {
     clearErrors,
     resetField,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -47,8 +48,9 @@ const Listing = ({ stepper }) => {
     defaultValues: {},
   });
 
-  const onSubmit = () => {
+  const onSubmit = (data) => {
     trigger();
+    setListingDetails(data);
     stepper.next();
   };
 
@@ -109,6 +111,7 @@ const Listing = ({ stepper }) => {
                   render={({ field }) => (
                     <Flatpickr
                       {...field}
+                      disabled={watch('listingOption') !== 'select-duration'}
                       placeholder="Select start date"
                       options={{
                         minDate: 'today',
@@ -133,6 +136,7 @@ const Listing = ({ stepper }) => {
                   render={({ field }) => (
                     <Flatpickr
                       {...field}
+                      disabled={watch('listingOption') !== 'select-duration'}
                       placeholder="Select end date"
                       options={{
                         minDate: 'today',
@@ -193,7 +197,14 @@ const Listing = ({ stepper }) => {
                     name="duration"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} type="number" min={0} placeholder="Enter" invalid={errors.duration && true} />
+                      <Input
+                        {...field}
+                        disabled={watch('listingOption') !== 'enter-duration'}
+                        type="number"
+                        min={0}
+                        placeholder="Enter"
+                        invalid={errors.duration && true}
+                      />
                     )}
                   />
                 </Col>
@@ -225,8 +236,10 @@ export default Listing;
 
 Listing.propTypes = {
   stepper: Proptypes.object,
+  setListingDetails: Proptypes.func,
 };
 
 Listing.defaultProps = {
   stepper: {},
+  setListingDetails: () => {},
 };

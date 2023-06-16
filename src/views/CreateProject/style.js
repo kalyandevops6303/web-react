@@ -31,6 +31,10 @@ export const FormWizardContainer = styled.div`
     .step {
       margin-right: 30px;
 
+      .step-trigger:disabled {
+        opacity: 1 !important;
+      }
+
       .step-trigger {
         .bs-stepper-box {
           svg {
@@ -61,7 +65,7 @@ export const FormWizardContainer = styled.div`
             color: ${theme.activeNavPillText} !important;
           }
           .bs-stepper-subtitle {
-            color: ${theme.wizardStepSubtitleColor};
+            color: ${theme.wizardStepSubtitleColor} !important;
           }
         }
       }
