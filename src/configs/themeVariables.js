@@ -32,6 +32,12 @@ const cardShadow = 'rgba(34, 41, 4, 0.1)';
 const dotBg = 'rgba(217, 217, 217, 0.5)';
 const lightBlueColor = '#2196F3';
 const lightBlueBgColor = '#E3F2FD';
+const progressBarBg = '#E9ECEF';
+const orange = '#FF6D00';
+const starRatingBg = '#FF9F43';
+const ratingBadgeBg = 'rgba(255, 159, 67, 0.12)';
+const greenBtnBg = 'rgba(40, 199, 111, 0.12)';
+const noDataFoundTextColor = '#2963c3';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -69,5 +75,11 @@ const theme = {
   dotBg,
   lightBlueColor,
   lightBlueBgColor,
+  progressBarBg,
+  orange,
+  starRatingBg,
+  ratingBadgeBg,
+  greenBtnBg,
+  noDataFoundTextColor,
 };
 export default theme;
