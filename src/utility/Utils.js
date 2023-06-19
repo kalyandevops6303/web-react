@@ -145,7 +145,7 @@ export const giveStrokeColor = (percentage) => {
     return theme.red;
     // eslint-disable-next-line
   } else if (percentage > 40 && percentage <= 70) {
-    return theme.orange;
+    return theme.progressBarOrange;
   } else {
     return theme.green;
   }

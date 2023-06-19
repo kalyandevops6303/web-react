@@ -34,6 +34,7 @@ const lightBlueColor = '#2196F3';
 const lightBlueBgColor = '#E3F2FD';
 const progressBarBg = '#E9ECEF';
 const orange = '#FF6D00';
+const progressBarOrange = '#F5B845';
 const starRatingBg = '#FF9F43';
 const ratingBadgeBg = 'rgba(255, 159, 67, 0.12)';
 const greenBtnBg = 'rgba(40, 199, 111, 0.12)';
@@ -77,6 +78,7 @@ const theme = {
   lightBlueBgColor,
   progressBarBg,
   orange,
+  progressBarOrange,
   starRatingBg,
   ratingBadgeBg,
   greenBtnBg,
