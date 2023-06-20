@@ -23,6 +23,7 @@ import { BlueBgIconContainer, NavsContainer, TableContainer } from '../style';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { giveStrokeColor } from '../../../utility/Utils';
 import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
+import InviteModal from '../InviteModal';
 
 const DATA1 = [
   {
@@ -290,6 +291,10 @@ const Invite = ({ stepper }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [searchValue, setSearchValue] = useState('');
 
+  const [inviteModal, setInviteModal] = useState(null);
+
+  const toggleInviteModal = () => setInviteModal(!inviteModal);
+
   useEffect(() => {
     setBestData(DATA1);
   }, [DATA1]);
@@ -379,12 +384,13 @@ const Invite = ({ stepper }) => {
 
   return (
     <>
+      {inviteModal && <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} />}
       <Card>
         <CardHeader className="d-flex justify-content-between">
           <h4 className="m-0 mt-1">
             Invite Bids <span className="fw-normal">(Optional)</span>
           </h4>
-          <div className="d-flex align-items-center upload-btn cursor-pointer">
+          <div className="d-flex align-items-center upload-btn cursor-pointer" onClick={() => setInviteModal(true)}>
             <BlueBgIconContainer className="p-50">
               <Share2 size={24} color={theme.activeNavPillText} />
             </BlueBgIconContainer>
