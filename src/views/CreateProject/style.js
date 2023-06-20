@@ -370,3 +370,26 @@ export const TableContainer = styled.div`
     }
   }
 `;
+
+export const InviteUsersListContainer = styled.div`
+  max-height: 200px;
+  overflow-y: scroll;
+
+  .user-pic {
+    border-radius: 50%;
+    border: 1px solid ${theme.bodyColor};
+    width: fit-content;
+  }
+
+  .badge {
+    padding: 0 8px 0 8px;
+  }
+
+  .bg-secondary {
+    background-color: ${theme.ratingBadgeBg} !important;
+  }
+
+  .rating-text {
+    color: ${theme.wizardStepSvgColor};
+  }
+`;

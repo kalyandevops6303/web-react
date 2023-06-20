@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { Check, ChevronLeft, Search, Share2, Star, User } from 'react-feather';
 import {
   Badge,
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -24,6 +26,7 @@ import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { giveStrokeColor } from '../../../utility/Utils';
 import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
+import SendInvitationModal from '../SendInvitationModal';
 
 const DATA1 = [
   {
@@ -289,11 +292,14 @@ const Invite = ({ stepper }) => {
   const [filteredFavouriteData, setFilteredFavouriteData] = useState(null);
   const [filteredAlmaMaterData, setFilteredAlmaMaterData] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [selectedTalents, setSelectedTalents] = useState([]);
   const [searchValue, setSearchValue] = useState('');
 
   const [inviteModal, setInviteModal] = useState(null);
+  const [sendInvitationModal, setSendInvitationModal] = useState(null);
 
   const toggleInviteModal = () => setInviteModal(!inviteModal);
+  const toggleSendInvitationModal = () => setSendInvitationModal(!sendInvitationModal);
 
   useEffect(() => {
     setBestData(DATA1);
@@ -382,9 +388,27 @@ const Invite = ({ stepper }) => {
     (favouriteData ? favouriteData.length : 0) +
     (almaMaterData ? almaMaterData.length : 0);
 
+  const onSendInvitationModalOpen = () => {
+    const selectedBestTalents = bestData.filter((talent) => selectedIds.includes(talent.id));
+    const selectedFavouriteTalents = favouriteData.filter((talent) => selectedIds.includes(talent.id));
+    const selectedAlmaMaterTalents = almaMaterData.filter((talent) => selectedIds.includes(talent.id));
+
+    const selectedTalentsData = [...selectedBestTalents, ...selectedFavouriteTalents, ...selectedAlmaMaterTalents];
+
+    setSelectedTalents(selectedTalentsData);
+    setSendInvitationModal(true);
+  };
+
   return (
     <>
       {inviteModal && <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} />}
+      {sendInvitationModal && (
+        <SendInvitationModal
+          modal={sendInvitationModal}
+          toggleModal={toggleSendInvitationModal}
+          selectedTalents={selectedTalents}
+        />
+      )}
       <Card>
         <CardHeader className="d-flex justify-content-between">
           <h4 className="m-0 mt-1">
@@ -707,12 +731,24 @@ const Invite = ({ stepper }) => {
           </TabContent>
         </CardBody>
       </Card>
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between align-items-center">
         <div className="d-flex align-items-center upload-btn cursor-pointer" onClick={() => stepper.previous()}>
           <BlueBgIconContainer className="p-25">
             <ChevronLeft size={18} color={theme.activeNavPillText} />
           </BlueBgIconContainer>
           <h5 className="fw-light mb-0 mx-75">Back</h5>
+        </div>
+        <div>
+          <Link to="/dashboard">
+            <Button color="primary" outline>
+              <span className="px-2">Close</span>
+            </Button>
+          </Link>
+          {selectedIds.length > 0 && (
+            <Button color="primary" className="ms-3" onClick={onSendInvitationModalOpen}>
+              Invite
+            </Button>
+          )}
         </div>
       </div>
     </>
