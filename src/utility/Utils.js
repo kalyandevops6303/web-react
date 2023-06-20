@@ -76,7 +76,7 @@ export const getHomeRouteForLoggedInUser = (userRole) => {
 export const selectThemeColors = (themes) => ({
   ...themes,
   colors: {
-    ...theme.colors,
+    ...themes.colors,
     primary25: '#7367f01a', // for option hover bg-color
     primary: 'rgba(1, 133, 228, 0.7)', // for selected option bg-color
     neutral10: 'rgba(1, 133, 228, 0.7)', // for tags bg-color
