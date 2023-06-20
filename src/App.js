@@ -4,9 +4,11 @@ import React, { Suspense } from 'react';
 import Router from './router/Router';
 
 const App = () => (
-  <Suspense fallback={null}>
-    <Router />
-  </Suspense>
+  <React.StrictMode>
+    <Suspense fallback={null}>
+      <Router />
+    </Suspense>
+  </React.StrictMode>
 );
 
 export default App;

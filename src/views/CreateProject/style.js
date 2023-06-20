@@ -29,6 +29,12 @@ export const FormWizardContainer = styled.div`
     }
 
     .step {
+      margin-right: 30px;
+
+      .step-trigger:disabled {
+        opacity: 1 !important;
+      }
+
       .step-trigger {
         .bs-stepper-box {
           svg {
@@ -59,7 +65,7 @@ export const FormWizardContainer = styled.div`
             color: ${theme.activeNavPillText} !important;
           }
           .bs-stepper-subtitle {
-            color: ${theme.wizardStepSubtitleColor};
+            color: ${theme.wizardStepSubtitleColor} !important;
           }
         }
       }
@@ -207,5 +213,183 @@ export const DropzoneContainer = styled.div`
 
   p {
     color: ${theme.inputBorder} !important;
+  }
+`;
+
+export const TimeWrapper = styled.section`
+  display: flex;
+  .weekdays,
+  .weekends {
+    width: 50%;
+
+    ul {
+      font-size: 11px;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      padding-top: 7px;
+      list-style-type: none;
+    }
+  }
+  .weekdays {
+    padding-right: 20px;
+    border-right: 1px solid ${theme.borderInputColor};
+
+    ul {
+      justify-content: space-between;
+    }
+  }
+  .weekends {
+    padding-left: 20px;
+
+    ul {
+      gap: 14px;
+    }
+  }
+  .dot {
+    height: 8px;
+    width: 8px;
+    display: block;
+    background: ${theme.dotBg};
+    border-radius: 50%;
+    margin: auto;
+    margin-bottom: 6px;
+  }
+  .active {
+    background: ${theme.green};
+  }
+
+  @media only screen and (min-device-width: 990px) and (max-device-width: 1160px) {
+    flex-direction: column;
+    gap: 16px;
+    .weekends {
+      ul {
+        gap: 32px;
+      }
+    }
+  }
+  @media only screen and (max-device-width: 450px) {
+    flex-direction: column;
+    gap: 16px;
+    .weekends {
+      ul {
+        gap: 32px;
+      }
+    }
+  }
+`;
+
+export const TagsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+
+  .bg-secondary {
+    background-color: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor} !important;
+  }
+`;
+
+export const YouDidItGifContainer = styled.div`
+  margin-bottom: -70px;
+  margin-top: -30px;
+`;
+
+export const BlueBgIconContainer = styled.div`
+  background: ${theme.uploadIconBackground};
+  border-radius: 50%;
+`;
+
+export const NavsContainer = styled.div`
+  .nav {
+    border-radius: 0;
+  }
+
+  .nav-link {
+    font-weight: 400;
+  }
+
+  .nav-tabs .nav-link.active {
+    border-bottom: 3px solid ${theme.bodyColor} !important;
+    margin-bottom: -2px;
+    color: ${theme.bodyColor};
+    font-weight: 600;
+  }
+
+  .nav-tabs .nav-link:after {
+    background: none !important;
+  }
+`;
+
+export const TableContainer = styled.div`
+  max-height: 500px;
+  overflow-y: scroll;
+
+  .user-pic {
+    border-radius: 50%;
+    border: 1px solid ${theme.bodyColor};
+    width: fit-content;
+  }
+
+  .badge {
+    padding: 0 8px 0 8px;
+  }
+
+  .bg-secondary {
+    background-color: ${theme.ratingBadgeBg} !important;
+  }
+
+  .rating-text {
+    color: ${theme.wizardStepSvgColor};
+  }
+
+  .circular-progressbar-container {
+    width: 46px;
+    height: 46px;
+
+    .percentage-text {
+      font-weight: 400;
+      font-size: 10px;
+      color: ${theme.headingTextColor};
+    }
+  }
+
+  .invited-icon-container {
+    background: ${theme.greenBtnBg};
+    border-radius: 50%;
+    width: fit-content;
+    padding: 5px;
+  }
+
+  .no-data-found-container {
+    .no-data-found-gif {
+      margin: -20px 0 -10px 0;
+    }
+
+    p {
+      color: ${theme.noDataFoundTextColor};
+    }
+  }
+`;
+
+export const InviteUsersListContainer = styled.div`
+  max-height: 200px;
+  overflow-y: scroll;
+
+  .user-pic {
+    border-radius: 50%;
+    border: 1px solid ${theme.bodyColor};
+    width: fit-content;
+  }
+
+  .badge {
+    padding: 0 8px 0 8px;
+  }
+
+  .bg-secondary {
+    background-color: ${theme.ratingBadgeBg} !important;
+  }
+
+  .rating-text {
+    color: ${theme.wizardStepSvgColor};
   }
 `;
