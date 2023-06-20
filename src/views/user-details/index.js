@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
-import { divide } from 'lodash';
+import { divide, round } from 'lodash';
 import { Col, Row } from 'reactstrap';
 import Statbox from './overview/Statbox';
 import LeftSidebarProfile from './overview/LeftSidebarProfile';
@@ -66,7 +66,7 @@ const UserDetails = () => {
             {!isClient && (
               <Col lg="3">
                 <Statbox
-                  title={`$${currentProfile?.hourly_rate}`}
+                  title={`${currentProfile?.currency_preference?.code} ${currentProfile?.hourly_rate}`}
                   desc="Hourly Billing Rate"
                   icon={<DollarSign height={20} />}
                   color="light-warning"
@@ -76,7 +76,7 @@ const UserDetails = () => {
             {!isClient && (
               <Col lg="3">
                 <Statbox
-                  title={`${divide(currentProfile?.work_experience, 12)}yr`}
+                  title={`${round(divide(currentProfile?.work_experience, 12), 2) || 0}yr`}
                   desc="Work Experience"
                   icon={<Briefcase height={20} />}
                   color="light-warning"
@@ -87,8 +87,10 @@ const UserDetails = () => {
               <Statbox
                 title={
                   <>
-                    {calculateAvailableHoursPerWeek(currentProfile?.availability) || 0} hours/week <br />{' '}
-                    {currentProfile?.availability?.timezone?.abbreviation} (
+                    {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
+                      ? 0
+                      : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}
+                    hours/week <br /> {currentProfile?.availability?.timezone?.abbreviation} (
                     {currentProfile?.availability?.timezone?.offset_name})
                   </>
                 }

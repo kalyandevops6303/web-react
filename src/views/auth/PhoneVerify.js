@@ -38,15 +38,15 @@ const VerifyPhone = () => {
   const userType = useSelector(selectUserType);
 
   useEffect(() => {
-    if (!isLoading && isPhoneVerified && userType) {
-      navigate(`/${userType.toLowerCase()}-onboarding`);
+    if (isPhoneVerified && userType) {
+      navigate(`/${userType.toLowerCase()}-onboarding/account-details`);
     } else if (isPhoneVerified && !userType) {
       navigate('/auth');
     }
     if (!phoneData) {
       navigate('/auth/register-phone');
     }
-  }, [isLoading, isPhoneVerified, navigate]);
+  }, [isPhoneVerified, navigate]);
 
   const [selectedCountry, setSelectedCountry] = useState({
     label: 'India',

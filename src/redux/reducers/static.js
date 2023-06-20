@@ -19,6 +19,8 @@ const initialState = {
   toolsLoading: false,
   skills: null,
   skillsLoading: false,
+  certificates: null,
+  certificatesLoading: false,
   timezones: null,
   timezonesLoading: false,
   currencies: null,
@@ -178,6 +180,22 @@ const staticDataSlice = createSlice({
       error: action.payload,
     }),
 
+    certificatesRequest: (state) => ({
+      ...state,
+      certificatesLoading: true,
+      error: null,
+    }),
+    certificatesSuccess: (state, action) => ({
+      ...state,
+      certificatesLoading: false,
+      certificates: action.payload,
+    }),
+    certificatesFailure: (state, action) => ({
+      ...state,
+      certificatesLoading: false,
+      error: action.payload,
+    }),
+
     timezonesRequest: (state) => ({
       ...state,
       timezonesLoading: true,
@@ -272,6 +290,9 @@ export const {
   skillsRequest,
   skillsSuccess,
   skillsFailure,
+  certificatesRequest,
+  certificatesSuccess,
+  certificatesFailure,
   timezonesRequest,
   timezonesSuccess,
   timezonesFailure,

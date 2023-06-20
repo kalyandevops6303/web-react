@@ -100,14 +100,13 @@ const RegisterPhone = () => {
                   type="phone"
                   id="mobile"
                   name="mobile"
-                  placeholder="9090989080"
                   autoFocus
                   control={control}
                   render={({ field }) => (
                     <Input
                       {...field}
                       value={field.value || ''} // Set a default value for the input
-                      placeholder="9090989080"
+                      placeholder="Enter phone number"
                       invalid={errors.mobile && true}
                     />
                   )}

@@ -72,7 +72,6 @@ const RegisterEmail = () => {
               type="email"
               id="email"
               name="email"
-              placeholder="john@example.com"
               autoFocus
               control={control}
               render={({ field }) => (

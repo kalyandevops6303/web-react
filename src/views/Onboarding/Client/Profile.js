@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Proptypes from 'prop-types';
+import { AsyncPaginate } from 'react-select-async-paginate';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -25,49 +26,25 @@ import { selectThemeColors } from '@utils';
 import { toast } from 'react-hot-toast';
 import { AccountImageContainer, ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
-import {
-  getCities,
-  getCompanyIndustries,
-  getCountries,
-  getCurrencies,
-  getEducations,
-  getInstitutes,
-  getProjectAreas,
-  getSkills,
-  getStates,
-  getTimezones,
-  getTools,
-} from '../../../redux/actions/staticActions';
-import {
-  cities,
-  citiesLoading,
-  companyIndustries,
-  companyIndustriesLoading,
-  countries,
-  countriesLoading,
-  currencies,
-  currenciesLoading,
-  educations,
-  educationsLoading,
-  institutes,
-  institutesLoading,
-  projectAreas,
-  projectAreasLoading,
-  skillsList,
-  skillsLoading,
-  states,
-  statesLoading,
-  timezones,
-  timezonesLoading,
-  toolsList,
-  toolsLoading,
-} from '../../../redux/selectors/staticSelectors';
+import { getStates, getCities } from '../../../redux/actions/staticActions';
+import { states, statesLoading, cities, citiesLoading } from '../../../redux/selectors/staticSelectors';
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
 import { saveProfileDetails } from '../../../redux/actions/clientOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/clientOnboardingSelectors';
 import AccountCreatedModal from '../AccountCreatedModal';
+import {
+  companyIndustriesService,
+  countriesService,
+  currenciesService,
+  educationsService,
+  paginatedInstitutesService,
+  projectAreasService,
+  skillsService,
+  timezonesService,
+  toolsService,
+} from '../../../services/staticServices';
 
-const Profile = ({ tabNames, toggleTab, active }) => {
+const Profile = () => {
   const ProfileSchema = yup.object().shape({
     companyName: yup.string().required('Company name is required'),
     title: yup.string().required('Title is required'),
@@ -272,6 +249,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
@@ -433,31 +411,16 @@ const Profile = ({ tabNames, toggleTab, active }) => {
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
   };
 
-  const [companyIndutriesOptions, setCompanyIndutriesOptions] = useState(null);
+  const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
-  const [institutesOptions, setInstitutesOptions] = useState(null);
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [timezonesOptions, setTimezonesOptions] = useState(null);
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
-
-  useEffect(() => {
-    if (active === tabNames.Profile) {
-      dispatch(getCompanyIndustries());
-      dispatch(getCountries());
-      dispatch(getInstitutes());
-      dispatch(getEducations());
-      dispatch(getProjectAreas());
-      dispatch(getTools());
-      dispatch(getSkills());
-      dispatch(getTimezones());
-      dispatch(getCurrencies());
-    }
-  }, [active]);
 
   useEffect(() => {
     setValue('state', null);
@@ -476,39 +439,11 @@ const Profile = ({ tabNames, toggleTab, active }) => {
     }
   }, [watch('state')]);
 
-  const companyIndustriesData = useSelector(companyIndustries);
-  const companyIndustriesIsLoading = useSelector(companyIndustriesLoading);
-  const countriesData = useSelector(countries);
-  const countriesIsLoading = useSelector(countriesLoading);
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
-  const institutesData = useSelector(institutes);
-  const institutesIsLoading = useSelector(institutesLoading);
-  const educationsData = useSelector(educations);
-  const educationsIsLoading = useSelector(educationsLoading);
-  const projectAreasData = useSelector(projectAreas);
-  const projectAreasIsLoading = useSelector(projectAreasLoading);
-  const toolsData = useSelector(toolsList);
-  const toolsIsLoading = useSelector(toolsLoading);
-  const skillsData = useSelector(skillsList);
-  const skillsIsLoading = useSelector(skillsLoading);
-  const timezonesData = useSelector(timezones);
-  const timezonesIsLoading = useSelector(timezonesLoading);
-  const currenciesData = useSelector(currencies);
-  const currenciesIsLoading = useSelector(currenciesLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
-
-  useEffect(() => {
-    const requiredData = companyIndustriesData?.map((industry) => ({ label: industry.name, value: industry._id }));
-    setCompanyIndutriesOptions(requiredData);
-  }, [companyIndustriesData]);
-
-  useEffect(() => {
-    const requiredData = countriesData?.map((country) => ({ label: country.name, value: country._id }));
-    setCountriesOptions(requiredData);
-  }, [countriesData]);
 
   useEffect(() => {
     const requiredData = statesData?.map((state) => ({ label: state.name, value: state._id }));
@@ -519,44 +454,6 @@ const Profile = ({ tabNames, toggleTab, active }) => {
     const requiredData = citiesData?.map((city) => ({ label: city.name, value: city._id }));
     setCitiesOptions(requiredData);
   }, [citiesData]);
-
-  useEffect(() => {
-    const requiredData = institutesData?.map((institute) => ({ label: institute.name, value: institute._id }));
-    setInstitutesOptions(requiredData);
-  }, [institutesData]);
-
-  useEffect(() => {
-    const requiredData = educationsData?.map((education) => ({ label: education.name, value: education._id }));
-    setEducationsOptions(requiredData);
-  }, [educationsData]);
-
-  useEffect(() => {
-    const requiredData = projectAreasData?.map((area) => ({ label: area.name, value: area._id }));
-    setProjectAreasOptions(requiredData);
-  }, [projectAreasData]);
-
-  useEffect(() => {
-    const requiredData = toolsData?.map((tool) => ({ label: tool.name, value: tool._id }));
-    setToolsOptions(requiredData);
-  }, [toolsData]);
-
-  useEffect(() => {
-    const requiredData = skillsData?.map((skill) => ({ label: skill.name, value: skill._id }));
-    setSkillsOptions(requiredData);
-  }, [skillsData]);
-
-  useEffect(() => {
-    const requiredData = timezonesData?.map((timezone) => ({
-      label: `${timezone.name} (${timezone.abbreviation})`,
-      value: timezone,
-    }));
-    setTimezonesOptions(requiredData);
-  }, [timezonesData]);
-
-  useEffect(() => {
-    const requiredData = currenciesData?.map((currency) => ({ label: currency.name, value: currency._id }));
-    setCurrenciesOptions(requiredData);
-  }, [currenciesData]);
 
   const isValidURL = (url) => {
     const urlPattern = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/;
@@ -587,7 +484,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
 
     if (!allowedTypes.includes(file.type)) {
       toast.error('Please select a valid image file (JPG, JPEG, or PNG).');
@@ -621,6 +518,213 @@ const Profile = ({ tabNames, toggleTab, active }) => {
   };
 
   const availabilityDays = watch('availabilityDays');
+
+  const loadCompanyIndustriesOptions = async (search) => {
+    if (search) {
+      return {
+        options: companyIndustriesOptions.filter(
+          (industry) =>
+            industry.label.toLowerCase().startsWith(search) || industry.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await companyIndustriesService();
+
+      const options = response?.data?.data?.map((industry) => ({ label: industry.name, value: industry._id }));
+
+      setCompanyIndustriesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadCountriesOptions = async (search) => {
+    if (search) {
+      return {
+        options: countriesOptions.filter(
+          (country) => country.label.toLowerCase().startsWith(search) || country.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await countriesService();
+
+      const options = response?.data?.data?.map((country) => ({ label: country.name, value: country._id }));
+
+      setCountriesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadInstitutesOptions = async (search, prevOptions, { page }) => {
+    try {
+      const response = await paginatedInstitutesService(page, search);
+
+      return {
+        options: response?.data?.data?.data?.map((institute) => ({ label: institute.name, value: institute._id })),
+        hasMore: response?.data?.data?.metadata?.has_next_page,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return { options: [], hasMore: false };
+    }
+  };
+
+  const loadEducationsOptions = async (search) => {
+    if (search) {
+      return {
+        options: educationsOptions.filter(
+          (education) =>
+            education.label.toLowerCase().startsWith(search) || education.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await educationsService();
+
+      const options = response?.data?.data?.map((education) => ({ label: education.name, value: education._id }));
+
+      setEducationsOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadAreaOptions = async (search) => {
+    if (search) {
+      return {
+        options: projectAreasOptions.filter(
+          (area) => area.label.toLowerCase().startsWith(search) || area.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await projectAreasService();
+
+      const options = response?.data?.data?.map((area) => ({ label: area.name, value: area._id }));
+
+      setProjectAreasOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadSkillsOptions = async (search) => {
+    if (search) {
+      return {
+        options: skillsOptions.filter(
+          (skill) => skill.label.toLowerCase().startsWith(search) || skill.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await skillsService();
+
+      const options = response?.data?.data?.map((skill) => ({ label: skill.name, value: skill._id }));
+
+      setSkillsOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadToolsOptions = async (search) => {
+    if (search) {
+      return {
+        options: toolsOptions.filter(
+          (tool) => tool.label.toLowerCase().startsWith(search) || tool.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await toolsService();
+
+      const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool._id }));
+
+      setToolsOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadTimezonesOptions = async (search) => {
+    if (search) {
+      return {
+        options: timezonesOptions.filter(
+          (timezone) =>
+            timezone.label.toLowerCase().startsWith(search) || timezone.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await timezonesService();
+
+      const options = response?.data?.data?.map((timezone) => ({
+        label: `${timezone.name} (${timezone.abbreviation})`,
+        value: timezone,
+      }));
+
+      setTimezonesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadCurrenciesOptions = async (search) => {
+    if (search) {
+      return {
+        options: currenciesOptions.filter(
+          (currency) =>
+            currency.label.toLowerCase().startsWith(search) || currency.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await currenciesService();
+
+      const options = response?.data?.data?.map((currency) => ({ label: currency.name, value: currency._id }));
+
+      setCurrenciesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
 
   return (
     <ProfileFormContainer>
@@ -698,7 +802,10 @@ const Profile = ({ tabNames, toggleTab, active }) => {
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="companyTagline">
                   Company Tagline<span className="label-asterisk me-50">*</span>
-                  <Info size={18} color={theme.infoIcon} />
+                  <Info size={18} color={theme.infoIcon} id="tagline-info" />
+                  <UncontrolledTooltip placement="right" target="tagline-info">
+                    <p className="m-0 ">Give your company tagline in 60 character.</p>
+                  </UncontrolledTooltip>
                 </Label>
                 <Controller
                   id="companyTagline"
@@ -717,7 +824,6 @@ const Profile = ({ tabNames, toggleTab, active }) => {
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="companyIndustry">
                   Company Industry<span className="label-asterisk me-50">*</span>
-                  <Info size={18} color={theme.infoIcon} />
                 </Label>
                 <Controller
                   id="companyIndustry"
@@ -725,9 +831,8 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                   control={control}
                   invalid={errors.companyIndustry && true}
                   render={({ field }) => (
-                    <Select
-                      isLoading={companyIndustriesIsLoading}
-                      options={companyIndutriesOptions}
+                    <AsyncPaginate
+                      loadOptions={loadCompanyIndustriesOptions}
                       classNamePrefix="select"
                       placeholder="Select your company industry"
                       theme={selectThemeColors}
@@ -910,9 +1015,8 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                   control={control}
                   invalid={errors.country && true}
                   render={({ field }) => (
-                    <Select
-                      isLoading={countriesIsLoading}
-                      options={countriesOptions}
+                    <AsyncPaginate
+                      loadOptions={loadCountriesOptions}
                       classNamePrefix="select"
                       placeholder="Select your country"
                       theme={selectThemeColors}
@@ -1005,9 +1109,10 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                       true
                     }
                     render={({ field }) => (
-                      <Select
-                        isLoading={institutesIsLoading}
-                        options={institutesOptions}
+                      <AsyncPaginate
+                        debounceTimeout={1000}
+                        additional={{ page: 1 }}
+                        loadOptions={loadInstitutesOptions}
                         classNamePrefix="select"
                         placeholder="Enter your institution name"
                         theme={selectThemeColors}
@@ -1050,9 +1155,8 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                       true
                     }
                     render={({ field }) => (
-                      <Select
-                        isLoading={educationsIsLoading}
-                        options={educationsOptions}
+                      <AsyncPaginate
+                        loadOptions={loadEducationsOptions}
                         classNamePrefix="select"
                         placeholder="Enter your education"
                         theme={selectThemeColors}
@@ -1266,9 +1370,8 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                   control={control}
                   invalid={errors.area && true}
                   render={({ field }) => (
-                    <Select
-                      isLoading={projectAreasIsLoading}
-                      options={projectAreasOptions}
+                    <AsyncPaginate
+                      loadOptions={loadAreaOptions}
                       classNamePrefix="select"
                       placeholder="Select area"
                       theme={selectThemeColors}
@@ -1291,10 +1394,9 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                   control={control}
                   invalid={errors.skills && true}
                   render={({ field }) => (
-                    <Select
+                    <AsyncPaginate
                       isMulti
-                      isLoading={skillsIsLoading}
-                      options={skillsOptions}
+                      loadOptions={loadSkillsOptions}
                       classNamePrefix="select"
                       placeholder="Select top 5 skills"
                       theme={selectThemeColors}
@@ -1319,10 +1421,9 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                   control={control}
                   invalid={errors.tools && true}
                   render={({ field }) => (
-                    <Select
+                    <AsyncPaginate
                       isMulti
-                      isLoading={toolsIsLoading}
-                      options={toolsOptions}
+                      loadOptions={loadToolsOptions}
                       classNamePrefix="select"
                       placeholder="Select top 5 tools"
                       theme={selectThemeColors}
@@ -1355,9 +1456,8 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                   control={control}
                   invalid={errors.preferredWorkingTimeZone && true}
                   render={({ field }) => (
-                    <Select
-                      isLoading={timezonesIsLoading}
-                      options={timezonesOptions}
+                    <AsyncPaginate
+                      loadOptions={loadTimezonesOptions}
                       classNamePrefix="select"
                       placeholder="Select preferred working time zone"
                       theme={selectThemeColors}
@@ -1788,9 +1888,8 @@ const Profile = ({ tabNames, toggleTab, active }) => {
                   control={control}
                   invalid={errors.currencyPreference && true}
                   render={({ field }) => (
-                    <Select
-                      isLoading={currenciesIsLoading}
-                      options={currenciesOptions}
+                    <AsyncPaginate
+                      loadOptions={loadCurrenciesOptions}
                       classNamePrefix="select"
                       placeholder="Select currency"
                       theme={selectThemeColors}
@@ -1809,7 +1908,7 @@ const Profile = ({ tabNames, toggleTab, active }) => {
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
           <div
             className="d-flex align-items-center upload-button cursor-pointer"
-            onClick={() => toggleTab(tabNames.Account)}
+            onClick={() => navigate('/client-onboarding/account-details')}
           >
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
@@ -1833,15 +1932,3 @@ const Profile = ({ tabNames, toggleTab, active }) => {
 };
 
 export default Profile;
-
-Profile.propTypes = {
-  tabNames: Proptypes.object,
-  toggleTab: Proptypes.func,
-  active: Proptypes.string,
-};
-
-Profile.defaultProps = {
-  tabNames: {},
-  toggleTab: () => {},
-  active: '',
-};

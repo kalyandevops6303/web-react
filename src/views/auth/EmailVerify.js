@@ -37,10 +37,10 @@ const VerifyEmail = () => {
     if (!userType || !emailId) {
       navigate('/auth');
     }
-    if (!isLoading && isEmailVerified) {
+    if (isEmailVerified) {
       navigate('/auth/set-password');
     }
-  }, [isLoading, isEmailVerified, navigate]);
+  }, [isEmailVerified, navigate]);
 
   const handleChange = (value) => {
     setCode(value);

@@ -1,5 +1,6 @@
 import errorHandler from '../../utility/errorHandler';
 import {
+  certificatesService,
   citiesService,
   companyIndustriesService,
   countriesService,
@@ -54,6 +55,9 @@ import {
   projectAreasRequest,
   projectAreasSuccess,
   projectAreasFailure,
+  certificatesRequest,
+  certificatesSuccess,
+  certificatesFailure,
 } from '../reducers/static';
 
 const getTalentRoles = () => async (dispatch) => {
@@ -146,6 +150,16 @@ const getSkills = () => async (dispatch) => {
   }
 };
 
+const getCertificates = () => async (dispatch) => {
+  dispatch(certificatesRequest());
+  try {
+    const res = await certificatesService();
+    dispatch(certificatesSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, certificatesFailure);
+  }
+};
+
 const getTimezones = () => async (dispatch) => {
   dispatch(timezonesRequest());
   try {
@@ -196,6 +210,7 @@ export {
   getEducations,
   getTools,
   getSkills,
+  getCertificates,
   getTimezones,
   getCurrencies,
   getCompanyIndustries,

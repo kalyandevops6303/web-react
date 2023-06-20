@@ -32,10 +32,10 @@ const SetPassword = () => {
   const isPasswordSet = useSelector(selectIsPasswordSet);
 
   useEffect(() => {
-    if (!isLoading && isPasswordSet) {
+    if (isPasswordSet) {
       navigate('/auth/register-phone');
     }
-  }, [isLoading, isPasswordSet, navigate]);
+  }, [isPasswordSet, navigate]);
 
   const schema = yup.object().shape({
     newPassword: validations.newPassword.required('Password is required'),
@@ -86,12 +86,11 @@ const SetPassword = () => {
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2">
             <Label className="form-label" for="login-email">
-              New Password
+              Password
             </Label>
             <Controller
               className="input-group-merge"
               id="newPassword"
-              placeholder="Confirm your new password"
               type="newPassword"
               name="newPassword"
               autoFocus
@@ -102,7 +101,7 @@ const SetPassword = () => {
                   value={field.value || ''} // Set a default value for the input
                   className="input-group-merge"
                   id="newPassword"
-                  placeholder="Confirm your new password"
+                  placeholder="Enter your password"
                 />
               )}
             />
@@ -127,12 +126,11 @@ const SetPassword = () => {
           </div>
           <div className="mb-3">
             <Label className="form-label" for="login-email">
-              Confirm new Password
+              Confirm Password
             </Label>
             <Controller
               className="input-group-merge"
               id="cnfPassword"
-              placeholder="Confirm your new password"
               type="cnfPassword"
               name="cnfPassword"
               autoFocus
@@ -143,7 +141,7 @@ const SetPassword = () => {
                   value={field.value || ''} // Set a default value for the input
                   className="input-group-merge"
                   id="cnfPassword"
-                  placeholder="Confirm your new password"
+                  placeholder="Confirm your password"
                 />
               )}
             />

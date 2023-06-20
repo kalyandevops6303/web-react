@@ -13,11 +13,16 @@ const citiesService = (stateId) => DataService.get(`${API.static.cities}/${state
 
 const institutesService = () => DataService.get(API.static.institutes);
 
+const paginatedInstitutesService = (page, search) =>
+  DataService.get(`${API.static.paginatedInstitutes}?page=${page}&page_size=100&search_query=${search}`);
+
 const educationsService = () => DataService.get(API.static.educations);
 
 const toolsService = () => DataService.get(API.static.tools);
 
 const skillsService = () => DataService.get(API.static.skills);
+
+const certificatesService = () => DataService.get(API.static.certificates);
 
 const timezonesService = () => DataService.get(API.static.timezones);
 
@@ -34,9 +39,11 @@ export {
   statesService,
   citiesService,
   institutesService,
+  paginatedInstitutesService,
   educationsService,
   toolsService,
   skillsService,
+  certificatesService,
   timezonesService,
   currenciesService,
   companyIndustriesService,
