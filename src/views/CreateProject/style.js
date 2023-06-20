@@ -12,6 +12,7 @@ export const BackButtonContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+  width: fit-content;
 
   .blue-text {
     color: ${theme.activeNavPillText};

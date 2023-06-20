@@ -1,5 +1,6 @@
 import React from 'react';
-import { Col, Row } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Button, Col, Row } from 'reactstrap';
 import EarningCard from './overview/Earning';
 import RewardsCard from './overview/Reward';
 import AvailableTime from './overview/AvailableTime';
@@ -11,7 +12,14 @@ import Meetings from './overview/Meetings';
 
 const PrivateDashboard = () => (
   <div>
-    <Header isTopCards>Dashboard</Header>
+    <Header isTopCards className="d-flex justify-content-between">
+      Dashboard
+      <Link to="/create-project">
+        <Button as="link" color="primary">
+          Create Project
+        </Button>
+      </Link>
+    </Header>
     <Row>
       <Col lg="4" sm="12">
         <EarningCard />

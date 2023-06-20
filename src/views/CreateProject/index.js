@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FileText, ArrowLeft, Box, Check, CreditCard } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import Wizard from '../../@core/components/wizard';
@@ -74,12 +75,14 @@ const CreateProject = () => {
   return (
     <>
       <Row className="m-0">
-        <BackButtonContainer className="p-0">
-          <BackIconContainer>
-            <ArrowLeft size={18} color={theme.white} />
-          </BackIconContainer>
-          <h4 className="m-0 fw-light blue-text mt-25 mx-50">Create Project</h4>
-        </BackButtonContainer>
+        <Link to="/dashboard" className="p-0">
+          <BackButtonContainer className="p-0">
+            <BackIconContainer>
+              <ArrowLeft size={18} color={theme.white} />
+            </BackIconContainer>
+            <h4 className="m-0 fw-light blue-text mt-25 mx-50">Create Project</h4>
+          </BackButtonContainer>
+        </Link>
       </Row>
       <Row>
         <Col lg="9" md="12" sm="12">
