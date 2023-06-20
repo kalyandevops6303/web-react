@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import Avatar from '@components/avatar';
 import { StatboxWrap } from './style';
 
-const Statbox = ({ title, icon, desc, color }) => (
-  <StatboxWrap time={desc === 'Availability'}>
+const Statbox = ({ isActive, isMarketPlaceTab, title, icon, desc, color }) => (
+  <StatboxWrap isActive={isActive} isMarketPlaceTab={isMarketPlaceTab} time={desc === 'Availability'}>
     <CardBody>
       <div className="d-flex align-items-center justify-content-between">
         <div className="my-auto">
@@ -20,10 +20,12 @@ const Statbox = ({ title, icon, desc, color }) => (
 );
 
 Statbox.propTypes = {
+  isActive: PropTypes.bool,
   title: PropTypes.string || PropTypes.element,
   icon: PropTypes.element,
   desc: PropTypes.string,
   color: PropTypes.string,
+  isMarketPlaceTab: PropTypes.bool,
 };
 
 export default Statbox;

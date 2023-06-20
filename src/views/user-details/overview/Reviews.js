@@ -43,7 +43,7 @@ const Reviews = () => (
     <Card>
       <CardBody>
         <CardTitle className="review-title mb-1">Reviews (0)</CardTitle>
-        <div className="d-none">
+        <div className="">
           <Review />
           <Review />
           <Review />

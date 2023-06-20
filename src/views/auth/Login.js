@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 // ** React Imports
+import { useEffect } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -23,6 +24,7 @@ import { validations } from '../../utility/Utils';
 import { loginUser } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading } from '../../redux/selectors/authSelectors';
+import { clearDataSuccess } from '../../redux/reducers/auth';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -46,6 +48,10 @@ const Login = () => {
       password: '',
     },
   });
+
+  useEffect(() => {
+    dispatch(clearDataSuccess());
+  }, []);
 
   const onSuccess = (resp) => {
     if (resp?.checkpoint === 'MOBILE_VERIFICATION') {

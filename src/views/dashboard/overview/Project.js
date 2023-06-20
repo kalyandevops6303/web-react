@@ -35,7 +35,7 @@ const UserSection = ({ users, tagName, name, isClient }) => (
           +3
         </span>
       ) : (
-        <AvatarGroup data={users} />
+        <AvatarGroup size="sm" data={users} />
       )}
     </div>
   </div>

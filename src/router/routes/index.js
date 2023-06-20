@@ -33,6 +33,7 @@ const AuthRoute = lazy(() => import('../../views/auth/index'));
 const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
 const ClientOnboarding = lazy(() => import('../../views/Onboarding/Client'));
 const CreateProject = lazy(() => import('../../views/CreateProject'));
+const MarketPlace = lazy(() => import('../../views/marketplace'));
 
 // ** Merge Routes
 const Routes = [
@@ -52,6 +53,10 @@ const Routes = [
   {
     path: '/second-page',
     element: <SecondPage />,
+  },
+  {
+    path: '/marketplace',
+    element: <MarketPlace />,
   },
 
   {
