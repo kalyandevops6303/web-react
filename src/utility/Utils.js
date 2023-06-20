@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
+import { DateTime } from 'luxon';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -128,24 +129,12 @@ const checkSize = (width) => {
 export const useIsMobile = () => checkSize(1024);
 export const useIsTab = () => checkSize(769);
 
-export const convertTo12HourFormat = (hourString) => {
-  const hour = parseInt(hourString, 10);
+export const convertTo12HourFormat = (hour) => {
+  const now = DateTime.local();
 
-  if (hour < 0 || hour > 24) {
-    return 'Invalid hour';
-  }
+  // Set the time to 22:00 (10 PM)
+  const convertedTime = now.set({ hour, minute: 0 });
 
-  if (hour === 24) {
-    return '12:00am';
-  }
-
-  if (hour < 12) {
-    return `${hour}:00am`;
-  }
-
-  if (hour === 12) {
-    return '12:00pm';
-  }
-
-  return `${hour - 12}:00pm`;
+  // Format the DateTime object as 10 PM
+  return convertedTime.toFormat('hh:mm a').toLowerCase();
 };

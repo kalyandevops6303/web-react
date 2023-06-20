@@ -164,7 +164,7 @@ const Project = ({ data, className, recommended }) => {
                     transformOrigin: 'center center',
                   },
                   trail: {
-                    stroke: '#E9ECEF',
+                    stroke: theme.progressBarBg,
                     strokeLinecap: 'round',
                     transform: 'rotate(0turn)',
                     transformOrigin: 'center center',

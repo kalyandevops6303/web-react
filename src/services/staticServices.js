@@ -13,6 +13,9 @@ const citiesService = (stateId) => DataService.get(`${API.static.cities}/${state
 
 const institutesService = () => DataService.get(API.static.institutes);
 
+const paginatedInstitutesService = (page, search) =>
+  DataService.get(`${API.static.paginatedInstitutes}?page=${page}&page_size=100&search_query=${search}`);
+
 const educationsService = () => DataService.get(API.static.educations);
 
 const toolsService = () => DataService.get(API.static.tools);
@@ -36,6 +39,7 @@ export {
   statesService,
   citiesService,
   institutesService,
+  paginatedInstitutesService,
   educationsService,
   toolsService,
   skillsService,

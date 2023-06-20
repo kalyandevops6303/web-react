@@ -15,6 +15,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../../../../redux/selectors/dashboardSelectors';
 import { clearData } from '../../../../redux/reducers/dashboard';
+import { clearDataSuccess } from '../../../../redux/reducers/auth';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(userData);
@@ -23,6 +24,7 @@ const UserDropdown = () => {
 
   const handleLogout = () => {
     dispatch(clearData());
+    dispatch(clearDataSuccess());
     localStorage.clear();
   };
   return (

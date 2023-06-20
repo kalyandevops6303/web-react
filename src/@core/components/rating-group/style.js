@@ -6,7 +6,6 @@ const RatingWrap = styled.div`
     display: flex;
     align-items: center;
     gap: 0.8rem;
-
     .ratings {
       padding-bottom: 0.2rem;
     }

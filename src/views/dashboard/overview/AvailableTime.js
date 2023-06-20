@@ -6,6 +6,7 @@
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText } from 'reactstrap';
 import { useSelector } from 'react-redux';
+import { capitalize } from 'lodash';
 import { TimeCardWrapper, TimeWrapper } from './style';
 import { convertTo12HourFormat } from '../../../utility/Utils';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
@@ -17,6 +18,9 @@ const AvailableTime = () => {
 
   const weekdaysData = userDetailsData?.availability?.weekdays_avl;
   const weekendsData = userDetailsData?.availability?.weekends_avl;
+
+  const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+  const weekends = ['SATURDAY', 'SUNDAY'];
 
   return (
     <TimeCardWrapper>
@@ -33,26 +37,12 @@ const AvailableTime = () => {
                   {convertTo12HourFormat(weekdaysData.start_time)} - {convertTo12HourFormat(weekdaysData.end_time)}
                 </CardText>
                 <ul>
-                  <li>
-                    <span className={weekdaysData.days.includes('MONDAY') ? 'dot active' : 'dot'} />
-                    Mon
-                  </li>
-                  <li>
-                    <span className={weekdaysData.days.includes('TUESDAY') ? 'dot active' : 'dot'} />
-                    Tue
-                  </li>
-                  <li>
-                    <span className={weekdaysData.days.includes('WEDNESDAY') ? 'dot active' : 'dot'} />
-                    Wed
-                  </li>
-                  <li>
-                    <span className={weekdaysData.days.includes('THURSDAY') ? 'dot active' : 'dot'} />
-                    Thu
-                  </li>
-                  <li>
-                    <span className={weekdaysData.days.includes('FRIDAY') ? 'dot active' : 'dot'} />
-                    Fri
-                  </li>
+                  {weekdays.map((day) => (
+                    <li key={day}>
+                      <span className={`dot ${weekdaysData.days.includes(day) ? 'active' : ''}`} />
+                      {capitalize(day.slice(0, 3))}
+                    </li>
+                  ))}
                 </ul>
               </section>
             )}
@@ -64,14 +54,12 @@ const AvailableTime = () => {
                     {convertTo12HourFormat(weekendsData.start_time)} - {convertTo12HourFormat(weekendsData.end_time)}
                   </CardText>
                   <ul>
-                    <li>
-                      <span className={weekendsData.days.includes('SATURDAY') ? 'dot active' : 'dot'} />
-                      Sat
-                    </li>
-                    <li>
-                      <span className={weekendsData.days.includes('SUNDAY') ? 'dot active' : 'dot'} />
-                      Sun
-                    </li>
+                    {weekends.map((day) => (
+                      <li key={day}>
+                        <span className={`dot ${weekendsData.days.includes(day) ? 'active' : ''}`} />
+                        {capitalize(day.slice(0, 3))}
+                      </li>
+                    ))}
                   </ul>
                 </section>
               </>

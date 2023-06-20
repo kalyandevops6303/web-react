@@ -63,6 +63,7 @@ const darkRedBg = '#B71C1C1F';
 const disabledGrayColor = '##607D8B';
 const disabledBg = '##607D8B1F';
 const turquoiseColor = '#46d8d5';
+const progressBarBg = '#E9ECEF';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -129,5 +130,6 @@ const theme = {
   blueBorderColorv2,
   blueCardBg,
   turquoiseColor,
+  progressBarBg,
 };
 export default theme;

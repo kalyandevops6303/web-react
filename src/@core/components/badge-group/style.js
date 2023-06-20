@@ -26,5 +26,4 @@ const BadgeGroupWrap = styled.div`
     text-overflow: ellipsis;
   }
 `;
-
 export default BadgeGroupWrap;

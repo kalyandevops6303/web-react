@@ -32,10 +32,10 @@ const SetPassword = () => {
   const isPasswordSet = useSelector(selectIsPasswordSet);
 
   useEffect(() => {
-    if (!isLoading && isPasswordSet) {
+    if (isPasswordSet) {
       navigate('/auth/register-phone');
     }
-  }, [isLoading, isPasswordSet, navigate]);
+  }, [isPasswordSet, navigate]);
 
   const schema = yup.object().shape({
     newPassword: validations.newPassword.required('Password is required'),

@@ -36,6 +36,10 @@ const Login = () => {
     password: yup.string().required('Password is required'),
   });
 
+  useEffect(() => {
+    dispatch(clearDataSuccess());
+  }, []);
+
   const {
     handleSubmit,
     formState: { errors },
@@ -90,7 +94,6 @@ const Login = () => {
               type="email"
               id="email"
               name="email"
-              placeholder="john@example.com"
               autoFocus
               control={control}
               render={({ field }) => (
@@ -111,7 +114,6 @@ const Login = () => {
             <Controller
               className="input-group-merge"
               id="password"
-              placeholder="Confirm your new password"
               type="password"
               name="password"
               autoFocus
