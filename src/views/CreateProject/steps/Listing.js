@@ -11,17 +11,36 @@ import { RequirementsFormContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
 
-const Listing = ({ stepper }) => {
+const Listing = ({ stepper, setListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
     listingOption: yup.string().required('Choose one option'),
-    startDate: yup.date().required('Start date is required'),
-    endDate: yup.date().required('End date is required'),
-    duration: yup.string().required('Duration is required'),
+    startDate: yup.object().when('listingOption', {
+      is: (listingOption) => listingOption === 'select-duration',
+      then: () => yup.date().required('Start date is required'),
+    }),
+    endDate: yup.object().when('listingOption', {
+      is: (listingOption) => listingOption === 'select-duration',
+      then: () => yup.date().required('End date is required'),
+    }),
+    duration: yup.number().when('listingOption', {
+      is: (listingOption) => listingOption === 'enter-duration',
+      then: () =>
+        yup
+          .number()
+          .min(1, 'No. of days must be greater than 0')
+          .required('No. of days is required')
+          .typeError('No. of days must be a number'),
+    }),
   });
 
   const {
     control,
     handleSubmit,
+    trigger,
+    clearErrors,
+    resetField,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -29,7 +48,9 @@ const Listing = ({ stepper }) => {
     defaultValues: {},
   });
 
-  const onSubmit = () => {
+  const onSubmit = (data) => {
+    trigger();
+    setListingDetails(data);
     stepper.next();
   };
 
@@ -54,7 +75,10 @@ const Listing = ({ stepper }) => {
                         {...field}
                         id="select-duration"
                         checked={field.value === 'select-duration'}
-                        onChange={(e) => {
+                        onChange={async (e) => {
+                          clearErrors('duration');
+                          resetField('duration');
+                          setValue('duration', 0);
                           const isChecked = e.target.checked;
                           const value = 'select-duration';
 
@@ -63,6 +87,8 @@ const Listing = ({ stepper }) => {
                           } else {
                             field.onChange('');
                           }
+                          await trigger('startDate');
+                          await trigger('endDate');
                         }}
                       />
                       <Label for="select-duration" className="form-check-label fw-bold">
@@ -85,6 +111,7 @@ const Listing = ({ stepper }) => {
                   render={({ field }) => (
                     <Flatpickr
                       {...field}
+                      disabled={watch('listingOption') !== 'select-duration'}
                       placeholder="Select start date"
                       options={{
                         minDate: 'today',
@@ -109,6 +136,7 @@ const Listing = ({ stepper }) => {
                   render={({ field }) => (
                     <Flatpickr
                       {...field}
+                      disabled={watch('listingOption') !== 'select-duration'}
                       placeholder="Select end date"
                       options={{
                         minDate: 'today',
@@ -135,7 +163,12 @@ const Listing = ({ stepper }) => {
                         {...field}
                         id="enter-duration"
                         checked={field.value === 'enter-duration'}
-                        onChange={(e) => {
+                        onChange={async (e) => {
+                          clearErrors('startDate');
+                          clearErrors('endDate');
+                          resetField('startDate');
+                          resetField('endDate');
+
                           const isChecked = e.target.checked;
                           const value = 'enter-duration';
 
@@ -144,6 +177,7 @@ const Listing = ({ stepper }) => {
                           } else {
                             field.onChange('');
                           }
+                          await trigger('duration');
                         }}
                       />
                       <Label for="enter-duration" className="form-check-label fw-bold">
@@ -163,12 +197,20 @@ const Listing = ({ stepper }) => {
                     name="duration"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} type="number" min={0} placeholder="Enter" invalid={errors.duration && true} />
+                      <Input
+                        {...field}
+                        disabled={watch('listingOption') !== 'enter-duration'}
+                        type="number"
+                        min={0}
+                        placeholder="Enter"
+                        invalid={errors.duration && true}
+                      />
                     )}
                   />
                 </Col>
                 <h5 className="fw-light m-0">Days</h5>
               </Col>
+              {errors.duration && <FormFeedback>{errors.duration.message}</FormFeedback>}
             </Row>
             {errors.listingOption && <FormFeedback>{errors.listingOption.message}</FormFeedback>}
           </CardBody>
@@ -194,8 +236,10 @@ export default Listing;
 
 Listing.propTypes = {
   stepper: Proptypes.object,
+  setListingDetails: Proptypes.func,
 };
 
 Listing.defaultProps = {
   stepper: {},
+  setListingDetails: () => {},
 };

@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FileText, ArrowLeft, Box, Check, CreditCard } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import Wizard from '../../@core/components/wizard';
@@ -11,8 +12,15 @@ import { BackButtonContainer, BackIconContainer, FormWizardContainer } from './s
 
 const CreateProject = () => {
   const ref = useRef(null);
-
   const [stepper, setStepper] = useState(null);
+  const [youDidItModal, setYouDidItModal] = useState(null);
+  const [projectDetails, setProjectDetails] = useState(null);
+  const [listingDetails, setListingDetails] = useState(null);
+  const [files, setFiles] = useState([]);
+
+  const toggleYouDidItModal = () => {
+    setYouDidItModal(!youDidItModal);
+  };
 
   const steps = [
     {
@@ -20,21 +28,40 @@ const CreateProject = () => {
       title: 'Requirements',
       subtitle: 'Enter project details',
       icon: <FileText size={18} />,
-      content: <Requirements stepper={stepper} type="wizard-modern" />,
+      content: (
+        <Requirements
+          stepper={stepper}
+          setProjectDetails={setProjectDetails}
+          files={files}
+          setFiles={setFiles}
+          youDidItModal={youDidItModal}
+          setYouDidItModal={setYouDidItModal}
+          toggleYouDidItModal={toggleYouDidItModal}
+          type="wizard-modern"
+        />
+      ),
     },
     {
       id: 'listing',
       title: 'Listing',
       subtitle: 'Add start and end date',
       icon: <Box size={18} />,
-      content: <Listing stepper={stepper} type="wizard-modern" />,
+      content: <Listing stepper={stepper} setListingDetails={setListingDetails} type="wizard-modern" />,
     },
     {
       id: 'preview',
       title: 'Preview',
       subtitle: 'Review before posting',
       icon: <Check size={18} />,
-      content: <Preview stepper={stepper} type="wizard-modern" />,
+      content: (
+        <Preview
+          stepper={stepper}
+          projectDetails={projectDetails}
+          listingDetails={listingDetails}
+          files={files}
+          type="wizard-modern"
+        />
+      ),
     },
     {
       id: 'invite',
@@ -48,15 +75,17 @@ const CreateProject = () => {
   return (
     <>
       <Row className="m-0">
-        <BackButtonContainer className="p-0">
-          <BackIconContainer>
-            <ArrowLeft size={18} color={theme.white} />
-          </BackIconContainer>
-          <h4 className="m-0 fw-light blue-text mt-25 mx-50">Create Project</h4>
-        </BackButtonContainer>
+        <Link to="/dashboard" className="p-0">
+          <BackButtonContainer className="p-0">
+            <BackIconContainer>
+              <ArrowLeft size={18} color={theme.white} />
+            </BackIconContainer>
+            <h4 className="m-0 fw-light blue-text mt-25 mx-50">Create Project</h4>
+          </BackButtonContainer>
+        </Link>
       </Row>
       <Row>
-        <Col lg="8" md="12" sm="12">
+        <Col lg="9" md="12" sm="12">
           <FormWizardContainer className="modern-horizontal-wizard">
             <Wizard
               type="modern-horizontal"

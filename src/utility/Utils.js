@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { DateTime } from 'luxon';
+import theme from '../configs/themeVariables';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -72,10 +73,10 @@ export const getHomeRouteForLoggedInUser = (userRole) => {
 };
 
 // ** React Select Theme Colors
-export const selectThemeColors = (theme) => ({
-  ...theme,
+export const selectThemeColors = (themes) => ({
+  ...themes,
   colors: {
-    ...theme.colors,
+    ...themes.colors,
     primary25: '#7367f01a', // for option hover bg-color
     primary: 'rgba(1, 133, 228, 0.7)', // for selected option bg-color
     neutral10: 'rgba(1, 133, 228, 0.7)', // for tags bg-color
@@ -137,4 +138,15 @@ export const convertTo12HourFormat = (hour) => {
 
   // Format the DateTime object as 10 PM
   return convertedTime.toFormat('hh:mm a').toLowerCase();
+};
+
+export const giveStrokeColor = (percentage) => {
+  if (percentage <= 40) {
+    return theme.red;
+    // eslint-disable-next-line
+  } else if (percentage > 40 && percentage <= 70) {
+    return theme.progressBarOrange;
+  } else {
+    return theme.green;
+  }
 };

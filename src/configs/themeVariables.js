@@ -36,6 +36,12 @@ const darkGreenColor = '#0097A7';
 const darkGreenBgColor = '#E0F7FA';
 const orange = '#FF6D00';
 const progressBarBg = '#E9ECEF';
+const dotBg = 'rgba(217, 217, 217, 0.5)';
+const progressBarOrange = '#F5B845';
+const starRatingBg = '#FF9F43';
+const ratingBadgeBg = 'rgba(255, 159, 67, 0.12)';
+const greenBtnBg = 'rgba(40, 199, 111, 0.12)';
+const noDataFoundTextColor = '#2963c3';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -77,5 +83,11 @@ const theme = {
   darkGreenBgColor,
   orange,
   progressBarBg,
+  dotBg,
+  progressBarOrange,
+  starRatingBg,
+  ratingBadgeBg,
+  greenBtnBg,
+  noDataFoundTextColor,
 };
 export default theme;
