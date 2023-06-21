@@ -103,6 +103,115 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
     </TagsContainer>
   );
 
+  const formatDate = (date) => {
+    if (!date) {
+      return undefined;
+    }
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString();
+    return `${day}-${month}-${year}`;
+  };
+
+  const isEmpty = (value) => {
+    if (value === undefined || value === null) {
+      return true;
+    }
+
+    if (typeof value === 'string' || Array.isArray(value)) {
+      return value.length === 0;
+    }
+
+    if (typeof value === 'object') {
+      return Object.keys(value).length === 0;
+    }
+
+    return false;
+  };
+
+  const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
+
+  const removeEmptyKeys = (obj) => {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      const filteredArray = obj.filter((item) => typeof item !== 'object' || !hasEmptyKeys(item));
+
+      return filteredArray.map((item) => removeEmptyKeys(item));
+    }
+
+    const filteredObj = {};
+    Object.keys(obj).forEach((key) => {
+      const value = obj[key];
+      if (typeof value === 'object') {
+        const cleanedValue = removeEmptyKeys(value);
+        if (!isEmpty(cleanedValue)) {
+          filteredObj[key] = cleanedValue;
+        }
+      } else if (!isEmpty(value)) {
+        filteredObj[key] = value;
+      }
+    });
+
+    if (isEmpty(filteredObj)) {
+      return undefined;
+    }
+
+    return filteredObj;
+  };
+
+  const onPostClick = () => {
+    const details = {
+      name: projectDetails?.projectName,
+      description: projectDetails?.projectDescription,
+      expected_duration: {
+        duration: projectDetails?.expectedDuration,
+        duration_type: projectDetails?.expectedDurationPeriod?.value,
+      },
+    };
+    const proficiency = {
+      skills: projectDetails?.skills.map((skill) => skill.value),
+      tools: projectDetails?.tools?.map((tool) => tool.value),
+    };
+    const availability = {
+      timezone: projectDetails?.preferredWorkingTimeZone.value._id,
+      time_overlap: projectDetails?.minTimeOverlapHr,
+      weekdays_avl: {
+        start_time: projectDetails?.weekdayStartTime?.value,
+        end_time: projectDetails?.weekdayEndTime?.value,
+        days: projectDetails?.weekdays,
+      },
+      weekends_avl: {
+        start_time: projectDetails?.weekendStartTime?.value,
+        end_time: projectDetails?.weekendEndTime?.value,
+        days: projectDetails?.weekends,
+      },
+    };
+    const countries = {
+      included: projectDetails?.includedCountriesSelection?.map((country) => country.value),
+      excluded: projectDetails?.excludedCountriesSelection?.map((country) => country.value),
+    };
+    const pay_type = {
+      currency: projectDetails?.currencyType?.value?._id,
+      variable_cost: projectDetails?.projectPayType !== 'fixed-price',
+      fixed_cost: projectDetails?.projectFixedCost,
+    };
+    const nda = {
+      is_nda: projectDetails?.nda === 'yes',
+    };
+    const listing_details = {
+      start_date: formatDate(listingDetails?.startDate),
+      end_date: formatDate(listingDetails?.endDate),
+      duration_in_days: listingDetails?.duration,
+    };
+
+    const requiredData = { details, proficiency, availability, countries, pay_type, nda, listing_details };
+
+    return removeEmptyKeys(requiredData);
+  };
+
   return (
     <>
       <Card>
@@ -253,7 +362,7 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
           </UploadIconContainer>
           <h5 className="fw-light mb-0 mx-75">Back</h5>
         </div>
-        <Button color="primary">
+        <Button color="primary" onClick={onPostClick}>
           <span className="me-50">Post</span>
           <ChevronRight size={14} />
         </Button>

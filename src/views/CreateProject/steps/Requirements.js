@@ -47,7 +47,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     expectedDuration: yup
       .number()
       .when('expectedDurationPeriod', {
-        is: (expectedDurationPeriod) => expectedDurationPeriod.value === 'week',
+        is: (expectedDurationPeriod) => expectedDurationPeriod.value === 'WEEK',
         then: () =>
           yup
             .number()
@@ -57,7 +57,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             .required('Expected duration is required'),
       })
       .when('expectedDurationPeriod', {
-        is: (expectedDurationPeriod) => expectedDurationPeriod.value === 'day',
+        is: (expectedDurationPeriod) => expectedDurationPeriod.value === 'DAY',
         then: () =>
           yup
             .number()
@@ -197,7 +197,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     resolver: yupResolver(ProjectDetailsSchema),
     defaultValues: {
       projectName: '',
-      expectedDurationPeriod: { label: 'Week', value: 'week' },
+      expectedDurationPeriod: { label: 'Week', value: 'WEEK' },
       projectDescription: '',
       availabilityDays: [],
       weekdays: [],
@@ -473,8 +473,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   render={({ field }) => (
                     <Select
                       options={[
-                        { label: 'Week', value: 'week' },
-                        { label: 'Day', value: 'day' },
+                        { label: 'Week', value: 'WEEK' },
+                        { label: 'Day', value: 'DAY' },
                       ]}
                       classNamePrefix="select"
                       theme={selectThemeColors}
