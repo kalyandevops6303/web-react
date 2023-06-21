@@ -29,9 +29,31 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
     projectName: yup
       .string()
-      .max(50, 'Project name must be at most 50 characters')
+      .min(4, 'Project name must be atleast 4 characters')
+      .max(150, 'Project name must be at most 150 characters')
       .required('Project name is required'),
-    expectedDuration: yup.number().required('Expected duration is required'),
+    expectedDuration: yup
+      .number()
+      .when('expectedDurationPeriod', {
+        is: (expectedDurationPeriod) => expectedDurationPeriod.value === 'week',
+        then: () =>
+          yup
+            .number()
+            .min(1, 'Expected duration should be atleast 1 week')
+            .max(12, 'Expected duration can not be more than 12 weeks')
+            .typeError('Please enter a number')
+            .required('Expected duration is required'),
+      })
+      .when('expectedDurationPeriod', {
+        is: (expectedDurationPeriod) => expectedDurationPeriod.value === 'day',
+        then: () =>
+          yup
+            .number()
+            .min(1, 'Expected duration should be atleast 1 day')
+            .max(90, 'Expected duration can not be more than 90 days')
+            .typeError('Please enter a number')
+            .required('Expected duration is required'),
+      }),
     expectedDurationPeriod: yup
       .object()
       .shape({
@@ -41,6 +63,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .required('Period is required'),
     projectDescription: yup
       .string()
+      .min(150, 'Project description must be atleast 150 characters')
       .max(250, 'Project description must be at most 250 characters')
       .required('Project description is required'),
     skills: yup
@@ -70,13 +93,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         value: yup.string().required('Preferred working time zone is required'),
       })
       .required('Preferred working time zone is required'),
-    minTimeOverlapHr: yup
-      .object()
-      .shape({
-        label: yup.string().required('Min time overlap hr is required'),
-        value: yup.string().required('Min time overlap hr is required'),
-      })
-      .required('Min time overlap hr is required'),
+    minTimeOverlapHr: yup.number().typeError('Please enter a number').required('Min time overlap hr is required'),
     availabilityDays: yup
       .array()
       .min(1, 'Select at least one work availability day')
@@ -518,24 +535,16 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   name="minTimeOverlapHr"
                   control={control}
                   render={({ field }) => (
-                    <Select
-                      options={[
-                        { label: '1', value: 1 },
-                        { label: '2', value: 2 },
-                        { label: '3', value: 3 },
-                        { label: '4', value: 4 },
-                      ]}
-                      classNamePrefix="select"
-                      placeholder="Enter min. overlap hr"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.minTimeOverlapHr,
-                      })}
+                    <Input
                       {...field}
+                      type="number"
+                      min={0}
+                      placeholder="Enter min. overlap hr"
+                      invalid={errors.minTimeOverlapHr && true}
                     />
                   )}
                 />
-                {errors.minTimeOverlapHr && <FormFeedback>{errors.minTimeOverlapHr.label.message}</FormFeedback>}
+                {errors.minTimeOverlapHr && <FormFeedback>{errors.minTimeOverlapHr.message}</FormFeedback>}
               </Col>
             </Row>
             <Row className="mt-2">
