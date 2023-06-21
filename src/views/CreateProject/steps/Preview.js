@@ -13,18 +13,6 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
   const weekends = ['SATURDAY', 'SUNDAY'];
 
-  const weekdaysData = {
-    start_time: '1',
-    end_time: '2',
-    days: ['MONDAY', 'WEDNESDAY', 'FRIDAY'],
-  };
-
-  const weekendsData = {
-    start_time: '1',
-    end_time: '2',
-    days: ['SATURDAY', 'SUNDAY'],
-  };
-
   const renderFilePreview = (file) => {
     if (file.type.startsWith('image')) {
       return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
@@ -148,49 +136,56 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
           </Row>
           <Row className="mb-2">
             <Col sm="12" md="12" lg="6">
-              <h4 className="fw-bolder">{projectDetails?.preferredWorkingTimeZone?.label}</h4>
+              <h4 className="fw-bolder">{projectDetails?.currencyType?.label}</h4>
               <p className="font-medium-2 fw-normal">Currency Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
                 {projectDetails?.projectPayType === 'variable-price'
                   ? 'Variable Pay'
-                  : `Fixed Pay - ${projectDetails?.currencyType?.label}${projectDetails?.projectFixedCost}`}{' '}
+                  : `Fixed Pay - ${projectDetails?.currencyType?.value?.code}${projectDetails?.projectFixedCost}`}{' '}
               </h4>
               <p className="font-medium-2 fw-normal">Payment Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
-              <h4 className="fw-bolder">{projectDetails?.nda}</h4>
+              <h4 className="fw-bolder">{capitalize(projectDetails?.nda)}</h4>
               <p className="font-medium-2 fw-normal">NDA</p>
             </Col>
           </Row>
           <Row>
             <Col sm="12" md="12" lg="6">
-              <TimeWrapper>
-                {weekdaysData && (
+              <TimeWrapper
+                isBorder={projectDetails?.availabilityDays.includes('weekends')}
+                isPadding={projectDetails?.availabilityDays.includes('weekdays')}
+              >
+                {projectDetails?.availabilityDays.includes('weekdays') && (
                   <section className="weekdays">
                     <CardText>
-                      {convertTo12HourFormat(weekdaysData.start_time)} - {convertTo12HourFormat(weekdaysData.end_time)}
+                      {convertTo12HourFormat(parseInt(projectDetails?.weekdayStartTime?.value, 10))} -{' '}
+                      {convertTo12HourFormat(parseInt(projectDetails?.weekdayEndTime?.value, 10))}{' '}
+                      {projectDetails?.preferredWorkingTimeZone?.value?.abbreviation}
                     </CardText>
                     <ul>
                       {weekdays.map((day) => (
                         <li key={day}>
-                          <span className={`dot ${weekdaysData.days.includes(day) ? 'active' : ''}`} />
+                          <span className={`dot ${projectDetails?.weekdays.includes(day) ? 'active' : ''}`} />
                           {capitalize(day.slice(0, 3))}
                         </li>
                       ))}
                     </ul>
                   </section>
                 )}
-                {weekendsData && (
+                {projectDetails?.availabilityDays.includes('weekends') && (
                   <section className="weekends">
                     <CardText>
-                      {convertTo12HourFormat(weekendsData.start_time)} - {convertTo12HourFormat(weekendsData.end_time)}
+                      {convertTo12HourFormat(parseInt(projectDetails?.weekendStartTime?.value, 10))} -{' '}
+                      {convertTo12HourFormat(parseInt(projectDetails?.weekendEndTime?.value, 10))}{' '}
+                      {projectDetails?.preferredWorkingTimeZone?.value?.abbreviation}
                     </CardText>
                     <ul>
                       {weekends.map((day) => (
                         <li key={day}>
-                          <span className={`dot ${weekendsData.days.includes(day) ? 'active' : ''}`} />
+                          <span className={`dot ${projectDetails?.weekends.includes(day) ? 'active' : ''}`} />
                           {capitalize(day.slice(0, 3))}
                         </li>
                       ))}
@@ -200,7 +195,7 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
               </TimeWrapper>
             </Col>
             <Col sm="12" md="6" lg="3">
-              <h4 className="fw-bolder">{projectDetails?.minTimeOverlapHr?.label} hr</h4>
+              <h4 className="fw-bolder">{projectDetails?.minTimeOverlapHr} hr</h4>
               <p className="font-medium-2 fw-normal">Minimum Overlap</p>
             </Col>
           </Row>
