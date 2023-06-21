@@ -394,3 +394,60 @@ export const InviteUsersListContainer = styled.div`
     color: ${theme.wizardStepSvgColor};
   }
 `;
+
+export const TextEditorContainer = styled.div`
+  .ql-toolbar.ql-snow {
+    border: 1px solid ${theme.inputBorderColor} !important;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .ql-container.ql-snow {
+    border-left: 1px solid ${theme.inputBorderColor} !important;
+    border-right: 1px solid ${theme.inputBorderColor} !important;
+    border-bottom: 1px solid ${theme.inputBorderColor} !important;
+    border-radius: 0 0 4px 4px;
+  }
+
+  .ql-editor.ql-blank::before {
+    color: ${theme.gray};
+    font-style: normal;
+    font-weight: 300;
+    font-size: 13px;
+  }
+
+  .ql-container {
+    font-family: inherit;
+    font-size: 15px;
+  }
+
+  .ql-toolbar.ql-snow + .ql-container.ql-snow {
+    min-height: 150px;
+  }
+`;
+
+export const PreviewTextEditorContainer = styled.div`
+  .ql-toolbar.ql-snow {
+    display: none;
+  }
+
+  .ql-container.ql-snow {
+    border: none !important;
+    border-radius: 0;
+  }
+
+  .ql-editor.ql-blank::before {
+    color: ${theme.gray};
+    font-style: normal;
+    font-weight: 300;
+    font-size: 13px;
+  }
+
+  .ql-container {
+    font-family: inherit;
+    font-size: 15px;
+  }
+
+  .ql-toolbar.ql-snow + .ql-container.ql-snow {
+    min-height: 100px;
+  }
+`;

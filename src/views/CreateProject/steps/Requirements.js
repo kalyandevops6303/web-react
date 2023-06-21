@@ -1,5 +1,7 @@
 import Proptypes from 'prop-types';
 import { ChevronRight, FileText, Info, Minus, Upload } from 'react-feather';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import Select from 'react-select';
 import classNames from 'classnames';
 import { selectThemeColors } from '@utils';
@@ -21,7 +23,7 @@ import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDropzone } from 'react-dropzone';
-import { DropzoneContainer, RequirementsFormContainer } from '../style';
+import { DropzoneContainer, RequirementsFormContainer, TextEditorContainer } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 
@@ -61,11 +63,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         value: yup.string().required('Period is required'),
       })
       .required('Period is required'),
-    projectDescription: yup
-      .string()
-      .min(150, 'Project description must be atleast 150 characters')
-      .max(250, 'Project description must be at most 250 characters')
-      .required('Project description is required'),
+    projectDescription: yup.string().required('Project description is required'),
     skills: yup
       .array()
       .of(
@@ -388,13 +386,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   name="projectDescription"
                   control={control}
                   render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="textarea"
-                      placeholder="Enter project background and requirements in 250 character."
-                      rows="5"
-                      invalid={errors.projectDescription && true}
-                    />
+                    <TextEditorContainer>
+                      <ReactQuill {...field} theme="snow" placeholder="Enter project background and requirements" />
+                    </TextEditorContainer>
                   )}
                 />
                 {errors.projectDescription && <FormFeedback>{errors.projectDescription.message}</FormFeedback>}
