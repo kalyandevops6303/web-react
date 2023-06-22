@@ -33,6 +33,12 @@ const createProjectSlice = createSlice({
       error: action.payload,
     }),
 
+    clearCreateProjectData: (state) => ({
+      ...state,
+      createProjectLoading: false,
+      createProject: null,
+    }),
+
     bestTalentsRequest: (state) => ({
       ...state,
       bestTalentsLoading: true,
@@ -102,6 +108,7 @@ export const {
   createProjectRequest,
   createProjectSuccess,
   createProjectFailure,
+  clearCreateProjectData,
   bestTalentsRequest,
   bestTalentsSuccess,
   bestTalentsFailure,
