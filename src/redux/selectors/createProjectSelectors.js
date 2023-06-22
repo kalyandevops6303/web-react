@@ -23,6 +23,16 @@ export const favoriteTalentsLoading = createSelector(
   (createProject) => createProject.favoriteTalentsLoading,
 );
 
+export const almaMaterTalents = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.almaMaterTalents,
+);
+
+export const almaMaterTalentsLoading = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.almaMaterTalentsLoading,
+);
+
 export const inviteTalentsLoading = createSelector(
   createProjectSelector,
   (createProject) => createProject.inviteTalentsLoading,

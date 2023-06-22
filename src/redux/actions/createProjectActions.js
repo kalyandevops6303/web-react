@@ -2,6 +2,9 @@ import errorHandler from '../../utility/errorHandler';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import {
+  almaMaterTalentsFailure,
+  almaMaterTalentsRequest,
+  almaMaterTalentsSuccess,
   bestTalentsFailure,
   bestTalentsRequest,
   bestTalentsSuccess,
@@ -16,6 +19,7 @@ import {
   inviteTalentsSuccess,
 } from '../reducers/createProject';
 import {
+  almaMaterTalentsService,
   bestTalentsService,
   createProjectService,
   favoriteTalentsService,
@@ -42,6 +46,16 @@ const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => a
   }
 };
 
+const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
+  dispatch(almaMaterTalentsRequest());
+  try {
+    const res = await almaMaterTalentsService(projectId, searchText, page, pageSize);
+    dispatch(almaMaterTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
+  } catch (error) {
+    errorHandler(error, almaMaterTalentsFailure);
+  }
+};
+
 const createNewProject = (data, onSuccess) => async (dispatch) => {
   dispatch(createProjectRequest());
   try {
@@ -49,6 +63,7 @@ const createNewProject = (data, onSuccess) => async (dispatch) => {
     dispatch(createProjectSuccess(res.data.data));
     dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
     dispatch(getFavoriteTalents(res.data.data.project_id, '', 1, 10, []));
+    dispatch(getAlmaMaterTalents(res.data.data.project_id, '', 1, 10, []));
     ShowToastMessage(SUCCESS, res.data.data.message);
     onSuccess();
   } catch (error) {
@@ -68,4 +83,4 @@ const inviteTalents = (projectId, data, onSuccess) => async (dispatch) => {
   }
 };
 
-export { createNewProject, getBestTalents, getFavoriteTalents, inviteTalents };
+export { createNewProject, getBestTalents, getFavoriteTalents, getAlmaMaterTalents, inviteTalents };
