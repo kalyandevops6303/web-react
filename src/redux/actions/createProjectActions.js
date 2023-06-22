@@ -8,8 +8,11 @@ import {
   createProjectFailure,
   createProjectRequest,
   createProjectSuccess,
+  inviteTalentsFailure,
+  inviteTalentsRequest,
+  inviteTalentsSuccess,
 } from '../reducers/createProject';
-import { bestTalentsService, createProjectService } from '../../services/createProjectServices';
+import { bestTalentsService, createProjectService, inviteTalentsService } from '../../services/createProjectServices';
 
 const getBestTalents = (projectId, searchText, page, pageSize) => async (dispatch) => {
   dispatch(bestTalentsRequest());
@@ -34,4 +37,16 @@ const createNewProject = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-export { createNewProject, getBestTalents };
+const inviteTalents = (projectId, data, onSuccess) => async (dispatch) => {
+  dispatch(inviteTalentsRequest());
+  try {
+    const res = await inviteTalentsService(projectId, data);
+    dispatch(inviteTalentsSuccess(res.data.data));
+    ShowToastMessage(SUCCESS, res.data.data.message);
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, inviteTalentsFailure);
+  }
+};
+
+export { createNewProject, getBestTalents, inviteTalents };

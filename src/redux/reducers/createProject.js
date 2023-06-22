@@ -5,6 +5,7 @@ const initialState = {
   createProjectLoading: false,
   bestTalents: null,
   bestTalentsLoading: false,
+  inviteTalentsLoading: false,
   error: null,
 };
 
@@ -43,6 +44,21 @@ const createProjectSlice = createSlice({
       bestTalentsLoading: false,
       error: action.payload,
     }),
+
+    inviteTalentsRequest: (state) => ({
+      ...state,
+      inviteTalentsLoading: true,
+      error: null,
+    }),
+    inviteTalentsSuccess: (state) => ({
+      ...state,
+      inviteTalentsLoading: false,
+    }),
+    inviteTalentsFailure: (state, action) => ({
+      ...state,
+      inviteTalentsLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -53,6 +69,9 @@ export const {
   bestTalentsRequest,
   bestTalentsSuccess,
   bestTalentsFailure,
+  inviteTalentsRequest,
+  inviteTalentsSuccess,
+  inviteTalentsFailure,
 } = createProjectSlice.actions;
 
 export default createProjectSlice.reducer;

@@ -15,3 +15,8 @@ export const bestTalentsLoading = createSelector(
   createProjectSelector,
   (createProject) => createProject.bestTalentsLoading,
 );
+
+export const inviteTalentsLoading = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.inviteTalentsLoading,
+);
