@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FileText, ArrowLeft, Box, Check, CreditCard } from 'react-feather';
 import { Col, Row } from 'reactstrap';
@@ -9,6 +10,7 @@ import Listing from './steps/Listing';
 import Requirements from './steps/Requirements';
 import theme from '../../configs/themeVariables';
 import { BackButtonContainer, BackIconContainer, FormWizardContainer } from './style';
+import { getBestTalents } from '../../redux/actions/createProjectActions';
 
 const CreateProject = () => {
   const ref = useRef(null);
@@ -76,6 +78,12 @@ const CreateProject = () => {
       ),
     },
   ];
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getBestTalents('6493e94477c47b3356cd1547', '', 1, 10));
+  }, []);
 
   return (
     <>

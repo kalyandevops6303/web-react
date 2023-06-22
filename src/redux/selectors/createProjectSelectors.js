@@ -8,3 +8,10 @@ export const createProjectLoading = createSelector(
   createProjectSelector,
   (createProject) => createProject.createProjectLoading,
 );
+
+export const bestTalents = createSelector(createProjectSelector, (createProject) => createProject.bestTalents);
+
+export const bestTalentsLoading = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.bestTalentsLoading,
+);

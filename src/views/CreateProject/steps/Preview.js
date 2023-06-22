@@ -9,8 +9,8 @@ import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style
 import { convertTo12HourFormat } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
-import createNewProject from '../../../redux/actions/createProjectActions';
 import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
+import { createNewProject } from '../../../redux/actions/createProjectActions';
 
 const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItModal }) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];

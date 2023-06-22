@@ -55,6 +55,7 @@ const API = {
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
+    bestTalents: `${apiCreateProjectEndpoint}/api/v1/project/best-talents`,
   },
 };
 

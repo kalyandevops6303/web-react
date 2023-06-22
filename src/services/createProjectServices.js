@@ -3,4 +3,7 @@ import DataService from '../configs/dataService/dataService';
 
 const createProjectService = (data) => DataService.post(API.createProject.createProject, data);
 
-export default createProjectService;
+const bestTalentsService = (projectId, searchText, page, pageSize) =>
+  DataService.get(`${API.createProject.bestTalents}?project_id=${projectId}&page=${page}&page_size=${pageSize}`);
+
+export { createProjectService, bestTalentsService };

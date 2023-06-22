@@ -28,6 +28,9 @@ import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
 import SendInvitationModal from '../SendInvitationModal';
 import YouDidItModal from '../YouDidItModal';
+// import InfiniteScroll from 'react-infinite-scroll-component';
+// import { useSelector } from 'react-redux';
+// import { bestTalents } from '../../../redux/selectors/createProjectSelectors';
 
 const DATA1 = [
   {
@@ -285,6 +288,8 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
     almaMater: '3',
   };
 
+  // const bestTalentsData = useSelector(bestTalents);
+
   const [activeTab, setTabActive] = useState(tabNames.best);
   const [bestData, setBestData] = useState(null);
   const [favouriteData, setFavouriteData] = useState(null);
@@ -480,6 +485,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
           <TabContent activeTab={activeTab} className="mb-2">
             <TabPane tabId={tabNames.best}>
               {activeTab === tabNames.best && (
+                // <InfiniteScroll dataLength={bestTalentsData.length} next={fetchData} hasMore={true} loader={<h4>Loading...</h4>}>
                 <TableContainer>
                   {filteredBestData?.length > 0 ? (
                     filteredBestData?.map((item) => (
@@ -560,6 +566,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
                     </div>
                   )}
                 </TableContainer>
+                // </InfiniteScroll>
               )}
             </TabPane>
             <TabPane tabId={tabNames.favourite}>

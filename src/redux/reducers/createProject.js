@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   createProject: null,
   createProjectLoading: false,
+  bestTalents: null,
+  bestTalentsLoading: false,
   error: null,
 };
 
@@ -26,38 +28,31 @@ const createProjectSlice = createSlice({
       error: action.payload,
     }),
 
-    accountDetailsRequest: (state) => ({
+    bestTalentsRequest: (state) => ({
       ...state,
-      accountDetailsLoading: true,
+      bestTalentsLoading: true,
       error: null,
     }),
-    accountDetailsSuccess: (state) => ({
+    bestTalentsSuccess: (state, action) => ({
       ...state,
-      accountDetailsLoading: false,
+      bestTalentsLoading: false,
+      bestTalents: action.payload,
     }),
-    accountDetailsFailure: (state, action) => ({
+    bestTalentsFailure: (state, action) => ({
       ...state,
-      accountDetailsLoading: false,
-      error: action.payload,
-    }),
-
-    profileDetailsRequest: (state) => ({
-      ...state,
-      profileDetailsLoading: true,
-      error: null,
-    }),
-    profileDetailsSuccess: (state) => ({
-      ...state,
-      profileDetailsLoading: false,
-    }),
-    profileDetailsFailure: (state, action) => ({
-      ...state,
-      profileDetailsLoading: false,
+      bestTalentsLoading: false,
       error: action.payload,
     }),
   },
 });
 
-export const { createProjectRequest, createProjectSuccess, createProjectFailure } = createProjectSlice.actions;
+export const {
+  createProjectRequest,
+  createProjectSuccess,
+  createProjectFailure,
+  bestTalentsRequest,
+  bestTalentsSuccess,
+  bestTalentsFailure,
+} = createProjectSlice.actions;
 
 export default createProjectSlice.reducer;
