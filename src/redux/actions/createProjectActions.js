@@ -8,11 +8,19 @@ import {
   createProjectFailure,
   createProjectRequest,
   createProjectSuccess,
+  favoriteTalentsFailure,
+  favoriteTalentsRequest,
+  favoriteTalentsSuccess,
   inviteTalentsFailure,
   inviteTalentsRequest,
   inviteTalentsSuccess,
 } from '../reducers/createProject';
-import { bestTalentsService, createProjectService, inviteTalentsService } from '../../services/createProjectServices';
+import {
+  bestTalentsService,
+  createProjectService,
+  favoriteTalentsService,
+  inviteTalentsService,
+} from '../../services/createProjectServices';
 
 const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   dispatch(bestTalentsRequest());
@@ -24,12 +32,23 @@ const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async
   }
 };
 
+const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
+  dispatch(favoriteTalentsRequest());
+  try {
+    const res = await favoriteTalentsService(projectId, searchText, page, pageSize);
+    dispatch(favoriteTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
+  } catch (error) {
+    errorHandler(error, favoriteTalentsFailure);
+  }
+};
+
 const createNewProject = (data, onSuccess) => async (dispatch) => {
   dispatch(createProjectRequest());
   try {
     const res = await createProjectService(data);
     dispatch(createProjectSuccess(res.data.data));
     dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
+    dispatch(getFavoriteTalents(res.data.data.project_id, '', 1, 10, []));
     ShowToastMessage(SUCCESS, res.data.data.message);
     onSuccess();
   } catch (error) {
@@ -49,4 +68,4 @@ const inviteTalents = (projectId, data, onSuccess) => async (dispatch) => {
   }
 };
 
-export { createNewProject, getBestTalents, inviteTalents };
+export { createNewProject, getBestTalents, getFavoriteTalents, inviteTalents };

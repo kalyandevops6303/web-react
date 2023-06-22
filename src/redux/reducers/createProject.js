@@ -5,6 +5,8 @@ const initialState = {
   createProjectLoading: false,
   bestTalents: null,
   bestTalentsLoading: false,
+  favoriteTalents: null,
+  favoriteTalentsLoading: false,
   inviteTalentsLoading: false,
   error: null,
 };
@@ -45,6 +47,22 @@ const createProjectSlice = createSlice({
       error: action.payload,
     }),
 
+    favoriteTalentsRequest: (state) => ({
+      ...state,
+      favoriteTalentsLoading: true,
+      error: null,
+    }),
+    favoriteTalentsSuccess: (state, action) => ({
+      ...state,
+      favoriteTalentsLoading: false,
+      favoriteTalents: action.payload,
+    }),
+    favoriteTalentsFailure: (state, action) => ({
+      ...state,
+      favoriteTalentsLoading: false,
+      error: action.payload,
+    }),
+
     inviteTalentsRequest: (state) => ({
       ...state,
       inviteTalentsLoading: true,
@@ -69,6 +87,9 @@ export const {
   bestTalentsRequest,
   bestTalentsSuccess,
   bestTalentsFailure,
+  favoriteTalentsRequest,
+  favoriteTalentsSuccess,
+  favoriteTalentsFailure,
   inviteTalentsRequest,
   inviteTalentsSuccess,
   inviteTalentsFailure,
