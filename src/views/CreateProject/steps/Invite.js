@@ -37,6 +37,7 @@ import {
   favoriteTalents,
 } from '../../../redux/selectors/createProjectSelectors';
 import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../../redux/actions/createProjectActions';
+import InvitationSentModal from '../InvitationSentModal';
 
 const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
   const tabNames = {
@@ -59,9 +60,11 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
 
   const [inviteModal, setInviteModal] = useState(null);
   const [sendInvitationModal, setSendInvitationModal] = useState(null);
+  const [invitationSentModal, setInvitationSentModal] = useState(null);
 
   const toggleInviteModal = () => setInviteModal(!inviteModal);
   const toggleSendInvitationModal = () => setSendInvitationModal(!sendInvitationModal);
+  const toggleInvitationSentModal = () => setInvitationSentModal(!invitationSentModal);
 
   const toggleTabs = (tab) => {
     if (activeTab !== tab) {
@@ -76,6 +79,18 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
     (favoriteTalentsData?.data ? favoriteTalentsData?.data.length : 0) +
     // eslint-disable-next-line no-unsafe-optional-chaining
     (almaMaterTalentsData?.data ? almaMaterTalentsData?.data.length : 0);
+
+  const removeDuplicates = (arr, key) => {
+    const seen = new Set();
+    return arr.filter((obj) => {
+      const val = obj[key];
+      if (!seen.has(val)) {
+        seen.add(val);
+        return true;
+      }
+      return false;
+    });
+  };
 
   const onSendInvitationModalOpen = () => {
     const selectedBestTalents = bestTalentsData?.data.filter((talent) => selectedIds.includes(talent.user_id));
@@ -93,7 +108,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
 
     const selectedTalentsData = [...selectedBestTalents, ...selectedFavouriteTalents, ...selectedAlmaMaterTalents];
 
-    setSelectedTalents(selectedTalentsData);
+    setSelectedTalents(removeDuplicates(selectedTalentsData, 'user_id'));
     setSendInvitationModal(true);
   };
 
@@ -144,6 +159,15 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
         <SendInvitationModal
           modal={sendInvitationModal}
           toggleModal={toggleSendInvitationModal}
+          selectedTalents={selectedTalents}
+          setInvitationSentModal={setInvitationSentModal}
+          projectId={createProjectDetails?.project_id}
+        />
+      )}
+      {invitationSentModal && (
+        <InvitationSentModal
+          modal={invitationSentModal}
+          toggleModal={toggleInvitationSentModal}
           selectedTalents={selectedTalents}
         />
       )}

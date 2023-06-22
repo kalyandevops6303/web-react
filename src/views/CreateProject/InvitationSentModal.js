@@ -31,7 +31,7 @@ const InvitationSentModal = ({ modal, toggleModal, selectedTalents }) => (
                       <User size={30} />
                     </div>
                     <div>
-                      <p className="font-medium-1 fw-bold m-0 mb-75">{talent.name}</p>
+                      <p className="font-medium-1 fw-bold m-0 mb-75">{`${talent.first_name} ${talent.last_name}`}</p>
                       <div className="d-flex align-items-center">
                         <Badge>
                           <div className="d-flex align-items-center">
@@ -39,7 +39,7 @@ const InvitationSentModal = ({ modal, toggleModal, selectedTalents }) => (
                             <p className="m-0 fw-bolder rating-text">{talent.rating}</p>
                           </div>
                         </Badge>
-                        <p className="m-0 font-small-3 fw-light ms-1">{talent.projects} Projects</p>
+                        <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
                       </div>
                     </div>
                   </div>
