@@ -27,6 +27,7 @@ import { giveStrokeColor } from '../../../utility/Utils';
 import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
 import SendInvitationModal from '../SendInvitationModal';
+import YouDidItModal from '../YouDidItModal';
 
 const DATA1 = [
   {
@@ -277,7 +278,7 @@ const DATA3 = [
   },
 ];
 
-const Invite = ({ stepper }) => {
+const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
   const tabNames = {
     best: '1',
     favourite: '2',
@@ -401,6 +402,7 @@ const Invite = ({ stepper }) => {
 
   return (
     <>
+      {youDidItModal && <YouDidItModal modal={youDidItModal} toggleModal={toggleYouDidItModal} />}
       {inviteModal && <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} />}
       {sendInvitationModal && (
         <SendInvitationModal
@@ -759,8 +761,12 @@ export default Invite;
 
 Invite.propTypes = {
   stepper: Proptypes.object,
+  youDidItModal: Proptypes.bool,
+  toggleYouDidItModal: Proptypes.func,
 };
 
 Invite.defaultProps = {
   stepper: {},
+  youDidItModal: false,
+  toggleYouDidItModal: () => {},
 };

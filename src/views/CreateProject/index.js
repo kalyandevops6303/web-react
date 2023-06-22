@@ -34,9 +34,6 @@ const CreateProject = () => {
           setProjectDetails={setProjectDetails}
           files={files}
           setFiles={setFiles}
-          youDidItModal={youDidItModal}
-          setYouDidItModal={setYouDidItModal}
-          toggleYouDidItModal={toggleYouDidItModal}
           type="wizard-modern"
         />
       ),
@@ -59,6 +56,7 @@ const CreateProject = () => {
           projectDetails={projectDetails}
           listingDetails={listingDetails}
           files={files}
+          setYouDidItModal={setYouDidItModal}
           type="wizard-modern"
         />
       ),
@@ -68,7 +66,14 @@ const CreateProject = () => {
       title: 'Invite',
       subtitle: 'Solicit bids',
       icon: <CreditCard size={18} />,
-      content: <Invite stepper={stepper} type="wizard-modern" />,
+      content: (
+        <Invite
+          stepper={stepper}
+          youDidItModal={youDidItModal}
+          toggleYouDidItModal={toggleYouDidItModal}
+          type="wizard-modern"
+        />
+      ),
     },
   ];
 

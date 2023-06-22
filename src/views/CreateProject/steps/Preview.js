@@ -1,4 +1,5 @@
 import Proptypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { capitalize } from 'lodash';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -8,10 +9,13 @@ import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style
 import { convertTo12HourFormat } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
+import createNewProject from '../../../redux/actions/createProjectActions';
 
-const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
+const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItModal }) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
   const weekends = ['SATURDAY', 'SUNDAY'];
+
+  const dispatch = useDispatch();
 
   const renderFilePreview = (file) => {
     if (file.type.startsWith('image')) {
@@ -162,6 +166,11 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
     return filteredObj;
   };
 
+  const onSuccess = () => {
+    stepper.next();
+    setYouDidItModal(true);
+  };
+
   const onPostClick = () => {
     const details = {
       name: projectDetails?.projectName,
@@ -209,7 +218,7 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
 
     const requiredData = { details, proficiency, availability, countries, pay_type, nda, listing_details };
 
-    return removeEmptyKeys(requiredData);
+    dispatch(createNewProject(removeEmptyKeys(requiredData), onSuccess));
   };
 
   return (
@@ -378,6 +387,7 @@ Preview.propTypes = {
   projectDetails: Proptypes.object,
   listingDetails: Proptypes.object,
   files: Proptypes.array,
+  setYouDidItModal: Proptypes.func,
 };
 
 Preview.defaultProps = {
@@ -385,4 +395,5 @@ Preview.defaultProps = {
   projectDetails: {},
   listingDetails: {},
   files: [],
+  setYouDidItModal: () => {},
 };

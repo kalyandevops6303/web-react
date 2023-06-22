@@ -1,5 +1,6 @@
 const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
 const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
+const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
 
 const API = {
   auth: {
@@ -51,6 +52,9 @@ const API = {
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
+  },
+  createProject: {
+    createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
   },
 };
 
