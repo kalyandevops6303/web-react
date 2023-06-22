@@ -458,6 +458,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       type="number"
                       min={0}
                       placeholder="Enter duration"
+                      onWheel={(e) => e.target.blur()}
                       invalid={errors.expectedDuration && true}
                     />
                   )}
@@ -646,6 +647,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       type="number"
                       min={0}
                       step={0.1}
+                      onWheel={(e) => e.target.blur()}
                       placeholder="Enter min. overlap hr"
                       invalid={errors.minTimeOverlapHr && true}
                     />
