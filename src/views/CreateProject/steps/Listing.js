@@ -51,7 +51,17 @@ const Listing = ({ stepper, setListingDetails }) => {
 
   const onSubmit = (data) => {
     trigger();
-    setListingDetails(data);
+    if (data.listingOption === 'select-duration') {
+      setListingDetails(data);
+    } else if (data.listingOption === 'enter-duration') {
+      const newData = {
+        ...data,
+        startDate: new Date(),
+        endDate: new Date(new Date().setDate(new Date().getDate() + data.duration)),
+      };
+
+      setListingDetails(newData);
+    }
     stepper.next();
   };
 

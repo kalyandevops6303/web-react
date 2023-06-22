@@ -37,6 +37,12 @@ const createProjectSlice = createSlice({
       ...state,
       createProjectLoading: false,
       createProject: null,
+      bestTalents: null,
+      bestTalentsLoading: false,
+      favoriteTalents: null,
+      favoriteTalentsLoading: false,
+      almaMaterTalents: null,
+      almaMaterTalentsLoading: false,
     }),
 
     bestTalentsRequest: (state) => ({
