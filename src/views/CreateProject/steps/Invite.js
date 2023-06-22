@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
@@ -116,7 +116,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
     dispatch(
       getBestTalents(
         createProjectDetails?.project_id,
-        '',
+        searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         bestTalentsData?.metadata?.current_page + 1,
         10,
@@ -129,7 +129,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
     dispatch(
       getFavoriteTalents(
         createProjectDetails?.project_id,
-        '',
+        searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         favoriteTalentsData?.metadata?.current_page + 1,
         10,
@@ -142,13 +142,31 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
     dispatch(
       getAlmaMaterTalents(
         createProjectDetails?.project_id,
-        '',
+        searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         almaMaterTalentsData?.metadata?.current_page + 1,
         10,
         almaMaterTalentsData?.data,
       ),
     );
+  };
+
+  useEffect(() => {
+    let delayDebounceFn = null;
+
+    if (createProjectDetails) {
+      delayDebounceFn = setTimeout(() => {
+        dispatch(getBestTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
+        dispatch(getFavoriteTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
+        dispatch(getAlmaMaterTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
+      }, 500);
+    }
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchValue]);
+
+  const onSearch = (e) => {
+    setSearchValue(e.target.value);
   };
 
   return (
@@ -192,11 +210,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
                 <InputGroupText className="ps-1 pe-50">
                   <Search size={14} color={theme.textMuted} />
                 </InputGroupText>
-                <Input
-                  placeholder="Enter talent name"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
+                <Input placeholder="Enter talent name" value={searchValue} onChange={(e) => onSearch(e)} />
               </InputGroup>
             </Col>
           </Row>
