@@ -14,11 +14,11 @@ import {
 } from '../reducers/createProject';
 import { bestTalentsService, createProjectService, inviteTalentsService } from '../../services/createProjectServices';
 
-const getBestTalents = (projectId, searchText, page, pageSize) => async (dispatch) => {
+const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   dispatch(bestTalentsRequest());
   try {
     const res = await bestTalentsService(projectId, searchText, page, pageSize);
-    dispatch(bestTalentsSuccess(res.data.data));
+    dispatch(bestTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, bestTalentsFailure);
   }
@@ -29,7 +29,7 @@ const createNewProject = (data, onSuccess) => async (dispatch) => {
   try {
     const res = await createProjectService(data);
     dispatch(createProjectSuccess(res.data.data));
-    dispatch(getBestTalents(res.data.data.project_id, '', 1, 10));
+    dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
     ShowToastMessage(SUCCESS, res.data.data.message);
     onSuccess();
   } catch (error) {

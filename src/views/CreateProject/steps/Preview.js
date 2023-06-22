@@ -216,7 +216,7 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
     const listing_details = {
       start_date: formatDate(listingDetails?.startDate),
       end_date: formatDate(listingDetails?.endDate),
-      duration_in_days: listingDetails?.duration,
+      duration_in_days: listingDetails?.duration === 0 ? undefined : listingDetails?.duration,
     };
 
     const requiredData = { details, proficiency, availability, countries, pay_type, nda, listing_details };

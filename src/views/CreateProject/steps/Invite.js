@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { Check, ChevronLeft, Search, Share2, Star, User } from 'react-feather';
 import {
@@ -28,9 +30,8 @@ import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
 import SendInvitationModal from '../SendInvitationModal';
 import YouDidItModal from '../YouDidItModal';
-// import InfiniteScroll from 'react-infinite-scroll-component';
-// import { useSelector } from 'react-redux';
-// import { bestTalents } from '../../../redux/selectors/createProjectSelectors';
+import { bestTalents, createProjectData } from '../../../redux/selectors/createProjectSelectors';
+import { getBestTalents } from '../../../redux/actions/createProjectActions';
 
 const DATA1 = [
   {
@@ -288,13 +289,15 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
     almaMater: '3',
   };
 
-  // const bestTalentsData = useSelector(bestTalents);
+  const dispatch = useDispatch();
+
+  const bestTalentsData = useSelector(bestTalents);
+  const createProjectDetails = useSelector(createProjectData);
 
   const [activeTab, setTabActive] = useState(tabNames.best);
   const [bestData, setBestData] = useState(null);
   const [favouriteData, setFavouriteData] = useState(null);
   const [almaMaterData, setAlmaMaterData] = useState(null);
-  const [filteredBestData, setFilteredBestData] = useState(null);
   const [filteredFavouriteData, setFilteredFavouriteData] = useState(null);
   const [filteredAlmaMaterData, setFilteredAlmaMaterData] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -318,9 +321,6 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
   }, [DATA3]);
 
   useEffect(() => {
-    setFilteredBestData(bestData);
-  }, [bestData]);
-  useEffect(() => {
     setFilteredFavouriteData(favouriteData);
   }, [favouriteData]);
   useEffect(() => {
@@ -330,62 +330,6 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
   const toggleTabs = (tab) => {
     if (activeTab !== tab) {
       setTabActive(tab);
-    }
-  };
-
-  const handleSearch = ({ target }) => {
-    const { value } = target;
-    let updatedBestData = [];
-    let updatedFavouriteData = [];
-    let updatedAlmaMaterData = [];
-    setSearchValue(value);
-
-    if (value.length) {
-      updatedBestData = bestData.filter((item) => {
-        const startsWith = item.name.toLowerCase().startsWith(value.toLowerCase());
-        const includes = item.name.toLowerCase().includes(value.toLowerCase());
-
-        if (startsWith) {
-          return startsWith;
-        }
-        // eslint-disable-next-line
-        else if (!startsWith && includes) {
-          return includes;
-        } else return null;
-      });
-      setFilteredBestData(updatedBestData);
-
-      updatedFavouriteData = favouriteData.filter((item) => {
-        const startsWith = item.name.toLowerCase().startsWith(value.toLowerCase());
-        const includes = item.name.toLowerCase().includes(value.toLowerCase());
-
-        if (startsWith) {
-          return startsWith;
-        }
-        // eslint-disable-next-line
-        else if (!startsWith && includes) {
-          return includes;
-        } else return null;
-      });
-      setFilteredFavouriteData(updatedFavouriteData);
-
-      updatedAlmaMaterData = almaMaterData.filter((item) => {
-        const startsWith = item.name.toLowerCase().startsWith(value.toLowerCase());
-        const includes = item.name.toLowerCase().includes(value.toLowerCase());
-
-        if (startsWith) {
-          return startsWith;
-        }
-        // eslint-disable-next-line
-        else if (!startsWith && includes) {
-          return includes;
-        } else return null;
-      });
-      setFilteredAlmaMaterData(updatedAlmaMaterData);
-    } else {
-      setFilteredBestData(bestData);
-      setFilteredFavouriteData(favouriteData);
-      setFilteredAlmaMaterData(almaMaterData);
     }
   };
 
@@ -403,6 +347,19 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
 
     setSelectedTalents(selectedTalentsData);
     setSendInvitationModal(true);
+  };
+
+  const loadNewBestTalents = () => {
+    dispatch(
+      getBestTalents(
+        createProjectDetails?.project_id,
+        '',
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        bestTalentsData?.metadata?.current_page + 1,
+        10,
+        bestTalentsData?.data,
+      ),
+    );
   };
 
   return (
@@ -437,7 +394,11 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
                 <InputGroupText className="ps-1 pe-50">
                   <Search size={14} color={theme.textMuted} />
                 </InputGroupText>
-                <Input placeholder="Enter talent name" value={searchValue} onChange={handleSearch} />
+                <Input
+                  placeholder="Enter talent name"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
               </InputGroup>
             </Col>
           </Row>
@@ -485,88 +446,98 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
           <TabContent activeTab={activeTab} className="mb-2">
             <TabPane tabId={tabNames.best}>
               {activeTab === tabNames.best && (
-                // <InfiniteScroll dataLength={bestTalentsData.length} next={fetchData} hasMore={true} loader={<h4>Loading...</h4>}>
-                <TableContainer>
-                  {filteredBestData?.length > 0 ? (
-                    filteredBestData?.map((item) => (
-                      <Row key={item.id} className="d-flex align-items-center mb-2">
-                        <Col sm="2" md="3" lg="4">
-                          <div className="d-flex align-items-center">
-                            <div className="user-pic p-25 me-2">
-                              <User size={28} />
-                            </div>
-                            <p className="font-medium-1 fw-bold m-0">{item.name}</p>
-                          </div>
-                        </Col>
-                        <Col sm="2" md="3" lg="4">
-                          <div className="d-flex align-items-center">
-                            <Badge>
-                              <div className="d-flex align-items-center">
-                                <Star
-                                  size={12}
-                                  color={theme.starRatingBg}
-                                  fill={theme.starRatingBg}
-                                  className="me-50"
-                                />
-                                <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                <InfiniteScroll
+                  dataLength={bestTalentsData?.data?.length || 0}
+                  next={loadNewBestTalents}
+                  hasMore={bestTalentsData?.metadata?.has_next_page}
+                >
+                  <TableContainer>
+                    {bestTalentsData?.data?.length > 0 ? (
+                      bestTalentsData?.data?.map((item) => (
+                        <Row key={item.id} className="d-flex align-items-center mb-2">
+                          <Col sm="2" md="3" lg="4">
+                            <div className="d-flex align-items-center">
+                              <div className="user-pic p-25 me-2">
+                                <User size={28} />
                               </div>
-                            </Badge>
-                            <p className="m-0 font-small-3 fw-bold ms-1">{item.projects} Projects</p>
-                          </div>
-                        </Col>
-                        <Col sm="2" md="3" lg="2">
-                          <div className="circular-progressbar-container">
-                            <CircularProgressbarWithChildren
-                              value={item.percentage}
-                              styles={{
-                                path: {
-                                  stroke: giveStrokeColor(item.percentage),
-                                  strokeLinecap: 'round',
-                                  transition: 'stroke-dashoffset 0.5s ease 0s',
-                                  transform: 'rotate(0turn)',
-                                  transformOrigin: 'center center',
-                                },
-                                trail: {
-                                  stroke: theme.progressBarBg,
-                                  strokeLinecap: 'round',
-                                  transform: 'rotate(0turn)',
-                                  transformOrigin: 'center center',
-                                },
-                              }}
-                            >
-                              <div className="d-flex justify-content-center align-items-center">
-                                <p className="percentage-text m-0">{item.percentage}%</p>
+                              <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                            </div>
+                          </Col>
+                          <Col sm="2" md="3" lg="4">
+                            <div className="d-flex align-items-center">
+                              <Badge>
+                                <div className="d-flex align-items-center">
+                                  <Star
+                                    size={12}
+                                    color={theme.starRatingBg}
+                                    fill={theme.starRatingBg}
+                                    className="me-50"
+                                  />
+                                  <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                </div>
+                              </Badge>
+                              <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
+                            </div>
+                          </Col>
+                          <Col sm="2" md="3" lg="2">
+                            <div className="circular-progressbar-container">
+                              <CircularProgressbarWithChildren
+                                value={item.match_percentage}
+                                styles={{
+                                  path: {
+                                    stroke: giveStrokeColor(item.match_percentage),
+                                    strokeLinecap: 'round',
+                                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                                    transform: 'rotate(0turn)',
+                                    transformOrigin: 'center center',
+                                  },
+                                  trail: {
+                                    stroke: theme.progressBarBg,
+                                    strokeLinecap: 'round',
+                                    transform: 'rotate(0turn)',
+                                    transformOrigin: 'center center',
+                                  },
+                                }}
+                              >
+                                <div className="d-flex justify-content-center align-items-center">
+                                  <p className="percentage-text m-0">{item.match_percentage}%</p>
+                                </div>
+                              </CircularProgressbarWithChildren>
+                            </div>
+                          </Col>
+                          <Col sm="2" md="3" lg="1">
+                            {selectedIds.includes(item.user_id) ? (
+                              <div
+                                className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
+                                onClick={() => setSelectedIds(selectedIds.filter((data) => data !== item.user_id))}
+                              >
+                                <Check size={18} color={theme.green} />
                               </div>
-                            </CircularProgressbarWithChildren>
-                          </div>
-                        </Col>
-                        <Col sm="2" md="3" lg="1">
-                          {selectedIds.includes(item.id) ? (
-                            <div
-                              className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
-                              onClick={() => setSelectedIds(selectedIds.filter((data) => data !== item.id))}
-                            >
-                              <Check size={18} color={theme.green} />
-                            </div>
-                          ) : (
-                            <div
-                              className="upload-btn cursor-pointer ms-3"
-                              onClick={() => setSelectedIds([...selectedIds, item.id])}
-                            >
-                              <h5 className="m-0 fw-light font-medium-1">Invite</h5>
-                            </div>
-                          )}
-                        </Col>
-                      </Row>
-                    ))
-                  ) : (
-                    <div className="no-data-found-container d-flex flex-column align-items-center py-1">
-                      <img src={NoDataFoundGif} alt="no-data" width={200} height={200} className="no-data-found-gif" />
-                      <p className="m-0 fw-bold font-medium-3">No Data Found</p>
-                    </div>
-                  )}
-                </TableContainer>
-                // </InfiniteScroll>
+                            ) : (
+                              <div
+                                className="upload-btn cursor-pointer ms-3"
+                                onClick={() => setSelectedIds([...selectedIds, item.user_id])}
+                              >
+                                <h5 className="m-0 fw-light font-medium-1">Invite</h5>
+                              </div>
+                            )}
+                          </Col>
+                        </Row>
+                      ))
+                    ) : (
+                      <div className="no-data-found-container d-flex flex-column align-items-center py-1">
+                        <img
+                          src={NoDataFoundGif}
+                          alt="no-data"
+                          width={200}
+                          height={200}
+                          className="no-data-found-gif"
+                        />
+                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                      </div>
+                    )}
+                  </TableContainer>
+                </InfiniteScroll>
               )}
             </TabPane>
             <TabPane tabId={tabNames.favourite}>
