@@ -1,21 +1,24 @@
 import Proptypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
-import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge } from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
 import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style';
 import { convertTo12HourFormat } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import createNewProject from '../../../redux/actions/createProjectActions';
+import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
 
 const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItModal }) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
   const weekends = ['SATURDAY', 'SUNDAY'];
 
   const dispatch = useDispatch();
+
+  const createProjectIsLoading = useSelector(createProjectLoading);
 
   const renderFilePreview = (file) => {
     if (file.type.startsWith('image')) {
@@ -371,9 +374,15 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
           </UploadIconContainer>
           <h5 className="fw-light mb-0 mx-75">Back</h5>
         </div>
-        <Button color="primary" onClick={onPostClick}>
-          <span className="me-50">Post</span>
-          <ChevronRight size={14} />
+        <Button color="primary" disabled={createProjectIsLoading} onClick={onPostClick}>
+          {createProjectIsLoading ? (
+            <Spinner size="sm" />
+          ) : (
+            <>
+              <span className="me-50">Post</span>
+              <ChevronRight size={14} />
+            </>
+          )}
         </Button>
       </div>
     </>
