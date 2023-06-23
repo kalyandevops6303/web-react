@@ -1,0 +1,166 @@
+import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
+import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { useDispatch, useSelector } from 'react-redux';
+import searchAction from '../../redux/actions/gloabalSearch';
+import UserCard from '../cards/UserCard';
+import { Header } from '../styled';
+import theme from '../../configs/themeVariables';
+import ProjectCard from '../cards/ProjectCard';
+
+const Search = () => {
+  const query = useSelector((state) => state.search.query);
+  const searchData = useSelector((state) => state.search.searchData);
+
+  const currentFilterData = useSelector((state) => state.search.currentFilterData);
+  const currentMetaData = useSelector((state) => state.search.currentFilterMetadata);
+  const currenPreviewData = useSelector((state) => state.search.currentFilterPreview);
+  const [hasMore, setHasMore] = useState(true);
+  const [activeTab, setActivetab] = useState('PROJECT');
+
+  useEffect(() => {
+    setHasMore(true);
+    if (currenPreviewData?.length === 0 || currentFilterData?.length === currentMetaData?.total_records) {
+      setHasMore(false);
+    }
+  }, [currenPreviewData]);
+
+  const dispatch = useDispatch();
+
+  const metaData = {
+    page: 1,
+    page_size: 10,
+  };
+  useEffect(() => {
+    dispatch(
+      searchAction({
+        scope: activeTab,
+        metaData,
+        query,
+        onSuccess: () => {},
+        onError: () => {
+          setHasMore(false);
+        },
+      }),
+    );
+  }, [activeTab, query]);
+
+  const newMetaData = {
+    ...metaData,
+    // eslint-disable-next-line no-unsafe-optional-chaining
+    page: currentMetaData?.current_page + 1 || 1,
+  };
+  const fetchMore = () => {
+    dispatch(
+      searchAction({
+        isFetchMore: true,
+        scope: activeTab,
+        metaData: newMetaData,
+        query,
+        onSuccess: () => {},
+        onError: () => {
+          setHasMore(false);
+        },
+      }),
+    );
+  };
+
+  const NavigationBar = styled.ul`
+    list-style-type: none;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+    border-top: 1px solid ${theme.cardHeaderBorderColor};
+
+    li {
+      padding: 1.5rem 0 1rem 0;
+      margin: 0 4rem 0 0;
+      font-size: 1rem;
+      color: ${theme.navPillText};
+      cursor: pointer;
+    }
+    .active {
+      border-bottom: 2.5px solid ${theme.activeNavPillText};
+      color: ${theme.activeNavPillText};
+      font-weight: 600;
+      cursor: auto;
+    }
+  `;
+  const SearchCardWrap = styled.div`
+    .card-body {
+      padding: 2rem 1.8rem;
+    }
+    .card .card {
+      box-shadow: 0 4px 15px 0 rgba(34, 41, 47, 0.1) !important;
+      margin: 1.8rem 0.7rem;
+    }
+  `;
+
+  const totalResult = Object.values(searchData).reduce((sum, item) => {
+    if (item?.metadata?.total_records) {
+      return sum + item.metadata.total_records;
+    }
+    return sum;
+  }, 0);
+
+  return (
+    <div>
+      <Header isTopCards className="d-flex justify-content-between">
+        Search Results
+      </Header>
+      <SearchCardWrap>
+        <Card>
+          <CardBody>
+            <CardText className="ms-50 mb-25">{totalResult || 0} result found</CardText>
+            <CardTitle className="ms-50">{query}</CardTitle>
+            <NavigationBar className=" ms-50 mb-50">
+              <li className={activeTab === 'PROJECT' && 'active'} onClick={() => setActivetab('PROJECT')}>
+                <CardText>Project ({searchData?.project?.metadata?.total_records})</CardText>
+              </li>
+              <li className={activeTab === 'TALENT' && 'active'} onClick={() => setActivetab('TALENT')}>
+                <CardText>Talent ({searchData?.talent?.metadata?.total_records})</CardText>
+              </li>
+              <li className={activeTab === 'CLIENT' && 'active'} onClick={() => setActivetab('CLIENT')}>
+                <CardText>Client ({searchData?.client?.metadata?.total_records})</CardText>
+              </li>
+            </NavigationBar>
+            <InfiniteScroll
+              dataLength={currentFilterData?.length}
+              next={fetchMore}
+              hasMore={hasMore}
+              endMessage={
+                <div className="d-flex justify-content-center mt-2">
+                  {currentFilterData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+                </div>
+              }
+              loader={<div className="d-flex justify-content-center">Loading...</div>}
+            >
+              {currentFilterData?.map((item) => {
+                const CardComponent = activeTab === 'TALENT' || activeTab === 'CLIENT' ? UserCard : ProjectCard;
+                return <CardComponent key={item?._id || item?.id} data={item} isExpanded={false} />;
+              })}
+            </InfiniteScroll>
+          </CardBody>
+        </Card>
+      </SearchCardWrap>
+      {/* <InfiniteScroll
+        dataLength={currentFilterData?.length}
+        next={fetchMore}
+        hasMore={hasMore}
+        endMessage={<div className="d-flex justify-content-center">You have seen it all!</div>}
+        loader={<div className="d-flex justify-content-center">Loading...</div>}
+      >
+        {currentFilterData?.map((item) => (
+          <UserCard data={item} key={item?._id} />
+        ))}
+      </InfiniteScroll> */}
+      {/* {currentFilterData?.map((item, index) => (
+        <UserCard data={item} key={index} />
+      ))} */}
+    </div>
+  );
+};
+
+export default Search;

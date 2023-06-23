@@ -493,7 +493,11 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
         dataLength={selectMarketPlaceData?.length}
         next={fetchMore}
         hasMore={hasMore}
-        endMessage={<div className="d-flex justify-content-center">You have seen it all!</div>}
+        endMessage={
+          <div className="d-flex justify-content-center mt-2">
+            {selectMarketPlaceData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+          </div>
+        }
         loader={<div className="d-flex justify-content-center">Loading...</div>}
       >
         {selectMarketPlaceData?.map((item) => {

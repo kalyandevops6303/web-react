@@ -9,6 +9,7 @@ import layout from './layout';
 import navbar from './navbar';
 import profile from './reducers/profile';
 import marketPlace from './reducers/marketPlace';
+import gloabalSearch from './reducers/gloabalSearch';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   marketPlace,
   layout,
   navbar,
+  search: gloabalSearch,
 
   // Add more reducers if needed
 });

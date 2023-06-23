@@ -1,69 +1,78 @@
 // ** React Imports
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 // ** Third Party Components
-import axios from "axios";
-import classnames from "classnames";
-import * as Icon from "react-feather";
+import axios from 'axios';
+import classnames from 'classnames';
+import * as Icon from 'react-feather';
 
 // ** Reactstrap Imports
-import { NavItem, NavLink } from "reactstrap";
+import { NavItem, NavLink } from 'reactstrap';
 
 // ** Store & Actions
-import { useDispatch } from "react-redux";
-import { handleSearchQuery } from "@store/navbar";
+import { useDispatch, useSelector } from 'react-redux';
+import { handleSearchQuery } from '@store/navbar';
 
 // ** Custom Components
-import Autocomplete from "@components/autocomplete";
+import Autocomplete from '@components/autocomplete';
+import theme from '../../../../configs/themeVariables';
+import { useNavigate } from 'react-router';
+import { handleQuery } from '../../../../redux/reducers/gloabalSearch';
 
 const NavbarSearch = () => {
   // ** Store Vars
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // ** States
   const [suggestions, setSuggestions] = useState([]);
   const [navbarSearch, setNavbarSearch] = useState(false);
-
+  const query = useSelector((state) => state.search);
   // ** ComponentDidMount
-  useEffect(() => {
-    axios.get("/api/main-search/data").then(({ data }) => {
-      setSuggestions(data.searchArr);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get('/api/main-search/data').then(({ data }) => {
+  //     setSuggestions(data.searchArr);
+  //   });
+  // }, []);
 
   // ** Removes query in store
-  const handleClearQueryInStore = () => dispatch(handleSearchQuery(""));
+  // const handleClearQueryInStore = () => dispatch(handleSearchQuery(''));
 
   // ** Function to handle external Input click
   const handleExternalClick = () => {
     if (navbarSearch === true) {
-      setNavbarSearch(false);
-      handleClearQueryInStore();
+      // setNavbarSearch(false);
+      // handleClearQueryInStore();
     }
   };
 
   // ** Function to clear input value
   const handleClearInput = (setUserInput) => {
     if (!navbarSearch) {
-      setUserInput("");
-      handleClearQueryInStore();
+      setUserInput('');
+      // dispatch(handleQuery(''));
+
+      // handleClearQueryInStore();
     }
   };
 
   // ** Function to close search on ESC & ENTER Click
   const onKeyDown = (e) => {
     if (e.keyCode === 27 || e.keyCode === 13) {
-      setTimeout(() => {
-        setNavbarSearch(false);
-        handleClearQueryInStore();
-      }, 1);
+      console.log(e.target.value);
+      dispatch(handleQuery(e.target.value));
+      navigate(`/search`);
+      // setTimeout(() => {
+      //   setNavbarSearch(false);
+      //   handleClearQueryInStore();
+      // }, 1);
     }
   };
 
   // ** Function to handle search suggestion Click
   const handleSuggestionItemClick = () => {
     setNavbarSearch(false);
-    handleClearQueryInStore();
+    // handleClearQueryInStore();
   };
 
   // ** Function to handle search list Click
@@ -72,105 +81,78 @@ const NavbarSearch = () => {
     setTimeout(() => {
       setNavbarSearch(false);
     }, 1);
-    handleClearQueryInStore();
+    // handleClearQueryInStore();
   };
 
   return (
     <NavItem className="nav-search" onClick={() => setNavbarSearch(true)}>
-      <NavLink className="nav-link-search">
+      <NavLink className="nav-link-search me-1">
         <Icon.Search className="ficon" />
       </NavLink>
       <div
-        className={classnames("search-input", {
-          open: navbarSearch === true,
+        className={classnames('search-input', {
+          open: navbarSearch === true || (query?.query && true),
         })}
       >
         <div className="search-input-icon">
-          <Icon.Search />
+          <Icon.Search color={theme.activeNavPillText} />
         </div>
-        {navbarSearch ? (
+        {navbarSearch || query?.query ? (
           <Autocomplete
             className="form-control"
             suggestions={suggestions}
             filterKey="title"
             filterHeaderKey="groupTitle"
             grouped={true}
-            placeholder="Explore Vuexy..."
+            placeholder="Explore Trumio..."
             autoFocus={true}
-            onSuggestionItemClick={handleSuggestionItemClick}
+            // onSuggestionItemClick={handleSuggestionItemClick}
             externalClick={handleExternalClick}
-            clearInput={(userInput, setUserInput) =>
-              handleClearInput(setUserInput)
-            }
+            // clearInput={(userInput, setUserInput) => handleClearInput(setUserInput)}
             onKeyDown={onKeyDown}
-            onChange={(e) => dispatch(handleSearchQuery(e.target.value))}
-            customRender={(
-              item,
-              i,
-              filteredData,
-              activeSuggestion,
-              onSuggestionItemClick,
-              onSuggestionItemHover
-            ) => {
-              const IconTag = Icon[item.icon ? item.icon : "X"];
-              return (
-                <li
-                  className={classnames("suggestion-item", {
-                    active: filteredData.indexOf(item) === activeSuggestion,
-                  })}
-                  key={i}
-                  onClick={(e) =>
-                    handleListItemClick(onSuggestionItemClick, item.link, e)
-                  }
-                  onMouseEnter={() =>
-                    onSuggestionItemHover(filteredData.indexOf(item))
-                  }
-                >
-                  <div
-                    className={classnames({
-                      "d-flex justify-content-between align-items-center":
-                        item.file || item.img,
-                    })}
-                  >
-                    <div className="item-container d-flex">
-                      {item.icon ? (
-                        <IconTag size={17} />
-                      ) : item.file ? (
-                        <img
-                          src={item.file}
-                          height="36"
-                          width="28"
-                          alt={item.title}
-                        />
-                      ) : item.img ? (
-                        <img
-                          className="rounded-circle mt-25"
-                          src={item.img}
-                          height="28"
-                          width="28"
-                          alt={item.title}
-                        />
-                      ) : null}
-                      <div className="item-info ms-1">
-                        <p className="align-middle mb-0">{item.title}</p>
-                        {item.by || item.email ? (
-                          <small className="text-muted">
-                            {item.by ? item.by : item.email ? item.email : null}
-                          </small>
-                        ) : null}
-                      </div>
-                    </div>
-                    {item.size || item.date ? (
-                      <div className="meta-container">
-                        <small className="text-muted">
-                          {item.size ? item.size : item.date ? item.date : null}
-                        </small>
-                      </div>
-                    ) : null}
-                  </div>
-                </li>
-              );
-            }}
+            defaultValue={query?.query}
+            // value={query ? query : ''}
+            // onChange={(e) => dispatch(handleSearchQuery(e.target.value))}
+            // customRender={(item, i, filteredData, activeSuggestion, onSuggestionItemClick, onSuggestionItemHover) => {
+            //   const IconTag = Icon[item.icon ? item.icon : 'X'];
+            //   return (
+            //     <li
+            //       className={classnames('suggestion-item', {
+            //         active: filteredData.indexOf(item) === activeSuggestion,
+            //       })}
+            //       key={i}
+            //       onClick={(e) => handleListItemClick(onSuggestionItemClick, item.link, e)}
+            //       onMouseEnter={() => onSuggestionItemHover(filteredData.indexOf(item))}
+            //     >
+            //       <div
+            //         className={classnames({
+            //           'd-flex justify-content-between align-items-center': item.file || item.img,
+            //         })}
+            //       >
+            //         <div className="item-container d-flex">
+            //           {item.icon ? (
+            //             <IconTag size={17} />
+            //           ) : item.file ? (
+            //             <img src={item.file} height="36" width="28" alt={item.title} />
+            //           ) : item.img ? (
+            //             <img className="rounded-circle mt-25" src={item.img} height="28" width="28" alt={item.title} />
+            //           ) : null}
+            //           <div className="item-info ms-1">
+            //             <p className="align-middle mb-0">{item.title}</p>
+            //             {item.by || item.email ? (
+            //               <small className="text-muted">{item.by ? item.by : item.email ? item.email : null}</small>
+            //             ) : null}
+            //           </div>
+            //         </div>
+            //         {item.size || item.date ? (
+            //           <div className="meta-container">
+            //             <small className="text-muted">{item.size ? item.size : item.date ? item.date : null}</small>
+            //           </div>
+            //         ) : null}
+            //       </div>
+            //     </li>
+            //   );
+            // }}
           />
         ) : null}
         <div className="search-input-close">
@@ -179,7 +161,8 @@ const NavbarSearch = () => {
             onClick={(e) => {
               e.stopPropagation();
               setNavbarSearch(false);
-              handleClearQueryInStore();
+              // handleClearQueryInStore();
+              dispatch(handleQuery(''));
             }}
           />
         </div>

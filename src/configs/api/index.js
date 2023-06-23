@@ -64,6 +64,9 @@ const API = {
       listClients: `${apiOnboardingEndpoint}/api/v1/talent/list-clients`,
     },
   },
+  globalSearch: {
+    search: `${apiOnboardingEndpoint}/api/v1/search`,
+  },
 };
 
 export default API;
