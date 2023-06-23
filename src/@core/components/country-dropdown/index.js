@@ -73,6 +73,7 @@ const CountryDropdown = ({ selectedCountry, setSelectedCountry, disabled }) => {
         onChange={handleCountryChange}
         isSearchable
         isDisabled={disabled}
+        closeMenuOnSelect={false}
       />
     </CountryDropdownWrapper>
   );

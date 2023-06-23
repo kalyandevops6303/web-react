@@ -32,6 +32,7 @@ const cardShadow = 'rgba(34, 41, 4, 0.1)';
 const lightBlueColor = '#2196F3';
 const lightBlueBgColor = '#E3F2FD';
 const textColor = '#757575';
+const tooltipColor = '#ff0000';
 const darkGreenColor = '#0097A7';
 const darkGreenBgColor = '#E0F7FA';
 const orange = '#FF6D00';
@@ -109,16 +110,6 @@ const theme = {
   darkGreenColor,
   darkGreenBgColor,
   orange,
-  progressBarBg,
-  dotBg,
-  progressBarOrange,
-  starRatingBg,
-  ratingBadgeBg,
-  greenBtnBg,
-  noDataFoundTextColor,
-  blueBorderColorv2,
-  blueCardBg,
-  // status
   succesGreenColor,
   succesGreenBg,
   joinReqColor,
@@ -141,6 +132,16 @@ const theme = {
   darkRedBg,
   disabledGrayColor,
   disabledBg,
+  tooltipColor,
+  blueBorderColorv2,
+  blueCardBg,
   turquoiseColor,
+  progressBarBg,
+  dotBg,
+  progressBarOrange,
+  starRatingBg,
+  ratingBadgeBg,
+  greenBtnBg,
+  noDataFoundTextColor,
 };
 export default theme;

@@ -489,7 +489,6 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {/* {selectMarketPlaceData?.length ? ( */}
       <InfiniteScroll
         dataLength={selectMarketPlaceData?.length}
         next={fetchMore}
@@ -502,9 +501,6 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
           return <CardComponent key={item?._id || item?.id} data={item} isExpanded={isExpanded} />;
         })}
       </InfiniteScroll>
-      {/* ) : (
-        <Spinner />
-      )} */}
     </>
   );
 };

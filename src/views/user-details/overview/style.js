@@ -2,19 +2,54 @@ import { Card } from 'reactstrap';
 import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
 
+const getPadding = (props) => {
+  if (props.time) {
+    return '1.22rem';
+  }
+  if (props.isMarketPlaceTab) {
+    return '1.2rem 1.5rem';
+  }
+  return '1.4rem 1.2rem';
+};
+
 const StatboxWrap = styled(Card)`
+  border: 1px solid ${(props) => (props.isActive ? `${theme.blueBorderColorv2} !important` : '')}; // active-border color
+  background: ${(props) => (props.isActive ? `${theme.blueCardBg} !important` : '')}; // active-bg color
+  flex: ${(props) => props.isMarketPlaceTab && '1'};
+  svg {
+    height: ${(props) => props.isMarketPlaceTab && '1.5rem'};
+  }
   .card-body {
-    padding: ${(props) => (props.time ? '1.22rem' : '1.4rem 1.2rem')};
+    padding: ${(props) => getPadding(props)};
   }
   .stat-avatar {
-    padding: 0.2rem;
+    padding: ${(props) => (props.isMarketPlaceTab ? '0.35rem' : '0.2rem')};
   }
   .stat-desc {
     font-weight: 300;
-    font-size: 12px;
+    font-size: 13px;
   }
   .time {
     font-size: 13px;
+  }
+
+  .bg-light-turquoise {
+    background: ${theme.turquoiseColor}1f; // light-turquoise
+    svg {
+      color: ${theme.turquoiseColor}; // turquoise
+    }
+  }
+  .bg-light-blue {
+    background: ${theme.royalBlueColor}1f; // light-blue
+    svg {
+      color: ${theme.royalBlueColor}; // blue
+    }
+  }
+  .bg-light-purple {
+    background: ${theme.purpleColor}1f; // light-purple
+    svg {
+      color: ${theme.purpleColor}; // purple
+    }
   }
 `;
 

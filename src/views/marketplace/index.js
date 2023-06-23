@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { useState } from 'react';
 import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
@@ -71,4 +71,4 @@ const MarketPlace = () => {
   );
 };
 
-export default memo(MarketPlace);
+export default MarketPlace;

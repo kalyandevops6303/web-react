@@ -1,18 +1,15 @@
 import React from 'react';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
-import { Badge } from 'reactstrap';
 import Rating from 'react-rating';
 import RatingWrap from './style';
+import RatingBadge from './RatingBadge';
 
 const RatingGroup = () => {
   return (
     <RatingWrap>
       <div className="d-flex rating-row">
-        <Badge color="light-warning" className="rating-badge">
-          <img height={14} src={FilledStar} alt="Filled star" />
-          4.5
-        </Badge>
+        <RatingBadge number={4} />
         <Rating
           className="ratings"
           initialRating={4}

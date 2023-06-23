@@ -5,7 +5,7 @@
 import { Menu } from 'react-feather';
 
 // ** Reactstrap Imports
-import { NavItem, NavLink } from 'reactstrap';
+import { NavItem, NavLink as RsNavLink } from 'reactstrap';
 
 import themeConfig from '@configs/themeConfig';
 
@@ -39,12 +39,17 @@ const ThemeNavbar = (props) => {
     }
     .menu-item {
       padding: 1rem 0;
-      margin: 0 2rem;
-      border-bottom: 3px solid ${theme.primary};
+      margin: 0 1rem 0 2rem;
       margin-bottom: -11px;
       font-size: 16px;
       font-weight: 600;
       color: ${theme.primary};
+      &:hover {
+        color: ${theme.primary};
+      }
+    }
+    .is-active {
+      border-bottom: 3px solid ${theme.primary};
     }
     @media (max-width: 1200px) {
       .menu-item {
@@ -68,9 +73,9 @@ const ThemeNavbar = (props) => {
       <div className="bookmark-wrapper d-flex align-items-center">
         <ul className="navbar-nav d-xl-none">
           <NavItem className="mobile-menu me-auto">
-            <NavLink className="nav-menu-main menu-toggle hidden-xs is-active" onClick={() => setMenuVisibility(true)}>
+            <RsNavLink className="nav-menu-main menu-toggle hidden-xs" onClick={() => setMenuVisibility(true)}>
               <Menu className="ficon" />
-            </NavLink>
+            </RsNavLink>
           </NavItem>
         </ul>
       </div>
@@ -82,8 +87,9 @@ const ThemeNavbar = (props) => {
       </Link>
 
       <NavLink
-        className="menu-item nav-menu-main menu-toggle hidden-xs is-active"
+        className={({ isActive }) => (isActive ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'}
         onClick={() => setMenuVisibility(true)}
+        to="/dashboard"
       >
         Dashboard
       </NavLink>

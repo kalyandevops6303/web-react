@@ -1,6 +1,7 @@
 import React from 'react';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
 import BadgeGroupWrap from './style';
+import { CustomBadge } from '../../../views/styled';
 
 const BadgeGroup = ({ title, data, color }) => {
   if (data?.length === 0) {

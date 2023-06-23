@@ -84,6 +84,7 @@ const RegisterEmail = () => {
               type="email"
               id="email"
               name="email"
+              placeholder="Enter email ID"
               autoFocus
               control={control}
               render={({ field }) => (
