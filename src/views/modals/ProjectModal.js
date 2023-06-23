@@ -1,5 +1,6 @@
 import React from 'react';
 import Proptypes from 'prop-types';
+import ReactShowMoreText from 'react-show-more-text';
 import { Modal, ModalHeader, ModalBody, Card, CardHeader, CardTitle, CardBody, Row, Col, CardText } from 'reactstrap';
 import lisa from '@src/assets/images/portrait/small/lisa.png';
 import styled from 'styled-components';
@@ -37,6 +38,32 @@ const ViewProjectDetailModalWrap = styled.div`
     font-weight: 300;
     font-size: 16px;
     line-height: 24px;
+  }
+`;
+export const PreviewTextEditorContainer = styled.div`
+  .ql-toolbar.ql-snow {
+    display: none;
+  }
+
+  .ql-container.ql-snow {
+    border: none !important;
+    border-radius: 0;
+  }
+
+  .ql-editor.ql-blank::before {
+    color: ${theme.gray};
+    font-style: normal;
+    font-weight: 300;
+    font-size: 13px;
+  }
+
+  .ql-container {
+    font-family: inherit;
+    font-size: 15px;
+  }
+
+  .ql-toolbar.ql-snow + .ql-container.ql-snow {
+    min-height: 100px;
   }
 `;
 const ProjectModal = ({ modal, toggleModal, data }) => (
@@ -79,7 +106,10 @@ const ProjectModal = ({ modal, toggleModal, data }) => (
               </Col>
               <Col lg="4">
                 <div>
-                  <CardTitle className="mb-25 fw-bolder">{data?.details?.expected_duration}</CardTitle>
+                  <CardTitle className="mb-25 fw-bolder">
+                    {data?.details?.expected_duration?.duration}&nbsp;
+                    {data?.details?.expected_duration?.duration_type}
+                  </CardTitle>
                   <CardText className="project-name">Expected duration</CardText>
                 </div>
               </Col>
@@ -93,7 +123,9 @@ const ProjectModal = ({ modal, toggleModal, data }) => (
             </CardTitle>
           </CardHeader>
           <CardBody>
-            <CardText className="fw-300 ms-75 project-desc">{data?.details?.description}</CardText>
+            <CardText className="fw-300 ms-75 project-desc">
+              <ReactShowMoreText>{data?.details?.description}</ReactShowMoreText>
+            </CardText>
           </CardBody>
         </Card>
         <Card>
