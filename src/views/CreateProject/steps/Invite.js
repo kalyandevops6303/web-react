@@ -113,48 +113,54 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
   };
 
   const loadNewBestTalents = () => {
-    dispatch(
-      getBestTalents(
-        createProjectDetails?.project_id,
-        searchValue,
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        bestTalentsData?.metadata?.current_page + 1,
-        10,
-        bestTalentsData?.data,
-      ),
-    );
+    if (stepper._currentIndex === 3) {
+      dispatch(
+        getBestTalents(
+          createProjectDetails?.project_id,
+          searchValue,
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          bestTalentsData?.metadata?.current_page + 1,
+          10,
+          bestTalentsData?.data,
+        ),
+      );
+    }
   };
 
   const loadNewFavoriteTalents = () => {
-    dispatch(
-      getFavoriteTalents(
-        createProjectDetails?.project_id,
-        searchValue,
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        favoriteTalentsData?.metadata?.current_page + 1,
-        10,
-        favoriteTalentsData?.data,
-      ),
-    );
+    if (stepper._currentIndex === 3) {
+      dispatch(
+        getFavoriteTalents(
+          createProjectDetails?.project_id,
+          searchValue,
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          favoriteTalentsData?.metadata?.current_page + 1,
+          10,
+          favoriteTalentsData?.data,
+        ),
+      );
+    }
   };
 
   const loadNewAlmaMaterTalents = () => {
-    dispatch(
-      getAlmaMaterTalents(
-        createProjectDetails?.project_id,
-        searchValue,
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        almaMaterTalentsData?.metadata?.current_page + 1,
-        10,
-        almaMaterTalentsData?.data,
-      ),
-    );
+    if (stepper._currentIndex === 3) {
+      dispatch(
+        getAlmaMaterTalents(
+          createProjectDetails?.project_id,
+          searchValue,
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          almaMaterTalentsData?.metadata?.current_page + 1,
+          10,
+          almaMaterTalentsData?.data,
+        ),
+      );
+    }
   };
 
   useEffect(() => {
     let delayDebounceFn = null;
 
-    if (createProjectDetails) {
+    if (createProjectDetails && stepper._currentIndex === 3) {
       delayDebounceFn = setTimeout(() => {
         dispatch(getBestTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
         dispatch(getFavoriteTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
@@ -163,7 +169,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
     }
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchValue]);
+  }, [searchValue, stepper]);
 
   const onSearch = (e) => {
     setSearchValue(e.target.value);
@@ -171,7 +177,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
 
   return (
     <>
-      {youDidItModal && <YouDidItModal modal={youDidItModal} toggleModal={toggleYouDidItModal} />}
+      {youDidItModal && <YouDidItModal modal={youDidItModal} toggleModal={toggleYouDidItModal} stepper={stepper} />}
       {inviteModal && <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} />}
       {sendInvitationModal && (
         <SendInvitationModal

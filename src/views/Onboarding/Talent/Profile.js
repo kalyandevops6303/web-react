@@ -841,6 +841,7 @@ const Profile = () => {
                             {...field}
                             type="number"
                             min={0}
+                            onWheel={(e) => e.target.blur()}
                             placeholder="Enter"
                             invalid={errors.workExperienceYear && true}
                           />
@@ -864,6 +865,7 @@ const Profile = () => {
                             {...field}
                             type="number"
                             min={0}
+                            onWheel={(e) => e.target.blur()}
                             placeholder="Enter"
                             invalid={errors.workExperienceMonth && true}
                           />
@@ -1067,6 +1069,7 @@ const Profile = () => {
                           {...field}
                           type="number"
                           min={0}
+                          onWheel={(e) => e.target.blur()}
                           placeholder="Enter zip code"
                           invalid={errors.zipCode && true}
                         />
@@ -1834,6 +1837,7 @@ const Profile = () => {
                       {...field}
                       type="number"
                       min={0}
+                      onWheel={(e) => e.target.blur()}
                       placeholder="Enter your hourly rate"
                       invalid={errors.workExperienceYear && true}
                     />

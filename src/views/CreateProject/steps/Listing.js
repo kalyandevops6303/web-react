@@ -216,6 +216,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                         disabled={watch('listingOption') !== 'enter-duration'}
                         type="number"
                         min={0}
+                        onWheel={(e) => e.target.blur()}
                         placeholder="Enter"
                         invalid={errors.duration && true}
                       />

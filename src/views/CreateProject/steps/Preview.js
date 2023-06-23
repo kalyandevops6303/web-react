@@ -9,7 +9,7 @@ import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style
 import { convertTo12HourFormat } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
-import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
+import { createProjectData, createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
 import { createNewProject } from '../../../redux/actions/createProjectActions';
 
 const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItModal }) => {
@@ -19,6 +19,7 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
   const dispatch = useDispatch();
 
   const createProjectIsLoading = useSelector(createProjectLoading);
+  const createProjectDetails = useSelector(createProjectData);
 
   const renderFilePreview = (file) => {
     if (file.type.startsWith('image')) {
@@ -218,7 +219,16 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
       end_date: formatDate(listingDetails?.endDate),
     };
 
-    const requiredData = { details, proficiency, availability, countries, pay_type, nda, listing_details };
+    const requiredData = {
+      id: createProjectDetails?.project_id || '',
+      details,
+      proficiency,
+      availability,
+      countries,
+      pay_type,
+      nda,
+      listing_details,
+    };
 
     dispatch(createNewProject(removeEmptyKeys(requiredData), onSuccess));
   };

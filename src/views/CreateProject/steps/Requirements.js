@@ -1326,6 +1326,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         {...field}
                         type="number"
                         min={0}
+                        onWheel={(e) => e.target.blur()}
                         placeholder="Specify project fixed cost"
                         invalid={errors.projectFixedCost && true}
                       />

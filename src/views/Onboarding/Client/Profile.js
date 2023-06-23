@@ -993,6 +993,7 @@ const Profile = () => {
                         <Input
                           {...field}
                           type="number"
+                          onWheel={(e) => e.target.blur()}
                           min={0}
                           placeholder="Enter zip code"
                           invalid={errors.zipCode && true}
