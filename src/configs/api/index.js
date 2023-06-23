@@ -54,14 +54,14 @@ const API = {
   },
   marketplace: {
     client: {
-      cardInfo: `http://20.204.104.218:4002/api/v1/client/cards-info`,
-      listProject: `http://20.204.104.218:4002/api/v1/client/list-projects`,
-      listTalents: `http://20.204.104.218:4002/api/v1/client/list-talents`,
+      cardInfo: `${apiOnboardingEndpoint}/api/v1/client/cards-info`,
+      listProject: `${apiOnboardingEndpoint}/api/v1/client/list-projects`,
+      listTalents: `${apiOnboardingEndpoint}/api/v1/client/list-talents`,
     },
     talent: {
-      cardInfo: `http://20.204.104.218:4002/api/v1/talent/cards-info`,
-      listProject: `http://20.204.104.218:4002/api/v1/talent/list-projects`,
-      listClients: `http://20.204.104.218:4002/api/v1/talent/list-clients`,
+      cardInfo: `${apiOnboardingEndpoint}/api/v1/talent/cards-info`,
+      listProject: `${apiOnboardingEndpoint}/api/v1/talent/list-projects`,
+      listClients: `${apiOnboardingEndpoint}/api/v1/talent/list-clients`,
     },
   },
 };
