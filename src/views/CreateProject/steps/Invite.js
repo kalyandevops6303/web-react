@@ -30,6 +30,7 @@ import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
 import SendInvitationModal from '../SendInvitationModal';
 import YouDidItModal from '../YouDidItModal';
+import InvitationSentModal from '../InvitationSentModal';
 import {
   almaMaterTalents,
   bestTalents,
@@ -37,7 +38,6 @@ import {
   favoriteTalents,
 } from '../../../redux/selectors/createProjectSelectors';
 import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../../redux/actions/createProjectActions';
-import InvitationSentModal from '../InvitationSentModal';
 
 const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
   const tabNames = {

@@ -100,6 +100,7 @@ const RegisterPhone = () => {
                   type="phone"
                   id="mobile"
                   name="mobile"
+                  placeholder="Enter phone number"
                   autoFocus
                   control={control}
                   render={({ field }) => (
