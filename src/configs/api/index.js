@@ -52,6 +52,18 @@ const API = {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
   },
+  marketplace: {
+    client: {
+      cardInfo: `http://20.204.104.218:4002/api/v1/client/cards-info`,
+      listProject: `http://20.204.104.218:4002/api/v1/client/list-projects`,
+      listTalents: `http://20.204.104.218:4002/api/v1/client/list-talents`,
+    },
+    talent: {
+      cardInfo: `http://20.204.104.218:4002/api/v1/talent/cards-info`,
+      listProject: `http://20.204.104.218:4002/api/v1/talent/list-projects`,
+      listClients: `http://20.204.104.218:4002/api/v1/talent/list-clients`,
+    },
+  },
 };
 
 export default API;

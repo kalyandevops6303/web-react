@@ -19,6 +19,8 @@ const UserDetails = () => {
   const param = useParams();
 
   useEffect(() => {
+    // eslint-disable-next-line no-undef
+    window?.scrollTo(0, 0);
     dispatch(getProfile(param?.userId, param?.userType.toUpperCase()));
   }, []);
 
