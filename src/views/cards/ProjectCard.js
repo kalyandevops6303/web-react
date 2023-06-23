@@ -143,7 +143,7 @@ const ProjectCard = ({ isExpanded, data }) => {
           </Row>
         </CardBody>
       </Card>
-      {showModal && <ProjectModal modal={showModal} toggleModal={handleToggle} />}
+      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
     </ProjectCardWrap>
   );
 };
