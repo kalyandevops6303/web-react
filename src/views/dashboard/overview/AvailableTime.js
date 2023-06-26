@@ -6,10 +6,9 @@
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText } from 'reactstrap';
 import { useSelector } from 'react-redux';
-import { capitalize } from 'lodash';
-import { TimeCardWrapper, TimeWrapper } from './style';
-import { convertTo12HourFormat } from '../../../utility/Utils';
+import { TimeCardWrapper } from './style';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
+import AvailableTimeComp from '../../../@core/components/available-time-comp';
 
 const AvailableTime = () => {
   const userDetailsData = useSelector(userData);
@@ -19,9 +18,6 @@ const AvailableTime = () => {
   const weekdaysData = userDetailsData?.availability?.weekdays_avl;
   const weekendsData = userDetailsData?.availability?.weekends_avl;
 
-  const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
-  const weekends = ['SATURDAY', 'SUNDAY'];
-
   return (
     <TimeCardWrapper>
       <Card className="time-card">
@@ -30,41 +26,7 @@ const AvailableTime = () => {
           <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">Edit</CardText>
         </CardHeader>
         <CardBody>
-          <TimeWrapper>
-            {weekdaysData && (
-              <section className="weekdays">
-                <CardText>
-                  {convertTo12HourFormat(weekdaysData.start_time)} - {convertTo12HourFormat(weekdaysData.end_time)}
-                </CardText>
-                <ul>
-                  {weekdays.map((day) => (
-                    <li key={day}>
-                      <span className={`dot ${weekdaysData.days.includes(day) ? 'active' : ''}`} />
-                      {capitalize(day.slice(0, 3))}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-            {weekendsData && (
-              <>
-                <span className="line" />
-                <section className="weekends">
-                  <CardText>
-                    {convertTo12HourFormat(weekendsData.start_time)} - {convertTo12HourFormat(weekendsData.end_time)}
-                  </CardText>
-                  <ul>
-                    {weekends.map((day) => (
-                      <li key={day}>
-                        <span className={`dot ${weekendsData.days.includes(day) ? 'active' : ''}`} />
-                        {capitalize(day.slice(0, 3))}
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              </>
-            )}
-          </TimeWrapper>
+          <AvailableTimeComp weekdaysData={weekdaysData} weekendsData={weekendsData} />
         </CardBody>
       </Card>
     </TimeCardWrapper>

@@ -146,71 +146,6 @@ const EarningAmount = styled.div`
   }
 `;
 
-const TimeWrapper = styled.section`
-  display: flex;
-  .weekdays,
-  .weekends {
-    width: 50%;
-
-    ul {
-      font-size: 11px;
-      display: flex;
-      margin: 0;
-      padding: 0;
-      padding-top: 7px;
-      list-style-type: none;
-    }
-  }
-  .weekdays {
-    ul {
-      justify-content: space-between;
-    }
-  }
-  .weekends {
-    ul {
-      gap: 14px;
-    }
-  }
-  .dot {
-    height: 8px;
-    width: 8px;
-    display: block;
-    background: rgba(217, 217, 217, 0.5);
-    border-radius: 50%;
-    margin: auto;
-    margin-bottom: 6px;
-  }
-  .active {
-    background: #28c76f;
-  }
-  .line {
-    width: 1px;
-    background: ${theme.borderInputColor};
-    margin: 0 2rem;
-    @media only screen and (max-device-width: 1340px) {
-      margin: 0 1.6rem;
-    }
-  }
-  @media only screen and (min-device-width: 990px) and (max-device-width: 1160px) {
-    flex-direction: column;
-    gap: 16px;
-    .weekends {
-      ul {
-        gap: 32px;
-      }
-    }
-  }
-  @media only screen and (max-device-width: 450px) {
-    flex-direction: column;
-    gap: 16px;
-    .weekends {
-      ul {
-        gap: 32px;
-      }
-    }
-  }
-`;
-
 const ProjectWrapper = styled.div`
   @media (max-width: 768px) {
     min-width: 20rem;
@@ -418,7 +353,6 @@ export {
   EarningAmount,
   EarningCardWrapper,
   RewardCardWrapper,
-  TimeWrapper,
   TimeCardWrapper,
   ProjectWrapper,
   ProjectsListingWrap,
