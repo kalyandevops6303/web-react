@@ -53,6 +53,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             .number()
             .min(1, 'Expected duration should be atleast 1 week')
             .max(12, 'Expected duration can not be more than 12 weeks')
+            .integer('Expected duration should be an integer')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
       })
@@ -63,6 +64,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             .number()
             .min(1, 'Expected duration should be atleast 1 day')
             .max(90, 'Expected duration can not be more than 90 days')
+            .integer('Expected duration should be an integer')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
       }),
@@ -101,7 +103,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         value: yup.object().required('Preferred working time zone is required'),
       })
       .required('Preferred working time zone is required'),
-    minTimeOverlapHr: yup.number().typeError('Please enter a number').required('Min time overlap hr is required'),
+    minTimeOverlapHr: yup
+      .number()
+      .min(0, 'Min time overlap hr should be greater than or equal to 0')
+      .typeError('Please enter a number')
+      .required('Min time overlap hr is required'),
     availabilityDays: yup
       .array()
       .min(1, 'Select at least one work availability day')
@@ -181,7 +187,12 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     projectPayType: yup.string().required('Project pay type is required'),
     projectFixedCost: yup.number().when('projectPayType', {
       is: (projectPayType) => projectPayType === 'fixed-price',
-      then: () => yup.number().required('Project fixed cost is required'),
+      then: () =>
+        yup
+          .number()
+          .min(1, 'Project fixed cost should be atleast 1')
+          .typeError('Please enter a number')
+          .required('Project fixed cost is required'),
     }),
     nda: yup.string().required('This is required'),
   });
