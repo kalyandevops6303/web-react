@@ -33,6 +33,7 @@ const AuthRoute = lazy(() => import('../../views/auth/index'));
 const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
 const ClientOnboarding = lazy(() => import('../../views/Onboarding/Client'));
 const CreateProject = lazy(() => import('../../views/CreateProject'));
+const Notifications = lazy(() => import('../../views/notifications'));
 
 // ** Merge Routes
 const Routes = [
@@ -94,6 +95,10 @@ const Routes = [
   {
     path: '/create-project',
     element: <CreateProject />,
+  },
+  {
+    path: '/notifications',
+    element: <Notifications />,
   },
 ];
 
