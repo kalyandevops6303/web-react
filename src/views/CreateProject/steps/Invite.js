@@ -199,7 +199,6 @@ const Invite = ({ stepper }) => {
           projectId={createProjectDetails?.project_id}
           message={message}
           toggleSendInvitationModal={toggleSendInvitationModal}
-          setSelectedIds={setSelectedIds}
         />
       )}
       <Card>
