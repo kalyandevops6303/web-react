@@ -234,14 +234,14 @@ export const TimeWrapper = styled.section`
   }
   .weekdays {
     padding-right: 20px;
-    border-right: ${(props) => (props.isBorder ? `1px solid ${theme.borderInputColor}` : 'none')};
+    border-right: 1px solid ${theme.borderInputColor};
 
     ul {
       justify-content: space-between;
     }
   }
   .weekends {
-    padding-left: ${(props) => (props.isPadding ? '20px' : '0')};
+    padding-left: 20px;
 
     ul {
       gap: 14px;

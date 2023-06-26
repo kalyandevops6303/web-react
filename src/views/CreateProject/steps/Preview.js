@@ -300,44 +300,59 @@ const Preview = ({
           </Row>
           <Row>
             <Col sm="12" md="12" lg="6">
-              <TimeWrapper
-                isBorder={projectDetails?.availabilityDays.includes('weekends')}
-                isPadding={projectDetails?.availabilityDays.includes('weekdays')}
-              >
-                {projectDetails?.availabilityDays.includes('weekdays') && (
-                  <section className="weekdays">
+              <TimeWrapper>
+                <section className="weekdays">
+                  {projectDetails?.availabilityDays.includes('weekdays') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayEndTime?.value, 10))}{' '}
                       {projectDetails?.preferredWorkingTimeZone?.value?.abbreviation}
                     </CardText>
-                    <ul>
-                      {weekdays.map((day) => (
-                        <li key={day}>
-                          <span className={`dot ${projectDetails?.weekdays.includes(day) ? 'active' : ''}`} />
-                          {capitalize(day.slice(0, 3))}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                )}
-                {projectDetails?.availabilityDays.includes('weekends') && (
-                  <section className="weekends">
+                  ) : (
+                    <CardText>&nbsp;</CardText>
+                  )}
+                  <ul>
+                    {weekdays.map((day) => (
+                      <li key={day}>
+                        <span
+                          className={`dot ${
+                            projectDetails?.availabilityDays.includes('weekdays') &&
+                            projectDetails?.weekdays.includes(day)
+                              ? 'active'
+                              : ''
+                          }`}
+                        />
+                        {capitalize(day.slice(0, 3))}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+                <section className="weekends">
+                  {projectDetails?.availabilityDays.includes('weekends') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendEndTime?.value, 10))}{' '}
                       {projectDetails?.preferredWorkingTimeZone?.value?.abbreviation}
                     </CardText>
-                    <ul>
-                      {weekends.map((day) => (
-                        <li key={day}>
-                          <span className={`dot ${projectDetails?.weekends.includes(day) ? 'active' : ''}`} />
-                          {capitalize(day.slice(0, 3))}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                )}
+                  ) : (
+                    <CardText>&nbsp;</CardText>
+                  )}
+                  <ul>
+                    {weekends.map((day) => (
+                      <li key={day}>
+                        <span
+                          className={`dot ${
+                            projectDetails?.availabilityDays.includes('weekends') &&
+                            projectDetails?.weekends.includes(day)
+                              ? 'active'
+                              : ''
+                          }`}
+                        />
+                        {capitalize(day.slice(0, 3))}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               </TimeWrapper>
             </Col>
             <Col sm="12" md="6" lg="3">
