@@ -22,7 +22,7 @@ import '../custom-styles.scss';
 import { inviteTalents } from '../../redux/actions/createProjectActions';
 import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
 
-const InviteModal = ({ modal, toggleModal }) => {
+const InviteModal = ({ modal, toggleModal, projectId }) => {
   const AccountDetailsSchema = yup.object().shape({
     email: yup.string().email('Enter a valid email').required('Email is required'),
   });
@@ -48,7 +48,7 @@ const InviteModal = ({ modal, toggleModal }) => {
   };
 
   const onSubmit = (data) => {
-    dispatch(inviteTalents('6493e94477c47b3356cd1547', { emails: [data.email] }, onSuccess));
+    dispatch(inviteTalents(projectId, { emails: [data.email] }, onSuccess));
   };
 
   const [copied, setCopied] = useState(false);
@@ -109,9 +109,11 @@ export default InviteModal;
 InviteModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  projectId: Proptypes.string,
 };
 
 InviteModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  projectId: '',
 };

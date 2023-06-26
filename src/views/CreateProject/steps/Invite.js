@@ -178,7 +178,9 @@ const Invite = ({ stepper }) => {
 
   return (
     <>
-      {inviteModal && <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} />}
+      {inviteModal && (
+        <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} projectId={createProjectDetails?.project_id} />
+      )}
       {sendInvitationModal && (
         <SendInvitationModal
           modal={sendInvitationModal}
