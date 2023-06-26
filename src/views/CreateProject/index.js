@@ -91,14 +91,14 @@ const CreateProject = () => {
   return (
     <>
       <Row className="m-0">
-        <Link to="/dashboard" className="p-0">
-          <BackButtonContainer className="p-0">
+        <BackButtonContainer className="p-0">
+          <Link to="/dashboard" className="p-0 d-flex">
             <BackIconContainer>
               <ArrowLeft size={18} color={theme.white} />
             </BackIconContainer>
             <h4 className="m-0 fw-light blue-text mt-25 mx-50">Create Project</h4>
-          </BackButtonContainer>
-        </Link>
+          </Link>
+        </BackButtonContainer>
       </Row>
       <Row>
         <Col lg="9" md="12" sm="12">
