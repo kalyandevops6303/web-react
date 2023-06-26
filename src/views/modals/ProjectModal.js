@@ -66,7 +66,7 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                     <CardText className="project-name">Project Name</CardText>
                   </div>
                 </Col>
-                <Col lg="4">
+                <Col lg="3">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
                       {data?.details?.expected_duration?.duration}
@@ -75,9 +75,11 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                     <CardText className="project-name">Expected duration</CardText>
                   </div>
                 </Col>
-                <Col lg="3">
+                <Col lg="4">
                   <div>
-                    <CardTitle className="mb-25 fw-bolder">-</CardTitle>
+                    <CardTitle className="mb-25 fw-bolder">
+                      {data?.listing_details?.start_date} to {data?.listing_details?.end_date}
+                    </CardTitle>
                     <CardText className="project-name">Listing duration</CardText>
                   </div>
                 </Col>
@@ -90,7 +92,7 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                   </div>
                 </Col>
 
-                <Col lg="4">
+                <Col lg="3">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
                       {data?.pay_type?.fixed_cost
@@ -101,9 +103,9 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                     <CardText className="project-name">Payment Type</CardText>
                   </div>
                 </Col>
-                <Col lg="3">
+                <Col lg="4">
                   <div>
-                    <CardTitle className="mb-25 fw-bolder">-</CardTitle>
+                    <CardTitle className="mb-25 fw-bolder">{data?.nda?.is_nda ? 'YES' : 'NO'}</CardTitle>
                     <CardText className="project-name">NDA</CardText>
                   </div>
                 </Col>
@@ -115,7 +117,7 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                     weekendsData={data?.availability?.weekends_avl}
                   />
                 </Col>
-                <Col lg="4">
+                <Col lg="3">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">{data?.availability?.time_overlap} hr</CardTitle>
                     <CardText className="project-name">Minimum Overlap</CardText>

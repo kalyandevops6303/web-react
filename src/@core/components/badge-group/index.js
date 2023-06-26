@@ -4,6 +4,22 @@ import BadgeGroupWrap from './style';
 import { CustomBadge } from '../../../views/styled';
 
 const BadgeGroup = ({ title, data, color }) => {
+  if (data?.name) {
+    return (
+      <BadgeGroupWrap>
+        <div className="badge-box-wrap mb-50">
+          <div className="info-key">{title || ''}</div>
+          <div className="badge-box mt-75">
+            <CustomBadge>
+              <Badge className={color} color={color}>
+                {data?.name}
+              </Badge>
+            </CustomBadge>
+          </div>
+        </div>
+      </BadgeGroupWrap>
+    );
+  }
   if (!data || data.length === 0) {
     return null;
   }
