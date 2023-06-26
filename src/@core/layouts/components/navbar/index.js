@@ -42,14 +42,19 @@ const ThemeNavbar = (props) => {
       margin: 0 1rem 0 2rem;
       margin-bottom: -11px;
       font-size: 16px;
+      font-weight: 400;
+      color: ${theme.textColor};
+      &:hover {
+        color: ${theme.textColor};
+      }
+    }
+    .is-active {
       font-weight: 600;
+      border-bottom: 3px solid ${theme.primary};
       color: ${theme.primary};
       &:hover {
         color: ${theme.primary};
       }
-    }
-    .is-active {
-      border-bottom: 3px solid ${theme.primary};
     }
     @media (max-width: 1200px) {
       .menu-item {

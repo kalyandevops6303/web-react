@@ -58,8 +58,8 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
     { label: 'Variable', value: 'VARIABLE' },
   ];
   const sortingOptions = [
-    { label: 'Recommanded', value: 'RECOMMADED' },
     { label: 'New', value: 'NEW' },
+    { label: 'Recommended', value: 'RECOMMADED' },
   ];
 
   const onSuccess = () => {};

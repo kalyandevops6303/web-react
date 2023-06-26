@@ -3,11 +3,13 @@ import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
 import { round } from 'lodash';
+import ReactHtmlParser from 'react-html-parser';
 import ReactShowMoreText from 'react-show-more-text';
 import lisa from '@src/assets/images/portrait/small/lisa.png';
 import Mpin from '@src/assets/images/map-pin.png';
 import LikeIcon from '@src/assets/images/like.png';
 import { useState, useEffect } from 'react';
+import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
@@ -36,6 +38,16 @@ const ProjectCard = ({ isExpanded, data }) => {
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
   };
+  const giveStrokeColor = (percentage) => {
+    if (percentage <= 40) {
+      return theme.red;
+      // eslint-disable-next-line
+    } else if (percentage > 40 && percentage <= 70) {
+      return theme.orange;
+    } else {
+      return theme.green;
+    }
+  };
 
   return (
     <ProjectCardWrap>
@@ -58,28 +70,14 @@ const ProjectCard = ({ isExpanded, data }) => {
               <div className="d-flex project-stats">
                 <CardText className="project">
                   {data?.pay_type?.variable_cost ? (
-                    <>Variable Price </>
+                    <>Variable Price&nbsp;</>
                   ) : (
                     <>
-                      Fixed Price - &nbsp;
-                      {data?.pay_type?.currency?.[0]?.code === 'INR'
-                        ? data?.pay_type?.fixed_cost?.toLocaleString('en-IN', {
-                            style: 'currency',
-                            currency: 'INR',
-                          })
-                        : data?.pay_type?.currency?.[0]?.code === 'USD'
-                        ? data?.pay_type?.fixed_cost?.toLocaleString('en-IN', {
-                            style: 'currency',
-                            currency: 'USD',
-                          })
-                        : data?.pay_type?.fixed_cost}
-                      &nbsp;
-                      {data?.pay_type?.currency?.[0]?.code} &nbsp;
+                      Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.[0]?.code}&nbsp;
                     </>
                   )}
-                  {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toFormat('LL/dd/yyyy') : '-'}
                 </CardText>
-                {data?.match_percentage && (
+                {data?.match_percentage > 1 && (
                   <CardText className="project d-flex align-items-center">
                     <img src={LikeIcon} alt="recommanded_icon" className="recom" /> Recommended
                   </CardText>
@@ -110,19 +108,24 @@ const ProjectCard = ({ isExpanded, data }) => {
                     show less
                   </span>
                 }
-                className="content-css project-desc"
+                className="content-css project-desc d-none"
                 anchorClass="show-more-less-clickable"
                 expanded={showFullText}
                 // eslint-disable-next-line no-undef
                 width={isTab ? round(window.innerWidth - 120) : round(window.innerWidth - window.innerWidth * 0.43)}
               >
-                {data?.details?.description}
+                {showFullText ? ReactHtmlParser(data?.details?.description) : data?.details?.description}
               </ReactShowMoreText>
+              {ReactHtmlParser(data?.details?.description)}
             </Col>
             <Col lg="4">
-              <div className="d-flex mb-2 align-items-center">
-                <img className="market-place-card-photo me-1" src={lisa} alt="avatar" />
-                <div className="d-flex w-100 align-items-center">
+              <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
+                <img
+                  className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
+                  src={lisa}
+                  alt="avatar"
+                />
+                <div className={`${data?.match_percentage >= 0 ? '' : ' d-flex w-100 align-items-center'}`}>
                   <div className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
                       {data?.client_details?.[0]?.first_name} {data?.client_details?.[0]?.last_name}
@@ -136,6 +139,32 @@ const ProjectCard = ({ isExpanded, data }) => {
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
                   </div>
                 </div>
+                {data?.match_percentage >= 0 && (
+                  <div className="circular-progressbar-container mt-25">
+                    <CircularProgressbarWithChildren
+                      value={data?.match_percentage}
+                      styles={{
+                        path: {
+                          stroke: giveStrokeColor(data?.match_percentage),
+                          strokeLinecap: 'round',
+                          transition: 'stroke-dashoffset 0.5s ease 0s',
+                          transform: 'rotate(0turn)',
+                          transformOrigin: 'center center',
+                        },
+                        trail: {
+                          stroke: theme.progressBarBg,
+                          strokeLinecap: 'round',
+                          transform: 'rotate(0turn)',
+                          transformOrigin: 'center center',
+                        },
+                      }}
+                    >
+                      <div className="d-flex justify-content-center align-items-center">
+                        <p className="percentage-text m-0">{data?.match_percentage}%</p>
+                      </div>
+                    </CircularProgressbarWithChildren>
+                  </div>
+                )}
               </div>
               <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
               <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />

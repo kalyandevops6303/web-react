@@ -4,36 +4,59 @@ import BadgeGroupWrap from './style';
 import { CustomBadge } from '../../../views/styled';
 
 const BadgeGroup = ({ title, data, color }) => {
-  if (data?.length === 0) {
-    return <></>;
+  if (data?.name) {
+    return (
+      <BadgeGroupWrap>
+        <div className="badge-box-wrap mb-50">
+          <div className="info-key">{title || ''}</div>
+          <div className="badge-box mt-75">
+            <CustomBadge>
+              <Badge className={color} color={color}>
+                {data?.name}
+              </Badge>
+            </CustomBadge>
+          </div>
+        </div>
+      </BadgeGroupWrap>
+    );
   }
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  const renderBadge = (item, index) => {
+    const { name } = item;
+    const isLongName = name.length > 35;
+    const badgeClassName = isLongName ? `${color} truncate-1` : color;
+    const badgeColor = `${color} badge`;
+
+    return (
+      <span key={index}>
+        {isLongName ? (
+          <>
+            <CustomBadge>
+              <Badge className={badgeClassName} color={badgeColor} id={`tooltip-${index}`}>
+                {name}
+              </Badge>
+            </CustomBadge>
+            <UncontrolledTooltip target={`tooltip-${index}`}>{name}</UncontrolledTooltip>
+          </>
+        ) : (
+          <CustomBadge>
+            <Badge className={badgeClassName} color={badgeColor}>
+              {name}
+            </Badge>
+          </CustomBadge>
+        )}
+      </span>
+    );
+  };
 
   return (
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
-        <div className="info-key">{data?.length > 0 ? title : ''}</div>
-        <div className="badge-box mt-75">
-          {data?.map((item, index) => (
-            <span key={index}>
-              {item?.name?.length > 35 ? (
-                <>
-                  <CustomBadge>
-                    <Badge className={`${color} truncate-1`} color={`${color} badge`} id={`tooltip-${index}`}>
-                      {item?.name}
-                    </Badge>
-                  </CustomBadge>
-                  <UncontrolledTooltip target={`tooltip-${index}`}>{item?.name}</UncontrolledTooltip>
-                </>
-              ) : (
-                <CustomBadge>
-                  <Badge className={color} color={`${color} badge`}>
-                    {item?.name}
-                  </Badge>
-                </CustomBadge>
-              )}
-            </span>
-          ))}
-        </div>
+        <div className="info-key">{title || ''}</div>
+        <div className="badge-box mt-75">{data.map(renderBadge)}</div>
       </div>
     </BadgeGroupWrap>
   );
