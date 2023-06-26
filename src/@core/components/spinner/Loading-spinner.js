@@ -1,11 +1,12 @@
-import classnames from "classnames";
+import classnames from 'classnames';
 
 const ComponentSpinner = ({ className }) => {
   return (
     <div
-      className={classnames("fallback-spinner", {
+      className={classnames('fallback-spinner', {
         [className]: className,
       })}
+      style={{ height: '12rem' }}
     >
       <div className="loading">
         <div className="effect-1 effects"></div>

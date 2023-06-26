@@ -1,10 +1,13 @@
 import { searchService } from '../../services/searchService';
 import errorHandler from '../../utility/errorHandler';
-import { currentSearchSuccess, getSearchSuccess } from '../reducers/gloabalSearch';
+import { currentSearchSuccess, getSearchSuccess, getSerachErr, getSerachReq } from '../reducers/gloabalSearch';
 
 const searchAction =
   ({ query, onSuccess, onError, metaData, scope, isFetchMore }) =>
   async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(getSerachReq());
+    }
     try {
       let res;
       onSuccess();
@@ -17,7 +20,7 @@ const searchAction =
       }
     } catch (error) {
       onError();
-      errorHandler(error);
+      errorHandler(error, getSerachErr);
     }
   };
 

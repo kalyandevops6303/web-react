@@ -2,11 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   query: '',
+  resultQuery: '',
   searchData: [],
   currentFilterData: [],
   currentFilterType: '',
   currentFilterMetadata: null,
   currentFilterPreview: null,
+  loading: false,
 };
 
 const globalSearchSlice = createSlice({
@@ -16,6 +18,20 @@ const globalSearchSlice = createSlice({
     handleQuery: (state, action) => ({
       ...state,
       query: action.payload,
+      resultQuery: action.payload,
+    }),
+    clearQuery: (state) => ({
+      ...state,
+      query: '',
+    }),
+
+    getSerachReq: (state) => ({
+      ...state,
+      loading: true,
+    }),
+    getSerachErr: (state) => ({
+      ...state,
+      loading: false,
     }),
 
     getSearchSuccess: (state, action) => {
@@ -33,6 +49,7 @@ const globalSearchSlice = createSlice({
           currentFilterType: action.payload.scope,
           currentFilterMetadata: searchResult.metadata,
           currentFilterPreview: searchResult.data,
+          loading: false,
         };
       }
 
@@ -58,6 +75,7 @@ const globalSearchSlice = createSlice({
   },
 });
 
-export const { getSearchSuccess, handleQuery, currentSearchSuccess } = globalSearchSlice.actions;
+export const { getSearchSuccess, handleQuery, currentSearchSuccess, getSerachReq, getSerachErr, clearQuery } =
+  globalSearchSlice.actions;
 
 export default globalSearchSlice.reducer;

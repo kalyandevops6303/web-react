@@ -1,4 +1,5 @@
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -8,16 +9,26 @@ import UserCard from '../cards/UserCard';
 import { Header } from '../styled';
 import theme from '../../configs/themeVariables';
 import ProjectCard from '../cards/ProjectCard';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const Search = () => {
-  const query = useSelector((state) => state.search.query);
+  const navigate = useNavigate();
+  const query = useSelector((state) => state.search.resultQuery);
   const searchData = useSelector((state) => state.search.searchData);
 
   const currentFilterData = useSelector((state) => state.search.currentFilterData);
   const currentMetaData = useSelector((state) => state.search.currentFilterMetadata);
   const currenPreviewData = useSelector((state) => state.search.currentFilterPreview);
+  const isLoading = useSelector((state) => state.search.loading);
+
   const [hasMore, setHasMore] = useState(true);
   const [activeTab, setActivetab] = useState('PROJECT');
+
+  useEffect(() => {
+    if (!query) {
+      navigate('/dashboard');
+    }
+  }, []);
 
   useEffect(() => {
     setHasMore(true);
@@ -33,37 +44,42 @@ const Search = () => {
     page_size: 10,
   };
   useEffect(() => {
-    dispatch(
-      searchAction({
-        scope: activeTab,
-        metaData,
-        query,
-        onSuccess: () => {},
-        onError: () => {
-          setHasMore(false);
-        },
-      }),
-    );
+    if (query?.length > 0) {
+      dispatch(
+        searchAction({
+          scope: activeTab,
+          metaData,
+          query,
+          onSuccess: () => {},
+          onError: () => {
+            setHasMore(false);
+          },
+        }),
+      );
+    }
   }, [activeTab, query]);
 
-  const newMetaData = {
-    ...metaData,
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    page: currentMetaData?.current_page + 1 || 1,
-  };
   const fetchMore = () => {
-    dispatch(
-      searchAction({
-        isFetchMore: true,
-        scope: activeTab,
-        metaData: newMetaData,
-        query,
-        onSuccess: () => {},
-        onError: () => {
-          setHasMore(false);
-        },
-      }),
-    );
+    const newMetaData = {
+      ...metaData,
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      page: currentMetaData?.current_page + 1 || 1,
+    };
+
+    if (query?.length > 0) {
+      dispatch(
+        searchAction({
+          isFetchMore: true,
+          scope: activeTab,
+          metaData: newMetaData,
+          query,
+          onSuccess: () => {},
+          onError: () => {
+            setHasMore(false);
+          },
+        }),
+      );
+    }
   };
 
   const NavigationBar = styled.ul`
@@ -91,10 +107,14 @@ const Search = () => {
   const SearchCardWrap = styled.div`
     .card-body {
       padding: 2rem 1.8rem;
+      min-height: 26rem;
     }
     .card .card {
       box-shadow: 0 4px 15px 0 rgba(34, 41, 47, 0.1) !important;
       margin: 1.8rem 0.7rem;
+    }
+    .no-data {
+      height: 10rem;
     }
   `;
 
@@ -126,39 +146,33 @@ const Search = () => {
                 <CardText>Client ({searchData?.client?.metadata?.total_records})</CardText>
               </li>
             </NavigationBar>
-            <InfiniteScroll
-              dataLength={currentFilterData?.length}
-              next={fetchMore}
-              hasMore={hasMore}
-              endMessage={
-                <div className="d-flex justify-content-center mt-2">
-                  {currentFilterData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
-                </div>
-              }
-              loader={<div className="d-flex justify-content-center">Loading...</div>}
-            >
-              {currentFilterData?.map((item) => {
-                const CardComponent = activeTab === 'TALENT' || activeTab === 'CLIENT' ? UserCard : ProjectCard;
-                return <CardComponent key={item?._id || item?.id} data={item} isExpanded={false} />;
-              })}
-            </InfiniteScroll>
+            {isLoading ? (
+              <ComponentSpinner />
+            ) : (
+              <InfiniteScroll
+                dataLength={currentFilterData?.length}
+                next={fetchMore}
+                hasMore={hasMore}
+                endMessage={
+                  <div
+                    className={`d-flex justify-content-center align-items-center mt-2  ${
+                      currentFilterData?.length > 0 ? '' : 'no-data'
+                    } `}
+                  >
+                    {currentFilterData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+                  </div>
+                }
+                loader={<div className="d-flex justify-content-center align-items-center">Loading...</div>}
+              >
+                {currentFilterData?.map((item) => {
+                  const CardComponent = activeTab === 'TALENT' || activeTab === 'CLIENT' ? UserCard : ProjectCard;
+                  return <CardComponent key={item?._id || item?.id} data={item} isExpanded={false} />;
+                })}
+              </InfiniteScroll>
+            )}
           </CardBody>
         </Card>
       </SearchCardWrap>
-      {/* <InfiniteScroll
-        dataLength={currentFilterData?.length}
-        next={fetchMore}
-        hasMore={hasMore}
-        endMessage={<div className="d-flex justify-content-center">You have seen it all!</div>}
-        loader={<div className="d-flex justify-content-center">Loading...</div>}
-      >
-        {currentFilterData?.map((item) => (
-          <UserCard data={item} key={item?._id} />
-        ))}
-      </InfiniteScroll> */}
-      {/* {currentFilterData?.map((item, index) => (
-        <UserCard data={item} key={index} />
-      ))} */}
     </div>
   );
 };

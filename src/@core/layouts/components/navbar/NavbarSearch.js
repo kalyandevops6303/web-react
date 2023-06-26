@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 
 // ** Third Party Components
-import axios from 'axios';
 import classnames from 'classnames';
 import * as Icon from 'react-feather';
 
@@ -17,7 +16,7 @@ import { handleSearchQuery } from '@store/navbar';
 import Autocomplete from '@components/autocomplete';
 import theme from '../../../../configs/themeVariables';
 import { useNavigate } from 'react-router';
-import { handleQuery } from '../../../../redux/reducers/gloabalSearch';
+import { clearQuery, handleQuery } from '../../../../redux/reducers/gloabalSearch';
 
 const NavbarSearch = () => {
   // ** Store Vars
@@ -29,14 +28,6 @@ const NavbarSearch = () => {
   const [navbarSearch, setNavbarSearch] = useState(false);
   const query = useSelector((state) => state.search);
   // ** ComponentDidMount
-  // useEffect(() => {
-  //   axios.get('/api/main-search/data').then(({ data }) => {
-  //     setSuggestions(data.searchArr);
-  //   });
-  // }, []);
-
-  // ** Removes query in store
-  // const handleClearQueryInStore = () => dispatch(handleSearchQuery(''));
 
   // ** Function to handle external Input click
   const handleExternalClick = () => {
@@ -47,42 +38,19 @@ const NavbarSearch = () => {
   };
 
   // ** Function to clear input value
-  const handleClearInput = (setUserInput) => {
-    if (!navbarSearch) {
-      setUserInput('');
-      // dispatch(handleQuery(''));
-
-      // handleClearQueryInStore();
-    }
-  };
 
   // ** Function to close search on ESC & ENTER Click
   const onKeyDown = (e) => {
-    if (e.keyCode === 27 || e.keyCode === 13) {
-      console.log(e.target.value);
-      dispatch(handleQuery(e.target.value));
-      navigate(`/search`);
-      // setTimeout(() => {
-      //   setNavbarSearch(false);
-      //   handleClearQueryInStore();
-      // }, 1);
+    if (e.target.value.length > 0) {
+      if (e.keyCode === 27 || e.keyCode === 13) {
+        console.log(e.target.value);
+        dispatch(handleQuery(e.target.value));
+        navigate(`/search`);
+      }
     }
   };
 
   // ** Function to handle search suggestion Click
-  const handleSuggestionItemClick = () => {
-    setNavbarSearch(false);
-    // handleClearQueryInStore();
-  };
-
-  // ** Function to handle search list Click
-  const handleListItemClick = (func, link, e) => {
-    func(link, e);
-    setTimeout(() => {
-      setNavbarSearch(false);
-    }, 1);
-    // handleClearQueryInStore();
-  };
 
   return (
     <NavItem className="nav-search" onClick={() => setNavbarSearch(true)}>
@@ -106,53 +74,9 @@ const NavbarSearch = () => {
             grouped={true}
             placeholder="Explore Trumio..."
             autoFocus={true}
-            // onSuggestionItemClick={handleSuggestionItemClick}
             externalClick={handleExternalClick}
-            // clearInput={(userInput, setUserInput) => handleClearInput(setUserInput)}
             onKeyDown={onKeyDown}
             defaultValue={query?.query}
-            // value={query ? query : ''}
-            // onChange={(e) => dispatch(handleSearchQuery(e.target.value))}
-            // customRender={(item, i, filteredData, activeSuggestion, onSuggestionItemClick, onSuggestionItemHover) => {
-            //   const IconTag = Icon[item.icon ? item.icon : 'X'];
-            //   return (
-            //     <li
-            //       className={classnames('suggestion-item', {
-            //         active: filteredData.indexOf(item) === activeSuggestion,
-            //       })}
-            //       key={i}
-            //       onClick={(e) => handleListItemClick(onSuggestionItemClick, item.link, e)}
-            //       onMouseEnter={() => onSuggestionItemHover(filteredData.indexOf(item))}
-            //     >
-            //       <div
-            //         className={classnames({
-            //           'd-flex justify-content-between align-items-center': item.file || item.img,
-            //         })}
-            //       >
-            //         <div className="item-container d-flex">
-            //           {item.icon ? (
-            //             <IconTag size={17} />
-            //           ) : item.file ? (
-            //             <img src={item.file} height="36" width="28" alt={item.title} />
-            //           ) : item.img ? (
-            //             <img className="rounded-circle mt-25" src={item.img} height="28" width="28" alt={item.title} />
-            //           ) : null}
-            //           <div className="item-info ms-1">
-            //             <p className="align-middle mb-0">{item.title}</p>
-            //             {item.by || item.email ? (
-            //               <small className="text-muted">{item.by ? item.by : item.email ? item.email : null}</small>
-            //             ) : null}
-            //           </div>
-            //         </div>
-            //         {item.size || item.date ? (
-            //           <div className="meta-container">
-            //             <small className="text-muted">{item.size ? item.size : item.date ? item.date : null}</small>
-            //           </div>
-            //         ) : null}
-            //       </div>
-            //     </li>
-            //   );
-            // }}
           />
         ) : null}
         <div className="search-input-close">
@@ -161,8 +85,7 @@ const NavbarSearch = () => {
             onClick={(e) => {
               e.stopPropagation();
               setNavbarSearch(false);
-              // handleClearQueryInStore();
-              dispatch(handleQuery(''));
+              dispatch(clearQuery(''));
             }}
           />
         </div>
