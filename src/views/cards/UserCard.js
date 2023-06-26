@@ -22,7 +22,7 @@ const UserCard = ({ data }) => (
                   </Link>
                 </CardTitle>
                 <CardText className="font-small-3 fw-300 mb-25 ms-25 marketplace-card-role">
-                  {data?.company_name || data?.role?.[0]?.name || 'Company name'}
+                  {data?.company_name || data?.role?.name || 'Company name'}
                 </CardText>
                 <div className="d-flex">
                   <RatingBadge number="0" />
