@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import { Check, ChevronLeft, Search, Share2, Star, User } from 'react-feather';
+import { Check, Search, Share2, Star, User } from 'react-feather';
 import {
   Badge,
   Button,
@@ -199,6 +199,7 @@ const Invite = ({ stepper }) => {
           projectId={createProjectDetails?.project_id}
           message={message}
           toggleSendInvitationModal={toggleSendInvitationModal}
+          setSelectedIds={setSelectedIds}
         />
       )}
       <Card>
@@ -563,13 +564,7 @@ const Invite = ({ stepper }) => {
           </TabContent>
         </CardBody>
       </Card>
-      <div className="d-flex justify-content-between align-items-center">
-        <div className="d-flex align-items-center upload-btn cursor-pointer" onClick={() => stepper.previous()}>
-          <BlueBgIconContainer className="p-25">
-            <ChevronLeft size={18} color={theme.activeNavPillText} />
-          </BlueBgIconContainer>
-          <h5 className="fw-light mb-0 mx-75">Back</h5>
-        </div>
+      <div className="d-flex justify-content-end align-items-center">
         <div>
           <Link to="/dashboard">
             <Button color="primary" outline>

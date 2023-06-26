@@ -218,7 +218,7 @@ const Preview = ({
     const pay_type = {
       currency: projectDetails?.currencyType?.value?._id,
       variable_cost: projectDetails?.projectPayType !== 'fixed-price',
-      fixed_cost: projectDetails?.projectFixedCost,
+      fixed_cost: projectDetails?.projectPayType === 'fixed-price' ? projectDetails?.projectFixedCost : 0,
     };
     const nda = {
       is_nda: projectDetails?.nda === 'yes',
@@ -289,7 +289,7 @@ const Preview = ({
               <h4 className="fw-bolder">
                 {projectDetails?.projectPayType === 'variable-price'
                   ? 'Variable Pay'
-                  : `Fixed Pay - ${projectDetails?.currencyType?.value?.code}${projectDetails?.projectFixedCost}`}{' '}
+                  : `Fixed Pay - ${projectDetails?.currencyType?.value?.code} ${projectDetails?.projectFixedCost}`}{' '}
               </h4>
               <p className="font-medium-2 fw-normal">Payment Type</p>
             </Col>
