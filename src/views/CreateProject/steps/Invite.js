@@ -174,6 +174,8 @@ const Invite = ({ stepper }) => {
     setSearchValue(e.target.value);
   };
 
+  const [message, setMessage] = useState('');
+
   return (
     <>
       {inviteModal && <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} />}
@@ -183,7 +185,8 @@ const Invite = ({ stepper }) => {
           toggleModal={toggleSendInvitationModal}
           selectedTalents={selectedTalents}
           setInvitationSentModal={setInvitationSentModal}
-          projectId={createProjectDetails?.project_id}
+          message={message}
+          setMessage={setMessage}
         />
       )}
       {invitationSentModal && (
@@ -191,6 +194,9 @@ const Invite = ({ stepper }) => {
           modal={invitationSentModal}
           toggleModal={toggleInvitationSentModal}
           selectedTalents={selectedTalents}
+          projectId={createProjectDetails?.project_id}
+          message={message}
+          toggleSendInvitationModal={toggleSendInvitationModal}
         />
       )}
       <Card>
