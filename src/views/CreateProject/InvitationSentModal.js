@@ -75,12 +75,7 @@ const InvitationSentModal = ({
   };
 
   return (
-    <Modal
-      isOpen={modal}
-      // toggle={toggleModal}
-      contentClassName="custom-modal-style"
-      className="modal-dialog-centered modal-lg"
-    >
+    <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={inviteTalentsIsLoading ? null : closeModal} />
       <ModalBody className="px-3 py-0">
         <div className="d-flex align-items-center">

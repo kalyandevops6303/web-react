@@ -60,6 +60,18 @@ const API = {
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
   },
+  marketplace: {
+    client: {
+      cardInfo: `${apiOnboardingEndpoint}/api/v1/client/cards-info`,
+      listProject: `${apiOnboardingEndpoint}/api/v1/client/list-projects`,
+      listTalents: `${apiOnboardingEndpoint}/api/v1/client/list-talents`,
+    },
+    talent: {
+      cardInfo: `${apiOnboardingEndpoint}/api/v1/talent/cards-info`,
+      listProject: `${apiOnboardingEndpoint}/api/v1/talent/list-projects`,
+      listClients: `${apiOnboardingEndpoint}/api/v1/talent/list-clients`,
+    },
+  },
 };
 
 export default API;
