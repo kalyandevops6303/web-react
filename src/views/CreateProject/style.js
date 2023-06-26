@@ -30,7 +30,7 @@ export const FormWizardContainer = styled.div`
     }
 
     .step {
-      margin-right: 30px;
+      margin-right: 25px;
 
       .step-trigger:disabled {
         opacity: 1 !important;

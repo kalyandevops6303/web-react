@@ -117,7 +117,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       then: () => yup.array().min(1, 'Select at least one weekday').required('Weekday is required'),
     }),
     weekends: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () => yup.array().min(1, 'Select at least one weekend day').required('Weekend is required'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
@@ -143,7 +143,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           .required('End time is required'),
     }),
     weekendStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -154,7 +154,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           .required('Start time is required'),
     }),
     weekendEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () =>
         yup
           .object()
