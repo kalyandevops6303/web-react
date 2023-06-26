@@ -60,7 +60,9 @@ const CreateProject = () => {
           projectDetails={projectDetails}
           listingDetails={listingDetails}
           files={files}
+          youDidItModal={youDidItModal}
           setYouDidItModal={setYouDidItModal}
+          toggleYouDidItModal={toggleYouDidItModal}
           type="wizard-modern"
         />
       ),

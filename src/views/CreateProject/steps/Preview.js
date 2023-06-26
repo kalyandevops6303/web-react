@@ -11,8 +11,17 @@ import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import { createProjectData, createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
 import { createNewProject } from '../../../redux/actions/createProjectActions';
+import YouDidItModal from '../YouDidItModal';
 
-const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItModal }) => {
+const Preview = ({
+  stepper,
+  projectDetails,
+  listingDetails,
+  files,
+  youDidItModal,
+  setYouDidItModal,
+  toggleYouDidItModal,
+}) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
   const weekends = ['SATURDAY', 'SUNDAY'];
 
@@ -171,11 +180,11 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
   };
 
   const onSuccess = () => {
+    toggleYouDidItModal();
     stepper.next();
-    setYouDidItModal(true);
   };
 
-  const onPostClick = () => {
+  const onNewProjectCreation = () => {
     const details = {
       name: projectDetails?.projectName,
       description: projectDetails?.projectDescription,
@@ -235,6 +244,13 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
 
   return (
     <>
+      {youDidItModal && (
+        <YouDidItModal
+          modal={youDidItModal}
+          toggleModal={toggleYouDidItModal}
+          onNewProjectCreation={onNewProjectCreation}
+        />
+      )}
       <Card>
         <CardHeader>
           <h4 className="m-0 mt-1">Project Details</h4>
@@ -383,7 +399,7 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
           </UploadIconContainer>
           <h5 className="fw-light mb-0 mx-75">Back</h5>
         </div>
-        <Button color="primary" disabled={createProjectIsLoading} onClick={onPostClick}>
+        <Button color="primary" disabled={createProjectIsLoading} onClick={() => setYouDidItModal(true)}>
           {createProjectIsLoading ? (
             <Spinner size="sm" />
           ) : (
@@ -405,7 +421,9 @@ Preview.propTypes = {
   projectDetails: Proptypes.object,
   listingDetails: Proptypes.object,
   files: Proptypes.array,
+  youDidItModal: Proptypes.bool,
   setYouDidItModal: Proptypes.func,
+  toggleYouDidItModal: Proptypes.func,
 };
 
 Preview.defaultProps = {
@@ -413,5 +431,7 @@ Preview.defaultProps = {
   projectDetails: {},
   listingDetails: {},
   files: [],
+  youDidItModal: false,
   setYouDidItModal: () => {},
+  toggleYouDidItModal: () => {},
 };

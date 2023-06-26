@@ -29,7 +29,6 @@ import { giveStrokeColor } from '../../../utility/Utils';
 import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
 import SendInvitationModal from '../SendInvitationModal';
-import YouDidItModal from '../YouDidItModal';
 import InvitationSentModal from '../InvitationSentModal';
 import {
   almaMaterTalents,
@@ -39,7 +38,7 @@ import {
 } from '../../../redux/selectors/createProjectSelectors';
 import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../../redux/actions/createProjectActions';
 
-const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
+const Invite = ({ stepper }) => {
   const tabNames = {
     best: '1',
     favourite: '2',
@@ -177,7 +176,6 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
 
   return (
     <>
-      {youDidItModal && <YouDidItModal modal={youDidItModal} toggleModal={toggleYouDidItModal} stepper={stepper} />}
       {inviteModal && <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} />}
       {sendInvitationModal && (
         <SendInvitationModal
@@ -585,12 +583,8 @@ export default Invite;
 
 Invite.propTypes = {
   stepper: Proptypes.object,
-  youDidItModal: Proptypes.bool,
-  toggleYouDidItModal: Proptypes.func,
 };
 
 Invite.defaultProps = {
   stepper: {},
-  youDidItModal: false,
-  toggleYouDidItModal: () => {},
 };
