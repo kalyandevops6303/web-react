@@ -52,7 +52,7 @@ const API = {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
   },
-  notification: {
+  notifications: {
     subscribe: `${apiAuthEndpoint}/api/v1/user/subscribe`,
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
   },

@@ -64,15 +64,17 @@ const messaging = firebase.messaging();
 let testUrl = 'https://test.trumio.ai/';
 
 messaging.onBackgroundMessage((payload) => {
+  const { data } = payload;
+
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
   // Customize notification here
-  const notificationTitle = 'Background Message Title';
+  const notificationTitle = data?.title;
   const notificationOptions = {
-    body: 'Background Message body.',
+    body: data?.body,
     icon: '/firebase-logo.png',
   };
 
-  self.registration.showNotification(notificationTitle).catch((error) => {
+  self.registration.showNotification(notificationTitle, notificationOptions).catch((error) => {
     console.error('Error displaying notification:', error);
   });
 });
