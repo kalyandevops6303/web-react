@@ -39,7 +39,7 @@ const AvailableTime = () => {
                 <ul>
                   {weekdays.map((day) => (
                     <li key={day}>
-                      <span className={`dot ${weekdaysData.days.includes(day) ? 'active' : ''}`} />
+                      <span className={`dot ${weekdaysData.days?.includes(day) ? 'active' : ''}`} />
                       {capitalize(day.slice(0, 3))}
                     </li>
                   ))}
@@ -56,7 +56,7 @@ const AvailableTime = () => {
                   <ul>
                     {weekends.map((day) => (
                       <li key={day}>
-                        <span className={`dot ${weekendsData.days.includes(day) ? 'active' : ''}`} />
+                        <span className={`dot ${weekendsData.days?.includes(day) ? 'active' : ''}`} />
                         {capitalize(day.slice(0, 3))}
                       </li>
                     ))}
