@@ -58,6 +58,7 @@ const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
     await fcmSubscribeService(fcmToken);
     dispatch(FCMSubscribe(fcmToken));
   } catch (error) {
+    console.error(error, 'fcmError');
     errorHandler(error);
   }
 };

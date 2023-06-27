@@ -65,7 +65,7 @@ const SigninWithGoogle = () => {
         type: 'standard',
         size: 'large',
         shape: 'rectangular',
-        width: document.getElementById('buttonDiv').offsetWidth,
+        width: document.getElementById('buttonDiv')?.offsetWidth,
         logo_alignment: 'left',
       });
     };
