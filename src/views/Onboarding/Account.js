@@ -31,8 +31,16 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
-    firstName: yup.string().required('First name is required'),
-    lastName: yup.string().required('Last name is required'),
+    firstName: yup
+      .string()
+      .min(3, 'First name must be at least 3 characters')
+      .max(25, 'First name must be at most 25 characters')
+      .required('First name is required'),
+    lastName: yup
+      .string()
+      .min(3, 'Last name must be at least 3 characters')
+      .max(25, 'Last name must be at most 25 characters')
+      .required('Last name is required'),
     countryCode: yup.string().required(),
     mobileNumber: yup.string().required(),
     email: yup.string().email().required(),
