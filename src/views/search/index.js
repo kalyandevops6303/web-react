@@ -133,7 +133,9 @@ const Search = () => {
       <SearchCardWrap>
         <Card>
           <CardBody>
-            <CardText className="ms-50 mb-25">{totalResult || 0} result found</CardText>
+            <CardText className="ms-50 mb-25">
+              {totalResult || 0} result{totalResult > 1 ? 's' : ''} found
+            </CardText>
             <CardTitle className="ms-50">{query}</CardTitle>
             <NavigationBar className=" ms-50 mb-50">
               <li className={activeTab === 'PROJECT' && 'active'} onClick={() => setActivetab('PROJECT')}>
