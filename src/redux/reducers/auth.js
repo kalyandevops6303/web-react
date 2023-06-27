@@ -11,6 +11,7 @@ const initialState = {
   password: null,
   loading: false,
   error: null,
+  fcmToken: '',
 };
 
 const authSlice = createSlice({
@@ -205,6 +206,12 @@ const authSlice = createSlice({
       loading: false,
       error: action.payload,
     }),
+
+    // FCM
+    FCMSubscribe: (state, action) => ({
+      ...state,
+      fcmToken: action.payload,
+    }),
   },
 });
 
@@ -244,6 +251,7 @@ export const {
   loginRequest,
   loginSuccess,
   loginFailure,
+  FCMSubscribe,
 } = authSlice.actions;
 
 export default authSlice.reducer;
