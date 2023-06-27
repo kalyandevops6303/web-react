@@ -5,61 +5,67 @@ import { Info } from 'react-feather';
 
 // ** Custom Components
 
+import { useSelector } from 'react-redux';
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText, ButtonGroup, Button } from 'reactstrap';
 import { EarningAmount, EarningCardWrapper } from './style';
+import { userData } from '../../../redux/selectors/dashboardSelectors';
 
-const EarningCard = () => (
-  <EarningCardWrapper>
-    <Card className="card-reward">
-      <CardHeader className="earning-head">
-        <CardTitle tag="h4">Earnings</CardTitle>
-        <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
-          View All
-        </CardText>
-      </CardHeader>
-      <CardBody className="earning-body">
-        <ButtonGroup className="button-grp">
-          <Button
-            tag="label"
-            className={classNames('btn-icon ', {
-              active: true,
-            })}
-            color="primary"
-            outline
-          >
-            Dec 2022
-          </Button>
-          <Button
-            tag="label"
-            className={classNames('btn-icon', {
-              active: false,
-            })}
-            color="primary"
-            outline
-          >
-            YTD 2023
-          </Button>
-        </ButtonGroup>
-        <div className="d-flex justify-content-around card-amount-details">
-          <EarningAmount>
-            <span className="title">
-              Total <Info size={14} />
-            </span>
-            <span className="amount">$ 0</span>
-            <span className="change">+0%</span>
-          </EarningAmount>
-          <EarningAmount>
-            <span className="title">
-              Completed <Info size={14} />
-            </span>
-            <span className="amount">$ 0</span>
-            <span className="change">+0%</span>
-          </EarningAmount>
-        </div>
-      </CardBody>
-    </Card>
-  </EarningCardWrapper>
-);
+const EarningCard = () => {
+  const userDetailsData = useSelector(userData);
+
+  return (
+    <EarningCardWrapper>
+      <Card className="card-reward">
+        <CardHeader className="earning-head">
+          <CardTitle tag="h4">{userDetailsData?.user_type === 'TALENT' ? 'Earnings' : 'Payments'}</CardTitle>
+          <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
+            View All
+          </CardText>
+        </CardHeader>
+        <CardBody className="earning-body">
+          <ButtonGroup className="button-grp">
+            <Button
+              tag="label"
+              className={classNames('btn-icon ', {
+                active: true,
+              })}
+              color="primary"
+              outline
+            >
+              Dec 2022
+            </Button>
+            <Button
+              tag="label"
+              className={classNames('btn-icon', {
+                active: false,
+              })}
+              color="primary"
+              outline
+            >
+              YTD 2023
+            </Button>
+          </ButtonGroup>
+          <div className="d-flex justify-content-around card-amount-details">
+            <EarningAmount>
+              <span className="title">
+                Total <Info size={14} />
+              </span>
+              <span className="amount">$ 0</span>
+              <span className="change">+0%</span>
+            </EarningAmount>
+            <EarningAmount>
+              <span className="title">
+                Completed <Info size={14} />
+              </span>
+              <span className="amount">$ 0</span>
+              <span className="change">+0%</span>
+            </EarningAmount>
+          </div>
+        </CardBody>
+      </Card>
+    </EarningCardWrapper>
+  );
+};
 
 export default EarningCard;

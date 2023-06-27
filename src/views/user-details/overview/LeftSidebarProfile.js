@@ -136,7 +136,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               <BadgeGroup
                 color="light-success-2"
                 title="Project area of interest"
-                data={data?.project_area_of_interest?.skills}
+                data={data?.project_area_of_interest?.area}
               />
             ) : (
               <>

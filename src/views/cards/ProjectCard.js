@@ -37,6 +37,7 @@ const ProjectCard = ({ isExpanded, data }) => {
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
+    LISTING_EXPIRED: 'LISTING_EXPIRED',
   };
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
@@ -73,7 +74,7 @@ const ProjectCard = ({ isExpanded, data }) => {
                     <>Variable Price&nbsp;</>
                   ) : (
                     <>
-                      Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.[0]?.code}&nbsp;
+                      Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
                     </>
                   )}
                 </CardText>
@@ -84,7 +85,7 @@ const ProjectCard = ({ isExpanded, data }) => {
                 )}
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
-                  {data?.client_details?.[0]?.office_address?.country?.[0]?.name || 'Location'}
+                  {data?.client_details?.office_address?.country?.name || 'Location'}
                 </CardText>
                 <CardText className="project">
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}
@@ -128,10 +129,10 @@ const ProjectCard = ({ isExpanded, data }) => {
                 <div className={`${data?.match_percentage >= 0 ? '' : ' d-flex w-100 align-items-center'}`}>
                   <div className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                      {data?.client_details?.[0]?.first_name} {data?.client_details?.[0]?.last_name}
+                      {data?.client_details?.first_name} {data?.client_details?.last_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                      {data?.client_details?.[0]?.company_name}
+                      {data?.client_details?.company_name}
                     </CardText>
                   </div>
                   <div className="d-flex flex-grow-1">

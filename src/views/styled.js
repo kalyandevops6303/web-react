@@ -47,7 +47,8 @@ const CustomBadge = styled.span`
     background: ${theme.darkRedColor}1f;
     color: ${theme.darkRedColor};
   }
-  .CLOSED {
+  .CLOSED,
+  .LISTING_EXPIRED {
     background: ${theme.disabledGrayColor}1f;
     color: ${theme.disabledGrayColor};
   }
