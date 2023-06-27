@@ -87,7 +87,7 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
               <Row className="mb-2">
                 <Col lg="5">
                   <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.[0]?.name}</CardTitle>
+                    <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.name}</CardTitle>
                     <CardText className="project-name">Currency Type</CardText>
                   </div>
                 </Col>
