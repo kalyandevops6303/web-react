@@ -53,6 +53,7 @@ const Invite = ({ stepper }) => {
   const createProjectDetails = useSelector(createProjectData);
 
   const [activeTab, setTabActive] = useState(tabNames.best);
+  const [invitedIds, setInvitedIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedTalents, setSelectedTalents] = useState([]);
   const [searchValue, setSearchValue] = useState('');
@@ -70,14 +71,6 @@ const Invite = ({ stepper }) => {
       setTabActive(tab);
     }
   };
-
-  const len =
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    (bestTalentsData?.data ? bestTalentsData?.data.length : 0) +
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    (favoriteTalentsData?.data ? favoriteTalentsData?.data.length : 0) +
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    (almaMaterTalentsData?.data ? almaMaterTalentsData?.data.length : 0);
 
   const removeDuplicates = (arr, key) => {
     const seen = new Set();
@@ -176,6 +169,32 @@ const Invite = ({ stepper }) => {
 
   const [message, setMessage] = useState('');
 
+  const renderActionButton = (userId) => {
+    if (invitedIds.includes(userId)) {
+      return (
+        <div className="ms-3">
+          <h5 className="m-0 fw-light font-medium-1">Invited!</h5>
+        </div>
+      );
+      // eslint-disable-next-line
+    } else if (selectedIds.includes(userId)) {
+      return (
+        <div
+          className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
+          onClick={() => setSelectedIds(selectedIds.filter((data) => data !== userId))}
+        >
+          <Check size={18} color={theme.green} />
+        </div>
+      );
+    } else {
+      return (
+        <div className="upload-btn cursor-pointer ms-3" onClick={() => setSelectedIds([...selectedIds, userId])}>
+          <h5 className="m-0 fw-light font-medium-1">Invite</h5>
+        </div>
+      );
+    }
+  };
+
   return (
     <>
       {inviteModal && (
@@ -199,6 +218,10 @@ const Invite = ({ stepper }) => {
           projectId={createProjectDetails?.project_id}
           message={message}
           toggleSendInvitationModal={toggleSendInvitationModal}
+          selectedIds={selectedIds}
+          setSelectedIds={setSelectedIds}
+          invitedIds={invitedIds}
+          setInvitedIds={setInvitedIds}
         />
       )}
       <Card>
@@ -265,7 +288,7 @@ const Invite = ({ stepper }) => {
             </NavsContainer>
           </Row>
 
-          <p className="font-small-3">{`${selectedIds?.length}/${len} invited`}</p>
+          {invitedIds.length > 0 && <p className="font-small-3">{`${invitedIds?.length} invited`}</p>}
 
           <TabContent activeTab={activeTab} className="mb-2">
             <TabPane tabId={tabNames.best}>
@@ -287,7 +310,7 @@ const Invite = ({ stepper }) => {
                               <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
                             </div>
                           </Col>
-                          <Col sm="2" md="3" lg="4">
+                          <Col sm="2" md="3" lg="3">
                             <div className="d-flex align-items-center">
                               <Badge>
                                 <div className="d-flex align-items-center">
@@ -329,8 +352,13 @@ const Invite = ({ stepper }) => {
                               </CircularProgressbarWithChildren>
                             </div>
                           </Col>
-                          <Col sm="2" md="3" lg="1">
-                            {selectedIds.includes(item.user_id) ? (
+                          <Col sm="2" md="3" lg="2">
+                            {renderActionButton(item.user_id)}
+                            {/* {invitedIds.includes(item.user_id) ? (
+                              <div className="ms-3">
+                                <h5 className="m-0 fw-light font-medium-1">Invited!</h5>
+                              </div>
+                            ) : selectedIds.includes(item.user_id) ? (
                               <div
                                 className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
                                 onClick={() => setSelectedIds(selectedIds.filter((data) => data !== item.user_id))}
@@ -344,7 +372,7 @@ const Invite = ({ stepper }) => {
                               >
                                 <h5 className="m-0 fw-light font-medium-1">Invite</h5>
                               </div>
-                            )}
+                            )} */}
                           </Col>
                         </Row>
                       ))
