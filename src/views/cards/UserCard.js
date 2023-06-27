@@ -1,10 +1,23 @@
 import { Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
+import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { Link } from 'react-router-dom';
 import lisa from '@src/assets/images/portrait/small/lisa.png';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
 import { UserCardWrap } from './style';
+import theme from '../../configs/themeVariables';
+
+const giveStrokeColor = (percentage) => {
+  if (percentage <= 40) {
+    return theme.red;
+    // eslint-disable-next-line
+  } else if (percentage > 40 && percentage <= 70) {
+    return theme.orange;
+  } else {
+    return theme.green;
+  }
+};
 
 const UserCard = ({ data }) => (
   <UserCardWrap>
@@ -22,13 +35,39 @@ const UserCard = ({ data }) => (
                   </Link>
                 </CardTitle>
                 <CardText className="font-small-3 fw-300 mb-25 ms-25 marketplace-card-role">
-                  {data?.company_name || data?.role?.[0]?.name || 'Company name'}
+                  {data?.company_name ? data?.company_name || 'Company Name' : data?.role?.name || 'Role'}
                 </CardText>
                 <div className="d-flex">
                   <RatingBadge number="0" />
                   <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
                 </div>
               </div>
+              {data?.match_percentage >= 0 && (
+                <div className="circular-progressbar-container mt-25">
+                  <CircularProgressbarWithChildren
+                    value={data?.match_percentage}
+                    styles={{
+                      path: {
+                        stroke: giveStrokeColor(data?.match_percentage),
+                        strokeLinecap: 'round',
+                        transition: 'stroke-dashoffset 0.5s ease 0s',
+                        transform: 'rotate(0turn)',
+                        transformOrigin: 'center center',
+                      },
+                      trail: {
+                        stroke: theme.progressBarBg,
+                        strokeLinecap: 'round',
+                        transform: 'rotate(0turn)',
+                        transformOrigin: 'center center',
+                      },
+                    }}
+                  >
+                    <div className="d-flex justify-content-center align-items-center">
+                      <p className="percentage-text m-0">{data?.match_percentage}%</p>
+                    </div>
+                  </CircularProgressbarWithChildren>
+                </div>
+              )}
             </div>
             <CardText className="mt-2 ">{data?.company_tagline || data?.professional_intro} </CardText>
           </Col>

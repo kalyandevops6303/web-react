@@ -1,4 +1,4 @@
-import { Col, Form, Input, InputGroup, InputGroupText, Label, Row, UncontrolledTooltip } from 'reactstrap';
+import { Col, Input, InputGroup, InputGroupText, Label, Row, UncontrolledTooltip } from 'reactstrap';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
@@ -260,6 +260,7 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
 
   const handleSearchTextChange = (e) => {
     setSearchText(e.target.value);
+    e.preventDefault();
   };
 
   const fetchMore = () => {
@@ -305,18 +306,18 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
     <>
       <FormWrapper>
         <SecondaryFiltersWrap>
-          <Form className="mt-auto">
+          <div className="mt-auto">
             <InputGroup className="input-group-merge marketplace-search">
               <InputGroupText>
                 <Search size={14} />
               </InputGroupText>
               <Input
                 innerRef={inputRef}
-                onInput={debounce(handleSearchTextChange, 300)}
+                onChange={debounce(handleSearchTextChange, 300)}
                 placeholder="Search project name, user name"
               />
             </InputGroup>
-          </Form>
+          </div>
           <Row>
             <Col className="d-flex mt-auto mb-50 d-none">
               <Label className="view-label me-1" id="view-label">

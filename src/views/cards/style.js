@@ -140,5 +140,45 @@ const UserCardWrap = styled(CardWrap)`
     color: ${theme.bodyColor};
     font-weight: 300;
   }
+
+  //exp
+
+  .circular-progressbar-container {
+    width: 35px;
+    height: 35px;
+    margin-left: 1rem;
+
+    .percentage-text {
+      font-weight: 400;
+      font-size: 10px;
+      color: ${theme.headingTextColor};
+    }
+  }
+
+  .truncate {
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .show-more {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .show-less {
+    display: none;
+  }
+
+  .collapsed .show-less {
+    display: inline;
+  }
+
+  .collapsed .show-more {
+    display: none;
+  }
 `;
 export { CardWrap, ProjectCardWrap, InstituteCardWrap, UserCardWrap };
