@@ -50,7 +50,12 @@ const Profile = () => {
   const ProfileSchema = yup.object().shape({
     tagline: yup.string().max(60, 'Tagline must be at most 60 characters').required('Tagline is required'),
     workExperienceYear: yup.number().min(0).integer('Year must be an integer').typeError('Year must be a number'),
-    workExperienceMonth: yup.number().min(0).integer('Month must be an integer').typeError('Month must be a number'),
+    workExperienceMonth: yup
+      .number()
+      .min(0)
+      .max(11, 'Month must be at most 11')
+      .integer('Month must be an integer')
+      .typeError('Month must be a number'),
     professionalIntroduction: yup
       .string()
       .max(150, 'Professional introduction must be at most 150 characters')
@@ -1072,6 +1077,7 @@ const Profile = () => {
                           onWheel={(e) => e.target.blur()}
                           placeholder="Enter zip code"
                           invalid={errors.zipCode && true}
+                          autoComplete="none"
                         />
                       )}
                     />

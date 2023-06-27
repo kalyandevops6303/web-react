@@ -997,6 +997,7 @@ const Profile = () => {
                           min={0}
                           placeholder="Enter zip code"
                           invalid={errors.zipCode && true}
+                          autoComplete="none"
                         />
                       )}
                     />
