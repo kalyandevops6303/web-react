@@ -260,14 +260,14 @@ const Preview = ({
           <Row className="mb-2">
             <Col sm="12" md="12" lg="6">
               <h4 className="fw-bolder">{projectDetails?.projectName}</h4>
-              <p className="font-medium-2 fw-normal">Project Name</p>
+              <p className="font-medium-1 fw-normal">Project Name</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
                 {projectDetails?.expectedDuration}
                 {projectDetails?.expectedDurationPeriod?.label[0].toLowerCase()}
               </h4>
-              <p className="font-medium-2 fw-normal">Expected Duration</p>
+              <p className="font-medium-1 fw-normal">Expected Duration</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
@@ -277,13 +277,13 @@ const Preview = ({
                     )}`
                   : `${listingDetails?.duration}d`}
               </h4>
-              <p className="font-medium-2 fw-normal">Listing Duration</p>
+              <p className="font-medium-1 fw-normal">Listing Duration</p>
             </Col>
           </Row>
           <Row className="mb-2">
             <Col sm="12" md="12" lg="6">
               <h4 className="fw-bolder">{projectDetails?.currencyType?.label}</h4>
-              <p className="font-medium-2 fw-normal">Currency Type</p>
+              <p className="font-medium-1 fw-normal">Currency Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
@@ -291,11 +291,11 @@ const Preview = ({
                   ? 'Variable Pay'
                   : `Fixed Pay - ${projectDetails?.currencyType?.value?.code} ${projectDetails?.projectFixedCost}`}{' '}
               </h4>
-              <p className="font-medium-2 fw-normal">Payment Type</p>
+              <p className="font-medium-1 fw-normal">Payment Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">{capitalize(projectDetails?.nda)}</h4>
-              <p className="font-medium-2 fw-normal">NDA</p>
+              <p className="font-medium-1 fw-normal">NDA</p>
             </Col>
           </Row>
           <Row>
@@ -357,7 +357,7 @@ const Preview = ({
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">{projectDetails?.minTimeOverlapHr} hr</h4>
-              <p className="font-medium-2 fw-normal">Minimum Overlap</p>
+              <p className="font-medium-1 fw-normal">Minimum Overlap</p>
             </Col>
           </Row>
         </CardBody>
