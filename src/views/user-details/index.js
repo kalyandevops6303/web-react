@@ -37,7 +37,7 @@ const UserDetails = () => {
     const weekdayHoursPerWeek = weekdayDurationPerDay * weekdaysPerWeek;
 
     // Check if weekends_avl property exists
-    if (availability?.weekends_avl.days) {
+    if (availability?.weekends_avl?.days) {
       const weekendStartTime = parseInt(availability.weekends_avl.start_time, 10);
       const weekendEndTime = parseInt(availability.weekends_avl.end_time, 10);
       const weekendDurationPerDay = weekendEndTime - weekendStartTime;
