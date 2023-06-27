@@ -11,6 +11,8 @@ import {
   setNewPasswordService,
   setPasswordService,
   loginServiceGoogle,
+  fcmSubscribeService,
+  fcmUnsubscribeService,
 } from '../../services/authServices';
 
 import {
@@ -45,10 +47,28 @@ import {
   resendFailure,
   resendRequest,
   resendSuccess,
+  FCMSubscribe,
 } from '../reducers/auth';
 import { setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
+
+const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
+  try {
+    await fcmSubscribeService(fcmToken);
+    dispatch(FCMSubscribe(fcmToken));
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+const fcmUnsubscribeNotification = (fcmToken) => async () => {
+  try {
+    await fcmUnsubscribeService(fcmToken);
+  } catch (error) {
+    errorHandler(error);
+  }
+};
 
 const loginUser = (username, password, onSuccess) => async (dispatch) => {
   dispatch(loginRequest());
@@ -206,4 +226,6 @@ export {
   verifyOtp,
   setNewPassword,
   loginUser,
+  fcmSubscribeNotification,
+  fcmUnsubscribeNotification,
 };

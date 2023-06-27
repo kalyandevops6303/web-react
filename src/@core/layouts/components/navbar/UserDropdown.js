@@ -16,13 +16,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../../../../redux/selectors/dashboardSelectors';
 import { clearData } from '../../../../redux/reducers/dashboard';
 import { clearDataSuccess } from '../../../../redux/reducers/auth';
+import { fcmUnsubscribeNotification } from '../../../../redux/actions/authActions';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(userData);
+  const fcmToken = useSelector((state) => state.auth.fcmToken);
 
   const dispatch = useDispatch();
 
   const handleLogout = () => {
+    if (fcmToken) {
+      dispatch(fcmUnsubscribeNotification(fcmToken));
+    }
     dispatch(clearData());
     dispatch(clearDataSuccess());
     localStorage.clear();

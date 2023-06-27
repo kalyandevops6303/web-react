@@ -77,6 +77,8 @@ const API = {
   },
   notifications: {
     allNotifications: `${apiOnboardingEndpoint}/api/v1/notification/all`,
+    subscribe: `${apiAuthEndpoint}/api/v1/user/subscribe`,
+    unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
   },
 };
 
