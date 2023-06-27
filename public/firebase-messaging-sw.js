@@ -72,7 +72,7 @@ messaging.onBackgroundMessage((payload) => {
     icon: '/firebase-logo.png',
   };
 
-  self.navigator.registration.showNotification(notificationTitle).catch((error) => {
+  self.registration.showNotification(notificationTitle).catch((error) => {
     console.error('Error displaying notification:', error);
   });
 });

@@ -22,8 +22,8 @@ const verifyOtpService = (email, otp) => DataService.post(API.auth.verifyOtp, { 
 
 const setNewPasswordService = (newPassword) => DataService.post(API.auth.setNewPassword, { new_password: newPassword });
 
-const fcmSubscribeService = (token) => DataService.post(`${API.notification.subscribe}`, { token });
-const fcmUnsubscribeService = (token) => DataService.post(`${API.notification.unsubscribe}`, { token });
+const fcmSubscribeService = (token) => DataService.post(`${API.notifications.subscribe}`, { token });
+const fcmUnsubscribeService = (token) => DataService.post(`${API.notifications.unsubscribe}`, { token });
 
 export {
   loginService,
