@@ -75,6 +75,9 @@ const API = {
   globalSearch: {
     search: `${apiOnboardingEndpoint}/api/v1/search`,
   },
+  notifications: {
+    allNotifications: `${apiOnboardingEndpoint}/api/v1/notification/all`,
+  },
 };
 
 export default API;

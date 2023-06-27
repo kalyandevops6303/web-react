@@ -11,6 +11,7 @@ import profile from './reducers/profile';
 import createProject from './reducers/createProject';
 import marketPlace from './reducers/marketPlace';
 import gloabalSearch from './reducers/gloabalSearch';
+import notifications from './reducers/notifications';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   currentProfile: profile,
   createProject,
   marketPlace,
+  notifications,
   layout,
   navbar,
   search: gloabalSearch,
