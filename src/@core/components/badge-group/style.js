@@ -3,10 +3,6 @@ import theme from '../../../configs/themeVariables';
 
 const BadgeGroupWrap = styled.div`
   .badge-box-wrap {
-    .bg-light-blue {
-      background: ${theme.lightBlueBgColor};
-      color: ${theme.lightBlueColor};
-    }
     .bg-light-success-2 {
       background: ${theme.darkGreenBgColor};
       color: ${theme.darkGreenColor};

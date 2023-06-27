@@ -92,6 +92,7 @@ const SetNewPassword = () => {
             <Controller
               className="input-group-merge"
               id="newPassword"
+              placeholder="Enter your new password"
               type="newPassword"
               name="newPassword"
               autoFocus

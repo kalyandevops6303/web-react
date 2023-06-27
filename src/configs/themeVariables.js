@@ -32,9 +32,37 @@ const cardShadow = 'rgba(34, 41, 4, 0.1)';
 const lightBlueColor = '#2196F3';
 const lightBlueBgColor = '#E3F2FD';
 const textColor = '#757575';
+const tooltipColor = '#ff0000';
 const darkGreenColor = '#0097A7';
 const darkGreenBgColor = '#E0F7FA';
 const orange = '#FF6D00';
+const blueBorderColorv2 = '#0578FB';
+const blueCardBg = '#E9F3FF';
+
+// status
+const succesGreenColor = '#20C997';
+const succesGreenBg = '#20C9971F';
+const joinReqColor = '#00ACC1';
+const joinRe1Bg = '#00ACC11F';
+const purpleColor = '#651FFF';
+const purpleBg = '#651FFF1F';
+const royalBlueColor = '#0D6EFD';
+const royalBlueBg = '#0D6EFD1F';
+const acceptColor = '#0097A7';
+const acceptBg = '#0097A71F';
+const errorColor = '#EA5455';
+const errorBg = '#EA54551F';
+const blueColor = '##00B0FF';
+const blueBg = '##00B0FF1F';
+const orangeColor = '##FF9F43';
+const organgeBg = '##FF9F431F';
+const greenV2Color = '##00C853';
+const greenV2Bg = '##00C8531F';
+const darkRedColor = '#B71C1C';
+const darkRedBg = '#B71C1C1F';
+const disabledGrayColor = '##607D8B';
+const disabledBg = '##607D8B1F';
+const turquoiseColor = '#46d8d5';
 const progressBarBg = '#E9ECEF';
 const dotBg = 'rgba(217, 217, 217, 0.5)';
 const progressBarOrange = '#F5B845';
@@ -82,6 +110,32 @@ const theme = {
   darkGreenColor,
   darkGreenBgColor,
   orange,
+  succesGreenColor,
+  succesGreenBg,
+  joinReqColor,
+  joinRe1Bg,
+  purpleColor,
+  purpleBg,
+  royalBlueColor,
+  royalBlueBg,
+  acceptColor,
+  acceptBg,
+  errorColor,
+  errorBg,
+  blueColor,
+  blueBg,
+  orangeColor,
+  organgeBg,
+  greenV2Color,
+  greenV2Bg,
+  darkRedColor,
+  darkRedBg,
+  disabledGrayColor,
+  disabledBg,
+  tooltipColor,
+  blueBorderColorv2,
+  blueCardBg,
+  turquoiseColor,
   progressBarBg,
   dotBg,
   progressBarOrange,

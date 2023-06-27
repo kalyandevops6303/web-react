@@ -16,7 +16,7 @@ import Avatar from '@components/avatar';
 
 const AvatarGroup = (props) => {
   // ** Props
-  const { data, tag, className } = props;
+  const { data, tag, className, size } = props;
 
   // ** Conditional Tag
   const Tag = tag || 'div';
@@ -34,7 +34,7 @@ const AvatarGroup = (props) => {
           ) : null}
           {!item.meta ? (
             <Avatar
-              size="sm"
+              size={size}
               tag={ItemTag}
               className={classnames('pull-up', {
                 [item.className]: item.className,
