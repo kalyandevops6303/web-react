@@ -761,7 +761,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekdayStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={timeOptions}
+                                options={
+                                  watch('weekdayEndTime')
+                                    ? timeOptions.filter(
+                                        (t) => parseInt(t.value, 10) < parseInt(watch('weekdayEndTime').value, 10),
+                                      )
+                                    : timeOptions
+                                }
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
@@ -787,7 +793,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekdayEndTime && true}
                             render={({ field }) => (
                               <Select
-                                options={timeOptions}
+                                options={
+                                  watch('weekdayStartTime')
+                                    ? timeOptions.filter(
+                                        (t) => parseInt(t.value, 10) > parseInt(watch('weekdayStartTime').value, 10),
+                                      )
+                                    : timeOptions
+                                }
                                 classNamePrefix="select"
                                 placeholder="Select end time"
                                 theme={selectThemeColors}
@@ -959,7 +971,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekendStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={timeOptions}
+                                options={
+                                  watch('weekendEndTime')
+                                    ? timeOptions.filter(
+                                        (t) => parseInt(t.value, 10) < parseInt(watch('weekendEndTime').value, 10),
+                                      )
+                                    : timeOptions
+                                }
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
@@ -985,7 +1003,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekendEndTime && true}
                             render={({ field }) => (
                               <Select
-                                options={timeOptions}
+                                options={
+                                  watch('weekendStartTime')
+                                    ? timeOptions.filter(
+                                        (t) => parseInt(t.value, 10) > parseInt(watch('weekendStartTime').value, 10),
+                                      )
+                                    : timeOptions
+                                }
                                 classNamePrefix="select"
                                 placeholder="Select end time"
                                 theme={selectThemeColors}
