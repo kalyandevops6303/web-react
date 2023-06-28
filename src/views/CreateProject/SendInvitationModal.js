@@ -47,7 +47,7 @@ const SendInvitationModal = ({ modal, toggleModal, selectedTalents, setInvitatio
           onChange={(e) => setMessage(e.target.value)}
         />
       </div>
-      <div className="d-flex justify-content-end mb-2 me-1 mt-3">
+      <div className="d-flex justify-content-end mb-2 mt-3 px-3">
         <Button color="primary" outline className="me-3" onClick={toggleModal}>
           <span className="px-2">Cancel</span>
         </Button>
