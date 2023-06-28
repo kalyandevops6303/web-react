@@ -15,7 +15,7 @@ const Meetings = () => (
       <Card className="card-inside">
         <CardBody className="d-flex flex-column justify-content-center">
           <img src={NoMeeting} alt="no-meetings" className="no-meetings-gif" />
-          <CardText className="text-center card-text font-medium-1 fw-bold mb-1 text-primary">No Meetings</CardText>
+          <CardText className="text-center card-text font-medium-1 fw-bold mb-1 text-primary">No Meetings !</CardText>
         </CardBody>
       </Card>
     </Card>
