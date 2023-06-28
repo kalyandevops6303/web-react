@@ -181,7 +181,7 @@ const Profile = () => {
       then: () => yup.array().min(1, 'Select at least one weekday').required('Weekday is required'),
     }),
     weekends: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () => yup.array().min(1, 'Select at least one weekend day').required('Weekend is required'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
@@ -207,7 +207,7 @@ const Profile = () => {
           .required('End time is required'),
     }),
     weekendStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -218,7 +218,7 @@ const Profile = () => {
           .required('Start time is required'),
     }),
     weekendEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -368,6 +368,7 @@ const Profile = () => {
       tools,
       certificates,
       preferredWorkingTimeZone,
+      availabilityDays,
       weekdayStartTime,
       weekdayEndTime,
       weekdays,
@@ -410,14 +411,14 @@ const Profile = () => {
     const availability = {
       timezone: preferredWorkingTimeZone.value._id,
       weekdays_avl: {
-        start_time: weekdayStartTime?.value,
-        end_time: weekdayEndTime?.value,
-        days: weekdays,
+        start_time: availabilityDays?.includes('weekdays') ? weekdayStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekdays') ? weekdayEndTime?.value : null,
+        days: availabilityDays?.includes('weekdays') ? weekdays : null,
       },
       weekends_avl: {
-        start_time: weekendStartTime?.value,
-        end_time: weekendEndTime?.value,
-        days: weekends,
+        start_time: availabilityDays?.includes('weekends') ? weekendStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekends') ? weekendEndTime?.value : null,
+        days: availabilityDays?.includes('weekends') ? weekends : null,
       },
     };
     const currency_preference = currencyPreference.value;
@@ -1435,11 +1436,11 @@ const Profile = () => {
                       <Input
                         type="checkbox"
                         {...field}
-                        id="weekend"
-                        checked={field.value.includes('weekend')}
+                        id="weekends"
+                        checked={field.value.includes('weekends')}
                         onChange={(e) => {
                           const isChecked = e.target.checked;
-                          const value = 'weekend';
+                          const value = 'weekends';
 
                           if (isChecked) {
                             field.onChange([...field.value, value]);
@@ -1448,7 +1449,7 @@ const Profile = () => {
                           }
                         }}
                       />
-                      <Label htmlFor="weekend" className="form-check-label">
+                      <Label htmlFor="weekends" className="form-check-label">
                         Weekend
                       </Label>
                     </div>
@@ -1458,7 +1459,7 @@ const Profile = () => {
               {errors.availabilityDays && <FormFeedback>{errors.availabilityDays.message}</FormFeedback>}
             </Row>
             <Row>
-              {availabilityDays && (availabilityDays.includes('weekdays') || availabilityDays.includes('weekend')) && (
+              {availabilityDays && (availabilityDays.includes('weekdays') || availabilityDays.includes('weekends')) && (
                 <>
                   {availabilityDays.includes('weekdays') && (
                     <div>
@@ -1670,7 +1671,7 @@ const Profile = () => {
                     </div>
                   )}
 
-                  {availabilityDays.includes('weekend') && (
+                  {availabilityDays.includes('weekends') && (
                     <div>
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
