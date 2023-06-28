@@ -149,3 +149,14 @@ export const giveStrokeColor = (percentage) => {
     return theme.green;
   }
 };
+
+export const giveProgressBarColorClassName = (percentage) => {
+  if (percentage <= 40) {
+    return 'progress-bar-danger';
+    // eslint-disable-next-line
+  } else if (percentage > 40 && percentage <= 70) {
+    return 'progress-bar-warning';
+  } else {
+    return 'progress-bar-success';
+  }
+};

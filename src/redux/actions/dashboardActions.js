@@ -1,6 +1,13 @@
 import errorHandler from '../../utility/errorHandler';
-import { userDataService, recommendedProjectsService } from '../../services/dashboardServices';
 import {
+  userDataService,
+  recommendedProjectsService,
+  profilePercentageService,
+} from '../../services/dashboardServices';
+import {
+  profilePercentageFailure,
+  profilePercentageRequest,
+  profilePercentageSuccess,
   recommendedProjectsFailure,
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
@@ -31,4 +38,14 @@ const getRecommendedProjects = () => async (dispatch) => {
   }
 };
 
-export { getUserData, getRecommendedProjects };
+const getProfilePercentage = () => async (dispatch) => {
+  dispatch(profilePercentageRequest());
+  try {
+    const res = await profilePercentageService();
+    dispatch(profilePercentageSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, profilePercentageFailure);
+  }
+};
+
+export { getUserData, getRecommendedProjects, getProfilePercentage };
