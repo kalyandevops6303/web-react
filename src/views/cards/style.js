@@ -3,11 +3,14 @@ import theme from '../../configs/themeVariables';
 
 const CardWrap = styled.div`
   .card-body {
-    padding: 2.1rem 2.6rem 2.6rem;
+    padding: 2.1rem 2.6rem 1.8rem 2.6rem;
   }
 `;
 
 const ProjectCardWrap = styled(CardWrap)`
+  .card-body {
+    padding: 2.1rem 2.6rem 1.4rem 2.6rem;
+  }
   .status-row {
     margin-left: -0.5rem;
   }
