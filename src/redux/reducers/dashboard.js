@@ -5,6 +5,8 @@ const initialState = {
   userDataLoading: false,
   recommendedProjects: null,
   recommendedProjectsLoading: false,
+  profilePercentage: null,
+  profilePercentageLoading: false,
   error: null,
 };
 
@@ -44,12 +46,30 @@ const dashboardSlice = createSlice({
       error: action.payload,
     }),
 
+    profilePercentageRequest: (state) => ({
+      ...state,
+      profilePercentageLoading: true,
+      error: null,
+    }),
+    profilePercentageSuccess: (state, action) => ({
+      ...state,
+      profilePercentage: action.payload,
+      profilePercentageLoading: false,
+    }),
+    profilePercentageFailure: (state, action) => ({
+      ...state,
+      profilePercentageLoading: false,
+      error: action.payload,
+    }),
+
     clearData: (state) => ({
       ...state,
       userData: null,
       userDataLoading: false,
       recommendedProjects: null,
       recommendedProjectsLoading: false,
+      profilePercentage: null,
+      profilePercentageLoading: false,
       error: null,
     }),
   },
@@ -62,6 +82,9 @@ export const {
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
   recommendedProjectsFailure,
+  profilePercentageRequest,
+  profilePercentageSuccess,
+  profilePercentageFailure,
   clearData,
 } = dashboardSlice.actions;
 

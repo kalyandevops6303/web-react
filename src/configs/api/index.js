@@ -52,6 +52,7 @@ const API = {
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
+    profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,

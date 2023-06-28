@@ -5,4 +5,6 @@ const userDataService = () => DataService.get(API.dashboard.userData);
 
 const recommendedProjectsService = () => DataService.get(API.dashboard.recommendedProjects);
 
-export { userDataService, recommendedProjectsService };
+const profilePercentageService = () => DataService.get(API.dashboard.profilePercentage);
+
+export { userDataService, recommendedProjectsService, profilePercentageService };

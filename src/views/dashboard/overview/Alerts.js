@@ -7,19 +7,23 @@ import { AlertCardWrapper } from './style';
 import getNotifications from '../../../redux/actions/notificationsActions';
 import { clearNotificationsData } from '../../../redux/reducers/notifications';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
-import { userData } from '../../../redux/selectors/dashboardSelectors';
+import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
+import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
+import { giveProgressBarColorClassName } from '../../../utility/Utils';
 
 const Alerts = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getNotifications('', 1, 10, []));
+    dispatch(getProfilePercentage());
 
     return () => dispatch(clearNotificationsData());
   }, []);
 
   const notificationsData = useSelector(notifications);
   const userDetailsData = useSelector(userData);
+  const profilePercentageData = useSelector(profilePercentage);
 
   return (
     <AlertCardWrapper>
@@ -38,11 +42,12 @@ const Alerts = () => {
             <CardText className="mb-50">
               Make it easier for others to find you by <br /> completing your profile.
             </CardText>
-            <span className="font-weight-bold percentage ">45%</span>
-            <Progress style={{ height: '0.5rem' }} className="progress-bar-success mt-25" value={45} />
-            <div className="mt-2 font-weight-normal text-center text-primary add-det mt-25">
-              Add your Availability 15%.
-            </div>
+            <span className="font-weight-bold percentage ">{profilePercentageData?.profile_completed}%</span>
+            <Progress
+              style={{ height: '0.5rem' }}
+              className={`${giveProgressBarColorClassName(profilePercentageData?.profile_completed)} mt-25`}
+              value={profilePercentageData?.profile_completed}
+            />
           </CardBody>
         </Card>
 

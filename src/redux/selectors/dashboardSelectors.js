@@ -13,4 +13,15 @@ const recommendedProjectsLoading = createSelector(
   (dashboard) => dashboard.recommendedProjectsLoading,
 );
 
-export { userData, userDataLoading, recommendedProjects, recommendedProjectsLoading };
+const profilePercentage = createSelector(dashboardSelector, (dashboard) => dashboard.profilePercentage);
+
+const profilePercentageLoading = createSelector(dashboardSelector, (dashboard) => dashboard.profilePercentageLoading);
+
+export {
+  userData,
+  userDataLoading,
+  recommendedProjects,
+  recommendedProjectsLoading,
+  profilePercentage,
+  profilePercentageLoading,
+};
