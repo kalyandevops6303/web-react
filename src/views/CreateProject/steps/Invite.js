@@ -293,15 +293,16 @@ const Invite = ({ stepper }) => {
           <TabContent activeTab={activeTab} className="mb-2">
             <TabPane tabId={tabNames.best}>
               {activeTab === tabNames.best && (
-                <InfiniteScroll
-                  dataLength={bestTalentsData?.data?.length || 0}
-                  next={loadNewBestTalents}
-                  hasMore={bestTalentsData?.metadata?.has_next_page}
-                >
-                  <TableContainer>
+                <TableContainer id="scrollableDiv">
+                  <InfiniteScroll
+                    dataLength={bestTalentsData?.data?.length || 0}
+                    next={loadNewBestTalents}
+                    hasMore={bestTalentsData?.metadata?.has_next_page}
+                    scrollableTarget="scrollableDiv"
+                  >
                     {bestTalentsData?.data?.length > 0 ? (
                       bestTalentsData?.data?.map((item) => (
-                        <Row key={item.id} className="d-flex align-items-center mb-2">
+                        <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
                               <div className="user-pic p-25 me-2">
@@ -310,7 +311,7 @@ const Invite = ({ stepper }) => {
                               <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
                             </div>
                           </Col>
-                          <Col sm="2" md="3" lg="3">
+                          <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
                               <Badge>
                                 <div className="d-flex align-items-center">
@@ -354,25 +355,6 @@ const Invite = ({ stepper }) => {
                           </Col>
                           <Col sm="2" md="3" lg="2">
                             {renderActionButton(item.user_id)}
-                            {/* {invitedIds.includes(item.user_id) ? (
-                              <div className="ms-3">
-                                <h5 className="m-0 fw-light font-medium-1">Invited!</h5>
-                              </div>
-                            ) : selectedIds.includes(item.user_id) ? (
-                              <div
-                                className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
-                                onClick={() => setSelectedIds(selectedIds.filter((data) => data !== item.user_id))}
-                              >
-                                <Check size={18} color={theme.green} />
-                              </div>
-                            ) : (
-                              <div
-                                className="upload-btn cursor-pointer ms-3"
-                                onClick={() => setSelectedIds([...selectedIds, item.user_id])}
-                              >
-                                <h5 className="m-0 fw-light font-medium-1">Invite</h5>
-                              </div>
-                            )} */}
                           </Col>
                         </Row>
                       ))
@@ -388,21 +370,22 @@ const Invite = ({ stepper }) => {
                         <p className="m-0 fw-bold font-medium-3">No Data Found</p>
                       </div>
                     )}
-                  </TableContainer>
-                </InfiniteScroll>
+                  </InfiniteScroll>
+                </TableContainer>
               )}
             </TabPane>
             <TabPane tabId={tabNames.favourite}>
               {activeTab === tabNames.favourite && (
-                <InfiniteScroll
-                  dataLength={favoriteTalentsData?.data?.length || 0}
-                  next={loadNewFavoriteTalents}
-                  hasMore={favoriteTalentsData?.metadata?.has_next_page}
-                >
-                  <TableContainer>
+                <TableContainer id="scrollableDiv">
+                  <InfiniteScroll
+                    dataLength={favoriteTalentsData?.data?.length || 0}
+                    next={loadNewFavoriteTalents}
+                    hasMore={favoriteTalentsData?.metadata?.has_next_page}
+                    scrollableTarget="scrollableDiv"
+                  >
                     {favoriteTalentsData?.data?.length > 0 ? (
                       favoriteTalentsData?.data?.map((item) => (
-                        <Row key={item.id} className="d-flex align-items-center mb-2">
+                        <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
                               <div className="user-pic p-25 me-2">
@@ -455,24 +438,8 @@ const Invite = ({ stepper }) => {
                               </CircularProgressbarWithChildren>
                             </div>
                           </Col>
-                          <Col sm="2" md="3" lg="1">
-                            {selectedIds.includes(item.talent_details.user_id) ? (
-                              <div
-                                className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
-                                onClick={() =>
-                                  setSelectedIds(selectedIds.filter((data) => data !== item.talent_details.user_id))
-                                }
-                              >
-                                <Check size={18} color={theme.green} />
-                              </div>
-                            ) : (
-                              <div
-                                className="upload-btn cursor-pointer ms-3"
-                                onClick={() => setSelectedIds([...selectedIds, item.talent_details.user_id])}
-                              >
-                                <h5 className="m-0 fw-light font-medium-1">Invite</h5>
-                              </div>
-                            )}
+                          <Col sm="2" md="3" lg="2">
+                            {renderActionButton(item.user_id)}
                           </Col>
                         </Row>
                       ))
@@ -488,21 +455,22 @@ const Invite = ({ stepper }) => {
                         <p className="m-0 fw-bold font-medium-3">No Data Found</p>
                       </div>
                     )}
-                  </TableContainer>
-                </InfiniteScroll>
+                  </InfiniteScroll>
+                </TableContainer>
               )}
             </TabPane>
             <TabPane tabId={tabNames.almaMater}>
               {activeTab === tabNames.almaMater && (
-                <InfiniteScroll
-                  dataLength={almaMaterTalentsData?.data?.length || 0}
-                  next={loadNewAlmaMaterTalents}
-                  hasMore={almaMaterTalentsData?.metadata?.has_next_page}
-                >
-                  <TableContainer>
+                <TableContainer id="scrollableDiv">
+                  <InfiniteScroll
+                    dataLength={almaMaterTalentsData?.data?.length || 0}
+                    next={loadNewAlmaMaterTalents}
+                    hasMore={almaMaterTalentsData?.metadata?.has_next_page}
+                    scrollableTarget="scrollableDiv"
+                  >
                     {almaMaterTalentsData?.data?.length > 0 ? (
                       almaMaterTalentsData?.data?.map((item) => (
-                        <Row key={item.id} className="d-flex align-items-center mb-2">
+                        <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
                               <div className="user-pic p-25 me-2">
@@ -553,22 +521,8 @@ const Invite = ({ stepper }) => {
                               </CircularProgressbarWithChildren>
                             </div>
                           </Col>
-                          <Col sm="2" md="3" lg="1">
-                            {selectedIds.includes(item.user_id) ? (
-                              <div
-                                className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
-                                onClick={() => setSelectedIds(selectedIds.filter((data) => data !== item.user_id))}
-                              >
-                                <Check size={18} color={theme.green} />
-                              </div>
-                            ) : (
-                              <div
-                                className="upload-btn cursor-pointer ms-3"
-                                onClick={() => setSelectedIds([...selectedIds, item.user_id])}
-                              >
-                                <h5 className="m-0 fw-light font-medium-1">Invite</h5>
-                              </div>
-                            )}
+                          <Col sm="2" md="3" lg="2">
+                            {renderActionButton(item.user_id)}
                           </Col>
                         </Row>
                       ))
@@ -584,8 +538,8 @@ const Invite = ({ stepper }) => {
                         <p className="m-0 fw-bold font-medium-3">No Data Found</p>
                       </div>
                     )}
-                  </TableContainer>
-                </InfiniteScroll>
+                  </InfiniteScroll>
+                </TableContainer>
               )}
             </TabPane>
           </TabContent>

@@ -322,6 +322,9 @@ export const NavsContainer = styled.div`
 `;
 
 export const TableContainer = styled.div`
+  max-height: 500px;
+  overflow-y: scroll;
+
   .user-pic {
     border-radius: 50%;
     border: 1px solid ${theme.bodyColor};
