@@ -62,7 +62,10 @@ const Profile = () => {
     totalStrength: yup.number(),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
-    zipCode: yup.number(),
+    zipCode: yup
+      .number()
+      .typeError('Zip code must be a number')
+      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     country: yup
       .object()
       .shape({

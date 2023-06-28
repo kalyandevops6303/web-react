@@ -96,7 +96,10 @@ const Profile = () => {
       .max(5, 'At most five languages can be added'),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
-    zipCode: yup.number().typeError('Zip code must be a number'),
+    zipCode: yup
+      .number()
+      .typeError('Zip code must be a number')
+      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     country: yup
       .object()
       .shape({
