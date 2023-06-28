@@ -35,11 +35,13 @@ const Account = () => {
       .string()
       .min(3, 'First name must be at least 3 characters')
       .max(25, 'First name must be at most 25 characters')
+      .matches(/^[a-zA-Z0-9]+$/, 'First name should not contain special characters')
       .required('First name is required'),
     lastName: yup
       .string()
       .min(3, 'Last name must be at least 3 characters')
       .max(25, 'Last name must be at most 25 characters')
+      .matches(/^[a-zA-Z0-9]+$/, 'Last name should not contain special characters')
       .required('Last name is required'),
     countryCode: yup.string().required(),
     mobileNumber: yup.string().required(),
