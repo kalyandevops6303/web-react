@@ -97,7 +97,7 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                     <CardTitle className="mb-25 fw-bolder">
                       {data?.pay_type?.fixed_cost
                         ? ` Fixed Price - 
-                          ${data?.pay_type?.currency?.[0]?.code} ${data?.pay_type?.fixed_cost}`
+                          ${data?.pay_type?.currency?.code} ${data?.pay_type?.fixed_cost}`
                         : 'Variable Pay'}
                     </CardTitle>
                     <CardText className="project-name">Payment Type</CardText>
@@ -113,6 +113,7 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
               <Row className="mb-2">
                 <Col lg="5">
                   <AvailableTimeComp
+                    timeZone={data?.availability?.timezone?.abbreviation}
                     weekdaysData={data?.availability?.weekdays_avl}
                     weekendsData={data?.availability?.weekends_avl}
                   />

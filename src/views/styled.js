@@ -127,6 +127,7 @@ const TimeWrapper = styled.section`
   display: flex;
   .weekdays,
   .weekends {
+    margin-top: auto;
     width: 50%;
 
     ul {
