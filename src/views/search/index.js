@@ -107,7 +107,6 @@ const Search = () => {
   const SearchCardWrap = styled.div`
     .card-body {
       padding: 2rem 1.8rem;
-      min-height: 26rem;
     }
     .card .card {
       box-shadow: 0 4px 15px 0 rgba(34, 41, 47, 0.1) !important;
