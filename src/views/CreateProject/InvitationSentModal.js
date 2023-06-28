@@ -89,10 +89,10 @@ const InvitationSentModal = ({
           <div className="w-100">
             <h2 className="fw-bold font-large-1 mb-1">Great Job!</h2>
             <h4 className="fw-bold font-small-5">Invitation sent</h4>
-            <p className="fw-light font-medium-3 mt-75">You’ve sent a team member invitation</p>
+            <p className="fw-light font-medium-3 mt-75">You’ve sent a project invitation</p>
             <InviteUsersListContainer>
               {selectedTalents.map((talent) => (
-                <Row key={talent.id} className="d-flex align-items-center mb-2">
+                <Row key={talent.id} className="d-flex align-items-center mb-2 mx-0">
                   <Col sm="12" md="12" lg="12">
                     <div className="d-flex align-items-center">
                       <div className="user-pic p-75 me-2">

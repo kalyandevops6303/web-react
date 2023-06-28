@@ -15,7 +15,7 @@ const SendInvitationModal = ({ modal, toggleModal, selectedTalents, setInvitatio
         <p className="mb-2">You are inviting the below to join your project.</p>
         <InviteUsersListContainer>
           {selectedTalents.map((talent) => (
-            <Row key={talent.user_id} className="d-flex align-items-center mb-2 w-100">
+            <Row key={talent.user_id} className="d-flex align-items-center mb-2 w-100 mx-0">
               <Col sm="12" md="8" lg="6">
                 <div className="d-flex align-items-center">
                   <div className="user-pic p-25 me-2">
