@@ -17,6 +17,7 @@ import { userData } from '../../../../redux/selectors/dashboardSelectors';
 import { clearData } from '../../../../redux/reducers/dashboard';
 import { clearDataSuccess } from '../../../../redux/reducers/auth';
 import { fcmUnsubscribeNotification } from '../../../../redux/actions/authActions';
+import { capitalize } from 'lodash';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(userData);
@@ -41,7 +42,7 @@ const UserDropdown = () => {
               ? userDetailsData?.talent_info?.first_name || 'User'
               : userDetailsData?.client_info?.first_name || 'User'}
           </span>
-          <span className="user-status">{userDetailsData?.user_type || 'Role'}</span>
+          <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
         </div>
         <Avatar img={defaultAvatar} imgHeight="40" imgWidth="40" status="online" />
       </DropdownToggle>
