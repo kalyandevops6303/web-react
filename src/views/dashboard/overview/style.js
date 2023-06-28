@@ -256,8 +256,8 @@ const ProjectWrapper = styled.div`
   }
 
   .circular-progressbar-container {
-    width: 46px;
-    height: 46px;
+    width: 40px;
+    height: 40px;
 
     .percentage-text {
       font-weight: 400;
@@ -266,7 +266,18 @@ const ProjectWrapper = styled.div`
     }
   }
 
+  .additional-text {
+    color: ${theme.lightBlueColor};
+    font-weight: 600;
+    font-size: 12px;
+    margin: auto;
+  }
+
   .tags-container {
+    height: 60px;
+    overflow: hidden;
+    width: 70% !important;
+
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -278,15 +289,17 @@ const ProjectWrapper = styled.div`
       color: ${theme.lightBlueColor} !important;
     }
 
-    .additional-text {
-      color: ${theme.lightBlueColor};
-      font-weight: 600;
-      font-size: 12px;
-    }
-
     .tag-margin {
       margin-right: 10px;
       margin-bottom: 10px;
+    }
+
+    .badge {
+      display: block;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 `;

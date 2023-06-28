@@ -6,33 +6,35 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import AvatarGroup from '@components/avatar-group';
 
 // ** Reactstrap Imports
-import { Card, CardTitle, CardBody, CardText, Badge, Row, Col } from 'reactstrap';
+import { Card, CardTitle, CardBody, CardText, Badge } from 'reactstrap';
 
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import hat from '@src/assets/images/hat.png';
 
+import { useState } from 'react';
+import { DateTime } from 'luxon';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
+import ProjectModal from '../../modals/ProjectModal';
 
-const UserSection = ({ users, tagName, name, isClient }) => (
+const UserSection = ({ users, tagName, name, isAlma }) => (
   <div className="user-section">
     <div className="d-flex">
-      <Badge className={`rounded ${isClient && 'light-client'}`} color={`light-${isClient ? 'client' : 'info'}`}>
+      <Badge className="rounded light-client" color={`light-client'}`}>
         {tagName}
       </Badge>
-      {isClient && (
+      {isAlma && (
         <Badge className="client-badge">
           <img src={hat} alt="client-badge" />
         </Badge>
       )}
     </div>
-    <CardText className="mt-50 truncate-2 active-project-users">{name}</CardText>
+    <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
           <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
-          +3
         </span>
       ) : (
         <AvatarGroup size="sm" data={users} />
@@ -43,7 +45,7 @@ const UserSection = ({ users, tagName, name, isClient }) => (
 
 UserSection.propTypes = {
   users: PropTypes.array,
-  isClient: PropTypes.bool,
+  isAlma: PropTypes.bool,
   name: PropTypes.string,
   tagName: PropTypes.string,
 };
@@ -76,6 +78,12 @@ TagsSection.propTypes = {
 };
 
 const Project = ({ data, className, recommended }) => {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleToggle = () => {
+    setShowModal(!showModal);
+  };
+
   const avatarGroupArr = [
     {
       title: 'Billy Hopkins',
@@ -121,13 +129,6 @@ const Project = ({ data, className, recommended }) => {
       placement: 'bottom',
       imgHeight: 33,
       imgWidth: 33,
-    },
-  ];
-
-  const AmountArr = [
-    {
-      title: 'Amount',
-      subtitle: '$ 12000',
     },
   ];
 
@@ -179,7 +180,12 @@ const Project = ({ data, className, recommended }) => {
             <TagsSection tags={data?.proficiency.skills} />
           </div>
           <div className="main-row">
-            <UserSection tagName="Client" name={data?.client_info?.company_name || '-'} users={singleAvatar} isClient />
+            <UserSection
+              tagName="Client"
+              name={data?.client_info?.company_name || '-'}
+              users={singleAvatar}
+              isAlma={data?.client_info?.is_alma_matter}
+            />
             {!recommended && <UserSection tagName="Team" name={data.teamName} users={avatarGroupArr} />}
           </div>
           {!recommended && (
@@ -187,25 +193,31 @@ const Project = ({ data, className, recommended }) => {
               <h6 className="section-label">Milestone 2</h6>
             </div>
           )}
-          <Row className="mt-1">
-            <Col lg="6">
-              {recommended ? (
-                <div className="design-planning-wrapper">
-                  {AmountArr.map((item) => (
-                    <div key={item.title} className="design-planning">
-                      <CardText className="mb-25">{item.title}</CardText>
-                      <h6 className="mb-0">{`${data?.pay_type.currency}-${data?.pay_type.fixed_cost}`}</h6>
-                    </div>
-                  ))}
+          <div className="bottom-detail d-flex mt-1">
+            <div className="design-planning-wrapper">
+              <div className="design-planning">
+                <CardText className="mb-25">Start date</CardText>
+                <h6 className="mb-0">{`${
+                  DateTime.fromSeconds(data?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
+                }`}</h6>
+              </div>
+              {!data?.pay_type?.variable_cost && (
+                <div className="design-planning">
+                  <CardText className="mb-25">Amount</CardText>
+                  <h6 className="mb-0">{`${data?.pay_type.currency?.code}-${data?.pay_type.fixed_cost}`}</h6>
                 </div>
-              ) : (
-                <CardText>Quality control & audit</CardText>
               )}
-            </Col>
-          </Row>
-          <div className="font-weight-normal text-center text-primary project-cta mt-25">View Project</div>
+            </div>
+          </div>
+          <div
+            onClick={() => setShowModal(true)}
+            className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
+          >
+            View Project
+          </div>
         </CardBody>
       </Card>
+      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
     </ProjectWrapper>
   );
 };
