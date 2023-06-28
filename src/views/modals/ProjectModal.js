@@ -38,6 +38,11 @@ const ViewProjectDetailModalWrap = styled.div`
     font-size: 16px;
     line-height: 24px;
   }
+
+  .badge {
+    width: fit-content !important;
+    display: initial !important;
+  }
 `;
 
 // eslint-disable-next-line arrow-body-style
