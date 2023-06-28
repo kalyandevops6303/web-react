@@ -6,6 +6,13 @@ import ReactCountryFlag from 'react-country-flag';
 import CountryFile from '../../../utility/constants/CountryList.json';
 import CountryDropdownWrapper from './style';
 
+const options = CountryFile.map((country) => ({
+  value: country.dial_code, // Add the country code as the value
+  label: country.label, // Use the country name as the label
+  code: country.code,
+  dial_code: country.dial_code,
+}));
+
 const CustomOption = ({ innerProps, data, isFocused, isSelected }) => (
   <div className={`custom-option ${isSelected ? 'selected' : ''} ${isFocused ? 'focused' : ''}`} {...innerProps}>
     <ReactCountryFlag
@@ -63,7 +70,7 @@ const CountryDropdown = ({ selectedCountry, setSelectedCountry, disabled }) => {
           fontSize: '13px',
           paddingLeft: '12px',
         }}
-        options={CountryFile}
+        options={options}
         components={{
           Option: CustomOption,
           SingleValue: CustomValue,

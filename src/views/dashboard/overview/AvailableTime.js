@@ -26,7 +26,11 @@ const AvailableTime = () => {
           <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">Edit</CardText>
         </CardHeader>
         <CardBody>
-          <AvailableTimeComp weekdaysData={weekdaysData} weekendsData={weekendsData} />
+          <AvailableTimeComp
+            timeZone={userDetailsData?.availability?.timezone?.abbreviation}
+            weekdaysData={weekdaysData}
+            weekendsData={weekendsData}
+          />
         </CardBody>
       </Card>
     </TimeCardWrapper>
