@@ -22,8 +22,8 @@ const giveStrokeColor = (percentage) => {
 const UserCard = ({ data }) => {
   const location = useLocation();
   const fromLocation = () => {
-    if (location.pathname.split('/').includes('marketplace')) return 'marketplace';
-    if (location.pathname.split('/').includes('search')) return 'Search page';
+    if (location.pathname.split('/').includes('marketplace')) return 'Marketplace';
+    if (location.pathname.split('/').includes('search')) return 'Search';
     return '';
   };
 
