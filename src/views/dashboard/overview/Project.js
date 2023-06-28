@@ -17,6 +17,7 @@ import { DateTime } from 'luxon';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
+import { CustomBadge } from '../../styled';
 
 const UserSection = ({ users, tagName, name, isAlma }) => (
   <div className="user-section">
@@ -143,11 +144,23 @@ const Project = ({ data, className, recommended }) => {
     }
   };
 
+  const statusEnum = {
+    OPEN: 'Open Listing',
+    IN_REVIEW: 'In Review',
+    TERMINATED: 'Terminated',
+    CLOSED: 'Closed',
+    LISTING_EXPIRED: 'LISTING_EXPIRED',
+  };
+
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
-          <Badge color="light-success">In-Progress</Badge>
+          <CustomBadge>
+            <Badge className={`${data?.status}`} color="badge">
+              {statusEnum[data?.status]}
+            </Badge>
+          </CustomBadge>
           <CardTitle className="mt-50 active-project-title truncate-2 mb-1.5">
             {/* {recommendedProjectsData?.data?.details?.name} */}
             {data?.details.name}
