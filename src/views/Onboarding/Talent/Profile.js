@@ -1044,7 +1044,12 @@ const Profile = () => {
                   name="streetAddress"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter street address" invalid={errors.streetAddress && true} />
+                    <Input
+                      {...field}
+                      placeholder="Enter street address"
+                      invalid={errors.streetAddress && true}
+                      autoComplete="none"
+                    />
                   )}
                 />
                 {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
@@ -1060,7 +1065,12 @@ const Profile = () => {
                       name="houseNumber"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} placeholder="Enter house number" invalid={errors.houseNumber && true} />
+                        <Input
+                          {...field}
+                          placeholder="Enter house number"
+                          invalid={errors.houseNumber && true}
+                          autoComplete="none"
+                        />
                       )}
                     />
                     {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
