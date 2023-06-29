@@ -48,15 +48,12 @@ const UserDetails = () => {
       const weekendStartTime = parseInt(availability.weekends_avl.start_time, 10);
       const weekendEndTime = parseInt(availability.weekends_avl.end_time, 10);
       const weekendDurationPerDay = weekendEndTime - weekendStartTime;
-      const weekendsPerWeek = availability?.weekends_avl?.days?.length;
+      const weekendsPerWeek = availability?.weekends_avl?.days.length;
       weekendHoursPerWeek = weekendDurationPerDay * weekendsPerWeek;
-
-      // Calculate total available hours per week
     }
+
     const totalHoursPerWeek = weekdayHoursPerWeek + weekendHoursPerWeek;
     return totalHoursPerWeek;
-    // Calculate total available hours per week without weekends
-    // return weekdayHoursPerWeek;
   };
 
   const calculateYearsFromMonths = (totalMonths) => {
