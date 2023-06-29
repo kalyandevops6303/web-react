@@ -23,6 +23,7 @@ import {
 import UserCard from '../../cards/UserCard';
 import ProjectCard from '../../cards/ProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -31,6 +32,8 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
   const selectMarketPlaceData = useSelector((state) => state.marketPlace.listData);
   const selectMarkeMetaData = useSelector((state) => state.marketPlace.metaData);
   const currentPreview = useSelector((state) => state.marketPlace.currentPreview);
+  const isLoading = useSelector((state) => state.marketPlace.loading);
+
   const metaData = { page: 1, page_size: 10 };
   const [secondFilterState, setSecondFilterState] = useState({
     statuses: [],
@@ -490,22 +493,26 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      <InfiniteScroll
-        dataLength={selectMarketPlaceData?.length}
-        next={fetchMore}
-        hasMore={hasMore}
-        endMessage={
-          <div className="d-flex justify-content-center mt-2">
-            {selectMarketPlaceData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
-          </div>
-        }
-        loader={<div className="d-flex justify-content-center">Loading...</div>}
-      >
-        {selectMarketPlaceData?.map((item) => {
-          const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
-          return <CardComponent key={item?._id || item?.id} data={item} isExpanded={isExpanded} />;
-        })}
-      </InfiniteScroll>
+      {isLoading ? (
+        <ComponentSpinner />
+      ) : (
+        <InfiniteScroll
+          dataLength={selectMarketPlaceData?.length}
+          next={fetchMore}
+          hasMore={hasMore}
+          endMessage={
+            <div className="d-flex justify-content-center mt-2">
+              {selectMarketPlaceData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+            </div>
+          }
+          loader={<div className="d-flex justify-content-center">Loading...</div>}
+        >
+          {selectMarketPlaceData?.map((item) => {
+            const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
+            return <CardComponent key={item?._id || item?.id} data={item} isExpanded={isExpanded} />;
+          })}
+        </InfiniteScroll>
+      )}
     </>
   );
 };

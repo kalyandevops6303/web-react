@@ -6,6 +6,7 @@ const initialState = {
   metaData: null,
   listData: [],
   users: [],
+  loading: false,
 };
 
 const marketPlaceSlice = createSlice({
@@ -16,12 +17,21 @@ const marketPlaceSlice = createSlice({
       ...state,
       cardData: action.payload,
     }),
+    getListReq: (state) => ({
+      ...state,
+      loading: true,
+    }),
+    getListErr: (state) => ({
+      ...state,
+      loading: false,
+    }),
     getListProjectsSuccess: (state, action) => ({
       ...state,
       currentPreview: action.payload.data,
       listData:
         action.payload.metadata.current_page === 1 ? action.payload.data : [...state.listData, ...action.payload.data],
       metaData: action.payload.metadata,
+      loading: false,
     }),
     getUsersSuccess: (state, action) => ({
       ...state,
@@ -29,6 +39,7 @@ const marketPlaceSlice = createSlice({
       listData:
         action.payload.metadata.current_page === 1 ? action.payload.data : [...state.listData, ...action.payload.data],
       metaData: action.payload.metadata,
+      loading: false,
     }),
 
     clearData: (state) => ({
@@ -41,6 +52,7 @@ const marketPlaceSlice = createSlice({
   },
 });
 
-export const { getCardInfoSuccess, getListProjectsSuccess, getUsersSuccess, clearData } = marketPlaceSlice.actions;
+export const { getCardInfoSuccess, getListProjectsSuccess, getUsersSuccess, clearData, getListReq, getListErr } =
+  marketPlaceSlice.actions;
 
 export default marketPlaceSlice.reducer;
