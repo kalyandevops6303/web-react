@@ -48,10 +48,12 @@ import {
   resendRequest,
   resendSuccess,
   FCMSubscribe,
+  logOut,
 } from '../reducers/auth';
 import { setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { clearData } from '../reducers/dashboard';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -210,6 +212,19 @@ const setNewPassword = (newPassword) => async (dispatch) => {
   }
 };
 
+const logoutAction =
+  ({ fcmToken, onSuccess }) =>
+  async (dispatch) => {
+    if (fcmToken) {
+      dispatch(fcmUnsubscribeNotification(fcmToken));
+    }
+    dispatch(logOut());
+    dispatch(clearData());
+    // eslint-disable-next-line no-undef
+    window.localStorage.clear();
+    onSuccess();
+  };
+
 const setUserType = (type) => async (dispatch) => {
   dispatch(setUserTypeSuccess(type));
 };
@@ -229,4 +244,5 @@ export {
   loginUser,
   fcmSubscribeNotification,
   fcmUnsubscribeNotification,
+  logoutAction,
 };

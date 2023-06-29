@@ -10,6 +10,7 @@ import BugsnagPluginReact from '@bugsnag/plugin-react';
 
 // ** Toast
 import { Toaster } from 'react-hot-toast';
+import { PersistGate } from 'redux-persist/integration/react';
 
 // ** Redux Imports
 
@@ -40,7 +41,7 @@ import './assets/scss/style.scss';
 // ** Service Worker
 import * as serviceWorker from './serviceWorker';
 import Error from './views/Error';
-import store from './redux/store';
+import { store, persistor } from './redux/store';
 
 // ** Lazy load app
 const LazyApp = lazy(() => import('./App'));
@@ -60,12 +61,14 @@ root.render(
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <BrowserRouter>
         <Provider store={store}>
-          <Suspense fallback={<Spinner />}>
-            <ThemeContext>
-              <LazyApp />
-              <Toaster position={themeConfig.layout.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
-            </ThemeContext>
-          </Suspense>
+          <PersistGate persistor={persistor}>
+            <Suspense fallback={<Spinner />}>
+              <ThemeContext>
+                <LazyApp />
+                <Toaster position={themeConfig.layout.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
+              </ThemeContext>
+            </Suspense>
+          </PersistGate>
         </Provider>
       </BrowserRouter>
     </GoogleOAuthProvider>

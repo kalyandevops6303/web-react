@@ -1,8 +1,10 @@
 /* eslint-disable no-undef */
-// import { logOut } from '../redux/authentication/actionCreator';
 import ShowToastMessage from '../@core/components/toast';
-import store from '../redux/store';
+// eslint-disable-next-line import/no-cycle
+import { logoutAction } from '../redux/actions/authActions';
+import { store } from '../redux/store';
 import { ERROR } from './constants/ToastTypes';
+import { getItem } from './localStorageControl';
 
 const { dispatch } = store;
 
@@ -18,16 +20,27 @@ const showErrorNotification = (errorMessage) => {
   }
 };
 
-const handleErrorCode = (err, callBack) => {
+const handleError = (err, callBack) => {
   if (callBack) {
     dispatch(callBack(err));
   }
   showErrorNotification(err?.response?.data?.errorData?.message || 'Operation could not be completed');
 };
 
-const handleError = (err, callBack) => {
+const fcmToken = getItem('fcmToken');
+const handleErrorCode = (err, callBack) => {
   if (window.navigator.onLine) {
-    handleErrorCode(err, callBack);
+    if (err?.response?.status === 401) {
+      showErrorNotification('Session expired!');
+      setTimeout(() => {
+        const onSuccess = () => {
+          window.location.href = '/auth/login';
+        };
+        dispatch(logoutAction({ fcmToken, onSuccess }));
+      }, 500);
+    } else {
+      handleError(err, callBack);
+    }
   }
 };
 
@@ -44,7 +57,7 @@ const errorHandler = (err, callBack) => {
         dispatch(callBack(err));
       }
     } else {
-      handleError(err, callBack);
+      handleErrorCode(err, callBack);
     }
   }
 };
