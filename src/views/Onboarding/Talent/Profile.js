@@ -45,6 +45,8 @@ import {
   timezonesService,
   toolsService,
 } from '../../../services/staticServices';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -563,6 +565,8 @@ const Profile = () => {
 
     if (isFilled) {
       append({});
+    } else {
+      ShowToastMessage(ERROR, 'Please fill all required education fields above');
     }
   };
 
@@ -2038,6 +2042,8 @@ const Profile = () => {
                 onClick={() => {
                   if (checkObjectValues(watch('otherSocialLinks'))) {
                     otherSocialLinksAppend(defaultLink);
+                  } else {
+                    ShowToastMessage(ERROR, 'Please fill social links above');
                   }
                 }}
               >
