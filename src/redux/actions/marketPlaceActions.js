@@ -8,7 +8,13 @@ import {
   getTalentsService,
 } from '../../services/marketPlaceServices';
 
-import { getCardInfoSuccess, getListProjectsSuccess, getUsersSuccess } from '../reducers/marketPlace';
+import {
+  getCardInfoSuccess,
+  getListErr,
+  getListProjectsSuccess,
+  getListReq,
+  getUsersSuccess,
+} from '../reducers/marketPlace';
 
 const getCardInfo =
   ({ userType, onSuccess, onError }) =>
@@ -31,6 +37,7 @@ const getCardInfo =
 const getListProjects =
   ({ isMyListing, isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
   async (dispatch) => {
+    dispatch(getListReq());
     try {
       let res;
       if (userType === 'CLIENT') {
@@ -42,13 +49,14 @@ const getListProjects =
       onSuccess();
     } catch (error) {
       onError();
-      errorHandler(error);
+      errorHandler(error, getListErr);
     }
   };
 
 const getUsers =
   ({ isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
   async (dispatch) => {
+    dispatch(getListReq());
     try {
       let res;
       if (userType === 'CLIENT') {
@@ -60,7 +68,7 @@ const getUsers =
       onSuccess();
     } catch (error) {
       onError();
-      errorHandler(error);
+      errorHandler(error, getListErr);
     }
   };
 

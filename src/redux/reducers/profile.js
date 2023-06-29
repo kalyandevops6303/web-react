@@ -34,10 +34,16 @@ const profileSlice = createSlice({
       ...state,
       userProfile: { ...state.userProfile, is_favourited: false },
     }),
+
+    clearData: (state) => ({
+      ...state,
+      userProfile: {},
+      isLoading: false,
+    }),
   },
 });
 
-export const { getProfileRequest, getProfileSuccess, getProfileFailure, makeFavSuccess, removeFavSuccess } =
+export const { getProfileRequest, getProfileSuccess, getProfileFailure, makeFavSuccess, clearData, removeFavSuccess } =
   profileSlice.actions;
 
 export default profileSlice.reducer;
