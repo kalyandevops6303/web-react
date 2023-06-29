@@ -94,17 +94,25 @@ const Alerts = () => {
                 <CardTitle tag="h4">Project Invitations</CardTitle>
               </CardHeader>
               <CardBody>
-                {notificationsData?.data?.slice(0, 3)?.map((item) => (
-                  <div key={item?._id} className="mb-1">
-                    <div className="d-flex justify-content-between">
-                      <CardText className="font-medium-2 fw-bold m-0">{item?.title}</CardText>
-                      <p className="font-small-2 fw-light m-0">
-                        {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
-                      </p>
-                    </div>
-                    <p className="font-small-4 m-0">{item?.message}</p>
+                {notificationsData?.data?.length > 0 ? (
+                  <div>
+                    {notificationsData?.data?.slice(0, 3)?.map((item) => (
+                      <div key={item?._id} className="mb-1">
+                        <div className="d-flex justify-content-between">
+                          <CardText className="font-medium-2 fw-bold m-0">{item?.title}</CardText>
+                          <p className="font-small-2 fw-light m-0">
+                            {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
+                          </p>
+                        </div>
+                        <p className="font-small-4 m-0">{item?.message}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
+                    No invitations !
+                  </CardText>
+                )}
               </CardBody>
             </Card>
             <Card className="card-inside">
