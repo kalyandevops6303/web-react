@@ -37,7 +37,9 @@ const getCardInfo =
 const getListProjects =
   ({ isMyListing, isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
   async (dispatch) => {
-    dispatch(getListReq());
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
     try {
       let res;
       if (userType === 'CLIENT') {
@@ -56,7 +58,9 @@ const getListProjects =
 const getUsers =
   ({ isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
   async (dispatch) => {
-    dispatch(getListReq());
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
     try {
       let res;
       if (userType === 'CLIENT') {
