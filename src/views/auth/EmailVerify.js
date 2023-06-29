@@ -3,9 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import OtpInput from 'react-otp-input';
 import { useState, useEffect } from 'react';
 
-// ** Icons Imports
-import Logo from '@src/assets/images/ic_trumio_logo.png';
-
 // ** Custom Components
 
 // ** Reactstrap Imports
@@ -22,6 +19,7 @@ import {
   selectUserType,
 } from '../../redux/selectors/authSelectors';
 import ResendOTPComp from './components/ResendOTP';
+import LogoComp from './components/LogoComp';
 
 const VerifyEmail = () => {
   const dispatch = useDispatch();
@@ -54,7 +52,7 @@ const VerifyEmail = () => {
   return (
     <OnBoardWrap>
       <div className="card-onboard">
-        <img alt="logo" src={Logo} className="card-logo" />
+        <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
           Two Step Verification 💬
         </CardTitle>

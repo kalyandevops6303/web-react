@@ -7,9 +7,6 @@ import { useNavigate } from 'react-router';
 import { Controller, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
-// ** Icons Imports
-import Logo from '@src/assets/images/ic_trumio_logo.png';
-
 // ** Reactstrap Imports
 import { CardTitle, Label, Form, Input, Button, FormFeedback, Spinner } from 'reactstrap';
 
@@ -22,6 +19,7 @@ import '@styles/react/pages/page-authentication.scss';
 import { registerEmail } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectEmail, selectUserType } from '../../redux/selectors/authSelectors';
+import LogoComp from './components/LogoComp';
 
 const RegisterEmail = () => {
   const navigate = useNavigate();
@@ -70,7 +68,7 @@ const RegisterEmail = () => {
   return (
     <OnBoardWrap>
       <div className="card-onboard">
-        <img alt="logo" src={Logo} className="card-logo" />
+        <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
           Sign up! 🔐
         </CardTitle>

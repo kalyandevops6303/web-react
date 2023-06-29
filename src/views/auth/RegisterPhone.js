@@ -7,9 +7,6 @@ import { useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 
-// ** Icons Imports
-import Logo from '@src/assets/images/ic_trumio_logo.png';
-
 // ** Reactstrap Imports
 import { CardTitle, Label, Form, Input, Button, FormGroup, FormFeedback, Spinner } from 'reactstrap';
 
@@ -21,6 +18,7 @@ import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { registerPhone } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectMobile } from '../../redux/selectors/authSelectors';
+import LogoComp from './components/LogoComp';
 
 const RegisterPhone = () => {
   const dispatch = useDispatch();
@@ -84,7 +82,7 @@ const RegisterPhone = () => {
   return (
     <OnBoardWrap>
       <div className="card-onboard">
-        <img alt="logo" src={Logo} className="card-logo" />
+        <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
           Sign up! 🔐
         </CardTitle>

@@ -7,9 +7,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 
-// ** Icons Imports
-import Logo from '@src/assets/images/ic_trumio_logo.png';
-
 // ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle';
 
@@ -24,6 +21,7 @@ import { OnBoardWrap, PasswordStrengthBarWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { setNewPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
+import LogoComp from './components/LogoComp';
 
 const SetNewPassword = () => {
   const dispatch = useDispatch();
@@ -79,7 +77,7 @@ const SetNewPassword = () => {
   return (
     <OnBoardWrap>
       <div className="card-onboard">
-        <img alt="logo" src={Logo} className="card-logo" />
+        <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
           Set New Password! 🔐
         </CardTitle>

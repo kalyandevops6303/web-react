@@ -9,6 +9,13 @@ export const HeaderContainer = styled.div`
   background: ${theme.headerBackground};
   width: 100%;
   padding: 15px 0;
+  .logo-wrap {
+    display: flex;
+    font-size: 14px;
+    .version {
+      margin-top: 0.4rem;
+    }
+  }
 `;
 
 export const TabsContainer = styled.div`

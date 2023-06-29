@@ -7,9 +7,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 
-// ** Icons Imports
-import Logo from '@src/assets/images/ic_trumio_logo.png';
-
 // ** Reactstrap Imports
 import { CardTitle, Label, Form, Button, FormFeedback, Spinner } from 'reactstrap';
 
@@ -22,6 +19,7 @@ import { OnBoardWrap, PasswordStrengthBarWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { setPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
+import LogoComp from './components/LogoComp';
 
 const SetPassword = () => {
   const dispatch = useDispatch();
@@ -79,7 +77,7 @@ const SetPassword = () => {
   return (
     <OnBoardWrap>
       <div className="card-onboard">
-        <img alt="logo" src={Logo} className="card-logo" />
+        <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
           Create Password! 🔐
         </CardTitle>
