@@ -1,6 +1,7 @@
 // ** React Imports
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // ** Icons Imports
 
@@ -14,15 +15,22 @@ import { OnBoardWrap, UserTypeCard } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { setUserType } from '../../redux/actions/authActions';
 import LogoComp from './components/LogoComp';
+import { selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 
 const UserType = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const handleSelection = (type) => {
     dispatch(setUserType(type));
     navigate('register');
   };
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard');
+    }
+  }, []);
 
   return (
     <OnBoardWrap>

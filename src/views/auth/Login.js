@@ -20,7 +20,7 @@ import '@styles/react/pages/page-authentication.scss';
 import { validations } from '../../utility/Utils';
 import { loginUser } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
-import { selectAuthLoading } from '../../redux/selectors/authSelectors';
+import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
 
@@ -28,12 +28,18 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
     password: yup.string().required('Password is required'),
   });
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard');
+    }
+  }, []);
   useEffect(() => {
     dispatch(clearDataSuccess());
   }, []);
@@ -50,10 +56,6 @@ const Login = () => {
       password: '',
     },
   });
-
-  useEffect(() => {
-    dispatch(clearDataSuccess());
-  }, []);
 
   const onSuccess = (resp) => {
     if (resp?.checkpoint === 'MOBILE_VERIFICATION') {
