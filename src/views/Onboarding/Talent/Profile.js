@@ -576,7 +576,9 @@ const Profile = () => {
     if (search) {
       return {
         options: talentRolesOptions.filter(
-          (role) => role.label.toLowerCase().startsWith(search) || role.label.toLowerCase().includes(search),
+          (role) =>
+            role.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            role.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -600,7 +602,8 @@ const Profile = () => {
       return {
         options: languagesOptions.filter(
           (language) =>
-            language.label.toLowerCase().startsWith(search) || language.label.toLowerCase().includes(search),
+            language.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            language.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -623,7 +626,9 @@ const Profile = () => {
     if (search) {
       return {
         options: countriesOptions.filter(
-          (country) => country.label.toLowerCase().startsWith(search) || country.label.toLowerCase().includes(search),
+          (country) =>
+            country.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            country.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -663,7 +668,8 @@ const Profile = () => {
       return {
         options: educationsOptions.filter(
           (education) =>
-            education.label.toLowerCase().startsWith(search) || education.label.toLowerCase().includes(search),
+            education.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            education.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -686,7 +692,9 @@ const Profile = () => {
     if (search) {
       return {
         options: toolsOptions.filter(
-          (tool) => tool.label.toLowerCase().startsWith(search) || tool.label.toLowerCase().includes(search),
+          (tool) =>
+            tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            tool.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -710,7 +718,8 @@ const Profile = () => {
       return {
         options: certificatesOptions.filter(
           (certificate) =>
-            certificate.label.toLowerCase().startsWith(search) || certificate.label.toLowerCase().includes(search),
+            certificate.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            certificate.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -733,7 +742,9 @@ const Profile = () => {
     if (search) {
       return {
         options: skillsOptions.filter(
-          (skill) => skill.label.toLowerCase().startsWith(search) || skill.label.toLowerCase().includes(search),
+          (skill) =>
+            skill.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            skill.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -757,7 +768,8 @@ const Profile = () => {
       return {
         options: timezonesOptions.filter(
           (timezone) =>
-            timezone.label.toLowerCase().startsWith(search) || timezone.label.toLowerCase().includes(search),
+            timezone.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            timezone.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -784,7 +796,8 @@ const Profile = () => {
       return {
         options: currenciesOptions.filter(
           (currency) =>
-            currency.label.toLowerCase().startsWith(search) || currency.label.toLowerCase().includes(search),
+            currency.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            currency.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
