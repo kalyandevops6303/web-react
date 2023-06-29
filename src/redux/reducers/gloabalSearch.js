@@ -4,6 +4,7 @@ const initialState = {
   query: '',
   resultQuery: '',
   searchData: [],
+  isNavbarSearchBarOpen: false,
   currentFilterData: [],
   currentFilterType: '',
   currentFilterMetadata: null,
@@ -32,6 +33,11 @@ const globalSearchSlice = createSlice({
     getSerachErr: (state) => ({
       ...state,
       loading: false,
+    }),
+
+    toggleIsNavbarSearchBarOpen: (state) => ({
+      ...state,
+      isNavbarSearchBarOpen: !state.isNavbarSearchBarOpen,
     }),
 
     getSearchSuccess: (state, action) => {
@@ -75,7 +81,14 @@ const globalSearchSlice = createSlice({
   },
 });
 
-export const { getSearchSuccess, handleQuery, currentSearchSuccess, getSerachReq, getSerachErr, clearQuery } =
-  globalSearchSlice.actions;
+export const {
+  getSearchSuccess,
+  handleQuery,
+  currentSearchSuccess,
+  getSerachReq,
+  getSerachErr,
+  clearQuery,
+  toggleIsNavbarSearchBarOpen,
+} = globalSearchSlice.actions;
 
 export default globalSearchSlice.reducer;
