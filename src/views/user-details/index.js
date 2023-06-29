@@ -30,11 +30,16 @@ const UserDetails = () => {
 
   const calculateAvailableHoursPerWeek = (availability) => {
     // Calculate weekday hours per week
-    const weekdayStartTime = parseInt(availability?.weekdays_avl?.start_time, 10);
-    const weekdayEndTime = parseInt(availability?.weekdays_avl?.end_time, 10);
-    const weekdayDurationPerDay = weekdayEndTime - weekdayStartTime;
-    const weekdaysPerWeek = availability?.weekdays_avl?.days.length;
-    const weekdayHoursPerWeek = weekdayDurationPerDay * weekdaysPerWeek;
+    let weekdayHoursPerWeek = 0;
+    let weekendHoursPerWeek = 0;
+
+    if (availability?.weekdays_avl?.days) {
+      const weekdayStartTime = parseInt(availability?.weekdays_avl?.start_time, 10);
+      const weekdayEndTime = parseInt(availability?.weekdays_avl?.end_time, 10);
+      const weekdayDurationPerDay = weekdayEndTime - weekdayStartTime;
+      const weekdaysPerWeek = availability?.weekdays_avl?.days?.length;
+      weekdayHoursPerWeek = weekdayDurationPerDay * weekdaysPerWeek;
+    }
 
     // Check if weekends_avl property exists
     if (availability?.weekends_avl?.days) {
@@ -42,15 +47,11 @@ const UserDetails = () => {
       const weekendEndTime = parseInt(availability.weekends_avl.end_time, 10);
       const weekendDurationPerDay = weekendEndTime - weekendStartTime;
       const weekendsPerWeek = availability?.weekends_avl?.days.length;
-      const weekendHoursPerWeek = weekendDurationPerDay * weekendsPerWeek;
-
-      // Calculate total available hours per week
-      const totalHoursPerWeek = weekdayHoursPerWeek + weekendHoursPerWeek;
-
-      return totalHoursPerWeek;
+      weekendHoursPerWeek = weekendDurationPerDay * weekendsPerWeek;
     }
-    // Calculate total available hours per week without weekends
-    return weekdayHoursPerWeek;
+
+    const totalHoursPerWeek = weekdayHoursPerWeek + weekendHoursPerWeek;
+    return totalHoursPerWeek;
   };
 
   const calculateYearsFromMonths = (totalMonths) => {
@@ -98,7 +99,7 @@ const UserDetails = () => {
                   <>
                     {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
                       ? 0
-                      : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}
+                      : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
                     hours/week <br /> {currentProfile?.availability?.timezone?.abbreviation} (
                     {currentProfile?.availability?.timezone?.offset_name})
                   </>

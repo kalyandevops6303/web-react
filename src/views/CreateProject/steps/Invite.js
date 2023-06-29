@@ -439,7 +439,7 @@ const Invite = ({ stepper }) => {
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item.user_id)}
+                            {renderActionButton(item.talent_details.user_id)}
                           </Col>
                         </Row>
                       ))
