@@ -105,7 +105,7 @@ const Invite = ({ stepper }) => {
   };
 
   const loadNewBestTalents = () => {
-    if (stepper._currentIndex === 3) {
+    if (stepper?._currentIndex === 3) {
       dispatch(
         getBestTalents(
           createProjectDetails?.project_id,
@@ -120,7 +120,7 @@ const Invite = ({ stepper }) => {
   };
 
   const loadNewFavoriteTalents = () => {
-    if (stepper._currentIndex === 3) {
+    if (stepper?._currentIndex === 3) {
       dispatch(
         getFavoriteTalents(
           createProjectDetails?.project_id,
@@ -135,7 +135,7 @@ const Invite = ({ stepper }) => {
   };
 
   const loadNewAlmaMaterTalents = () => {
-    if (stepper._currentIndex === 3) {
+    if (stepper?._currentIndex === 3) {
       dispatch(
         getAlmaMaterTalents(
           createProjectDetails?.project_id,
@@ -152,7 +152,7 @@ const Invite = ({ stepper }) => {
   useEffect(() => {
     let delayDebounceFn = null;
 
-    if (createProjectDetails && stepper._currentIndex === 3) {
+    if (createProjectDetails && stepper?._currentIndex === 3) {
       delayDebounceFn = setTimeout(() => {
         dispatch(getBestTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
         dispatch(getFavoriteTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
