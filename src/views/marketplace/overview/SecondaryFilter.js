@@ -178,7 +178,9 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
     if (search) {
       return {
         options: skillsOptions.filter(
-          (skill) => skill.label.toLowerCase().startsWith(search) || skill.label.toLowerCase().includes(search),
+          (skill) =>
+            skill.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            skill.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -197,7 +199,9 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
     if (search) {
       return {
         options: toolsOptions.filter(
-          (tool) => tool.label.toLowerCase().startsWith(search) || tool.label.toLowerCase().includes(search),
+          (tool) =>
+            tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            tool.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -217,7 +221,8 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
       return {
         options: companyIndustriesOptions.filter(
           (industry) =>
-            industry.label.toLowerCase().startsWith(search) || industry.label.toLowerCase().includes(search),
+            industry.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            industry.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -239,7 +244,9 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
     if (search) {
       return {
         options: projectAreasOptions.filter(
-          (area) => area.label.toLowerCase().startsWith(search) || area.label.toLowerCase().includes(search),
+          (area) =>
+            area.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            area.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
