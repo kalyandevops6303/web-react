@@ -212,6 +212,11 @@ const authSlice = createSlice({
       ...state,
       fcmToken: action.payload,
     }),
+
+    setLoggedInStatus: (state) => ({
+      ...state,
+      isLoggedIn: true,
+    }),
   },
 });
 
@@ -252,6 +257,7 @@ export const {
   loginSuccess,
   loginFailure,
   FCMSubscribe,
+  setLoggedInStatus,
 } = authSlice.actions;
 
 export default authSlice.reducer;
