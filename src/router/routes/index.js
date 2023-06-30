@@ -81,14 +81,6 @@ const Routes = [
   },
 
   {
-    path: '/auth/*',
-    element: <AuthRoute />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-
-  {
     path: '/talent-onboarding/:section-details',
     element: <TalentOnboarding />,
     meta: {
