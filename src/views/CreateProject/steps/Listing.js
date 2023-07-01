@@ -27,7 +27,8 @@ const Listing = ({ stepper, setListingDetails }) => {
       then: () =>
         yup
           .number()
-          .min(1, 'No. of days must be greater than 0')
+          .min(1, 'No. of days must be atleast 1')
+          .max(90, 'No. of days must be at most 90')
           .required('No. of days is required')
           .typeError('No. of days must be a number'),
     }),
@@ -50,7 +51,17 @@ const Listing = ({ stepper, setListingDetails }) => {
 
   const onSubmit = (data) => {
     trigger();
-    setListingDetails(data);
+    if (data.listingOption === 'select-duration') {
+      setListingDetails(data);
+    } else if (data.listingOption === 'enter-duration') {
+      const newData = {
+        ...data,
+        startDate: new Date(),
+        endDate: new Date(new Date().setDate(new Date().getDate() + data.duration)),
+      };
+
+      setListingDetails(newData);
+    }
     stepper.next();
   };
 
@@ -139,7 +150,10 @@ const Listing = ({ stepper, setListingDetails }) => {
                       disabled={watch('listingOption') !== 'select-duration'}
                       placeholder="Select end date"
                       options={{
-                        minDate: 'today',
+                        minDate: watch('startDate') ? watch('startDate')[0] : 'today',
+                        maxDate: watch('startDate')
+                          ? new Date(watch('startDate')[0]).setMonth(watch('startDate')[0].getMonth() + 3)
+                          : 'today',
                         dateFormat: 'd-m-Y',
                       }}
                       className={classNames('form-control', {
@@ -202,6 +216,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                         disabled={watch('listingOption') !== 'enter-duration'}
                         type="number"
                         min={0}
+                        onWheel={(e) => e.target.blur()}
                         placeholder="Enter"
                         invalid={errors.duration && true}
                       />

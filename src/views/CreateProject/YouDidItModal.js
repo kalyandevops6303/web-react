@@ -1,11 +1,11 @@
 import React from 'react';
 import Proptypes from 'prop-types';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import '../custom-styles.scss';
 import Notepad from '../../assets/images/youDidIt.gif';
 import { YouDidItGifContainer } from './style';
 
-const YouDidItModal = ({ modal, toggleModal }) => (
+const YouDidItModal = ({ modal, toggleModal, stepper }) => (
   <Modal
     isOpen={modal}
     toggle={toggleModal}
@@ -24,12 +24,22 @@ const YouDidItModal = ({ modal, toggleModal }) => (
           <p className="fw-light w-75 mt-50">Your project listing will go live on your selected start date</p>
         </div>
       </div>
+      <div className="d-flex justify-content-end align-items-center mt-3 mb-2 me-2">
+        <Button
+          color="flat-danger"
+          className="me-1"
+          onClick={() => {
+            stepper.previous();
+            toggleModal();
+          }}
+        >
+          Oops, Recall
+        </Button>
+        <Button color="primary" onClick={toggleModal}>
+          Done
+        </Button>
+      </div>
     </ModalBody>
-    <ModalFooter>
-      <Button color="primary" onClick={toggleModal} className="mb-1">
-        Done
-      </Button>
-    </ModalFooter>
   </Modal>
 );
 
@@ -38,9 +48,11 @@ export default YouDidItModal;
 YouDidItModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  stepper: Proptypes.object,
 };
 
 YouDidItModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  stepper: {},
 };

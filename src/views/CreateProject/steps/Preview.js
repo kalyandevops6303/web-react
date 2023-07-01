@@ -1,27 +1,25 @@
 import Proptypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
-import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge } from 'reactstrap';
-import { TagsContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat } from '../../../utility/Utils';
+import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
+import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style';
+import { convertTo12HourFormat, formatDateWithDash } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
+import { createProjectData, createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
+import { createNewProject } from '../../../redux/actions/createProjectActions';
 
-const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
+const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItModal }) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
   const weekends = ['SATURDAY', 'SUNDAY'];
 
-  const weekdaysData = {
-    start_time: '1',
-    end_time: '2',
-    days: ['MONDAY', 'WEDNESDAY', 'FRIDAY'],
-  };
+  const dispatch = useDispatch();
 
-  const weekendsData = {
-    start_time: '1',
-    end_time: '2',
-    days: ['SATURDAY', 'SUNDAY'],
-  };
+  const createProjectIsLoading = useSelector(createProjectLoading);
+  const createProjectDetails = useSelector(createProjectData);
 
   const renderFilePreview = (file) => {
     if (file.type.startsWith('image')) {
@@ -113,6 +111,118 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
     </TagsContainer>
   );
 
+  const isEmpty = (value) => {
+    if (value === undefined || value === null) {
+      return true;
+    }
+
+    if (typeof value === 'string' || Array.isArray(value)) {
+      return value.length === 0;
+    }
+
+    if (typeof value === 'object') {
+      return Object.keys(value).length === 0;
+    }
+
+    return false;
+  };
+
+  const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
+
+  const removeEmptyKeys = (obj) => {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      const filteredArray = obj.filter((item) => typeof item !== 'object' || !hasEmptyKeys(item));
+
+      return filteredArray.map((item) => removeEmptyKeys(item));
+    }
+
+    const filteredObj = {};
+    Object.keys(obj).forEach((key) => {
+      const value = obj[key];
+      if (typeof value === 'object') {
+        const cleanedValue = removeEmptyKeys(value);
+        if (!isEmpty(cleanedValue)) {
+          filteredObj[key] = cleanedValue;
+        }
+      } else if (!isEmpty(value)) {
+        filteredObj[key] = value;
+      }
+    });
+
+    if (isEmpty(filteredObj)) {
+      return undefined;
+    }
+
+    return filteredObj;
+  };
+
+  const onSuccess = () => {
+    stepper.next();
+    setYouDidItModal(true);
+  };
+
+  const onPostClick = () => {
+    const details = {
+      name: projectDetails?.projectName,
+      description: projectDetails?.projectDescription,
+      expected_duration: {
+        duration: projectDetails?.expectedDuration,
+        duration_type: projectDetails?.expectedDurationPeriod?.value,
+      },
+    };
+    const proficiency = {
+      skills: projectDetails?.skills.map((skill) => skill.value),
+      tools: projectDetails?.tools?.map((tool) => tool.value),
+    };
+    const availability = {
+      timezone: projectDetails?.preferredWorkingTimeZone.value._id,
+      time_overlap: projectDetails?.minTimeOverlapHr,
+      weekdays_avl: {
+        start_time: projectDetails?.weekdayStartTime?.value,
+        end_time: projectDetails?.weekdayEndTime?.value,
+        days: projectDetails?.weekdays,
+      },
+      weekends_avl: {
+        start_time: projectDetails?.weekendStartTime?.value,
+        end_time: projectDetails?.weekendEndTime?.value,
+        days: projectDetails?.weekends,
+      },
+    };
+    const countries = {
+      included: projectDetails?.includedCountriesSelection?.map((country) => country.value),
+      excluded: projectDetails?.excludedCountriesSelection?.map((country) => country.value),
+    };
+    const pay_type = {
+      currency: projectDetails?.currencyType?.value?._id,
+      variable_cost: projectDetails?.projectPayType !== 'fixed-price',
+      fixed_cost: projectDetails?.projectFixedCost,
+    };
+    const nda = {
+      is_nda: projectDetails?.nda === 'yes',
+    };
+    const listing_details = {
+      start_date: formatDateWithDash(listingDetails?.startDate),
+      end_date: formatDateWithDash(listingDetails?.endDate),
+    };
+
+    const requiredData = {
+      id: createProjectDetails?.project_id || '',
+      details,
+      proficiency,
+      availability,
+      countries,
+      pay_type,
+      nda,
+      listing_details,
+    };
+
+    dispatch(createNewProject(removeEmptyKeys(requiredData), onSuccess));
+  };
+
   return (
     <>
       <Card>
@@ -146,49 +256,56 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
           </Row>
           <Row className="mb-2">
             <Col sm="12" md="12" lg="6">
-              <h4 className="fw-bolder">{projectDetails?.preferredWorkingTimeZone?.label}</h4>
+              <h4 className="fw-bolder">{projectDetails?.currencyType?.label}</h4>
               <p className="font-medium-2 fw-normal">Currency Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
                 {projectDetails?.projectPayType === 'variable-price'
                   ? 'Variable Pay'
-                  : `Fixed Pay - ${projectDetails?.currencyType?.label}${projectDetails?.projectFixedCost}`}{' '}
+                  : `Fixed Pay - ${projectDetails?.currencyType?.value?.code}${projectDetails?.projectFixedCost}`}{' '}
               </h4>
               <p className="font-medium-2 fw-normal">Payment Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
-              <h4 className="fw-bolder">{projectDetails?.nda}</h4>
+              <h4 className="fw-bolder">{capitalize(projectDetails?.nda)}</h4>
               <p className="font-medium-2 fw-normal">NDA</p>
             </Col>
           </Row>
           <Row>
             <Col sm="12" md="12" lg="6">
-              <TimeWrapper>
-                {weekdaysData && (
+              <TimeWrapper
+                isBorder={projectDetails?.availabilityDays.includes('weekends')}
+                isPadding={projectDetails?.availabilityDays.includes('weekdays')}
+              >
+                {projectDetails?.availabilityDays.includes('weekdays') && (
                   <section className="weekdays">
                     <CardText>
-                      {convertTo12HourFormat(weekdaysData.start_time)} - {convertTo12HourFormat(weekdaysData.end_time)}
+                      {convertTo12HourFormat(parseInt(projectDetails?.weekdayStartTime?.value, 10))} -{' '}
+                      {convertTo12HourFormat(parseInt(projectDetails?.weekdayEndTime?.value, 10))}{' '}
+                      {projectDetails?.preferredWorkingTimeZone?.value?.abbreviation}
                     </CardText>
                     <ul>
                       {weekdays.map((day) => (
                         <li key={day}>
-                          <span className={`dot ${weekdaysData.days.includes(day) ? 'active' : ''}`} />
+                          <span className={`dot ${projectDetails?.weekdays.includes(day) ? 'active' : ''}`} />
                           {capitalize(day.slice(0, 3))}
                         </li>
                       ))}
                     </ul>
                   </section>
                 )}
-                {weekendsData && (
+                {projectDetails?.availabilityDays.includes('weekends') && (
                   <section className="weekends">
                     <CardText>
-                      {convertTo12HourFormat(weekendsData.start_time)} - {convertTo12HourFormat(weekendsData.end_time)}
+                      {convertTo12HourFormat(parseInt(projectDetails?.weekendStartTime?.value, 10))} -{' '}
+                      {convertTo12HourFormat(parseInt(projectDetails?.weekendEndTime?.value, 10))}{' '}
+                      {projectDetails?.preferredWorkingTimeZone?.value?.abbreviation}
                     </CardText>
                     <ul>
                       {weekends.map((day) => (
                         <li key={day}>
-                          <span className={`dot ${weekendsData.days.includes(day) ? 'active' : ''}`} />
+                          <span className={`dot ${projectDetails?.weekends.includes(day) ? 'active' : ''}`} />
                           {capitalize(day.slice(0, 3))}
                         </li>
                       ))}
@@ -198,7 +315,7 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
               </TimeWrapper>
             </Col>
             <Col sm="12" md="6" lg="3">
-              <h4 className="fw-bolder">{projectDetails?.minTimeOverlapHr?.label} hr</h4>
+              <h4 className="fw-bolder">{projectDetails?.minTimeOverlapHr} hr</h4>
               <p className="font-medium-2 fw-normal">Minimum Overlap</p>
             </Col>
           </Row>
@@ -210,7 +327,9 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
         </CardHeader>
         <hr className="m-0 card-header-border" />
         <CardBody>
-          <p className="fw-light font-medium-1">{projectDetails?.projectDescription}</p>
+          <PreviewTextEditorContainer>
+            <ReactQuill theme="snow" readOnly value={projectDetails?.projectDescription} />
+          </PreviewTextEditorContainer>
         </CardBody>
       </Card>
       {files && files.length > 0 && fileList()}
@@ -254,9 +373,15 @@ const Preview = ({ stepper, projectDetails, listingDetails, files }) => {
           </UploadIconContainer>
           <h5 className="fw-light mb-0 mx-75">Back</h5>
         </div>
-        <Button color="primary">
-          <span className="me-50">Post</span>
-          <ChevronRight size={14} />
+        <Button color="primary" disabled={createProjectIsLoading} onClick={onPostClick}>
+          {createProjectIsLoading ? (
+            <Spinner size="sm" />
+          ) : (
+            <>
+              <span className="me-50">Post</span>
+              <ChevronRight size={14} />
+            </>
+          )}
         </Button>
       </div>
     </>
@@ -270,6 +395,7 @@ Preview.propTypes = {
   projectDetails: Proptypes.object,
   listingDetails: Proptypes.object,
   files: Proptypes.array,
+  setYouDidItModal: Proptypes.func,
 };
 
 Preview.defaultProps = {
@@ -277,4 +403,5 @@ Preview.defaultProps = {
   projectDetails: {},
   listingDetails: {},
   files: [],
+  setYouDidItModal: () => {},
 };

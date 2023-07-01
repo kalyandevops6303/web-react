@@ -234,14 +234,14 @@ export const TimeWrapper = styled.section`
   }
   .weekdays {
     padding-right: 20px;
-    border-right: 1px solid ${theme.borderInputColor};
+    border-right: ${(props) => (props.isBorder ? `1px solid ${theme.borderInputColor}` : 'none')};
 
     ul {
       justify-content: space-between;
     }
   }
   .weekends {
-    padding-left: 20px;
+    padding-left: ${(props) => (props.isPadding ? '20px' : '0')};
 
     ul {
       gap: 14px;
@@ -322,9 +322,6 @@ export const NavsContainer = styled.div`
 `;
 
 export const TableContainer = styled.div`
-  max-height: 500px;
-  overflow-y: scroll;
-
   .user-pic {
     border-radius: 50%;
     border: 1px solid ${theme.bodyColor};
@@ -392,5 +389,62 @@ export const InviteUsersListContainer = styled.div`
 
   .rating-text {
     color: ${theme.wizardStepSvgColor};
+  }
+`;
+
+export const TextEditorContainer = styled.div`
+  .ql-toolbar.ql-snow {
+    border: 1px solid ${theme.inputBorderColor} !important;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .ql-container.ql-snow {
+    border-left: 1px solid ${theme.inputBorderColor} !important;
+    border-right: 1px solid ${theme.inputBorderColor} !important;
+    border-bottom: 1px solid ${theme.inputBorderColor} !important;
+    border-radius: 0 0 4px 4px;
+  }
+
+  .ql-editor.ql-blank::before {
+    color: ${theme.gray};
+    font-style: normal;
+    font-weight: 300;
+    font-size: 13px;
+  }
+
+  .ql-container {
+    font-family: inherit;
+    font-size: 15px;
+  }
+
+  .ql-toolbar.ql-snow + .ql-container.ql-snow {
+    min-height: 150px;
+  }
+`;
+
+export const PreviewTextEditorContainer = styled.div`
+  .ql-toolbar.ql-snow {
+    display: none;
+  }
+
+  .ql-container.ql-snow {
+    border: none !important;
+    border-radius: 0;
+  }
+
+  .ql-editor.ql-blank::before {
+    color: ${theme.gray};
+    font-style: normal;
+    font-weight: 300;
+    font-size: 13px;
+  }
+
+  .ql-container {
+    font-family: inherit;
+    font-size: 15px;
+  }
+
+  .ql-toolbar.ql-snow + .ql-container.ql-snow {
+    min-height: 100px;
   }
 `;
