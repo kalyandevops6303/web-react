@@ -43,6 +43,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .string()
       .min(4, 'Project name must be atleast 4 characters')
       .max(150, 'Project name must be at most 150 characters')
+      .matches(/^[a-zA-Z0-9 _]+$/, 'Project name should not contain special characters')
       .required('Project name is required'),
     expectedDuration: yup
       .number()

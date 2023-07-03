@@ -185,7 +185,7 @@ const Preview = ({
 
   const onNewProjectCreation = () => {
     const details = {
-      name: projectDetails?.projectName,
+      name: projectDetails?.projectName.trim(),
       description: projectDetails?.projectDescription,
       expected_duration: {
         duration: projectDetails?.expectedDuration,
