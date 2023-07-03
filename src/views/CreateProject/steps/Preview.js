@@ -9,7 +9,7 @@ import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style
 import { convertTo12HourFormat } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
-import { createProjectData, createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
+import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
 import { createNewProject } from '../../../redux/actions/createProjectActions';
 import YouDidItModal from '../YouDidItModal';
 
@@ -28,7 +28,6 @@ const Preview = ({
   const dispatch = useDispatch();
 
   const createProjectIsLoading = useSelector(createProjectLoading);
-  const createProjectDetails = useSelector(createProjectData);
 
   const renderFilePreview = (file) => {
     if (file.type.startsWith('image')) {
@@ -233,7 +232,6 @@ const Preview = ({
     };
 
     const requiredData = {
-      id: createProjectDetails?.project_id || '',
       details,
       proficiency,
       availability,
