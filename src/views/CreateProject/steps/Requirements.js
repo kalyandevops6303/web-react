@@ -191,6 +191,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         yup
           .number()
           .min(1, 'Project fixed cost should be atleast 1')
+          .test('maxDigitsAfterDecimal', 'Project fixed cost must have 2 digits after decimal or less', (number) =>
+            /^\d+(\.\d{1,2})?$/.test(number),
+          )
           .typeError('Please enter a number')
           .required('Project fixed cost is required'),
     }),
