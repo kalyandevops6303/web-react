@@ -191,7 +191,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         yup
           .number()
           .min(1, 'Project fixed cost should be atleast 1')
-          .test('maxDigitsAfterDecimal', 'Project fixed cost must have 2 digits after decimal or less', (number) =>
+          .test('maxDigitsAfterDecimal', 'Project fixed cost must be upto two decimal places', (number) =>
             /^\d+(\.\d{1,2})?$/.test(number),
           )
           .typeError('Please enter a number')
@@ -1371,7 +1371,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       <Input
                         {...field}
                         type="number"
-                        min={0}
+                        step="any"
                         onWheel={(e) => e.target.blur()}
                         placeholder="Specify project fixed cost"
                         invalid={errors.projectFixedCost && true}

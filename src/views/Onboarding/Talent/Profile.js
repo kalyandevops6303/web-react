@@ -243,7 +243,7 @@ const Profile = () => {
     hourlyRate: yup
       .number()
       .min(1, 'Hourly rate should be atleast 1')
-      .test('maxDigitsAfterDecimal', 'Hourly rate must have 2 digits after decimal or less', (number) =>
+      .test('maxDigitsAfterDecimal', 'Hourly Rate must be upto two decimal places', (number) =>
         /^\d+(\.\d{1,2})?$/.test(number),
       )
       .typeError('Hourly rate must be a number')
@@ -434,7 +434,7 @@ const Profile = () => {
       },
     };
     const currency_preference = currencyPreference.value;
-    const hourly_rate = parseInt(hourlyRate, 10);
+    const hourly_rate = hourlyRate;
     const social_links = [
       {
         platform: 'linkedIn',
@@ -1904,10 +1904,10 @@ const Profile = () => {
                     <Input
                       {...field}
                       type="number"
-                      min={0}
+                      step="any"
                       onWheel={(e) => e.target.blur()}
                       placeholder="Enter your hourly rate"
-                      invalid={errors.workExperienceYear && true}
+                      invalid={errors.hourlyRate && true}
                     />
                   )}
                 />
