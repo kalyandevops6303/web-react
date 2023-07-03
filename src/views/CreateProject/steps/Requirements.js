@@ -1,5 +1,9 @@
+import { useState } from 'react';
 import Proptypes from 'prop-types';
 import { ChevronRight, FileText, Info, Minus, Upload } from 'react-feather';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { AsyncPaginate } from 'react-select-async-paginate';
 import Select from 'react-select';
 import classNames from 'classnames';
 import { selectThemeColors } from '@utils';
@@ -21,17 +25,47 @@ import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDropzone } from 'react-dropzone';
-import { DropzoneContainer, RequirementsFormContainer } from '../style';
+import { DropzoneContainer, RequirementsFormContainer, TextEditorContainer } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
+import {
+  countriesService,
+  currenciesService,
+  skillsService,
+  timezonesService,
+  toolsService,
+} from '../../../services/staticServices';
+import timeOptions from '../../../utility/constants/TimeDropdownOptions';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
     projectName: yup
       .string()
-      .max(50, 'Project name must be at most 50 characters')
+      .min(4, 'Project name must be atleast 4 characters')
+      .max(150, 'Project name must be at most 150 characters')
       .required('Project name is required'),
-    expectedDuration: yup.number().required('Expected duration is required'),
+    expectedDuration: yup
+      .number()
+      .when('expectedDurationPeriod', {
+        is: (expectedDurationPeriod) => expectedDurationPeriod.value === 'WEEK',
+        then: () =>
+          yup
+            .number()
+            .min(1, 'Expected duration should be atleast 1 week')
+            .max(12, 'Expected duration can not be more than 12 weeks')
+            .typeError('Please enter a number')
+            .required('Expected duration is required'),
+      })
+      .when('expectedDurationPeriod', {
+        is: (expectedDurationPeriod) => expectedDurationPeriod.value === 'DAY',
+        then: () =>
+          yup
+            .number()
+            .min(1, 'Expected duration should be atleast 1 day')
+            .max(90, 'Expected duration can not be more than 90 days')
+            .typeError('Please enter a number')
+            .required('Expected duration is required'),
+      }),
     expectedDurationPeriod: yup
       .object()
       .shape({
@@ -39,10 +73,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         value: yup.string().required('Period is required'),
       })
       .required('Period is required'),
-    projectDescription: yup
-      .string()
-      .max(250, 'Project description must be at most 250 characters')
-      .required('Project description is required'),
+    projectDescription: yup.string().required('Project description is required'),
     skills: yup
       .array()
       .of(
@@ -67,16 +98,10 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .object()
       .shape({
         label: yup.string().required('Preferred working time zone is required'),
-        value: yup.string().required('Preferred working time zone is required'),
+        value: yup.object().required('Preferred working time zone is required'),
       })
       .required('Preferred working time zone is required'),
-    minTimeOverlapHr: yup
-      .object()
-      .shape({
-        label: yup.string().required('Min time overlap hr is required'),
-        value: yup.string().required('Min time overlap hr is required'),
-      })
-      .required('Min time overlap hr is required'),
+    minTimeOverlapHr: yup.number().typeError('Please enter a number').required('Min time overlap hr is required'),
     availabilityDays: yup
       .array()
       .min(1, 'Select at least one work availability day')
@@ -150,7 +175,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .object()
       .shape({
         label: yup.string().required('Currency type is required'),
-        value: yup.string().required('Currency type is required'),
+        value: yup.object().required('Currency type is required'),
       })
       .required('Currency type is required'),
     projectPayType: yup.string().required('Project pay type is required'),
@@ -172,7 +197,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     resolver: yupResolver(ProjectDetailsSchema),
     defaultValues: {
       projectName: '',
-      expectedDurationPeriod: { label: 'Week', value: 'week' },
+      expectedDurationPeriod: { label: 'Week', value: 'WEEK' },
       projectDescription: '',
       availabilityDays: [],
       weekdays: [],
@@ -180,12 +205,136 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     },
   });
 
+  const [skillsOptions, setSkillsOptions] = useState(null);
+  const [toolsOptions, setToolsOptions] = useState(null);
+  const [timezonesOptions, setTimezonesOptions] = useState(null);
+  const [countriesOptions, setCountriesOptions] = useState(null);
+  const [currenciesOptions, setCurrenciesOptions] = useState(null);
+
+  const loadSkillsOptions = async (search) => {
+    if (search) {
+      return {
+        options: skillsOptions.filter(
+          (skill) => skill.label.toLowerCase().startsWith(search) || skill.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await skillsService();
+
+      const options = response?.data?.data?.map((skill) => ({ label: skill.name, value: skill._id }));
+
+      setSkillsOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadToolsOptions = async (search) => {
+    if (search) {
+      return {
+        options: toolsOptions.filter(
+          (tool) => tool.label.toLowerCase().startsWith(search) || tool.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await toolsService();
+
+      const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool._id }));
+
+      setToolsOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadTimezonesOptions = async (search) => {
+    if (search) {
+      return {
+        options: timezonesOptions.filter(
+          (timezone) =>
+            timezone.label.toLowerCase().startsWith(search) || timezone.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await timezonesService();
+
+      const options = response?.data?.data?.map((timezone) => ({
+        label: `${timezone.name} (${timezone.abbreviation})`,
+        value: timezone,
+      }));
+
+      setTimezonesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadCountriesOptions = async (search) => {
+    if (search) {
+      return {
+        options: countriesOptions.filter(
+          (country) => country.label.toLowerCase().startsWith(search) || country.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await countriesService();
+
+      const options = response?.data?.data?.map((country) => ({ label: country.name, value: country._id }));
+
+      setCountriesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
+  const loadCurrenciesOptions = async (search) => {
+    if (search) {
+      return {
+        options: currenciesOptions.filter(
+          (currency) =>
+            currency.label.toLowerCase().startsWith(search) || currency.label.toLowerCase().includes(search),
+        ),
+      };
+    }
+    try {
+      const response = await currenciesService();
+
+      const options = response?.data?.data?.map((currency) => ({ label: currency.name, value: currency }));
+
+      setCurrenciesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
   const onSubmit = (data) => {
     setProjectDetails(data);
     stepper.next();
   };
-
-  // const [files, setFiles] = useState([]);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -252,28 +401,6 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     </div>
   );
 
-  const languageOptions = [
-    { value: 'English', label: 'English' },
-    { value: 'Hindi', label: 'Hindi' },
-    { value: 'Spanish', label: 'Spanish' },
-    { value: 'German', label: 'German' },
-    { value: 'Chinese', label: 'Chinese' },
-    { value: 'Japenese', label: 'Japenese' },
-  ];
-
-  const countryOptions = [
-    { value: 'usa', label: 'USA' },
-    { value: 'canada', label: 'Canada' },
-    { value: 'uk', label: 'UK' },
-    { value: 'germany', label: 'Germany' },
-    { value: 'france', label: 'France' },
-    { value: 'spain', label: 'Spain' },
-    { value: 'italy', label: 'Italy' },
-    { value: 'australia', label: 'Australia' },
-    { value: 'japan', label: 'Japan' },
-    { value: 'china', label: 'China' },
-  ];
-
   const availabilityDays = watch('availabilityDays');
   const projectPayType = watch('projectPayType');
 
@@ -331,6 +458,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       type="number"
                       min={0}
                       placeholder="Enter duration"
+                      onWheel={(e) => e.target.blur()}
                       invalid={errors.expectedDuration && true}
                     />
                   )}
@@ -346,8 +474,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   render={({ field }) => (
                     <Select
                       options={[
-                        { label: 'Week', value: 'week' },
-                        { label: 'Day', value: 'day' },
+                        { label: 'Week', value: 'WEEK' },
+                        { label: 'Day', value: 'DAY' },
                       ]}
                       classNamePrefix="select"
                       theme={selectThemeColors}
@@ -371,13 +499,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   name="projectDescription"
                   control={control}
                   render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="textarea"
-                      placeholder="Enter project background and requirements in 250 character."
-                      rows="5"
-                      invalid={errors.projectDescription && true}
-                    />
+                    <TextEditorContainer>
+                      <ReactQuill {...field} theme="snow" placeholder="Enter project background and requirements" />
+                    </TextEditorContainer>
                   )}
                 />
                 {errors.projectDescription && <FormFeedback>{errors.projectDescription.message}</FormFeedback>}
@@ -433,9 +557,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   control={control}
                   invalid={errors.skills && true}
                   render={({ field }) => (
-                    <Select
+                    <AsyncPaginate
                       isMulti
-                      options={languageOptions}
+                      loadOptions={loadSkillsOptions}
                       classNamePrefix="select"
                       placeholder="Select top 5 skills"
                       theme={selectThemeColors}
@@ -458,9 +582,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   control={control}
                   invalid={errors.tools && true}
                   render={({ field }) => (
-                    <Select
+                    <AsyncPaginate
                       isMulti
-                      options={languageOptions}
+                      loadOptions={loadToolsOptions}
                       classNamePrefix="select"
                       placeholder="Select top 5 tools"
                       theme={selectThemeColors}
@@ -493,8 +617,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   control={control}
                   invalid={errors.preferredWorkingTimeZone && true}
                   render={({ field }) => (
-                    <Select
-                      options={languageOptions}
+                    <AsyncPaginate
+                      loadOptions={loadTimezonesOptions}
                       classNamePrefix="select"
                       placeholder="Select preferred working time zone"
                       theme={selectThemeColors}
@@ -518,24 +642,18 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   name="minTimeOverlapHr"
                   control={control}
                   render={({ field }) => (
-                    <Select
-                      options={[
-                        { label: '1', value: 1 },
-                        { label: '2', value: 2 },
-                        { label: '3', value: 3 },
-                        { label: '4', value: 4 },
-                      ]}
-                      classNamePrefix="select"
-                      placeholder="Enter min. overlap hr"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.minTimeOverlapHr,
-                      })}
+                    <Input
                       {...field}
+                      type="number"
+                      min={0}
+                      step={0.1}
+                      onWheel={(e) => e.target.blur()}
+                      placeholder="Enter min. overlap hr"
+                      invalid={errors.minTimeOverlapHr && true}
                     />
                   )}
                 />
-                {errors.minTimeOverlapHr && <FormFeedback>{errors.minTimeOverlapHr.label.message}</FormFeedback>}
+                {errors.minTimeOverlapHr && <FormFeedback>{errors.minTimeOverlapHr.message}</FormFeedback>}
               </Col>
             </Row>
             <Row className="mt-2">
@@ -574,11 +692,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       <Input
                         type="checkbox"
                         {...field}
-                        id="weekend"
-                        checked={field.value.includes('weekend')}
+                        id="weekends"
+                        checked={field.value.includes('weekends')}
                         onChange={(e) => {
                           const isChecked = e.target.checked;
-                          const value = 'weekend';
+                          const value = 'weekends';
 
                           if (isChecked) {
                             field.onChange([...field.value, value]);
@@ -587,7 +705,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           }
                         }}
                       />
-                      <Label htmlFor="weekend" className="form-check-label">
+                      <Label htmlFor="weekends" className="form-check-label">
                         Weekend
                       </Label>
                     </div>
@@ -597,7 +715,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               {errors.availabilityDays && <FormFeedback>{errors.availabilityDays.message}</FormFeedback>}
             </Row>
             <Row>
-              {availabilityDays && (availabilityDays.includes('weekdays') || availabilityDays.includes('weekend')) && (
+              {availabilityDays && (availabilityDays.includes('weekdays') || availabilityDays.includes('weekends')) && (
                 <>
                   {availabilityDays.includes('weekdays') && (
                     <div>
@@ -607,7 +725,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             Weekday -<span className="fw-light"> Working time available</span>
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').label}
+                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekday" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
@@ -632,7 +750,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekdayStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={languageOptions}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
@@ -658,7 +776,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekdayEndTime && true}
                             render={({ field }) => (
                               <Select
-                                options={languageOptions}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select end time"
                                 theme={selectThemeColors}
@@ -688,11 +806,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Mon"
-                                  checked={field.value.includes('Mon')}
+                                  id="MONDAY"
+                                  checked={field.value.includes('MONDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Mon';
+                                    const value = 'MONDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -701,7 +819,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Mon" className="form-check-label">
+                                <Label for="MONDAY" className="form-check-label">
                                   Mon
                                 </Label>
                               </div>
@@ -709,11 +827,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Tue"
-                                  checked={field.value.includes('Tue')}
+                                  id="TUESDAY"
+                                  checked={field.value.includes('TUESDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Tue';
+                                    const value = 'TUESDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -722,7 +840,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Tue" className="form-check-label">
+                                <Label for="TUESDAY" className="form-check-label">
                                   Tue
                                 </Label>
                               </div>
@@ -730,11 +848,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Wed"
-                                  checked={field.value.includes('Wed')}
+                                  id="WEDNESDAY"
+                                  checked={field.value.includes('WEDNESDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Wed';
+                                    const value = 'WEDNESDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -743,7 +861,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Wed" className="form-check-label">
+                                <Label for="WEDNESDAY" className="form-check-label">
                                   Wed
                                 </Label>
                               </div>
@@ -751,11 +869,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Thu"
-                                  checked={field.value.includes('Thu')}
+                                  id="THURSDAY"
+                                  checked={field.value.includes('THURSDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Thu';
+                                    const value = 'THURSDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -764,7 +882,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Thu" className="form-check-label">
+                                <Label for="THURSDAY" className="form-check-label">
                                   Thu
                                 </Label>
                               </div>
@@ -772,11 +890,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Fri"
-                                  checked={field.value.includes('Fri')}
+                                  id="FRIDAY"
+                                  checked={field.value.includes('FRIDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Fri';
+                                    const value = 'FRIDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -785,7 +903,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Fri" className="form-check-label">
+                                <Label for="FRIDAY" className="form-check-label">
                                   Fri
                                 </Label>
                               </div>
@@ -797,7 +915,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                     </div>
                   )}
 
-                  {availabilityDays.includes('weekend') && (
+                  {availabilityDays.includes('weekends') && (
                     <div>
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
@@ -805,7 +923,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             Weekend -<span className="fw-light"> Working time available</span>
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').label}
+                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekend" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekend">
@@ -830,7 +948,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekendStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={languageOptions}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
@@ -856,7 +974,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekendEndTime && true}
                             render={({ field }) => (
                               <Select
-                                options={languageOptions}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select end time"
                                 theme={selectThemeColors}
@@ -886,11 +1004,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Sat"
-                                  checked={field.value.includes('Sat')}
+                                  id="SATURDAY"
+                                  checked={field.value.includes('SATURDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Sat';
+                                    const value = 'SATURDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -899,7 +1017,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Sat" className="form-check-label">
+                                <Label for="SATURDAY" className="form-check-label">
                                   Sat
                                 </Label>
                               </div>
@@ -907,11 +1025,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                 <Input
                                   type="checkbox"
                                   {...field}
-                                  id="Sun"
-                                  checked={field.value.includes('Sun')}
+                                  id="SUNDAY"
+                                  checked={field.value.includes('SUNDAY')}
                                   onChange={(e) => {
                                     const isChecked = e.target.checked;
-                                    const value = 'Sun';
+                                    const value = 'SUNDAY';
 
                                     if (isChecked) {
                                       field.onChange([...field.value, value]);
@@ -920,7 +1038,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                                     }
                                   }}
                                 />
-                                <Label for="Sun" className="form-check-label">
+                                <Label for="SUNDAY" className="form-check-label">
                                   Sun
                                 </Label>
                               </div>
@@ -983,15 +1101,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   invalid={errors.includedCountriesSelection && true}
                   render={({ field }) => (
                     <div className="custom-multiselect">
-                      <Select
+                      <AsyncPaginate
                         isMulti
-                        options={
-                          watch('includedCountriesSelection')
-                            ? countryOptions.filter(
-                                (option) => !watch('includedCountriesSelection').includes(option.value),
-                              )
-                            : countryOptions
-                        }
+                        loadOptions={loadCountriesOptions}
                         onChange={(selectedOptions) => field.onChange(selectedOptions)}
                         isDisabled={watch('includeOrExcludeCountries') !== 'include-countries'}
                         classNamePrefix="select"
@@ -1066,15 +1178,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   invalid={errors.excludedCountriesSelection && true}
                   render={({ field }) => (
                     <div className="custom-multiselect">
-                      <Select
+                      <AsyncPaginate
                         isMulti
-                        options={
-                          watch('excludedCountriesSelection')
-                            ? countryOptions.filter(
-                                (option) => !watch('excludedCountriesSelection').includes(option.value),
-                              )
-                            : countryOptions
-                        }
+                        loadOptions={loadCountriesOptions}
                         onChange={(selectedOptions) => field.onChange(selectedOptions)}
                         isDisabled={watch('includeOrExcludeCountries') !== 'exclude-countries'}
                         classNamePrefix="select"
@@ -1129,8 +1235,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   control={control}
                   invalid={errors.currencyType && true}
                   render={({ field }) => (
-                    <Select
-                      options={languageOptions}
+                    <AsyncPaginate
+                      loadOptions={loadCurrenciesOptions}
                       classNamePrefix="select"
                       placeholder="Select currency"
                       theme={selectThemeColors}
@@ -1207,7 +1313,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               {projectPayType === 'fixed-price' && (
                 <Col sm="12" md="6" lg="3">
                   <Label className="form-label" for="projectFixedCost">
-                    Project Fixed Cost<span className="label-asterisk me-50">*</span>
+                    Project Fixed Cost{`${watch('currencyType') ? ` in ${watch('currencyType')?.value?.code}` : ''}`}
+                    <span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
                     id="projectFixedCost"
@@ -1219,6 +1326,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         {...field}
                         type="number"
                         min={0}
+                        onWheel={(e) => e.target.blur()}
                         placeholder="Specify project fixed cost"
                         invalid={errors.projectFixedCost && true}
                       />

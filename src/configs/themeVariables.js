@@ -70,6 +70,8 @@ const starRatingBg = '#FF9F43';
 const ratingBadgeBg = 'rgba(255, 159, 67, 0.12)';
 const greenBtnBg = 'rgba(40, 199, 111, 0.12)';
 const noDataFoundTextColor = '#2963c3';
+const infoColor = '#00CFE8';
+const secondaryColor = '#82868B';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -143,5 +145,7 @@ const theme = {
   ratingBadgeBg,
   greenBtnBg,
   noDataFoundTextColor,
+  info: infoColor,
+  secondary: secondaryColor,
 };
 export default theme;

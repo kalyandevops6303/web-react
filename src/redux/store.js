@@ -9,6 +9,8 @@ import layout from './layout';
 import navbar from './navbar';
 import profile from './reducers/profile';
 import marketPlace from './reducers/marketPlace';
+import notifications from './reducers/notifications';
+import createProject from './reducers/createProject';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -18,6 +20,8 @@ const rootReducer = combineReducers({
   dashboard: dashboardReducer,
   currentProfile: profile,
   marketPlace,
+  notifications,
+  createProject,
   layout,
   navbar,
 

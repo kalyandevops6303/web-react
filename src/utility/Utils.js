@@ -149,3 +149,13 @@ export const giveStrokeColor = (percentage) => {
     return theme.green;
   }
 };
+
+export const formatDateWithDash = (date) => {
+  if (!date) {
+    return undefined;
+  }
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear().toString();
+  return `${day}-${month}-${year}`;
+};

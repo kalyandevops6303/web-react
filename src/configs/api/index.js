@@ -1,5 +1,6 @@
 const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
 const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
+const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
 
 const API = {
   auth: {
@@ -63,6 +64,16 @@ const API = {
       listProject: `${apiOnboardingEndpoint}/api/v1/talent/list-projects`,
       listClients: `${apiOnboardingEndpoint}/api/v1/talent/list-clients`,
     },
+  },
+  notifications: {
+    allNotifications: `${apiOnboardingEndpoint}/api/v1/notification/all`,
+  },
+  createProject: {
+    createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
+    bestTalents: `${apiCreateProjectEndpoint}/api/v1/project/best-talents`,
+    favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
+    almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
+    inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
   },
 };
 
