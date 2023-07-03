@@ -2,25 +2,22 @@
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
-import { round } from 'lodash';
 import ReactHtmlParser from 'react-html-parser';
-import ReactShowMoreText from 'react-show-more-text';
 import lisa from '@src/assets/images/portrait/small/lisa.png';
 import Mpin from '@src/assets/images/map-pin.png';
 import LikeIcon from '@src/assets/images/like.png';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
 import { ProjectCardWrap } from './style';
-import { useIsTab } from '../../utility/Utils';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 
 const ProjectCard = ({ isExpanded, data }) => {
-  const isTab = useIsTab();
+  const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
 
@@ -30,6 +27,10 @@ const ProjectCard = ({ isExpanded, data }) => {
 
   const handleToggle = () => {
     setShowModal(!showModal);
+  };
+
+  const handleToggleView = () => {
+    setShowFullText(!showFullText);
   };
 
   const statusEnum = {
@@ -50,6 +51,15 @@ const ProjectCard = ({ isExpanded, data }) => {
     }
   };
 
+  const divRef = useRef(null);
+
+  useEffect(() => {
+    const divElement = divRef.current;
+    if (divElement) {
+      setIsContentOverflowing(divElement.scrollHeight > divElement.clientHeight);
+    }
+  }, []);
+
   return (
     <ProjectCardWrap>
       <Card>
@@ -68,7 +78,7 @@ const ProjectCard = ({ isExpanded, data }) => {
                   {data?.details?.name}
                 </span>
               </CardTitle>
-              <div className="d-flex project-stats">
+              <div className="d-flex flex-wrap project-stats">
                 <CardText className="project">
                   {data?.pay_type?.variable_cost ? (
                     <>Variable Price&nbsp;</>
@@ -87,37 +97,26 @@ const ProjectCard = ({ isExpanded, data }) => {
                   <img src={Mpin} alt="Mpin" className="mpin" />
                   {data?.client_details?.office_address?.country?.name || 'Location'}
                 </CardText>
-                <CardText className="project">
+                <CardText className=" mb-1">
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}
                 </CardText>
               </div>
-              <ReactShowMoreText
-                lines={4}
-                more={
-                  <span
-                    style={{ color: theme.lightBlueColor, textDecoration: 'none', cursor: 'pointer' }}
-                    onClick={() => setShowFullText(true)}
-                  >
-                    show more
-                  </span>
-                }
-                less={
-                  <span
-                    style={{ color: theme.lightBlueColor, textDecoration: 'none', cursor: 'pointer' }}
-                    onClick={() => setShowFullText(false)}
-                  >
-                    show less
-                  </span>
-                }
-                className="content-css project-desc d-none"
-                anchorClass="show-more-less-clickable"
-                expanded={showFullText}
-                // eslint-disable-next-line no-undef
-                width={isTab ? round(window.innerWidth - 120) : round(window.innerWidth - window.innerWidth * 0.43)}
-              >
-                {showFullText ? ReactHtmlParser(data?.details?.description) : data?.details?.description}
-              </ReactShowMoreText>
-              {ReactHtmlParser(data?.details?.description)}
+
+              {!showFullText ? (
+                <div className="my-div" ref={divRef} style={{ maxHeight: '115px', overflow: 'hidden' }}>
+                  {ReactHtmlParser(data?.details?.description)}
+                </div>
+              ) : (
+                <div className="my-div" ref={divRef}>
+                  {ReactHtmlParser(data?.details?.description)}
+                </div>
+              )}
+
+              {isContentOverflowing && (
+                <CardText className="cursor-pointer show-more" onClick={handleToggleView}>
+                  {showFullText ? 'Show less' : 'Show more'}
+                </CardText>
+              )}
             </Col>
             <Col lg="4">
               <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>

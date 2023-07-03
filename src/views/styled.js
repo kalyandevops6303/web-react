@@ -88,6 +88,7 @@ const SecondaryFiltersWrap = styled.div`
   .wide__menu {
     width: 250px;
   }
+
   .view-label {
     font-size: 14px;
   }
@@ -119,6 +120,26 @@ const SecondaryFiltersWrap = styled.div`
       font-size: 15px;
       display: flex;
       align-items: center;
+    }
+  }
+
+  @media only screen and (max-device-width: 600px) {
+    .select__control {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    .wide__control {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    .wide__menu {
+      width: 100%;
+    }
+    .reset-btn {
+      width: 100%;
+    }
+    #popoverButton {
+      width: 12rem;
     }
   }
 `;

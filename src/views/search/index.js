@@ -115,6 +115,11 @@ const Search = () => {
     .no-data {
       height: 10rem;
     }
+    @media only screen and (max-device-width: 600px) {
+      .card-body {
+        padding: 1rem;
+      }
+    }
   `;
 
   const totalResult = Object.values(searchData).reduce((sum, item) => {

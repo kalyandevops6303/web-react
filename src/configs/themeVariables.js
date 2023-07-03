@@ -96,6 +96,7 @@ const theme = {
   blueBorderColor,
   borderInputColor,
   green: greenColor,
+  activeColor: blueBorderColorv2,
   textColor,
   gray,
   switchBgColor,

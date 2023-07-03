@@ -11,6 +11,7 @@ const ProjectCardWrap = styled(CardWrap)`
   .card-body {
     padding: 2.1rem 2.6rem 1.4rem 2.6rem;
   }
+
   .status-row {
     margin-left: -0.5rem;
   }
@@ -80,9 +81,8 @@ const ProjectCardWrap = styled(CardWrap)`
 
   .show-more {
     text-decoration: underline;
-    cursor: pointer;
+    color: ${theme.activeNavPillText};
   }
-
   .show-less {
     display: none;
   }
@@ -93,6 +93,14 @@ const ProjectCardWrap = styled(CardWrap)`
 
   .collapsed .show-more {
     display: none;
+  }
+  @media only screen and (max-device-width: 600px) {
+    .card-body {
+      padding: 1rem;
+    }
+    .show-more {
+      margin-bottom: 2rem !important;
+    }
   }
 `;
 
@@ -182,6 +190,15 @@ const UserCardWrap = styled(CardWrap)`
 
   .collapsed .show-more {
     display: none;
+  }
+
+  @media only screen and (max-device-width: 600px) {
+    .card-body {
+      padding: 1rem;
+    }
+    .desc {
+      margin-bottom: 1rem !important;
+    }
   }
 `;
 export { CardWrap, ProjectCardWrap, InstituteCardWrap, UserCardWrap };

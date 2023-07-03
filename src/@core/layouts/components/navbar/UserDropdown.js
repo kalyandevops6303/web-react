@@ -42,7 +42,7 @@ const UserDropdown = () => {
           </span>
           <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
         </div>
-        <Avatar img={defaultAvatar} imgHeight="40" imgWidth="40" status="online" />
+        <Avatar img={defaultAvatar} imgHeight="40" imgWidth="40" />
       </DropdownToggle>
       <DropdownMenu end>
         <DropdownItem tag={Link} to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}>
