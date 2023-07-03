@@ -53,6 +53,9 @@ const API = {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
   },
+  notifications: {
+    allNotifications: `${apiOnboardingEndpoint}/api/v1/notification/all`,
+  },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project/best-talents`,

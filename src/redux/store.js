@@ -8,6 +8,7 @@ import dashboardReducer from './reducers/dashboard';
 import layout from './layout';
 import navbar from './navbar';
 import profile from './reducers/profile';
+import notifications from './reducers/notifications';
 import createProject from './reducers/createProject';
 
 const rootReducer = combineReducers({
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   clientOnboarding: clientOnboardingReducer,
   dashboard: dashboardReducer,
   currentProfile: profile,
+  notifications,
   createProject,
   layout,
   navbar,
