@@ -132,7 +132,6 @@ export const useIsTab = () => checkSize(769);
 
 export const convertTo12HourFormat = (hour) => {
   const now = DateTime.local();
-
   // Set the time to 22:00 (10 PM)
   const convertedTime = now.set({ hour, minute: 0 });
 

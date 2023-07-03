@@ -1,12 +1,12 @@
 import React from 'react';
 import Proptypes from 'prop-types';
+import ReactHtmlParser from 'react-html-parser';
 import { Modal, ModalHeader, ModalBody, Card, CardHeader, CardTitle, CardBody, Row, Col, CardText } from 'reactstrap';
-import lisa from '@src/assets/images/portrait/small/lisa.png';
 import styled from 'styled-components';
-import { Heart } from 'react-feather';
 import theme from '../../configs/themeVariables';
-import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
+import '../custom-styles.scss';
+import AvailableTimeComp from '../../@core/components/available-time-comp';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -38,113 +38,137 @@ const ViewProjectDetailModalWrap = styled.div`
     font-size: 16px;
     line-height: 24px;
   }
+
+  .badge {
+    width: fit-content !important;
+    display: initial !important;
+  }
 `;
-const is_favourited = false;
-const ProjectModal = ({ modal, toggleModal }) => (
-  <Modal isOpen={modal} toggle={toggleModal} className="modal-dialog-centered modal-lg">
-    <ModalHeader toggle={toggleModal} />
-    <ModalBody>
-      <ViewProjectDetailModalWrap>
-        <Card>
-          <CardHeader>
-            <CardTitle className="mb-0 d-flex justify-content-between w-100">
-              <span>Project Details</span>
-              {is_favourited ? (
-                <Heart className="d-flex ms-2 heart" fill={theme.red} stroke={theme.red} />
-              ) : (
-                <Heart className="d-flex ms-2 heart" />
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardBody>
-            <Row>
-              <Col lg="4">
-                <div className="d-flex">
-                  <img className="card-photo me-1 mt-50" src={lisa} alt="avatar" />
+
+// eslint-disable-next-line arrow-body-style
+const ProjectModal = ({ modal, toggleModal, data }) => {
+  return (
+    <Modal
+      contentClassName="custom-modal-project-details"
+      isOpen={modal}
+      toggle={toggleModal}
+      className="modal-dialog-centered modal-lg"
+    >
+      <ModalHeader toggle={toggleModal} />
+      <ModalBody>
+        <ViewProjectDetailModalWrap>
+          <Card>
+            <CardHeader>
+              <CardTitle className="mb-0 d-flex justify-content-between w-100">
+                <span>Project Details</span>
+              </CardTitle>
+            </CardHeader>
+            <CardBody>
+              <Row className="mb-2">
+                <Col lg="5">
                   <div>
-                    <CardTitle className="mb-25 title">Cloudwell Automation</CardTitle>
-                    <div className="d-flex">
-                      <RatingBadge number="4.1" />
-                      <CardText className="ps-1 font-small-3 fw-300 rating-label">51 Projects</CardText>
-                    </div>
+                    <CardTitle className="mb-25 fw-bolder">{data?.details?.name}</CardTitle>
+                    <CardText className="project-name">Project Name</CardText>
                   </div>
-                </div>
-              </Col>
-              <Col lg="4">
-                <div>
-                  <CardTitle className="mb-25 fw-bolder">Cloudwell Automation</CardTitle>
-                  <CardText className="project-name">Project Name</CardText>
-                </div>
-              </Col>
-              <Col lg="4">
-                <div>
-                  <CardTitle className="mb-25 fw-bolder">115w</CardTitle>
-                  <CardText className="project-name">Expected duration</CardText>
-                </div>
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="mb-0 d-flex justify-content-between w-100">
-              <span>Project Description</span>
-            </CardTitle>
-          </CardHeader>
-          <CardBody>
-            <CardText className="fw-300 ms-75 project-desc">
-              The data collection and payment system is designed to allow automotive companies to compensate users for
-              sharing their data. By collecting data such as driving habits, vehicle usage, road conditions and other
-              environmental data, valuable insights that can be created to support autonomous driving. The payment
-              system would be integrated into the vehicls software, allowing for seamless data collection and
-              compensation for users who opt-in. Users would be required to agree to the terms and conditions of the
-              program before their data could be collected and shared. The data collected would include driving
-              behavior, vehicle usage, location, and other environment data such as weather conditions and traffic
-              patterns. The data would be securely transmitted to the automotive companys servers, where it would be
-              analyzed and used to improve their products and services. Compensation for the data would be based on
-              factors such as the amount and quality of data provided, as well as the specific needs of the automotive
-              company. Payment options could include direct monetary compensation, discounts on vehicle purchases or
-              services, or other rewards such as gift cards or exclusive access to new products.
-            </CardText>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="mb-0 d-flex justify-content-between w-100">
-              <span>Requirements</span>
-            </CardTitle>
-          </CardHeader>
-          <CardBody>
-            <BadgeGroup
-              title="Project deliverables"
-              data={[{ name: 'html' }, { name: 'css' }, { name: 'html' }, { name: 'css' }]}
-              color="light-blue"
-            />
-            <BadgeGroup
-              title="Skills"
-              data={[{ name: 'html' }, { name: 'css' }, { name: 'html' }, { name: 'css' }]}
-              color="light-blue"
-            />
-            <BadgeGroup
-              title="Tools"
-              data={[{ name: 'html' }, { name: 'css' }, { name: 'html' }, { name: 'css' }]}
-              color="light-blue"
-            />
-          </CardBody>
-        </Card>
-      </ViewProjectDetailModalWrap>
-    </ModalBody>
-  </Modal>
-);
+                </Col>
+                <Col lg="3">
+                  <div>
+                    <CardTitle className="mb-25 fw-bolder">
+                      {data?.details?.expected_duration?.duration}
+                      {data?.details?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
+                    </CardTitle>
+                    <CardText className="project-name">Expected duration</CardText>
+                  </div>
+                </Col>
+                <Col lg="4">
+                  <div>
+                    <CardTitle className="mb-25 fw-bolder">
+                      {data?.listing_details?.start_date} to {data?.listing_details?.end_date}
+                    </CardTitle>
+                    <CardText className="project-name">Listing duration</CardText>
+                  </div>
+                </Col>
+              </Row>
+              <Row className="mb-2">
+                <Col lg="5">
+                  <div>
+                    <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.name}</CardTitle>
+                    <CardText className="project-name">Currency Type</CardText>
+                  </div>
+                </Col>
+
+                <Col lg="3">
+                  <div>
+                    <CardTitle className="mb-25 fw-bolder">
+                      {data?.pay_type?.fixed_cost
+                        ? ` Fixed Price - 
+                          ${data?.pay_type?.currency?.code} ${data?.pay_type?.fixed_cost}`
+                        : 'Variable Pay'}
+                    </CardTitle>
+                    <CardText className="project-name">Payment Type</CardText>
+                  </div>
+                </Col>
+                <Col lg="4">
+                  <div>
+                    <CardTitle className="mb-25 fw-bolder">{data?.nda?.is_nda ? 'YES' : 'NO'}</CardTitle>
+                    <CardText className="project-name">NDA</CardText>
+                  </div>
+                </Col>
+              </Row>
+              <Row className="mb-2">
+                <Col lg="5">
+                  <AvailableTimeComp
+                    timeZone={data?.availability?.timezone?.abbreviation}
+                    weekdaysData={data?.availability?.weekdays_avl}
+                    weekendsData={data?.availability?.weekends_avl}
+                  />
+                </Col>
+                <Col lg="3">
+                  <div>
+                    <CardTitle className="mb-25 fw-bolder">{data?.availability?.time_overlap} hr</CardTitle>
+                    <CardText className="project-name">Minimum Overlap</CardText>
+                  </div>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="mb-0 d-flex justify-content-between w-100">
+                <span>Project Description</span>
+              </CardTitle>
+            </CardHeader>
+            <CardBody>
+              <CardText className="fw-300 ms-75 project-desc"> {ReactHtmlParser(data?.details?.description)} </CardText>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="mb-0 d-flex justify-content-between w-100">
+                <span>Requirements</span>
+              </CardTitle>
+            </CardHeader>
+            <CardBody>
+              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
+              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+            </CardBody>
+          </Card>
+        </ViewProjectDetailModalWrap>
+      </ModalBody>
+    </Modal>
+  );
+};
 
 export default ProjectModal;
 
 ProjectModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  data: Proptypes.object,
 };
 
 ProjectModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  data: {},
 };

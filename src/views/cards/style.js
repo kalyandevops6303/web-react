@@ -3,11 +3,14 @@ import theme from '../../configs/themeVariables';
 
 const CardWrap = styled.div`
   .card-body {
-    padding: 2.1rem 2.6rem 2.6rem;
+    padding: 2.1rem 2.6rem 1.8rem 2.6rem;
   }
 `;
 
 const ProjectCardWrap = styled(CardWrap)`
+  .card-body {
+    padding: 2.1rem 2.6rem 1.4rem 2.6rem;
+  }
   .status-row {
     margin-left: -0.5rem;
   }
@@ -50,6 +53,46 @@ const ProjectCardWrap = styled(CardWrap)`
     font-weight: 300;
     font-size: 16px;
     line-height: 24px;
+  }
+
+  .circular-progressbar-container {
+    width: 35px;
+    height: 35px;
+    margin-left: 4rem;
+
+    .percentage-text {
+      font-weight: 400;
+      font-size: 10px;
+      color: ${theme.headingTextColor};
+    }
+  }
+
+  //exp
+
+  .truncate {
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .show-more {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .show-less {
+    display: none;
+  }
+
+  .collapsed .show-less {
+    display: inline;
+  }
+
+  .collapsed .show-more {
+    display: none;
   }
 `;
 
@@ -99,6 +142,46 @@ const UserCardWrap = styled(CardWrap)`
   .rating-label {
     color: ${theme.bodyColor};
     font-weight: 300;
+  }
+
+  //exp
+
+  .circular-progressbar-container {
+    width: 35px;
+    height: 35px;
+    margin-left: 1rem;
+
+    .percentage-text {
+      font-weight: 400;
+      font-size: 10px;
+      color: ${theme.headingTextColor};
+    }
+  }
+
+  .truncate {
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .show-more {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .show-less {
+    display: none;
+  }
+
+  .collapsed .show-less {
+    display: inline;
+  }
+
+  .collapsed .show-more {
+    display: none;
   }
 `;
 export { CardWrap, ProjectCardWrap, InstituteCardWrap, UserCardWrap };

@@ -53,6 +53,18 @@ const API = {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
   },
+  marketplace: {
+    client: {
+      cardInfo: `${apiOnboardingEndpoint}/api/v1/client/cards-info`,
+      listProject: `${apiOnboardingEndpoint}/api/v1/client/list-projects`,
+      listTalents: `${apiOnboardingEndpoint}/api/v1/client/list-talents`,
+    },
+    talent: {
+      cardInfo: `${apiOnboardingEndpoint}/api/v1/talent/cards-info`,
+      listProject: `${apiOnboardingEndpoint}/api/v1/talent/list-projects`,
+      listClients: `${apiOnboardingEndpoint}/api/v1/talent/list-clients`,
+    },
+  },
   notifications: {
     allNotifications: `${apiOnboardingEndpoint}/api/v1/notification/all`,
   },

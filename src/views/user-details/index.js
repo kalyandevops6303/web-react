@@ -1,9 +1,9 @@
 import { Briefcase, Calendar, Check, DollarSign } from 'react-feather';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
-import { divide, round } from 'lodash';
+import { capitalize, round } from 'lodash';
 import { Col, Row } from 'reactstrap';
 import Statbox from './overview/Statbox';
 import LeftSidebarProfile from './overview/LeftSidebarProfile';
@@ -18,7 +18,11 @@ const UserDetails = () => {
   const dispatch = useDispatch();
   const param = useParams();
 
+  const location = useLocation();
+
   useEffect(() => {
+    // eslint-disable-next-line no-undef
+    window?.scrollTo(0, 0);
     dispatch(getProfile(param?.userId, param?.userType.toUpperCase()));
   }, []);
 
@@ -31,15 +35,15 @@ const UserDetails = () => {
     const weekdayStartTime = parseInt(availability?.weekdays_avl?.start_time, 10);
     const weekdayEndTime = parseInt(availability?.weekdays_avl?.end_time, 10);
     const weekdayDurationPerDay = weekdayEndTime - weekdayStartTime;
-    const weekdaysPerWeek = availability?.weekdays_avl?.days.length;
+    const weekdaysPerWeek = availability?.weekdays_avl?.days?.length;
     const weekdayHoursPerWeek = weekdayDurationPerDay * weekdaysPerWeek;
 
     // Check if weekends_avl property exists
-    if (availability?.weekends_avl) {
+    if (availability?.weekends_avl?.days) {
       const weekendStartTime = parseInt(availability.weekends_avl.start_time, 10);
       const weekendEndTime = parseInt(availability.weekends_avl.end_time, 10);
       const weekendDurationPerDay = weekendEndTime - weekendStartTime;
-      const weekendsPerWeek = availability.weekends_avl.days.length;
+      const weekendsPerWeek = availability?.weekends_avl?.days?.length;
       const weekendHoursPerWeek = weekendDurationPerDay * weekendsPerWeek;
 
       // Calculate total available hours per week
@@ -51,9 +55,21 @@ const UserDetails = () => {
     return weekdayHoursPerWeek;
   };
 
+  const calculateYearsFromMonths = (totalMonths) => {
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+    const combined = `${years}y ${months}m`;
+    return combined;
+  };
+
+  const defaultBreadCrumb = [{ title: currentProfile?.first_name || 'User' }];
+  const dynamicBreadCrumb = [
+    { title: capitalize(location?.state?.from), link: location?.state?.link },
+    { title: currentProfile?.first_name || 'User' },
+  ];
   return (
     <>
-      <BreadCrumbs data={[{ title: currentProfile?.first_name || 'User' }]} />
+      <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} />
       <Row>
         <Col lg="3">
           <LeftSidebarProfile isClient={isClient} data={currentProfile} isEditable={userData?._id === param?.userId} />
@@ -76,7 +92,7 @@ const UserDetails = () => {
             {!isClient && (
               <Col lg="3">
                 <Statbox
-                  title={`${round(divide(currentProfile?.work_experience, 12), 2) || 0}yr`}
+                  title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
                   desc="Work Experience"
                   icon={<Briefcase height={20} />}
                   color="light-warning"

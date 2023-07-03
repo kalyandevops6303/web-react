@@ -35,18 +35,33 @@ const CustomBadge = styled.span`
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
   }
-  .open-listing-color {
+  .OPEN {
     background: ${theme.succesGreenBg};
     color: ${theme.succesGreenColor};
+  }
+  .IN_REVIEW {
+    background: ${theme.orange}1f;
+    color: ${theme.orange};
+  }
+  .TERMINATED {
+    background: ${theme.darkRedColor}1f;
+    color: ${theme.darkRedColor};
+  }
+  .CLOSED,
+  .LISTING_EXPIRED {
+    background: ${theme.disabledGrayColor}1f;
+    color: ${theme.disabledGrayColor};
   }
 `;
 
 const FormWrapper = styled.div`
-  .select__placeholder {
+  .select__placeholder,
+  .wide__placeholder {
     font-size: 12px;
     color: ${theme.textMuted};
   }
-  .select__indicator {
+  .select__indicator,
+  .wide__indicator {
     svg {
       color: ${theme.textMuted};
     }
@@ -55,13 +70,23 @@ const FormWrapper = styled.div`
 const SecondaryFiltersWrap = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.4rem;
   margin-bottom: 2rem;
   .marketplace-search {
     min-width: 18rem;
   }
   .select__control {
-    min-width: 14rem;
+    min-width: 12rem;
+    width: 12rem;
+  }
+  .wide__control {
+    min-width: 12rem;
+    width: 12rem;
+  }
+  .wide__menu {
+    width: 250px;
   }
   .view-label {
     font-size: 14px;
@@ -97,4 +122,70 @@ const SecondaryFiltersWrap = styled.div`
     }
   }
 `;
-export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap };
+
+const TimeWrapper = styled.section`
+  display: flex;
+  .weekdays,
+  .weekends {
+    margin-top: auto;
+    width: 50%;
+
+    ul {
+      font-size: 11px;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      padding-top: 7px;
+      list-style-type: none;
+    }
+  }
+  .weekdays {
+    ul {
+      justify-content: space-between;
+    }
+  }
+  .weekends {
+    ul {
+      gap: 14px;
+    }
+  }
+  .dot {
+    height: 8px;
+    width: 8px;
+    display: block;
+    background: rgba(217, 217, 217, 0.5);
+    border-radius: 50%;
+    margin: auto;
+    margin-bottom: 6px;
+  }
+  .active {
+    background: #28c76f;
+  }
+  .line {
+    width: 1px;
+    background: ${theme.borderInputColor};
+    margin: 0 2rem;
+    @media only screen and (max-device-width: 1340px) {
+      margin: 0 1.6rem;
+    }
+  }
+  @media only screen and (min-device-width: 990px) and (max-device-width: 1160px) {
+    flex-direction: column;
+    gap: 16px;
+    .weekends {
+      ul {
+        gap: 32px;
+      }
+    }
+  }
+  @media only screen and (max-device-width: 450px) {
+    flex-direction: column;
+    gap: 16px;
+    .weekends {
+      ul {
+        gap: 32px;
+      }
+    }
+  }
+`;
+export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper };

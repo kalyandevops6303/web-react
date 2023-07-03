@@ -10,7 +10,7 @@ import { NavItem, NavLink as RsNavLink } from 'reactstrap';
 import themeConfig from '@configs/themeConfig';
 
 // ** Custom Components
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
@@ -21,6 +21,7 @@ import { getUserData } from '../../../../redux/actions/dashboardActions';
 
 const ThemeNavbar = (props) => {
   const userData = getItem('userData');
+  const location = useLocation();
   // ** Props
   const { skin, setSkin, setMenuVisibility } = props;
   // ** Function to toggle Theme (Light/Dark)
@@ -41,14 +42,19 @@ const ThemeNavbar = (props) => {
       margin: 0 1rem 0 2rem;
       margin-bottom: -11px;
       font-size: 16px;
+      font-weight: 400;
+      color: ${theme.textColor};
+      &:hover {
+        color: ${theme.textColor};
+      }
+    }
+    .is-active {
       font-weight: 600;
+      border-bottom: 3px solid ${theme.primary};
       color: ${theme.primary};
       &:hover {
         color: ${theme.primary};
       }
-    }
-    .is-active {
-      border-bottom: 3px solid ${theme.primary};
     }
     @media (max-width: 1200px) {
       .menu-item {
@@ -93,9 +99,12 @@ const ThemeNavbar = (props) => {
         Dashboard
       </NavLink>
       <NavLink
-        className={({ isActive }) => (isActive ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'}
+        className={
+          (location?.pathname?.split('/')?.[1] === 'marketplace' ? 'is-active' : '') +
+          ' menu-item nav-menu-main menu-toggle hidden-xs'
+        }
         onClick={() => setMenuVisibility(true)}
-        to="/marketplace"
+        to="/marketplace/all_listings"
       >
         Marketplace
       </NavLink>
