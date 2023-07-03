@@ -19,7 +19,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
   }, []);
 
   return (
-    <Row>
+    <Row className="primary-row">
       <Col onClick={() => handlePrimaryChangeFilter('all_listings')}>
         <Statbox
           isActive={selected === 'all_listings'}

@@ -83,7 +83,7 @@ const Login = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          Welcome Back! 👋🏻{' '}
+          Welcome Back! 👋🏻
         </CardTitle>
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-1">
@@ -140,7 +140,7 @@ const Login = () => {
                 className="form-check-label"
                 for="remember-me"
               >
-                <small>Forgot password?</small>
+                <small>Forgot Password?</small>
               </Label>
             </div>
           </div>

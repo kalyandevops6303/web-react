@@ -53,10 +53,10 @@ const ThemeNavbar = (props) => {
     }
     .is-active {
       font-weight: 600;
-      border-bottom: 3px solid ${theme.primary};
-      color: ${theme.primary};
+      border-bottom: 3px solid ${theme.activeColor};
+      color: ${theme.activeColor};
       &:hover {
-        color: ${theme.primary};
+        color: ${theme.activeColor};
       }
     }
     @media (max-width: 1200px) {

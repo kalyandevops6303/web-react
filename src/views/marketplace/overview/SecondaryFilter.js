@@ -1,4 +1,5 @@
-import { Col, Input, InputGroup, InputGroupText, Label, Row, UncontrolledTooltip } from 'reactstrap';
+/* eslint-disable no-undef */
+import { Col, Input, InputGroup, InputGroupText, Label, Popover, PopoverBody, Row } from 'reactstrap';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
@@ -7,12 +8,15 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { RefreshCcw, Search } from 'react-feather';
 import CollActive from '@src/assets/images/coll_active.png';
 import ExpandInactive from '@src/assets/images/expand_inactive.png';
+import CollInactive from '@src/assets/images/coll_inactive.png';
+import ExpandActive from '@src/assets/images/expand_active.png';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { selectThemeColors } from '../../../utility/Utils';
+import { selectThemeColors, useIsTab } from '../../../utility/Utils';
 import { getListProjects, getUsers } from '../../../redux/actions/marketPlaceActions';
 import {
   companyIndustriesService,
@@ -24,11 +28,17 @@ import UserCard from '../../cards/UserCard';
 import ProjectCard from '../../cards/ProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import '../../custom-styles.scss';
 
-const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userType }) => {
+const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
   const dispatch = useDispatch();
+  const location = useLocation();
+  const isTab = useIsTab();
+  const popoverRef = useRef(null);
+
   const [hasMore, setHasMore] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const selectMarketPlaceData = useSelector((state) => state.marketPlace.listData);
   const selectMarkeMetaData = useSelector((state) => state.marketPlace.metaData);
   const currentPreview = useSelector((state) => state.marketPlace.currentPreview);
@@ -49,6 +59,13 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
   const [toolsOptions, setToolsOptions] = useState(null);
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Function to toggle the popover
+  const togglePopover = () => {
+    setPopoverOpen(!popoverOpen);
+  };
 
   const statusesOptions = [
     { label: 'Open', value: 'OPEN' },
@@ -69,6 +86,18 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
   const onError = () => {
     setHasMore(false);
   };
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+        setPopoverOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
 
   useEffect(() => {
     setHasMore(true);
@@ -305,6 +334,14 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
     }
   };
 
+  const isUsers =
+    location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
+
+  const toggleExapantion = () => {
+    setIsExpanded(!isExpanded);
+    setPopoverOpen(false);
+  };
+
   return (
     <>
       <FormWrapper>
@@ -317,42 +354,68 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
               <Input
                 innerRef={inputRef}
                 onChange={debounce(handleSearchTextChange, 300)}
-                placeholder="Search project name, user name"
+                placeholder={isUsers ? 'Search users' : 'Search project name, user name'}
               />
             </InputGroup>
           </div>
           <Row>
-            <Col className="d-flex mt-auto mb-50 d-none">
-              <Label className="view-label me-1" id="view-label">
-                View:
-              </Label>
-              <img
-                className="cursor-pointer"
-                src={isExpanded ? ExpandInactive : CollActive}
-                alt="collactive"
-                onClick={() => toggleExapantion()}
-              />
-              <UncontrolledTooltip placement="right" target="view-label">
-                <style>{`
-                  .tooltip-inner {
-                    background-color: white !important;
-                    color: black !important;
-                  }
-                  .tooltip-arrow::before {
-                    right: -1px;
-                    border-right-color: white !important;
-                  }
-                `}</style>
-                <div className="d-flex align-items-center">
-                  <img className="me-50 " src={ExpandInactive} alt="collactive" onClick={() => toggleExapantion()} />
-                  <span>Expand</span>
-                </div>
-                <div className="d-flex align-items-center">
-                  <img className="me-50 " src={CollActive} alt="collactive" onClick={() => toggleExapantion()} />
-                  <span>Compress</span>
-                </div>
-              </UncontrolledTooltip>
-            </Col>
+            {isTab ? (
+              <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
+                <Label className="view-label me-1">View:</Label>
+                <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
+                <Popover
+                  innerRef={popoverRef}
+                  placement="right"
+                  isOpen={popoverOpen}
+                  target="popoverButton"
+                  toggle={togglePopover}
+                >
+                  <PopoverBody className="show-more-popover-body">
+                    <div
+                      className="d-flex align-items-center tooltip-option"
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                      onClick={() => toggleExapantion()}
+                    >
+                      <img className="me-50" src={isHovered ? ExpandActive : ExpandInactive} alt="collactive" />
+                      <span>Expand</span>
+                    </div>
+                    <div className="d-flex align-items-center tooltip-option" onClick={() => toggleExapantion()}>
+                      <img className="me-50" src={isHovered ? CollInactive : CollActive} alt="collactive" />
+                      <span>Compress</span>
+                    </div>
+                  </PopoverBody>
+                </Popover>
+              </div>
+            ) : (
+              <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
+                <Label className="view-label me-1">View:</Label>
+                <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
+                <Popover
+                  innerRef={popoverRef}
+                  placement="right"
+                  isOpen={popoverOpen}
+                  target="popoverButton"
+                  toggle={togglePopover}
+                >
+                  <PopoverBody className="show-more-popover-body">
+                    <div
+                      className="d-flex align-items-center tooltip-option"
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                      onClick={() => toggleExapantion()}
+                    >
+                      <img className="me-50" src={isHovered ? ExpandActive : ExpandInactive} alt="collactive" />
+                      <span>Expand</span>
+                    </div>
+                    <div className="d-flex align-items-center tooltip-option" onClick={() => toggleExapantion()}>
+                      <img className="me-50" src={isHovered ? CollInactive : CollActive} alt="collactive" />
+                      <span>Compress</span>
+                    </div>
+                  </PopoverBody>
+                </Popover>
+              </Col>
+            )}
             {(userType === 'TALENT' || primaryFilter === 'talents') && (
               <Col>
                 <Label className="form-label">Sort by</Label>
@@ -483,12 +546,22 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
                 />
               </Col>
             )}
-            <Col className="reset-btn cursor-pointer" onClick={handleReset}>
-              <div className="reset-icon">
-                <RefreshCcw size={18} color={theme.activeNavPillText} />
+            {!isTab && (
+              <Col className="reset-btn cursor-pointer" onClick={handleReset}>
+                <div className="reset-icon">
+                  <RefreshCcw size={18} color={theme.activeNavPillText} />
+                </div>
+                <span className="reset-label">Reset</span>
+              </Col>
+            )}
+            {isTab && (
+              <div className="reset-btn cursor-pointer" onClick={handleReset}>
+                <div className="reset-icon">
+                  <RefreshCcw size={18} color={theme.activeNavPillText} />
+                </div>
+                <span className="reset-label">Reset</span>
               </div>
-              <span className="reset-label">Reset</span>
-            </Col>
+            )}
           </Row>
         </SecondaryFiltersWrap>
       </FormWrapper>
@@ -518,14 +591,10 @@ const SecondaryFilters = ({ primaryFilter, toggleExapantion, isExpanded, userTyp
 };
 
 SecondaryFilters.propTypes = {
-  toggleExapantion: PropTypes.func,
-  isExpanded: PropTypes.bool,
   primaryFilter: PropTypes.string,
   userType: PropTypes.string,
 };
 SecondaryFilters.defaultProps = {
-  toggleExapantion: () => {},
-  isExpanded: false,
   primaryFilter: '',
   userType: '',
 };
