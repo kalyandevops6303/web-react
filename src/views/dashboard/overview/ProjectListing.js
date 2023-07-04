@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable react/require-default-props */
 import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
@@ -105,24 +107,29 @@ const ProjectListing = () => {
             <AccordionBody accordionId="3">
               <ProjectsListingWrap>
                 {isTab ? (
-                  // eslint-disable-next-line
-                  <>
-                    {recommendedProjectsData?.data?.map((project) => (
-                      <Project key={project.id} data={project} recommended />
-                    ))}
-                  </>
+                  recommendedProjectsData?.data?.map((project) => (
+                    <Project key={project.id} data={project} recommended />
+                  ))
                 ) : (
-                  <div>
+                  <>
                     {recommendedProjectsData?.data?.length > 0 ? (
-                      <Slider {...settings}>
-                        {recommendedProjectsData?.data?.map((project, index) => (
-                          <Project className={`slide-${index}`} key={project.id} data={project} recommended />
-                        ))}
-                      </Slider>
+                      recommendedProjectsData?.data?.length >= 4 ? (
+                        <Slider {...settings}>
+                          {recommendedProjectsData?.data?.map((project, index) => (
+                            <Project className={`slide-${index}`} key={project.id} data={project} recommended />
+                          ))}
+                        </Slider>
+                      ) : (
+                        <div className="custom-slider-wrap">
+                          {recommendedProjectsData?.data?.map((project) => (
+                            <Project className="custom-slider-project" key={project.id} data={project} recommended />
+                          ))}
+                        </div>
+                      )
                     ) : (
                       <Empty active={false} recommended payment={false} />
                     )}
-                  </div>
+                  </>
                 )}
               </ProjectsListingWrap>
             </AccordionBody>

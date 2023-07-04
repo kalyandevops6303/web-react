@@ -311,6 +311,13 @@ const ProjectsListingWrap = styled.div`
       margin-left: 0.5rem;
     }
   }
+  .custom-slider-wrap {
+    display: flex;
+    gap: 1rem;
+    .custom-slider-project {
+      width: 32%;
+    }
+  }
   .slick-track {
     display: flex;
     gap: 1rem;
