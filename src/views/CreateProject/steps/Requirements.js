@@ -106,6 +106,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     minTimeOverlapHr: yup
       .number()
       .min(0, 'Min time overlap hr should be greater than or equal to 0')
+      .max(24, 'Min time overlap hr should not be greater than 24')
       .typeError('Please enter a number')
       .required('Min time overlap hr is required'),
     availabilityDays: yup
