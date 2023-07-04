@@ -60,7 +60,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   // Function to toggle the popover
   const togglePopover = () => {
@@ -337,10 +336,46 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const isUsers =
     location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
 
-  const toggleExapantion = () => {
-    setIsExpanded(!isExpanded);
-    setPopoverOpen(false);
-  };
+  const ExpandCollapseComp = (
+    <>
+      <Label className="view-label me-1">View:</Label>
+      <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
+      <Popover
+        innerRef={popoverRef}
+        placement="right"
+        isOpen={popoverOpen}
+        target="popoverButton"
+        toggle={togglePopover}
+      >
+        <PopoverBody className="show-more-popover-body">
+          <div
+            className={`d-flex align-items-center tooltip-option tooltip-option-${
+              isExpanded === true ? 'active' : 'inactive'
+            }`}
+            onClick={() => {
+              setIsExpanded(true);
+              setPopoverOpen(false);
+            }}
+          >
+            <img className="me-50" src={isExpanded ? ExpandActive : ExpandInactive} alt="collactive" />
+            <span>Expand</span>
+          </div>
+          <div
+            className={`d-flex align-items-center tooltip-option tooltip-option-${
+              isExpanded === false ? 'active' : 'inactive'
+            }`}
+            onClick={() => {
+              setIsExpanded(false);
+              setPopoverOpen(false);
+            }}
+          >
+            <img className="me-50" src={isExpanded ? CollInactive : CollActive} alt="collactive" />
+            <span>Compress</span>
+          </div>
+        </PopoverBody>
+      </Popover>
+    </>
+  );
 
   return (
     <>
@@ -361,59 +396,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           <Row>
             {isTab ? (
               <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
-                <Label className="view-label me-1">View:</Label>
-                <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
-                <Popover
-                  innerRef={popoverRef}
-                  placement="right"
-                  isOpen={popoverOpen}
-                  target="popoverButton"
-                  toggle={togglePopover}
-                >
-                  <PopoverBody className="show-more-popover-body">
-                    <div
-                      className="d-flex align-items-center tooltip-option"
-                      onMouseEnter={() => setIsHovered(true)}
-                      onMouseLeave={() => setIsHovered(false)}
-                      onClick={() => toggleExapantion()}
-                    >
-                      <img className="me-50" src={isHovered ? ExpandActive : ExpandInactive} alt="collactive" />
-                      <span>Expand</span>
-                    </div>
-                    <div className="d-flex align-items-center tooltip-option" onClick={() => toggleExapantion()}>
-                      <img className="me-50" src={isHovered ? CollInactive : CollActive} alt="collactive" />
-                      <span>Compress</span>
-                    </div>
-                  </PopoverBody>
-                </Popover>
+                {ExpandCollapseComp}
               </div>
             ) : (
               <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
-                <Label className="view-label me-1">View:</Label>
-                <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
-                <Popover
-                  innerRef={popoverRef}
-                  placement="right"
-                  isOpen={popoverOpen}
-                  target="popoverButton"
-                  toggle={togglePopover}
-                >
-                  <PopoverBody className="show-more-popover-body">
-                    <div
-                      className="d-flex align-items-center tooltip-option"
-                      onMouseEnter={() => setIsHovered(true)}
-                      onMouseLeave={() => setIsHovered(false)}
-                      onClick={() => toggleExapantion()}
-                    >
-                      <img className="me-50" src={isHovered ? ExpandActive : ExpandInactive} alt="collactive" />
-                      <span>Expand</span>
-                    </div>
-                    <div className="d-flex align-items-center tooltip-option" onClick={() => toggleExapantion()}>
-                      <img className="me-50" src={isHovered ? CollInactive : CollActive} alt="collactive" />
-                      <span>Compress</span>
-                    </div>
-                  </PopoverBody>
-                </Popover>
+                {ExpandCollapseComp}
               </Col>
             )}
             {(userType === 'TALENT' || primaryFilter === 'talents') && (
