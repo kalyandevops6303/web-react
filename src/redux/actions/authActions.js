@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import errorHandler from '../../utility/errorHandler';
 
 import {
@@ -79,7 +80,11 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     const res = await loginService({ email: username, password });
     setItem('access_token', res.data.data.access_token);
     onSuccess(res.data.data);
-    dispatch(loginSuccess(res.data.data));
+    if (res.data?.data?.checkpoint === 'COMPLETE') {
+      dispatch(loginSuccess(res.data.data));
+    } else {
+      dispatch(loginSuccess(false));
+    }
   } catch (error) {
     errorHandler(error, loginFailure);
   }
