@@ -33,7 +33,7 @@ const Empty = ({ active, recommended, payment }) => (
         {payment && <CardText className="get-started">No Upcoming Payment</CardText>}
         {active ||
           (recommended && (
-            <div className="font-weight-normal text-center text-primary project-cta mt-25">Explore Project</div>
+            <div className="font-weight-normal text-center text-primary project-cta mt-25">No Projects</div>
           ))}
       </CardBody>
     </Card>
@@ -112,11 +112,17 @@ const ProjectListing = () => {
                     ))}
                   </>
                 ) : (
-                  <Slider {...settings}>
-                    {recommendedProjectsData?.data?.map((project, index) => (
-                      <Project className={`slide-${index}`} key={project.id} data={project} recommended />
-                    ))}
-                  </Slider>
+                  <div>
+                    {recommendedProjectsData?.data?.length > 0 ? (
+                      <Slider {...settings}>
+                        {recommendedProjectsData?.data?.map((project, index) => (
+                          <Project className={`slide-${index}`} key={project.id} data={project} recommended />
+                        ))}
+                      </Slider>
+                    ) : (
+                      <Empty active={false} recommended payment={false} />
+                    )}
+                  </div>
                 )}
               </ProjectsListingWrap>
             </AccordionBody>
