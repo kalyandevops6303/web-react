@@ -103,7 +103,7 @@ const ProjectCard = ({ isExpanded, data }) => {
               </div>
 
               {!showFullText ? (
-                <div className="my-div" ref={divRef} style={{ maxHeight: '115px', overflow: 'hidden' }}>
+                <div className="my-div" ref={divRef} style={{ maxHeight: '6.2rem', overflow: 'hidden' }}>
                   {ReactHtmlParser(data?.details?.description)}
                 </div>
               ) : (
