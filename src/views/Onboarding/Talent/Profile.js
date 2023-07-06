@@ -51,13 +51,19 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
     tagline: yup.string().max(60, 'Tagline must be at most 60 characters').required('Tagline is required'),
-    workExperienceYear: yup.number().min(0).integer('Year must be an integer').typeError('Year must be a number'),
+    workExperienceYear: yup
+      .number()
+      .min(0)
+      .integer('Year must be an integer')
+      .typeError('Year must be a number')
+      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     workExperienceMonth: yup
       .number()
       .min(0)
       .max(11, 'Month must be at most 11')
       .integer('Month must be an integer')
-      .typeError('Month must be a number'),
+      .typeError('Month must be a number')
+      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     professionalIntroduction: yup
       .string()
       .max(150, 'Professional introduction must be at most 150 characters')
@@ -115,6 +121,7 @@ const Profile = () => {
         label: yup.string().required('State is required'),
         value: yup.string().required('State is required'),
       })
+      .transform((value) => (value === null ? undefined : value))
       .required('State is required'),
     city: yup
       .object()
@@ -122,6 +129,7 @@ const Profile = () => {
         label: yup.string().required('City is required'),
         value: yup.string().required('City is required'),
       })
+      .transform((value) => (value === null ? undefined : value))
       .required('City is required'),
     educationDetails: yup
       .array()
