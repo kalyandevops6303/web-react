@@ -98,10 +98,14 @@ const Account = () => {
       if (res.checkpoint === 'ACCOUNT_DETAILS' && res.oauth_type === 'google') {
         if (res.user_type === 'TALENT') {
           setValue('firstName', res?.talent_info?.first_name, { shouldValidate: true });
-          setValue('lastName', res?.talent_info?.last_name, { shouldValidate: true });
+          if (res?.talent_info?.last_name !== '') {
+            setValue('lastName', res?.talent_info?.last_name, { shouldValidate: true });
+          }
         } else if (res.user_type === 'CLIENT') {
           setValue('firstName', res?.client_info?.first_name, { shouldValidate: true });
-          setValue('lastName', res?.client_info?.last_name, { shouldValidate: true });
+          if (res?.client_info?.last_name !== '') {
+            setValue('lastName', res?.client_info?.last_name, { shouldValidate: true });
+          }
         }
       } else if (res.checkpoint === 'PROFILE_DETAILS') {
         if (res.user_type === 'TALENT') {
