@@ -96,7 +96,11 @@ const loginUserWithGoogle =
     try {
       const res = await loginServiceGoogle({ id_token, user_type });
       setItem('access_token', res.data.data.access_token);
-      dispatch(loginSuccess(res.data.data));
+      if (res.data?.data?.checkpoint === 'COMPLETE') {
+        dispatch(loginSuccess(res.data.data));
+      } else {
+        dispatch(loginSuccess(false));
+      }
       onSuccess(res.data.data);
     } catch (error) {
       onError(error);
