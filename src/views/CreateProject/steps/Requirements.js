@@ -53,6 +53,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             .number()
             .min(1, 'Expected duration should be atleast 1 week')
             .max(12, 'Expected duration can not be more than 12 weeks')
+            .integer('Expected duration should be an integer')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
       })
@@ -63,6 +64,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             .number()
             .min(1, 'Expected duration should be atleast 1 day')
             .max(90, 'Expected duration can not be more than 90 days')
+            .integer('Expected duration should be an integer')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
       }),
@@ -101,7 +103,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         value: yup.object().required('Preferred working time zone is required'),
       })
       .required('Preferred working time zone is required'),
-    minTimeOverlapHr: yup.number().typeError('Please enter a number').required('Min time overlap hr is required'),
+    minTimeOverlapHr: yup
+      .number()
+      .min(0, 'Min time overlap hr should be greater than or equal to 0')
+      .typeError('Please enter a number')
+      .required('Min time overlap hr is required'),
     availabilityDays: yup
       .array()
       .min(1, 'Select at least one work availability day')
@@ -111,7 +117,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       then: () => yup.array().min(1, 'Select at least one weekday').required('Weekday is required'),
     }),
     weekends: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () => yup.array().min(1, 'Select at least one weekend day').required('Weekend is required'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
@@ -137,7 +143,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           .required('End time is required'),
     }),
     weekendStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -148,7 +154,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           .required('Start time is required'),
     }),
     weekendEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -181,7 +187,12 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     projectPayType: yup.string().required('Project pay type is required'),
     projectFixedCost: yup.number().when('projectPayType', {
       is: (projectPayType) => projectPayType === 'fixed-price',
-      then: () => yup.number().required('Project fixed cost is required'),
+      then: () =>
+        yup
+          .number()
+          .min(1, 'Project fixed cost should be atleast 1')
+          .typeError('Please enter a number')
+          .required('Project fixed cost is required'),
     }),
     nda: yup.string().required('This is required'),
   });
@@ -750,7 +761,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekdayStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={timeOptions}
+                                options={
+                                  watch('weekdayEndTime')
+                                    ? timeOptions.filter(
+                                        (t) => parseInt(t.value, 10) < parseInt(watch('weekdayEndTime').value, 10),
+                                      )
+                                    : timeOptions
+                                }
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
@@ -776,7 +793,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekdayEndTime && true}
                             render={({ field }) => (
                               <Select
-                                options={timeOptions}
+                                options={
+                                  watch('weekdayStartTime')
+                                    ? timeOptions.filter(
+                                        (t) => parseInt(t.value, 10) > parseInt(watch('weekdayStartTime').value, 10),
+                                      )
+                                    : timeOptions
+                                }
                                 classNamePrefix="select"
                                 placeholder="Select end time"
                                 theme={selectThemeColors}
@@ -948,7 +971,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekendStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={timeOptions}
+                                options={
+                                  watch('weekendEndTime')
+                                    ? timeOptions.filter(
+                                        (t) => parseInt(t.value, 10) < parseInt(watch('weekendEndTime').value, 10),
+                                      )
+                                    : timeOptions
+                                }
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
@@ -974,7 +1003,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekendEndTime && true}
                             render={({ field }) => (
                               <Select
-                                options={timeOptions}
+                                options={
+                                  watch('weekendStartTime')
+                                    ? timeOptions.filter(
+                                        (t) => parseInt(t.value, 10) > parseInt(watch('weekendStartTime').value, 10),
+                                      )
+                                    : timeOptions
+                                }
                                 classNamePrefix="select"
                                 placeholder="Select end time"
                                 theme={selectThemeColors}

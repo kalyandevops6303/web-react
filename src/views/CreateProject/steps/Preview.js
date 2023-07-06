@@ -11,8 +11,17 @@ import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import { createProjectData, createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
 import { createNewProject } from '../../../redux/actions/createProjectActions';
+import YouDidItModal from '../YouDidItModal';
 
-const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItModal }) => {
+const Preview = ({
+  stepper,
+  projectDetails,
+  listingDetails,
+  files,
+  youDidItModal,
+  setYouDidItModal,
+  toggleYouDidItModal,
+}) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
   const weekends = ['SATURDAY', 'SUNDAY'];
 
@@ -161,11 +170,11 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
   };
 
   const onSuccess = () => {
+    toggleYouDidItModal();
     stepper.next();
-    setYouDidItModal(true);
   };
 
-  const onPostClick = () => {
+  const onNewProjectCreation = () => {
     const details = {
       name: projectDetails?.projectName,
       description: projectDetails?.projectDescription,
@@ -199,7 +208,7 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
     const pay_type = {
       currency: projectDetails?.currencyType?.value?._id,
       variable_cost: projectDetails?.projectPayType !== 'fixed-price',
-      fixed_cost: projectDetails?.projectFixedCost,
+      fixed_cost: projectDetails?.projectPayType === 'fixed-price' ? projectDetails?.projectFixedCost : 0,
     };
     const nda = {
       is_nda: projectDetails?.nda === 'yes',
@@ -225,6 +234,13 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
 
   return (
     <>
+      {youDidItModal && (
+        <YouDidItModal
+          modal={youDidItModal}
+          toggleModal={toggleYouDidItModal}
+          onNewProjectCreation={onNewProjectCreation}
+        />
+      )}
       <Card>
         <CardHeader>
           <h4 className="m-0 mt-1">Project Details</h4>
@@ -234,14 +250,14 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
           <Row className="mb-2">
             <Col sm="12" md="12" lg="6">
               <h4 className="fw-bolder">{projectDetails?.projectName}</h4>
-              <p className="font-medium-2 fw-normal">Project Name</p>
+              <p className="font-medium-1 fw-normal">Project Name</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
                 {projectDetails?.expectedDuration}
                 {projectDetails?.expectedDurationPeriod?.label[0].toLowerCase()}
               </h4>
-              <p className="font-medium-2 fw-normal">Expected Duration</p>
+              <p className="font-medium-1 fw-normal">Expected Duration</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
@@ -251,72 +267,87 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
                     )}`
                   : `${listingDetails?.duration}d`}
               </h4>
-              <p className="font-medium-2 fw-normal">Listing Duration</p>
+              <p className="font-medium-1 fw-normal">Listing Duration</p>
             </Col>
           </Row>
           <Row className="mb-2">
             <Col sm="12" md="12" lg="6">
               <h4 className="fw-bolder">{projectDetails?.currencyType?.label}</h4>
-              <p className="font-medium-2 fw-normal">Currency Type</p>
+              <p className="font-medium-1 fw-normal">Currency Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
                 {projectDetails?.projectPayType === 'variable-price'
                   ? 'Variable Pay'
-                  : `Fixed Pay - ${projectDetails?.currencyType?.value?.code}${projectDetails?.projectFixedCost}`}{' '}
+                  : `Fixed Pay - ${projectDetails?.currencyType?.value?.code} ${projectDetails?.projectFixedCost}`}{' '}
               </h4>
-              <p className="font-medium-2 fw-normal">Payment Type</p>
+              <p className="font-medium-1 fw-normal">Payment Type</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">{capitalize(projectDetails?.nda)}</h4>
-              <p className="font-medium-2 fw-normal">NDA</p>
+              <p className="font-medium-1 fw-normal">NDA</p>
             </Col>
           </Row>
           <Row>
             <Col sm="12" md="12" lg="6">
-              <TimeWrapper
-                isBorder={projectDetails?.availabilityDays.includes('weekends')}
-                isPadding={projectDetails?.availabilityDays.includes('weekdays')}
-              >
-                {projectDetails?.availabilityDays.includes('weekdays') && (
-                  <section className="weekdays">
+              <TimeWrapper>
+                <section className="weekdays">
+                  {projectDetails?.availabilityDays.includes('weekdays') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekdayEndTime?.value, 10))}{' '}
                       {projectDetails?.preferredWorkingTimeZone?.value?.abbreviation}
                     </CardText>
-                    <ul>
-                      {weekdays.map((day) => (
-                        <li key={day}>
-                          <span className={`dot ${projectDetails?.weekdays.includes(day) ? 'active' : ''}`} />
-                          {capitalize(day.slice(0, 3))}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                )}
-                {projectDetails?.availabilityDays.includes('weekends') && (
-                  <section className="weekends">
+                  ) : (
+                    <CardText>&nbsp;</CardText>
+                  )}
+                  <ul>
+                    {weekdays.map((day) => (
+                      <li key={day}>
+                        <span
+                          className={`dot ${
+                            projectDetails?.availabilityDays.includes('weekdays') &&
+                            projectDetails?.weekdays.includes(day)
+                              ? 'active'
+                              : ''
+                          }`}
+                        />
+                        {capitalize(day.slice(0, 3))}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+                <section className="weekends">
+                  {projectDetails?.availabilityDays.includes('weekends') ? (
                     <CardText>
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendStartTime?.value, 10))} -{' '}
                       {convertTo12HourFormat(parseInt(projectDetails?.weekendEndTime?.value, 10))}{' '}
                       {projectDetails?.preferredWorkingTimeZone?.value?.abbreviation}
                     </CardText>
-                    <ul>
-                      {weekends.map((day) => (
-                        <li key={day}>
-                          <span className={`dot ${projectDetails?.weekends.includes(day) ? 'active' : ''}`} />
-                          {capitalize(day.slice(0, 3))}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                )}
+                  ) : (
+                    <CardText>&nbsp;</CardText>
+                  )}
+                  <ul>
+                    {weekends.map((day) => (
+                      <li key={day}>
+                        <span
+                          className={`dot ${
+                            projectDetails?.availabilityDays.includes('weekends') &&
+                            projectDetails?.weekends.includes(day)
+                              ? 'active'
+                              : ''
+                          }`}
+                        />
+                        {capitalize(day.slice(0, 3))}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               </TimeWrapper>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">{projectDetails?.minTimeOverlapHr} hr</h4>
-              <p className="font-medium-2 fw-normal">Minimum Overlap</p>
+              <p className="font-medium-1 fw-normal">Minimum Overlap</p>
             </Col>
           </Row>
         </CardBody>
@@ -373,7 +404,7 @@ const Preview = ({ stepper, projectDetails, listingDetails, files, setYouDidItMo
           </UploadIconContainer>
           <h5 className="fw-light mb-0 mx-75">Back</h5>
         </div>
-        <Button color="primary" disabled={createProjectIsLoading} onClick={onPostClick}>
+        <Button color="primary" disabled={createProjectIsLoading} onClick={() => setYouDidItModal(true)}>
           {createProjectIsLoading ? (
             <Spinner size="sm" />
           ) : (
@@ -395,7 +426,9 @@ Preview.propTypes = {
   projectDetails: Proptypes.object,
   listingDetails: Proptypes.object,
   files: Proptypes.array,
+  youDidItModal: Proptypes.bool,
   setYouDidItModal: Proptypes.func,
+  toggleYouDidItModal: Proptypes.func,
 };
 
 Preview.defaultProps = {
@@ -403,5 +436,7 @@ Preview.defaultProps = {
   projectDetails: {},
   listingDetails: {},
   files: [],
+  youDidItModal: false,
   setYouDidItModal: () => {},
+  toggleYouDidItModal: () => {},
 };

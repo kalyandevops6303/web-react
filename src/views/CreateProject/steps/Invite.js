@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import { Check, ChevronLeft, Search, Share2, Star, User } from 'react-feather';
+import { Check, Search, Share2, Star, User } from 'react-feather';
 import {
   Badge,
   Button,
@@ -29,7 +29,6 @@ import { giveStrokeColor } from '../../../utility/Utils';
 import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
 import SendInvitationModal from '../SendInvitationModal';
-import YouDidItModal from '../YouDidItModal';
 import InvitationSentModal from '../InvitationSentModal';
 import {
   almaMaterTalents,
@@ -39,7 +38,7 @@ import {
 } from '../../../redux/selectors/createProjectSelectors';
 import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../../redux/actions/createProjectActions';
 
-const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
+const Invite = ({ stepper }) => {
   const tabNames = {
     best: '1',
     favourite: '2',
@@ -54,6 +53,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
   const createProjectDetails = useSelector(createProjectData);
 
   const [activeTab, setTabActive] = useState(tabNames.best);
+  const [invitedIds, setInvitedIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedTalents, setSelectedTalents] = useState([]);
   const [searchValue, setSearchValue] = useState('');
@@ -71,14 +71,6 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
       setTabActive(tab);
     }
   };
-
-  const len =
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    (bestTalentsData?.data ? bestTalentsData?.data.length : 0) +
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    (favoriteTalentsData?.data ? favoriteTalentsData?.data.length : 0) +
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    (almaMaterTalentsData?.data ? almaMaterTalentsData?.data.length : 0);
 
   const removeDuplicates = (arr, key) => {
     const seen = new Set();
@@ -175,17 +167,47 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
     setSearchValue(e.target.value);
   };
 
+  const [message, setMessage] = useState('');
+
+  const renderActionButton = (userId) => {
+    if (invitedIds.includes(userId)) {
+      return (
+        <div className="ms-3">
+          <h5 className="m-0 fw-light font-medium-1">Invited!</h5>
+        </div>
+      );
+      // eslint-disable-next-line
+    } else if (selectedIds.includes(userId)) {
+      return (
+        <div
+          className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
+          onClick={() => setSelectedIds(selectedIds.filter((data) => data !== userId))}
+        >
+          <Check size={18} color={theme.green} />
+        </div>
+      );
+    } else {
+      return (
+        <div className="upload-btn cursor-pointer ms-3" onClick={() => setSelectedIds([...selectedIds, userId])}>
+          <h5 className="m-0 fw-light font-medium-1">Invite</h5>
+        </div>
+      );
+    }
+  };
+
   return (
     <>
-      {youDidItModal && <YouDidItModal modal={youDidItModal} toggleModal={toggleYouDidItModal} stepper={stepper} />}
-      {inviteModal && <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} />}
+      {inviteModal && (
+        <InviteModal modal={inviteModal} toggleModal={toggleInviteModal} projectId={createProjectDetails?.project_id} />
+      )}
       {sendInvitationModal && (
         <SendInvitationModal
           modal={sendInvitationModal}
           toggleModal={toggleSendInvitationModal}
           selectedTalents={selectedTalents}
           setInvitationSentModal={setInvitationSentModal}
-          projectId={createProjectDetails?.project_id}
+          message={message}
+          setMessage={setMessage}
         />
       )}
       {invitationSentModal && (
@@ -193,6 +215,13 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
           modal={invitationSentModal}
           toggleModal={toggleInvitationSentModal}
           selectedTalents={selectedTalents}
+          projectId={createProjectDetails?.project_id}
+          message={message}
+          toggleSendInvitationModal={toggleSendInvitationModal}
+          selectedIds={selectedIds}
+          setSelectedIds={setSelectedIds}
+          invitedIds={invitedIds}
+          setInvitedIds={setInvitedIds}
         />
       )}
       <Card>
@@ -259,7 +288,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
             </NavsContainer>
           </Row>
 
-          <p className="font-small-3">{`${selectedIds?.length}/${len} invited`}</p>
+          {invitedIds.length > 0 && <p className="font-small-3">{`${invitedIds?.length} invited`}</p>}
 
           <TabContent activeTab={activeTab} className="mb-2">
             <TabPane tabId={tabNames.best}>
@@ -281,7 +310,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
                               <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
                             </div>
                           </Col>
-                          <Col sm="2" md="3" lg="4">
+                          <Col sm="2" md="3" lg="3">
                             <div className="d-flex align-items-center">
                               <Badge>
                                 <div className="d-flex align-items-center">
@@ -323,22 +352,8 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
                               </CircularProgressbarWithChildren>
                             </div>
                           </Col>
-                          <Col sm="2" md="3" lg="1">
-                            {selectedIds.includes(item.user_id) ? (
-                              <div
-                                className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
-                                onClick={() => setSelectedIds(selectedIds.filter((data) => data !== item.user_id))}
-                              >
-                                <Check size={18} color={theme.green} />
-                              </div>
-                            ) : (
-                              <div
-                                className="upload-btn cursor-pointer ms-3"
-                                onClick={() => setSelectedIds([...selectedIds, item.user_id])}
-                              >
-                                <h5 className="m-0 fw-light font-medium-1">Invite</h5>
-                              </div>
-                            )}
+                          <Col sm="2" md="3" lg="2">
+                            {renderActionButton(item.user_id)}
                           </Col>
                         </Row>
                       ))
@@ -557,13 +572,7 @@ const Invite = ({ stepper, youDidItModal, toggleYouDidItModal }) => {
           </TabContent>
         </CardBody>
       </Card>
-      <div className="d-flex justify-content-between align-items-center">
-        <div className="d-flex align-items-center upload-btn cursor-pointer" onClick={() => stepper.previous()}>
-          <BlueBgIconContainer className="p-25">
-            <ChevronLeft size={18} color={theme.activeNavPillText} />
-          </BlueBgIconContainer>
-          <h5 className="fw-light mb-0 mx-75">Back</h5>
-        </div>
+      <div className="d-flex justify-content-end align-items-center">
         <div>
           <Link to="/dashboard">
             <Button color="primary" outline>
@@ -585,12 +594,8 @@ export default Invite;
 
 Invite.propTypes = {
   stepper: Proptypes.object,
-  youDidItModal: Proptypes.bool,
-  toggleYouDidItModal: Proptypes.func,
 };
 
 Invite.defaultProps = {
   stepper: {},
-  youDidItModal: false,
-  toggleYouDidItModal: () => {},
 };

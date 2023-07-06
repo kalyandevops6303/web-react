@@ -1,91 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Proptypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Modal, ModalHeader, ModalBody, Row, Col, Badge, Input, Spinner } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Row, Col, Badge, Input } from 'reactstrap';
 import { Star, User } from 'react-feather';
 import '../custom-styles.scss';
 import { InviteUsersListContainer } from './style';
 import theme from '../../configs/themeVariables';
-import { inviteTalents } from '../../redux/actions/createProjectActions';
-import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
 
-const SendInvitationModal = ({ modal, toggleModal, selectedTalents, setInvitationSentModal, projectId }) => {
-  const [message, setMessage] = useState('');
-
-  const dispatch = useDispatch();
-
-  const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
-
-  const onSuccess = () => {
-    toggleModal();
-    setInvitationSentModal(true);
-  };
-
-  const onInviteClick = () => {
-    const userIds = selectedTalents.map((talent) => talent.user_id);
-    const userEmails = selectedTalents.map((talent) => talent.user_details.email);
-
-    dispatch(inviteTalents(projectId, { emails: userEmails, talent_ids: userIds, message }, onSuccess));
-  };
-
-  return (
-    <Modal
-      isOpen={modal}
-      toggle={toggleModal}
-      contentClassName="custom-modal-style"
-      className="modal-dialog-centered modal-lg"
-    >
-      <ModalHeader toggle={toggleModal} />
-      <ModalBody>
-        <div className="px-3">
-          <h2 className="fw-bold font-large-1 text-center mb-3">Send Invitation</h2>
-          <p className="mb-2">You are inviting the below to join your project.</p>
-          <InviteUsersListContainer>
-            {selectedTalents.map((talent) => (
-              <Row key={talent.user_id} className="d-flex align-items-center mb-2 w-100">
-                <Col sm="12" md="8" lg="6">
-                  <div className="d-flex align-items-center">
-                    <div className="user-pic p-25 me-2">
-                      <User size={28} />
+const SendInvitationModal = ({ modal, toggleModal, selectedTalents, setInvitationSentModal, message, setMessage }) => (
+  <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
+    <ModalHeader toggle={toggleModal} />
+    <ModalBody>
+      <div className="px-3">
+        <h2 className="fw-bold font-large-1 text-center mb-3">Send Invitation</h2>
+        <p className="mb-2">You are inviting the below to join your project.</p>
+        <InviteUsersListContainer>
+          {selectedTalents.map((talent) => (
+            <Row key={talent.user_id} className="d-flex align-items-center mb-2 w-100">
+              <Col sm="12" md="8" lg="6">
+                <div className="d-flex align-items-center">
+                  <div className="user-pic p-25 me-2">
+                    <User size={28} />
+                  </div>
+                  <p className="font-medium-1 fw-bold m-0">{`${talent.first_name} ${talent.last_name}`}</p>
+                </div>
+              </Col>
+              <Col sm="12" md="4" lg="6">
+                <div className="d-flex align-items-center">
+                  <Badge>
+                    <div className="d-flex align-items-center">
+                      <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
+                      <p className="m-0 fw-bolder rating-text">{talent.rating}</p>
                     </div>
-                    <p className="font-medium-1 fw-bold m-0">{`${talent.first_name} ${talent.last_name}`}</p>
-                  </div>
-                </Col>
-                <Col sm="12" md="4" lg="6">
-                  <div className="d-flex align-items-center">
-                    <Badge>
-                      <div className="d-flex align-items-center">
-                        <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
-                        <p className="m-0 fw-bolder rating-text">{talent.rating}</p>
-                      </div>
-                    </Badge>
-                    <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
-                  </div>
-                </Col>
-              </Row>
-            ))}
-          </InviteUsersListContainer>
-          <Input
-            type="textarea"
-            rows="5"
-            placeholder="Enter your message to talent."
-            className="mt-2"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-        </div>
-        <div className="d-flex justify-content-end mb-2 me-1 mt-3">
-          <Button color="primary" outline className="me-3" onClick={toggleModal}>
-            <span className="px-2">Cancel</span>
-          </Button>
-          <Button color="primary" disabled={inviteTalentsIsLoading} onClick={onInviteClick}>
-            {inviteTalentsIsLoading ? <Spinner size="sm" /> : <>Invite</>}
-          </Button>
-        </div>
-      </ModalBody>
-    </Modal>
-  );
-};
+                  </Badge>
+                  <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
+                </div>
+              </Col>
+            </Row>
+          ))}
+        </InviteUsersListContainer>
+        <Input
+          type="textarea"
+          rows="5"
+          placeholder="Enter your message to talent."
+          className="mt-2"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+      </div>
+      <div className="d-flex justify-content-end mb-2 me-1 mt-3">
+        <Button color="primary" outline className="me-3" onClick={toggleModal}>
+          <span className="px-2">Cancel</span>
+        </Button>
+        <Button
+          color="primary"
+          onClick={() => {
+            toggleModal();
+            setInvitationSentModal(true);
+          }}
+        >
+          Invite
+        </Button>
+      </div>
+    </ModalBody>
+  </Modal>
+);
 
 export default SendInvitationModal;
 
@@ -94,7 +72,8 @@ SendInvitationModal.propTypes = {
   toggleModal: Proptypes.func,
   selectedTalents: Proptypes.array,
   setInvitationSentModal: Proptypes.func,
-  projectId: Proptypes.string,
+  message: Proptypes.string,
+  setMessage: Proptypes.func,
 };
 
 SendInvitationModal.defaultProps = {
@@ -102,5 +81,6 @@ SendInvitationModal.defaultProps = {
   toggleModal: () => {},
   selectedTalents: [],
   setInvitationSentModal: () => {},
-  projectId: '',
+  message: '',
+  setMessage: () => {},
 };

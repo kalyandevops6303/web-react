@@ -53,6 +53,13 @@ const API = {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
   },
+  createProject: {
+    createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
+    bestTalents: `${apiCreateProjectEndpoint}/api/v1/project/best-talents`,
+    favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
+    almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
+    inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
+  },
   marketplace: {
     client: {
       cardInfo: `${apiOnboardingEndpoint}/api/v1/client/cards-info`,
@@ -67,13 +74,6 @@ const API = {
   },
   notifications: {
     allNotifications: `${apiOnboardingEndpoint}/api/v1/notification/all`,
-  },
-  createProject: {
-    createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
-    bestTalents: `${apiCreateProjectEndpoint}/api/v1/project/best-talents`,
-    favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
-    almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
-    inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
   },
 };
 
