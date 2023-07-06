@@ -1,6 +1,6 @@
 // ** Third Party Components
-// import classnames from 'classnames';
 import classNames from 'classnames';
+import { DateTime } from 'luxon';
 import { Info } from 'react-feather';
 
 // ** Custom Components
@@ -33,7 +33,7 @@ const EarningCard = () => {
               color="primary"
               outline
             >
-              Dec 2022
+              {DateTime.now().toFormat('MMM yy')}
             </Button>
             <Button
               tag="label"
@@ -43,7 +43,7 @@ const EarningCard = () => {
               color="primary"
               outline
             >
-              YTD 2023
+              YTD {DateTime.now().toFormat('yyyy')}
             </Button>
           </ButtonGroup>
           <div className="d-flex justify-content-around card-amount-details">

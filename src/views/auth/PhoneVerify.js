@@ -77,9 +77,9 @@ const VerifyPhone = () => {
         </CardTitle>
 
         <CardText className="mb-2 card-text">
-          We sent a verification code to your mobile number. Enter the code in the field below.
+          We sent a verification code to your mobile number. Enter it in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
-            Edit
+            Go back
           </span>
         </CardText>
 
@@ -122,7 +122,7 @@ const VerifyPhone = () => {
             }}
           />
           <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
-            Verify OTP
+            Submit
           </Button>
         </Form>
 

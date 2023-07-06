@@ -48,17 +48,17 @@ import {
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
-    tagline: yup.string().max(60, 'Tagline must be at most 60 characters').required('Tagline is required'),
-    workExperienceYear: yup.number().min(0).integer('Year must be an integer').typeError('Year must be a number'),
+    tagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
+    workExperienceYear: yup.number().min(0).integer('Year must be a number').typeError('Year must be a number'),
     workExperienceMonth: yup
       .number()
       .min(0)
-      .max(11, 'Month must be at most 11')
-      .integer('Month must be an integer')
+      .max(11, 'Month must be 11 or less')
+      .integer('Month must be a number')
       .typeError('Month must be a number'),
     professionalIntroduction: yup
       .string()
-      .max(150, 'Professional introduction must be at most 150 characters')
+      .max(150, 'Professional introduction must be 150 characters or less')
       .required('Professional introduction is required'),
     role: yup
       .object()
@@ -75,7 +75,7 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five languages can be added'),
+      .max(5, 'Maximum of five languages can be added'),
     readLanguages: yup
       .array()
       .of(
@@ -84,7 +84,7 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five languages can be added'),
+      .max(5, 'Maximum of five languages can be added'),
     writeLanguages: yup
       .array()
       .of(
@@ -93,7 +93,7 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five languages can be added'),
+      .max(5, 'Maximum of five languages can be added'),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
     zipCode: yup
@@ -128,20 +128,20 @@ const Profile = () => {
           educationInstitution: yup
             .object()
             .shape({
-              label: yup.string().required('Education Institution is required'),
-              value: yup.string().required('Education Institution is required'),
+              label: yup.string().required('College or university is required'),
+              value: yup.string().required('College or university is required'),
             })
-            .required('Education Institution is required'),
+            .required('College or university is required'),
           education: yup
             .object()
             .shape({
-              label: yup.string().required('Education is required'),
-              value: yup.string().required('Education is required'),
+              label: yup.string().required('Degree is required'),
+              value: yup.string().required('Degree is required'),
             })
-            .required('Education is required'),
+            .required('Degree is required'),
         }),
       )
-      .min(1, 'At least one education should be added'),
+      .min(1, 'At least one degree should be added'),
     tools: yup
       .array()
       .of(
@@ -150,7 +150,7 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five tools can be added'),
+      .max(5, 'Maximum of five tools can be added'),
     certificates: yup.array().of(
       yup.object().shape({
         label: yup.string(),
@@ -165,27 +165,26 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five skills can be added')
-      .min(1, 'At least one skill should be added')
+      .max(5, 'Maximum of five skills can be added')
+      .min(1, 'At least one skill is required')
       .required('Skill is required'),
     preferredWorkingTimeZone: yup
       .object()
       .shape({
-        label: yup.string().required('Preferred working time zone is required'),
-        value: yup.object().required('Preferred working time zone is required'),
+        label: yup.string().required('Preferred time zone is required'),
+        value: yup.object().required('Preferred time zone is required'),
       })
-      .required('Preferred working time zone is required'),
-    availabilityDays: yup
-      .array()
-      .min(1, 'Select at least one work availability day')
-      .required('Work availability day is required'),
+      .required('Preferred time zone is required'),
+    availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
     weekdays: yup.array().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
-      then: () => yup.array().min(1, 'Select at least one weekday').required('Weekday is required'),
+      then: () =>
+        yup.array().min(1, 'Select at least one day in the week').required('Select at least one day in the week'),
     }),
     weekends: yup.array().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
-      then: () => yup.array().min(1, 'Select at least one weekend day').required('Weekend is required'),
+      then: () =>
+        yup.array().min(1, 'Select at least one day in the weekend').required('Select at least one day in the weekend'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
@@ -234,18 +233,18 @@ const Profile = () => {
     currencyPreference: yup
       .object()
       .shape({
-        label: yup.string().required('Currency preference is required'),
-        value: yup.string().required('Currency preference is required'),
+        label: yup.string().required('Preferred currency is required'),
+        value: yup.string().required('Preferred currency is required'),
       })
-      .required('Currency preference is required'),
+      .required('Preferred currency is required'),
     hourlyRate: yup.number().typeError('Hourly rate must be a number').required('Hourly rate is required'),
-    linkedInLink: yup.string().url('Please enter a valid url'),
-    twitterLink: yup.string().url('Please enter a valid url'),
-    githubLink: yup.string().url('Please enter a valid url'),
+    linkedInLink: yup.string().url('Please enter a valid URL'),
+    twitterLink: yup.string().url('Please enter a valid URL'),
+    githubLink: yup.string().url('Please enter a valid URL'),
     otherSocialLinks: yup.array().of(
       yup.object().shape({
         linkName: yup.string().nullable(),
-        link: yup.string().url('Please enter a valid url').nullable(),
+        link: yup.string().url('Please enter a valid URL').nullable(),
       }),
     ),
   });
@@ -815,10 +814,6 @@ const Profile = () => {
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="tagline">
                   Tagline<span className="label-asterisk me-50">*</span>
-                  <Info size={18} color={theme.infoIcon} id="tagline-info" />
-                  <UncontrolledTooltip placement="right" target="tagline-info">
-                    <p className="m-0">Give your tagline in 60 character.</p>
-                  </UncontrolledTooltip>
                 </Label>
                 <Controller
                   id="tagline"
@@ -827,7 +822,7 @@ const Profile = () => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder="Enter your tagline in 60 character."
+                      placeholder="Enter your tagline in 60 characters"
                       invalid={errors.tagline && true}
                     />
                   )}
@@ -838,7 +833,7 @@ const Profile = () => {
                 <Row>
                   <Col sm="12" md="6" lg="6">
                     <Label className="form-label" for="workExperienceYear">
-                      Work Experience year
+                      Work Experience - Years
                     </Label>
                     <Controller
                       id="workExperienceYear"
@@ -854,7 +849,7 @@ const Profile = () => {
                             placeholder="Enter"
                             invalid={errors.workExperienceYear && true}
                           />
-                          <InputGroupText>Year</InputGroupText>
+                          <InputGroupText>Year(s)</InputGroupText>
                         </InputGroup>
                       )}
                     />
@@ -862,7 +857,7 @@ const Profile = () => {
                   </Col>
                   <Col sm="12" md="6" lg="6">
                     <Label className="form-label" for="workExperienceMonth">
-                      Work Experience month
+                      Months
                     </Label>
                     <Controller
                       id="workExperienceMonth"
@@ -878,7 +873,7 @@ const Profile = () => {
                             placeholder="Enter"
                             invalid={errors.workExperienceMonth && true}
                           />
-                          <InputGroupText>Month</InputGroupText>
+                          <InputGroupText>Month(s)</InputGroupText>
                         </InputGroup>
                       )}
                     />
@@ -891,10 +886,6 @@ const Profile = () => {
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="professionalIntroduction">
                   Professional Introduction<span className="label-asterisk me-50">*</span>
-                  <Info size={18} color={theme.infoIcon} id="pro-intro-info" />
-                  <UncontrolledTooltip placement="right" target="pro-intro-info">
-                    <p className="m-0 ">Give your professional introduction in 150 character.</p>
-                  </UncontrolledTooltip>
                 </Label>
                 <Controller
                   id="professionalIntroduction"
@@ -904,7 +895,7 @@ const Profile = () => {
                     <Input
                       {...field}
                       type="textarea"
-                      placeholder="Write your professional introduction in 150 character."
+                      placeholder="Describe in 150 characters"
                       rows="5"
                       invalid={errors.professionalIntroduction && true}
                     />
@@ -927,7 +918,7 @@ const Profile = () => {
                     <AsyncPaginate
                       loadOptions={loadTalentRolesOptions}
                       classNamePrefix="select"
-                      placeholder="Enter your role"
+                      placeholder="Select your role"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.role,
@@ -944,7 +935,7 @@ const Profile = () => {
                 <UploadIconContainer>
                   <Upload size={18} color={theme.activeNavPillText} />
                 </UploadIconContainer>
-                <h5 className="fw-bold">Upload Resume</h5>
+                <h5 className="fw-bold">Upload your resume</h5>
               </div>
             </Row>
             <Row className="mb-1">
@@ -953,7 +944,7 @@ const Profile = () => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="speakLanguages">
-                  Language - I can speak well (Top 5)
+                  I can speak well (Top 5)
                 </Label>
                 <Controller
                   id="speakLanguages"
@@ -978,7 +969,7 @@ const Profile = () => {
               </Col>
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="readLanguages">
-                  Language - I can read well (Top 5)
+                  I can read well (Top 5)
                 </Label>
                 <Controller
                   id="readLanguages"
@@ -1005,7 +996,7 @@ const Profile = () => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="writeLanguages">
-                  Language - I can write well (Top 5)
+                  I can write well (Top 5)
                 </Label>
                 <Controller
                   id="writeLanguages"
@@ -1031,7 +1022,7 @@ const Profile = () => {
             </Row>
             <Row className="mb-1 mt-3">
               <h5 className="m-0">
-                Current Residency<span className="label-asterisk">*</span>
+                Current Address<span className="label-asterisk">*</span>
               </h5>
             </Row>
             <Row className="mb-1">
@@ -1192,7 +1183,7 @@ const Profile = () => {
               <Row key={item.id} className="mt-1">
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
-                    Education Institution<span className="label-asterisk me-50">*</span>
+                    Name of College or University<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
                     id={`educationDetails.${index}.educationInstitution`}
@@ -1212,7 +1203,7 @@ const Profile = () => {
                         additional={{ page: 1 }}
                         loadOptions={loadInstitutesOptions}
                         classNamePrefix="select"
-                        placeholder="Enter your institution name"
+                        placeholder="Select your college or university"
                         theme={selectThemeColors}
                         className={classNames('react-select', {
                           'is-invalid':
@@ -1238,7 +1229,7 @@ const Profile = () => {
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for={`educationDetails.${index}.education`}>
-                    Education<span className="label-asterisk me-50">*</span>
+                    Degree<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
                     id={`educationDetails.${index}.education`}
@@ -1256,7 +1247,7 @@ const Profile = () => {
                       <AsyncPaginate
                         loadOptions={loadEducationsOptions}
                         classNamePrefix="select"
-                        placeholder="Enter your education"
+                        placeholder="Select your degree"
                         theme={selectThemeColors}
                         className={classNames('react-select', {
                           'is-invalid':
@@ -1287,7 +1278,7 @@ const Profile = () => {
                 <UploadIconContainer>
                   <Plus size={18} color={theme.activeNavPillText} />
                 </UploadIconContainer>
-                <h5 className="fw-bold">Add Education Institution</h5>
+                <h5 className="fw-bold">Add New</h5>
               </div>
             </Row>
           </CardBody>
@@ -1313,7 +1304,7 @@ const Profile = () => {
                       isMulti
                       loadOptions={loadToolsOptions}
                       classNamePrefix="select"
-                      placeholder="Select top 5 tools"
+                      placeholder="Select up to 5 tools"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.tools,
@@ -1365,7 +1356,7 @@ const Profile = () => {
                       isMulti
                       loadOptions={loadSkillsOptions}
                       classNamePrefix="select"
-                      placeholder="Select top 5 skills"
+                      placeholder="Select up to 5 skills"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.skills,
@@ -1388,7 +1379,7 @@ const Profile = () => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="preferredWorkingTimeZone">
-                  Preferred working time zone<span className="label-asterisk me-50">*</span>
+                  Preferred time zone<span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="preferredWorkingTimeZone"
@@ -1399,7 +1390,7 @@ const Profile = () => {
                     <AsyncPaginate
                       loadOptions={loadTimezonesOptions}
                       classNamePrefix="select"
-                      placeholder="Select preferred working time zone"
+                      placeholder="Select one"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.preferredWorkingTimeZone,
@@ -1415,7 +1406,7 @@ const Profile = () => {
             </Row>
             <Row className="mt-2">
               <h5 className="m-0">
-                Select your work availability days<span className="label-asterisk me-50">*</span>
+                Days available<span className="label-asterisk me-50">*</span>
               </h5>
             </Row>
             <Row className="custom-checkbox-border">
@@ -1463,7 +1454,7 @@ const Profile = () => {
                         }}
                       />
                       <Label htmlFor="weekends" className="form-check-label">
-                        Weekend
+                        Weekends
                       </Label>
                     </div>
                   </div>
@@ -1479,7 +1470,8 @@ const Profile = () => {
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
                           <h5 className="m-0">
-                            Weekday -<span className="fw-light"> Working time available</span>
+                            Weekdays
+                            {/* <span className="fw-light"></span> */}
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
                             {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
@@ -1488,8 +1480,8 @@ const Profile = () => {
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
                             <div className="d-flex flex-column align-items-start">
                               <p className="m-0">
-                                Based on Preferred
-                                <br /> working time zone
+                                Based on preferred
+                                <br /> time zone
                               </p>
                             </div>
                           </UncontrolledTooltip>
@@ -1498,7 +1490,7 @@ const Profile = () => {
                       <Row className="mb-1 mt-2">
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekdayStartTime">
-                            Select start time<span className="label-asterisk me-50">*</span>
+                            Start time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekdayStartTime"
@@ -1530,7 +1522,7 @@ const Profile = () => {
                         </Col>
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekdayEndTime">
-                            Select end time<span className="label-asterisk me-50">*</span>
+                            End time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekdayEndTime"
@@ -1561,7 +1553,7 @@ const Profile = () => {
                       </Row>
                       <Row className="mt-2">
                         <h5 className="m-0">
-                          Which working days of the week are you available?
+                          Which days?
                           <span className="label-asterisk me-50">*</span>
                         </h5>
                       </Row>
@@ -1689,7 +1681,8 @@ const Profile = () => {
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
                           <h5 className="m-0">
-                            Weekend -<span className="fw-light"> Working time available</span>
+                            Weekends
+                            {/* <span className="fw-light"> </span> */}
                           </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
                             {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
@@ -1698,8 +1691,8 @@ const Profile = () => {
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekend">
                             <div className="d-flex flex-column align-items-start">
                               <p className="m-0">
-                                Based on Preferred
-                                <br /> working time zone
+                                Based on preferred
+                                <br /> time zone
                               </p>
                             </div>
                           </UncontrolledTooltip>
@@ -1708,7 +1701,7 @@ const Profile = () => {
                       <Row className="mb-1 mt-2">
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekendStartTime">
-                            Select start time<span className="label-asterisk me-50">*</span>
+                            Start time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekendStartTime"
@@ -1740,7 +1733,7 @@ const Profile = () => {
                         </Col>
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekendEndTime">
-                            Select end time<span className="label-asterisk me-50">*</span>
+                            End time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekendEndTime"
@@ -1771,7 +1764,7 @@ const Profile = () => {
                       </Row>
                       <Row className="mt-2">
                         <h5 className="m-0">
-                          Which working days of the weekend are you available?
+                          Which days?
                           <span className="label-asterisk me-50">*</span>
                         </h5>
                       </Row>
@@ -1844,7 +1837,7 @@ const Profile = () => {
             <Row className="mb-1">
               <Col sm="12" md="6" lg="3">
                 <Label className="form-label" for="currencyPreference">
-                  Currency Preference<span className="label-asterisk me-50">*</span>
+                  Preferred Currency<span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="currencyPreference"
@@ -1855,7 +1848,7 @@ const Profile = () => {
                     <AsyncPaginate
                       loadOptions={loadCurrenciesOptions}
                       classNamePrefix="select"
-                      placeholder="Select currency"
+                      placeholder="Select one"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.currencyPreference,
@@ -1894,21 +1887,21 @@ const Profile = () => {
         </Card>
         <Card>
           <CardHeader>
-            <h4 className="m-0 mt-1">Social links</h4>
+            <h4 className="m-0 mt-1">Social Links</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="linkedInLink">
-                  Linkedin
+                  LinkedIn
                 </Label>
                 <Controller
                   id="linkedInLink"
                   name="linkedInLink"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter your public link" invalid={errors.linkedInLink && true} />
+                    <Input {...field} placeholder="Enter public URL" invalid={errors.linkedInLink && true} />
                   )}
                 />
                 {errors.linkedInLink && <FormFeedback>{errors.linkedInLink.message}</FormFeedback>}
@@ -1922,7 +1915,7 @@ const Profile = () => {
                   name="twitterLink"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter twitter link" invalid={errors.twitterLink && true} />
+                    <Input {...field} placeholder="Enter URL" invalid={errors.twitterLink && true} />
                   )}
                 />
                 {errors.twitterLink && <FormFeedback>{errors.twitterLink.message}</FormFeedback>}
@@ -1938,19 +1931,19 @@ const Profile = () => {
                   name="githubLink"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter Github link" invalid={errors.githubLink && true} />
+                    <Input {...field} placeholder="Enter URL" invalid={errors.githubLink && true} />
                   )}
                 />
                 {errors.githubLink && <FormFeedback>{errors.githubLink.message}</FormFeedback>}
               </Col>
             </Row>
             <hr className="m-0 card-header-border" />
-            <h5 className="m-0 mt-2 mb-1">Other Social links</h5>
+            <h5 className="m-0 mt-2 mb-1">Other</h5>
             {otherSocialLinksFields.map((item, index) => (
               <Row key={item.id} className="mb-1">
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for={`otherSocialLinks[${index}].linkName`}>
-                    Link Name
+                    Website
                   </Label>
                   <Controller
                     id={`otherSocialLinks[${index}].linkName`}
@@ -1967,7 +1960,7 @@ const Profile = () => {
                     render={({ field }) => (
                       <Input
                         {...field}
-                        placeholder="Enter Link name"
+                        placeholder="Enter description"
                         invalid={
                           errors &&
                           errors.otherSocialLinks &&
@@ -2008,7 +2001,7 @@ const Profile = () => {
                     render={({ field }) => (
                       <Input
                         {...field}
-                        placeholder="Enter Link"
+                        placeholder="Enter URL"
                         invalid={
                           errors &&
                           errors.otherSocialLinks &&
@@ -2044,7 +2037,7 @@ const Profile = () => {
                 <UploadIconContainer>
                   <Plus size={18} color={theme.activeNavPillText} />
                 </UploadIconContainer>
-                <h5 className="fw-bold">Add Social Link</h5>
+                <h5 className="fw-bold">Add New</h5>
               </div>
             </Row>
           </CardBody>

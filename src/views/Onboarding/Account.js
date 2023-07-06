@@ -167,7 +167,7 @@ const Account = () => {
                   ref={fileInputRef}
                 />
                 <Button color="primary" className="ml-2 mr-1" onClick={() => fileInputRef.current.click()}>
-                  Update Picture
+                  Upload Image
                 </Button>
               </div>
               <Info size={18} color={theme.infoIcon} id="image-info" />
@@ -213,7 +213,7 @@ const Account = () => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="mobileNumber">
-                  Mobile number
+                  Mobile Number
                 </Label>
                 <Row>
                   <Col sm="3" md="3" lg="3">
@@ -248,7 +248,7 @@ const Account = () => {
               </Col>
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="email">
-                  Email address
+                  Email Address
                 </Label>
                 <Controller
                   id="email"

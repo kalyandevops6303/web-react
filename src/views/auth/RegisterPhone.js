@@ -29,9 +29,9 @@ const RegisterPhone = () => {
 
   const [selectedCountry, setSelectedCountry] = useState(
     mobileData?.selectedCountry || {
-      label: 'India',
-      dial_code: '+91',
-      code: 'IN',
+      label: 'United States',
+      dial_code: '+1',
+      code: 'US',
     },
   );
 
