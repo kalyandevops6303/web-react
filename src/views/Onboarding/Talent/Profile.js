@@ -822,7 +822,7 @@ const Profile = () => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder="Enter your tagline in 60 characters"
+                      placeholder="Enter your tagline in 60 characters or less"
                       invalid={errors.tagline && true}
                     />
                   )}
@@ -1469,10 +1469,7 @@ const Profile = () => {
                     <div>
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
-                          <h5 className="m-0">
-                            Weekdays
-                            {/* <span className="fw-light"></span> */}
-                          </h5>
+                          <h5 className="m-0">Weekdays</h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
                             {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
@@ -1680,10 +1677,7 @@ const Profile = () => {
                     <div>
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
-                          <h5 className="m-0">
-                            Weekends
-                            {/* <span className="fw-light"> </span> */}
-                          </h5>
+                          <h5 className="m-0">Weekends</h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
                             {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>

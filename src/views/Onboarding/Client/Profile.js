@@ -91,27 +91,27 @@ const Profile = () => {
           educationInstitution: yup
             .object()
             .shape({
-              label: yup.string().required('Education Institution is required'),
-              value: yup.string().required('Education Institution is required'),
+              label: yup.string().required('College or university is required'),
+              value: yup.string().required('College or university is required'),
             })
-            .required('Education Institution is required'),
+            .required('College or university is required'),
           education: yup
             .object()
             .shape({
-              label: yup.string().required('Education is required'),
-              value: yup.string().required('Education is required'),
+              label: yup.string().required('Degree is required'),
+              value: yup.string().required('Degree is required'),
             })
-            .required('Education is required'),
+            .required('Degree is required'),
         }),
       )
-      .min(1, 'At least one education should be added'),
-    linkedInLink: yup.string().url('Please enter a valid url'),
-    twitterLink: yup.string().url('Please enter a valid url'),
-    githubLink: yup.string().url('Please enter a valid url'),
+      .min(1, 'At least one degree should be added'),
+    linkedInLink: yup.string().url('Please enter a valid URL'),
+    twitterLink: yup.string().url('Please enter a valid URL'),
+    githubLink: yup.string().url('Please enter a valid URL'),
     otherSocialLinks: yup.array().of(
       yup.object().shape({
         linkName: yup.string().nullable(),
-        link: yup.string().url('Please enter a valid url').nullable(),
+        link: yup.string().url('Please enter a valid URL').nullable(),
       }),
     ),
     area: yup.object().shape({
@@ -126,8 +126,8 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five skills can be added')
-      .min(1, 'At least one skill should be added')
+      .max(5, 'Maximum of five skills can be added')
+      .min(1, 'At least one skill is required')
       .required('Skill is required'),
     tools: yup
       .array()
@@ -137,7 +137,7 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five tools can be added'),
+      .max(5, 'Maximum of five tools can be added'),
     preferredWorkingTimeZone: yup
       .object()
       .shape({
@@ -145,17 +145,16 @@ const Profile = () => {
         value: yup.object().required('Preferred working time zone is required'),
       })
       .required('Preferred working time zone is required'),
-    availabilityDays: yup
-      .array()
-      .min(1, 'Select at least one work availability day')
-      .required('Work availability day is required'),
+    availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
     weekdays: yup.array().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
-      then: () => yup.array().min(1, 'Select at least one weekday').required('Weekday is required'),
+      then: () =>
+        yup.array().min(1, 'Select at least one day in the week').required('Select at least one day in the week'),
     }),
     weekends: yup.array().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
-      then: () => yup.array().min(1, 'Select at least one weekend day').required('Weekend is required'),
+      then: () =>
+        yup.array().min(1, 'Select at least one day in the weekend').required('Select at least one day in the weekend'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
@@ -204,10 +203,10 @@ const Profile = () => {
     currencyPreference: yup
       .object()
       .shape({
-        label: yup.string().required('Currency preference is required'),
-        value: yup.string().required('Currency preference is required'),
+        label: yup.string().required('Preferred currency is required'),
+        value: yup.string().required('Preferred currency is required'),
       })
-      .required('Currency preference is required'),
+      .required('Preferred currency is required'),
   });
 
   const defaultLink = {
@@ -815,7 +814,7 @@ const Profile = () => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder="Enter tagline in 60 characters or less"
+                      placeholder="Enter your tagline in 60 characters or less"
                       invalid={errors.companyTagline && true}
                     />
                   )}
@@ -1461,7 +1460,7 @@ const Profile = () => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="preferredWorkingTimeZone">
-                  Preferred working time zone<span className="label-asterisk me-50">*</span>
+                  Preferred time zone<span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="preferredWorkingTimeZone"
@@ -1472,7 +1471,7 @@ const Profile = () => {
                     <AsyncPaginate
                       loadOptions={loadTimezonesOptions}
                       classNamePrefix="select"
-                      placeholder="Select preferred working time zone"
+                      placeholder="Select one"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.preferredWorkingTimeZone,
@@ -1488,7 +1487,7 @@ const Profile = () => {
             </Row>
             <Row className="mt-2">
               <h5 className="m-0">
-                Select your work availability days<span className="label-asterisk me-50">*</span>
+                Days available<span className="label-asterisk me-50">*</span>
               </h5>
             </Row>
             <Row className="custom-checkbox-border">
@@ -1551,9 +1550,7 @@ const Profile = () => {
                     <div>
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
-                          <h5 className="m-0">
-                            Weekday -<span className="fw-light"> Working time available</span>
-                          </h5>
+                          <h5 className="m-0">Weekday </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
                             {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
@@ -1561,8 +1558,8 @@ const Profile = () => {
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
                             <div className="d-flex flex-column align-items-start">
                               <p className="m-0">
-                                Based on Preferred
-                                <br /> working time zone
+                                Based on preferred
+                                <br /> time zone
                               </p>
                             </div>
                           </UncontrolledTooltip>
@@ -1571,7 +1568,7 @@ const Profile = () => {
                       <Row className="mb-1 mt-2">
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekdayStartTime">
-                            Select start time<span className="label-asterisk me-50">*</span>
+                            Start time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekdayStartTime"
@@ -1603,7 +1600,7 @@ const Profile = () => {
                         </Col>
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekdayEndTime">
-                            Select end time<span className="label-asterisk me-50">*</span>
+                            End time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekdayEndTime"
@@ -1634,7 +1631,7 @@ const Profile = () => {
                       </Row>
                       <Row className="mt-2">
                         <h5 className="m-0">
-                          Which working days of the week are you available?
+                          Which days?
                           <span className="label-asterisk me-50">*</span>
                         </h5>
                       </Row>
@@ -1761,9 +1758,7 @@ const Profile = () => {
                     <div>
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
-                          <h5 className="m-0">
-                            Weekend -<span className="fw-light"> Working time available</span>
-                          </h5>
+                          <h5 className="m-0">Weekend </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
                             {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
@@ -1771,8 +1766,8 @@ const Profile = () => {
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekend">
                             <div className="d-flex flex-column align-items-start">
                               <p className="m-0">
-                                Based on Preferred
-                                <br /> working time zone
+                                Based on preferred
+                                <br /> time zone
                               </p>
                             </div>
                           </UncontrolledTooltip>
@@ -1781,7 +1776,7 @@ const Profile = () => {
                       <Row className="mb-1 mt-2">
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekendStartTime">
-                            Select start time<span className="label-asterisk me-50">*</span>
+                            Start time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekendStartTime"
@@ -1813,7 +1808,7 @@ const Profile = () => {
                         </Col>
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekendEndTime">
-                            Select end time<span className="label-asterisk me-50">*</span>
+                            End time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekendEndTime"
@@ -1844,7 +1839,7 @@ const Profile = () => {
                       </Row>
                       <Row className="mt-2">
                         <h5 className="m-0">
-                          Which working days of the weekend are you available?
+                          Which days?
                           <span className="label-asterisk me-50">*</span>
                         </h5>
                       </Row>
