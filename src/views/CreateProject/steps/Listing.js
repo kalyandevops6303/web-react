@@ -80,7 +80,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                 name="listingOption"
                 render={({ field }) => (
                   <div className="demo-inline-spacing mx-25">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                       <Input
                         type="radio"
                         {...field}
@@ -171,7 +171,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                 name="listingOption"
                 render={({ field }) => (
                   <div className="demo-inline-spacing mx-25">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                       <Input
                         type="radio"
                         {...field}
