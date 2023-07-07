@@ -94,13 +94,18 @@ const UserDetails = () => {
         <Col lg="9">
           <Row>
             <Col lg="3">
-              <Statbox title="-" desc="Completed Projects" icon={<Check height={20} />} color="light-success" />
+              <Statbox
+                title={currentProfile?.projects_worked_on_count}
+                desc="Completed Projects"
+                icon={<Check height={20} />}
+                color="light-success"
+              />
             </Col>
             {!isClient && (
               <Col lg="3">
                 <Statbox
                   title={`${currentProfile?.currency_preference?.code} ${currentProfile?.hourly_rate}`}
-                  desc="Hourly Billing Rate"
+                  desc="Hourly Rate"
                   icon={<DollarSign height={20} />}
                   color="light-warning"
                 />

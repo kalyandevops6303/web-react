@@ -46,19 +46,16 @@ import {
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
-    companyName: yup.string().required('Company name is required'),
+    companyName: yup.string().required('Organization is required'),
     title: yup.string().required('Title is required'),
-    companyTagline: yup
-      .string()
-      .max(60, 'Company tagline must be at most 60 characters')
-      .required('Company tagline is required'),
+    companyTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
     companyIndustry: yup
       .object()
       .shape({
-        label: yup.string().required('Company industry is required'),
-        value: yup.string().required('Company industry is required'),
+        label: yup.string().required('Industry is required'),
+        value: yup.string().required('Industry is required'),
       })
-      .required('Company industry is required'),
+      .required('Industry is required'),
     totalStrength: yup.number(),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
@@ -775,14 +772,18 @@ const Profile = () => {
             <Row className="mb-1 mt-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="companyName">
-                  Company Name<span className="label-asterisk me-50">*</span>
+                  Organization<span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="companyName"
                   name="companyName"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter your company name" invalid={errors.companyName && true} />
+                    <Input
+                      {...field}
+                      placeholder="Enter your organization's name"
+                      invalid={errors.companyName && true}
+                    />
                   )}
                 />
                 {errors.companyName && <FormFeedback>{errors.companyName.message}</FormFeedback>}
@@ -805,11 +806,7 @@ const Profile = () => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="companyTagline">
-                  Company Tagline<span className="label-asterisk me-50">*</span>
-                  <Info size={18} color={theme.infoIcon} id="tagline-info" />
-                  <UncontrolledTooltip placement="right" target="tagline-info">
-                    <p className="m-0 ">Give your company tagline in 60 character.</p>
-                  </UncontrolledTooltip>
+                  Tagline<span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="companyTagline"
@@ -818,7 +815,7 @@ const Profile = () => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder="Enter your company tagline in 60 character."
+                      placeholder="Enter tagline in 60 characters or less"
                       invalid={errors.companyTagline && true}
                     />
                   )}
@@ -827,7 +824,7 @@ const Profile = () => {
               </Col>
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="companyIndustry">
-                  Company Industry<span className="label-asterisk me-50">*</span>
+                  Industry<span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="companyIndustry"
@@ -838,7 +835,7 @@ const Profile = () => {
                     <AsyncPaginate
                       loadOptions={loadCompanyIndustriesOptions}
                       classNamePrefix="select"
-                      placeholder="Select your company industry"
+                      placeholder="Select one"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.companyIndustry,
@@ -851,7 +848,7 @@ const Profile = () => {
               </Col>
             </Row>
             <Row className="mt-2">
-              <h5 className="m-0">What is the total strength of your company?</h5>
+              <h5 className="m-0">Number of employees or members</h5>
             </Row>
             <Row className="mb-3">
               <div className="demo-inline-spacing m-0">
@@ -978,7 +975,7 @@ const Profile = () => {
                 <Row>
                   <Col sm="6" md="6" lg="6">
                     <Label className="form-label" for="houseNumber">
-                      House Number
+                      Suite
                     </Label>
                     <Controller
                       id="houseNumber"
@@ -987,7 +984,7 @@ const Profile = () => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          placeholder="Enter house number"
+                          placeholder="Enter suite number"
                           invalid={errors.houseNumber && true}
                           autoComplete="none"
                         />
@@ -1110,7 +1107,7 @@ const Profile = () => {
               <Row key={item.id} className="mt-1">
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
-                    Education Institution<span className="label-asterisk me-50">*</span>
+                    Name of College or University<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
                     id={`educationDetails.${index}.educationInstitution`}
@@ -1130,7 +1127,7 @@ const Profile = () => {
                         additional={{ page: 1 }}
                         loadOptions={loadInstitutesOptions}
                         classNamePrefix="select"
-                        placeholder="Enter your institution name"
+                        placeholder="Select your college or university"
                         theme={selectThemeColors}
                         className={classNames('react-select', {
                           'is-invalid':
@@ -1156,7 +1153,7 @@ const Profile = () => {
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for={`educationDetails.${index}.education`}>
-                    Education<span className="label-asterisk me-50">*</span>
+                    Degree<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
                     id={`educationDetails.${index}.education`}
@@ -1174,7 +1171,7 @@ const Profile = () => {
                       <AsyncPaginate
                         loadOptions={loadEducationsOptions}
                         classNamePrefix="select"
-                        placeholder="Enter your education"
+                        placeholder="Select your degree"
                         theme={selectThemeColors}
                         className={classNames('react-select', {
                           'is-invalid':
@@ -1205,28 +1202,28 @@ const Profile = () => {
                 <UploadIconContainer>
                   <Plus size={18} color={theme.activeNavPillText} />
                 </UploadIconContainer>
-                <h5 className="fw-bold">Add Education Institution</h5>
+                <h5 className="fw-bold">Add New</h5>
               </div>
             </Row>
           </CardBody>
         </Card>
         <Card>
           <CardHeader>
-            <h4 className="m-0 mt-1">Social links</h4>
+            <h4 className="m-0 mt-1">Social Links</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="linkedInLink">
-                  Linkedin
+                  LinkedIn
                 </Label>
                 <Controller
                   id="linkedInLink"
                   name="linkedInLink"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter your public link" invalid={errors.linkedInLink && true} />
+                    <Input {...field} placeholder="Enter public URL" invalid={errors.linkedInLink && true} />
                   )}
                 />
                 {errors.linkedInLink && <FormFeedback>{errors.linkedInLink.message}</FormFeedback>}
@@ -1240,7 +1237,7 @@ const Profile = () => {
                   name="twitterLink"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter twitter link" invalid={errors.twitterLink && true} />
+                    <Input {...field} placeholder="Enter URL" invalid={errors.twitterLink && true} />
                   )}
                 />
                 {errors.twitterLink && <FormFeedback>{errors.twitterLink.message}</FormFeedback>}
@@ -1256,19 +1253,19 @@ const Profile = () => {
                   name="githubLink"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter Github link" invalid={errors.githubLink && true} />
+                    <Input {...field} placeholder="Enter URL" invalid={errors.githubLink && true} />
                   )}
                 />
                 {errors.githubLink && <FormFeedback>{errors.githubLink.message}</FormFeedback>}
               </Col>
             </Row>
             <hr className="m-0 card-header-border" />
-            <h5 className="m-0 mt-2 mb-1">Other Social links</h5>
+            <h5 className="m-0 mt-2 mb-1">Other</h5>
             {otherSocialLinksFields.map((item, index) => (
               <Row key={item.id} className="mb-1">
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for={`otherSocialLinks[${index}].linkName`}>
-                    Link Name
+                    Website
                   </Label>
                   <Controller
                     id={`otherSocialLinks[${index}].linkName`}
@@ -1285,7 +1282,7 @@ const Profile = () => {
                     render={({ field }) => (
                       <Input
                         {...field}
-                        placeholder="Enter Link name"
+                        placeholder="Enter description"
                         invalid={
                           errors &&
                           errors.otherSocialLinks &&
@@ -1326,7 +1323,7 @@ const Profile = () => {
                     render={({ field }) => (
                       <Input
                         {...field}
-                        placeholder="Enter Link"
+                        placeholder="Enter URL"
                         invalid={
                           errors &&
                           errors.otherSocialLinks &&
@@ -1362,7 +1359,7 @@ const Profile = () => {
                 <UploadIconContainer>
                   <Plus size={18} color={theme.activeNavPillText} />
                 </UploadIconContainer>
-                <h5 className="fw-bold">Add Social Link</h5>
+                <h5 className="fw-bold">Add New</h5>
               </div>
             </Row>
           </CardBody>
@@ -1370,7 +1367,7 @@ const Profile = () => {
         <Card>
           <CardHeader>
             <h4 className="m-0 mt-1">
-              Project area of interest<span className="label-asterisk m-0">*</span>
+              Project Domain<span className="label-asterisk m-0">*</span>
             </h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
@@ -1378,7 +1375,7 @@ const Profile = () => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="area">
-                  Area
+                  Area of interest
                 </Label>
                 <Controller
                   id="area"
@@ -1389,7 +1386,7 @@ const Profile = () => {
                     <AsyncPaginate
                       loadOptions={loadAreaOptions}
                       classNamePrefix="select"
-                      placeholder="Select area"
+                      placeholder="Select areas of interest"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.area,
@@ -1920,7 +1917,7 @@ const Profile = () => {
             <Row className="mb-1">
               <Col sm="12" md="6" lg="3">
                 <Label className="form-label" for="currencyPreference">
-                  Currency Preference<span className="label-asterisk me-50">*</span>
+                  Preferred Currency<span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="currencyPreference"
@@ -1931,7 +1928,7 @@ const Profile = () => {
                     <AsyncPaginate
                       loadOptions={loadCurrenciesOptions}
                       classNamePrefix="select"
-                      placeholder="Select currency"
+                      placeholder="Select one"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.currencyPreference,

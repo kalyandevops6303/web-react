@@ -48,9 +48,9 @@ const VerifyPhone = () => {
   }, [isPhoneVerified, navigate]);
 
   const [selectedCountry, setSelectedCountry] = useState({
-    label: 'India',
-    dial_code: '+91',
-    code: 'IN',
+    label: 'United States',
+    dial_code: '+1',
+    code: 'US',
   });
 
   const handleChange = (value) => {

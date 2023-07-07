@@ -41,8 +41,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
     projectName: yup
       .string()
-      .min(4, 'Project name must be atleast 4 characters')
-      .max(150, 'Project name must be at most 150 characters')
+      .min(4, 'Project name must be at least 4 characters')
+      .max(150, 'Project name must be 150 characters or less')
       .required('Project name is required'),
     expectedDuration: yup
       .number()
@@ -51,9 +51,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         then: () =>
           yup
             .number()
-            .min(1, 'Expected duration should be atleast 1 week')
-            .max(12, 'Expected duration can not be more than 12 weeks')
-            .integer('Expected duration should be an integer')
+            .min(1, 'Expected duration should be at least 1 week')
+            .max(12, 'Expected duration cannot be greater than 12 weeks')
+            .integer('Expected duration should be a number')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
       })
@@ -62,9 +62,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         then: () =>
           yup
             .number()
-            .min(1, 'Expected duration should be atleast 1 day')
-            .max(90, 'Expected duration can not be more than 90 days')
-            .integer('Expected duration should be an integer')
+            .min(1, 'Expected duration should be at least 1 day')
+            .max(90, 'Expected duration cannot be greater than 90 days')
+            .integer('Expected duration should be a number')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
       }),
@@ -84,7 +84,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five skills can be added')
+      .max(5, 'A maximum of five skills can be added')
       .min(1, 'At least one skill should be added')
       .required('Skill is required'),
     tools: yup
@@ -95,7 +95,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five tools can be added'),
+      .max(5, 'A maximum of five tools can be added'),
     preferredWorkingTimeZone: yup
       .object()
       .shape({
@@ -105,9 +105,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .required('Preferred working time zone is required'),
     minTimeOverlapHr: yup
       .number()
-      .min(0, 'Min time overlap hr should be greater than or equal to 0')
+      .min(0, 'Desired time overlap should be greater than or equal to 0')
       .typeError('Please enter a number')
-      .required('Min time overlap hr is required'),
+      .required('Desired time overlap is required'),
     availabilityDays: yup
       .array()
       .min(1, 'Select at least one work availability day')
@@ -180,21 +180,21 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     currencyType: yup
       .object()
       .shape({
-        label: yup.string().required('Currency type is required'),
-        value: yup.object().required('Currency type is required'),
+        label: yup.string().required('Currency is required'),
+        value: yup.object().required('Currency is required'),
       })
-      .required('Currency type is required'),
-    projectPayType: yup.string().required('Project pay type is required'),
+      .required('Currency is required'),
+    projectPayType: yup.string().required('Payment type is required'),
     projectFixedCost: yup.number().when('projectPayType', {
       is: (projectPayType) => projectPayType === 'fixed-price',
       then: () =>
         yup
           .number()
-          .min(1, 'Project fixed cost should be atleast 1')
+          .min(1, 'Fixed cost is required')
           .typeError('Please enter a number')
-          .required('Project fixed cost is required'),
+          .required('Fixed cost is required'),
     }),
-    nda: yup.string().required('This is required'),
+    nda: yup.string().required('NDA is required'),
   });
 
   const {
@@ -511,7 +511,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   control={control}
                   render={({ field }) => (
                     <TextEditorContainer>
-                      <ReactQuill {...field} theme="snow" placeholder="Enter project background and requirements" />
+                      <ReactQuill {...field} theme="snow" placeholder="Add background and requirements" />
                     </TextEditorContainer>
                   )}
                 />
@@ -539,8 +539,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                     <div {...getRootProps({ className: 'dropzone' })}>
                       <input {...getInputProps()} />
                       <div className="d-flex align-items-center justify-content-center flex-column p-3">
-                        <h4>Drop files here or click to upload</h4>
-                        <p className="text-secondary text-center mt-50 fw-light">
+                        <h4 className="font-medium-1">Drop files here or click to upload</h4>
+                        <p className="text-secondary font-small-5 text-center mt-50 fw-light">
                           (This is just a demo dropzone. Selected files are not actually uploaded.)
                         </p>
                       </div>
@@ -553,7 +553,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         </Card>
         <Card>
           <CardHeader>
-            <h4 className="m-0 mt-1">Required Proficiency</h4>
+            <h4 className="m-0 mt-1">Technical Requirements</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
@@ -646,8 +646,15 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               </Col>
               <Col sm="12" md="6" lg="3">
                 <Label className="form-label" for="minTimeOverlapHr">
-                  Minimum Time Overlap Hr<span className="label-asterisk">*</span>
+                  Desired Time Overlap<span className="label-asterisk">*</span>
                 </Label>
+                <Info size={18} color={theme.infoIcon} id="desired-time" className="ms-25" />
+                <UncontrolledTooltip placement="right" target="desired-time">
+                  <div className="d-flex flex-column align-items-start">
+                    For collaboration with <br /> project team
+                  </div>
+                </UncontrolledTooltip>
+
                 <Controller
                   id="minTimeOverlapHr"
                   name="minTimeOverlapHr"
@@ -659,7 +666,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       min={0}
                       step={0.1}
                       onWheel={(e) => e.target.blur()}
-                      placeholder="Enter min. overlap hr"
+                      placeholder="Enter number of hours"
                       invalid={errors.minTimeOverlapHr && true}
                     />
                   )}
@@ -1091,7 +1098,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         </Card>
         <Card>
           <CardHeader>
-            <h4 className="m-0 mt-1">Country</h4>
+            <h4 className="m-0 mt-1">Country - Inclusions and Exclusions (Optional)</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
@@ -1120,8 +1127,14 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         }}
                       />
                       <Label for="include-countries" className="form-check-label">
-                        Include Countries
+                        Included Countries
                       </Label>
+                      <Info size={18} color={theme.infoIcon} id="time-zone-info-weekday" className="ms-50" />
+                      <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
+                        <div className="d-flex flex-column align-items-start">
+                          <p className="m-0">Project will only be listed in these countries</p>
+                        </div>
+                      </UncontrolledTooltip>
                     </div>
                   </div>
                 )}
@@ -1157,6 +1170,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             {watch('includedCountriesSelection') && watch('includedCountriesSelection').length > 0 && (
               <Row className="mt-2 pb-0">
                 <Label className="form-check-label mb-75">Selected countries -</Label>
+
                 {watch('includedCountriesSelection').map((country) => (
                   <div className="countries-pills" key={country.label}>
                     <Badge pill className="px-1 py-50 d-flex align-items-center">
@@ -1197,8 +1211,14 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         }}
                       />
                       <Label for="exclude-countries" className="form-check-label">
-                        Exclude Countries
+                        Excluded Countries
                       </Label>
+                      <Info size={18} color={theme.infoIcon} id="exclude-country" className="ms-50" />
+                      <UncontrolledTooltip placement="right" target="exclude-country">
+                        <div className="d-flex flex-column align-items-start">
+                          <p className="m-0">Project will not be listed in these countries</p>
+                        </div>
+                      </UncontrolledTooltip>
                     </div>
                   </div>
                 )}
@@ -1252,7 +1272,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         </Card>
         <Card>
           <CardHeader>
-            <h4 className="m-0 mt-1">Project Pay Type</h4>
+            <h4 className="m-0 mt-1">Payment</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
@@ -1260,7 +1280,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               <Col sm="12" md="6" lg="3">
                 <Label className="form-label" for="currencyType">
                   <h5 className="m-0 mb-25">
-                    Select currency type
+                    Currency
                     <span className="label-asterisk me-50">*</span>
                   </h5>
                 </Label>
@@ -1289,7 +1309,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               <Col sm="12" md="6" lg="6">
                 <Label className="form-label" for="projectPayType">
                   <h5 className="m-0">
-                    Select project pay type
+                    Payment type
                     <span className="label-asterisk me-50">*</span>
                   </h5>
                 </Label>
@@ -1316,7 +1336,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           }}
                         />
                         <Label for="variable-price" className="form-check-label">
-                          Variable price
+                          Variable cost
                         </Label>
                       </div>
                       <div className="form-check form-check-inline checkbox-custom-margin">
@@ -1337,7 +1357,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           }}
                         />
                         <Label for="fixed-price" className="form-check-label">
-                          Fixed price
+                          Fixed cost
                         </Label>
                       </div>
                     </div>
@@ -1348,7 +1368,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               {projectPayType === 'fixed-price' && (
                 <Col sm="12" md="6" lg="3">
                   <Label className="form-label" for="projectFixedCost">
-                    Project Fixed Cost{`${watch('currencyType') ? ` in ${watch('currencyType')?.value?.code}` : ''}`}
+                    Fixed Cost{`${watch('currencyType') ? ` in ${watch('currencyType')?.value?.code}` : ''}`}
                     <span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
@@ -1362,7 +1382,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         type="number"
                         min={0}
                         onWheel={(e) => e.target.blur()}
-                        placeholder="Specify project fixed cost"
+                        placeholder="Enter amount"
                         invalid={errors.projectFixedCost && true}
                       />
                     )}
@@ -1383,7 +1403,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               <Col sm="12" md="12" lg="12">
                 <Label className="form-label" for="nda">
                   <h5 className="m-0">
-                    Would you like to have an NDA for this project?
+                    NDA required?
                     <span className="label-asterisk me-50">*</span>
                   </h5>
                 </Label>

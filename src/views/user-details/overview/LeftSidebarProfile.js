@@ -52,7 +52,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               <CardText className="text-center user-name mb-50">{`${data?.first_name || '-'} ${
                 data?.last_name || '-'
               }`}</CardText>
-              <Button size="sm" outline color="primary" className="d-flex m-auto outline-btn mt-2">
+              <Button size="sm" outline color="primary" className="d-flex m-auto outline-btn mt-2 not-clickable">
                 {data?.role?.name || '-'}
               </Button>
             </div>
@@ -152,7 +152,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
             )}
             <BadgeGroup
               color="light-success-2"
-              title="Available time zone"
+              title="Time zone"
               data={[
                 {
                   name:
@@ -247,11 +247,11 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               </div>
             ) : (
               <>
-                <div className="d-flex gap-1 mt-3">
-                  <Button className="w-100" outline color="primary">
+                <div className="d-flex gap-1 mt-3 justify-content-center">
+                  <Button className="w-50" outline color="primary">
                     Invite
                   </Button>
-                  <Button className="w-100" color="primary">
+                  <Button className="w-50" color="primary">
                     Message
                   </Button>
                 </div>

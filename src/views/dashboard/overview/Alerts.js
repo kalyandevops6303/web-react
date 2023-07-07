@@ -56,9 +56,7 @@ const Alerts = () => {
             <CardTitle tag="h4">Upcoming Projects</CardTitle>
           </CardHeader>
           <CardBody className="d-flex justify-content-center align-items-center">
-            <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-              No projects !
-            </CardText>
+            <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">None available</CardText>
           </CardBody>
         </Card>
 
@@ -70,7 +68,7 @@ const Alerts = () => {
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
                 <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-                  No bids !
+                  None available
                 </CardText>
               </CardBody>
             </Card>
@@ -79,8 +77,8 @@ const Alerts = () => {
                 <CardTitle tag="h4">Upcoming Payments</CardTitle>
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
-                <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-                  No payments !
+                <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">
+                  None schdudled
                 </CardText>
               </CardBody>
             </Card>
@@ -112,8 +110,8 @@ const Alerts = () => {
                 <CardTitle tag="h4">Team Invitations</CardTitle>
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
-                <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-                  No invitations !
+                <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">
+                  None received
                 </CardText>
               </CardBody>
             </Card>

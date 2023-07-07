@@ -50,7 +50,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
               className="stat-box cursor-pointer"
               isMarketPlaceTab
               title={selectCardData?.talents}
-              desc="Talents"
+              desc="Talent"
               icon={<Users height={20} />}
               color="light-purple"
             />

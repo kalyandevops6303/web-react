@@ -13,14 +13,14 @@ const RewardsCard = ({ cols }) => {
   const data = [
     {
       title: '$0',
-      subtitle: 'Referral Rewards',
+      subtitle: 'Rewards',
       color: 'light-info',
       icon: <User size={24} />,
     },
 
     {
-      title: '$0',
-      subtitle: 'Work Rewards',
+      title: '0',
+      subtitle: 'Referrals',
       color: 'light-warning',
       icon: <Briefcase size={24} />,
     },
