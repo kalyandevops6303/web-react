@@ -18,7 +18,7 @@ const Listing = ({ stepper, setListingDetails }) => {
       is: (listingOption) => listingOption === 'select-duration',
       then: () => yup.date().required('Start date is required'),
     }),
-    endDate: yup.object().when('listingOption', {
+    endDate: yup.date().when('listingOption', {
       is: (listingOption) => listingOption === 'select-duration',
       then: () => yup.date().required('End date is required'),
     }),
@@ -39,8 +39,6 @@ const Listing = ({ stepper, setListingDetails }) => {
     handleSubmit,
     trigger,
     clearErrors,
-    resetField,
-    setValue,
     watch,
     formState: { errors },
   } = useForm({
@@ -49,20 +47,28 @@ const Listing = ({ stepper, setListingDetails }) => {
     defaultValues: {},
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = () => {
     trigger();
-    if (data.listingOption === 'select-duration') {
-      setListingDetails(data);
-    } else if (data.listingOption === 'enter-duration') {
+    if (watch('listingOption') === 'select-duration' && watch('startDate') && watch('endDate')) {
+      const requiredFormData = {
+        listingOption: watch('listingOption'),
+        startDate: new Date(watch('startDate')),
+        endDate: new Date(watch('endDate')),
+      };
+
+      setListingDetails(requiredFormData);
+      stepper.next();
+    } else if (watch('listingOption') === 'enter-duration' && watch('duration')) {
       const newData = {
-        ...data,
+        listingOption: watch('listingOption'),
         startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + data.duration)),
+        endDate: new Date(new Date().setDate(new Date().getDate() + parseInt(watch('duration'), 10))),
+        duration: watch('duration'),
       };
 
       setListingDetails(newData);
+      stepper.next();
     }
-    stepper.next();
   };
 
   return (
@@ -88,8 +94,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                         checked={field.value === 'select-duration'}
                         onChange={async (e) => {
                           clearErrors('duration');
-                          resetField('duration');
-                          setValue('duration', 0);
+
                           const isChecked = e.target.checked;
                           const value = 'select-duration';
 
@@ -98,8 +103,6 @@ const Listing = ({ stepper, setListingDetails }) => {
                           } else {
                             field.onChange('');
                           }
-                          await trigger('startDate');
-                          await trigger('endDate');
                         }}
                       />
                       <Label for="select-duration" className="form-check-label fw-bold">
@@ -180,8 +183,6 @@ const Listing = ({ stepper, setListingDetails }) => {
                         onChange={async (e) => {
                           clearErrors('startDate');
                           clearErrors('endDate');
-                          resetField('startDate');
-                          resetField('endDate');
 
                           const isChecked = e.target.checked;
                           const value = 'enter-duration';
@@ -191,7 +192,6 @@ const Listing = ({ stepper, setListingDetails }) => {
                           } else {
                             field.onChange('');
                           }
-                          await trigger('duration');
                         }}
                       />
                       <Label for="enter-duration" className="form-check-label fw-bold">
@@ -237,7 +237,7 @@ const Listing = ({ stepper, setListingDetails }) => {
             </UploadIconContainer>
             <h5 className="fw-light mb-0 mx-75">Back</h5>
           </div>
-          <Button color="primary">
+          <Button color="primary" onClick={() => onSubmit()}>
             <span className="me-50">Save & Continue</span>
             <ChevronRight size={14} />
           </Button>
