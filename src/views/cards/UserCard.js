@@ -21,10 +21,22 @@ const giveStrokeColor = (percentage) => {
 
 const UserCard = ({ data }) => {
   const location = useLocation();
-  const fromLocation = () => {
+  const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace')) return 'Marketplace';
     if (location.pathname.split('/').includes('search')) return 'Search';
     return '';
+  };
+  const fromLocationSecondary = () => {
+    if (location.pathname.split('/').includes('all_listings')) return 'Marketplace';
+    if (location.pathname.split('/').includes('my_listings')) return 'My listings';
+    if (location.pathname.split('/').includes('talents')) return 'Talent';
+    if (location.pathname.split('/').includes('clients')) return 'Clients';
+    return '';
+  };
+
+  const fromLocationSearch = () => {
+    if (data?.company_name) return 'Clients';
+    return 'Talent';
   };
 
   return (
@@ -38,7 +50,13 @@ const UserCard = ({ data }) => {
                 <div>
                   <CardTitle className="marketplace-card-title mb-0 ms-25">
                     <Link
-                      state={{ from: fromLocation(), link: location.pathname }}
+                      state={{
+                        from: {
+                          primary: fromLocationPrimary(),
+                          secondary: fromLocationSecondary() || fromLocationSearch(),
+                        },
+                        link: location.pathname,
+                      }}
                       to={`/profile/${data?.company_name ? 'client' : 'talent'}/${data?.user_id}`}
                     >
                       {data?.first_name}&nbsp;

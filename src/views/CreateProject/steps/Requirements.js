@@ -1227,7 +1227,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             </Row>
             {watch('includedCountriesSelection') && watch('includedCountriesSelection').length > 0 && (
               <Row className="mt-2 pb-0">
-                <Label className="form-check-label mb-75">Selected countries -</Label>
+                <Label className="form-check-label mb-75">Selected countries:</Label>
 
                 {watch('includedCountriesSelection').map((country) => (
                   <div className="countries-pills" key={country.label}>
@@ -1311,7 +1311,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             </Row>
             {watch('excludedCountriesSelection') && watch('excludedCountriesSelection').length > 0 && (
               <Row className="mt-2 pb-0">
-                <Label className="form-check-label mb-75">Selected countries -</Label>
+                <Label className="form-check-label mb-75">Selected countries:</Label>
                 {watch('excludedCountriesSelection').map((country) => (
                   <div className="countries-pills" key={country.label}>
                     <Badge pill className="px-1 py-50 d-flex align-items-center">

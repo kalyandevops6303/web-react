@@ -18,12 +18,13 @@ import {
   Spinner,
   UncontrolledTooltip,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Info, Plus, UserPlus } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info, Plus } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
 import { toast } from 'react-hot-toast';
+import companyIcon from '@src/assets/images/company.png';
 import { AccountImageContainer, ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getStates, getCities } from '../../../redux/actions/staticActions';
@@ -761,7 +762,7 @@ const Profile = () => {
                 <img src={selectedImagePreview} alt="profile" className="selected-image" />
               ) : (
                 <AccountImageContainer>
-                  <UserPlus size={50} />
+                  <img src={companyIcon} alt="profile" />
                 </AccountImageContainer>
               )}
               <div className="ml-2 mr-1">
@@ -773,7 +774,7 @@ const Profile = () => {
                   ref={fileInputRef}
                 />
                 <Button color="primary" className="ml-2 mr-1" onClick={() => fileInputRef.current.click()}>
-                  Update Logo
+                  Update Picture
                 </Button>
               </div>
               <Info size={18} color={theme.infoIcon} id="logo-info" />

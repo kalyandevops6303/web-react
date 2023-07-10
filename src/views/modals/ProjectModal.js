@@ -1,6 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import ReactHtmlParser from 'react-html-parser';
+import { DateTime } from 'luxon';
 import { Modal, ModalHeader, ModalBody, Card, CardHeader, CardTitle, CardBody, Row, Col, CardText } from 'reactstrap';
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
@@ -83,7 +84,8 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                 <Col lg="4">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
-                      {data?.listing_details?.start_date} to {data?.listing_details?.end_date}
+                      {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} to{' '}
+                      {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
                     </CardTitle>
                     <CardText className="project-name">Listing Duration</CardText>
                   </div>

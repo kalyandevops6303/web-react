@@ -103,7 +103,7 @@ const ThemeNavbar = (props) => {
       </NavLink>
       <NavLink
         className={
-          (location?.pathname?.split('/')?.[1] === 'marketplace' || location?.state?.from === 'Marketplace'
+          (location?.pathname?.split('/')?.[1] === 'marketplace' || location?.state?.from?.primary === 'Marketplace'
             ? 'is-active'
             : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
         }

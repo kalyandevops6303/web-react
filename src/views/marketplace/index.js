@@ -52,10 +52,19 @@ const MarketPlace = () => {
   // eslint-disable-next-line react/no-unstable-nested-components
   const SecondComp = () => <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />;
 
+  const primaryEnum = {
+    clients: 'Clients',
+    all_listings: 'All listings',
+    my_listings: 'My listings',
+    talents: 'Talent',
+  };
+
   return (
     <MarketPlaceContainer>
       <div className="d-flex justify-content-between">
-        <BreadCrumbs data={[{ title: 'Marketplace' }]} />
+        <BreadCrumbs
+          data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
+        />
 
         {userDetailsData?.user_type === 'CLIENT' && (
           <Link to="/create-project">

@@ -122,12 +122,26 @@ export const AccountImageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  img {
+    height: inherit;
+  }
 `;
 
 export const ProfileFormContainer = styled.div`
   .label-asterisk {
     color: ${theme.red};
     margin-left: 4px;
+  }
+
+  // dropdown styles
+  .select__placeholder {
+    font-size: 12px;
+    color: ${theme.textMuted};
+  }
+  .select__indicator {
+    svg {
+      color: ${theme.textMuted};
+    }
   }
 
   .select__control {

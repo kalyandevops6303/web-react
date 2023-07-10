@@ -8,7 +8,7 @@ import Avatar from '@components/avatar';
 import { User, Power } from 'react-feather';
 
 // ** Reactstrap Imports
-import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap';
+import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip } from 'reactstrap';
 
 // ** Default Avatar Image
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -48,15 +48,24 @@ const UserDropdown = () => {
     }
   `;
 
+  const userName =
+    userDetailsData?.user_type === 'TALENT'
+      ? userDetailsData?.talent_info?.first_name + ' ' + userDetailsData?.talent_info?.last_name || 'User'
+      : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User';
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
         <div className="user-nav d-sm-flex d-none">
-          <span className="user-name fw-bold">
-            {userDetailsData?.user_type === 'TALENT'
-              ? userDetailsData?.talent_info?.first_name || 'User'
-              : userDetailsData?.client_info?.first_name || 'User'}
+          <span className="user-name fw-bold" id="username">
+            {userName}
           </span>
+          {userName.length > 15 && (
+            <UncontrolledTooltip placement="right" target="username">
+              <div className="d-flex flex-column align-items-start">
+                <p className="m-0">{userName}</p>
+              </div>
+            </UncontrolledTooltip>
+          )}
           <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
         </div>
         <Avatar img={defaultAvatar} imgHeight="40" imgWidth="40" />
