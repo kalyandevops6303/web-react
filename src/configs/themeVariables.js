@@ -72,6 +72,7 @@ const greenBtnBg = 'rgba(40, 199, 111, 0.12)';
 const noDataFoundTextColor = '#2963c3';
 const infoColor = '#00CFE8';
 const secondaryColor = '#82868B';
+const cardBgBlue = '#a8dbff1f';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -148,5 +149,6 @@ const theme = {
   noDataFoundTextColor,
   info: infoColor,
   secondary: secondaryColor,
+  cardBgBlue,
 };
 export default theme;

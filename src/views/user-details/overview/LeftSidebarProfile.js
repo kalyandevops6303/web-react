@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { unionBy } from 'lodash';
 import { Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
@@ -52,23 +53,20 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               <CardText className="text-center user-name mb-50">{`${data?.first_name || '-'} ${
                 data?.last_name || '-'
               }`}</CardText>
-              <Button size="sm" outline color="primary" className="d-flex m-auto outline-btn mt-2 not-clickable">
-                {data?.role?.name || '-'}
-              </Button>
+
+              <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name}`}</CardText>
             </div>
           )}
           {!isEditable && !isClient && (
             <div className="public">
               <CardText className="text-center user-name mb-50 fw-300">{`${data?.first_name} ${data?.last_name}`}</CardText>
-              <Button size="sm" outline color="primary" className="d-flex m-auto outline-btn">
-                {data?.role?.name || '-'}
-              </Button>
+              <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name}`}</CardText>
             </div>
           )}
           {isClient && (
             <div className="public">
               <CardText className="text-center user-name mb-25 fw-300">{`${data?.company_name || '-'}`}</CardText>
-              <CardText className="text-center font-small-4 user-name mb-50 fw-300">{`${data?.first_name || '-'} ${
+              <CardText className="text-center mb-50 fw-bold">{`${data?.first_name || '-'} ${
                 data?.last_name || '-'
               }`}</CardText>
             </div>
@@ -142,7 +140,11 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                 <BadgeGroup color="light-blue" title="Certificates" data={data?.expertise?.certificates} />
                 <BadgeGroup color="light-blue" title="Skills" data={data?.expertise?.skills} />
                 <BadgeGroup color="light-blue" title="Tools" data={data?.expertise?.tools} />
-                <BadgeGroup color="light-success-2" title="Language" data={data?.languages_speak} />
+                <BadgeGroup
+                  color="light-success-2"
+                  title="Language"
+                  data={unionBy(data?.languages_speak, data?.languages_read, data?.languages_write, 'name')}
+                />
               </>
             )}
             <BadgeGroup

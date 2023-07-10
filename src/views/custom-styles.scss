@@ -15,6 +15,12 @@
     width: 78% !important;
     margin: 0 auto;
 }
+@media (max-width: 768px) {
+    .custom-modal-project-details {
+        width: 100% !important;
+    }
+
+}
 
 // Tooltip
 .show-more-popover-body {

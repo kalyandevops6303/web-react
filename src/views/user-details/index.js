@@ -72,10 +72,14 @@ const UserDetails = () => {
     return combined;
   };
 
-  const defaultBreadCrumb = [{ title: 'Profile', link: '#' }, { title: currentProfile?.first_name || 'User' }];
+  const defaultBreadCrumb = [
+    { title: 'Profile', link: '#' },
+    { title: `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User' },
+  ];
   const dynamicBreadCrumb = [
-    { title: capitalize(location?.state?.from), link: location?.state?.link },
-    { title: currentProfile?.first_name || 'User' },
+    { title: capitalize(location?.state?.from?.primary), link: location?.state?.link },
+    { title: capitalize(location?.state?.from?.secondary) },
+    { title: `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User' },
   ];
 
   if (loading) {

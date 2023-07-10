@@ -34,16 +34,20 @@ export const PasswordStrengthBarWrap = styled.div`
 export const OnBoardWrap = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
 
   // gif css
   .create-pw-gif {
     margin-right: 3rem;
+    height: 90vh;
   }
   .auth-gif {
     margin-right: 4rem;
+    height: 90vh;
   }
   .register-gif {
     margin-right: 10rem;
+    height: 90vh;
   }
 
   .logo-wrap {
@@ -81,7 +85,7 @@ export const OnBoardWrap = styled.div`
   .card-onboard {
     filter: drop-shadow(4px 8px 8px rgba(1, 133, 228, 0.12));
     box-shadow: 4px 8px 8px 0px rgba(1, 133, 228, 0.11999999731779099);
-    background: #a8dbff1f;
+    background: ${theme.cardBgBlue};
     border-radius: 32px;
     width: fit-content;
     left: 12%;
@@ -111,7 +115,7 @@ export const OnBoardWrap = styled.div`
     justify-content: center;
     gap: 0.5rem;
     align-items: center;
-    color: #0065c1;
+    color: ${theme.primary};
     font-weight: 600 !important;
     .google-img {
       height: 1.2rem;
@@ -121,7 +125,7 @@ export const OnBoardWrap = styled.div`
     margin-top: 0.8rem;
     gap: 0.5rem;
     .primary {
-      color: #0065c1;
+      color: ${theme.primary};
     }
   }
   .last-row {
@@ -156,6 +160,7 @@ export const OnBoardWrap = styled.div`
 `;
 export const UserTypeCard = styled.div`
   box-shadow: 0px 4px 14px rgba(0, 101, 193, 0.15);
+  background: white;
   border-radius: 6px;
   padding: 1.8rem 2.8rem;
   min-height: 8rem;
