@@ -39,19 +39,17 @@ const UserType = () => {
         <CardTitle tag="h2" className="card-title-onboard">
           Welcome! 👋🏻
         </CardTitle>
-        <CardText className="mb-3 card-text">Please select a user type</CardText>
-
         <UserTypeCard onClick={() => handleSelection('TALENT')} className="mt-3 text-center">
           <CardTitle color="primary" tag="h2" className="select-card-title">
             Talent
           </CardTitle>
-          <CardText className="card-text">Find clients and projects.</CardText>
+          <CardText className="card-text">Find projects and teams</CardText>
         </UserTypeCard>
         <UserTypeCard onClick={() => handleSelection('CLIENT')} className="text-center">
           <CardTitle color="blue" tag="h2" className="select-card-title">
             Client
           </CardTitle>
-          <CardText className="card-text">Find talent or project teams and hire for projects</CardText>
+          <CardText className="card-text">Hire great teams and talent</CardText>
         </UserTypeCard>
         <div className="mt-2 d-flex justify-content-center sign-info">
           <Label>

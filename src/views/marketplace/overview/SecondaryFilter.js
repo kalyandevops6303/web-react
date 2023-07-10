@@ -416,7 +416,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 <Select
                   options={sortingOptions}
                   classNamePrefix="select"
-                  placeholder="Select"
+                  placeholder="Select type"
                   theme={selectThemeColors}
                   onChange={onChangeSort}
                   value={
@@ -446,11 +446,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             )}
             {primaryFilter !== 'talents' && primaryFilter !== 'clients' && (
               <Col>
-                <Label className="form-label">Project types</Label>
+                <Label className="form-label">Payment type</Label>
                 <Select
                   options={projectTypesOptions}
                   classNamePrefix="select"
-                  placeholder="Project types"
+                  placeholder="Select type"
                   theme={selectThemeColors}
                   onChange={onChangeProjectType}
                   value={

@@ -22,7 +22,7 @@ const AvailableTime = () => {
     <TimeCardWrapper>
       <Card className="time-card">
         <CardHeader>
-          <CardTitle tag="h4">Available Time</CardTitle>
+          <CardTitle tag="h4">Availability</CardTitle>
           <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">Edit</CardText>
         </CardHeader>
         <CardBody>

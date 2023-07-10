@@ -51,36 +51,34 @@ const Alerts = () => {
           </CardBody>
         </Card>
 
-        <Card className="card-inside">
+        <Card className="card-inside d-none">
           <CardHeader>
             <CardTitle tag="h4">Upcoming Projects</CardTitle>
           </CardHeader>
           <CardBody className="d-flex justify-content-center align-items-center">
-            <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-              No projects !
-            </CardText>
+            <CardText className="text-center card-text font-small-4 mt-20 mb-2 text-primary">None available</CardText>
           </CardBody>
         </Card>
 
         {userDetailsData?.user_type === 'CLIENT' && (
           <>
-            <Card className="card-inside">
+            <Card className="card-inside d-none">
               <CardHeader>
                 <CardTitle tag="h4">Bid Submitted</CardTitle>
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
                 <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-                  No bids !
+                  None available
                 </CardText>
               </CardBody>
             </Card>
-            <Card className="card-inside">
+            <Card className="card-inside d-none">
               <CardHeader>
                 <CardTitle tag="h4">Upcoming Payments</CardTitle>
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
-                <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-                  No payments !
+                <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">
+                  None schdudled
                 </CardText>
               </CardBody>
             </Card>
@@ -115,13 +113,13 @@ const Alerts = () => {
                 )}
               </CardBody>
             </Card>
-            <Card className="card-inside">
+            <Card className="card-inside d-none">
               <CardHeader>
                 <CardTitle tag="h4">Team Invitations</CardTitle>
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
-                <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-                  No invitations !
+                <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">
+                  None received
                 </CardText>
               </CardBody>
             </Card>

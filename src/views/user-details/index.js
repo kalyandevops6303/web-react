@@ -69,7 +69,7 @@ const UserDetails = () => {
     return combined;
   };
 
-  const defaultBreadCrumb = [{ title: currentProfile?.first_name || 'User' }];
+  const defaultBreadCrumb = [{ title: 'Profile', link: '#' }, { title: currentProfile?.first_name || 'User' }];
   const dynamicBreadCrumb = [
     { title: capitalize(location?.state?.from), link: location?.state?.link },
     { title: currentProfile?.first_name || 'User' },
@@ -91,13 +91,18 @@ const UserDetails = () => {
         <Col lg="9">
           <Row>
             <Col lg="3">
-              <Statbox title="-" desc="Completed Projects" icon={<Check height={20} />} color="light-success" />
+              <Statbox
+                title={currentProfile?.projects_worked_on_count || 0}
+                desc="Completed Projects"
+                icon={<Check height={20} />}
+                color="light-success"
+              />
             </Col>
             {!isClient && (
               <Col lg="3">
                 <Statbox
                   title={`${currentProfile?.currency_preference?.code} ${currentProfile?.hourly_rate}`}
-                  desc="Hourly Billing Rate"
+                  desc="Hourly Rate"
                   icon={<DollarSign height={20} />}
                   color="light-warning"
                 />

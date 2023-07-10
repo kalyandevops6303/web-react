@@ -35,7 +35,7 @@ const Empty = ({ active, recommended, payment }) => (
         {payment && <CardText className="get-started">No Upcoming Payment</CardText>}
         {active ||
           (recommended && (
-            <div className="font-weight-normal text-center text-primary project-cta mt-25">No Projects</div>
+            <div className="font-weight-normal text-center text-primary project-cta mt-25">Explore Projects</div>
           ))}
       </CardBody>
     </Card>

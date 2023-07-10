@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import BgImage from '../../assets/images/onboard_bg.png';
 import theme from '../../configs/themeVariables';
 
 export const PasswordStrengthBarWrap = styled.div`
@@ -33,6 +32,20 @@ export const PasswordStrengthBarWrap = styled.div`
   }
 `;
 export const OnBoardWrap = styled.div`
+  display: flex;
+  justify-content: center;
+
+  // gif css
+  .create-pw-gif {
+    margin-right: 3rem;
+  }
+  .auth-gif {
+    margin-right: 4rem;
+  }
+  .register-gif {
+    margin-right: 10rem;
+  }
+
   .logo-wrap {
     display: flex;
     font-size: 14px;
@@ -61,13 +74,14 @@ export const OnBoardWrap = styled.div`
     font-weight: 500 !important;
   }
 
-  background-image: url(${BgImage});
   height: 100vh;
   width: 100%;
-  background-color: black;
+  background-color: white;
   background-size: cover;
   .card-onboard {
-    background: white;
+    filter: drop-shadow(4px 8px 8px rgba(1, 133, 228, 0.12));
+    box-shadow: 4px 8px 8px 0px rgba(1, 133, 228, 0.11999999731779099);
+    background: #a8dbff1f;
     border-radius: 32px;
     width: fit-content;
     left: 12%;

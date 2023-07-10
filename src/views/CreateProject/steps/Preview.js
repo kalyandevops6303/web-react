@@ -285,13 +285,13 @@ const Preview = ({
           <Row className="mb-2">
             <Col sm="12" md="12" lg="6">
               <h4 className="fw-bolder">{projectDetails?.currencyType?.label}</h4>
-              <p className="font-medium-1 fw-normal">Currency Type</p>
+              <p className="font-medium-1 fw-normal">Currency</p>
             </Col>
             <Col sm="12" md="6" lg="3">
               <h4 className="fw-bolder">
                 {projectDetails?.projectPayType === 'variable-price'
-                  ? 'Variable Pay'
-                  : `Fixed Pay - ${projectDetails?.currencyType?.value?.code} ${projectDetails?.projectFixedCost}`}{' '}
+                  ? 'Variable'
+                  : `Fixed - ${projectDetails?.currencyType?.value?.code} ${projectDetails?.projectFixedCost}`}{' '}
               </h4>
               <p className="font-medium-1 fw-normal">Payment Type</p>
             </Col>
@@ -378,7 +378,7 @@ const Preview = ({
       {files && files.length > 0 && fileList()}
       <Card>
         <CardHeader>
-          <h4 className="m-0 mt-1">Requirements</h4>
+          <h4 className="m-0 mt-1">Requirement Details</h4>
         </CardHeader>
         <hr className="m-0 card-header-border" />
         <CardBody>
@@ -397,10 +397,9 @@ const Preview = ({
               projectDetails?.excludedCountriesSelection?.length > 0) && (
               <Row>
                 <p>
-                  Country -{' '}
                   {projectDetails?.includeOrExcludeCountries === 'include-countries'
-                    ? 'Include Countries'
-                    : 'Exclude Countries'}
+                    ? 'Included Countries'
+                    : 'Excluded Countries'}
                 </p>
                 {projectDetails?.includeOrExcludeCountries === 'include-countries'
                   ? countriesList(projectDetails?.includedCountriesSelection)

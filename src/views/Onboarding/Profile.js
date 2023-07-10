@@ -424,7 +424,7 @@ const Profile = ({ tabNames, toggleTab }) => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder="Enter your tagline in 60 character."
+                      placeholder="Enter tagline in 60 characters or less"
                       invalid={errors.tagline && true}
                     />
                   )}

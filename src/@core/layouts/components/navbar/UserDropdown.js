@@ -1,5 +1,5 @@
 // ** React Imports
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 // ** Custom Components
 import Avatar from '@components/avatar';
@@ -17,12 +17,15 @@ import { userData } from '../../../../redux/selectors/dashboardSelectors';
 
 import { logoutAction } from '../../../../redux/actions/authActions';
 import { capitalize } from 'lodash';
+import styled from 'styled-components';
+import theme from '../../../../configs/themeVariables';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(userData);
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleLogout = () => {
     const onSuccess = () => {
@@ -31,6 +34,20 @@ const UserDropdown = () => {
 
     dispatch(logoutAction({ fcmToken, onSuccess }));
   };
+  const LineWrapper = styled.div`
+    position: relative;
+    .line {
+      height: 2px;
+      background: ${theme.activeColor};
+      width: 90%;
+      position: absolute;
+      bottom: -12px;
+      margin: auto;
+      left: 0;
+      right: 0;
+    }
+  `;
+
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
@@ -44,6 +61,13 @@ const UserDropdown = () => {
         </div>
         <Avatar img={defaultAvatar} imgHeight="40" imgWidth="40" />
       </DropdownToggle>
+
+      {location?.pathname?.split?.('/')?.[3] === userDetailsData?._id && (
+        <LineWrapper>
+          <div className="line"></div>
+        </LineWrapper>
+      )}
+
       <DropdownMenu end>
         <DropdownItem tag={Link} to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}>
           <User size={14} className="me-75" />

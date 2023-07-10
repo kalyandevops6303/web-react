@@ -2,15 +2,13 @@ import React from 'react';
 import { Card, CardBody, CardHeader, CardText, CardTitle } from 'reactstrap';
 
 const Disputes = () => (
-  <Card>
+  <Card className="d-none">
     <CardHeader>
       <CardTitle tag="h4">Disputes</CardTitle>
       <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">View All</CardText>
     </CardHeader>
     <CardBody className="pt-1 pb-5">
-      <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-        No dispute raised !
-      </CardText>
+      <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">None raised</CardText>
     </CardBody>
   </Card>
 );

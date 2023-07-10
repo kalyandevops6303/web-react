@@ -52,7 +52,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               <CardText className="text-center user-name mb-50">{`${data?.first_name || '-'} ${
                 data?.last_name || '-'
               }`}</CardText>
-              <Button size="sm" outline color="primary" className="d-flex m-auto outline-btn mt-2">
+              <Button size="sm" outline color="primary" className="d-flex m-auto outline-btn mt-2 not-clickable">
                 {data?.role?.name || '-'}
               </Button>
             </div>
@@ -88,20 +88,15 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
             </div>
           )}
           {isEditable && (
-            <>
-              <div className="profile-completion mt-2">
-                <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
-                <Progress
-                  style={{ height: '0.4rem', borderRadius: '6px' }}
-                  className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
-                  value={profilePercentageData?.profile_completed}
-                />
-                <CardText className="font-small-3 mt-25">Profile Completion</CardText>
-              </div>
-              <CardText className="text-center text-decoration-underline card-text me-25 mt-1 mb-1 text-primary">
-                Update Profile
-              </CardText>
-            </>
+            <div className="profile-completion mt-2">
+              <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
+              <Progress
+                style={{ height: '0.4rem', borderRadius: '6px' }}
+                className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
+                value={profilePercentageData?.profile_completed}
+              />
+              <CardText className="font-small-3 mt-25">Profile Completion</CardText>
+            </div>
           )}
           <section className="user-details mt-2">
             <CardTitle className="info-detail-title main mb-75">Details</CardTitle>
@@ -152,7 +147,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
             )}
             <BadgeGroup
               color="light-success-2"
-              title="Available time zone"
+              title="Time zone"
               data={[
                 {
                   name:
@@ -246,17 +241,18 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                 </Button>
               </div>
             ) : (
-              <>
-                <div className="d-flex gap-1 mt-3">
-                  <Button className="w-100" outline color="primary">
+              // To be taken for team memebers
+              <div className="d-none">
+                <div className="d-flex gap-1 mt-3 justify-content-center">
+                  <Button className="w-50" outline color="primary">
                     Invite
                   </Button>
-                  <Button className="w-100" color="primary">
+                  <Button className="w-50" color="primary">
                     Message
                   </Button>
                 </div>
                 <CardText className="report-text m-0 text-center mt-1 fw-bold">Report</CardText>
-              </>
+              </div>
             )}
           </section>
         </CardBody>

@@ -54,7 +54,7 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP }) => {
         <small>Resend</small>
       </Label>
       <Label className={`primary ${countdown === 0 && 'cursor-pointer'}`}>
-        <small>OTP</small>
+        <small>Code</small>
       </Label>
       {countdown !== 0 && (
         <Label>
