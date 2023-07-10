@@ -1,5 +1,10 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-nested-ternary */
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import AuthGIF from '@src/assets/images/gifs/auth.gif';
+import RegisterGIF from '@src/assets/images/gifs/register.gif';
+import CreatePWGIF from '@src/assets/images/gifs/create_pw.gif';
 import Spinner from '../../@core/components/spinner/Fallback-spinner';
 import { OnBoardWrap } from './style';
 
@@ -61,6 +66,17 @@ const AuthRoute = () => {
       element: <SetNewPassword />,
     },
   ];
+  const renderGif = () => {
+    const currentPath = window.location.pathname;
+
+    if (currentPath === '/auth/set-new-password' || currentPath === '/auth/set-password') {
+      return <img src={CreatePWGIF} alt="bg-gif" className="create-pw-gif" />;
+    }
+    if (currentPath === '/auth/login' || currentPath === '/auth') {
+      return <img src={AuthGIF} alt="bg-gif" className="me-8 auth-gif" />;
+    }
+    return <img src={RegisterGIF} alt="bg-gif" className="me-8 register-gif" />;
+  };
   return (
     <OnBoardWrap>
       <Suspense fallback={<Spinner />}>
@@ -70,6 +86,7 @@ const AuthRoute = () => {
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
         </Routes>
+        {window.innerWidth > 1024 && renderGif()}
       </Suspense>
     </OnBoardWrap>
   );

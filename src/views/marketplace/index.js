@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import { Link, Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import { Button } from 'reactstrap';
+import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { getItem } from '../../utility/localStorageControl';
+import { userData } from '../../redux/selectors/dashboardSelectors';
 
 const MarketPlaceContainer = styled.div`
   .marketplace-search {
@@ -22,6 +25,7 @@ const MarketPlaceContainer = styled.div`
 `;
 
 const MarketPlace = () => {
+  const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
   const navigate = useNavigate();
   // Primary filters
@@ -43,19 +47,29 @@ const MarketPlace = () => {
   };
 
   // const userData = useSelector(selectAuthUserData);
-  const userData = getItem('userData');
+  const userDataLocal = getItem('userData');
 
   // eslint-disable-next-line react/no-unstable-nested-components
-  const SecondComp = () => <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
+  const SecondComp = () => <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />;
 
   return (
     <MarketPlaceContainer>
-      <BreadCrumbs data={[{ title: 'Marketplace' }]} />
+      <div className="d-flex justify-content-between">
+        <BreadCrumbs data={[{ title: 'Marketplace' }]} />
+
+        {userDetailsData?.user_type === 'CLIENT' && (
+          <Link to="/create-project">
+            <Button as="link" color="primary">
+              Create Project
+            </Button>
+          </Link>
+        )}
+      </div>
       <PrimaryFilter
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}
         isTab={isTab}
-        userType={userData?.user_type}
+        userType={userDataLocal?.user_type}
       />
       <Routes>
         <Route path="all_listings" element={<SecondComp />} />
