@@ -40,8 +40,9 @@ const errorHandler = (err, callBack) => {
       err?.message === 'CORS error'
     ) {
       ShowToastMessage(ERROR, 'Unable to process request');
-
-      handleError(err, callBack);
+      if (callBack) {
+        dispatch(callBack(err));
+      }
     } else {
       handleError(err, callBack);
     }

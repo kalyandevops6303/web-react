@@ -32,6 +32,9 @@ const ThemeNavbar = (props) => {
     .navbar-brand {
       margin: auto 0;
       .brand-logo {
+        font-size: 14px;
+        display: flex;
+        align-items: center;
         img {
           max-height: 30px;
         }
@@ -88,6 +91,7 @@ const ThemeNavbar = (props) => {
       <Link to={userData ? '/dashboard' : '/auth'} className="navbar-brand">
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
+          <span className="ms-25 mt-25">v0.0.1</span>
         </span>
       </Link>
 

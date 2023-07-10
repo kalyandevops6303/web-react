@@ -33,6 +33,10 @@ export const PasswordStrengthBarWrap = styled.div`
   }
 `;
 export const OnBoardWrap = styled.div`
+  .logo-wrap {
+    display: flex;
+    font-size: 14px;
+  }
   .auth-edit {
     color: ${theme.primary};
     text-decoration: underline;

@@ -7,9 +7,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
-// ** Icons Imports
-import Logo from '@src/assets/images/ic_trumio_logo.png';
-
 // ** Reactstrap Imports
 import { CardTitle, Label, Form, Input, Button, FormFeedback, Spinner } from 'reactstrap';
 
@@ -25,6 +22,7 @@ import { loginUser } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
+import LogoComp from './components/LogoComp';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -81,7 +79,7 @@ const Login = () => {
   return (
     <OnBoardWrap isLoginPage={window.location.pathname === '/login'}>
       <div className="card-onboard">
-        <img alt="logo" src={Logo} className="card-logo" />
+        <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
           Welcome Back! 👋🏻{' '}
         </CardTitle>
@@ -151,7 +149,6 @@ const Login = () => {
         <div className="divider my-2">
           <div className="divider-text">Or</div>
         </div>
-
         <SigninWithGoogle title="Sign In" />
         <div className="d-flex justify-content-center sign-info">
           <Label>

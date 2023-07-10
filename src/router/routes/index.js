@@ -35,6 +35,8 @@ const ClientOnboarding = lazy(() => import('../../views/Onboarding/Client'));
 const CreateProject = lazy(() => import('../../views/CreateProject'));
 const Notifications = lazy(() => import('../../views/notifications'));
 const MarketPlace = lazy(() => import('../../views/marketplace'));
+const Search = lazy(() => import('../../views/search'));
+
 // ** Merge Routes
 const Routes = [
   {
@@ -45,6 +47,10 @@ const Routes = [
   {
     path: '/dashboard',
     element: <PrivateDashboard />,
+  },
+  {
+    path: '/search',
+    element: <Search />,
   },
   {
     path: '/profile/:userType/:userId',

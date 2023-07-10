@@ -7,15 +7,13 @@ import { useDispatch } from 'react-redux';
 // ** Reactstrap Imports
 import { CardTitle, CardText, Label } from 'reactstrap';
 
-// ** Illustrations Imports
-import Logo from '@src/assets/images/ic_trumio_logo.png';
-
 // ** Custom Components
 import { OnBoardWrap, UserTypeCard } from './style';
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
 import { setUserType } from '../../redux/actions/authActions';
+import LogoComp from './components/LogoComp';
 
 const UserType = () => {
   const dispatch = useDispatch();
@@ -29,7 +27,7 @@ const UserType = () => {
   return (
     <OnBoardWrap>
       <div className="card-onboard">
-        <img alt="logo" src={Logo} className="card-logo" />
+        <LogoComp />
         <CardTitle tag="h2" className="card-title-onboard">
           Welcome! 👋🏻
         </CardTitle>

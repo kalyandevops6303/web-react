@@ -10,6 +10,7 @@ import navbar from './navbar';
 import profile from './reducers/profile';
 import createProject from './reducers/createProject';
 import marketPlace from './reducers/marketPlace';
+import gloabalSearch from './reducers/gloabalSearch';
 import notifications from './reducers/notifications';
 
 const rootReducer = combineReducers({
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   notifications,
   layout,
   navbar,
+  search: gloabalSearch,
 
   // Add more reducers if needed
 });
