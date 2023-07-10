@@ -4,7 +4,7 @@ import { AlertCardWrapper } from './style';
 import NoMeeting from '../../../assets/images/meetings.gif';
 
 const Meetings = () => (
-  <AlertCardWrapper>
+  <AlertCardWrapper className="d-none">
     <Card>
       <CardHeader className="earning-head">
         <CardTitle tag="h4">Meetings</CardTitle>

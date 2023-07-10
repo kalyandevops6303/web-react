@@ -88,20 +88,15 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
             </div>
           )}
           {isEditable && (
-            <>
-              <div className="profile-completion mt-2">
-                <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
-                <Progress
-                  style={{ height: '0.4rem', borderRadius: '6px' }}
-                  className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
-                  value={profilePercentageData?.profile_completed}
-                />
-                <CardText className="font-small-3 mt-25">Profile Completion</CardText>
-              </div>
-              <CardText className="text-center text-decoration-underline card-text me-25 mt-1 mb-1 text-primary">
-                Update Profile
-              </CardText>
-            </>
+            <div className="profile-completion mt-2">
+              <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
+              <Progress
+                style={{ height: '0.4rem', borderRadius: '6px' }}
+                className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
+                value={profilePercentageData?.profile_completed}
+              />
+              <CardText className="font-small-3 mt-25">Profile Completion</CardText>
+            </div>
           )}
           <section className="user-details mt-2">
             <CardTitle className="info-detail-title main mb-75">Details</CardTitle>
@@ -246,7 +241,8 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                 </Button>
               </div>
             ) : (
-              <>
+              // To be taken for team memebers
+              <div className="d-none">
                 <div className="d-flex gap-1 mt-3 justify-content-center">
                   <Button className="w-50" outline color="primary">
                     Invite
@@ -256,7 +252,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                   </Button>
                 </div>
                 <CardText className="report-text m-0 text-center mt-1 fw-bold">Report</CardText>
-              </>
+              </div>
             )}
           </section>
         </CardBody>

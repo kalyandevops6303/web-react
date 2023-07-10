@@ -1,18 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
+import { Card, CardBody, CardTitle, Col, Row } from 'reactstrap';
 import { RecentProjectsWrap } from './style';
 import Project from './Project';
 
-const RecentProjects = ({ isEditable }) => (
+const RecentProjects = () => (
   <RecentProjectsWrap>
     <Card>
       <CardBody>
         <div className="d-flex justify-content-between">
           <CardTitle className="fw-bolder">Recent Projects</CardTitle>
-          <CardText className="text-decoration-underline fw-bolder card-text font-small-3 text-edit">
-            {isEditable ? 'Edit' : 'View'} Portfolio
-          </CardText>
         </div>
         <h4 className="text-center font-small-4 empty">No projects to show</h4>
         <Row className="d-none">
@@ -45,10 +41,6 @@ const RecentProjects = ({ isEditable }) => (
     </Card>
   </RecentProjectsWrap>
 );
-RecentProjects.propTypes = {
-  isEditable: PropTypes.bool,
-};
-RecentProjects.defaultProps = {
-  isEditable: false,
-};
+RecentProjects.propTypes = {};
+RecentProjects.defaultProps = {};
 export default RecentProjects;

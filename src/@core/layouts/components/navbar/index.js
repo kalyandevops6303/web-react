@@ -53,7 +53,7 @@ const ThemeNavbar = (props) => {
     }
     .is-active {
       font-weight: 600;
-      border-bottom: 3px solid ${theme.activeColor};
+      border-bottom: 2px solid ${theme.activeColor};
       color: ${theme.activeColor};
       &:hover {
         color: ${theme.activeColor};
@@ -97,17 +97,16 @@ const ThemeNavbar = (props) => {
 
       <NavLink
         className={({ isActive }) => (isActive ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'}
-        onClick={() => setMenuVisibility(true)}
         to="/dashboard"
       >
         Dashboard
       </NavLink>
       <NavLink
         className={
-          (location?.pathname?.split('/')?.[1] === 'marketplace' ? 'is-active' : '') +
-          ' menu-item nav-menu-main menu-toggle hidden-xs'
+          (location?.pathname?.split('/')?.[1] === 'marketplace' || location?.state?.from === 'Marketplace'
+            ? 'is-active'
+            : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
         }
-        onClick={() => setMenuVisibility(true)}
         to="/marketplace/all_listings"
       >
         Marketplace

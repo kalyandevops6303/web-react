@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
+import BreadCrumbs from '@components/breadcrumbs';
 import EarningCard from './overview/Earning';
 import RewardsCard from './overview/Reward';
 import AvailableTime from './overview/AvailableTime';
@@ -17,8 +18,10 @@ const PrivateDashboard = () => {
 
   return (
     <div>
-      <Header isTopCards className="d-flex justify-content-between">
-        Dashboard
+      <div className="d-flex justify-content-between">
+        {/* Dashboard */}
+        <BreadCrumbs data={[{ title: 'Dashboard' }]} />
+
         {userDetailsData?.user_type === 'CLIENT' && (
           <Link to="/create-project">
             <Button as="link" color="primary">
@@ -26,7 +29,7 @@ const PrivateDashboard = () => {
             </Button>
           </Link>
         )}
-      </Header>
+      </div>
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />

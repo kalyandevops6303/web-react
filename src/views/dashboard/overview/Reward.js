@@ -45,7 +45,7 @@ const RewardsCard = ({ cols }) => {
       <Card className="card-reward">
         <CardHeader>
           <CardTitle tag="h4">Rewards</CardTitle>
-          <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
+          <CardText className="d-none text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
             View All
           </CardText>
         </CardHeader>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardBody, CardHeader, CardText, CardTitle } from 'reactstrap';
 
 const Disputes = () => (
-  <Card>
+  <Card className="d-none">
     <CardHeader>
       <CardTitle tag="h4">Disputes</CardTitle>
       <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">View All</CardText>

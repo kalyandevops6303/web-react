@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 
 // ** Third Party Components
 import Proptypes from 'prop-types';
-import classnames from 'classnames';
-import { Grid, CheckSquare, MessageSquare, Mail, Calendar } from 'react-feather';
+import { Home } from 'react-feather';
 
 // ** Reactstrap Imports
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import theme from '../../../configs/themeVariables';
 
 const BreadCrumbs = (props) => {
   // ** Props
@@ -32,14 +32,16 @@ const BreadCrumbs = (props) => {
   };
 
   return (
-    <div className="content-header row">
+    <div className="content-header row" style={{ display: 'contents' }}>
       <div className="content-header-left col-md-9 col-12 mb-2">
         <div className="row breadcrumbs-top">
           <div className="col-12">
             <div className="breadcrumb-wrapper vs-breadcrumbs d-sm-block d-none col-12">
               <Breadcrumb>
                 <BreadcrumbItem tag="li">
-                  <Link to="/dashboard">Dashboard</Link>
+                  <Link to="/dashboard">
+                    <Home className="mb-25" color={theme.activeColor} size={14} />
+                  </Link>
                 </BreadcrumbItem>
                 {renderBreadCrumbs()}
               </Breadcrumb>

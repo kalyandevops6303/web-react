@@ -19,7 +19,7 @@ const EarningCard = () => {
       <Card className="card-reward">
         <CardHeader className="earning-head">
           <CardTitle tag="h4">{userDetailsData?.user_type === 'TALENT' ? 'Earnings' : 'Payments'}</CardTitle>
-          <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
+          <CardText className="d-none text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
             View All
           </CardText>
         </CardHeader>
