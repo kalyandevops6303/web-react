@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, lazy } from 'react';
+import { Fragment } from 'react';
 import { Navigate } from 'react-router-dom';
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout';
@@ -12,6 +12,17 @@ import PublicRoute from '@components/routes/PublicRoute';
 
 // ** Utils
 import { isObjEmpty } from '@utils';
+
+import PrivateDashboard from '../../views/dashboard/PrivateDashboard';
+import UserDetails from '../../views/user-details';
+import SecondPage from '../../views/SecondPage';
+import AuthRoute from '../../views/auth/index';
+import TalentOnboarding from '../../views/Onboarding/Talent';
+import ClientOnboarding from '../../views/Onboarding/Client';
+import CreateProject from '../../views/CreateProject';
+import MarketPlace from '../../views/marketplace';
+import Search from '../../views/search';
+import Notifications from '../../views/notifications';
 import ComingSoon from '../../views/auth/ComingSoon';
 
 const getLayout = {
@@ -25,17 +36,6 @@ const TemplateTitle = '%s - Vuexy React Admin Template';
 
 // ** Default Route
 const DefaultRoute = '/auth';
-
-const PrivateDashboard = lazy(() => import('../../views/dashboard/PrivateDashboard'));
-const UserDetails = lazy(() => import('../../views/user-details'));
-const SecondPage = lazy(() => import('../../views/SecondPage'));
-const AuthRoute = lazy(() => import('../../views/auth/index'));
-const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
-const ClientOnboarding = lazy(() => import('../../views/Onboarding/Client'));
-const CreateProject = lazy(() => import('../../views/CreateProject'));
-const MarketPlace = lazy(() => import('../../views/marketplace'));
-const Search = lazy(() => import('../../views/search'));
-const Notifications = lazy(() => import('../../views/notifications'));
 
 // ** Merge Routes
 const Routes = [
