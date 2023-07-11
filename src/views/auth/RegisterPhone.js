@@ -70,7 +70,7 @@ const RegisterPhone = () => {
       dispatch(
         registerPhone({
           phone: values.mobile.replace(/[^\d]/g, ''),
-          country_code: selectedCountry.dial_code.slice(1),
+          country_code: selectedCountry.dial_code,
           selectedCountry,
           onSuccess,
         }),
@@ -118,7 +118,7 @@ const RegisterPhone = () => {
           </FormGroup>
 
           <Button color="primary" block type="submit" disabled={!mobileValue || isLoading}>
-            {isLoading ? <Spinner size="sm" /> : 'Send OTP'}
+            {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>
         </Form>
         <div className="d-flex justify-content-center sign-info">
