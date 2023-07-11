@@ -1,10 +1,11 @@
-import { Briefcase, Calendar, Check, DollarSign } from 'react-feather';
+import { Briefcase, Calendar, Check } from 'react-feather';
 import { useLocation, useParams } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { capitalize, round } from 'lodash';
 import { Col, Row } from 'reactstrap';
+import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from './overview/Statbox';
 import LeftSidebarProfile from './overview/LeftSidebarProfile';
 import UserBio from './overview/UserBio';
@@ -74,8 +75,8 @@ const UserDetails = () => {
     { title: `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User' },
   ];
   const dynamicBreadCrumb = [
-    { title: capitalize(location?.state?.from?.primary), link: location?.state?.link },
-    { title: capitalize(location?.state?.from?.secondary) },
+    { title: capitalize(location?.state?.from?.primary?.title), link: location?.state?.from?.primary?.link },
+    { title: capitalize(location?.state?.from?.secondary?.title), link: location?.state?.from?.secondary?.link },
     { title: `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User' },
   ];
 
@@ -107,7 +108,7 @@ const UserDetails = () => {
                 <Statbox
                   title={`${currentProfile?.currency_preference?.code} ${currentProfile?.hourly_rate}`}
                   desc="Hourly Rate"
-                  icon={<DollarSign height={20} />}
+                  icon={<img src={MoneyIcon} height={22} alt="money" />}
                   color="light-warning"
                 />
               </Col>

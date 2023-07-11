@@ -123,7 +123,7 @@ export const AccountImageContainer = styled.div`
   justify-content: center;
   align-items: center;
   img {
-    height: inherit;
+    height: 5rem;
   }
 `;
 
