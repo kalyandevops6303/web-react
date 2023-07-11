@@ -62,7 +62,7 @@ const Preview = ({
       .replace(',', '')
       .split(' ');
 
-    return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2].slice(2, 4)}`;
+    return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
   };
 
   const fileList = () => (

@@ -16,11 +16,11 @@ const Listing = ({ stepper, setListingDetails }) => {
     listingOption: yup.string().required('Choose one option'),
     startDate: yup.date().when('listingOption', {
       is: (listingOption) => listingOption === 'select-duration',
-      then: () => yup.date().required('Start date is required'),
+      then: () => yup.date().typeError('Start date is required').required('Start date is required'),
     }),
     endDate: yup.date().when('listingOption', {
       is: (listingOption) => listingOption === 'select-duration',
-      then: () => yup.date().required('End date is required'),
+      then: () => yup.date().typeError('End date is required').required('End date is required'),
     }),
     duration: yup.number().when('listingOption', {
       is: (listingOption) => listingOption === 'enter-duration',
@@ -29,6 +29,7 @@ const Listing = ({ stepper, setListingDetails }) => {
           .number()
           .min(1, 'No. of days must be atleast 1')
           .max(90, 'No. of days must be at most 90')
+          .integer('Must be a number')
           .required('No. of days is required')
           .typeError('No. of days must be a number'),
     }),
@@ -48,8 +49,22 @@ const Listing = ({ stepper, setListingDetails }) => {
   });
 
   const onSubmit = () => {
-    trigger();
-    if (watch('listingOption') === 'select-duration' && watch('startDate') && watch('endDate')) {
+    if (!watch('listingOption')) {
+      trigger('listingOption');
+    } else if (watch('listingOption') === 'select-duration') {
+      trigger('startDate');
+      trigger('endDate');
+    } else if (watch('listingOption') === 'enter-duration') {
+      trigger('duration');
+    }
+
+    if (
+      watch('listingOption') === 'select-duration' &&
+      watch('startDate') &&
+      watch('startDate')?.length > 0 &&
+      watch('endDate') &&
+      watch('endDate')?.length > 0
+    ) {
       const requiredFormData = {
         listingOption: watch('listingOption'),
         startDate: new Date(watch('startDate')),
@@ -155,7 +170,8 @@ const Listing = ({ stepper, setListingDetails }) => {
                       options={{
                         minDate: watch('startDate') ? watch('startDate')[0] : 'today',
                         maxDate: watch('startDate')
-                          ? new Date(watch('startDate')[0]).setMonth(watch('startDate')[0].getMonth() + 3)
+                          ? // eslint-disable-next-line no-unsafe-optional-chaining
+                            new Date(watch('startDate')[0]).setMonth(watch('startDate')[0]?.getMonth() + 3)
                           : 'today',
                         dateFormat: 'd-m-Y',
                       }}
