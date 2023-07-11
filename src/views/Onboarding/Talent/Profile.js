@@ -53,13 +53,13 @@ const Profile = () => {
     tagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
     workExperienceYear: yup
       .number()
-      .min(0)
+      .min(0, 'Year cannot be negative')
       .integer('Year must be a number')
       .typeError('Year must be a number')
       .transform((value) => (Number.isNaN(value) ? undefined : value)),
     workExperienceMonth: yup
       .number()
-      .min(0)
+      .min(0, 'Month cannot be negative')
       .max(11, 'Month must be 11 or less')
       .integer('Month must be a number')
       .typeError('Month must be a number')
