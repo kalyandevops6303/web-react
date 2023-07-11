@@ -34,7 +34,7 @@ const authSlice = createSlice({
       isResendLoading: false,
       error: null,
       fcmToken: '',
-      userType: '',
+      userType: null,
     }),
 
     logOut: () => ({

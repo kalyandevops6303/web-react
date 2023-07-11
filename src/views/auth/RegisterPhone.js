@@ -32,6 +32,7 @@ const RegisterPhone = () => {
       label: 'United States',
       dial_code: '+1',
       code: 'US',
+      _id: '6479c2071183add75cda4e37',
     },
   );
 
@@ -68,7 +69,7 @@ const RegisterPhone = () => {
     } else {
       dispatch(
         registerPhone({
-          phone: values.mobile,
+          phone: values.mobile.replace(/[^\d]/g, ''),
           country_code: selectedCountry.dial_code.slice(1),
           selectedCountry,
           onSuccess,
