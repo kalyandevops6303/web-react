@@ -54,28 +54,26 @@ const Notifications = () => {
     <>
       <div className="d-flex justify-content-between mb-2 mt-1">
         <h2>Notifications</h2>
-        {notificationsData?.data?.length > 0 && (
-          <Row className="mt-2 w-100 justify-content-end">
-            <Col sm="6" md="4" lg="2">
-              <Label>Priority</Label>
-              <Select
-                options={[
-                  { label: 'All Priorities', value: '' },
-                  { label: 'Priority 1', value: 'PRIORITY_1' },
-                  { label: 'Priority 2', value: 'PRIORITY_2' },
-                  { label: 'Priority 3', value: 'PRIORITY_3' },
-                  { label: 'Priority 4', value: 'PRIORITY_4' },
-                ]}
-                value={selectedPriority}
-                classNamePrefix="select"
-                placeholder="Select priority"
-                theme={selectThemeColors}
-                className="react-select"
-                onChange={(option) => onPriorityChange(option)}
-              />
-            </Col>
-          </Row>
-        )}
+        <Row className="mt-2 w-100 justify-content-end">
+          <Col sm="6" md="4" lg="2">
+            <Label>Priority</Label>
+            <Select
+              options={[
+                { label: 'All Priorities', value: '' },
+                { label: 'Priority 1', value: 'PRIORITY_1' },
+                { label: 'Priority 2', value: 'PRIORITY_2' },
+                { label: 'Priority 3', value: 'PRIORITY_3' },
+                { label: 'Priority 4', value: 'PRIORITY_4' },
+              ]}
+              value={selectedPriority}
+              classNamePrefix="select"
+              placeholder="Select priority"
+              theme={selectThemeColors}
+              className="react-select"
+              onChange={(option) => onPriorityChange(option)}
+            />
+          </Col>
+        </Row>
       </div>
 
       <InfiniteScroll

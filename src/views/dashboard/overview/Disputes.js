@@ -11,7 +11,7 @@ const Disputes = () => (
     </CardHeader>
     <CardBody className="pt-1 pb-5">
       <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-        No Dispute raised !
+        No dispute raised !
       </CardText>
     </CardBody>
   </Card>

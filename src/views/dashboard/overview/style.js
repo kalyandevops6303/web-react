@@ -7,6 +7,7 @@ const RewardCardWrapper = styled(CardWrapper)`
     padding: 0.5rem 1.5rem 1rem 1.8rem !important;
   }
   .card-reward {
+    min-height: 191.95px;
     p {
       line-height: inherit;
     }
@@ -67,7 +68,7 @@ const TimeCardWrapper = styled(CardWrapper)`
     padding: 0.5rem 1.6rem 1rem 1.7rem !important;
   }
   .time-card {
-    min-height: 192px;
+    min-height: 191.95px;
     .card-body {
       font-size: 13.5px;
     }

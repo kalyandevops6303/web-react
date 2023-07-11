@@ -150,6 +150,17 @@ export const giveStrokeColor = (percentage) => {
   }
 };
 
+export const giveProgressBarColorClassName = (percentage) => {
+  if (percentage <= 40) {
+    return 'progress-bar-danger';
+    // eslint-disable-next-line
+  } else if (percentage > 40 && percentage <= 70) {
+    return 'progress-bar-warning';
+  } else {
+    return 'progress-bar-success';
+  }
+};
+
 export const formatDateWithDash = (date) => {
   if (!date) {
     return undefined;

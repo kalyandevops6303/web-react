@@ -191,14 +191,18 @@ const Preview = ({
       timezone: projectDetails?.preferredWorkingTimeZone.value._id,
       time_overlap: projectDetails?.minTimeOverlapHr,
       weekdays_avl: {
-        start_time: projectDetails?.weekdayStartTime?.value,
-        end_time: projectDetails?.weekdayEndTime?.value,
-        days: projectDetails?.weekdays,
+        start_time: projectDetails?.availabilityDays?.includes('weekdays')
+          ? projectDetails?.weekdayStartTime?.value
+          : null,
+        end_time: projectDetails?.availabilityDays?.includes('weekdays') ? projectDetails?.weekdayEndTime?.value : null,
+        days: projectDetails?.availabilityDays?.includes('weekdays') ? projectDetails?.weekdays : null,
       },
       weekends_avl: {
-        start_time: projectDetails?.weekendStartTime?.value,
-        end_time: projectDetails?.weekendEndTime?.value,
-        days: projectDetails?.weekends,
+        start_time: projectDetails?.availabilityDays?.includes('weekends')
+          ? projectDetails?.weekendStartTime?.value
+          : null,
+        end_time: projectDetails?.availabilityDays?.includes('weekends') ? projectDetails?.weekendEndTime?.value : null,
+        days: projectDetails?.availabilityDays?.includes('weekends') ? projectDetails?.weekends : null,
       },
     };
     const countries = {

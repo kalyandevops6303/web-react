@@ -33,9 +33,9 @@ const AuthRoute = lazy(() => import('../../views/auth/index'));
 const TalentOnboarding = lazy(() => import('../../views/Onboarding/Talent'));
 const ClientOnboarding = lazy(() => import('../../views/Onboarding/Client'));
 const CreateProject = lazy(() => import('../../views/CreateProject'));
-const Notifications = lazy(() => import('../../views/notifications'));
 const MarketPlace = lazy(() => import('../../views/marketplace'));
 const Search = lazy(() => import('../../views/search'));
+const Notifications = lazy(() => import('../../views/notifications'));
 
 // ** Merge Routes
 const Routes = [
@@ -75,14 +75,6 @@ const Routes = [
   {
     path: '/coming-soon',
     element: <ComingSoon />,
-    meta: {
-      layout: 'blank',
-    },
-  },
-
-  {
-    path: '/auth/*',
-    element: <AuthRoute />,
     meta: {
       layout: 'blank',
     },

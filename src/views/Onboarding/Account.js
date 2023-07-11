@@ -35,11 +35,13 @@ const Account = () => {
       .string()
       .min(3, 'First name must be at least 3 characters')
       .max(25, 'First name must be at most 25 characters')
+      .matches(/^[a-zA-Z0-9 _]+$/, 'First name should not contain special characters')
       .required('First name is required'),
     lastName: yup
       .string()
       .min(3, 'Last name must be at least 3 characters')
       .max(25, 'Last name must be at most 25 characters')
+      .matches(/^[a-zA-Z0-9 _]+$/, 'Last name should not contain special characters')
       .required('Last name is required'),
     countryCode: yup.string().required(),
     mobileNumber: yup.string().required(),
@@ -78,7 +80,7 @@ const Account = () => {
 
   const onSubmit = (data) => {
     const { firstName, lastName } = data;
-    const reqData = { first_name: firstName, last_name: lastName };
+    const reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
 
     if (userDetailsData.user_type === 'TALENT') {
       dispatch(saveTalentAccountDetails(reqData, onSuccess));

@@ -45,6 +45,8 @@ import {
   timezonesService,
   toolsService,
 } from '../../../services/staticServices';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -96,7 +98,10 @@ const Profile = () => {
       .max(5, 'At most five languages can be added'),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
-    zipCode: yup.number().typeError('Zip code must be a number'),
+    zipCode: yup
+      .number()
+      .typeError('Zip code must be a number')
+      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     country: yup
       .object()
       .shape({
@@ -181,7 +186,7 @@ const Profile = () => {
       then: () => yup.array().min(1, 'Select at least one weekday').required('Weekday is required'),
     }),
     weekends: yup.array().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () => yup.array().min(1, 'Select at least one weekend day').required('Weekend is required'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
@@ -207,7 +212,7 @@ const Profile = () => {
           .required('End time is required'),
     }),
     weekendStartTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -218,7 +223,7 @@ const Profile = () => {
           .required('Start time is required'),
     }),
     weekendEndTime: yup.object().when('availabilityDays', {
-      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekend'),
+      is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
       then: () =>
         yup
           .object()
@@ -368,6 +373,7 @@ const Profile = () => {
       tools,
       certificates,
       preferredWorkingTimeZone,
+      availabilityDays,
       weekdayStartTime,
       weekdayEndTime,
       weekdays,
@@ -410,14 +416,14 @@ const Profile = () => {
     const availability = {
       timezone: preferredWorkingTimeZone.value._id,
       weekdays_avl: {
-        start_time: weekdayStartTime?.value,
-        end_time: weekdayEndTime?.value,
-        days: weekdays,
+        start_time: availabilityDays?.includes('weekdays') ? weekdayStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekdays') ? weekdayEndTime?.value : null,
+        days: availabilityDays?.includes('weekdays') ? weekdays : null,
       },
       weekends_avl: {
-        start_time: weekendStartTime?.value,
-        end_time: weekendEndTime?.value,
-        days: weekends,
+        start_time: availabilityDays?.includes('weekends') ? weekendStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekends') ? weekendEndTime?.value : null,
+        days: availabilityDays?.includes('weekends') ? weekends : null,
       },
     };
     const currency_preference = currencyPreference.value;
@@ -559,6 +565,8 @@ const Profile = () => {
 
     if (isFilled) {
       append({});
+    } else {
+      ShowToastMessage(ERROR, 'Please fill all required education fields above');
     }
   };
 
@@ -568,7 +576,9 @@ const Profile = () => {
     if (search) {
       return {
         options: talentRolesOptions.filter(
-          (role) => role.label.toLowerCase().startsWith(search) || role.label.toLowerCase().includes(search),
+          (role) =>
+            role.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            role.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -592,7 +602,8 @@ const Profile = () => {
       return {
         options: languagesOptions.filter(
           (language) =>
-            language.label.toLowerCase().startsWith(search) || language.label.toLowerCase().includes(search),
+            language.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            language.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -615,7 +626,9 @@ const Profile = () => {
     if (search) {
       return {
         options: countriesOptions.filter(
-          (country) => country.label.toLowerCase().startsWith(search) || country.label.toLowerCase().includes(search),
+          (country) =>
+            country.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            country.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -655,7 +668,8 @@ const Profile = () => {
       return {
         options: educationsOptions.filter(
           (education) =>
-            education.label.toLowerCase().startsWith(search) || education.label.toLowerCase().includes(search),
+            education.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            education.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -678,7 +692,9 @@ const Profile = () => {
     if (search) {
       return {
         options: toolsOptions.filter(
-          (tool) => tool.label.toLowerCase().startsWith(search) || tool.label.toLowerCase().includes(search),
+          (tool) =>
+            tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            tool.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -702,7 +718,8 @@ const Profile = () => {
       return {
         options: certificatesOptions.filter(
           (certificate) =>
-            certificate.label.toLowerCase().startsWith(search) || certificate.label.toLowerCase().includes(search),
+            certificate.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            certificate.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -725,7 +742,9 @@ const Profile = () => {
     if (search) {
       return {
         options: skillsOptions.filter(
-          (skill) => skill.label.toLowerCase().startsWith(search) || skill.label.toLowerCase().includes(search),
+          (skill) =>
+            skill.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            skill.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -749,7 +768,8 @@ const Profile = () => {
       return {
         options: timezonesOptions.filter(
           (timezone) =>
-            timezone.label.toLowerCase().startsWith(search) || timezone.label.toLowerCase().includes(search),
+            timezone.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            timezone.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -776,7 +796,8 @@ const Profile = () => {
       return {
         options: currenciesOptions.filter(
           (currency) =>
-            currency.label.toLowerCase().startsWith(search) || currency.label.toLowerCase().includes(search),
+            currency.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            currency.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -1040,7 +1061,12 @@ const Profile = () => {
                   name="streetAddress"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter street address" invalid={errors.streetAddress && true} />
+                    <Input
+                      {...field}
+                      placeholder="Enter street address"
+                      invalid={errors.streetAddress && true}
+                      autoComplete="none"
+                    />
                   )}
                 />
                 {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
@@ -1056,7 +1082,12 @@ const Profile = () => {
                       name="houseNumber"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} placeholder="Enter house number" invalid={errors.houseNumber && true} />
+                        <Input
+                          {...field}
+                          placeholder="Enter house number"
+                          invalid={errors.houseNumber && true}
+                          autoComplete="none"
+                        />
                       )}
                     />
                     {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
@@ -1435,11 +1466,11 @@ const Profile = () => {
                       <Input
                         type="checkbox"
                         {...field}
-                        id="weekend"
-                        checked={field.value.includes('weekend')}
+                        id="weekends"
+                        checked={field.value.includes('weekends')}
                         onChange={(e) => {
                           const isChecked = e.target.checked;
-                          const value = 'weekend';
+                          const value = 'weekends';
 
                           if (isChecked) {
                             field.onChange([...field.value, value]);
@@ -1448,7 +1479,7 @@ const Profile = () => {
                           }
                         }}
                       />
-                      <Label htmlFor="weekend" className="form-check-label">
+                      <Label htmlFor="weekends" className="form-check-label">
                         Weekend
                       </Label>
                     </div>
@@ -1458,7 +1489,7 @@ const Profile = () => {
               {errors.availabilityDays && <FormFeedback>{errors.availabilityDays.message}</FormFeedback>}
             </Row>
             <Row>
-              {availabilityDays && (availabilityDays.includes('weekdays') || availabilityDays.includes('weekend')) && (
+              {availabilityDays && (availabilityDays.includes('weekdays') || availabilityDays.includes('weekends')) && (
                 <>
                   {availabilityDays.includes('weekdays') && (
                     <div>
@@ -1670,7 +1701,7 @@ const Profile = () => {
                     </div>
                   )}
 
-                  {availabilityDays.includes('weekend') && (
+                  {availabilityDays.includes('weekends') && (
                     <div>
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
@@ -2024,6 +2055,8 @@ const Profile = () => {
                 onClick={() => {
                   if (checkObjectValues(watch('otherSocialLinks'))) {
                     otherSocialLinksAppend(defaultLink);
+                  } else {
+                    ShowToastMessage(ERROR, 'Please fill social links above');
                   }
                 }}
               >

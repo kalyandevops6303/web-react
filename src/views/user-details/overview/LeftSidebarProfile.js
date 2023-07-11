@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -17,6 +17,8 @@ import { LeftSidebarProfileWrapper } from './style';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
+import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
+import { giveProgressBarColorClassName } from '../../../utility/Utils';
 
 const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
   const dispatch = useDispatch();
@@ -27,6 +29,8 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
   const handleUnLike = () => {
     dispatch(removeFavourite(param?.userId));
   };
+
+  const profilePercentageData = useSelector(profilePercentage);
 
   return (
     <LeftSidebarProfileWrapper>
@@ -83,14 +87,14 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               </CardText>
             </div>
           )}
-          {isEditable && !isClient && (
+          {isEditable && (
             <>
               <div className="profile-completion mt-2">
-                <CardText className="mb-25">0%</CardText>
+                <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
                 <Progress
                   style={{ height: '0.4rem', borderRadius: '6px' }}
-                  className="progress-bar-warning"
-                  value={0}
+                  className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
+                  value={profilePercentageData?.profile_completed}
                 />
                 <CardText className="font-small-3 mt-25">Profile Completion</CardText>
               </div>
