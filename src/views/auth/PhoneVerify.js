@@ -67,7 +67,7 @@ const VerifyPhone = () => {
     dispatch(
       verifyPhone({
         phone: phoneData.phone,
-        country_code: phoneData?.selectedCountry.dial_code.slice(1),
+        country_code: phoneData?.selectedCountry.dial_code,
         code,
         country_id: phoneData?.selectedCountry?._id,
       }),
