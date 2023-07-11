@@ -21,7 +21,6 @@ const Autocomplete = (props) => {
   const container = useRef(null);
   const inputElRef = useRef(null);
   const suggestionsListRef = useRef(null);
-  console.log(props.value);
 
   // ** States
   const [focused, setFocused] = useState(false);

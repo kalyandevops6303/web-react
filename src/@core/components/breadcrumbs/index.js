@@ -25,7 +25,7 @@ const BreadCrumbs = (props) => {
           active={!isLastItem}
           // className={isLastItem ? 'text-primary' : 'body-color'}
         >
-          <Wrapper {...(item.link ? { to: item.link } : {})}>{item.title}</Wrapper>
+          <Wrapper {...(item.link?.length > 0 ? { to: item.link } : {})}>{item.title}</Wrapper>
         </BreadcrumbItem>
       );
     });

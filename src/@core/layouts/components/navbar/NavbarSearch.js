@@ -43,7 +43,6 @@ const NavbarSearch = () => {
   const onKeyDown = (e) => {
     if (e.target.value.length > 0) {
       if (e.keyCode === 27 || e.keyCode === 13) {
-        console.log(e.target.value);
         dispatch(handleQuery(e.target.value));
         navigate(`/search`);
       }

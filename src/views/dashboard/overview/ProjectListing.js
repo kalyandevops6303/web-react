@@ -84,7 +84,7 @@ const ProjectListing = () => {
       </AccordionItem>
       <AccordionItem>
         <AccordionHeader targetId="2">
-          Upcoming Projects <Tag hasNew>0 new</Tag>
+          Upcoming Projects <Tag>0</Tag>
         </AccordionHeader>
         <AccordionBody accordionId="2">
           <ProjectsListingWrap>
@@ -100,7 +100,7 @@ const ProjectListing = () => {
         {userDetailsData?.user_type === 'TALENT' && (
           <>
             <AccordionHeader targetId="3">
-              Recommended Projects <Tag hasNew>{recommendedProjectsData?.data?.length} new</Tag>
+              Recommended Projects <Tag>{recommendedProjectsData?.data?.length}</Tag>
             </AccordionHeader>
             <AccordionBody accordionId="3">
               <ProjectsListingWrap>
@@ -125,7 +125,7 @@ const ProjectListing = () => {
         {userDetailsData?.user_type === 'CLIENT' && (
           <>
             <AccordionHeader targetId="3">
-              Upcoming Payments <Tag hasNew>0 new</Tag>
+              Upcoming Payments <Tag>0 new</Tag>
             </AccordionHeader>
             <AccordionBody accordionId="3">
               <ProjectsListingWrap>
