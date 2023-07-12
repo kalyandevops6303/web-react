@@ -848,15 +848,15 @@ const Profile = () => {
               </Col>
             </Row>
             <Row className="mt-2">
-              <h5 className="m-0">Number of employees or members</h5>
+              <Label className="m-0">Number of employees or members</Label>
             </Row>
             <Row className="mb-3">
-              <div className="demo-inline-spacing m-0">
+              <div className="m-0 mt-1">
                 <Controller
                   control={control}
                   name="totalStrength"
                   render={({ field }) => (
-                    <div className="demo-inline-spacing m-0">
+                    <div className="m-0">
                       <div className="form-check form-check-inline checkbox-custom-margin">
                         <Input
                           type="radio"
@@ -874,9 +874,7 @@ const Profile = () => {
                             }
                           }}
                         />
-                        <Label for="1-100" className="form-check-label fw-bold">
-                          1 - 100
-                        </Label>
+                        <Label for="1-100">1 - 100</Label>
                       </div>
                       <div className="form-check form-check-inline checkbox-custom-margin">
                         <Input
@@ -895,9 +893,7 @@ const Profile = () => {
                             }
                           }}
                         />
-                        <Label for="100-500" className="form-check-label fw-bold">
-                          100 - 500
-                        </Label>
+                        <Label for="100-500">100 - 500</Label>
                       </div>
                       <div className="form-check form-check-inline checkbox-custom-margin">
                         <Input
@@ -916,9 +912,7 @@ const Profile = () => {
                             }
                           }}
                         />
-                        <Label for="500-1000" className="form-check-label fw-bold">
-                          500 - 1000
-                        </Label>
+                        <Label for="500-1000">500 - 1000</Label>
                       </div>
                       <div className="form-check form-check-inline checkbox-custom-margin">
                         <Input
@@ -937,9 +931,7 @@ const Profile = () => {
                             }
                           }}
                         />
-                        <Label for="1000+" className="form-check-label fw-bold">
-                          1000+
-                        </Label>
+                        <Label for="1000+">1000+</Label>
                       </div>
                     </div>
                   )}
