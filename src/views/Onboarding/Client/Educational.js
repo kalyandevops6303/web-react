@@ -243,20 +243,22 @@ const Educational = () => {
 
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
-      setValue(
-        'educationDetails',
-        res?.client_info?.educational_institute.map((detail) => ({
-          educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-          education: { label: detail.education.name, value: detail.education._id },
-        })),
-      );
+      if (res?.client_info?.educational_institute.length > 0) {
+        setValue(
+          'educationDetails',
+          res?.client_info?.educational_institute.map((detail) => ({
+            educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+            education: { label: detail.education.name, value: detail.education._id },
+          })),
+        );
+      }
       if (res?.client_info?.project_area_of_interest?.tools.length > 0) {
         setValue(
           'tools',
           res?.client_info?.project_area_of_interest?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
         );
       }
-      if (res?.client_info?.project_area_of_interest?.area) {
+      if (res?.client_info?.project_area_of_interest?.area !== {}) {
         setValue('area', {
           label: res?.client_info?.project_area_of_interest?.area.name,
           value: res?.client_info?.project_area_of_interest?.area._id,

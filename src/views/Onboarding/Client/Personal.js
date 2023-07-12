@@ -256,26 +256,30 @@ const Personal = () => {
       setValue('companyName', res?.client_info?.company_name);
       setValue('title', res?.client_info?.title);
       setValue('companyTagline', res?.client_info?.company_tagline);
-      setValue('companyIndustry', {
-        label: res?.client_info?.company_industry?.name,
-        value: res?.client_info?.company_industry?._id,
-      });
+      if (res?.client_info?.company_industry !== {}) {
+        setValue('companyIndustry', {
+          label: res?.client_info?.company_industry?.name,
+          value: res?.client_info?.company_industry?._id,
+        });
+      }
       setValue('totalStrength', res?.client_info?.company_strength);
-      setValue('streetAddress', res?.client_info?.office_address?.street_address);
-      setValue('houseNumber', res?.client_info?.office_address?.house_number);
-      setValue('zipCode', res?.client_info?.office_address?.zip_code);
-      setValue('country', {
-        label: res?.client_info?.office_address.country.name,
-        value: res?.client_info?.office_address.country._id,
-      });
-      setValue('state', {
-        label: res?.client_info?.office_address.state.name,
-        value: res?.client_info?.office_address.state._id,
-      });
-      setValue('city', {
-        label: res?.client_info?.office_address.city.name,
-        value: res?.client_info?.office_address.city._id,
-      });
+      if (res?.client_info?.office_address !== {}) {
+        setValue('streetAddress', res?.client_info?.office_address?.street_address);
+        setValue('houseNumber', res?.client_info?.office_address?.house_number);
+        setValue('zipCode', res?.client_info?.office_address?.zip_code);
+        setValue('country', {
+          label: res?.client_info?.office_address.country.name,
+          value: res?.client_info?.office_address.country._id,
+        });
+        setValue('state', {
+          label: res?.client_info?.office_address.state.name,
+          value: res?.client_info?.office_address.state._id,
+        });
+        setValue('city', {
+          label: res?.client_info?.office_address.city.name,
+          value: res?.client_info?.office_address.city._id,
+        });
+      }
     }
   };
 

@@ -218,43 +218,48 @@ const Availability = () => {
 
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
-      setValue('preferredWorkingTimeZone', {
-        label: `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
-        value: res?.availability?.timezone,
-      });
+      if (res?.availability !== {}) {
+        if (res?.availability?.timezone) {
+          setValue('preferredWorkingTimeZone', {
+            label: `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
+            value: res?.availability?.timezone,
+          });
+        }
 
-      let clientAvailabilityDays = [];
+        let clientAvailabilityDays = [];
 
-      if (res?.availability?.weekdays_avl) {
-        clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
-        setValue('weekdays', res?.availability?.weekdays_avl?.days);
-        setValue(
-          'weekdayStartTime',
-          timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
-        );
-        setValue(
-          'weekdayEndTime',
-          timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
-        );
+        if (res?.availability?.weekdays_avl) {
+          clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
+          setValue('weekdays', res?.availability?.weekdays_avl?.days);
+          setValue(
+            'weekdayStartTime',
+            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
+          );
+          setValue(
+            'weekdayEndTime',
+            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
+          );
+        }
+        if (res?.availability.weekends_avl) {
+          clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
+          setValue('weekends', res?.availability?.weekends_avl?.days);
+          setValue(
+            'weekendStartTime',
+            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
+          );
+          setValue(
+            'weekendEndTime',
+            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
+          );
+        }
+        setValue('availabilityDays', clientAvailabilityDays);
       }
-      if (res?.availability.weekends_avl) {
-        clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
-        setValue('weekends', res?.availability?.weekends_avl?.days);
-        setValue(
-          'weekendStartTime',
-          timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
-        );
-        setValue(
-          'weekendEndTime',
-          timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
-        );
+      if (res?.client_info?.currency_preference !== {}) {
+        setValue('currencyPreference', {
+          label: res?.client_info?.currency_preference?.name,
+          value: res?.client_info?.currency_preference?._id,
+        });
       }
-      setValue('availabilityDays', clientAvailabilityDays);
-      setValue('currencyPreference', {
-        label: res?.client_info?.currency_preference?.name,
-        value: res?.client_info?.currency_preference?._id,
-      });
-      setValue('hourlyRate', res?.client_info?.hourly_rate);
     }
   };
 
@@ -366,7 +371,8 @@ const Availability = () => {
                         <div className="d-flex align-items-center">
                           <h5 className="m-0">Weekday </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
+                            {watch('preferredWorkingTimeZone') &&
+                              watch('preferredWorkingTimeZone')?.value?.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekday" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
@@ -574,7 +580,8 @@ const Availability = () => {
                         <div className="d-flex align-items-center">
                           <h5 className="m-0">Weekend </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
+                            {watch('preferredWorkingTimeZone') &&
+                              watch('preferredWorkingTimeZone')?.value?.abbreviation}
                           </p>
                           <Info size={18} color={theme.infoIcon} id="time-zone-info-weekend" />
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekend">
