@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import React, { useEffect, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { Link, useNavigate } from 'react-router-dom';
@@ -28,8 +29,8 @@ import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getStates, getCities } from '../../../redux/actions/staticActions';
 import { states, statesLoading, cities, citiesLoading } from '../../../redux/selectors/staticSelectors';
-import { saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
-import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
+import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { profileDetailsLoading, userDetails } from '../../../redux/selectors/talentOnboardingSelectors';
 import { countriesService, languagesService, talentRolesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 
@@ -149,10 +150,13 @@ const Personal = () => {
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const userDetailsData = useSelector(userDetails);
 
   useEffect(() => {
-    setValue('state', null);
-    setValue('city', null);
+    if (watch('country')?.value !== userDetailsData?.talent_info?.current_residency.country._id) {
+      setValue('state', null);
+      setValue('city', null);
+    }
 
     if (watch('country')) {
       dispatch(getStates(watch('country').value));
@@ -160,7 +164,9 @@ const Personal = () => {
   }, [watch('country')]);
 
   useEffect(() => {
-    setValue('city', null);
+    if (watch('state')?.value !== userDetailsData?.talent_info?.current_residency.state._id) {
+      setValue('city', null);
+    }
 
     if (watch('state')) {
       dispatch(getCities(watch('state').value));
@@ -306,6 +312,68 @@ const Personal = () => {
       return { options: [] };
     }
   };
+
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) {
+      setValue('tagline', res?.talent_info?.tagline);
+      if (res?.talent_info?.work_experience > 0) {
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const years = Math.floor(res?.talent_info?.work_experience / 12);
+        const months = res?.talent_info?.work_experience % 12;
+
+        setValue('workExperienceYear', years);
+        setValue('workExperienceMonth', months);
+      }
+      setValue('professionalIntroduction', res?.talent_info?.professional_intro);
+      setValue('role', { label: res?.talent_info?.role?.name, value: res?.talent_info?.role?._id });
+      if (res?.talent_info?.languages_speak.length > 0) {
+        setValue(
+          'speakLanguages',
+          res?.talent_info?.languages_speak.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+        );
+      }
+      if (res?.talent_info?.languages_read.length > 0) {
+        setValue(
+          'readLanguages',
+          res?.talent_info?.languages_read.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+        );
+      }
+      if (res?.talent_info?.languages_write.length > 0) {
+        setValue(
+          'writeLanguages',
+          res?.talent_info?.languages_write.map((language) => ({
+            label: language.name,
+            value: language._id,
+          })),
+        );
+      }
+      setValue('streetAddress', res?.talent_info?.current_residency?.street_address);
+      setValue('houseNumber', res?.talent_info?.current_residency?.house_number);
+      setValue('zipCode', res?.talent_info?.current_residency?.zip_code);
+      setValue('country', {
+        label: res?.talent_info?.current_residency.country.name,
+        value: res?.talent_info?.current_residency.country._id,
+      });
+      setValue('state', {
+        label: res?.talent_info?.current_residency.state.name,
+        value: res?.talent_info?.current_residency.state._id,
+      });
+      setValue('city', {
+        label: res?.talent_info?.current_residency.city.name,
+        value: res?.talent_info?.current_residency.city._id,
+      });
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getUserDetails(onGetUserDetailsSuccess));
+  }, []);
 
   return (
     <ProfileFormContainer>

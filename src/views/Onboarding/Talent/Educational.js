@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
-import { saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import {
   certificatesService,
@@ -79,6 +79,7 @@ const Educational = () => {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -240,6 +241,43 @@ const Educational = () => {
       ShowToastMessage(ERROR, 'Please fill all required education fields above');
     }
   };
+
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) {
+      setValue(
+        'educationDetails',
+        res?.talent_info?.educational_institute.map((detail) => ({
+          educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+          education: { label: detail.education.name, value: detail.education._id },
+        })),
+      );
+      if (res?.talent_info?.expertise?.tools.length > 0) {
+        setValue(
+          'tools',
+          res?.talent_info?.expertise?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+        );
+      }
+      if (res?.talent_info?.expertise?.certificates.length > 0) {
+        setValue(
+          'certificates',
+          res?.talent_info?.expertise?.certificates.map((certificate) => ({
+            label: certificate.name,
+            value: certificate._id,
+          })),
+        );
+      }
+      if (res?.talent_info?.expertise?.skills.length > 0) {
+        setValue(
+          'skills',
+          res?.talent_info?.expertise?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getUserDetails(onGetUserDetailsSuccess));
+  }, []);
 
   return (
     <ProfileFormContainer>

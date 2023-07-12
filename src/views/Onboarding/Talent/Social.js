@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
-import { saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -37,6 +37,7 @@ const Social = () => {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -119,6 +120,43 @@ const Social = () => {
     }
     return true;
   };
+
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) {
+      if (res?.talent_info?.social_links.length > 0) {
+        if (res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn')) {
+          setValue('linkedInLink', res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url);
+        }
+        if (res?.talent_info?.social_links.find((link) => link.platform === 'twitter')) {
+          setValue('twitterLink', res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url);
+        }
+        if (res?.talent_info?.social_links.find((link) => link.platform === 'github')) {
+          setValue('githubLink', res?.talent_info?.social_links.find((link) => link.platform === 'github').url);
+        }
+        if (
+          res?.talent_info?.social_links.filter(
+            (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+          ).length > 0
+        ) {
+          setValue(
+            'otherSocialLinks',
+            res?.talent_info?.social_links
+              .filter(
+                (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+              )
+              .map((link) => ({
+                linkName: link.platform,
+                link: link.url,
+              })),
+          );
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getUserDetails(onGetUserDetailsSuccess));
+  }, []);
 
   return (
     <ProfileFormContainer>

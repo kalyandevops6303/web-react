@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -26,7 +26,7 @@ import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
-import { saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
@@ -116,6 +116,7 @@ const Availability = () => {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -224,6 +225,52 @@ const Availability = () => {
   };
 
   const availabilityDays = watch('availabilityDays');
+
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) {
+      setValue('preferredWorkingTimeZone', {
+        label: `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
+        value: res?.availability?.timezone,
+      });
+
+      let talentAvailabilityDays = [];
+
+      if (res?.availability?.weekdays_avl) {
+        talentAvailabilityDays = [...talentAvailabilityDays, 'weekdays'];
+        setValue('weekdays', res?.availability?.weekdays_avl?.days);
+        setValue(
+          'weekdayStartTime',
+          timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
+        );
+        setValue(
+          'weekdayEndTime',
+          timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
+        );
+      }
+      if (res?.availability.weekends_avl) {
+        talentAvailabilityDays = [...talentAvailabilityDays, 'weekends'];
+        setValue('weekends', res?.availability?.weekends_avl?.days);
+        setValue(
+          'weekendStartTime',
+          timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
+        );
+        setValue(
+          'weekendEndTime',
+          timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
+        );
+      }
+      setValue('availabilityDays', talentAvailabilityDays);
+      setValue('currencyPreference', {
+        label: res?.talent_info?.currency_preference?.name,
+        value: res?.talent_info?.currency_preference?._id,
+      });
+      setValue('hourlyRate', res?.talent_info?.hourly_rate);
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getUserDetails(onGetUserDetailsSuccess));
+  }, []);
 
   return (
     <ProfileFormContainer>
