@@ -5,9 +5,12 @@ import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { Home, User } from 'react-feather';
 import { TabsContainer } from '../style';
 import Account from '../Account';
-import Profile from './Profile';
+import Personal from './Personal';
+import Educational from './Educational';
+import Availability from './Availability';
+import Social from './Social';
 
-const Tabs = ({ tabNames, toggleTab, active }) => {
+const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
 
   return (
@@ -20,22 +23,45 @@ const Tabs = ({ tabNames, toggleTab, active }) => {
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink active={location.pathname === '/talent-onboarding/profile-details'}>
+          <NavLink active={location.pathname === '/talent-onboarding/personal-details'}>
             <User className="font-medium-3 me-50" />
-            <span className="fw-bold">Profile</span>
+            <span className="fw-bold">Personal</span>
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink active={location.pathname === '/talent-onboarding/educational-details'}>
+            <User className="font-medium-3 me-50" />
+            <span className="fw-bold">Educational</span>
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink active={location.pathname === '/talent-onboarding/availability-details'}>
+            <User className="font-medium-3 me-50" />
+            <span className="fw-bold">Availability</span>
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink active={location.pathname === '/talent-onboarding/social-details'}>
+            <User className="font-medium-3 me-50" />
+            <span className="fw-bold">Social</span>
           </NavLink>
         </NavItem>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
-          {location.pathname === '/talent-onboarding/account-details' && (
-            <Account tabNames={tabNames} toggleTab={toggleTab} />
-          )}
+          {location.pathname === '/talent-onboarding/account-details' && <Account tabNames={tabNames} />}
         </TabPane>
-        <TabPane tabId={tabNames.Profile}>
-          {location.pathname === '/talent-onboarding/profile-details' && (
-            <Profile tabNames={tabNames} toggleTab={toggleTab} active={active} />
-          )}
+        <TabPane tabId={tabNames.Personal}>
+          {location.pathname === '/talent-onboarding/personal-details' && <Personal />}
+        </TabPane>
+        <TabPane tabId={tabNames.Educational}>
+          {location.pathname === '/talent-onboarding/educational-details' && <Educational />}
+        </TabPane>
+        <TabPane tabId={tabNames.Availability}>
+          {location.pathname === '/talent-onboarding/availability-details' && <Availability />}
+        </TabPane>
+        <TabPane tabId={tabNames.Social}>
+          {location.pathname === '/talent-onboarding/social-details' && <Social />}
         </TabPane>
         <TabPane tabId={tabNames.Payment}>Payment</TabPane>
       </TabContent>
@@ -47,11 +73,9 @@ export default Tabs;
 Tabs.propTypes = {
   tabNames: Proptypes.object,
   active: Proptypes.string,
-  toggleTab: Proptypes.func,
 };
 
 Tabs.defaultProps = {
   tabNames: {},
   active: '',
-  toggleTab: () => {},
 };
