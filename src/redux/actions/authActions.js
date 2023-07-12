@@ -51,7 +51,7 @@ import {
   FCMSubscribe,
   logOut,
 } from '../reducers/auth';
-import { setItem } from '../../utility/localStorageControl';
+import { getItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { clearData } from '../reducers/dashboard';
@@ -82,6 +82,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     onSuccess(res.data.data);
     if (res.data?.data?.checkpoint === 'COMPLETE') {
       dispatch(loginSuccess(res.data.data));
+      setItem('isUserVisited', true);
     } else {
       dispatch(loginSuccess(false));
     }
@@ -93,8 +94,14 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
 const loginUserWithGoogle =
   ({ id_token, user_type, onError, onSuccess }) =>
   async (dispatch) => {
+    let res;
     try {
-      const res = await loginServiceGoogle({ id_token, user_type });
+      if (user_type) {
+        res = await loginServiceGoogle({ id_token, user_type });
+      } else {
+        res = await loginServiceGoogle({ id_token });
+      }
+
       setItem('access_token', res.data.data.access_token);
       if (res.data?.data?.checkpoint === 'COMPLETE') {
         dispatch(loginSuccess(res.data.data));
@@ -148,7 +155,7 @@ const registerPhone =
   async (dispatch) => {
     dispatch(registerPhoneRequest());
     try {
-      await registerPhoneService(phone, country_code);
+      await registerPhoneService({ phone, country_code });
       dispatch(registerPhoneSuccess({ phone, selectedCountry }));
       onSuccess();
     } catch (error) {
@@ -229,8 +236,15 @@ const logoutAction =
     }
     dispatch(logOut());
     dispatch(clearData());
+
+    const keyToPreserve = 'isUserVisited';
+    const preservedValue = getItem(keyToPreserve);
     // eslint-disable-next-line no-undef
     window.localStorage.clear();
+    if (preservedValue) {
+      setItem(keyToPreserve, preservedValue);
+    }
+
     onSuccess();
   };
 

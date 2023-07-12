@@ -32,6 +32,7 @@ const RegisterPhone = () => {
       label: 'United States',
       dial_code: '+1',
       code: 'US',
+      _id: '6479c2071183add75cda4e37',
     },
   );
 
@@ -68,8 +69,8 @@ const RegisterPhone = () => {
     } else {
       dispatch(
         registerPhone({
-          phone: values.mobile,
-          country_code: selectedCountry.dial_code.slice(1),
+          phone: values.mobile.replace(/[^\d]/g, ''),
+          country_code: selectedCountry.dial_code,
           selectedCountry,
           onSuccess,
         }),
@@ -117,7 +118,7 @@ const RegisterPhone = () => {
           </FormGroup>
 
           <Button color="primary" block type="submit" disabled={!mobileValue || isLoading}>
-            {isLoading ? <Spinner size="sm" /> : 'Send OTP'}
+            {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>
         </Form>
         <div className="d-flex justify-content-center sign-info">

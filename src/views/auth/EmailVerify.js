@@ -99,7 +99,7 @@ const VerifyEmail = () => {
               outline: 'none',
             }}
           />
-          {otpError && <FormFeedback className="mt-1">Invalid OTP</FormFeedback>}
+          {otpError && <FormFeedback className="mt-1">Invalid code</FormFeedback>}
           <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
             {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>

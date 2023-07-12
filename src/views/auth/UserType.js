@@ -16,17 +16,26 @@ import '@styles/react/pages/page-authentication.scss';
 import { setUserType } from '../../redux/actions/authActions';
 import LogoComp from './components/LogoComp';
 import { selectIsLoggedIn } from '../../redux/selectors/authSelectors';
+import { clearDataSuccess } from '../../redux/reducers/auth';
+import { getItem } from '../../utility/localStorageControl';
 
 const UserType = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoggedIn = useSelector(selectIsLoggedIn);
-
+  const isUserVisited = getItem('isUserVisited');
   const handleSelection = (type) => {
     dispatch(setUserType(type));
     navigate('register');
   };
   useEffect(() => {
+    dispatch(clearDataSuccess());
+  }, []);
+
+  useEffect(() => {
+    if (isUserVisited) {
+      navigate('/auth/login');
+    }
     if (isLoggedIn) {
       navigate('/dashboard');
     }

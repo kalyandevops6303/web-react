@@ -50,12 +50,10 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP }) => {
       className={`d-flex justify-content-center sign-info ${countdown === 0 && 'cursor-pointer'} `}
       onClick={handleResend}
     >
-      <Label className={countdown === 0 && 'cursor-pointer'}>
-        <small>Resend</small>
-      </Label>
       <Label className={`primary ${countdown === 0 && 'cursor-pointer'}`}>
-        <small>Code</small>
+        <small>Resend Code </small>
       </Label>
+
       {countdown !== 0 && (
         <Label>
           <small>
