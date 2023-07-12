@@ -31,7 +31,7 @@ const SigninWithGoogle = () => {
     } else if (resp?.checkpoint === 'ACCOUNT_DETAILS') {
       navigate(`/${resp.user_type.toLowerCase()}-onboarding/account-details`);
     } else if (resp?.checkpoint === 'PROFILE_DETAILS') {
-      navigate(`/${resp.user_type.toLowerCase()}-onboarding/profile-details`);
+      navigate(`/${resp.user_type.toLowerCase()}-onboarding/personal-details`);
     } else if (resp?.checkpoint === 'COMPLETE') {
       navigate('/dashboard');
     }

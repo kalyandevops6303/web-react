@@ -114,7 +114,7 @@ const Account = () => {
             setValue('lastName', res?.client_info?.last_name, { shouldValidate: true });
           }
         }
-      } else if (res.checkpoint === 'PROFILE_DETAILS') {
+      } else if (res.checkpoint === 'PROFILE_DETAILS' || res.checkpoint === 'COMPLETE') {
         if (res.user_type === 'TALENT') {
           setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
@@ -308,8 +308,8 @@ const Account = () => {
             // eslint-disable-next-line
             onClick={() =>
               userDetailsData?.user_type === 'TALENT'
-                ? navigate('/talent-onboarding/profile-details')
-                : navigate('/client-onboarding/profile-details')
+                ? navigate('/talent-onboarding/personal-details')
+                : navigate('/client-onboarding/personal-details')
             }
           >
             <span className="me-50">Next</span>
