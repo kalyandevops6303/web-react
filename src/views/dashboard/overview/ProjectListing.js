@@ -21,27 +21,40 @@ import { recommendedProjects, userData } from '../../../redux/selectors/dashboar
 import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 
-const Empty = ({ active, recommended, payment }) => (
-  <ProjectWrapper>
-    <Card className="empty-card">
-      <CardBody className="empty empty-h-25">
-        {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
-        {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
-        {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
-        {active && (
-          <CardText className="get-started">
-            Lets get you <br /> started!
-          </CardText>
-        )}
-        {payment && <CardText className="get-started">No Upcoming Payment</CardText>}
-        {active ||
-          (recommended && (
-            <div className="font-weight-normal text-center text-primary project-cta mt-25">Explore Projects</div>
-          ))}
-      </CardBody>
-    </Card>
-  </ProjectWrapper>
-);
+const Empty = ({ active, recommended, payment }) => {
+  const navigate = useNavigate();
+  return (
+    <ProjectWrapper>
+      <Card className="empty-card">
+        <CardBody className="empty empty-h-25">
+          <div>
+            {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
+            {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
+            {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
+            {active && (
+              <CardText className="get-started">
+                Lets get you <br /> started!
+              </CardText>
+            )}
+            {payment && (
+              <CardText className="font-weight-normal get-started">
+                No Upcoming <br /> Payment
+              </CardText>
+            )}
+          </div>
+          {(active || recommended) && (
+            <div
+              onClick={() => navigate('/marketplace/all_listings')}
+              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+            >
+              Explore Projects
+            </div>
+          )}
+        </CardBody>
+      </Card>
+    </ProjectWrapper>
+  );
+};
 
 const AccordionHeadStyle = styled.div`
   display: flex;
