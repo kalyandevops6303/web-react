@@ -2,7 +2,9 @@
 import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
 import Slider from 'react-slick';
+import { useNavigate } from 'react-router';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
@@ -17,6 +19,7 @@ import { useIsTab } from '../../../utility/Utils';
 import Tag from '../../../@core/components/tags';
 import { recommendedProjects, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
+import theme from '../../../configs/themeVariables';
 
 const Empty = ({ active, recommended, payment }) => (
   <ProjectWrapper>
@@ -40,10 +43,23 @@ const Empty = ({ active, recommended, payment }) => (
   </ProjectWrapper>
 );
 
+const AccordionHeadStyle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  .view-all-cta {
+    font-size: 0.875rem;
+    color: ${theme.activeColor};
+    text-decoration: underline;
+    margin-right: 1rem;
+    font-weight: 400;
+  }
+`;
+
 const ProjectListing = () => {
   const [open, setOpen] = useState('1');
   const isTab = useIsTab();
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const toggle = (id) => (open === id ? setOpen() : setOpen(id));
@@ -65,6 +81,11 @@ const ProjectListing = () => {
       dispatch(getRecommendedProjects());
     }
   }, [userDetailsData]);
+
+  const handleViewAll = (e) => {
+    e.stopPropagation();
+    navigate('/marketplace/all_listings', { state: { isRecommended: true } });
+  };
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
@@ -100,7 +121,14 @@ const ProjectListing = () => {
         {userDetailsData?.user_type === 'TALENT' && (
           <>
             <AccordionHeader targetId="3">
-              Recommended Projects <Tag>{recommendedProjectsData?.data?.length}</Tag>
+              <AccordionHeadStyle>
+                <span className="d-flex align-items-center">
+                  Recommended Projects <Tag>{recommendedProjectsData?.data?.length} </Tag>
+                </span>
+                <CardText onClick={handleViewAll} className="view-all-cta">
+                  View all
+                </CardText>
+              </AccordionHeadStyle>
             </AccordionHeader>
             <AccordionBody accordionId="3">
               <ProjectsListingWrap>

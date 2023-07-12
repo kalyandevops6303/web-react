@@ -146,6 +146,16 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     });
   };
 
+  useEffect(() => {
+    if (location?.state?.isRecommended) {
+      setSecondFilterState({
+        ...secondFilterState,
+        sort_by: [{ label: 'Recommended', value: 'RECOMMADED' }],
+      });
+      setIsRecommanded(true);
+    }
+  }, [location]);
+
   const onChangeSort = (value) => {
     setSecondFilterState({
       ...secondFilterState,

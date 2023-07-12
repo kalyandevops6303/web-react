@@ -342,7 +342,6 @@ const ProjectsListingWrap = styled.div`
     &:before {
       font-size: 30px;
       line-height: 1;
-      opacity: 0.75;
       color: #0185e44a;
     }
   }
@@ -352,7 +351,6 @@ const ProjectsListingWrap = styled.div`
     &:before {
       font-size: 30px;
       line-height: 1;
-      opacity: 0.75;
       color: #0185e44a;
     }
   }
