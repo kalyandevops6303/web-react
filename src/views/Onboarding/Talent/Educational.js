@@ -244,13 +244,15 @@ const Educational = () => {
 
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
-      setValue(
-        'educationDetails',
-        res?.talent_info?.educational_institute.map((detail) => ({
-          educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-          education: { label: detail.education.name, value: detail.education._id },
-        })),
-      );
+      if (res?.talent_info?.educational_institute.length > 0) {
+        setValue(
+          'educationDetails',
+          res?.talent_info?.educational_institute.map((detail) => ({
+            educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+            education: { label: detail.education.name, value: detail.education._id },
+          })),
+        );
+      }
       if (res?.talent_info?.expertise?.tools.length > 0) {
         setValue(
           'tools',
