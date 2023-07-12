@@ -138,7 +138,7 @@ const Personal = () => {
   };
 
   useEffect(() => {
-    if (watch('country')?.value !== userDetailsData?.client_info?.office_address.country._id) {
+    if (watch('country')?.value !== userDetailsData?.client_info?.office_address?.country?._id) {
       setValue('state', null);
       setValue('city', null);
     }
@@ -149,7 +149,7 @@ const Personal = () => {
   }, [watch('country')]);
 
   useEffect(() => {
-    if (watch('state')?.value !== userDetailsData?.client_info?.office_address.state._id) {
+    if (watch('state')?.value !== userDetailsData?.client_info?.office_address?.state?._id) {
       setValue('city', null);
     }
 
