@@ -88,7 +88,7 @@ const Educational = () => {
     },
   });
 
-  const { fields, append } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'educationDetails',
   });
@@ -241,6 +241,10 @@ const Educational = () => {
     }
   };
 
+  const handleRemoveEducation = (index) => {
+    remove(index);
+  };
+
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.client_info?.educational_institute.length > 0) {
@@ -288,7 +292,7 @@ const Educational = () => {
           <CardBody>
             {fields.map((item, index) => (
               <Row key={item.id} className="mt-1">
-                <Col sm="12" md="12" lg="6">
+                <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
                     Name of College or University<span className="label-asterisk me-50">*</span>
                   </Label>
@@ -334,7 +338,7 @@ const Educational = () => {
                       </FormFeedback>
                     )}
                 </Col>
-                <Col sm="12" md="12" lg="6">
+                <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for={`educationDetails.${index}.education`}>
                     Degree<span className="label-asterisk me-50">*</span>
                   </Label>
@@ -377,6 +381,18 @@ const Educational = () => {
                           errors.educationDetails[index].education.label.message}
                       </FormFeedback>
                     )}
+                </Col>
+                <Col sm="12" md="12" lg="2">
+                  {index !== 0 && (
+                    <Button
+                      type="button"
+                      color="flat-danger"
+                      className="mt-2"
+                      onClick={() => handleRemoveEducation(index)}
+                    >
+                      Remove
+                    </Button>
+                  )}
                 </Col>
               </Row>
             ))}

@@ -50,7 +50,11 @@ const Social = () => {
     },
   });
 
-  const { fields: otherSocialLinksFields, append: otherSocialLinksAppend } = useFieldArray({
+  const {
+    fields: otherSocialLinksFields,
+    append: otherSocialLinksAppend,
+    remove,
+  } = useFieldArray({
     control,
     name: 'otherSocialLinks',
   });
@@ -220,7 +224,7 @@ const Social = () => {
             <h5 className="m-0 mt-2 mb-1">Other</h5>
             {otherSocialLinksFields.map((item, index) => (
               <Row key={item.id} className="mb-1">
-                <Col sm="12" md="12" lg="6">
+                <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for={`otherSocialLinks[${index}].linkName`}>
                     Website
                   </Label>
@@ -261,7 +265,7 @@ const Social = () => {
                       </FormFeedback>
                     )}
                 </Col>
-                <Col sm="12" md="12" lg="6">
+                <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for={`otherSocialLinks[${index}].link`}>
                     Link
                   </Label>
@@ -301,6 +305,13 @@ const Social = () => {
                         {errors.otherSocialLinks[index].link && errors.otherSocialLinks[index].link.message}
                       </FormFeedback>
                     )}
+                </Col>
+                <Col sm="12" md="12" lg="2">
+                  {index !== 0 && (
+                    <Button type="button" color="flat-danger" className="mt-2" onClick={() => remove(index)}>
+                      Remove
+                    </Button>
+                  )}
                 </Col>
               </Row>
             ))}
