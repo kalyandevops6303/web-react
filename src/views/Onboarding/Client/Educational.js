@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import * as yup from 'yup';
@@ -23,6 +23,7 @@ import {
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -77,6 +78,7 @@ const Educational = () => {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -238,6 +240,40 @@ const Educational = () => {
       ShowToastMessage(ERROR, 'Please fill all required education fields above');
     }
   };
+
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) {
+      setValue(
+        'educationDetails',
+        res?.client_info?.educational_institute.map((detail) => ({
+          educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+          education: { label: detail.education.name, value: detail.education._id },
+        })),
+      );
+      if (res?.client_info?.project_area_of_interest?.tools.length > 0) {
+        setValue(
+          'tools',
+          res?.client_info?.project_area_of_interest?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+        );
+      }
+      if (res?.client_info?.project_area_of_interest?.area) {
+        setValue('area', {
+          label: res?.client_info?.project_area_of_interest?.area.name,
+          value: res?.client_info?.project_area_of_interest?.area._id,
+        });
+      }
+      if (res?.client_info?.project_area_of_interest?.skills.length > 0) {
+        setValue(
+          'skills',
+          res?.client_info?.project_area_of_interest?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getUserDetails(onGetUserDetailsSuccess));
+  }, []);
 
   return (
     <ProfileFormContainer>
