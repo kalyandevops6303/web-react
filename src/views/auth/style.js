@@ -36,18 +36,26 @@ export const OnBoardWrap = styled.div`
   justify-content: center;
   align-items: center;
 
-  // gif css
-  .create-pw-gif {
-    margin-right: 3rem;
-    height: 90vh;
+  // bg pic css
+  .user-type-pic {
+    margin-right: 6rem;
+    height: 78vh;
   }
-  .auth-gif {
-    margin-right: 4rem;
-    height: 90vh;
-  }
-  .register-gif {
+  .create-pw-pic {
     margin-right: 10rem;
-    height: 90vh;
+    height: 62vh;
+  }
+  .login-pic {
+    margin-right: 8rem;
+    height: 78vh;
+  }
+  .verification-pic {
+    margin-right: 8rem;
+    height: 70vh;
+  }
+  .register-pic {
+    margin-right: 10rem;
+    height: 78vh;
   }
 
   .logo-wrap {

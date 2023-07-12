@@ -1,23 +1,26 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-nested-ternary */
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import AuthGIF from '@src/assets/images/gifs/auth.gif';
-import RegisterGIF from '@src/assets/images/gifs/register.gif';
-import CreatePWGIF from '@src/assets/images/gifs/create_pw.gif';
+import LoginPic from '@src/assets/images/auth/login.png';
+import RegisterPic from '@src/assets/images/auth/register.svg';
+import CreatePWPic from '@src/assets/images/auth/password.svg';
+import UserTypePic from '@src/assets/images/auth/user_type.svg';
+import VerificationPic from '@src/assets/images/auth/verification.svg';
+
 import Spinner from '../../@core/components/spinner/Fallback-spinner';
 import { OnBoardWrap } from './style';
 
-const Login = lazy(() => import('./Login'));
-const Register = lazy(() => import('./RegisterEmail'));
-const ForgotPassword = lazy(() => import('./ForgotPassword'));
-const UserType = lazy(() => import('./UserType'));
-const VerifyEmail = lazy(() => import('./EmailVerify'));
-const VerifyPhone = lazy(() => import('./PhoneVerify'));
-const SetPassword = lazy(() => import('./SetPassword'));
-const RegisterPhone = lazy(() => import('./RegisterPhone'));
-const SetNewPassword = lazy(() => import('./SetNewPassword'));
-const ForgotPasswordVerification = lazy(() => import('./ForgotPasswordVerification'));
+import Login from './Login';
+import Register from './RegisterEmail';
+import ForgotPassword from './ForgotPassword';
+import UserType from './UserType';
+import VerifyEmail from './EmailVerify';
+import VerifyPhone from './PhoneVerify';
+import SetPassword from './SetPassword';
+import RegisterPhone from './RegisterPhone';
+import SetNewPassword from './SetNewPassword';
+import ForgotPasswordVerification from './ForgotPasswordVerification';
 
 const AuthRoute = () => {
   const routes = [
@@ -66,16 +69,29 @@ const AuthRoute = () => {
       element: <SetNewPassword />,
     },
   ];
-  const renderGif = () => {
+  const renderImage = () => {
     const currentPath = window.location.pathname;
-
-    if (currentPath === '/auth/set-new-password' || currentPath === '/auth/set-password') {
-      return <img src={CreatePWGIF} alt="bg-gif" className="create-pw-gif" />;
+    if (
+      currentPath === '/auth/set-new-password' ||
+      currentPath === '/auth/set-password' ||
+      currentPath === '/auth/forgot-password'
+    ) {
+      return <img src={CreatePWPic} alt="bg-gif" className="create-pw-pic" />;
     }
-    if (currentPath === '/auth/login' || currentPath === '/auth') {
-      return <img src={AuthGIF} alt="bg-gif" className="me-8 auth-gif" />;
+    if (
+      currentPath === '/auth/phone-verify' ||
+      currentPath === '/auth/email-verify' ||
+      currentPath === '/auth/forgot-password-email-verify'
+    ) {
+      return <img src={VerificationPic} alt="bg-pic" className="verification-pic" />;
     }
-    return <img src={RegisterGIF} alt="bg-gif" className="me-8 register-gif" />;
+    if (currentPath === '/auth/login') {
+      return <img src={LoginPic} alt="bg-pic" className="me-8 login-pic" />;
+    }
+    if (currentPath === '/auth') {
+      return <img src={UserTypePic} alt="bg-pic" className="me-8 user-type-pic" />;
+    }
+    return <img src={RegisterPic} alt="bg-pic" className="me-8 register-pic" />;
   };
   return (
     <OnBoardWrap>
@@ -86,7 +102,7 @@ const AuthRoute = () => {
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
         </Routes>
-        {window.innerWidth > 1024 && renderGif()}
+        {window.innerWidth > 1024 && renderImage()}
       </Suspense>
     </OnBoardWrap>
   );
