@@ -91,12 +91,10 @@ const SetNewPassword = () => {
             </Label>
             <Info size={16} color={theme.infoIcon} id="info" className="ms-25" />
             <UncontrolledTooltip placement="right" target="info">
-              <div className="d-flex flex-column align-items-start">
-                <p className="m-0">
-                  Password must contain at least 8 characters, with one uppercase, one lowercase, one number and one
-                  special case character
-                </p>
-              </div>
+              <p className="m-0 text-start">
+                Password must contain at least 8 characters, with one uppercase, one lowercase, one number and one
+                special case character
+              </p>
             </UncontrolledTooltip>
             <Controller
               className="input-group-merge"
