@@ -3,9 +3,11 @@ import { useLocation, useParams } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
-import { capitalize, round } from 'lodash';
 import { Col, Row } from 'reactstrap';
 import Statbox from './overview/Statbox';
+import round from '../../lib/round';
+import capitalize from '../../lib/capitalize';
+
 import LeftSidebarProfile from './overview/LeftSidebarProfile';
 import UserBio from './overview/UserBio';
 import RecentProjects from './overview/RecentProjects';

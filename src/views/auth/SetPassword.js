@@ -1,6 +1,5 @@
 // ** React Imports
 import { useEffect, useState } from 'react';
-import PasswordStrengthBar from 'react-password-strength-bar';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
@@ -20,6 +19,7 @@ import '@styles/react/pages/page-authentication.scss';
 import { setPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
+import PasswordStrengthBar from '../../lib/password-strength-bar';
 
 const SetPassword = () => {
   const dispatch = useDispatch();

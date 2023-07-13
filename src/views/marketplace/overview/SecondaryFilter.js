@@ -2,14 +2,14 @@ import { Col, Input, InputGroup, InputGroupText, Label, Row, UncontrolledTooltip
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { debounce } from 'lodash';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { RefreshCcw, Search } from 'react-feather';
 import CollActive from '@src/assets/images/coll_active.png';
 import ExpandInactive from '@src/assets/images/expand_inactive.png';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
+import InfiniteScroll from '../../../lib/infinite-scroll';
+import debounce from '../../../lib/debounce';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors } from '../../../utility/Utils';

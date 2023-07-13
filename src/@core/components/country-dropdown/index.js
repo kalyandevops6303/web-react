@@ -2,7 +2,7 @@
 import React from 'react';
 import Select, { components } from 'react-select';
 import PropTypes from 'prop-types';
-import ReactCountryFlag from 'react-country-flag';
+import ReactCountryFlag from '../../../lib/country-flag';
 import CountryFile from '../../../utility/constants/CountryList.json';
 import CountryDropdownWrapper from './style';
 

@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import Slider from 'react-slick';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
@@ -10,6 +9,7 @@ import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
 import Project from './Project';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
+import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';

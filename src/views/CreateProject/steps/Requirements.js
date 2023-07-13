@@ -24,7 +24,7 @@ import {
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useDropzone } from 'react-dropzone';
+import useDropzone from '../../../lib/react-dropzone';
 import { DropzoneContainer, RequirementsFormContainer, TextEditorContainer } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';

@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import OtpInput from 'react-otp-input';
 import { useState, useEffect } from 'react';
 
 // ** Custom Components
@@ -18,6 +17,7 @@ import {
   selectIsEmailVerified,
   selectUserType,
 } from '../../redux/selectors/authSelectors';
+import OtpInput from '../../lib/otp-input';
 import ResendOTPComp from './components/ResendOTP';
 import LogoComp from './components/LogoComp';
 

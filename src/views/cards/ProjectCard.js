@@ -2,14 +2,14 @@
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
-import { round } from 'lodash';
-import ReactHtmlParser from 'react-html-parser';
 import ReactShowMoreText from 'react-show-more-text';
 import lisa from '@src/assets/images/portrait/small/lisa.png';
 import Mpin from '@src/assets/images/map-pin.png';
 import LikeIcon from '@src/assets/images/like.png';
 import { useState, useEffect } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import ReactHtmlParser from '../../lib/html-parser';
+import round from '../../lib/round';
 
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';

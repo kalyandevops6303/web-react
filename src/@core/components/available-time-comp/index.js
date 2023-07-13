@@ -1,5 +1,5 @@
 import { CardText } from 'reactstrap';
-import { capitalize } from 'lodash';
+import capitalize from '../../../lib/capitalize';
 import { convertTo12HourFormat } from '../../../utility/Utils';
 import { TimeWrapper } from '../../../views/styled';
 

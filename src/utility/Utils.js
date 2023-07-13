@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { DateTime } from 'luxon';
 import theme from '../configs/themeVariables';
-
+import DateTime from '../lib/date-time';
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
