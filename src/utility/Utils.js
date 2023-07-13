@@ -127,7 +127,6 @@ const checkSize = (width) => {
   }, [isMobile]);
   return isMobile;
 };
-export const useIsMobile = () => checkSize(1024);
 export const useIsTab = () => checkSize(769);
 
 export const convertTo12HourFormat = (hour) => {

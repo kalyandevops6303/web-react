@@ -56,7 +56,7 @@ const BadgeGroup = ({ title, data, color }) => {
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
         <div className="info-key">{title || ''}</div>
-        <div className="badge-box mt-75">{data.map(renderBadge)}</div>
+        <div className="badge-box mt-75">{data?.map(renderBadge)}</div>
       </div>
     </BadgeGroupWrap>
   );
