@@ -547,7 +547,7 @@ const Invite = ({ stepper }) => {
       </Card>
       <div className="d-flex justify-content-end align-items-center">
         <div>
-          <Link to="/dashboard">
+          <Link to="/marketplace/all_listings">
             <Button color="primary" outline>
               <span className="px-2">Close</span>
             </Button>
