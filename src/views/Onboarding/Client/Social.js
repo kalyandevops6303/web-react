@@ -8,13 +8,14 @@ import { ChevronLeft, ChevronRight, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
-import { saveProfileDetails } from '../../../redux/actions/clientOnboardingActions';
+import { saveSocialProfileDetails } from '../../../redux/actions/clientOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/clientOnboardingSelectors';
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { removeEmptyKeys } from '../../../utility/Utils';
-import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
+import { getUserDetails, saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
+import { checkpointCompleteLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -66,11 +67,16 @@ const Social = () => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const checkpointCompleteIsLoading = useSelector(checkpointCompleteLoading);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onSuccess = () => {
     setAccountCreatedModal(true);
+  };
+
+  const onSkipClick = () => {
+    dispatch(saveCheckpointComplete(onSuccess));
   };
 
   const onSubmit = (data) => {
@@ -100,7 +106,11 @@ const Social = () => {
       social_links,
     };
 
-    dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    if (removeEmptyKeys(reqData)) {
+      dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    } else {
+      dispatch(saveCheckpointComplete(onSuccess));
+    }
   };
 
   const isValidURL = (url) => {
@@ -130,13 +140,19 @@ const Social = () => {
     if (res) {
       if (res?.client_info?.social_links.length > 0) {
         if (res?.client_info?.social_links.find((link) => link.platform === 'linkedIn')) {
-          setValue('linkedInLink', res?.client_info?.social_links.find((link) => link.platform === 'linkedIn').url);
+          setValue('linkedInLink', res?.client_info?.social_links.find((link) => link.platform === 'linkedIn').url, {
+            shouldValidate: true,
+          });
         }
         if (res?.client_info?.social_links.find((link) => link.platform === 'twitter')) {
-          setValue('twitterLink', res?.client_info?.social_links.find((link) => link.platform === 'twitter').url);
+          setValue('twitterLink', res?.client_info?.social_links.find((link) => link.platform === 'twitter').url, {
+            shouldValidate: true,
+          });
         }
         if (res?.client_info?.social_links.find((link) => link.platform === 'github')) {
-          setValue('githubLink', res?.client_info?.social_links.find((link) => link.platform === 'github').url);
+          setValue('githubLink', res?.client_info?.social_links.find((link) => link.platform === 'github').url, {
+            shouldValidate: true,
+          });
         }
         if (
           res?.client_info?.social_links.filter(
@@ -153,6 +169,7 @@ const Social = () => {
                 linkName: link.platform,
                 link: link.url,
               })),
+            { shouldValidate: true },
           );
         }
       }
@@ -346,12 +363,22 @@ const Social = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" outline className="me-2" onClick={onSuccess}>
+            <Button
+              color="primary"
+              outline
+              className="me-2"
+              onClick={onSkipClick}
+              disabled={checkpointCompleteIsLoading}
+            >
               <span className="me-50">Skip</span>
               <ChevronRight size={14} />
             </Button>
 
-            <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+            <Button
+              color="primary"
+              type="submit"
+              disabled={!isValid || profileDetailsIsLoading || checkpointCompleteIsLoading}
+            >
               {profileDetailsIsLoading ? (
                 <Spinner size="sm" />
               ) : (

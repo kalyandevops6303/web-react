@@ -254,24 +254,32 @@ const Educational = () => {
             educationInstitution: { label: detail.institution.name, value: detail.institution._id },
             education: { label: detail.education.name, value: detail.education._id },
           })),
+          { shouldValidate: true },
         );
       }
       if (res?.client_info?.project_area_of_interest?.tools.length > 0) {
         setValue(
           'tools',
           res?.client_info?.project_area_of_interest?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          { shouldValidate: true },
         );
       }
-      if (res?.client_info?.project_area_of_interest?.area !== {}) {
-        setValue('area', {
-          label: res?.client_info?.project_area_of_interest?.area.name,
-          value: res?.client_info?.project_area_of_interest?.area._id,
-        });
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      if ('name' in res?.client_info?.project_area_of_interest?.area) {
+        setValue(
+          'area',
+          {
+            label: res?.client_info?.project_area_of_interest?.area.name,
+            value: res?.client_info?.project_area_of_interest?.area._id,
+          },
+          { shouldValidate: true },
+        );
       }
       if (res?.client_info?.project_area_of_interest?.skills.length > 0) {
         setValue(
           'skills',
           res?.client_info?.project_area_of_interest?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          { shouldValidate: true },
         );
       }
     }

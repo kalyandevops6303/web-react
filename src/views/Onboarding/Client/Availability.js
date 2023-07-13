@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AsyncPaginate } from 'react-select-async-paginate';
@@ -218,47 +219,59 @@ const Availability = () => {
 
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
-      if (res?.availability !== {}) {
+      if ('timezone' in res?.availability) {
         if (res?.availability?.timezone) {
-          setValue('preferredWorkingTimeZone', {
-            label: `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
-            value: res?.availability?.timezone,
-          });
+          setValue(
+            'preferredWorkingTimeZone',
+            {
+              label: `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
+              value: res?.availability?.timezone,
+            },
+            { shouldValidate: true },
+          );
         }
 
         let clientAvailabilityDays = [];
 
-        if (res?.availability?.weekdays_avl) {
+        if ('days' in res?.availability?.weekdays_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
-          setValue('weekdays', res?.availability?.weekdays_avl?.days);
+          setValue('weekdays', res?.availability?.weekdays_avl?.days, { shouldValidate: true });
           setValue(
             'weekdayStartTime',
             timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
+            { shouldValidate: true },
           );
           setValue(
             'weekdayEndTime',
             timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
+            { shouldValidate: true },
           );
         }
-        if (res?.availability.weekends_avl) {
+        if ('days' in res?.availability.weekends_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
-          setValue('weekends', res?.availability?.weekends_avl?.days);
+          setValue('weekends', res?.availability?.weekends_avl?.days, { shouldValidate: true });
           setValue(
             'weekendStartTime',
             timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
+            { shouldValidate: true },
           );
           setValue(
             'weekendEndTime',
             timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
+            { shouldValidate: true },
           );
         }
-        setValue('availabilityDays', clientAvailabilityDays);
+        setValue('availabilityDays', clientAvailabilityDays, { shouldValidate: true });
       }
-      if (res?.client_info?.currency_preference !== {}) {
-        setValue('currencyPreference', {
-          label: res?.client_info?.currency_preference?.name,
-          value: res?.client_info?.currency_preference?._id,
-        });
+      if ('name' in res?.client_info?.currency_preference) {
+        setValue(
+          'currencyPreference',
+          {
+            label: res?.client_info?.currency_preference?.name,
+            value: res?.client_info?.currency_preference?._id,
+          },
+          { shouldValidate: true },
+        );
       }
     }
   };

@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AsyncPaginate } from 'react-select-async-paginate';
@@ -253,32 +254,75 @@ const Personal = () => {
 
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
-      setValue('companyName', res?.client_info?.company_name);
-      setValue('title', res?.client_info?.title);
-      setValue('companyTagline', res?.client_info?.company_tagline);
-      if (res?.client_info?.company_industry !== {}) {
-        setValue('companyIndustry', {
-          label: res?.client_info?.company_industry?.name,
-          value: res?.client_info?.company_industry?._id,
-        });
+      if (res?.client_info?.company_name.length > 0) {
+        setValue('companyName', res?.client_info?.company_name, { shouldValidate: true });
       }
-      setValue('totalStrength', res?.client_info?.company_strength);
-      if (res?.client_info?.office_address !== {}) {
-        setValue('streetAddress', res?.client_info?.office_address?.street_address);
-        setValue('houseNumber', res?.client_info?.office_address?.house_number);
-        setValue('zipCode', res?.client_info?.office_address?.zip_code);
-        setValue('country', {
-          label: res?.client_info?.office_address.country.name,
-          value: res?.client_info?.office_address.country._id,
-        });
-        setValue('state', {
-          label: res?.client_info?.office_address.state.name,
-          value: res?.client_info?.office_address.state._id,
-        });
-        setValue('city', {
-          label: res?.client_info?.office_address.city.name,
-          value: res?.client_info?.office_address.city._id,
-        });
+      if (res?.client_info?.title.length > 0) {
+        setValue('title', res?.client_info?.title, { shouldValidate: true });
+      }
+      if (res?.client_info?.company_tagline.length > 0) {
+        setValue('companyTagline', res?.client_info?.company_tagline, { shouldValidate: true });
+      }
+      if ('name' in res?.client_info?.company_industry) {
+        setValue(
+          'companyIndustry',
+          {
+            label: res?.client_info?.company_industry?.name,
+            value: res?.client_info?.company_industry?._id,
+          },
+          { shouldValidate: true },
+        );
+      }
+      if (res?.client_info?.company_strength > 0) {
+        setValue('totalStrength', res?.client_info?.company_strength, { shouldValidate: true });
+      }
+      if (
+        'streetAddress' in res?.client_info?.office_address ||
+        'houseNumber' in res?.client_info?.office_address ||
+        'zipCode' in res?.client_info?.office_address ||
+        'country' in res?.client_info?.office_address ||
+        'state' in res?.client_info?.office_address ||
+        'city' in res?.client_info?.office_address
+      ) {
+        if (res?.client_info?.office_address?.street_address.length > 0) {
+          setValue('streetAddress', res?.client_info?.office_address?.street_address, { shouldValidate: true });
+        }
+        if (res?.client_info?.office_address?.house_number.length > 0) {
+          setValue('houseNumber', res?.client_info?.office_address?.house_number, { shouldValidate: true });
+        }
+        if (res?.client_info?.office_address?.zip_code > 0) {
+          setValue('zipCode', res?.client_info?.office_address?.zip_code, { shouldValidate: true });
+        }
+        if ('country' in res?.client_info?.office_address) {
+          setValue(
+            'country',
+            {
+              label: res?.client_info?.office_address.country.name,
+              value: res?.client_info?.office_address.country._id,
+            },
+            { shouldValidate: true },
+          );
+        }
+        if ('state' in res?.client_info?.office_address) {
+          setValue(
+            'state',
+            {
+              label: res?.client_info?.office_address.state.name,
+              value: res?.client_info?.office_address.state._id,
+            },
+            { shouldValidate: true },
+          );
+        }
+        if ('city' in res?.client_info?.office_address) {
+          setValue(
+            'city',
+            {
+              label: res?.client_info?.office_address.city.name,
+              value: res?.client_info?.office_address.city._id,
+            },
+            { shouldValidate: true },
+          );
+        }
       }
     }
   };
