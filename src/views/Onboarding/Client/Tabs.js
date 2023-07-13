@@ -31,7 +31,7 @@ const Tabs = ({ tabNames, active }) => {
         <NavItem>
           <NavLink active={location.pathname === '/client-onboarding/educational-details'}>
             <User className="font-medium-3 me-50" />
-            <span className="fw-bold">Educational</span>
+            <span className="fw-bold">Education</span>
           </NavLink>
         </NavItem>
         <NavItem>
