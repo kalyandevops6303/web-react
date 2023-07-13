@@ -141,7 +141,7 @@ const ProjectListing = () => {
                   Recommended Projects <Tag>{recommendedProjectsData?.data?.length} </Tag>
                 </span>
                 <CardText onClick={handleViewAll} className="view-all-cta">
-                  View all
+                  View All
                 </CardText>
               </AccordionHeadStyle>
             </AccordionHeader>
