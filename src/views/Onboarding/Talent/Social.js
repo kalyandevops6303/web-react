@@ -129,13 +129,19 @@ const Social = () => {
     if (res) {
       if (res?.talent_info?.social_links.length > 0) {
         if (res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn')) {
-          setValue('linkedInLink', res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url);
+          setValue('linkedInLink', res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url, {
+            shouldValidate: true,
+          });
         }
         if (res?.talent_info?.social_links.find((link) => link.platform === 'twitter')) {
-          setValue('twitterLink', res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url);
+          setValue('twitterLink', res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url, {
+            shouldValidate: true,
+          });
         }
         if (res?.talent_info?.social_links.find((link) => link.platform === 'github')) {
-          setValue('githubLink', res?.talent_info?.social_links.find((link) => link.platform === 'github').url);
+          setValue('githubLink', res?.talent_info?.social_links.find((link) => link.platform === 'github').url, {
+            shouldValidate: true,
+          });
         }
         if (
           res?.talent_info?.social_links.filter(
@@ -152,6 +158,7 @@ const Social = () => {
                 linkName: link.platform,
                 link: link.url,
               })),
+            { shouldValidate: true },
           );
         }
       }

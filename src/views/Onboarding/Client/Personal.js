@@ -24,7 +24,7 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
 import { toast } from 'react-hot-toast';
-import companyIcon from '@src/assets/images/company.png';
+import companyIcon from '@src/assets/images/business.svg';
 import { AccountImageContainer, ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getStates, getCities } from '../../../redux/actions/staticActions';

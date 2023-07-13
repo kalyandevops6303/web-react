@@ -255,12 +255,14 @@ const Educational = () => {
             educationInstitution: { label: detail.institution.name, value: detail.institution._id },
             education: { label: detail.education.name, value: detail.education._id },
           })),
+          { shouldValidate: true },
         );
       }
       if (res?.talent_info?.expertise?.tools.length > 0) {
         setValue(
           'tools',
           res?.talent_info?.expertise?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          { shouldValidate: true },
         );
       }
       if (res?.talent_info?.expertise?.certificates.length > 0) {
@@ -270,12 +272,14 @@ const Educational = () => {
             label: certificate.name,
             value: certificate._id,
           })),
+          { shouldValidate: true },
         );
       }
       if (res?.talent_info?.expertise?.skills.length > 0) {
         setValue(
           'skills',
           res?.talent_info?.expertise?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          { shouldValidate: true },
         );
       }
     }

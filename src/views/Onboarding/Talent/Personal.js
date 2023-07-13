@@ -315,18 +315,26 @@ const Personal = () => {
 
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
-      setValue('tagline', res?.talent_info?.tagline);
+      if (res?.talent_info?.tagline.length > 0) {
+        setValue('tagline', res?.talent_info?.tagline, { shouldValidate: true });
+      }
       if (res?.talent_info?.work_experience > 0) {
         // eslint-disable-next-line no-unsafe-optional-chaining
         const years = Math.floor(res?.talent_info?.work_experience / 12);
         const months = res?.talent_info?.work_experience % 12;
 
-        setValue('workExperienceYear', years);
-        setValue('workExperienceMonth', months);
+        setValue('workExperienceYear', years, { shouldValidate: true });
+        setValue('workExperienceMonth', months, { shouldValidate: true });
       }
-      setValue('professionalIntroduction', res?.talent_info?.professional_intro);
-      if (res?.talent_info?.role !== {}) {
-        setValue('role', { label: res?.talent_info?.role?.name, value: res?.talent_info?.role?._id });
+      if (res?.talent_info?.professional_intro.length > 0) {
+        setValue('professionalIntroduction', res?.talent_info?.professional_intro, { shouldValidate: true });
+      }
+      if ('name' in res?.talent_info?.role) {
+        setValue(
+          'role',
+          { label: res?.talent_info?.role?.name, value: res?.talent_info?.role?._id },
+          { shouldValidate: true },
+        );
       }
       if (res?.talent_info?.languages_speak.length > 0) {
         setValue(
@@ -335,6 +343,7 @@ const Personal = () => {
             label: language.name,
             value: language._id,
           })),
+          { shouldValidate: true },
         );
       }
       if (res?.talent_info?.languages_read.length > 0) {
@@ -344,6 +353,7 @@ const Personal = () => {
             label: language.name,
             value: language._id,
           })),
+          { shouldValidate: true },
         );
       }
       if (res?.talent_info?.languages_write.length > 0) {
@@ -353,24 +363,56 @@ const Personal = () => {
             label: language.name,
             value: language._id,
           })),
+          { shouldValidate: true },
         );
       }
-      if (res?.talent_info?.current_residency !== {}) {
-        setValue('streetAddress', res?.talent_info?.current_residency?.street_address);
-        setValue('houseNumber', res?.talent_info?.current_residency?.house_number);
-        setValue('zipCode', res?.talent_info?.current_residency?.zip_code);
-        setValue('country', {
-          label: res?.talent_info?.current_residency.country.name,
-          value: res?.talent_info?.current_residency.country._id,
-        });
-        setValue('state', {
-          label: res?.talent_info?.current_residency.state.name,
-          value: res?.talent_info?.current_residency.state._id,
-        });
-        setValue('city', {
-          label: res?.talent_info?.current_residency.city.name,
-          value: res?.talent_info?.current_residency.city._id,
-        });
+      if (
+        'streetAddress' in res?.talent_info?.current_residency ||
+        'houseNumber' in res?.talent_info?.current_residency ||
+        'zipCode' in res?.talent_info?.current_residency ||
+        'country' in res?.talent_info?.current_residency ||
+        'state' in res?.talent_info?.current_residency ||
+        'city' in res?.talent_info?.current_residency
+      ) {
+        if (res?.talent_info?.current_residency?.street_address.length > 0) {
+          setValue('streetAddress', res?.talent_info?.current_residency?.street_address, { shouldValidate: true });
+        }
+        if (res?.talent_info?.current_residency?.house_number.length > 0) {
+          setValue('houseNumber', res?.talent_info?.current_residency?.house_number, { shouldValidate: true });
+        }
+        if (res?.talent_info?.current_residency?.zip_code > 0) {
+          setValue('zipCode', res?.talent_info?.current_residency?.zip_code, { shouldValidate: true });
+        }
+        if ('country' in res?.talent_info?.current_residency) {
+          setValue(
+            'country',
+            {
+              label: res?.talent_info?.current_residency.country.name,
+              value: res?.talent_info?.current_residency.country._id,
+            },
+            { shouldValidate: true },
+          );
+        }
+        if ('state' in res?.talent_info?.current_residency) {
+          setValue(
+            'state',
+            {
+              label: res?.talent_info?.current_residency.state.name,
+              value: res?.talent_info?.current_residency.state._id,
+            },
+            { shouldValidate: true },
+          );
+        }
+        if ('city' in res?.talent_info?.current_residency) {
+          setValue(
+            'city',
+            {
+              label: res?.talent_info?.current_residency.city.name,
+              value: res?.talent_info?.current_residency.city._id,
+            },
+            { shouldValidate: true },
+          );
+        }
       }
     }
   };

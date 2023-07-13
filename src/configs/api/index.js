@@ -16,7 +16,7 @@ const API = {
     setNewPassword: `${apiAuthEndpoint}/api/v1/user/forgot-password/change`,
   },
   static: {
-    talentRoles: `${apiAuthEndpoint}/api/v1/talent-role`,
+    talentRoles: `${apiAuthEndpoint}/api/v1/static/talent-role`,
     languages: `${apiAuthEndpoint}/api/v1/static/language/all`,
     countries: `${apiAuthEndpoint}/api/v1/static/country`,
     states: `${apiAuthEndpoint}/api/v1/static/state-by-id`,
