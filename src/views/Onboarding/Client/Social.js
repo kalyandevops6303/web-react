@@ -383,7 +383,7 @@ const Social = () => {
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">Create Account</span>
+                  <span className="me-50">Save & Continue</span>
                   <ChevronRight size={14} />
                 </>
               )}

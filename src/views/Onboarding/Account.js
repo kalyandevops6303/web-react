@@ -22,10 +22,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AccountDetailsFormContainer, AccountImageContainer } from './style';
 import theme from '../../configs/themeVariables';
 import CountryDropdown from '../../@core/components/country-dropdown';
-import { getUserDetails, saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
+import {
+  getUserDetails,
+  saveProfileDetails as saveTalentProfileDetails,
+  saveTalentAccountDetails,
+} from '../../redux/actions/talentOnboardingActions';
 import { talentAccountDetailsLoading, userDetails } from '../../redux/selectors/talentOnboardingSelectors';
 import ShowToastMessage from '../../@core/components/toast';
-import { saveClientAccountDetails } from '../../redux/actions/clientOnboardingActions';
+import {
+  saveClientAccountDetails,
+  saveProfileDetails as saveClientProfileDetails,
+} from '../../redux/actions/clientOnboardingActions';
 import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
 
@@ -78,17 +85,29 @@ const Account = () => {
   const fileInputRef = useRef(null);
 
   const onSuccess = () => {
-    setIsNextButtonDisabled(false);
+    // eslint-disable-next-line no-unused-expressions
+    userDetailsData?.user_type === 'TALENT'
+      ? navigate('/talent-onboarding/personal-details')
+      : navigate('/client-onboarding/personal-details');
   };
 
   const onSubmit = (data) => {
     const { firstName, lastName } = data;
     const reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
 
-    if (userDetailsData.user_type === 'TALENT') {
-      dispatch(saveTalentAccountDetails(reqData, onSuccess));
+    if (userDetailsData?.checkpoint === 'ACCOUNT_DETAILS' || userDetailsData?.checkpoint === 'PROFILE_DETAILS') {
+      if (userDetailsData.user_type === 'TALENT') {
+        dispatch(saveTalentAccountDetails(reqData, onSuccess));
+      } else {
+        dispatch(saveClientAccountDetails(reqData, onSuccess));
+      }
     } else {
-      dispatch(saveClientAccountDetails(reqData, onSuccess));
+      // eslint-disable-next-line no-lonely-if
+      if (userDetailsData.user_type === 'TALENT') {
+        dispatch(saveTalentProfileDetails(reqData, onSuccess));
+      } else {
+        dispatch(saveClientProfileDetails(reqData, onSuccess));
+      }
     }
   };
 
@@ -282,38 +301,26 @@ const Account = () => {
                 {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
               </Col>
             </Row>
-            <div className="d-flex justify-content-end mt-2">
-              <Button
-                color="primary"
-                type="submit"
-                disabled={
-                  userDetailsData?.user_type === 'TALENT'
-                    ? !isValid || talentAccountDetailsIsLoading
-                    : !isValid || clientAccountDetailsIsLoading
-                }
-              >
-                {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <span className="me-50">Save Changes</span>
-                )}
-              </Button>
-            </div>
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end">
           <Button
             color="primary"
-            disabled={isNextButtonDisabled}
-            // eslint-disable-next-line
-            onClick={() =>
-              userDetailsData?.user_type === 'TALENT'
-                ? navigate('/talent-onboarding/personal-details')
-                : navigate('/client-onboarding/personal-details')
+            type="submit"
+            disabled={
+              isNextButtonDisabled || userDetailsData?.user_type === 'TALENT'
+                ? !isValid || talentAccountDetailsIsLoading
+                : !isValid || clientAccountDetailsIsLoading
             }
           >
-            <span className="me-50">Next</span>
-            <ChevronRight size={14} />
+            {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span className="me-50">Save & Continue</span>
+                <ChevronRight size={14} />
+              </>
+            )}
           </Button>
         </div>
       </Form>
