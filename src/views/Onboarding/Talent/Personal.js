@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useEffect, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -138,6 +138,7 @@ const Personal = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
   const [languagesOptions, setLanguagesOptions] = useState(null);
@@ -183,8 +184,34 @@ const Personal = () => {
     setCitiesOptions(requiredData);
   }, [citiesData]);
 
+  const onBackClick = () => {
+    if (location?.state?.isEditing) {
+      navigate('/talent-onboarding/account-details', {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate('/talent-onboarding/account-details');
+    }
+  };
+
+  const onSkipClick = () => {
+    if (location?.state?.isEditing) {
+      navigate('/talent-onboarding/educational-details', {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate('/talent-onboarding/educational-details');
+    }
+  };
+
   const onSuccess = () => {
-    navigate('/talent-onboarding/educational-details');
+    if (location?.state?.isEditing) {
+      navigate('/talent-onboarding/educational-details', {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate('/talent-onboarding/educational-details');
+    }
   };
 
   const onSubmit = (data) => {
@@ -794,22 +821,17 @@ const Personal = () => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
-          <div
-            className="d-flex align-items-center upload-button cursor-pointer"
-            onClick={() => navigate('/talent-onboarding/account-details')}
-          >
+          <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
             </UploadIconContainer>
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Link to="/talent-onboarding/educational-details">
-              <Button color="primary" outline className="me-2">
-                <span className="me-50">Skip</span>
-                <ChevronRight size={14} />
-              </Button>
-            </Link>
+            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+              <span className="me-50">Skip</span>
+              <ChevronRight size={14} />
+            </Button>
             <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
               {profileDetailsIsLoading ? (
                 <Spinner size="sm" />
