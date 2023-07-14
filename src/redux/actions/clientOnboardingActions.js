@@ -10,6 +10,7 @@ import {
 import ShowToastMessage from '../../@core/components/toast';
 import { accountDetailsService, profileDetailsService } from '../../services/clientOnboardingServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { saveCheckpointComplete } from './talentOnboardingActions';
 
 const saveClientAccountDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(accountDetailsRequest());
@@ -35,4 +36,16 @@ const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-export { saveClientAccountDetails, saveProfileDetails };
+const saveSocialProfileDetails = (data, onSuccess) => async (dispatch) => {
+  dispatch(profileDetailsRequest());
+  try {
+    const res = await profileDetailsService(data);
+    dispatch(profileDetailsSuccess(res.data.data));
+    ShowToastMessage(SUCCESS, res.data.data.message);
+    dispatch(saveCheckpointComplete(onSuccess));
+  } catch (error) {
+    errorHandler(error, profileDetailsFailure);
+  }
+};
+
+export { saveClientAccountDetails, saveProfileDetails, saveSocialProfileDetails };
