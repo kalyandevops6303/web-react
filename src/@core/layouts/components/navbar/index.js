@@ -15,15 +15,18 @@ import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/dashboardActions';
+import { useIsTab } from '../../../../utility/Utils';
 
 const ThemeNavbar = (props) => {
   const userData = getItem('userData');
   const location = useLocation();
+  const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
+
   // ** Props
-  const { skin, setSkin, setMenuVisibility } = props;
+  const { skin, setSkin, setMenuVisibility, className } = props;
   // ** Function to toggle Theme (Light/Dark)
 
   const HeadWrapper = styled.div`
@@ -77,7 +80,7 @@ const ThemeNavbar = (props) => {
   }, []);
 
   return (
-    <HeadWrapper>
+    <HeadWrapper className={className}>
       <div className="bookmark-wrapper d-flex align-items-center">
         <ul className="navbar-nav d-xl-none">
           <NavItem className="mobile-menu me-auto">
@@ -95,22 +98,29 @@ const ThemeNavbar = (props) => {
         </span>
       </Link>
 
-      <NavLink
-        className={({ isActive }) => (isActive ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'}
-        to="/dashboard"
-      >
-        Dashboard
-      </NavLink>
-      <NavLink
-        className={
-          (location?.pathname?.split('/')?.[1] === 'marketplace' || location?.state?.from?.primary === 'Marketplace'
-            ? 'is-active'
-            : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
-        }
-        to="/marketplace/all_listings"
-      >
-        Marketplace
-      </NavLink>
+      {!isNavbarSearchBarOpen && (
+        <>
+          {' '}
+          <NavLink
+            className={({ isActive }) =>
+              (isActive ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+            }
+            to="/dashboard"
+          >
+            Dashboard
+          </NavLink>
+          <NavLink
+            className={
+              (location?.pathname?.split('/')?.[1] === 'marketplace' || location?.state?.from?.primary === 'Marketplace'
+                ? 'is-active'
+                : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+            }
+            to="/marketplace/all_listings"
+          >
+            Marketplace
+          </NavLink>
+        </>
+      )}
 
       <NavbarUser skin={skin} setSkin={setSkin} />
     </HeadWrapper>

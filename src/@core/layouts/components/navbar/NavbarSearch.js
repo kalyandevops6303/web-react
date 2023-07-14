@@ -10,7 +10,6 @@ import { NavItem, NavLink } from 'reactstrap';
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux';
-import { handleSearchQuery } from '@store/navbar';
 
 // ** Custom Components
 import Autocomplete from '@components/autocomplete';
@@ -86,6 +85,7 @@ const NavbarSearch = () => {
         ) : null}
         <div className="search-input-close">
           <Icon.X
+            color={theme.activeNavPillText}
             className="ficon"
             onClick={(e) => {
               e.stopPropagation();
