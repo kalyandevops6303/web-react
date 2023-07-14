@@ -39,8 +39,11 @@ import { userDetails } from '../../../redux/selectors/talentOnboardingSelectors'
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
-    companyName: yup.string().required('Organization is required'),
-    title: yup.string().required('Title is required'),
+    companyName: yup
+      .string()
+      .max(30, 'Organization  must be 30 characters or less')
+      .required('Organization is required'),
+    title: yup.string().max(30, 'Title  must be 30 characters or less').required('Title is required'),
     companyTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
     companyIndustry: yup
       .object()
