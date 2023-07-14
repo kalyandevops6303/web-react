@@ -3,7 +3,7 @@ import { Col, Input, InputGroup, InputGroupText, Label, Popover, PopoverBody, Ro
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { debounce } from 'lodash';
+import { debounce, throttle } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { RefreshCcw, Search } from 'react-feather';
 import CollActive from '@src/assets/images/coll_active.png';
@@ -91,10 +91,26 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
         setPopoverOpen(false);
       }
+    }; // Adjust the debounce delay (in milliseconds) as per your needs
+
+    const handleScroll = throttle(() => {
+      setPopoverOpen(false);
+    }, 300); // Adjust the throttle delay (in milliseconds) as per your needs
+
+    const handleWindowClick = (event) => {
+      handleOutsideClick(event);
     };
-    document.addEventListener('mousedown', handleOutsideClick);
+
+    const handleWindowScroll = () => {
+      handleScroll();
+    };
+
+    document.addEventListener('mousedown', handleWindowClick);
+    window.addEventListener('scroll', handleWindowScroll);
+
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('mousedown', handleWindowClick);
+      window.removeEventListener('scroll', handleWindowScroll);
     };
   }, []);
 
@@ -345,7 +361,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const isUsers =
     location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
-
   const ExpandCollapseComp = (
     <>
       <Label className="view-label me-1">View:</Label>
@@ -579,7 +594,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         >
           {selectMarketPlaceData?.map((item) => {
             const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
-            return <CardComponent key={item?._id || item?.id} data={item} isExpanded={isExpanded} />;
+            return (
+              <CardComponent
+                key={item?._id || item?.id}
+                data={item}
+                isPopoverOpen={popoverOpen}
+                isExpanded={isExpanded}
+              />
+            );
           })}
         </InfiniteScroll>
       )}
