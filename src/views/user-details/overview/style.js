@@ -145,6 +145,9 @@ const LeftSidebarProfileWrapper = styled.div`
 `;
 
 const UserBioWrap = styled.div`
+  .card {
+    min-height: 8rem;
+  }
   .user-cover {
     height: 10rem;
     object-fit: contain;
