@@ -523,7 +523,7 @@ const Educational = () => {
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">Next</span>
+                  <span className="me-50">Save & Continue</span>
                   <ChevronRight size={14} />
                 </>
               )}
