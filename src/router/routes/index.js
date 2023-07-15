@@ -24,6 +24,7 @@ import MarketPlace from '../../views/marketplace';
 import Search from '../../views/search';
 import Notifications from '../../views/notifications';
 import ComingSoon from '../../views/auth/ComingSoon';
+import ProjectDetails from '../../views/project-details';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -64,7 +65,10 @@ const Routes = [
     path: '/marketplace/*',
     element: <MarketPlace />,
   },
-
+  {
+    path: '/project-details/:projectId',
+    element: <ProjectDetails />,
+  },
   {
     path: '/auth/*',
     element: <AuthRoute />,

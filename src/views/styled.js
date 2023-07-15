@@ -52,6 +52,11 @@ const CustomBadge = styled.span`
     background: ${theme.disabledGrayColor}1f;
     color: ${theme.disabledGrayColor};
   }
+  .OPEN_PROJECT {
+    background: ${theme.blueColor}1f !important;
+    color: ${theme.blueColor};
+    border: ${(props) => props.bordered && '1px solid'};
+  }
 `;
 
 const FormWrapper = styled.div`
