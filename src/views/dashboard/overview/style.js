@@ -240,6 +240,7 @@ const ProjectWrapper = styled.div`
     flex-direction: column;
     justify-content: space-between;
     .get-started {
+      margin-top: -2rem;
       font-size: 18px;
       line-height: 24px;
       color: #2963c3;
@@ -350,7 +351,6 @@ const ProjectsListingWrap = styled.div`
     &:before {
       font-size: 30px;
       line-height: 1;
-      opacity: 0.75;
       color: #0185e44a;
     }
   }
@@ -360,7 +360,6 @@ const ProjectsListingWrap = styled.div`
     &:before {
       font-size: 30px;
       line-height: 1;
-      opacity: 0.75;
       color: #0185e44a;
     }
   }

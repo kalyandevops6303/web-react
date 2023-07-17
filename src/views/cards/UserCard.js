@@ -36,7 +36,7 @@ const UserCard = ({ data }) => {
   };
 
   const fromLocationSearch = () => {
-    if (data?.company_name) return { title: 'Clients', link: '' };
+    if (data?.user_type === 'CLIENT') return { title: 'Clients', link: '' };
     return { title: 'Talent', link: '' };
   };
 
@@ -57,14 +57,14 @@ const UserCard = ({ data }) => {
                           secondary: fromLocationSecondary() || fromLocationSearch(),
                         },
                       }}
-                      to={`/profile/${data?.company_name ? 'client' : 'talent'}/${data?.user_id}`}
+                      to={`/profile/${data?.user_type === 'CLIENT' ? 'client' : 'talent'}/${data?.user_id}`}
                     >
                       {data?.first_name}&nbsp;
                       {data?.last_name}
                     </Link>
                   </CardTitle>
                   <CardText className="font-small-3 fw-300 mb-25 ms-25 marketplace-card-role">
-                    {data?.company_name ? data?.company_name || 'Company Name' : data?.role?.name || 'Role'}
+                    {data?.user_type === 'CLIENT' ? data?.company_name || 'Company Name' : data?.role?.name || 'Role'}
                   </CardText>
                   <div className="d-flex">
                     <RatingBadge number="0" />
@@ -101,17 +101,21 @@ const UserCard = ({ data }) => {
               <CardText className="mt-2 desc">{data?.company_tagline || data?.professional_intro} </CardText>
             </Col>
             <Col lg="4">
-              {data?.company_name && (
-                <BadgeGroup title="Area of interest" data={data?.project_area_of_interest?.area} color="light-blue" />
+              {data?.user_type === 'CLIENT' && (
+                <BadgeGroup
+                  title="Area of interest"
+                  data={data?.project_area_of_interest?.area?.name ? data?.project_area_of_interest?.area : []}
+                  color="light-blue"
+                />
               )}
               <BadgeGroup
                 title="Skills"
-                data={data?.company_name ? data?.project_area_of_interest?.skills : data?.expertise?.skills}
+                data={data?.user_type === 'CLIENT' ? data?.project_area_of_interest?.skills : data?.expertise?.skills}
                 color="light-blue"
               />
               <BadgeGroup
                 title="Tools"
-                data={data?.company_name ? data?.project_area_of_interest?.tools : data?.expertise?.tools}
+                data={data?.user_type === 'CLIENT' ? data?.project_area_of_interest?.tools : data?.expertise?.tools}
                 color="light-blue"
               />
             </Col>
