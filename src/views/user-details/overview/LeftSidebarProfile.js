@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
 import { Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -24,6 +24,7 @@ import { giveProgressBarColorClassName } from '../../../utility/Utils';
 const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
   const dispatch = useDispatch();
   const param = useParams();
+  const navigate = useNavigate();
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
@@ -32,6 +33,12 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
   };
 
   const profilePercentageData = useSelector(profilePercentage);
+
+  const onEditClick = () => {
+    navigate(`/${data.user_type.toLowerCase()}-onboarding/account-details`, {
+      state: { isEditing: true },
+    });
+  };
 
   return (
     <LeftSidebarProfileWrapper>
@@ -252,7 +259,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
 
             {isEditable ? (
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                <Button className="w-50" color="primary">
+                <Button className="w-50" color="primary" onClick={onEditClick}>
                   Edit
                 </Button>
               </div>

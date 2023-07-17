@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-expressions */
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -74,6 +75,7 @@ const Account = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
@@ -85,10 +87,19 @@ const Account = () => {
   const fileInputRef = useRef(null);
 
   const onSuccess = () => {
-    // eslint-disable-next-line no-unused-expressions
-    userDetailsData?.user_type === 'TALENT'
-      ? navigate('/talent-onboarding/personal-details')
-      : navigate('/client-onboarding/personal-details');
+    if (location?.state?.isEditing) {
+      userDetailsData?.user_type === 'TALENT'
+        ? navigate('/talent-onboarding/personal-details', {
+            state: { isEditing: true },
+          })
+        : navigate('/client-onboarding/personal-details', {
+            state: { isEditing: true },
+          });
+    } else {
+      userDetailsData?.user_type === 'TALENT'
+        ? navigate('/talent-onboarding/personal-details')
+        : navigate('/client-onboarding/personal-details');
+    }
   };
 
   const onSubmit = (data) => {
@@ -178,7 +189,7 @@ const Account = () => {
   return (
     <AccountDetailsFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="pb-3">
+        <Card>
           <CardHeader>
             <h4 className="m-0 mt-1">Account Details</h4>
           </CardHeader>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,6 +11,7 @@ import theme from '../../../configs/themeVariables';
 import {
   getUserDetails,
   saveCheckpointComplete,
+  saveProfileDetails,
   saveSocialProfileDetails,
 } from '../../../redux/actions/talentOnboardingActions';
 import { checkpointCompleteLoading, profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
@@ -65,6 +66,7 @@ const Social = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
@@ -73,12 +75,30 @@ const Social = () => {
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
+  const onBackClick = () => {
+    if (location?.state?.isEditing) {
+      navigate('/talent-onboarding/availability-details', {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate('/talent-onboarding/availability-details');
+    }
+  };
+
   const onSuccess = () => {
-    setAccountCreatedModal(true);
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      setAccountCreatedModal(true);
+    }
   };
 
   const onSkipClick = () => {
-    dispatch(saveCheckpointComplete(onSuccess));
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      dispatch(saveCheckpointComplete(onSuccess));
+    }
   };
 
   const onSubmit = (data) => {
@@ -109,9 +129,18 @@ const Social = () => {
     };
 
     if (removeEmptyKeys(reqData)) {
-      dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      if (location?.state?.isEditing) {
+        dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      } else {
+        dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      }
     } else {
-      dispatch(saveCheckpointComplete(onSuccess));
+      // eslint-disable-next-line no-lonely-if
+      if (location?.state?.isEditing) {
+        navigate('/dashboard');
+      } else {
+        dispatch(saveCheckpointComplete(onSuccess));
+      }
     }
   };
 
@@ -355,10 +384,7 @@ const Social = () => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
-          <div
-            className="d-flex align-items-center upload-button cursor-pointer"
-            onClick={() => navigate('/talent-onboarding/availability-details')}
-          >
+          <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
             </UploadIconContainer>

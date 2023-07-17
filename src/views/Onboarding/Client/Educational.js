@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
@@ -95,6 +95,7 @@ const Educational = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
@@ -103,8 +104,34 @@ const Educational = () => {
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
 
+  const onBackClick = () => {
+    if (location?.state?.isEditing) {
+      navigate('/client-onboarding/personal-details', {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate('/client-onboarding/personal-details');
+    }
+  };
+
+  const onSkipClick = () => {
+    if (location?.state?.isEditing) {
+      navigate('/client-onboarding/availability-details', {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate('/client-onboarding/availability-details');
+    }
+  };
+
   const onSuccess = () => {
-    navigate('/client-onboarding/availability-details');
+    if (location?.state?.isEditing) {
+      navigate('/client-onboarding/availability-details', {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate('/client-onboarding/availability-details');
+    }
   };
 
   const onSubmit = (data) => {
@@ -503,22 +530,17 @@ const Educational = () => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
-          <div
-            className="d-flex align-items-center upload-button cursor-pointer"
-            onClick={() => navigate('/client-onboarding/personal-details')}
-          >
+          <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
             </UploadIconContainer>
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Link to="/client-onboarding/availability-details">
-              <Button color="primary" outline className="me-2">
-                <span className="me-50">Skip</span>
-                <ChevronRight size={14} />
-              </Button>
-            </Link>
+            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+              <span className="me-50">Skip</span>
+              <ChevronRight size={14} />
+            </Button>
             <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
               {profileDetailsIsLoading ? (
                 <Spinner size="sm" />
