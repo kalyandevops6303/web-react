@@ -456,44 +456,48 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         },
         { shouldValidate: true },
       );
-    }
 
-    let clientAvailabilityDays = [];
+      let clientAvailabilityDays = [];
 
-    if ('days' in userDetailsData.availability.weekdays_avl) {
-      clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
-      setValue('weekdays', userDetailsData?.availability?.weekdays_avl?.days, { shouldValidate: true });
-      setValue(
-        'weekdayStartTime',
-        timeOptions.find(
-          (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.start_time,
-        ),
-        { shouldValidate: true },
-      );
-      setValue(
-        'weekdayEndTime',
-        timeOptions.find((time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.end_time),
-        { shouldValidate: true },
-      );
-    }
-    if ('days' in userDetailsData.availability.weekends_avl) {
-      clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
-      setValue('weekends', userDetailsData?.availability?.weekends_avl?.days, { shouldValidate: true });
-      setValue(
-        'weekendStartTime',
-        timeOptions.find(
-          (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.start_time,
-        ),
-        { shouldValidate: true },
-      );
-      setValue(
-        'weekendEndTime',
-        timeOptions.find((time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.end_time),
-        { shouldValidate: true },
-      );
-    }
+      if ('days' in userDetailsData.availability.weekdays_avl) {
+        clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
+        setValue('weekdays', userDetailsData?.availability?.weekdays_avl?.days, { shouldValidate: true });
+        setValue(
+          'weekdayStartTime',
+          timeOptions.find(
+            (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.start_time,
+          ),
+          { shouldValidate: true },
+        );
+        setValue(
+          'weekdayEndTime',
+          timeOptions.find(
+            (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.end_time,
+          ),
+          { shouldValidate: true },
+        );
+      }
+      if ('days' in userDetailsData.availability.weekends_avl) {
+        clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
+        setValue('weekends', userDetailsData?.availability?.weekends_avl?.days, { shouldValidate: true });
+        setValue(
+          'weekendStartTime',
+          timeOptions.find(
+            (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.start_time,
+          ),
+          { shouldValidate: true },
+        );
+        setValue(
+          'weekendEndTime',
+          timeOptions.find(
+            (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.end_time,
+          ),
+          { shouldValidate: true },
+        );
+      }
 
-    setValue('availabilityDays', clientAvailabilityDays, { shouldValidate: true });
+      setValue('availabilityDays', clientAvailabilityDays, { shouldValidate: true });
+    }
   }, [userDetailsData]);
 
   return (
