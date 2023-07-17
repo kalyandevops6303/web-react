@@ -11,6 +11,7 @@ import theme from '../../../configs/themeVariables';
 import {
   getUserDetails,
   saveCheckpointComplete,
+  saveProfileDetails,
   saveSocialProfileDetails,
 } from '../../../redux/actions/talentOnboardingActions';
 import { checkpointCompleteLoading, profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
@@ -93,7 +94,11 @@ const Social = () => {
   };
 
   const onSkipClick = () => {
-    dispatch(saveCheckpointComplete(onSuccess));
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      dispatch(saveCheckpointComplete(onSuccess));
+    }
   };
 
   const onSubmit = (data) => {
@@ -124,9 +129,18 @@ const Social = () => {
     };
 
     if (removeEmptyKeys(reqData)) {
-      dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      if (location?.state?.isEditing) {
+        dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      } else {
+        dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      }
     } else {
-      dispatch(saveCheckpointComplete(onSuccess));
+      // eslint-disable-next-line no-lonely-if
+      if (location?.state?.isEditing) {
+        navigate('/dashboard');
+      } else {
+        dispatch(saveCheckpointComplete(onSuccess));
+      }
     }
   };
 

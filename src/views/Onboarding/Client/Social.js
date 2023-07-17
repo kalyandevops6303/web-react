@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
-import { saveSocialProfileDetails } from '../../../redux/actions/clientOnboardingActions';
+import { saveProfileDetails, saveSocialProfileDetails } from '../../../redux/actions/clientOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/clientOnboardingSelectors';
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -91,7 +91,11 @@ const Social = () => {
   };
 
   const onSkipClick = () => {
-    dispatch(saveCheckpointComplete(onSuccess));
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      dispatch(saveCheckpointComplete(onSuccess));
+    }
   };
 
   const onSubmit = (data) => {
@@ -122,9 +126,18 @@ const Social = () => {
     };
 
     if (removeEmptyKeys(reqData)) {
-      dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      if (location?.state?.isEditing) {
+        dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      } else {
+        dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      }
     } else {
-      dispatch(saveCheckpointComplete(onSuccess));
+      // eslint-disable-next-line no-lonely-if
+      if (location?.state?.isEditing) {
+        navigate('/dashboard');
+      } else {
+        dispatch(saveCheckpointComplete(onSuccess));
+      }
     }
   };
 
