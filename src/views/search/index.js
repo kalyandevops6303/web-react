@@ -10,6 +10,7 @@ import { Header } from '../styled';
 import theme from '../../configs/themeVariables';
 import ProjectCard from '../cards/ProjectCard';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { userTypes } from '../../utility/constants/Constant';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -115,6 +116,11 @@ const Search = () => {
     .no-data {
       height: 10rem;
     }
+    @media only screen and (max-device-width: 600px) {
+      .card-body {
+        padding: 1rem;
+      }
+    }
   `;
 
   const totalResult = Object.values(searchData).reduce((sum, item) => {
@@ -140,10 +146,10 @@ const Search = () => {
               <li className={activeTab === 'PROJECT' && 'active'} onClick={() => setActivetab('PROJECT')}>
                 <CardText>Project ({searchData?.project?.metadata?.total_records})</CardText>
               </li>
-              <li className={activeTab === 'TALENT' && 'active'} onClick={() => setActivetab('TALENT')}>
+              <li className={activeTab === userTypes.talent && 'active'} onClick={() => setActivetab(userTypes.talent)}>
                 <CardText>Talent ({searchData?.talent?.metadata?.total_records})</CardText>
               </li>
-              <li className={activeTab === 'CLIENT' && 'active'} onClick={() => setActivetab('CLIENT')}>
+              <li className={activeTab === userTypes.client && 'active'} onClick={() => setActivetab(userTypes.client)}>
                 <CardText>Client ({searchData?.client?.metadata?.total_records})</CardText>
               </li>
             </NavigationBar>
@@ -166,7 +172,8 @@ const Search = () => {
                 loader={<div className="d-flex justify-content-center align-items-center">Loading...</div>}
               >
                 {currentFilterData?.map((item) => {
-                  const CardComponent = activeTab === 'TALENT' || activeTab === 'CLIENT' ? UserCard : ProjectCard;
+                  const CardComponent =
+                    activeTab === userTypes.talent || activeTab === userTypes.client ? UserCard : ProjectCard;
                   return <CardComponent key={item?._id || item?.id} data={item} isExpanded={false} />;
                 })}
               </InfiniteScroll>

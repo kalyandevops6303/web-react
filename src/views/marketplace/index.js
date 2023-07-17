@@ -13,13 +13,20 @@ const MarketPlaceContainer = styled.div`
       padding: 0.571rem 0.6rem 0.571rem 0.8rem;
     }
   }
+
+  @media only screen and (max-device-width: 600px) {
+    .primary-row {
+      display: block;
+    }
+  }
 `;
 
 const MarketPlace = () => {
   const isTab = useIsTab();
   const navigate = useNavigate();
-  const [isExpanded, setIsExpanded] = useState(false);
   // Primary filters
+
+  // Adjust the number of lines based on the desired limit
 
   const routesMatch =
     useMatch('/marketplace/clients') ||
@@ -38,19 +45,8 @@ const MarketPlace = () => {
   // const userData = useSelector(selectAuthUserData);
   const userData = getItem('userData');
 
-  const toggleExapantion = () => {
-    setIsExpanded(!isExpanded);
-  };
-
   // eslint-disable-next-line react/no-unstable-nested-components
-  const SecondComp = () => (
-    <SecondaryFilters
-      userType={userData?.user_type}
-      primaryFilter={primaryFilter}
-      toggleExapantion={toggleExapantion}
-      isExpanded={isExpanded}
-    />
-  );
+  const SecondComp = () => <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
 
   return (
     <MarketPlaceContainer>

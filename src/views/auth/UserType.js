@@ -1,6 +1,7 @@
 // ** React Imports
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // ** Icons Imports
 
@@ -14,15 +15,23 @@ import { OnBoardWrap, UserTypeCard } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { setUserType } from '../../redux/actions/authActions';
 import LogoComp from './components/LogoComp';
+import { selectIsLoggedIn } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
 const UserType = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const handleSelection = (type) => {
     dispatch(setUserType(type));
     navigate('register');
   };
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard');
+    }
+  }, []);
 
   return (
     <OnBoardWrap>
@@ -33,13 +42,13 @@ const UserType = () => {
         </CardTitle>
         <CardText className="mb-3 card-text">Please select a user type</CardText>
 
-        <UserTypeCard onClick={() => handleSelection('TALENT')} className="mt-3 text-center">
+        <UserTypeCard onClick={() => handleSelection(userTypes.talent)} className="mt-3 text-center">
           <CardTitle color="primary" tag="h2" className="select-card-title">
             Talent
           </CardTitle>
           <CardText className="card-text">Find clients and projects.</CardText>
         </UserTypeCard>
-        <UserTypeCard onClick={() => handleSelection('CLIENT')} className="text-center">
+        <UserTypeCard onClick={() => handleSelection(userTypes.client)} className="text-center">
           <CardTitle color="blue" tag="h2" className="select-card-title">
             Client
           </CardTitle>

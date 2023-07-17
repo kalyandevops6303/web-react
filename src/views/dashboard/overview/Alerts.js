@@ -10,6 +10,7 @@ import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -62,7 +63,7 @@ const Alerts = () => {
           </CardBody>
         </Card>
 
-        {userDetailsData?.user_type === 'CLIENT' && (
+        {userDetailsData?.user_type === userTypes.client && (
           <>
             <Card className="card-inside">
               <CardHeader>
@@ -87,7 +88,7 @@ const Alerts = () => {
           </>
         )}
 
-        {userDetailsData?.user_type === 'TALENT' && (
+        {userDetailsData?.user_type === userTypes.talent && (
           <>
             <Card className="card-inside">
               <CardHeader>

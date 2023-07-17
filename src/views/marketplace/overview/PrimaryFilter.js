@@ -6,6 +6,7 @@ import { PropTypes } from 'prop-types';
 import Statbox from '../../user-details/overview/Statbox';
 import { getItem } from '../../../utility/localStorageControl';
 import { getCardInfo } from '../../../redux/actions/marketPlaceActions';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType }) => {
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
   }, []);
 
   return (
-    <Row>
+    <Row className="primary-row">
       <Col onClick={() => handlePrimaryChangeFilter('all_listings')}>
         <Statbox
           isActive={selected === 'all_listings'}
@@ -31,7 +32,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
           className="stat-box cursor-pointer"
         />
       </Col>
-      {userType === 'CLIENT' && (
+      {userType === userTypes.client && (
         <>
           <Col onClick={() => handlePrimaryChangeFilter('my_listings')}>
             <Statbox
@@ -58,7 +59,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
         </>
       )}
 
-      {userType === 'TALENT' && (
+      {userType === userTypes.talent && (
         <>
           <Col onClick={() => handlePrimaryChangeFilter('clients')}>
             <Statbox

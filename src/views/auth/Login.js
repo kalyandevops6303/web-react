@@ -20,20 +20,27 @@ import '@styles/react/pages/page-authentication.scss';
 import { validations } from '../../utility/Utils';
 import { loginUser } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
-import { selectAuthLoading } from '../../redux/selectors/authSelectors';
+import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
+import { checkPoints } from '../../utility/constants/Constant';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
     password: yup.string().required('Password is required'),
   });
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard');
+    }
+  }, []);
   useEffect(() => {
     dispatch(clearDataSuccess());
   }, []);
@@ -51,18 +58,14 @@ const Login = () => {
     },
   });
 
-  useEffect(() => {
-    dispatch(clearDataSuccess());
-  }, []);
-
   const onSuccess = (resp) => {
-    if (resp?.checkpoint === 'MOBILE_VERIFICATION') {
+    if (resp?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
       navigate('/auth/register-phone');
-    } else if (resp?.checkpoint === 'ACCOUNT_DETAILS') {
+    } else if (resp?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
       navigate(`/${resp.user_type.toLowerCase()}-onboarding/account-details`);
-    } else if (resp?.checkpoint === 'PROFILE_DETAILS') {
+    } else if (resp?.checkpoint === checkPoints.PROFILE_DETAILS) {
       navigate(`/${resp.user_type.toLowerCase()}-onboarding/profile-details`);
-    } else if (resp?.checkpoint === 'COMPLETE') {
+    } else if (resp?.checkpoint === checkPoints.COMPLETE) {
       navigate('/dashboard');
     }
   };
@@ -81,7 +84,7 @@ const Login = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          Welcome Back! 👋🏻{' '}
+          Welcome Back! 👋🏻
         </CardTitle>
         <Form className="auth-login-form mt-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-1">
@@ -138,7 +141,7 @@ const Login = () => {
                 className="form-check-label"
                 for="remember-me"
               >
-                <small>Forgot password?</small>
+                <small>Forgot Password?</small>
               </Label>
             </div>
           </div>

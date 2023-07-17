@@ -22,10 +22,9 @@ const authSlice = createSlice({
       ...state,
       userType: action.payload,
     }),
-    clearDataSuccess: () => ({
+    clearDataSuccess: (state) => ({
+      ...state,
       email: null,
-      isLoggedIn: false,
-      userData: null,
       isEmailVerified: false,
       phone: null,
       isPhoneVerified: false,
@@ -34,6 +33,12 @@ const authSlice = createSlice({
       loading: false,
       isResendLoading: false,
       error: null,
+      fcmToken: '',
+    }),
+
+    logOut: () => ({
+      isLoggedIn: false,
+      userData: null,
     }),
 
     // resend otp
@@ -257,6 +262,7 @@ export const {
   loginSuccess,
   loginFailure,
   FCMSubscribe,
+  logOut,
   setLoggedInStatus,
 } = authSlice.actions;
 

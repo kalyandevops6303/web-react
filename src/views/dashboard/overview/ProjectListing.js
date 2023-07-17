@@ -17,6 +17,7 @@ import { useIsTab } from '../../../utility/Utils';
 import Tag from '../../../@core/components/tags';
 import { recommendedProjects, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const Empty = ({ active, recommended, payment }) => (
   <ProjectWrapper>
@@ -61,7 +62,7 @@ const ProjectListing = () => {
   const recommendedProjectsData = useSelector(recommendedProjects);
 
   useEffect(() => {
-    if (userDetailsData?.user_type === 'TALENT') {
+    if (userDetailsData?.user_type === userTypes.talent) {
       dispatch(getRecommendedProjects());
     }
   }, [userDetailsData]);
@@ -97,7 +98,7 @@ const ProjectListing = () => {
         </AccordionBody>
       </AccordionItem>
       <AccordionItem>
-        {userDetailsData?.user_type === 'TALENT' && (
+        {userDetailsData?.user_type === userTypes.talent && (
           <>
             <AccordionHeader targetId="3">
               Recommended Projects <Tag hasNew>{recommendedProjectsData?.data?.length} new</Tag>
@@ -122,7 +123,7 @@ const ProjectListing = () => {
             </AccordionBody>
           </>
         )}
-        {userDetailsData?.user_type === 'CLIENT' && (
+        {userDetailsData?.user_type === userTypes.client && (
           <>
             <AccordionHeader targetId="3">
               Upcoming Payments <Tag hasNew>0 new</Tag>

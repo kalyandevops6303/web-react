@@ -80,7 +80,7 @@ const UserCard = ({ data }) => {
                   </div>
                 )}
               </div>
-              <CardText className="mt-2 ">{data?.company_tagline || data?.professional_intro} </CardText>
+              <CardText className="mt-2 desc">{data?.company_tagline || data?.professional_intro} </CardText>
             </Col>
             <Col lg="4">
               {data?.company_name && (

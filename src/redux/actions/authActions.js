@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import errorHandler from '../../utility/errorHandler';
 
 import {
@@ -48,10 +49,13 @@ import {
   resendRequest,
   resendSuccess,
   FCMSubscribe,
+  logOut,
 } from '../reducers/auth';
 import { setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { clearData } from '../reducers/dashboard';
+import { checkPoints } from '../../utility/constants/Constant';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -77,7 +81,11 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     const res = await loginService({ email: username, password });
     setItem('access_token', res.data.data.access_token);
     onSuccess(res.data.data);
-    dispatch(loginSuccess(res.data.data));
+    if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
+      dispatch(loginSuccess(res.data.data));
+    } else {
+      dispatch(loginSuccess(false));
+    }
   } catch (error) {
     errorHandler(error, loginFailure);
   }
@@ -89,7 +97,11 @@ const loginUserWithGoogle =
     try {
       const res = await loginServiceGoogle({ id_token, user_type });
       setItem('access_token', res.data.data.access_token);
-      dispatch(loginSuccess(res.data.data));
+      if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
+        dispatch(loginSuccess(res.data.data));
+      } else {
+        dispatch(loginSuccess(false));
+      }
       onSuccess(res.data.data);
     } catch (error) {
       onError(error);
@@ -210,6 +222,19 @@ const setNewPassword = (newPassword) => async (dispatch) => {
   }
 };
 
+const logoutAction =
+  ({ fcmToken, onSuccess }) =>
+  async (dispatch) => {
+    if (fcmToken) {
+      dispatch(fcmUnsubscribeNotification(fcmToken));
+    }
+    dispatch(logOut());
+    dispatch(clearData());
+    // eslint-disable-next-line no-undef
+    window.localStorage.clear();
+    onSuccess();
+  };
+
 const setUserType = (type) => async (dispatch) => {
   dispatch(setUserTypeSuccess(type));
 };
@@ -227,6 +252,7 @@ export {
   verifyOtp,
   setNewPassword,
   loginUser,
+  logoutAction,
   fcmSubscribeNotification,
   fcmUnsubscribeNotification,
 };

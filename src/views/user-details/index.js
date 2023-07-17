@@ -13,8 +13,12 @@ import UserBio from './overview/UserBio';
 import RecentProjects from './overview/RecentProjects';
 import Reviews from './overview/Reviews';
 import { getProfile } from '../../redux/actions/profileActions';
-import { selectCurrentProfile } from '../../redux/selectors/profileSelectors';
+import { selectCurrentProfile, selectError, selectLoading } from '../../redux/selectors/profileSelectors';
 import { getItem } from '../../utility/localStorageControl';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { clearData } from '../../redux/reducers/profile';
+import Error from '../Error';
+import { userTypes } from '../../utility/constants/Constant';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -23,13 +27,16 @@ const UserDetails = () => {
   const location = useLocation();
 
   useEffect(() => {
+    dispatch(clearData());
     // eslint-disable-next-line no-undef
     window?.scrollTo(0, 0);
     dispatch(getProfile(param?.userId, param?.userType.toUpperCase()));
   }, []);
 
-  const isClient = param?.userType.toUpperCase() === 'CLIENT';
+  const isClient = param?.userType.toUpperCase() === userTypes.client;
   const currentProfile = useSelector(selectCurrentProfile);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
   const userData = getItem('userData');
 
   const calculateAvailableHoursPerWeek = (availability) => {
@@ -70,6 +77,13 @@ const UserDetails = () => {
     { title: capitalize(location?.state?.from), link: location?.state?.link },
     { title: currentProfile?.first_name || 'User' },
   ];
+
+  if (loading) {
+    return <ComponentSpinner />;
+  }
+  if (error) {
+    return <Error />;
+  }
   return (
     <>
       <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} />

@@ -28,6 +28,7 @@ import ShowToastMessage from '../../@core/components/toast';
 import { saveClientAccountDetails } from '../../redux/actions/clientOnboardingActions';
 import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
+import { checkPoints, userTypes } from '../../utility/constants/Constant';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -82,7 +83,7 @@ const Account = () => {
     const { firstName, lastName } = data;
     const reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
 
-    if (userDetailsData.user_type === 'TALENT') {
+    if (userDetailsData.user_type === userTypes.talent) {
       dispatch(saveTalentAccountDetails(reqData, onSuccess));
     } else {
       dispatch(saveClientAccountDetails(reqData, onSuccess));
@@ -95,11 +96,11 @@ const Account = () => {
       setValue('mobileNumber', res.phone);
       setValue('email', res.email);
 
-      if (res.checkpoint === 'PROFILE_DETAILS') {
-        if (res.user_type === 'TALENT') {
+      if (res.checkpoint === checkPoints.PROFILE_DETAILS) {
+        if (res.user_type === userTypes.talent) {
           setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
-        } else if (res.user_type === 'CLIENT') {
+        } else if (res.user_type === userTypes.client) {
           setValue('firstName', res.client_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.client_info?.last_name, { shouldValidate: true });
         }
@@ -272,7 +273,7 @@ const Account = () => {
                 color="primary"
                 type="submit"
                 disabled={
-                  userDetailsData?.user_type === 'TALENT'
+                  userDetailsData?.user_type === userTypes.talent
                     ? !isValid || talentAccountDetailsIsLoading
                     : !isValid || clientAccountDetailsIsLoading
                 }
@@ -292,7 +293,7 @@ const Account = () => {
             disabled={isNextButtonDisabled}
             // eslint-disable-next-line
             onClick={() =>
-              userDetailsData?.user_type === 'TALENT'
+              userDetailsData?.user_type === userTypes.talent
                 ? navigate('/talent-onboarding/profile-details')
                 : navigate('/client-onboarding/profile-details')
             }

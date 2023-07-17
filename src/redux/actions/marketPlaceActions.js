@@ -8,14 +8,21 @@ import {
   getTalentsService,
 } from '../../services/marketPlaceServices';
 
-import { getCardInfoSuccess, getListProjectsSuccess, getUsersSuccess } from '../reducers/marketPlace';
+import {
+  getCardInfoSuccess,
+  getListErr,
+  getListProjectsSuccess,
+  getListReq,
+  getUsersSuccess,
+} from '../reducers/marketPlace';
+import { userTypes } from '../../utility/constants/Constant';
 
 const getCardInfo =
   ({ userType, onSuccess, onError }) =>
   async (dispatch) => {
     try {
       let res;
-      if (userType === 'CLIENT') {
+      if (userType === userTypes.client) {
         res = await getClientCardService();
       } else {
         res = await getTalentCardService();
@@ -31,9 +38,12 @@ const getCardInfo =
 const getListProjects =
   ({ isMyListing, isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
   async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
     try {
       let res;
-      if (userType === 'CLIENT') {
+      if (userType === userTypes.client) {
         res = await getListProjectClientService({ postData, searchText, metaData, isRecommanded, isMyListing });
       } else {
         res = await getListProjectTalentService({ postData, searchText, metaData, isRecommanded });
@@ -42,16 +52,19 @@ const getListProjects =
       onSuccess();
     } catch (error) {
       onError();
-      errorHandler(error);
+      errorHandler(error, getListErr);
     }
   };
 
 const getUsers =
   ({ isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
   async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
     try {
       let res;
-      if (userType === 'CLIENT') {
+      if (userType === userTypes.client) {
         res = await getTalentsService({ postData, searchText, metaData, isRecommanded });
       } else {
         res = await getClientsService({ postData, searchText, metaData, isRecommanded });
@@ -60,7 +73,7 @@ const getUsers =
       onSuccess();
     } catch (error) {
       onError();
-      errorHandler(error);
+      errorHandler(error, getListErr);
     }
   };
 

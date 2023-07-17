@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { Card, CardHeader, CardTitle, CardBody, CardText, ButtonGroup, Button } from 'reactstrap';
 import { EarningAmount, EarningCardWrapper } from './style';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const EarningCard = () => {
   const userDetailsData = useSelector(userData);
@@ -18,7 +19,7 @@ const EarningCard = () => {
     <EarningCardWrapper>
       <Card className="card-reward">
         <CardHeader className="earning-head">
-          <CardTitle tag="h4">{userDetailsData?.user_type === 'TALENT' ? 'Earnings' : 'Payments'}</CardTitle>
+          <CardTitle tag="h4">{userDetailsData?.user_type === userTypes.talent ? 'Earnings' : 'Payments'}</CardTitle>
           <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
             View All
           </CardText>
