@@ -238,14 +238,6 @@ const logoutAction =
     dispatch(logOut());
     dispatch(clearData());
 
-    // const keyToPreserve = 'isUserVisited';
-    // const preservedValue = getItem(keyToPreserve);
-    // // eslint-disable-next-line no-undef
-    // window.localStorage.clear();
-    // if (preservedValue) {
-    //   setItem(keyToPreserve, preservedValue);
-    // }
-
     onSuccess();
   };
 

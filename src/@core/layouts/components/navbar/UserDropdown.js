@@ -20,6 +20,7 @@ import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
 import { userTypes } from '../../../../utility/constants/Constant';
+import { getItem, setItem } from '../../../../utility/localStorageControl';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(userData);
@@ -31,6 +32,13 @@ const UserDropdown = () => {
   const handleLogout = () => {
     const onSuccess = () => {
       navigate('/auth/login');
+      const keyToPreserve = 'isUserVisited';
+      const preservedValue = getItem(keyToPreserve);
+      // eslint-disable-next-line no-undef
+      window.localStorage.clear();
+      if (preservedValue) {
+        setItem(keyToPreserve, preservedValue);
+      }
     };
 
     dispatch(logoutAction({ fcmToken, onSuccess }));
