@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
-import { Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
@@ -13,15 +13,16 @@ import BehanceIcon from '@src/assets/images/behance.png';
 import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
-import { GitHub, Heart, Link, Linkedin, Twitter } from 'react-feather';
+import { GitHub, Heart, Link, Linkedin, Twitter, UserCheck } from 'react-feather';
 import { LeftSidebarProfileWrapper } from './style';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import { CustomBadge } from '../../styled';
 
-const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
+const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const handleLike = () => {
@@ -37,12 +38,22 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
     <LeftSidebarProfileWrapper>
       <Card>
         <CardBody>
-          {!isEditable &&
-            (data?.is_favourited ? (
-              <Heart className="d-flex ms-auto heart" fill={theme.red} stroke={theme.red} onClick={handleUnLike} />
-            ) : (
-              <Heart className="d-flex ms-auto heart" onClick={handleLike} />
-            ))}
+          <div className="d-flex justify-content-between">
+            {isInvited && (
+              <div className="d-flex gap-50 align-items-center">
+                <UserCheck size={16} />
+                <CustomBadge>
+                  <Badge className="INVITED">Invited</Badge>
+                </CustomBadge>
+              </div>
+            )}
+            {!isEditable &&
+              (data?.is_favourited ? (
+                <Heart className="d-flex ms-auto heart" fill={theme.red} stroke={theme.red} onClick={handleUnLike} />
+              ) : (
+                <Heart className="d-flex ms-auto heart" onClick={handleLike} />
+              ))}
+          </div>
 
           <div className="user-image">
             <img src={avatar7} alt="user" />
@@ -236,13 +247,14 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               />
             </div>
 
-            {isEditable ? (
+            {isEditable && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50" color="primary">
                   Edit
                 </Button>
               </div>
-            ) : (
+            )}
+            {!isEditable && (
               // To be taken for team memebers
               <div className="d-none">
                 <div className="d-flex gap-1 mt-3 justify-content-center">
@@ -256,6 +268,18 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                 <CardText className="report-text m-0 text-center mt-1 fw-bold">Report</CardText>
               </div>
             )}
+            {isInvited && (
+              <div className="invited-box">
+                <div className="d-flex gap-1 mt-3 justify-content-center">
+                  <Button size="md" className="w-50" outline color="primary">
+                    View Profile
+                  </Button>
+                  <Button size="md" className="w-50" color="primary">
+                    Message
+                  </Button>
+                </div>
+              </div>
+            )}
           </section>
         </CardBody>
       </Card>
@@ -267,11 +291,13 @@ LeftSidebarProfile.propTypes = {
   isEditable: PropTypes.bool,
   data: PropTypes.object,
   isClient: PropTypes.bool,
+  isInvited: PropTypes.bool,
 };
 LeftSidebarProfile.defaultProps = {
   isEditable: false,
   data: {},
   isClient: false,
+  isInvited: false,
 };
 
 export default LeftSidebarProfile;

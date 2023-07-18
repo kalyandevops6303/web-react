@@ -25,6 +25,7 @@ import Search from '../../views/search';
 import Notifications from '../../views/notifications';
 import ComingSoon from '../../views/auth/ComingSoon';
 import ProjectDetails from '../../views/project-details';
+import BidDetails from '../../views/project-details/BidDetails';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -68,6 +69,10 @@ const Routes = [
   {
     path: '/project-details/:projectId/:projectStep',
     element: <ProjectDetails />,
+  },
+  {
+    path: '/project-details/:projectId/:projectStep/details',
+    element: <BidDetails />,
   },
   {
     path: '/auth/*',

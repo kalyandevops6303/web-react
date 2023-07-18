@@ -57,6 +57,10 @@ const CustomBadge = styled.span`
     color: ${theme.blueColor};
     border: ${(props) => props.bordered && '1px solid'};
   }
+  .INVITED {
+    color: ${theme.purpleColor};
+    background: ${theme.purpleColor}1f !important;
+  }
 `;
 
 const FormWrapper = styled.div`
