@@ -9,7 +9,7 @@ import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style
 import { convertTo12HourFormat, formatDateWithDash } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
-import { createProjectData, createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
+import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
 import { createNewProject } from '../../../redux/actions/createProjectActions';
 import YouDidItModal from '../YouDidItModal';
 
@@ -28,7 +28,6 @@ const Preview = ({
   const dispatch = useDispatch();
 
   const createProjectIsLoading = useSelector(createProjectLoading);
-  const createProjectDetails = useSelector(createProjectData);
 
   const renderFilePreview = (file) => {
     if (file.type.startsWith('image')) {
@@ -63,7 +62,7 @@ const Preview = ({
       .replace(',', '')
       .split(' ');
 
-    return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2].slice(2, 4)}`;
+    return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
   };
 
   const fileList = () => (
@@ -176,7 +175,7 @@ const Preview = ({
 
   const onNewProjectCreation = () => {
     const details = {
-      name: projectDetails?.projectName,
+      name: projectDetails?.projectName.trim(),
       description: projectDetails?.projectDescription,
       expected_duration: {
         duration: projectDetails?.expectedDuration,
@@ -223,7 +222,6 @@ const Preview = ({
     };
 
     const requiredData = {
-      id: createProjectDetails?.project_id || '',
       details,
       proficiency,
       availability,

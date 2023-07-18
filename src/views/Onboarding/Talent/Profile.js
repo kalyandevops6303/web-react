@@ -51,13 +51,19 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
     tagline: yup.string().max(60, 'Tagline must be at most 60 characters').required('Tagline is required'),
-    workExperienceYear: yup.number().min(0).integer('Year must be an integer').typeError('Year must be a number'),
+    workExperienceYear: yup
+      .number()
+      .min(0)
+      .integer('Year must be an integer')
+      .typeError('Year must be a number')
+      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     workExperienceMonth: yup
       .number()
       .min(0)
       .max(11, 'Month must be at most 11')
       .integer('Month must be an integer')
-      .typeError('Month must be a number'),
+      .typeError('Month must be a number')
+      .transform((value) => (Number.isNaN(value) ? undefined : value)),
     professionalIntroduction: yup
       .string()
       .max(150, 'Professional introduction must be at most 150 characters')
@@ -115,6 +121,7 @@ const Profile = () => {
         label: yup.string().required('State is required'),
         value: yup.string().required('State is required'),
       })
+      .transform((value) => (value === null ? undefined : value))
       .required('State is required'),
     city: yup
       .object()
@@ -122,6 +129,7 @@ const Profile = () => {
         label: yup.string().required('City is required'),
         value: yup.string().required('City is required'),
       })
+      .transform((value) => (value === null ? undefined : value))
       .required('City is required'),
     educationDetails: yup
       .array()
@@ -240,7 +248,14 @@ const Profile = () => {
         value: yup.string().required('Currency preference is required'),
       })
       .required('Currency preference is required'),
-    hourlyRate: yup.number().typeError('Hourly rate must be a number').required('Hourly rate is required'),
+    hourlyRate: yup
+      .number()
+      .min(1, 'Hourly rate should be atleast 1')
+      .test('maxDigitsAfterDecimal', 'Hourly Rate must be upto two decimal places', (number) =>
+        /^\d+(\.\d{1,2})?$/.test(number),
+      )
+      .typeError('Hourly rate must be a number')
+      .required('Hourly rate is required'),
     linkedInLink: yup.string().url('Please enter a valid url'),
     twitterLink: yup.string().url('Please enter a valid url'),
     githubLink: yup.string().url('Please enter a valid url'),
@@ -427,7 +442,7 @@ const Profile = () => {
       },
     };
     const currency_preference = currencyPreference.value;
-    const hourly_rate = parseInt(hourlyRate, 10);
+    const hourly_rate = hourlyRate;
     const social_links = [
       {
         platform: 'linkedIn',
@@ -1897,10 +1912,10 @@ const Profile = () => {
                     <Input
                       {...field}
                       type="number"
-                      min={0}
+                      step="any"
                       onWheel={(e) => e.target.blur()}
                       placeholder="Enter your hourly rate"
-                      invalid={errors.workExperienceYear && true}
+                      invalid={errors.hourlyRate && true}
                     />
                   )}
                 />

@@ -81,6 +81,7 @@ const Profile = () => {
         label: yup.string().required('State is required'),
         value: yup.string().required('State is required'),
       })
+      .transform((value) => (value === null ? undefined : value))
       .required('State is required'),
     city: yup
       .object()
@@ -88,6 +89,7 @@ const Profile = () => {
         label: yup.string().required('City is required'),
         value: yup.string().required('City is required'),
       })
+      .transform((value) => (value === null ? undefined : value))
       .required('City is required'),
     educationDetails: yup
       .array()

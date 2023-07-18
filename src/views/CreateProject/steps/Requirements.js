@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { ChevronRight, FileText, Info, Minus, Upload } from 'react-feather';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -36,6 +37,7 @@ import {
   toolsService,
 } from '../../../services/staticServices';
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
+import { userData } from '../../../redux/selectors/dashboardSelectors';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -106,6 +108,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     minTimeOverlapHr: yup
       .number()
       .min(0, 'Min time overlap hr should be greater than or equal to 0')
+      .max(24, 'Min time overlap hr should not be greater than 24')
       .typeError('Please enter a number')
       .required('Min time overlap hr is required'),
     availabilityDays: yup
@@ -191,6 +194,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         yup
           .number()
           .min(1, 'Project fixed cost should be atleast 1')
+          .test('maxDigitsAfterDecimal', 'Project fixed cost must be upto two decimal places', (number) =>
+            /^\d+(\.\d{1,2})?$/.test(number),
+          )
           .typeError('Please enter a number')
           .required('Project fixed cost is required'),
     }),
@@ -438,6 +444,55 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
     setValue('excludedCountriesSelection', newCountries);
   };
+
+  useEffect(() => {
+    loadTimezonesOptions();
+  }, []);
+
+  const userDetailsData = useSelector(userData);
+
+  useEffect(() => {
+    if (timezonesOptions?.length > 0) {
+      const clientPreferredTimezone = timezonesOptions.find(
+        (timezone) => timezone.value._id === userDetailsData?.availability?.timezone._id,
+      );
+
+      setValue('preferredWorkingTimeZone', clientPreferredTimezone);
+    }
+
+    let clientAvailabilityDays = [];
+
+    if (userDetailsData.availability.weekdays_avl) {
+      clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
+      setValue('weekdays', userDetailsData?.availability?.weekdays_avl?.days);
+      setValue(
+        'weekdayStartTime',
+        timeOptions.find(
+          (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.start_time,
+        ),
+      );
+      setValue(
+        'weekdayEndTime',
+        timeOptions.find((time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.end_time),
+      );
+    }
+    if (userDetailsData.availability.weekends_avl) {
+      clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
+      setValue('weekends', userDetailsData?.availability?.weekends_avl?.days);
+      setValue(
+        'weekendStartTime',
+        timeOptions.find(
+          (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.start_time,
+        ),
+      );
+      setValue(
+        'weekendEndTime',
+        timeOptions.find((time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.end_time),
+      );
+    }
+
+    setValue('availabilityDays', clientAvailabilityDays);
+  }, [userDetailsData, timezonesOptions]);
 
   return (
     <RequirementsFormContainer>
@@ -1109,7 +1164,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 name="includeOrExcludeCountries"
                 render={({ field }) => (
                   <div className="demo-inline-spacing mx-25">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                       <Input
                         type="radio"
                         {...field}
@@ -1186,7 +1241,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 name="includeOrExcludeCountries"
                 render={({ field }) => (
                   <div className="demo-inline-spacing mx-25">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                       <Input
                         type="radio"
                         {...field}
@@ -1306,7 +1361,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   name="projectPayType"
                   render={({ field }) => (
                     <div className="demo-inline-spacing m-0">
-                      <div className="form-check form-check-inline checkbox-custom-margin">
+                      <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                         <Input
                           type="radio"
                           {...field}
@@ -1327,7 +1382,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           Variable price
                         </Label>
                       </div>
-                      <div className="form-check form-check-inline checkbox-custom-margin">
+                      <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                         <Input
                           type="radio"
                           {...field}
@@ -1368,7 +1423,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       <Input
                         {...field}
                         type="number"
-                        min={0}
+                        step="any"
                         onWheel={(e) => e.target.blur()}
                         placeholder="Specify project fixed cost"
                         invalid={errors.projectFixedCost && true}
@@ -1400,7 +1455,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   name="nda"
                   render={({ field }) => (
                     <div className="demo-inline-spacing m-0">
-                      <div className="form-check form-check-inline checkbox-custom-margin">
+                      <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                         <Input
                           type="radio"
                           {...field}
@@ -1421,7 +1476,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           Yes
                         </Label>
                       </div>
-                      <div className="form-check form-check-inline checkbox-custom-margin">
+                      <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                         <Input
                           type="radio"
                           {...field}

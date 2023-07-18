@@ -211,7 +211,7 @@ const Project = ({ data, className, recommended }) => {
               <div className="design-planning">
                 <CardText className="mb-25">Start date</CardText>
                 <h6 className="mb-0">{`${
-                  DateTime.fromSeconds(data?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
+                  DateTime.fromMillis(data?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
                 }`}</h6>
               </div>
               {!data?.pay_type?.variable_cost && (

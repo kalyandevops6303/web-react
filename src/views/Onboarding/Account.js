@@ -74,6 +74,9 @@ const Account = () => {
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
 
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImagePreview, setSelectedImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
   const onSuccess = () => {
     setIsNextButtonDisabled(false);
@@ -96,7 +99,23 @@ const Account = () => {
       setValue('mobileNumber', res.phone);
       setValue('email', res.email);
 
-      if (res.checkpoint === checkPoints.PROFILE_DETAILS) {
+      if (res.checkpoint === checkPoints.ACCOUNT_DETAILS && res.oauth_type === 'google') {
+        if (res.user_type === userTypes.talent) {
+          setSelectedImage(res?.talent_info?.image_uri);
+          setSelectedImagePreview(res?.talent_info?.image_uri);
+          setValue('firstName', res?.talent_info?.first_name, { shouldValidate: true });
+          if (res?.talent_info?.last_name !== '') {
+            setValue('lastName', res?.talent_info?.last_name, { shouldValidate: true });
+          }
+        } else if (res.user_type === userTypes.client) {
+          setSelectedImage(res?.client_info?.image_uri);
+          setSelectedImagePreview(res?.client_info?.image_uri);
+          setValue('firstName', res?.client_info?.first_name, { shouldValidate: true });
+          if (res?.client_info?.last_name !== '') {
+            setValue('lastName', res?.client_info?.last_name, { shouldValidate: true });
+          }
+        }
+      } else if (res.checkpoint === checkPoints.PROFILE_DETAILS) {
         if (res.user_type === userTypes.talent) {
           setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
@@ -113,10 +132,6 @@ const Account = () => {
   useEffect(() => {
     dispatch(getUserDetails(onGetUserDetailsSuccess));
   }, []);
-
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImagePreview, setSelectedImagePreview] = useState(null);
-  const fileInputRef = useRef(null);
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];

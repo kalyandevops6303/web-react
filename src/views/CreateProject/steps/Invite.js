@@ -308,7 +308,9 @@ const Invite = ({ stepper }) => {
                               <div className="user-pic p-25 me-2">
                                 <User size={28} />
                               </div>
-                              <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
+                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                              </Link>
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="4">
@@ -391,7 +393,9 @@ const Invite = ({ stepper }) => {
                               <div className="user-pic p-25 me-2">
                                 <User size={28} />
                               </div>
-                              <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
+                              <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
+                                <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
+                              </Link>
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="4">
@@ -476,7 +480,9 @@ const Invite = ({ stepper }) => {
                               <div className="user-pic p-25 me-2">
                                 <User size={28} />
                               </div>
-                              <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
+                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                              </Link>
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="4">
