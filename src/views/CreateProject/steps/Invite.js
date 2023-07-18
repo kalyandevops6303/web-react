@@ -270,7 +270,7 @@ const Invite = ({ stepper }) => {
                       toggleTabs(tabNames.favourite);
                     }}
                   >
-                    Favourite Talent
+                    Favorite Talent
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -369,7 +369,7 @@ const Invite = ({ stepper }) => {
                           height={200}
                           className="no-data-found-gif"
                         />
-                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
                       </div>
                     )}
                   </InfiniteScroll>
@@ -456,7 +456,7 @@ const Invite = ({ stepper }) => {
                           height={200}
                           className="no-data-found-gif"
                         />
-                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
                       </div>
                     )}
                   </InfiniteScroll>
@@ -541,7 +541,7 @@ const Invite = ({ stepper }) => {
                           height={200}
                           className="no-data-found-gif"
                         />
-                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
                       </div>
                     )}
                   </InfiniteScroll>
