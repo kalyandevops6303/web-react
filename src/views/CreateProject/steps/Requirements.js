@@ -213,7 +213,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     resolver: yupResolver(ProjectDetailsSchema),
     defaultValues: {
       projectName: '',
-      expectedDurationPeriod: { label: 'Week', value: 'WEEK' },
+      expectedDurationPeriod: { label: 'Weeks', value: 'WEEK' },
       projectDescription: '',
       availabilityDays: [],
       weekdays: [],
@@ -554,8 +554,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   render={({ field }) => (
                     <Select
                       options={[
-                        { label: 'Week', value: 'WEEK' },
-                        { label: 'Day', value: 'DAY' },
+                        { label: 'Weeks', value: 'WEEK' },
+                        { label: 'Days', value: 'DAY' },
                       ]}
                       classNamePrefix="select"
                       theme={selectThemeColors}
