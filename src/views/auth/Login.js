@@ -24,6 +24,7 @@ import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authS
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
 import { removeItem } from '../../utility/localStorageControl';
+import { checkPoints } from '../../utility/constants/Constant';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -59,13 +60,13 @@ const Login = () => {
   });
 
   const onSuccess = (resp) => {
-    if (resp?.checkpoint === 'MOBILE_VERIFICATION') {
+    if (resp?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
       navigate('/auth/register-phone');
-    } else if (resp?.checkpoint === 'ACCOUNT_DETAILS') {
+    } else if (resp?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
       navigate(`/${resp.user_type.toLowerCase()}-onboarding/account-details`);
-    } else if (resp?.checkpoint === 'PROFILE_DETAILS') {
+    } else if (resp?.checkpoint === checkPoints.PROFILE_DETAILS) {
       navigate(`/${resp.user_type.toLowerCase()}-onboarding/profile-details`);
-    } else if (resp?.checkpoint === 'COMPLETE') {
+    } else if (resp?.checkpoint === checkPoints.COMPLETE) {
       navigate('/dashboard');
     }
   };

@@ -3,8 +3,6 @@ import { Col, Input, InputGroup, InputGroupText, Label, Popover, PopoverBody, Ro
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { debounce, throttle } from 'lodash';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { RefreshCcw, Search } from 'react-feather';
 import CollActive from '@src/assets/images/coll_active.png';
 import ExpandInactive from '@src/assets/images/expand_inactive.png';
@@ -14,6 +12,9 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
+import InfiniteScroll from '../../../lib/infinite-scroll';
+import debounce from '../../../lib/debounce';
+import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors, useIsTab } from '../../../utility/Utils';
@@ -29,6 +30,7 @@ import ProjectCard from '../../cards/ProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -235,7 +237,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (search) {
       return {
         options: skillsOptions.filter(
-          (skill) => skill.label.toLowerCase().startsWith(search) || skill.label.toLowerCase().includes(search),
+          (skill) =>
+            skill.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            skill.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -254,7 +258,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (search) {
       return {
         options: toolsOptions.filter(
-          (tool) => tool.label.toLowerCase().startsWith(search) || tool.label.toLowerCase().includes(search),
+          (tool) =>
+            tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            tool.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -274,7 +280,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       return {
         options: companyIndustriesOptions.filter(
           (industry) =>
-            industry.label.toLowerCase().startsWith(search) || industry.label.toLowerCase().includes(search),
+            industry.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            industry.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -296,7 +303,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (search) {
       return {
         options: projectAreasOptions.filter(
-          (area) => area.label.toLowerCase().startsWith(search) || area.label.toLowerCase().includes(search),
+          (area) =>
+            area.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            area.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -361,6 +370,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const isUsers =
     location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
+
   const ExpandCollapseComp = (
     <>
       <Label className="view-label me-1">View:</Label>
@@ -428,7 +438,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 {ExpandCollapseComp}
               </Col>
             )}
-            {(userType === 'TALENT' || primaryFilter === 'talents') && (
+            {(userType === userTypes.talent || primaryFilter === 'talents') && (
               <Col>
                 <Label className="form-label">Sort by</Label>
                 <Select

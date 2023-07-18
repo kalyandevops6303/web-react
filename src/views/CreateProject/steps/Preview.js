@@ -6,10 +6,10 @@ import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
 import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat } from '../../../utility/Utils';
+import { convertTo12HourFormat, formatDateWithDash } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
-import { createProjectData, createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
+import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
 import { createNewProject } from '../../../redux/actions/createProjectActions';
 import YouDidItModal from '../YouDidItModal';
 
@@ -28,7 +28,6 @@ const Preview = ({
   const dispatch = useDispatch();
 
   const createProjectIsLoading = useSelector(createProjectLoading);
-  const createProjectDetails = useSelector(createProjectData);
 
   const renderFilePreview = (file) => {
     if (file.type.startsWith('image')) {
@@ -63,7 +62,7 @@ const Preview = ({
       .replace(',', '')
       .split(' ');
 
-    return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2].slice(2, 4)}`;
+    return `${formattedDate[1]} ${formattedDate[0]} '${formattedDate[2]?.slice(2, 4)}`;
   };
 
   const fileList = () => (
@@ -119,16 +118,6 @@ const Preview = ({
       ))}
     </TagsContainer>
   );
-
-  const formatDate = (date) => {
-    if (!date) {
-      return undefined;
-    }
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear().toString();
-    return `${day}-${month}-${year}`;
-  };
 
   const isEmpty = (value) => {
     if (value === undefined || value === null) {
@@ -186,7 +175,7 @@ const Preview = ({
 
   const onNewProjectCreation = () => {
     const details = {
-      name: projectDetails?.projectName,
+      name: projectDetails?.projectName.trim(),
       description: projectDetails?.projectDescription,
       expected_duration: {
         duration: projectDetails?.expectedDuration,
@@ -228,12 +217,11 @@ const Preview = ({
       is_nda: projectDetails?.nda === 'yes',
     };
     const listing_details = {
-      start_date: formatDate(listingDetails?.startDate),
-      end_date: formatDate(listingDetails?.endDate),
+      start_date: formatDateWithDash(listingDetails?.startDate),
+      end_date: formatDateWithDash(listingDetails?.endDate),
     };
 
     const requiredData = {
-      id: createProjectDetails?.project_id || '',
       details,
       proficiency,
       availability,

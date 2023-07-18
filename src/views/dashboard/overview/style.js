@@ -10,6 +10,7 @@ const RewardCardWrapper = styled(CardWrapper)`
     cursor: auto;
   }
   .card-reward {
+    min-height: 191.95px;
     p {
       line-height: inherit;
     }
@@ -70,7 +71,7 @@ const TimeCardWrapper = styled(CardWrapper)`
     padding: 0.5rem 1.6rem 1rem 1.7rem !important;
   }
   .time-card {
-    min-height: 192px;
+    min-height: 191.95px;
     .card-body {
       font-size: 13.5px;
     }
@@ -312,6 +313,13 @@ const ProjectsListingWrap = styled.div`
   .slide-0 {
     .card-app-design {
       margin-left: 0.5rem;
+    }
+  }
+  .custom-slider-wrap {
+    display: flex;
+    gap: 1rem;
+    .custom-slider-project {
+      width: 32%;
     }
   }
   .slick-track {

@@ -1,17 +1,26 @@
 import React from 'react';
 import Proptypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import '../custom-styles.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import AccountCreatedGif from '../../assets/images/accountCreatedGif.gif';
 import { AccountCreatedImageContainer } from './style';
+import { setLoggedInStatus } from '../../redux/reducers/auth';
 
 const AccountCreatedModal = ({ modal, toggleModal }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onClose = () => {
+    dispatch(setLoggedInStatus());
     toggleModal();
     navigate('/dashboard');
+  };
+
+  const onGetStartedClick = () => {
+    dispatch(setLoggedInStatus());
+    toggleModal();
   };
 
   return (
@@ -36,7 +45,7 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
       </ModalBody>
       <ModalFooter>
         <Link to="/dashboard">
-          <Button color="primary" onClick={toggleModal}>
+          <Button color="primary" onClick={onGetStartedClick}>
             Get Started
           </Button>
         </Link>

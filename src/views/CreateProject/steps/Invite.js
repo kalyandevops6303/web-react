@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { Check, Search, Share2, Star, User } from 'react-feather';
 import {
@@ -22,6 +21,7 @@ import {
   TabContent,
   TabPane,
 } from 'reactstrap';
+import InfiniteScroll from '../../../lib/infinite-scroll';
 import theme from '../../../configs/themeVariables';
 import { BlueBgIconContainer, NavsContainer, TableContainer } from '../style';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
@@ -105,7 +105,7 @@ const Invite = ({ stepper }) => {
   };
 
   const loadNewBestTalents = () => {
-    if (stepper._currentIndex === 3) {
+    if (stepper?._currentIndex === 3) {
       dispatch(
         getBestTalents(
           createProjectDetails?.project_id,
@@ -120,7 +120,7 @@ const Invite = ({ stepper }) => {
   };
 
   const loadNewFavoriteTalents = () => {
-    if (stepper._currentIndex === 3) {
+    if (stepper?._currentIndex === 3) {
       dispatch(
         getFavoriteTalents(
           createProjectDetails?.project_id,
@@ -135,7 +135,7 @@ const Invite = ({ stepper }) => {
   };
 
   const loadNewAlmaMaterTalents = () => {
-    if (stepper._currentIndex === 3) {
+    if (stepper?._currentIndex === 3) {
       dispatch(
         getAlmaMaterTalents(
           createProjectDetails?.project_id,
@@ -152,7 +152,7 @@ const Invite = ({ stepper }) => {
   useEffect(() => {
     let delayDebounceFn = null;
 
-    if (createProjectDetails && stepper._currentIndex === 3) {
+    if (createProjectDetails && stepper?._currentIndex === 3) {
       delayDebounceFn = setTimeout(() => {
         dispatch(getBestTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
         dispatch(getFavoriteTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
@@ -308,7 +308,9 @@ const Invite = ({ stepper }) => {
                               <div className="user-pic p-25 me-2">
                                 <User size={28} />
                               </div>
-                              <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
+                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                              </Link>
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="4">
@@ -391,7 +393,9 @@ const Invite = ({ stepper }) => {
                               <div className="user-pic p-25 me-2">
                                 <User size={28} />
                               </div>
-                              <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
+                              <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
+                                <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
+                              </Link>
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="4">
@@ -476,7 +480,9 @@ const Invite = ({ stepper }) => {
                               <div className="user-pic p-25 me-2">
                                 <User size={28} />
                               </div>
-                              <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
+                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                              </Link>
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="4">

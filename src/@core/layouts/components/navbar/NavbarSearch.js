@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // ** Third Party Components
 import classnames from 'classnames';
@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Autocomplete from '@components/autocomplete';
 import theme from '../../../../configs/themeVariables';
 import { useNavigate } from 'react-router';
-import { clearQuery, handleQuery } from '../../../../redux/reducers/gloabalSearch';
+import { clearQuery, handleQuery, toggleIsNavbarSearchBarOpen } from '../../../../redux/reducers/gloabalSearch';
 
 const NavbarSearch = () => {
   // ** Store Vars
@@ -24,19 +24,8 @@ const NavbarSearch = () => {
 
   // ** States
   const [suggestions, setSuggestions] = useState([]);
-  const [navbarSearch, setNavbarSearch] = useState(false);
   const query = useSelector((state) => state.search);
   // ** ComponentDidMount
-
-  // ** Function to handle external Input click
-  const handleExternalClick = () => {
-    if (navbarSearch === true) {
-      // setNavbarSearch(false);
-      // handleClearQueryInStore();
-    }
-  };
-
-  // ** Function to clear input value
 
   // ** Function to close search on ESC & ENTER Click
   const onKeyDown = (e) => {
@@ -51,19 +40,27 @@ const NavbarSearch = () => {
   // ** Function to handle search suggestion Click
 
   return (
-    <NavItem className="nav-search" onClick={() => setNavbarSearch(true)}>
-      <NavLink className="nav-link-search me-1">
-        <Icon.Search className="ficon" />
-      </NavLink>
+    <NavItem
+      className="nav-search"
+      onClick={() => {
+        dispatch(toggleIsNavbarSearchBarOpen());
+      }}
+    >
+      {!query.isNavbarSearchBarOpen && (
+        <NavLink className="nav-link-search me-1">
+          <Icon.Search className="ficon" />
+        </NavLink>
+      )}
+
       <div
         className={classnames('search-input', {
-          open: navbarSearch === true || (query?.query && true),
+          open: query.isNavbarSearchBarOpen === true || (query?.query && true),
         })}
       >
         <div className="search-input-icon">
           <Icon.Search color={theme.activeNavPillText} />
         </div>
-        {navbarSearch || query?.query ? (
+        {query.isNavbarSearchBarOpen || query?.query ? (
           <Autocomplete
             className="form-control"
             suggestions={suggestions}
@@ -72,7 +69,6 @@ const NavbarSearch = () => {
             grouped={true}
             placeholder="Explore Trumio..."
             autoFocus={true}
-            externalClick={handleExternalClick}
             onKeyDown={onKeyDown}
             defaultValue={query?.query}
           />
@@ -83,7 +79,7 @@ const NavbarSearch = () => {
             className="ficon"
             onClick={(e) => {
               e.stopPropagation();
-              setNavbarSearch(false);
+              dispatch(toggleIsNavbarSearchBarOpen());
               dispatch(clearQuery(''));
             }}
           />

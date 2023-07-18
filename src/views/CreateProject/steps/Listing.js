@@ -16,11 +16,11 @@ const Listing = ({ stepper, setListingDetails }) => {
     listingOption: yup.string().required('Select one'),
     startDate: yup.object().when('listingOption', {
       is: (listingOption) => listingOption === 'select-duration',
-      then: () => yup.date().required('Start date is required'),
+      then: () => yup.date().typeError('Start date is required').required('Start date is required'),
     }),
-    endDate: yup.object().when('listingOption', {
+    endDate: yup.date().when('listingOption', {
       is: (listingOption) => listingOption === 'select-duration',
-      then: () => yup.date().required('End date is required'),
+      then: () => yup.date().typeError('End date is required').required('End date is required'),
     }),
     duration: yup.number().when('listingOption', {
       is: (listingOption) => listingOption === 'enter-duration',
@@ -29,6 +29,7 @@ const Listing = ({ stepper, setListingDetails }) => {
           .number()
           .min(1, 'Must be at least 1')
           .max(90, 'Must be 90 or less')
+          .integer('Must be a number')
           .required('Number is required')
           .typeError('Must be a number'),
     }),
@@ -39,8 +40,6 @@ const Listing = ({ stepper, setListingDetails }) => {
     handleSubmit,
     trigger,
     clearErrors,
-    resetField,
-    setValue,
     watch,
     formState: { errors },
   } = useForm({
@@ -49,20 +48,42 @@ const Listing = ({ stepper, setListingDetails }) => {
     defaultValues: {},
   });
 
-  const onSubmit = (data) => {
-    trigger();
-    if (data.listingOption === 'select-duration') {
-      setListingDetails(data);
-    } else if (data.listingOption === 'enter-duration') {
+  const onSubmit = () => {
+    if (!watch('listingOption')) {
+      trigger('listingOption');
+    } else if (watch('listingOption') === 'select-duration') {
+      trigger('startDate');
+      trigger('endDate');
+    } else if (watch('listingOption') === 'enter-duration') {
+      trigger('duration');
+    }
+
+    if (
+      watch('listingOption') === 'select-duration' &&
+      watch('startDate') &&
+      watch('startDate')?.length > 0 &&
+      watch('endDate') &&
+      watch('endDate')?.length > 0
+    ) {
+      const requiredFormData = {
+        listingOption: watch('listingOption'),
+        startDate: new Date(watch('startDate')),
+        endDate: new Date(watch('endDate')),
+      };
+
+      setListingDetails(requiredFormData);
+      stepper.next();
+    } else if (watch('listingOption') === 'enter-duration' && watch('duration')) {
       const newData = {
-        ...data,
+        listingOption: watch('listingOption'),
         startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + data.duration)),
+        endDate: new Date(new Date().setDate(new Date().getDate() + parseInt(watch('duration'), 10))),
+        duration: watch('duration'),
       };
 
       setListingDetails(newData);
+      stepper.next();
     }
-    stepper.next();
   };
 
   return (
@@ -80,7 +101,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                 name="listingOption"
                 render={({ field }) => (
                   <div className="demo-inline-spacing mx-25">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                       <Input
                         type="radio"
                         {...field}
@@ -88,8 +109,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                         checked={field.value === 'select-duration'}
                         onChange={async (e) => {
                           clearErrors('duration');
-                          resetField('duration');
-                          setValue('duration', 0);
+
                           const isChecked = e.target.checked;
                           const value = 'select-duration';
 
@@ -98,8 +118,6 @@ const Listing = ({ stepper, setListingDetails }) => {
                           } else {
                             field.onChange('');
                           }
-                          await trigger('startDate');
-                          await trigger('endDate');
                         }}
                       />
                       <Label for="select-duration" className="form-check-label fw-bold">
@@ -152,7 +170,8 @@ const Listing = ({ stepper, setListingDetails }) => {
                       options={{
                         minDate: watch('startDate') ? watch('startDate')[0] : 'today',
                         maxDate: watch('startDate')
-                          ? new Date(watch('startDate')[0]).setMonth(watch('startDate')[0].getMonth() + 3)
+                          ? // eslint-disable-next-line no-unsafe-optional-chaining
+                            new Date(watch('startDate')[0]).setMonth(watch('startDate')[0]?.getMonth() + 3)
                           : 'today',
                         dateFormat: 'd-m-Y',
                       }}
@@ -171,7 +190,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                 name="listingOption"
                 render={({ field }) => (
                   <div className="demo-inline-spacing mx-25">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                       <Input
                         type="radio"
                         {...field}
@@ -180,8 +199,6 @@ const Listing = ({ stepper, setListingDetails }) => {
                         onChange={async (e) => {
                           clearErrors('startDate');
                           clearErrors('endDate');
-                          resetField('startDate');
-                          resetField('endDate');
 
                           const isChecked = e.target.checked;
                           const value = 'enter-duration';
@@ -191,7 +208,6 @@ const Listing = ({ stepper, setListingDetails }) => {
                           } else {
                             field.onChange('');
                           }
-                          await trigger('duration');
                         }}
                       />
                       <Label for="enter-duration" className="form-check-label fw-bold">
@@ -237,7 +253,7 @@ const Listing = ({ stepper, setListingDetails }) => {
             </UploadIconContainer>
             <h5 className="fw-light mb-0 mx-75">Back</h5>
           </div>
-          <Button color="primary">
+          <Button color="primary" onClick={() => onSubmit()}>
             <span className="me-50">Save & Continue</span>
             <ChevronRight size={14} />
           </Button>

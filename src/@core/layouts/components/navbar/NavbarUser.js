@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
-// ** Dropdowns Imports
+import { Link } from 'react-router-dom';
+import { Bell } from 'react-feather';
 import NavbarSearch from './NavbarSearch';
 import UserDropdown from './UserDropdown';
-import { Bell } from 'react-feather';
 import theme from '../../../../configs/themeVariables';
-import { Link } from 'react-router-dom';
 import { NotificationIconContainer } from './style';
 import { useIsTab } from '../../../../utility/Utils';
 
@@ -19,7 +18,6 @@ const NavbarUser = () => {
         ''
       ) : (
         <>
-          {' '}
           <NotificationIconContainer>
             <Link to="/notifications">
               <Bell size={20} color={theme.bodyColor} />

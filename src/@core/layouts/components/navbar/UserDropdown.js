@@ -19,6 +19,7 @@ import { logoutAction } from '../../../../redux/actions/authActions';
 import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
+import { userTypes } from '../../../../utility/constants/Constant';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(userData);
@@ -49,7 +50,7 @@ const UserDropdown = () => {
   `;
 
   const userName =
-    userDetailsData?.user_type === 'TALENT'
+    userDetailsData?.user_type === userTypes.talent
       ? userDetailsData?.talent_info?.first_name + ' ' + userDetailsData?.talent_info?.last_name || 'User'
       : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User';
   return (

@@ -12,6 +12,7 @@ import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
 import { userData } from '../../redux/selectors/dashboardSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
 const PrivateDashboard = () => {
   const userDetailsData = useSelector(userData);
@@ -19,10 +20,8 @@ const PrivateDashboard = () => {
   return (
     <div>
       <div className="d-flex justify-content-between">
-        {/* Dashboard */}
         <BreadCrumbs data={[{ title: 'Dashboard' }]} />
-
-        {userDetailsData?.user_type === 'CLIENT' && (
+        {userDetailsData?.user_type === userTypes.client && (
           <Link to="/create-project">
             <Button as="link" color="primary">
               Create Project

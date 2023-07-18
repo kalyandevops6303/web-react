@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { ChevronRight, FileText, Info, Minus, Upload } from 'react-feather';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -24,7 +25,7 @@ import {
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useDropzone } from 'react-dropzone';
+import useDropzone from '../../../lib/react-dropzone';
 import { DropzoneContainer, RequirementsFormContainer, TextEditorContainer } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
@@ -36,6 +37,7 @@ import {
   toolsService,
 } from '../../../services/staticServices';
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
+import { userData } from '../../../redux/selectors/dashboardSelectors';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -106,6 +108,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     minTimeOverlapHr: yup
       .number()
       .min(0, 'Desired time overlap should be greater than or equal to 0')
+      .max(24, 'Desired time overlap should not be greater than 24')
       .typeError('Please enter a number')
       .required('Desired time overlap is required'),
     availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
@@ -190,6 +193,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         yup
           .number()
           .min(1, 'Fixed cost is required')
+          .test('maxDigitsAfterDecimal', 'Fixed cost must be upto two decimal places', (number) =>
+            /^\d+(\.\d{1,2})?$/.test(number),
+          )
           .typeError('Please enter a number')
           .required('Fixed cost is required'),
     }),
@@ -225,7 +231,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     if (search) {
       return {
         options: skillsOptions.filter(
-          (skill) => skill.label.toLowerCase().startsWith(search) || skill.label.toLowerCase().includes(search),
+          (skill) =>
+            skill.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            skill.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -248,7 +256,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     if (search) {
       return {
         options: toolsOptions.filter(
-          (tool) => tool.label.toLowerCase().startsWith(search) || tool.label.toLowerCase().includes(search),
+          (tool) =>
+            tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            tool.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -272,7 +282,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       return {
         options: timezonesOptions.filter(
           (timezone) =>
-            timezone.label.toLowerCase().startsWith(search) || timezone.label.toLowerCase().includes(search),
+            timezone.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            timezone.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -298,7 +309,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     if (search) {
       return {
         options: countriesOptions.filter(
-          (country) => country.label.toLowerCase().startsWith(search) || country.label.toLowerCase().includes(search),
+          (country) =>
+            country.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            country.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -322,7 +335,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       return {
         options: currenciesOptions.filter(
           (currency) =>
-            currency.label.toLowerCase().startsWith(search) || currency.label.toLowerCase().includes(search),
+            currency.label.toLowerCase().startsWith(search.toLowerCase()) ||
+            currency.label.toLowerCase().includes(search.toLowerCase()),
         ),
       };
     }
@@ -429,6 +443,55 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
     setValue('excludedCountriesSelection', newCountries);
   };
+
+  useEffect(() => {
+    loadTimezonesOptions();
+  }, []);
+
+  const userDetailsData = useSelector(userData);
+
+  useEffect(() => {
+    if (timezonesOptions?.length > 0) {
+      const clientPreferredTimezone = timezonesOptions.find(
+        (timezone) => timezone.value._id === userDetailsData?.availability?.timezone._id,
+      );
+
+      setValue('preferredWorkingTimeZone', clientPreferredTimezone);
+    }
+
+    let clientAvailabilityDays = [];
+
+    if (userDetailsData.availability.weekdays_avl) {
+      clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
+      setValue('weekdays', userDetailsData?.availability?.weekdays_avl?.days);
+      setValue(
+        'weekdayStartTime',
+        timeOptions.find(
+          (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.start_time,
+        ),
+      );
+      setValue(
+        'weekdayEndTime',
+        timeOptions.find((time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.end_time),
+      );
+    }
+    if (userDetailsData.availability.weekends_avl) {
+      clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
+      setValue('weekends', userDetailsData?.availability?.weekends_avl?.days);
+      setValue(
+        'weekendStartTime',
+        timeOptions.find(
+          (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.start_time,
+        ),
+      );
+      setValue(
+        'weekendEndTime',
+        timeOptions.find((time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.end_time),
+      );
+    }
+
+    setValue('availabilityDays', clientAvailabilityDays);
+  }, [userDetailsData, timezonesOptions]);
 
   return (
     <RequirementsFormContainer>
@@ -1103,7 +1166,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 name="includeOrExcludeCountries"
                 render={({ field }) => (
                   <div className="demo-inline-spacing mx-25">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                       <Input
                         type="radio"
                         {...field}
@@ -1187,7 +1250,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 name="includeOrExcludeCountries"
                 render={({ field }) => (
                   <div className="demo-inline-spacing mx-25">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                       <Input
                         type="radio"
                         {...field}
@@ -1313,7 +1376,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   name="projectPayType"
                   render={({ field }) => (
                     <div className="demo-inline-spacing m-0">
-                      <div className="form-check form-check-inline checkbox-custom-margin">
+                      <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                         <Input
                           type="radio"
                           {...field}
@@ -1334,7 +1397,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           Variable cost
                         </Label>
                       </div>
-                      <div className="form-check form-check-inline checkbox-custom-margin">
+                      <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                         <Input
                           type="radio"
                           {...field}
@@ -1407,7 +1470,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   name="nda"
                   render={({ field }) => (
                     <div className="demo-inline-spacing m-0">
-                      <div className="form-check form-check-inline checkbox-custom-margin">
+                      <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                         <Input
                           type="radio"
                           {...field}
@@ -1428,7 +1491,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           Yes
                         </Label>
                       </div>
-                      <div className="form-check form-check-inline checkbox-custom-margin">
+                      <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
                         <Input
                           type="radio"
                           {...field}

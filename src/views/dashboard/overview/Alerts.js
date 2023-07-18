@@ -10,6 +10,7 @@ import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -60,7 +61,7 @@ const Alerts = () => {
           </CardBody>
         </Card>
 
-        {userDetailsData?.user_type === 'CLIENT' && (
+        {userDetailsData?.user_type === userTypes.client && (
           <>
             <Card className="card-inside d-none">
               <CardHeader>
@@ -78,34 +79,42 @@ const Alerts = () => {
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
                 <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">
-                  None schdudled
+                  None scheduled
                 </CardText>
               </CardBody>
             </Card>
           </>
         )}
 
-        {userDetailsData?.user_type === 'TALENT' && (
+        {userDetailsData?.user_type === userTypes.talent && (
           <>
             <Card className="card-inside">
               <CardHeader>
                 <CardTitle tag="h4">Project Invitations</CardTitle>
               </CardHeader>
               <CardBody>
-                {notificationsData?.data?.slice(0, 3)?.map((item) => (
-                  <div key={item?._id} className="mb-1">
-                    <div className="d-flex justify-content-between">
-                      <CardText className="font-medium-2 fw-bold m-0">{item?.title}</CardText>
-                      <p className="font-small-2 fw-light m-0">
-                        {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
-                      </p>
-                    </div>
-                    <p className="font-small-4 m-0">{item?.message}</p>
+                {notificationsData?.data?.length > 0 ? (
+                  <div>
+                    {notificationsData?.data?.slice(0, 3)?.map((item) => (
+                      <div key={item?._id} className="mb-1">
+                        <div className="d-flex justify-content-between">
+                          <CardText className="font-medium-2 fw-bold m-0">{item?.title}</CardText>
+                          <p className="font-small-2 fw-light m-0">
+                            {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
+                          </p>
+                        </div>
+                        <p className="font-small-4 m-0">{item?.message}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
+                    No invitations !
+                  </CardText>
+                )}
               </CardBody>
             </Card>
-            <Card className="card-inside d-none">
+            <Card className="card-inside">
               <CardHeader>
                 <CardTitle tag="h4">Team Invitations</CardTitle>
               </CardHeader>
