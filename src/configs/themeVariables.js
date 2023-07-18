@@ -38,6 +38,7 @@ const darkGreenBgColor = '#E0F7FA';
 const orange = '#FF6D00';
 const blueBorderColorv2 = '#0578FB';
 const blueCardBg = '#E9F3FF';
+const tableHeaderColor = '#F3F2F7';
 
 // status
 const succesGreenColor = '#20C997';
@@ -73,6 +74,7 @@ const noDataFoundTextColor = '#2963c3';
 const infoColor = '#00CFE8';
 const secondaryColor = '#82868B';
 const cardBgBlue = '#a8dbff1f';
+const yellowColor = '#FAFF11';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -150,5 +152,7 @@ const theme = {
   info: infoColor,
   secondary: secondaryColor,
   cardBgBlue,
+  tableHeaderColor,
+  yellowColor,
 };
 export default theme;

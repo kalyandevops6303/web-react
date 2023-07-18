@@ -66,7 +66,7 @@ const Routes = [
     element: <MarketPlace />,
   },
   {
-    path: '/project-details/:projectId',
+    path: '/project-details/:projectId/:projectStep',
     element: <ProjectDetails />,
   },
   {
