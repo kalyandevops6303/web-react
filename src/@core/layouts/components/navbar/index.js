@@ -100,7 +100,6 @@ const ThemeNavbar = (props) => {
 
       {!isNavbarSearchBarOpen && (
         <>
-          {' '}
           <NavLink
             className={({ isActive }) =>
               (isActive ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'

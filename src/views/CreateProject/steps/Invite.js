@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { Check, Search, Share2, Star, User } from 'react-feather';
 import {
@@ -22,6 +21,7 @@ import {
   TabContent,
   TabPane,
 } from 'reactstrap';
+import InfiniteScroll from '../../../lib/infinite-scroll';
 import theme from '../../../configs/themeVariables';
 import { BlueBgIconContainer, NavsContainer, TableContainer } from '../style';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
@@ -19,6 +18,7 @@ import {
   Spinner,
 } from 'reactstrap';
 import '../custom-styles.scss';
+import CopyToClipboard from '../../lib/copy-clipboard';
 import { inviteTalents } from '../../redux/actions/createProjectActions';
 import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
 

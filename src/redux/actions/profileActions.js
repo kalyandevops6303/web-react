@@ -1,4 +1,5 @@
 import { getClientService, getTalentService, makeFavService, removeFavService } from '../../services/profileServices';
+import { userTypes } from '../../utility/constants/Constant';
 import errorHandler from '../../utility/errorHandler';
 import {
   getProfileFailure,
@@ -12,10 +13,10 @@ const getProfile = (id, user_type) => async (dispatch) => {
   dispatch(getProfileRequest());
   let res;
   try {
-    if (user_type === 'TALENT') {
+    if (user_type === userTypes.talent) {
       res = await getTalentService(id);
     }
-    if (user_type === 'CLIENT') {
+    if (user_type === userTypes.client) {
       res = await getClientService(id);
     }
     dispatch(getProfileSuccess(res.data.data));

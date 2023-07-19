@@ -25,7 +25,7 @@ import {
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useDropzone } from 'react-dropzone';
+import useDropzone from '../../../lib/react-dropzone';
 import { DropzoneContainer, RequirementsFormContainer, TextEditorContainer } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
@@ -108,7 +108,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     minTimeOverlapHr: yup
       .number()
       .min(0, 'Desired time overlap should be greater than or equal to 0')
-      .max(24, 'Desired time overlap hr should not be greater than 24')
+      .max(24, 'Desired time overlap should not be greater than 24')
       .typeError('Please enter a number')
       .required('Desired time overlap is required'),
     availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),

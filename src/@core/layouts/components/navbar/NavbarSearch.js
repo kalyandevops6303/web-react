@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // ** Third Party Components
 import classnames from 'classnames';
@@ -26,15 +26,6 @@ const NavbarSearch = () => {
   const [suggestions, setSuggestions] = useState([]);
   const query = useSelector((state) => state.search);
   // ** ComponentDidMount
-
-  // ** Function to handle external Input click
-  const handleExternalClick = () => {
-    if (query.isNavbarSearchBarOpen === true) {
-      // handleClearQueryInStore();
-    }
-  };
-
-  // ** Function to clear input value
 
   // ** Function to close search on ESC & ENTER Click
   const onKeyDown = (e) => {
@@ -78,7 +69,6 @@ const NavbarSearch = () => {
             grouped={true}
             placeholder="Explore Trumio..."
             autoFocus={true}
-            externalClick={handleExternalClick}
             onKeyDown={onKeyDown}
             defaultValue={query?.query}
           />
