@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { DateTime } from 'luxon';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
 import { AlertCardWrapper } from './style';
@@ -14,6 +14,7 @@ import returnCompleteProfileDetailsCta from '../../../utility/constants/Complete
 
 const Alerts = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getNotifications('', 1, 10, []));
@@ -25,6 +26,12 @@ const Alerts = () => {
   const notificationsData = useSelector(notifications);
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
+
+  const onAddDetailsClick = (path) => {
+    navigate(path, {
+      state: { isEditing: true },
+    });
+  };
 
   return (
     <AlertCardWrapper>
@@ -50,18 +57,19 @@ const Alerts = () => {
               value={profilePercentageData?.profile_completed}
             />
             {returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing) && (
-              <CardText className="card-text font-medium-2 mt-2 mb-0 text-primary text-center">
-                <Link
-                  to={
+              <CardText
+                className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"
+                onClick={() =>
+                  onAddDetailsClick(
                     returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                      ?.path
-                  }
-                >
-                  {
-                    returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                      ?.label
-                  }
-                </Link>
+                      ?.path,
+                  )
+                }
+              >
+                {
+                  returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
+                    ?.label
+                }
               </CardText>
             )}
           </CardBody>

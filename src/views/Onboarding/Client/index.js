@@ -31,7 +31,7 @@ const ClientOnboarding = () => {
 
       <div className="px-5 py-3">
         <div className="px-2">
-          <h2>Onboarding</h2>
+          <h2>{location?.state?.isEditing ? 'Edit Profile' : 'Onboarding'}</h2>
           <Tabs tabNames={tabNames} active={active} />
         </div>
       </div>
