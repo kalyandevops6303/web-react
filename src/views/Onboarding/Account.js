@@ -36,6 +36,7 @@ import {
 } from '../../redux/actions/clientOnboardingActions';
 import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
+import ResetPasswordModal from './ResetPasswordModal';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -81,10 +82,13 @@ const Account = () => {
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
 
+  const [resetPasswordModal, setResetPasswordModal] = useState(null);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
   const fileInputRef = useRef(null);
+
+  const toggleResetPasswordModal = () => setResetPasswordModal(!resetPasswordModal);
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
@@ -188,6 +192,7 @@ const Account = () => {
 
   return (
     <AccountDetailsFormContainer>
+      {resetPasswordModal && <ResetPasswordModal modal={resetPasswordModal} toggleModal={toggleResetPasswordModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
@@ -315,6 +320,11 @@ const Account = () => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end">
+          {location?.state?.isEditing && (
+            <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
+              Reset Password
+            </Button>
+          )}
           <Button
             color="primary"
             type="submit"
