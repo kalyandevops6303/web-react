@@ -54,6 +54,7 @@ const UserDropdown = () => {
       : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User';
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
+      {console.log('userDetailsData', userDetailsData)}
       <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
         <div className="user-nav d-sm-flex d-none">
           <span className="user-name fw-bold" id="username">
@@ -68,7 +69,27 @@ const UserDropdown = () => {
           )}
           <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
         </div>
-        <Avatar img={defaultAvatar} imgHeight="40" imgWidth="40" />
+        {userDetailsData?.user_type === 'TALENT' ? (
+          <Avatar
+            img={
+              userDetailsData?.talent_info?.image_uri.length > 0
+                ? userDetailsData?.talent_info?.image_uri
+                : defaultAvatar
+            }
+            imgHeight="40"
+            imgWidth="40"
+          />
+        ) : (
+          <Avatar
+            img={
+              userDetailsData?.client_info?.image_uri.length > 0
+                ? userDetailsData?.client_info?.image_uri
+                : defaultAvatar
+            }
+            imgHeight="40"
+            imgWidth="40"
+          />
+        )}
       </DropdownToggle>
 
       {location?.pathname?.split?.('/')?.[3] === userDetailsData?._id && (
