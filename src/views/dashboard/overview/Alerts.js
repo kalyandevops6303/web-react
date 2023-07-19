@@ -10,6 +10,7 @@ import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import returnCompleteProfileDetailsCta from '../../../utility/constants/CompleteProfileDetailsCta';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -48,6 +49,21 @@ const Alerts = () => {
               className={`${giveProgressBarColorClassName(profilePercentageData?.profile_completed)} mt-25`}
               value={profilePercentageData?.profile_completed}
             />
+            {returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing) && (
+              <CardText className="card-text font-medium-2 mt-2 mb-0 text-primary text-center">
+                <Link
+                  to={
+                    returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
+                      ?.path
+                  }
+                >
+                  {
+                    returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
+                      ?.label
+                  }
+                </Link>
+              </CardText>
+            )}
           </CardBody>
         </Card>
 
