@@ -447,57 +447,59 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const userDetailsData = useSelector(userData);
 
   useEffect(() => {
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    if ('timezone' in userDetailsData?.availability) {
-      setValue(
-        'preferredWorkingTimeZone',
-        {
-          label: `${userDetailsData?.availability?.timezone?.name} (${userDetailsData?.availability?.timezone?.abbreviation})`,
-          value: userDetailsData?.availability?.timezone,
-        },
-        { shouldValidate: true },
-      );
-
-      let clientAvailabilityDays = [];
-
-      if ('days' in userDetailsData.availability.weekdays_avl) {
-        clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
-        setValue('weekdays', userDetailsData?.availability?.weekdays_avl?.days, { shouldValidate: true });
+    if (userDetailsData) {
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      if ('timezone' in userDetailsData?.availability) {
         setValue(
-          'weekdayStartTime',
-          timeOptions.find(
-            (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.start_time,
-          ),
+          'preferredWorkingTimeZone',
+          {
+            label: `${userDetailsData?.availability?.timezone?.name} (${userDetailsData?.availability?.timezone?.abbreviation})`,
+            value: userDetailsData?.availability?.timezone,
+          },
           { shouldValidate: true },
         );
-        setValue(
-          'weekdayEndTime',
-          timeOptions.find(
-            (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.end_time,
-          ),
-          { shouldValidate: true },
-        );
+
+        let clientAvailabilityDays = [];
+
+        if ('days' in userDetailsData.availability.weekdays_avl) {
+          clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
+          setValue('weekdays', userDetailsData?.availability?.weekdays_avl?.days, { shouldValidate: true });
+          setValue(
+            'weekdayStartTime',
+            timeOptions.find(
+              (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.start_time,
+            ),
+            { shouldValidate: true },
+          );
+          setValue(
+            'weekdayEndTime',
+            timeOptions.find(
+              (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekdays_avl?.end_time,
+            ),
+            { shouldValidate: true },
+          );
+        }
+        if ('days' in userDetailsData.availability.weekends_avl) {
+          clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
+          setValue('weekends', userDetailsData?.availability?.weekends_avl?.days, { shouldValidate: true });
+          setValue(
+            'weekendStartTime',
+            timeOptions.find(
+              (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.start_time,
+            ),
+            { shouldValidate: true },
+          );
+          setValue(
+            'weekendEndTime',
+            timeOptions.find(
+              (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.end_time,
+            ),
+            { shouldValidate: true },
+          );
+        }
+
+        setValue('availabilityDays', clientAvailabilityDays, { shouldValidate: true });
       }
-      if ('days' in userDetailsData.availability.weekends_avl) {
-        clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
-        setValue('weekends', userDetailsData?.availability?.weekends_avl?.days, { shouldValidate: true });
-        setValue(
-          'weekendStartTime',
-          timeOptions.find(
-            (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.start_time,
-          ),
-          { shouldValidate: true },
-        );
-        setValue(
-          'weekendEndTime',
-          timeOptions.find(
-            (time) => parseInt(time.value, 10) === userDetailsData?.availability?.weekends_avl?.end_time,
-          ),
-          { shouldValidate: true },
-        );
-      }
-
-      setValue('availabilityDays', clientAvailabilityDays, { shouldValidate: true });
     }
   }, [userDetailsData]);
 
