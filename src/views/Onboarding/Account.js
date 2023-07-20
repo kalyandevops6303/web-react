@@ -160,7 +160,7 @@ const Account = () => {
             setValue('lastName', res?.client_info?.last_name, { shouldValidate: true });
           }
         }
-      } else if (res.checkpoint === checkPoints.PROFILE_DETAILS) {
+      } else if (res.checkpoint === checkPoints.PROFILE_DETAILS || res.checkpoint === checkPoints.COMPLETE) {
         if (res.user_type === userTypes.talent) {
           setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
