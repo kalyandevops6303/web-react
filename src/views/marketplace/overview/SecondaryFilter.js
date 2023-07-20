@@ -56,7 +56,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     industries: [],
     project_areas: [],
   });
-  const [isRecommanded, setIsRecommanded] = useState(false);
+  const [isRecommanded, setIsRecommanded] = useState(location?.state?.isRecommended || false);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
