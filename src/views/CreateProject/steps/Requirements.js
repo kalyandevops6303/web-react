@@ -447,7 +447,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const userDetailsData = useSelector(userData);
 
   useEffect(() => {
-    if ('timezone' in userDetailsData.availability) {
+    // eslint-disable-next-line no-unsafe-optional-chaining
+    if ('timezone' in userDetailsData?.availability) {
       setValue(
         'preferredWorkingTimeZone',
         {
