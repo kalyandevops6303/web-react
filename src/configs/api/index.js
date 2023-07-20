@@ -38,6 +38,7 @@ const API = {
     accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
+    profileImageUpload: `${apiAuthEndpoint}/api/v1/user/profile/image-url`,
   },
   clientOnboarding: {
     accountDetails: `${apiAuthEndpoint}/api/v1/client/account-details`,

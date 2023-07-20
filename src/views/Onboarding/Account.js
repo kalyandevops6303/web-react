@@ -38,6 +38,7 @@ import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboard
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import ResetPasswordModal from './ResetPasswordModal';
+import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -87,6 +88,8 @@ const Account = () => {
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
+  const [imageUrlRes, setImageUrlRes] = useState(null);
+  const [isImageUploading, setIsImageUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   const toggleResetPasswordModal = () => setResetPasswordModal(!resetPasswordModal);
@@ -109,7 +112,12 @@ const Account = () => {
 
   const onSubmit = (data) => {
     const { firstName, lastName } = data;
-    const reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
+    let reqData;
+    if (imageUrlRes) {
+      reqData = { first_name: firstName.trim(), last_name: lastName.trim(), image_uri: imageUrlRes.file_key };
+    } else {
+      reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
+    }
 
     if (
       userDetailsData?.checkpoint === checkPoints.ACCOUNT_DETAILS ||
@@ -156,9 +164,13 @@ const Account = () => {
         if (res.user_type === userTypes.talent) {
           setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
+          setSelectedImage(res.talent_info?.image_uri);
+          setSelectedImagePreview(res.talent_info?.image_uri);
         } else if (res.user_type === userTypes.client) {
           setValue('firstName', res.client_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.client_info?.last_name, { shouldValidate: true });
+          setSelectedImage(res.client_info?.image_uri);
+          setSelectedImagePreview(res.client_info?.image_uri);
         }
 
         setIsNextButtonDisabled(false);
@@ -185,14 +197,46 @@ const Account = () => {
     return true;
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
+
     if (file && isFileValid(file)) {
       const thumbnail = URL.createObjectURL(file);
       setSelectedImage(file);
       setSelectedImagePreview(thumbnail);
+
+      try {
+        setIsImageUploading(true);
+        const res = await profileImageUploadService(file.name);
+        setImageUrlRes(res?.data?.data);
+      } catch (error) {
+        setIsImageUploading(false);
+        setImageUrlRes(null);
+      }
     }
   };
+
+  const uploadImage = async (uploadUrl) => {
+    try {
+      const res = await profileImageUploadToAzureService(uploadUrl, selectedImage, {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': selectedImage.type,
+      });
+
+      if (res) {
+        setIsImageUploading(false);
+      }
+    } catch {
+      ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again!');
+      setIsImageUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (imageUrlRes) {
+      uploadImage(imageUrlRes.upload_url);
+    }
+  }, [imageUrlRes]);
 
   return (
     <AccountDetailsFormContainer>
@@ -220,8 +264,13 @@ const Account = () => {
                   className="file-input"
                   ref={fileInputRef}
                 />
-                <Button color="primary" className="ml-2 mr-1" onClick={() => fileInputRef.current.click()}>
-                  Upload Image
+                <Button
+                  color="primary"
+                  className="ml-2 mr-1"
+                  disabled={isImageUploading}
+                  onClick={() => fileInputRef.current.click()}
+                >
+                  {isImageUploading ? <Spinner size="sm" /> : 'Upload Image'}
                 </Button>
               </div>
               <Info size={18} color={theme.infoIcon} id="image-info" />
@@ -333,9 +382,10 @@ const Account = () => {
             color="primary"
             type="submit"
             disabled={
-              isNextButtonDisabled || userDetailsData?.user_type === 'TALENT'
+              isImageUploading ||
+              (isNextButtonDisabled || userDetailsData?.user_type === 'TALENT'
                 ? !isValid || talentAccountDetailsIsLoading
-                : !isValid || clientAccountDetailsIsLoading
+                : !isValid || clientAccountDetailsIsLoading)
             }
           >
             {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
