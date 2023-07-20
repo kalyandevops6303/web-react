@@ -29,6 +29,7 @@ import ProjectCard from '../../cards/ProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
+import NoDataFoundComponent from './NoDataFoundComp';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -578,8 +579,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           next={fetchMore}
           hasMore={hasMore}
           endMessage={
-            <div className="d-flex justify-content-center mt-2">
-              {selectMarketPlaceData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+            <div className="d-flex justify-content-center ">
+              {selectMarketPlaceData?.length > 0 ? (
+                <span className="mt-2">You have seen it all!</span>
+              ) : (
+                <NoDataFoundComponent isRecommanded={isRecommanded} data={selectMarketPlaceData} />
+              )}
             </div>
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}

@@ -10,7 +10,7 @@ import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
-import returnCompleteProfileDetailsCta from '../../../utility/constants/CompleteProfileDetailsCta';
+import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 
 const Alerts = () => {
   const dispatch = useDispatch();
