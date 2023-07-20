@@ -2,11 +2,12 @@
 /* eslint-disable no-nested-ternary */
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import LoginPic from '@src/assets/images/auth/login.png';
-import RegisterPic from '@src/assets/images/auth/register.svg';
-import CreatePWPic from '@src/assets/images/auth/password.svg';
-import UserTypePic from '@src/assets/images/auth/user_type.svg';
-import VerificationPic from '@src/assets/images/auth/verification.svg';
+import LoginPic from '@src/assets/images/auth/loginpic.png';
+import { useSelector } from 'react-redux';
+import ClientPic from '@src/assets/images/auth/client.png';
+import CreatePWPic from '@src/assets/images/auth/password.png';
+import TalentPic from '@src/assets/images/auth/talent.png';
+import VerificationPic from '@src/assets/images/auth/verification.png';
 
 import Spinner from '../../@core/components/spinner/Fallback-spinner';
 import { OnBoardWrap } from './style';
@@ -21,8 +22,11 @@ import SetPassword from './SetPassword';
 import RegisterPhone from './RegisterPhone';
 import SetNewPassword from './SetNewPassword';
 import ForgotPasswordVerification from './ForgotPasswordVerification';
+import { selectUserType } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
 const AuthRoute = () => {
+  const userType = useSelector(selectUserType);
   const routes = [
     {
       path: '/login',
@@ -88,10 +92,10 @@ const AuthRoute = () => {
     if (currentPath === '/auth/login') {
       return <img src={LoginPic} alt="bg-pic" className="me-8 login-pic" />;
     }
-    if (currentPath === '/auth') {
-      return <img src={UserTypePic} alt="bg-pic" className="me-8 user-type-pic" />;
+    if (userType === userTypes.client) {
+      return <img src={ClientPic} alt="bg-pic" className="me-8 client-pic" />;
     }
-    return <img src={RegisterPic} alt="bg-pic" className="me-8 register-pic" />;
+    return <img src={TalentPic} alt="bg-pic" className="me-8 talent-pic" />;
   };
   return (
     <OnBoardWrap>
