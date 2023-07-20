@@ -234,7 +234,7 @@ export const TimeWrapper = styled.section`
   }
   .weekdays {
     padding-right: 20px;
-    border-right: ${(props) => (props.isBorder ? `1px solid ${theme.borderInputColor}` : 'none')};
+    border-right: 1px solid ${theme.borderInputColor};
 
     ul {
       justify-content: space-between;
@@ -322,6 +322,9 @@ export const NavsContainer = styled.div`
 `;
 
 export const TableContainer = styled.div`
+  max-height: 500px;
+  overflow-y: scroll;
+
   .user-pic {
     border-radius: 50%;
     border: 1px solid ${theme.bodyColor};
