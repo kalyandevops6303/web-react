@@ -1,22 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Form,
-  Row,
-  Input,
-  FormFeedback,
-  Col,
-  InputGroup,
-  Spinner,
-} from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Form, Row, Input, FormFeedback, Col, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
 import CopyToClipboard from '../../lib/copy-clipboard';
 import { inviteTalents } from '../../redux/actions/createProjectActions';
@@ -51,12 +39,9 @@ const InviteModal = ({ modal, toggleModal, projectId }) => {
     dispatch(inviteTalents(projectId, { emails: [data.email] }, onSuccess));
   };
 
-  const [copied, setCopied] = useState(false);
-
   return (
     <Modal
       isOpen={modal}
-      toggle={toggleModal}
       contentClassName="custom-larger-than-medium-modal-style"
       className="modal-dialog-centered modal-lg"
     >
@@ -78,20 +63,6 @@ const InviteModal = ({ modal, toggleModal, projectId }) => {
                 {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
               </Col>
             </Row>
-            <div className="divider">
-              <div className="divider-text">Or</div>
-            </div>
-            <InputGroup>
-              <Input value="Lorem ipsum dolor sit amet, consectet lorem ipsum dolor sit amet, consectet" />
-              <CopyToClipboard
-                onCopy={() => setCopied(true)}
-                text="Lorem ipsum dolor sit amet, consectet lorem ipsum dolor sit amet, consectet"
-              >
-                <Button color="primary" type="button" disabled={copied}>
-                  {copied ? 'Link Copied!' : 'Copy Link'}
-                </Button>
-              </CopyToClipboard>
-            </InputGroup>
             <div className="d-flex justify-content-end">
               <Button color="primary" type="submit" className="mb-1 mt-3" disabled={!isValid || inviteTalentsIsLoading}>
                 {inviteTalentsIsLoading ? <Spinner size="sm" /> : <>Send Invite</>}
