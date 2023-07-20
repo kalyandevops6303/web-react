@@ -46,6 +46,7 @@ const succesGreenBg = '#20C9971F';
 const joinReqColor = '#00ACC1';
 const joinRe1Bg = '#00ACC11F';
 const purpleColor = '#651FFF';
+const purpleTimelimeColor = '#7367F0';
 const purpleBg = '#651FFF1F';
 const royalBlueColor = '#0D6EFD';
 const royalBlueBg = '#0D6EFD1F';
@@ -55,7 +56,7 @@ const errorColor = '#EA5455';
 const errorBg = '#EA54551F';
 const blueColor = '#00B0FF';
 const blueBg = '##00B0FF1F';
-const orangeColor = '##FF9F43';
+const orangeColor = '#FF9F43';
 const organgeBg = '##FF9F431F';
 const greenV2Color = '##00C853';
 const greenV2Bg = '##00C8531F';
@@ -154,5 +155,6 @@ const theme = {
   cardBgBlue,
   tableHeaderColor,
   yellowColor,
+  purpleTimelimeColor,
 };
 export default theme;

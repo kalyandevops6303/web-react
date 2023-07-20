@@ -1,6 +1,7 @@
 // ** Third Party Components
 import Proptypes from 'prop-types';
 import classnames from 'classnames';
+import styled from 'styled-components';
 
 const Timeline = (props) => {
   // ** Props
@@ -8,6 +9,18 @@ const Timeline = (props) => {
 
   // ** Custom Tagg
   const Tag = tag ? tag : 'ul';
+
+  const TimelineWrap = styled.div`
+    > .timeline-point-indicator {
+      border: 0;
+      background-color: ${(props) => props.color} !important;
+      opacity: ${(props) => (props.isDisabled ? '0.8' : '')};
+      &:before {
+        background: ${(props) => props.color} !important;
+        opacity: 0.2;
+      }
+    }
+  `;
 
   return (
     <Tag
@@ -25,15 +38,17 @@ const Timeline = (props) => {
               [item.className]: className,
             })}
           >
-            <span
-              className={classnames('timeline-point', {
-                [`timeline-point-${item.color}`]: item.color,
-                'timeline-point-indicator': !item.icon,
-              })}
-            >
-              {item.icon ? item.icon : null}
-            </span>
-            <div className="timeline-event">{item.customContent ? item.customContent : null}</div>
+            <TimelineWrap color={item.color} isDisabled={item.isDisabled}>
+              <span
+                className={classnames('timeline-point', {
+                  [`timeline-point-${item.color}`]: item.color,
+                  'timeline-point-indicator': !item.icon,
+                })}
+              >
+                {item.icon ? item.icon : null}
+              </span>
+              <div className="timeline-event">{item.customContent ? item.customContent : null}</div>
+            </TimelineWrap>
           </ItemTag>
         );
       })}
