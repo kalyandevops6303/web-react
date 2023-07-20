@@ -241,7 +241,7 @@ export const TimeWrapper = styled.section`
     }
   }
   .weekends {
-    padding-left: ${(props) => (props.isPadding ? '20px' : '0')};
+    padding-left: 20px;
 
     ul {
       gap: 14px;
