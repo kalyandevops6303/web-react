@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Route, Routes, useMatch, useNavigate } from 'react-router-dom';
 import { Button } from 'reactstrap';
 import { useSelector } from 'react-redux';
@@ -39,6 +39,12 @@ const MarketPlace = () => {
     useMatch('/marketplace/talents');
 
   const [primaryFilter, setPrimaryFilter] = useState(routesMatch?.pathname?.split('/')?.[2]);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-undef
+    window.scrollTo(0, 0);
+  }, []);
+
   // Secondary filters
 
   const handlePrimaryChangeFilter = (props) => {
