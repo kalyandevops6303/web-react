@@ -42,20 +42,26 @@ export const OnBoardWrap = styled.div`
     height: 78vh;
   }
   .create-pw-pic {
-    margin-right: 10rem;
+    margin-right: 14rem;
     height: 62vh;
   }
   .login-pic {
-    margin-right: 8rem;
-    height: 78vh;
+    margin-right: 10rem;
+    margin-top: 2rem;
+    height: 84vh;
   }
   .verification-pic {
-    margin-right: 8rem;
-    height: 70vh;
+    margin-right: 14rem;
+    height: 62vh;
   }
-  .register-pic {
+  .client-pic {
     margin-right: 10rem;
+    margin-top: 4rem;
     height: 78vh;
+  }
+  .talent-pic {
+    margin-right: 8rem;
+    height: 94vh;
   }
 
   .logo-wrap {
