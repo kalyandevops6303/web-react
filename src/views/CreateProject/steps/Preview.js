@@ -70,15 +70,15 @@ const Preview = ({
       <Card className="p-1">
         {files.map((file, index) => (
           <Row
-            key={file.name}
+            key={file.file.name}
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
             <Col sm="6" md="6" lg="6">
-              {renderFilePreview(file)}
-              {file.name}
+              {renderFilePreview(file.file)}
+              {file.file.name}
             </Col>
             <Col sm="2" md="2" lg="4">
-              {renderFileSize(file.size)}
+              {renderFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {renderFormattedDate(new Date())}
@@ -174,14 +174,34 @@ const Preview = ({
   };
 
   const onNewProjectCreation = () => {
-    const details = {
-      name: projectDetails?.projectName.trim(),
-      description: projectDetails?.projectDescription,
-      expected_duration: {
-        duration: projectDetails?.expectedDuration,
-        duration_type: projectDetails?.expectedDurationPeriod?.value,
-      },
-    };
+    let details;
+
+    if (files.length > 0) {
+      const documents = files.map((file) => ({
+        file_name: file.file.name,
+        file_key: file.uploadData.file_key,
+      }));
+
+      details = {
+        name: projectDetails?.projectName.trim(),
+        description: projectDetails?.projectDescription,
+        expected_duration: {
+          duration: projectDetails?.expectedDuration,
+          duration_type: projectDetails?.expectedDurationPeriod?.value,
+        },
+        documents,
+      };
+    } else {
+      details = {
+        name: projectDetails?.projectName.trim(),
+        description: projectDetails?.projectDescription,
+        expected_duration: {
+          duration: projectDetails?.expectedDuration,
+          duration_type: projectDetails?.expectedDurationPeriod?.value,
+        },
+      };
+    }
+
     const proficiency = {
       skills: projectDetails?.skills.map((skill) => skill.value),
       tools: projectDetails?.tools?.map((tool) => tool.value),

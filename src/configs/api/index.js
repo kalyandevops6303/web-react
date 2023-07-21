@@ -63,6 +63,7 @@ const API = {
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
+    projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
   },
   marketplace: {
     client: {
