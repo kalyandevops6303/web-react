@@ -10,8 +10,8 @@ import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
-import { userTypes } from '../../../utility/constants/Constant';
 import returnCompleteProfileDetailsCta from '../../../utility/constants/CompleteProfileDetailsCta';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -138,7 +138,7 @@ const Alerts = () => {
                 )}
               </CardBody>
             </Card>
-            <Card className="card-inside">
+            <Card className="card-inside d-none">
               <CardHeader>
                 <CardTitle tag="h4">Team Invitations</CardTitle>
               </CardHeader>

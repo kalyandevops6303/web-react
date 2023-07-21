@@ -123,14 +123,14 @@ const Account = () => {
       userDetailsData?.checkpoint === checkPoints.ACCOUNT_DETAILS ||
       userDetailsData?.checkpoint === checkPoints.PROFILE_DETAILS
     ) {
-      if (userDetailsData.user_type === 'TALENT') {
+      if (userDetailsData.user_type === userTypes.talent) {
         dispatch(saveTalentAccountDetails(reqData, onSuccess));
       } else {
         dispatch(saveClientAccountDetails(reqData, onSuccess));
       }
     } else {
       // eslint-disable-next-line no-lonely-if
-      if (userDetailsData.user_type === 'TALENT') {
+      if (userDetailsData.user_type === userTypes.talent) {
         dispatch(saveTalentProfileDetails(reqData, onSuccess));
       } else {
         dispatch(saveClientProfileDetails(reqData, onSuccess));

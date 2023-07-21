@@ -6,7 +6,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Modal, ModalHeader, ModalBody, Form, Row, Input, FormFeedback, Col, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
-import CopyToClipboard from '../../lib/copy-clipboard';
 import { inviteTalents } from '../../redux/actions/createProjectActions';
 import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
 

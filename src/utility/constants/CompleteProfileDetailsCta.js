@@ -43,4 +43,4 @@ const returnCompleteProfileDetailsCta = (userType, missingValues) => {
   }
 };
 
-export default returnCompleteProfileDetailsCta;
+export { returnCompleteProfileDetailsCta, CompleteProfileDetailsCta };

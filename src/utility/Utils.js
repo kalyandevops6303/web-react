@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
+import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
+
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -214,6 +216,7 @@ export const returnFilteredDropdownOptions = (search, options) =>
       option.label.toLowerCase().startsWith(search.toLowerCase()) ||
       option.label.toLowerCase().includes(search.toLowerCase()),
   );
+
 export const formatDateWithDash = (date) => {
   if (!date) {
     return undefined;
@@ -222,4 +225,11 @@ export const formatDateWithDash = (date) => {
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear().toString();
   return `${day}-${month}-${year}`;
+};
+
+export const returnDetailsForMarketPlace = (userType, missingValues) => {
+  if (missingValues?.includes('educational_institute')) {
+    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'educational_institute');
+  }
+  return null;
 };

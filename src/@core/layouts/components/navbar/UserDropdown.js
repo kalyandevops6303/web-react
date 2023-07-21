@@ -58,7 +58,7 @@ const UserDropdown = () => {
   `;
 
   const userName = userDetailsData
-    ? userDetailsData?.user_type === 'TALENT'
+    ? userDetailsData?.user_type === userTypes.talent
       ? userDetailsData?.talent_info?.first_name + ' ' + userDetailsData?.talent_info?.last_name || 'User'
       : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User'
     : 'User';
