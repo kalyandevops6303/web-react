@@ -48,9 +48,10 @@ const VerifyPhone = () => {
   }, [isPhoneVerified, navigate]);
 
   const [selectedCountry, setSelectedCountry] = useState({
-    label: 'India',
-    dial_code: '+91',
-    code: 'IN',
+    label: 'United States',
+    dial_code: '+1',
+    code: 'US',
+    _id: '6479c2071183add75cda4e37',
   });
 
   const handleChange = (value) => {
@@ -64,7 +65,12 @@ const VerifyPhone = () => {
 
   const verifyOtp = () => {
     dispatch(
-      verifyPhone({ phone: phoneData.phone, country_code: phoneData?.selectedCountry.dial_code.slice(1), code }),
+      verifyPhone({
+        phone: phoneData.phone,
+        country_code: phoneData?.selectedCountry.dial_code,
+        code,
+        country_id: phoneData?.selectedCountry?._id,
+      }),
     );
   };
 
@@ -77,9 +83,9 @@ const VerifyPhone = () => {
         </CardTitle>
 
         <CardText className="mb-2 card-text">
-          We sent a verification code to your mobile number. Enter the code in the field below.
+          We sent a verification code to your mobile number. Enter it in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
-            Edit
+            Go back
           </span>
         </CardText>
 
@@ -95,7 +101,7 @@ const VerifyPhone = () => {
                 disabled
               />
               <div className="mobile-input">
-                <Input defaultValue={phoneData?.phone} type="number" placeholder="9090989080" disabled />
+                <Input defaultValue={phoneData?.phone} type="number" placeholder="Phone number" disabled />
               </div>
             </div>
           </div>
@@ -122,7 +128,7 @@ const VerifyPhone = () => {
             }}
           />
           <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
-            Verify OTP
+            Submit
           </Button>
         </Form>
 

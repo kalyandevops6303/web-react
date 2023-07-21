@@ -3,6 +3,8 @@ import Proptypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, Card, CardHeader, CardTitle, CardBody, Row, Col, CardText } from 'reactstrap';
 import styled from 'styled-components';
 import ReactHtmlParser from '../../lib/html-parser';
+import DateTime from '../../lib/date-time';
+
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
@@ -77,15 +79,16 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                       {data?.details?.expected_duration?.duration}
                       {data?.details?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
                     </CardTitle>
-                    <CardText className="project-name">Expected duration</CardText>
+                    <CardText className="project-name">Expected Duration</CardText>
                   </div>
                 </Col>
                 <Col lg="4">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
-                      {data?.listing_details?.start_date} to {data?.listing_details?.end_date}
+                      {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} to{' '}
+                      {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
                     </CardTitle>
-                    <CardText className="project-name">Listing duration</CardText>
+                    <CardText className="project-name">Listing Duration</CardText>
                   </div>
                 </Col>
               </Row>
@@ -93,7 +96,7 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                 <Col lg="5">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">{data?.pay_type?.currency?.name}</CardTitle>
-                    <CardText className="project-name">Currency Type</CardText>
+                    <CardText className="project-name">Currency</CardText>
                   </div>
                 </Col>
 
@@ -101,16 +104,16 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
                       {data?.pay_type?.fixed_cost
-                        ? ` Fixed Price - 
+                        ? ` Fixed - 
                           ${data?.pay_type?.currency?.code} ${data?.pay_type?.fixed_cost}`
-                        : 'Variable Pay'}
+                        : 'Variable'}
                     </CardTitle>
                     <CardText className="project-name">Payment Type</CardText>
                   </div>
                 </Col>
                 <Col lg="4">
                   <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.nda?.is_nda ? 'YES' : 'NO'}</CardTitle>
+                    <CardTitle className="mb-25 fw-bolder">{data?.nda?.is_nda ? 'Yes' : 'No'}</CardTitle>
                     <CardText className="project-name">NDA</CardText>
                   </div>
                 </Col>
@@ -145,7 +148,7 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
           <Card>
             <CardHeader>
               <CardTitle className="mb-0 d-flex justify-content-between w-100">
-                <span>Requirements</span>
+                <span>Requirement Details</span>
               </CardTitle>
             </CardHeader>
             <CardBody>

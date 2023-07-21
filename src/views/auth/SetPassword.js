@@ -5,9 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
+import { Info } from 'react-feather';
 
 // ** Reactstrap Imports
-import { CardTitle, Label, Form, Button, FormFeedback, Spinner } from 'reactstrap';
+import { CardTitle, Label, Form, Button, FormFeedback, Spinner, UncontrolledTooltip } from 'reactstrap';
 
 // ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle';
@@ -19,6 +20,7 @@ import '@styles/react/pages/page-authentication.scss';
 import { setPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
+import theme from '../../configs/themeVariables';
 import PasswordStrengthBar from '../../lib/password-strength-bar';
 
 const SetPassword = () => {
@@ -86,6 +88,13 @@ const SetPassword = () => {
             <Label className="form-label" for="login-email">
               Password
             </Label>
+            <Info size={16} color={theme.infoIcon} id="info" className="ms-25" />
+            <UncontrolledTooltip placement="right" target="info">
+              <p className="m-0 text-start">
+                Password must contain at least 8 characters, with one uppercase, one lowercase, one number and one
+                special case character
+              </p>
+            </UncontrolledTooltip>
             <Controller
               className="input-group-merge"
               id="newPassword"

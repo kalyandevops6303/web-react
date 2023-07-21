@@ -11,6 +11,7 @@ const options = CountryFile.map((country) => ({
   label: country.label, // Use the country name as the label
   code: country.code,
   dial_code: country.dial_code,
+  _id: country._id,
 }));
 
 const CustomOption = ({ innerProps, data, isFocused, isSelected }) => (
@@ -80,7 +81,6 @@ const CountryDropdown = ({ selectedCountry, setSelectedCountry, disabled }) => {
         onChange={handleCountryChange}
         isSearchable
         isDisabled={disabled}
-        closeMenuOnSelect={false}
       />
     </CountryDropdownWrapper>
   );

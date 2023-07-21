@@ -1,6 +1,6 @@
 // ** Third Party Components
-// import classnames from 'classnames';
 import classNames from 'classnames';
+import { DateTime } from 'luxon';
 import { Info } from 'react-feather';
 
 // ** Custom Components
@@ -20,7 +20,7 @@ const EarningCard = () => {
       <Card className="card-reward">
         <CardHeader className="earning-head">
           <CardTitle tag="h4">{userDetailsData?.user_type === userTypes.talent ? 'Earnings' : 'Payments'}</CardTitle>
-          <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
+          <CardText className="d-none text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
             View All
           </CardText>
         </CardHeader>
@@ -34,7 +34,7 @@ const EarningCard = () => {
               color="primary"
               outline
             >
-              Dec 2022
+              {DateTime.now().toFormat('MMM yy')}
             </Button>
             <Button
               tag="label"
@@ -44,7 +44,7 @@ const EarningCard = () => {
               color="primary"
               outline
             >
-              YTD 2023
+              YTD {DateTime.now().toFormat('yyyy')}
             </Button>
           </ButtonGroup>
           <div className="d-flex justify-content-around card-amount-details">

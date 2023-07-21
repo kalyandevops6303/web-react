@@ -45,14 +45,14 @@ const CreateProject = () => {
     {
       id: 'listing',
       title: 'Listing',
-      subtitle: 'Add start and end date',
+      subtitle: 'Specify period',
       icon: <Box size={18} />,
       content: <Listing stepper={stepper} setListingDetails={setListingDetails} type="wizard-modern" />,
     },
     {
       id: 'preview',
       title: 'Preview',
-      subtitle: 'Review before posting',
+      subtitle: 'Summary',
       icon: <Check size={18} />,
       content: (
         <Preview
@@ -70,7 +70,7 @@ const CreateProject = () => {
     {
       id: 'invite',
       title: 'Invite',
-      subtitle: 'Solicit bids',
+      subtitle: 'Talent',
       icon: <CreditCard size={18} />,
       content: (
         <Invite

@@ -14,6 +14,7 @@ import { useLocation } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import debounce from '../../../lib/debounce';
+import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors, useIsTab } from '../../../utility/Utils';
@@ -92,10 +93,26 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
         setPopoverOpen(false);
       }
+    }; // Adjust the debounce delay (in milliseconds) as per your needs
+
+    const handleScroll = throttle(() => {
+      setPopoverOpen(false);
+    }, 300); // Adjust the throttle delay (in milliseconds) as per your needs
+
+    const handleWindowClick = (event) => {
+      handleOutsideClick(event);
     };
-    document.addEventListener('mousedown', handleOutsideClick);
+
+    const handleWindowScroll = () => {
+      handleScroll();
+    };
+
+    document.addEventListener('mousedown', handleWindowClick);
+    window.addEventListener('scroll', handleWindowScroll);
+
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('mousedown', handleWindowClick);
+      window.removeEventListener('scroll', handleWindowScroll);
     };
   }, []);
 
@@ -146,6 +163,16 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       statuses: [value],
     });
   };
+
+  useEffect(() => {
+    if (location?.state?.isRecommended) {
+      setSecondFilterState({
+        ...secondFilterState,
+        sort_by: [{ label: 'Recommended', value: 'RECOMMADED' }],
+      });
+      setIsRecommanded(true);
+    }
+  }, [location]);
 
   const onChangeSort = (value) => {
     setSecondFilterState({
@@ -417,7 +444,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 <Select
                   options={sortingOptions}
                   classNamePrefix="select"
-                  placeholder="Select"
+                  placeholder="Select type"
                   theme={selectThemeColors}
                   onChange={onChangeSort}
                   value={
@@ -447,11 +474,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             )}
             {primaryFilter !== 'talents' && primaryFilter !== 'clients' && (
               <Col>
-                <Label className="form-label">Project types</Label>
+                <Label className="form-label">Payment type</Label>
                 <Select
                   options={projectTypesOptions}
                   classNamePrefix="select"
-                  placeholder="Project types"
+                  placeholder="Select type"
                   theme={selectThemeColors}
                   onChange={onChangeProjectType}
                   value={
@@ -577,7 +604,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         >
           {selectMarketPlaceData?.map((item) => {
             const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
-            return <CardComponent key={item?._id || item?.id} data={item} isExpanded={isExpanded} />;
+            return (
+              <CardComponent
+                key={item?._id || item?.id}
+                data={item}
+                isPopoverOpen={popoverOpen}
+                isExpanded={isExpanded}
+              />
+            );
           })}
         </InfiniteScroll>
       )}

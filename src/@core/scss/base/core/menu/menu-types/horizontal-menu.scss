@@ -31,7 +31,7 @@
   // Navbar container spacing for all
   .navbar.header-navbar {
     .navbar-container {
-      padding: 0.8rem #{$content-padding};
+      padding: 0.8rem 1rem 0.8rem 1.8rem;
     }
   }
 
@@ -269,6 +269,9 @@
 
 .horizontal-layout {
   // navbar floating
+  .active-search {
+    background: #f7f6fa;
+  }
   &.navbar-floating {
     // Horizontal layout navbar shadow position and height fix
     .header-navbar-shadow {

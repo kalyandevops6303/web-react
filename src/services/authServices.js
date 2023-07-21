@@ -12,7 +12,8 @@ const verifyEmailService = (data) => DataService.post(API.auth.verifyEmail, data
 
 const setPasswordService = (password) => DataService.post(API.auth.createNewPassowrd, { password });
 
-const registerPhoneService = (phone, country_code) => DataService.post(API.auth.registerPhone, { phone, country_code });
+const registerPhoneService = ({ phone, country_code }) =>
+  DataService.post(API.auth.registerPhone, { phone, country_code });
 
 const verifyPhoneService = (data) => DataService.post(API.auth.verifyPhone, data);
 

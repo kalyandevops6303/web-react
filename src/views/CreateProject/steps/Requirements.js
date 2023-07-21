@@ -43,8 +43,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
     projectName: yup
       .string()
-      .min(4, 'Project name must be atleast 4 characters')
-      .max(150, 'Project name must be at most 150 characters')
+      .min(4, 'Project name must be at least 4 characters')
+      .max(150, 'Project name must be 150 characters or less')
       .required('Project name is required'),
     expectedDuration: yup
       .number()
@@ -53,9 +53,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         then: () =>
           yup
             .number()
-            .min(1, 'Expected duration should be atleast 1 week')
-            .max(12, 'Expected duration can not be more than 12 weeks')
-            .integer('Expected duration should be an integer')
+            .min(1, 'Expected duration should be at least 1 week')
+            .max(12, 'Expected duration cannot be greater than 12 weeks')
+            .integer('Expected duration should be a number')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
       })
@@ -64,9 +64,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         then: () =>
           yup
             .number()
-            .min(1, 'Expected duration should be atleast 1 day')
-            .max(90, 'Expected duration can not be more than 90 days')
-            .integer('Expected duration should be an integer')
+            .min(1, 'Expected duration should be at least 1 day')
+            .max(90, 'Expected duration cannot be greater than 90 days')
+            .integer('Expected duration should be a number')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
       }),
@@ -86,7 +86,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five skills can be added')
+      .max(5, 'A maximum of five skills can be added')
       .min(1, 'At least one skill should be added')
       .required('Skill is required'),
     tools: yup
@@ -97,31 +97,30 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           value: yup.string(),
         }),
       )
-      .max(5, 'At most five tools can be added'),
+      .max(5, 'A maximum of five tools can be added'),
     preferredWorkingTimeZone: yup
       .object()
       .shape({
-        label: yup.string().required('Preferred working time zone is required'),
-        value: yup.object().required('Preferred working time zone is required'),
+        label: yup.string().required('Preferred time zone is required'),
+        value: yup.object().required('Preferred time zone is required'),
       })
-      .required('Preferred working time zone is required'),
+      .required('Preferred time zone is required'),
     minTimeOverlapHr: yup
       .number()
-      .min(0, 'Min time overlap hr should be greater than or equal to 0')
-      .max(24, 'Min time overlap hr should not be greater than 24')
+      .min(0, 'Desired time overlap should be greater than or equal to 0')
+      .max(24, 'Desired time overlap should not be greater than 24')
       .typeError('Please enter a number')
-      .required('Min time overlap hr is required'),
-    availabilityDays: yup
-      .array()
-      .min(1, 'Select at least one work availability day')
-      .required('Work availability day is required'),
+      .required('Desired time overlap is required'),
+    availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
     weekdays: yup.array().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
-      then: () => yup.array().min(1, 'Select at least one weekday').required('Weekday is required'),
+      then: () =>
+        yup.array().min(1, 'Select at least one day in the week').required('Select at least one day in the week'),
     }),
     weekends: yup.array().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekends'),
-      then: () => yup.array().min(1, 'Select at least one weekend day').required('Weekend is required'),
+      then: () =>
+        yup.array().min(1, 'Select at least one day in the weekend').required('Select at least one day in the weekend'),
     }),
     weekdayStartTime: yup.object().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
@@ -183,24 +182,24 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     currencyType: yup
       .object()
       .shape({
-        label: yup.string().required('Currency type is required'),
-        value: yup.object().required('Currency type is required'),
+        label: yup.string().required('Currency is required'),
+        value: yup.object().required('Currency is required'),
       })
-      .required('Currency type is required'),
-    projectPayType: yup.string().required('Project pay type is required'),
+      .required('Currency is required'),
+    projectPayType: yup.string().required('Payment type is required'),
     projectFixedCost: yup.number().when('projectPayType', {
       is: (projectPayType) => projectPayType === 'fixed-price',
       then: () =>
         yup
           .number()
-          .min(1, 'Project fixed cost should be atleast 1')
-          .test('maxDigitsAfterDecimal', 'Project fixed cost must be upto two decimal places', (number) =>
+          .min(1, 'Fixed cost is required')
+          .test('maxDigitsAfterDecimal', 'Fixed cost must be upto two decimal places', (number) =>
             /^\d+(\.\d{1,2})?$/.test(number),
           )
           .typeError('Please enter a number')
-          .required('Project fixed cost is required'),
+          .required('Fixed cost is required'),
     }),
-    nda: yup.string().required('This is required'),
+    nda: yup.string().required('NDA is required'),
   });
 
   const {
@@ -574,7 +573,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   control={control}
                   render={({ field }) => (
                     <TextEditorContainer>
-                      <ReactQuill {...field} theme="snow" placeholder="Enter project background and requirements" />
+                      <ReactQuill {...field} theme="snow" placeholder="Add background and requirements" />
                     </TextEditorContainer>
                   )}
                 />
@@ -602,8 +601,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                     <div {...getRootProps({ className: 'dropzone' })}>
                       <input {...getInputProps()} />
                       <div className="d-flex align-items-center justify-content-center flex-column p-3">
-                        <h4>Drop files here or click to upload</h4>
-                        <p className="text-secondary text-center mt-50 fw-light">
+                        <h4 className="font-medium-1">Drop files here or click to upload</h4>
+                        <p className="text-secondary font-small-5 text-center mt-50 fw-light">
                           (This is just a demo dropzone. Selected files are not actually uploaded.)
                         </p>
                       </div>
@@ -616,7 +615,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         </Card>
         <Card>
           <CardHeader>
-            <h4 className="m-0 mt-1">Required Proficiency</h4>
+            <h4 className="m-0 mt-1">Technical Requirements</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
@@ -683,7 +682,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="preferredWorkingTimeZone">
-                  Preferred working time zone<span className="label-asterisk me-50">*</span>
+                  Preferred time zone<span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="preferredWorkingTimeZone"
@@ -694,7 +693,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                     <AsyncPaginate
                       loadOptions={loadTimezonesOptions}
                       classNamePrefix="select"
-                      placeholder="Select preferred working time zone"
+                      placeholder="Select one"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.preferredWorkingTimeZone,
@@ -709,8 +708,15 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               </Col>
               <Col sm="12" md="6" lg="3">
                 <Label className="form-label" for="minTimeOverlapHr">
-                  Minimum Time Overlap Hr<span className="label-asterisk">*</span>
+                  Desired Time Overlap<span className="label-asterisk">*</span>
                 </Label>
+                <Info size={18} color={theme.infoIcon} id="desired-time" className="ms-25" />
+                <UncontrolledTooltip placement="right" target="desired-time">
+                  <div className="d-flex flex-column align-items-start">
+                    For collaboration with <br /> project team
+                  </div>
+                </UncontrolledTooltip>
+
                 <Controller
                   id="minTimeOverlapHr"
                   name="minTimeOverlapHr"
@@ -722,7 +728,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       min={0}
                       step={0.1}
                       onWheel={(e) => e.target.blur()}
-                      placeholder="Enter min. overlap hr"
+                      placeholder="Enter number of hours"
                       invalid={errors.minTimeOverlapHr && true}
                     />
                   )}
@@ -732,7 +738,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             </Row>
             <Row className="mt-2">
               <h5 className="m-0">
-                Select your work availability days<span className="label-asterisk me-50">*</span>
+                Days available<span className="label-asterisk me-50">*</span>
               </h5>
             </Row>
             <Row className="custom-checkbox-border">
@@ -780,7 +786,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         }}
                       />
                       <Label htmlFor="weekends" className="form-check-label">
-                        Weekend
+                        Weekends
                       </Label>
                     </div>
                   </div>
@@ -795,9 +801,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                     <div>
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
-                          <h5 className="m-0">
-                            Weekday -<span className="fw-light"> Working time available</span>
-                          </h5>
+                          <h5 className="m-0">Weekdays</h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
                             {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
@@ -805,8 +809,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
                             <div className="d-flex flex-column align-items-start">
                               <p className="m-0">
-                                Based on Preferred
-                                <br /> working time zone
+                                Based on preferred
+                                <br /> time zone
                               </p>
                             </div>
                           </UncontrolledTooltip>
@@ -815,7 +819,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       <Row className="mb-1 mt-2">
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekdayStartTime">
-                            Select start time<span className="label-asterisk me-50">*</span>
+                            Start time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekdayStartTime"
@@ -847,7 +851,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         </Col>
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekdayEndTime">
-                            Select end time<span className="label-asterisk me-50">*</span>
+                            End time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekdayEndTime"
@@ -878,7 +882,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       </Row>
                       <Row className="mt-2">
                         <h5 className="m-0">
-                          Which working days of the week are you available?
+                          Which days?
                           <span className="label-asterisk me-50">*</span>
                         </h5>
                       </Row>
@@ -1005,9 +1009,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                     <div>
                       <Row className="mb-1 mt-2">
                         <div className="d-flex align-items-center">
-                          <h5 className="m-0">
-                            Weekend -<span className="fw-light"> Working time available</span>
-                          </h5>
+                          <h5 className="m-0">Weekends </h5>
                           <p className="m-0 mx-1 px-50 time-zone-border">
                             {watch('preferredWorkingTimeZone') && watch('preferredWorkingTimeZone').value.abbreviation}
                           </p>
@@ -1015,8 +1017,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           <UncontrolledTooltip placement="right" target="time-zone-info-weekend">
                             <div className="d-flex flex-column align-items-start">
                               <p className="m-0">
-                                Based on Preferred
-                                <br /> working time zone
+                                Based on preferred
+                                <br /> time zone
                               </p>
                             </div>
                           </UncontrolledTooltip>
@@ -1025,7 +1027,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       <Row className="mb-1 mt-2">
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekendStartTime">
-                            Select start time<span className="label-asterisk me-50">*</span>
+                            Start time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekendStartTime"
@@ -1057,7 +1059,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         </Col>
                         <Col sm="6" md="6" lg="3">
                           <Label className="form-label" for="weekendEndTime">
-                            Select end time<span className="label-asterisk me-50">*</span>
+                            End time<span className="label-asterisk me-50">*</span>
                           </Label>
                           <Controller
                             id="weekendEndTime"
@@ -1088,7 +1090,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       </Row>
                       <Row className="mt-2">
                         <h5 className="m-0">
-                          Which working days of the weekend are you available?
+                          Which days?
                           <span className="label-asterisk me-50">*</span>
                         </h5>
                       </Row>
@@ -1154,7 +1156,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         </Card>
         <Card>
           <CardHeader>
-            <h4 className="m-0 mt-1">Country</h4>
+            <h4 className="m-0 mt-1">Country - Inclusions and Exclusions (Optional)</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
@@ -1183,8 +1185,14 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         }}
                       />
                       <Label for="include-countries" className="form-check-label">
-                        Include Countries
+                        Included Countries
                       </Label>
+                      <Info size={18} color={theme.infoIcon} id="time-zone-info-weekday" className="ms-50" />
+                      <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
+                        <div className="d-flex flex-column align-items-start">
+                          <p className="m-0">Project will only be listed in these countries</p>
+                        </div>
+                      </UncontrolledTooltip>
                     </div>
                   </div>
                 )}
@@ -1219,7 +1227,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             </Row>
             {watch('includedCountriesSelection') && watch('includedCountriesSelection').length > 0 && (
               <Row className="mt-2 pb-0">
-                <Label className="form-check-label mb-75">Selected countries -</Label>
+                <Label className="form-check-label mb-75">Selected countries:</Label>
+
                 {watch('includedCountriesSelection').map((country) => (
                   <div className="countries-pills" key={country.label}>
                     <Badge pill className="px-1 py-50 d-flex align-items-center">
@@ -1260,8 +1269,14 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                         }}
                       />
                       <Label for="exclude-countries" className="form-check-label">
-                        Exclude Countries
+                        Excluded Countries
                       </Label>
+                      <Info size={18} color={theme.infoIcon} id="exclude-country" className="ms-50" />
+                      <UncontrolledTooltip placement="right" target="exclude-country">
+                        <div className="d-flex flex-column align-items-start">
+                          <p className="m-0">Project will not be listed in these countries</p>
+                        </div>
+                      </UncontrolledTooltip>
                     </div>
                   </div>
                 )}
@@ -1296,7 +1311,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             </Row>
             {watch('excludedCountriesSelection') && watch('excludedCountriesSelection').length > 0 && (
               <Row className="mt-2 pb-0">
-                <Label className="form-check-label mb-75">Selected countries -</Label>
+                <Label className="form-check-label mb-75">Selected countries:</Label>
                 {watch('excludedCountriesSelection').map((country) => (
                   <div className="countries-pills" key={country.label}>
                     <Badge pill className="px-1 py-50 d-flex align-items-center">
@@ -1315,7 +1330,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         </Card>
         <Card>
           <CardHeader>
-            <h4 className="m-0 mt-1">Project Pay Type</h4>
+            <h4 className="m-0 mt-1">Payment</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
@@ -1323,7 +1338,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               <Col sm="12" md="6" lg="3">
                 <Label className="form-label" for="currencyType">
                   <h5 className="m-0 mb-25">
-                    Select currency type
+                    Currency
                     <span className="label-asterisk me-50">*</span>
                   </h5>
                 </Label>
@@ -1352,7 +1367,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               <Col sm="12" md="6" lg="6">
                 <Label className="form-label" for="projectPayType">
                   <h5 className="m-0">
-                    Select project pay type
+                    Payment type
                     <span className="label-asterisk me-50">*</span>
                   </h5>
                 </Label>
@@ -1379,7 +1394,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           }}
                         />
                         <Label for="variable-price" className="form-check-label">
-                          Variable price
+                          Variable cost
                         </Label>
                       </div>
                       <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
@@ -1400,7 +1415,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           }}
                         />
                         <Label for="fixed-price" className="form-check-label">
-                          Fixed price
+                          Fixed cost
                         </Label>
                       </div>
                     </div>
@@ -1411,7 +1426,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               {projectPayType === 'fixed-price' && (
                 <Col sm="12" md="6" lg="3">
                   <Label className="form-label" for="projectFixedCost">
-                    Project Fixed Cost{`${watch('currencyType') ? ` in ${watch('currencyType')?.value?.code}` : ''}`}
+                    Fixed Cost{`${watch('currencyType') ? ` in ${watch('currencyType')?.value?.code}` : ''}`}
                     <span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
@@ -1423,9 +1438,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       <Input
                         {...field}
                         type="number"
-                        step="any"
+                        min={0}
                         onWheel={(e) => e.target.blur()}
-                        placeholder="Specify project fixed cost"
+                        placeholder="Enter amount"
                         invalid={errors.projectFixedCost && true}
                       />
                     )}
@@ -1446,7 +1461,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               <Col sm="12" md="12" lg="12">
                 <Label className="form-label" for="nda">
                   <h5 className="m-0">
-                    Would you like to have an NDA for this project?
+                    NDA required?
                     <span className="label-asterisk me-50">*</span>
                   </h5>
                 </Label>

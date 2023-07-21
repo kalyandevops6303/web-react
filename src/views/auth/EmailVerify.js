@@ -57,9 +57,9 @@ const VerifyEmail = () => {
           Two Step Verification 💬
         </CardTitle>
         <CardText className="mb-2 card-text">
-          We sent a verification code to your email ID. Enter the code in the field below.
+          We sent a verification code to your email. Enter it in the field below.
           <span className="auth-edit" onClick={() => navigate(-1)}>
-            Edit
+            Go back
           </span>
         </CardText>
         <Form className="auth-login-form" onSubmit={(e) => e.preventDefault()}>
@@ -99,9 +99,9 @@ const VerifyEmail = () => {
               outline: 'none',
             }}
           />
-          {otpError && <FormFeedback className="mt-1">Invalid OTP</FormFeedback>}
+          {otpError && <FormFeedback className="mt-1">Invalid code</FormFeedback>}
           <Button color="primary" block className="mt-4" disabled={code.length !== 4 || isLoading} onClick={verifyOtp}>
-            {isLoading ? <Spinner size="sm" /> : 'Verify OTP'}
+            {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>
         </Form>
 

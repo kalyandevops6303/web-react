@@ -23,6 +23,7 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
+import { removeItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
 
 const Login = () => {
@@ -157,7 +158,7 @@ const Login = () => {
           <Label>
             <small>New to Trumio?</small>
           </Label>
-          <Label tag={Link} to="/auth" className="primary">
+          <Label tag={Link} to="/auth" className="primary" onClick={() => removeItem('isUserVisited')}>
             <small>Create an account</small>
           </Label>
         </div>

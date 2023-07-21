@@ -11,7 +11,7 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP }) => {
   const userType = useSelector(selectUserType);
   const emailId = useSelector(selectEmail);
   const phoneData = useSelector(selectMobile);
-  const [countdown, setCountdown] = useState(0);
+  const [countdown, setCountdown] = useState(60);
   const minutes = Math.floor(countdown / 60);
   const seconds = countdown % 60;
 
@@ -50,12 +50,10 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP }) => {
       className={`d-flex justify-content-center sign-info ${countdown === 0 && 'cursor-pointer'} `}
       onClick={handleResend}
     >
-      <Label className={countdown === 0 && 'cursor-pointer'}>
-        <small>Resend</small>
+      <Label className={`${countdown === 0 && 'cursor-pointer primary'}`}>
+        <small>Resend Code </small>
       </Label>
-      <Label className={`primary ${countdown === 0 && 'cursor-pointer'}`}>
-        <small>OTP</small>
-      </Label>
+
       {countdown !== 0 && (
         <Label>
           <small>

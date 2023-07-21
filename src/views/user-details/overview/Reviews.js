@@ -47,9 +47,9 @@ const Reviews = () => (
           <Review />
           <Review />
           <Review />
-          <h4 className="text-center empty">No reviews to show</h4>
+          <h4 className="text-center font-small-4 empty">No reviews to show</h4>
         </div>
-        <h4 className="text-center empty">No reviews to show</h4>
+        <h4 className="text-center font-small-4 empty">No reviews to show</h4>
 
         <CardText className="d-none text-center text-decoration-underline card-text me-25 mb-0 text-primary">
           View More

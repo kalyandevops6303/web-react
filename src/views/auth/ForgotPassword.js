@@ -85,7 +85,7 @@ const RegisterEmail = () => {
           </div>
 
           <Button color="primary" block className="auth-btn" type="submit" disabled={!emailValue || isLoading}>
-            {isLoading ? <Spinner size="sm" /> : 'Send OTP'}
+            {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>
         </Form>
         <div className="divider my-2">

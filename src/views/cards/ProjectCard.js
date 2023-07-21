@@ -15,14 +15,14 @@ import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 
-const ProjectCard = ({ isExpanded, data }) => {
+const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setShowFullText(isExpanded);
-  }, [isExpanded]);
+  }, [isExpanded, isPopoverOpen]);
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -179,11 +179,13 @@ const ProjectCard = ({ isExpanded, data }) => {
 ProjectCard.propTypes = {
   isExpanded: PropTypes.bool,
   data: PropTypes.object,
+  isPopoverOpen: PropTypes.bool,
 };
 
 ProjectCard.defaultProps = {
   isExpanded: false,
   data: {},
+  isPopoverOpen: false,
 };
 
 export default ProjectCard;

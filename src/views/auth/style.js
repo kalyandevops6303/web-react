@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import BgImage from '../../assets/images/onboard_bg.png';
 import theme from '../../configs/themeVariables';
 
 export const PasswordStrengthBarWrap = styled.div`
@@ -33,6 +32,38 @@ export const PasswordStrengthBarWrap = styled.div`
   }
 `;
 export const OnBoardWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  // bg pic css
+  .user-type-pic {
+    margin-right: 6rem;
+    height: 78vh;
+  }
+  .create-pw-pic {
+    margin-right: 14rem;
+    height: 62vh;
+  }
+  .login-pic {
+    margin-right: 10rem;
+    margin-top: 2rem;
+    height: 84vh;
+  }
+  .verification-pic {
+    margin-right: 14rem;
+    height: 62vh;
+  }
+  .client-pic {
+    margin-right: 10rem;
+    margin-top: 4rem;
+    height: 78vh;
+  }
+  .talent-pic {
+    margin-right: 8rem;
+    height: 94vh;
+  }
+
   .logo-wrap {
     display: flex;
     font-size: 14px;
@@ -61,13 +92,14 @@ export const OnBoardWrap = styled.div`
     font-weight: 500 !important;
   }
 
-  background-image: url(${BgImage});
   height: 100vh;
   width: 100%;
-  background-color: black;
+  background-color: white;
   background-size: cover;
   .card-onboard {
-    background: white;
+    filter: drop-shadow(4px 8px 8px rgba(1, 133, 228, 0.12));
+    box-shadow: 4px 8px 8px 0px rgba(1, 133, 228, 0.11999999731779099);
+    background: ${theme.cardBgBlue};
     border-radius: 32px;
     width: fit-content;
     left: 12%;
@@ -97,7 +129,7 @@ export const OnBoardWrap = styled.div`
     justify-content: center;
     gap: 0.5rem;
     align-items: center;
-    color: #0065c1;
+    color: ${theme.primary};
     font-weight: 600 !important;
     .google-img {
       height: 1.2rem;
@@ -107,7 +139,7 @@ export const OnBoardWrap = styled.div`
     margin-top: 0.8rem;
     gap: 0.5rem;
     .primary {
-      color: #0065c1;
+      color: ${theme.primary};
     }
   }
   .last-row {
@@ -142,6 +174,7 @@ export const OnBoardWrap = styled.div`
 `;
 export const UserTypeCard = styled.div`
   box-shadow: 0px 4px 14px rgba(0, 101, 193, 0.15);
+  background: white;
   border-radius: 6px;
   padding: 1.8rem 2.8rem;
   min-height: 8rem;

@@ -13,8 +13,8 @@ import { UploadIconContainer } from '../../Onboarding/style';
 
 const Listing = ({ stepper, setListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
-    listingOption: yup.string().required('Choose one option'),
-    startDate: yup.date().when('listingOption', {
+    listingOption: yup.string().required('Select one'),
+    startDate: yup.object().when('listingOption', {
       is: (listingOption) => listingOption === 'select-duration',
       then: () => yup.date().typeError('Start date is required').required('Start date is required'),
     }),
@@ -27,11 +27,11 @@ const Listing = ({ stepper, setListingDetails }) => {
       then: () =>
         yup
           .number()
-          .min(1, 'No. of days must be atleast 1')
-          .max(90, 'No. of days must be at most 90')
+          .min(1, 'Must be at least 1')
+          .max(90, 'Must be 90 or less')
           .integer('Must be a number')
-          .required('No. of days is required')
-          .typeError('No. of days must be a number'),
+          .required('Number is required')
+          .typeError('Must be a number'),
     }),
   });
 
@@ -121,7 +121,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                         }}
                       />
                       <Label for="select-duration" className="form-check-label fw-bold">
-                        <h5 className="m-0">Select your listing duration</h5>
+                        <h5 className="m-0">Select dates</h5>
                       </Label>
                     </div>
                   </div>
@@ -211,7 +211,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                         }}
                       />
                       <Label for="enter-duration" className="form-check-label fw-bold">
-                        <h5 className="m-0">Enter listing duration</h5>
+                        <h5 className="m-0">Enter duration</h5>
                       </Label>
                     </div>
                   </div>
@@ -233,7 +233,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                         type="number"
                         min={0}
                         onWheel={(e) => e.target.blur()}
-                        placeholder="Enter"
+                        placeholder="number of"
                         invalid={errors.duration && true}
                       />
                     )}

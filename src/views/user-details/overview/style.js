@@ -24,6 +24,7 @@ const StatboxWrap = styled(Card)`
   }
   .stat-avatar {
     padding: ${(props) => (props.isMarketPlaceTab ? '0.35rem' : '0.2rem')};
+    cursor: auto;
   }
   .stat-desc {
     font-weight: 300;
@@ -56,6 +57,17 @@ const StatboxWrap = styled(Card)`
 const LeftSidebarProfileWrapper = styled.div`
   .outline-btn {
     font-size: 13px;
+  }
+  .not-clickable {
+    cursor: auto !important;
+  }
+  .btn-outline-primary:hover:not(.disabled):not(:disabled) {
+    background: inherit !important;
+    color: ${theme.primary} !important;
+  }
+  .btn-outline-primary:focus:not(.disabled):not(:disabled) {
+    background: inherit !important;
+    color: ${theme.primary} !important;
   }
   .user-image {
     display: flex;

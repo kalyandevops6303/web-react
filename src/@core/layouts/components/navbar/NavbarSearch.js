@@ -75,6 +75,7 @@ const NavbarSearch = () => {
         ) : null}
         <div className="search-input-close">
           <Icon.X
+            color={theme.activeNavPillText}
             className="ficon"
             onClick={(e) => {
               e.stopPropagation();

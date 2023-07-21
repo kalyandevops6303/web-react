@@ -238,14 +238,14 @@ const Invite = ({ stepper }) => {
         </CardHeader>
         <hr className="m-0 card-header-border" />
         <CardBody>
-          <p className="font-medium-1 fw-bold">Share your project listing with the best teams and talent</p>
+          <p className="font-medium-1 fw-bold">Share your project listing with the best talent</p>
           <Row>
             <Col sm="12" md="12" lg="7">
               <InputGroup className="input-group-merge">
                 <InputGroupText className="ps-1 pe-50">
                   <Search size={14} color={theme.textMuted} />
                 </InputGroupText>
-                <Input placeholder="Enter talent name" value={searchValue} onChange={(e) => onSearch(e)} />
+                <Input placeholder="Search talent name" value={searchValue} onChange={(e) => onSearch(e)} />
               </InputGroup>
             </Col>
           </Row>
@@ -553,7 +553,7 @@ const Invite = ({ stepper }) => {
       </Card>
       <div className="d-flex justify-content-end align-items-center">
         <div>
-          <Link to="/dashboard">
+          <Link to="/marketplace/all_listings">
             <Button color="primary" outline>
               <span className="px-2">Close</span>
             </Button>

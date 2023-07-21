@@ -1,9 +1,10 @@
-import { Briefcase, Calendar, Check, DollarSign } from 'react-feather';
+import { Briefcase, Calendar, Check } from 'react-feather';
 import { useLocation, useParams } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
+import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from './overview/Statbox';
 import round from '../../lib/round';
 import capitalize from '../../lib/capitalize';
@@ -72,10 +73,14 @@ const UserDetails = () => {
     return combined;
   };
 
-  const defaultBreadCrumb = [{ title: currentProfile?.first_name || 'User' }];
+  const defaultBreadCrumb = [
+    { title: 'Profile', link: '#' },
+    { title: `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User' },
+  ];
   const dynamicBreadCrumb = [
-    { title: capitalize(location?.state?.from), link: location?.state?.link },
-    { title: currentProfile?.first_name || 'User' },
+    { title: capitalize(location?.state?.from?.primary?.title), link: location?.state?.from?.primary?.link },
+    { title: capitalize(location?.state?.from?.secondary?.title), link: location?.state?.from?.secondary?.link },
+    { title: `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User' },
   ];
 
   if (loading) {
@@ -94,14 +99,19 @@ const UserDetails = () => {
         <Col lg="9">
           <Row>
             <Col lg="3">
-              <Statbox title="-" desc="Completed Projects" icon={<Check height={20} />} color="light-success" />
+              <Statbox
+                title={currentProfile?.projects_worked_on_count || 0}
+                desc="Completed Projects"
+                icon={<Check height={20} />}
+                color="light-success"
+              />
             </Col>
             {!isClient && (
               <Col lg="3">
                 <Statbox
                   title={`${currentProfile?.currency_preference?.code} ${currentProfile?.hourly_rate}`}
-                  desc="Hourly Billing Rate"
-                  icon={<DollarSign height={20} />}
+                  desc="Hourly Rate"
+                  icon={<img src={MoneyIcon} height={22} alt="money" />}
                   color="light-warning"
                 />
               </Col>

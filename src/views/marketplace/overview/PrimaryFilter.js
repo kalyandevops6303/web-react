@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { DollarSign, ThumbsUp, Users } from 'react-feather';
+import { ThumbsUp, Users } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
+import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from '../../user-details/overview/Statbox';
 import { getItem } from '../../../utility/localStorageControl';
 import { getCardInfo } from '../../../redux/actions/marketPlaceActions';
@@ -27,7 +28,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
           isMarketPlaceTab
           title={selectCardData?.all_listings}
           desc="All Listings"
-          icon={<DollarSign height={20} />}
+          icon={<img src={MoneyIcon} height={22} alt="money" />}
           color="light-warning"
           className="stat-box cursor-pointer"
         />
@@ -51,7 +52,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
               className="stat-box cursor-pointer"
               isMarketPlaceTab
               title={selectCardData?.talents}
-              desc="Talents"
+              desc="Talent"
               icon={<Users height={20} />}
               color="light-purple"
             />
