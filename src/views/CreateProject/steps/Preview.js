@@ -6,7 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
 import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat } from '../../../utility/Utils';
+import { convertTo12HourFormat, formatDateWithDash } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
@@ -119,16 +119,6 @@ const Preview = ({
     </TagsContainer>
   );
 
-  const formatDate = (date) => {
-    if (!date) {
-      return undefined;
-    }
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear().toString();
-    return `${day}-${month}-${year}`;
-  };
-
   const isEmpty = (value) => {
     if (value === undefined || value === null) {
       return true;
@@ -227,8 +217,8 @@ const Preview = ({
       is_nda: projectDetails?.nda === 'yes',
     };
     const listing_details = {
-      start_date: formatDate(listingDetails?.startDate),
-      end_date: formatDate(listingDetails?.endDate),
+      start_date: formatDateWithDash(listingDetails?.startDate),
+      end_date: formatDateWithDash(listingDetails?.endDate),
     };
 
     const requiredData = {

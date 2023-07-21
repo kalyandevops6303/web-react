@@ -32,6 +32,7 @@
   &[class*='bg-'] {
     .navbar-nav {
       .nav-item {
+        
         > a {
           color: set-navbar-text-color($theme-dark-body-color) !important;
 

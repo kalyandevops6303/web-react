@@ -37,6 +37,7 @@ import {
 import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import ResetPasswordModal from './ResetPasswordModal';
+import { checkPoints, userTypes } from '../../utility/constants/Constant';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -110,15 +111,15 @@ const Account = () => {
     const { firstName, lastName } = data;
     const reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
 
-    if (userDetailsData?.checkpoint === 'ACCOUNT_DETAILS' || userDetailsData?.checkpoint === 'PROFILE_DETAILS') {
-      if (userDetailsData.user_type === 'TALENT') {
+    if (userDetailsData?.checkpoint === checkPoints.ACCOUNT_DETAILS || userDetailsData?.checkpoint === checkPoints.PROFILE_DETAILS) {
+      if (userDetailsData.user_type === userTypes.talent) {
         dispatch(saveTalentAccountDetails(reqData, onSuccess));
       } else {
         dispatch(saveClientAccountDetails(reqData, onSuccess));
       }
     } else {
       // eslint-disable-next-line no-lonely-if
-      if (userDetailsData.user_type === 'TALENT') {
+      if (userDetailsData.user_type === userTypes.talent) {
         dispatch(saveTalentProfileDetails(reqData, onSuccess));
       } else {
         dispatch(saveClientProfileDetails(reqData, onSuccess));
@@ -132,15 +133,15 @@ const Account = () => {
       setValue('mobileNumber', res.phone);
       setValue('email', res.email);
 
-      if (res.checkpoint === 'ACCOUNT_DETAILS' && res.oauth_type === 'google') {
-        if (res.user_type === 'TALENT') {
+      if (res.checkpoint === checkPoints.ACCOUNT_DETAILS && res.oauth_type === 'google') {
+        if (res.user_type === userTypes.talent) {
           setSelectedImage(res?.talent_info?.image_uri);
           setSelectedImagePreview(res?.talent_info?.image_uri);
           setValue('firstName', res?.talent_info?.first_name, { shouldValidate: true });
           if (res?.talent_info?.last_name !== '') {
             setValue('lastName', res?.talent_info?.last_name, { shouldValidate: true });
           }
-        } else if (res.user_type === 'CLIENT') {
+        } else if (res.user_type === userTypes.client) {
           setSelectedImage(res?.client_info?.image_uri);
           setSelectedImagePreview(res?.client_info?.image_uri);
           setValue('firstName', res?.client_info?.first_name, { shouldValidate: true });
@@ -148,11 +149,11 @@ const Account = () => {
             setValue('lastName', res?.client_info?.last_name, { shouldValidate: true });
           }
         }
-      } else if (res.checkpoint === 'PROFILE_DETAILS' || res.checkpoint === 'COMPLETE') {
-        if (res.user_type === 'TALENT') {
+      } else if (res.checkpoint === checkPoints.PROFILE_DETAILS || res.checkpoint === checkPoints.COMPLETE) {
+        if (res.user_type === userTypes.talent) {
           setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
-        } else if (res.user_type === 'CLIENT') {
+        } else if (res.user_type === userTypes.client) {
           setValue('firstName', res.client_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.client_info?.last_name, { shouldValidate: true });
         }

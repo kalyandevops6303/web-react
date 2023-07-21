@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { DateTime } from 'luxon';
 import theme from '../configs/themeVariables';
-
+import DateTime from '../lib/date-time';
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -127,7 +126,6 @@ const checkSize = (width) => {
   }, [isMobile]);
   return isMobile;
 };
-export const useIsMobile = () => checkSize(1024);
 export const useIsTab = () => checkSize(769);
 
 export const convertTo12HourFormat = (hour) => {
@@ -216,3 +214,12 @@ export const returnFilteredDropdownOptions = (search, options) =>
       option.label.toLowerCase().startsWith(search.toLowerCase()) ||
       option.label.toLowerCase().includes(search.toLowerCase()),
   );
+export const formatDateWithDash = (date) => {
+  if (!date) {
+    return undefined;
+  }
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear().toString();
+  return `${day}-${month}-${year}`;
+};

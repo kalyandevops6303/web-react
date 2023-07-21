@@ -234,14 +234,14 @@ export const TimeWrapper = styled.section`
   }
   .weekdays {
     padding-right: 20px;
-    border-right: 1px solid ${theme.borderInputColor};
+    border-right: ${(props) => (props.isBorder ? `1px solid ${theme.borderInputColor}` : 'none')};
 
     ul {
       justify-content: space-between;
     }
   }
   .weekends {
-    padding-left: 20px;
+    padding-left: ${(props) => (props.isPadding ? '20px' : '0')};
 
     ul {
       gap: 14px;
@@ -322,9 +322,6 @@ export const NavsContainer = styled.div`
 `;
 
 export const TableContainer = styled.div`
-  max-height: 500px;
-  overflow-y: scroll;
-
   .user-pic {
     border-radius: 50%;
     border: 1px solid ${theme.bodyColor};

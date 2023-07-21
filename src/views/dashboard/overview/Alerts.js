@@ -11,6 +11,7 @@ import { profilePercentage, userData } from '../../../redux/selectors/dashboardS
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import returnCompleteProfileDetailsCta from '../../../utility/constants/CompleteProfileDetailsCta';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -84,7 +85,7 @@ const Alerts = () => {
           </CardBody>
         </Card>
 
-        {userDetailsData?.user_type === 'CLIENT' && (
+        {userDetailsData?.user_type === userTypes.client && (
           <>
             <Card className="card-inside d-none">
               <CardHeader>
@@ -102,14 +103,14 @@ const Alerts = () => {
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
                 <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">
-                  None schdudled
+                  None scheduled
                 </CardText>
               </CardBody>
             </Card>
           </>
         )}
 
-        {userDetailsData?.user_type === 'TALENT' && (
+        {userDetailsData?.user_type === userTypes.talent && (
           <>
             <Card className="card-inside">
               <CardHeader>

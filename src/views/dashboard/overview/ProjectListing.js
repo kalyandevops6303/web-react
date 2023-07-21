@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import Slider from 'react-slick';
 import { useNavigate } from 'react-router';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
@@ -14,6 +13,7 @@ import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
 import Project from './Project';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
+import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -22,6 +22,7 @@ import Tag from '../../../@core/components/tags';
 import { recommendedProjects, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const Empty = ({ active, recommended, payment }) => {
   const navigate = useNavigate();
@@ -92,7 +93,7 @@ const ProjectListing = () => {
   const recommendedProjectsData = useSelector(recommendedProjects);
 
   useEffect(() => {
-    if (userDetailsData?.user_type === 'TALENT') {
+    if (userDetailsData?.user_type === userTypes.talent) {
       dispatch(getRecommendedProjects());
     }
   }, [userDetailsData]);
@@ -133,7 +134,7 @@ const ProjectListing = () => {
         </AccordionBody>
       </AccordionItem>
       <AccordionItem>
-        {userDetailsData?.user_type === 'TALENT' && (
+        {userDetailsData?.user_type === userTypes.talent && (
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
@@ -176,7 +177,7 @@ const ProjectListing = () => {
             </AccordionBody>
           </>
         )}
-        {userDetailsData?.user_type === 'CLIENT' && (
+        {userDetailsData?.user_type === userTypes.client && (
           <>
             <AccordionHeader targetId="3">
               Upcoming Payments <Tag>0 new</Tag>
