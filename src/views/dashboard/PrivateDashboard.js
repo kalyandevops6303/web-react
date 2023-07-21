@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
@@ -15,7 +15,10 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 
 const PrivateDashboard = () => {
   const userDetailsData = useSelector(userData);
-
+  useEffect(() => {
+    // eslint-disable-next-line no-undef
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div>
       <div className="d-flex justify-content-between">

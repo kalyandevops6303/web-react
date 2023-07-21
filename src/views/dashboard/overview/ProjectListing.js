@@ -17,14 +17,23 @@ import { ProjectWrapper, ProjectsListingWrap } from './style';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
+
 import Tag from '../../../@core/components/tags';
-import { recommendedProjects, userData } from '../../../redux/selectors/dashboardSelectors';
+import { profilePercentage, recommendedProjects, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 
-const Empty = ({ active, recommended, payment }) => {
+const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
+  const userDetailsData = useSelector(userData);
+  const profilePercentageData = useSelector(profilePercentage);
+
+  const onAddDetailsClick = (path) => {
+    navigate(path, {
+      state: { isEditing: true },
+    });
+  };
   return (
     <ProjectWrapper>
       <Card className="empty-card">
@@ -44,13 +53,34 @@ const Empty = ({ active, recommended, payment }) => {
               </CardText>
             )}
           </div>
-          {(active || recommended) && (
+          {active && (
             <div
               onClick={() => navigate('/marketplace/all_listings')}
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
             >
               Explore Projects
             </div>
+          )}
+          {isEducationNotCompleted && recommended ? (
+            <div
+              onClick={() =>
+                onAddDetailsClick(
+                  returnDetailsForMarketPlace(userDetailsData?.user_type, profilePercentageData?.values_missing)?.path,
+                )
+              }
+              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+            >
+              Complete your profile <br /> to get started!
+            </div>
+          ) : recommended ? (
+            <div
+              onClick={() => navigate('/marketplace/all_listings')}
+              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+            >
+              Explore Projects
+            </div>
+          ) : (
+            ''
           )}
         </CardBody>
       </Card>
@@ -76,6 +106,7 @@ const ProjectListing = () => {
   const isTab = useIsTab();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const profilePercentageData = useSelector(profilePercentage);
 
   const toggle = (id) => (open === id ? setOpen() : setOpen(id));
 
@@ -140,9 +171,11 @@ const ProjectListing = () => {
                 <span className="d-flex align-items-center">
                   Recommended Projects <Tag>{recommendedProjectsData?.data?.length} </Tag>
                 </span>
-                <CardText onClick={handleViewAll} className="view-all-cta">
-                  View All
-                </CardText>
+                {recommendedProjectsData?.data?.length > 0 && (
+                  <CardText onClick={handleViewAll} className="view-all-cta">
+                    View All
+                  </CardText>
+                )}
               </AccordionHeadStyle>
             </AccordionHeader>
             <AccordionBody accordionId="3">
@@ -168,7 +201,15 @@ const ProjectListing = () => {
                         </div>
                       )
                     ) : (
-                      <Empty active={false} recommended payment={false} />
+                      <Empty
+                        active={false}
+                        isEducationNotCompleted={returnDetailsForMarketPlace(
+                          userDetailsData?.user_type,
+                          profilePercentageData?.values_missing,
+                        )}
+                        recommended
+                        payment={false}
+                      />
                     )}
                   </>
                 )}
@@ -203,10 +244,12 @@ Empty.propTypes = {
   active: Proptypes.bool,
   recommended: Proptypes.bool,
   payment: Proptypes.bool,
+  isEducationNotCompleted: Proptypes.bool,
 };
 
 Empty.defaultProps = {
   active: false,
   recommended: false,
   payment: false,
+  isEducationNotCompleted: false,
 };

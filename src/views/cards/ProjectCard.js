@@ -38,7 +38,7 @@ const ProjectCard = ({ isExpanded, data }) => {
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
-    LISTING_EXPIRED: 'LISTING_EXPIRED',
+    LISTING_EXPIRED: 'Listing Expired',
   };
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {

@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router';
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import NodataFound from '@src/assets/images/noDataFoundGif.gif';
+import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
+
 import theme from '../../../configs/themeVariables';
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
@@ -19,8 +21,8 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
     .no-data-found-dynamic {
       font-size: 1.125rem;
       font-style: normal;
-      font-weight: 500;
-      margin-top: -1rem;
+      font-weight: 400;
+      margin-top: -1.5rem;
       text-align: center;
       color: ${theme.noDataFoundTextColor};
       margin-bottom: 4rem !important;
@@ -41,7 +43,13 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
   return (
     <NoDataFoundWrapper>
       <Card className="w-100 p-2">
-        <img className="m-auto" height={200} width={200} src={NodataFound} alt="No data found" />
+        <img
+          className="m-auto"
+          height={200}
+          width={200}
+          src={isRecommanded ? UpcomingProjectsEmptyGif : NodataFound}
+          alt="No data found"
+        />
         {isRecommanded &&
         returnDetailsForMarketPlace(userDetailsData?.user_type, profilePercentageData?.values_missing) ? (
           <CardText
@@ -52,7 +60,7 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
             }
             className="no-data-found-dynamic cursor-pointer"
           >
-            Complete your profile to get recommended data!
+            Complete your profile to get started!
           </CardText>
         ) : (
           <CardText className="no-data-found-dynamic">No data found!</CardText>
