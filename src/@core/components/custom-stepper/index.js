@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
+import { useNavigate } from 'react-router';
 
-const CustomStep = ({ steps, currentStep }) => {
+const CustomStep = ({ onChangeStep, steps, currentStep }) => {
+  const navigate = useNavigate();
   const CustomStepWrap = styled.div`
     margin-bottom: 1.5rem;
     display: flex;
@@ -56,10 +58,19 @@ const CustomStep = ({ steps, currentStep }) => {
       }
     }
   `;
+
+  const handleChangeStep = (step) => {
+    onChangeStep(step);
+    navigate(step);
+  };
   return (
     <CustomStepWrap>
       {steps.map((item) => (
-        <div key={item.title} className={`stepper ${currentStep === item.title.toLowerCase() ? 'active' : ''}`}>
+        <div
+          onClick={() => handleChangeStep(item.title.toLowerCase())}
+          key={item.title}
+          className={` stepper ${currentStep === item.title.toLowerCase() ? 'active' : 'cursor-pointer'}`}
+        >
           <span className="stepper-box">{item.icon}</span>
           <span className="stepper-label">
             <span className="stepper-title">{item.title}</span>

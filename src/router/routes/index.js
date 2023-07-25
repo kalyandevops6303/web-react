@@ -26,6 +26,7 @@ import Notifications from '../../views/notifications';
 import ComingSoon from '../../views/auth/ComingSoon';
 import ProjectDetails from '../../views/project-details';
 import BidDetails from '../../views/project-details/BidDetails';
+import ContractView from '../../views/project-details/ContractView';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -67,13 +68,18 @@ const Routes = [
     element: <MarketPlace />,
   },
   {
-    path: '/project-details/:projectId/:projectStep',
+    path: '/project-details/:projectId/*',
     element: <ProjectDetails />,
   },
   {
     path: '/project-details/:projectId/:projectStep/details',
     element: <BidDetails />,
   },
+  {
+    path: '/project-details/:projectId/contract',
+    element: <ContractView />,
+  },
+
   {
     path: '/auth/*',
     element: <AuthRoute />,
