@@ -9,6 +9,8 @@ import Personal from './Personal';
 import Educational from './Educational';
 import Availability from './Availability';
 import Social from './Social';
+import EducationTabInactiveImg from '../../../assets/images/educationTabInactive.png';
+import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -30,7 +32,11 @@ const Tabs = ({ tabNames, active }) => {
         </NavItem>
         <NavItem>
           <NavLink active={location.pathname === '/talent-onboarding/educational-details'}>
-            <User className="font-medium-3 me-50" />
+            {location.pathname === '/talent-onboarding/educational-details' ? (
+              <img src={EducationTabActiveImg} alt="education-active" width={20} height={20} className="me-50" />
+            ) : (
+              <img src={EducationTabInactiveImg} alt="education-inactive" width={20} height={20} className="me-50" />
+            )}
             <span className="fw-bold">Education</span>
           </NavLink>
         </NavItem>
