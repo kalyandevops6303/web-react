@@ -24,6 +24,7 @@ import MarketPlace from '../../views/marketplace';
 import Search from '../../views/search';
 import Notifications from '../../views/notifications';
 import ComingSoon from '../../views/auth/ComingSoon';
+import { userOnboarding } from '../../utility/constants/Constant';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -81,14 +82,14 @@ const Routes = [
   },
 
   {
-    path: '/talent-onboarding/:section-details',
+    path: `/${userOnboarding.talent}/:section-details`,
     element: <TalentOnboarding />,
     meta: {
       layout: 'blank',
     },
   },
   {
-    path: '/client-onboarding/:section-details',
+    path: `/${userOnboarding.client}/:section-details`,
     element: <ClientOnboarding />,
     meta: {
       layout: 'blank',

@@ -65,7 +65,7 @@ const Login = () => {
     } else if (resp?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
       navigate(`/${resp.user_type.toLowerCase()}-onboarding/account-details`);
     } else if (resp?.checkpoint === checkPoints.PROFILE_DETAILS) {
-      navigate(`/${resp.user_type.toLowerCase()}-onboarding/profile-details`);
+      navigate(`/${resp.user_type.toLowerCase()}-onboarding/personal-details`);
     } else if (resp?.checkpoint === checkPoints.COMPLETE) {
       navigate('/dashboard');
     }

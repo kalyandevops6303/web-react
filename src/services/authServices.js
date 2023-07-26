@@ -26,6 +26,8 @@ const setNewPasswordService = (newPassword) => DataService.post(API.auth.setNewP
 const fcmSubscribeService = (token) => DataService.post(`${API.notifications.subscribe}`, { token });
 const fcmUnsubscribeService = (token) => DataService.post(`${API.notifications.unsubscribe}`, { token });
 
+const resetPasswordService = (data) => DataService.post(API.auth.resetPassword, data);
+
 export {
   loginService,
   loginServiceGoogle,
@@ -39,4 +41,5 @@ export {
   setNewPasswordService,
   fcmSubscribeService,
   fcmUnsubscribeService,
+  resetPasswordService,
 };

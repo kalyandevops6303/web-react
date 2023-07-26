@@ -109,7 +109,7 @@ const UserDetails = () => {
             {!isClient && (
               <Col lg="3">
                 <Statbox
-                  title={`${currentProfile?.currency_preference?.code} ${currentProfile?.hourly_rate}`}
+                  title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
                   desc="Hourly Rate"
                   icon={<img src={MoneyIcon} height={22} alt="money" />}
                   color="light-warning"
@@ -133,8 +133,9 @@ const UserDetails = () => {
                     {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
                       ? 0
                       : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
-                    hours/week <br /> {currentProfile?.availability?.timezone?.abbreviation} (
-                    {currentProfile?.availability?.timezone?.offset_name})
+                    hours/week <br />
+                    {currentProfile?.availability?.timezone?.abbreviation}(
+                    {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
                   </>
                 }
                 desc="Availability"

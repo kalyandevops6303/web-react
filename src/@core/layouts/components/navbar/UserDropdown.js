@@ -57,10 +57,12 @@ const UserDropdown = () => {
     }
   `;
 
-  const userName =
-    userDetailsData?.user_type === userTypes.talent
+  const userName = userDetailsData
+    ? userDetailsData?.user_type === userTypes.talent
       ? userDetailsData?.talent_info?.first_name + ' ' + userDetailsData?.talent_info?.last_name || 'User'
-      : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User';
+      : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User'
+    : 'User';
+
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
@@ -68,7 +70,7 @@ const UserDropdown = () => {
           <span className="user-name fw-bold" id="username">
             {userName}
           </span>
-          {userName.length > 15 && (
+          {userName?.length > 15 && (
             <UncontrolledTooltip placement="right" target="username">
               <div className="d-flex flex-column align-items-start">
                 <p className="m-0">{userName}</p>

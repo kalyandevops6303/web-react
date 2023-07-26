@@ -14,6 +14,7 @@ import {
   loginServiceGoogle,
   fcmSubscribeService,
   fcmUnsubscribeService,
+  resetPasswordService,
 } from '../../services/authServices';
 
 import {
@@ -50,6 +51,9 @@ import {
   resendSuccess,
   FCMSubscribe,
   logOut,
+  resetPasswordRequest,
+  resetPasswordSuccess,
+  resetPasswordFailure,
 } from '../reducers/auth';
 import { setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -245,6 +249,18 @@ const setUserType = (type) => async (dispatch) => {
   dispatch(setUserTypeSuccess(type));
 };
 
+const resetPassword = (data, onSuccess) => async (dispatch) => {
+  dispatch(resetPasswordRequest());
+  try {
+    await resetPasswordService(data);
+    dispatch(resetPasswordSuccess());
+    onSuccess();
+    ShowToastMessage(SUCCESS, 'Password has been updated');
+  } catch (error) {
+    errorHandler(error, resetPasswordFailure);
+  }
+};
+
 export {
   resendAction,
   loginUserWithGoogle,
@@ -258,7 +274,8 @@ export {
   verifyOtp,
   setNewPassword,
   loginUser,
-  logoutAction,
   fcmSubscribeNotification,
   fcmUnsubscribeNotification,
+  logoutAction,
+  resetPassword,
 };

@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-expressions */
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -22,13 +23,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AccountDetailsFormContainer, AccountImageContainer } from './style';
 import theme from '../../configs/themeVariables';
 import CountryDropdown from '../../@core/components/country-dropdown';
-import { getUserDetails, saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
+import {
+  getUserDetails,
+  saveProfileDetails as saveTalentProfileDetails,
+  saveTalentAccountDetails,
+} from '../../redux/actions/talentOnboardingActions';
 import { talentAccountDetailsLoading, userDetails } from '../../redux/selectors/talentOnboardingSelectors';
 import ShowToastMessage from '../../@core/components/toast';
-import { saveClientAccountDetails } from '../../redux/actions/clientOnboardingActions';
+import {
+  saveClientAccountDetails,
+  saveProfileDetails as saveClientProfileDetails,
+} from '../../redux/actions/clientOnboardingActions';
 import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
-import { checkPoints, userTypes } from '../../utility/constants/Constant';
+import ResetPasswordModal from './ResetPasswordModal';
+import { checkPoints, userOnboarding, userTypes } from '../../utility/constants/Constant';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -68,28 +77,56 @@ const Account = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
 
+  const [resetPasswordModal, setResetPasswordModal] = useState(null);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
   const fileInputRef = useRef(null);
 
+  const toggleResetPasswordModal = () => setResetPasswordModal(!resetPasswordModal);
+
   const onSuccess = () => {
-    setIsNextButtonDisabled(false);
+    if (location?.state?.isEditing) {
+      userDetailsData?.user_type === 'TALENT'
+        ? navigate(`/${userOnboarding.talent}/personal-details`, {
+            state: { isEditing: true },
+          })
+        : navigate(`/${userOnboarding.client}/personal-details`, {
+            state: { isEditing: true },
+          });
+    } else {
+      userDetailsData?.user_type === 'TALENT'
+        ? navigate(`/${userOnboarding.talent}/personal-details`)
+        : navigate(`/${userOnboarding.client}/personal-details`);
+    }
   };
 
   const onSubmit = (data) => {
     const { firstName, lastName } = data;
     const reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
 
-    if (userDetailsData.user_type === userTypes.talent) {
-      dispatch(saveTalentAccountDetails(reqData, onSuccess));
+    if (
+      userDetailsData?.checkpoint === checkPoints.ACCOUNT_DETAILS ||
+      userDetailsData?.checkpoint === checkPoints.PROFILE_DETAILS
+    ) {
+      if (userDetailsData.user_type === userTypes.talent) {
+        dispatch(saveTalentAccountDetails(reqData, onSuccess));
+      } else {
+        dispatch(saveClientAccountDetails(reqData, onSuccess));
+      }
     } else {
-      dispatch(saveClientAccountDetails(reqData, onSuccess));
+      // eslint-disable-next-line no-lonely-if
+      if (userDetailsData.user_type === userTypes.talent) {
+        dispatch(saveTalentProfileDetails(reqData, onSuccess));
+      } else {
+        dispatch(saveClientProfileDetails(reqData, onSuccess));
+      }
     }
   };
 
@@ -115,7 +152,7 @@ const Account = () => {
             setValue('lastName', res?.client_info?.last_name, { shouldValidate: true });
           }
         }
-      } else if (res.checkpoint === checkPoints.PROFILE_DETAILS) {
+      } else if (res.checkpoint === checkPoints.PROFILE_DETAILS || res.checkpoint === checkPoints.COMPLETE) {
         if (res.user_type === userTypes.talent) {
           setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
@@ -159,8 +196,9 @@ const Account = () => {
 
   return (
     <AccountDetailsFormContainer>
+      {resetPasswordModal && <ResetPasswordModal modal={resetPasswordModal} toggleModal={toggleResetPasswordModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="pb-3">
+        <Card>
           <CardHeader>
             <h4 className="m-0 mt-1">Account Details</h4>
           </CardHeader>
@@ -283,38 +321,31 @@ const Account = () => {
                 {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
               </Col>
             </Row>
-            <div className="d-flex justify-content-end mt-2">
-              <Button
-                color="primary"
-                type="submit"
-                disabled={
-                  userDetailsData?.user_type === userTypes.talent
-                    ? !isValid || talentAccountDetailsIsLoading
-                    : !isValid || clientAccountDetailsIsLoading
-                }
-              >
-                {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <span className="me-50">Save Changes</span>
-                )}
-              </Button>
-            </div>
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end">
+          {location?.state?.isEditing && (
+            <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
+              Reset Password
+            </Button>
+          )}
           <Button
             color="primary"
-            disabled={isNextButtonDisabled}
-            // eslint-disable-next-line
-            onClick={() =>
-              userDetailsData?.user_type === userTypes.talent
-                ? navigate('/talent-onboarding/profile-details')
-                : navigate('/client-onboarding/profile-details')
+            type="submit"
+            disabled={
+              isNextButtonDisabled || userDetailsData?.user_type === 'TALENT'
+                ? !isValid || talentAccountDetailsIsLoading
+                : !isValid || clientAccountDetailsIsLoading
             }
           >
-            <span className="me-50">Next</span>
-            <ChevronRight size={14} />
+            {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span className="me-50">Save & Continue</span>
+                <ChevronRight size={14} />
+              </>
+            )}
           </Button>
         </div>
       </Form>

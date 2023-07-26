@@ -31,6 +31,7 @@ import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import { userTypes } from '../../../utility/constants/Constant';
+import NoDataFoundComponent from './NoDataFoundComp';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -56,7 +57,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     industries: [],
     project_areas: [],
   });
-  const [isRecommanded, setIsRecommanded] = useState(false);
+  const [isRecommanded, setIsRecommanded] = useState(location?.state?.isRecommended || false);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
@@ -596,8 +597,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           next={fetchMore}
           hasMore={hasMore}
           endMessage={
-            <div className="d-flex justify-content-center mt-2">
-              {selectMarketPlaceData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+            <div className="d-flex justify-content-center ">
+              {selectMarketPlaceData?.length > 0 ? (
+                <span className="mt-2">You have seen it all!</span>
+              ) : (
+                <NoDataFoundComponent isRecommanded={isRecommanded} data={selectMarketPlaceData} />
+              )}
             </div>
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}

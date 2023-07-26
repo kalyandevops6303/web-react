@@ -145,6 +145,9 @@ const LeftSidebarProfileWrapper = styled.div`
 `;
 
 const UserBioWrap = styled.div`
+  .card {
+    min-height: 8rem;
+  }
   .user-cover {
     height: 10rem;
     object-fit: contain;
@@ -214,9 +217,6 @@ const RecentProjectWrap = styled.div`
 `;
 
 const ReviewsContainer = styled.div`
-  .card-body {
-    padding-left: 2rem;
-  }
   .review-title {
     font-weight: 300;
     border-bottom: 1px solid ${theme.cardHeaderBorderColor};

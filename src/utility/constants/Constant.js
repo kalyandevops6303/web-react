@@ -16,4 +16,8 @@ const userTypes = {
   client: 'CLIENT',
   talent: 'TALENT',
 };
-export { ERROR_CODES, checkPoints, userTypes };
+const userOnboarding = {
+  client: 'client-onboarding',
+  talent: 'talent-onboarding',
+};
+export { ERROR_CODES, checkPoints, userTypes, userOnboarding };

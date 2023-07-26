@@ -46,6 +46,7 @@ import {
 } from '../../../services/staticServices';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -1953,7 +1954,7 @@ const Profile = () => {
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
           <div
             className="d-flex align-items-center upload-button cursor-pointer"
-            onClick={() => navigate('/client-onboarding/account-details')}
+            onClick={() => navigate(`/${userOnboarding.client}/account-details`)}
           >
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
+import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
+
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -159,6 +161,62 @@ export const giveProgressBarColorClassName = (percentage) => {
   }
 };
 
+const isEmpty = (value) => {
+  if (value === undefined || value === null) {
+    return true;
+  }
+
+  if (typeof value === 'string' || Array.isArray(value)) {
+    return value.length === 0;
+  }
+
+  if (typeof value === 'object') {
+    return Object.keys(value).length === 0;
+  }
+
+  return false;
+};
+
+const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
+
+export const removeEmptyKeys = (obj) => {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    const filteredArray = obj.filter((item) => typeof item !== 'object' || !hasEmptyKeys(item));
+
+    return filteredArray.map((item) => removeEmptyKeys(item));
+  }
+
+  const filteredObj = {};
+  Object.keys(obj).forEach((key) => {
+    const value = obj[key];
+    if (typeof value === 'object') {
+      const cleanedValue = removeEmptyKeys(value);
+      if (!isEmpty(cleanedValue)) {
+        filteredObj[key] = cleanedValue;
+      }
+    } else if (!isEmpty(value)) {
+      filteredObj[key] = value;
+    }
+  });
+
+  if (isEmpty(filteredObj)) {
+    return undefined;
+  }
+
+  return filteredObj;
+};
+
+export const returnFilteredDropdownOptions = (search, options) =>
+  options.filter(
+    (option) =>
+      option.label.toLowerCase().startsWith(search.toLowerCase()) ||
+      option.label.toLowerCase().includes(search.toLowerCase()),
+  );
+
 export const formatDateWithDash = (date) => {
   if (!date) {
     return undefined;
@@ -167,4 +225,11 @@ export const formatDateWithDash = (date) => {
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear().toString();
   return `${day}-${month}-${year}`;
+};
+
+export const returnDetailsForMarketPlace = (userType, missingValues) => {
+  if (missingValues?.includes('educational_institute')) {
+    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'educational_institute');
+  }
+  return null;
 };

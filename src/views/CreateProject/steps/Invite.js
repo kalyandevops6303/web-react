@@ -85,22 +85,22 @@ const Invite = ({ stepper }) => {
   };
 
   const onSendInvitationModalOpen = () => {
-    const selectedBestTalents = bestTalentsData?.data.filter((talent) => selectedIds.includes(talent.user_id));
-    const selectedFavouriteTalents = favoriteTalentsData?.data
-      .filter((talent) => selectedIds.includes(talent.talent_details.user_id))
-      .map((talent) => ({
-        ...talent.talent_details,
-        user_details: talent.user_details,
-        total_matches: talent.total_matches,
-        match_percentage: talent.match_percentage,
-      }));
-    const selectedAlmaMaterTalents = almaMaterTalentsData?.data.filter((talent) =>
-      selectedIds.includes(talent.user_id),
-    );
+    const reformattedData = selectedTalents.map((talent) => {
+      if ('talent_details' in talent) {
+        return {
+          ...talent.talent_details,
+          user_details: talent.user_details,
+          total_matches: talent.total_matches,
+          match_percentage: talent.match_percentage,
+        };
+        // eslint-disable-next-line no-else-return
+      } else {
+        return talent;
+      }
+    });
 
-    const selectedTalentsData = [...selectedBestTalents, ...selectedFavouriteTalents, ...selectedAlmaMaterTalents];
+    setSelectedTalents(removeDuplicates(reformattedData, 'user_id'));
 
-    setSelectedTalents(removeDuplicates(selectedTalentsData, 'user_id'));
     setSendInvitationModal(true);
   };
 
@@ -169,7 +169,15 @@ const Invite = ({ stepper }) => {
 
   const [message, setMessage] = useState('');
 
-  const renderActionButton = (userId) => {
+  const renderActionButton = (user, type) => {
+    let userId;
+
+    if (type === 'fav') {
+      userId = user.talent_details.user_id;
+    } else {
+      userId = user.user_id;
+    }
+
     if (invitedIds.includes(userId)) {
       return (
         <div className="ms-3">
@@ -181,14 +189,23 @@ const Invite = ({ stepper }) => {
       return (
         <div
           className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
-          onClick={() => setSelectedIds(selectedIds.filter((data) => data !== userId))}
+          onClick={() => {
+            setSelectedIds(selectedIds.filter((data) => data !== userId));
+            setSelectedTalents(selectedTalents.filter((data) => data.user_id !== userId));
+          }}
         >
           <Check size={18} color={theme.green} />
         </div>
       );
     } else {
       return (
-        <div className="upload-btn cursor-pointer ms-3" onClick={() => setSelectedIds([...selectedIds, userId])}>
+        <div
+          className="upload-btn cursor-pointer ms-3"
+          onClick={() => {
+            setSelectedIds([...selectedIds, userId]);
+            setSelectedTalents([...selectedTalents, user]);
+          }}
+        >
           <h5 className="m-0 fw-light font-medium-1">Invite</h5>
         </div>
       );
@@ -222,6 +239,7 @@ const Invite = ({ stepper }) => {
           setSelectedIds={setSelectedIds}
           invitedIds={invitedIds}
           setInvitedIds={setInvitedIds}
+          setSelectedTalents={setSelectedTalents}
         />
       )}
       <Card>
@@ -270,7 +288,7 @@ const Invite = ({ stepper }) => {
                       toggleTabs(tabNames.favourite);
                     }}
                   >
-                    Favourite Talent
+                    Favorite Talent
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -356,7 +374,7 @@ const Invite = ({ stepper }) => {
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item.user_id)}
+                            {renderActionButton(item, 'best')}
                           </Col>
                         </Row>
                       ))
@@ -369,7 +387,7 @@ const Invite = ({ stepper }) => {
                           height={200}
                           className="no-data-found-gif"
                         />
-                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
                       </div>
                     )}
                   </InfiniteScroll>
@@ -443,7 +461,7 @@ const Invite = ({ stepper }) => {
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item.talent_details.user_id)}
+                            {renderActionButton(item, 'fav')}
                           </Col>
                         </Row>
                       ))
@@ -456,7 +474,7 @@ const Invite = ({ stepper }) => {
                           height={200}
                           className="no-data-found-gif"
                         />
-                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
                       </div>
                     )}
                   </InfiniteScroll>
@@ -528,7 +546,7 @@ const Invite = ({ stepper }) => {
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item.user_id)}
+                            {renderActionButton(item, 'alma')}
                           </Col>
                         </Row>
                       ))
@@ -541,7 +559,7 @@ const Invite = ({ stepper }) => {
                           height={200}
                           className="no-data-found-gif"
                         />
-                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
                       </div>
                     )}
                   </InfiniteScroll>

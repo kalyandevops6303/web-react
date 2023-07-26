@@ -7,4 +7,6 @@ const accountDetailsService = (data) => DataService.post(API.talentOnboarding.ac
 
 const profileDetailsService = (data) => DataService.put(API.talentOnboarding.profileDetails, data);
 
-export { userDetailsService, accountDetailsService, profileDetailsService };
+const checkpointCompleteService = () => DataService.post(API.talentOnboarding.checkpointComplete);
+
+export { userDetailsService, accountDetailsService, profileDetailsService, checkpointCompleteService };
