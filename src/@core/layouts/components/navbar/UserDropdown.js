@@ -54,7 +54,6 @@ const UserDropdown = () => {
       : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User';
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
-      {console.log('userDetailsData', userDetailsData)}
       <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
         <div className="user-nav d-sm-flex d-none">
           <span className="user-name fw-bold" id="username">
