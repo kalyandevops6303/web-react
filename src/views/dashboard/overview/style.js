@@ -371,6 +371,17 @@ const ProjectsListingWrap = styled.div`
   }
 `;
 
+const DashboardHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  margin-top: -4rem;
+
+  @media (max-width: 767px) {
+    margin-top: -2rem;
+  }
+`;
+
 export {
   CardWrapper,
   EarningAmount,
@@ -380,4 +391,5 @@ export {
   ProjectWrapper,
   ProjectsListingWrap,
   AlertCardWrapper,
+  DashboardHeaderWrapper,
 };

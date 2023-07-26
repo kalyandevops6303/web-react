@@ -9,6 +9,7 @@ import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { getItem } from '../../utility/localStorageControl';
 import { userData } from '../../redux/selectors/dashboardSelectors';
+import { DashboardHeaderWrapper } from '../dashboard/overview/style';
 
 const MarketPlaceContainer = styled.div`
   .marketplace-search {
@@ -67,11 +68,11 @@ const MarketPlace = () => {
 
   return (
     <MarketPlaceContainer>
-      <div className="d-flex justify-content-between">
-        <BreadCrumbs
-          data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
-        />
+      <BreadCrumbs
+        data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
+      />
 
+      <DashboardHeaderWrapper>
         {userDetailsData?.user_type === 'CLIENT' && (
           <Link to="/create-project">
             <Button as="link" color="primary">
@@ -79,7 +80,8 @@ const MarketPlace = () => {
             </Button>
           </Link>
         )}
-      </div>
+      </DashboardHeaderWrapper>
+
       <PrimaryFilter
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}

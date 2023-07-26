@@ -40,10 +40,10 @@ const Preview = ({
 
   const renderFileSize = (size) => {
     if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
       // eslint-disable-next-line
     } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
+      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
     }
   };
 

@@ -13,6 +13,7 @@ import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import { DashboardHeaderWrapper } from './overview/style';
 
 const PrivateDashboard = () => {
   const userDetailsData = useSelector(userData);
@@ -20,10 +21,11 @@ const PrivateDashboard = () => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
   }, []);
+
   return (
     <div>
-      <div className="d-flex justify-content-between">
-        <BreadCrumbs data={[{ title: 'Dashboard' }]} />
+      <BreadCrumbs data={[{ title: 'Dashboard' }]} />
+      <DashboardHeaderWrapper>
         {userDetailsData?.user_type === userTypes.client && (
           <Link to="/create-project">
             <Button as="link" color="primary">
@@ -31,7 +33,7 @@ const PrivateDashboard = () => {
             </Button>
           </Link>
         )}
-      </div>
+      </DashboardHeaderWrapper>
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />
