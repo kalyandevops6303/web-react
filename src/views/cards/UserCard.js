@@ -2,7 +2,8 @@ import { Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import lisa from '@src/assets/images/portrait/small/lisa.png';
+import Avatar from '@components/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
 import { UserCardWrap } from './style';
@@ -48,7 +49,12 @@ const UserCard = ({ data }) => {
           <Row>
             <Col lg="8">
               <div className="d-flex">
-                <img className="market-place-card-photo me-1 mt-50" src={lisa} alt="avatar" />
+                <Avatar
+                  img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
+                  imgHeight="35"
+                  imgWidth="35"
+                  className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
+                />
                 <div>
                   <CardTitle className="marketplace-card-title mb-0 ms-25">
                     <Link

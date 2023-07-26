@@ -2,11 +2,12 @@
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
-import lisa from '@src/assets/images/portrait/small/lisa.png';
 import Mpin from '@src/assets/images/map-pin.png';
 import LikeIcon from '@src/assets/images/like.png';
 import { useState, useEffect, useRef } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import Avatar from '@components/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import ReactHtmlParser from '../../lib/html-parser';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
@@ -119,10 +120,11 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
             </Col>
             <Col lg="4">
               <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
-                <img
+                <Avatar
+                  img={data?.client_details?.image_uri?.length > 0 ? data?.client_details?.image_uri : defaultAvatar}
+                  imgHeight="35"
+                  imgWidth="35"
                   className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
-                  src={lisa}
-                  alt="avatar"
                 />
                 <div className={`${data?.match_percentage >= 0 ? '' : ' d-flex w-100 align-items-center'}`}>
                   <div className="flex-grow-1">

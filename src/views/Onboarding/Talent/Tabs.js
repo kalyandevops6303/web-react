@@ -2,7 +2,7 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Home, User } from 'react-feather';
+import { Clock, Home, Link, User } from 'react-feather';
 import { TabsContainer } from '../style';
 import Account from '../Account';
 import Personal from './Personal';
@@ -36,13 +36,13 @@ const Tabs = ({ tabNames, active }) => {
         </NavItem>
         <NavItem>
           <NavLink active={location.pathname === '/talent-onboarding/availability-details'}>
-            <User className="font-medium-3 me-50" />
+            <Clock className="font-medium-3 me-50" />
             <span className="fw-bold">Availability</span>
           </NavLink>
         </NavItem>
         <NavItem>
           <NavLink active={location.pathname === '/talent-onboarding/social-details'}>
-            <User className="font-medium-3 me-50" />
+            <Link className="font-medium-3 me-50" />
             <span className="fw-bold">Social</span>
           </NavLink>
         </NavItem>

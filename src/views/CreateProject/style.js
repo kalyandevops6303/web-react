@@ -326,9 +326,7 @@ export const TableContainer = styled.div`
   overflow-y: scroll;
 
   .user-pic {
-    border-radius: 50%;
-    border: 1px solid ${theme.bodyColor};
-    width: fit-content;
+    cursor: auto !important;
   }
 
   .badge {
@@ -377,9 +375,7 @@ export const InviteUsersListContainer = styled.div`
   overflow-y: scroll;
 
   .user-pic {
-    border-radius: 50%;
-    border: 1px solid ${theme.bodyColor};
-    width: fit-content;
+    cursor: auto !important;
   }
 
   .badge {
