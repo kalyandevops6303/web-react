@@ -52,7 +52,16 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
             ))}
 
           <div className="user-image">
-            <img src={data?.image_uri?.length > 0 ? data?.image_uri : avatar7} alt="user" width={112} height={120} />
+            {isClient ? (
+              <img
+                src={data?.company_logo?.length > 0 ? data?.company_logo : avatar7}
+                alt="user"
+                width={112}
+                height={120}
+              />
+            ) : (
+              <img src={data?.image_uri?.length > 0 ? data?.image_uri : avatar7} alt="user" width={112} height={120} />
+            )}
           </div>
 
           {isEditable && !isClient && (

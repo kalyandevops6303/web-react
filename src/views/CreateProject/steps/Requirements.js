@@ -364,8 +364,17 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   };
 
   const isFileValid = (file) => {
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
     const maxSize = 5 * 1024 * 1024; // 5MB
 
+    if (!allowedTypes.includes(file.type)) {
+      ShowToastMessage(ERROR, 'Please select a valid file (PDF, DOC, or DOCX).');
+      return false;
+    }
     if (file.size > maxSize) {
       ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
       return false;
