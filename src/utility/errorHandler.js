@@ -41,6 +41,8 @@ const handleErrorCode = (err, callBack) => {
     } else {
       handleError(err, callBack);
     }
+  } else {
+    showErrorNotification('Please check your connection!');
   }
 };
 
@@ -59,8 +61,6 @@ const errorHandler = (err, callBack) => {
     } else {
       handleErrorCode(err, callBack);
     }
-  } else {
-    showErrorNotification('Please check your connection!');
   }
 };
 export default errorHandler;
