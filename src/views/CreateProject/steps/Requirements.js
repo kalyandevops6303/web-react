@@ -112,7 +112,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .number()
       .min(0, 'Desired time overlap should be greater than or equal to 0')
       .max(24, 'Desired time overlap should not be greater than 24')
-      .test('maxDigitsAfterDecimal', 'Desired time overlap should be upto two decimal places', (number) =>
+      .test('maxDigitsAfterDecimal', 'Desired time overlap should be upto one decimal place', (number) =>
         /^\d+(\.\d{1,1})?$/.test(number),
       )
       .typeError('Please enter a number')
