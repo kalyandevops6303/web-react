@@ -171,15 +171,11 @@ const Search = () => {
                 }
                 loader={<div className="d-flex justify-content-center align-items-center">Loading...</div>}
               >
-                <div className="d-flex flex-wrap justify-content-between">
-                  {currentFilterData?.map((item) => {
-                    const CardComponent =
-                      activeTab === userTypes.talent || activeTab === userTypes.client ? UserCard : ProjectCard;
-                    return (
-                      <CardComponent userType={activeTab} key={item?._id || item?.id} data={item} isExpanded={false} />
-                    );
-                  })}
-                </div>
+                {currentFilterData?.map((item) => {
+                  const CardComponent =
+                    activeTab === userTypes.talent || activeTab === userTypes.client ? UserCard : ProjectCard;
+                  return <CardComponent key={item?._id || item?.id} data={item} isExpanded={false} />;
+                })}
               </InfiniteScroll>
             )}
           </CardBody>

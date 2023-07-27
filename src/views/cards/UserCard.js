@@ -21,7 +21,7 @@ const giveStrokeColor = (percentage) => {
   }
 };
 
-const UserCard = ({ data, userType }) => {
+const UserCard = ({ data }) => {
   const location = useLocation();
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -43,7 +43,7 @@ const UserCard = ({ data, userType }) => {
   };
 
   return (
-    <UserCardWrap userType={userType}>
+    <UserCardWrap>
       <Card>
         <CardBody>
           <Row>
@@ -107,11 +107,10 @@ const UserCard = ({ data, userType }) => {
                   </div>
                 )}
               </div>
-              <CardText className={`mt-75 desc ${userType === 'client' ? 'truncate-4' : 'truncate-3'}`}>
-                {data?.company_tagline || data?.professional_intro}
+              <CardText className="mt-75 desc truncate-4">
+                {data?.company_tagline || data?.professional_intro}{' '}
               </CardText>
             </Col>
-
             <Col lg="7">
               {data?.user_type === userTypes.client && (
                 <BadgeGroup
@@ -144,11 +143,7 @@ const UserCard = ({ data, userType }) => {
   );
 };
 UserCard.propTypes = {
+  // eslint-disable-next-line react/require-default-props
   data: PropTypes.object,
-  userType: PropTypes.string,
-};
-UserCard.defaultProps = {
-  data: {},
-  userType: 'string',
 };
 export default UserCard;
