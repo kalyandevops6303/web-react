@@ -607,19 +607,17 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          <div className="d-flex flex-wrap justify-content-between">
-            {selectMarketPlaceData?.map((item) => {
-              const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
-              return (
-                <CardComponent
-                  key={item?._id || item?.id}
-                  data={item}
-                  isPopoverOpen={popoverOpen}
-                  isExpanded={isExpanded}
-                />
-              );
-            })}
-          </div>
+          {selectMarketPlaceData?.map((item) => {
+            const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
+            return (
+              <CardComponent
+                key={item?._id || item?.id}
+                data={item}
+                isPopoverOpen={popoverOpen}
+                isExpanded={isExpanded}
+              />
+            );
+          })}
         </InfiniteScroll>
       )}
     </>
