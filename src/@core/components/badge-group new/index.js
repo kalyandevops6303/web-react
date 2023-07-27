@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
-import BadgeGroupWrap from './style';
 import { CustomBadge } from '../../../views/styled';
+import { BadgeGroupWrap } from './style';
 
-const BadgeGroup = ({ title, data, color }) => {
+const BadgeGroup = ({ title, color, data }) => {
+  const [visibleTags, setVisibleTags] = useState([]);
+  const [hiddenTagsCount, setHiddenTagsCount] = useState(0);
   if (!data || data.length === 0) {
     return null;
   }
+
   if (data?.name) {
     return (
       <BadgeGroupWrap>
@@ -23,6 +26,58 @@ const BadgeGroup = ({ title, data, color }) => {
       </BadgeGroupWrap>
     );
   }
+
+  useEffect(() => {
+    arrangeTags();
+    const handleResize = () => arrangeTags();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [data]);
+
+  const arrangeTags = () => {
+    const tagsContainer = document.querySelector('.badge-box-wrap');
+    const containerWidth = tagsContainer.offsetWidth;
+    const tagsArray = data?.map((item) => item.name);
+
+    let currentRowWidth = 0;
+    let visibleTagsCount = 0;
+    const visibleTagsArray = [];
+
+    for (let i = 0; i < tagsArray.length; i++) {
+      const tagWidth = calculateTagWidth(tagsArray[i]);
+
+      if (currentRowWidth + tagWidth <= containerWidth) {
+        visibleTagsCount++;
+        visibleTagsArray.push(tagsArray[i]);
+        currentRowWidth += tagWidth;
+      } else {
+        break;
+      }
+    }
+
+    const hiddenTagsCount = tagsArray.length - visibleTagsCount;
+    setVisibleTags(visibleTagsArray);
+    setHiddenTagsCount(hiddenTagsCount);
+  };
+
+  const calculateTagWidth = (tagName) => {
+    const tempTag = document.createElement('span');
+    tempTag.textContent = tagName;
+    tempTag.style.display = 'inline-block';
+    tempTag.style.padding = '5px';
+    tempTag.style.margin = '5px';
+    tempTag.style.backgroundColor = '#f0f0f0';
+    tempTag.style.whiteSpace = 'nowrap';
+
+    document.body.appendChild(tempTag);
+    const tagWidth = tempTag.offsetWidth + 10; // Include padding and margin
+    document.body.removeChild(tempTag);
+
+    return tagWidth;
+  };
 
   const renderBadge = (item, index) => {
     const { name } = item;
@@ -56,7 +111,16 @@ const BadgeGroup = ({ title, data, color }) => {
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
         <div className="info-key">{title || ''}</div>
-        <div className="badge-box mt-25">{data && data?.map(renderBadge)}</div>
+        <div className="d-flex align-items-center">
+          <div className="badge-box mt-25">{data && data?.map(renderBadge)}</div>
+          {hiddenTagsCount > 0 && (
+            <CustomBadge>
+              <Badge color="light-blue" className="light-blue">
+                + {hiddenTagsCount}
+              </Badge>
+            </CustomBadge>
+          )}
+        </div>
       </div>
     </BadgeGroupWrap>
   );
