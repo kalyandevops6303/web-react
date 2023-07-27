@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
 import { Button } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -8,8 +8,9 @@ import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { getItem } from '../../utility/localStorageControl';
-import { userData } from '../../redux/selectors/dashboardSelectors';
+import { profilePercentage, userData } from '../../redux/selectors/dashboardSelectors';
 import { DashboardHeaderWrapper } from '../dashboard/overview/style';
+import CompleteProfileModal from '../modals/CompleteProfileModal';
 
 const MarketPlaceContainer = styled.div`
   .marketplace-search {
@@ -27,6 +28,7 @@ const MarketPlaceContainer = styled.div`
 
 const MarketPlace = () => {
   const userDetailsData = useSelector(userData);
+  const profilePercentageData = useSelector(profilePercentage);
   const isTab = useIsTab();
   const navigate = useNavigate();
   // Primary filters
@@ -66,19 +68,39 @@ const MarketPlace = () => {
     talents: 'Talent',
   };
 
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+
+  const toggleCompleteProfileModal = () => {
+    setCompleteProfileModal(!completeProfileModal);
+  };
+
+  const onCreateProjectClick = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModal(true);
+    } else {
+      navigate('/create-project');
+    }
+  };
+
   return (
     <MarketPlaceContainer>
+      {completeProfileModal && (
+        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+      )}
+
       <BreadCrumbs
         data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
       />
 
       <DashboardHeaderWrapper>
         {userDetailsData?.user_type === 'CLIENT' && (
-          <Link to="/create-project">
-            <Button as="link" color="primary">
-              Create Project
-            </Button>
-          </Link>
+          <Button as="link" color="primary" onClick={onCreateProjectClick}>
+            Create Project
+          </Button>
         )}
       </DashboardHeaderWrapper>
 
