@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import OtpInput from 'react-otp-input';
 import { useState, useEffect } from 'react';
 
 // ** Custom Components
@@ -12,6 +11,7 @@ import { CardTitle, CardText, Label, Form, Input, Button, FormFeedback, Spinner 
 import '@styles/react/pages/page-authentication.scss';
 import { OnBoardWrap } from './style';
 import { verifyOtp } from '../../redux/actions/authActions';
+import OtpInput from '../../lib/otp-input';
 import { selectAuthLoading, selectEmail, selectIsEmailVerified } from '../../redux/selectors/authSelectors';
 import ResendOTPComp from './components/ResendOTP';
 import LogoComp from './components/LogoComp';

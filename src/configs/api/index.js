@@ -14,9 +14,10 @@ const API = {
     forgotPassword: `${apiAuthEndpoint}/api/v1/user/forgot-password/create`,
     verifyOtp: `${apiAuthEndpoint}/api/v1/user/forgot-password/verify`,
     setNewPassword: `${apiAuthEndpoint}/api/v1/user/forgot-password/change`,
+    resetPassword: `${apiAuthEndpoint}/api/v1/user/reset-password`,
   },
   static: {
-    talentRoles: `${apiAuthEndpoint}/api/v1/talent-role`,
+    talentRoles: `${apiAuthEndpoint}/api/v1/static/talent-role`,
     languages: `${apiAuthEndpoint}/api/v1/static/language/all`,
     countries: `${apiAuthEndpoint}/api/v1/static/country`,
     states: `${apiAuthEndpoint}/api/v1/static/state-by-id`,
@@ -36,6 +37,8 @@ const API = {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
     accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,
+    checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
+    profileImageUpload: `${apiAuthEndpoint}/api/v1/user/profile/image-url`,
   },
   clientOnboarding: {
     accountDetails: `${apiAuthEndpoint}/api/v1/client/account-details`,
@@ -60,6 +63,7 @@ const API = {
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
+    projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
   },
   marketplace: {
     client: {

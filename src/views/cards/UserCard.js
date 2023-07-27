@@ -2,11 +2,13 @@ import { Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import lisa from '@src/assets/images/portrait/small/lisa.png';
+import Avatar from '@components/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
 import { UserCardWrap } from './style';
 import theme from '../../configs/themeVariables';
+import { userTypes } from '../../utility/constants/Constant';
 
 const giveStrokeColor = (percentage) => {
   if (percentage <= 40) {
@@ -36,7 +38,7 @@ const UserCard = ({ data }) => {
   };
 
   const fromLocationSearch = () => {
-    if (data?.company_name) return { title: 'Clients', link: '' };
+    if (data?.user_type === userTypes.client) return { title: 'Clients', link: '' };
     return { title: 'Talent', link: '' };
   };
 
@@ -47,7 +49,12 @@ const UserCard = ({ data }) => {
           <Row>
             <Col lg="8">
               <div className="d-flex">
-                <img className="market-place-card-photo me-1 mt-50" src={lisa} alt="avatar" />
+                <Avatar
+                  img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
+                  imgHeight="35"
+                  imgWidth="35"
+                  className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
+                />
                 <div>
                   <CardTitle className="marketplace-card-title mb-0 ms-25">
                     <Link
@@ -57,14 +64,14 @@ const UserCard = ({ data }) => {
                           secondary: fromLocationSecondary() || fromLocationSearch(),
                         },
                       }}
-                      to={`/profile/${data?.company_name ? 'client' : 'talent'}/${data?.user_id}`}
+                      to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
                     >
                       {data?.first_name}&nbsp;
                       {data?.last_name}
                     </Link>
                   </CardTitle>
                   <CardText className="font-small-3 fw-300 mb-25 ms-25 marketplace-card-role">
-                    {data?.company_name ? data?.company_name || 'Company Name' : data?.role?.name || 'Role'}
+                    {data?.user_type === userTypes.client ? data?.company_name || 'Company Name' : data?.role?.name || 'Role'}
                   </CardText>
                   <div className="d-flex">
                     <RatingBadge number="0" />
@@ -101,17 +108,21 @@ const UserCard = ({ data }) => {
               <CardText className="mt-2 desc">{data?.company_tagline || data?.professional_intro} </CardText>
             </Col>
             <Col lg="4">
-              {data?.company_name && (
-                <BadgeGroup title="Area of interest" data={data?.project_area_of_interest?.area} color="light-blue" />
+              {data?.user_type === userTypes.client && (
+                <BadgeGroup
+                  title="Area of interest"
+                  data={data?.project_area_of_interest?.area?.name ? data?.project_area_of_interest?.area : []}
+                  color="light-blue"
+                />
               )}
               <BadgeGroup
                 title="Skills"
-                data={data?.company_name ? data?.project_area_of_interest?.skills : data?.expertise?.skills}
+                data={data?.user_type === userTypes.client ? data?.project_area_of_interest?.skills : data?.expertise?.skills}
                 color="light-blue"
               />
               <BadgeGroup
                 title="Tools"
-                data={data?.company_name ? data?.project_area_of_interest?.tools : data?.expertise?.tools}
+                data={data?.user_type === userTypes.client ? data?.project_area_of_interest?.tools : data?.expertise?.tools}
                 color="light-blue"
               />
             </Col>

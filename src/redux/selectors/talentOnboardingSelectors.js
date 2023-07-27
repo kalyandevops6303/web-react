@@ -18,3 +18,8 @@ export const profileDetailsLoading = createSelector(
   talentOnboardingSelector,
   (talentOnboarding) => talentOnboarding.profileDetailsLoading,
 );
+
+export const checkpointCompleteLoading = createSelector(
+  talentOnboardingSelector,
+  (talentOnboarding) => talentOnboarding.checkpointCompleteLoading,
+);

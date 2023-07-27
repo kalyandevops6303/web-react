@@ -2,14 +2,15 @@ import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { useDispatch, useSelector } from 'react-redux';
+import InfiniteScroll from '../../lib/infinite-scroll';
 import searchAction from '../../redux/actions/gloabalSearch';
 import UserCard from '../cards/UserCard';
 import { Header } from '../styled';
 import theme from '../../configs/themeVariables';
 import ProjectCard from '../cards/ProjectCard';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { userTypes } from '../../utility/constants/Constant';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -145,10 +146,10 @@ const Search = () => {
               <li className={activeTab === 'PROJECT' && 'active'} onClick={() => setActivetab('PROJECT')}>
                 <CardText>Project ({searchData?.project?.metadata?.total_records})</CardText>
               </li>
-              <li className={activeTab === 'TALENT' && 'active'} onClick={() => setActivetab('TALENT')}>
+              <li className={activeTab === userTypes.talent && 'active'} onClick={() => setActivetab(userTypes.talent)}>
                 <CardText>Talent ({searchData?.talent?.metadata?.total_records})</CardText>
               </li>
-              <li className={activeTab === 'CLIENT' && 'active'} onClick={() => setActivetab('CLIENT')}>
+              <li className={activeTab === userTypes.client && 'active'} onClick={() => setActivetab(userTypes.client)}>
                 <CardText>Client ({searchData?.client?.metadata?.total_records})</CardText>
               </li>
             </NavigationBar>
@@ -171,7 +172,8 @@ const Search = () => {
                 loader={<div className="d-flex justify-content-center align-items-center">Loading...</div>}
               >
                 {currentFilterData?.map((item) => {
-                  const CardComponent = activeTab === 'TALENT' || activeTab === 'CLIENT' ? UserCard : ProjectCard;
+                  const CardComponent =
+                    activeTab === userTypes.talent || activeTab === userTypes.client ? UserCard : ProjectCard;
                   return <CardComponent key={item?._id || item?.id} data={item} isExpanded={false} />;
                 })}
               </InfiniteScroll>

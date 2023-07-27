@@ -2,13 +2,13 @@
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
-import ReactHtmlParser from 'react-html-parser';
-import lisa from '@src/assets/images/portrait/small/lisa.png';
 import Mpin from '@src/assets/images/map-pin.png';
 import LikeIcon from '@src/assets/images/like.png';
 import { useState, useEffect, useRef } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-
+import Avatar from '@components/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import ReactHtmlParser from '../../lib/html-parser';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
@@ -16,14 +16,14 @@ import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 
-const ProjectCard = ({ isExpanded, data }) => {
+const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setShowFullText(isExpanded);
-  }, [isExpanded]);
+  }, [isExpanded, isPopoverOpen]);
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -38,7 +38,7 @@ const ProjectCard = ({ isExpanded, data }) => {
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
-    LISTING_EXPIRED: 'LISTING_EXPIRED',
+    LISTING_EXPIRED: 'Listing Expired',
   };
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
@@ -120,10 +120,11 @@ const ProjectCard = ({ isExpanded, data }) => {
             </Col>
             <Col lg="4">
               <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
-                <img
+                <Avatar
+                  img={data?.client_details?.image_uri?.length > 0 ? data?.client_details?.image_uri : defaultAvatar}
+                  imgHeight="35"
+                  imgWidth="35"
                   className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
-                  src={lisa}
-                  alt="avatar"
                 />
                 <div className={`${data?.match_percentage >= 0 ? '' : ' d-flex w-100 align-items-center'}`}>
                   <div className="flex-grow-1">
@@ -180,11 +181,13 @@ const ProjectCard = ({ isExpanded, data }) => {
 ProjectCard.propTypes = {
   isExpanded: PropTypes.bool,
   data: PropTypes.object,
+  isPopoverOpen: PropTypes.bool,
 };
 
 ProjectCard.defaultProps = {
   isExpanded: false,
   data: {},
+  isPopoverOpen: false,
 };
 
 export default ProjectCard;

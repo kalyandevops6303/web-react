@@ -51,6 +51,7 @@ const HorizontalLayout = (props) => {
   // ** States
   const [isMounted, setIsMounted] = useState(false);
   const [navbarScrolled, setNavbarScrolled] = useState(false);
+  const isNavbarSearchBarOpen = useSelector((state) => state.search?.isNavbarSearchBarOpen);
 
   // ** Store Vars
   const dispatch = useDispatch();
@@ -115,12 +116,18 @@ const HorizontalLayout = (props) => {
       <Navbar
         expand="lg"
         container={false}
-        className={classnames('header-navbar navbar-fixed align-items-center navbar-shadow navbar-brand-center', {
-          'navbar-scrolled': navbarScrolled,
-        })}
+        className={classnames(
+          `${
+            isNavbarSearchBarOpen ? 'active-search' : ''
+          } header-navbar navbar-fixed align-items-center navbar-shadow navbar-brand-center`,
+          {
+            'navbar-scrolled': navbarScrolled,
+          },
+        )}
       >
-        <div className="navbar-container d-flex content">
+        <div className="navbar-container d-flex content ">
           {/* {navbar ? navbar({ skin, setSkin }) : <NavbarComponent skin={skin} setSkin={setSkin} />} */}
+
           <NavbarComponent skin={skin} setSkin={setSkin} />
         </div>
       </Navbar>

@@ -14,6 +14,7 @@ import {
   loginServiceGoogle,
   fcmSubscribeService,
   fcmUnsubscribeService,
+  resetPasswordService,
 } from '../../services/authServices';
 
 import {
@@ -50,11 +51,15 @@ import {
   resendSuccess,
   FCMSubscribe,
   logOut,
+  resetPasswordRequest,
+  resetPasswordSuccess,
+  resetPasswordFailure,
 } from '../reducers/auth';
-import { getItem, setItem } from '../../utility/localStorageControl';
+import { setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { clearData } from '../reducers/dashboard';
+import { checkPoints } from '../../utility/constants/Constant';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -80,7 +85,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     const res = await loginService({ email: username, password });
     setItem('access_token', res.data.data.access_token);
     onSuccess(res.data.data);
-    if (res.data?.data?.checkpoint === 'COMPLETE') {
+    if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
       dispatch(loginSuccess(res.data.data));
       setItem('isUserVisited', true);
     } else {
@@ -103,7 +108,7 @@ const loginUserWithGoogle =
       }
 
       setItem('access_token', res.data.data.access_token);
-      if (res.data?.data?.checkpoint === 'COMPLETE') {
+      if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(loginSuccess(res.data.data));
       } else {
         dispatch(loginSuccess(false));
@@ -237,19 +242,23 @@ const logoutAction =
     dispatch(logOut());
     dispatch(clearData());
 
-    const keyToPreserve = 'isUserVisited';
-    const preservedValue = getItem(keyToPreserve);
-    // eslint-disable-next-line no-undef
-    window.localStorage.clear();
-    if (preservedValue) {
-      setItem(keyToPreserve, preservedValue);
-    }
-
     onSuccess();
   };
 
 const setUserType = (type) => async (dispatch) => {
   dispatch(setUserTypeSuccess(type));
+};
+
+const resetPassword = (data, onSuccess) => async (dispatch) => {
+  dispatch(resetPasswordRequest());
+  try {
+    await resetPasswordService(data);
+    dispatch(resetPasswordSuccess());
+    onSuccess();
+    ShowToastMessage(SUCCESS, 'Password has been updated');
+  } catch (error) {
+    errorHandler(error, resetPasswordFailure);
+  }
 };
 
 export {
@@ -265,7 +274,8 @@ export {
   verifyOtp,
   setNewPassword,
   loginUser,
+  logoutAction,
   fcmSubscribeNotification,
   fcmUnsubscribeNotification,
-  logoutAction,
+  resetPassword,
 };

@@ -6,4 +6,14 @@ const ERROR_CODES = {
   EC_400: 400,
   EC_422: 422,
 };
-export default ERROR_CODES;
+const checkPoints = {
+  COMPLETE: 'COMPLETE',
+  MOBILE_VERIFICATION: 'MOBILE_VERIFICATION',
+  ACCOUNT_DETAILS: 'ACCOUNT_DETAILS',
+  PROFILE_DETAILS: 'PROFILE_DETAILS',
+};
+const userTypes = {
+  client: 'CLIENT',
+  talent: 'TALENT',
+};
+export { ERROR_CODES, checkPoints, userTypes };

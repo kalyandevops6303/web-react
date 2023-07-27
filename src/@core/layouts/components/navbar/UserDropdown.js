@@ -19,6 +19,8 @@ import { logoutAction } from '../../../../redux/actions/authActions';
 import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
+import { userTypes } from '../../../../utility/constants/Constant';
+import { getItem, setItem } from '../../../../utility/localStorageControl';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(userData);
@@ -30,6 +32,13 @@ const UserDropdown = () => {
   const handleLogout = () => {
     const onSuccess = () => {
       navigate('/auth/login');
+      const keyToPreserve = 'isUserVisited';
+      const preservedValue = getItem(keyToPreserve);
+      // eslint-disable-next-line no-undef
+      window.localStorage.clear();
+      if (preservedValue) {
+        setItem(keyToPreserve, preservedValue);
+      }
     };
 
     dispatch(logoutAction({ fcmToken, onSuccess }));
@@ -48,10 +57,12 @@ const UserDropdown = () => {
     }
   `;
 
-  const userName =
-    userDetailsData?.user_type === 'TALENT'
+  const userName = userDetailsData
+    ? userDetailsData?.user_type === userTypes.talent
       ? userDetailsData?.talent_info?.first_name + ' ' + userDetailsData?.talent_info?.last_name || 'User'
-      : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User';
+      : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User'
+    : 'User';
+
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
@@ -59,7 +70,7 @@ const UserDropdown = () => {
           <span className="user-name fw-bold" id="username">
             {userName}
           </span>
-          {userName.length > 15 && (
+          {userName?.length > 15 && (
             <UncontrolledTooltip placement="right" target="username">
               <div className="d-flex flex-column align-items-start">
                 <p className="m-0">{userName}</p>
@@ -68,7 +79,27 @@ const UserDropdown = () => {
           )}
           <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
         </div>
-        <Avatar img={defaultAvatar} imgHeight="40" imgWidth="40" />
+        {userDetailsData?.user_type === 'TALENT' ? (
+          <Avatar
+            img={
+              userDetailsData?.talent_info?.image_uri.length > 0
+                ? userDetailsData?.talent_info?.image_uri
+                : defaultAvatar
+            }
+            imgHeight="40"
+            imgWidth="40"
+          />
+        ) : (
+          <Avatar
+            img={
+              userDetailsData?.client_info?.image_uri.length > 0
+                ? userDetailsData?.client_info?.image_uri
+                : defaultAvatar
+            }
+            imgHeight="40"
+            imgWidth="40"
+          />
+        )}
       </DropdownToggle>
 
       {location?.pathname?.split?.('/')?.[3] === userDetailsData?._id && (

@@ -5,6 +5,7 @@ const initialState = {
   userDetailsLoading: false,
   accountDetailsLoading: false,
   profileDetailsLoading: false,
+  checkpointCompleteLoading: false,
   error: null,
 };
 
@@ -57,6 +58,21 @@ const talentOnboardingSlice = createSlice({
       profileDetailsLoading: false,
       error: action.payload,
     }),
+
+    checkpointCompleteRequest: (state) => ({
+      ...state,
+      checkpointCompleteLoading: true,
+      error: null,
+    }),
+    checkpointCompleteSuccess: (state) => ({
+      ...state,
+      checkpointCompleteLoading: false,
+    }),
+    checkpointCompleteFailure: (state, action) => ({
+      ...state,
+      checkpointCompleteLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -70,6 +86,9 @@ export const {
   profileDetailsRequest,
   profileDetailsSuccess,
   profileDetailsFailure,
+  checkpointCompleteRequest,
+  checkpointCompleteSuccess,
+  checkpointCompleteFailure,
 } = talentOnboardingSlice.actions;
 
 export default talentOnboardingSlice.reducer;

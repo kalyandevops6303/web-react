@@ -3,8 +3,6 @@ import { Col, Input, InputGroup, InputGroupText, Label, Popover, PopoverBody, Ro
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { debounce } from 'lodash';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { RefreshCcw, Search } from 'react-feather';
 import CollActive from '@src/assets/images/coll_active.png';
 import ExpandInactive from '@src/assets/images/expand_inactive.png';
@@ -14,6 +12,9 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
+import InfiniteScroll from '../../../lib/infinite-scroll';
+import debounce from '../../../lib/debounce';
+import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors, useIsTab } from '../../../utility/Utils';
@@ -29,6 +30,8 @@ import ProjectCard from '../../cards/ProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
+import { userTypes } from '../../../utility/constants/Constant';
+import NoDataFoundComponent from './NoDataFoundComp';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -54,7 +57,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     industries: [],
     project_areas: [],
   });
-  const [isRecommanded, setIsRecommanded] = useState(false);
+  const [isRecommanded, setIsRecommanded] = useState(location?.state?.isRecommended || false);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
@@ -91,10 +94,26 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
         setPopoverOpen(false);
       }
+    }; // Adjust the debounce delay (in milliseconds) as per your needs
+
+    const handleScroll = throttle(() => {
+      setPopoverOpen(false);
+    }, 300); // Adjust the throttle delay (in milliseconds) as per your needs
+
+    const handleWindowClick = (event) => {
+      handleOutsideClick(event);
     };
-    document.addEventListener('mousedown', handleOutsideClick);
+
+    const handleWindowScroll = () => {
+      handleScroll();
+    };
+
+    document.addEventListener('mousedown', handleWindowClick);
+    window.addEventListener('scroll', handleWindowScroll);
+
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('mousedown', handleWindowClick);
+      window.removeEventListener('scroll', handleWindowScroll);
     };
   }, []);
 
@@ -420,7 +439,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 {ExpandCollapseComp}
               </Col>
             )}
-            {(userType === 'TALENT' || primaryFilter === 'talents') && (
+            {(userType === userTypes.talent || primaryFilter === 'talents') && (
               <Col>
                 <Label className="form-label">Sort by</Label>
                 <Select
@@ -578,15 +597,26 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           next={fetchMore}
           hasMore={hasMore}
           endMessage={
-            <div className="d-flex justify-content-center mt-2">
-              {selectMarketPlaceData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+            <div className="d-flex justify-content-center ">
+              {selectMarketPlaceData?.length > 0 ? (
+                <span className="mt-2">You have seen it all!</span>
+              ) : (
+                <NoDataFoundComponent isRecommanded={isRecommanded} data={selectMarketPlaceData} />
+              )}
             </div>
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
           {selectMarketPlaceData?.map((item) => {
             const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
-            return <CardComponent key={item?._id || item?.id} data={item} isExpanded={isExpanded} />;
+            return (
+              <CardComponent
+                key={item?._id || item?.id}
+                data={item}
+                isPopoverOpen={popoverOpen}
+                isExpanded={isExpanded}
+              />
+            );
           })}
         </InfiniteScroll>
       )}
