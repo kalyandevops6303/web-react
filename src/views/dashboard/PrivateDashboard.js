@@ -31,7 +31,14 @@ const PrivateDashboard = () => {
             </Button>
           </Link>
         )}
+
+        {userDetailsData?.user_type === userTypes.talent && (
+          <Link to="/create-team/profile-details">
+            <span className="text-decoration-underline font-medium-2">Create Team</span>
+          </Link>
+        )}
       </div>
+
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />
