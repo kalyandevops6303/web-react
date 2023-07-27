@@ -275,6 +275,34 @@ const BidWrapper = styled.div`
     padding: 0.3rem;
   }
 `;
+const TeamVieWrapper = styled.div`
+  .basic-title {
+    padding-left: 1.2rem;
+  }
+  .team-member-row {
+    margin-bottom: 3rem;
+  }
+
+  .card .card {
+    box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1) !important;
+    margin-bottom: 1rem;
+    padding: 1rem 1.6rem;
+    .card-body {
+      padding: 0;
+    }
+  }
+  .main-card-body {
+    background: ${theme.headerBackground};
+    padding: 2rem 1.6rem 2rem 1.6rem !important;
+  }
+  .main-card-title {
+    padding: 1.6rem 1.6rem 0.8rem 1.6rem !important;
+    font-size: 1.25rem;
+    margin-bottom: 0 !important;
+    background: ${theme.headerBackground};
+    border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+  }
+`;
 const AccordionHeadStyle = styled.div`
   display: flex;
   justify-content: space-between;
@@ -348,4 +376,58 @@ const ContractDetailsWrap = styled.div`
     overflow-y: auto;
   }
 `;
-export { BidWrapper, LeftSidebarProjectDetailsWrapper, ContractDetailsWrap, BidDetailsWrap, AccordionHeadStyle };
+
+const MemberRowWrapper = styled.div`
+  input {
+    width: 18rem;
+  }
+  .indicator {
+    display: block;
+    height: 0.5rem;
+    width: 0.5rem;
+    border-radius: 50%;
+    background: ${theme.red};
+    align-self: flex-start;
+  }
+  .key {
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+  }
+  .value {
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 500;
+  }
+  .name-info {
+    width: 15rem;
+  }
+  .role,
+  .project-count {
+    color: ${theme.textMuted};
+  }
+  .delete-icon {
+    margin: auto 0;
+  }
+  .mail-bg {
+    background-color: ${theme.activeColor}1f;
+    border-radius: 50%;
+    height: 2.5rem;
+    width: 2.5rem;
+    display: flex;
+    justify-content: center;
+    .mail-icon {
+      margin: auto;
+    }
+  }
+`;
+
+export {
+  BidWrapper,
+  TeamVieWrapper,
+  LeftSidebarProjectDetailsWrapper,
+  ContractDetailsWrap,
+  BidDetailsWrap,
+  AccordionHeadStyle,
+  MemberRowWrapper,
+};
