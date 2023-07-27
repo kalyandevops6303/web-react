@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
 import { Button } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
@@ -11,6 +11,7 @@ import { getItem } from '../../utility/localStorageControl';
 import { profilePercentage, userData } from '../../redux/selectors/dashboardSelectors';
 import { DashboardHeaderWrapper } from '../dashboard/overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
+import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
 const MarketPlaceContainer = styled.div`
   .marketplace-search {
@@ -31,6 +32,7 @@ const MarketPlace = () => {
   const profilePercentageData = useSelector(profilePercentage);
   const isTab = useIsTab();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // Primary filters
 
   // Adjust the number of lines based on the desired limit
@@ -46,6 +48,7 @@ const MarketPlace = () => {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    dispatch(getProfilePercentage());
   }, []);
 
   // Secondary filters
@@ -96,13 +99,13 @@ const MarketPlace = () => {
         data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
       />
 
-      <DashboardHeaderWrapper>
-        {userDetailsData?.user_type === 'CLIENT' && (
+      {userDetailsData?.user_type === 'CLIENT' && (
+        <DashboardHeaderWrapper>
           <Button as="link" color="primary" onClick={onCreateProjectClick}>
             Create Project
           </Button>
-        )}
-      </DashboardHeaderWrapper>
+        </DashboardHeaderWrapper>
+      )}
 
       <PrimaryFilter
         selected={primaryFilter}

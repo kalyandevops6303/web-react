@@ -51,13 +51,13 @@ const PrivateDashboard = () => {
         <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
       )}
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
-      <DashboardHeaderWrapper>
-        {userDetailsData?.user_type === userTypes.client && (
+      {userDetailsData?.user_type === userTypes.client && (
+        <DashboardHeaderWrapper>
           <Button as="link" color="primary" onClick={onCreateProjectClick}>
             Create Project
           </Button>
-        )}
-      </DashboardHeaderWrapper>
+        </DashboardHeaderWrapper>
+      )}
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />
