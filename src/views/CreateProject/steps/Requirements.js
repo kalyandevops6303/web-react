@@ -112,6 +112,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .number()
       .min(0, 'Desired time overlap should be greater than or equal to 0')
       .max(24, 'Desired time overlap should not be greater than 24')
+      .test('maxDigitsAfterDecimal', 'Desired time overlap should be upto two decimal places', (number) =>
+        /^\d+(\.\d{1,1})?$/.test(number),
+      )
       .typeError('Please enter a number')
       .required('Desired time overlap is required'),
     availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
@@ -210,6 +213,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     handleSubmit,
     watch,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -229,6 +233,10 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const [timezonesOptions, setTimezonesOptions] = useState(null);
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
+
+  useEffect(() => {
+    clearErrors('expectedDuration');
+  }, [watch('expectedDurationPeriod')]);
 
   const loadSkillsOptions = async (search) => {
     if (search) {
