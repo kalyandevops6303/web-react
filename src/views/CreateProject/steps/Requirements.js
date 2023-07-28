@@ -547,7 +547,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
         let clientAvailabilityDays = [];
 
-        if ('days' in userDetailsData?.availability?.weekdays_avl) {
+        if (userDetailsData?.availability?.weekdays_avl && 'days' in userDetailsData?.availability?.weekdays_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
           setValue('weekdays', userDetailsData?.availability?.weekdays_avl?.days, { shouldValidate: true });
           setValue(
@@ -565,7 +565,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             { shouldValidate: true },
           );
         }
-        if ('days' in userDetailsData?.availability?.weekends_avl) {
+        if (userDetailsData?.availability?.weekends_avl && 'days' in userDetailsData?.availability?.weekends_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
           setValue('weekends', userDetailsData?.availability?.weekends_avl?.days, { shouldValidate: true });
           setValue(
