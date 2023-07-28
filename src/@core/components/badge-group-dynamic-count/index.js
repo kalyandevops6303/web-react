@@ -39,7 +39,6 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
 
   const arrangeTags = () => {
     const tagsContainer = document.querySelector('.badge-box-wrap');
-    // const containerWidth = tagsContainer.getBoundingClientRect().width - 31;
     const containerWidth = tagsContainer.getBoundingClientRect().width - 17;
 
     const tagsArray = data?.map((item) => item.name);
