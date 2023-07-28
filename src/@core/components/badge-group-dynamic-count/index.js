@@ -11,10 +11,9 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
   }
   const renderBadge = (name, index) => {
     // const { name } = item;
-    const isLongName = name.length > 35;
+    const isLongName = name?.length > 35;
     const badgeClassName = isLongName ? `${color}` : color;
     const badgeColor = `${color} badge`;
-    console.log(name, name.length);
     return (
       <span key={index}>
         {isLongName ? (
@@ -69,17 +68,15 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     const visibleTagsArray = [];
     for (let i = 0; i < tagsArray.length; i++) {
       const tagWidth = calculateTagWidth(tagsArray[i]);
-      console.log(containerWidth, 'container', tagWidth);
 
       if (currentRowWidth + tagWidth < containerWidth) {
         visibleTagsCount++;
         visibleTagsArray.push(tagsArray[i]);
-        currentRowWidth += tagWidth;
+        currentRowWidth = currentRowWidth + tagWidth + 8;
       } else {
         break;
       }
     }
-
     const hiddenTagsCount = tagsArray.length - visibleTagsCount;
     setVisibleTags(visibleTagsArray);
     setHiddenTagsCount(hiddenTagsCount);
@@ -104,7 +101,6 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
   };
 
   const customBadgeId = `tooltip-${title}-${user_id}`; // Generate a unique ID using uuidv4()
-  console.log(document.getElementById(customBadgeId));
   return (
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
