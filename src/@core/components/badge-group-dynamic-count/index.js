@@ -3,7 +3,7 @@ import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { CustomBadge } from '../../../views/styled';
 import { BadgeGroupWrap } from './style';
 
-const BadgeGroup = ({ title, color, data }) => {
+const BadgeGroup = ({ user_id, data, title, color }) => {
   const [visibleTags, setVisibleTags] = useState([]);
   const [hiddenTagsCount, setHiddenTagsCount] = useState(0);
   if (!data || data.length === 0) {
@@ -39,17 +39,19 @@ const BadgeGroup = ({ title, color, data }) => {
 
   const arrangeTags = () => {
     const tagsContainer = document.querySelector('.badge-box-wrap');
-    const containerWidth = tagsContainer.offsetWidth;
+    // const containerWidth = tagsContainer.getBoundingClientRect().width - 31;
+    const containerWidth = tagsContainer.getBoundingClientRect().width - 17;
+
     const tagsArray = data?.map((item) => item.name);
 
     let currentRowWidth = 0;
     let visibleTagsCount = 0;
     const visibleTagsArray = [];
-
     for (let i = 0; i < tagsArray.length; i++) {
       const tagWidth = calculateTagWidth(tagsArray[i]);
+      console.log(containerWidth, 'container', tagWidth);
 
-      if (currentRowWidth + tagWidth <= containerWidth) {
+      if (currentRowWidth + tagWidth < containerWidth) {
         visibleTagsCount++;
         visibleTagsArray.push(tagsArray[i]);
         currentRowWidth += tagWidth;
@@ -66,21 +68,19 @@ const BadgeGroup = ({ title, color, data }) => {
   const calculateTagWidth = (tagName) => {
     const tempTag = document.createElement('span');
     tempTag.textContent = tagName;
-    tempTag.style.display = 'inline-block';
-    tempTag.style.padding = '5px';
-    tempTag.style.margin = '5px';
-    tempTag.style.backgroundColor = '#f0f0f0';
     tempTag.style.whiteSpace = 'nowrap';
+    tempTag.style.position = 'fixed'; // Ensures the element doesn't affect layout
+    tempTag.style.visibility = 'hidden'; // Keeps the element hidden
 
     document.body.appendChild(tempTag);
-    const tagWidth = tempTag.offsetWidth + 10; // Include padding and margin
+    const tagWidth = tempTag.getBoundingClientRect().width;
     document.body.removeChild(tempTag);
 
     return tagWidth;
   };
 
-  const renderBadge = (item, index) => {
-    const { name } = item;
+  const renderBadge = (name, index) => {
+    // const { name } = item;
     const isLongName = name.length > 35;
     const badgeClassName = isLongName ? `${color} truncate-1` : color;
     const badgeColor = `${color} badge`;
@@ -106,19 +106,32 @@ const BadgeGroup = ({ title, color, data }) => {
       </span>
     );
   };
-
+  const customBadgeId = `tooltip-${title}-${user_id}`; // Generate a unique ID using uuidv4()
+  console.log(document.getElementById(customBadgeId));
   return (
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
         <div className="info-key">{title || ''}</div>
         <div className="d-flex align-items-center">
-          <div className="badge-box mt-25">{data && data?.map(renderBadge)}</div>
+          <div className="badge-box mt-25">{visibleTags && visibleTags?.map(renderBadge)}</div>
           {hiddenTagsCount > 0 && (
-            <CustomBadge>
-              <Badge color="light-blue" className="light-blue">
-                + {hiddenTagsCount}
-              </Badge>
-            </CustomBadge>
+            <>
+              <CustomBadge id={customBadgeId}>
+                <Badge color="light-blue" className="light-blue">
+                  + {hiddenTagsCount}
+                </Badge>
+              </CustomBadge>
+              <UncontrolledTooltip placement="right" target={customBadgeId}>
+                {data
+                  ?.filter((item) => !visibleTags.includes(item.name))
+                  .map((item, index) => (
+                    <span key={index}>
+                      {index > 0 && ', '}
+                      {item.name}
+                    </span>
+                  ))}
+              </UncontrolledTooltip>
+            </>
           )}
         </div>
       </div>

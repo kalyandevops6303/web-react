@@ -430,15 +430,17 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </InputGroup>
           </div>
           <Row>
-            {isTab ? (
-              <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
-                {ExpandCollapseComp}
-              </div>
-            ) : (
-              <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
-                {ExpandCollapseComp}
-              </Col>
-            )}
+            {primaryFilter !== 'talents' &&
+              primaryFilter !== 'clients' &&
+              (isTab ? (
+                <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
+                  {ExpandCollapseComp}
+                </div>
+              ) : (
+                <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
+                  {ExpandCollapseComp}
+                </Col>
+              ))}
             {(userType === userTypes.talent || primaryFilter === 'talents') && (
               <Col>
                 <Label className="form-label">Sort by</Label>
@@ -616,6 +618,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   data={item}
                   isPopoverOpen={popoverOpen}
                   isExpanded={isExpanded}
+                  userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
                 />
               );
             })}

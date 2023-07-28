@@ -143,7 +143,7 @@ const UserCardWrap = styled(CardWrap)`
     margin: 0.8rem 0.7rem !important;
   }
   .truncate-1 {
-    width: 12rem;
+    width: 9rem;
     display: inline-block;
     display: block;
     -webkit-line-clamp: 1;
@@ -168,7 +168,7 @@ const UserCardWrap = styled(CardWrap)`
   }
   .card-body {
     min-height: ${(props) => (props.userType === userTypes.client ? '14rem' : '11.5rem')};
-    padding: 1rem 1rem 0.8rem 1rem !important;
+    padding: 1.2rem 1.2rem 0.8rem 1.2rem !important;
   }
   .marketplace-card-title {
     font-size: 0.9rem;
