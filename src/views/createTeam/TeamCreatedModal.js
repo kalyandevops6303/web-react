@@ -15,7 +15,7 @@ const TeamCreatedModal = ({ modal, toggleModal }) => (
         <div className="w-75">
           <h2 className="fw-bold font-large-1 mb-1">Great Job!</h2>
           <h3 className="fw-bold font-medium-3">Team Created</h3>
-          <p className="font-medium-2">You succedully created a team</p>
+          <p className="font-medium-2">You successfully created a team</p>
           <div className="my-1 d-flex align-items-center">
             <TeamCreatedModalImageWrapper>
               <UserPlus size={30} />
