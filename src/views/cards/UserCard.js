@@ -1,4 +1,4 @@
-import { Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
+import { Card, CardBody, CardText, CardTitle, Col, Row, UncontrolledTooltip } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
@@ -41,7 +41,7 @@ const UserCard = ({ data, userType }) => {
     if (data?.user_type === userTypes.client) return { title: 'Clients', link: '' };
     return { title: 'Talent', link: '' };
   };
-
+  const description = data?.company_tagline || data?.professional_intro;
   return (
     <UserCardWrap userType={userType}>
       <Card>
@@ -107,9 +107,17 @@ const UserCard = ({ data, userType }) => {
                   </div>
                 )}
               </div>
-              <CardText className={`mt-75 desc ${userType === 'client' ? 'truncate-4' : 'truncate-3'}`}>
-                {data?.company_tagline || data?.professional_intro}
+              <CardText
+                id={`tooltip-${data?.user_id}`}
+                className={`mt-75 desc ${userType === 'client' ? 'truncate-4' : 'truncate-3'}`}
+              >
+                {description}
               </CardText>
+              {description?.length > 80 && (
+                <UncontrolledTooltip placement="right" target={`tooltip-${data?.user_id}`}>
+                  <p className="m-0 text-start">{data?.company_tagline || data?.professional_intro}</p>
+                </UncontrolledTooltip>
+              )}
             </Col>
 
             <Col lg="7">
