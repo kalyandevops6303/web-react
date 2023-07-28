@@ -8,6 +8,7 @@ const CardWrap = styled.div`
 `;
 
 const ProjectCardWrap = styled(CardWrap)`
+  width: 100%;
   .card-body {
     padding: 2.1rem 2.6rem 1.4rem 2.6rem;
   }
@@ -133,20 +134,43 @@ const InstituteCardWrap = styled(CardWrap)`
   }
 `;
 const UserCardWrap = styled(CardWrap)`
+  width: 49%;
+  .truncate-1 {
+    width: 12rem;
+    display: inline-block;
+    display: block;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-body {
+    min-height: 13.5rem;
+    padding: 1rem 1rem 0.8rem 1rem;
+  }
   .marketplace-card-title {
-    font-size: 22px;
-    color: ${theme.activeNavPillText};
-    line-height: 22px;
+    font-size: 0.9rem;
+    line-height: 1.125rem;
+    a {
+      color: inherit;
+    }
   }
   .marketplace-card-role {
-    font-size: 18px;
+    line-height: 1.125rem;
+    font-size: 0.75rem !important;
     color: ${theme.gray};
     font-weight: 300;
-    line-height: 18xp;
   }
 
   .market-place-card-photo {
-    height: 2.2rem;
+    height: 2rem;
     border-radius: 50%;
     cursor: auto !important;
   }

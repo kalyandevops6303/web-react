@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import BadgeGroup from '../../@core/components/badge-group';
+import BadgeGroup from '../../@core/components/badge-group new';
 import { UserCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
@@ -47,16 +47,16 @@ const UserCard = ({ data }) => {
       <Card>
         <CardBody>
           <Row>
-            <Col lg="8">
+            <Col lg="5">
               <div className="d-flex">
                 <Avatar
                   img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
-                  imgHeight="35"
-                  imgWidth="35"
-                  className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
+                  imgHeight="30"
+                  imgWidth="30"
+                  className={`market-place-card-photo me-1 mt-25 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
                 />
                 <div>
-                  <CardTitle className="marketplace-card-title mb-0 ms-25">
+                  <CardTitle className="truncate-1 text-decoration-none marketplace-card-title mb-0">
                     <Link
                       state={{
                         from: {
@@ -70,8 +70,10 @@ const UserCard = ({ data }) => {
                       {data?.last_name}
                     </Link>
                   </CardTitle>
-                  <CardText className="font-small-3 fw-300 mb-25 ms-25 marketplace-card-role">
-                    {data?.user_type === userTypes.client ? data?.company_name || 'Company Name' : data?.role?.name || 'Role'}
+                  <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
+                    {data?.user_type === userTypes.client
+                      ? data?.company_name || 'Company Name'
+                      : data?.role?.name || 'Role'}
                   </CardText>
                   <div className="d-flex">
                     <RatingBadge number="0" />
@@ -105,9 +107,11 @@ const UserCard = ({ data }) => {
                   </div>
                 )}
               </div>
-              <CardText className="mt-2 desc">{data?.company_tagline || data?.professional_intro} </CardText>
+              <CardText className="mt-75 desc truncate-4">
+                {data?.company_tagline || data?.professional_intro}{' '}
+              </CardText>
             </Col>
-            <Col lg="4">
+            <Col lg="7">
               {data?.user_type === userTypes.client && (
                 <BadgeGroup
                   title="Area of interest"
@@ -117,12 +121,18 @@ const UserCard = ({ data }) => {
               )}
               <BadgeGroup
                 title="Skills"
-                data={data?.user_type === userTypes.client ? data?.project_area_of_interest?.skills : data?.expertise?.skills}
+                data={
+                  data?.user_type === userTypes.client
+                    ? data?.project_area_of_interest?.skills
+                    : data?.expertise?.skills
+                }
                 color="light-blue"
               />
               <BadgeGroup
                 title="Tools"
-                data={data?.user_type === userTypes.client ? data?.project_area_of_interest?.tools : data?.expertise?.tools}
+                data={
+                  data?.user_type === userTypes.client ? data?.project_area_of_interest?.tools : data?.expertise?.tools
+                }
                 color="light-blue"
               />
             </Col>
