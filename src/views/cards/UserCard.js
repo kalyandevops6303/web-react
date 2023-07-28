@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import BadgeGroup from '../../@core/components/badge-group new';
+import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { UserCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
@@ -126,6 +126,7 @@ const UserCard = ({ data, userType }) => {
                   title="Area of interest"
                   data={data?.project_area_of_interest?.area?.name ? data?.project_area_of_interest?.area : []}
                   color="light-blue"
+                  user_id={data?.user_id}
                 />
               )}
               <BadgeGroup
@@ -136,6 +137,7 @@ const UserCard = ({ data, userType }) => {
                     : data?.expertise?.skills
                 }
                 color="light-blue"
+                user_id={data?.user_id}
               />
               <BadgeGroup
                 title="Tools"
@@ -143,6 +145,7 @@ const UserCard = ({ data, userType }) => {
                   data?.user_type === userTypes.client ? data?.project_area_of_interest?.tools : data?.expertise?.tools
                 }
                 color="light-blue"
+                user_id={data?.user_id}
               />
             </Col>
           </Row>
