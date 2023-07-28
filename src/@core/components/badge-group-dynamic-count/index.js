@@ -9,19 +9,40 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
   if (!data || data.length === 0) {
     return null;
   }
+  const renderBadge = (name, index) => {
+    // const { name } = item;
+    const isLongName = name.length > 35;
+    const badgeClassName = isLongName ? `${color}` : color;
+    const badgeColor = `${color} badge`;
+    console.log(name, name.length);
+    return (
+      <span key={index}>
+        {isLongName ? (
+          <>
+            <CustomBadge>
+              <Badge className={badgeClassName} color={badgeColor} id={`tooltip-${index}`}>
+                {name}
+              </Badge>
+            </CustomBadge>
+            <UncontrolledTooltip target={`tooltip-${index}`}>{name}</UncontrolledTooltip>
+          </>
+        ) : (
+          <CustomBadge>
+            <Badge className={badgeClassName} color={badgeColor}>
+              {name}
+            </Badge>
+          </CustomBadge>
+        )}
+      </span>
+    );
+  };
 
   if (data?.name) {
     return (
       <BadgeGroupWrap>
         <div className="badge-box-wrap mb-50">
           <div className="info-key">{title || ''}</div>
-          <div className="badge-box mt-25">
-            <CustomBadge>
-              <Badge className={color} color={color}>
-                {data?.name}
-              </Badge>
-            </CustomBadge>
-          </div>
+          <div className="badge-box mt-25">{renderBadge(data.name, 0)}</div>
         </div>
       </BadgeGroupWrap>
     );
@@ -75,36 +96,13 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     const tagWidth = tempTag.getBoundingClientRect().width;
     document.body.removeChild(tempTag);
 
+    if (tagWidth > 298) {
+      return 150;
+    }
+
     return tagWidth;
   };
 
-  const renderBadge = (name, index) => {
-    // const { name } = item;
-    const isLongName = name.length > 35;
-    const badgeClassName = isLongName ? `${color} truncate-1` : color;
-    const badgeColor = `${color} badge`;
-
-    return (
-      <span key={index}>
-        {isLongName ? (
-          <>
-            <CustomBadge>
-              <Badge className={badgeClassName} color={badgeColor} id={`tooltip-${index}`}>
-                {name}
-              </Badge>
-            </CustomBadge>
-            <UncontrolledTooltip target={`tooltip-${index}`}>{name}</UncontrolledTooltip>
-          </>
-        ) : (
-          <CustomBadge>
-            <Badge className={badgeClassName} color={badgeColor}>
-              {name}
-            </Badge>
-          </CustomBadge>
-        )}
-      </span>
-    );
-  };
   const customBadgeId = `tooltip-${title}-${user_id}`; // Generate a unique ID using uuidv4()
   console.log(document.getElementById(customBadgeId));
   return (
