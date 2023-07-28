@@ -27,6 +27,7 @@ import theme from '../../configs/themeVariables';
 import { returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import { languagesService, skillsService, timezonesService, toolsService } from '../../services/staticServices';
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
+import TeamCreatedModal from './TeamCreatedModal';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -159,6 +160,7 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
+  const [teamCreatedModal, setTeamCreatedModal] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
   const [servicesOptions, setServicesOptions] = useState(null);
@@ -167,6 +169,10 @@ const Profile = () => {
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [timezonesOptions, setTimezonesOptions] = useState(null);
   const fileInputRef = useRef(null);
+
+  const toggleTeamCreatedModal = () => {
+    setTeamCreatedModal(!teamCreatedModal);
+  };
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -310,6 +316,7 @@ const Profile = () => {
 
   return (
     <ProfileFormContainer>
+      {teamCreatedModal && <TeamCreatedModal modal={teamCreatedModal} toggleModal={toggleTeamCreatedModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
@@ -984,7 +991,7 @@ const Profile = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" type="submit" outline>
+            <Button color="primary" outline onClick={() => setTeamCreatedModal(true)}>
               <span className="me-50">Save</span>
               <ChevronRight size={14} />
             </Button>
