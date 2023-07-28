@@ -57,9 +57,10 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     };
   }, [data]);
 
+  const widthToMinus = window.location.pathname.split('/')?.includes('search') ? 17 : 31;
   const arrangeTags = () => {
     const tagsContainer = document.querySelector('.badge-box-wrap');
-    const containerWidth = tagsContainer.getBoundingClientRect().width - 17;
+    const containerWidth = tagsContainer.getBoundingClientRect().width - widthToMinus;
 
     const tagsArray = data?.map((item) => item.name);
 
