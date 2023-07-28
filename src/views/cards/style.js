@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
+import { userTypes } from '../../utility/constants/Constant';
 
 const CardWrap = styled.div`
   .card-body {
@@ -134,7 +135,13 @@ const InstituteCardWrap = styled(CardWrap)`
   }
 `;
 const UserCardWrap = styled(CardWrap)`
-  width: 49%;
+  width: 50%;
+  @media only screen and (max-device-width: 600px) {
+    width: 100%;
+  }
+  .card {
+    margin: 0.8rem 0.7rem !important;
+  }
   .truncate-1 {
     width: 12rem;
     display: inline-block;
@@ -152,9 +159,16 @@ const UserCardWrap = styled(CardWrap)`
     overflow: hidden;
     position: relative;
   }
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+  }
   .card-body {
-    min-height: 13.5rem;
-    padding: 1rem 1rem 0.8rem 1rem;
+    min-height: ${(props) => (props.userType === userTypes.client ? '14rem' : '11.5rem')};
+    padding: 1rem 1rem 0.8rem 1rem !important;
   }
   .marketplace-card-title {
     font-size: 0.9rem;
