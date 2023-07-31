@@ -159,7 +159,7 @@ const Project = ({ open, data, className, recommended }) => {
           <div className="main-row">
             <UserSection
               tagName="Client"
-              name={data?.client_info?.company_name || '-'}
+              name={`${data?.client_info?.first_name} ${data?.client_info?.last_name}`}
               users={[
                 {
                   title: `${data?.client_info?.first_name} ${data?.client_info?.last_name}`,
