@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
+import { userTypes } from '../../utility/constants/Constant';
 
 const CardWrap = styled.div`
   .card-body {
@@ -8,6 +9,7 @@ const CardWrap = styled.div`
 `;
 
 const ProjectCardWrap = styled(CardWrap)`
+  width: 100%;
   .card-body {
     padding: 2.1rem 2.6rem 1.4rem 2.6rem;
   }
@@ -133,20 +135,57 @@ const InstituteCardWrap = styled(CardWrap)`
   }
 `;
 const UserCardWrap = styled(CardWrap)`
+  width: 50%;
+  @media only screen and (max-device-width: 600px) {
+    width: 100%;
+  }
+  .card {
+    margin: 0.8rem 0.7rem !important;
+  }
+  .truncate-1 {
+    width: 9rem;
+    display: inline-block;
+    display: block;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .truncate-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+  }
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-body {
+    min-height: ${(props) => (props.userType === userTypes.client ? '14rem' : '11.5rem')};
+    padding: 1.2rem 1.2rem 0.8rem 1.2rem !important;
+  }
   .marketplace-card-title {
-    font-size: 22px;
-    color: ${theme.activeNavPillText};
-    line-height: 22px;
+    font-size: 0.9rem;
+    line-height: 1.125rem;
+    a {
+      color: inherit;
+    }
   }
   .marketplace-card-role {
-    font-size: 18px;
+    line-height: 1.125rem;
+    font-size: 0.75rem !important;
     color: ${theme.gray};
     font-weight: 300;
-    line-height: 18xp;
   }
 
   .market-place-card-photo {
-    height: 2.2rem;
+    height: 2rem;
     border-radius: 50%;
     cursor: auto !important;
   }
