@@ -39,7 +39,7 @@ const currentProfile = {
   first_name: 'Rajat',
   user_id: '6486b2b2b03b9ecd06909871',
   last_name: 'Petwal',
-  image_uri: 'assets/trumio_logo.png',
+  image_uri: '',
   projects_worked_on_count: 0,
   languages_read: [],
   social_links: [
