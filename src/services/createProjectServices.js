@@ -21,10 +21,17 @@ const almaMaterTalentsService = (projectId, searchText, page, pageSize) =>
 const inviteTalentsService = (projectId, data) =>
   DataService.post(`${API.createProject.inviteTalents}?project_id=${projectId}`, data);
 
+const projectFileUploadService = (filename) =>
+  DataService.get(`${API.createProject.projectFileUpload}?filename=${filename}`);
+
+const projectFileUploadToAzureService = (url, data, headers) => DataService.putWithoutToken(url, data, headers);
+
 export {
   createProjectService,
   bestTalentsService,
   favoriteTalentsService,
   almaMaterTalentsService,
   inviteTalentsService,
+  projectFileUploadService,
+  projectFileUploadToAzureService,
 };

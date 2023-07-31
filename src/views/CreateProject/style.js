@@ -234,14 +234,14 @@ export const TimeWrapper = styled.section`
   }
   .weekdays {
     padding-right: 20px;
-    border-right: ${(props) => (props.isBorder ? `1px solid ${theme.borderInputColor}` : 'none')};
+    border-right: 1px solid ${theme.borderInputColor};
 
     ul {
       justify-content: space-between;
     }
   }
   .weekends {
-    padding-left: ${(props) => (props.isPadding ? '20px' : '0')};
+    padding-left: 20px;
 
     ul {
       gap: 14px;
@@ -322,10 +322,11 @@ export const NavsContainer = styled.div`
 `;
 
 export const TableContainer = styled.div`
+  max-height: 500px;
+  overflow-y: scroll;
+
   .user-pic {
-    border-radius: 50%;
-    border: 1px solid ${theme.bodyColor};
-    width: fit-content;
+    cursor: auto !important;
   }
 
   .badge {
@@ -374,9 +375,7 @@ export const InviteUsersListContainer = styled.div`
   overflow-y: scroll;
 
   .user-pic {
-    border-radius: 50%;
-    border: 1px solid ${theme.bodyColor};
-    width: fit-content;
+    cursor: auto !important;
   }
 
   .badge {

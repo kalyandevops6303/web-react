@@ -49,6 +49,15 @@ class DataService {
     });
   }
 
+  static putWithoutToken(path = '', data = {}, optionalHeader = {}) {
+    return axios({
+      method: 'PUT',
+      url: path,
+      data,
+      headers: { ...optionalHeader },
+    });
+  }
+
   static delete(path = '', data = {}) {
     return client({
       method: 'DELETE',

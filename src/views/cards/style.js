@@ -45,6 +45,7 @@ const ProjectCardWrap = styled(CardWrap)`
   .market-place-card-photo {
     height: 2.2rem;
     border-radius: 50%;
+    cursor: auto !important;
   }
   .rating-label {
     color: ${theme.bodyColor};
@@ -117,6 +118,7 @@ const InstituteCardWrap = styled(CardWrap)`
   .market-place-card-photo {
     height: 2.2rem;
     border-radius: 50%;
+    cursor: auto !important;
   }
   .rating-label {
     color: ${theme.bodyColor};
@@ -146,6 +148,7 @@ const UserCardWrap = styled(CardWrap)`
   .market-place-card-photo {
     height: 2.2rem;
     border-radius: 50%;
+    cursor: auto !important;
   }
   .rating-label {
     color: ${theme.bodyColor};
