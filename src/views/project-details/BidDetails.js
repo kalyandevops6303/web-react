@@ -63,17 +63,17 @@ const BidDetails = () => {
                   <tr className="">
                     <td className="fw-bolder">Milestone 1</td>
                     <td>First prototype design for v1.0</td>
-                    <td>Peter Charles</td>
+                    <td>$10,000</td>
                   </tr>
                   <tr>
                     <td className="fw-bolder">Milestone 2</td>
                     <td>Alpha release for v1.0 modules</td>
-                    <td>Peter Charles</td>
+                    <td>$10,000</td>
                   </tr>
                   <tr>
                     <td className="fw-bolder">Milestone 3</td>
                     <td>System test pass for v1.0</td>
-                    <td>Peter Charles</td>
+                    <td>$10,000</td>
                   </tr>
                 </tbody>
               </Table>
