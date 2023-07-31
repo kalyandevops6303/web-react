@@ -43,7 +43,7 @@ const BidDetails = () => {
               </div>
               <div>
                 <CardText className="value">10w</CardText>
-                <CardText className="key">Estimation Duraion</CardText>
+                <CardText className="key">Estimation Duration</CardText>
               </div>
             </CardBody>
           </Card>
