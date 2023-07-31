@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
@@ -13,15 +13,27 @@ import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 
 const PrivateDashboard = () => {
   const userDetailsData = useSelector(userData);
+
+  const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
+
+  const toggleListingTeamMembersModal = () => {
+    setListingTeamMembersModal(!listingTeamMembersModal);
+  };
+
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    setListingTeamMembersModal(true);
   }, []);
   return (
     <div>
+      {listingTeamMembersModal && (
+        <ListingTeamMembersModal modal={listingTeamMembersModal} toggleModal={toggleListingTeamMembersModal} />
+      )}
       <div className="d-flex justify-content-between">
         <BreadCrumbs data={[{ title: 'Dashboard' }]} />
         {userDetailsData?.user_type === userTypes.client && (

@@ -209,4 +209,9 @@ const TimeWrapper = styled.section`
     }
   }
 `;
-export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper };
+
+const GrayBorderContainer = styled.div`
+  border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+`;
+
+export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper, GrayBorderContainer };
