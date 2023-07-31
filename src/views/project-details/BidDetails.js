@@ -38,12 +38,12 @@ const BidDetails = () => {
             <CardTitle className="main-card-title">Project Bid Estimation</CardTitle>
             <CardBody className="main-card-body bid-eta">
               <div>
-                <CardText className="value">$65,334</CardText>
+                <CardText className="value">$30,000</CardText>
                 <CardText className="key">Total Bid Amount</CardText>
               </div>
               <div>
-                <CardText className="value">$65,334</CardText>
-                <CardText className="key">Total Bid Amount</CardText>
+                <CardText className="value">10w</CardText>
+                <CardText className="key">Estimation Duraion</CardText>
               </div>
             </CardBody>
           </Card>
