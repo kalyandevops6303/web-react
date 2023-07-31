@@ -212,6 +212,31 @@ const TimeWrapper = styled.section`
 
 const GrayBorderContainer = styled.div`
   border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+
+  .custom-header-margin {
+    margin-top: -1.6rem;
+  }
+`;
+
+export const BlueNavsContainer = styled.div`
+  .nav {
+    border-radius: 0;
+  }
+
+  .nav-link {
+    font-weight: 400;
+  }
+
+  .nav-tabs .nav-link.active {
+    border-bottom: 3px solid ${theme.activeNavPillText} !important;
+    margin-bottom: -2px;
+    color: ${theme.activeNavPillText};
+    font-weight: 600;
+  }
+
+  .nav-tabs .nav-link:after {
+    background: none !important;
+  }
 `;
 
 export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper, GrayBorderContainer };

@@ -14,16 +14,21 @@ import Meetings from './overview/Meetings';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
+import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
 
 const PrivateDashboard = () => {
   const userDetailsData = useSelector(userData);
 
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
+  const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
 
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
   };
 
+  const toggleInviteTeamMemberModal = () => {
+    setInviteTeamMemberModal(!inviteTeamMemberModal);
+  };
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
@@ -32,7 +37,14 @@ const PrivateDashboard = () => {
   return (
     <div>
       {listingTeamMembersModal && (
-        <ListingTeamMembersModal modal={listingTeamMembersModal} toggleModal={toggleListingTeamMembersModal} />
+        <ListingTeamMembersModal
+          modal={listingTeamMembersModal}
+          toggleModal={toggleListingTeamMembersModal}
+          setInviteTeamMemberModal={setInviteTeamMemberModal}
+        />
+      )}
+      {inviteTeamMemberModal && (
+        <InviteTeamMemberModal modal={inviteTeamMemberModal} toggleModal={toggleInviteTeamMemberModal} />
       )}
       <div className="d-flex justify-content-between">
         <BreadCrumbs data={[{ title: 'Dashboard' }]} />
