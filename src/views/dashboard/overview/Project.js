@@ -97,16 +97,6 @@ const Project = ({ open, data, className, recommended }) => {
     },
   ];
 
-  const singleAvatar = [
-    {
-      title: 'Brandon Miles',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-  ];
-
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
       return theme.red;
@@ -170,7 +160,15 @@ const Project = ({ open, data, className, recommended }) => {
             <UserSection
               tagName="Client"
               name={data?.client_info?.company_name || '-'}
-              users={singleAvatar}
+              users={[
+                {
+                  title: `${data?.client_info?.first_name} ${data?.client_info?.last_name}`,
+                  img: data?.client_info?.image_uri || avatar7,
+                  placement: 'bottom',
+                  imgHeight: 33,
+                  imgWidth: 33,
+                },
+              ]}
               isAlma={data?.client_info?.is_alma_matter}
             />
             {!recommended && <UserSection tagName="Team" name={data.teamName} users={avatarGroupArr} />}
