@@ -5,6 +5,8 @@ import { DateTime } from 'luxon';
 import lisa from '@src/assets/images/portrait/small/lisa.png';
 import Mpin from '@src/assets/images/map-pin.png';
 import LikeIcon from '@src/assets/images/like.png';
+import AvatarGroup from '@components/avatar-group';
+import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useState, useEffect, useRef } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import ReactHtmlParser from '../../lib/html-parser';
@@ -15,7 +17,7 @@ import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 
-const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
+const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -59,6 +61,157 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     }
   }, []);
 
+  const avatarGroupArr = [
+    {
+      title: 'Billy Hopkins',
+      img: avatar7,
+      placement: 'bottom',
+      imgHeight: 33,
+      imgWidth: 33,
+    },
+    {
+      title: 'Amy Carson',
+      img: avatar7,
+      placement: 'bottom',
+      imgHeight: 33,
+      imgWidth: 33,
+    },
+    {
+      title: 'Brandon Miles',
+      img: avatar7,
+      placement: 'bottom',
+      imgHeight: 33,
+      imgWidth: 33,
+    },
+    {
+      title: 'Daisy Weber',
+      img: avatar7,
+      placement: 'bottom',
+      imgHeight: 33,
+      imgWidth: 33,
+    },
+    {
+      title: 'Jenny Looper',
+      img: avatar7,
+      placement: 'bottom',
+      imgHeight: 33,
+      imgWidth: 33,
+    },
+  ];
+
+  const isRecommended = data?.match_percentage >= 0;
+  const ProjectWithTeamUI = (
+    <div className={`d-flex  gap-1 mb-2 ${isRecommended || isProjectWithTeam ? '' : 'align-items-center'}`}>
+      <section className="d-flex w-50">
+        <img className={`market-place-card-photo me-75 ${isRecommended ? 'mt-25' : ''}`} src={lisa} alt="avatar" />
+        <div
+          className={`${
+            isRecommended || isProjectWithTeam ? '' : ' d-flex w-100 align-items-center'
+          } name-info-rating-wrapper`}
+        >
+          <div className="flex-grow-1">
+            <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
+              {data?.client_details?.first_name} {data?.client_details?.last_name}
+            </CardTitle>
+            <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+              {data?.client_details?.company_name}
+            </CardText>
+          </div>
+          <div className="d-flex flex-grow-1 mt-25">
+            <RatingBadge number="0" />
+            <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+          </div>
+        </div>
+      </section>
+      <div className="w-50">
+        <div className="flex-grow-1">
+          <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">Research and development</CardTitle>
+        </div>
+        <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroupArr.slice(0, 3)} />
+
+        <div className="d-flex flex-grow-1 mt-25">
+          <RatingBadge number="0" />
+          <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+        </div>
+      </div>
+    </div>
+  );
+  const TeamUI = (
+    <div className="w-50">
+      <div className="flex-grow-1">
+        <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">Research and development</CardTitle>
+      </div>
+      <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroupArr.slice(0, 3)} />
+
+      <div className="d-flex flex-grow-1 mt-25">
+        <RatingBadge number="0" />
+        <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+      </div>
+    </div>
+  );
+  const RecommendedUI = (
+    <div className="d-flex mb-2">
+      <img className="market-place-card-photo me-75 mt-75" src={lisa} alt="avatar" />
+      <div>
+        <div className="flex-grow-1">
+          <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
+            {data?.client_details?.first_name} {data?.client_details?.last_name}
+          </CardTitle>
+          <CardText className="font-small-3 fw-300 ms-25 mb-25 marketplace-card-role">
+            {data?.client_details?.company_name}
+          </CardText>
+        </div>
+        <div className="d-flex flex-grow-1">
+          <RatingBadge number="0" />
+          <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+        </div>
+      </div>
+      <div className="circular-progressbar-container mt-25">
+        <CircularProgressbarWithChildren
+          value={data?.match_percentage}
+          styles={{
+            path: {
+              stroke: giveStrokeColor(data?.match_percentage),
+              strokeLinecap: 'round',
+              transition: 'stroke-dashoffset 0.5s ease 0s',
+              transform: 'rotate(0turn)',
+              transformOrigin: 'center center',
+            },
+            trail: {
+              stroke: theme.progressBarBg,
+              strokeLinecap: 'round',
+              transform: 'rotate(0turn)',
+              transformOrigin: 'center center',
+            },
+          }}
+        >
+          <div className="d-flex justify-content-center align-items-center">
+            <p className="percentage-text m-0">{data?.match_percentage}%</p>
+          </div>
+        </CircularProgressbarWithChildren>
+      </div>
+    </div>
+  );
+
+  const BaseInfoUI = (
+    <div className="d-flex mb-2 align-items-center">
+      <img className="market-place-card-photo me-75" src={lisa} alt="avatar" />
+      <div className="d-flex w-100 align-items-center">
+        <div className="flex-grow-1">
+          <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
+            {data?.client_details?.first_name} {data?.client_details?.last_name}
+          </CardTitle>
+          <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+            {data?.client_details?.company_name}
+          </CardText>
+        </div>
+        <div className="d-flex flex-grow-1">
+          <RatingBadge number="0" />
+          <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+        </div>
+      </div>
+    </div>
+  );
   return (
     <ProjectCardWrap>
       <Card>
@@ -118,53 +271,8 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
               )}
             </Col>
             <Col lg="4">
-              <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
-                <img
-                  className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
-                  src={lisa}
-                  alt="avatar"
-                />
-                <div className={`${data?.match_percentage >= 0 ? '' : ' d-flex w-100 align-items-center'}`}>
-                  <div className="flex-grow-1">
-                    <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                      {data?.client_details?.first_name} {data?.client_details?.last_name}
-                    </CardTitle>
-                    <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                      {data?.client_details?.company_name}
-                    </CardText>
-                  </div>
-                  <div className="d-flex flex-grow-1">
-                    <RatingBadge number="0" />
-                    <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
-                  </div>
-                </div>
-                {data?.match_percentage >= 0 && (
-                  <div className="circular-progressbar-container mt-25">
-                    <CircularProgressbarWithChildren
-                      value={data?.match_percentage}
-                      styles={{
-                        path: {
-                          stroke: giveStrokeColor(data?.match_percentage),
-                          strokeLinecap: 'round',
-                          transition: 'stroke-dashoffset 0.5s ease 0s',
-                          transform: 'rotate(0turn)',
-                          transformOrigin: 'center center',
-                        },
-                        trail: {
-                          stroke: theme.progressBarBg,
-                          strokeLinecap: 'round',
-                          transform: 'rotate(0turn)',
-                          transformOrigin: 'center center',
-                        },
-                      }}
-                    >
-                      <div className="d-flex justify-content-center align-items-center">
-                        <p className="percentage-text m-0">{data?.match_percentage}%</p>
-                      </div>
-                    </CircularProgressbarWithChildren>
-                  </div>
-                )}
-              </div>
+              {isProjectWithTeam ? ProjectWithTeamUI : isTeam ? TeamUI : isRecommended ? RecommendedUI : ''}
+              {!isProjectWithTeam && !isRecommended && !isTeam && BaseInfoUI}
               <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
               <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
             </Col>
@@ -180,12 +288,16 @@ ProjectCard.propTypes = {
   isExpanded: PropTypes.bool,
   data: PropTypes.object,
   isPopoverOpen: PropTypes.bool,
+  isProjectWithTeam: PropTypes.bool,
+  isTeam: PropTypes.bool,
 };
 
 ProjectCard.defaultProps = {
   isExpanded: false,
   data: {},
   isPopoverOpen: false,
+  isProjectWithTeam: false,
+  isTeam: false,
 };
 
 export default ProjectCard;

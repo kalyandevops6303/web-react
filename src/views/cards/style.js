@@ -32,18 +32,29 @@ const ProjectCardWrap = styled(CardWrap)`
       }
     }
   }
+  .name-info-rating-wrapper {
+    width: 70%;
+  }
   .marketplace-card-title {
-    line-height: 18px;
+    line-height: 1.25rem;
+    font-size: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .marketplace-card-role {
-    font-size: 18px;
+    font-size: 0.8rem !important;
     color: ${theme.gray};
     font-weight: 300;
-    line-height: 18xp;
+    line-height: 1.125rem;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .market-place-card-photo {
-    height: 2.2rem;
+    height: 2rem;
     border-radius: 50%;
   }
   .rating-label {

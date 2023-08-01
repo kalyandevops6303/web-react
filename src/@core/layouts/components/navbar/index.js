@@ -118,6 +118,16 @@ const ThemeNavbar = (props) => {
           >
             Marketplace
           </NavLink>
+          <NavLink
+            className={
+              (location?.pathname?.split('/')?.[1] === 'projects' || location?.state?.from?.primary === 'projects'
+                ? 'is-active'
+                : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+            }
+            to="/projects/ongoing"
+          >
+            Project
+          </NavLink>
         </>
       )}
 

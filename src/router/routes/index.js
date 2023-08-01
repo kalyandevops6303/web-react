@@ -25,6 +25,7 @@ import Search from '../../views/search';
 import Notifications from '../../views/notifications';
 import ComingSoon from '../../views/auth/ComingSoon';
 import { userOnboarding } from '../../utility/constants/Constant';
+import Projects from '../../views/projects';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -64,6 +65,11 @@ const Routes = [
   {
     path: '/marketplace/*',
     element: <MarketPlace />,
+  },
+
+  {
+    path: '/projects/*',
+    element: <Projects />,
   },
 
   {
