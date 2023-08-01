@@ -17,8 +17,8 @@ import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
 import { DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
-import SendInvitationModal from '../CreateProject/SendInvitationModal';
-import InvitationSentModal from '../CreateProject/InvitationSentModal';
+import SendInvitationModal from '../modals/SendInvitationModal';
+import InvitationSentModal from '../modals/InvitationSentModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();

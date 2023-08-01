@@ -5,7 +5,7 @@ import { Star, User } from 'react-feather';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col, Badge, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
 import GreatJobTick from '../../assets/images/greatJobGif.gif';
-import { InviteUsersListContainer } from './style';
+import { InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
 import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
 import { inviteTalents } from '../../redux/actions/createProjectActions';

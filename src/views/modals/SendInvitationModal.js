@@ -3,7 +3,7 @@ import Proptypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col, Badge, Input } from 'reactstrap';
 import { Star, User } from 'react-feather';
 import '../custom-styles.scss';
-import { InviteUsersListContainer } from './style';
+import { InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
 
 const SendInvitationModal = ({
