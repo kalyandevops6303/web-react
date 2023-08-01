@@ -16,6 +16,7 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import { removeEmptyKeys } from '../../../utility/Utils';
 import { getUserDetails, saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
 import { checkpointCompleteLoading } from '../../../redux/selectors/talentOnboardingSelectors';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -74,11 +75,11 @@ const Social = () => {
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/client-onboarding/availability-details', {
+      navigate(`/${userOnboarding.client}/availability-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/client-onboarding/availability-details');
+      navigate(`/${userOnboarding.client}/availability-details`);
     }
   };
 

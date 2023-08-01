@@ -1,27 +1,37 @@
+import { userOnboarding } from './Constant';
+
 const CompleteProfileDetailsCta = {
   TALENT: [
     {
       keyToMatch: 'tagline',
       label: 'Add Personal Details',
-      path: '/talent-onboarding/personal-details',
+      path: `/${userOnboarding.talent}/personal-details`,
     },
     {
       keyToMatch: 'educational_institute',
       label: 'Add Education Details',
-      path: '/talent-onboarding/educational-details',
+      path: `/${userOnboarding.talent}/educational-details`,
     },
-    { keyToMatch: 'availability', label: 'Add Availability Details', path: '/talent-onboarding/availability-details' },
-    { keyToMatch: 'social_links', label: 'Add Social Details', path: '/talent-onboarding/social-details' },
+    {
+      keyToMatch: 'availability',
+      label: 'Add Availability Details',
+      path: `/${userOnboarding.talent}/availability-details`,
+    },
+    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userOnboarding.talent}/social-details` },
   ],
   CLIENT: [
-    { keyToMatch: 'company_name', label: 'Add Personal Details', path: '/client-onboarding/personal-details' },
+    { keyToMatch: 'company_name', label: 'Add Personal Details', path: `/${userOnboarding.client}/personal-details` },
     {
       keyToMatch: 'educational_institute',
       label: 'Add Education Details',
-      path: '/client-onboarding/educational-details',
+      path: `/${userOnboarding.client}/educational-details`,
     },
-    { keyToMatch: 'availability', label: 'Add Availability Details', path: '/client-onboarding/availability-details' },
-    { keyToMatch: 'social_links', label: 'Add Social Details', path: '/client-onboarding/social-details' },
+    {
+      keyToMatch: 'availability',
+      label: 'Add Availability Details',
+      path: `/${userOnboarding.client}/availability-details`,
+    },
+    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userOnboarding.client}/social-details` },
   ],
 };
 

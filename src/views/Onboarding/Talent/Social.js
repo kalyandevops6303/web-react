@@ -19,6 +19,7 @@ import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { removeEmptyKeys } from '../../../utility/Utils';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -77,11 +78,11 @@ const Social = () => {
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/availability-details', {
+      navigate(`/${userOnboarding.talent}/availability-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/availability-details');
+      navigate(`/${userOnboarding.talent}/availability-details`);
     }
   };
 

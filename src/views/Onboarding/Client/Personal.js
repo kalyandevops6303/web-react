@@ -41,6 +41,7 @@ import {
 } from '../../../services/talentOnboardingServices';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -213,31 +214,31 @@ const Personal = () => {
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/client-onboarding/account-details', {
+      navigate(`/${userOnboarding.client}/account-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/client-onboarding/account-details');
+      navigate(`/${userOnboarding.client}/account-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/client-onboarding/educational-details', {
+      navigate(`/${userOnboarding.client}/educational-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/client-onboarding/educational-details');
+      navigate(`/${userOnboarding.client}/educational-details`);
     }
   };
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/client-onboarding/educational-details', {
+      navigate(`/${userOnboarding.client}/educational-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/client-onboarding/educational-details');
+      navigate(`/${userOnboarding.client}/educational-details`);
     }
   };
 

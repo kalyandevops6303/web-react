@@ -11,6 +11,7 @@ import Availability from './Availability';
 import Social from './Social';
 import EducationTabInactiveImg from '../../../assets/images/educationTabInactive.png';
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -19,20 +20,20 @@ const Tabs = ({ tabNames, active }) => {
     <TabsContainer className="pt-2">
       <Nav pills className="mb-2">
         <NavItem>
-          <NavLink active={location.pathname === '/client-onboarding/account-details'}>
+          <NavLink active={location.pathname === `/${userOnboarding.client}/account-details`}>
             <Home className="font-medium-3 me-50" />
             <span className="fw-bold">Account</span>
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink active={location.pathname === '/client-onboarding/personal-details'}>
+          <NavLink active={location.pathname === `/${userOnboarding.client}/personal-details`}>
             <User className="font-medium-3 me-50" />
             <span className="fw-bold">Personal</span>
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink active={location.pathname === '/client-onboarding/educational-details'}>
-            {location.pathname === '/client-onboarding/educational-details' ? (
+          <NavLink active={location.pathname === `/${userOnboarding.client}/educational-details`}>
+            {location.pathname === `/${userOnboarding.client}/educational-details` ? (
               <img src={EducationTabActiveImg} alt="education-active" width={20} height={20} className="me-50" />
             ) : (
               <img src={EducationTabInactiveImg} alt="education-inactive" width={20} height={20} className="me-50" />
@@ -41,13 +42,13 @@ const Tabs = ({ tabNames, active }) => {
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink active={location.pathname === '/client-onboarding/availability-details'}>
+          <NavLink active={location.pathname === `/${userOnboarding.client}/availability-details`}>
             <Clock className="font-medium-3 me-50" />
             <span className="fw-bold">Availability</span>
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink active={location.pathname === '/client-onboarding/social-details'}>
+          <NavLink active={location.pathname === `/${userOnboarding.client}/social-details`}>
             <Link className="font-medium-3 me-50" />
             <span className="fw-bold">Social</span>
           </NavLink>
@@ -55,19 +56,19 @@ const Tabs = ({ tabNames, active }) => {
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
-          {location.pathname === '/client-onboarding/account-details' && <Account />}
+          {location.pathname === `/${userOnboarding.client}/account-details` && <Account />}
         </TabPane>
         <TabPane tabId={tabNames.Personal}>
-          {location.pathname === '/client-onboarding/personal-details' && <Personal />}
+          {location.pathname === `/${userOnboarding.client}/personal-details` && <Personal />}
         </TabPane>
         <TabPane tabId={tabNames.Educational}>
-          {location.pathname === '/client-onboarding/educational-details' && <Educational />}
+          {location.pathname === `/${userOnboarding.client}/educational-details` && <Educational />}
         </TabPane>
         <TabPane tabId={tabNames.Availability}>
-          {location.pathname === '/client-onboarding/availability-details' && <Availability />}
+          {location.pathname === `/${userOnboarding.client}/availability-details` && <Availability />}
         </TabPane>
         <TabPane tabId={tabNames.Social}>
-          {location.pathname === '/client-onboarding/social-details' && <Social />}
+          {location.pathname === `/${userOnboarding.client}/social-details` && <Social />}
         </TabPane>
         <TabPane tabId={tabNames.Payment}>Payment</TabPane>
       </TabContent>

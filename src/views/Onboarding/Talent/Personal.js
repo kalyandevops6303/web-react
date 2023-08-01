@@ -33,6 +33,7 @@ import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talen
 import { profileDetailsLoading, userDetails } from '../../../redux/selectors/talentOnboardingSelectors';
 import { countriesService, languagesService, talentRolesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -186,31 +187,31 @@ const Personal = () => {
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/account-details', {
+      navigate(`/${userOnboarding.talent}/account-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/account-details');
+      navigate(`/${userOnboarding.talent}/account-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/educational-details', {
+      navigate(`/${userOnboarding.talent}/educational-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/educational-details');
+      navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/educational-details', {
+      navigate(`/${userOnboarding.talent}/educational-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/educational-details');
+      navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 

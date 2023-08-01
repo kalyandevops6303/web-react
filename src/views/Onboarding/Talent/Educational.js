@@ -23,6 +23,7 @@ import {
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -107,31 +108,31 @@ const Educational = () => {
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/personal-details', {
+      navigate(`/${userOnboarding.talent}/personal-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/personal-details');
+      navigate(`/${userOnboarding.talent}/personal-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/availability-details', {
+      navigate(`/${userOnboarding.talent}/availability-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/availability-details');
+      navigate(`/${userOnboarding.talent}/availability-details`);
     }
   };
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/availability-details', {
+      navigate(`/${userOnboarding.talent}/availability-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/availability-details');
+      navigate(`/${userOnboarding.talent}/availability-details`);
     }
   };
 

@@ -24,6 +24,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -106,31 +107,31 @@ const Educational = () => {
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/client-onboarding/personal-details', {
+      navigate(`/${userOnboarding.client}/personal-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/client-onboarding/personal-details');
+      navigate(`/${userOnboarding.client}/personal-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/client-onboarding/availability-details', {
+      navigate(`/${userOnboarding.client}/availability-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/client-onboarding/availability-details');
+      navigate(`/${userOnboarding.client}/availability-details`);
     }
   };
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/client-onboarding/availability-details', {
+      navigate(`/${userOnboarding.client}/availability-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/client-onboarding/availability-details');
+      navigate(`/${userOnboarding.client}/availability-details`);
     }
   };
 

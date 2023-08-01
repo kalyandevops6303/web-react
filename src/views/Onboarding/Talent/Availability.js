@@ -31,6 +31,7 @@ import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talen
 import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -140,31 +141,31 @@ const Availability = () => {
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/educational-details', {
+      navigate(`/${userOnboarding.talent}/educational-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/educational-details');
+      navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/social-details', {
+      navigate(`/${userOnboarding.talent}/social-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/social-details');
+      navigate(`/${userOnboarding.talent}/social-details`);
     }
   };
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/social-details', {
+      navigate(`/${userOnboarding.talent}/social-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/social-details');
+      navigate(`/${userOnboarding.talent}/social-details`);
     }
   };
 

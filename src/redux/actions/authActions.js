@@ -274,8 +274,8 @@ export {
   verifyOtp,
   setNewPassword,
   loginUser,
-  logoutAction,
   fcmSubscribeNotification,
   fcmUnsubscribeNotification,
+  logoutAction,
   resetPassword,
 };
