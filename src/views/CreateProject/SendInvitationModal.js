@@ -6,13 +6,21 @@ import '../custom-styles.scss';
 import { InviteUsersListContainer } from './style';
 import theme from '../../configs/themeVariables';
 
-const SendInvitationModal = ({ modal, toggleModal, selectedTalents, setInvitationSentModal, message, setMessage }) => (
+const SendInvitationModal = ({
+  modal,
+  toggleModal,
+  selectedTalents,
+  setInvitationSentModal,
+  message,
+  setMessage,
+  description,
+}) => (
   <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
     <ModalHeader toggle={toggleModal} />
     <ModalBody>
       <div className="px-3">
         <h2 className="fw-bold font-large-1 text-center mb-3">Send Invitation</h2>
-        <p className="mb-2">You are inviting the below to join your project.</p>
+        <p className="mb-2">{description}</p>
         <InviteUsersListContainer>
           {selectedTalents.map((talent) => (
             <Row key={talent.user_id} className="d-flex align-items-center mb-2 w-100 mx-0">
@@ -74,6 +82,7 @@ SendInvitationModal.propTypes = {
   setInvitationSentModal: Proptypes.func,
   message: Proptypes.string,
   setMessage: Proptypes.func,
+  description: Proptypes.string,
 };
 
 SendInvitationModal.defaultProps = {
@@ -83,4 +92,5 @@ SendInvitationModal.defaultProps = {
   setInvitationSentModal: () => {},
   message: '',
   setMessage: () => {},
+  description: '',
 };

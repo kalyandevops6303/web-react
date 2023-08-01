@@ -17,14 +17,17 @@ import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
 import { DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
+import SendInvitationModal from '../CreateProject/SendInvitationModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
 
   const userDetailsData = useSelector(userData);
 
+  const [message, setMessage] = useState('');
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
+  const [sendInvitationModal, setSendInvitationModal] = useState(null);
 
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
@@ -33,6 +36,11 @@ const PrivateDashboard = () => {
   const toggleInviteTeamMemberModal = () => {
     setInviteTeamMemberModal(!inviteTeamMemberModal);
   };
+
+  const toggleSendInvitationModal = () => {
+    setSendInvitationModal(!sendInvitationModal);
+  };
+
   const profilePercentageData = useSelector(profilePercentage);
 
   useEffect(() => {
@@ -68,11 +76,22 @@ const PrivateDashboard = () => {
         <ListingTeamMembersModal
           modal={listingTeamMembersModal}
           toggleModal={toggleListingTeamMembersModal}
-          setInviteTeamMemberModal={setInviteTeamMemberModal}
+          toggleSendInvitationModal={toggleSendInvitationModal}
         />
       )}
       {inviteTeamMemberModal && (
         <InviteTeamMemberModal modal={inviteTeamMemberModal} toggleModal={toggleInviteTeamMemberModal} />
+      )}
+      {sendInvitationModal && (
+        <SendInvitationModal
+          modal={sendInvitationModal}
+          toggleModal={toggleSendInvitationModal}
+          selectedTalents={[]}
+          setInvitationSentModal={() => {}}
+          message={message}
+          setMessage={setMessage}
+          description="You are inviting the below to join your team."
+        />
       )}
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (

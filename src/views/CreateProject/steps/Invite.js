@@ -227,6 +227,7 @@ const Invite = ({ stepper }) => {
           setInvitationSentModal={setInvitationSentModal}
           message={message}
           setMessage={setMessage}
+          description="You are inviting the below to join your project."
         />
       )}
       {invitationSentModal && (

@@ -8,10 +8,10 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { GrayBorderContainer } from '../styled';
 import theme from '../../configs/themeVariables';
 
-const ListingTeamMembersModal = ({ modal, toggleModal, setInviteTeamMemberModal }) => {
+const ListingTeamMembersModal = ({ modal, toggleModal, toggleSendInvitationModal }) => {
   const onInviteTeamMemberClick = () => {
     toggleModal();
-    setInviteTeamMemberModal(true);
+    toggleSendInvitationModal(true);
   };
 
   return (
@@ -173,11 +173,11 @@ export default ListingTeamMembersModal;
 ListingTeamMembersModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  setInviteTeamMemberModal: Proptypes.func,
+  toggleSendInvitationModal: Proptypes.func,
 };
 
 ListingTeamMembersModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  setInviteTeamMemberModal: () => {},
+  toggleSendInvitationModal: () => {},
 };
