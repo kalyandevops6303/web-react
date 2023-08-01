@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Route, Routes, useMatch, useNavigate } from 'react-router-dom';
-import { Button } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { getItem } from '../../utility/localStorageControl';
-import { userData } from '../../redux/selectors/dashboardSelectors';
+import { getProfilePercentage } from '../../redux/actions/dashboardActions';
+import CreateProjectButton from './overview/CreateProjectButton';
 
 const MarketPlaceContainer = styled.div`
   .marketplace-search {
@@ -25,9 +25,9 @@ const MarketPlaceContainer = styled.div`
 `;
 
 const MarketPlace = () => {
-  const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // Primary filters
 
   // Adjust the number of lines based on the desired limit
@@ -43,6 +43,7 @@ const MarketPlace = () => {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    dispatch(getProfilePercentage());
   }, []);
 
   // Secondary filters
@@ -67,19 +68,12 @@ const MarketPlace = () => {
 
   return (
     <MarketPlaceContainer>
-      <div className="d-flex justify-content-between">
-        <BreadCrumbs
-          data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
-        />
+      <BreadCrumbs
+        data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
+      />
 
-        {userDetailsData?.user_type === 'CLIENT' && (
-          <Link to="/create-project">
-            <Button as="link" color="primary">
-              Create Project
-            </Button>
-          </Link>
-        )}
-      </div>
+      <CreateProjectButton />
+
       <PrimaryFilter
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}

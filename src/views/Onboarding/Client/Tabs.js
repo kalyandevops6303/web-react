@@ -2,13 +2,15 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Home, User } from 'react-feather';
+import { Clock, Home, Link, User } from 'react-feather';
 import { TabsContainer } from '../style';
 import Account from '../Account';
 import Personal from './Personal';
 import Educational from './Educational';
 import Availability from './Availability';
 import Social from './Social';
+import EducationTabInactiveImg from '../../../assets/images/educationTabInactive.png';
+import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
 import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Tabs = ({ tabNames, active }) => {
@@ -31,19 +33,23 @@ const Tabs = ({ tabNames, active }) => {
         </NavItem>
         <NavItem>
           <NavLink active={location.pathname === `/${userOnboarding.client}/educational-details`}>
-            <User className="font-medium-3 me-50" />
+          {location.pathname === `/${userOnboarding.client}/educational-details` ? (
+              <img src={EducationTabActiveImg} alt="education-active" width={20} height={20} className="me-50" />
+            ) : (
+              <img src={EducationTabInactiveImg} alt="education-inactive" width={20} height={20} className="me-50" />
+            )}
             <span className="fw-bold">Education</span>
           </NavLink>
         </NavItem>
         <NavItem>
           <NavLink active={location.pathname === `/${userOnboarding.client}/availability-details`}>
-            <User className="font-medium-3 me-50" />
+            <Clock className="font-medium-3 me-50" />
             <span className="fw-bold">Availability</span>
           </NavLink>
         </NavItem>
         <NavItem>
           <NavLink active={location.pathname === `/${userOnboarding.client}/social-details`}>
-            <User className="font-medium-3 me-50" />
+            <Link className="font-medium-3 me-50" />
             <span className="fw-bold">Social</span>
           </NavLink>
         </NavItem>

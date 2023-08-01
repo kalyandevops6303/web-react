@@ -8,7 +8,6 @@ import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from './overview/Statbox';
 import round from '../../lib/round';
 import capitalize from '../../lib/capitalize';
-
 import LeftSidebarProfile from './overview/LeftSidebarProfile';
 import UserBio from './overview/UserBio';
 import RecentProjects from './overview/RecentProjects';
