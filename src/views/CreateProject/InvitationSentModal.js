@@ -22,6 +22,7 @@ const InvitationSentModal = ({
   invitedIds,
   setInvitedIds,
   setSelectedTalents,
+  description,
 }) => {
   const dispatch = useDispatch();
 
@@ -91,7 +92,7 @@ const InvitationSentModal = ({
           <div className="w-100">
             <h2 className="fw-bold font-large-1 mb-1">Great Job!</h2>
             <h4 className="fw-bold font-small-5">Invitation sent</h4>
-            <p className="fw-light font-medium-3 mt-75">You’ve sent a project invitation</p>
+            <p className="fw-light font-medium-3 mt-75">{description}</p>
             <InviteUsersListContainer>
               {selectedTalents.map((talent) => (
                 <Row key={talent.id} className="d-flex align-items-center mb-2 mx-0">
@@ -146,6 +147,7 @@ InvitationSentModal.propTypes = {
   invitedIds: Proptypes.array,
   setInvitedIds: Proptypes.func,
   setSelectedTalents: Proptypes.func,
+  description: Proptypes.string,
 };
 
 InvitationSentModal.defaultProps = {
@@ -160,4 +162,5 @@ InvitationSentModal.defaultProps = {
   invitedIds: [],
   setInvitedIds: () => {},
   setSelectedTalents: () => {},
+  description: '',
 };

@@ -243,6 +243,7 @@ const Invite = ({ stepper }) => {
           invitedIds={invitedIds}
           setInvitedIds={setInvitedIds}
           setSelectedTalents={setSelectedTalents}
+          description="You’ve sent a project invitation"
         />
       )}
       <Card>

@@ -18,6 +18,7 @@ import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
 import { DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SendInvitationModal from '../CreateProject/SendInvitationModal';
+import InvitationSentModal from '../CreateProject/InvitationSentModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const PrivateDashboard = () => {
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
   const [sendInvitationModal, setSendInvitationModal] = useState(null);
+  const [invitationSentModal, setInvitationSentModal] = useState(null);
 
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
@@ -39,6 +41,10 @@ const PrivateDashboard = () => {
 
   const toggleSendInvitationModal = () => {
     setSendInvitationModal(!sendInvitationModal);
+  };
+
+  const toggleInvitationSentModal = () => {
+    setInvitationSentModal(!invitationSentModal);
   };
 
   const profilePercentageData = useSelector(profilePercentage);
@@ -76,7 +82,7 @@ const PrivateDashboard = () => {
         <ListingTeamMembersModal
           modal={listingTeamMembersModal}
           toggleModal={toggleListingTeamMembersModal}
-          toggleSendInvitationModal={toggleSendInvitationModal}
+          toggleInvitationSentModal={toggleInvitationSentModal}
         />
       )}
       {inviteTeamMemberModal && (
@@ -91,6 +97,22 @@ const PrivateDashboard = () => {
           message={message}
           setMessage={setMessage}
           description="You are inviting the below to join your team."
+        />
+      )}
+      {invitationSentModal && (
+        <InvitationSentModal
+          modal={invitationSentModal}
+          toggleModal={toggleInvitationSentModal}
+          selectedTalents={[]}
+          projectId=""
+          message={message}
+          toggleSendInvitationModal={toggleSendInvitationModal}
+          selectedIds={[]}
+          setSelectedIds={() => {}}
+          invitedIds={[]}
+          setInvitedIds={() => {}}
+          setSelectedTalents={() => {}}
+          description="You’ve sent a team member invitation"
         />
       )}
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
