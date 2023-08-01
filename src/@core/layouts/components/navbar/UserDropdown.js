@@ -79,7 +79,27 @@ const UserDropdown = () => {
           )}
           <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
         </div>
-        <Avatar img={defaultAvatar} imgHeight="40" imgWidth="40" />
+        {userDetailsData?.user_type === userTypes.talent ? (
+          <Avatar
+            img={
+              userDetailsData?.talent_info?.image_uri.length > 0
+                ? userDetailsData?.talent_info?.image_uri
+                : defaultAvatar
+            }
+            imgHeight="40"
+            imgWidth="40"
+          />
+        ) : (
+          <Avatar
+            img={
+              userDetailsData?.client_info?.image_uri.length > 0
+                ? userDetailsData?.client_info?.image_uri
+                : defaultAvatar
+            }
+            imgHeight="40"
+            imgWidth="40"
+          />
+        )}
       </DropdownToggle>
 
       {location?.pathname?.split?.('/')?.[3] === userDetailsData?._id && (

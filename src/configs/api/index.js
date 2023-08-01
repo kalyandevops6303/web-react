@@ -38,6 +38,7 @@ const API = {
     accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
+    profileImageUpload: `${apiAuthEndpoint}/api/v1/user/profile/image-url`,
   },
   clientOnboarding: {
     accountDetails: `${apiAuthEndpoint}/api/v1/client/account-details`,
@@ -62,6 +63,7 @@ const API = {
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
+    projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
   },
   marketplace: {
     client: {

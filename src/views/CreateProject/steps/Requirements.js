@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable no-unsafe-optional-chaining */
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { ChevronRight, FileText, Info, Minus, Upload } from 'react-feather';
@@ -38,6 +39,9 @@ import {
 } from '../../../services/staticServices';
 import timeOptions from '../../../utility/constants/TimeDropdownOptions';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
+import { projectFileUploadService, projectFileUploadToAzureService } from '../../../services/createProjectServices';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -109,6 +113,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       .number()
       .min(0, 'Desired time overlap should be greater than or equal to 0')
       .max(24, 'Desired time overlap should not be greater than 24')
+      .test('maxDigitsAfterDecimal', 'Desired time overlap should be upto one decimal place', (number) =>
+        /^\d+(\.\d{1,1})?$/.test(number),
+      )
       .typeError('Please enter a number')
       .required('Desired time overlap is required'),
     availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
@@ -207,6 +214,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     handleSubmit,
     watch,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -226,6 +234,10 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const [timezonesOptions, setTimezonesOptions] = useState(null);
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
+
+  useEffect(() => {
+    clearErrors('expectedDuration');
+  }, [watch('expectedDurationPeriod')]);
 
   const loadSkillsOptions = async (search) => {
     if (search) {
@@ -360,10 +372,76 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     stepper.next();
   };
 
+  const isFileValid = (file) => {
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!allowedTypes.includes(file.type)) {
+      ShowToastMessage(ERROR, 'Please select a valid file (PDF, DOC, or DOCX).');
+      return false;
+    }
+    if (file.size > maxSize) {
+      ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
+      return false;
+    }
+    return true;
+  };
+
+  const [uploadingFiles, setUploadingFiles] = useState([]);
+
+  const filesRef = useRef();
+
+  useEffect(() => {
+    filesRef.current = files;
+  }, [files]);
+
+  const handleUploadFile = async (file) => {
+    try {
+      setUploadingFiles((prevFiles) => [...prevFiles, file]);
+
+      await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': file.file.type,
+      });
+    } catch (error) {
+      ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
+    } finally {
+      setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
+    }
+  };
+
+  const onDrop = useCallback(async (acceptedFiles) => {
+    const fetchUploadUrls = async () => {
+      const allFiles = [...filesRef.current, ...acceptedFiles];
+
+      if (allFiles?.length > 5) {
+        ShowToastMessage(ERROR, 'Maximum 5 files allowed');
+      } else {
+        const validFiles = acceptedFiles.filter((file) => isFileValid(file));
+
+        const promises = validFiles.map(async (file) => {
+          const response = await projectFileUploadService(file.name);
+          return { file, uploadData: response?.data?.data };
+        });
+
+        const filesWithUrls = await Promise.all(promises);
+        setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
+
+        filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
+      }
+    };
+    fetchUploadUrls();
+  }, []);
+
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setFiles([...files, ...acceptedFiles.map((file) => Object.assign(file))]);
+    accept: {
+      'text/application': ['.pdf', '.doc', '.docx'],
     },
+    onDrop,
   });
 
   const renderFilePreview = (file) => {
@@ -377,16 +455,16 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
-    const filtered = uploadedFiles.filter((i) => i.name !== file.name);
+    const filtered = uploadedFiles.filter((i) => i.file.name !== file.name);
     setFiles([...filtered]);
   };
 
   const renderFileSize = (size) => {
     if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
       // eslint-disable-next-line
     } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
+      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
     }
   };
 
@@ -401,21 +479,29 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       <Card className="p-1">
         {files.map((file, index) => (
           <Row
-            key={file.name}
+            key={file.file.name}
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
-            <Col sm="6" md="6" lg="6">
-              {renderFilePreview(file)}
-              {file.name}
+            <Col sm="6" md="4" lg="4">
+              {renderFilePreview(file.file)}
+              {file.file.name}
+            </Col>
+            <Col sm="6" md="2" lg="2">
+              {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.size)}
+              {renderFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate}
             </Col>
             <Col sm="2" md="2" lg="2">
-              <Button color="flat-danger" className="btn-left-margin" onClick={() => handleRemoveFile(file)}>
+              <Button
+                color="flat-danger"
+                className="btn-left-margin"
+                disabled={uploadingFiles.includes(file)}
+                onClick={() => handleRemoveFile(file.file)}
+              >
                 Remove
               </Button>
             </Col>
@@ -461,7 +547,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
         let clientAvailabilityDays = [];
 
-        if ('days' in userDetailsData.availability.weekdays_avl) {
+        if (userDetailsData?.availability?.weekdays_avl && 'days' in userDetailsData?.availability?.weekdays_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
           setValue('weekdays', userDetailsData?.availability?.weekdays_avl?.days, { shouldValidate: true });
           setValue(
@@ -479,7 +565,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             { shouldValidate: true },
           );
         }
-        if ('days' in userDetailsData.availability.weekends_avl) {
+        if (userDetailsData?.availability?.weekends_avl && 'days' in userDetailsData?.availability?.weekends_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
           setValue('weekends', userDetailsData?.availability?.weekends_avl?.days, { shouldValidate: true });
           setValue(
@@ -591,10 +677,20 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               </Col>
             </Row>
             <Row>
-              <Label className="form-label">Upload detailed requirements document (optional)</Label>
+              <Label className="form-label">
+                Upload detailed requirements document (optional) <Info size={18} color={theme.infoIcon} id="document" />
+                <UncontrolledTooltip placement="right" target="document">
+                  <div className="d-flex flex-column align-items-start">
+                    <p className="m-0">Allowed file types:</p>
+                    <p className="m-0">pdf, doc, docx</p>
+                    <p className="m-0">Max files: 5</p>
+                    <p className="m-0">Max file size: 5MB</p>
+                  </div>
+                </UncontrolledTooltip>
+              </Label>
               {files.length ? (
                 <>
-                  <div className="px-1">{fileList()}</div>
+                  <div className="px-1 mt-50">{fileList()}</div>
                   <div {...getRootProps({ className: 'dropzone' })}>
                     <input {...getInputProps()} />
                     <div className="d-flex align-items-center upload-btn cursor-pointer mt-1">
@@ -1531,7 +1627,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end">
-          <Button color="primary">
+          <Button color="primary" disabled={uploadingFiles.length > 0}>
             <span className="me-50">Save & Continue</span>
             <ChevronRight size={14} />
           </Button>

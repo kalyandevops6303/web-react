@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -11,12 +11,16 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { userData } from '../../redux/selectors/dashboardSelectors';
+import { profilePercentage, userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
+import { DashboardHeaderWrapper } from './overview/style';
+import CompleteProfileModal from '../modals/CompleteProfileModal';
 
 const PrivateDashboard = () => {
+  const navigate = useNavigate();
+
   const userDetailsData = useSelector(userData);
 
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
@@ -29,13 +33,37 @@ const PrivateDashboard = () => {
   const toggleInviteTeamMemberModal = () => {
     setInviteTeamMemberModal(!inviteTeamMemberModal);
   };
+  const profilePercentageData = useSelector(profilePercentage);
+
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
     setListingTeamMembersModal(true);
   }, []);
+
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+
+  const toggleCompleteProfileModal = () => {
+    setCompleteProfileModal(!completeProfileModal);
+  };
+
+  const onCreateProjectClick = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModal(true);
+    } else {
+      navigate('/create-project');
+    }
+  };
+
   return (
     <div>
+      {completeProfileModal && (
+        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+      )}
       {listingTeamMembersModal && (
         <ListingTeamMembersModal
           modal={listingTeamMembersModal}
@@ -46,16 +74,14 @@ const PrivateDashboard = () => {
       {inviteTeamMemberModal && (
         <InviteTeamMemberModal modal={inviteTeamMemberModal} toggleModal={toggleInviteTeamMemberModal} />
       )}
-      <div className="d-flex justify-content-between">
-        <BreadCrumbs data={[{ title: 'Dashboard' }]} />
-        {userDetailsData?.user_type === userTypes.client && (
-          <Link to="/create-project">
-            <Button as="link" color="primary">
-              Create Project
-            </Button>
-          </Link>
-        )}
-      </div>
+      <BreadCrumbs data={[{ title: 'Dashboard' }]} />
+      {userDetailsData?.user_type === userTypes.client && (
+        <DashboardHeaderWrapper>
+          <Button as="link" color="primary" onClick={onCreateProjectClick}>
+            Create Project
+          </Button>
+        </DashboardHeaderWrapper>
+      )}
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />

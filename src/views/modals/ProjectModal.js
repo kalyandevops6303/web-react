@@ -4,7 +4,6 @@ import { Modal, ModalHeader, ModalBody, Card, CardHeader, CardTitle, CardBody, R
 import styled from 'styled-components';
 import ReactHtmlParser from '../../lib/html-parser';
 import DateTime from '../../lib/date-time';
-
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
