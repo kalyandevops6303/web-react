@@ -89,6 +89,10 @@ export const OnBoardWrap = styled.div`
     font-weight: 500 !important;
   }
 
+  .privacy-terms-label {
+    color: ${theme.primary};
+  }
+
   height: 100vh;
   width: 100%;
   background-color: white;
