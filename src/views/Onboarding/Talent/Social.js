@@ -18,18 +18,18 @@ import { checkpointCompleteLoading, profileDetailsLoading } from '../../../redux
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { removeEmptyKeys } from '../../../utility/Utils';
+import { isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
-    linkedInLink: yup.string().url('Please enter a valid URL'),
-    twitterLink: yup.string().url('Please enter a valid URL'),
-    githubLink: yup.string().url('Please enter a valid URL'),
+    linkedInLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
+    twitterLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
+    githubLink: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
     otherSocialLinks: yup.array().of(
       yup.object().shape({
         linkName: yup.string().nullable(),
-        link: yup.string().url('Please enter a valid URL').nullable(),
+        link: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
       }),
     ),
   });
@@ -108,20 +108,24 @@ const Social = () => {
     const social_links = [
       {
         platform: 'linkedIn',
-        url: linkedInLink,
+        url:
+          linkedInLink.includes('http://') || linkedInLink.includes('https://')
+            ? linkedInLink
+            : `https://${linkedInLink}`,
       },
       {
         platform: 'twitter',
-        url: twitterLink,
+        url:
+          twitterLink.includes('http://') || twitterLink.includes('https://') ? twitterLink : `https://${twitterLink}`,
       },
       {
         platform: 'github',
-        url: githubLink,
+        url: githubLink.includes('http://') || githubLink.includes('https://') ? githubLink : `https://${githubLink}`,
       },
       // eslint-disable-next-line
       ...otherSocialLinks?.map((link) => ({
         platform: link.linkName,
-        url: link.link,
+        url: link.link.includes('http://') || link.link.includes('https://') ? link.link : `https://${link.link}`,
       })),
     ];
 

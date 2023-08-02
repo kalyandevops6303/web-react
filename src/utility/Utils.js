@@ -233,3 +233,14 @@ export const returnDetailsForMarketPlace = (userType, missingValues) => {
   }
   return null;
 };
+
+// eslint-disable-next-line consistent-return
+export const isUrlWithoutProtocol = (value) => {
+  if (value.length > 0) {
+    const urlPattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,6}(\/.*)?$/i;
+    return urlPattern.test(value);
+    // eslint-disable-next-line no-else-return
+  } else {
+    return true;
+  }
+};

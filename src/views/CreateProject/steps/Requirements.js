@@ -414,7 +414,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     }
   };
 
-  const onDrop = useCallback(async (acceptedFiles) => {
+  const onDrop = useCallback(async (acceptedFiles, rejectedFiles) => {
+    rejectedFiles.forEach((file) =>
+      ShowToastMessage(ERROR, `${file.file.name} is not of a valid supported file type (PDF, DOC, or DOCX).`),
+    );
+
     const fetchUploadUrls = async () => {
       const allFiles = [...filesRef.current, ...acceptedFiles];
 
