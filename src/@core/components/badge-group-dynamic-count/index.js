@@ -10,7 +10,6 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     return null;
   }
   const renderBadge = (name, index) => {
-    // const { name } = item;
     const isLongName = name?.length > 35;
     const badgeClassName = isLongName ? `${color}` : color;
     const badgeColor = `${color} badge`;
@@ -57,7 +56,9 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     };
   }, [data]);
 
+  // This width is for the dynamic badge count that will be displayed, based on the number of tags. Substract this width from container width to have exact width of container.
   const widthToMinus = window.location.pathname.split('/')?.includes('search') ? 17 : 31;
+
   const arrangeTags = () => {
     const tagsContainer = document.querySelector('.badge-box-wrap');
     const containerWidth = tagsContainer.getBoundingClientRect().width - widthToMinus;
