@@ -239,4 +239,35 @@ export const BlueNavsContainer = styled.div`
   }
 `;
 
-export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper, GrayBorderContainer };
+const GrayCardWrapper = styled.div`
+  .card-header {
+    background-color: ${theme.headerBackground};
+  }
+
+  .card-body {
+    background-color: ${theme.headerBackground};
+  }
+
+  .white-card-bg {
+    .card-body {
+      border-radius: 6px;
+      background-color: ${theme.white};
+      box-shadow: 0px 4px 24px 0px ${theme.cardShadowLight};
+    }
+
+    .text-blue {
+      color: ${theme.activeNavPillText};
+    }
+  }
+`;
+
+export {
+  CardWrapper,
+  Header,
+  CustomBadge,
+  FormWrapper,
+  SecondaryFiltersWrap,
+  TimeWrapper,
+  GrayBorderContainer,
+  GrayCardWrapper,
+};

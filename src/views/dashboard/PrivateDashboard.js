@@ -52,7 +52,6 @@ const PrivateDashboard = () => {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
-    setListingTeamMembersModal(true);
   }, []);
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
