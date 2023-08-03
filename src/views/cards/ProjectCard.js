@@ -6,7 +6,9 @@ import Mpin from '@src/assets/images/map-pin.png';
 import LikeIcon from '@src/assets/images/like.png';
 import { useState, useEffect, useRef } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import { useDispatch } from 'react-redux';
 import Avatar from '@components/avatar';
+import { Heart } from 'react-feather';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import ReactHtmlParser from '../../lib/html-parser';
 import theme from '../../configs/themeVariables';
@@ -15,8 +17,10 @@ import BadgeGroup from '../../@core/components/badge-group';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
+import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 
 const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
+  const dispatch = useDispatch();
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -60,6 +64,13 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     }
   }, []);
 
+  const handleLike = () => {
+    dispatch(makeFavFromMarketplace({ project_id: data?._id }));
+  };
+  const handleUnLike = () => {
+    dispatch(removeFavFromMarketplace({ project_id: data?._id }));
+  };
+
   return (
     <ProjectCardWrap>
       <Card>
@@ -73,9 +84,22 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                   </Badge>
                 </CustomBadge>
               </div>
-              <CardTitle>
+              <CardTitle className="d-flex align-items-center">
                 <span className="cursor-pointer" onClick={() => setShowModal(true)}>
-                  {data?.details?.name}
+                  {data?.details?.name}{' '}
+                </span>
+                <span>
+                  {data?.is_favorite ? (
+                    <Heart
+                      className="cursor-pointer d-flex m-auto ms-75  heart"
+                      fill={theme.red}
+                      stroke={theme.red}
+                      onClick={handleUnLike}
+                      size={20}
+                    />
+                  ) : (
+                    <Heart className="cursor-pointer d-flex m-auto ms-75 heart" onClick={handleLike} size={20} />
+                  )}
                 </span>
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">

@@ -142,8 +142,14 @@ const UserCardWrap = styled(CardWrap)`
   .card {
     margin: 0.8rem 0.7rem !important;
   }
+  .alma-mater {
+    padding: 3px 4px 0px 4px;
+    background-color: ${theme.yellowColor} !important;
+    border-radius: 50%;
+    margin-bottom: -1px;
+  }
   .truncate-1 {
-    width: 9rem;
+    max-width: 9rem;
     display: inline-block;
     display: block;
     -webkit-line-clamp: 1;
@@ -199,7 +205,7 @@ const UserCardWrap = styled(CardWrap)`
   .circular-progressbar-container {
     width: 35px;
     height: 35px;
-    margin-left: 1rem;
+    // margin-left: 1rem;
 
     .percentage-text {
       font-weight: 400;

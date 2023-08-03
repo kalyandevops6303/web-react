@@ -47,6 +47,7 @@ const handleErrorCode = (err, callBack) => {
 };
 
 const errorHandler = (err, callBack) => {
+  console.error(err);
   if (window.navigator.onLine) {
     if (
       err?.response?.status === 502 ||

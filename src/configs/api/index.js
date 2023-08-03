@@ -51,6 +51,7 @@ const API = {
     clientProjects: `${apiOnboardingEndpoint}/api/v1/client/completed-projects`,
     addToFav: `${apiOnboardingEndpoint}/api/v1/favourite/set-user`,
     removeFav: `${apiOnboardingEndpoint}/api/v1/favourite/remove`,
+    addToFavProject: `${apiOnboardingEndpoint}/api/v1/favourite/set-project`,
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,

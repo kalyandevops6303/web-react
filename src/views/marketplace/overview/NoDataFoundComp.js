@@ -63,7 +63,7 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
   );
 };
 NoDataFoundComponent.propTypes = {
-  isRecommanded: PropTypes.string,
+  isRecommanded: PropTypes.bool,
 };
 NoDataFoundComponent.defaultProps = {
   isRecommanded: false,
