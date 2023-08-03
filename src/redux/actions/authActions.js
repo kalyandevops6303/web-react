@@ -214,7 +214,7 @@ const resendAction =
         await registerEmailService(email, userType);
       }
       if (isPhoneResend) {
-        await registerPhoneService(phone, country_code);
+        await registerPhoneService({ phone, country_code });
       }
       dispatch(resendSuccess());
     } catch (error) {

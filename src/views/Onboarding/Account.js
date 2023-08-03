@@ -119,7 +119,10 @@ const Account = () => {
       reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
     }
 
-    if (userDetailsData?.checkpoint === checkPoints.ACCOUNT_DETAILS || userDetailsData?.checkpoint === checkPoints.PROFILE_DETAILS) {
+    if (
+      userDetailsData?.checkpoint === checkPoints.ACCOUNT_DETAILS ||
+      userDetailsData?.checkpoint === checkPoints.PROFILE_DETAILS
+    ) {
       if (userDetailsData.user_type === userTypes.talent) {
         dispatch(saveTalentAccountDetails(reqData, onSuccess));
       } else {

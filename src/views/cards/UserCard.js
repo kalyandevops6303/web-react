@@ -1,11 +1,11 @@
-import { Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
+import { Card, CardBody, CardText, CardTitle, Col, Row, UncontrolledTooltip } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import BadgeGroup from '../../@core/components/badge-group';
+import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { UserCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
@@ -21,7 +21,7 @@ const giveStrokeColor = (percentage) => {
   }
 };
 
-const UserCard = ({ data }) => {
+const UserCard = ({ data, userType }) => {
   const location = useLocation();
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -41,22 +41,22 @@ const UserCard = ({ data }) => {
     if (data?.user_type === userTypes.client) return { title: 'Clients', link: '' };
     return { title: 'Talent', link: '' };
   };
-
+  const description = data?.company_tagline || data?.professional_intro;
   return (
-    <UserCardWrap>
+    <UserCardWrap userType={userType}>
       <Card>
         <CardBody>
           <Row>
-            <Col lg="8">
+            <Col lg="5">
               <div className="d-flex">
                 <Avatar
                   img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
-                  imgHeight="35"
-                  imgWidth="35"
-                  className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
+                  imgHeight="30"
+                  imgWidth="30"
+                  className={`market-place-card-photo me-1 mt-25 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
                 />
                 <div>
-                  <CardTitle className="marketplace-card-title mb-0 ms-25">
+                  <CardTitle className="truncate-1 text-decoration-none marketplace-card-title mb-0">
                     <Link
                       state={{
                         from: {
@@ -70,8 +70,10 @@ const UserCard = ({ data }) => {
                       {data?.last_name}
                     </Link>
                   </CardTitle>
-                  <CardText className="font-small-3 fw-300 mb-25 ms-25 marketplace-card-role">
-                    {data?.user_type === userTypes.client ? data?.company_name || 'Company Name' : data?.role?.name || 'Role'}
+                  <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
+                    {data?.user_type === userTypes.client
+                      ? data?.company_name || 'Company Name'
+                      : data?.role?.name || 'Role'}
                   </CardText>
                   <div className="d-flex">
                     <RatingBadge number="0" />
@@ -105,25 +107,45 @@ const UserCard = ({ data }) => {
                   </div>
                 )}
               </div>
-              <CardText className="mt-2 desc">{data?.company_tagline || data?.professional_intro} </CardText>
+              <CardText
+                id={`tooltip-${data?.user_id}`}
+                className={`mt-75 desc ${userType === 'client' ? 'truncate-4' : 'truncate-3'}`}
+              >
+                {description}
+              </CardText>
+              {description?.length > 80 && (
+                <UncontrolledTooltip placement="right" target={`tooltip-${data?.user_id}`}>
+                  <p className="m-0 text-start">{data?.company_tagline || data?.professional_intro}</p>
+                </UncontrolledTooltip>
+              )}
             </Col>
-            <Col lg="4">
+
+            <Col lg="7">
               {data?.user_type === userTypes.client && (
                 <BadgeGroup
                   title="Area of interest"
                   data={data?.project_area_of_interest?.area?.name ? data?.project_area_of_interest?.area : []}
                   color="light-blue"
+                  user_id={data?.user_id}
                 />
               )}
               <BadgeGroup
                 title="Skills"
-                data={data?.user_type === userTypes.client ? data?.project_area_of_interest?.skills : data?.expertise?.skills}
+                data={
+                  data?.user_type === userTypes.client
+                    ? data?.project_area_of_interest?.skills
+                    : data?.expertise?.skills
+                }
                 color="light-blue"
+                user_id={data?.user_id}
               />
               <BadgeGroup
                 title="Tools"
-                data={data?.user_type === userTypes.client ? data?.project_area_of_interest?.tools : data?.expertise?.tools}
+                data={
+                  data?.user_type === userTypes.client ? data?.project_area_of_interest?.tools : data?.expertise?.tools
+                }
                 color="light-blue"
+                user_id={data?.user_id}
               />
             </Col>
           </Row>
@@ -133,7 +155,11 @@ const UserCard = ({ data }) => {
   );
 };
 UserCard.propTypes = {
-  // eslint-disable-next-line react/require-default-props
   data: PropTypes.object,
+  userType: PropTypes.string,
+};
+UserCard.defaultProps = {
+  data: {},
+  userType: 'string',
 };
 export default UserCard;

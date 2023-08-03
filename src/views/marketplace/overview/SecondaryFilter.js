@@ -430,15 +430,17 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </InputGroup>
           </div>
           <Row>
-            {isTab ? (
-              <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
-                {ExpandCollapseComp}
-              </div>
-            ) : (
-              <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
-                {ExpandCollapseComp}
-              </Col>
-            )}
+            {primaryFilter !== 'talents' &&
+              primaryFilter !== 'clients' &&
+              (isTab ? (
+                <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
+                  {ExpandCollapseComp}
+                </div>
+              ) : (
+                <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
+                  {ExpandCollapseComp}
+                </Col>
+              ))}
             {(userType === userTypes.talent || primaryFilter === 'talents') && (
               <Col>
                 <Label className="form-label">Sort by</Label>
@@ -607,17 +609,20 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          {selectMarketPlaceData?.map((item) => {
-            const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
-            return (
-              <CardComponent
-                key={item?._id || item?.id}
-                data={item}
-                isPopoverOpen={popoverOpen}
-                isExpanded={isExpanded}
-              />
-            );
-          })}
+          <div className="d-flex flex-wrap justify-content-between">
+            {selectMarketPlaceData?.map((item) => {
+              const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
+              return (
+                <CardComponent
+                  key={item?._id || item?.id}
+                  data={item}
+                  isPopoverOpen={popoverOpen}
+                  isExpanded={isExpanded}
+                  userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
+                />
+              );
+            })}
+          </div>
         </InfiniteScroll>
       )}
     </>

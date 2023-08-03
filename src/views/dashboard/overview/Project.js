@@ -18,6 +18,7 @@ import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
 import { CustomBadge } from '../../styled';
+import TagsSection from './TagsSection';
 
 const UserSection = ({ users, tagName, name, isAlma }) => (
   <div className="user-section">
@@ -51,34 +52,7 @@ UserSection.propTypes = {
   tagName: PropTypes.string,
 };
 
-const TagsSection = ({ tags }) => (
-  <div className="tags-container">
-    {tags.length > 4 ? (
-      <>
-        {tags.slice(0, 4).map((tag) => (
-          <Badge key={tag.name} className="tag-margin">
-            {tag.name}
-          </Badge>
-        ))}
-        <span className="additional-text">+3</span>
-      </>
-    ) : (
-      <>
-        {tags.slice(0, 4).map((tag) => (
-          <Badge key={tag.name} className="tag-margin">
-            {tag.name}
-          </Badge>
-        ))}
-      </>
-    )}
-  </div>
-);
-
-TagsSection.propTypes = {
-  tags: PropTypes.array,
-};
-
-const Project = ({ data, className, recommended }) => {
+const Project = ({ open, data, className, recommended }) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleToggle = () => {
@@ -116,16 +90,6 @@ const Project = ({ data, className, recommended }) => {
     },
     {
       title: 'Jenny Looper',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-  ];
-
-  const singleAvatar = [
-    {
-      title: 'Brandon Miles',
       img: avatar7,
       placement: 'bottom',
       imgHeight: 33,
@@ -190,13 +154,21 @@ const Project = ({ data, className, recommended }) => {
                 </div>
               </CircularProgressbarWithChildren>
             </div>
-            <TagsSection tags={data?.proficiency.skills} />
+            <TagsSection open={open} tags={data?.proficiency.skills} />
           </div>
           <div className="main-row">
             <UserSection
               tagName="Client"
-              name={data?.client_info?.company_name || '-'}
-              users={singleAvatar}
+              name={`${data?.client_info?.first_name} ${data?.client_info?.last_name}`}
+              users={[
+                {
+                  title: `${data?.client_info?.first_name} ${data?.client_info?.last_name}`,
+                  img: data?.client_info?.image_uri || avatar7,
+                  placement: 'bottom',
+                  imgHeight: 33,
+                  imgWidth: 33,
+                },
+              ]}
               isAlma={data?.client_info?.is_alma_matter}
             />
             {!recommended && <UserSection tagName="Team" name={data.teamName} users={avatarGroupArr} />}
@@ -239,5 +211,6 @@ Project.propTypes = {
   data: PropTypes.object,
   className: PropTypes.string,
   recommended: PropTypes.bool,
+  open: PropTypes.string,
 };
 export default Project;

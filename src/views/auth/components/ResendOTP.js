@@ -37,7 +37,7 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP }) => {
         dispatch(
           resendAction({
             phone: phoneData.phone,
-            country_code: phoneData?.selectedCountry.dial_code.slice(1),
+            country_code: phoneData?.selectedCountry.dial_code,
             isPhoneResend: true,
           }),
         );

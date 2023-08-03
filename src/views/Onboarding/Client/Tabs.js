@@ -33,7 +33,7 @@ const Tabs = ({ tabNames, active }) => {
         </NavItem>
         <NavItem>
           <NavLink active={location.pathname === `/${userOnboarding.client}/educational-details`}>
-          {location.pathname === `/${userOnboarding.client}/educational-details` ? (
+            {location.pathname === `/${userOnboarding.client}/educational-details` ? (
               <img src={EducationTabActiveImg} alt="education-active" width={20} height={20} className="me-50" />
             ) : (
               <img src={EducationTabInactiveImg} alt="education-inactive" width={20} height={20} className="me-50" />

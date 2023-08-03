@@ -21,7 +21,6 @@ const Autocomplete = (props) => {
   // ** Input On Change Event
   const onChange = (e) => {
     const userInput = e.currentTarget.value;
-    setActiveSuggestion(0);
     setUserInput(userInput);
   };
 
