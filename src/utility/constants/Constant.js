@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const ERROR_CODES = {
   EC_401: 401,
   EC_404: 404,
@@ -20,4 +21,5 @@ const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
 };
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding };
+const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+export { ERROR_CODES, checkPoints, userTypes, userOnboarding, validEmailRegex };
