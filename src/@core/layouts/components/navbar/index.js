@@ -18,7 +18,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/dashboardActions';
-import { useIsTab } from '../../../../utility/Utils';
+import { userTypes } from '../../../../utility/constants/Constant';
 
 const ThemeNavbar = (props) => {
   const userData = getItem('userData');
@@ -114,7 +114,7 @@ const ThemeNavbar = (props) => {
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/marketplace/all_listings"
+            to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'} `}
           >
             Marketplace
           </NavLink>
