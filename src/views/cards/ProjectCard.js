@@ -9,6 +9,7 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { useDispatch } from 'react-redux';
 import Avatar from '@components/avatar';
 import { Heart } from 'react-feather';
+import { useLocation } from 'react-router-dom';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import ReactHtmlParser from '../../lib/html-parser';
 import theme from '../../configs/themeVariables';
@@ -21,6 +22,7 @@ import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/ac
 
 const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -70,6 +72,7 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const handleUnLike = () => {
     dispatch(removeFavFromMarketplace({ project_id: data?._id }));
   };
+  const isSearchPage = location.pathname.split('/').includes('search');
 
   return (
     <ProjectCardWrap>
@@ -88,19 +91,21 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                 <span className="cursor-pointer" onClick={() => setShowModal(true)}>
                   {data?.details?.name}{' '}
                 </span>
-                <span>
-                  {data?.is_favorite ? (
-                    <Heart
-                      className="cursor-pointer d-flex m-auto ms-75  heart"
-                      fill={theme.red}
-                      stroke={theme.red}
-                      onClick={handleUnLike}
-                      size={20}
-                    />
-                  ) : (
-                    <Heart className="cursor-pointer d-flex m-auto ms-75 heart" onClick={handleLike} size={20} />
-                  )}
-                </span>
+                {!isSearchPage && (
+                  <span>
+                    {data?.is_favorite ? (
+                      <Heart
+                        className="cursor-pointer d-flex m-auto ms-75  heart"
+                        fill={theme.red}
+                        stroke={theme.red}
+                        onClick={handleUnLike}
+                        size={20}
+                      />
+                    ) : (
+                      <Heart className="cursor-pointer d-flex m-auto ms-75 heart" onClick={handleLike} size={20} />
+                    )}
+                  </span>
+                )}
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">
                 <CardText className="project">
@@ -146,8 +151,8 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
               <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
                 <Avatar
                   img={data?.client_details?.image_uri?.length > 0 ? data?.client_details?.image_uri : defaultAvatar}
-                  imgHeight="35"
-                  imgWidth="35"
+                  imgHeight="30"
+                  imgWidth="30"
                   className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
                 />
                 <div className={`${data?.match_percentage >= 0 ? '' : ' d-flex w-100 align-items-center'}`}>
@@ -155,7 +160,7 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                     <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
                       {data?.client_details?.first_name} {data?.client_details?.last_name}
                     </CardTitle>
-                    <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+                    <CardText className="fw-300 ms-25 marketplace-card-role">
                       {data?.client_details?.company_name}
                     </CardText>
                   </div>

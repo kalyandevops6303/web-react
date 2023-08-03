@@ -54,7 +54,7 @@ const UserCard = ({ data, userType }) => {
   const handleUnLike = () => {
     dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
   };
-
+  const isSearchPage = location.pathname.split('/').includes('search');
   return (
     <UserCardWrap userType={userType}>
       <Card>
@@ -85,16 +85,20 @@ const UserCard = ({ data, userType }) => {
                           {data?.last_name}
                         </Link>
                       </CardTitle>
-                      {data?.is_favorite ? (
-                        <Heart
-                          className="cursor-pointer d-flex ms-50  heart"
-                          fill={theme.red}
-                          stroke={theme.red}
-                          onClick={handleUnLike}
-                          size={18}
-                        />
-                      ) : (
-                        <Heart className="cursor-pointer d-flex  ms-50 heart" onClick={handleLike} size={18} />
+                      {!isSearchPage && (
+                        <span>
+                          {data?.is_favorite ? (
+                            <Heart
+                              className="cursor-pointer d-flex ms-50  heart"
+                              fill={theme.red}
+                              stroke={theme.red}
+                              onClick={handleUnLike}
+                              size={18}
+                            />
+                          ) : (
+                            <Heart className="cursor-pointer d-flex  ms-50 heart" onClick={handleLike} size={18} />
+                          )}
+                        </span>
                       )}
                       {data?.is_alma_mater && (
                         <Badge className="alma-mater ms-50">

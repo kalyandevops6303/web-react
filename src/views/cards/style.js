@@ -13,7 +13,9 @@ const ProjectCardWrap = styled(CardWrap)`
   .card-body {
     padding: 2.1rem 2.6rem 1.4rem 2.6rem;
   }
-
+  a {
+    color: inherit;
+  }
   .status-row {
     margin-left: -0.5rem;
   }
@@ -35,17 +37,21 @@ const ProjectCardWrap = styled(CardWrap)`
     }
   }
   .marketplace-card-title {
-    line-height: 18px;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.3125rem;
   }
   .marketplace-card-role {
-    font-size: 18px;
     color: ${theme.gray};
-    font-weight: 300;
-    line-height: 18xp;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.125rem;
   }
 
   .market-place-card-photo {
-    height: 2.2rem;
+    height: 2rem;
     border-radius: 50%;
     cursor: auto !important;
   }
