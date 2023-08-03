@@ -18,7 +18,7 @@ import { checkpointCompleteLoading, profileDetailsLoading } from '../../../redux
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
+import { formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Social = () => {
@@ -108,24 +108,20 @@ const Social = () => {
     const social_links = [
       {
         platform: 'linkedIn',
-        url:
-          linkedInLink.includes('http://') || linkedInLink.includes('https://')
-            ? linkedInLink
-            : `https://${linkedInLink}`,
+        url: formatUrl(linkedInLink),
       },
       {
         platform: 'twitter',
-        url:
-          twitterLink.includes('http://') || twitterLink.includes('https://') ? twitterLink : `https://${twitterLink}`,
+        url: formatUrl(twitterLink),
       },
       {
         platform: 'github',
-        url: githubLink.includes('http://') || githubLink.includes('https://') ? githubLink : `https://${githubLink}`,
+        url: formatUrl(githubLink),
       },
       // eslint-disable-next-line
       ...otherSocialLinks?.map((link) => ({
         platform: link.linkName,
-        url: link.link.includes('http://') || link.link.includes('https://') ? link.link : `https://${link.link}`,
+        url: formatUrl(link.link),
       })),
     ];
 
@@ -150,7 +146,7 @@ const Social = () => {
   };
 
   const isValidURL = (url) => {
-    const urlPattern = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/;
+    const urlPattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,6}(\/.*)?$/i;
     return urlPattern.test(url);
   };
 

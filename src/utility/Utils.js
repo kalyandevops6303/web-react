@@ -236,11 +236,31 @@ export const returnDetailsForMarketPlace = (userType, missingValues) => {
 
 // eslint-disable-next-line consistent-return
 export const isUrlWithoutProtocol = (value) => {
-  if (value.length > 0) {
+  if (value?.length > 0) {
     const urlPattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,6}(\/.*)?$/i;
     return urlPattern.test(value);
     // eslint-disable-next-line no-else-return
   } else {
     return true;
+  }
+};
+
+export const formatUrl = (link) => {
+  if (link) {
+    if (
+      link?.startsWith('http://') ||
+      link?.startsWith('https://') ||
+      link?.startsWith('Http://') ||
+      link?.startsWith('Https://')
+    ) {
+      return link.toLowerCase();
+
+      // eslint-disable-next-line no-else-return
+    } else {
+      return `https://${link.toLowerCase()}`;
+    }
+    // eslint-disable-next-line no-else-return
+  } else {
+    return undefined;
   }
 };

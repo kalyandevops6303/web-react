@@ -138,6 +138,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             label: yup.string().required('Start time is required'),
             value: yup.string().required('Start time is required'),
           })
+          .transform((value) => (value === null ? undefined : value))
           .required('Start time is required'),
     }),
     weekdayEndTime: yup.object().when('availabilityDays', {
@@ -149,6 +150,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             label: yup.string().required('End time is required'),
             value: yup.string().required('End time is required'),
           })
+          .transform((value) => (value === null ? undefined : value))
           .required('End time is required'),
     }),
     weekendStartTime: yup.object().when('availabilityDays', {
@@ -160,6 +162,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             label: yup.string().required('Start time is required'),
             value: yup.string().required('Start time is required'),
           })
+          .transform((value) => (value === null ? undefined : value))
           .required('Start time is required'),
     }),
     weekendEndTime: yup.object().when('availabilityDays', {
@@ -171,6 +174,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             label: yup.string().required('End time is required'),
             value: yup.string().required('End time is required'),
           })
+          .transform((value) => (value === null ? undefined : value))
           .required('End time is required'),
     }),
     includeOrExcludeCountries: yup.string(),
@@ -938,20 +942,18 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekdayStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={
-                                  watch('weekdayEndTime')
-                                    ? timeOptions.filter(
-                                        (t) => parseInt(t.value, 10) < parseInt(watch('weekdayEndTime').value, 10),
-                                      )
-                                    : timeOptions
-                                }
+                                {...field}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
                                 className={classNames('react-select', {
                                   'is-invalid': errors && errors.weekdayStartTime,
                                 })}
-                                {...field}
+                                onChange={(selectedOption) => {
+                                  field.onChange(selectedOption);
+                                  setValue('weekdayEndTime', null);
+                                }}
                               />
                             )}
                           />
@@ -1146,20 +1148,18 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             invalid={errors.weekendStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={
-                                  watch('weekendEndTime')
-                                    ? timeOptions.filter(
-                                        (t) => parseInt(t.value, 10) < parseInt(watch('weekendEndTime').value, 10),
-                                      )
-                                    : timeOptions
-                                }
+                                {...field}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
                                 className={classNames('react-select', {
                                   'is-invalid': errors && errors.weekendStartTime,
                                 })}
-                                {...field}
+                                onChange={(selectedOption) => {
+                                  field.onChange(selectedOption);
+                                  setValue('weekendEndTime', null);
+                                }}
                               />
                             )}
                           />
