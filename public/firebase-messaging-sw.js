@@ -61,7 +61,7 @@ self.addEventListener('push', (e) => {
 
 const messaging = firebase.messaging();
 
-let testUrl = 'https://test.trumio.ai/';
+let testUrl = 'https://uat.trumio.ai/';
 
 messaging.onBackgroundMessage((payload) => {
   const { data } = payload;
