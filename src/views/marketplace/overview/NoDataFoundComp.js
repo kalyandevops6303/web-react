@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useState } from 'react';
 import { Card, CardText } from 'reactstrap';
 import { useNavigate } from 'react-router';
 import { PropTypes } from 'prop-types';
@@ -9,10 +10,31 @@ import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
 import theme from '../../../configs/themeVariables';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { returnDetailsForMarketPlace } from '../../../utility/Utils';
+import CompleteProfileModal from '../../modals/CompleteProfileModal';
 
 const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
   const userDetailsData = useSelector(userData);
+  const profilePercentageData = useSelector(profilePercentage);
+
   const navigate = useNavigate();
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+
+  const toggleCompleteProfileModal = () => {
+    setCompleteProfileModal(!completeProfileModal);
+  };
+
+  const onCreateProjectClick = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModal(true);
+    } else {
+      navigate('/create-project');
+    }
+  };
+
   const NoDataFoundWrapper = styled.div`
     width: 100%;
     .no-data-found-dynamic {
@@ -32,8 +54,6 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
     });
   };
 
-  const profilePercentageData = useSelector(profilePercentage);
-
   const contentMapping = {
     recommendedWithDetails: {
       imgSrc: UpcomingProjectsEmptyGif,
@@ -49,7 +69,7 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
       imgSrc: ActiveProjectsEmptyGif,
       text: "Let's get you started!",
       onClick: () => {
-        navigate('/create-project');
+        onCreateProjectClick();
       },
     },
     default: {
@@ -75,6 +95,9 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
           <CardText className="no-data-found-dynamic">{text}</CardText>
         )}
       </Card>
+      {completeProfileModal && (
+        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+      )}
     </NoDataFoundWrapper>
   );
 };

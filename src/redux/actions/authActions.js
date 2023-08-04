@@ -54,6 +54,7 @@ import {
   resetPasswordRequest,
   resetPasswordSuccess,
   resetPasswordFailure,
+  getUserDataSuccess,
 } from '../reducers/auth';
 import { setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -61,6 +62,7 @@ import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { clearData } from '../reducers/dashboard';
 import { checkPoints } from '../../utility/constants/Constant';
 import { clearNotificationsData } from '../reducers/notifications';
+import { userDetailsService } from '../../services/talentOnboardingServices';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -261,6 +263,14 @@ const resetPassword = (data, onSuccess) => async (dispatch) => {
     errorHandler(error, resetPasswordFailure);
   }
 };
+const getUserData = () => async (dispatch) => {
+  try {
+    const res = await userDetailsService();
+    dispatch(getUserDataSuccess(res.data.data.user_type));
+  } catch (error) {
+    errorHandler(error);
+  }
+};
 
 export {
   resendAction,
@@ -279,4 +289,5 @@ export {
   fcmUnsubscribeNotification,
   logoutAction,
   resetPassword,
+  getUserData,
 };

@@ -11,6 +11,7 @@ const initialState = {
   password: null,
   loading: false,
   error: null,
+  userType: null,
   fcmToken: '',
 };
 
@@ -238,6 +239,11 @@ const authSlice = createSlice({
       loading: false,
       error: action.payload,
     }),
+
+    getUserDataSuccess: (state, action) => ({
+      ...state,
+      userType: action.payload,
+    }),
   },
 });
 
@@ -283,6 +289,7 @@ export const {
   resetPasswordRequest,
   resetPasswordSuccess,
   resetPasswordFailure,
+  getUserDataSuccess,
 } = authSlice.actions;
 
 export default authSlice.reducer;
