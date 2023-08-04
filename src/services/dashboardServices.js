@@ -7,4 +7,7 @@ const recommendedProjectsService = () => DataService.get(API.dashboard.recommend
 
 const profilePercentageService = () => DataService.get(API.dashboard.profilePercentage);
 
-export { userDataService, recommendedProjectsService, profilePercentageService };
+const getProjectInviteService = () =>
+  DataService.get(`${API.dashboard.projectInvites}?invitation_type=PROJECT&page=1&page_size=5`);
+
+export { userDataService, recommendedProjectsService, profilePercentageService, getProjectInviteService };
