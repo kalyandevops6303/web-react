@@ -60,6 +60,7 @@ import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { clearData } from '../reducers/dashboard';
 import { checkPoints } from '../../utility/constants/Constant';
+import { clearNotificationsData } from '../reducers/notifications';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -241,7 +242,7 @@ const logoutAction =
     }
     dispatch(logOut());
     dispatch(clearData());
-
+    dispatch(clearNotificationsData());
     onSuccess();
   };
 

@@ -31,6 +31,7 @@ const notificationsSlice = createSlice({
       ...state,
       notifications: null,
       notificationsLoading: false,
+      notificationCount: false,
     }),
     notificationCount: (state, action) => ({
       ...state,
