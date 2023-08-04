@@ -19,9 +19,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/dashboardActions';
 import { userTypes } from '../../../../utility/constants/Constant';
+import { selectAuthUserData } from '../../../../redux/selectors/authSelectors';
 
 const ThemeNavbar = (props) => {
-  const userData = getItem('userData');
+  const userData = useSelector(selectAuthUserData);
+
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
 
