@@ -127,7 +127,7 @@ const Alerts = () => {
                         </div>
                       </div>
                     ))}
-                    {projectInvites?.metadata?.total_records > 4 && (
+                    {projectInvites?.metadata?.total_records > 3 && (
                       <span className="additional-text text-center d-block">
                         +{projectInvites.metadata.total_records - 3} more
                       </span>
