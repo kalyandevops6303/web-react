@@ -11,7 +11,7 @@ import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBod
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
-import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
+import CardSkeleton from '@src/assets/images/gifs/card_loader.gif';
 
 import Project from './Project';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
