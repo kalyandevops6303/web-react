@@ -20,11 +20,15 @@ import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import { getItem } from '../../../utility/localStorageControl';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
+  const userData = getItem('userData');
+
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
@@ -44,11 +48,17 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
     <LeftSidebarProfileWrapper>
       <Card>
         <CardBody>
-          {!isEditable &&
+          {!(isClient && userData?.user_type === userTypes.client) &&
+            !isEditable &&
             (data?.is_favourited ? (
-              <Heart className="d-flex ms-auto heart" fill={theme.red} stroke={theme.red} onClick={handleUnLike} />
+              <Heart
+                className="cursor-pointer d-flex ms-auto heart"
+                fill={theme.red}
+                stroke={theme.red}
+                onClick={handleUnLike}
+              />
             ) : (
-              <Heart className="d-flex ms-auto heart" onClick={handleLike} />
+              <Heart className="cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
             ))}
 
           <div className="user-image">

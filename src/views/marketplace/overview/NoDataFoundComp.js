@@ -5,11 +5,12 @@ import { PropTypes } from 'prop-types';
 import { useSelector } from 'react-redux';
 import NodataFound from '@src/assets/images/noDataFoundGif.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
+import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
 import theme from '../../../configs/themeVariables';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { returnDetailsForMarketPlace } from '../../../utility/Utils';
 
-const NoDataFoundComponent = ({ isRecommanded }) => {
+const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
   const userDetailsData = useSelector(userData);
   const navigate = useNavigate();
   const NoDataFoundWrapper = styled.div`
@@ -33,30 +34,45 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
 
   const profilePercentageData = useSelector(profilePercentage);
 
+  const contentMapping = {
+    recommendedWithDetails: {
+      imgSrc: UpcomingProjectsEmptyGif,
+      text: 'Complete your profile to get started!',
+      onClick: () => {
+        const details = returnDetailsForMarketPlace(userDetailsData?.user_type, profilePercentageData?.values_missing);
+        if (details) {
+          onAddDetailsClick(details.path);
+        }
+      },
+    },
+    myListing: {
+      imgSrc: ActiveProjectsEmptyGif,
+      text: "Let's get you started!",
+      onClick: () => {
+        navigate('/create-project');
+      },
+    },
+    default: {
+      imgSrc: NodataFound,
+      text: 'No data found!',
+    },
+  };
+
+  // eslint-disable-next-line no-nested-ternary
+  const contentType = isRecommanded ? 'recommendedWithDetails' : isMyListing ? 'myListing' : 'default';
+
+  const { imgSrc, text, onClick } = contentMapping[contentType];
+
   return (
     <NoDataFoundWrapper>
       <Card className="w-100 p-2">
-        <img
-          className="m-auto"
-          height={200}
-          width={200}
-          src={isRecommanded ? UpcomingProjectsEmptyGif : NodataFound}
-          alt="No data found"
-        />
-        {isRecommanded &&
-        returnDetailsForMarketPlace(userDetailsData?.user_type, profilePercentageData?.values_missing) ? (
-          <CardText
-            onClick={() =>
-              onAddDetailsClick(
-                returnDetailsForMarketPlace(userDetailsData?.user_type, profilePercentageData?.values_missing)?.path,
-              )
-            }
-            className="no-data-found-dynamic cursor-pointer"
-          >
-            Complete your profile to get started!
+        <img className="m-auto" height={200} width={200} src={imgSrc} alt="No data found" />
+        {onClick ? (
+          <CardText onClick={onClick} className="no-data-found-dynamic cursor-pointer">
+            {text}
           </CardText>
         ) : (
-          <CardText className="no-data-found-dynamic">No data found!</CardText>
+          <CardText className="no-data-found-dynamic">{text}</CardText>
         )}
       </Card>
     </NoDataFoundWrapper>
@@ -64,8 +80,10 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
 };
 NoDataFoundComponent.propTypes = {
   isRecommanded: PropTypes.bool,
+  isMyListing: PropTypes.bool,
 };
 NoDataFoundComponent.defaultProps = {
   isRecommanded: false,
+  isMyListing: false,
 };
 export default NoDataFoundComponent;
