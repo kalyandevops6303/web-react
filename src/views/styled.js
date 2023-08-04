@@ -88,6 +88,9 @@ const SecondaryFiltersWrap = styled.div`
   .wide__menu {
     width: 250px;
   }
+  .select__clear-indicator {
+    padding-right: 0;
+  }
 
   .view-label {
     font-size: 14px;

@@ -22,4 +22,28 @@ const userOnboarding = {
   talent: 'talent-onboarding',
 };
 const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding, validEmailRegex };
+
+const statusesOptions = [
+  { label: 'Open', value: 'OPEN' },
+  { label: 'In-review', value: 'IN_REVIEW' },
+  { label: 'Terminated', value: 'TERMINATED' },
+  { label: 'Closed', value: 'CLOSED' },
+];
+const projectTypesOptions = [
+  { label: 'Fixed', value: 'FIXED' },
+  { label: 'Variable', value: 'VARIABLE' },
+];
+const sortingOptions = [
+  { label: 'New', value: 'NEW' },
+  { label: 'Recommended', value: 'RECOMMADED' },
+];
+export {
+  ERROR_CODES,
+  checkPoints,
+  userTypes,
+  userOnboarding,
+  sortingOptions,
+  statusesOptions,
+  validEmailRegex,
+  projectTypesOptions,
+};
