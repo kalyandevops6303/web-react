@@ -9,6 +9,7 @@ import PrimaryFilter from './overview/PrimaryFilter';
 import { getItem } from '../../utility/localStorageControl';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 import CreateProjectButton from './overview/CreateProjectButton';
+import CreateBidModal from '../modals/CreateBidModal';
 
 const MarketPlaceContainer = styled.div`
   .marketplace-search {
@@ -66,8 +67,19 @@ const MarketPlace = () => {
     talents: 'Talent',
   };
 
+  const [createBidModal, setCreateBidModal] = useState(null);
+
+  const toggleCreateBidModal = () => {
+    setCreateBidModal(!createBidModal);
+  };
+
+  useEffect(() => {
+    setCreateBidModal(true);
+  }, []);
+
   return (
     <MarketPlaceContainer>
+      {createBidModal && <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} />}
       <BreadCrumbs
         data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
       />

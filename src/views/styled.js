@@ -209,4 +209,27 @@ const TimeWrapper = styled.section`
     }
   }
 `;
-export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper };
+
+const CreateBidRadioOption = styled.div`
+  padding: 1rem;
+  border-radius: 6px;
+  border: ${(props) => (props.active ? '1px solid #0185E4' : '1px solid rgba(130, 134, 139, 0.12)')};
+  background-color: ${(props) => (props.active ? 'rgba(1,133,228,0.06)' : 'rgba(130, 134, 139, 0.03)')};
+
+  .form-check-input:not(:disabled):checked {
+    box-shadow: 0px 2px 4px ${theme.checkboxShadow};
+  }
+
+  .form-check-input:checked {
+    background-color: ${theme.activeNavPillText};
+    border-color: ${theme.activeNavPillText};
+  }
+
+  .label {
+    p {
+      color: ${(props) => (props.active ? '#0185E4' : `${theme.secondary}`)};
+    }
+  }
+`;
+
+export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper, CreateBidRadioOption };
