@@ -54,7 +54,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     project_types: [],
     skills: [],
     tools: [],
-    sort_by: [],
+    sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMADED' }] : [],
     industries: [],
     project_areas: [],
   });
