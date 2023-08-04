@@ -112,7 +112,8 @@ const AlertCardWrapper = styled(CardWrapper)`
     height: 10vw;
   }
   .relative-time {
-    width: 18%;
+    width: 30%;
+    text-align: end;
   }
   .additional-text {
     color: ${theme.lightBlueColor};
