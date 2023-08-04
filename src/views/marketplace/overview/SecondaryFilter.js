@@ -559,7 +559,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               {selectMarketPlaceData?.length > 0 ? (
                 <span className="mt-2">You have seen it all!</span>
               ) : (
-                <NoDataFoundComponent isRecommanded={isRecommanded} data={selectMarketPlaceData} />
+                <NoDataFoundComponent
+                  isMyListing={primaryFilter === 'my_listings'}
+                  isRecommanded={isRecommanded}
+                  data={selectMarketPlaceData}
+                />
               )}
             </div>
           }
