@@ -449,7 +449,7 @@ const Personal = () => {
                   disabled={isImageUploading}
                   onClick={() => fileInputRef.current.click()}
                 >
-                  {isImageUploading ? <Spinner size="sm" /> : 'Update Picture'}
+                  {isImageUploading ? <Spinner size="sm" /> : 'Upload Logo'}
                 </Button>
               </div>
               <Info size={18} color={theme.infoIcon} id="logo-info" />

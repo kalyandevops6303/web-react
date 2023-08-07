@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { ChevronRight, FileText, Info, Minus, Upload } from 'react-feather';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import Select from 'react-select';
@@ -27,7 +26,7 @@ import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useDropzone from '../../../lib/react-dropzone';
-import { DropzoneContainer, RequirementsFormContainer, TextEditorContainer } from '../style';
+import { DropzoneContainer, RequirementsFormContainer } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import {
@@ -81,7 +80,11 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         value: yup.string().required('Period is required'),
       })
       .required('Period is required'),
-    projectDescription: yup.string().required('Project description is required'),
+    projectDescription: yup
+      .string()
+      .min(100, 'Project description must be at least 100 characters')
+      .max(3000, 'Project description must be 3000 characters or less')
+      .required('Project description is required'),
     skills: yup
       .array()
       .of(
@@ -377,17 +380,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   };
 
   const isFileValid = (file) => {
-    const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ];
     const maxSize = 5 * 1024 * 1024; // 5MB
 
-    if (!allowedTypes.includes(file.type)) {
-      ShowToastMessage(ERROR, 'Please select a valid file (PDF, DOC, or DOCX).');
-      return false;
-    }
     if (file.size > maxSize) {
       ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
       return false;
@@ -420,7 +414,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   const onDrop = useCallback(async (acceptedFiles, rejectedFiles) => {
     rejectedFiles.forEach((file) =>
-      ShowToastMessage(ERROR, `${file.file.name} is not of a valid supported file type (PDF, DOC, or DOCX).`),
+      ShowToastMessage(ERROR, `${file.file.name} is not of a valid supported file type (PDF, DOC, DOCX, TXT or JPEG).`),
     );
 
     const fetchUploadUrls = async () => {
@@ -448,6 +442,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       'text/application': ['.pdf', '.doc', '.docx'],
+      'text/plain': ['.txt'],
+      'image/jpeg': ['.jpeg'],
     },
     onDrop,
   });
@@ -676,9 +672,13 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   name="projectDescription"
                   control={control}
                   render={({ field }) => (
-                    <TextEditorContainer>
-                      <ReactQuill {...field} theme="snow" placeholder="Add background and requirements" />
-                    </TextEditorContainer>
+                    <Input
+                      {...field}
+                      type="textarea"
+                      placeholder="Add background and requirements"
+                      rows="5"
+                      invalid={errors.projectDescription && true}
+                    />
                   )}
                 />
                 {errors.projectDescription && <FormFeedback>{errors.projectDescription.message}</FormFeedback>}
@@ -690,7 +690,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 <UncontrolledTooltip placement="right" target="document">
                   <div className="d-flex flex-column align-items-start">
                     <p className="m-0">Allowed file types:</p>
-                    <p className="m-0">pdf, doc, docx</p>
+                    <p className="m-0">pdf, doc, docx, txt, jpeg</p>
                     <p className="m-0">Max files: 5</p>
                     <p className="m-0">Max file size: 5MB</p>
                   </div>
