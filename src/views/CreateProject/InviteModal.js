@@ -42,6 +42,7 @@ const InviteModal = ({ modal, toggleModal, projectId }) => {
     if (!inputValue) return;
     switch (event.key) {
       case 'Enter':
+      case ',':
       case ' ':
         if (validEmailRegex.test(inputValue)) {
           if (validEmailRegex.test(inputValue) && !customEmailsValue.find((email) => email.label === inputValue)) {
