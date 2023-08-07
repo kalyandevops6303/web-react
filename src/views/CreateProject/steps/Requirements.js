@@ -377,17 +377,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   };
 
   const isFileValid = (file) => {
-    const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ];
     const maxSize = 5 * 1024 * 1024; // 5MB
 
-    if (!allowedTypes.includes(file.type)) {
-      ShowToastMessage(ERROR, 'Please select a valid file (PDF, DOC, or DOCX).');
-      return false;
-    }
     if (file.size > maxSize) {
       ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
       return false;
@@ -420,7 +411,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   const onDrop = useCallback(async (acceptedFiles, rejectedFiles) => {
     rejectedFiles.forEach((file) =>
-      ShowToastMessage(ERROR, `${file.file.name} is not of a valid supported file type (PDF, DOC, or DOCX).`),
+      ShowToastMessage(ERROR, `${file.file.name} is not of a valid supported file type (PDF, DOC, DOCX, TXT or JPEG).`),
     );
 
     const fetchUploadUrls = async () => {
@@ -448,6 +439,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       'text/application': ['.pdf', '.doc', '.docx'],
+      'text/plain': ['.txt'],
+      'image/jpeg': ['.jpeg'],
     },
     onDrop,
   });
@@ -690,7 +683,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 <UncontrolledTooltip placement="right" target="document">
                   <div className="d-flex flex-column align-items-start">
                     <p className="m-0">Allowed file types:</p>
-                    <p className="m-0">pdf, doc, docx</p>
+                    <p className="m-0">pdf, doc, docx, txt, jpeg</p>
                     <p className="m-0">Max files: 5</p>
                     <p className="m-0">Max file size: 5MB</p>
                   </div>
