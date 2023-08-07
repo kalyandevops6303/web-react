@@ -1,3 +1,5 @@
+import { Box, Check, Watch } from 'react-feather';
+
 const ERROR_CODES = {
   EC_401: 401,
   EC_404: 404,
@@ -20,4 +22,9 @@ const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
 };
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding };
+const createBidSteps = [
+  { title: 'Team', subtitle: 'Add role & hourly rates', icon: <Box size={18} /> },
+  { title: 'Milestone', subtitle: 'Add milestone & role', icon: <Watch size={18} /> },
+  { title: 'Preview', subtitle: 'Review before posting', icon: <Check size={18} /> },
+];
+export { ERROR_CODES, checkPoints, userTypes, userOnboarding, createBidSteps };
