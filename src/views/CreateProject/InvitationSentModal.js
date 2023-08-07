@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { Star, User } from 'react-feather';
+import { Star } from 'react-feather';
+import Avatar from '@components/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col, Badge, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
 import GreatJobTick from '../../assets/images/greatJobGif.gif';
@@ -97,11 +99,14 @@ const InvitationSentModal = ({
                 <Row key={talent.id} className="d-flex align-items-center mb-2 mx-0">
                   <Col sm="12" md="12" lg="12">
                     <div className="d-flex align-items-center">
-                      <div className="user-pic p-75 me-2">
-                        <User size={30} />
-                      </div>
+                      <Avatar
+                        img={talent?.image_uri?.length > 0 ? talent?.image_uri : defaultAvatar}
+                        imgHeight="48"
+                        imgWidth="48"
+                        className="me-2 user-pic"
+                      />
                       <div>
-                        <p className="font-medium-1 fw-bold m-0 mb-75">{`${talent.first_name} ${talent.last_name}`}</p>
+                        <p className="font-medium-1 fw-bold m-0 mb-50">{`${talent.first_name} ${talent.last_name}`}</p>
                         <div className="d-flex align-items-center">
                           <Badge>
                             <div className="d-flex align-items-center">
