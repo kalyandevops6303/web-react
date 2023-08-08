@@ -95,7 +95,7 @@ const ThemeNavbar = (props) => {
       <Link to={userDetail ? '/dashboard' : '/auth'} className="navbar-brand">
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
-          <span className="ms-25 mt-25">v0.0.4</span>
+          <span className="ms-25 mt-25">v0.0.5</span>
         </span>
       </Link>
 
