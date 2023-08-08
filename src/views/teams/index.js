@@ -10,13 +10,7 @@ import PrimaryFilter from './overview/PrimaryFilter';
 import { getItem } from '../../utility/localStorageControl';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 
-const MarketPlaceContainer = styled.div`
-  .marketplace-search {
-    .input-group-text {
-      padding: 0.571rem 0.6rem 0.571rem 0.8rem;
-    }
-  }
-
+const TeamsContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
     .primary-row {
       display: block;
@@ -24,7 +18,7 @@ const MarketPlaceContainer = styled.div`
   }
 `;
 
-const MarketPlace = () => {
+const MyTeams = () => {
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
   const navigate = useNavigate();
@@ -33,10 +27,11 @@ const MarketPlace = () => {
   // Adjust the number of lines based on the desired limit
 
   const routesMatch =
-    useMatch('/marketplace/clients') ||
-    useMatch('/marketplace/all_listings') ||
-    useMatch('/marketplace/my_listings') ||
-    useMatch('/marketplace/talents');
+    useMatch('/teams/all') ||
+    useMatch('/teams/recommended') ||
+    useMatch('/teams/invited') ||
+    useMatch('/teams/join_request') ||
+    useMatch('/teams/Favorite');
 
   const [primaryFilter, setPrimaryFilter] = useState(routesMatch?.pathname?.split('/')?.[2]);
 
@@ -49,7 +44,7 @@ const MarketPlace = () => {
 
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
-    navigate(`/marketplace/${props}`);
+    navigate(`/teams/${props}`);
   };
 
   // const userData = useSelector(selectAuthUserData);
@@ -59,18 +54,17 @@ const MarketPlace = () => {
   const SecondComp = () => <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />;
 
   const primaryEnum = {
-    clients: 'Clients',
-    all_listings: 'All listings',
-    my_listings: 'My listings',
-    talents: 'Talent',
+    all: 'Teams',
+    recommended: 'Recommended',
+    invited: 'Invited',
+    join_request: 'Join Request',
+    favorite: 'Favorite',
   };
 
   return (
-    <MarketPlaceContainer>
+    <TeamsContainer>
       <div className="d-flex justify-content-between">
-        <BreadCrumbs
-          data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
-        />
+        <BreadCrumbs data={[{ title: 'My Teams', link: '/teams/all' }, { title: primaryEnum[primaryFilter] }]} />
 
         {userDetailsData?.user_type === 'CLIENT' && (
           <Link to="/create-project">
@@ -87,13 +81,14 @@ const MarketPlace = () => {
         userType={userDataLocal?.user_type}
       />
       <Routes>
-        <Route path="all_listings" element={<SecondComp />} />
-        <Route path="my_listings" element={<SecondComp />} />
-        <Route path="clients" element={<SecondComp />} />
-        <Route path="talents" element={<SecondComp />} />
+        <Route path="all" element={<SecondComp />} />
+        <Route path="recommended" element={<SecondComp />} />
+        <Route path="invited" element={<SecondComp />} />
+        <Route path="join_request" element={<SecondComp />} />
+        <Route path="Favorite" element={<SecondComp />} />
       </Routes>
-    </MarketPlaceContainer>
+    </TeamsContainer>
   );
 };
 
-export default MarketPlace;
+export default MyTeams;

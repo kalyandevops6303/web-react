@@ -128,6 +128,16 @@ const ThemeNavbar = (props) => {
           >
             Project
           </NavLink>
+          <NavLink
+            className={
+              (location?.pathname?.split('/')?.[1] === 'teams' || location?.state?.from?.primary === 'teams'
+                ? 'is-active'
+                : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+            }
+            to="/teams/all"
+          >
+            My Team
+          </NavLink>
         </>
       )}
 

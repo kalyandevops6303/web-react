@@ -26,6 +26,7 @@ import Notifications from '../../views/notifications';
 import ComingSoon from '../../views/auth/ComingSoon';
 import { userOnboarding } from '../../utility/constants/Constant';
 import Projects from '../../views/projects';
+import MyTeams from '../../views/teams';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -70,6 +71,10 @@ const Routes = [
   {
     path: '/projects/*',
     element: <Projects />,
+  },
+  {
+    path: '/teams/*',
+    element: <MyTeams />,
   },
 
   {
