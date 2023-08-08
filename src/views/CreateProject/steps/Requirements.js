@@ -42,6 +42,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { projectFileUploadService, projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import { maxFileSize } from '../../../utility/constants/Constant';
+import uuidv4 from '../../../lib/uuidv4';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -426,7 +427,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
         const promises = validFiles.map(async (file) => {
           const response = await projectFileUploadService(file.name);
-          return { file, uploadData: response?.data?.data };
+          return { id: uuidv4(), file, uploadData: response?.data?.data };
         });
 
         const filesWithUrls = await Promise.all(promises);
@@ -458,7 +459,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
-    const filtered = uploadedFiles.filter((i) => i.file.name !== file.name);
+    const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     setFiles([...filtered]);
   };
 
@@ -482,7 +483,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       <Card className="p-1">
         {files.map((file, index) => (
           <Row
-            key={file.file.name}
+            key={file.id}
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
             <Col sm="6" md="4" lg="4">
@@ -503,7 +504,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 color="flat-danger"
                 className="btn-left-margin"
                 disabled={uploadingFiles.includes(file)}
-                onClick={() => handleRemoveFile(file.file)}
+                onClick={() => handleRemoveFile(file)}
               >
                 Remove
               </Button>
