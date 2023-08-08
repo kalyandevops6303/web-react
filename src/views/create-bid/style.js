@@ -86,4 +86,84 @@ const ProgressBarWrapper = styled.div`
   }
 `;
 
-export { LeftSidebarProjectDetailsWrapper, ProgressBarWrapper };
+const TeamSectionWrapper = styled.div`
+  .card-header-border {
+    border: 1px solid ${theme.cardHeaderBorderColor};
+  }
+
+  .active-role-pill {
+    width: fit-content;
+    padding: 0 0 0 16px;
+    margin-bottom: 16px;
+
+    .bg-secondary {
+      background-color: ${theme.activeNavPillText} !important;
+    }
+
+    h6 {
+      color: ${theme.white};
+    }
+  }
+
+  .inactive-role-pill {
+    width: fit-content;
+    padding: 0 0 0 16px;
+    margin-bottom: 16px;
+
+    .bg-secondary {
+      border: 1px solid ${theme.activeNavPillText};
+      background-color: ${theme.white} !important;
+    }
+
+    h6 {
+      color: ${theme.wizardStepSvgColor};
+    }
+  }
+
+  .upload-button {
+    width: fit-content;
+
+    .add-icon-container {
+      background: ${theme.uploadIconBackground};
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 6px;
+      width: fit-content;
+    }
+
+    h5 {
+      margin: 0 0 0 8px;
+      color: ${theme.activeNavPillText};
+    }
+
+    .select__input {
+      .select__placeholder {
+        font-size: 12px;
+        color: ${theme.textMuted} !important;
+      }
+    }
+    .select__indicator {
+      svg {
+        color: ${theme.textMuted};
+      }
+    }
+
+    .select__control {
+      border-color: ${theme.inputBorderColor};
+
+      .select__indicator {
+        svg {
+          color: ${theme.textMuted} !important;
+        }
+      }
+
+      .select__placeholder {
+        color: ${theme.textMuted};
+      }
+    }
+  }
+`;
+
+export { LeftSidebarProjectDetailsWrapper, ProgressBarWrapper, TeamSectionWrapper };

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router';
+import { Route, Routes, useLocation } from 'react-router';
 import BreadCrumbs from '@components/breadcrumbs';
 import CustomStep from '@components/custom-stepper';
 import { Col, Progress, Row } from 'reactstrap';
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
 import { createBidSteps } from '../../utility/constants/Constant';
 import { ProgressBarWrapper } from './style';
+import TeamView from './overview/TeamView';
 
 const index = () => {
-  const params = useParams();
+  const location = useLocation();
 
-  const [currentStep, setCurrentStep] = useState(params?.step);
+  const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[4]);
 
   const changeStep = (step) => {
     setCurrentStep(step);
@@ -32,6 +33,9 @@ const index = () => {
               </Progress>
             </ProgressBarWrapper>
           </Row>
+          <Routes>
+            <Route path="team" element={<TeamView />} />
+          </Routes>
         </Col>
       </Row>
     </>
