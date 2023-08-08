@@ -11,7 +11,6 @@ import Avatar from '@components/avatar';
 import { Heart } from 'react-feather';
 import { useLocation } from 'react-router-dom';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import ReactHtmlParser from '../../lib/html-parser';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
@@ -132,12 +131,12 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
               </div>
 
               {!showFullText ? (
-                <div className="my-div" ref={divRef} style={{ maxHeight: '6.2rem', overflow: 'hidden' }}>
-                  {ReactHtmlParser(data?.details?.description)}
+                <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                  {data?.details?.description}
                 </div>
               ) : (
                 <div className="my-div" ref={divRef}>
-                  {ReactHtmlParser(data?.details?.description)}
+                  {data?.details?.description}
                 </div>
               )}
 
