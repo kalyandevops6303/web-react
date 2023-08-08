@@ -22,4 +22,5 @@ const userOnboarding = {
   talent: 'talent-onboarding',
 };
 const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding, validEmailRegex };
+const maxFileSize = 5000000; // 5MB
+export { ERROR_CODES, checkPoints, userTypes, userOnboarding, validEmailRegex, maxFileSize };

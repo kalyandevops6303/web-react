@@ -41,7 +41,7 @@ import {
 } from '../../../services/talentOnboardingServices';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { maxFileSize, userOnboarding } from '../../../utility/constants/Constant';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -128,13 +128,12 @@ const Personal = () => {
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    const maxSize = 5 * 1024 * 1024;
 
     if (!allowedTypes.includes(file.type)) {
       ShowToastMessage(ERROR, 'Please select a valid image file (JPG, JPEG, or PNG).');
       return false;
     }
-    if (file.size > maxSize) {
+    if (file.size > maxFileSize) {
       ShowToastMessage(ERROR, 'File size exceeds the maximum limit (5MB).');
       return false;
     }
