@@ -61,10 +61,7 @@ const Personal = () => {
     totalStrength: yup.number(),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
-    zipCode: yup
-      .number()
-      .typeError('Zip code must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
+    zipCode: yup.string(),
     country: yup
       .object()
       .shape({
@@ -695,9 +692,6 @@ const Personal = () => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          type="number"
-                          onWheel={(e) => e.target.blur()}
-                          min={0}
                           placeholder="Enter zip code"
                           invalid={errors.zipCode && true}
                           autoComplete="none"
