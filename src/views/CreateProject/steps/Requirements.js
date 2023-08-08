@@ -41,6 +41,7 @@ import { userData } from '../../../redux/selectors/dashboardSelectors';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { projectFileUploadService, projectFileUploadToAzureService } from '../../../services/createProjectServices';
+import { maxFileSize } from '../../../utility/constants/Constant';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -380,9 +381,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   };
 
   const isFileValid = (file) => {
-    const maxSize = 5 * 1024 * 1024; // 5MB
-
-    if (file.size > maxSize) {
+    if (file.size > maxFileSize) {
       ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
       return false;
     }

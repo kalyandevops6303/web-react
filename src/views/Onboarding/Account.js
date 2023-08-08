@@ -38,7 +38,7 @@ import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboard
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
-import { checkPoints, userOnboarding, userTypes } from '../../utility/constants/Constant';
+import { checkPoints, maxFileSize, userOnboarding, userTypes } from '../../utility/constants/Constant';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -184,13 +184,12 @@ const Account = () => {
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!allowedTypes.includes(file.type)) {
       ShowToastMessage(ERROR, 'Please select a valid image file (JPG, JPEG, or PNG).');
       return false;
     }
-    if (file.size > maxSize) {
+    if (file.size > maxFileSize) {
       ShowToastMessage(ERROR, 'File size exceeds the maximum limit (5MB).');
       return false;
     }
