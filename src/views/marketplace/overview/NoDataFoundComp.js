@@ -78,8 +78,20 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
     },
   };
 
-  // eslint-disable-next-line no-nested-ternary
-  const contentType = isRecommanded ? 'recommendedWithDetails' : isMyListing ? 'myListing' : 'default';
+  const isrecommendedDataFilled = returnDetailsForMarketPlace(
+    userDetailsData?.user_type,
+    profilePercentageData?.values_missing,
+  );
+
+  const totalCreatedProject = useSelector((state) => state.marketPlace.cardData.my_listings);
+
+  const contentType =
+    // eslint-disable-next-line no-nested-ternary
+    isRecommanded && isrecommendedDataFilled
+      ? 'recommendedWithDetails'
+      : isMyListing && totalCreatedProject === 0
+      ? 'myListing'
+      : 'default';
 
   const { imgSrc, text, onClick } = contentMapping[contentType];
 
