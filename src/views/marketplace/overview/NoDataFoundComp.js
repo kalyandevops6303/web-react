@@ -83,7 +83,7 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
     profilePercentageData?.values_missing,
   );
 
-  const totalCreatedProject = useSelector((state) => state.marketPlace.cardData.my_listings);
+  const totalCreatedProject = useSelector((state) => state.marketPlace?.cardData?.my_listings);
 
   const contentType =
     // eslint-disable-next-line no-nested-ternary
