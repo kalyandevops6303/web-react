@@ -31,6 +31,7 @@ import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talen
 import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -61,6 +62,7 @@ const Availability = () => {
             label: yup.string().required('Start time is required'),
             value: yup.string().required('Start time is required'),
           })
+          .transform((value) => (value === null ? undefined : value))
           .required('Start time is required'),
     }),
     weekdayEndTime: yup.object().when('availabilityDays', {
@@ -72,6 +74,7 @@ const Availability = () => {
             label: yup.string().required('End time is required'),
             value: yup.string().required('End time is required'),
           })
+          .transform((value) => (value === null ? undefined : value))
           .required('End time is required'),
     }),
     weekendStartTime: yup.object().when('availabilityDays', {
@@ -83,6 +86,7 @@ const Availability = () => {
             label: yup.string().required('Start time is required'),
             value: yup.string().required('Start time is required'),
           })
+          .transform((value) => (value === null ? undefined : value))
           .required('Start time is required'),
     }),
     weekendEndTime: yup.object().when('availabilityDays', {
@@ -94,6 +98,7 @@ const Availability = () => {
             label: yup.string().required('End time is required'),
             value: yup.string().required('End time is required'),
           })
+          .transform((value) => (value === null ? undefined : value))
           .required('End time is required'),
     }),
     currencyPreference: yup
@@ -140,31 +145,31 @@ const Availability = () => {
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/educational-details', {
+      navigate(`/${userOnboarding.talent}/educational-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/educational-details');
+      navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/social-details', {
+      navigate(`/${userOnboarding.talent}/social-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/social-details');
+      navigate(`/${userOnboarding.talent}/social-details`);
     }
   };
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/social-details', {
+      navigate(`/${userOnboarding.talent}/social-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/social-details');
+      navigate(`/${userOnboarding.talent}/social-details`);
     }
   };
 
@@ -450,20 +455,18 @@ const Availability = () => {
                             invalid={errors.weekdayStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={
-                                  watch('weekdayEndTime')
-                                    ? timeOptions.filter(
-                                        (t) => parseInt(t.value, 10) < parseInt(watch('weekdayEndTime').value, 10),
-                                      )
-                                    : timeOptions
-                                }
+                                {...field}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
                                 className={classNames('react-select', {
                                   'is-invalid': errors && errors.weekdayStartTime,
                                 })}
-                                {...field}
+                                onChange={(selectedOption) => {
+                                  field.onChange(selectedOption);
+                                  setValue('weekdayEndTime', null);
+                                }}
                               />
                             )}
                           />
@@ -659,20 +662,18 @@ const Availability = () => {
                             invalid={errors.weekendStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={
-                                  watch('weekendEndTime')
-                                    ? timeOptions.filter(
-                                        (t) => parseInt(t.value, 10) < parseInt(watch('weekendEndTime').value, 10),
-                                      )
-                                    : timeOptions
-                                }
+                                {...field}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
                                 className={classNames('react-select', {
                                   'is-invalid': errors && errors.weekendStartTime,
                                 })}
-                                {...field}
+                                onChange={(selectedOption) => {
+                                  field.onChange(selectedOption);
+                                  setValue('weekendEndTime', null);
+                                }}
                               />
                             )}
                           />

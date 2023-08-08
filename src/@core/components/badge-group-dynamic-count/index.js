@@ -10,7 +10,6 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     return null;
   }
   const renderBadge = (name, index) => {
-    // const { name } = item;
     const isLongName = name?.length > 35;
     const badgeClassName = isLongName ? `${color}` : color;
     const badgeColor = `${color} badge`;
@@ -57,7 +56,9 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     };
   }, [data]);
 
+  // This width is for the dynamic badge count that will be displayed, based on the number of tags. Substract this width from container width to have exact width of container.
   const widthToMinus = window.location.pathname.split('/')?.includes('search') ? 17 : 31;
+
   const arrangeTags = () => {
     const tagsContainer = document.querySelector('.badge-box-wrap');
     const containerWidth = tagsContainer.getBoundingClientRect().width - widthToMinus;
@@ -69,7 +70,6 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     const visibleTagsArray = [];
     for (let i = 0; i < tagsArray.length; i++) {
       const tagWidth = calculateTagWidth(tagsArray[i]);
-
       if (currentRowWidth + tagWidth < containerWidth) {
         visibleTagsCount++;
         visibleTagsArray.push(tagsArray[i]);
@@ -94,8 +94,11 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     const tagWidth = tempTag.getBoundingClientRect().width;
     document.body.removeChild(tempTag);
 
-    if (tagWidth > 298) {
-      return 150;
+    const tagsContainer = document.querySelector('.badge-box-wrap');
+    const containerWidth = tagsContainer.getBoundingClientRect().width - widthToMinus;
+
+    if (tagWidth > containerWidth) {
+      return containerWidth - 16;
     }
 
     return tagWidth;
@@ -110,8 +113,8 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
           <div className="badge-box mt-25">{visibleTags && visibleTags?.map(renderBadge)}</div>
           {hiddenTagsCount > 0 && (
             <>
-              <CustomBadge id={customBadgeId}>
-                <Badge color="light-blue" className="light-blue">
+              <CustomBadge id={customBadgeId} className="count">
+                <Badge color="light-blue" className="light-blue ">
                   + {hiddenTagsCount}
                 </Badge>
               </CustomBadge>

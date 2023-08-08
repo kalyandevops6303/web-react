@@ -38,6 +38,7 @@ const darkGreenBgColor = '#E0F7FA';
 const orange = '#FF6D00';
 const blueBorderColorv2 = '#0578FB';
 const blueCardBg = '#E9F3FF';
+const yellowColor = '#feffb8';
 
 // status
 const succesGreenColor = '#20C997';
@@ -150,5 +151,6 @@ const theme = {
   info: infoColor,
   secondary: secondaryColor,
   cardBgBlue,
+  yellowColor,
 };
 export default theme;

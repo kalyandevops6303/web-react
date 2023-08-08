@@ -106,7 +106,8 @@ const AuthRoute = () => {
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
         </Routes>
-        {window.innerWidth > 1024 && renderImage()}
+
+        <div className="w-100">{window.innerWidth > 1024 && renderImage()}</div>
       </Suspense>
     </OnBoardWrap>
   );

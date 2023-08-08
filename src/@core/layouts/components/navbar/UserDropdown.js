@@ -79,7 +79,7 @@ const UserDropdown = () => {
           )}
           <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
         </div>
-        {userDetailsData?.user_type === 'TALENT' ? (
+        {userDetailsData?.user_type === userTypes.talent ? (
           <Avatar
             img={
               userDetailsData?.talent_info?.image_uri.length > 0

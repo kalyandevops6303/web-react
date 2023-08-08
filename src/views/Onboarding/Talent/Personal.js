@@ -33,6 +33,7 @@ import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talen
 import { profileDetailsLoading, userDetails } from '../../../redux/selectors/talentOnboardingSelectors';
 import { countriesService, languagesService, talentRolesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -90,10 +91,7 @@ const Personal = () => {
       .max(5, 'Maximum of five languages can be added'),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
-    zipCode: yup
-      .number()
-      .typeError('Zip code must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
+    zipCode: yup.string(),
     country: yup
       .object()
       .shape({
@@ -186,31 +184,31 @@ const Personal = () => {
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/account-details', {
+      navigate(`/${userOnboarding.talent}/account-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/account-details');
+      navigate(`/${userOnboarding.talent}/account-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/educational-details', {
+      navigate(`/${userOnboarding.talent}/educational-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/educational-details');
+      navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/talent-onboarding/educational-details', {
+      navigate(`/${userOnboarding.talent}/educational-details`, {
         state: { isEditing: true },
       });
     } else {
-      navigate('/talent-onboarding/educational-details');
+      navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 
@@ -724,9 +722,6 @@ const Personal = () => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          type="number"
-                          min={0}
-                          onWheel={(e) => e.target.blur()}
                           placeholder="Enter zip code"
                           invalid={errors.zipCode && true}
                           autoComplete="none"

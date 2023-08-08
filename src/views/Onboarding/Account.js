@@ -36,9 +36,9 @@ import {
 } from '../../redux/actions/clientOnboardingActions';
 import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
-import { checkPoints, userTypes } from '../../utility/constants/Constant';
-import ResetPasswordModal from './ResetPasswordModal';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
+import ResetPasswordModal from './ResetPasswordModal';
+import { checkPoints, maxFileSize, userOnboarding, userTypes } from '../../utility/constants/Constant';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -97,16 +97,16 @@ const Account = () => {
   const onSuccess = () => {
     if (location?.state?.isEditing) {
       userDetailsData?.user_type === 'TALENT'
-        ? navigate('/talent-onboarding/personal-details', {
+        ? navigate(`/${userOnboarding.talent}/personal-details`, {
             state: { isEditing: true },
           })
-        : navigate('/client-onboarding/personal-details', {
+        : navigate(`/${userOnboarding.client}/personal-details`, {
             state: { isEditing: true },
           });
     } else {
       userDetailsData?.user_type === 'TALENT'
-        ? navigate('/talent-onboarding/personal-details')
-        : navigate('/client-onboarding/personal-details');
+        ? navigate(`/${userOnboarding.talent}/personal-details`)
+        : navigate(`/${userOnboarding.client}/personal-details`);
     }
   };
 
@@ -184,13 +184,12 @@ const Account = () => {
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!allowedTypes.includes(file.type)) {
       ShowToastMessage(ERROR, 'Please select a valid image file (JPG, JPEG, or PNG).');
       return false;
     }
-    if (file.size > maxSize) {
+    if (file.size > maxFileSize) {
       ShowToastMessage(ERROR, 'File size exceeds the maximum limit (5MB).');
       return false;
     }
@@ -383,7 +382,7 @@ const Account = () => {
             type="submit"
             disabled={
               isImageUploading ||
-              (isNextButtonDisabled || userDetailsData?.user_type === 'TALENT'
+              (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
                 ? !isValid || talentAccountDetailsIsLoading
                 : !isValid || clientAccountDetailsIsLoading)
             }

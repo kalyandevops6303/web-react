@@ -27,6 +27,9 @@ class CustomPushEvent extends Event {
  * Overrides push notification data, to avoid having 'notification' key and firebase blocking
  * the message handler from being called
  */
+
+const channel = new BroadcastChannel('data-channel');
+
 self.addEventListener('push', (e) => {
   // Skip if event is our own custom event
   if (e.custom) return;
@@ -73,6 +76,8 @@ messaging.onBackgroundMessage((payload) => {
     body: data?.body,
     icon: '/firebase-logo.png',
   };
+
+  channel.postMessage('data-channel', payload);
 
   self.registration.showNotification(notificationTitle, notificationOptions).catch((error) => {
     console.error('Error displaying notification:', error);

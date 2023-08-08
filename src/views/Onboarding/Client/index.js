@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '../Header';
 import Tabs from './Tabs';
+import { userOnboarding } from '../../../utility/constants/Constant';
 
 const ClientOnboarding = () => {
   const tabNames = {
@@ -18,11 +19,11 @@ const ClientOnboarding = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === '/client-onboarding/account-details') setActive(tabNames.Account);
-    else if (location.pathname === '/client-onboarding/personal-details') setActive(tabNames.Personal);
-    else if (location.pathname === '/client-onboarding/educational-details') setActive(tabNames.Educational);
-    else if (location.pathname === '/client-onboarding/availability-details') setActive(tabNames.Availability);
-    else if (location.pathname === '/client-onboarding/social-details') setActive(tabNames.Social);
+    if (location.pathname === `/${userOnboarding.client}/account-details`) setActive(tabNames.Account);
+    else if (location.pathname === `/${userOnboarding.client}/personal-details`) setActive(tabNames.Personal);
+    else if (location.pathname === `/${userOnboarding.client}/educational-details`) setActive(tabNames.Educational);
+    else if (location.pathname === `/${userOnboarding.client}/availability-details`) setActive(tabNames.Availability);
+    else if (location.pathname === `/${userOnboarding.client}/social-details`) setActive(tabNames.Social);
   }, [location]);
 
   return (
