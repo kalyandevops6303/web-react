@@ -54,16 +54,12 @@ const LeftSidebarProjectDetails = () => (
         </section>
 
         <section className="project-details mt-2">
-          <CardTitle className="main-title mb-75">Details</CardTitle>
+          <CardTitle className="main-title mb-75">Project Details</CardTitle>
         </section>
 
         <div className="d-flex mb-75">
           <span className="info-key">Posted date:</span>
           <CardText className="info-value">04/22/2023</CardText>
-        </div>
-        <div className="d-flex mb-75">
-          <span className="info-key">Payment type:</span>
-          <CardText className="info-value">-</CardText>
         </div>
 
         <BadgeGroup

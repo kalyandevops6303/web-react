@@ -137,32 +137,30 @@ const TeamSectionWrapper = styled.div`
       margin: 0 0 0 8px;
       color: ${theme.activeNavPillText};
     }
+  }
 
-    .select__input {
-      .select__placeholder {
-        font-size: 12px;
-        color: ${theme.textMuted} !important;
-      }
-    }
+  .select__placeholder {
+    font-size: 12px;
+    color: ${theme.textMuted};
+  }
+
+  .select__control {
+    border-color: ${theme.inputBorderColor};
+
     .select__indicator {
       svg {
         color: ${theme.textMuted};
+        display: none;
       }
     }
+  }
 
-    .select__control {
-      border-color: ${theme.inputBorderColor};
+  .roles-list-header {
+    color: ${theme.grayTitleColor};
+  }
 
-      .select__indicator {
-        svg {
-          color: ${theme.textMuted} !important;
-        }
-      }
-
-      .select__placeholder {
-        color: ${theme.textMuted};
-      }
-    }
+  .same-role-error {
+    margin-top: -1.4rem;
   }
 `;
 
