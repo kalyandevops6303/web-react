@@ -15,6 +15,7 @@ import { profilePercentage, userData } from '../../redux/selectors/dashboardSele
 import { userTypes } from '../../utility/constants/Constant';
 import { DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
+import TeamSection from './overview/TeamSection';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -75,6 +76,7 @@ const PrivateDashboard = () => {
           <ProjectListing />
         </Col>
         <Col lg="4" sm="12">
+          <TeamSection />
           <Alerts />
           <Disputes />
           <Meetings />

@@ -396,6 +396,25 @@ const TagsWrap = styled.div`
   }
 `;
 
+const TeamSectionWrapper = styled(CardWrapper)`
+  .card-header {
+    padding: 1.6rem 1.5rem;
+  }
+  .card-body {
+    padding: 0.5rem 1.5rem 1rem !important;
+  }
+  .card-title {
+    font-size: 1.125rem;
+  }
+  .members-count {
+    margin-left: 0.75rem;
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.25rem;
+  }
+`;
+
 export {
   TagsWrap,
   CardWrapper,
@@ -407,4 +426,5 @@ export {
   ProjectsListingWrap,
   AlertCardWrapper,
   DashboardHeaderWrapper,
+  TeamSectionWrapper,
 };
