@@ -372,7 +372,7 @@ const Account = () => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end">
-          {location?.state?.isEditing && (
+          {location?.state?.isEditing && userDetailsData?.oauth_type !== 'google' && (
             <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
               Reset Password
             </Button>
