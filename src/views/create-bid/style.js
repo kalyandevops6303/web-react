@@ -164,4 +164,53 @@ const TeamSectionWrapper = styled.div`
   }
 `;
 
-export { LeftSidebarProjectDetailsWrapper, ProgressBarWrapper, TeamSectionWrapper };
+const MilestoneSectionWrapper = styled.div`
+  .gray-card-wrapper {
+    .card-header {
+      background-color: ${theme.headerBackground};
+    }
+    .card-body {
+      background-color: ${theme.headerBackground};
+    }
+    .white-card-bg {
+      .card-body {
+        border-radius: 6px;
+        background-color: ${theme.white};
+        box-shadow: 0px 4px 24px 0px ${theme.cardShadowLight} !important;
+      }
+    }
+  }
+
+  .gray-border-container {
+    border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+  }
+
+  .label-asterisk {
+    color: ${theme.red};
+  }
+
+  .upload-button {
+    width: fit-content;
+
+    .add-icon-container {
+      background: ${theme.uploadIconBackground};
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 6px;
+      width: fit-content;
+    }
+
+    h5 {
+      margin: 0 0 0 8px;
+      color: ${theme.activeNavPillText};
+    }
+  }
+
+  .form-control[readonly] {
+    opacity: 1 !important;
+  }
+`;
+
+export { LeftSidebarProjectDetailsWrapper, ProgressBarWrapper, TeamSectionWrapper, MilestoneSectionWrapper };

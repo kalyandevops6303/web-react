@@ -7,6 +7,7 @@ import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
 import { createBidSteps } from '../../utility/constants/Constant';
 import { ProgressBarWrapper } from './style';
 import TeamView from './overview/TeamView';
+import MilestoneView from './overview/MilestoneView';
 
 const index = () => {
   const location = useLocation();
@@ -35,6 +36,7 @@ const index = () => {
           </Row>
           <Routes>
             <Route path="team" element={<TeamView />} />
+            <Route path="milestone" element={<MilestoneView />} />
           </Routes>
         </Col>
       </Row>
