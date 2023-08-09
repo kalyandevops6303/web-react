@@ -16,6 +16,8 @@ import { userTypes } from '../../utility/constants/Constant';
 import { DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
+import TalentListing from './overview/TalentListing';
+import TeamListing from './overview/TeamListing';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -72,8 +74,18 @@ const PrivateDashboard = () => {
       </Row>
       <Row>
         <Col lg="8" sm="12">
-          <Header>Projects</Header>
-          <ProjectListing />
+          <section className="mb-2">
+            <Header className="mb-1">Projects</Header>
+            <ProjectListing />
+          </section>
+          <section className="mb-2">
+            <Header className="mb-1">Talents</Header>
+            <TalentListing />
+          </section>
+          <section className="mb-2">
+            <Header className="mb-1">Teams</Header>
+            <TeamListing />
+          </section>
         </Col>
         <Col lg="4" sm="12">
           <TeamSection />
