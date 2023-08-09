@@ -1,5 +1,20 @@
 import React from 'react';
-import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Label, Row } from 'reactstrap';
+import {
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  UncontrolledAccordion,
+} from 'reactstrap';
 import classNames from 'classnames';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
@@ -42,7 +57,7 @@ const MilestoneView = () => {
             <Card className="white-card-bg">
               <CardBody>
                 <Row className="d-flex justify-content-between">
-                  <Col sm="12" md="12" lg="3">
+                  <Col sm="12" md="12" lg="3" className="ps-50">
                     <div>
                       <Label className="form-label" for="estimatedStartDate">
                         Estimated Start Date<span className="label-asterisk me-50">*</span>
@@ -81,6 +96,48 @@ const MilestoneView = () => {
                 </Row>
               </CardBody>
             </Card>
+
+            <UncontrolledAccordion className="mb-2">
+              <Card className="white-card-bg">
+                <CardBody className="p-0">
+                  <AccordionItem className="py-0">
+                    <AccordionHeader targetId="1" className="py-0">
+                      <div className="d-flex justify-content-between align-items-center w-100">
+                        <p className="fw-bold font-medium-1 m-0 ms-25">Milestone 1</p>
+                        <Row className="d-flex justify-content-end">
+                          <Col sm="12" md="12" lg="3">
+                            <div className="me-2">
+                              <Label className="fw-normal form-label">Duration</Label>
+                              <Input
+                                placeholder="Enter"
+                                invalid={errors.expectedDuration && true}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                              />
+                            </div>
+                          </Col>
+                          <Col sm="12" md="12" lg="4">
+                            <div>
+                              <Label className="fw-normal form-label me-2">Talent Cost</Label>
+                              <Input
+                                placeholder="Enter"
+                                className="w-75"
+                                invalid={errors.expectedDuration && true}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                              />
+                            </div>
+                          </Col>
+                        </Row>
+                      </div>
+                    </AccordionHeader>
+                    <AccordionBody accordionId="1">This is the first</AccordionBody>
+                  </AccordionItem>
+                </CardBody>
+              </Card>
+            </UncontrolledAccordion>
           </Form>
         </CardBody>
       </Card>
