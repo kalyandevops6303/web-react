@@ -211,6 +211,25 @@ const MilestoneSectionWrapper = styled.div`
   .form-control[readonly] {
     opacity: 1 !important;
   }
+
+  .upload-button {
+    width: fit-content;
+
+    .add-icon-container {
+      background: ${theme.uploadIconBackground};
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 6px;
+      width: fit-content;
+    }
+
+    h5 {
+      margin: 0 0 0 8px;
+      color: ${theme.activeNavPillText};
+    }
+  }
 `;
 
 export { LeftSidebarProjectDetailsWrapper, ProgressBarWrapper, TeamSectionWrapper, MilestoneSectionWrapper };
