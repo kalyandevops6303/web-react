@@ -53,7 +53,6 @@ const MarketPlace = () => {
     navigate(`/marketplace/${props}`);
   };
 
-  // const userData = useSelector(selectAuthUserData);
   const userDataLocal = getItem('userData');
 
   // eslint-disable-next-line react/no-unstable-nested-components

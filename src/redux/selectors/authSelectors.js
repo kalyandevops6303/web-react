@@ -6,6 +6,8 @@ export const selectAuthLoading = createSelector(authSelector, (auth) => auth.loa
 
 export const selectAuthUserData = createSelector(authSelector, (auth) => auth.userData);
 
+export const selectIsTeamLoggedIn = createSelector(authSelector, (auth) => auth.isTeamLoggedIn);
+
 export const selectIsLoggedIn = createSelector(authSelector, (auth) => auth.isLoggedIn);
 
 export const selectEmail = createSelector(authSelector, (auth) => auth.email);

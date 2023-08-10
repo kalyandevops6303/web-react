@@ -17,8 +17,8 @@ import theme from '../../../../configs/themeVariables';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getItem } from '../../../../utility/localStorageControl';
-import { getUserData } from '../../../../redux/actions/dashboardActions';
 import { useIsTab } from '../../../../utility/Utils';
+import { getUserData } from '../../../../redux/actions/authActions';
 
 const ThemeNavbar = (props) => {
   const userData = getItem('userData');

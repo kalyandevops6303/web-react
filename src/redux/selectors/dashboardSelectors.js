@@ -1,10 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit';
 
 const dashboardSelector = (state) => state.dashboard;
+const authSelector = (state) => state.auth;
 
-const userData = createSelector(dashboardSelector, (dashboard) => dashboard.userData);
+const userData = createSelector(authSelector, (auth) => auth.userData);
 
-const userDataLoading = createSelector(dashboardSelector, (dashboard) => dashboard.userDataLoading);
+const userDataLoading = createSelector(authSelector, (auth) => auth.userDataLoading);
 
 const recommendedProjects = createSelector(dashboardSelector, (dashboard) => dashboard.recommendedProjects);
 

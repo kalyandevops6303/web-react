@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  userData: null,
+  // userData: null,
   userDataLoading: false,
   recommendedProjects: null,
   recommendedProjectsLoading: false,
@@ -14,21 +14,21 @@ const dashboardSlice = createSlice({
   name: 'dashboard',
   initialState,
   reducers: {
-    userDataRequest: (state) => ({
-      ...state,
-      userDataLoading: true,
-      error: null,
-    }),
-    userDataSuccess: (state, action) => ({
-      ...state,
-      userData: action.payload,
-      userDataLoading: false,
-    }),
-    userDataFailure: (state, action) => ({
-      ...state,
-      userDataLoading: false,
-      error: action.payload,
-    }),
+    // userDataRequest: (state) => ({
+    //   ...state,
+    //   userDataLoading: true,
+    //   error: null,
+    // }),
+    // userDataSuccess: (state, action) => ({
+    //   ...state,
+    //   userData: action.payload,
+    //   userDataLoading: false,
+    // }),
+    // userDataFailure: (state, action) => ({
+    //   ...state,
+    //   userDataLoading: false,
+    //   error: action.payload,
+    // }),
 
     recommendedProjectsRequest: (state) => ({
       ...state,
@@ -76,9 +76,9 @@ const dashboardSlice = createSlice({
 });
 
 export const {
-  userDataRequest,
-  userDataSuccess,
-  userDataFailure,
+  // userDataRequest,
+  // userDataSuccess,
+  // userDataFailure,
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
   recommendedProjectsFailure,

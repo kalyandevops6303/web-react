@@ -4,6 +4,9 @@ const initialState = {
   email: null,
   isLoggedIn: false,
   userData: null,
+  currentUserData: null,
+  userDataLoading: false,
+  authData: null,
   isEmailVerified: false,
   phone: null,
   isPhoneVerified: false,
@@ -32,6 +35,7 @@ const authSlice = createSlice({
       password: null,
       loading: false,
       isResendLoading: false,
+      currentUserData: null,
       error: null,
       fcmToken: '',
       userType: null,
@@ -40,6 +44,7 @@ const authSlice = createSlice({
     logOut: () => ({
       isLoggedIn: false,
       userData: null,
+      authData: null,
     }),
 
     // resend otp
@@ -205,7 +210,7 @@ const authSlice = createSlice({
       ...state,
       loading: false,
       isLoggedIn: action.payload !== false,
-      userData: action.payload,
+      // authData: action.payload,
     }),
     loginFailure: (state, action) => ({
       ...state,
@@ -238,10 +243,37 @@ const authSlice = createSlice({
       loading: false,
       error: action.payload,
     }),
+
+    // userData
+
+    userDataRequest: (state) => ({
+      ...state,
+      userDataLoading: true,
+      error: null,
+    }),
+    userDataSuccess: (state, action) => ({
+      ...state,
+      userData: action.payload,
+      currentUserData: action.payload,
+      userDataLoading: false,
+    }),
+    userDataFailure: (state, action) => ({
+      ...state,
+      userDataLoading: false,
+      error: action.payload,
+    }),
+
+    // switch profile
+    switchProfileSuccess: (state, action) => ({
+      ...state,
+      userData: action.payload,
+      isTeamLoggedIn: action.payload.user_type === 'TEAM',
+    }),
   },
 });
 
 export const {
+  switchProfileSuccess,
   clearDataSuccess,
   setUserTypeSuccess,
   registerEmailRequest,
@@ -283,6 +315,9 @@ export const {
   resetPasswordRequest,
   resetPasswordSuccess,
   resetPasswordFailure,
+  userDataRequest,
+  userDataSuccess,
+  userDataFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;

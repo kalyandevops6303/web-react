@@ -15,53 +15,59 @@ const client = axios.create({
 
 class DataService {
   static get(path = '') {
+    const teamId = getItem('teamId');
     return client({
       method: 'GET',
-      url: path,
+      url: teamId ? `${path}?teamId=${teamId}` : path,
       headers: { ...authHeader() },
     });
   }
 
   static post(path = '', data = {}, optionalHeader = {}) {
+    const teamId = getItem('teamId');
     return client({
       method: 'POST',
-      url: path,
+      url: teamId ? `${path}?teamId=${teamId}` : path,
       data,
       headers: { ...authHeader(), ...optionalHeader },
     });
   }
 
   static patch(path = '', data = {}, optionalHeader = {}) {
+    const teamId = getItem('teamId');
     return client({
       method: 'PATCH',
-      url: path,
+      url: teamId ? `${path}?teamId=${teamId}` : path,
       data,
       headers: { ...authHeader(), ...optionalHeader },
     });
   }
 
   static put(path = '', data = {}, optionalHeader = {}) {
+    const teamId = getItem('teamId');
     return client({
       method: 'PUT',
-      url: path,
+      url: teamId ? `${path}?teamId=${teamId}` : path,
       data,
       headers: { ...authHeader(), ...optionalHeader },
     });
   }
 
   static putWithoutToken(path = '', data = {}, optionalHeader = {}) {
+    const teamId = getItem('teamId');
     return axios({
       method: 'PUT',
-      url: path,
+      url: teamId ? `${path}?teamId=${teamId}` : path,
       data,
       headers: { ...optionalHeader },
     });
   }
 
   static delete(path = '', data = {}) {
+    const teamId = getItem('teamId');
     return client({
       method: 'DELETE',
-      url: path,
+      url: teamId ? `${path}?teamId=${teamId}` : path,
       data: JSON.stringify(data),
       headers: { ...authHeader() },
     });
