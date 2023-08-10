@@ -31,7 +31,7 @@ import { languagesService, skillsService, timezonesService, toolsService } from 
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
 import TeamCreatedModal from './TeamCreatedModal';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
-import { createTeam } from '../../redux/actions/TeamActions';
+import { createTeam } from '../../redux/actions/teamsActions';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
