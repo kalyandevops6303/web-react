@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import * as yup from 'yup';
 import Select from 'react-select';
@@ -17,17 +17,21 @@ import {
   Input,
   Label,
   Row,
+  Spinner,
   UncontrolledTooltip,
 } from 'reactstrap';
+import { useDispatch } from 'react-redux';
 import { Camera, ChevronLeft, ChevronRight, Info, UserPlus } from 'react-feather';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { AccountImageContainer, ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
 import theme from '../../configs/themeVariables';
-import { returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
+import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import { languagesService, skillsService, timezonesService, toolsService } from '../../services/staticServices';
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
 import TeamCreatedModal from './TeamCreatedModal';
+import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
+import { createTeam } from '../../redux/actions/TeamActions';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -159,7 +163,7 @@ const Profile = () => {
   });
 
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [teamCreatedModal, setTeamCreatedModal] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
@@ -168,6 +172,9 @@ const Profile = () => {
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [timezonesOptions, setTimezonesOptions] = useState(null);
+  const [imageUrlRes, setImageUrlRes] = useState(null);
+  const [isImageUploading, setIsImageUploading] = useState(false);
+  const [isTeamcreating, setIsTeamcreating] = useState(false);
   const fileInputRef = useRef(null);
 
   const toggleTeamCreatedModal = () => {
@@ -176,7 +183,7 @@ const Profile = () => {
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    const maxSize = 5 * 1024 * 1024;
+    const maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!allowedTypes.includes(file.type)) {
       ShowToastMessage(ERROR, 'Please select a valid image file (JPG, JPEG, or PNG).');
@@ -189,16 +196,102 @@ const Profile = () => {
     return true;
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
+
     if (file && isFileValid(file)) {
       const thumbnail = URL.createObjectURL(file);
       setSelectedImage(file);
       setSelectedImagePreview(thumbnail);
+
+      try {
+        setIsImageUploading(true);
+        const res = await profileImageUploadService(file.name);
+        setImageUrlRes(res?.data?.data);
+      } catch (error) {
+        setIsImageUploading(false);
+        setImageUrlRes(null);
+      }
     }
   };
 
-  const onSubmit = () => {};
+  const uploadImage = async (uploadUrl) => {
+    try {
+      const res = await profileImageUploadToAzureService(uploadUrl, selectedImage, {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': selectedImage.type,
+      });
+
+      if (res) {
+        setIsImageUploading(false);
+      }
+    } catch {
+      ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again!');
+      setIsImageUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (imageUrlRes) {
+      uploadImage(imageUrlRes.upload_url);
+    }
+  }, [imageUrlRes]);
+  const onSuccess = () => {
+    setIsTeamcreating(false);
+    setTeamCreatedModal(true);
+  };
+  const onSubmit = (data) => {
+    const {
+      availabilityDays,
+      weekdays,
+      weekends,
+      teamName,
+      teamTagline,
+      teamIntroduction,
+      services,
+      languagesSupported,
+      tools,
+      skills,
+      preferredWorkingTimeZone,
+      weekdayStartTime,
+      weekdayEndTime,
+      weekendStartTime,
+      weekendEndTime,
+    } = data;
+    const languages_supported = languagesSupported?.map((language) => language.value);
+    const skillsSelected = skills.map((skill) => skill.value);
+    const servicesSelected = services.map((skill) => skill.value);
+    const toolsSelected = tools?.map((skill) => skill.value);
+    const availability = {
+      timezone: preferredWorkingTimeZone.value._id,
+      weekdays_avl: {
+        start_time: availabilityDays?.includes('weekdays') ? weekdayStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekdays') ? weekdayEndTime?.value : null,
+        days: availabilityDays?.includes('weekdays') ? weekdays : null,
+      },
+      weekends_avl: {
+        start_time: availabilityDays?.includes('weekends') ? weekendStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekends') ? weekendEndTime?.value : null,
+        days: availabilityDays?.includes('weekends') ? weekends : null,
+      },
+    };
+    const reqData = {
+      name: teamName,
+      // team_logo,
+      tagline: teamTagline,
+      introduction: teamIntroduction,
+      services: servicesSelected,
+      languages_supported,
+      tools: toolsSelected,
+      skills: skillsSelected,
+      availability,
+    };
+    if (imageUrlRes) {
+      reqData.image_uri = imageUrlRes.file_key;
+    }
+    setIsTeamcreating(true);
+    dispatch(createTeam(removeEmptyKeys(reqData), onSuccess));
+  };
 
   const loadServicesOptions = async (search) => {
     if (search) {
@@ -346,7 +439,7 @@ const Profile = () => {
                   onClick={() => fileInputRef.current.click()}
                 >
                   <Camera className="me-50" />
-                  Upload Team Logo
+                  {isImageUploading ? <Spinner size="sm" /> : 'Upload Team Logo'}
                 </Button>
               </div>
               <Info size={18} color={theme.infoIcon} id="logo-info" />
@@ -991,8 +1084,8 @@ const Profile = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" outline onClick={() => setTeamCreatedModal(true)}>
-              <span className="me-50">Save</span>
+            <Button color="primary" outline>
+              <span className="me-50">{isTeamcreating ? <Spinner size="sm" /> : 'Save'}</span>
               <ChevronRight size={14} />
             </Button>
           </div>
