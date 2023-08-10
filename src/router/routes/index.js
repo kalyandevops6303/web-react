@@ -23,6 +23,7 @@ import CreateProject from '../../views/CreateProject';
 import MarketPlace from '../../views/marketplace';
 import Search from '../../views/search';
 import Notifications from '../../views/notifications';
+import TeamInvitation from '../../views/team-invitation';
 import ComingSoon from '../../views/auth/ComingSoon';
 import { userOnboarding } from '../../utility/constants/Constant';
 
@@ -102,6 +103,10 @@ const Routes = [
   {
     path: '/notifications',
     element: <Notifications />,
+  },
+  {
+    path: '/team-invitation',
+    element: <TeamInvitation />,
   },
 ];
 

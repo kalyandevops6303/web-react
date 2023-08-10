@@ -13,13 +13,40 @@ import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
 import { profilePercentage, userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
+import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
 import { DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
+import SendInvitationModal from '../modals/SendInvitationModal';
+import InvitationSentModal from '../modals/InvitationSentModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
 
   const userDetailsData = useSelector(userData);
+
+  const [message, setMessage] = useState('');
+  const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
+  const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
+  const [sendInvitationModal, setSendInvitationModal] = useState(null);
+  const [invitationSentModal, setInvitationSentModal] = useState(null);
+
+  const toggleListingTeamMembersModal = () => {
+    setListingTeamMembersModal(!listingTeamMembersModal);
+  };
+
+  const toggleInviteTeamMemberModal = () => {
+    setInviteTeamMemberModal(!inviteTeamMemberModal);
+  };
+
+  const toggleSendInvitationModal = () => {
+    setSendInvitationModal(!sendInvitationModal);
+  };
+
+  const toggleInvitationSentModal = () => {
+    setInvitationSentModal(!invitationSentModal);
+  };
+
   const profilePercentageData = useSelector(profilePercentage);
 
   useEffect(() => {
@@ -49,6 +76,43 @@ const PrivateDashboard = () => {
     <div>
       {completeProfileModal && (
         <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+      )}
+      {listingTeamMembersModal && (
+        <ListingTeamMembersModal
+          modal={listingTeamMembersModal}
+          toggleModal={toggleListingTeamMembersModal}
+          toggleInvitationSentModal={toggleInvitationSentModal}
+        />
+      )}
+      {inviteTeamMemberModal && (
+        <InviteTeamMemberModal modal={inviteTeamMemberModal} toggleModal={toggleInviteTeamMemberModal} />
+      )}
+      {sendInvitationModal && (
+        <SendInvitationModal
+          modal={sendInvitationModal}
+          toggleModal={toggleSendInvitationModal}
+          selectedTalents={[]}
+          setInvitationSentModal={() => {}}
+          message={message}
+          setMessage={setMessage}
+          description="You are inviting the below to join your team."
+        />
+      )}
+      {invitationSentModal && (
+        <InvitationSentModal
+          modal={invitationSentModal}
+          toggleModal={toggleInvitationSentModal}
+          selectedTalents={[]}
+          projectId=""
+          message={message}
+          toggleSendInvitationModal={toggleSendInvitationModal}
+          selectedIds={[]}
+          setSelectedIds={() => {}}
+          invitedIds={[]}
+          setInvitedIds={() => {}}
+          setSelectedTalents={() => {}}
+          description="You’ve sent a team member invitation"
+        />
       )}
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
