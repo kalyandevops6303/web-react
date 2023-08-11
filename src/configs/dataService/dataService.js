@@ -14,11 +14,12 @@ const client = axios.create({
 });
 
 class DataService {
-  static get(path = '') {
+  static get(path = '', data = {}) {
     const teamId = getItem('teamId');
     return client({
       method: 'GET',
       url: teamId ? `${path}?teamId=${teamId}` : path,
+      data,
       headers: { ...authHeader() },
     });
   }

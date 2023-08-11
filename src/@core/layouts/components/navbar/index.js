@@ -19,12 +19,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getItem } from '../../../../utility/localStorageControl';
 import { useIsTab } from '../../../../utility/Utils';
 import { getUserData } from '../../../../redux/actions/authActions';
+import { getTeams } from '../../../../redux/actions/teamsActions';
+import { selectCurrentUserData } from '../../../../redux/selectors/authSelectors';
 
 const ThemeNavbar = (props) => {
   const userData = getItem('userData');
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
-
+  const currentUser = useSelector(selectCurrentUserData);
   // ** Props
   const { skin, setSkin, setMenuVisibility, className } = props;
   // ** Function to toggle Theme (Light/Dark)
@@ -79,6 +81,10 @@ const ThemeNavbar = (props) => {
     }
   }, []);
 
+  const onSuccess = () => {};
+  useEffect(() => {
+    dispatch(getTeams({ id: currentUser?._id, onSuccess }));
+  }, []);
   return (
     <HeadWrapper className={className}>
       <div className="bookmark-wrapper d-flex align-items-center">

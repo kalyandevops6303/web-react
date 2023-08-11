@@ -13,6 +13,7 @@ import createProject from './reducers/createProject';
 import marketPlace from './reducers/marketPlace';
 import gloabalSearch from './reducers/gloabalSearch';
 import notifications from './reducers/notifications';
+import team from './reducers/team';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   notifications,
   layout,
   navbar,
+  team,
   search: gloabalSearch,
 
   // Add more reducers if needed

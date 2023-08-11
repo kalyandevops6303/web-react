@@ -85,6 +85,9 @@ const API = {
     subscribe: `${apiAuthEndpoint}/api/v1/user/subscribe`,
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
   },
+  team: {
+    getTeam: `${apiAuthEndpoint}/api/v1/team/by-talent`,
+  },
 };
 
 export default API;
