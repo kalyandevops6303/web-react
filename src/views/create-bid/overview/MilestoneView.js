@@ -11,6 +11,8 @@ import {
   Form,
   FormFeedback,
   Input,
+  InputGroup,
+  InputGroupText,
   Label,
   Row,
   UncontrolledAccordion,
@@ -20,7 +22,7 @@ import classNames from 'classnames';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import * as yup from 'yup';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChevronLeft, ChevronRight, Info, Plus } from 'react-feather';
 import { MilestoneSectionWrapper } from '../style';
@@ -32,40 +34,37 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 const MilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
     estimatedStartDate: yup.date().typeError('Start date is required').required('Start date is required'),
-    milestones: yup
-      .array()
-      .of(
-        yup.object().shape({
-          duration: yup
-            .number()
-            .min(1, 'Duration must be at least 1')
-            .typeError('Please enter a number')
-            .required('Duration is required'),
-          talentCost: yup
-            .number()
-            .min(1, 'Cost must be at least 1')
-            .typeError('Please enter a number')
-            .required('Talent cost is required'),
-          name: yup
+    milestones: yup.array().of(
+      yup.object().shape({
+        duration: yup
+          .number()
+          .min(1, 'Duration must be at least 1')
+          .typeError('Please enter a number')
+          .required('Duration is required'),
+        talentCost: yup
+          .number()
+          .min(1, 'Cost must be at least 1')
+          .typeError('Please enter a number')
+          .required('Talent cost is required'),
+        name: yup
+          .string()
+          .min(4, 'Name must be at least 4 characters')
+          .max(50, 'Name must be 50 characters or less')
+          .required('Name is required'),
+        description: yup
+          .string()
+          .min(4, 'Description must be at least 4 characters')
+          .max(250, 'Description must be 250 characters or less')
+          .optional(),
+        deliverables: yup.array().of(
+          yup
             .string()
-            .min(4, 'Name must be at least 4 characters')
-            .max(50, 'Name must be 50 characters or less')
-            .required('Name is required'),
-          description: yup
-            .string()
-            .min(4, 'Description must be at least 4 characters')
-            .max(250, 'Description must be 250 characters or less')
-            .optional(),
-          deliverables: yup.array().of(
-            yup
-              .string()
-              .min(4, 'Deliverable must be at least 4 characters')
-              .max(50, 'Deliverable must be 50 characters or less')
-              .transform((value) => (value === '' ? undefined : value)),
-          ),
-        }),
-      )
-      .min(1, 'At least one milestone should be added'),
+            .min(4, 'Deliverable must be at least 4 characters')
+            .max(50, 'Deliverable must be 50 characters or less')
+            .transform((value) => (value === '' ? undefined : value)),
+        ),
+      }),
+    ),
   });
 
   const {
@@ -191,17 +190,28 @@ const MilestoneView = () => {
                   <Col sm="12" md="12" lg="4" className="d-flex justify-content-between me-1">
                     <div>
                       <Label className="form-label">Estimated Duration</Label>
-                      <p className="fw-bold font-medium-1 text-end mt-50">6w</p>
+                      <p className="fw-bold font-medium-1 text-end mt-50">
+                        {useWatch({ control, name: 'milestones' }).reduce(
+                          (total, milestone) => total + Number(milestone.duration || 0),
+                          0,
+                        )}
+                        w
+                      </p>
                     </div>
                     <div>
                       <Label className="form-label me-2">Total Cost</Label>
-                      <p className="fw-bold font-medium-1 text-end me-2 mt-50">$ 5000</p>
+                      <p className="fw-bold font-medium-1 text-end me-2 mt-50">
+                        ${' '}
+                        {useWatch({ control, name: 'milestones' }).reduce(
+                          (total, milestone) => total + Number(milestone.talentCost || 0),
+                          0,
+                        )}
+                      </p>
                     </div>
                   </Col>
                 </Row>
               </CardBody>
             </Card>
-
             <UncontrolledAccordion className="mb-2">
               {milestonesFields.map((milestone, milestoneIndex) => (
                 <Card className="white-card-bg" key={milestone.id}>
@@ -229,24 +239,34 @@ const MilestoneView = () => {
                                     true
                                   }
                                   render={({ field }) => (
-                                    <Input
-                                      {...field}
-                                      placeholder="Enter"
-                                      type="number"
-                                      min={0}
-                                      onWheel={(e) => e.target.blur()}
-                                      invalid={
-                                        errors &&
-                                        errors.milestones &&
-                                        errors.milestones.length > 0 &&
-                                        errors.milestones[milestoneIndex] &&
-                                        errors.milestones[milestoneIndex].duration &&
-                                        true
-                                      }
+                                    <InputGroup
+                                      className="input-group-merge"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                       }}
-                                    />
+                                    >
+                                      <Input
+                                        {...field}
+                                        placeholder="Enter"
+                                        type="number"
+                                        min={0}
+                                        onWheel={(e) => e.target.blur()}
+                                        invalid={
+                                          errors &&
+                                          errors.milestones &&
+                                          errors.milestones.length > 0 &&
+                                          errors.milestones[milestoneIndex] &&
+                                          errors.milestones[milestoneIndex].duration &&
+                                          true
+                                        }
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                        }}
+                                      />
+                                      {getValues('milestones')[milestoneIndex].duration > 0 && (
+                                        <InputGroupText className="ps-0">w</InputGroupText>
+                                      )}
+                                    </InputGroup>
                                   )}
                                 />
                                 {errors &&
@@ -276,22 +296,31 @@ const MilestoneView = () => {
                                     true
                                   }
                                   render={({ field }) => (
-                                    <Input
-                                      {...field}
-                                      placeholder="Enter"
-                                      className="w-75"
-                                      invalid={
-                                        errors &&
-                                        errors.milestones &&
-                                        errors.milestones.length > 0 &&
-                                        errors.milestones[milestoneIndex] &&
-                                        errors.milestones[milestoneIndex].talentCost &&
-                                        true
-                                      }
+                                    <InputGroup
+                                      className="input-group-merge w-75"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                       }}
-                                    />
+                                    >
+                                      {getValues('milestones')[milestoneIndex].talentCost > 0 && (
+                                        <InputGroupText className="pe-25">$</InputGroupText>
+                                      )}
+                                      <Input
+                                        {...field}
+                                        placeholder="Enter"
+                                        invalid={
+                                          errors &&
+                                          errors.milestones &&
+                                          errors.milestones.length > 0 &&
+                                          errors.milestones[milestoneIndex] &&
+                                          errors.milestones[milestoneIndex].talentCost &&
+                                          true
+                                        }
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                        }}
+                                      />
+                                    </InputGroup>
                                   )}
                                 />
                                 {errors &&
@@ -356,7 +385,7 @@ const MilestoneView = () => {
                                   <Info size={18} color={theme.infoIcon} id="logo-info" className="ms-50" />
                                 </div>
                                 <UncontrolledTooltip placement="right" target="logo-info">
-                                  <p className="m-0">Give description in 60 characters or less</p>
+                                  <p className="m-0">Give description in 250 characters or less</p>
                                 </UncontrolledTooltip>
                                 <Controller
                                   id={`milestones[${milestoneIndex}].description`}
@@ -375,7 +404,7 @@ const MilestoneView = () => {
                                       {...field}
                                       type="textarea"
                                       rows="4"
-                                      placeholder="Enter description"
+                                      placeholder="Enter description in 250 characters"
                                       invalid={
                                         errors &&
                                         errors.milestones &&
@@ -400,7 +429,7 @@ const MilestoneView = () => {
                           <Col sm="12" md="12" lg="6">
                             <Card>
                               <CardBody>
-                                <p className="fw-bold font-medium-1 text-secondary mb-2">Deliverable Details</p>
+                                <p className="fw-bold font-medium-1 text-secondary mb-2 pb-2">Deliverable Details</p>
                                 {milestone.deliverables.map((item, index) => (
                                   <Row key={item.id} className="mb-1 d-flex align-items-center">
                                     <Col sm="12" md="12" lg="8">
@@ -443,13 +472,12 @@ const MilestoneView = () => {
                                         errors.milestones[milestoneIndex].deliverables.length > 0 &&
                                         errors.milestones[milestoneIndex].deliverables[index] && (
                                           <FormFeedback>
-                                            {errors.milestones[milestoneIndex].deliverables[index] &&
-                                              errors.milestones[milestoneIndex].deliverables[index].message}
+                                            {errors.milestones[milestoneIndex].deliverables[index].message}
                                           </FormFeedback>
                                         )}
                                     </Col>
                                     <Col sm="12" md="12" lg="4">
-                                      {index !== 0 && (
+                                      {getValues('milestones')[milestoneIndex].deliverables.length > 1 && (
                                         <Button
                                           type="button"
                                           color="flat-danger"
@@ -482,7 +510,7 @@ const MilestoneView = () => {
                             <Plus size={16} color={theme.activeNavPillText} />
                             <h5 className="fw-bold">Add Milestone</h5>
                           </div>
-                          {milestoneIndex !== 0 && (
+                          {getValues('milestones').length > 1 && (
                             <Button type="button" color="flat-danger" onClick={() => milestonesRemove(milestoneIndex)}>
                               Remove
                             </Button>

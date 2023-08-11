@@ -70,7 +70,7 @@ const LeftSidebarProjectDetails = () => (
         />
 
         <div className="project-desc mb-75">
-          <div className="project-desc-title">Desciption:</div>
+          <div className="project-desc-title">Description:</div>
           <CardText className="value">
             The data collection and payment system is designed to allow automotive companies to compensate users for
             sharing their data. By collecting data such as driving habits, vehicle usage, road conditions and other
