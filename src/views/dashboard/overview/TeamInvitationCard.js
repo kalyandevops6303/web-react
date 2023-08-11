@@ -11,7 +11,6 @@ import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
-import { DateTime } from 'luxon';
 import { ProjectWrapper } from './style';
 import ProjectModal from '../../modals/ProjectModal';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
@@ -43,57 +42,31 @@ const TeamInvitaionCard = ({ data, className }) => {
     setShowModal(!showModal);
   };
 
-  const avatarGroupArr = [
-    {
-      title: 'Billy Hopkins',
-      img: avatar7,
+  const users = [];
+
+  data?.team_members?.map((user) =>
+    users.push({
+      name: user.name || 'user',
+      img: user.image_uri || avatar7,
       placement: 'bottom',
       imgHeight: 33,
       imgWidth: 33,
-    },
-    {
-      title: 'Amy Carson',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Brandon Miles',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Daisy Weber',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Jenny Looper',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-  ];
+    }),
+  );
 
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
-          <CardTitle className="mt-50 active-project-title truncate-2 mb-1.5">{data?.details.name}</CardTitle>
+          <CardTitle className="mt-50 active-project-title truncate-2 mb-1.5">{data?.project?.name}</CardTitle>
 
           <div className="d-flex">
             <RatingBadge number="0" />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
           </div>
 
-          <UserSection tagName="Team" name="Team name" users={avatarGroupArr} />
-          <div className="bottom-detail d-flex mt-1">
+          <UserSection tagName="Team" name={data?.name} users={users} />
+          {/* <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper">
               <div className="design-planning">
                 <CardText className="mb-25">Start date</CardText>
@@ -108,7 +81,7 @@ const TeamInvitaionCard = ({ data, className }) => {
                 }`}</h6>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div
             onClick={() => setShowModal(true)}

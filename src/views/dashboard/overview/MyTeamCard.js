@@ -41,43 +41,17 @@ const MyTeamCard = ({ data, className }) => {
     setShowModal(!showModal);
   };
 
-  const avatarGroupArr = [
-    {
-      title: 'Billy Hopkins',
-      img: avatar7,
+  const users = [];
+
+  data?.team_members?.map((user) =>
+    users.push({
+      name: user.name || 'user',
+      img: user.image_uri || avatar7,
       placement: 'bottom',
       imgHeight: 33,
       imgWidth: 33,
-    },
-    {
-      title: 'Amy Carson',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Brandon Miles',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Daisy Weber',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Jenny Looper',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-  ];
+    }),
+  );
 
   return (
     <ProjectWrapper className={className}>
@@ -87,17 +61,15 @@ const MyTeamCard = ({ data, className }) => {
             <RatingBadge number="0" />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
           </div>
-          <CardTitle className="mt-50 truncate-1 mb-1">
-            Rama lingam Rama lingam Rama lingam {data?.details.name}
-          </CardTitle>
+          <CardTitle className="mt-50 truncate-1 mb-1">{data?.name}</CardTitle>
           <section className="d-flex justify-content-between">
             <div>
-              {avatarGroupArr.length > 3 ? (
+              {users.length > 3 ? (
                 <span className="d-flex avatars">
-                  <AvatarGroup size="sm" className="mr-4" data={avatarGroupArr.slice(0, 3)} />
+                  <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
                 </span>
               ) : (
-                <AvatarGroup size="sm" data={avatarGroupArr} />
+                <AvatarGroup size="sm" data={users} />
               )}
             </div>
             <div

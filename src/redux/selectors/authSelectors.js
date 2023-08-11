@@ -8,7 +8,7 @@ export const selectAuthUserData = createSelector(authSelector, (auth) => auth.us
 
 export const selectUserData = createSelector(authSelector, (auth) => auth.userData);
 
-export const selectCurrentUserData = createSelector(authSelector, (auth) => auth.currentUserData);
+export const selectCurrentUserData = createSelector(authSelector, (auth) => auth.savedUserData);
 
 export const selectIsTeamLoggedIn = createSelector(authSelector, (auth) => auth.isTeamLoggedIn);
 

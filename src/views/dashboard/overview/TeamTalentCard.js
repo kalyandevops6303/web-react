@@ -12,7 +12,6 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
-import { DateTime } from 'luxon';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
@@ -46,43 +45,17 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
     setShowModal(!showModal);
   };
 
-  const avatarGroupArr = [
-    {
-      title: 'Billy Hopkins',
-      img: avatar7,
+  const users = [];
+
+  data?.team_members?.map((user) =>
+    users.push({
+      name: user.name || 'user',
+      img: user.image_uri || avatar7,
       placement: 'bottom',
       imgHeight: 33,
       imgWidth: 33,
-    },
-    {
-      title: 'Amy Carson',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Brandon Miles',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Daisy Weber',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Jenny Looper',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-  ];
+    }),
+  );
 
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
@@ -125,10 +98,10 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
                   </div>
                 </CircularProgressbarWithChildren>
               </div>
-              <TagsSection open={open} tags={data?.proficiency.skills} />
+              <TagsSection open={open} tags={data?.skills} />
             </div>
           ) : (
-            <TagsSection fullWidth open={open} tags={data?.proficiency.skills} />
+            <TagsSection fullWidth open={open} tags={data?.skills} />
           )}
           <div className="d-flex">
             <RatingBadge number="0" />
@@ -138,15 +111,15 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           <div className="main-row">
             {isRecommendedTeam ? (
               <>
-                <UserSection tagName="Team" name="Team name" users={avatarGroupArr} />
+                <UserSection tagName="Team" name={data?.name} users={users} />
                 <div className="bottom-detail d-flex mt-1">
                   <div className="design-planning-wrapper">
-                    <div className="design-planning">
+                    {/* <div className="design-planning">
                       <CardText className="mb-25">Start date</CardText>
                       <h6 className="mb-0">{`${
                         DateTime.fromMillis(data?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
                       }`}</h6>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </>
@@ -154,17 +127,17 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
               <>
                 <UserSection
                   tagName="Client"
-                  name={`${data?.client_info?.first_name} ${data?.client_info?.last_name}`}
+                  name={`${data?.first_name} ${data?.last_name}`}
                   users={[
                     {
-                      title: `${data?.client_info?.first_name} ${data?.client_info?.last_name}`,
-                      img: data?.client_info?.image_uri || avatar7,
+                      title: `${data?.first_name} ${data?.last_name}`,
+                      img: data?.image_uri || avatar7,
                       placement: 'bottom',
                       imgHeight: 33,
                       imgWidth: 33,
                     },
                   ]}
-                  isAlma={data?.client_info?.is_alma_matter}
+                  isAlma={data?.is_alma_matter}
                 />
                 <div className="circular-progressbar-container-large mt-1">
                   <CircularProgressbarWithChildren

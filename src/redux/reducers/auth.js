@@ -4,7 +4,7 @@ const initialState = {
   email: null,
   isLoggedIn: false,
   userData: null,
-  currentUserData: null,
+  savedUserData: null,
   userDataLoading: false,
   authData: null,
   isEmailVerified: false,
@@ -35,7 +35,6 @@ const authSlice = createSlice({
       password: null,
       loading: false,
       isResendLoading: false,
-      currentUserData: null,
       error: null,
       fcmToken: '',
       userType: null,
@@ -254,7 +253,8 @@ const authSlice = createSlice({
     userDataSuccess: (state, action) => ({
       ...state,
       userData: action.payload,
-      currentUserData: action.payload,
+      savedUserData: action.payload.user_type !== 'TEAM' ? action.payload : state.savedUserData,
+      isTeamLoggedIn: action.payload.user_type === 'TEAM',
       userDataLoading: false,
     }),
     userDataFailure: (state, action) => ({

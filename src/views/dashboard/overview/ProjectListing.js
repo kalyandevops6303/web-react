@@ -180,7 +180,7 @@ const ProjectListing = () => {
         </AccordionBody>
       </AccordionItem>
       <AccordionItem>
-        {userDetailsData?.user_type === userTypes.talent && (
+        {userDetailsData?.user_type !== userTypes.client && (
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>

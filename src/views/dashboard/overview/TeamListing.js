@@ -25,11 +25,15 @@ import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
 import Tag from '../../../@core/components/tags';
 import {
   profilePercentage,
-  recommendedProjects,
-  recommendedProjectsLoading,
+  selectGetMyTeam,
+  selectGetMyTeamLoading,
+  selectRecommendedTeams,
+  selectRecommendedTeamsLoading,
+  selectTeamInvitation,
+  selectTeamInvitationLoading,
   userData,
 } from '../../../redux/selectors/dashboardSelectors';
-import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
+import { getMyTeam, getRecommendedTeams, getTeamInvitation } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import MyTeamCard from './MyTeamCard';
@@ -118,7 +122,19 @@ const TeamListing = () => {
   const dispatch = useDispatch();
   const profilePercentageData = useSelector(profilePercentage);
 
-  const toggle = (id) => (open === id ? setOpen() : setOpen(id));
+  const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
+
+  useEffect(() => {
+    if (open === '1') {
+      dispatch(getMyTeam());
+    }
+    if (open === '2') {
+      dispatch(getTeamInvitation());
+    }
+    if (open === '3') {
+      dispatch(getRecommendedTeams());
+    }
+  }, [open]);
 
   const settings = {
     dots: false,
@@ -130,14 +146,14 @@ const TeamListing = () => {
   };
 
   const userDetailsData = useSelector(userData);
-  const recommendedProjectsData = useSelector(recommendedProjects);
-  const isRecommendedLoading = useSelector(recommendedProjectsLoading);
+  const myTeam = useSelector(selectGetMyTeam);
+  const isMyTeamLoading = useSelector(selectGetMyTeamLoading);
 
-  useEffect(() => {
-    if (userDetailsData?.user_type === userTypes.talent) {
-      dispatch(getRecommendedProjects());
-    }
-  }, [userDetailsData]);
+  const teamInvitation = useSelector(selectTeamInvitation);
+  const isTeamInviteLoading = useSelector(selectTeamInvitationLoading);
+
+  const recommendedTeams = useSelector(selectRecommendedTeams);
+  const isRecommendedTeamsLoading = useSelector(selectRecommendedTeamsLoading);
 
   const handleViewAll = (e) => {
     e.stopPropagation();
@@ -156,20 +172,20 @@ const TeamListing = () => {
       <AccordionItem>
         {userDetailsData?.user_type === userTypes.talent && (
           <>
-            <AccordionHeader targetId="3">
+            <AccordionHeader targetId="1">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  My teams <Tag>{recommendedProjectsData?.data?.length} </Tag>
+                  My teams <Tag>{myTeam?.data?.length} </Tag>
                 </span>
-                {recommendedProjectsData?.data?.length > 0 && (
+                {myTeam?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All
                   </CardText>
                 )}
               </AccordionHeadStyle>
             </AccordionHeader>
-            <AccordionBody accordionId="3">
-              {isSliderLoading || isRecommendedLoading ? (
+            <AccordionBody accordionId="1">
+              {isSliderLoading || isMyTeamLoading ? (
                 <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
                   <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
                   <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
@@ -177,15 +193,15 @@ const TeamListing = () => {
                 </div>
               ) : (
                 <ProjectsListingWrap>
-                  {recommendedProjectsData?.data?.length > 0 && isTab ? (
-                    recommendedProjectsData?.data?.map((project) => (
+                  {myTeam?.data?.length > 0 && isTab ? (
+                    myTeam?.data?.map((project) => (
                       <MyTeamCard isRecommendedTeam key={project.id} data={project} recommended />
                     ))
-                  ) : recommendedProjectsData?.data?.length > 0 ? (
+                  ) : myTeam?.data?.length > 0 ? (
                     <>
-                      {recommendedProjectsData?.data?.length >= 4 ? (
+                      {myTeam?.data?.length >= 4 ? (
                         <Slider {...settings}>
-                          {recommendedProjectsData?.data?.map((project, index) => (
+                          {myTeam?.data?.map((project, index) => (
                             <MyTeamCard
                               isRecommendedTeam
                               className={`slide-${index}`}
@@ -197,7 +213,7 @@ const TeamListing = () => {
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
-                          {recommendedProjectsData?.data?.map((project) => (
+                          {myTeam?.data?.map((project) => (
                             <MyTeamCard
                               isRecommendedTeam
                               className="custom-slider-project"
@@ -230,20 +246,20 @@ const TeamListing = () => {
       <AccordionItem>
         {userDetailsData?.user_type === userTypes.talent && (
           <>
-            <AccordionHeader targetId="3">
+            <AccordionHeader targetId="2">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Team invites <Tag>{recommendedProjectsData?.data?.length} </Tag>
+                  Team invites <Tag>{teamInvitation?.data?.length} </Tag>
                 </span>
-                {recommendedProjectsData?.data?.length > 0 && (
+                {teamInvitation?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All
                   </CardText>
                 )}
               </AccordionHeadStyle>
             </AccordionHeader>
-            <AccordionBody accordionId="3">
-              {isSliderLoading || isRecommendedLoading ? (
+            <AccordionBody accordionId="2">
+              {isSliderLoading || isTeamInviteLoading ? (
                 <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
                   <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
                   <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
@@ -251,15 +267,15 @@ const TeamListing = () => {
                 </div>
               ) : (
                 <ProjectsListingWrap>
-                  {recommendedProjectsData?.data?.length > 0 && isTab ? (
-                    recommendedProjectsData?.data?.map((project) => (
+                  {teamInvitation?.data?.length > 0 && isTab ? (
+                    teamInvitation?.data?.map((project) => (
                       <TeamInvitationCard isRecommendedTeam key={project.id} data={project} recommended />
                     ))
-                  ) : recommendedProjectsData?.data?.length > 0 ? (
+                  ) : teamInvitation?.data?.length > 0 ? (
                     <>
-                      {recommendedProjectsData?.data?.length >= 4 ? (
+                      {teamInvitation?.data?.length >= 4 ? (
                         <Slider {...settings}>
-                          {recommendedProjectsData?.data?.map((project, index) => (
+                          {teamInvitation?.data?.map((project, index) => (
                             <TeamInvitationCard
                               isRecommendedTeam
                               className={`slide-${index}`}
@@ -271,7 +287,7 @@ const TeamListing = () => {
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
-                          {recommendedProjectsData?.data?.map((project) => (
+                          {teamInvitation?.data?.map((project) => (
                             <TeamInvitationCard
                               isRecommendedTeam
                               className="custom-slider-project"
@@ -307,9 +323,9 @@ const TeamListing = () => {
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Recommended Teams <Tag>{recommendedProjectsData?.data?.length} </Tag>
+                  Recommended Teams <Tag>{recommendedTeams?.data?.length} </Tag>
                 </span>
-                {recommendedProjectsData?.data?.length > 0 && (
+                {recommendedTeams?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All
                   </CardText>
@@ -317,7 +333,7 @@ const TeamListing = () => {
               </AccordionHeadStyle>
             </AccordionHeader>
             <AccordionBody accordionId="3">
-              {isSliderLoading || isRecommendedLoading ? (
+              {isSliderLoading || isRecommendedTeamsLoading ? (
                 <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
                   <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
                   <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
@@ -325,15 +341,15 @@ const TeamListing = () => {
                 </div>
               ) : (
                 <ProjectsListingWrap>
-                  {recommendedProjectsData?.data?.length > 0 && isTab ? (
-                    recommendedProjectsData?.data?.map((project) => (
+                  {recommendedTeams?.data?.length > 0 && isTab ? (
+                    recommendedTeams?.data?.map((project) => (
                       <TeamTalentCard isRecommendedTeam key={project.id} data={project} />
                     ))
-                  ) : recommendedProjectsData?.data?.length > 0 ? (
+                  ) : recommendedTeams?.data?.length > 0 ? (
                     <>
-                      {recommendedProjectsData?.data?.length >= 4 ? (
+                      {recommendedTeams?.data?.length >= 4 ? (
                         <Slider {...settings}>
-                          {recommendedProjectsData?.data?.map((project, index) => (
+                          {recommendedTeams?.data?.map((project, index) => (
                             <TeamTalentCard
                               isRecommendedTeam
                               className={`slide-${index}`}
@@ -344,7 +360,7 @@ const TeamListing = () => {
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
-                          {recommendedProjectsData?.data?.map((project) => (
+                          {recommendedTeams?.data?.map((project) => (
                             <TeamTalentCard
                               isRecommendedTeam
                               className="custom-slider-project"
@@ -368,22 +384,6 @@ const TeamListing = () => {
                   )}
                 </ProjectsListingWrap>
               )}
-            </AccordionBody>
-          </>
-        )}
-        {userDetailsData?.user_type === userTypes.client && (
-          <>
-            <AccordionHeader targetId="3">
-              Upcoming Payments <Tag>0 new</Tag>
-            </AccordionHeader>
-            <AccordionBody accordionId="3">
-              <ProjectsListingWrap>
-                {isTab ? (
-                  <Empty active={false} recommended={false} payment />
-                ) : (
-                  <Empty active={false} recommended={false} payment />
-                )}
-              </ProjectsListingWrap>
             </AccordionBody>
           </>
         )}

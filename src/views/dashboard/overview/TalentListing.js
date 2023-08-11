@@ -24,11 +24,13 @@ import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
 import Tag from '../../../@core/components/tags';
 import {
   profilePercentage,
-  recommendedProjects,
-  recommendedProjectsLoading,
+  selectJoinRequestMember,
+  selectJoinRequestMemberLoading,
+  selectRecommendedTalent,
+  selectRecommendedTalentLoading,
   userData,
 } from '../../../redux/selectors/dashboardSelectors';
-import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
+import { getJoinRequest, getRecommendedProjects, getRecommendedTalent } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 
@@ -114,9 +116,25 @@ const TalentListing = () => {
   const isTab = useIsTab();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
 
-  const toggle = (id) => (open === id ? setOpen() : setOpen(id));
+  const joinRequests = useSelector(selectJoinRequestMember);
+  const isJoinRequestLoading = useSelector(selectJoinRequestMemberLoading);
+
+  const recommendedTalent = useSelector(selectRecommendedTalent);
+  const isRecommendedTalentLoading = useSelector(selectRecommendedTalentLoading);
+
+  const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
+
+  useEffect(() => {
+    if (open === '1') {
+      dispatch(getJoinRequest(userDetailsData?._id));
+    }
+    if (open === '2') {
+      dispatch(getRecommendedTalent(userDetailsData?._id));
+    }
+  }, [open]);
 
   const settings = {
     dots: false,
@@ -126,10 +144,6 @@ const TalentListing = () => {
     slidesToScroll: 2,
     arrows: true,
   };
-
-  const userDetailsData = useSelector(userData);
-  const recommendedProjectsData = useSelector(recommendedProjects);
-  const isRecommendedLoading = useSelector(recommendedProjectsLoading);
 
   useEffect(() => {
     if (userDetailsData?.user_type === userTypes.talent) {
@@ -153,84 +167,116 @@ const TalentListing = () => {
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
       <AccordionItem>
         <AccordionHeader targetId="1">
-          Join Request <Tag>0</Tag>
+          <AccordionHeadStyle>
+            <span className="d-flex align-items-center">
+              Join Requests <Tag>{joinRequests?.data?.length} </Tag>
+            </span>
+            {joinRequests?.data?.length > 0 && (
+              <CardText onClick={handleViewAll} className="view-all-cta">
+                View All
+              </CardText>
+            )}
+          </AccordionHeadStyle>
         </AccordionHeader>
         <AccordionBody accordionId="1">
-          <ProjectsListingWrap>
-            {isTab ? (
-              <Empty active recommended={false} payment={false} />
-            ) : (
-              <Empty active recommended={false} payment={false} />
-            )}
-          </ProjectsListingWrap>
+          {isSliderLoading || isJoinRequestLoading ? (
+            <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+            </div>
+          ) : (
+            <ProjectsListingWrap>
+              {joinRequests?.data?.length > 0 && isTab ? (
+                joinRequests?.data?.map((project) => <TeamTalentCard key={project.id} data={project} recommended />)
+              ) : joinRequests?.data?.length > 0 ? (
+                <>
+                  {joinRequests?.data?.length >= 4 ? (
+                    <Slider {...settings}>
+                      {joinRequests?.data?.map((project, index) => (
+                        <TeamTalentCard className={`slide-${index}`} key={project.id} data={project} recommended />
+                      ))}
+                    </Slider>
+                  ) : (
+                    <div className="custom-slider-wrap">
+                      {joinRequests?.data?.map((project) => (
+                        <TeamTalentCard className="custom-slider-project" key={project.id} data={project} recommended />
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Empty
+                  active={false}
+                  isEducationNotCompleted={returnDetailsForMarketPlace(
+                    userDetailsData?.user_type,
+                    profilePercentageData?.values_missing,
+                  )}
+                  recommended
+                  payment={false}
+                />
+              )}
+            </ProjectsListingWrap>
+          )}
         </AccordionBody>
       </AccordionItem>
 
       <AccordionItem>
-        {userDetailsData?.user_type === userTypes.talent && (
-          <>
-            <AccordionHeader targetId="3">
-              <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Recommended Talents <Tag>{recommendedProjectsData?.data?.length} </Tag>
-                </span>
-                {recommendedProjectsData?.data?.length > 0 && (
-                  <CardText onClick={handleViewAll} className="view-all-cta">
-                    View All
-                  </CardText>
-                )}
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="3">
-              {isSliderLoading || isRecommendedLoading ? (
-                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                </div>
-              ) : (
-                <ProjectsListingWrap>
-                  {recommendedProjectsData?.data?.length > 0 && isTab ? (
-                    recommendedProjectsData?.data?.map((project) => (
-                      <TeamTalentCard key={project.id} data={project} recommended />
-                    ))
-                  ) : recommendedProjectsData?.data?.length > 0 ? (
-                    <>
-                      {recommendedProjectsData?.data?.length >= 4 ? (
-                        <Slider {...settings}>
-                          {recommendedProjectsData?.data?.map((project, index) => (
-                            <TeamTalentCard className={`slide-${index}`} key={project.id} data={project} recommended />
-                          ))}
-                        </Slider>
-                      ) : (
-                        <div className="custom-slider-wrap">
-                          {recommendedProjectsData?.data?.map((project) => (
-                            <TeamTalentCard
-                              className="custom-slider-project"
-                              key={project.id}
-                              data={project}
-                              recommended
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </>
+        <AccordionHeader targetId="2">
+          <AccordionHeadStyle>
+            <span className="d-flex align-items-center">
+              Recommended Talents <Tag>{recommendedTalent?.data?.length} </Tag>
+            </span>
+            {recommendedTalent?.data?.length > 0 && (
+              <CardText onClick={handleViewAll} className="view-all-cta">
+                View All
+              </CardText>
+            )}
+          </AccordionHeadStyle>
+        </AccordionHeader>
+        <AccordionBody accordionId="2">
+          {isSliderLoading || isRecommendedTalentLoading ? (
+            <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+            </div>
+          ) : (
+            <ProjectsListingWrap>
+              {recommendedTalent?.data?.length > 0 && isTab ? (
+                recommendedTalent?.data?.map((project) => (
+                  <TeamTalentCard key={project.id} data={project} recommended />
+                ))
+              ) : recommendedTalent?.data?.length > 0 ? (
+                <>
+                  {recommendedTalent?.data?.length >= 4 ? (
+                    <Slider {...settings}>
+                      {recommendedTalent?.data?.map((project, index) => (
+                        <TeamTalentCard className={`slide-${index}`} key={project.id} data={project} recommended />
+                      ))}
+                    </Slider>
                   ) : (
-                    <Empty
-                      active={false}
-                      isEducationNotCompleted={returnDetailsForMarketPlace(
-                        userDetailsData?.user_type,
-                        profilePercentageData?.values_missing,
-                      )}
-                      recommended
-                      payment={false}
-                    />
+                    <div className="custom-slider-wrap">
+                      {recommendedTalent?.data?.map((project) => (
+                        <TeamTalentCard className="custom-slider-project" key={project.id} data={project} recommended />
+                      ))}
+                    </div>
                   )}
-                </ProjectsListingWrap>
+                </>
+              ) : (
+                <Empty
+                  active={false}
+                  isEducationNotCompleted={returnDetailsForMarketPlace(
+                    userDetailsData?.user_type,
+                    profilePercentageData?.values_missing,
+                  )}
+                  recommended
+                  payment={false}
+                />
               )}
-            </AccordionBody>
-          </>
-        )}
+            </ProjectsListingWrap>
+          )}
+        </AccordionBody>
       </AccordionItem>
     </Accordion>
   );

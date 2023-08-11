@@ -11,18 +11,19 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { profilePercentage, userData } from '../../redux/selectors/dashboardSelectors';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
 import TeamListing from './overview/TeamListing';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
 
-  const userDetailsData = useSelector(userData);
+  const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
 
   useEffect(() => {
@@ -78,17 +79,21 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
-          <section className="mb-2">
-            <Header className="mb-1">Talents</Header>
-            <TalentListing />
-          </section>
-          <section className="mb-2">
-            <Header className="mb-1">Teams</Header>
-            <TeamListing />
-          </section>
+          {userDetailsData?.user_type === userTypes.team && (
+            <section className="mb-2">
+              <Header className="mb-1">Talents</Header>
+              <TalentListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.talent && (
+            <section className="mb-2">
+              <Header className="mb-1">Teams</Header>
+              <TeamListing />
+            </section>
+          )}
         </Col>
         <Col lg="4" sm="12">
-          <TeamSection />
+          {userDetailsData?.user_type === userTypes.team && <TeamSection />}
           <Alerts />
           <Disputes />
           <Meetings />

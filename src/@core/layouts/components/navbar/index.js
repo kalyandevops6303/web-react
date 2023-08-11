@@ -83,7 +83,7 @@ const ThemeNavbar = (props) => {
 
   const onSuccess = () => {};
   useEffect(() => {
-    dispatch(getTeams({ id: currentUser?._id, onSuccess }));
+    dispatch(getTeams({ onSuccess }));
   }, []);
   return (
     <HeadWrapper className={className}>

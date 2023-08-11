@@ -19,7 +19,7 @@ const EarningCard = () => {
     <EarningCardWrapper>
       <Card className="card-reward">
         <CardHeader className="earning-head">
-          <CardTitle tag="h4">{userDetailsData?.user_type === userTypes.talent ? 'Earnings' : 'Payments'}</CardTitle>
+          <CardTitle tag="h4">{userDetailsData?.user_type === userTypes.client ? 'Payments' : 'Earnings'}</CardTitle>
           <CardText className="d-none text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
             View All
           </CardText>

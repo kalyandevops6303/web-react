@@ -110,7 +110,6 @@ const UserDropdown = () => {
   const handleSwitch = (data) => {
     dispatch(switchProfile({ data, onSuccess: handleShowModal }));
   };
-  console.log(isProfileSwitchLoading);
 
   const userName = isTeamLoggedIn
     ? userDetailsData?.name
@@ -176,7 +175,7 @@ const UserDropdown = () => {
 
       <UserDropDownWrapper>
         <DropdownMenu end>
-          <div style={{ height: '13rem', overflowY: 'scroll' }}>
+          <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
             <DropdownItem
               className={`d-flex justify-content-between ${
                 savedUserDetails?._id === userDetailsData?._id ? 'isActive' : ''

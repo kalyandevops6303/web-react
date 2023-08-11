@@ -59,11 +59,12 @@ import {
   userDataSuccess,
   switchProfileSuccess,
 } from '../reducers/auth';
-import { removeItem, setItem } from '../../utility/localStorageControl';
+import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
+import { getTeamById } from '../../services/teamServices';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -267,7 +268,13 @@ const resetPassword = (data, onSuccess) => async (dispatch) => {
 const getUserData = () => async (dispatch) => {
   dispatch(userDataRequest());
   try {
-    const res = await userDataService();
+    const team_id = getItem('team_id');
+    let res;
+    if (team_id) {
+      res = await getTeamById(team_id);
+    } else {
+      res = await userDataService();
+    }
     dispatch(userDataSuccess(res.data.data));
     setItem('userData', res.data.data);
   } catch (error) {
@@ -281,9 +288,9 @@ const switchProfile =
     try {
       dispatch(switchProfileSuccess(data));
       if (data?.user_type === 'TEAM') {
-        setItem('teamId', data?._id);
+        setItem('team_id', data?._id);
       } else {
-        removeItem('teamId');
+        removeItem('team_id');
       }
       onSuccess();
       // dispatch(clearPostState());
