@@ -36,19 +36,33 @@ const MilestoneView = () => {
       .array()
       .of(
         yup.object().shape({
-          duration: yup.number().required('Duration is required'),
-          talentCost: yup.number().required('Talent cost is required'),
+          duration: yup
+            .number()
+            .min(1, 'Duration must be at least 1')
+            .typeError('Please enter a number')
+            .required('Duration is required'),
+          talentCost: yup
+            .number()
+            .min(1, 'Cost must be at least 1')
+            .typeError('Please enter a number')
+            .required('Talent cost is required'),
           name: yup
             .string()
-            .min(2, 'Name must be at least 2 characters')
+            .min(4, 'Name must be at least 4 characters')
             .max(50, 'Name must be 50 characters or less')
             .required('Name is required'),
           description: yup
             .string()
-            .min(2, 'Description must be at least 2 characters')
-            .max(50, 'Description must be 50 characters or less')
+            .min(4, 'Description must be at least 4 characters')
+            .max(250, 'Description must be 250 characters or less')
             .optional(),
-          deliverables: yup.array().of(yup.string()),
+          deliverables: yup.array().of(
+            yup
+              .string()
+              .min(4, 'Deliverable must be at least 4 characters')
+              .max(50, 'Deliverable must be 50 characters or less')
+              .transform((value) => (value === '' ? undefined : value)),
+          ),
         }),
       )
       .min(1, 'At least one milestone should be added'),
@@ -66,10 +80,10 @@ const MilestoneView = () => {
     defaultValues: {
       milestones: [
         {
-          duration: '',
-          talentCost: '',
-          name: '',
-          description: '',
+          duration: undefined,
+          talentCost: undefined,
+          name: undefined,
+          description: undefined,
           deliverables: [''],
         },
       ],
@@ -117,12 +131,17 @@ const MilestoneView = () => {
 
   const handleAddMilestone = () => {
     const allMilestonesValid = getValues('milestones').every(
-      (milestone) =>
-        milestone.duration.trim() !== '' && milestone.talentCost.trim() !== '' && milestone.name.trim() !== '',
+      (milestone) => milestone.duration > 0 && milestone.talentCost > 0 && milestone.name.trim() !== '',
     );
 
     if (allMilestonesValid) {
-      milestonesAppend({ name: '', description: '', duration: '', talentCost: '', deliverables: [''] });
+      milestonesAppend({
+        name: undefined,
+        description: undefined,
+        duration: undefined,
+        talentCost: undefined,
+        deliverables: [''],
+      });
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
@@ -213,6 +232,9 @@ const MilestoneView = () => {
                                     <Input
                                       {...field}
                                       placeholder="Enter"
+                                      type="number"
+                                      min={0}
+                                      onWheel={(e) => e.target.blur()}
                                       invalid={
                                         errors &&
                                         errors.milestones &&
@@ -227,6 +249,13 @@ const MilestoneView = () => {
                                     />
                                   )}
                                 />
+                                {errors &&
+                                  errors.milestones &&
+                                  errors.milestones.length > 0 &&
+                                  errors.milestones[milestoneIndex] &&
+                                  errors.milestones[milestoneIndex].duration && (
+                                    <FormFeedback>{errors.milestones[milestoneIndex].duration.message}</FormFeedback>
+                                  )}
                               </div>
                             </Col>
                             <Col sm="12" md="12" lg="4">
@@ -265,6 +294,13 @@ const MilestoneView = () => {
                                     />
                                   )}
                                 />
+                                {errors &&
+                                  errors.milestones &&
+                                  errors.milestones.length > 0 &&
+                                  errors.milestones[milestoneIndex] &&
+                                  errors.milestones[milestoneIndex].talentCost && (
+                                    <FormFeedback>{errors.milestones[milestoneIndex].talentCost.message}</FormFeedback>
+                                  )}
                               </div>
                             </Col>
                           </Row>
@@ -306,7 +342,13 @@ const MilestoneView = () => {
                                     />
                                   )}
                                 />
-                                {/* {errors.name && <FormFeedback>{errors.name.message}</FormFeedback>} */}
+                                {errors &&
+                                  errors.milestones &&
+                                  errors.milestones.length > 0 &&
+                                  errors.milestones[milestoneIndex] &&
+                                  errors.milestones[milestoneIndex].name && (
+                                    <FormFeedback>{errors.milestones[milestoneIndex].name.message}</FormFeedback>
+                                  )}
                                 <div className="d-flex mt-2">
                                   <Label className="form-label" for="description">
                                     Description
@@ -345,7 +387,13 @@ const MilestoneView = () => {
                                     />
                                   )}
                                 />
-                                {/* {errors.description && <FormFeedback>{errors.description.message}</FormFeedback>} */}
+                                {errors &&
+                                  errors.milestones &&
+                                  errors.milestones.length > 0 &&
+                                  errors.milestones[milestoneIndex] &&
+                                  errors.milestones[milestoneIndex].description && (
+                                    <FormFeedback>{errors.milestones[milestoneIndex].description.message}</FormFeedback>
+                                  )}
                               </CardBody>
                             </Card>
                           </Col>
@@ -396,7 +444,7 @@ const MilestoneView = () => {
                                         errors.milestones[milestoneIndex].deliverables[index] && (
                                           <FormFeedback>
                                             {errors.milestones[milestoneIndex].deliverables[index] &&
-                                              errors.milestones.deliverables[index].message}
+                                              errors.milestones[milestoneIndex].deliverables[index].message}
                                           </FormFeedback>
                                         )}
                                     </Col>
