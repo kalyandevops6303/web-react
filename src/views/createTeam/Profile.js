@@ -240,6 +240,9 @@ const Profile = () => {
     setIsTeamcreating(false);
     setTeamCreatedModal(true);
   };
+  const onError = () => {
+    setIsTeamcreating(false);
+  };
   const onSubmit = (data) => {
     const {
       availabilityDays,
@@ -287,10 +290,10 @@ const Profile = () => {
       availability,
     };
     if (imageUrlRes) {
-      reqData.image_uri = imageUrlRes.file_key;
+      reqData.team_logo = imageUrlRes.file_key;
     }
     setIsTeamcreating(true);
-    dispatch(createTeam(removeEmptyKeys(reqData), onSuccess));
+    dispatch(createTeam(removeEmptyKeys(reqData), onSuccess, onError));
   };
 
   const loadServicesOptions = async (search) => {
