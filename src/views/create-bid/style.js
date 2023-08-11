@@ -230,6 +230,10 @@ const MilestoneSectionWrapper = styled.div`
       color: ${theme.activeNavPillText};
     }
   }
+
+  .card-header-border {
+    border: 1px solid ${theme.cardHeaderBorderColor};
+  }
 `;
 
 export { LeftSidebarProjectDetailsWrapper, ProgressBarWrapper, TeamSectionWrapper, MilestoneSectionWrapper };

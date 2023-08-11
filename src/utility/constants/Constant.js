@@ -27,4 +27,5 @@ const createBidSteps = [
   { title: 'Milestone', subtitle: 'Add milestone & role', icon: <Watch size={18} /> },
   { title: 'Preview', subtitle: 'Review before posting', icon: <Check size={18} /> },
 ];
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding, createBidSteps };
+const maxFileSize = 5000000; // 5MB
+export { ERROR_CODES, checkPoints, userTypes, userOnboarding, createBidSteps, maxFileSize };

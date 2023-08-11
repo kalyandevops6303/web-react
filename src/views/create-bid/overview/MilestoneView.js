@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   AccordionBody,
   AccordionHeader,
@@ -22,14 +22,17 @@ import classNames from 'classnames';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import * as yup from 'yup';
+import { useDropzone } from 'react-dropzone';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ChevronLeft, ChevronRight, Info, Plus } from 'react-feather';
+import { ChevronLeft, ChevronRight, FileText, Info, Plus, Upload } from 'react-feather';
 import { MilestoneSectionWrapper } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
+import { maxFileSize } from '../../../utility/constants/Constant';
+import { DropzoneContainer } from '../../CreateProject/style';
 
 const MilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -145,6 +148,142 @@ const MilestoneView = () => {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
   };
+
+  const isFileValid = (file) => {
+    if (file.size > maxFileSize) {
+      ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
+      return false;
+    }
+    return true;
+  };
+
+  const [files, setFiles] = useState([]);
+  const [uploadingFiles, setUploadingFiles] = useState([]);
+
+  const filesRef = useRef();
+
+  useEffect(() => {
+    filesRef.current = files;
+  }, [files]);
+
+  const handleUploadFile = async (file) => {
+    try {
+      setUploadingFiles((prevFiles) => [...prevFiles, file]);
+
+      //   await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
+      //     'x-ms-blob-type': 'BlockBlob',
+      //     'Content-Type': file.file.type,
+      //   });
+    } catch (error) {
+      ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
+    } finally {
+      setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
+    }
+  };
+
+  const onDrop = useCallback(async (acceptedFiles, rejectedFiles) => {
+    rejectedFiles.forEach((file) =>
+      ShowToastMessage(ERROR, `${file.file.name} is not of a valid supported file type (PDF, DOC, DOCX, TXT or JPEG).`),
+    );
+
+    const fetchUploadUrls = async () => {
+      const allFiles = [...filesRef.current, ...acceptedFiles];
+
+      if (allFiles?.length > 5) {
+        ShowToastMessage(ERROR, 'Maximum 5 files allowed');
+      } else {
+        const validFiles = acceptedFiles.filter((file) => isFileValid(file));
+
+        // eslint-disable-next-line arrow-body-style
+        const promises = validFiles.map(async () => {
+          //   const response = await projectFileUploadService(file.name);
+          //   return { id: uuidv4(), file, uploadData: response?.data?.data };
+        });
+
+        const filesWithUrls = await Promise.all(promises);
+        setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
+
+        filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
+      }
+    };
+    fetchUploadUrls();
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: {
+      'text/application': ['.pdf', '.doc', '.docx'],
+      'text/plain': ['.txt'],
+      'image/jpeg': ['.jpeg'],
+    },
+    onDrop,
+  });
+
+  const renderFilePreview = (file) => {
+    if (file.type.startsWith('image')) {
+      return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
+      // eslint-disable-next-line
+    } else {
+      return <FileText size="18" className="me-75 mb-50" />;
+    }
+  };
+
+  const handleRemoveFile = (file) => {
+    const uploadedFiles = files;
+    const filtered = uploadedFiles.filter((i) => i.id !== file.id);
+    setFiles([...filtered]);
+  };
+
+  const renderFileSize = (size) => {
+    if (Math.round(size / 100) / 10 > 1000) {
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
+      // eslint-disable-next-line
+    } else {
+      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
+    }
+  };
+
+  const formattedDate = new Date()
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+    .replace(',', '')
+    .split(' ');
+  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+
+  const fileList = () => (
+    <div className="custom-card mb-1">
+      <Card className="p-1">
+        {files.map((file, index) => (
+          <Row
+            key={file.id}
+            className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
+          >
+            <Col sm="6" md="4" lg="4">
+              {renderFilePreview(file.file)}
+              {file.file.name}
+            </Col>
+            <Col sm="6" md="2" lg="2">
+              {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              {renderFileSize(file.file.size)}
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              {requiredFormattedDate}
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              <Button
+                color="flat-danger"
+                className="btn-left-margin"
+                disabled={uploadingFiles.includes(file)}
+                onClick={() => handleRemoveFile(file)}
+              >
+                Remove
+              </Button>
+            </Col>
+          </Row>
+        ))}
+      </Card>
+    </div>
+  );
 
   return (
     <MilestoneSectionWrapper className="mt-2">
@@ -523,6 +662,55 @@ const MilestoneView = () => {
               ))}
             </UncontrolledAccordion>
           </Form>
+        </CardBody>
+      </Card>
+      <Card className="mt-2">
+        <CardHeader className="py-75">
+          <h4 className="m-0 mt-75">Documents</h4>
+        </CardHeader>
+        <hr className="m-0 card-header-border" />
+        <CardBody>
+          <Row className="mb-1">
+            <Label className="form-label">
+              Upload detailed requirements document (optional) <Info size={18} color={theme.infoIcon} id="document" />
+              <UncontrolledTooltip placement="right" target="document">
+                <div className="d-flex flex-column align-items-start">
+                  <p className="m-0">Allowed file types:</p>
+                  <p className="m-0">pdf, doc, docx, txt, jpeg</p>
+                  <p className="m-0">Max files: 5</p>
+                  <p className="m-0">Max file size: 5MB</p>
+                </div>
+              </UncontrolledTooltip>
+            </Label>
+            {files.length ? (
+              <>
+                <div className="px-1 mt-50">{fileList()}</div>
+                <div {...getRootProps({ className: 'dropzone' })}>
+                  <input {...getInputProps()} />
+                  <div className="d-flex align-items-center upload-btn cursor-pointer mt-1">
+                    <UploadIconContainer>
+                      <Upload size={18} color={theme.activeNavPillText} />
+                    </UploadIconContainer>
+                    <h5 className="fw-bold mb-0 mx-75">Upload</h5>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Col sm="12" md="12" lg="6">
+                <DropzoneContainer>
+                  <div {...getRootProps({ className: 'dropzone' })}>
+                    <input {...getInputProps()} />
+                    <div className="d-flex align-items-center justify-content-center flex-column p-3">
+                      <h4 className="font-medium-1">Drop files here or click to upload</h4>
+                      <p className="text-secondary font-small-5 text-center mt-50 fw-light">
+                        (This is just a demo dropzone. Selected files are not actually uploaded.)
+                      </p>
+                    </div>
+                  </div>
+                </DropzoneContainer>
+              </Col>
+            )}
+          </Row>
         </CardBody>
       </Card>
       <div className="d-flex justify-content-between align-items-center">
