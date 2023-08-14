@@ -236,4 +236,82 @@ const MilestoneSectionWrapper = styled.div`
   }
 `;
 
-export { LeftSidebarProjectDetailsWrapper, ProgressBarWrapper, TeamSectionWrapper, MilestoneSectionWrapper };
+const PreviewSectionWrapper = styled.div`
+  .report-text {
+    color: ${theme.red};
+  }
+
+  .main-card-title {
+    padding: 1.5rem 1.5rem 0.8rem 1.5rem !important;
+    font-size: 1.25rem;
+    margin-bottom: 0 !important;
+    border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+  }
+  .bid-eta {
+    display: flex;
+    gap: 4rem;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    .value {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    .key {
+    }
+  }
+
+  .milestone-table {
+    border: 1px solid ${theme.cardHeaderBorderColor};
+
+    th {
+      padding: 1rem 1.7rem;
+    }
+    td {
+      padding: 1rem 1.7rem;
+    }
+  }
+  .milestone-title {
+    font-weight: 300;
+    font-size: 1.2rem;
+  }
+
+  .card-header-border {
+    border: 1px solid ${theme.cardHeaderBorderColor};
+  }
+
+  .upload-button {
+    width: fit-content;
+
+    .add-icon-container {
+      background: ${theme.uploadIconBackground};
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 6px;
+      width: fit-content;
+    }
+
+    h5 {
+      margin: 0 0 0 8px;
+      color: ${theme.activeNavPillText};
+    }
+  }
+
+  .white-card-bg {
+    .card-body {
+      border-radius: 6px;
+      background-color: ${theme.white};
+      box-shadow: 0px 4px 24px 0px ${theme.cardShadowLight} !important;
+    }
+  }
+`;
+
+export {
+  LeftSidebarProjectDetailsWrapper,
+  ProgressBarWrapper,
+  TeamSectionWrapper,
+  MilestoneSectionWrapper,
+  PreviewSectionWrapper,
+};
