@@ -7,7 +7,7 @@ const recommendedProjectsService = () => DataService.get(API.dashboard.recommend
 
 const profilePercentageService = () => DataService.get(API.dashboard.profilePercentage);
 
-const getTeamMemberService = () => DataService.get(API.dashboard.getTeamMember);
+const getTeamMemberService = () => DataService.get(`${API.dashboard.getTeamMember}?page=1&page_size=30`);
 
 const getInvitedTeamMemberService = () => DataService.get(API.dashboard.getInvitedMember);
 
@@ -21,6 +21,10 @@ const getTeamInvitationService = () => DataService.get(API.dashboard.teamInvitai
 
 const getMyTeamService = () => DataService.get(`${API.dashboard.getMyTeam}?page=1&page_size=20`);
 
+const validateUrlService = (data) => DataService.post(API.dashboard.validateUrl, data);
+
+const updateInvitationService = (data) => DataService.post(API.dashboard.updateInvitation, data);
+
 export {
   userDataService,
   recommendedProjectsService,
@@ -32,4 +36,6 @@ export {
   getRecommendedTeamService,
   getTeamInvitationService,
   getMyTeamService,
+  validateUrlService,
+  updateInvitationService,
 };

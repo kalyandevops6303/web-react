@@ -4,7 +4,7 @@ const initialState = {
   userDataLoading: false,
   recommendedProjects: null,
   recommendedProjectsLoading: false,
-  getTeamMember: null,
+  getTeamMember: [],
   getTeamMemberLoading: false,
   getInvitedMember: null,
   getInvitedMemberLoading: false,

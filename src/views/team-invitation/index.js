@@ -1,13 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { GrayBorderContainer, GrayCardWrapper } from '../styled';
 import InfoIcon from '../../assets/images/timeline-info-icon.png';
+import { updateInvitation } from '../../redux/actions/dashboardActions';
+import { getItem, setItem } from '../../utility/localStorageControl';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const TeamInvitation = () => {
   const breadCrumb = [{ title: 'Dashboard' }, { title: `Team Name` || 'User', link: '#' }];
+  const dispatch = useDispatch();
+  const userData = useSelector(selectUserData);
+  const inviteToken = getItem('inviteToken');
+
+  useEffect(() => {
+    setItem('isInviteRead', true);
+  }, []);
+
+  const handleAccept = () => {
+    const data = {
+      token: inviteToken ? getItem('inviteToken') : '',
+      status: 'ACCEPTED',
+      user_id: userData?._id,
+    };
+    dispatch(updateInvitation({ data, onSuccess: () => {}, onError: () => {} }));
+  };
+  const handleDecline = () => {
+    const data = {
+      token: inviteToken ? getItem('inviteToken') : '',
+      status: 'DECLINED',
+      user_id: userData?._id,
+    };
+    dispatch(updateInvitation({ data, onSuccess: () => {}, onError: () => {} }));
+  };
 
   return (
     <>
@@ -29,8 +57,12 @@ const TeamInvitation = () => {
                       <div className="d-flex justify-content-between align-items-center">
                         <h5 className="mt-1">Invite</h5>
                         <div className="d-flex text-blue text-decoration-underline">
-                          <p className="me-2 cursor-pointer mb-0">Decline</p>
-                          <p className="cursor-pointer mb-0">Accept</p>
+                          <p className="me-2 cursor-pointer mb-0" onClick={handleDecline}>
+                            Decline
+                          </p>
+                          <p className="cursor-pointer mb-0" onClick={handleAccept}>
+                            Accept
+                          </p>
                         </div>
                       </div>
                       <h5 className="mt-2 pt-50 font-small-4 mb-0">Invite Sent</h5>

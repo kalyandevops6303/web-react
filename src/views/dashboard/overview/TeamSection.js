@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody, CardHeader, CardText, CardTitle } from 'reactstrap';
 import { TeamSectionWrapper } from './style';
@@ -7,7 +7,7 @@ import UserNameRoleCompanyComp from '../../../@core/components/username-role-com
 import { getTeamMembers } from '../../../redux/actions/dashboardActions';
 import { selectGetTeamMember } from '../../../redux/selectors/dashboardSelectors';
 
-const TeamSection = () => {
+const TeamSection = ({ toggleModal }) => {
   const dispatch = useDispatch();
   const teamMembers = useSelector(selectGetTeamMember);
   useEffect(() => {
@@ -20,8 +20,11 @@ const TeamSection = () => {
           <CardTitle tag="h6">
             Team <span className="members-count">{teamMembers?.metadata?.total_records} Members</span>
           </CardTitle>
-          <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
-            <Link to="/notifications">View All</Link>
+          <CardText
+            onClick={toggleModal}
+            className="cursor-pointer text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary"
+          >
+            View All
           </CardText>
         </CardHeader>
         <CardBody>
@@ -34,6 +37,13 @@ const TeamSection = () => {
       </Card>
     </TeamSectionWrapper>
   );
+};
+
+TeamSection.propTypes = {
+  toggleModal: Proptypes.func,
+};
+TeamSection.defaultProps = {
+  toggleModal: () => {},
 };
 
 export default TeamSection;

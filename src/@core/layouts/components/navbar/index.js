@@ -21,6 +21,7 @@ import { useIsTab } from '../../../../utility/Utils';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { getTeams } from '../../../../redux/actions/teamsActions';
 import { selectCurrentUserData } from '../../../../redux/selectors/authSelectors';
+import { userTypes } from '../../../../utility/constants/Constant';
 
 const ThemeNavbar = (props) => {
   const userData = getItem('userData');
@@ -83,7 +84,9 @@ const ThemeNavbar = (props) => {
 
   const onSuccess = () => {};
   useEffect(() => {
-    dispatch(getTeams({ onSuccess }));
+    if (userData?.user_type !== userTypes.client) {
+      dispatch(getTeams({ onSuccess }));
+    }
   }, []);
   return (
     <HeadWrapper className={className}>

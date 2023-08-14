@@ -61,6 +61,8 @@ const API = {
     getInvitedMember: `${apiOnboardingEndpoint}/api/v1/team/invite-member`,
     joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-request`,
     recommendedTalent: `${apiOnboardingEndpoint}/api/v1/teams/recommended-talents`,
+    validateUrl: `${apiAuthEndpoint}/api/v1/team/invite-member/validate-deep-link`,
+    updateInvitation: `${apiAuthEndpoint}/api/v1/team/invite-member/update-invite`,
 
     // talent
     recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,

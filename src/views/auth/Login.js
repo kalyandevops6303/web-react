@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // ** React Imports
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -23,25 +23,71 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
-import { removeItem } from '../../utility/localStorageControl';
+import { removeItem, setItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
+import { validateUrl } from '../../redux/actions/dashboardActions';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
   const isLoggedIn = useSelector(selectIsLoggedIn);
+  const [validUrl, setValidUrl] = useState(false);
+
+  const [validationInProgress, setValidationInProgress] = useState(false); // New state
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
     password: yup.string().required('Password is required'),
   });
 
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const dataParam = urlSearchParams.get('data');
+
+  const onValidUrlSuccess = () => {
+    setValidUrl(true);
+    setValidationInProgress(false); // Set validation as complete
+    setItem('inviteToken', dataParam);
+    setItem('isInviteRead', false);
+  };
+
+  const onInvalidUrlSuccess = () => {
+    setValidationInProgress(false); // Set validation as complete
+  };
+
   useEffect(() => {
-    if (isLoggedIn) {
+    if (dataParam) {
+      setValidationInProgress(true); // Set validation in progress
+      dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
+    }
+  }, []); // Only run when validationInProgress changes
+
+  useEffect(() => {
+    // Redirect logic based on the conditions
+    if (validationInProgress) {
+      // Validation in progress, don't redirect yet
+      return;
+    }
+
+    if (validUrl && isLoggedIn) {
+      navigate('/team-invitation');
+    } else if (isLoggedIn) {
       navigate('/dashboard');
     }
-  }, []);
+  }, [validationInProgress, validUrl, isLoggedIn]);
+
+  // useEffect(() => {
+
+  // }, [validUrl]);
+
+  // Valid link
+  // When user is logged in and he clicks mail, login => dashboard
+  // When user is not looged in and he clicks mail, login =>
+
+  // Invalid link
+  // When user is logged in and he clicks mail, login => dashboard, show message link expired
+  // When user is not looged in and he clicks mail, show link expired message on login
+
   useEffect(() => {
     dispatch(clearDataSuccess());
   }, []);

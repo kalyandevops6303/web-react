@@ -23,6 +23,7 @@ import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
 import TeamListing from './overview/TeamListing';
 import { selectUserData } from '../../redux/selectors/authSelectors';
+import { getItem } from '../../utility/localStorageControl';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -75,6 +76,19 @@ const PrivateDashboard = () => {
     }
   };
 
+  const onTeamInvite = () => {
+    setInviteTeamMemberModal(true);
+  };
+
+  const inviteToken = getItem('inviteToken');
+  const isInviteRead = getItem('isInviteRead');
+
+  useEffect(() => {
+    if (inviteToken && !isInviteRead) {
+      navigate('/team-invitation');
+    }
+  }, []);
+
   return (
     <div>
       {completeProfileModal && (
@@ -84,7 +98,7 @@ const PrivateDashboard = () => {
         <ListingTeamMembersModal
           modal={listingTeamMembersModal}
           toggleModal={toggleListingTeamMembersModal}
-          toggleInvitationSentModal={toggleInvitationSentModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
         />
       )}
       {inviteTeamMemberModal && (
@@ -125,6 +139,13 @@ const PrivateDashboard = () => {
           </Button>
         </DashboardHeaderWrapper>
       )}
+      {userDetailsData?.user_type === userTypes.team && (
+        <DashboardHeaderWrapper>
+          <Button as="link" color="primary" onClick={onTeamInvite}>
+            Invite Talent
+          </Button>
+        </DashboardHeaderWrapper>
+      )}
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
           <Link to="/create-team/profile-details">
@@ -132,6 +153,7 @@ const PrivateDashboard = () => {
           </Link>
         </CreateTeamButtonWrapper>
       )}
+
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />
@@ -163,7 +185,13 @@ const PrivateDashboard = () => {
           )}
         </Col>
         <Col lg="4" sm="12">
-          {userDetailsData?.user_type === userTypes.team && <TeamSection />}
+          {userDetailsData?.user_type === userTypes.team && (
+            <TeamSection
+              modal={listingTeamMembersModal}
+              toggleModal={toggleListingTeamMembersModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            />
+          )}
           <Alerts />
           <Disputes />
           <Meetings />
