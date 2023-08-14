@@ -7,11 +7,11 @@ import { UserPlus } from 'react-feather';
 import GreatJobGif from '../../assets/images/greatJobGif.gif';
 import { TeamCreatedModalImageWrapper } from '../styled';
 
-const TeamCreatedModal = ({ modal, toggleModal }) => {
+const TeamCreatedModal = ({ modal }) => {
   const navigate = useNavigate();
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={toggleModal} />
+      <ModalHeader />
       <ModalBody>
         <div className="d-flex justify-content-between align-items-center ps-1">
           <img src={GreatJobGif} width={120} height={120} alt="great-job" className="me-5" />
@@ -34,7 +34,9 @@ const TeamCreatedModal = ({ modal, toggleModal }) => {
           <Button color="primary" outline className="me-2" onClick={() => navigate('/dashboard')}>
             Close
           </Button>
-          <Button color="primary">Add Member</Button>
+          <Button onClick={() => navigate('/dashboard')} color="primary">
+            Get Started
+          </Button>
         </div>
       </ModalBody>
     </Modal>
@@ -45,10 +47,8 @@ export default TeamCreatedModal;
 
 TeamCreatedModal.propTypes = {
   modal: Proptypes.bool,
-  toggleModal: Proptypes.func,
 };
 
 TeamCreatedModal.defaultProps = {
   modal: false,
-  toggleModal: () => {},
 };
