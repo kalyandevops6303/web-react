@@ -15,6 +15,7 @@ const checkPoints = {
 const userTypes = {
   client: 'CLIENT',
   talent: 'TALENT',
+  team: 'TEAM',
 };
 const userOnboarding = {
   client: 'client-onboarding',

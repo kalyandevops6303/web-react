@@ -31,6 +31,10 @@
     width: 540px !important;
     margin: 0 auto;
 }
+.custom-modal-style-sm {
+    width: 30% !important;
+    margin: auto;
+}
 
 .modal-dialog {
     max-width: none !important;
@@ -42,6 +46,10 @@
 @media (max-width: 768px) {
     .custom-modal-project-details {
         width: 100% !important;
+    }
+    .custom-modal-style-sm {
+        width: 30% !important;
+        
     }
 
 }

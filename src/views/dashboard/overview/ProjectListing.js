@@ -31,6 +31,7 @@ import {
 import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -127,12 +128,12 @@ const ProjectListing = () => {
     arrows: true,
   };
 
-  const userDetailsData = useSelector(userData);
+  const userDetailsData = useSelector(selectUserData);
   const recommendedProjectsData = useSelector(recommendedProjects);
   const isRecommendedLoading = useSelector(recommendedProjectsLoading);
 
   useEffect(() => {
-    if (userDetailsData?.user_type === userTypes.talent) {
+    if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
       dispatch(getRecommendedProjects());
     }
   }, [userDetailsData]);
@@ -180,12 +181,12 @@ const ProjectListing = () => {
         </AccordionBody>
       </AccordionItem>
       <AccordionItem>
-        {userDetailsData?.user_type === userTypes.talent && (
+        {userDetailsData?.user_type !== userTypes.client && (
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Recommended Projects <Tag>{recommendedProjectsData?.data?.length} </Tag>
+                  Recommended Projects <Tag>{recommendedProjectsData?.data?.length || 0} </Tag>
                 </span>
                 {recommendedProjectsData?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">

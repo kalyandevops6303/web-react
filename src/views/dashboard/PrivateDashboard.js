@@ -11,7 +11,7 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { profilePercentage, userData } from '../../redux/selectors/dashboardSelectors';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
@@ -19,11 +19,13 @@ import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/styl
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SendInvitationModal from '../modals/SendInvitationModal';
 import InvitationSentModal from '../modals/InvitationSentModal';
+import TeamSection from './overview/TeamSection';
+import TalentListing from './overview/TalentListing';
+import TeamListing from './overview/TeamListing';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
-
-  const userDetailsData = useSelector(userData);
 
   const [message, setMessage] = useState('');
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
@@ -47,6 +49,7 @@ const PrivateDashboard = () => {
     setInvitationSentModal(!invitationSentModal);
   };
 
+  const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
 
   useEffect(() => {
@@ -142,10 +145,25 @@ const PrivateDashboard = () => {
       </Row>
       <Row>
         <Col lg="8" sm="12">
-          <Header>Projects</Header>
-          <ProjectListing />
+          <section className="mb-2">
+            <Header className="mb-1">Projects</Header>
+            <ProjectListing />
+          </section>
+          {userDetailsData?.user_type === userTypes.team && (
+            <section className="mb-2">
+              <Header className="mb-1">Talents</Header>
+              <TalentListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.talent && (
+            <section className="mb-2">
+              <Header className="mb-1">Teams</Header>
+              <TeamListing />
+            </section>
+          )}
         </Col>
         <Col lg="4" sm="12">
+          {userDetailsData?.user_type === userTypes.team && <TeamSection />}
           <Alerts />
           <Disputes />
           <Meetings />
