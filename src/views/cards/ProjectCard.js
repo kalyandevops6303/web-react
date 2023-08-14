@@ -15,6 +15,7 @@ import BadgeGroup from '../../@core/components/badge-group';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
+import CreateBidModal from '../modals/CreateBidModal';
 
 const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
@@ -59,6 +60,13 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
       setIsContentOverflowing(divElement.scrollHeight > divElement.clientHeight);
     }
   }, []);
+
+  const [createBidModal, setCreateBidModal] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const toggleCreateBidModal = () => {
+    setCreateBidModal(!createBidModal);
+  };
 
   return (
     <ProjectCardWrap>
@@ -173,7 +181,18 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
           </Row>
         </CardBody>
       </Card>
-      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
+      {showModal && (
+        <ProjectModal
+          data={data}
+          modal={showModal}
+          toggleModal={handleToggle}
+          setCreateBidModal={setCreateBidModal}
+          setSelectedProject={setSelectedProject}
+        />
+      )}
+      {createBidModal && (
+        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={selectedProject} />
+      )}
     </ProjectCardWrap>
   );
 };

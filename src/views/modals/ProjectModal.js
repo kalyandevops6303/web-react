@@ -1,6 +1,19 @@
 import React from 'react';
 import Proptypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody, Card, CardHeader, CardTitle, CardBody, Row, Col, CardText } from 'reactstrap';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardBody,
+  Row,
+  Col,
+  CardText,
+  Button,
+} from 'reactstrap';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import ReactHtmlParser from '../../lib/html-parser';
 import DateTime from '../../lib/date-time';
@@ -8,6 +21,8 @@ import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
+import { userData } from '../../redux/selectors/dashboardSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -47,7 +62,9 @@ const ViewProjectDetailModalWrap = styled.div`
 `;
 
 // eslint-disable-next-line arrow-body-style
-const ProjectModal = ({ modal, toggleModal, data }) => {
+const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelectedProject }) => {
+  const userDetailsData = useSelector(userData);
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -155,6 +172,23 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
               <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
             </CardBody>
           </Card>
+          {userDetailsData?.user_type === userTypes.talent && (
+            <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
+              <Button color="flat-danger" className="me-1">
+                Report
+              </Button>
+              <Button
+                color="primary"
+                onClick={() => {
+                  toggleModal();
+                  setCreateBidModal(true);
+                  setSelectedProject(data);
+                }}
+              >
+                Create Bid
+              </Button>
+            </div>
+          )}
         </ViewProjectDetailModalWrap>
       </ModalBody>
     </Modal>
@@ -167,10 +201,14 @@ ProjectModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
+  setCreateBidModal: Proptypes.func,
+  setSelectedProject: Proptypes.func,
 };
 
 ProjectModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   data: {},
+  setCreateBidModal: () => {},
+  setSelectedProject: () => {},
 };
