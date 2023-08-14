@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,7 +22,7 @@ import { makeFavourite, removeFavourite } from '../../../redux/actions/profileAc
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
 
-const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
+const LeftSidebarProfile = ({ isTalentView, isTeamView, isClient, data, isEditable }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
       <Card>
         <CardBody>
           {!isEditable &&
+            !isTeamView &&
             (data?.is_favourited ? (
               <Heart className="d-flex ms-auto heart" fill={theme.red} stroke={theme.red} onClick={handleUnLike} />
             ) : (
@@ -52,19 +54,24 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
             ))}
 
           <div className="user-image">
-            {isClient ? (
+            {isClient && (
               <img
                 src={data?.company_logo?.length > 0 ? data?.company_logo : avatar7}
                 alt="user"
                 width={112}
                 height={120}
               />
-            ) : (
+            )}
+
+            {isTalentView && (
               <img src={data?.image_uri?.length > 0 ? data?.image_uri : avatar7} alt="user" width={112} height={120} />
+            )}
+            {isTeamView && (
+              <img src={data?.team_logo?.length > 0 ? data?.team_logo : avatar7} alt="user" width={112} height={120} />
             )}
           </div>
 
-          {isEditable && !isClient && (
+          {isEditable && isTalentView && (
             <div className="private">
               <CardText className="text-center user-name mb-50">{`${data?.first_name || '-'} ${
                 data?.last_name || '-'
@@ -73,7 +80,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name || ''}`}</CardText>
             </div>
           )}
-          {!isEditable && !isClient && (
+          {!isEditable && isTalentView && (
             <div className="public">
               <CardText className="text-center user-name mb-50 fw-300">{`${data?.first_name} ${data?.last_name}`}</CardText>
               <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name}`}</CardText>
@@ -87,6 +94,12 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               <CardText className="text-center mb-50 fw-bold">{`${data?.first_name || '-'} ${
                 data?.last_name || '-'
               }`}</CardText>
+            </div>
+          )}
+          {isTeamView && (
+            <div className="public">
+              <CardText className="text-center user-name fw-bold mb-25 ">{data?.name}</CardText>
+              <CardText className="text-center mb-50 fw-300">{`${data?.created_by?.first_name} ${data?.created_by?.last_name}`}</CardText>
             </div>
           )}
 
@@ -103,7 +116,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               </CardText>
             </div>
           )}
-          {isEditable && (
+          {isEditable && !isTeamView && (
             <div className="profile-completion mt-2">
               <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
               <Progress
@@ -123,7 +136,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               </div>
             ))}
 
-            {isClient ? (
+            {isClient && (
               <>
                 <div className="d-flex mb-75">
                   <span className="info-key">Location:</span>
@@ -141,7 +154,8 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                   <CardText>{data?.company_industry?.name || '-'} </CardText>
                 </div>
               </>
-            ) : (
+            )}
+            {isTalentView && (
               <div className="d-flex mb-75">
                 <span className="info-key">Location:</span>
                 {data?.current_residency?.city ? (
@@ -155,13 +169,21 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               </div>
             )}
 
-            {isClient ? (
+            {isClient && (
               <BadgeGroup
                 color="light-success-2"
                 title="Project area of interest"
                 data={data?.project_area_of_interest?.area?.name ? data?.project_area_of_interest?.area : []}
               />
-            ) : (
+            )}
+            {isTeamView && (
+              <BadgeGroup
+                color="light-success-2"
+                title="Project area of interest"
+                data={data?.services?.name ? data?.services : []}
+              />
+            )}
+            {isTalentView && (
               <>
                 <BadgeGroup color="light-blue" title="Certificates" data={data?.expertise?.certificates} />
                 <BadgeGroup color="light-blue" title="Skills" data={data?.expertise?.skills} />
@@ -171,6 +193,13 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                   title="Language"
                   data={unionBy(data?.languages_speak, data?.languages_read, data?.languages_write, 'name')}
                 />
+              </>
+            )}
+            {isTeamView && (
+              <>
+                <BadgeGroup color="light-blue" title="Skills" data={data?.skills} />
+                <BadgeGroup color="light-blue" title="Tools" data={data?.tools} />
+                <BadgeGroup color="light-blue" title="Language" data={data?.languages_supported} />
               </>
             )}
             <BadgeGroup
@@ -189,19 +218,65 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
               }
             />
 
-            <div className="social-links">
-              <CardText className="Info-key mt-50 mb-50">Social Links</CardText>
-              {data?.social_links?.length === 0 && <CardText className="Info-key font-small-3 mt-0">No links</CardText>}
+            {!isTeamView && (
+              <div className="social-links">
+                <CardText className="Info-key mt-50 mb-50">Social Links</CardText>
+                {data?.social_links?.length === 0 && (
+                  <CardText className="Info-key font-small-3 mt-0">No links</CardText>
+                )}
 
-              {data?.social_links?.map((item, index) => {
-                if (item?.platform === 'linkedIn')
+                {data?.social_links?.map((item, index) => {
+                  if (item?.platform === 'linkedIn')
+                    return (
+                      <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                        <Avatar
+                          color="light-primary"
+                          icon={
+                            <Linkedin fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
+                          }
+                          onClick={item?.url}
+                          className="me-1 p-25 mb-1"
+                          id={`tooltip-links-${index}`}
+                        />
+                        <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
+                      </a>
+                    );
+                  if (item?.platform === 'twitter')
+                    return (
+                      <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                        <Avatar
+                          color="light-primary"
+                          icon={
+                            <Twitter fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
+                          }
+                          onClick={item?.url}
+                          className="me-1 p-25 mb-1"
+                          id={`tooltip-links-${index}`}
+                        />
+                        <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
+                      </a>
+                    );
+
+                  if (item?.platform === 'github')
+                    return (
+                      <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                        <Avatar
+                          color="light-primary"
+                          icon={
+                            <GitHub fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
+                          }
+                          onClick={item?.url}
+                          className="me-1 p-25 mb-1"
+                          id={`tooltip-links-${index}`}
+                        />
+                        <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
+                      </a>
+                    );
                   return (
-                    <a href={item?.url} target="_blank" rel="noopener noreferrer">
+                    <a key={item?.url} href={item?.url} target="_blank" rel="noopener noreferrer">
                       <Avatar
                         color="light-primary"
-                        icon={
-                          <Linkedin fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
-                        }
+                        icon={<Link fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />}
                         onClick={item?.url}
                         className="me-1 p-25 mb-1"
                         id={`tooltip-links-${index}`}
@@ -209,64 +284,24 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                       <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
                     </a>
                   );
-                if (item?.platform === 'twitter')
-                  return (
-                    <a href={item?.url} target="_blank" rel="noopener noreferrer">
-                      <Avatar
-                        color="light-primary"
-                        icon={
-                          <Twitter fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
-                        }
-                        onClick={item?.url}
-                        className="me-1 p-25 mb-1"
-                        id={`tooltip-links-${index}`}
-                      />
-                      <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
-                    </a>
-                  );
+                })}
 
-                if (item?.platform === 'github')
-                  return (
-                    <a href={item?.url} target="_blank" rel="noopener noreferrer">
-                      <Avatar
-                        color="light-primary"
-                        icon={
-                          <GitHub fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
-                        }
-                        onClick={item?.url}
-                        className="me-1 p-25 mb-1"
-                        id={`tooltip-links-${index}`}
-                      />
-                      <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
-                    </a>
-                  );
-                return (
-                  <a key={item?.url} href={item?.url} target="_blank" rel="noopener noreferrer">
-                    <Avatar
-                      color="light-primary"
-                      icon={<Link fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />}
-                      onClick={item?.url}
-                      className="me-1 p-25 mb-1"
-                      id={`tooltip-links-${index}`}
-                    />
-                    <UncontrolledTooltip target={`tooltip-links-${index}`}>{item?.platform}</UncontrolledTooltip>
-                  </a>
-                );
-              })}
+                <Avatar
+                  color="light-primary"
+                  icon={<img src={DribbleIcon} alt="driblle-icon" />}
+                  className="d-none me-1 p-25"
+                />
+                <Avatar
+                  color="light-primary"
+                  icon={<img src={BehanceIcon} alt="driblle-icon" />}
+                  className=" d-none me-1 p-25"
+                />
+              </div>
+            )}
 
-              <Avatar
-                color="light-primary"
-                icon={<img src={DribbleIcon} alt="driblle-icon" />}
-                className="d-none me-1 p-25"
-              />
-              <Avatar
-                color="light-primary"
-                icon={<img src={BehanceIcon} alt="driblle-icon" />}
-                className=" d-none me-1 p-25"
-              />
-            </div>
-
-            {isEditable ? (
+            {isTeamView ? (
+              <span />
+            ) : isEditable ? (
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50" color="primary" onClick={onEditClick}>
                   Edit
@@ -297,11 +332,15 @@ LeftSidebarProfile.propTypes = {
   isEditable: PropTypes.bool,
   data: PropTypes.object,
   isClient: PropTypes.bool,
+  isTalentView: PropTypes.bool,
+  isTeamView: PropTypes.bool,
 };
 LeftSidebarProfile.defaultProps = {
   isEditable: false,
   data: {},
   isClient: false,
+  isTalentView: false,
+  isTeamView: false,
 };
 
 export default LeftSidebarProfile;

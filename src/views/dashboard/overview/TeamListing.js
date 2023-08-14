@@ -12,6 +12,7 @@ import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
 import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
+import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
 
 import TeamTalentCard from './TeamTalentCard';
 import TeamInvitationCard from './TeamInvitationCard';
@@ -38,7 +39,7 @@ import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import MyTeamCard from './MyTeamCard';
 
-const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
+const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
@@ -61,6 +62,8 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
                 Lets get you <br /> started!
               </CardText>
             )}
+            {isTeam && <img src={TeamNoDataGif} className="empty-gif" alt="empty-gif" />}
+
             {payment && (
               <CardText className="font-weight-normal get-started">
                 No Upcoming <br /> Payment
@@ -94,7 +97,9 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
               Explore Projects
             </div>
           ) : (
-            ''
+            <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
+              View Details
+            </div>
           )}
         </CardBody>
       </Card>
@@ -107,6 +112,7 @@ const AccordionHeadStyle = styled.div`
   justify-content: space-between;
   width: 100%;
   .view-all-cta {
+    display: none;
     font-size: 0.875rem;
     color: ${theme.activeColor};
     text-decoration: underline;
@@ -227,12 +233,12 @@ const TeamListing = () => {
                     </>
                   ) : (
                     <Empty
+                      isTeam
                       active={false}
                       isEducationNotCompleted={returnDetailsForMarketPlace(
                         userDetailsData?.user_type,
                         profilePercentageData?.values_missing,
                       )}
-                      recommended
                       payment={false}
                     />
                   )}
@@ -249,7 +255,7 @@ const TeamListing = () => {
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Team invites <Tag>{teamInvitation?.data?.length} </Tag>
+                  Team invites {teamInvitation?.data?.length ? <Tag>{teamInvitation?.data?.length} </Tag> : ''}
                 </span>
                 {teamInvitation?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
@@ -301,12 +307,12 @@ const TeamListing = () => {
                     </>
                   ) : (
                     <Empty
+                      isTeam
                       active={false}
                       isEducationNotCompleted={returnDetailsForMarketPlace(
                         userDetailsData?.user_type,
                         profilePercentageData?.values_missing,
                       )}
-                      recommended
                       payment={false}
                     />
                   )}
@@ -323,7 +329,7 @@ const TeamListing = () => {
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Recommended Teams <Tag>{recommendedTeams?.data?.length} </Tag>
+                  Recommended Teams {recommendedTeams?.data?.length ? <Tag>{recommendedTeams?.data?.length}</Tag> : ''}
                 </span>
                 {recommendedTeams?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
@@ -373,12 +379,12 @@ const TeamListing = () => {
                     </>
                   ) : (
                     <Empty
+                      isTeam
                       active={false}
                       isEducationNotCompleted={returnDetailsForMarketPlace(
                         userDetailsData?.user_type,
                         profilePercentageData?.values_missing,
                       )}
-                      recommended
                       payment={false}
                     />
                   )}
@@ -399,6 +405,7 @@ Empty.propTypes = {
   recommended: Proptypes.bool,
   payment: Proptypes.bool,
   isEducationNotCompleted: Proptypes.bool,
+  isTeam: Proptypes.bool,
 };
 
 Empty.defaultProps = {
@@ -406,4 +413,5 @@ Empty.defaultProps = {
   recommended: false,
   payment: false,
   isEducationNotCompleted: false,
+  isTeam: false,
 };

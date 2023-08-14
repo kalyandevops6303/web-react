@@ -42,10 +42,9 @@ const MyTeamCard = ({ data, className }) => {
   };
 
   const users = [];
-
   data?.team_members?.map((user) =>
     users.push({
-      name: user.name || 'user',
+      title: `${user?.talent_info?.first_name} ${user?.talent_info?.last_name}` || 'user',
       img: user.image_uri || avatar7,
       placement: 'bottom',
       imgHeight: 33,
@@ -73,7 +72,7 @@ const MyTeamCard = ({ data, className }) => {
               )}
             </div>
             <div
-              onClick={() => setShowModal(true)}
+              // onClick={() => setShowModal(true)}
               className="cursor-pointer font-small-4 font-weight-normal text-center text-primary project-cta mt-25"
             >
               View

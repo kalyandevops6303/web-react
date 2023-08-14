@@ -106,6 +106,7 @@ const UserDropdown = () => {
 
   const handleShowModal = () => {
     ShowToastMessage('success', `Profile switched successfully`);
+    navigate('/dashboard');
   };
   const handleSwitch = (data) => {
     dispatch(switchProfile({ data, onSuccess: handleShowModal }));

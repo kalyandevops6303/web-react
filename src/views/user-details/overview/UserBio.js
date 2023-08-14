@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Card, CardBody, CardText } from 'reactstrap';
 import { UserBioWrap } from './style';
 
-const UserBio = ({ isClient, data }) => (
+const UserBio = ({ isTalentView, isTeamView, isClient, data }) => (
   <UserBioWrap>
     {data?.company_name || data?.tagline ? (
       <Card>
@@ -14,7 +14,10 @@ const UserBio = ({ isClient, data }) => (
                 {isClient ? `About ${data?.company_name || 'User'}` : data?.tagline}
               </CardText>
             </div>
-            <CardText>{isClient ? data?.company_tagline : data?.professional_intro} </CardText>
+            <CardText>
+              {isClient && data?.company_tagline} {isTalentView && data?.professional_intro}
+              {isTeamView && data?.introduction}{' '}
+            </CardText>
           </div>
         </CardBody>
       </Card>
@@ -31,9 +34,13 @@ const UserBio = ({ isClient, data }) => (
 UserBio.propTypes = {
   data: PropTypes.object,
   isClient: PropTypes.bool,
+  isTalentView: PropTypes.bool,
+  isTeamView: PropTypes.bool,
 };
 UserBio.defaultProps = {
   data: {},
   isClient: false,
+  isTalentView: false,
+  isTeamView: false,
 };
 export default UserBio;

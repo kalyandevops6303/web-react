@@ -11,6 +11,8 @@ import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBod
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
+import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
+
 import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
 
 import TeamTalentCard from './TeamTalentCard';
@@ -34,7 +36,7 @@ import { getJoinRequest, getRecommendedProjects, getRecommendedTalent } from '..
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 
-const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
+const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
@@ -52,6 +54,8 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
             {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
+            {isTeam && <img src={TeamNoDataGif} className="empty-gif" alt="empty-gif" />}
+
             {active && (
               <CardText className="get-started">
                 Lets get you <br /> started!
@@ -90,7 +94,9 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
               Explore Projects
             </div>
           ) : (
-            ''
+            <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
+              View Details
+            </div>
           )}
         </CardBody>
       </Card>
@@ -103,6 +109,7 @@ const AccordionHeadStyle = styled.div`
   justify-content: space-between;
   width: 100%;
   .view-all-cta {
+    display: none;
     font-size: 0.875rem;
     color: ${theme.activeColor};
     text-decoration: underline;
@@ -207,12 +214,12 @@ const TalentListing = () => {
                 </>
               ) : (
                 <Empty
+                  isTeam
                   active={false}
                   isEducationNotCompleted={returnDetailsForMarketPlace(
                     userDetailsData?.user_type,
                     profilePercentageData?.values_missing,
                   )}
-                  recommended
                   payment={false}
                 />
               )}
@@ -265,12 +272,12 @@ const TalentListing = () => {
                 </>
               ) : (
                 <Empty
+                  isTeam
                   active={false}
                   isEducationNotCompleted={returnDetailsForMarketPlace(
                     userDetailsData?.user_type,
                     profilePercentageData?.values_missing,
                   )}
-                  recommended
                   payment={false}
                 />
               )}
@@ -289,6 +296,7 @@ Empty.propTypes = {
   recommended: Proptypes.bool,
   payment: Proptypes.bool,
   isEducationNotCompleted: Proptypes.bool,
+  isTeam: Proptypes.bool,
 };
 
 Empty.defaultProps = {
@@ -296,4 +304,5 @@ Empty.defaultProps = {
   recommended: false,
   payment: false,
   isEducationNotCompleted: false,
+  isTeam: false,
 };
