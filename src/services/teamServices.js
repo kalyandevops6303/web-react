@@ -5,4 +5,6 @@ const getTeamService = () => DataService.get(`${API.team.getTeam}?page=1&page_si
 
 const getTeamById = (id) => DataService.get(`${API.team.teamById}/${id}`);
 
-export { getTeamService, getTeamById };
+const createTeamService = (data) => DataService.post(API.team.create, data);
+
+export { createTeamService, getTeamService, getTeamById };

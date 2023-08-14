@@ -98,6 +98,7 @@ const API = {
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
+    create: `${apiAuthEndpoint}/api/v1/team/create`,
   },
 };
 

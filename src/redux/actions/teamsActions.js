@@ -1,4 +1,4 @@
-import { getTeamService } from '../../services/teamServices';
+import { getTeamService, createTeamService } from '../../services/teamServices';
 import errorHandler from '../../utility/errorHandler';
 import { getTeamSuccess } from '../reducers/team';
 
@@ -14,5 +14,15 @@ const getTeams =
     }
   };
 
+const createTeam = (data, onSuccess, onError) => async () => {
+  try {
+    await createTeamService(data);
+    onSuccess();
+  } catch (error) {
+    onError();
+    errorHandler(error);
+  }
+};
+
 // eslint-disable-next-line import/prefer-default-export
-export { getTeams };
+export { createTeam, getTeams };
