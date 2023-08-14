@@ -395,6 +395,16 @@ const TagsWrap = styled.div`
     margin: auto;
   }
 `;
+const CreateTeamButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  margin-top: -3.5rem;
+
+  @media (max-width: 767px) {
+    margin-top: -2rem;
+  }
+`;
 
 export {
   TagsWrap,
@@ -407,4 +417,5 @@ export {
   ProjectsListingWrap,
   AlertCardWrapper,
   DashboardHeaderWrapper,
+  CreateTeamButtonWrapper,
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -15,7 +15,7 @@ import { profilePercentage, userData } from '../../redux/selectors/dashboardSele
 import { userTypes } from '../../utility/constants/Constant';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
-import { DashboardHeaderWrapper } from './overview/style';
+import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SendInvitationModal from '../modals/SendInvitationModal';
 import InvitationSentModal from '../modals/InvitationSentModal';
@@ -121,6 +121,13 @@ const PrivateDashboard = () => {
             Create Project
           </Button>
         </DashboardHeaderWrapper>
+      )}
+      {userDetailsData?.user_type === userTypes.talent && (
+        <CreateTeamButtonWrapper>
+          <Link to="/create-team/profile-details">
+            <span className="text-decoration-underline font-medium-2">Create Team</span>
+          </Link>
+        </CreateTeamButtonWrapper>
       )}
       <Row>
         <Col lg="4" sm="12">
