@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -21,10 +21,15 @@ import { makeFavourite, removeFavourite } from '../../../redux/actions/profileAc
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
+import { getItem } from '../../../utility/localStorageControl';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
   const dispatch = useDispatch();
   const param = useParams();
+  const navigate = useNavigate();
+  const userData = getItem('userData');
+
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
@@ -34,11 +39,17 @@ const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
 
   const profilePercentageData = useSelector(profilePercentage);
 
+  const onEditClick = () => {
+    navigate(`/${data.user_type.toLowerCase()}-onboarding/account-details`, {
+      state: { isEditing: true },
+    });
+  };
+
   return (
     <LeftSidebarProfileWrapper>
       <Card>
         <CardBody>
-          <div className="d-flex justify-content-between">
+          <div>
             {isInvited && (
               <div className="d-flex gap-50 align-items-center">
                 <UserCheck size={16} />
@@ -47,16 +58,31 @@ const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
                 </CustomBadge>
               </div>
             )}
-            {!isEditable &&
+            {!(isClient && userData?.user_type === userTypes.client) &&
+              !isEditable &&
               (data?.is_favourited ? (
-                <Heart className="d-flex ms-auto heart" fill={theme.red} stroke={theme.red} onClick={handleUnLike} />
+                <Heart
+                  className="cursor-pointer d-flex ms-auto heart"
+                  fill={theme.red}
+                  stroke={theme.red}
+                  onClick={handleUnLike}
+                />
               ) : (
-                <Heart className="d-flex ms-auto heart" onClick={handleLike} />
+                <Heart className="cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
               ))}
           </div>
 
           <div className="user-image">
-            <img src={avatar7} alt="user" />
+            {isClient ? (
+              <img
+                src={data?.company_logo?.length > 0 ? data?.company_logo : avatar7}
+                alt="user"
+                width={112}
+                height={120}
+              />
+            ) : (
+              <img src={data?.image_uri?.length > 0 ? data?.image_uri : avatar7} alt="user" width={112} height={120} />
+            )}
           </div>
 
           {isEditable && !isClient && (
@@ -65,7 +91,7 @@ const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
                 data?.last_name || '-'
               }`}</CardText>
 
-              <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name}`}</CardText>
+              <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name || ''}`}</CardText>
             </div>
           )}
           {!isEditable && !isClient && (
@@ -76,7 +102,9 @@ const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
           )}
           {isClient && (
             <div className="public">
-              <CardText className="text-center user-name mb-25 fw-300">{`${data?.company_name || '-'}`}</CardText>
+              <CardText className="text-center user-name mb-25 fw-300">{`${
+                data?.company_name || 'Company name'
+              }`}</CardText>
               <CardText className="text-center mb-50 fw-bold">{`${data?.first_name || '-'} ${
                 data?.last_name || '-'
               }`}</CardText>
@@ -120,10 +148,14 @@ const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
               <>
                 <div className="d-flex mb-75">
                   <span className="info-key">Location:</span>
-                  <CardText>
-                    {data?.office_address?.city?.name}, {data?.office_address?.state?.name},{' '}
-                    {data?.office_address?.country?.name}
-                  </CardText>
+                  {data?.office_address?.city ? (
+                    <CardText>
+                      {data?.office_address?.city?.name}, {data?.office_address?.state?.name},
+                      {data?.office_address?.country?.name}
+                    </CardText>
+                  ) : (
+                    '-'
+                  )}
                 </div>
                 <div className="d-flex mb-75">
                   <span className="info-key">Industry:</span>
@@ -133,10 +165,14 @@ const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
             ) : (
               <div className="d-flex mb-75">
                 <span className="info-key">Location:</span>
-                <CardText>
-                  {data?.current_residency?.city?.name}, {data?.current_residency?.state?.name},
-                  {data?.current_residency?.country?.name}
-                </CardText>
+                {data?.current_residency?.city ? (
+                  <CardText>
+                    {data?.current_residency?.city?.name}, {data?.current_residency?.state?.name},
+                    {data?.current_residency?.country?.name}
+                  </CardText>
+                ) : (
+                  '-'
+                )}
               </div>
             )}
 
@@ -144,7 +180,7 @@ const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
               <BadgeGroup
                 color="light-success-2"
                 title="Project area of interest"
-                data={data?.project_area_of_interest?.area}
+                data={data?.project_area_of_interest?.area?.name ? data?.project_area_of_interest?.area : []}
               />
             ) : (
               <>
@@ -161,17 +197,21 @@ const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
             <BadgeGroup
               color="light-success-2"
               title="Time zone"
-              data={[
-                {
-                  name:
-                    `${data?.availability?.timezone?.abbreviation}(${data?.availability?.timezone?.offset_name})` ||
-                    '-',
-                },
-              ]}
+              data={
+                data?.availability?.timezone
+                  ? [
+                      {
+                        name:
+                          `${data?.availability?.timezone?.abbreviation}(${data?.availability?.timezone?.offset_name})` ||
+                          '-',
+                      },
+                    ]
+                  : []
+              }
             />
 
             <div className="social-links">
-              <CardText className="Info-key mt-50">Social Links</CardText>
+              <CardText className="Info-key mt-50 mb-50">Social Links</CardText>
               {data?.social_links?.length === 0 && <CardText className="Info-key font-small-3 mt-0">No links</CardText>}
 
               {data?.social_links?.map((item, index) => {
@@ -249,7 +289,7 @@ const LeftSidebarProfile = ({ isInvited, isClient, data, isEditable }) => {
 
             {isEditable && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                <Button className="w-50" color="primary">
+                <Button className="w-50" color="primary" onClick={onEditClick}>
                   Edit
                 </Button>
               </div>

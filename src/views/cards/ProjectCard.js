@@ -2,28 +2,33 @@
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
-import ReactHtmlParser from 'react-html-parser';
-import lisa from '@src/assets/images/portrait/small/lisa.png';
 import Mpin from '@src/assets/images/map-pin.png';
 import LikeIcon from '@src/assets/images/like.png';
 import { useState, useEffect, useRef } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-
+import { useDispatch } from 'react-redux';
+import Avatar from '@components/avatar';
+import { Heart } from 'react-feather';
+import { useLocation } from 'react-router-dom';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
+import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 
-const ProjectCard = ({ isExpanded, data }) => {
+const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
+  const dispatch = useDispatch();
+  const location = useLocation();
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setShowFullText(isExpanded);
-  }, [isExpanded]);
+  }, [isExpanded, isPopoverOpen]);
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -38,7 +43,7 @@ const ProjectCard = ({ isExpanded, data }) => {
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
-    LISTING_EXPIRED: 'LISTING_EXPIRED',
+    LISTING_EXPIRED: 'Listing Expired',
   };
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
@@ -60,6 +65,14 @@ const ProjectCard = ({ isExpanded, data }) => {
     }
   }, []);
 
+  const handleLike = () => {
+    dispatch(makeFavFromMarketplace({ project_id: data?._id }));
+  };
+  const handleUnLike = () => {
+    dispatch(removeFavFromMarketplace({ project_id: data?._id }));
+  };
+  const isSearchPage = location.pathname.split('/').includes('search');
+
   return (
     <ProjectCardWrap>
       <Card>
@@ -73,10 +86,25 @@ const ProjectCard = ({ isExpanded, data }) => {
                   </Badge>
                 </CustomBadge>
               </div>
-              <CardTitle>
+              <CardTitle className="d-flex align-items-center">
                 <span className="cursor-pointer" onClick={() => setShowModal(true)}>
-                  {data?.details?.name}
+                  {data?.details?.name}{' '}
                 </span>
+                {!isSearchPage && (
+                  <span>
+                    {data?.is_favorite ? (
+                      <Heart
+                        className="cursor-pointer d-flex m-auto ms-75  heart"
+                        fill={theme.red}
+                        stroke={theme.red}
+                        onClick={handleUnLike}
+                        size={20}
+                      />
+                    ) : (
+                      <Heart className="cursor-pointer d-flex m-auto ms-75 heart" onClick={handleLike} size={20} />
+                    )}
+                  </span>
+                )}
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">
                 <CardText className="project">
@@ -103,12 +131,12 @@ const ProjectCard = ({ isExpanded, data }) => {
               </div>
 
               {!showFullText ? (
-                <div className="my-div" ref={divRef} style={{ maxHeight: '6.2rem', overflow: 'hidden' }}>
-                  {ReactHtmlParser(data?.details?.description)}
+                <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                  {data?.details?.description}
                 </div>
               ) : (
                 <div className="my-div" ref={divRef}>
-                  {ReactHtmlParser(data?.details?.description)}
+                  {data?.details?.description}
                 </div>
               )}
 
@@ -120,17 +148,18 @@ const ProjectCard = ({ isExpanded, data }) => {
             </Col>
             <Col lg="4">
               <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
-                <img
+                <Avatar
+                  img={data?.client_details?.image_uri?.length > 0 ? data?.client_details?.image_uri : defaultAvatar}
+                  imgHeight="30"
+                  imgWidth="30"
                   className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
-                  src={lisa}
-                  alt="avatar"
                 />
                 <div className={`${data?.match_percentage >= 0 ? '' : ' d-flex w-100 align-items-center'}`}>
                   <div className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
                       {data?.client_details?.first_name} {data?.client_details?.last_name}
                     </CardTitle>
-                    <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+                    <CardText className="fw-300 ms-25 marketplace-card-role">
                       {data?.client_details?.company_name}
                     </CardText>
                   </div>
@@ -180,11 +209,13 @@ const ProjectCard = ({ isExpanded, data }) => {
 ProjectCard.propTypes = {
   isExpanded: PropTypes.bool,
   data: PropTypes.object,
+  isPopoverOpen: PropTypes.bool,
 };
 
 ProjectCard.defaultProps = {
   isExpanded: false,
   data: {},
+  isPopoverOpen: false,
 };
 
 export default ProjectCard;

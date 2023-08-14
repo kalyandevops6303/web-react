@@ -3,8 +3,6 @@ import { Col, Input, InputGroup, InputGroupText, Label, Popover, PopoverBody, Ro
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { debounce } from 'lodash';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { RefreshCcw, Search } from 'react-feather';
 import CollActive from '@src/assets/images/coll_active.png';
 import ExpandInactive from '@src/assets/images/expand_inactive.png';
@@ -14,6 +12,9 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
+import InfiniteScroll from '../../../lib/infinite-scroll';
+import debounce from '../../../lib/debounce';
+import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors, useIsTab } from '../../../utility/Utils';
@@ -29,6 +30,8 @@ import ProjectCard from '../../cards/ProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
+import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from '../../../utility/constants/Constant';
+import NoDataFoundComponent from './NoDataFoundComp';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -36,6 +39,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const location = useLocation();
   const isTab = useIsTab();
   const popoverRef = useRef(null);
+  const inputRef = useRef();
 
   const [hasMore, setHasMore] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -50,51 +54,45 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     project_types: [],
     skills: [],
     tools: [],
-    sort_by: [],
+    sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMADED' }] : [],
     industries: [],
     project_areas: [],
   });
-  const [isRecommanded, setIsRecommanded] = useState(false);
+  const { sort_by } = secondFilterState;
+
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  // Function to toggle the popover
-  const togglePopover = () => {
-    setPopoverOpen(!popoverOpen);
-  };
-
-  const statusesOptions = [
-    { label: 'Open', value: 'OPEN' },
-    { label: 'In-review', value: 'IN_REVIEW' },
-    { label: 'Terminated', value: 'TERMINATED' },
-    { label: 'Closed', value: 'CLOSED' },
-  ];
-  const projectTypesOptions = [
-    { label: 'Fixed', value: 'FIXED' },
-    { label: 'Variable', value: 'VARIABLE' },
-  ];
-  const sortingOptions = [
-    { label: 'New', value: 'NEW' },
-    { label: 'Recommended', value: 'RECOMMADED' },
-  ];
-
-  const onSuccess = () => {};
-  const onError = () => {
-    setHasMore(false);
-  };
+  const isRecommanded = sort_by[0]?.value === 'RECOMMADED';
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
         setPopoverOpen(false);
       }
+    }; // Adjust the debounce delay (in milliseconds) as per your needs
+
+    const handleScroll = throttle(() => {
+      setPopoverOpen(false);
+    }, 300); // Adjust the throttle delay (in milliseconds) as per your needs
+
+    const handleWindowClick = (event) => {
+      handleOutsideClick(event);
     };
-    document.addEventListener('mousedown', handleOutsideClick);
+
+    const handleWindowScroll = () => {
+      handleScroll();
+    };
+
+    document.addEventListener('mousedown', handleWindowClick);
+    window.addEventListener('scroll', handleWindowScroll);
+
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('mousedown', handleWindowClick);
+      window.removeEventListener('scroll', handleWindowScroll);
     };
   }, []);
 
@@ -105,6 +103,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [currentPreview]);
 
+  const onSuccess = () => {};
+  const onError = () => {
+    setHasMore(false);
+  };
   useEffect(() => {
     dispatch(clearData());
     const valuesOnly = {};
@@ -139,64 +141,31 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [secondFilterState, searchText, primaryFilter, isRecommanded]);
 
-  const onChangeStatus = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      statuses: [value],
-    });
-  };
-
   useEffect(() => {
     if (location?.state?.isRecommended) {
       setSecondFilterState({
         ...secondFilterState,
         sort_by: [{ label: 'Recommended', value: 'RECOMMADED' }],
       });
-      setIsRecommanded(true);
     }
   }, [location]);
+
+  // Function to toggle the popover
+  const togglePopover = () => {
+    setPopoverOpen(!popoverOpen);
+  };
 
   const onChangeSort = (value) => {
     setSecondFilterState({
       ...secondFilterState,
-      sort_by: [value],
+      sort_by: value ? [value] : [],
     });
-    if (value.value === 'RECOMMADED') {
-      setIsRecommanded(true);
-    } else {
-      setIsRecommanded(false);
-    }
   };
-  const inputRef = useRef();
 
-  const onChangeProjectType = (value) => {
+  const onChangeFilter = (filterKey, value) => {
     setSecondFilterState({
       ...secondFilterState,
-      project_types: [value],
-    });
-  };
-  const onChangeSkill = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      skills: [value],
-    });
-  };
-  const onChangeTools = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      tools: [value],
-    });
-  };
-  const onChangeIndustry = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      industries: [value],
-    });
-  };
-  const onChangeArea = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      project_areas: [value],
+      [filterKey]: value ? [value] : [],
     });
   };
   const handleReset = () => {
@@ -213,7 +182,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (inputRef.current) {
       inputRef.current.value = '';
     }
-    setIsRecommanded(false);
   };
   const loadSkillsOptions = async (search) => {
     if (search) {
@@ -411,19 +379,22 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </InputGroup>
           </div>
           <Row>
-            {isTab ? (
-              <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
-                {ExpandCollapseComp}
-              </div>
-            ) : (
-              <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
-                {ExpandCollapseComp}
-              </Col>
-            )}
-            {(userType === 'TALENT' || primaryFilter === 'talents') && (
+            {primaryFilter !== 'talents' &&
+              primaryFilter !== 'clients' &&
+              (isTab ? (
+                <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
+                  {ExpandCollapseComp}
+                </div>
+              ) : (
+                <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
+                  {ExpandCollapseComp}
+                </Col>
+              ))}
+            {(userType === userTypes.talent || primaryFilter === 'talents') && (
               <Col>
                 <Label className="form-label">Sort by</Label>
                 <Select
+                  isClearable
                   options={sortingOptions}
                   classNamePrefix="select"
                   placeholder="Select type"
@@ -441,11 +412,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Status</Label>
                 <Select
+                  isClearable
                   options={statusesOptions}
                   classNamePrefix="select"
                   placeholder="Select status"
                   theme={selectThemeColors}
-                  onChange={onChangeStatus}
+                  onChange={(value) => onChangeFilter('statuses', value)}
                   value={
                     secondFilterState.statuses.length > 0
                       ? { value: secondFilterState.statuses[0].value, label: secondFilterState.statuses[0].label }
@@ -458,11 +430,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Payment type</Label>
                 <Select
+                  isClearable
                   options={projectTypesOptions}
                   classNamePrefix="select"
                   placeholder="Select type"
                   theme={selectThemeColors}
-                  onChange={onChangeProjectType}
+                  onChange={(value) => onChangeFilter('project_types', value)}
                   value={
                     secondFilterState.project_types.length > 0
                       ? {
@@ -478,12 +451,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Skills</Label>
                 <AsyncPaginate
+                  isClearable
                   loadOptions={loadSkillsOptions}
                   classNamePrefix="wide"
                   placeholder="Select skill"
                   theme={selectThemeColors}
                   className={classNames('react-select')}
-                  onChange={onChangeSkill}
+                  onChange={(value) => onChangeFilter('skills', value)}
                   value={
                     secondFilterState.skills.length > 0
                       ? { value: secondFilterState.skills[0].value, label: secondFilterState.skills[0].label }
@@ -496,12 +470,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Tools</Label>
                 <AsyncPaginate
+                  isClearable
                   loadOptions={loadToolsOptions}
                   classNamePrefix="wide"
                   placeholder="Select tool"
                   theme={selectThemeColors}
                   className={classNames('react-select')}
-                  onChange={onChangeTools}
+                  onChange={(value) => onChangeFilter('tools', value)}
                   value={
                     secondFilterState.tools.length > 0
                       ? { value: secondFilterState.tools[0].value, label: secondFilterState.tools[0].label }
@@ -514,12 +489,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Company industry</Label>
                 <AsyncPaginate
+                  isClearable
                   loadOptions={loadCompanyIndustriesOptions}
                   classNamePrefix="wide"
                   placeholder="Select industry"
                   theme={selectThemeColors}
                   className={classNames('react-select')}
-                  onChange={onChangeIndustry}
+                  onChange={(value) => onChangeFilter('industries', value)}
                   value={
                     secondFilterState.industries.length > 0
                       ? { value: secondFilterState.industries[0].value, label: secondFilterState.industries[0].label }
@@ -533,12 +509,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Project Area</Label>
                 <AsyncPaginate
+                  isClearable
                   loadOptions={loadAreaOptions}
                   classNamePrefix="wide"
                   placeholder="Select area"
                   theme={selectThemeColors}
                   className={classNames('react-select')}
-                  onChange={onChangeArea}
+                  onChange={(value) => onChangeFilter('project_areas', value)}
                   value={
                     secondFilterState.project_areas.length > 0
                       ? {
@@ -578,16 +555,34 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           next={fetchMore}
           hasMore={hasMore}
           endMessage={
-            <div className="d-flex justify-content-center mt-2">
-              {selectMarketPlaceData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+            <div className="d-flex justify-content-center ">
+              {selectMarketPlaceData?.length > 0 ? (
+                <span className="mt-2">You have seen it all!</span>
+              ) : (
+                <NoDataFoundComponent
+                  isMyListing={primaryFilter === 'my_listings'}
+                  isRecommanded={isRecommanded}
+                  data={selectMarketPlaceData}
+                />
+              )}
             </div>
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          {selectMarketPlaceData?.map((item) => {
-            const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
-            return <CardComponent key={item?._id || item?.id} data={item} isExpanded={isExpanded} />;
-          })}
+          <div className="d-flex flex-wrap justify-content-between">
+            {selectMarketPlaceData?.map((item) => {
+              const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
+              return (
+                <CardComponent
+                  key={item?._id || item?.id}
+                  data={item}
+                  isPopoverOpen={popoverOpen}
+                  isExpanded={isExpanded}
+                  userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
+                />
+              );
+            })}
+          </div>
         </InfiniteScroll>
       )}
     </>

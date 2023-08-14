@@ -5,7 +5,7 @@ import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { InstituteCardWrap } from './style';
 
 const Institute = () => {
-  const avatarGroupArr = [
+  const avatarGroups = [
     {
       title: 'Billy Hopkins',
       img: lisa,
@@ -59,13 +59,13 @@ const Institute = () => {
           </CardText>
 
           <div className="avatar-wrap mb-1">
-            {avatarGroupArr.length > 4 ? (
+            {avatarGroups.length > 4 ? (
               <span className="d-flex avatars">
-                <AvatarGroup size="md" className="mr-4" data={avatarGroupArr.slice(0, 3)} />
+                <AvatarGroup size="md" className="mr-4" data={avatarGroups.slice(0, 3)} />
                 +3
               </span>
             ) : (
-              <AvatarGroup size="md" data={avatarGroupArr} />
+              <AvatarGroup size="md" data={avatarGroups} />
             )}
           </div>
           <div className="d-flex">

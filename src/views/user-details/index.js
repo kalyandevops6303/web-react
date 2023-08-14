@@ -3,10 +3,11 @@ import { useLocation, useParams } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
-import { capitalize, round } from 'lodash';
 import { Col, Row } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from './overview/Statbox';
+import round from '../../lib/round';
+import capitalize from '../../lib/capitalize';
 import LeftSidebarProfile from './overview/LeftSidebarProfile';
 import UserBio from './overview/UserBio';
 import RecentProjects from './overview/RecentProjects';
@@ -17,6 +18,7 @@ import { getItem } from '../../utility/localStorageControl';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { clearData } from '../../redux/reducers/profile';
 import Error from '../Error';
+import { userTypes } from '../../utility/constants/Constant';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -31,7 +33,7 @@ const UserDetails = () => {
     dispatch(getProfile(param?.userId, param?.userType.toUpperCase()));
   }, []);
 
-  const isClient = param?.userType.toUpperCase() === 'CLIENT';
+  const isClient = param?.userType.toUpperCase() === userTypes.client;
   const currentProfile = useSelector(selectCurrentProfile);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
@@ -106,7 +108,7 @@ const UserDetails = () => {
             {!isClient && (
               <Col lg="3">
                 <Statbox
-                  title={`${currentProfile?.currency_preference?.code} ${currentProfile?.hourly_rate}`}
+                  title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
                   desc="Hourly Rate"
                   icon={<img src={MoneyIcon} height={22} alt="money" />}
                   color="light-warning"
@@ -130,8 +132,9 @@ const UserDetails = () => {
                     {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
                       ? 0
                       : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
-                    hours/week <br /> {currentProfile?.availability?.timezone?.abbreviation} (
-                    {currentProfile?.availability?.timezone?.offset_name})
+                    hours/week <br />
+                    {currentProfile?.availability?.timezone?.abbreviation}(
+                    {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
                   </>
                 }
                 desc="Availability"

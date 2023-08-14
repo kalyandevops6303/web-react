@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { DateTime } from 'luxon';
 import theme from '../configs/themeVariables';
+import DateTime from '../lib/date-time';
+import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -127,7 +128,6 @@ const checkSize = (width) => {
   }, [isMobile]);
   return isMobile;
 };
-export const useIsMobile = () => checkSize(1024);
 export const useIsTab = () => checkSize(769);
 
 export const convertTo12HourFormat = (hour) => {
@@ -158,5 +158,109 @@ export const giveProgressBarColorClassName = (percentage) => {
     return 'progress-bar-warning';
   } else {
     return 'progress-bar-success';
+  }
+};
+
+const isEmpty = (value) => {
+  if (value === undefined || value === null) {
+    return true;
+  }
+
+  if (typeof value === 'string' || Array.isArray(value)) {
+    return value.length === 0;
+  }
+
+  if (typeof value === 'object') {
+    return Object.keys(value).length === 0;
+  }
+
+  return false;
+};
+
+const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
+
+export const removeEmptyKeys = (obj) => {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    const filteredArray = obj.filter((item) => typeof item !== 'object' || !hasEmptyKeys(item));
+
+    return filteredArray.map((item) => removeEmptyKeys(item));
+  }
+
+  const filteredObj = {};
+  Object.keys(obj).forEach((key) => {
+    const value = obj[key];
+    if (typeof value === 'object') {
+      const cleanedValue = removeEmptyKeys(value);
+      if (!isEmpty(cleanedValue)) {
+        filteredObj[key] = cleanedValue;
+      }
+    } else if (!isEmpty(value)) {
+      filteredObj[key] = value;
+    }
+  });
+
+  if (isEmpty(filteredObj)) {
+    return undefined;
+  }
+
+  return filteredObj;
+};
+
+export const returnFilteredDropdownOptions = (search, options) =>
+  options.filter(
+    (option) =>
+      option.label.toLowerCase().startsWith(search.toLowerCase()) ||
+      option.label.toLowerCase().includes(search.toLowerCase()),
+  );
+
+export const formatDateWithDash = (date) => {
+  if (!date) {
+    return undefined;
+  }
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear().toString();
+  return `${day}-${month}-${year}`;
+};
+
+export const returnDetailsForMarketPlace = (userType, missingValues) => {
+  if (missingValues?.includes('educational_institute')) {
+    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'educational_institute');
+  }
+  return null;
+};
+
+// eslint-disable-next-line consistent-return
+export const isUrlWithoutProtocol = (value) => {
+  if (value?.length > 0) {
+    const urlPattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,6}(\/.*)?$/i;
+    return urlPattern.test(value);
+    // eslint-disable-next-line no-else-return
+  } else {
+    return true;
+  }
+};
+
+export const formatUrl = (link) => {
+  if (link) {
+    if (
+      link?.startsWith('http://') ||
+      link?.startsWith('https://') ||
+      link?.startsWith('Http://') ||
+      link?.startsWith('Https://')
+    ) {
+      return link.toLowerCase();
+
+      // eslint-disable-next-line no-else-return
+    } else {
+      return `https://${link.toLowerCase()}`;
+    }
+    // eslint-disable-next-line no-else-return
+  } else {
+    return undefined;
   }
 };

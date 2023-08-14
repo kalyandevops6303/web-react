@@ -1,12 +1,11 @@
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
-import { TagsContainer, PreviewTextEditorContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat } from '../../../utility/Utils';
+import { TagsContainer, TimeWrapper } from '../style';
+import { convertTo12HourFormat, formatDateWithDash } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
@@ -40,10 +39,10 @@ const Preview = ({
 
   const renderFileSize = (size) => {
     if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
       // eslint-disable-next-line
     } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
+      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
     }
   };
 
@@ -70,15 +69,15 @@ const Preview = ({
       <Card className="p-1">
         {files.map((file, index) => (
           <Row
-            key={file.name}
+            key={file.file.name}
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
             <Col sm="6" md="6" lg="6">
-              {renderFilePreview(file)}
-              {file.name}
+              {renderFilePreview(file.file)}
+              {file.file.name}
             </Col>
             <Col sm="2" md="2" lg="4">
-              {renderFileSize(file.size)}
+              {renderFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {renderFormattedDate(new Date())}
@@ -118,16 +117,6 @@ const Preview = ({
       ))}
     </TagsContainer>
   );
-
-  const formatDate = (date) => {
-    if (!date) {
-      return undefined;
-    }
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear().toString();
-    return `${day}-${month}-${year}`;
-  };
 
   const isEmpty = (value) => {
     if (value === undefined || value === null) {
@@ -184,14 +173,34 @@ const Preview = ({
   };
 
   const onNewProjectCreation = () => {
-    const details = {
-      name: projectDetails?.projectName.trim(),
-      description: projectDetails?.projectDescription,
-      expected_duration: {
-        duration: projectDetails?.expectedDuration,
-        duration_type: projectDetails?.expectedDurationPeriod?.value,
-      },
-    };
+    let details;
+
+    if (files.length > 0) {
+      const documents = files.map((file) => ({
+        file_name: file.file.name,
+        file_key: file.uploadData.file_key,
+      }));
+
+      details = {
+        name: projectDetails?.projectName.trim(),
+        description: projectDetails?.projectDescription,
+        expected_duration: {
+          duration: projectDetails?.expectedDuration,
+          duration_type: projectDetails?.expectedDurationPeriod?.value,
+        },
+        documents,
+      };
+    } else {
+      details = {
+        name: projectDetails?.projectName.trim(),
+        description: projectDetails?.projectDescription,
+        expected_duration: {
+          duration: projectDetails?.expectedDuration,
+          duration_type: projectDetails?.expectedDurationPeriod?.value,
+        },
+      };
+    }
+
     const proficiency = {
       skills: projectDetails?.skills.map((skill) => skill.value),
       tools: projectDetails?.tools?.map((tool) => tool.value),
@@ -227,8 +236,8 @@ const Preview = ({
       is_nda: projectDetails?.nda === 'yes',
     };
     const listing_details = {
-      start_date: formatDate(listingDetails?.startDate),
-      end_date: formatDate(listingDetails?.endDate),
+      start_date: formatDateWithDash(listingDetails?.startDate),
+      end_date: formatDateWithDash(listingDetails?.endDate),
     };
 
     const requiredData = {
@@ -369,11 +378,7 @@ const Preview = ({
           <h4 className="m-0 mt-1">Project Description</h4>
         </CardHeader>
         <hr className="m-0 card-header-border" />
-        <CardBody>
-          <PreviewTextEditorContainer>
-            <ReactQuill theme="snow" readOnly value={projectDetails?.projectDescription} />
-          </PreviewTextEditorContainer>
-        </CardBody>
+        <CardBody>{projectDetails?.projectDescription}</CardBody>
       </Card>
       {files && files.length > 0 && fileList()}
       <Card>

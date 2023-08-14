@@ -33,8 +33,9 @@ const rootReducer = combineReducers({
 
 // Configure Redux Persist for the 'auth' reducer only
 const persistConfig = {
-  key: 'auth',
+  key: 'root',
   storage,
+  whitelist: ['auth', 'notifications'],
 };
 
 export default persistReducer(persistConfig, rootReducer);

@@ -4,6 +4,9 @@ import BadgeGroupWrap from './style';
 import { CustomBadge } from '../../../views/styled';
 
 const BadgeGroup = ({ title, data, color }) => {
+  if (!data || data.length === 0) {
+    return null;
+  }
   if (data?.name) {
     return (
       <BadgeGroupWrap>
@@ -19,9 +22,6 @@ const BadgeGroup = ({ title, data, color }) => {
         </div>
       </BadgeGroupWrap>
     );
-  }
-  if (!data || data.length === 0) {
-    return null;
   }
 
   const renderBadge = (item, index) => {
@@ -56,7 +56,7 @@ const BadgeGroup = ({ title, data, color }) => {
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
         <div className="info-key">{title || ''}</div>
-        <div className="badge-box mt-75">{data.map(renderBadge)}</div>
+        <div className="badge-box mt-75">{data && data?.map(renderBadge)}</div>
       </div>
     </BadgeGroupWrap>
   );

@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import { Check, Search, Share2, Star, User } from 'react-feather';
+import { Check, Search, Share2, Star } from 'react-feather';
 import {
   Badge,
   Button,
@@ -22,6 +21,9 @@ import {
   TabContent,
   TabPane,
 } from 'reactstrap';
+import Avatar from '@components/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import InfiniteScroll from '../../../lib/infinite-scroll';
 import theme from '../../../configs/themeVariables';
 import { BlueBgIconContainer, NavsContainer, TableContainer } from '../style';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
@@ -85,22 +87,22 @@ const Invite = ({ stepper }) => {
   };
 
   const onSendInvitationModalOpen = () => {
-    const selectedBestTalents = bestTalentsData?.data.filter((talent) => selectedIds.includes(talent.user_id));
-    const selectedFavouriteTalents = favoriteTalentsData?.data
-      .filter((talent) => selectedIds.includes(talent.talent_details.user_id))
-      .map((talent) => ({
-        ...talent.talent_details,
-        user_details: talent.user_details,
-        total_matches: talent.total_matches,
-        match_percentage: talent.match_percentage,
-      }));
-    const selectedAlmaMaterTalents = almaMaterTalentsData?.data.filter((talent) =>
-      selectedIds.includes(talent.user_id),
-    );
+    const reformattedData = selectedTalents.map((talent) => {
+      if ('talent_details' in talent) {
+        return {
+          ...talent.talent_details,
+          user_details: talent.user_details,
+          total_matches: talent.total_matches,
+          match_percentage: talent.match_percentage,
+        };
+        // eslint-disable-next-line no-else-return
+      } else {
+        return talent;
+      }
+    });
 
-    const selectedTalentsData = [...selectedBestTalents, ...selectedFavouriteTalents, ...selectedAlmaMaterTalents];
+    setSelectedTalents(removeDuplicates(reformattedData, 'user_id'));
 
-    setSelectedTalents(removeDuplicates(selectedTalentsData, 'user_id'));
     setSendInvitationModal(true);
   };
 
@@ -169,7 +171,15 @@ const Invite = ({ stepper }) => {
 
   const [message, setMessage] = useState('');
 
-  const renderActionButton = (userId) => {
+  const renderActionButton = (user, type) => {
+    let userId;
+
+    if (type === 'fav') {
+      userId = user.talent_details.user_id;
+    } else {
+      userId = user.user_id;
+    }
+
     if (invitedIds.includes(userId)) {
       return (
         <div className="ms-3">
@@ -181,14 +191,23 @@ const Invite = ({ stepper }) => {
       return (
         <div
           className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
-          onClick={() => setSelectedIds(selectedIds.filter((data) => data !== userId))}
+          onClick={() => {
+            setSelectedIds(selectedIds.filter((data) => data !== userId));
+            setSelectedTalents(selectedTalents.filter((data) => data.user_id !== userId));
+          }}
         >
           <Check size={18} color={theme.green} />
         </div>
       );
     } else {
       return (
-        <div className="upload-btn cursor-pointer ms-3" onClick={() => setSelectedIds([...selectedIds, userId])}>
+        <div
+          className="upload-btn cursor-pointer ms-3"
+          onClick={() => {
+            setSelectedIds([...selectedIds, userId]);
+            setSelectedTalents([...selectedTalents, user]);
+          }}
+        >
           <h5 className="m-0 fw-light font-medium-1">Invite</h5>
         </div>
       );
@@ -222,6 +241,7 @@ const Invite = ({ stepper }) => {
           setSelectedIds={setSelectedIds}
           invitedIds={invitedIds}
           setInvitedIds={setInvitedIds}
+          setSelectedTalents={setSelectedTalents}
         />
       )}
       <Card>
@@ -270,7 +290,7 @@ const Invite = ({ stepper }) => {
                       toggleTabs(tabNames.favourite);
                     }}
                   >
-                    Favourite Talent
+                    Favorite Talent
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -305,9 +325,12 @@ const Invite = ({ stepper }) => {
                         <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
-                              <div className="user-pic p-25 me-2">
-                                <User size={28} />
-                              </div>
+                              <Avatar
+                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
+                                imgHeight="38"
+                                imgWidth="38"
+                                className="me-2 user-pic"
+                              />
                               <Link to={`/profile/talent/${item.user_id}`} target="_blank">
                                 <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
                               </Link>
@@ -356,7 +379,7 @@ const Invite = ({ stepper }) => {
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item.user_id)}
+                            {renderActionButton(item, 'best')}
                           </Col>
                         </Row>
                       ))
@@ -369,7 +392,7 @@ const Invite = ({ stepper }) => {
                           height={200}
                           className="no-data-found-gif"
                         />
-                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
                       </div>
                     )}
                   </InfiniteScroll>
@@ -390,9 +413,16 @@ const Invite = ({ stepper }) => {
                         <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
-                              <div className="user-pic p-25 me-2">
-                                <User size={28} />
-                              </div>
+                              <Avatar
+                                img={
+                                  item?.talent_details?.image_uri?.length > 0
+                                    ? item?.talent_details?.image_uri
+                                    : defaultAvatar
+                                }
+                                imgHeight="38"
+                                imgWidth="38"
+                                className="me-2 user-pic"
+                              />
                               <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
                                 <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
                               </Link>
@@ -443,7 +473,7 @@ const Invite = ({ stepper }) => {
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item.talent_details.user_id)}
+                            {renderActionButton(item, 'fav')}
                           </Col>
                         </Row>
                       ))
@@ -456,7 +486,7 @@ const Invite = ({ stepper }) => {
                           height={200}
                           className="no-data-found-gif"
                         />
-                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
                       </div>
                     )}
                   </InfiniteScroll>
@@ -477,9 +507,12 @@ const Invite = ({ stepper }) => {
                         <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
-                              <div className="user-pic p-25 me-2">
-                                <User size={28} />
-                              </div>
+                              <Avatar
+                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
+                                imgHeight="38"
+                                imgWidth="38"
+                                className="me-2 user-pic"
+                              />
                               <Link to={`/profile/talent/${item.user_id}`} target="_blank">
                                 <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
                               </Link>
@@ -528,7 +561,7 @@ const Invite = ({ stepper }) => {
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item.user_id)}
+                            {renderActionButton(item, 'alma')}
                           </Col>
                         </Row>
                       ))
@@ -541,7 +574,7 @@ const Invite = ({ stepper }) => {
                           height={200}
                           className="no-data-found-gif"
                         />
-                        <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
                       </div>
                     )}
                   </InfiniteScroll>
@@ -553,7 +586,7 @@ const Invite = ({ stepper }) => {
       </Card>
       <div className="d-flex justify-content-end align-items-center">
         <div>
-          <Link to="/marketplace/all_listings">
+          <Link to="/marketplace/my_listings">
             <Button color="primary" outline>
               <span className="px-2">Close</span>
             </Button>

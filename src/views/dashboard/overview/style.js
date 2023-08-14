@@ -111,6 +111,16 @@ const AlertCardWrapper = styled(CardWrapper)`
   .no-meetings-gif {
     height: 10vw;
   }
+  .relative-time {
+    width: 30%;
+    text-align: end;
+  }
+  .additional-text {
+    color: ${theme.lightBlueColor};
+    font-weight: 600;
+    font-size: 12px;
+    margin: auto;
+  }
 `;
 
 const EarningAmount = styled.div`
@@ -277,36 +287,6 @@ const ProjectWrapper = styled.div`
     font-size: 12px;
     margin: auto;
   }
-
-  .tags-container {
-    height: 60px;
-    overflow: hidden;
-    width: 70% !important;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    width: 100%;
-    margin-left: 10px;
-
-    .bg-secondary {
-      background-color: ${theme.lightBlueBgColor} !important;
-      color: ${theme.lightBlueColor} !important;
-    }
-
-    .tag-margin {
-      margin-right: 10px;
-      margin-bottom: 10px;
-    }
-
-    .badge {
-      display: block;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
 `;
 
 const ProjectsListingWrap = styled.div`
@@ -371,7 +351,63 @@ const ProjectsListingWrap = styled.div`
   }
 `;
 
+const DashboardHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  margin-top: -4rem;
+
+  @media (max-width: 767px) {
+    margin-top: -2rem;
+  }
+`;
+
+const TagsWrap = styled.div`
+  height: 60px;
+  overflow: hidden;
+  width: 75% !important;
+
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-left: 10px;
+
+  .badge-box-wrap {
+    max-height: 2rem;
+    overflow: hidden;
+    width: 100%;
+    .badge {
+      margin: 0 0.5rem 0.5rem 0;
+      font-size: 0.75rem;
+      max-width: 10rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  .bg-secondary {
+    background-color: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor} !important;
+  }
+
+  .tag-margin {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    :last-child {
+      margin-right: 0px;
+    }
+  }
+
+  .additional-text {
+    color: ${theme.lightBlueColor};
+    font-weight: 600;
+    font-size: 12px;
+    margin: auto;
+  }
+`;
+
 export {
+  TagsWrap,
   CardWrapper,
   EarningAmount,
   EarningCardWrapper,
@@ -380,4 +416,5 @@ export {
   ProjectWrapper,
   ProjectsListingWrap,
   AlertCardWrapper,
+  DashboardHeaderWrapper,
 };

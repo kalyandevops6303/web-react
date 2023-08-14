@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-expressions */
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -22,12 +23,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AccountDetailsFormContainer, AccountImageContainer } from './style';
 import theme from '../../configs/themeVariables';
 import CountryDropdown from '../../@core/components/country-dropdown';
-import { getUserDetails, saveTalentAccountDetails } from '../../redux/actions/talentOnboardingActions';
+import {
+  getUserDetails,
+  saveProfileDetails as saveTalentProfileDetails,
+  saveTalentAccountDetails,
+} from '../../redux/actions/talentOnboardingActions';
 import { talentAccountDetailsLoading, userDetails } from '../../redux/selectors/talentOnboardingSelectors';
 import ShowToastMessage from '../../@core/components/toast';
-import { saveClientAccountDetails } from '../../redux/actions/clientOnboardingActions';
+import {
+  saveClientAccountDetails,
+  saveProfileDetails as saveClientProfileDetails,
+} from '../../redux/actions/clientOnboardingActions';
 import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
+import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
+import ResetPasswordModal from './ResetPasswordModal';
+import { checkPoints, maxFileSize, userOnboarding, userTypes } from '../../utility/constants/Constant';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -67,28 +78,63 @@ const Account = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
 
+  const [resetPasswordModal, setResetPasswordModal] = useState(null);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
+  const [imageUrlRes, setImageUrlRes] = useState(null);
+  const [isImageUploading, setIsImageUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+  const toggleResetPasswordModal = () => setResetPasswordModal(!resetPasswordModal);
+
   const onSuccess = () => {
-    setIsNextButtonDisabled(false);
+    if (location?.state?.isEditing) {
+      userDetailsData?.user_type === 'TALENT'
+        ? navigate(`/${userOnboarding.talent}/personal-details`, {
+            state: { isEditing: true },
+          })
+        : navigate(`/${userOnboarding.client}/personal-details`, {
+            state: { isEditing: true },
+          });
+    } else {
+      userDetailsData?.user_type === 'TALENT'
+        ? navigate(`/${userOnboarding.talent}/personal-details`)
+        : navigate(`/${userOnboarding.client}/personal-details`);
+    }
   };
 
   const onSubmit = (data) => {
     const { firstName, lastName } = data;
-    const reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
-
-    if (userDetailsData.user_type === 'TALENT') {
-      dispatch(saveTalentAccountDetails(reqData, onSuccess));
+    let reqData;
+    if (imageUrlRes) {
+      reqData = { first_name: firstName.trim(), last_name: lastName.trim(), image_uri: imageUrlRes.file_key };
     } else {
-      dispatch(saveClientAccountDetails(reqData, onSuccess));
+      reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
+    }
+
+    if (
+      userDetailsData?.checkpoint === checkPoints.ACCOUNT_DETAILS ||
+      userDetailsData?.checkpoint === checkPoints.PROFILE_DETAILS
+    ) {
+      if (userDetailsData.user_type === userTypes.talent) {
+        dispatch(saveTalentAccountDetails(reqData, onSuccess));
+      } else {
+        dispatch(saveClientAccountDetails(reqData, onSuccess));
+      }
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (userDetailsData.user_type === userTypes.talent) {
+        dispatch(saveTalentProfileDetails(reqData, onSuccess));
+      } else {
+        dispatch(saveClientProfileDetails(reqData, onSuccess));
+      }
     }
   };
 
@@ -98,15 +144,15 @@ const Account = () => {
       setValue('mobileNumber', res.phone);
       setValue('email', res.email);
 
-      if (res.checkpoint === 'ACCOUNT_DETAILS' && res.oauth_type === 'google') {
-        if (res.user_type === 'TALENT') {
+      if (res.checkpoint === checkPoints.ACCOUNT_DETAILS && res.oauth_type === 'google') {
+        if (res.user_type === userTypes.talent) {
           setSelectedImage(res?.talent_info?.image_uri);
           setSelectedImagePreview(res?.talent_info?.image_uri);
           setValue('firstName', res?.talent_info?.first_name, { shouldValidate: true });
           if (res?.talent_info?.last_name !== '') {
             setValue('lastName', res?.talent_info?.last_name, { shouldValidate: true });
           }
-        } else if (res.user_type === 'CLIENT') {
+        } else if (res.user_type === userTypes.client) {
           setSelectedImage(res?.client_info?.image_uri);
           setSelectedImagePreview(res?.client_info?.image_uri);
           setValue('firstName', res?.client_info?.first_name, { shouldValidate: true });
@@ -114,13 +160,17 @@ const Account = () => {
             setValue('lastName', res?.client_info?.last_name, { shouldValidate: true });
           }
         }
-      } else if (res.checkpoint === 'PROFILE_DETAILS') {
-        if (res.user_type === 'TALENT') {
+      } else if (res.checkpoint === checkPoints.PROFILE_DETAILS || res.checkpoint === checkPoints.COMPLETE) {
+        if (res.user_type === userTypes.talent) {
           setValue('firstName', res.talent_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.talent_info?.last_name, { shouldValidate: true });
-        } else if (res.user_type === 'CLIENT') {
+          setSelectedImage(res.talent_info?.image_uri);
+          setSelectedImagePreview(res.talent_info?.image_uri);
+        } else if (res.user_type === userTypes.client) {
           setValue('firstName', res.client_info?.first_name, { shouldValidate: true });
           setValue('lastName', res.client_info?.last_name, { shouldValidate: true });
+          setSelectedImage(res.client_info?.image_uri);
+          setSelectedImagePreview(res.client_info?.image_uri);
         }
 
         setIsNextButtonDisabled(false);
@@ -134,32 +184,64 @@ const Account = () => {
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!allowedTypes.includes(file.type)) {
       ShowToastMessage(ERROR, 'Please select a valid image file (JPG, JPEG, or PNG).');
       return false;
     }
-    if (file.size > maxSize) {
+    if (file.size > maxFileSize) {
       ShowToastMessage(ERROR, 'File size exceeds the maximum limit (5MB).');
       return false;
     }
     return true;
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
+
     if (file && isFileValid(file)) {
       const thumbnail = URL.createObjectURL(file);
       setSelectedImage(file);
       setSelectedImagePreview(thumbnail);
+
+      try {
+        setIsImageUploading(true);
+        const res = await profileImageUploadService(file.name);
+        setImageUrlRes(res?.data?.data);
+      } catch (error) {
+        setIsImageUploading(false);
+        setImageUrlRes(null);
+      }
     }
   };
 
+  const uploadImage = async (uploadUrl) => {
+    try {
+      const res = await profileImageUploadToAzureService(uploadUrl, selectedImage, {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': selectedImage.type,
+      });
+
+      if (res) {
+        setIsImageUploading(false);
+      }
+    } catch {
+      ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again!');
+      setIsImageUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (imageUrlRes) {
+      uploadImage(imageUrlRes.upload_url);
+    }
+  }, [imageUrlRes]);
+
   return (
     <AccountDetailsFormContainer>
+      {resetPasswordModal && <ResetPasswordModal modal={resetPasswordModal} toggleModal={toggleResetPasswordModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="pb-3">
+        <Card>
           <CardHeader>
             <h4 className="m-0 mt-1">Account Details</h4>
           </CardHeader>
@@ -181,8 +263,13 @@ const Account = () => {
                   className="file-input"
                   ref={fileInputRef}
                 />
-                <Button color="primary" className="ml-2 mr-1" onClick={() => fileInputRef.current.click()}>
-                  Upload Image
+                <Button
+                  color="primary"
+                  className="ml-2 mr-1"
+                  disabled={isImageUploading}
+                  onClick={() => fileInputRef.current.click()}
+                >
+                  {isImageUploading ? <Spinner size="sm" /> : 'Upload Image'}
                 </Button>
               </div>
               <Info size={18} color={theme.infoIcon} id="image-info" />
@@ -282,38 +369,32 @@ const Account = () => {
                 {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
               </Col>
             </Row>
-            <div className="d-flex justify-content-end mt-2">
-              <Button
-                color="primary"
-                type="submit"
-                disabled={
-                  userDetailsData?.user_type === 'TALENT'
-                    ? !isValid || talentAccountDetailsIsLoading
-                    : !isValid || clientAccountDetailsIsLoading
-                }
-              >
-                {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <span className="me-50">Save Changes</span>
-                )}
-              </Button>
-            </div>
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end">
+          {location?.state?.isEditing && userDetailsData?.oauth_type !== 'google' && (
+            <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
+              Reset Password
+            </Button>
+          )}
           <Button
             color="primary"
-            disabled={isNextButtonDisabled}
-            // eslint-disable-next-line
-            onClick={() =>
-              userDetailsData?.user_type === 'TALENT'
-                ? navigate('/talent-onboarding/profile-details')
-                : navigate('/client-onboarding/profile-details')
+            type="submit"
+            disabled={
+              isImageUploading ||
+              (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
+                ? !isValid || talentAccountDetailsIsLoading
+                : !isValid || clientAccountDetailsIsLoading)
             }
           >
-            <span className="me-50">Next</span>
-            <ChevronRight size={14} />
+            {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span className="me-50">Save & Continue</span>
+                <ChevronRight size={14} />
+              </>
+            )}
           </Button>
         </div>
       </Form>

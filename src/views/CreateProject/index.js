@@ -26,11 +26,16 @@ const CreateProject = () => {
     setYouDidItModal(!youDidItModal);
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line no-undef
+    window.scrollTo(0, 0);
+  }, []);
+
   const steps = [
     {
       id: 'requirements',
       title: 'Requirements',
-      subtitle: 'Enter project details',
+      subtitle: 'Project Details',
       icon: <FileText size={18} />,
       content: (
         <Requirements
@@ -45,7 +50,7 @@ const CreateProject = () => {
     {
       id: 'listing',
       title: 'Listing',
-      subtitle: 'Specify period',
+      subtitle: 'Duration',
       icon: <Box size={18} />,
       content: <Listing stepper={stepper} setListingDetails={setListingDetails} type="wizard-modern" />,
     },

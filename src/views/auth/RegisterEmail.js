@@ -20,6 +20,7 @@ import { registerEmail } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectEmail, selectUserType } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
+import theme from '../../configs/themeVariables';
 
 const RegisterEmail = () => {
   const navigate = useNavigate();
@@ -97,7 +98,7 @@ const RegisterEmail = () => {
             {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
           </div>
           <div className="form-check mb-1">
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between align-items-center">
               <Label color="primary" className="form-check-label" for="remember-me">
                 <small>
                   <Controller
@@ -124,8 +125,14 @@ const RegisterEmail = () => {
                 </small>
               </Label>
 
-              <Label color="primary" className="form-check-label">
-                <small>Privacy policy & terms</small>
+              <Label color={theme.primary} className="mb-0 ">
+                <small className="privacy-terms-label">
+                  <u>Privacy policy </u>
+                </small>
+                <small className="privacy-terms-label">&</small>
+                <small className="privacy-terms-label">
+                  <u>Terms</u>
+                </small>
               </Label>
             </div>
             {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}

@@ -38,8 +38,8 @@ const AccountCreatedModal = ({ modal, toggleModal }) => {
             />
           </AccountCreatedImageContainer>
           <div>
-            <h2 className="fw-normal">Account Created!</h2>
-            <p className="fw-light w-75 mt-2">Select continue to increase your discoverability on Trumio.</p>
+            <h2 className="fw-normal">Account is Ready!</h2>
+            <p className="fw-light w-75 mt-2">Get started and explore what trumio can offer</p>
           </div>
         </div>
       </ModalBody>

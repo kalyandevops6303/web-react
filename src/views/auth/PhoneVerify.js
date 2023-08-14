@@ -1,5 +1,4 @@
 // ** React Imports
-import OtpInput from 'react-otp-input';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,7 +13,7 @@ import CountryDropdown from '../../@core/components/country-dropdown';
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
 import { OnBoardWrap } from './style';
-import { verifyPhone } from '../../redux/actions/authActions';
+import { getUserData, verifyPhone } from '../../redux/actions/authActions';
 import theme from '../../configs/themeVariables';
 import {
   selectAuthLoading,
@@ -23,6 +22,7 @@ import {
   selectUserType,
 } from '../../redux/selectors/authSelectors';
 import ResendOTPComp from './components/ResendOTP';
+import OtpInput from '../../lib/otp-input';
 import LogoComp from './components/LogoComp';
 
 const VerifyPhone = () => {
@@ -35,6 +35,12 @@ const VerifyPhone = () => {
   const phoneData = useSelector(selectMobile);
 
   const userType = useSelector(selectUserType);
+
+  useEffect(() => {
+    if (!userType) {
+      dispatch(getUserData());
+    }
+  }, []);
 
   useEffect(() => {
     if (isPhoneVerified && userType) {

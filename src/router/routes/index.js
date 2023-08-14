@@ -27,6 +27,7 @@ import ComingSoon from '../../views/auth/ComingSoon';
 import ProjectDetails from '../../views/project-details';
 import BidDetails from '../../views/project-details/BidDetails';
 import ContractView from '../../views/project-details/ContractView';
+import { userOnboarding } from '../../utility/constants/Constant';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -96,14 +97,14 @@ const Routes = [
   },
 
   {
-    path: '/talent-onboarding/:section-details',
+    path: `/${userOnboarding.talent}/:section-details`,
     element: <TalentOnboarding />,
     meta: {
       layout: 'blank',
     },
   },
   {
-    path: '/client-onboarding/:section-details',
+    path: `/${userOnboarding.client}/:section-details`,
     element: <ClientOnboarding />,
     meta: {
       layout: 'blank',

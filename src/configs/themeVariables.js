@@ -39,6 +39,7 @@ const orange = '#FF6D00';
 const blueBorderColorv2 = '#0578FB';
 const blueCardBg = '#E9F3FF';
 const tableHeaderColor = '#F3F2F7';
+const yellowColor = '#feffb8';
 
 // status
 const succesGreenColor = '#20C997';
@@ -63,7 +64,7 @@ const greenV2Bg = '##00C8531F';
 const darkRedColor = '#B71C1C';
 const darkRedBg = '#B71C1C1F';
 const disabledGrayColor = '#607D8B';
-const disabledBg = '#607D8B1F';
+const disabledBg = '##607D8B1F';
 const turquoiseColor = '#46d8d5';
 const progressBarBg = '#E9ECEF';
 const dotBg = 'rgba(217, 217, 217, 0.5)';
@@ -75,7 +76,6 @@ const noDataFoundTextColor = '#2963c3';
 const infoColor = '#00CFE8';
 const secondaryColor = '#82868B';
 const cardBgBlue = '#a8dbff1f';
-const yellowColor = '#FAFF11';
 
 const theme = {
   primary: primaryColor, // primary color for all components

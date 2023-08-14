@@ -5,7 +5,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
-import PasswordStrengthBar from 'react-password-strength-bar';
 import { Info } from 'react-feather';
 
 // ** Custom Components
@@ -24,6 +23,7 @@ import { setNewPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
+import PasswordStrengthBar from '../../lib/password-strength-bar';
 
 const SetNewPassword = () => {
   const dispatch = useDispatch();

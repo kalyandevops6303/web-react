@@ -11,6 +11,7 @@ const initialState = {
   password: null,
   loading: false,
   error: null,
+  userType: null,
   fcmToken: '',
 };
 
@@ -223,6 +224,26 @@ const authSlice = createSlice({
       ...state,
       isLoggedIn: true,
     }),
+
+    resetPasswordRequest: (state) => ({
+      ...state,
+      loading: true,
+      error: null,
+    }),
+    resetPasswordSuccess: (state) => ({
+      ...state,
+      loading: false,
+    }),
+    resetPasswordFailure: (state, action) => ({
+      ...state,
+      loading: false,
+      error: action.payload,
+    }),
+
+    getUserDataSuccess: (state, action) => ({
+      ...state,
+      userType: action.payload,
+    }),
   },
 });
 
@@ -265,6 +286,10 @@ export const {
   FCMSubscribe,
   logOut,
   setLoggedInStatus,
+  resetPasswordRequest,
+  resetPasswordSuccess,
+  resetPasswordFailure,
+  getUserDataSuccess,
 } = authSlice.actions;
 
 export default authSlice.reducer;

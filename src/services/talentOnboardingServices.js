@@ -7,4 +7,18 @@ const accountDetailsService = (data) => DataService.post(API.talentOnboarding.ac
 
 const profileDetailsService = (data) => DataService.put(API.talentOnboarding.profileDetails, data);
 
-export { userDetailsService, accountDetailsService, profileDetailsService };
+const checkpointCompleteService = () => DataService.post(API.talentOnboarding.checkpointComplete);
+
+const profileImageUploadService = (filename) =>
+  DataService.get(`${API.talentOnboarding.profileImageUpload}?filename=${filename}`);
+
+const profileImageUploadToAzureService = (url, data, headers) => DataService.putWithoutToken(url, data, headers);
+
+export {
+  userDetailsService,
+  accountDetailsService,
+  profileDetailsService,
+  checkpointCompleteService,
+  profileImageUploadService,
+  profileImageUploadToAzureService,
+};

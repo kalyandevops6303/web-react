@@ -134,10 +134,22 @@ export const RequirementsFormContainer = styled.div`
     }
   }
 
+  .select__multi-value .select__multi-value__label {
+    padding: 0.26rem 0.3rem 0.26rem 0.6rem;
+  }
+
+  .select__multi-value .select__multi-value__remove {
+    padding-left: 0.5rem;
+  }
+
   .select__multi-value__remove {
     svg {
       color: ${theme.white};
     }
+  }
+
+  .select__multi-value {
+    margin: 0.1rem 0.7rem 0.1rem 0;
   }
 
   .time-zone-border {
@@ -326,9 +338,7 @@ export const TableContainer = styled.div`
   overflow-y: scroll;
 
   .user-pic {
-    border-radius: 50%;
-    border: 1px solid ${theme.bodyColor};
-    width: fit-content;
+    cursor: auto !important;
   }
 
   .badge {
@@ -377,9 +387,7 @@ export const InviteUsersListContainer = styled.div`
   overflow-y: scroll;
 
   .user-pic {
-    border-radius: 50%;
-    border: 1px solid ${theme.bodyColor};
-    width: fit-content;
+    cursor: auto !important;
   }
 
   .badge {
