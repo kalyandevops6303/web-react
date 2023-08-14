@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Card, CardBody, CardHeader, CardText, Col, Row, Table, UncontrolledTooltip } from 'reactstrap';
 import { ChevronLeft, ChevronRight, FileText, Info } from 'react-feather';
 import { PreviewSectionWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
+import BidSubmittedModal from './BidSubmittedModal';
 
 const Preview = () => {
+  const [bidSubmittedModal, setBidSubmittedModal] = useState(null);
+
+  const toggleBidSubmittedModal = () => {
+    setBidSubmittedModal(!bidSubmittedModal);
+  };
+
   const renderFilePreview = (file) => {
     if (file?.type?.startsWith('image')) {
       return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
@@ -59,6 +66,7 @@ const Preview = () => {
 
   return (
     <PreviewSectionWrapper>
+      {bidSubmittedModal && <BidSubmittedModal modal={bidSubmittedModal} toggleModal={toggleBidSubmittedModal} />}
       <Card className="mt-2">
         <CardHeader className="py-75">
           <h4 className="m-0 mt-75">Project Bid Estimate</h4>
@@ -130,7 +138,7 @@ const Preview = () => {
           </UploadIconContainer>
           <h5 className="fw-bold">Back</h5>
         </div>
-        <Button color="primary">
+        <Button color="primary" onClick={() => setBidSubmittedModal(true)}>
           <span className="me-50">Save & Continue</span>
           <ChevronRight size={14} />
         </Button>
