@@ -18,4 +18,6 @@ const createBidService = (projectId, bidType, teamId) => {
   }
 };
 
-export { checkBidService, createBidService };
+const projectDetailsService = (projectId) => DataService.get(`${API.createBid.projectInfo}?project_id=${projectId}`);
+
+export { checkBidService, createBidService, projectDetailsService };

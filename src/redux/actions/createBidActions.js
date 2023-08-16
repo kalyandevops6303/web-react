@@ -1,4 +1,4 @@
-import { checkBidService, createBidService } from '../../services/createBidServices';
+import { checkBidService, createBidService, projectDetailsService } from '../../services/createBidServices';
 import errorHandler from '../../utility/errorHandler';
 import {
   checkBidFailure,
@@ -7,6 +7,9 @@ import {
   createBidFailure,
   createBidRequest,
   createBidSuccess,
+  projectDetailsFailure,
+  projectDetailsRequest,
+  projectDetailsSuccess,
 } from '../reducers/createBid';
 
 const getCheckBid = (projectId, teamId, onNoBidFound, onBidFound) => async (dispatch) => {
@@ -35,4 +38,14 @@ const createBid = (projectId, bidType, teamId, onSuccess) => async (dispatch) =>
   }
 };
 
-export { getCheckBid, createBid };
+const getProjectDetails = (projectId) => async (dispatch) => {
+  dispatch(projectDetailsRequest());
+  try {
+    const res = await projectDetailsService(projectId);
+    dispatch(projectDetailsSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, projectDetailsFailure);
+  }
+};
+
+export { getCheckBid, createBid, getProjectDetails };

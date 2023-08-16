@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   checkBidLoading: false,
   createBidLoading: false,
+  projectDetails: null,
+  projectDetailsLoading: false,
   error: null,
 };
 
@@ -39,6 +41,22 @@ const createBid = createSlice({
       createBidLoading: false,
       error: action.payload,
     }),
+
+    projectDetailsRequest: (state) => ({
+      ...state,
+      projectDetailsLoading: true,
+      error: null,
+    }),
+    projectDetailsSuccess: (state, action) => ({
+      ...state,
+      projectDetailsLoading: false,
+      projectDetails: action.payload,
+    }),
+    projectDetailsFailure: (state, action) => ({
+      ...state,
+      projectDetailsLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -49,6 +67,9 @@ export const {
   createBidRequest,
   createBidSuccess,
   createBidFailure,
+  projectDetailsRequest,
+  projectDetailsSuccess,
+  projectDetailsFailure,
 } = createBid.actions;
 
 export default createBid.reducer;
