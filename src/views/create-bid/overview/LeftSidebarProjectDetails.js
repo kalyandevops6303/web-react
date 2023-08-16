@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Avatar from '@components/avatar';
-import lisa from '@src/assets/images/portrait/small/lisa.png';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import BadgeGroup from '../../../@core/components/badge-group';
 import { LeftSidebarProjectDetailsWrapper } from '../style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { CustomBadge } from '../../styled';
 import { getProjectDetails } from '../../../redux/actions/createBidActions';
 import { projectDetails } from '../../../redux/selectors/createBidSelectors';
+import DateTime from '../../../lib/date-time';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -30,33 +31,62 @@ const LeftSidebarProjectDetails = () => {
     dispatch(getProjectDetails(params.projectId));
   }, []);
 
+  const [daysLeft, setDaysLeft] = useState(0);
+
+  useEffect(() => {
+    if (projectDetailsData) {
+      setDaysLeft(
+        Math.max(
+          0,
+          Math.ceil(
+            DateTime.fromFormat(projectDetailsData?.listing_details?.end_date, 'dd-MM-yyyy').diff(
+              DateTime.now(),
+              'days',
+            ).days,
+          ),
+        ),
+      );
+    }
+  }, [projectDetailsData]);
+
   return (
     <LeftSidebarProjectDetailsWrapper>
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between status-head">
             <CustomBadge bordered>
-              <Badge className={`${projectDetailsData[0]?.status}`} color="badge">
-                {statusEnum[projectDetailsData[0]?.status]}
+              <Badge className={`${projectDetailsData?.status}`} color="badge">
+                {statusEnum[projectDetailsData?.status]}
               </Badge>
             </CustomBadge>
-            <CardText className="fw-bold days">10 Days left</CardText>
+            <CardText className="fw-bold days">{daysLeft} Days left</CardText>
           </div>
-          <CardTitle className="title">{projectDetailsData[0]?.details?.name}</CardTitle>
+          <CardTitle className="title">{projectDetailsData?.details?.name}</CardTitle>
 
           <div className="d-flex">
-            <img className="project-details-card-photo me-1 mt-50" src={lisa} alt="avatar" />
+            <Avatar
+              img={
+                projectDetailsData?.client_details?.company_logo?.length > 0
+                  ? projectDetailsData?.client_details?.company_logo
+                  : defaultAvatar
+              }
+              imgHeight="32"
+              imgWidth="32"
+              className="project-details-card-photo me-1 mt-50"
+            />
             <div>
-              <CardText className="mb-0 ms-25">Cloudwell Automation</CardText>
+              <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
               <div className="d-flex">
-                <RatingBadge number="0" />
-                <CardText className="ps-75 font-small-2 fw-300 rating-label">0 Projects</CardText>
+                <RatingBadge number={projectDetailsData?.client_details?.rating} />
+                <CardText className="ps-75 font-small-2 fw-300 rating-label">
+                  {projectDetailsData?.client_details?.projects_listed_count} Projects
+                </CardText>
               </div>
             </div>
           </div>
 
           <section className="stats d-flex mt-2 justify-content-between ">
-            {!projectDetailsData[0]?.pay_type.variable_cost && (
+            {!projectDetailsData?.pay_type?.variable_cost && (
               <div className="d-flex amount gap-50 align-items-center">
                 <Avatar
                   color="light-warning"
@@ -65,7 +95,7 @@ const LeftSidebarProjectDetails = () => {
                 />
                 <div>
                   <CardText className="font-small-3 mb-0 stat-value">
-                    {projectDetailsData[0]?.pay_type.currency[0]} {projectDetailsData[0]?.pay_type.fixed_cost}
+                    {projectDetailsData?.pay_type?.currency?.code} {projectDetailsData?.pay_type?.fixed_cost}
                   </CardText>
                   <CardText className="font-small-2 mb-0 stat-key">Value</CardText>
                 </div>
@@ -80,7 +110,7 @@ const LeftSidebarProjectDetails = () => {
           <div className="d-flex mb-75">
             <span className="info-key">Posted date:</span>
             <CardText className="info-value">
-              {projectDetailsData[0]?.listing_details?.start_date.replaceAll('-', '/')}
+              {projectDetailsData?.listing_details?.start_date.replaceAll('-', '/')}
             </CardText>
           </div>
 
