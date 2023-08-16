@@ -1,11 +1,24 @@
 import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
 import { CreateBidRadioOption } from '../styled';
+import { createBid } from '../../redux/actions/createBidActions';
+import { bidTypes } from '../../utility/constants/Constant';
 
 const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [selectedFlow, setSelectedFlow] = useState('');
+
+  const onSuccess = (bidData) => {
+    const { bid_id, bid_type, project_type } = bidData;
+
+    navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/team`);
+  };
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
@@ -16,11 +29,14 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
         <div className="d-flex mt-2 px-50">
           <CreateBidRadioOption
             className="me-1 cursor-pointer"
-            active={selectedFlow === 'simple'}
-            onClick={() => setSelectedFlow('simple')}
+            active={selectedFlow === bidTypes.simple}
+            onClick={() => {
+              setSelectedFlow(bidTypes.simple);
+              dispatch(createBid(selectedProject._id, bidTypes.simple, null, onSuccess));
+            }}
           >
             <div className="form-check form-check-inline checkbox-custom-margin">
-              <Input type="radio" id="simple" checked={selectedFlow === 'simple'} />
+              <Input type="radio" id="simple" checked={selectedFlow === bidTypes.simple} />
               <div className="label">
                 <p className="fw-bolder mb-50">
                   {selectedProject.pay_type.variable_cost ? 'Variable Price' : 'Fixed Price'} - Simple Flow
@@ -34,11 +50,14 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
           </CreateBidRadioOption>
           <CreateBidRadioOption
             className="ms-1 cursor-pointer"
-            active={selectedFlow === 'advance'}
-            onClick={() => setSelectedFlow('advance')}
+            active={selectedFlow === bidTypes.advanced}
+            onClick={() => {
+              setSelectedFlow(bidTypes.advanced);
+              dispatch(createBid(selectedProject._id, bidTypes.advanced, null, onSuccess));
+            }}
           >
             <div className="form-check form-check-inline checkbox-custom-margin">
-              <Input type="radio" id="advance" checked={selectedFlow === 'advance'} />
+              <Input type="radio" id="advance" checked={selectedFlow === bidTypes.advanced} />
               <div className="label">
                 <p className="fw-bolder mb-50">
                   {selectedProject.pay_type.variable_cost ? 'Variable Price' : 'Fixed Price'} - Advance Flow

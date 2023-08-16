@@ -12,9 +12,12 @@ import {
   Col,
   CardText,
   Button,
+  Spinner,
 } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import { ChevronRight } from 'react-feather';
 import ReactHtmlParser from '../../lib/html-parser';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
@@ -23,6 +26,8 @@ import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import { getCheckBid } from '../../redux/actions/createBidActions';
+import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -63,7 +68,23 @@ const ViewProjectDetailModalWrap = styled.div`
 
 // eslint-disable-next-line arrow-body-style
 const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelectedProject }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const userDetailsData = useSelector(userData);
+  const checkBidLoadingIsLoading = useSelector(checkBidLoading);
+
+  const onNoBidFound = () => {
+    toggleModal();
+    setCreateBidModal(true);
+  };
+
+  const onBidFound = (bidData) => {
+    const { bid_id, bid_type, project_type } = bidData;
+
+    toggleModal();
+    navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`);
+  };
 
   return (
     <Modal
@@ -179,13 +200,20 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
               </Button>
               <Button
                 color="primary"
+                disabled={checkBidLoadingIsLoading}
                 onClick={() => {
-                  toggleModal();
-                  setCreateBidModal(true);
                   setSelectedProject(data);
+                  dispatch(getCheckBid(data._id, null, onNoBidFound, onBidFound));
                 }}
               >
-                Create Bid
+                {checkBidLoadingIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Create Bid</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
               </Button>
             </div>
           )}

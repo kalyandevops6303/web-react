@@ -28,4 +28,8 @@ const createBidSteps = [
   { title: 'Preview', subtitle: 'Review before posting', icon: <Check size={18} /> },
 ];
 const maxFileSize = 5000000; // 5MB
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding, createBidSteps, maxFileSize };
+const bidTypes = {
+  simple: 'SIMPLE',
+  advanced: 'ADVANCED',
+};
+export { ERROR_CODES, checkPoints, userTypes, userOnboarding, createBidSteps, maxFileSize, bidTypes };

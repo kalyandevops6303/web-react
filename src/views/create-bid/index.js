@@ -10,10 +10,10 @@ import TeamView from './overview/TeamView';
 import MilestoneView from './overview/MilestoneView';
 import Preview from './overview/Preview';
 
-const index = () => {
+const CreateBid = () => {
   const location = useLocation();
 
-  const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[4]);
+  const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[5]);
   const [progressPercent, setProgressPercent] = useState(null);
 
   const changeStep = (step) => {
@@ -59,4 +59,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default CreateBid;

@@ -105,7 +105,7 @@ const Routes = [
     element: <Notifications />,
   },
   {
-    path: '/create-bid/:bidType/:projectId/*',
+    path: '/create-bid/:projectId/:bidType/:bidId/*',
     element: <CreateBid />,
   },
 ];

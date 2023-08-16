@@ -85,6 +85,10 @@ const API = {
     subscribe: `${apiAuthEndpoint}/api/v1/user/subscribe`,
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
   },
+  createBid: {
+    checkBid: `${apiCreateProjectEndpoint}/api/v1/bid/check`,
+    createBid: `${apiCreateProjectEndpoint}/api/v1/bid/create`,
+  },
 };
 
 export default API;

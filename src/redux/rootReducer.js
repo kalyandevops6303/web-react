@@ -13,6 +13,7 @@ import createProject from './reducers/createProject';
 import marketPlace from './reducers/marketPlace';
 import gloabalSearch from './reducers/gloabalSearch';
 import notifications from './reducers/notifications';
+import createBid from './reducers/createBid';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   layout,
   navbar,
   search: gloabalSearch,
+  createBid,
 
   // Add more reducers if needed
 });
