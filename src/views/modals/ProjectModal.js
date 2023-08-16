@@ -80,10 +80,18 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
   };
 
   const onBidFound = (bidData) => {
-    const { bid_id, bid_type, project_type } = bidData;
+    const { bid_id, bid_type, project_type, entity } = bidData;
 
     toggleModal();
-    navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`);
+    if (entity === userTypes.talent) {
+      navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`, {
+        state: { entity },
+      });
+    } else {
+      navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`, {
+        state: { entity },
+      });
+    }
   };
 
   return (
@@ -203,7 +211,7 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
                 disabled={checkBidLoadingIsLoading}
                 onClick={() => {
                   setSelectedProject(data);
-                  dispatch(getCheckBid(data._id, null, onNoBidFound, onBidFound));
+                  dispatch(getCheckBid(data._id, '64dc8e1e35b3c71d95b32c7d', onNoBidFound, onBidFound));
                 }}
               >
                 {checkBidLoadingIsLoading ? (

@@ -4,7 +4,7 @@ import BreadCrumbs from '@components/breadcrumbs';
 import CustomStep from '@components/custom-stepper';
 import { Col, Progress, Row } from 'reactstrap';
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
-import { createBidSteps } from '../../utility/constants/Constant';
+import { createBidSteps, userTypes } from '../../utility/constants/Constant';
 import { ProgressBarWrapper } from './style';
 import TeamView from './overview/TeamView';
 import MilestoneView from './overview/MilestoneView';
@@ -24,8 +24,10 @@ const CreateBid = () => {
     let percent = 0;
     if (currentStep === 'team') {
       percent = 30;
-    } else if (currentStep === 'milestone') {
+    } else if (location?.state?.entity === userTypes.team && currentStep === 'milestone') {
       percent = 60;
+    } else if (location?.state?.entity === userTypes.talent && currentStep === 'milestone') {
+      percent = 50;
     } else if (currentStep === 'preview') {
       percent = 100;
     }
@@ -41,7 +43,15 @@ const CreateBid = () => {
         </Col>
         <Col lg="9">
           <Row className="w-75">
-            <CustomStep steps={createBidSteps} currentStep={currentStep} onChangeStep={changeStep} />
+            <CustomStep
+              steps={
+                location?.state?.entity === userTypes.team
+                  ? createBidSteps
+                  : createBidSteps.filter((step) => step.title !== 'Team')
+              }
+              currentStep={currentStep}
+              onChangeStep={changeStep}
+            />
             <ProgressBarWrapper>
               <Progress value={progressPercent} className="p-0">
                 {progressPercent}%
@@ -49,7 +59,7 @@ const CreateBid = () => {
             </ProgressBarWrapper>
           </Row>
           <Routes>
-            <Route path="team" element={<TeamView />} />
+            {location?.state?.entity === userTypes.team && <Route path="team" element={<TeamView />} />}
             <Route path="milestone" element={<MilestoneView />} />
             <Route path="preview" element={<Preview />} />
           </Routes>

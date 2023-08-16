@@ -5,6 +5,11 @@ const initialState = {
   createBidLoading: false,
   projectDetails: null,
   projectDetailsLoading: false,
+  bidDetails: null,
+  bidDetailsLoading: false,
+  recommendedRoles: null,
+  allTeamMembers: null,
+  rolesLoading: false,
   error: null,
 };
 
@@ -57,6 +62,39 @@ const createBid = createSlice({
       projectDetailsLoading: false,
       error: action.payload,
     }),
+
+    bidDetailsRequest: (state) => ({
+      ...state,
+      bidDetailsLoading: true,
+      error: null,
+    }),
+    bidDetailsSuccess: (state, action) => ({
+      ...state,
+      bidDetailsLoading: false,
+      bidDetails: action.payload,
+    }),
+    bidDetailsFailure: (state, action) => ({
+      ...state,
+      bidDetailsLoading: false,
+      error: action.payload,
+    }),
+
+    rolesRequest: (state) => ({
+      ...state,
+      rolesLoading: true,
+      error: null,
+    }),
+    rolesSuccess: (state, action) => ({
+      ...state,
+      rolesLoading: false,
+      recommendedRoles: action.payload.recommended,
+      allTeamMembers: action.payload.all,
+    }),
+    rolesFailure: (state, action) => ({
+      ...state,
+      rolesLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -70,6 +108,12 @@ export const {
   projectDetailsRequest,
   projectDetailsSuccess,
   projectDetailsFailure,
+  bidDetailsRequest,
+  bidDetailsSuccess,
+  bidDetailsFailure,
+  rolesRequest,
+  rolesSuccess,
+  rolesFailure,
 } = createBid.actions;
 
 export default createBid.reducer;

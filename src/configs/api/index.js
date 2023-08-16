@@ -89,6 +89,8 @@ const API = {
     checkBid: `${apiCreateProjectEndpoint}/api/v1/bid/check`,
     createBid: `${apiCreateProjectEndpoint}/api/v1/bid/create`,
     projectInfo: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
+    bidInfo: `${apiCreateProjectEndpoint}/api/v1/bid/info`,
+    roles: `${apiCreateProjectEndpoint}/api/v1/bid/roles`,
   },
 };
 

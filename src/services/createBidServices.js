@@ -20,4 +20,10 @@ const createBidService = (projectId, bidType, teamId) => {
 
 const projectDetailsService = (projectId) => DataService.get(`${API.createBid.projectInfo}?project_id=${projectId}`);
 
-export { checkBidService, createBidService, projectDetailsService };
+const bidDetailsService = (bidId, teamId) =>
+  DataService.get(`${API.createBid.bidInfo}?bid_id=${bidId}&team_id=${teamId}`);
+
+const rolesService = (projectId, teamId) =>
+  DataService.get(`${API.createBid.roles}?project_id=${projectId}&team_id=${teamId}`);
+
+export { checkBidService, createBidService, projectDetailsService, bidDetailsService, rolesService };

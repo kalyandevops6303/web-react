@@ -7,6 +7,8 @@ import { Badge, Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Inp
 import { AsyncPaginate } from 'react-select-async-paginate';
 import classNames from 'classnames';
 import { ChevronLeft, ChevronRight, Copy, Minus, Plus, Trash2 } from 'react-feather';
+import { useParams } from 'react-router';
+import { useDispatch } from 'react-redux';
 import { TeamSectionWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import { returnFilteredDropdownOptions, selectThemeColors } from '../../../utility/Utils';
@@ -14,6 +16,7 @@ import { talentRolesService } from '../../../services/staticServices';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { UploadIconContainer } from '../../Onboarding/style';
+import { getBidDetails, getRoles } from '../../../redux/actions/createBidActions';
 
 const TeamView = () => {
   const ROLES = [
@@ -64,6 +67,9 @@ const TeamView = () => {
     control,
     name: 'projectRolesDetails',
   });
+
+  const params = useParams();
+  const dispatch = useDispatch();
 
   const onSubmit = () => {};
 
@@ -173,6 +179,11 @@ const TeamView = () => {
 
     setFieldErrors(allFields);
   }, [fields]);
+
+  useEffect(() => {
+    dispatch(getBidDetails(params.bidId, '64dc8e1e35b3c71d95b32c7d'));
+    dispatch(getRoles(params.projectId, '64dc8e1e35b3c71d95b32c7d'));
+  }, []);
 
   return (
     <TeamSectionWrapper>

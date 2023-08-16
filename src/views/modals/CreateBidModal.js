@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
 import { CreateBidRadioOption } from '../styled';
 import { createBid } from '../../redux/actions/createBidActions';
-import { bidTypes } from '../../utility/constants/Constant';
+import { bidTypes, userTypes } from '../../utility/constants/Constant';
 
 const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
   const dispatch = useDispatch();
@@ -15,9 +15,17 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
   const [selectedFlow, setSelectedFlow] = useState('');
 
   const onSuccess = (bidData) => {
-    const { bid_id, bid_type, project_type } = bidData;
+    const { bid_id, bid_type, project_type, entity } = bidData;
 
-    navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/team`);
+    if (entity === userTypes.talent) {
+      navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/milestone`, {
+        state: { entity },
+      });
+    } else {
+      navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/team`, {
+        state: { entity },
+      });
+    }
   };
 
   return (
@@ -32,7 +40,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
             active={selectedFlow === bidTypes.simple}
             onClick={() => {
               setSelectedFlow(bidTypes.simple);
-              dispatch(createBid(selectedProject._id, bidTypes.simple, null, onSuccess));
+              dispatch(createBid(selectedProject._id, bidTypes.simple, '64dc8e1e35b3c71d95b32c7d', onSuccess));
             }}
           >
             <div className="form-check form-check-inline checkbox-custom-margin">
