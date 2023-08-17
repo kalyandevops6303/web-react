@@ -29,20 +29,16 @@ const handleError = (err, callBack) => {
 
 const fcmToken = getItem('fcmToken');
 const handleErrorCode = (err, callBack) => {
-  if (window.navigator.onLine) {
-    if (err?.response?.status === 401) {
-      showErrorNotification('Session expired!');
-      setTimeout(() => {
-        const onSuccess = () => {
-          window.location.href = '/auth/login';
-        };
-        dispatch(logoutAction({ fcmToken, onSuccess }));
-      }, 500);
-    } else {
-      handleError(err, callBack);
-    }
+  if (err?.response?.status === 401) {
+    showErrorNotification('Session expired!');
+    setTimeout(() => {
+      const onSuccess = () => {
+        window.location.href = '/auth/login';
+      };
+      dispatch(logoutAction({ fcmToken, onSuccess }));
+    }, 500);
   } else {
-    showErrorNotification('Please check your connection!');
+    handleError(err, callBack);
   }
 };
 
@@ -62,6 +58,8 @@ const errorHandler = (err, callBack) => {
     } else {
       handleErrorCode(err, callBack);
     }
+  } else {
+    showErrorNotification('Please check your connection!');
   }
 };
 export default errorHandler;

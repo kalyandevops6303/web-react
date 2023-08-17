@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const ERROR_CODES = {
   EC_401: 401,
   EC_404: 404,
@@ -35,4 +36,16 @@ const sortingOptions = [
   { label: 'New', value: 'NEW' },
   { label: 'Recommended', value: 'RECOMMADED' },
 ];
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding, sortingOptions, statusesOptions, projectTypesOptions };
+const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const maxFileSize = 5000000; // 5MB
+export {
+  ERROR_CODES,
+  checkPoints,
+  userTypes,
+  userOnboarding,
+  sortingOptions,
+  statusesOptions,
+  projectTypesOptions,
+  validEmailRegex,
+  maxFileSize,
+};
