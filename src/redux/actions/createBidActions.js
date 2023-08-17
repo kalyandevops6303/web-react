@@ -4,6 +4,7 @@ import {
   createBidService,
   projectDetailsService,
   rolesService,
+  setWorkersService,
 } from '../../services/createBidServices';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -22,6 +23,9 @@ import {
   rolesFailure,
   rolesRequest,
   rolesSuccess,
+  setWorkersFailure,
+  setWorkersRequest,
+  setWorkersSuccess,
 } from '../reducers/createBid';
 
 const getCheckBid = (projectId, teamId, onNoBidFound, onBidFound) => async (dispatch) => {
@@ -60,11 +64,12 @@ const getProjectDetails = (projectId) => async (dispatch) => {
   }
 };
 
-const getBidDetails = (bidId, teamId) => async (dispatch) => {
+const getBidDetails = (bidId, teamId, onGetUserDetailsSuccess) => async (dispatch) => {
   dispatch(bidDetailsRequest());
   try {
     const res = await bidDetailsService(bidId, teamId);
     dispatch(bidDetailsSuccess(res.data.data));
+    onGetUserDetailsSuccess(res.data.data);
   } catch (error) {
     errorHandler(error, bidDetailsFailure);
   }
@@ -80,4 +85,15 @@ const getRoles = (projectId, teamId) => async (dispatch) => {
   }
 };
 
-export { getCheckBid, createBid, getProjectDetails, getBidDetails, getRoles };
+const saveSetWorkers = (bidId, teamId, data, onSuccess) => async (dispatch) => {
+  dispatch(setWorkersRequest());
+  try {
+    const res = await setWorkersService(bidId, teamId, data);
+    dispatch(setWorkersSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, setWorkersFailure);
+  }
+};
+
+export { getCheckBid, createBid, getProjectDetails, getBidDetails, getRoles, saveSetWorkers };

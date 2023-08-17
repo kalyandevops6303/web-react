@@ -10,6 +10,7 @@ const initialState = {
   recommendedRoles: null,
   allTeamMembers: null,
   rolesLoading: false,
+  setWorkersLoading: false,
   error: null,
 };
 
@@ -95,6 +96,21 @@ const createBid = createSlice({
       rolesLoading: false,
       error: action.payload,
     }),
+
+    setWorkersRequest: (state) => ({
+      ...state,
+      setWorkersLoading: true,
+      error: null,
+    }),
+    setWorkersSuccess: (state) => ({
+      ...state,
+      setWorkersLoading: false,
+    }),
+    setWorkersFailure: (state, action) => ({
+      ...state,
+      setWorkersLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -114,6 +130,9 @@ export const {
   rolesRequest,
   rolesSuccess,
   rolesFailure,
+  setWorkersRequest,
+  setWorkersSuccess,
+  setWorkersFailure,
 } = createBid.actions;
 
 export default createBid.reducer;

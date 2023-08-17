@@ -26,4 +26,7 @@ const bidDetailsService = (bidId, teamId) =>
 const rolesService = (projectId, teamId) =>
   DataService.get(`${API.createBid.roles}?project_id=${projectId}&team_id=${teamId}`);
 
-export { checkBidService, createBidService, projectDetailsService, bidDetailsService, rolesService };
+const setWorkersService = (bidId, teamId, data) =>
+  DataService.put(`${API.createBid.setWorkers}?bid_id=${bidId}&team_id=${teamId}`, data);
+
+export { checkBidService, createBidService, projectDetailsService, bidDetailsService, rolesService, setWorkersService };
