@@ -21,3 +21,5 @@ export const allTeamMembers = createSelector(createBidSelector, (createBid) => c
 export const rolesLoading = createSelector(createBidSelector, (createBid) => createBid.rolesLoading);
 
 export const setWorkersLoading = createSelector(createBidSelector, (createBid) => createBid.setWorkersLoading);
+
+export const setMilestonesLoading = createSelector(createBidSelector, (createBid) => createBid.setMilestonesLoading);

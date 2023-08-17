@@ -11,6 +11,7 @@ const initialState = {
   allTeamMembers: null,
   rolesLoading: false,
   setWorkersLoading: false,
+  setMilestonesLoading: false,
   error: null,
 };
 
@@ -111,6 +112,21 @@ const createBid = createSlice({
       setWorkersLoading: false,
       error: action.payload,
     }),
+
+    setMilestonesRequest: (state) => ({
+      ...state,
+      setMilestonesLoading: true,
+      error: null,
+    }),
+    setMilestonesSuccess: (state) => ({
+      ...state,
+      setMilestonesLoading: false,
+    }),
+    setMilestonesFailure: (state, action) => ({
+      ...state,
+      setMilestonesLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -133,6 +149,9 @@ export const {
   setWorkersRequest,
   setWorkersSuccess,
   setWorkersFailure,
+  setMilestonesRequest,
+  setMilestonesSuccess,
+  setMilestonesFailure,
 } = createBid.actions;
 
 export default createBid.reducer;

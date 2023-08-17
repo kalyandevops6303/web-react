@@ -29,4 +29,22 @@ const rolesService = (projectId, teamId) =>
 const setWorkersService = (bidId, teamId, data) =>
   DataService.put(`${API.createBid.setWorkers}?bid_id=${bidId}&team_id=${teamId}`, data);
 
-export { checkBidService, createBidService, projectDetailsService, bidDetailsService, rolesService, setWorkersService };
+const setMilestonesService = (projectId, bidId, teamId, data) =>
+  DataService.post(`${API.createBid.setMilestones}?project_id=${projectId}&bid_id=${bidId}&team_id=${teamId}`, data);
+
+const milestoneFileUploadService = (filename) =>
+  DataService.get(`${API.createBid.milestoneFileUpload}?filename=${filename}`);
+
+const milestoneFileUploadToAzureService = (url, data, headers) => DataService.putWithoutToken(url, data, headers);
+
+export {
+  checkBidService,
+  createBidService,
+  projectDetailsService,
+  bidDetailsService,
+  rolesService,
+  setWorkersService,
+  setMilestonesService,
+  milestoneFileUploadService,
+  milestoneFileUploadToAzureService,
+};

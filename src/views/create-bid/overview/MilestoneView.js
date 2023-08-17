@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 import {
   AccordionBody,
   AccordionHeader,
@@ -15,6 +17,7 @@ import {
   InputGroupText,
   Label,
   Row,
+  Spinner,
   UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
@@ -33,6 +36,11 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
+import { formatDateWithDash } from '../../../utility/Utils';
+import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
+import { setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
+import uuidv4 from '../../../lib/uuidv4';
+import { milestoneFileUploadService, milestoneFileUploadToAzureService } from '../../../services/createBidServices';
 
 const MilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -58,6 +66,7 @@ const MilestoneView = () => {
           .string()
           .min(4, 'Description must be at least 4 characters')
           .max(250, 'Description must be 250 characters or less')
+          .transform((value) => (value === '' ? undefined : value))
           .optional(),
         deliverables: yup.array().of(
           yup
@@ -74,8 +83,8 @@ const MilestoneView = () => {
     control,
     handleSubmit,
     getValues,
-    trigger,
-    formState: { errors },
+    setValue,
+    formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(MilestoneDetailsSchema),
@@ -102,8 +111,79 @@ const MilestoneView = () => {
     name: 'milestones',
   });
 
-  const onSubmit = () => {
-    trigger();
+  const dispatch = useDispatch();
+  const params = useParams();
+
+  const setMilestonesIsLoading = useSelector(setMilestonesLoading);
+
+  const [files, setFiles] = useState([]);
+  const [uploadingFiles, setUploadingFiles] = useState([]);
+  const filesRef = useRef();
+
+  const cleanArrayOfObjects = (arr) =>
+    arr.map((obj) => {
+      const cleanedObj = Object.keys(obj).reduce((acc, key) => {
+        if (obj[key] !== undefined) {
+          if (Array.isArray(obj[key])) {
+            const cleanedArray = obj[key].filter((item) => item !== undefined);
+            if (cleanedArray.length > 0) {
+              acc[key] = cleanedArray;
+            }
+          } else {
+            acc[key] = obj[key];
+          }
+        }
+        return acc;
+      }, {});
+
+      return cleanedObj;
+    });
+
+  const onSubmit = (data) => {
+    const { estimatedStartDate, milestones } = data;
+
+    const project_start_date = formatDateWithDash(estimatedStartDate);
+    const total_estimated_duration = {
+      duration: milestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0),
+      duration_type: 'WEEK',
+    };
+    const total_estimated_cost = milestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
+    const create_milestones = milestones.map((milestone) => ({
+      name: milestone.name,
+      description: milestone.description,
+      estimated_duration: {
+        duration: milestone.duration,
+        duration_type: 'WEEK',
+      },
+      estimated_cost: milestone.talentCost,
+      deliverables: milestone.deliverables,
+    }));
+
+    let reqData;
+
+    if (files.length > 0) {
+      const documents = files.map((file) => ({
+        file_name: file.file.name,
+        file_key: file.uploadData.file_key,
+      }));
+
+      reqData = {
+        project_start_date,
+        total_estimated_duration,
+        total_estimated_cost,
+        documents,
+        create_milestones: cleanArrayOfObjects(create_milestones),
+      };
+    } else {
+      reqData = {
+        project_start_date,
+        total_estimated_duration,
+        total_estimated_cost,
+        create_milestones: cleanArrayOfObjects(create_milestones),
+      };
+    }
+
+    dispatch(saveSetMilestones(params.projectId, params.bidId, '64dc8e1e35b3c71d95b32c7d', reqData));
   };
 
   const handleAddDeliverable = (milestoneIndex, defaultValue = '') => {
@@ -157,11 +237,6 @@ const MilestoneView = () => {
     return true;
   };
 
-  const [files, setFiles] = useState([]);
-  const [uploadingFiles, setUploadingFiles] = useState([]);
-
-  const filesRef = useRef();
-
   useEffect(() => {
     filesRef.current = files;
   }, [files]);
@@ -170,10 +245,10 @@ const MilestoneView = () => {
     try {
       setUploadingFiles((prevFiles) => [...prevFiles, file]);
 
-      //   await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
-      //     'x-ms-blob-type': 'BlockBlob',
-      //     'Content-Type': file.file.type,
-      //   });
+      await milestoneFileUploadToAzureService(file.uploadData.upload_url, file.file, {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': file.file.type,
+      });
     } catch (error) {
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
     } finally {
@@ -194,10 +269,9 @@ const MilestoneView = () => {
       } else {
         const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
-        // eslint-disable-next-line arrow-body-style
-        const promises = validFiles.map(async () => {
-          //   const response = await projectFileUploadService(file.name);
-          //   return { id: uuidv4(), file, uploadData: response?.data?.data };
+        const promises = validFiles.map(async (file) => {
+          const response = await milestoneFileUploadService(file.name);
+          return { id: uuidv4(), file, uploadData: response?.data?.data };
         });
 
         const filesWithUrls = await Promise.all(promises);
@@ -243,7 +317,7 @@ const MilestoneView = () => {
   };
 
   const formattedDate = new Date()
-    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
     .replace(',', '')
     .split(' ');
   const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
@@ -285,18 +359,41 @@ const MilestoneView = () => {
     </div>
   );
 
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) {
+      if (res?.project_start_date > 0) {
+        setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
+      }
+      if (res?.milestones?.length > 0) {
+        const reqData = res?.milestones?.map((milestone) => ({
+          duration: milestone?.estimated_duration?.duration,
+          talentCost: milestone?.estimated_cost,
+          name: milestone?.name,
+          description: milestone?.description,
+          deliverables: milestone?.deliverables?.length > 0 ? milestone?.deliverables : [''],
+        }));
+
+        setValue('milestones', reqData, { shouldValidate: true });
+      }
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getBidDetails(params.bidId, '64dc8e1e35b3c71d95b32c7d', onGetUserDetailsSuccess));
+  }, []);
+
   return (
     <MilestoneSectionWrapper className="mt-2">
-      <Card className="gray-card-wrapper">
-        <CardHeader className="p-0">
-          <div className="w-100 pt-2 pb-1 px-1 gray-border-container">
-            <h5 className="m-0 font-medium-1">
-              Create milestones that will make it easier to work on and track this project
-            </h5>
-          </div>
-        </CardHeader>
-        <CardBody className="pt-2 pb-0">
-          <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Card className="gray-card-wrapper">
+          <CardHeader className="p-0">
+            <div className="w-100 pt-2 pb-1 px-1 gray-border-container">
+              <h5 className="m-0 font-medium-1">
+                Create milestones that will make it easier to work on and track this project
+              </h5>
+            </div>
+          </CardHeader>
+          <CardBody className="pt-2 pb-0">
             <Card className="white-card-bg">
               <CardBody>
                 <Row className="d-flex justify-content-between">
@@ -661,70 +758,76 @@ const MilestoneView = () => {
                 </Card>
               ))}
             </UncontrolledAccordion>
-          </Form>
-        </CardBody>
-      </Card>
-      <Card className="mt-2">
-        <CardHeader className="py-75">
-          <h4 className="m-0 mt-75">Documents</h4>
-        </CardHeader>
-        <hr className="m-0 card-header-border" />
-        <CardBody>
-          <Row className="mb-1">
-            <Label className="form-label">
-              Upload detailed requirements document (optional) <Info size={18} color={theme.infoIcon} id="document" />
-              <UncontrolledTooltip placement="right" target="document">
-                <div className="d-flex flex-column align-items-start">
-                  <p className="m-0">Allowed file types:</p>
-                  <p className="m-0">pdf, doc, docx, txt, jpeg</p>
-                  <p className="m-0">Max files: 5</p>
-                  <p className="m-0">Max file size: 5MB</p>
-                </div>
-              </UncontrolledTooltip>
-            </Label>
-            {files.length ? (
-              <>
-                <div className="px-1 mt-50">{fileList()}</div>
-                <div {...getRootProps({ className: 'dropzone' })}>
-                  <input {...getInputProps()} />
-                  <div className="d-flex align-items-center upload-btn cursor-pointer mt-1">
-                    <UploadIconContainer>
-                      <Upload size={18} color={theme.activeNavPillText} />
-                    </UploadIconContainer>
-                    <h5 className="fw-bold mb-0 mx-75">Upload</h5>
+          </CardBody>
+        </Card>
+        <Card className="mt-2">
+          <CardHeader className="py-75">
+            <h4 className="m-0 mt-75">Documents</h4>
+          </CardHeader>
+          <hr className="m-0 card-header-border" />
+          <CardBody>
+            <Row className="mb-1">
+              <Label className="form-label">
+                Upload detailed requirements document (optional) <Info size={18} color={theme.infoIcon} id="document" />
+                <UncontrolledTooltip placement="right" target="document">
+                  <div className="d-flex flex-column align-items-start">
+                    <p className="m-0">Allowed file types:</p>
+                    <p className="m-0">pdf, doc, docx, txt, jpeg</p>
+                    <p className="m-0">Max files: 5</p>
+                    <p className="m-0">Max file size: 5MB</p>
                   </div>
-                </div>
-              </>
-            ) : (
-              <Col sm="12" md="12" lg="6">
-                <DropzoneContainer>
+                </UncontrolledTooltip>
+              </Label>
+              {files.length ? (
+                <>
+                  <div className="px-1 mt-50">{fileList()}</div>
                   <div {...getRootProps({ className: 'dropzone' })}>
                     <input {...getInputProps()} />
-                    <div className="d-flex align-items-center justify-content-center flex-column p-3">
-                      <h4 className="font-medium-1">Drop files here or click to upload</h4>
-                      <p className="text-secondary font-small-5 text-center mt-50 fw-light">
-                        (This is just a demo dropzone. Selected files are not actually uploaded.)
-                      </p>
+                    <div className="d-flex align-items-center upload-btn cursor-pointer mt-1">
+                      <UploadIconContainer>
+                        <Upload size={18} color={theme.activeNavPillText} />
+                      </UploadIconContainer>
+                      <h5 className="fw-bold mb-0 mx-75">Upload</h5>
                     </div>
                   </div>
-                </DropzoneContainer>
-              </Col>
+                </>
+              ) : (
+                <Col sm="12" md="12" lg="6">
+                  <DropzoneContainer>
+                    <div {...getRootProps({ className: 'dropzone' })}>
+                      <input {...getInputProps()} />
+                      <div className="d-flex align-items-center justify-content-center flex-column p-3">
+                        <h4 className="font-medium-1">Drop files here or click to upload</h4>
+                        <p className="text-secondary font-small-5 text-center mt-50 fw-light">
+                          (This is just a demo dropzone. Selected files are not actually uploaded.)
+                        </p>
+                      </div>
+                    </div>
+                  </DropzoneContainer>
+                </Col>
+              )}
+            </Row>
+          </CardBody>
+        </Card>
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex align-items-center upload-button cursor-pointer">
+            <UploadIconContainer>
+              <ChevronLeft size={18} color={theme.activeNavPillText} />
+            </UploadIconContainer>
+            <h5 className="fw-bold">Back</h5>
+          </div>
+          <Button color="primary" type="submit" disabled={!isValid || setMilestonesIsLoading}>
+            {setMilestonesIsLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span className="me-50">Save & Continue</span>
+                <ChevronRight size={14} />
+              </>
             )}
-          </Row>
-        </CardBody>
-      </Card>
-      <div className="d-flex justify-content-between align-items-center">
-        <div className="d-flex align-items-center upload-button cursor-pointer">
-          <UploadIconContainer>
-            <ChevronLeft size={18} color={theme.activeNavPillText} />
-          </UploadIconContainer>
-          <h5 className="fw-bold">Back</h5>
+          </Button>
         </div>
-        <Button color="primary" onClick={() => onSubmit()}>
-          <span className="me-50">Save & Continue</span>
-          <ChevronRight size={14} />
-        </Button>
-      </div>
+      </Form>
     </MilestoneSectionWrapper>
   );
 };

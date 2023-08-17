@@ -4,6 +4,7 @@ import {
   createBidService,
   projectDetailsService,
   rolesService,
+  setMilestonesService,
   setWorkersService,
 } from '../../services/createBidServices';
 import errorHandler from '../../utility/errorHandler';
@@ -23,6 +24,9 @@ import {
   rolesFailure,
   rolesRequest,
   rolesSuccess,
+  setMilestonesFailure,
+  setMilestonesRequest,
+  setMilestonesSuccess,
   setWorkersFailure,
   setWorkersRequest,
   setWorkersSuccess,
@@ -96,4 +100,14 @@ const saveSetWorkers = (bidId, teamId, data, onSuccess) => async (dispatch) => {
   }
 };
 
-export { getCheckBid, createBid, getProjectDetails, getBidDetails, getRoles, saveSetWorkers };
+const saveSetMilestones = (projectId, bidId, teamId, data) => async (dispatch) => {
+  dispatch(setMilestonesRequest());
+  try {
+    const res = await setMilestonesService(projectId, bidId, teamId, data);
+    dispatch(setMilestonesSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, setMilestonesFailure);
+  }
+};
+
+export { getCheckBid, createBid, getProjectDetails, getBidDetails, getRoles, saveSetWorkers, saveSetMilestones };

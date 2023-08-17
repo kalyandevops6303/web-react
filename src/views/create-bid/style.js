@@ -234,6 +234,14 @@ const MilestoneSectionWrapper = styled.div`
   .card-header-border {
     border: 1px solid ${theme.cardHeaderBorderColor};
   }
+
+  .upload-btn {
+    width: fit-content;
+
+    h5 {
+      color: ${theme.activeNavPillText};
+    }
+  }
 `;
 
 const PreviewSectionWrapper = styled.div`

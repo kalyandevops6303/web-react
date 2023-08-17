@@ -92,6 +92,8 @@ const API = {
     bidInfo: `${apiCreateProjectEndpoint}/api/v1/bid/info`,
     roles: `${apiCreateProjectEndpoint}/api/v1/bid/roles`,
     setWorkers: `${apiCreateProjectEndpoint}/api/v1/bid/set-workers`,
+    setMilestones: `${apiCreateProjectEndpoint}/api/v1/bid/set-milestones`,
+    milestoneFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
   },
 };
 
