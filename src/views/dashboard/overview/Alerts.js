@@ -17,8 +17,6 @@ const Alerts = () => {
   useEffect(() => {
     dispatch(getProjectInvites());
     dispatch(getProfilePercentage());
-
-    // return () => dispatch(clearNotificationsData());
   }, []);
 
   const projectInvites = useSelector((state) => state.dashboard.projectInvites);
