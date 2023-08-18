@@ -20,8 +20,13 @@ const createBidService = (projectId, bidType, teamId) => {
 
 const projectDetailsService = (projectId) => DataService.get(`${API.createBid.projectInfo}?project_id=${projectId}`);
 
-const bidDetailsService = (bidId, teamId) =>
-  DataService.get(`${API.createBid.bidInfo}?bid_id=${bidId}&team_id=${teamId}`);
+const bidDetailsService = (bidId, teamId) => {
+  if (teamId) {
+    return DataService.get(`${API.createBid.bidInfo}?bid_id=${bidId}&team_id=${teamId}`);
+  } else {
+    return DataService.get(`${API.createBid.bidInfo}?bid_id=${bidId}`);
+  }
+};
 
 const rolesService = (projectId, teamId) =>
   DataService.get(`${API.createBid.roles}?project_id=${projectId}&team_id=${teamId}`);
@@ -29,8 +34,16 @@ const rolesService = (projectId, teamId) =>
 const setWorkersService = (bidId, teamId, data) =>
   DataService.put(`${API.createBid.setWorkers}?bid_id=${bidId}&team_id=${teamId}`, data);
 
-const setMilestonesService = (projectId, bidId, teamId, data) =>
-  DataService.post(`${API.createBid.setMilestones}?project_id=${projectId}&bid_id=${bidId}&team_id=${teamId}`, data);
+const setMilestonesService = (projectId, bidId, teamId, data) => {
+  if (teamId) {
+    return DataService.post(
+      `${API.createBid.setMilestones}?project_id=${projectId}&bid_id=${bidId}&team_id=${teamId}`,
+      data,
+    );
+  } else {
+    return DataService.post(`${API.createBid.setMilestones}?project_id=${projectId}&bid_id=${bidId}`, data);
+  }
+};
 
 const milestoneFileUploadService = (filename) =>
   DataService.get(`${API.createBid.milestoneFileUpload}?filename=${filename}`);

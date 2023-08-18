@@ -100,11 +100,12 @@ const saveSetWorkers = (bidId, teamId, data, onSuccess) => async (dispatch) => {
   }
 };
 
-const saveSetMilestones = (projectId, bidId, teamId, data) => async (dispatch) => {
+const saveSetMilestones = (projectId, bidId, teamId, data, onSuccess) => async (dispatch) => {
   dispatch(setMilestonesRequest());
   try {
     const res = await setMilestonesService(projectId, bidId, teamId, data);
     dispatch(setMilestonesSuccess(res.data.data));
+    onSuccess();
   } catch (error) {
     errorHandler(error, setMilestonesFailure);
   }

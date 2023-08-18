@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import {
   AccordionBody,
   AccordionHeader,
@@ -34,7 +34,7 @@ import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { maxFileSize } from '../../../utility/constants/Constant';
+import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
 import { formatDateWithDash } from '../../../utility/Utils';
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
@@ -75,6 +75,7 @@ const MilestoneView = () => {
             .max(50, 'Deliverable must be 50 characters or less')
             .transform((value) => (value === '' ? undefined : value)),
         ),
+        otherDetails: yup.object().optional(),
       }),
     ),
   });
@@ -96,6 +97,7 @@ const MilestoneView = () => {
           name: undefined,
           description: undefined,
           deliverables: [''],
+          otherDetails: {},
         },
       ],
     },
@@ -113,11 +115,14 @@ const MilestoneView = () => {
 
   const dispatch = useDispatch();
   const params = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const setMilestonesIsLoading = useSelector(setMilestonesLoading);
 
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
+  const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
   const filesRef = useRef();
 
   const cleanArrayOfObjects = (arr) =>
@@ -139,6 +144,12 @@ const MilestoneView = () => {
       return cleanedObj;
     });
 
+  const onSuccess = () => {
+    navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/preview`, {
+      state: { entity: location.state.entity },
+    });
+  };
+
   const onSubmit = (data) => {
     const { estimatedStartDate, milestones } = data;
 
@@ -148,7 +159,8 @@ const MilestoneView = () => {
       duration_type: 'WEEK',
     };
     const total_estimated_cost = milestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
-    const create_milestones = milestones.map((milestone) => ({
+    const newMilestones = milestones.filter((milestone) => !('_id' in milestone.otherDetails));
+    const create_milestones = newMilestones.map((milestone) => ({
       name: milestone.name,
       description: milestone.description,
       estimated_duration: {
@@ -158,32 +170,35 @@ const MilestoneView = () => {
       estimated_cost: milestone.talentCost,
       deliverables: milestone.deliverables,
     }));
+    const updatedMilestones = milestones.filter((milestone) => '_id' in milestone.otherDetails);
+    const update_milestones = updatedMilestones.map((milestone) => ({
+      name: milestone.name,
+      description: milestone.description,
+      estimated_duration: {
+        duration: milestone.duration,
+        duration_type: 'WEEK',
+      },
+      estimated_cost: milestone.talentCost,
+      deliverables: milestone.deliverables,
+      milestone_id: milestone.otherDetails._id,
+    }));
+    const removed_milestone_ids = removedMilestoneIds.filter((id) => id !== undefined);
+    const documents = files.map((file) => ({
+      file_name: file?.file?.name || file?.file?.file_name,
+      file_key: file.uploadData.file_key,
+    }));
 
-    let reqData;
+    const reqData = {
+      project_start_date,
+      total_estimated_duration,
+      total_estimated_cost,
+      documents,
+      create_milestones: cleanArrayOfObjects(create_milestones),
+      update_milestones: cleanArrayOfObjects(update_milestones),
+      removed_milestone_ids,
+    };
 
-    if (files.length > 0) {
-      const documents = files.map((file) => ({
-        file_name: file.file.name,
-        file_key: file.uploadData.file_key,
-      }));
-
-      reqData = {
-        project_start_date,
-        total_estimated_duration,
-        total_estimated_cost,
-        documents,
-        create_milestones: cleanArrayOfObjects(create_milestones),
-      };
-    } else {
-      reqData = {
-        project_start_date,
-        total_estimated_duration,
-        total_estimated_cost,
-        create_milestones: cleanArrayOfObjects(create_milestones),
-      };
-    }
-
-    dispatch(saveSetMilestones(params.projectId, params.bidId, '64dc8e1e35b3c71d95b32c7d', reqData));
+    dispatch(saveSetMilestones(params.projectId, params.bidId, '64dc8e1e35b3c71d95b32c7d', reqData, onSuccess));
   };
 
   const handleAddDeliverable = (milestoneIndex, defaultValue = '') => {
@@ -223,6 +238,7 @@ const MilestoneView = () => {
         duration: undefined,
         talentCost: undefined,
         deliverables: [''],
+        otherDetails: {},
       });
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
@@ -292,14 +308,7 @@ const MilestoneView = () => {
     onDrop,
   });
 
-  const renderFilePreview = (file) => {
-    if (file.type.startsWith('image')) {
-      return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
-      // eslint-disable-next-line
-    } else {
-      return <FileText size="18" className="me-75 mb-50" />;
-    }
-  };
+  const renderFilePreview = () => <FileText size="18" className="me-75 mb-50" />;
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
@@ -316,11 +325,13 @@ const MilestoneView = () => {
     }
   };
 
-  const formattedDate = new Date()
-    .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
-    .replace(',', '')
-    .split(' ');
-  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+  const requiredFormattedDate = (date = new Date()) => {
+    const formattedDate = new Date(date)
+      .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+      .replace(',', '')
+      .split(' ');
+    return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+  };
 
   const fileList = () => (
     <div className="custom-card mb-1">
@@ -331,8 +342,8 @@ const MilestoneView = () => {
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
             <Col sm="6" md="4" lg="4">
-              {renderFilePreview(file.file)}
-              {file.file.name}
+              {renderFilePreview()}
+              {file?.file?.name || file?.file?.file_name}
             </Col>
             <Col sm="6" md="2" lg="2">
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
@@ -341,7 +352,7 @@ const MilestoneView = () => {
               {renderFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {requiredFormattedDate}
+              {requiredFormattedDate(file?.file?.created_at)}
             </Col>
             <Col sm="2" md="2" lg="2">
               <Button
@@ -371,9 +382,20 @@ const MilestoneView = () => {
           name: milestone?.name,
           description: milestone?.description,
           deliverables: milestone?.deliverables?.length > 0 ? milestone?.deliverables : [''],
+          otherDetails: milestone,
         }));
 
         setValue('milestones', reqData, { shouldValidate: true });
+      }
+      if (res?.documents?.length > 0) {
+        const reqFiles = res?.documents?.map((file) => ({
+          file,
+          id: uuidv4(),
+          uploadData: {
+            file_key: file?.file_key,
+          },
+        }));
+        setFiles(reqFiles);
       }
     }
   };
@@ -747,7 +769,14 @@ const MilestoneView = () => {
                             <h5 className="fw-bold">Add Milestone</h5>
                           </div>
                           {getValues('milestones').length > 1 && (
-                            <Button type="button" color="flat-danger" onClick={() => milestonesRemove(milestoneIndex)}>
+                            <Button
+                              type="button"
+                              color="flat-danger"
+                              onClick={() => {
+                                setRemovedMilestoneIds((oldIds) => [...oldIds, milestone.otherDetails._id]);
+                                milestonesRemove(milestoneIndex);
+                              }}
+                            >
                               Remove
                             </Button>
                           )}
@@ -810,13 +839,28 @@ const MilestoneView = () => {
           </CardBody>
         </Card>
         <div className="d-flex justify-content-between align-items-center">
-          <div className="d-flex align-items-center upload-button cursor-pointer">
+          <div
+            className="d-flex align-items-center upload-button cursor-pointer"
+            onClick={() => {
+              if (location.state.entity === userTypes.team) {
+                navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`, {
+                  state: { entity: location.state.entity },
+                });
+              } else {
+                navigate(-1);
+              }
+            }}
+          >
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
             </UploadIconContainer>
             <h5 className="fw-bold">Back</h5>
           </div>
-          <Button color="primary" type="submit" disabled={!isValid || setMilestonesIsLoading}>
+          <Button
+            color="primary"
+            type="submit"
+            disabled={!isValid || setMilestonesIsLoading || uploadingFiles.length > 0}
+          >
             {setMilestonesIsLoading ? (
               <Spinner size="sm" />
             ) : (
