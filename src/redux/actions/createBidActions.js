@@ -6,6 +6,7 @@ import {
   rolesService,
   setMilestonesService,
   setWorkersService,
+  submitBidService,
 } from '../../services/createBidServices';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -30,6 +31,9 @@ import {
   setWorkersFailure,
   setWorkersRequest,
   setWorkersSuccess,
+  submitBidFailure,
+  submitBidRequest,
+  submitBidSuccess,
 } from '../reducers/createBid';
 
 const getCheckBid = (projectId, teamId, onNoBidFound, onBidFound) => async (dispatch) => {
@@ -111,4 +115,24 @@ const saveSetMilestones = (projectId, bidId, teamId, data, onSuccess) => async (
   }
 };
 
-export { getCheckBid, createBid, getProjectDetails, getBidDetails, getRoles, saveSetWorkers, saveSetMilestones };
+const saveSubmitBid = (bidId, teamId, onSuccess) => async (dispatch) => {
+  dispatch(submitBidRequest());
+  try {
+    const res = await submitBidService(bidId, teamId);
+    dispatch(submitBidSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, submitBidFailure);
+  }
+};
+
+export {
+  getCheckBid,
+  createBid,
+  getProjectDetails,
+  getBidDetails,
+  getRoles,
+  saveSetWorkers,
+  saveSetMilestones,
+  saveSubmitBid,
+};

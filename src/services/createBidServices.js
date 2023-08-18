@@ -50,6 +50,14 @@ const milestoneFileUploadService = (filename) =>
 
 const milestoneFileUploadToAzureService = (url, data, headers) => DataService.putWithoutToken(url, data, headers);
 
+const submitBidService = (bidId, teamId) => {
+  if (teamId) {
+    return DataService.put(`${API.createBid.submitBid}?bid_id=${bidId}&team_id=${teamId}`);
+  } else {
+    return DataService.put(`${API.createBid.submitBid}?bid_id=${bidId}`);
+  }
+};
+
 export {
   checkBidService,
   createBidService,
@@ -60,4 +68,5 @@ export {
   setMilestonesService,
   milestoneFileUploadService,
   milestoneFileUploadToAzureService,
+  submitBidService,
 };
