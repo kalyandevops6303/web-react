@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router';
 import BreadCrumbs from '@components/breadcrumbs';
-import CustomStep from '@components/custom-stepper';
 import { Col, Progress, Row } from 'reactstrap';
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
 import { createBidSteps, userTypes } from '../../utility/constants/Constant';
@@ -9,6 +8,7 @@ import { ProgressBarWrapper } from './style';
 import TeamView from './overview/TeamView';
 import MilestoneView from './overview/MilestoneView';
 import Preview from './overview/Preview';
+import FormStepper from './overview/FormStepper';
 
 const CreateBid = () => {
   const location = useLocation();
@@ -43,7 +43,7 @@ const CreateBid = () => {
         </Col>
         <Col lg="9">
           <Row className="w-75">
-            <CustomStep
+            <FormStepper
               steps={
                 location?.state?.entity === userTypes.team
                   ? createBidSteps

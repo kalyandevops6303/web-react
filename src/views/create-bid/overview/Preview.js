@@ -76,7 +76,7 @@ const Preview = () => {
   );
 
   useEffect(() => {
-    dispatch(getBidDetails(params.bidId, null, () => {}));
+    dispatch(getBidDetails(params.bidId, '64dc8e1e35b3c71d95b32c7d', () => {}));
   }, []);
 
   return (
