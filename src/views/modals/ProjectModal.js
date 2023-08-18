@@ -66,7 +66,6 @@ const ViewProjectDetailModalWrap = styled.div`
   }
 `;
 
-// eslint-disable-next-line arrow-body-style
 const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelectedProject }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -80,17 +79,40 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
   };
 
   const onBidFound = (bidData) => {
-    const { bid_id, bid_type, project_type, entity } = bidData;
+    const { bid_id, bid_type, project_type, entity, workers, milestones } = bidData;
 
     toggleModal();
     if (entity === userTypes.talent) {
-      navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`, {
-        state: { entity },
-      });
+      if (milestones) {
+        navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`, {
+          state: { entity },
+        });
+      } else {
+        navigate(
+          `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
+          {
+            state: { entity },
+          },
+        );
+      }
     } else {
-      navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`, {
-        state: { entity },
-      });
+      // eslint-disable-next-line no-lonely-if
+      if (milestones && workers) {
+        navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`, {
+          state: { entity },
+        });
+      } else if (workers && !milestones) {
+        navigate(
+          `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
+          {
+            state: { entity },
+          },
+        );
+      } else if (!workers && !milestones) {
+        navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`, {
+          state: { entity },
+        });
+      }
     }
   };
 
