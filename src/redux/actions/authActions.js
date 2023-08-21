@@ -65,6 +65,7 @@ import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
+import { clearTeams } from '../reducers/team';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -245,6 +246,7 @@ const logoutAction =
       dispatch(fcmUnsubscribeNotification(fcmToken));
     }
     dispatch(logOut());
+    dispatch(clearTeams());
     // dispatch(clearData());
     onSuccess();
   };

@@ -86,6 +86,13 @@ const API = {
       listProject: `${apiOnboardingEndpoint}/api/v1/talent/list-projects`,
       listClients: `${apiOnboardingEndpoint}/api/v1/talent/list-clients`,
     },
+
+    cardInfo: `${apiOnboardingEndpoint}/api/v1/marketplace/cards-info`,
+    listProject: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects`,
+    listTalents: `${apiOnboardingEndpoint}/api/v1/marketplace/list-talents`,
+    bidProjects: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
+    listTeams: `${apiOnboardingEndpoint}/api/v1/marketplace/list-teams`,
+    listClients: `${apiOnboardingEndpoint}/api/v1/marketplace/list-clients`,
   },
   globalSearch: {
     search: `${apiOnboardingEndpoint}/api/v1/search`,

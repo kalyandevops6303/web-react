@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { Box, Check, Watch } from 'react-feather';
 
 const ERROR_CODES = {
@@ -33,4 +34,6 @@ const bidTypes = {
   simple: 'SIMPLE',
   advanced: 'ADVANCED',
 };
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding, createBidSteps, maxFileSize, bidTypes };
+const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+export { ERROR_CODES, checkPoints, userTypes, userOnboarding, createBidSteps, validEmailRegex, maxFileSize, bidTypes };

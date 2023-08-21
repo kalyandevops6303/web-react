@@ -36,7 +36,9 @@ const MarketPlace = () => {
     useMatch('/marketplace/clients') ||
     useMatch('/marketplace/all_listings') ||
     useMatch('/marketplace/my_listings') ||
-    useMatch('/marketplace/talents');
+    useMatch('/marketplace/talents') ||
+    useMatch('/marketplace/teams') ||
+    useMatch('/marketplace/my_bids');
 
   const [primaryFilter, setPrimaryFilter] = useState(routesMatch?.pathname?.split('/')?.[2]);
 
@@ -63,6 +65,8 @@ const MarketPlace = () => {
     all_listings: 'All listings',
     my_listings: 'My listings',
     talents: 'Talent',
+    teams: 'Teams',
+    my_bids: 'My bids',
   };
 
   return (
@@ -82,8 +86,10 @@ const MarketPlace = () => {
       <Routes>
         <Route path="all_listings" element={<SecondComp />} />
         <Route path="my_listings" element={<SecondComp />} />
+        <Route path="my_bids" element={<SecondComp />} />
         <Route path="clients" element={<SecondComp />} />
         <Route path="talents" element={<SecondComp />} />
+        <Route path="teams" element={<SecondComp />} />
       </Routes>
     </MarketPlaceContainer>
   );
