@@ -22,7 +22,7 @@ const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
 };
-
+const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
   { label: 'In-review', value: 'IN_REVIEW' },
@@ -37,7 +37,6 @@ const sortingOptions = [
   { label: 'New', value: 'NEW' },
   { label: 'Recommended', value: 'RECOMMADED' },
 ];
-const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const maxFileSize = 5000000; // 5MB
 export {
   ERROR_CODES,
