@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import {
   AccordionBody,
   AccordionHeader,
@@ -41,6 +41,7 @@ import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createB
 import { setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
 import { milestoneFileUploadService, milestoneFileUploadToAzureService } from '../../../services/createBidServices';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
 
 const MilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -116,9 +117,9 @@ const MilestoneView = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const setMilestonesIsLoading = useSelector(setMilestonesLoading);
+  const selectUserDetailsData = useSelector(selectUserData);
 
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
@@ -145,9 +146,7 @@ const MilestoneView = () => {
     });
 
   const onSuccess = () => {
-    navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/preview`, {
-      state: { entity: location.state.entity },
-    });
+    navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/preview`);
   };
 
   const onSubmit = (data) => {
@@ -198,7 +197,7 @@ const MilestoneView = () => {
       removed_milestone_ids,
     };
 
-    dispatch(saveSetMilestones(params.projectId, params.bidId, '64dc8e1e35b3c71d95b32c7d', reqData, onSuccess));
+    dispatch(saveSetMilestones(params.projectId, params.bidId, reqData, onSuccess));
   };
 
   const handleAddDeliverable = (milestoneIndex, defaultValue = '') => {
@@ -370,7 +369,7 @@ const MilestoneView = () => {
     </div>
   );
 
-  const onGetUserDetailsSuccess = (res) => {
+  const onGetBidDetailsSuccess = (res) => {
     if (res) {
       if (res?.project_start_date > 0) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
@@ -401,7 +400,7 @@ const MilestoneView = () => {
   };
 
   useEffect(() => {
-    dispatch(getBidDetails(params.bidId, '64dc8e1e35b3c71d95b32c7d', onGetUserDetailsSuccess));
+    dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
   }, []);
 
   return (
@@ -842,12 +841,10 @@ const MilestoneView = () => {
           <div
             className="d-flex align-items-center upload-button cursor-pointer"
             onClick={() => {
-              if (location.state.entity === userTypes.team) {
-                navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`, {
-                  state: { entity: location.state.entity },
-                });
+              if (selectUserDetailsData?.user_type === userTypes.team) {
+                navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`);
               } else {
-                navigate(-1);
+                navigate('/marketplace/all_listings');
               }
             }}
           >

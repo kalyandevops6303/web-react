@@ -24,10 +24,12 @@ import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
-import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR } from '../../utility/constants/ToastTypes';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -70,8 +72,8 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userDetailsData = useSelector(userData);
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
+  const selectUserDetailsData = useSelector(selectUserData);
 
   const onNoBidFound = () => {
     toggleModal();
@@ -79,39 +81,31 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
   };
 
   const onBidFound = (bidData) => {
-    const { bid_id, bid_type, project_type, entity, workers, milestones } = bidData;
+    const { bid_id, bid_type, project_type, entity, workers, milestones, status } = bidData;
 
-    toggleModal();
-    if (entity === userTypes.talent) {
-      if (milestones) {
-        navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`, {
-          state: { entity },
-        });
-      } else {
-        navigate(
-          `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
-          {
-            state: { entity },
-          },
-        );
-      }
+    if (status !== 'DRAFT') {
+      ShowToastMessage(ERROR, 'You have already submitted a bid for this project');
     } else {
-      // eslint-disable-next-line no-lonely-if
-      if (milestones && workers) {
-        navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`, {
-          state: { entity },
-        });
-      } else if (workers && !milestones) {
-        navigate(
-          `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
-          {
-            state: { entity },
-          },
-        );
-      } else if (!workers && !milestones) {
-        navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`, {
-          state: { entity },
-        });
+      toggleModal();
+      if (entity === userTypes.talent) {
+        if (milestones) {
+          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
+        } else {
+          navigate(
+            `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
+          );
+        }
+      } else {
+        // eslint-disable-next-line no-lonely-if
+        if (milestones && workers) {
+          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
+        } else if (workers && !milestones) {
+          navigate(
+            `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
+          );
+        } else if (!workers && !milestones) {
+          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`);
+        }
       }
     }
   };
@@ -223,7 +217,8 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
               <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
             </CardBody>
           </Card>
-          {userDetailsData?.user_type === userTypes.talent && (
+          {(selectUserDetailsData?.user_type === userTypes.talent ||
+            selectUserDetailsData?.user_type === userTypes.team) && (
             <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
               <Button color="flat-danger" className="me-1">
                 Report
@@ -233,7 +228,7 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
                 disabled={checkBidLoadingIsLoading}
                 onClick={() => {
                   setSelectedProject(data);
-                  dispatch(getCheckBid(data._id, '64dc8e1e35b3c71d95b32c7d', onNoBidFound, onBidFound));
+                  dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
                 }}
               >
                 {checkBidLoadingIsLoading ? (

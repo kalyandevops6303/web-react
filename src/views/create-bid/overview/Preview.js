@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Button, Card, CardBody, CardHeader, CardText, Col, Row, Table, UncontrolledTooltip } from 'reactstrap';
 import { ChevronLeft, ChevronRight, FileText, Info } from 'react-feather';
 import { PreviewSectionWrapper } from '../style';
@@ -15,7 +15,6 @@ const Preview = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [bidSubmittedModal, setBidSubmittedModal] = useState(null);
 
@@ -76,7 +75,7 @@ const Preview = () => {
   );
 
   useEffect(() => {
-    dispatch(getBidDetails(params.bidId, '64dc8e1e35b3c71d95b32c7d', () => {}));
+    dispatch(getBidDetails(params.bidId, () => {}));
   }, []);
 
   return (
@@ -146,9 +145,7 @@ const Preview = () => {
             <div
               className="d-flex align-items-center upload-button cursor-pointer"
               onClick={() =>
-                navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/milestone`, {
-                  state: { entity: location.state.entity },
-                })
+                navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/milestone`)
               }
             >
               <UploadIconContainer>

@@ -53,9 +53,13 @@ class DataService {
 
   static patch(path = '', data = {}, optionalHeader = {}) {
     const team_id = getItem('team_id');
+    const params = {
+      team_id,
+    };
+    const fullUrl = constructUrlWithParams(path, params);
     return client({
       method: 'PATCH',
-      url: team_id ? `${path}?team_id=${team_id}` : path,
+      url: team_id ? fullUrl : path,
       data,
       headers: { ...authHeader(), ...optionalHeader },
     });
@@ -63,19 +67,22 @@ class DataService {
 
   static put(path = '', data = {}, optionalHeader = {}) {
     const team_id = getItem('team_id');
+    const params = {
+      team_id,
+    };
+    const fullUrl = constructUrlWithParams(path, params);
     return client({
       method: 'PUT',
-      url: team_id ? `${path}?team_id=${team_id}` : path,
+      url: team_id ? fullUrl : path,
       data,
       headers: { ...authHeader(), ...optionalHeader },
     });
   }
 
   static putWithoutToken(path = '', data = {}, optionalHeader = {}) {
-    const team_id = getItem('team_id');
     return axios({
       method: 'PUT',
-      url: team_id ? `${path}?team_id=${team_id}` : path,
+      url: path,
       data,
       headers: { ...optionalHeader },
     });
@@ -83,9 +90,13 @@ class DataService {
 
   static delete(path = '', data = {}) {
     const team_id = getItem('team_id');
+    const params = {
+      team_id,
+    };
+    const fullUrl = constructUrlWithParams(path, params);
     return client({
       method: 'DELETE',
-      url: team_id ? `${path}?team_id=${team_id}` : path,
+      url: team_id ? fullUrl : path,
       data: JSON.stringify(data),
       headers: { ...authHeader() },
     });

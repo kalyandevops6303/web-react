@@ -18,13 +18,9 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
     const { bid_id, bid_type, project_type, entity } = bidData;
 
     if (entity === userTypes.talent) {
-      navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/milestone`, {
-        state: { entity },
-      });
+      navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/milestone`);
     } else {
-      navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/team`, {
-        state: { entity },
-      });
+      navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/team`);
     }
   };
 
@@ -40,7 +36,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
             active={selectedFlow === bidTypes.simple}
             onClick={() => {
               setSelectedFlow(bidTypes.simple);
-              dispatch(createBid(selectedProject._id, bidTypes.simple, '64dc8e1e35b3c71d95b32c7d', onSuccess));
+              dispatch(createBid(selectedProject._id, bidTypes.simple, onSuccess));
             }}
           >
             <div className="form-check form-check-inline checkbox-custom-margin">
@@ -61,7 +57,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
             active={selectedFlow === bidTypes.advanced}
             onClick={() => {
               setSelectedFlow(bidTypes.advanced);
-              dispatch(createBid(selectedProject._id, bidTypes.advanced, null, onSuccess));
+              dispatch(createBid(selectedProject._id, bidTypes.advanced, onSuccess));
             }}
           >
             <div className="form-check form-check-inline checkbox-custom-margin">

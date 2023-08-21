@@ -25,7 +25,7 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
   };
 
   const onDoneClick = () => {
-    dispatch(saveSubmitBid(params.bidId, '64dc8e1e35b3c71d95b32c7d', onSuccess));
+    dispatch(saveSubmitBid(params.bidId, onSuccess));
   };
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 import styled from 'styled-components';
 import Proptypes from 'prop-types';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import theme from '../../../configs/themeVariables';
 import { bidDetails } from '../../../redux/selectors/createBidSelectors';
@@ -9,7 +9,6 @@ import { bidDetails } from '../../../redux/selectors/createBidSelectors';
 const FormStepper = ({ onChangeStep, steps, currentStep }) => {
   const navigate = useNavigate();
   const params = useParams();
-  const location = useLocation();
 
   const bidDetailsData = useSelector(bidDetails);
 
@@ -74,23 +73,17 @@ const FormStepper = ({ onChangeStep, steps, currentStep }) => {
     if (step === 'team') {
       if (bidDetailsData?.workers?.length > 0) {
         onChangeStep(step);
-        navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`, {
-          state: { entity: location.state.entity },
-        });
+        navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`);
       }
     } else if (step === 'milestone') {
       if (bidDetailsData?.milestones?.length > 0) {
         onChangeStep(step);
-        navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/milestone`, {
-          state: { entity: location.state.entity },
-        });
+        navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/milestone`);
       }
     } else if (step === 'preview') {
       if (bidDetailsData?.workers?.length > 0 && bidDetailsData?.milestones?.length > 0) {
         onChangeStep(step);
-        navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/preview`, {
-          state: { entity: location.state.entity },
-        });
+        navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/preview`);
       }
     }
   };

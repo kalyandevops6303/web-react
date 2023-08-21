@@ -7,7 +7,7 @@ import { Badge, Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Inp
 import Select from 'react-select';
 import classNames from 'classnames';
 import { ChevronLeft, ChevronRight, Copy, Minus, Plus, Trash2 } from 'react-feather';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { TeamSectionWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
@@ -67,7 +67,6 @@ const TeamView = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const rolesIsLoading = useSelector(rolesLoading);
   const recommendedRolesData = useSelector(recommendedRoles);
@@ -98,9 +97,7 @@ const TeamView = () => {
     );
 
   const onSuccess = () => {
-    navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/milestone`, {
-      state: { entity: location.state.entity },
-    });
+    navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/milestone`);
   };
 
   const onSubmit = (data) => {
@@ -124,9 +121,7 @@ const TeamView = () => {
         role: item?.role,
       }));
 
-      dispatch(
-        saveSetWorkers(params.bidId, '64dc8e1e35b3c71d95b32c7d', removeUndefinedKeysFromArray(requiredData), onSuccess),
-      );
+      dispatch(saveSetWorkers(params.bidId, removeUndefinedKeysFromArray(requiredData), onSuccess));
     }
   };
 
@@ -205,7 +200,7 @@ const TeamView = () => {
     setAllTeamMembersOptions(requiredData);
   }, [allTeamMembersData]);
 
-  const onGetUserDetailsSuccess = (res) => {
+  const onGetBidDetailsSuccess = (res) => {
     if (res) {
       if (res?.workers?.length > 0) {
         const data = res?.workers?.map((worker) => {
@@ -231,8 +226,8 @@ const TeamView = () => {
   };
 
   useEffect(() => {
-    dispatch(getBidDetails(params.bidId, '64dc8e1e35b3c71d95b32c7d', onGetUserDetailsSuccess));
-    dispatch(getRoles(params.projectId, '64dc8e1e35b3c71d95b32c7d'));
+    dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
+    dispatch(getRoles(params.projectId));
   }, []);
 
   return (
