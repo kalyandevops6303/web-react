@@ -232,4 +232,23 @@ const CreateBidRadioOption = styled.div`
   }
 `;
 
-export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper, CreateBidRadioOption };
+const TeamCreatedModalImageWrapper = styled.section`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid ${theme.navPillText};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export {
+  CardWrapper,
+  Header,
+  CustomBadge,
+  FormWrapper,
+  SecondaryFiltersWrap,
+  TimeWrapper,
+  CreateBidRadioOption,
+  TeamCreatedModalImageWrapper,
+};

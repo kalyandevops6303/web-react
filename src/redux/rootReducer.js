@@ -14,6 +14,7 @@ import marketPlace from './reducers/marketPlace';
 import gloabalSearch from './reducers/gloabalSearch';
 import notifications from './reducers/notifications';
 import createBid from './reducers/createBid';
+import team from './reducers/team';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   notifications,
   layout,
   navbar,
+  team,
   search: gloabalSearch,
   createBid,
 

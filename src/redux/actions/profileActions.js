@@ -1,4 +1,5 @@
 import { getClientService, getTalentService, makeFavService, removeFavService } from '../../services/profileServices';
+import { getTeamById } from '../../services/teamServices';
 import { userTypes } from '../../utility/constants/Constant';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -18,6 +19,9 @@ const getProfile = (id, user_type) => async (dispatch) => {
     }
     if (user_type === userTypes.client) {
       res = await getClientService(id);
+    }
+    if (user_type === userTypes.team) {
+      res = await getTeamById(id);
     }
     dispatch(getProfileSuccess(res.data.data));
   } catch (error) {

@@ -56,6 +56,16 @@ const API = {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
+    // team
+    getTeamMember: `${apiOnboardingEndpoint}/api/v1/team/get-members`,
+    getInvitedMember: `${apiOnboardingEndpoint}/api/v1/team/invite-member`,
+    joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-request`,
+    recommendedTalent: `${apiOnboardingEndpoint}/api/v1/teams/recommended-talents`,
+
+    // talent
+    recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,
+    teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite`,
+    getMyTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
@@ -95,6 +105,11 @@ const API = {
     setMilestones: `${apiCreateProjectEndpoint}/api/v1/bid/set-milestones`,
     milestoneFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
     submitBid: `${apiCreateProjectEndpoint}/api/v1/bid/submit`,
+  },
+  team: {
+    getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
+    teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
+    create: `${apiAuthEndpoint}/api/v1/team/create`,
   },
 };
 

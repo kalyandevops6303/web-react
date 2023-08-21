@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -11,15 +11,19 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { profilePercentage, userData } from '../../redux/selectors/dashboardSelectors';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
-import { DashboardHeaderWrapper } from './overview/style';
+import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
+import TeamSection from './overview/TeamSection';
+import TalentListing from './overview/TalentListing';
+import TeamListing from './overview/TeamListing';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
 
-  const userDetailsData = useSelector(userData);
+  const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
 
   useEffect(() => {
@@ -58,6 +62,13 @@ const PrivateDashboard = () => {
           </Button>
         </DashboardHeaderWrapper>
       )}
+      {userDetailsData?.user_type === userTypes.talent && (
+        <CreateTeamButtonWrapper>
+          <Link to="/create-team/profile-details">
+            <span className="text-decoration-underline font-medium-2">Create Team</span>
+          </Link>
+        </CreateTeamButtonWrapper>
+      )}
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />
@@ -71,10 +82,25 @@ const PrivateDashboard = () => {
       </Row>
       <Row>
         <Col lg="8" sm="12">
-          <Header>Projects</Header>
-          <ProjectListing />
+          <section className="mb-2">
+            <Header className="mb-1">Projects</Header>
+            <ProjectListing />
+          </section>
+          {userDetailsData?.user_type === userTypes.team && (
+            <section className="mb-2">
+              <Header className="mb-1">Talents</Header>
+              <TalentListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.talent && (
+            <section className="mb-2">
+              <Header className="mb-1">Teams</Header>
+              <TeamListing />
+            </section>
+          )}
         </Col>
         <Col lg="4" sm="12">
+          {userDetailsData?.user_type === userTypes.team && <TeamSection />}
           <Alerts />
           <Disputes />
           <Meetings />
