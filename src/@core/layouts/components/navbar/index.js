@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getItem } from '../../../../utility/localStorageControl';
 import { getTeams } from '../../../../redux/actions/teamsActions';
 import { selectCurrentUserData } from '../../../../redux/selectors/authSelectors';
-import { getUserData } from '../../../../redux/actions/dashboardActions';
+import { getUserData } from '../../../../redux/actions/authActions';
 import { userTypes } from '../../../../utility/constants/Constant';
 import { userData } from '../../../../redux/selectors/dashboardSelectors';
 
