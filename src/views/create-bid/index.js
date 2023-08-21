@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router';
+import { Route, Routes, useLocation, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Progress, Row } from 'reactstrap';
@@ -14,6 +14,7 @@ import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const CreateBid = () => {
   const location = useLocation();
+  const params = useParams();
 
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[5]);
   const [progressPercent, setProgressPercent] = useState(null);
@@ -63,7 +64,8 @@ const CreateBid = () => {
             </ProgressBarWrapper>
           </Row>
           <Routes>
-            {selectUserDetailsData?.user_type === userTypes.team && <Route path="team" element={<TeamView />} />}
+            {(params.bidType === 'variable-simple' || params.bidType === 'fixed-simple') &&
+              selectUserDetailsData?.user_type === userTypes.team && <Route path="team" element={<TeamView />} />}
             <Route path="milestone" element={<MilestoneView />} />
             <Route path="preview" element={<Preview />} />
           </Routes>
