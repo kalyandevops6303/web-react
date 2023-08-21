@@ -1,7 +1,9 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col, Badge, Input } from 'reactstrap';
-import { Star, User } from 'react-feather';
+import { Star } from 'react-feather';
+import Avatar from '@components/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import '../custom-styles.scss';
 import { InviteUsersListContainer } from './style';
 import theme from '../../configs/themeVariables';
@@ -18,9 +20,12 @@ const SendInvitationModal = ({ modal, toggleModal, selectedTalents, setInvitatio
             <Row key={talent.user_id} className="d-flex align-items-center mb-2 w-100 mx-0">
               <Col sm="12" md="8" lg="6">
                 <div className="d-flex align-items-center">
-                  <div className="user-pic p-25 me-2">
-                    <User size={28} />
-                  </div>
+                  <Avatar
+                    img={talent?.image_uri?.length > 0 ? talent?.image_uri : defaultAvatar}
+                    imgHeight="38"
+                    imgWidth="38"
+                    className="me-2 user-pic"
+                  />
                   <p className="font-medium-1 fw-bold m-0">{`${talent.first_name} ${talent.last_name}`}</p>
                 </div>
               </Col>

@@ -165,10 +165,22 @@ export const ProfileFormContainer = styled.div`
     }
   }
 
+  .select__multi-value .select__multi-value__label {
+    padding: 0.26rem 0.3rem 0.26rem 0.6rem;
+  }
+
+  .select__multi-value .select__multi-value__remove {
+    padding-left: 0.5rem;
+  }
+
   .select__multi-value__remove {
     svg {
       color: ${theme.white};
     }
+  }
+
+  .select__multi-value {
+    margin: 0.1rem 0.7rem 0.1rem 0;
   }
 
   .time-zone-border {

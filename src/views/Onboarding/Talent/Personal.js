@@ -91,10 +91,7 @@ const Personal = () => {
       .max(5, 'Maximum of five languages can be added'),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
-    zipCode: yup
-      .number()
-      .typeError('Zip code must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
+    zipCode: yup.string(),
     country: yup
       .object()
       .shape({
@@ -725,9 +722,6 @@ const Personal = () => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          type="number"
-                          min={0}
-                          onWheel={(e) => e.target.blur()}
                           placeholder="Enter zip code"
                           invalid={errors.zipCode && true}
                           autoComplete="none"
