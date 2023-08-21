@@ -14,6 +14,7 @@ const initialState = {
   password: null,
   loading: false,
   error: null,
+  userType: null,
   fcmToken: '',
 };
 
@@ -269,6 +270,11 @@ const authSlice = createSlice({
       userData: action.payload,
       isTeamLoggedIn: action.payload.user_type === 'TEAM',
     }),
+
+    getUserDataSuccess: (state, action) => ({
+      ...state,
+      userType: action.payload,
+    }),
   },
 });
 
@@ -318,6 +324,7 @@ export const {
   userDataRequest,
   userDataSuccess,
   userDataFailure,
+  getUserDataSuccess,
 } = authSlice.actions;
 
 export default authSlice.reducer;

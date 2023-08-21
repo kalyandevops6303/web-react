@@ -18,7 +18,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { ChevronRight } from 'react-feather';
-import ReactHtmlParser from '../../lib/html-parser';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
@@ -203,7 +202,7 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <CardText className="fw-300 ms-75 project-desc"> {ReactHtmlParser(data?.details?.description)} </CardText>
+              <CardText className="fw-300 ms-75 project-desc"> {data?.details?.description} </CardText>
             </CardBody>
           </Card>
           <Card>

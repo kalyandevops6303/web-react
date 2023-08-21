@@ -102,7 +102,7 @@ const ThemeNavbar = (props) => {
       <Link to={userData ? '/dashboard' : '/auth'} className="navbar-brand">
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
-          <span className="ms-25 mt-25">v0.0.4</span>
+          <span className="ms-25 mt-25">v0.0.5</span>
         </span>
       </Link>
 
@@ -122,7 +122,7 @@ const ThemeNavbar = (props) => {
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/marketplace/all_listings"
+            to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'} `}
           >
             Marketplace
           </NavLink>

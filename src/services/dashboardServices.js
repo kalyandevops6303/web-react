@@ -20,6 +20,8 @@ const getRecommendedTeamService = () => DataService.get(API.dashboard.recommende
 const getTeamInvitationService = () => DataService.get(API.dashboard.teamInvitaion);
 
 const getMyTeamService = () => DataService.get(`${API.dashboard.getMyTeam}?page=1&page_size=20`);
+const getProjectInviteService = () =>
+  DataService.get(`${API.dashboard.projectInvites}?invitation_type=PROJECT&page=1&page_size=5`);
 
 export {
   userDataService,
@@ -32,4 +34,5 @@ export {
   getRecommendedTeamService,
   getTeamInvitationService,
   getMyTeamService,
+  getProjectInviteService,
 };
