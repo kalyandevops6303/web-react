@@ -40,7 +40,7 @@ const makeFavourite = (id, user_type) => async (dispatch) => {
 };
 const removeFavourite = (id) => async (dispatch) => {
   try {
-    await removeFavService(id);
+    await removeFavService({ user_id: id });
     dispatch(removeFavSuccess(id));
   } catch (error) {
     errorHandler(error);

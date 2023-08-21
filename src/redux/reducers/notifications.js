@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   notifications: null,
   notificationsLoading: false,
+  notificationCount: false,
   error: null,
 };
 
@@ -30,11 +31,21 @@ const notificationsSlice = createSlice({
       ...state,
       notifications: null,
       notificationsLoading: false,
+      notificationCount: false,
+    }),
+    notificationCount: (state, action) => ({
+      ...state,
+      notificationCount: action.payload,
     }),
   },
 });
 
-export const { notificationsRequest, notificationsSuccess, notificationsFailure, clearNotificationsData } =
-  notificationsSlice.actions;
+export const {
+  notificationsRequest,
+  notificationsSuccess,
+  notificationCount,
+  notificationsFailure,
+  clearNotificationsData,
+} = notificationsSlice.actions;
 
 export default notificationsSlice.reducer;
