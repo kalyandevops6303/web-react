@@ -13,7 +13,9 @@ const ProjectCardWrap = styled(CardWrap)`
   .card-body {
     padding: 2.1rem 2.6rem 1.4rem 2.6rem;
   }
-
+  a {
+    color: inherit;
+  }
   .status-row {
     margin-left: -0.5rem;
   }
@@ -35,17 +37,21 @@ const ProjectCardWrap = styled(CardWrap)`
     }
   }
   .marketplace-card-title {
-    line-height: 18px;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.3125rem;
   }
   .marketplace-card-role {
-    font-size: 18px;
     color: ${theme.gray};
-    font-weight: 300;
-    line-height: 18xp;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.125rem;
   }
 
   .market-place-card-photo {
-    height: 2.2rem;
+    height: 2rem;
     border-radius: 50%;
     cursor: auto !important;
   }
@@ -141,8 +147,14 @@ const UserCardWrap = styled(CardWrap)`
   .card {
     margin: 0.8rem 0.7rem !important;
   }
+  .alma-mater {
+    padding: 3px 4px 0px 4px;
+    background-color: ${theme.yellowColor} !important;
+    border-radius: 50%;
+    margin-bottom: -1px;
+  }
   .truncate-1 {
-    width: 9rem;
+    max-width: 9rem;
     display: inline-block;
     display: block;
     -webkit-line-clamp: 1;
@@ -198,7 +210,7 @@ const UserCardWrap = styled(CardWrap)`
   .circular-progressbar-container {
     width: 35px;
     height: 35px;
-    margin-left: 1rem;
+    // margin-left: 1rem;
 
     .percentage-text {
       font-weight: 400;

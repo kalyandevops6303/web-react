@@ -17,13 +17,14 @@ import theme from '../../../../configs/themeVariables';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getItem } from '../../../../utility/localStorageControl';
-import { useIsTab } from '../../../../utility/Utils';
-import { getUserData } from '../../../../redux/actions/authActions';
 import { getTeams } from '../../../../redux/actions/teamsActions';
 import { selectCurrentUserData } from '../../../../redux/selectors/authSelectors';
+import { getUserData } from '../../../../redux/actions/dashboardActions';
+import { userTypes } from '../../../../utility/constants/Constant';
+import { userData } from '../../../../redux/selectors/dashboardSelectors';
 
 const ThemeNavbar = (props) => {
-  const userData = getItem('userData');
+  const userDetail = useSelector(userData);
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const currentUser = useSelector(selectCurrentUserData);
@@ -97,10 +98,10 @@ const ThemeNavbar = (props) => {
         </ul>
       </div>
 
-      <Link to={userData ? '/dashboard' : '/auth'} className="navbar-brand">
+      <Link to={userDetail ? '/dashboard' : '/auth'} className="navbar-brand">
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
-          <span className="ms-25 mt-25">v0.0.4</span>
+          <span className="ms-25 mt-25">v0.0.5</span>
         </span>
       </Link>
 
@@ -120,7 +121,7 @@ const ThemeNavbar = (props) => {
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/marketplace/all_listings"
+            to={`/marketplace/${userDetail?.user_type === userTypes.client ? 'my_listings' : 'all_listings'} `}
           >
             Marketplace
           </NavLink>

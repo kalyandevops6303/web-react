@@ -20,6 +20,7 @@ const initialState = {
   getMyTeamLoading: false,
   profilePercentage: null,
   profilePercentageLoading: false,
+  projectInvites: [],
   error: null,
 };
 
@@ -170,6 +171,10 @@ const dashboardSlice = createSlice({
       getMyTeamLoading: false,
       error: action.payload,
     }),
+    getProjectInvitesSuccess: (state, action) => ({
+      ...state,
+      projectInvites: action.payload,
+    }),
 
     clearData: (state) => ({
       ...state,
@@ -212,6 +217,7 @@ export const {
   getMyTeamRequest,
   getMyTeamSuccess,
   getMyTeamFailure,
+  getProjectInvitesSuccess,
   clearData,
 } = dashboardSlice.actions;
 
