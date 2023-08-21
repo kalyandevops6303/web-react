@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Badge } from 'reactstrap';
 import { TagsWrap } from './style';
 
-const TagsSection = ({ tags, open }) => {
+const TagsSection = ({ fullWidth, tags, open }) => {
   const [visibleTags, setVisibleTags] = useState([]);
   const [hiddenTagsCount, setHiddenTagsCount] = useState(0);
   const calculateTagWidth = (tagName) => {
@@ -17,9 +17,12 @@ const TagsSection = ({ tags, open }) => {
 
     document.body.appendChild(tempTag);
     const tagWidth = tempTag.getBoundingClientRect().width;
+    const tagsContainer = document.querySelector('.tags-wrap');
+    const containerWidth = tagsContainer.getBoundingClientRect().width - 16;
     document.body.removeChild(tempTag);
-    if (tagWidth > 120) {
-      return 120;
+
+    if (tagWidth > containerWidth) {
+      return containerWidth - 16;
     }
     return tagWidth;
   };
@@ -59,7 +62,7 @@ const TagsSection = ({ tags, open }) => {
   }, [tags, open]);
 
   return (
-    <TagsWrap className="tags-wrap align-items-center">
+    <TagsWrap fullWidth={fullWidth} className="tags-wrap align-items-center">
       <div className="badge-box-wrap">
         {visibleTags?.map((tag) => (
           <Badge key={tag} className="tag-margin">
@@ -77,10 +80,12 @@ const TagsSection = ({ tags, open }) => {
 };
 
 TagsSection.propTypes = {
+  fullWidth: PropTypes.bool,
   tags: PropTypes.array,
   open: PropTypes.string,
 };
 TagsSection.defaultProps = {
+  fullWidth: false,
   tags: [],
   open: '',
 };

@@ -63,7 +63,6 @@ const ProjectCardWrap = styled(CardWrap)`
     width: 35px;
     height: 35px;
     margin-left: 4rem;
-
     .percentage-text {
       font-weight: 400;
       font-size: 10px;

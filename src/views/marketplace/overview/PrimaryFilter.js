@@ -13,7 +13,6 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state.marketPlace.cardData);
 
-  // const userData = useSelector(selectAuthUserData);
   const userData = getItem('userData');
 
   useEffect(() => {

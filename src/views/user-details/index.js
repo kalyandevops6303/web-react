@@ -30,10 +30,14 @@ const UserDetails = () => {
     dispatch(clearData());
     // eslint-disable-next-line no-undef
     window?.scrollTo(0, 0);
+
     dispatch(getProfile(param?.userId, param?.userType.toUpperCase()));
   }, []);
 
   const isClient = param?.userType.toUpperCase() === userTypes.client;
+  const isTalentView = param?.userType.toUpperCase() === userTypes.talent;
+  const isTeamView = param?.userType.toUpperCase() === userTypes.team;
+
   const currentProfile = useSelector(selectCurrentProfile);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
@@ -74,7 +78,9 @@ const UserDetails = () => {
 
   const defaultBreadCrumb = [
     { title: 'Profile', link: '#' },
-    { title: `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User' },
+    {
+      title: isTeamView ? currentProfile?.name : `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User',
+    },
   ];
   const dynamicBreadCrumb = [
     { title: capitalize(location?.state?.from?.primary?.title), link: location?.state?.from?.primary?.link },
@@ -93,7 +99,13 @@ const UserDetails = () => {
       <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} />
       <Row>
         <Col lg="3">
-          <LeftSidebarProfile isClient={isClient} data={currentProfile} isEditable={userData?._id === param?.userId} />
+          <LeftSidebarProfile
+            isTalentView={isTalentView}
+            isTeamView={isTeamView}
+            isClient={isClient}
+            data={currentProfile}
+            isEditable={userData?._id === param?.userId}
+          />
         </Col>
         <Col lg="9">
           <Row>
@@ -105,7 +117,7 @@ const UserDetails = () => {
                 color="light-success"
               />
             </Col>
-            {!isClient && (
+            {isTalentView && (
               <Col lg="3">
                 <Statbox
                   title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
@@ -115,7 +127,19 @@ const UserDetails = () => {
                 />
               </Col>
             )}
-            {!isClient && (
+            {isTeamView && (
+              <Col lg="3">
+                <Statbox
+                  title={`${currentProfile?.total_project_value?.code || ''} ${
+                    currentProfile?.total_project_value || 0
+                  }`}
+                  desc="Total Project Value"
+                  icon={<img src={MoneyIcon} height={22} alt="money" />}
+                  color="light-warning"
+                />
+              </Col>
+            )}
+            {isTalentView && (
               <Col lg="3">
                 <Statbox
                   title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
@@ -144,7 +168,13 @@ const UserDetails = () => {
             </Col>
           </Row>
           <Row>
-            <UserBio data={currentProfile} isClient={isClient} isEditable={userData?._id === param?.userId} />
+            <UserBio
+              data={currentProfile}
+              isTalentView={isTalentView}
+              isTeamView={isTeamView}
+              isClient={isClient}
+              isEditable={userData?._id === param?.userId}
+            />
           </Row>
           <Row>
             <RecentProjects isEditable={userData?._id === param?.userId} />

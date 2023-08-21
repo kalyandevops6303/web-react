@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
-import { getItem } from '../../utility/localStorageControl';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 import CreateProjectButton from './overview/CreateProjectButton';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 
 const MarketPlaceContainer = styled.div`
   .marketplace-search {
@@ -53,8 +53,7 @@ const MarketPlace = () => {
     navigate(`/marketplace/${props}`);
   };
 
-  // const userData = useSelector(selectAuthUserData);
-  const userDataLocal = getItem('userData');
+  const userDataLocal = useSelector(selectAuthUserData);
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const SecondComp = () => <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />;
