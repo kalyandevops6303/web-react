@@ -106,13 +106,14 @@ const ProjectCardWrap = styled(CardWrap)`
   }
 `;
 
-const InstituteCardWrap = styled(CardWrap)`
+const TeamCardWrap = styled(CardWrap)`
+  width: 100%;
   .card-title {
     font-size: 22px;
     color: ${theme.activeNavPillText};
     line-height: 22px;
   }
-  .institute-desc {
+  .team-desc {
     width: 56%;
   }
 
@@ -242,4 +243,4 @@ const UserCardWrap = styled(CardWrap)`
     }
   }
 `;
-export { CardWrap, ProjectCardWrap, InstituteCardWrap, UserCardWrap };
+export { CardWrap, ProjectCardWrap, TeamCardWrap, UserCardWrap };

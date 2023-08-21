@@ -1,11 +1,11 @@
 import errorHandler from '../../utility/errorHandler';
 import {
-  getClientCardService,
+  getBidProjectService,
+  getCardService,
   getClientsService,
-  getListProjectClientService,
-  getListProjectTalentService,
-  getTalentCardService,
+  getListProjectService,
   getTalentsService,
+  getTeamsService,
 } from '../../services/marketPlaceServices';
 
 import {
@@ -15,18 +15,12 @@ import {
   getListReq,
   getUsersSuccess,
 } from '../reducers/marketPlace';
-import { userTypes } from '../../utility/constants/Constant';
 
 const getCardInfo =
-  ({ userType, onSuccess, onError }) =>
+  ({ onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      let res;
-      if (userType === userTypes.client) {
-        res = await getClientCardService();
-      } else {
-        res = await getTalentCardService();
-      }
+      const res = await getCardService();
       dispatch(getCardInfoSuccess(res.data.data));
       onSuccess();
     } catch (error) {
@@ -36,18 +30,27 @@ const getCardInfo =
   };
 
 const getListProjects =
-  ({ isMyListing, isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
+  ({ isMyListing, isRecommanded, isMyBids, metaData, onSuccess, onError, postData, searchText }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
+    let res;
     try {
-      let res;
-      if (userType === userTypes.client) {
-        res = await getListProjectClientService({ postData, searchText, metaData, isRecommanded, isMyListing });
+      if (isMyBids) {
+        res = await getBidProjectService({
+          postData: { ...postData, is_recommended: isRecommanded },
+          searchText,
+          metaData,
+        });
       } else {
-        res = await getListProjectTalentService({ postData, searchText, metaData, isRecommanded });
+        res = await getListProjectService({
+          postData: { ...postData, is_my_listings: isMyListing, is_recommended: isRecommanded },
+          searchText,
+          metaData,
+        });
       }
+
       dispatch(getListProjectsSuccess(res.data.data));
       onSuccess();
     } catch (error) {
@@ -57,17 +60,27 @@ const getListProjects =
   };
 
 const getUsers =
-  ({ isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
+  ({ isRecommanded, metaData, primaryFilter, onSuccess, onError, postData, searchText }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
     try {
       let res;
-      if (userType === userTypes.client) {
-        res = await getTalentsService({ postData, searchText, metaData, isRecommanded });
-      } else {
-        res = await getClientsService({ postData, searchText, metaData, isRecommanded });
+      if (primaryFilter === 'talents') {
+        res = await getTalentsService({
+          postData: { ...postData, is_recommended: isRecommanded },
+          searchText,
+          metaData,
+        });
+      } else if (primaryFilter === 'clients') {
+        res = await getClientsService({
+          postData: { ...postData, is_recommended: isRecommanded },
+          searchText,
+          metaData,
+        });
+      } else if (primaryFilter === 'teams') {
+        res = await getTeamsService({ postData: { ...postData, is_recommended: isRecommanded }, searchText, metaData });
       }
       dispatch(getUsersSuccess(res.data.data));
       onSuccess();
