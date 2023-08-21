@@ -18,9 +18,15 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
     const { bid_id, bid_type, project_type, entity } = bidData;
 
     if (entity === userTypes.talent) {
-      navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/milestone`);
+      navigate(
+        `/create-bid/${
+          selectedProject._id
+        }/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
+      );
     } else {
-      navigate(`/create-bid/${selectedProject._id}/${project_type}-${bid_type.toLowerCase()}/${bid_id}/team`);
+      navigate(
+        `/create-bid/${selectedProject._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`,
+      );
     }
   };
 
