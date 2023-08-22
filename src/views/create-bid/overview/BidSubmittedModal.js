@@ -21,7 +21,7 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
 
   const onSuccess = () => {
     toggleModal();
-    navigate('/marketplace/all_listings');
+    navigate('/marketplace/my_bids');
   };
 
   const onDoneClick = () => {
