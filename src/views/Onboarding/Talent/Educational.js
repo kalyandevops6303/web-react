@@ -462,6 +462,8 @@ const Educational = () => {
                     <AsyncPaginate
                       isMulti
                       loadOptions={loadToolsOptions}
+                      menuPosition='fixed'
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select up to 5 tools"
                       theme={selectThemeColors}
@@ -487,6 +489,8 @@ const Educational = () => {
                     <AsyncPaginate
                       isMulti
                       loadOptions={loadCertificatesOptions}
+                      menuPosition='fixed'
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select certificates"
                       theme={selectThemeColors}
@@ -514,6 +518,9 @@ const Educational = () => {
                     <AsyncPaginate
                       isMulti
                       loadOptions={loadSkillsOptions}
+                      menuPosition='fixed'
+                      minMenuHeight={200}
+                      menuPlacement='top'
                       classNamePrefix="select"
                       placeholder="Select up to 5 skills"
                       theme={selectThemeColors}
