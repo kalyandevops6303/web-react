@@ -6,12 +6,13 @@ import { Col, Progress, Row } from 'reactstrap';
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
 import { createBidSteps, userTypes } from '../../utility/constants/Constant';
 import { ProgressBarWrapper } from './style';
-import TeamView from './overview/TeamView';
 import VariableSimpleMilestoneView from './overview/VariableSimpleMilestoneView';
 import Preview from './overview/Preview';
 import FormStepper from './overview/FormStepper';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import FixedSimpleMilestoneView from './overview/FixedSimpleMilestoneView';
+import SimpleTeamView from './overview/SimpleTeamView';
+import AdvanceTeamView from './overview/AdvanceTeamView';
 
 const CreateBid = () => {
   const location = useLocation();
@@ -66,7 +67,10 @@ const CreateBid = () => {
           </Row>
           <Routes>
             {(params.bidType === 'variable-simple' || params.bidType === 'fixed-simple') &&
-              selectUserDetailsData?.user_type === userTypes.team && <Route path="team" element={<TeamView />} />}
+              selectUserDetailsData?.user_type === userTypes.team && <Route path="team" element={<SimpleTeamView />} />}
+            {params.bidType === 'variable-advanced' && selectUserDetailsData?.user_type === userTypes.team && (
+              <Route path="team" element={<AdvanceTeamView />} />
+            )}
             {params.bidType === 'variable-simple' && (
               <Route path="milestone" element={<VariableSimpleMilestoneView />} />
             )}

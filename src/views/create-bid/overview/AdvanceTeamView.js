@@ -3,7 +3,21 @@ import React, { useState, useEffect } from 'react';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Badge, Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Row, Spinner } from 'reactstrap';
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  InputGroup,
+  InputGroupText,
+  Row,
+  Spinner,
+} from 'reactstrap';
 import Select from 'react-select';
 import classNames from 'classnames';
 import { ChevronLeft, ChevronRight, Copy, Minus, Plus, Trash2 } from 'react-feather';
@@ -25,7 +39,7 @@ import {
 } from '../../../redux/selectors/createBidSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
-const TeamView = () => {
+const AdvanceTeamView = () => {
   const EducationalSchema = yup.object().shape({
     projectRolesDetails: yup
       .array()
@@ -40,6 +54,12 @@ const TeamView = () => {
             label: yup.string(),
             value: yup.object(),
           }),
+          rate: yup
+            .number()
+            .min(1, 'Rate must be atleast 1')
+            .integer('Rate must be an integer')
+            .typeError('Please enter a number')
+            .required('Rate is required'),
         }),
       )
       .min(1, 'At least one role should be added'),
@@ -50,6 +70,7 @@ const TeamView = () => {
     handleSubmit,
     watch,
     setValue,
+    getValues,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -127,8 +148,8 @@ const TeamView = () => {
 
   const handleAddRole = () => {
     const isFilled = watch('projectRolesDetails').every((item) => {
-      const { role } = item;
-      return role;
+      const { role, rate } = item;
+      return role && rate;
     });
 
     if (isFilled) {
@@ -141,10 +162,10 @@ const TeamView = () => {
   const handleCopyRole = (index) => {
     const projectRole = watch('projectRolesDetails')[index];
 
-    if (projectRole?.role && projectRole?.role?.length !== 0) {
-      append({ role: `${projectRole.role} copy`, member: undefined });
+    if (projectRole?.role && projectRole?.role?.length !== 0 && projectRole?.role && projectRole?.role > 0) {
+      append({ role: `${projectRole.role} copy`, member: undefined, rate: projectRole.rate });
     } else {
-      ShowToastMessage(ERROR, 'Please give a role name first');
+      ShowToastMessage(ERROR, 'Please give a role name and rate first');
     }
   };
 
@@ -165,7 +186,7 @@ const TeamView = () => {
   };
 
   const handleAddSuggestedRole = (name) => {
-    append({ role: name, member: undefined });
+    append({ role: name, member: undefined, rate: undefined });
   };
 
   const handleRemoveSuggestedRole = (name) => {
@@ -281,11 +302,14 @@ const TeamView = () => {
 
               <hr className="my-1 card-header-border" />
               <Row>
-                <Col sm="12" md="5" lg="4">
+                <Col sm="12" md="5" lg="3">
                   <p className="roles-list-header">Project Roles</p>
                 </Col>
-                <Col sm="12" md="5" lg="6">
+                <Col sm="12" md="5" lg="4">
                   <p className="roles-list-header">Team Member</p>
+                </Col>
+                <Col sm="12" md="5" lg="3">
+                  <p className="roles-list-header">$ Hours/Rate</p>
                 </Col>
                 <Col sm="12" md="5" lg="2">
                   <div className="d-flex justify-content-end me-2">
@@ -297,30 +321,118 @@ const TeamView = () => {
               {fields.map((item, index) => (
                 <>
                   <Row key={item.id} className="mb-1 d-flex align-items-center">
+                    <Col sm="12" md="5" lg="3">
+                      <Controller
+                        id={`projectRolesDetails.${index}.role`}
+                        name={`projectRolesDetails.${index}.role`}
+                        control={control}
+                        invalid={
+                          errors &&
+                          errors.projectRolesDetails &&
+                          errors.projectRolesDetails.length > 0 &&
+                          errors.projectRolesDetails[index] &&
+                          errors.projectRolesDetails[index].role &&
+                          true
+                        }
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            placeholder="Enter role"
+                            invalid={
+                              errors &&
+                              errors.projectRolesDetails &&
+                              errors.projectRolesDetails.length > 0 &&
+                              errors.projectRolesDetails[index] &&
+                              errors.projectRolesDetails[index].role &&
+                              true
+                            }
+                            onChange={(e) => {
+                              field.onChange(e.target.value);
+                              updateFieldsErrorsValue(index, e.target.value);
+                            }}
+                          />
+                        )}
+                      />
+                      {errors &&
+                        errors.projectRolesDetails &&
+                        errors.projectRolesDetails.length > 0 &&
+                        errors.projectRolesDetails[index] && (
+                          <FormFeedback>
+                            {errors.projectRolesDetails[index].role && errors.projectRolesDetails[index].role.message}
+                          </FormFeedback>
+                        )}
+                    </Col>
                     <Col sm="12" md="5" lg="4">
-                      <div className="w-75">
-                        <Controller
-                          id={`projectRolesDetails.${index}.role`}
-                          name={`projectRolesDetails.${index}.role`}
-                          control={control}
-                          invalid={
-                            errors &&
-                            errors.projectRolesDetails &&
-                            errors.projectRolesDetails.length > 0 &&
-                            errors.projectRolesDetails[index] &&
-                            errors.projectRolesDetails[index].role &&
-                            true
-                          }
-                          render={({ field }) => (
+                      <Controller
+                        id={`projectRolesDetails.${index}.member`}
+                        name={`projectRolesDetails.${index}.member`}
+                        control={control}
+                        invalid={
+                          errors &&
+                          errors.projectRolesDetails &&
+                          errors.projectRolesDetails.length > 0 &&
+                          errors.projectRolesDetails[index] &&
+                          errors.projectRolesDetails[index].member &&
+                          true
+                        }
+                        render={({ field }) => (
+                          <Select
+                            isLoading={rolesIsLoading}
+                            options={allTeamMembersOptions}
+                            classNamePrefix="select"
+                            placeholder="Assign team member"
+                            theme={selectThemeColors}
+                            className={classNames('react-select', {
+                              'is-invalid':
+                                errors &&
+                                errors.projectRolesDetails &&
+                                errors.projectRolesDetails.length > 0 &&
+                                errors.projectRolesDetails[index] &&
+                                errors.projectRolesDetails[index].member,
+                            })}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors &&
+                        errors.projectRolesDetails &&
+                        errors.projectRolesDetails.length > 0 &&
+                        errors.projectRolesDetails[index] && (
+                          <FormFeedback>
+                            {errors.projectRolesDetails[index].member &&
+                              errors.projectRolesDetails[index].member.label.message}
+                          </FormFeedback>
+                        )}
+                    </Col>
+                    <Col sm="12" md="5" lg="3">
+                      <Controller
+                        id={`projectRolesDetails.${index}.rate`}
+                        name={`projectRolesDetails.${index}.rate`}
+                        control={control}
+                        invalid={
+                          errors &&
+                          errors.projectRolesDetails &&
+                          errors.projectRolesDetails.length > 0 &&
+                          errors.projectRolesDetails[index] &&
+                          errors.projectRolesDetails[index].rate &&
+                          true
+                        }
+                        render={({ field }) => (
+                          <InputGroup className="input-group-merge w-75">
+                            {getValues('projectRolesDetails')[index].rate > 0 && (
+                              <InputGroupText className="pe-25">$</InputGroupText>
+                            )}
                             <Input
                               {...field}
-                              placeholder="Enter role"
+                              type="number"
+                              onWheel={(e) => e.target.blur()}
+                              placeholder="Enter rate"
                               invalid={
                                 errors &&
                                 errors.projectRolesDetails &&
                                 errors.projectRolesDetails.length > 0 &&
                                 errors.projectRolesDetails[index] &&
-                                errors.projectRolesDetails[index].role &&
+                                errors.projectRolesDetails[index].rate &&
                                 true
                               }
                               onChange={(e) => {
@@ -328,61 +440,17 @@ const TeamView = () => {
                                 updateFieldsErrorsValue(index, e.target.value);
                               }}
                             />
-                          )}
-                        />
-                        {errors &&
-                          errors.projectRolesDetails &&
-                          errors.projectRolesDetails.length > 0 &&
-                          errors.projectRolesDetails[index] && (
-                            <FormFeedback>
-                              {errors.projectRolesDetails[index].role && errors.projectRolesDetails[index].role.message}
-                            </FormFeedback>
-                          )}
-                      </div>
-                    </Col>
-                    <Col sm="12" md="5" lg="6">
-                      <div className="w-75">
-                        <Controller
-                          id={`projectRolesDetails.${index}.member`}
-                          name={`projectRolesDetails.${index}.member`}
-                          control={control}
-                          invalid={
-                            errors &&
-                            errors.projectRolesDetails &&
-                            errors.projectRolesDetails.length > 0 &&
-                            errors.projectRolesDetails[index] &&
-                            errors.projectRolesDetails[index].member &&
-                            true
-                          }
-                          render={({ field }) => (
-                            <Select
-                              isLoading={rolesIsLoading}
-                              options={allTeamMembersOptions}
-                              classNamePrefix="select"
-                              placeholder="Assign team member"
-                              theme={selectThemeColors}
-                              className={classNames('react-select', {
-                                'is-invalid':
-                                  errors &&
-                                  errors.projectRolesDetails &&
-                                  errors.projectRolesDetails.length > 0 &&
-                                  errors.projectRolesDetails[index] &&
-                                  errors.projectRolesDetails[index].member,
-                              })}
-                              {...field}
-                            />
-                          )}
-                        />
-                        {errors &&
-                          errors.projectRolesDetails &&
-                          errors.projectRolesDetails.length > 0 &&
-                          errors.projectRolesDetails[index] && (
-                            <FormFeedback>
-                              {errors.projectRolesDetails[index].member &&
-                                errors.projectRolesDetails[index].member.label.message}
-                            </FormFeedback>
-                          )}
-                      </div>
+                          </InputGroup>
+                        )}
+                      />
+                      {errors &&
+                        errors.projectRolesDetails &&
+                        errors.projectRolesDetails.length > 0 &&
+                        errors.projectRolesDetails[index] && (
+                          <FormFeedback>
+                            {errors.projectRolesDetails[index].rate && errors.projectRolesDetails[index].rate.message}
+                          </FormFeedback>
+                        )}
                     </Col>
                     <Col sm="12" md="5" lg="2">
                       <div className="d-flex justify-content-end">
@@ -433,7 +501,7 @@ const TeamView = () => {
               disabled={
                 !isValid ||
                 fields.length === 0 ||
-                !watch('projectRolesDetails').every((field) => field.role) ||
+                !watch('projectRolesDetails').every((field) => field.role && field.rate) ||
                 setWorkersIsLoading
               }
             >
@@ -453,4 +521,4 @@ const TeamView = () => {
   );
 };
 
-export default TeamView;
+export default AdvanceTeamView;
