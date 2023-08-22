@@ -7,6 +7,7 @@ const initialState = {
   recommendedProjectsLoading: false,
   profilePercentage: null,
   profilePercentageLoading: false,
+  projectInvites: [],
   error: null,
 };
 
@@ -62,6 +63,11 @@ const dashboardSlice = createSlice({
       error: action.payload,
     }),
 
+    getProjectInvitesSuccess: (state, action) => ({
+      ...state,
+      projectInvites: action.payload,
+    }),
+
     clearData: (state) => ({
       ...state,
       userData: null,
@@ -85,6 +91,7 @@ export const {
   profilePercentageRequest,
   profilePercentageSuccess,
   profilePercentageFailure,
+  getProjectInvitesSuccess,
   clearData,
 } = dashboardSlice.actions;
 

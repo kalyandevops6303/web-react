@@ -3,8 +3,10 @@ import {
   userDataService,
   recommendedProjectsService,
   profilePercentageService,
+  getProjectInviteService,
 } from '../../services/dashboardServices';
 import {
+  getProjectInvitesSuccess,
   profilePercentageFailure,
   profilePercentageRequest,
   profilePercentageSuccess,
@@ -48,4 +50,13 @@ const getProfilePercentage = () => async (dispatch) => {
   }
 };
 
-export { getUserData, getRecommendedProjects, getProfilePercentage };
+const getProjectInvites = () => async (dispatch) => {
+  try {
+    const res = await getProjectInviteService();
+    dispatch(getProjectInvitesSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+export { getUserData, getRecommendedProjects, getProfilePercentage, getProjectInvites };

@@ -111,6 +111,16 @@ const AlertCardWrapper = styled(CardWrapper)`
   .no-meetings-gif {
     height: 10vw;
   }
+  .relative-time {
+    width: 30%;
+    text-align: end;
+  }
+  .additional-text {
+    color: ${theme.lightBlueColor};
+    font-weight: 600;
+    font-size: 12px;
+    margin: auto;
+  }
 `;
 
 const EarningAmount = styled.div`

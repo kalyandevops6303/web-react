@@ -30,7 +30,7 @@ import ProjectCard from '../../cards/ProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
-import { userTypes } from '../../../utility/constants/Constant';
+import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
@@ -39,6 +39,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const location = useLocation();
   const isTab = useIsTab();
   const popoverRef = useRef(null);
+  const inputRef = useRef();
 
   const [hasMore, setHasMore] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -53,41 +54,19 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     project_types: [],
     skills: [],
     tools: [],
-    sort_by: [],
+    sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMADED' }] : [],
     industries: [],
     project_areas: [],
   });
-  const [isRecommanded, setIsRecommanded] = useState(location?.state?.isRecommended || false);
+  const { sort_by } = secondFilterState;
+
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  // Function to toggle the popover
-  const togglePopover = () => {
-    setPopoverOpen(!popoverOpen);
-  };
-
-  const statusesOptions = [
-    { label: 'Open', value: 'OPEN' },
-    { label: 'In-review', value: 'IN_REVIEW' },
-    { label: 'Terminated', value: 'TERMINATED' },
-    { label: 'Closed', value: 'CLOSED' },
-  ];
-  const projectTypesOptions = [
-    { label: 'Fixed', value: 'FIXED' },
-    { label: 'Variable', value: 'VARIABLE' },
-  ];
-  const sortingOptions = [
-    { label: 'New', value: 'NEW' },
-    { label: 'Recommended', value: 'RECOMMADED' },
-  ];
-
-  const onSuccess = () => {};
-  const onError = () => {
-    setHasMore(false);
-  };
+  const isRecommanded = sort_by[0]?.value === 'RECOMMADED';
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -124,6 +103,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [currentPreview]);
 
+  const onSuccess = () => {};
+  const onError = () => {
+    setHasMore(false);
+  };
   useEffect(() => {
     dispatch(clearData());
     const valuesOnly = {};
@@ -158,64 +141,31 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [secondFilterState, searchText, primaryFilter, isRecommanded]);
 
-  const onChangeStatus = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      statuses: [value],
-    });
-  };
-
   useEffect(() => {
     if (location?.state?.isRecommended) {
       setSecondFilterState({
         ...secondFilterState,
         sort_by: [{ label: 'Recommended', value: 'RECOMMADED' }],
       });
-      setIsRecommanded(true);
     }
   }, [location]);
+
+  // Function to toggle the popover
+  const togglePopover = () => {
+    setPopoverOpen(!popoverOpen);
+  };
 
   const onChangeSort = (value) => {
     setSecondFilterState({
       ...secondFilterState,
-      sort_by: [value],
+      sort_by: value ? [value] : [],
     });
-    if (value.value === 'RECOMMADED') {
-      setIsRecommanded(true);
-    } else {
-      setIsRecommanded(false);
-    }
   };
-  const inputRef = useRef();
 
-  const onChangeProjectType = (value) => {
+  const onChangeFilter = (filterKey, value) => {
     setSecondFilterState({
       ...secondFilterState,
-      project_types: [value],
-    });
-  };
-  const onChangeSkill = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      skills: [value],
-    });
-  };
-  const onChangeTools = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      tools: [value],
-    });
-  };
-  const onChangeIndustry = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      industries: [value],
-    });
-  };
-  const onChangeArea = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      project_areas: [value],
+      [filterKey]: value ? [value] : [],
     });
   };
   const handleReset = () => {
@@ -232,7 +182,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (inputRef.current) {
       inputRef.current.value = '';
     }
-    setIsRecommanded(false);
   };
   const loadSkillsOptions = async (search) => {
     if (search) {
@@ -445,6 +394,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Sort by</Label>
                 <Select
+                  isClearable
                   options={sortingOptions}
                   classNamePrefix="select"
                   placeholder="Select type"
@@ -462,11 +412,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Status</Label>
                 <Select
+                  isClearable
                   options={statusesOptions}
                   classNamePrefix="select"
                   placeholder="Select status"
                   theme={selectThemeColors}
-                  onChange={onChangeStatus}
+                  onChange={(value) => onChangeFilter('statuses', value)}
                   value={
                     secondFilterState.statuses.length > 0
                       ? { value: secondFilterState.statuses[0].value, label: secondFilterState.statuses[0].label }
@@ -479,11 +430,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Payment type</Label>
                 <Select
+                  isClearable
                   options={projectTypesOptions}
                   classNamePrefix="select"
                   placeholder="Select type"
                   theme={selectThemeColors}
-                  onChange={onChangeProjectType}
+                  onChange={(value) => onChangeFilter('project_types', value)}
                   value={
                     secondFilterState.project_types.length > 0
                       ? {
@@ -499,12 +451,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Skills</Label>
                 <AsyncPaginate
+                  isClearable
                   loadOptions={loadSkillsOptions}
                   classNamePrefix="wide"
                   placeholder="Select skill"
                   theme={selectThemeColors}
                   className={classNames('react-select')}
-                  onChange={onChangeSkill}
+                  onChange={(value) => onChangeFilter('skills', value)}
                   value={
                     secondFilterState.skills.length > 0
                       ? { value: secondFilterState.skills[0].value, label: secondFilterState.skills[0].label }
@@ -517,12 +470,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Tools</Label>
                 <AsyncPaginate
+                  isClearable
                   loadOptions={loadToolsOptions}
                   classNamePrefix="wide"
                   placeholder="Select tool"
                   theme={selectThemeColors}
                   className={classNames('react-select')}
-                  onChange={onChangeTools}
+                  onChange={(value) => onChangeFilter('tools', value)}
                   value={
                     secondFilterState.tools.length > 0
                       ? { value: secondFilterState.tools[0].value, label: secondFilterState.tools[0].label }
@@ -535,12 +489,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Company industry</Label>
                 <AsyncPaginate
+                  isClearable
                   loadOptions={loadCompanyIndustriesOptions}
                   classNamePrefix="wide"
                   placeholder="Select industry"
                   theme={selectThemeColors}
                   className={classNames('react-select')}
-                  onChange={onChangeIndustry}
+                  onChange={(value) => onChangeFilter('industries', value)}
                   value={
                     secondFilterState.industries.length > 0
                       ? { value: secondFilterState.industries[0].value, label: secondFilterState.industries[0].label }
@@ -554,12 +509,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Col>
                 <Label className="form-label">Project Area</Label>
                 <AsyncPaginate
+                  isClearable
                   loadOptions={loadAreaOptions}
                   classNamePrefix="wide"
                   placeholder="Select area"
                   theme={selectThemeColors}
                   className={classNames('react-select')}
-                  onChange={onChangeArea}
+                  onChange={(value) => onChangeFilter('project_areas', value)}
                   value={
                     secondFilterState.project_areas.length > 0
                       ? {
@@ -603,7 +559,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               {selectMarketPlaceData?.length > 0 ? (
                 <span className="mt-2">You have seen it all!</span>
               ) : (
-                <NoDataFoundComponent isRecommanded={isRecommanded} data={selectMarketPlaceData} />
+                <NoDataFoundComponent
+                  isMyListing={primaryFilter === 'my_listings'}
+                  isRecommanded={isRecommanded}
+                  data={selectMarketPlaceData}
+                />
               )}
             </div>
           }

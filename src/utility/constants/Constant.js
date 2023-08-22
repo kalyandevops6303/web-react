@@ -21,6 +21,31 @@ const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
 };
+
+const statusesOptions = [
+  { label: 'Open', value: 'OPEN' },
+  { label: 'In-review', value: 'IN_REVIEW' },
+  { label: 'Terminated', value: 'TERMINATED' },
+  { label: 'Closed', value: 'CLOSED' },
+];
+const projectTypesOptions = [
+  { label: 'Fixed', value: 'FIXED' },
+  { label: 'Variable', value: 'VARIABLE' },
+];
+const sortingOptions = [
+  { label: 'New', value: 'NEW' },
+  { label: 'Recommended', value: 'RECOMMADED' },
+];
 const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const maxFileSize = 5000000; // 5MB
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding, validEmailRegex, maxFileSize };
+export {
+  ERROR_CODES,
+  checkPoints,
+  userTypes,
+  userOnboarding,
+  sortingOptions,
+  statusesOptions,
+  projectTypesOptions,
+  validEmailRegex,
+  maxFileSize,
+};
