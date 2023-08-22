@@ -77,7 +77,7 @@
     "stream-browserify": "3.0.0",
     "styled-components": "5.3.5",
     "swiper": "8.1.5",
-    "uuid": "9.0.0",
+    "uuid": "^9.0.0",
     "wnumb": "1.2.0",
     "yup": "0.32.11"
   },

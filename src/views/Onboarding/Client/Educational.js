@@ -488,6 +488,8 @@ const Educational = () => {
                     <AsyncPaginate
                       isMulti
                       loadOptions={loadSkillsOptions}
+                      menuPosition='fixed'
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select top 5 skills"
                       theme={selectThemeColors}
@@ -515,6 +517,8 @@ const Educational = () => {
                     <AsyncPaginate
                       isMulti
                       loadOptions={loadToolsOptions}
+                      menuPosition='fixed'
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select top 5 tools"
                       theme={selectThemeColors}
