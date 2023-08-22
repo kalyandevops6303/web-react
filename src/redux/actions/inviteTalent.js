@@ -14,52 +14,53 @@ import {
   inviteTalentsFailure,
   inviteTalentsRequest,
   inviteTalentsSuccess,
-} from '../reducers/createProject';
+} from '../reducers/inviteTalent';
 import {
   almaMaterTalentsService,
   bestTalentsService,
   favoriteTalentsService,
   inviteTalentsService,
-} from '../../services/createProjectServices';
+} from '../../services/inviteTeamMemberService';
 
-const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
+const getBestTalents = (searchText, page, pageSize, oldData) => async (dispatch) => {
   dispatch(bestTalentsRequest());
   try {
-    const res = await bestTalentsService(projectId, searchText, page, pageSize);
+    const res = await bestTalentsService(searchText, page, pageSize);
     dispatch(bestTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, bestTalentsFailure);
   }
 };
 
-const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
+const getFavoriteTalents = (searchText, page, pageSize, oldData) => async (dispatch) => {
   dispatch(favoriteTalentsRequest());
   try {
-    const res = await favoriteTalentsService(projectId, searchText, page, pageSize);
+    const res = await favoriteTalentsService(searchText, page, pageSize);
     dispatch(favoriteTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, favoriteTalentsFailure);
   }
 };
 
-const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
+const getAlmaMaterTalents = (searchText, page, pageSize, oldData) => async (dispatch) => {
   dispatch(almaMaterTalentsRequest());
   try {
-    const res = await almaMaterTalentsService(projectId, searchText, page, pageSize);
+    const res = await almaMaterTalentsService(searchText, page, pageSize);
     dispatch(almaMaterTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, almaMaterTalentsFailure);
   }
 };
 
-const inviteTalents = (projectId, data, onSuccess) => async (dispatch) => {
+const inviteTalents = (data, onSuccess) => async (dispatch) => {
   dispatch(inviteTalentsRequest());
   try {
-    const res = await inviteTalentsService(projectId, data);
+    const res = await inviteTalentsService(data);
     dispatch(inviteTalentsSuccess(res.data.data));
-    ShowToastMessage(SUCCESS, res.data.data.message);
+    ShowToastMessage(SUCCESS, 'Invited successfully');
     onSuccess();
   } catch (error) {
+    console.error(error);
     errorHandler(error, inviteTalentsFailure);
   }
 };

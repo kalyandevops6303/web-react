@@ -14,25 +14,21 @@ import Meetings from './overview/Meetings';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
-import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
-import SendInvitationModal from '../modals/SendInvitationModal';
-import InvitationSentModal from '../modals/InvitationSentModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
 import TeamListing from './overview/TeamListing';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { getItem } from '../../utility/localStorageControl';
+import InviteTalentToTeam from '../invite-talent-to-team';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
 
-  const [message, setMessage] = useState('');
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
-  const [sendInvitationModal, setSendInvitationModal] = useState(null);
-  const [invitationSentModal, setInvitationSentModal] = useState(null);
+  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
 
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
@@ -40,14 +36,6 @@ const PrivateDashboard = () => {
 
   const toggleInviteTeamMemberModal = () => {
     setInviteTeamMemberModal(!inviteTeamMemberModal);
-  };
-
-  const toggleSendInvitationModal = () => {
-    setSendInvitationModal(!sendInvitationModal);
-  };
-
-  const toggleInvitationSentModal = () => {
-    setInvitationSentModal(!invitationSentModal);
   };
 
   const userDetailsData = useSelector(selectUserData);
@@ -78,6 +66,7 @@ const PrivateDashboard = () => {
 
   const onTeamInvite = () => {
     setInviteTeamMemberModal(true);
+    setInviteTalentToTeamModal(true);
   };
 
   const inviteToken = getItem('inviteToken');
@@ -99,38 +88,10 @@ const PrivateDashboard = () => {
           modal={listingTeamMembersModal}
           toggleModal={toggleListingTeamMembersModal}
           toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
         />
       )}
-      {inviteTeamMemberModal && (
-        <InviteTeamMemberModal modal={inviteTeamMemberModal} toggleModal={toggleInviteTeamMemberModal} />
-      )}
-      {sendInvitationModal && (
-        <SendInvitationModal
-          modal={sendInvitationModal}
-          toggleModal={toggleSendInvitationModal}
-          selectedTalents={[]}
-          setInvitationSentModal={() => {}}
-          message={message}
-          setMessage={setMessage}
-          description="You are inviting the below to join your team."
-        />
-      )}
-      {invitationSentModal && (
-        <InvitationSentModal
-          modal={invitationSentModal}
-          toggleModal={toggleInvitationSentModal}
-          selectedTalents={[]}
-          projectId=""
-          message={message}
-          toggleSendInvitationModal={toggleSendInvitationModal}
-          selectedIds={[]}
-          setSelectedIds={() => {}}
-          invitedIds={[]}
-          setInvitedIds={() => {}}
-          setSelectedTalents={() => {}}
-          description="You’ve sent a team member invitation"
-        />
-      )}
+
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
@@ -145,6 +106,13 @@ const PrivateDashboard = () => {
             Invite Talent
           </Button>
         </DashboardHeaderWrapper>
+      )}
+      {inviteTalentToTeamModal && (
+        <InviteTalentToTeam
+          inviteTeamMemberModal={inviteTeamMemberModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+        />
       )}
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>

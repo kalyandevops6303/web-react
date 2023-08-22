@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import '../custom-styles.scss';
 import {
   Badge,
+  Button,
   Col,
   Input,
   InputGroup,
@@ -18,21 +19,31 @@ import {
   TabContent,
   TabPane,
 } from 'reactstrap';
-import { Check, Link, Search, Star } from 'react-feather';
+import { Link } from 'react-router-dom';
+import { Check, Search, Star } from 'react-feather';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { BlueNavsContainer, GrayBorderContainer } from '../styled';
 import theme from '../../configs/themeVariables';
-import { almaMaterTalents, bestTalents, favoriteTalents } from '../../redux/selectors/createProjectSelectors';
-import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../redux/actions/createProjectActions';
 import { TableContainer } from '../CreateProject/style';
 import AlmaMaterImg from '../../assets/images/almaMater.png';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import InfiniteScroll from '../../lib/infinite-scroll';
 import { giveStrokeColor } from '../../utility/Utils';
+import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../redux/actions/inviteTalent';
+import { almaMaterTalents, bestTalents, favoriteTalents } from '../../redux/selectors/inviteTalentSelector';
 
-const InviteTeamMemberModal = ({ modal, toggleModal }) => {
+const InviteTeamMemberModal = ({
+  invitedIds,
+  selectedIds,
+  setSelectedIds,
+  selectedTalents,
+  setSelectedTalents,
+  setSendInvitationModal,
+  modal,
+  toggleModal,
+}) => {
   const tabNames = {
     favourite: '1',
     recommended: '2',
@@ -46,8 +57,6 @@ const InviteTeamMemberModal = ({ modal, toggleModal }) => {
   const almaMaterTalentsData = useSelector(almaMaterTalents);
 
   const [activeTab, setTabActive] = useState(tabNames.favourite);
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [selectedTalents, setSelectedTalents] = useState([]);
   const [searchValue, setSearchValue] = useState('');
 
   const toggleTabs = (tab) => {
@@ -59,7 +68,6 @@ const InviteTeamMemberModal = ({ modal, toggleModal }) => {
   const loadNewBestTalents = () => {
     dispatch(
       getBestTalents(
-        '64c782ea699472a090d3e381',
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         bestTalentsData?.metadata?.current_page + 1,
@@ -72,7 +80,6 @@ const InviteTeamMemberModal = ({ modal, toggleModal }) => {
   const loadNewFavoriteTalents = () => {
     dispatch(
       getFavoriteTalents(
-        '64c782ea699472a090d3e381',
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         favoriteTalentsData?.metadata?.current_page + 1,
@@ -85,7 +92,6 @@ const InviteTeamMemberModal = ({ modal, toggleModal }) => {
   const loadNewAlmaMaterTalents = () => {
     dispatch(
       getAlmaMaterTalents(
-        '64c782ea699472a090d3e381',
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         almaMaterTalentsData?.metadata?.current_page + 1,
@@ -99,9 +105,9 @@ const InviteTeamMemberModal = ({ modal, toggleModal }) => {
     let delayDebounceFn = null;
 
     delayDebounceFn = setTimeout(() => {
-      dispatch(getBestTalents('64c782ea699472a090d3e381', searchValue, 1, 10, []));
-      dispatch(getFavoriteTalents('64c782ea699472a090d3e381', searchValue, 1, 10, []));
-      dispatch(getAlmaMaterTalents('64c782ea699472a090d3e381', searchValue, 1, 10, []));
+      dispatch(getBestTalents(searchValue, 1, 10, []));
+      dispatch(getFavoriteTalents(searchValue, 1, 10, []));
+      dispatch(getAlmaMaterTalents(searchValue, 1, 10, []));
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
@@ -121,7 +127,7 @@ const InviteTeamMemberModal = ({ modal, toggleModal }) => {
       userId = user.user_id;
     }
 
-    if (true) {
+    if (invitedIds.includes(userId)) {
       return (
         <div className="ms-3">
           <h5 className="m-0 fw-light font-medium-1">Invited!</h5>
@@ -153,6 +159,37 @@ const InviteTeamMemberModal = ({ modal, toggleModal }) => {
         </div>
       );
     }
+  };
+
+  const removeDuplicates = (arr, key) => {
+    const seen = new Set();
+    return arr.filter((obj) => {
+      const val = obj[key];
+      if (!seen.has(val)) {
+        seen.add(val);
+        return true;
+      }
+      return false;
+    });
+  };
+  const onSendInvitationModalOpen = () => {
+    const reformattedData = selectedTalents.map((talent) => {
+      if ('talent_details' in talent) {
+        return {
+          ...talent.talent_details,
+          user_details: talent.user_details,
+          total_matches: talent.total_matches,
+          match_percentage: talent.match_percentage,
+        };
+        // eslint-disable-next-line no-else-return
+      } else {
+        return talent;
+      }
+    });
+
+    setSelectedTalents(removeDuplicates(reformattedData, 'user_id'));
+    toggleModal();
+    setSendInvitationModal(true);
   };
 
   return (
@@ -495,6 +532,20 @@ const InviteTeamMemberModal = ({ modal, toggleModal }) => {
           </TabContent>
         </div>
       </ModalBody>
+      <div className="d-flex justify-content-end align-items-center">
+        <div>
+          <Link to="/marketplace/all_listings">
+            <Button color="primary" outline>
+              <span className="px-2">Close</span>
+            </Button>
+          </Link>
+          {selectedIds.length > 0 && (
+            <Button color="primary" className="ms-3" onClick={onSendInvitationModalOpen}>
+              Invite
+            </Button>
+          )}
+        </div>
+      </div>
     </Modal>
   );
 };
@@ -504,9 +555,21 @@ export default InviteTeamMemberModal;
 InviteTeamMemberModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  invitedIds: Proptypes.bool,
+  selectedIds: Proptypes.bool,
+  setSelectedIds: Proptypes.func,
+  selectedTalents: Proptypes.bool,
+  setSelectedTalents: Proptypes.func,
+  setSendInvitationModal: Proptypes.func,
 };
 
 InviteTeamMemberModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  invitedIds: false,
+  selectedIds: false,
+  setSelectedIds: () => {},
+  selectedTalents: false,
+  setSelectedTalents: () => {},
+  setSendInvitationModal: () => {},
 };

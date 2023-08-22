@@ -77,6 +77,12 @@ const API = {
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
   },
+  inviteTeamMember: {
+    bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
+    favoriteTalents: `${apiAuthEndpoint}/api/v1/team/favourite-talents`,
+    almaMaterTalents: `${apiAuthEndpoint}/api/v1/team/alma-mater-talents`,
+    sendInvitaion: `${apiAuthEndpoint}/api/v1/team/send-invitations`,
+  },
   marketplace: {
     client: {
       cardInfo: `${apiOnboardingEndpoint}/api/v1/client/cards-info`,

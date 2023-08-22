@@ -13,7 +13,7 @@ import { getInvitedMember, getTeamMembers } from '../../redux/actions/dashboardA
 import { selectGetInvitedMember, selectGetTeamMember } from '../../redux/selectors/dashboardSelectors';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 
-const ListingTeamMembersModal = ({ modal, toggleModal, toggleInviteTeamMemberModal }) => {
+const ListingTeamMembersModal = ({ modal, toggleModal, toggleInviteTeamMemberModal, setInviteTalentToTeamModal }) => {
   const dispatch = useDispatch();
   const teamMembers = useSelector(selectGetTeamMember);
   const inviteMembers = useSelector(selectGetInvitedMember);
@@ -22,6 +22,7 @@ const ListingTeamMembersModal = ({ modal, toggleModal, toggleInviteTeamMemberMod
   const onInviteTeamMemberClick = () => {
     toggleModal();
     toggleInviteTeamMemberModal(true);
+    setInviteTalentToTeamModal(true);
   };
 
   useEffect(() => {
@@ -158,10 +159,12 @@ ListingTeamMembersModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   toggleInviteTeamMemberModal: Proptypes.func,
+  setInviteTalentToTeamModal: Proptypes.func,
 };
 
 ListingTeamMembersModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   toggleInviteTeamMemberModal: () => {},
+  setInviteTalentToTeamModal: () => {},
 };

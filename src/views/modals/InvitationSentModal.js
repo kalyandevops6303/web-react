@@ -8,13 +8,12 @@ import GreatJobTick from '../../assets/images/greatJobGif.gif';
 import { InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
 import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
-import { inviteTalents } from '../../redux/actions/createProjectActions';
+import { inviteTalents } from '../../redux/actions/inviteTalent';
 
 const InvitationSentModal = ({
   modal,
   toggleModal,
   selectedTalents,
-  projectId,
   message,
   toggleSendInvitationModal,
   selectedIds,
@@ -41,9 +40,9 @@ const InvitationSentModal = ({
 
   const onInviteTalents = () => {
     const userIds = selectedTalents.map((talent) => talent.user_id);
-    const userEmails = selectedTalents.map((talent) => talent.user_details.email);
-
-    dispatch(inviteTalents(projectId, { emails: userEmails, talent_ids: userIds, message }, onSuccess));
+    dispatch(
+      inviteTalents({ talent_ids: userIds, message, redirect_url: 'http://localhost:3000/auth/login' }, onSuccess),
+    );
   };
 
   useEffect(() => {
@@ -139,7 +138,6 @@ InvitationSentModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   selectedTalents: Proptypes.array,
-  projectId: Proptypes.string,
   message: Proptypes.string,
   toggleSendInvitationModal: Proptypes.func,
   selectedIds: Proptypes.array,
@@ -154,7 +152,6 @@ InvitationSentModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   selectedTalents: [],
-  projectId: '',
   message: '',
   toggleSendInvitationModal: () => {},
   selectedIds: [],
