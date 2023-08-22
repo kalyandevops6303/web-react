@@ -7,10 +7,11 @@ import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
 import { createBidSteps, userTypes } from '../../utility/constants/Constant';
 import { ProgressBarWrapper } from './style';
 import TeamView from './overview/TeamView';
-import MilestoneView from './overview/MilestoneView';
+import VariableSimpleMilestoneView from './overview/VariableSimpleMilestoneView';
 import Preview from './overview/Preview';
 import FormStepper from './overview/FormStepper';
 import { selectUserData } from '../../redux/selectors/authSelectors';
+import FixedSimpleMilestoneView from './overview/FixedSimpleMilestoneView';
 
 const CreateBid = () => {
   const location = useLocation();
@@ -66,7 +67,10 @@ const CreateBid = () => {
           <Routes>
             {(params.bidType === 'variable-simple' || params.bidType === 'fixed-simple') &&
               selectUserDetailsData?.user_type === userTypes.team && <Route path="team" element={<TeamView />} />}
-            <Route path="milestone" element={<MilestoneView />} />
+            {params.bidType === 'variable-simple' && (
+              <Route path="milestone" element={<VariableSimpleMilestoneView />} />
+            )}
+            {params.bidType === 'fixed-simple' && <Route path="milestone" element={<FixedSimpleMilestoneView />} />}
             <Route path="preview" element={<Preview />} />
           </Routes>
         </Col>

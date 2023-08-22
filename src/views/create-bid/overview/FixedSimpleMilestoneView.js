@@ -43,7 +43,7 @@ import uuidv4 from '../../../lib/uuidv4';
 import { milestoneFileUploadService, milestoneFileUploadToAzureService } from '../../../services/createBidServices';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 
-const MilestoneView = () => {
+const FixedSimpleMilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
     estimatedStartDate: yup.date().typeError('Start date is required').required('Start date is required'),
     milestones: yup.array().of(
@@ -873,4 +873,4 @@ const MilestoneView = () => {
   );
 };
 
-export default MilestoneView;
+export default FixedSimpleMilestoneView;
