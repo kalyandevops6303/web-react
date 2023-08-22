@@ -44,12 +44,11 @@ const Login = () => {
   // const inviteId = urlSearchParams.get('invite_id');
 
   const onValidUrlSuccess = () => {
-    setValidationInProgress(false); // Set validation as complete
     setValidUrl(true);
     setItem('inviteToken', dataParam);
     setItem('isInviteRead', false);
     if (isLoggedIn) {
-      navigate(`/team-invitation/64e4da24c4c0a33056afe343`);
+      navigate(`/team-invitation/64e4eb63c4c0a33056afe4c4`);
     }
   };
 

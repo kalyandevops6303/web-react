@@ -74,7 +74,7 @@ const PrivateDashboard = () => {
 
   useEffect(() => {
     if (inviteToken && !isInviteRead) {
-      navigate('/team-invitation/64e4da24c4c0a33056afe343');
+      navigate('/team-invitation/64e4eb63c4c0a33056afe4c4');
     }
   }, []);
 
