@@ -34,8 +34,6 @@ const Login = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const [validUrl, setValidUrl] = useState(false);
 
-  const [validationInProgress, setValidationInProgress] = useState(false); // New state
-
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
     password: yup.string().required('Password is required'),
@@ -43,42 +41,31 @@ const Login = () => {
 
   const urlSearchParams = new URLSearchParams(window.location.search);
   const dataParam = urlSearchParams.get('data');
+  // const inviteId = urlSearchParams.get('invite_id');
 
   const onValidUrlSuccess = () => {
-    setValidUrl(true);
     setValidationInProgress(false); // Set validation as complete
+    setValidUrl(true);
     setItem('inviteToken', dataParam);
     setItem('isInviteRead', false);
+    if (isLoggedIn) {
+      navigate(`/team-invitation/64e4da24c4c0a33056afe343`);
+    }
   };
 
-  const onInvalidUrlSuccess = () => {
-    setValidationInProgress(false); // Set validation as complete
-  };
+  const onInvalidUrlSuccess = () => {};
 
   useEffect(() => {
     if (dataParam) {
-      setValidationInProgress(true); // Set validation in progress
       dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
     }
-  }, []); // Only run when validationInProgress changes
+  }, []);
 
   useEffect(() => {
-    // Redirect logic based on the conditions
-    if (validationInProgress) {
-      // Validation in progress, don't redirect yet
-      return;
-    }
-
-    if (validUrl && isLoggedIn) {
-      navigate('/team-invitation');
-    } else if (isLoggedIn) {
+    if (isLoggedIn) {
       navigate('/dashboard');
     }
-  }, [validationInProgress, validUrl, isLoggedIn]);
-
-  // useEffect(() => {
-
-  // }, [validUrl]);
+  }, [validUrl, isLoggedIn]);
 
   // Valid link
   // When user is logged in and he clicks mail, login => dashboard

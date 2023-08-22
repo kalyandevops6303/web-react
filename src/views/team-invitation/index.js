@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { DateTime } from 'luxon';
+import { useParams } from 'react-router';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { GrayBorderContainer, GrayCardWrapper } from '../styled';
@@ -9,15 +11,26 @@ import InfoIcon from '../../assets/images/timeline-info-icon.png';
 import { updateInvitation } from '../../redux/actions/dashboardActions';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import { selectUserData } from '../../redux/selectors/authSelectors';
+import { getWhoInvited } from '../../redux/actions/teamsActions';
 
 const TeamInvitation = () => {
   const breadCrumb = [{ title: 'Dashboard' }, { title: `Team Name` || 'User', link: '#' }];
   const dispatch = useDispatch();
   const userData = useSelector(selectUserData);
   const inviteToken = getItem('inviteToken');
+  const params = useParams();
+  const [invitedByData, setInvitedByData] = useState('');
 
   useEffect(() => {
     setItem('isInviteRead', true);
+  }, []);
+
+  const onSuccess = (res) => {
+    setInvitedByData(res);
+  };
+  const onError = () => {};
+  useEffect(() => {
+    dispatch(getWhoInvited({ id: params.inviteId, onSuccess, onError }));
   }, []);
 
   const handleAccept = () => {
@@ -66,21 +79,34 @@ const TeamInvitation = () => {
                         </div>
                       </div>
                       <h5 className="mt-2 pt-50 font-small-4 mb-0">Invite Sent</h5>
-                      <p className="font-small-4">Apr 12, 23</p>
+                      <p className="font-small-4">
+                        {invitedByData?.created_at
+                          ? DateTime.fromMillis(invitedByData?.created_at).toFormat('MMM dd, yy')
+                          : '-'}
+                      </p>
                       <div className="d-flex align-items-center">
-                        <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" className="me-50 user-pic" />
+                        <Avatar
+                          img={invitedByData?.invitation_by?.image_uri || defaultAvatar}
+                          imgHeight="38"
+                          imgWidth="38"
+                          className="me-50 user-pic"
+                        />
                         <div>
-                          <p className="fw-bolder m-0">Bob Smith (Team Member)</p>
-                          <p className="m-0">Frontend Developer</p>
+                          <p className="fw-bolder m-0">
+                            {invitedByData?.invitation_by?.first_name} {invitedByData?.invitation_by?.last_name} (Team
+                            Member)
+                          </p>
+                          <p className="m-0">{invitedByData?.role?.name || 'Role'} </p>
                         </div>
                       </div>
-                      <p className="fw-bolder mt-2 mb-0">Message</p>
-                      <div className="w-75">
-                        <p className="font-small-3 w-50">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                          labore et dolore magna aliqua. Enim ut tellus elementum sagittis vitae et leo. Duis
-                        </p>
-                      </div>
+                      {invitedByData?.invitation_message && (
+                        <>
+                          <p className="fw-bolder mt-2 mb-0">Message</p>
+                          <div className="w-75">
+                            <p className="font-small-3 w-50">{invitedByData?.invitation_message} </p>
+                          </div>
+                        </>
+                      )}
                     </CardBody>
                   </Card>
                 </div>

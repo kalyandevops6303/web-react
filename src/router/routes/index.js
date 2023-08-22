@@ -106,7 +106,7 @@ const Routes = [
     element: <Notifications />,
   },
   {
-    path: '/team-invitation',
+    path: '/team-invitation/:inviteId',
     element: <TeamInvitation />,
   },
   {

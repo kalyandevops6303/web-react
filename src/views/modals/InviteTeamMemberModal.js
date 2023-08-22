@@ -530,22 +530,22 @@ const InviteTeamMemberModal = ({
               )}
             </TabPane>
           </TabContent>
+          <div className="d-flex justify-content-end align-items-center">
+            <div>
+              <Link to="#" onClick={toggleModal}>
+                <Button color="primary" outline>
+                  <span className="px-2">Close</span>
+                </Button>
+              </Link>
+              {selectedIds.length > 0 && (
+                <Button color="primary" className="ms-3" onClick={onSendInvitationModalOpen}>
+                  Invite
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </ModalBody>
-      <div className="d-flex justify-content-end align-items-center">
-        <div>
-          <Link to="/marketplace/all_listings">
-            <Button color="primary" outline>
-              <span className="px-2">Close</span>
-            </Button>
-          </Link>
-          {selectedIds.length > 0 && (
-            <Button color="primary" className="ms-3" onClick={onSendInvitationModalOpen}>
-              Invite
-            </Button>
-          )}
-        </div>
-      </div>
     </Modal>
   );
 };

@@ -154,7 +154,8 @@ const updateInvitation =
       onSuccess();
     } catch (error) {
       onError();
-      errorHandler(error, getMyTeamFailure);
+      ShowToastMessage(ERROR, 'Invalid Invite Link');
+      // errorHandler(error, getMyTeamFailure);
     }
   };
 
