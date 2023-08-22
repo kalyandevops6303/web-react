@@ -62,6 +62,8 @@ const API = {
     getInvitedMember: `${apiOnboardingEndpoint}/api/v1/team/invite-member`,
     joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-request`,
     recommendedTalent: `${apiOnboardingEndpoint}/api/v1/teams/recommended-talents`,
+    validateUrl: `${apiAuthEndpoint}/api/v1/team/invite-member/validate-deep-link`,
+    updateInvitation: `${apiAuthEndpoint}/api/v1/team/invite-member/update-invite`,
 
     // talent
     recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,
@@ -76,6 +78,12 @@ const API = {
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
+  },
+  inviteTeamMember: {
+    bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
+    favoriteTalents: `${apiAuthEndpoint}/api/v1/team/favourite-talents`,
+    almaMaterTalents: `${apiAuthEndpoint}/api/v1/team/alma-mater-talents`,
+    sendInvitaion: `${apiAuthEndpoint}/api/v1/team/send-invitations`,
   },
   marketplace: {
     client: {
@@ -108,6 +116,7 @@ const API = {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
+    getInvitation: `${apiAuthEndpoint}/api/v1/team/get-invitation`,
   },
 };
 

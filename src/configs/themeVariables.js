@@ -74,6 +74,7 @@ const noDataFoundTextColor = '#2963c3';
 const infoColor = '#00CFE8';
 const secondaryColor = '#82868B';
 const cardBgBlue = '#a8dbff1f';
+const cardShadowLight = 'rgba(0, 0, 0, 0.06)';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -152,5 +153,6 @@ const theme = {
   secondary: secondaryColor,
   cardBgBlue,
   yellowColor,
+  cardShadowLight,
 };
 export default theme;

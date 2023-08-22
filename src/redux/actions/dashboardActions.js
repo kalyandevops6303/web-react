@@ -10,6 +10,8 @@ import {
   getRecommendedTeamService,
   getTeamInvitationService,
   getProjectInviteService,
+  validateUrlService,
+  updateInvitationService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -42,6 +44,8 @@ import {
   getMyTeamRequest,
   getMyTeamSuccess,
 } from '../reducers/dashboard';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR } from '../../utility/constants/ToastTypes';
 
 const getRecommendedProjects = () => async (dispatch) => {
   dispatch(recommendedProjectsRequest());
@@ -141,8 +145,34 @@ const getProjectInvites = () => async (dispatch) => {
     errorHandler(error);
   }
 };
+const validateUrl =
+  ({ data, onSuccess, onError }) =>
+  async () => {
+    try {
+      await validateUrlService({ token: data });
+      onSuccess();
+    } catch (error) {
+      onError();
+      ShowToastMessage(ERROR, 'Invalid Invite Link');
+    }
+  };
+
+const updateInvitation =
+  ({ data, onSuccess, onError }) =>
+  async () => {
+    try {
+      await updateInvitationService(data);
+      onSuccess();
+    } catch (error) {
+      onError();
+      ShowToastMessage(ERROR, 'Invalid Invite Link');
+      // errorHandler(error, getMyTeamFailure);
+    }
+  };
 
 export {
+  validateUrl,
+  updateInvitation,
   getRecommendedProjects,
   getProfilePercentage,
   getTeamMembers,

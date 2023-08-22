@@ -1,4 +1,4 @@
-import { getTeamService, createTeamService } from '../../services/teamServices';
+import { getTeamService, createTeamService, getInvitedByService } from '../../services/teamServices';
 import errorHandler from '../../utility/errorHandler';
 import { getTeamSuccess } from '../reducers/team';
 
@@ -24,5 +24,16 @@ const createTeam = (data, onSuccess, onError) => async () => {
   }
 };
 
+const getWhoInvited =
+  ({ id, onSuccess, onError }) =>
+  async () => {
+    try {
+      const res = await getInvitedByService({ invitation_id: id });
+      onSuccess(res.data.data);
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
 // eslint-disable-next-line import/prefer-default-export
-export { createTeam, getTeams };
+export { createTeam, getTeams, getWhoInvited };

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // ** React Imports
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -23,25 +23,58 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
-import { removeItem } from '../../utility/localStorageControl';
+import { removeItem, setItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
+import { validateUrl } from '../../redux/actions/dashboardActions';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
   const isLoggedIn = useSelector(selectIsLoggedIn);
+  const [validUrl, setValidUrl] = useState(false);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
     password: yup.string().required('Password is required'),
   });
 
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const dataParam = urlSearchParams.get('data');
+  // const inviteId = urlSearchParams.get('invite_id');
+
+  const onValidUrlSuccess = () => {
+    setValidationInProgress(false); // Set validation as complete
+    setValidUrl(true);
+    setItem('inviteToken', dataParam);
+    setItem('isInviteRead', false);
+    if (isLoggedIn) {
+      navigate(`/team-invitation/64e4da24c4c0a33056afe343`);
+    }
+  };
+
+  const onInvalidUrlSuccess = () => {};
+
+  useEffect(() => {
+    if (dataParam) {
+      dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
+    }
+  }, []);
+
   useEffect(() => {
     if (isLoggedIn) {
       navigate('/dashboard');
     }
-  }, []);
+  }, [validUrl, isLoggedIn]);
+
+  // Valid link
+  // When user is logged in and he clicks mail, login => dashboard
+  // When user is not looged in and he clicks mail, login =>
+
+  // Invalid link
+  // When user is logged in and he clicks mail, login => dashboard, show message link expired
+  // When user is not looged in and he clicks mail, show link expired message on login
+
   useEffect(() => {
     dispatch(clearDataSuccess());
   }, []);

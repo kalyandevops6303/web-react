@@ -13,15 +13,30 @@ import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
 import TeamListing from './overview/TeamListing';
 import { selectUserData } from '../../redux/selectors/authSelectors';
+import { getItem } from '../../utility/localStorageControl';
+import InviteTalentToTeam from '../invite-talent-to-team';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
+
+  const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
+  const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
+  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+
+  const toggleListingTeamMembersModal = () => {
+    setListingTeamMembersModal(!listingTeamMembersModal);
+  };
+
+  const toggleInviteTeamMemberModal = () => {
+    setInviteTeamMemberModal(!inviteTeamMemberModal);
+  };
 
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
@@ -49,11 +64,34 @@ const PrivateDashboard = () => {
     }
   };
 
+  const onTeamInvite = () => {
+    setInviteTeamMemberModal(true);
+    setInviteTalentToTeamModal(true);
+  };
+
+  const inviteToken = getItem('inviteToken');
+  const isInviteRead = getItem('isInviteRead');
+
+  useEffect(() => {
+    if (inviteToken && !isInviteRead) {
+      navigate('/team-invitation/64e4da24c4c0a33056afe343');
+    }
+  }, []);
+
   return (
     <div>
       {completeProfileModal && (
         <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
       )}
+      {listingTeamMembersModal && (
+        <ListingTeamMembersModal
+          modal={listingTeamMembersModal}
+          toggleModal={toggleListingTeamMembersModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+        />
+      )}
+
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
@@ -62,6 +100,20 @@ const PrivateDashboard = () => {
           </Button>
         </DashboardHeaderWrapper>
       )}
+      {userDetailsData?.user_type === userTypes.team && (
+        <DashboardHeaderWrapper>
+          <Button as="link" color="primary" onClick={onTeamInvite}>
+            Invite Talent
+          </Button>
+        </DashboardHeaderWrapper>
+      )}
+      {inviteTalentToTeamModal && (
+        <InviteTalentToTeam
+          inviteTeamMemberModal={inviteTeamMemberModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+        />
+      )}
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
           <Link to="/create-team/profile-details">
@@ -69,6 +121,7 @@ const PrivateDashboard = () => {
           </Link>
         </CreateTeamButtonWrapper>
       )}
+
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />
@@ -100,7 +153,13 @@ const PrivateDashboard = () => {
           )}
         </Col>
         <Col lg="4" sm="12">
-          {userDetailsData?.user_type === userTypes.team && <TeamSection />}
+          {userDetailsData?.user_type === userTypes.team && (
+            <TeamSection
+              modal={listingTeamMembersModal}
+              toggleModal={toggleListingTeamMembersModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            />
+          )}
           <Alerts />
           <Disputes />
           <Meetings />
