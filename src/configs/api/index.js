@@ -51,6 +51,7 @@ const API = {
     clientProjects: `${apiOnboardingEndpoint}/api/v1/client/completed-projects`,
     addToFav: `${apiOnboardingEndpoint}/api/v1/favourite/set-user`,
     removeFav: `${apiOnboardingEndpoint}/api/v1/favourite/remove`,
+    addToFavProject: `${apiOnboardingEndpoint}/api/v1/favourite/set-project`,
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -66,6 +67,7 @@ const API = {
     recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,
     teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite`,
     getMyTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
+    projectInvites: `${apiOnboardingEndpoint}/api/v1/user/alerts/invitations`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
@@ -86,6 +88,13 @@ const API = {
       listProject: `${apiOnboardingEndpoint}/api/v1/talent/list-projects`,
       listClients: `${apiOnboardingEndpoint}/api/v1/talent/list-clients`,
     },
+
+    cardInfo: `${apiOnboardingEndpoint}/api/v1/marketplace/cards-info`,
+    listProject: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects`,
+    listTalents: `${apiOnboardingEndpoint}/api/v1/marketplace/list-talents`,
+    bidProjects: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
+    listTeams: `${apiOnboardingEndpoint}/api/v1/marketplace/list-teams`,
+    listClients: `${apiOnboardingEndpoint}/api/v1/marketplace/list-clients`,
   },
   globalSearch: {
     search: `${apiOnboardingEndpoint}/api/v1/search`,

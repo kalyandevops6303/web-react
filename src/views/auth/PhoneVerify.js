@@ -13,7 +13,7 @@ import CountryDropdown from '../../@core/components/country-dropdown';
 // ** Styles
 import '@styles/react/pages/page-authentication.scss';
 import { OnBoardWrap } from './style';
-import { verifyPhone } from '../../redux/actions/authActions';
+import { getUserData, verifyPhone } from '../../redux/actions/authActions';
 import theme from '../../configs/themeVariables';
 import {
   selectAuthLoading,
@@ -35,6 +35,12 @@ const VerifyPhone = () => {
   const phoneData = useSelector(selectMobile);
 
   const userType = useSelector(selectUserType);
+
+  useEffect(() => {
+    if (!userType) {
+      dispatch(getUserData());
+    }
+  }, []);
 
   useEffect(() => {
     if (isPhoneVerified && userType) {

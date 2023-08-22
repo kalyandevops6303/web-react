@@ -4,11 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
 import { AlertCardWrapper } from './style';
-import getNotifications from '../../../redux/actions/notificationsActions';
-import { clearNotificationsData } from '../../../redux/reducers/notifications';
-import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
-import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
+import { getProfilePercentage, getProjectInvites } from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -18,13 +15,12 @@ const Alerts = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getNotifications('', 1, 10, []));
+    dispatch(getProjectInvites());
     dispatch(getProfilePercentage());
-
-    return () => dispatch(clearNotificationsData());
   }, []);
 
-  const notificationsData = useSelector(notifications);
+  const projectInvites = useSelector((state) => state.dashboard.projectInvites);
+
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
 
@@ -121,19 +117,23 @@ const Alerts = () => {
                 <CardTitle tag="h4">Project Invitations</CardTitle>
               </CardHeader>
               <CardBody>
-                {notificationsData?.data?.length > 0 ? (
+                {projectInvites?.data?.length > 0 ? (
                   <div>
-                    {notificationsData?.data?.slice(0, 3)?.map((item) => (
+                    {projectInvites?.data?.slice(0, 3)?.map((item) => (
                       <div key={item?._id} className="mb-1">
                         <div className="d-flex justify-content-between">
-                          <CardText className="font-medium-2 fw-bold m-0">{item?.title}</CardText>
-                          <p className="font-small-2 fw-light m-0">
-                            {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
+                          <p className="font-medium-1 m-0">{item?.project_name}</p>
+                          <p className="relative-time font-small-2 fw-light m-0 ms-50">
+                            {item?.invitation_sent ? DateTime?.fromMillis(item?.invitation_sent)?.toRelative() : ''}
                           </p>
                         </div>
-                        <p className="font-small-4 m-0">{item?.message}</p>
                       </div>
                     ))}
+                    {projectInvites?.metadata?.total_records > 3 && (
+                      <span className="additional-text text-center d-block">
+                        +{projectInvites.metadata.total_records - 3} more
+                      </span>
+                    )}
                   </div>
                 ) : (
                   <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">

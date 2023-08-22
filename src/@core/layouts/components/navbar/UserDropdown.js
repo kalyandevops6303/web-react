@@ -23,7 +23,7 @@ import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
 import { userTypes } from '../../../../utility/constants/Constant';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
-import { selectCurrentUserData, selectIsTeamLoggedIn, selectUserData } from '../../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectIsTeamLoggedIn, selectUserData } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -32,7 +32,7 @@ import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(selectUserData);
-  const savedUserDetails = useSelector(selectCurrentUserData);
+  const savedUserDetails = useSelector(selectSavedUserData);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const teams = useSelector(selectTeamData);
 

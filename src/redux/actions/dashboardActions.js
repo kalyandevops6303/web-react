@@ -9,8 +9,11 @@ import {
   getRecommendedTalentService,
   getRecommendedTeamService,
   getTeamInvitationService,
+  getProjectInviteService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
+
 import {
+  getProjectInvitesSuccess,
   profilePercentageFailure,
   profilePercentageRequest,
   profilePercentageSuccess,
@@ -130,6 +133,15 @@ const getMyTeam = () => async (dispatch) => {
   }
 };
 
+const getProjectInvites = () => async (dispatch) => {
+  try {
+    const res = await getProjectInviteService();
+    dispatch(getProjectInvitesSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 export {
   getRecommendedProjects,
   getProfilePercentage,
@@ -140,4 +152,5 @@ export {
   getRecommendedTeams,
   getTeamInvitation,
   getMyTeam,
+  getProjectInvites,
 };

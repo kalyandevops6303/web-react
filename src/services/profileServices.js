@@ -11,7 +11,9 @@ const getClientProjectService = (data) => DataService.get(API.profile.clientProj
 
 const makeFavService = (id, user_type) => DataService.post(API.profile.addToFav, { user_id: id, user_type });
 
-const removeFavService = (id) => DataService.post(API.profile.removeFav, { user_id: id });
+const removeFavService = (data) => DataService.post(API.profile.removeFav, data);
+
+const makeProjectFavService = (id) => DataService.post(API.profile.addToFavProject, { project_id: id });
 
 export {
   getTalentService,
@@ -20,4 +22,5 @@ export {
   getClientProjectService,
   makeFavService,
   removeFavService,
+  makeProjectFavService,
 };

@@ -38,29 +38,26 @@ export const OnBoardWrap = styled.div`
 
   // bg pic css
   .user-type-pic {
-    margin-right: 6rem;
     height: 78vh;
   }
   .create-pw-pic {
-    margin-right: 14rem;
+    margin-left: 7rem;
     height: 62vh;
   }
   .login-pic {
-    margin-right: 10rem;
     margin-top: 2rem;
     height: 84vh;
   }
   .verification-pic {
-    margin-right: 14rem;
+    margin-left: 7rem;
     height: 62vh;
   }
   .client-pic {
-    margin-right: 10rem;
+    margin-left: 2rem;
     margin-top: 4rem;
     height: 78vh;
   }
   .talent-pic {
-    margin-right: 8rem;
     height: 94vh;
   }
 
@@ -90,6 +87,10 @@ export const OnBoardWrap = styled.div`
   }
   .btn {
     font-weight: 500 !important;
+  }
+
+  .privacy-terms-label {
+    color: ${theme.primary};
   }
 
   height: 100vh;

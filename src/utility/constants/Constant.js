@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { Box, Check, Watch } from 'react-feather';
 
 const ERROR_CODES = {
@@ -33,4 +34,31 @@ const bidTypes = {
   simple: 'SIMPLE',
   advanced: 'ADVANCED',
 };
-export { ERROR_CODES, checkPoints, userTypes, userOnboarding, createBidSteps, maxFileSize, bidTypes };
+const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const statusesOptions = [
+  { label: 'Open', value: 'OPEN' },
+  { label: 'In-review', value: 'IN_REVIEW' },
+  { label: 'Terminated', value: 'TERMINATED' },
+  { label: 'Closed', value: 'CLOSED' },
+];
+const projectTypesOptions = [
+  { label: 'Fixed', value: 'FIXED' },
+  { label: 'Variable', value: 'VARIABLE' },
+];
+const sortingOptions = [
+  { label: 'New', value: 'NEW' },
+  { label: 'Recommended', value: 'RECOMMADED' },
+];
+export {
+  ERROR_CODES,
+  checkPoints,
+  userTypes,
+  userOnboarding,
+  sortingOptions,
+  statusesOptions,
+  projectTypesOptions,
+  validEmailRegex,
+  maxFileSize,
+  createBidSteps,
+  bidTypes,
+};

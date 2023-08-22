@@ -10,6 +10,7 @@ import Router from './router/Router';
 import { setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
 import theme from './configs/themeVariables';
+import { notificationCount } from './redux/reducers/notifications';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -33,11 +34,27 @@ const App = () => {
     }
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    const channel = new BroadcastChannel('data-channel');
+
+    channel?.addEventListener('message', () => {
+      // Handle the received data from the service worker
+      dispatch(notificationCount(true));
+    });
+
+    return () => {
+      // Cleanup when the component unmounts
+      channel?.removeEventListener('message');
+      channel?.close();
+    };
+  }, []);
   messaging?.onMessage((payload) => {
     if (!('Notification' in window)) {
       console.warn('This browser does not support system notifications.');
     } else if (Notification.permission === 'granted') {
       // only when type single
+      dispatch(notificationCount(true));
+
       toast(
         (t) => (
           <div className="w-100 d-flex align-items-center justify-content-between">

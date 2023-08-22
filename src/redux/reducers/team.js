@@ -12,9 +12,12 @@ const teamSlice = createSlice({
       ...state,
       teams: action.payload,
     }),
+    clearTeams: () => ({
+      teams: [],
+    }),
   },
 });
 
-export const { getTeamSuccess } = teamSlice.actions;
+export const { getTeamSuccess, clearTeams } = teamSlice.actions;
 
 export default teamSlice.reducer;
