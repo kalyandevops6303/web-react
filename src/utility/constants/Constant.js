@@ -49,6 +49,11 @@ const sortingOptions = [
   { label: 'New', value: 'NEW' },
   { label: 'Recommended', value: 'RECOMMADED' },
 ];
+const USD = {
+  _id: '6478b0d1679b91d695ad534a',
+  name: 'US Dollar',
+  code: 'USD',
+};
 export {
   ERROR_CODES,
   checkPoints,
@@ -61,4 +66,5 @@ export {
   maxFileSize,
   createBidSteps,
   bidTypes,
+  USD,
 };

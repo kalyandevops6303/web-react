@@ -41,7 +41,7 @@ import { userData } from '../../../redux/selectors/dashboardSelectors';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { projectFileUploadService, projectFileUploadToAzureService } from '../../../services/createProjectServices';
-import { maxFileSize } from '../../../utility/constants/Constant';
+import { USD, maxFileSize } from '../../../utility/constants/Constant';
 import uuidv4 from '../../../lib/uuidv4';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
@@ -235,6 +235,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       availabilityDays: [],
       weekdays: [],
       weekends: [],
+      currencyType: { label: 'US Dollar', value: USD },
     },
   });
 
@@ -1459,6 +1460,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   invalid={errors.currencyType && true}
                   render={({ field }) => (
                     <AsyncPaginate
+                      isDisabled
                       loadOptions={loadCurrenciesOptions}
                       classNamePrefix="select"
                       placeholder="Select currency"
