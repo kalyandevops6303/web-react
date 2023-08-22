@@ -242,6 +242,34 @@ const MilestoneSectionWrapper = styled.div`
       color: ${theme.activeNavPillText};
     }
   }
+
+  .fixed-cost-banner {
+    border-radius: 6px;
+  }
+
+  .error-banner {
+    background: rgba(234, 84, 85, 0.12);
+
+    p {
+      color: ${theme.red};
+    }
+  }
+
+  .info-banner {
+    background: #d8e8f3;
+
+    p {
+      color: ${theme.activeNavPillText};
+    }
+  }
+
+  .green-amount {
+    color: ${theme.green};
+  }
+
+  .red-amount {
+    color: ${theme.red};
+  }
 `;
 
 const PreviewSectionWrapper = styled.div`

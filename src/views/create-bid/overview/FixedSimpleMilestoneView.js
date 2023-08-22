@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
@@ -38,12 +39,12 @@ import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
 import { formatDateWithDash } from '../../../utility/Utils';
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
-import { setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
+import { projectDetails, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
 import { milestoneFileUploadService, milestoneFileUploadToAzureService } from '../../../services/createBidServices';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 
-const MilestoneView = () => {
+const FixedSimpleMilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
     estimatedStartDate: yup.date().typeError('Start date is required').required('Start date is required'),
     milestones: yup.array().of(
@@ -120,6 +121,7 @@ const MilestoneView = () => {
 
   const setMilestonesIsLoading = useSelector(setMilestonesLoading);
   const selectUserDetailsData = useSelector(selectUserData);
+  const projectDetailsData = useSelector(projectDetails);
 
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
@@ -415,6 +417,26 @@ const MilestoneView = () => {
             </div>
           </CardHeader>
           <CardBody className="pt-2 pb-0">
+            {useWatch({ control, name: 'milestones' }).reduce(
+              (total, milestone) => total + Number(milestone.talentCost || 0),
+              0,
+            ) > projectDetailsData?.pay_type?.fixed_cost ? (
+              <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
+                <Info size={18} color={theme.red} className="me-50" />
+                <p className="font-medium-1 m-0 error">
+                  <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of the
+                  project. Please adjust your cost in order to submit the bid
+                </p>
+              </div>
+            ) : (
+              <div className="fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
+                <Info size={18} color={theme.activeNavPillText} className="me-50" />
+                <p className="font-medium-1 m-0 info">
+                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
+                  distributed between each talent
+                </p>
+              </div>
+            )}
             <Card className="white-card-bg">
               <CardBody>
                 <Row className="d-flex justify-content-between">
@@ -456,14 +478,34 @@ const MilestoneView = () => {
                       </p>
                     </div>
                     <div>
-                      <Label className="form-label me-2">Total Cost</Label>
-                      <p className="fw-bold font-medium-1 text-end me-2 mt-50">
-                        ${' '}
-                        {useWatch({ control, name: 'milestones' }).reduce(
-                          (total, milestone) => total + Number(milestone.talentCost || 0),
-                          0,
-                        )}
+                      <div className="d-flex align-items-center m-0">
+                        <Label className="form-label">Fixed Cost</Label>
+                        <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
+                      </div>
+                      <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
+                        $ {projectDetailsData?.pay_type?.fixed_cost}
                       </p>
+                      {useWatch({ control, name: 'milestones' }).reduce(
+                        (total, milestone) => total + Number(milestone.talentCost || 0),
+                        0,
+                      ) > projectDetailsData?.pay_type?.fixed_cost ? (
+                        <p className="fw-bold font-small-3 text-end me-2 mb-0 red-amount">
+                          - ${' '}
+                          {useWatch({ control, name: 'milestones' }).reduce(
+                            (total, milestone) => total + Number(milestone.talentCost || 0),
+                            0,
+                          ) - projectDetailsData?.pay_type?.fixed_cost}
+                        </p>
+                      ) : (
+                        <p className="fw-bold font-small-3 text-end me-2 mb-0 green-amount">
+                          + ${' '}
+                          {projectDetailsData?.pay_type?.fixed_cost -
+                            useWatch({ control, name: 'milestones' }).reduce(
+                              (total, milestone) => total + Number(milestone.talentCost || 0),
+                              0,
+                            )}
+                        </p>
+                      )}
                     </div>
                   </Col>
                 </Row>
@@ -856,7 +898,15 @@ const MilestoneView = () => {
           <Button
             color="primary"
             type="submit"
-            disabled={!isValid || setMilestonesIsLoading || uploadingFiles.length > 0}
+            disabled={
+              useWatch({ control, name: 'milestones' }).reduce(
+                (total, milestone) => total + Number(milestone.talentCost || 0),
+                0,
+              ) > projectDetailsData?.pay_type?.fixed_cost ||
+              !isValid ||
+              setMilestonesIsLoading ||
+              uploadingFiles.length > 0
+            }
           >
             {setMilestonesIsLoading ? (
               <Spinner size="sm" />
@@ -873,4 +923,4 @@ const MilestoneView = () => {
   );
 };
 
-export default MilestoneView;
+export default FixedSimpleMilestoneView;
