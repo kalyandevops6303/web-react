@@ -741,6 +741,8 @@ const Personal = () => {
                     <Select
                       isLoading={statesIsLoading}
                       options={statesOptions}
+                      menuPosition='fixed'
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select your state"
                       theme={selectThemeColors}
@@ -768,6 +770,8 @@ const Personal = () => {
                     <Select
                       isLoading={citiesIsLoading}
                       options={citiesOptions}
+                      menuPosition='fixed'
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select your city"
                       theme={selectThemeColors}

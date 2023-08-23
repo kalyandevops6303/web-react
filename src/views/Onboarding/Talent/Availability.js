@@ -797,6 +797,8 @@ const Availability = () => {
                   render={({ field }) => (
                     <AsyncPaginate
                       loadOptions={loadCurrenciesOptions}
+                      menuPosition='fixed'
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select one"
                       theme={selectThemeColors}

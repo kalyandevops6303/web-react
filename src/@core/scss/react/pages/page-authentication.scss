@@ -3,3 +3,19 @@
 .auth-wrapper .auth-footer-btn .btn {
   padding: 0.555rem 0.6rem !important;
 }
+
+.speech-emoji {
+  width: 38px;
+  height: 38px;
+}
+
+.create-password {
+input{
+  font-family: monospace;
+  letter-spacing: 5px;
+}
+input::placeholder {
+  font-family: inherit;
+  letter-spacing: normal;
+}
+}

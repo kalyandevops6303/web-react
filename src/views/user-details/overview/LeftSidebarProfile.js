@@ -1,4 +1,4 @@
-import React from 'react';
+  import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,7 +13,7 @@ import BehanceIcon from '@src/assets/images/behance.png';
 import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
-import { GitHub, Heart, Link, Linkedin, Twitter } from 'react-feather';
+import { GitHub, Heart, Link, Linkedin} from 'react-feather';
 import { LeftSidebarProfileWrapper } from './style';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
@@ -22,6 +22,8 @@ import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { getItem } from '../../../utility/localStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
+
+import TwitterXIcon from "../../../assets/images/logo/X-logo.svg";
 
 const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
   const dispatch = useDispatch();
@@ -225,7 +227,7 @@ const LeftSidebarProfile = ({ isClient, data, isEditable }) => {
                       <Avatar
                         color="light-primary"
                         icon={
-                          <Twitter fill={theme.activeNavPillText} stroke={theme.activeNavPillBackground} size={24} />
+                          <img src={TwitterXIcon} alt='' width={20} height={20} />
                         }
                         onClick={item?.url}
                         className="me-1 p-25 mb-1"

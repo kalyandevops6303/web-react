@@ -107,7 +107,7 @@ const SetPassword = () => {
                 <InputPasswordToggle
                   {...field}
                   value={field.value || ''} // Set a default value for the input
-                  className="input-group-merge"
+                  className="input-group-merge create-password"
                   id="newPassword"
                   placeholder="Enter your password"
                 />
@@ -148,7 +148,7 @@ const SetPassword = () => {
                 <InputPasswordToggle
                   {...field}
                   value={field.value || ''} // Set a default value for the input
-                  className="input-group-merge"
+                  className="input-group-merge create-password"
                   id="cnfPassword"
                   placeholder="Confirm your password"
                 />
