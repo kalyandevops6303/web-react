@@ -86,7 +86,6 @@
     }
 
     &:last-of-type {
-      border-left-color: transparent !important;
       &:after {
         content: '';
         position: absolute;
