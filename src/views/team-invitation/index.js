@@ -1,9 +1,11 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import { useParams } from 'react-router';
+import { capitalize } from 'lodash';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { GrayBorderContainer, GrayCardWrapper } from '../styled';
@@ -12,6 +14,7 @@ import { updateInvitation } from '../../redux/actions/dashboardActions';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { getWhoInvited } from '../../redux/actions/teamsActions';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const TeamInvitation = () => {
   const breadCrumb = [{ title: 'Dashboard' }, { title: `Team Name` || 'User', link: '#' }];
@@ -20,6 +23,9 @@ const TeamInvitation = () => {
   const inviteToken = getItem('inviteToken');
   const params = useParams();
   const [invitedByData, setInvitedByData] = useState('');
+  const [status, setStatus] = useState(invitedByData?.invitation_status);
+  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
+  const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
 
   useEffect(() => {
     setItem('isInviteRead', true);
@@ -27,9 +33,15 @@ const TeamInvitation = () => {
 
   const onSuccess = (res) => {
     setInvitedByData(res);
+    setGetWhoInvitedLoading(false);
+    setStatus(res?.invitation_status);
   };
-  const onError = () => {};
+
+  const onError = () => {
+    setGetWhoInvitedLoading(false);
+  };
   useEffect(() => {
+    setGetWhoInvitedLoading(true);
     dispatch(getWhoInvited({ id: params.inviteId, onSuccess, onError }));
   }, []);
 
@@ -39,7 +51,19 @@ const TeamInvitation = () => {
       status: 'ACCEPTED',
       user_id: userData?._id,
     };
-    dispatch(updateInvitation({ data, onSuccess: () => {}, onError: () => {} }));
+    setIsStatusUpdating(true);
+    dispatch(
+      updateInvitation({
+        data,
+        onSuccess: () => {
+          setStatus('ACCEPTED');
+          setIsStatusUpdating(false);
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
   };
   const handleDecline = () => {
     const data = {
@@ -47,8 +71,22 @@ const TeamInvitation = () => {
       status: 'DECLINED',
       user_id: userData?._id,
     };
-    dispatch(updateInvitation({ data, onSuccess: () => {}, onError: () => {} }));
+    dispatch(
+      updateInvitation({
+        data,
+        onSuccess: () => {
+          setStatus('DECLINED');
+          setIsStatusUpdating(false);
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
   };
+  if (isGetWhoInvitedLoading) {
+    <ComponentSpinner />;
+  }
 
   return (
     <>
@@ -69,14 +107,20 @@ const TeamInvitation = () => {
                     <CardBody>
                       <div className="d-flex justify-content-between align-items-center">
                         <h5 className="mt-1">Invite</h5>
-                        <div className="d-flex text-blue text-decoration-underline">
-                          <p className="me-2 cursor-pointer mb-0" onClick={handleDecline}>
-                            Decline
-                          </p>
-                          <p className="cursor-pointer mb-0" onClick={handleAccept}>
-                            Accept
-                          </p>
-                        </div>
+                        {isStatusUpdating ? (
+                          'Loading..'
+                        ) : status === 'PENDING' ? (
+                          <div className="d-flex text-blue text-decoration-underline">
+                            <p className="me-2 cursor-pointer mb-0" onClick={handleDecline}>
+                              Decline
+                            </p>
+                            <p className="cursor-pointer mb-0" onClick={handleAccept}>
+                              Accept
+                            </p>
+                          </div>
+                        ) : (
+                          status && capitalize(status)
+                        )}
                       </div>
                       <h5 className="mt-2 pt-50 font-small-4 mb-0">Invite Sent</h5>
                       <p className="font-small-4">

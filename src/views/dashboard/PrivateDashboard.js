@@ -71,10 +71,10 @@ const PrivateDashboard = () => {
 
   const inviteToken = getItem('inviteToken');
   const isInviteRead = getItem('isInviteRead');
-
+  const inviteId = getItem('inviteId');
   useEffect(() => {
     if (inviteToken && !isInviteRead) {
-      navigate('/team-invitation/64e4eb63c4c0a33056afe4c4');
+      navigate(`/team-invitation/${inviteId}`);
     }
   }, []);
 
