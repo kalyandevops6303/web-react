@@ -13,6 +13,7 @@ import { selectUserData } from '../../redux/selectors/authSelectors';
 import FixedSimpleMilestoneView from './overview/FixedSimpleMilestoneView';
 import SimpleTeamView from './overview/SimpleTeamView';
 import AdvanceTeamView from './overview/AdvanceTeamView';
+import VariableAdvanceMilestoneView from './overview/VariableAdvanceMilestoneView';
 
 const CreateBid = () => {
   const location = useLocation();
@@ -73,6 +74,9 @@ const CreateBid = () => {
             )}
             {params.bidType === 'variable-simple' && (
               <Route path="milestone" element={<VariableSimpleMilestoneView />} />
+            )}
+            {params.bidType === 'variable-advanced' && (
+              <Route path="milestone" element={<VariableAdvanceMilestoneView />} />
             )}
             {params.bidType === 'fixed-simple' && <Route path="milestone" element={<FixedSimpleMilestoneView />} />}
             <Route path="preview" element={<Preview />} />

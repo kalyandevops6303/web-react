@@ -75,6 +75,11 @@ const infoColor = '#00CFE8';
 const secondaryColor = '#82868B';
 const cardBgBlue = '#a8dbff1f';
 const cardShadowLight = 'rgba(0, 0, 0, 0.06)';
+const darkBorder = 'rgba(130, 134, 139, 0.12)';
+const lightBlueBgRadio = 'rgba(1,133,228,0.06)';
+const lightGrayBgRadio = 'rgba(130, 134, 139, 0.03)';
+const errorBannerBg = 'rgba(234, 84, 85, 0.12)';
+const infoBannerBg = '#d8e8f3';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -154,5 +159,10 @@ const theme = {
   cardBgBlue,
   cardShadowLight,
   yellowColor,
+  darkBorder,
+  lightBlueBgRadio,
+  lightGrayBgRadio,
+  errorBannerBg,
+  infoBannerBg,
 };
 export default theme;
