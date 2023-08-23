@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
-import { DateTime } from 'luxon';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { selectThemeColors } from '@utils';
 import { Badge, Card, CardBody, Col, Label, Row } from 'reactstrap';
 import { Bell } from 'react-feather';
+import DateTime from '../../lib/date-time';
 import { BorderCardContainer, NotificationBadgeContainer } from './style';
 import theme from '../../configs/themeVariables';
 import getNotifications from '../../redux/actions/notificationsActions';

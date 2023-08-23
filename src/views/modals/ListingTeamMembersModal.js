@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { DateTime } from 'luxon';
 import { Button, Modal, ModalHeader, ModalBody, Card, CardBody, Row, Col } from 'reactstrap';
 import { Trash2 } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import DateTime from '../../lib/date-time';
 import { GrayBorderContainer } from '../styled';
 import theme from '../../configs/themeVariables';
 import { getInvitedMember, getTeamMembers } from '../../redux/actions/dashboardActions';
