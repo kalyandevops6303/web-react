@@ -24,6 +24,7 @@ import MarketPlace from '../../views/marketplace';
 import Search from '../../views/search';
 import Notifications from '../../views/notifications';
 import CreateBid from '../../views/create-bid';
+import TeamInvitation from '../../views/team-invitation';
 import CreateTeam from '../../views/createTeam';
 import ComingSoon from '../../views/auth/ComingSoon';
 import { userOnboarding } from '../../utility/constants/Constant';
@@ -108,6 +109,10 @@ const Routes = [
   {
     path: '/create-bid/:projectId/:bidType/:bidId/*',
     element: <CreateBid />,
+  },
+  {
+    path: '/team-invitation/:inviteId',
+    element: <TeamInvitation />,
   },
   {
     path: '/create-team/:section-details',

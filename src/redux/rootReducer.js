@@ -10,6 +10,8 @@ import layout from './layout';
 import navbar from './navbar';
 import profile from './reducers/profile';
 import createProject from './reducers/createProject';
+import inviteTalent from './reducers/inviteTalent';
+
 import marketPlace from './reducers/marketPlace';
 import gloabalSearch from './reducers/gloabalSearch';
 import notifications from './reducers/notifications';
@@ -31,6 +33,7 @@ const rootReducer = combineReducers({
   team,
   search: gloabalSearch,
   createBid,
+  inviteTalent,
 
   // Add more reducers if needed
 });

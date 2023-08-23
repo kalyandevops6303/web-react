@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { DateTime } from 'luxon';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
+import DateTime from '../../../lib/date-time';
 import { AlertCardWrapper } from './style';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { getProfilePercentage, getProjectInvites } from '../../../redux/actions/dashboardActions';

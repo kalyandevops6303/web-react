@@ -29,6 +29,10 @@ const AuthRoute = () => {
   const userType = useSelector(selectUserType);
   const routes = [
     {
+      path: '/login/:token',
+      element: <Login />,
+    },
+    {
       path: '/login',
       element: <Login />,
     },

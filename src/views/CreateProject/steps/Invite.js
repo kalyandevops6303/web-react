@@ -30,8 +30,8 @@ import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { giveStrokeColor } from '../../../utility/Utils';
 import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
-import SendInvitationModal from '../SendInvitationModal';
-import InvitationSentModal from '../InvitationSentModal';
+import SendInvitationModal from '../../modals/SendInvitationModal';
+import InvitationSentModal from '../../modals/InvitationSentModal';
 import {
   almaMaterTalents,
   bestTalents,
@@ -227,6 +227,7 @@ const Invite = ({ stepper }) => {
           setInvitationSentModal={setInvitationSentModal}
           message={message}
           setMessage={setMessage}
+          description="You are inviting the below to join your project."
         />
       )}
       {invitationSentModal && (
@@ -242,6 +243,7 @@ const Invite = ({ stepper }) => {
           invitedIds={invitedIds}
           setInvitedIds={setInvitedIds}
           setSelectedTalents={setSelectedTalents}
+          description="You’ve sent a project invitation"
         />
       )}
       <Card>

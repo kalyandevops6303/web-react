@@ -1,7 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { DateTime } from 'luxon';
 import Mpin from '@src/assets/images/map-pin.png';
 import LikeIcon from '@src/assets/images/like.png';
 import { useState, useEffect, useRef } from 'react';
@@ -11,6 +10,7 @@ import Avatar from '@components/avatar';
 import { Heart } from 'react-feather';
 import { useLocation } from 'react-router-dom';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
