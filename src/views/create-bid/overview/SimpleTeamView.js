@@ -421,7 +421,10 @@ const SimpleTeamView = () => {
             </CardBody>
           </Card>
           <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center upload-button cursor-pointer" onClick={() => navigate(-1)}>
+            <div
+              className="d-flex align-items-center upload-button cursor-pointer"
+              onClick={() => navigate('/marketplace/all_listings')}
+            >
               <UploadIconContainer>
                 <ChevronLeft size={18} color={theme.activeNavPillText} />
               </UploadIconContainer>

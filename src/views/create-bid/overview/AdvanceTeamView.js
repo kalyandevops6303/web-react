@@ -140,6 +140,7 @@ const AdvanceTeamView = () => {
         first_name: item?.member?.value?.first_name,
         last_name: item?.member?.value?.last_name,
         role: item?.role,
+        hourly_rate: item?.rate,
       }));
 
       dispatch(saveSetWorkers(params.bidId, removeUndefinedKeysFromArray(requiredData), onSuccess));
@@ -155,14 +156,14 @@ const AdvanceTeamView = () => {
     if (isFilled) {
       append({});
     } else {
-      ShowToastMessage(ERROR, 'Please fill all project roles fields above');
+      ShowToastMessage(ERROR, 'Please fill all fields above');
     }
   };
 
   const handleCopyRole = (index) => {
     const projectRole = watch('projectRolesDetails')[index];
 
-    if (projectRole?.role && projectRole?.role?.length !== 0 && projectRole?.role && projectRole?.role > 0) {
+    if (projectRole?.role && projectRole?.role?.length !== 0 && projectRole?.rate && projectRole?.rate > 0) {
       append({ role: `${projectRole.role} copy`, member: undefined, rate: projectRole.rate });
     } else {
       ShowToastMessage(ERROR, 'Please give a role name and rate first');
@@ -232,11 +233,13 @@ const AdvanceTeamView = () => {
                 label: `${worker.first_name} ${worker.last_name}`,
                 value: worker,
               },
+              rate: worker.hourly_rate,
             };
           } else {
             return {
               role: worker.role,
               member: undefined,
+              rate: worker.hourly_rate,
             };
           }
         });
@@ -259,7 +262,7 @@ const AdvanceTeamView = () => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Card className="mt-2">
             <CardHeader className="py-75">
-              <h4 className="m-0 mt-75">Roles</h4>
+              <h4 className="m-0 mt-75">Roles & Efforts</h4>
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>
@@ -377,6 +380,7 @@ const AdvanceTeamView = () => {
                         }
                         render={({ field }) => (
                           <Select
+                            {...field}
                             isLoading={rolesIsLoading}
                             options={allTeamMembersOptions}
                             classNamePrefix="select"
@@ -390,7 +394,12 @@ const AdvanceTeamView = () => {
                                 errors.projectRolesDetails[index] &&
                                 errors.projectRolesDetails[index].member,
                             })}
-                            {...field}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setValue(`projectRolesDetails.${index}.rate`, e.value.hourly_rate, {
+                                shouldValidate: true,
+                              });
+                            }}
                           />
                         )}
                       />
@@ -419,7 +428,7 @@ const AdvanceTeamView = () => {
                         }
                         render={({ field }) => (
                           <InputGroup className="input-group-merge w-75">
-                            {getValues('projectRolesDetails')[index].rate > 0 && (
+                            {getValues('projectRolesDetails')[index]?.rate > 0 && (
                               <InputGroupText className="pe-25">$</InputGroupText>
                             )}
                             <Input
@@ -489,7 +498,10 @@ const AdvanceTeamView = () => {
             </CardBody>
           </Card>
           <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center upload-button cursor-pointer" onClick={() => navigate(-1)}>
+            <div
+              className="d-flex align-items-center upload-button cursor-pointer"
+              onClick={() => navigate('/marketplace/all_listings')}
+            >
               <UploadIconContainer>
                 <ChevronLeft size={18} color={theme.activeNavPillText} />
               </UploadIconContainer>
