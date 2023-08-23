@@ -43,7 +43,7 @@ const InvitationSentModal = ({
   const onInviteTalents = () => {
     const userIds = selectedTalents.map((talent) => talent.user_id);
     dispatch(
-      inviteTalents({ talent_ids: userIds, message, redirect_url: 'http://localhost:3000/auth/login' }, onSuccess),
+      inviteTalents({ talent_ids: userIds, message, redirect_url: 'https://test.trumio.ai/auth/login' }, onSuccess),
     );
   };
 
