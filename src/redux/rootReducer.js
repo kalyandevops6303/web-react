@@ -5,13 +5,12 @@ import authReducer from './reducers/auth';
 import staticReducer from './reducers/static';
 import talentOnboardingReducer from './reducers/talentOnboarding';
 import clientOnboardingReducer from './reducers/clientOnboarding';
-import dashboardReducer from './reducers/dashboard';
 import layout from './layout';
 import navbar from './navbar';
 import profile from './reducers/profile';
 import createProject from './reducers/createProject';
 import inviteTalent from './reducers/inviteTalent';
-
+import dashboard from './reducers/dashboard';
 import marketPlace from './reducers/marketPlace';
 import gloabalSearch from './reducers/gloabalSearch';
 import notifications from './reducers/notifications';
@@ -22,7 +21,7 @@ const rootReducer = combineReducers({
   staticData: staticReducer,
   talentOnboarding: talentOnboardingReducer,
   clientOnboarding: clientOnboardingReducer,
-  dashboard: dashboardReducer,
+  dashboard,
   currentProfile: profile,
   createProject,
   marketPlace,

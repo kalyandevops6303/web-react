@@ -4,6 +4,7 @@ import Select from 'react-select';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { selectThemeColors } from '@utils';
 import { Badge, Card, CardBody, Col, Label, Row } from 'reactstrap';
+import { useNavigate } from 'react-router';
 import { Bell } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { BorderCardContainer, NotificationBadgeContainer } from './style';
@@ -14,6 +15,7 @@ import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import { clearNotificationsData } from '../../redux/reducers/notifications';
 
 const Notifications = () => {
+  const navigate = useNavigate();
   const priorities = {
     PRIORITY_1: 'red',
     PRIORITY_2: 'green',
@@ -49,7 +51,11 @@ const Notifications = () => {
     setSelectedPriority(option);
     dispatch(getNotifications(option.value, 1, 10, []));
   };
-
+  const handleNotification = (data) => {
+    if (data?.title === 'Team Invite') {
+      navigate(`/team-invitation/${data.custom_payload?.invitation_id}`);
+    }
+  };
   return (
     <>
       <div className="d-flex justify-content-between mb-2 mt-1">
@@ -83,7 +89,11 @@ const Notifications = () => {
       >
         {notificationsData?.data?.length > 0 ? (
           notificationsData?.data?.map((item) => (
-            <BorderCardContainer key={item?._id} priorityColor={priorities[item.priority]}>
+            <BorderCardContainer
+              onClick={() => handleNotification(item)}
+              key={item?._id}
+              priorityColor={priorities[item.priority]}
+            >
               <Card>
                 <CardBody>
                   <div className="d-flex justify-content-between">

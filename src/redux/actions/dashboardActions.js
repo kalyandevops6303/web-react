@@ -12,6 +12,7 @@ import {
   getProjectInviteService,
   validateUrlService,
   updateInvitationService,
+  removeMemberService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -43,9 +44,12 @@ import {
   getMyTeamFailure,
   getMyTeamRequest,
   getMyTeamSuccess,
+  removeMemberRequest,
+  removeMemberFailure,
+  removeMemberSuccess,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
-import { ERROR } from '../../utility/constants/ToastTypes';
+import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
 
 const getRecommendedProjects = () => async (dispatch) => {
   dispatch(recommendedProjectsRequest());
@@ -67,25 +71,29 @@ const getProfilePercentage = () => async (dispatch) => {
   }
 };
 
-const getTeamMembers = () => async (dispatch) => {
-  dispatch(getTeamMemberRequest());
-  try {
-    const res = await getTeamMemberService();
-    dispatch(getTeamMemberSuccess(res.data.data));
-  } catch (error) {
-    errorHandler(error, getTeamMemberFailure);
-  }
-};
+const getTeamMembers =
+  ({ metadata }) =>
+  async (dispatch) => {
+    dispatch(getTeamMemberRequest());
+    try {
+      const res = await getTeamMemberService({ metadata });
+      dispatch(getTeamMemberSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getTeamMemberFailure);
+    }
+  };
 
-const getInvitedMember = () => async (dispatch) => {
-  dispatch(getInvitedMemberRequest());
-  try {
-    const res = await getInvitedTeamMemberService();
-    dispatch(getInvitedMemberSuccess(res.data.data));
-  } catch (error) {
-    errorHandler(error, getInvitedMemberFailure);
-  }
-};
+const getInvitedMember =
+  ({ metadata }) =>
+  async (dispatch) => {
+    dispatch(getInvitedMemberRequest());
+    try {
+      const res = await getInvitedTeamMemberService({ metadata });
+      dispatch(getInvitedMemberSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getInvitedMemberFailure);
+    }
+  };
 
 const getJoinRequest = (id) => async (dispatch) => {
   dispatch(joinRequestMemberRequest());
@@ -104,6 +112,18 @@ const getRecommendedTalent = (id) => async (dispatch) => {
     dispatch(recommendedTalentSuccess(res.data.data));
   } catch (error) {
     errorHandler(error, recommendedTalentFailure);
+  }
+};
+
+const removeTeamMember = (data) => async (dispatch) => {
+  dispatch(removeMemberRequest());
+  try {
+    await removeMemberService(data);
+    dispatch(removeMemberSuccess(data));
+    dispatch(getTeamMembers());
+    ShowToastMessage(SUCCESS, 'Member Removed');
+  } catch (error) {
+    errorHandler(error, removeMemberFailure);
   }
 };
 
@@ -172,6 +192,7 @@ const updateInvitation =
 
 export {
   validateUrl,
+  removeTeamMember,
   updateInvitation,
   getRecommendedProjects,
   getProfilePercentage,
