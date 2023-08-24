@@ -44,7 +44,7 @@ const TeamSection = ({ toggleModal }) => {
       <Card>
         <CardHeader className="earning-head">
           <CardTitle tag="h6">
-            Team <span className="members-count">{teamMembers?.metadata?.total_records} Members</span>
+            Team <span className="members-count">{selectTeamMembersMetadata?.total_records} Members</span>
           </CardTitle>
           <CardText
             onClick={toggleModal}
