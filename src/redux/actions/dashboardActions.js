@@ -118,9 +118,10 @@ const getRecommendedTalent = (id) => async (dispatch) => {
 const removeTeamMember = (data) => async (dispatch) => {
   dispatch(removeMemberRequest());
   try {
+    const metadata = { page: 1, page_size: 10 };
     await removeMemberService(data);
     dispatch(removeMemberSuccess(data));
-    dispatch(getTeamMembers());
+    dispatch(getTeamMembers({ metadata }));
     ShowToastMessage(SUCCESS, 'Member Removed');
   } catch (error) {
     errorHandler(error, removeMemberFailure);
