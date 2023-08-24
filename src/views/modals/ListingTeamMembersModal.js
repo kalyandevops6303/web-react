@@ -62,7 +62,7 @@ const ListingTeamMembersModal = ({ modal, toggleModal, toggleInviteTeamMemberMod
                               <p className="fw-bolder m-0">
                                 {item?.first_name} {item?.last_name}
                               </p>
-                              <p className="font-small-3 m-0">{item?.role}</p>
+                              <p className="font-small-3 m-0">{item?.role?.name}</p>
                             </div>
                           </div>
                         </Col>
@@ -115,7 +115,7 @@ const ListingTeamMembersModal = ({ modal, toggleModal, toggleInviteTeamMemberMod
                                 <p className="fw-bolder m-0">
                                   {item?.first_name} {item?.last_name}
                                 </p>
-                                <p className="font-small-3 m-0">{item?.role}</p>
+                                <p className="font-small-3 m-0">{item?.role?.name}</p>
                               </div>
                             </div>
                           </Col>
