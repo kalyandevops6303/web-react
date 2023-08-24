@@ -13,15 +13,16 @@ import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
-import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
-import TeamListing from './overview/TeamListing';
+// import TeamListing from './overview/TeamListing';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { getItem } from '../../utility/localStorageControl';
 import InviteTalentToTeam from '../invite-talent-to-team';
+import RemoveMemberModal from '../modals/RemoveMemberModal';
+import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -29,6 +30,8 @@ const PrivateDashboard = () => {
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+  const [deleteModal, setDeletModal] = useState(false);
+  const [deleteModalData, setDeleteModalData] = useState();
 
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
@@ -78,6 +81,11 @@ const PrivateDashboard = () => {
     }
   }, []);
 
+  const handleRemoveMember = (data) => {
+    setDeletModal(true);
+    setDeleteModalData(data);
+  };
+
   return (
     <div>
       {completeProfileModal && (
@@ -89,7 +97,11 @@ const PrivateDashboard = () => {
           toggleModal={toggleListingTeamMembersModal}
           toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+          onRemove={handleRemoveMember}
         />
+      )}
+      {deleteModal && (
+        <RemoveMemberModal modal={deleteModal} data={deleteModalData} toggleModal={() => setDeletModal(!deleteModal)} />
       )}
 
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
@@ -148,7 +160,7 @@ const PrivateDashboard = () => {
           {userDetailsData?.user_type === userTypes.talent && (
             <section className="mb-2">
               <Header className="mb-1">Teams</Header>
-              <TeamListing />
+              {/* <TeamListing /> */}
             </section>
           )}
         </Col>
