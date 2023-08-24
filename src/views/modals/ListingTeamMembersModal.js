@@ -164,7 +164,7 @@ const InvitedMemberComponent = () => {
       {inviteMembers?.length > 0 && (
         <div>
           <GrayBorderContainer className="d-flex justify-content-between px-2 py-1">
-            <h3 className="font-medium-4">Invite sent</h3>
+            <h3 className="font-medium-4">Invites Sent</h3>
           </GrayBorderContainer>
 
           <div id="scrollableDivInvitedMemberModal" className="p-2" style={{ maxHeight: '22rem', overflowY: 'auto' }}>
@@ -208,7 +208,7 @@ const InvitedMemberComponent = () => {
                         <p className="fw-bold m-0">Team Member</p>
                       </Col>
                       <Col sm="12" md="3" lg="3">
-                        <p className="m-0">Accepted on</p>
+                        <p className="m-0">Invited on</p>
                         <p className="fw-bold font-medium-2 m-0">
                           {DateTime.fromMillis(item?.invited_on).toFormat('MMM dd, yy') || '-'}
                         </p>
