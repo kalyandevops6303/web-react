@@ -39,10 +39,11 @@ import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
 import { formatDateWithDash } from '../../../utility/Utils';
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
-import { projectDetails, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
+import { bidDetailsLoading, projectDetails, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
 import { milestoneFileUploadService, milestoneFileUploadToAzureService } from '../../../services/createBidServices';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const FixedSimpleMilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -122,11 +123,23 @@ const FixedSimpleMilestoneView = () => {
   const setMilestonesIsLoading = useSelector(setMilestonesLoading);
   const selectUserDetailsData = useSelector(selectUserData);
   const projectDetailsData = useSelector(projectDetails);
+  const bidDetailsIsLoading = useSelector(bidDetailsLoading);
 
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
   const filesRef = useRef();
+  const allMilestones = useWatch({ control, name: 'milestones' });
+
+  const calculateTotalValues = () => {
+    const totalDuration = allMilestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
+
+    const totalCost = allMilestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
+
+    return { totalDuration, totalCost };
+  };
+
+  const { totalDuration, totalCost } = calculateTotalValues();
 
   const cleanArrayOfObjects = (arr) =>
     arr.map((obj) => {
@@ -407,518 +420,503 @@ const FixedSimpleMilestoneView = () => {
 
   return (
     <MilestoneSectionWrapper className="mt-2">
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="gray-card-wrapper">
-          <CardHeader className="p-0">
-            <div className="w-100 pt-2 pb-1 px-1 gray-border-container">
-              <h5 className="m-0 font-medium-1">
-                Create milestones that will make it easier to work on and track this project
-              </h5>
-            </div>
-          </CardHeader>
-          <CardBody className="pt-2 pb-0">
-            {useWatch({ control, name: 'milestones' }).reduce(
-              (total, milestone) => total + Number(milestone.talentCost || 0),
-              0,
-            ) > projectDetailsData?.pay_type?.fixed_cost ? (
-              <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
-                <Info size={18} color={theme.red} className="me-50" />
-                <p className="font-medium-1 m-0 error">
-                  <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of the
-                  project. Please adjust your cost in order to submit the bid
-                </p>
+      {bidDetailsIsLoading ? (
+        <ComponentSpinner className="mt-5" />
+      ) : (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Card className="gray-card-wrapper">
+            <CardHeader className="p-0">
+              <div className="w-100 pt-2 pb-1 px-1 gray-border-container">
+                <h5 className="m-0 font-medium-1">
+                  Create milestones that will make it easier to work on and track this project
+                </h5>
               </div>
-            ) : (
-              <div className="fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
-                <Info size={18} color={theme.activeNavPillText} className="me-50" />
-                <p className="font-medium-1 m-0 info">
-                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
-                  distributed between each talent
-                </p>
-              </div>
-            )}
-            <Card className="white-card-bg">
-              <CardBody>
-                <Row className="d-flex justify-content-between">
-                  <Col sm="12" md="12" lg="3" className="ps-50">
-                    <div>
-                      <Label className="form-label" for="estimatedStartDate">
-                        Estimated Start Date<span className="label-asterisk me-50">*</span>
-                      </Label>
-                      <Controller
-                        control={control}
-                        id="estimatedStartDate"
-                        name="estimatedStartDate"
-                        render={({ field }) => (
-                          <Flatpickr
-                            {...field}
-                            placeholder="Select start date"
-                            options={{
-                              minDate: 'today',
-                              dateFormat: 'd-m-Y',
-                            }}
-                            className={classNames('form-control', {
-                              'is-invalid': errors && errors.estimatedStartDate,
-                            })}
-                          />
-                        )}
-                      />
-                      {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
-                    </div>
-                  </Col>
-                  <Col sm="12" md="12" lg="4" className="d-flex justify-content-between me-1">
-                    <div>
-                      <Label className="form-label">Estimated Duration</Label>
-                      <p className="fw-bold font-medium-1 text-end mt-50">
-                        {useWatch({ control, name: 'milestones' }).reduce(
-                          (total, milestone) => total + Number(milestone.duration || 0),
-                          0,
-                        )}
-                        w
-                      </p>
-                    </div>
-                    <div>
-                      <div className="d-flex align-items-center m-0">
-                        <Label className="form-label">Fixed Cost</Label>
-                        <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
+            </CardHeader>
+            <CardBody className="pt-2 pb-0">
+              {totalCost > projectDetailsData?.pay_type?.fixed_cost ? (
+                <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
+                  <Info size={18} color={theme.red} className="me-50" />
+                  <p className="font-medium-1 m-0 error">
+                    <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of
+                    the project. Please adjust your cost in order to submit the bid
+                  </p>
+                </div>
+              ) : (
+                <div className="fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
+                  <Info size={18} color={theme.activeNavPillText} className="me-50" />
+                  <p className="font-medium-1 m-0 info">
+                    <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
+                    distributed between each talent
+                  </p>
+                </div>
+              )}
+              <Card className="white-card-bg">
+                <CardBody>
+                  <Row className="d-flex justify-content-between">
+                    <Col sm="12" md="12" lg="3" className="ps-50">
+                      <div>
+                        <Label className="form-label" for="estimatedStartDate">
+                          Estimated Start Date<span className="label-asterisk me-50">*</span>
+                        </Label>
+                        <Controller
+                          control={control}
+                          id="estimatedStartDate"
+                          name="estimatedStartDate"
+                          render={({ field }) => (
+                            <Flatpickr
+                              {...field}
+                              placeholder="Select start date"
+                              options={{
+                                minDate: 'today',
+                                dateFormat: 'd-m-Y',
+                              }}
+                              className={classNames('form-control', {
+                                'is-invalid': errors && errors.estimatedStartDate,
+                              })}
+                            />
+                          )}
+                        />
+                        {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
                       </div>
-                      <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
-                        $ {projectDetailsData?.pay_type?.fixed_cost}
-                      </p>
-                      {useWatch({ control, name: 'milestones' }).reduce(
-                        (total, milestone) => total + Number(milestone.talentCost || 0),
-                        0,
-                      ) > projectDetailsData?.pay_type?.fixed_cost ? (
-                        <p className="fw-bold font-small-3 text-end me-2 mb-0 red-amount">
-                          - ${' '}
-                          {useWatch({ control, name: 'milestones' }).reduce(
-                            (total, milestone) => total + Number(milestone.talentCost || 0),
-                            0,
-                          ) - projectDetailsData?.pay_type?.fixed_cost}
-                        </p>
-                      ) : (
-                        <p className="fw-bold font-small-3 text-end me-2 mb-0 green-amount">
-                          + ${' '}
-                          {projectDetailsData?.pay_type?.fixed_cost -
-                            useWatch({ control, name: 'milestones' }).reduce(
-                              (total, milestone) => total + Number(milestone.talentCost || 0),
-                              0,
-                            )}
-                        </p>
-                      )}
-                    </div>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-            <UncontrolledAccordion className="mb-2">
-              {milestonesFields.map((milestone, milestoneIndex) => (
-                <Card className="white-card-bg" key={milestone.id}>
-                  <CardBody className="p-0">
-                    <AccordionItem className="py-0">
-                      <AccordionHeader targetId={milestoneIndex + 1} className="py-0">
-                        <div className="d-flex justify-content-between align-items-center w-100">
-                          <p className="fw-bold font-medium-1 m-0 ms-25">Milestone {milestoneIndex + 1}</p>
-                          <Row className="d-flex justify-content-end">
-                            <Col sm="12" md="12" lg="3">
-                              <div className="me-2">
-                                <Label className="fw-normal form-label" for="duration">
-                                  Duration
-                                </Label>
-                                <Controller
-                                  id={`milestones[${milestoneIndex}].duration`}
-                                  name={`milestones[${milestoneIndex}].duration`}
-                                  control={control}
-                                  invalid={
-                                    errors &&
-                                    errors.milestones &&
-                                    errors.milestones.length > 0 &&
-                                    errors.milestones[milestoneIndex] &&
-                                    errors.milestones[milestoneIndex].duration &&
-                                    true
-                                  }
-                                  render={({ field }) => (
-                                    <InputGroup
-                                      className="input-group-merge"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                      }}
-                                    >
-                                      <Input
-                                        {...field}
-                                        placeholder="Enter"
-                                        type="number"
-                                        min={0}
-                                        onWheel={(e) => e.target.blur()}
-                                        invalid={
-                                          errors &&
-                                          errors.milestones &&
-                                          errors.milestones.length > 0 &&
-                                          errors.milestones[milestoneIndex] &&
-                                          errors.milestones[milestoneIndex].duration &&
-                                          true
-                                        }
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                        }}
-                                      />
-                                      {getValues('milestones')[milestoneIndex].duration > 0 && (
-                                        <InputGroupText className="ps-0">w</InputGroupText>
-                                      )}
-                                    </InputGroup>
-                                  )}
-                                />
-                                {errors &&
-                                  errors.milestones &&
-                                  errors.milestones.length > 0 &&
-                                  errors.milestones[milestoneIndex] &&
-                                  errors.milestones[milestoneIndex].duration && (
-                                    <FormFeedback>{errors.milestones[milestoneIndex].duration.message}</FormFeedback>
-                                  )}
-                              </div>
-                            </Col>
-                            <Col sm="12" md="12" lg="4">
-                              <div>
-                                <Label className="fw-normal form-label me-2" for="talentCost">
-                                  Talent Cost
-                                </Label>
-                                <Controller
-                                  id={`milestones[${milestoneIndex}].talentCost`}
-                                  name={`milestones[${milestoneIndex}].talentCost`}
-                                  control={control}
-                                  invalid={
-                                    errors &&
-                                    errors.milestones &&
-                                    errors.milestones.length > 0 &&
-                                    errors.milestones[milestoneIndex] &&
-                                    errors.milestones[milestoneIndex].talentCost &&
-                                    true
-                                  }
-                                  render={({ field }) => (
-                                    <InputGroup
-                                      className="input-group-merge w-75"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                      }}
-                                    >
-                                      {getValues('milestones')[milestoneIndex].talentCost > 0 && (
-                                        <InputGroupText className="pe-25">$</InputGroupText>
-                                      )}
-                                      <Input
-                                        {...field}
-                                        placeholder="Enter"
-                                        invalid={
-                                          errors &&
-                                          errors.milestones &&
-                                          errors.milestones.length > 0 &&
-                                          errors.milestones[milestoneIndex] &&
-                                          errors.milestones[milestoneIndex].talentCost &&
-                                          true
-                                        }
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                        }}
-                                      />
-                                    </InputGroup>
-                                  )}
-                                />
-                                {errors &&
-                                  errors.milestones &&
-                                  errors.milestones.length > 0 &&
-                                  errors.milestones[milestoneIndex] &&
-                                  errors.milestones[milestoneIndex].talentCost && (
-                                    <FormFeedback>{errors.milestones[milestoneIndex].talentCost.message}</FormFeedback>
-                                  )}
-                              </div>
-                            </Col>
-                          </Row>
+                    </Col>
+                    <Col sm="12" md="12" lg="4" className="d-flex justify-content-between me-1">
+                      <div>
+                        <Label className="form-label">Estimated Duration</Label>
+                        <p className="fw-bold font-medium-1 text-end mt-50">{totalDuration}w</p>
+                      </div>
+                      <div>
+                        <div className="d-flex align-items-center m-0">
+                          <Label className="form-label">Fixed Cost</Label>
+                          <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
                         </div>
-                      </AccordionHeader>
-                      <AccordionBody accordionId={milestoneIndex + 1}>
-                        <Row>
-                          <Col sm="12" md="12" lg="6">
-                            <Card>
-                              <CardBody>
-                                <p className="fw-bold font-medium-1 text-secondary mb-2">Milestone Details</p>
-                                <Label className="form-label" for="name">
-                                  Milestone Name<span className="label-asterisk">*</span>
-                                </Label>
-                                <Controller
-                                  id={`milestones[${milestoneIndex}].name`}
-                                  name={`milestones[${milestoneIndex}].name`}
-                                  control={control}
-                                  invalid={
-                                    errors &&
-                                    errors.milestones &&
-                                    errors.milestones.length > 0 &&
-                                    errors.milestones[milestoneIndex] &&
-                                    errors.milestones[milestoneIndex].name &&
-                                    true
-                                  }
-                                  render={({ field }) => (
-                                    <Input
-                                      {...field}
-                                      placeholder="Enter name"
-                                      invalid={
-                                        errors &&
-                                        errors.milestones &&
-                                        errors.milestones.length > 0 &&
-                                        errors.milestones[milestoneIndex] &&
-                                        errors.milestones[milestoneIndex].name &&
-                                        true
-                                      }
-                                    />
-                                  )}
-                                />
-                                {errors &&
-                                  errors.milestones &&
-                                  errors.milestones.length > 0 &&
-                                  errors.milestones[milestoneIndex] &&
-                                  errors.milestones[milestoneIndex].name && (
-                                    <FormFeedback>{errors.milestones[milestoneIndex].name.message}</FormFeedback>
-                                  )}
-                                <div className="d-flex mt-2">
-                                  <Label className="form-label" for="description">
-                                    Description
+                        <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
+                          $ {projectDetailsData?.pay_type?.fixed_cost}
+                        </p>
+                        {totalCost > projectDetailsData?.pay_type?.fixed_cost ? (
+                          <p className="fw-bold font-small-3 text-end me-2 mb-0 red-amount">
+                            - $ {totalCost - projectDetailsData?.pay_type?.fixed_cost}
+                          </p>
+                        ) : (
+                          <p className="fw-bold font-small-3 text-end me-2 mb-0 green-amount">
+                            + $ {projectDetailsData?.pay_type?.fixed_cost - totalCost}
+                          </p>
+                        )}
+                      </div>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+              <UncontrolledAccordion className="mb-2">
+                {milestonesFields.map((milestone, milestoneIndex) => (
+                  <Card className="white-card-bg" key={milestone.id}>
+                    <CardBody className="p-0">
+                      <AccordionItem className="py-0">
+                        <AccordionHeader targetId={milestoneIndex + 1} className="py-0">
+                          <div className="d-flex justify-content-between align-items-center w-100">
+                            <p className="fw-bold font-medium-1 m-0 ms-25">Milestone {milestoneIndex + 1}</p>
+                            <Row className="d-flex justify-content-end">
+                              <Col sm="12" md="12" lg="3">
+                                <div className="me-2">
+                                  <Label className="fw-normal form-label" for="duration">
+                                    Duration
                                   </Label>
-                                  <Info size={18} color={theme.infoIcon} id="logo-info" className="ms-50" />
-                                </div>
-                                <UncontrolledTooltip placement="right" target="logo-info">
-                                  <p className="m-0">Give description in 250 characters or less</p>
-                                </UncontrolledTooltip>
-                                <Controller
-                                  id={`milestones[${milestoneIndex}].description`}
-                                  name={`milestones[${milestoneIndex}].description`}
-                                  control={control}
-                                  invalid={
-                                    errors &&
+                                  <Controller
+                                    id={`milestones[${milestoneIndex}].duration`}
+                                    name={`milestones[${milestoneIndex}].duration`}
+                                    control={control}
+                                    invalid={
+                                      errors &&
+                                      errors.milestones &&
+                                      errors.milestones.length > 0 &&
+                                      errors.milestones[milestoneIndex] &&
+                                      errors.milestones[milestoneIndex].duration &&
+                                      true
+                                    }
+                                    render={({ field }) => (
+                                      <InputGroup
+                                        className="input-group-merge"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                        }}
+                                      >
+                                        <Input
+                                          {...field}
+                                          placeholder="Enter"
+                                          type="number"
+                                          min={0}
+                                          onWheel={(e) => e.target.blur()}
+                                          invalid={
+                                            errors &&
+                                            errors.milestones &&
+                                            errors.milestones.length > 0 &&
+                                            errors.milestones[milestoneIndex] &&
+                                            errors.milestones[milestoneIndex].duration &&
+                                            true
+                                          }
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                          }}
+                                        />
+                                        {getValues('milestones')[milestoneIndex].duration > 0 && (
+                                          <InputGroupText className="ps-0">w</InputGroupText>
+                                        )}
+                                      </InputGroup>
+                                    )}
+                                  />
+                                  {errors &&
                                     errors.milestones &&
                                     errors.milestones.length > 0 &&
                                     errors.milestones[milestoneIndex] &&
-                                    errors.milestones[milestoneIndex].description &&
-                                    true
-                                  }
-                                  render={({ field }) => (
-                                    <Input
-                                      {...field}
-                                      type="textarea"
-                                      rows="4"
-                                      placeholder="Enter description in 250 characters"
-                                      invalid={
-                                        errors &&
-                                        errors.milestones &&
-                                        errors.milestones.length > 0 &&
-                                        errors.milestones[milestoneIndex] &&
-                                        errors.milestones[milestoneIndex].description &&
-                                        true
-                                      }
-                                    />
-                                  )}
-                                />
-                                {errors &&
-                                  errors.milestones &&
-                                  errors.milestones.length > 0 &&
-                                  errors.milestones[milestoneIndex] &&
-                                  errors.milestones[milestoneIndex].description && (
-                                    <FormFeedback>{errors.milestones[milestoneIndex].description.message}</FormFeedback>
-                                  )}
-                              </CardBody>
-                            </Card>
-                          </Col>
-                          <Col sm="12" md="12" lg="6">
-                            <Card>
-                              <CardBody>
-                                <p className="fw-bold font-medium-1 text-secondary mb-2 pb-2">Deliverable Details</p>
-                                {milestone.deliverables.map((item, index) => (
-                                  <Row key={item.id} className="mb-1 d-flex align-items-center">
-                                    <Col sm="12" md="12" lg="8">
-                                      <Controller
-                                        id={`milestones[${milestoneIndex}].deliverables[${index}]`}
-                                        name={`milestones[${milestoneIndex}].deliverables[${index}]`}
-                                        control={control}
+                                    errors.milestones[milestoneIndex].duration && (
+                                      <FormFeedback>{errors.milestones[milestoneIndex].duration.message}</FormFeedback>
+                                    )}
+                                </div>
+                              </Col>
+                              <Col sm="12" md="12" lg="4">
+                                <div>
+                                  <Label className="fw-normal form-label me-2" for="talentCost">
+                                    Talent Cost
+                                  </Label>
+                                  <Controller
+                                    id={`milestones[${milestoneIndex}].talentCost`}
+                                    name={`milestones[${milestoneIndex}].talentCost`}
+                                    control={control}
+                                    invalid={
+                                      errors &&
+                                      errors.milestones &&
+                                      errors.milestones.length > 0 &&
+                                      errors.milestones[milestoneIndex] &&
+                                      errors.milestones[milestoneIndex].talentCost &&
+                                      true
+                                    }
+                                    render={({ field }) => (
+                                      <InputGroup
+                                        className="input-group-merge w-75"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                        }}
+                                      >
+                                        {getValues('milestones')[milestoneIndex].talentCost > 0 && (
+                                          <InputGroupText className="pe-25">$</InputGroupText>
+                                        )}
+                                        <Input
+                                          {...field}
+                                          placeholder="Enter"
+                                          invalid={
+                                            errors &&
+                                            errors.milestones &&
+                                            errors.milestones.length > 0 &&
+                                            errors.milestones[milestoneIndex] &&
+                                            errors.milestones[milestoneIndex].talentCost &&
+                                            true
+                                          }
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                          }}
+                                        />
+                                      </InputGroup>
+                                    )}
+                                  />
+                                  {errors &&
+                                    errors.milestones &&
+                                    errors.milestones.length > 0 &&
+                                    errors.milestones[milestoneIndex] &&
+                                    errors.milestones[milestoneIndex].talentCost && (
+                                      <FormFeedback>
+                                        {errors.milestones[milestoneIndex].talentCost.message}
+                                      </FormFeedback>
+                                    )}
+                                </div>
+                              </Col>
+                            </Row>
+                          </div>
+                        </AccordionHeader>
+                        <AccordionBody accordionId={milestoneIndex + 1}>
+                          <Row>
+                            <Col sm="12" md="12" lg="6">
+                              <Card>
+                                <CardBody>
+                                  <p className="fw-bold font-medium-1 text-secondary mb-2">Milestone Details</p>
+                                  <Label className="form-label" for="name">
+                                    Milestone Name<span className="label-asterisk">*</span>
+                                  </Label>
+                                  <Controller
+                                    id={`milestones[${milestoneIndex}].name`}
+                                    name={`milestones[${milestoneIndex}].name`}
+                                    control={control}
+                                    invalid={
+                                      errors &&
+                                      errors.milestones &&
+                                      errors.milestones.length > 0 &&
+                                      errors.milestones[milestoneIndex] &&
+                                      errors.milestones[milestoneIndex].name &&
+                                      true
+                                    }
+                                    render={({ field }) => (
+                                      <Input
+                                        {...field}
+                                        placeholder="Enter name"
                                         invalid={
                                           errors &&
+                                          errors.milestones &&
+                                          errors.milestones.length > 0 &&
+                                          errors.milestones[milestoneIndex] &&
+                                          errors.milestones[milestoneIndex].name &&
+                                          true
+                                        }
+                                      />
+                                    )}
+                                  />
+                                  {errors &&
+                                    errors.milestones &&
+                                    errors.milestones.length > 0 &&
+                                    errors.milestones[milestoneIndex] &&
+                                    errors.milestones[milestoneIndex].name && (
+                                      <FormFeedback>{errors.milestones[milestoneIndex].name.message}</FormFeedback>
+                                    )}
+                                  <div className="d-flex mt-2">
+                                    <Label className="form-label" for="description">
+                                      Description
+                                    </Label>
+                                    <Info size={18} color={theme.infoIcon} id="logo-info" className="ms-50" />
+                                  </div>
+                                  <UncontrolledTooltip placement="right" target="logo-info">
+                                    <p className="m-0">Give description in 250 characters or less</p>
+                                  </UncontrolledTooltip>
+                                  <Controller
+                                    id={`milestones[${milestoneIndex}].description`}
+                                    name={`milestones[${milestoneIndex}].description`}
+                                    control={control}
+                                    invalid={
+                                      errors &&
+                                      errors.milestones &&
+                                      errors.milestones.length > 0 &&
+                                      errors.milestones[milestoneIndex] &&
+                                      errors.milestones[milestoneIndex].description &&
+                                      true
+                                    }
+                                    render={({ field }) => (
+                                      <Input
+                                        {...field}
+                                        type="textarea"
+                                        rows="4"
+                                        placeholder="Enter description in 250 characters"
+                                        invalid={
+                                          errors &&
+                                          errors.milestones &&
+                                          errors.milestones.length > 0 &&
+                                          errors.milestones[milestoneIndex] &&
+                                          errors.milestones[milestoneIndex].description &&
+                                          true
+                                        }
+                                      />
+                                    )}
+                                  />
+                                  {errors &&
+                                    errors.milestones &&
+                                    errors.milestones.length > 0 &&
+                                    errors.milestones[milestoneIndex] &&
+                                    errors.milestones[milestoneIndex].description && (
+                                      <FormFeedback>
+                                        {errors.milestones[milestoneIndex].description.message}
+                                      </FormFeedback>
+                                    )}
+                                </CardBody>
+                              </Card>
+                            </Col>
+                            <Col sm="12" md="12" lg="6">
+                              <Card>
+                                <CardBody>
+                                  <p className="fw-bold font-medium-1 text-secondary mb-2 pb-2">Deliverable Details</p>
+                                  {milestone.deliverables.map((item, index) => (
+                                    <Row key={item.id} className="mb-1 d-flex align-items-center">
+                                      <Col sm="12" md="12" lg="8">
+                                        <Controller
+                                          id={`milestones[${milestoneIndex}].deliverables[${index}]`}
+                                          name={`milestones[${milestoneIndex}].deliverables[${index}]`}
+                                          control={control}
+                                          invalid={
+                                            errors &&
+                                            errors.milestones &&
+                                            errors.milestones.length > 0 &&
+                                            errors.milestones[milestoneIndex] &&
+                                            errors.milestones[milestoneIndex].deliverables &&
+                                            errors.milestones[milestoneIndex].deliverables.length > 0 &&
+                                            errors.milestones[milestoneIndex].deliverables[index] &&
+                                            true
+                                          }
+                                          render={({ field }) => (
+                                            <Input
+                                              {...field}
+                                              placeholder="Enter deliverable"
+                                              invalid={
+                                                errors &&
+                                                errors.milestones &&
+                                                errors.milestones.length > 0 &&
+                                                errors.milestones[milestoneIndex] &&
+                                                errors.milestones[milestoneIndex].deliverables &&
+                                                errors.milestones[milestoneIndex].deliverables.length > 0 &&
+                                                errors.milestones[milestoneIndex].deliverables[index] &&
+                                                true
+                                              }
+                                            />
+                                          )}
+                                        />
+                                        {errors &&
                                           errors.milestones &&
                                           errors.milestones.length > 0 &&
                                           errors.milestones[milestoneIndex] &&
                                           errors.milestones[milestoneIndex].deliverables &&
                                           errors.milestones[milestoneIndex].deliverables.length > 0 &&
-                                          errors.milestones[milestoneIndex].deliverables[index] &&
-                                          true
-                                        }
-                                        render={({ field }) => (
-                                          <Input
-                                            {...field}
-                                            placeholder="Enter deliverable"
-                                            invalid={
-                                              errors &&
-                                              errors.milestones &&
-                                              errors.milestones.length > 0 &&
-                                              errors.milestones[milestoneIndex] &&
-                                              errors.milestones[milestoneIndex].deliverables &&
-                                              errors.milestones[milestoneIndex].deliverables.length > 0 &&
-                                              errors.milestones[milestoneIndex].deliverables[index] &&
-                                              true
-                                            }
-                                          />
+                                          errors.milestones[milestoneIndex].deliverables[index] && (
+                                            <FormFeedback>
+                                              {errors.milestones[milestoneIndex].deliverables[index].message}
+                                            </FormFeedback>
+                                          )}
+                                      </Col>
+                                      <Col sm="12" md="12" lg="4">
+                                        {getValues('milestones')[milestoneIndex].deliverables.length > 1 && (
+                                          <Button
+                                            type="button"
+                                            color="flat-danger"
+                                            onClick={() => handleRemoveDeliverable(milestoneIndex, index)}
+                                          >
+                                            Remove
+                                          </Button>
                                         )}
-                                      />
-                                      {errors &&
-                                        errors.milestones &&
-                                        errors.milestones.length > 0 &&
-                                        errors.milestones[milestoneIndex] &&
-                                        errors.milestones[milestoneIndex].deliverables &&
-                                        errors.milestones[milestoneIndex].deliverables.length > 0 &&
-                                        errors.milestones[milestoneIndex].deliverables[index] && (
-                                          <FormFeedback>
-                                            {errors.milestones[milestoneIndex].deliverables[index].message}
-                                          </FormFeedback>
-                                        )}
-                                    </Col>
-                                    <Col sm="12" md="12" lg="4">
-                                      {getValues('milestones')[milestoneIndex].deliverables.length > 1 && (
-                                        <Button
-                                          type="button"
-                                          color="flat-danger"
-                                          onClick={() => handleRemoveDeliverable(milestoneIndex, index)}
-                                        >
-                                          Remove
-                                        </Button>
-                                      )}
-                                    </Col>
-                                  </Row>
-                                ))}
-                                <div
-                                  className="d-flex align-items-center upload-button cursor-pointer mt-2"
-                                  onClick={() => handleAddDeliverable(milestoneIndex)}
-                                >
-                                  <div className="add-icon-container">
-                                    <Plus size={16} color={theme.activeNavPillText} />
+                                      </Col>
+                                    </Row>
+                                  ))}
+                                  <div
+                                    className="d-flex align-items-center upload-button cursor-pointer mt-2"
+                                    onClick={() => handleAddDeliverable(milestoneIndex)}
+                                  >
+                                    <div className="add-icon-container">
+                                      <Plus size={16} color={theme.activeNavPillText} />
+                                    </div>
+                                    <h5 className="fw-bold">Add Deliverable</h5>
                                   </div>
-                                  <h5 className="fw-bold">Add Deliverable</h5>
-                                </div>
-                              </CardBody>
-                            </Card>
-                          </Col>
-                        </Row>
-                        <div className="d-flex align-items-center justify-content-between w-100">
-                          <div
-                            className="d-flex align-items-center upload-button cursor-pointer"
-                            onClick={handleAddMilestone}
-                          >
-                            <Plus size={16} color={theme.activeNavPillText} />
-                            <h5 className="fw-bold">Add Milestone</h5>
-                          </div>
-                          {getValues('milestones').length > 1 && (
-                            <Button
-                              type="button"
-                              color="flat-danger"
-                              onClick={() => {
-                                setRemovedMilestoneIds((oldIds) => [...oldIds, milestone.otherDetails._id]);
-                                milestonesRemove(milestoneIndex);
-                              }}
+                                </CardBody>
+                              </Card>
+                            </Col>
+                          </Row>
+                          <div className="d-flex align-items-center justify-content-between w-100">
+                            <div
+                              className="d-flex align-items-center upload-button cursor-pointer"
+                              onClick={handleAddMilestone}
                             >
-                              Remove
-                            </Button>
-                          )}
-                        </div>
-                      </AccordionBody>
-                    </AccordionItem>
-                  </CardBody>
-                </Card>
-              ))}
-            </UncontrolledAccordion>
-          </CardBody>
-        </Card>
-        <Card className="mt-2">
-          <CardHeader className="py-75">
-            <h4 className="m-0 mt-75">Documents</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <Row className="mb-1">
-              <Label className="form-label">
-                Upload detailed requirements document (optional) <Info size={18} color={theme.infoIcon} id="document" />
-                <UncontrolledTooltip placement="right" target="document">
-                  <div className="d-flex flex-column align-items-start">
-                    <p className="m-0">Allowed file types:</p>
-                    <p className="m-0">pdf, doc, docx, txt, jpeg</p>
-                    <p className="m-0">Max files: 5</p>
-                    <p className="m-0">Max file size: 5MB</p>
-                  </div>
-                </UncontrolledTooltip>
-              </Label>
-              {files.length ? (
-                <>
-                  <div className="px-1 mt-50">{fileList()}</div>
-                  <div {...getRootProps({ className: 'dropzone' })}>
-                    <input {...getInputProps()} />
-                    <div className="d-flex align-items-center upload-btn cursor-pointer mt-1">
-                      <UploadIconContainer>
-                        <Upload size={18} color={theme.activeNavPillText} />
-                      </UploadIconContainer>
-                      <h5 className="fw-bold mb-0 mx-75">Upload</h5>
+                              <Plus size={16} color={theme.activeNavPillText} />
+                              <h5 className="fw-bold">Add Milestone</h5>
+                            </div>
+                            {getValues('milestones').length > 1 && (
+                              <Button
+                                type="button"
+                                color="flat-danger"
+                                onClick={() => {
+                                  setRemovedMilestoneIds((oldIds) => [...oldIds, milestone.otherDetails._id]);
+                                  milestonesRemove(milestoneIndex);
+                                }}
+                              >
+                                Remove
+                              </Button>
+                            )}
+                          </div>
+                        </AccordionBody>
+                      </AccordionItem>
+                    </CardBody>
+                  </Card>
+                ))}
+              </UncontrolledAccordion>
+            </CardBody>
+          </Card>
+          <Card className="mt-2">
+            <CardHeader className="py-75">
+              <h4 className="m-0 mt-75">Documents</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <Row className="mb-1">
+                <Label className="form-label">
+                  Upload detailed requirements document (optional){' '}
+                  <Info size={18} color={theme.infoIcon} id="document" />
+                  <UncontrolledTooltip placement="right" target="document">
+                    <div className="d-flex flex-column align-items-start">
+                      <p className="m-0">Allowed file types:</p>
+                      <p className="m-0">pdf, doc, docx, txt, jpeg</p>
+                      <p className="m-0">Max files: 5</p>
+                      <p className="m-0">Max file size: 5MB</p>
                     </div>
-                  </div>
-                </>
-              ) : (
-                <Col sm="12" md="12" lg="6">
-                  <DropzoneContainer>
+                  </UncontrolledTooltip>
+                </Label>
+                {files.length ? (
+                  <>
+                    <div className="px-1 mt-50">{fileList()}</div>
                     <div {...getRootProps({ className: 'dropzone' })}>
                       <input {...getInputProps()} />
-                      <div className="d-flex align-items-center justify-content-center flex-column p-3">
-                        <h4 className="font-medium-1">Drop files here or click to upload</h4>
-                        <p className="text-secondary font-small-5 text-center mt-50 fw-light">
-                          (This is just a demo dropzone. Selected files are not actually uploaded.)
-                        </p>
+                      <div className="d-flex align-items-center upload-btn cursor-pointer mt-1">
+                        <UploadIconContainer>
+                          <Upload size={18} color={theme.activeNavPillText} />
+                        </UploadIconContainer>
+                        <h5 className="fw-bold mb-0 mx-75">Upload</h5>
                       </div>
                     </div>
-                  </DropzoneContainer>
-                </Col>
-              )}
-            </Row>
-          </CardBody>
-        </Card>
-        <div className="d-flex justify-content-between align-items-center">
-          <div
-            className="d-flex align-items-center upload-button cursor-pointer"
-            onClick={() => {
-              if (selectUserDetailsData?.user_type === userTypes.team) {
-                navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`);
-              } else {
-                navigate('/marketplace/all_listings');
+                  </>
+                ) : (
+                  <Col sm="12" md="12" lg="6">
+                    <DropzoneContainer>
+                      <div {...getRootProps({ className: 'dropzone' })}>
+                        <input {...getInputProps()} />
+                        <div className="d-flex align-items-center justify-content-center flex-column p-3">
+                          <h4 className="font-medium-1">Drop files here or click to upload</h4>
+                          <p className="text-secondary font-small-5 text-center mt-50 fw-light">
+                            (This is just a demo dropzone. Selected files are not actually uploaded.)
+                          </p>
+                        </div>
+                      </div>
+                    </DropzoneContainer>
+                  </Col>
+                )}
+              </Row>
+            </CardBody>
+          </Card>
+          <div className="d-flex justify-content-between align-items-center">
+            <div
+              className="d-flex align-items-center upload-button cursor-pointer"
+              onClick={() => {
+                if (selectUserDetailsData?.user_type === userTypes.team) {
+                  navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`);
+                } else {
+                  navigate('/marketplace/all_listings');
+                }
+              }}
+            >
+              <UploadIconContainer>
+                <ChevronLeft size={18} color={theme.activeNavPillText} />
+              </UploadIconContainer>
+              <h5 className="fw-bold">Back</h5>
+            </div>
+            <Button
+              color="primary"
+              type="submit"
+              disabled={
+                totalCost > projectDetailsData?.pay_type?.fixed_cost ||
+                !isValid ||
+                setMilestonesIsLoading ||
+                uploadingFiles.length > 0
               }
-            }}
-          >
-            <UploadIconContainer>
-              <ChevronLeft size={18} color={theme.activeNavPillText} />
-            </UploadIconContainer>
-            <h5 className="fw-bold">Back</h5>
+            >
+              {setMilestonesIsLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span className="me-50">Save & Continue</span>
+                  <ChevronRight size={14} />
+                </>
+              )}
+            </Button>
           </div>
-          <Button
-            color="primary"
-            type="submit"
-            disabled={
-              useWatch({ control, name: 'milestones' }).reduce(
-                (total, milestone) => total + Number(milestone.talentCost || 0),
-                0,
-              ) > projectDetailsData?.pay_type?.fixed_cost ||
-              !isValid ||
-              setMilestonesIsLoading ||
-              uploadingFiles.length > 0
-            }
-          >
-            {setMilestonesIsLoading ? (
-              <Spinner size="sm" />
-            ) : (
-              <>
-                <span className="me-50">Save & Continue</span>
-                <ChevronRight size={14} />
-              </>
-            )}
-          </Button>
-        </div>
-      </Form>
+        </Form>
+      )}
     </MilestoneSectionWrapper>
   );
 };

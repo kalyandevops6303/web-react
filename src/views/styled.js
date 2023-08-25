@@ -177,13 +177,13 @@ const TimeWrapper = styled.section`
     height: 8px;
     width: 8px;
     display: block;
-    background: rgba(217, 217, 217, 0.5);
+    background: ${theme.dotBg};
     border-radius: 50%;
     margin: auto;
     margin-bottom: 6px;
   }
   .active {
-    background: #28c76f;
+    background: ${theme.green};
   }
   .line {
     width: 1px;
@@ -216,8 +216,8 @@ const TimeWrapper = styled.section`
 const CreateBidRadioOption = styled.div`
   padding: 1rem;
   border-radius: 6px;
-  border: ${(props) => (props.active ? '1px solid #0185E4' : '1px solid rgba(130, 134, 139, 0.12)')};
-  background-color: ${(props) => (props.active ? 'rgba(1,133,228,0.06)' : 'rgba(130, 134, 139, 0.03)')};
+  border: ${(props) => (props.active ? `1px solid ${theme.activeNavPillText}` : `1px solid ${theme.darkBorder}`)};
+  background-color: ${(props) => (props.active ? `${theme.lightBlueBgRadio}` : `${theme.lightGrayBgRadio}`)};
 
   .form-check-input:not(:disabled):checked {
     box-shadow: 0px 2px 4px ${theme.checkboxShadow};
@@ -230,7 +230,7 @@ const CreateBidRadioOption = styled.div`
 
   .label {
     p {
-      color: ${(props) => (props.active ? '#0185E4' : `${theme.secondary}`)};
+      color: ${(props) => (props.active ? `${theme.activeNavPillText}` : `${theme.secondary}`)};
     }
   }
 `;
