@@ -50,6 +50,7 @@ const VariableAdvanceMilestoneView = () => {
     estimatedStartDate: yup.date().typeError('Start date is required').required('Start date is required'),
     milestones: yup.array().of(
       yup.object().shape({
+        milestoneId: yup.string(),
         name: yup
           .string()
           .min(4, 'Name must be at least 4 characters')
@@ -72,8 +73,9 @@ const VariableAdvanceMilestoneView = () => {
         workers: yup.array().of(
           yup.object().shape({
             role: yup.string().required(),
+            isChecked: yup.boolean().required(),
             duration: yup.number().when('isChecked', {
-              is: true,
+              is: (isChecked) => isChecked === true,
               then: () =>
                 yup
                   .number()
@@ -81,9 +83,14 @@ const VariableAdvanceMilestoneView = () => {
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Duration is required'),
+              otherwise: yup
+                .number()
+                .transform((value) => (Number.isNaN(value) ? undefined : value))
+                .optional()
+                .notRequired(),
             }),
             hours: yup.number().when('isChecked', {
-              is: true,
+              is: (isChecked) => isChecked === true,
               then: () =>
                 yup
                   .number()
@@ -91,8 +98,12 @@ const VariableAdvanceMilestoneView = () => {
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Hours is required'),
+              otherwise: yup
+                .number()
+                .transform((value) => (Number.isNaN(value) ? undefined : value))
+                .optional()
+                .notRequired(),
             }),
-            isChecked: yup.boolean().required(),
             otherDetails: yup.object().optional(),
           }),
         ),
@@ -105,6 +116,7 @@ const VariableAdvanceMilestoneView = () => {
     handleSubmit,
     getValues,
     setValue,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -112,6 +124,7 @@ const VariableAdvanceMilestoneView = () => {
     defaultValues: {
       milestones: [
         {
+          milestoneId: uuidv4(),
           name: undefined,
           description: undefined,
           deliverables: [''],
@@ -231,8 +244,10 @@ const VariableAdvanceMilestoneView = () => {
     const total_estimated_cost = totalCost;
     const total_numbers_of_hours = totalHours;
     const newMilestones = milestones.filter((milestone) => !('_id' in milestone.otherDetails));
-    const create_milestones = newMilestones.map((milestone, index) => {
-      const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(index);
+    const create_milestones = newMilestones.map((milestone) => {
+      const reqIndex = allMilestones.findIndex((mile) => mile.milestoneId === milestone.milestoneId);
+
+      const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(reqIndex);
 
       return {
         name: milestone.name,
@@ -252,14 +267,16 @@ const VariableAdvanceMilestoneView = () => {
             last_name: worker.otherDetails.last_name,
             user_id: worker.otherDetails.user_id,
             hourly_rate: worker.otherDetails.hourly_rate,
-            number_of_weeks: worker.duration,
-            hours_per_week: worker.hours,
+            number_of_weeks: Number(worker.duration),
+            hours_per_week: Number(worker.hours),
           })),
       };
     });
     const updatedMilestones = milestones.filter((milestone) => '_id' in milestone.otherDetails);
-    const update_milestones = updatedMilestones.map((milestone, index) => {
-      const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(index);
+    const update_milestones = updatedMilestones.map((milestone) => {
+      const reqIndex = allMilestones.findIndex((mile) => mile.milestoneId === milestone.milestoneId);
+
+      const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(reqIndex);
 
       return {
         name: milestone.name,
@@ -280,8 +297,8 @@ const VariableAdvanceMilestoneView = () => {
             last_name: worker.otherDetails.last_name,
             user_id: worker.otherDetails.user_id,
             hourly_rate: worker.otherDetails.hourly_rate,
-            number_of_weeks: worker.duration,
-            hours_per_week: worker.hours,
+            number_of_weeks: Number(worker.duration),
+            hours_per_week: Number(worker.hours),
           })),
       };
     });
@@ -343,6 +360,7 @@ const VariableAdvanceMilestoneView = () => {
 
     if (allMilestonesValid) {
       milestonesAppend({
+        milestoneId: uuidv4(),
         name: undefined,
         description: undefined,
         deliverables: [''],
@@ -492,6 +510,7 @@ const VariableAdvanceMilestoneView = () => {
       }
       if (res?.milestones?.length > 0) {
         const reqData = res?.milestones?.map((milestone) => ({
+          milestoneId: uuidv4(),
           name: milestone?.name,
           description: milestone?.description,
           deliverables: milestone?.deliverables?.length > 0 ? milestone?.deliverables : [''],
@@ -523,6 +542,7 @@ const VariableAdvanceMilestoneView = () => {
       } else if (res?.workers?.length > 0) {
         const reqData = [
           {
+            milestoneId: uuidv4(),
             name: undefined,
             description: undefined,
             deliverables: [''],
@@ -775,54 +795,60 @@ const VariableAdvanceMilestoneView = () => {
                                           {milestone.workers.map((worker, workerIndex) => (
                                             <Row className="mb-1 d-flex align-items-center" key={worker.role}>
                                               <Col sm="12" md="6" lg="5">
-                                                <div className="d-flex align-items-center">
-                                                  <div className="form-check form-check-inline checkbox-custom-margin">
-                                                    <Input
-                                                      type="checkbox"
-                                                      id={`milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`}
-                                                      checked={worker.isChecked}
-                                                      onChange={(e) => {
-                                                        if (e.target.checked) {
-                                                          calculateMilestoneValues(milestoneIndex);
+                                                <Controller
+                                                  id={`milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`}
+                                                  name={`milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`}
+                                                  control={control}
+                                                  invalid={
+                                                    errors &&
+                                                    errors.milestones &&
+                                                    errors.milestones.length > 0 &&
+                                                    errors.milestones[milestoneIndex] &&
+                                                    errors.milestones[milestoneIndex].workers &&
+                                                    errors.milestones[milestoneIndex].workers.length > 0 &&
+                                                    errors.milestones[milestoneIndex].workers[workerIndex] &&
+                                                    errors.milestones[milestoneIndex].workers[workerIndex].isChecked &&
+                                                    true
+                                                  }
+                                                  render={({ field }) => (
+                                                    <div className="d-flex align-items-center">
+                                                      <div className="form-check form-check-inline checkbox-custom-margin">
+                                                        <Input
+                                                          {...field}
+                                                          type="checkbox"
+                                                          id={`milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`}
+                                                          checked={worker.isChecked}
+                                                          onChange={(e) => {
+                                                            // handleCheckboxChange(
+                                                            //   milestoneIndex,
+                                                            //   workerIndex,
+                                                            //   e.target.checked,
+                                                            // );
+                                                            field.onChange(e.target.checked);
 
-                                                          const newData = {
-                                                            ...milestone,
-                                                            workers: milestone.workers.map((w) => {
-                                                              if (w.role === worker.role) {
-                                                                return { ...w, isChecked: true };
-                                                              } else {
-                                                                return w;
-                                                              }
-                                                            }),
-                                                          };
-
-                                                          milestonesUpdate(milestoneIndex, newData);
-                                                        } else {
-                                                          calculateMilestoneValues(milestoneIndex);
-
-                                                          const newData = {
-                                                            ...milestone,
-                                                            workers: milestone.workers.map((w) => {
-                                                              if (w.role === worker.role) {
-                                                                return { ...w, isChecked: false };
-                                                              } else {
-                                                                return w;
-                                                              }
-                                                            }),
-                                                          };
-
-                                                          milestonesUpdate(milestoneIndex, newData);
-                                                        }
-                                                      }}
-                                                    />
-                                                  </div>
-                                                  <Label
-                                                    for={`milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`}
-                                                    className="form-check-label"
-                                                  >
-                                                    {worker.role}
-                                                  </Label>
-                                                </div>
+                                                            if (!e.target.checked) {
+                                                              trigger(
+                                                                `milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`,
+                                                              );
+                                                              trigger(
+                                                                `milestones[${milestoneIndex}].workers[${workerIndex}].duration`,
+                                                              );
+                                                              trigger(
+                                                                `milestones[${milestoneIndex}].workers[${workerIndex}].hours`,
+                                                              );
+                                                            }
+                                                          }}
+                                                        />
+                                                      </div>
+                                                      <Label
+                                                        for={`milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`}
+                                                        className="form-check-label"
+                                                      >
+                                                        {worker.role}
+                                                      </Label>
+                                                    </div>
+                                                  )}
+                                                />
                                               </Col>
                                               <Col sm="12" md="6" lg="7">
                                                 <Row>
@@ -836,6 +862,7 @@ const VariableAdvanceMilestoneView = () => {
                                                         errors.milestones &&
                                                         errors.milestones.length > 0 &&
                                                         errors.milestones[milestoneIndex] &&
+                                                        errors.milestones[milestoneIndex].workers &&
                                                         errors.milestones[milestoneIndex].workers.length > 0 &&
                                                         errors.milestones[milestoneIndex].workers[workerIndex] &&
                                                         errors.milestones[milestoneIndex].workers[workerIndex]
@@ -855,6 +882,7 @@ const VariableAdvanceMilestoneView = () => {
                                                               errors.milestones &&
                                                               errors.milestones.length > 0 &&
                                                               errors.milestones[milestoneIndex] &&
+                                                              errors.milestones[milestoneIndex].workers &&
                                                               errors.milestones[milestoneIndex].workers.length > 0 &&
                                                               errors.milestones[milestoneIndex].workers[workerIndex] &&
                                                               errors.milestones[milestoneIndex].workers[workerIndex]
@@ -881,6 +909,7 @@ const VariableAdvanceMilestoneView = () => {
                                                         errors.milestones &&
                                                         errors.milestones.length > 0 &&
                                                         errors.milestones[milestoneIndex] &&
+                                                        errors.milestones[milestoneIndex].workers &&
                                                         errors.milestones[milestoneIndex].workers.length > 0 &&
                                                         errors.milestones[milestoneIndex].workers[workerIndex] &&
                                                         errors.milestones[milestoneIndex].workers[workerIndex].hours &&
@@ -899,6 +928,7 @@ const VariableAdvanceMilestoneView = () => {
                                                               errors.milestones &&
                                                               errors.milestones.length > 0 &&
                                                               errors.milestones[milestoneIndex] &&
+                                                              errors.milestones[milestoneIndex].workers &&
                                                               errors.milestones[milestoneIndex].workers.length > 0 &&
                                                               errors.milestones[milestoneIndex].workers[workerIndex] &&
                                                               errors.milestones[milestoneIndex].workers[workerIndex]
