@@ -1,6 +1,21 @@
+/* eslint-disable no-undef */
+import { ChevronRight } from 'react-feather';
 import React from 'react';
 import Proptypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody, Card, CardHeader, CardTitle, CardBody, Row, Col, CardText } from 'reactstrap';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardBody,
+  Row,
+  Col,
+  CardText,
+  Button,
+} from 'reactstrap';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
@@ -47,6 +62,13 @@ const ViewProjectDetailModalWrap = styled.div`
 
 // eslint-disable-next-line arrow-body-style
 const ProjectModal = ({ modal, toggleModal, data }) => {
+  const navigate = useNavigate();
+  const isViewable =
+    window.location.pathname.split('/').includes('my_bids') ||
+    window.location.pathname.split('/').includes('my_listings');
+  const handleRedirectTodetailsView = () => {
+    navigate(`/project-details/${data?._id}/bid`);
+  };
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -154,6 +176,14 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
               <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
             </CardBody>
           </Card>
+          {isViewable && (
+            <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
+              <Button onClick={handleRedirectTodetailsView} color="primary">
+                <span className="me-50">View Bid</span>
+                <ChevronRight size={14} />
+              </Button>
+            </div>
+          )}
         </ViewProjectDetailModalWrap>
       </ModalBody>
     </Modal>

@@ -79,6 +79,9 @@ const API = {
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
   },
+  projectDetails: {
+    getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
+  },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
     favoriteTalents: `${apiAuthEndpoint}/api/v1/team/favourite-talents`,

@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+/* eslint-disable no-undef */
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -7,6 +9,7 @@ import CustomStep from '../../@core/components/custom-stepper';
 import { steps } from './overview/constants';
 import BidView from './overview/BidView';
 import TeamView from './overview/TeamView';
+import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -15,9 +18,19 @@ const ProjectDetails = () => {
   const changeStep = (step) => {
     setCurrentStep(step);
   };
+  const projectDetailsData = useSelector(projectDetails);
+
+  useEffect(() => {
+    window?.scrollTo(0, 0);
+  }, []);
   return (
     <>
-      <BreadCrumbs data={[{ title: 'Project name' }]} />
+      <BreadCrumbs
+        data={[
+          { title: 'Marketplace', link: '/marketplace/all_listings' },
+          { title: projectDetailsData?.details?.name },
+        ]}
+      />
       <Row>
         <Col lg="3">
           <LeftSidebarProjectDetails />
