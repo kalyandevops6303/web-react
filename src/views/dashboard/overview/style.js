@@ -111,6 +111,16 @@ const AlertCardWrapper = styled(CardWrapper)`
   .no-meetings-gif {
     height: 10vw;
   }
+  .relative-time {
+    width: 30%;
+    text-align: end;
+  }
+  .additional-text {
+    color: ${theme.lightBlueColor};
+    font-weight: 600;
+    font-size: 12px;
+    margin: auto;
+  }
 `;
 
 const EarningAmount = styled.div`
@@ -186,6 +196,14 @@ const ProjectWrapper = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .truncate-1 {
+    height: 1.6rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .user-section {
     .rounded {
@@ -218,7 +236,7 @@ const ProjectWrapper = styled.div`
     height: 40px;
   }
   .active-project-users {
-    height: 34px;
+    height: 36px;
   }
   .main-row {
     display: flex;
@@ -263,7 +281,16 @@ const ProjectWrapper = styled.div`
   .circular-progressbar-container {
     width: 40px;
     height: 40px;
-
+    .percentage-text {
+      font-weight: 400;
+      font-size: 10px;
+      color: ${theme.headingTextColor};
+    }
+  }
+  .circular-progressbar-container-large {
+    width: 60px;
+    height: 60px;
+    margin: auto;
     .percentage-text {
       font-weight: 400;
       font-size: 10px;
@@ -276,36 +303,6 @@ const ProjectWrapper = styled.div`
     font-weight: 600;
     font-size: 12px;
     margin: auto;
-  }
-
-  .tags-container {
-    height: 60px;
-    overflow: hidden;
-    width: 70% !important;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    width: 100%;
-    margin-left: 10px;
-
-    .bg-secondary {
-      background-color: ${theme.lightBlueBgColor} !important;
-      color: ${theme.lightBlueColor} !important;
-    }
-
-    .tag-margin {
-      margin-right: 10px;
-      margin-bottom: 10px;
-    }
-
-    .badge {
-      display: block;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
   }
 `;
 
@@ -371,7 +368,90 @@ const ProjectsListingWrap = styled.div`
   }
 `;
 
+const DashboardHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  margin-top: -4rem;
+
+  @media (max-width: 767px) {
+    margin-top: -2rem;
+  }
+`;
+
+const TagsWrap = styled.div`
+  // height: ${(props) => (props.fullWidth ? 'auto' : '60px')};
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  width: ${(props) => (props.fullWidth ? '100%' : '75%')} !important;
+  margin: ${(props) => (props.fullWidth ? '0 0 0.75rem 0' : '0.5rem 0 0 10px')};
+
+  .badge-box-wrap {
+    max-height: 2rem;
+    overflow: hidden;
+    width: 100%;
+    .badge {
+      margin: 0 0.5rem 0.5rem 0;
+      font-size: 0.75rem;
+      max-width: ${(props) => (props.fullWidth ? '15rem' : '10rem')};
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+  .bg-secondary {
+    background-color: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor} !important;
+  }
+
+  .tag-margin {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    :last-child {
+      margin-right: 0px;
+    }
+  }
+
+  .additional-text {
+    color: ${theme.lightBlueColor};
+    font-weight: 600;
+    font-size: 12px;
+    margin: auto;
+  }
+`;
+const CreateTeamButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  margin-top: -3.5rem;
+
+  @media (max-width: 767px) {
+    margin-top: -2rem;
+  }
+`;
+
+const TeamSectionWrapper = styled(CardWrapper)`
+  .card-header {
+    padding: 1.6rem 1.5rem;
+  }
+  .card-body {
+    padding: 0.5rem 1.5rem 1rem !important;
+  }
+  .card-title {
+    font-size: 1.125rem;
+  }
+  .members-count {
+    margin-left: 0.75rem;
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.25rem;
+  }
+`;
+
 export {
+  TagsWrap,
   CardWrapper,
   EarningAmount,
   EarningCardWrapper,
@@ -380,4 +460,7 @@ export {
   ProjectWrapper,
   ProjectsListingWrap,
   AlertCardWrapper,
+  DashboardHeaderWrapper,
+  TeamSectionWrapper,
+  CreateTeamButtonWrapper,
 };

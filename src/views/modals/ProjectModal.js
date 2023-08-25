@@ -2,9 +2,7 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, Card, CardHeader, CardTitle, CardBody, Row, Col, CardText } from 'reactstrap';
 import styled from 'styled-components';
-import ReactHtmlParser from '../../lib/html-parser';
 import DateTime from '../../lib/date-time';
-
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
@@ -142,7 +140,7 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <CardText className="fw-300 ms-75 project-desc"> {ReactHtmlParser(data?.details?.description)} </CardText>
+              <CardText className="fw-300 ms-75 project-desc"> {data?.details?.description} </CardText>
             </CardBody>
           </Card>
           <Card>

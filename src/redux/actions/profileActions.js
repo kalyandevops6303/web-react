@@ -1,4 +1,5 @@
 import { getClientService, getTalentService, makeFavService, removeFavService } from '../../services/profileServices';
+import { getTeamById } from '../../services/teamServices';
 import { userTypes } from '../../utility/constants/Constant';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -19,6 +20,9 @@ const getProfile = (id, user_type) => async (dispatch) => {
     if (user_type === userTypes.client) {
       res = await getClientService(id);
     }
+    if (user_type === userTypes.team) {
+      res = await getTeamById(id);
+    }
     dispatch(getProfileSuccess(res.data.data));
   } catch (error) {
     errorHandler(error, getProfileFailure);
@@ -36,7 +40,7 @@ const makeFavourite = (id, user_type) => async (dispatch) => {
 };
 const removeFavourite = (id) => async (dispatch) => {
   try {
-    await removeFavService(id);
+    await removeFavService({ user_id: id });
     dispatch(removeFavSuccess(id));
   } catch (error) {
     errorHandler(error);

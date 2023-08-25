@@ -54,12 +54,20 @@ import {
   resetPasswordRequest,
   resetPasswordSuccess,
   resetPasswordFailure,
+  userDataRequest,
+  userDataFailure,
+  userDataSuccess,
+  switchProfileSuccess,
+  getUserDataSuccess,
 } from '../reducers/auth';
-import { setItem } from '../../utility/localStorageControl';
+import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
-import { clearData } from '../reducers/dashboard';
 import { checkPoints } from '../../utility/constants/Constant';
+import { userDataService } from '../../services/dashboardServices';
+import { getTeamById } from '../../services/teamServices';
+import { clearTeams } from '../reducers/team';
+import { clearNotificationsData } from '../reducers/notifications';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -214,7 +222,7 @@ const resendAction =
         await registerEmailService(email, userType);
       }
       if (isPhoneResend) {
-        await registerPhoneService(phone, country_code);
+        await registerPhoneService({ phone, country_code });
       }
       dispatch(resendSuccess());
     } catch (error) {
@@ -240,8 +248,9 @@ const logoutAction =
       dispatch(fcmUnsubscribeNotification(fcmToken));
     }
     dispatch(logOut());
-    dispatch(clearData());
-
+    dispatch(clearTeams());
+    // dispatch(clearData());
+    dispatch(clearNotificationsData());
     onSuccess();
   };
 
@@ -261,7 +270,44 @@ const resetPassword = (data, onSuccess) => async (dispatch) => {
   }
 };
 
+const getUserData = () => async (dispatch) => {
+  dispatch(userDataRequest());
+  try {
+    const team_id = getItem('team_id');
+    let res;
+    if (team_id) {
+      res = await getTeamById(team_id);
+    } else {
+      res = await userDataService();
+    }
+    dispatch(userDataSuccess(res.data.data));
+    dispatch(getUserDataSuccess(res.data.data?.user_type));
+    setItem('userData', res.data.data);
+  } catch (error) {
+    errorHandler(error, userDataFailure);
+  }
+};
+
+const switchProfile =
+  ({ data, onSuccess }) =>
+  async (dispatch) => {
+    try {
+      dispatch(switchProfileSuccess(data));
+      if (data?.user_type === 'TEAM') {
+        setItem('team_id', data?._id);
+      } else {
+        removeItem('team_id');
+      }
+      onSuccess();
+      // dispatch(clearPostState());
+    } catch (err) {
+      errorHandler(err);
+    }
+  };
+
 export {
+  switchProfile,
+  getUserData,
   resendAction,
   loginUserWithGoogle,
   setUserType,

@@ -89,6 +89,9 @@ const SecondaryFiltersWrap = styled.div`
   .wide__menu {
     width: 250px;
   }
+  .select__clear-indicator {
+    padding-right: 0;
+  }
 
   .view-label {
     font-size: 14px;
@@ -210,4 +213,75 @@ const TimeWrapper = styled.section`
     }
   }
 `;
-export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper };
+
+const GrayBorderContainer = styled.div`
+  border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+
+  .custom-header-margin {
+    margin-top: -1.6rem;
+  }
+`;
+
+export const BlueNavsContainer = styled.div`
+  .nav {
+    border-radius: 0;
+  }
+
+  .nav-link {
+    font-weight: 400;
+  }
+
+  .nav-tabs .nav-link.active {
+    border-bottom: 3px solid ${theme.activeNavPillText} !important;
+    margin-bottom: -2px;
+    color: ${theme.activeNavPillText};
+    font-weight: 600;
+  }
+
+  .nav-tabs .nav-link:after {
+    background: none !important;
+  }
+`;
+
+const GrayCardWrapper = styled.div`
+  .card-header {
+    background-color: ${theme.headerBackground};
+  }
+
+  .card-body {
+    background-color: ${theme.headerBackground};
+  }
+
+  .white-card-bg {
+    .card-body {
+      border-radius: 6px;
+      background-color: ${theme.white};
+      box-shadow: 0px 4px 24px 0px ${theme.cardShadowLight};
+    }
+
+    .text-blue {
+      color: ${theme.activeNavPillText};
+    }
+  }
+`;
+const TeamCreatedModalImageWrapper = styled.section`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid ${theme.navPillText};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export {
+  CardWrapper,
+  Header,
+  CustomBadge,
+  FormWrapper,
+  SecondaryFiltersWrap,
+  TimeWrapper,
+  GrayBorderContainer,
+  GrayCardWrapper,
+  TeamCreatedModalImageWrapper,
+};

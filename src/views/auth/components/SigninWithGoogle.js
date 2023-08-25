@@ -4,14 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { memo, useEffect } from 'react';
 import { loginUserWithGoogle } from '../../../redux/actions/authActions';
-import { selectIsLoggedIn, selectUserType } from '../../../redux/selectors/authSelectors';
+import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { ERROR_CODES, checkPoints } from '../../../utility/constants/Constant';
 
 const SigninWithGoogle = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userType = useSelector(selectUserType);
-  const isLoggedIn = useSelector(selectIsLoggedIn);
   const GoogleWrap = styled.div`
     display: flex;
     justify-content: center;

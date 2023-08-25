@@ -24,7 +24,6 @@ import classNames from 'classnames';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
-import { toast } from 'react-hot-toast';
 import companyIcon from '@src/assets/images/business.svg';
 import { AccountImageContainer, ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
@@ -36,7 +35,13 @@ import { companyIndustriesService, countriesService } from '../../../services/st
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
 import { userDetails } from '../../../redux/selectors/talentOnboardingSelectors';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import {
+  profileImageUploadService,
+  profileImageUploadToAzureService,
+} from '../../../services/talentOnboardingServices';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
+import { maxFileSize, userOnboarding } from '../../../utility/constants/Constant';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -56,10 +61,7 @@ const Personal = () => {
     totalStrength: yup.number(),
     streetAddress: yup.string(),
     houseNumber: yup.string(),
-    zipCode: yup
-      .number()
-      .typeError('Zip code must be a number')
-      .transform((value) => (Number.isNaN(value) ? undefined : value)),
+    zipCode: yup.string(),
     country: yup
       .object()
       .shape({
@@ -110,6 +112,8 @@ const Personal = () => {
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
+  const [imageUrlRes, setImageUrlRes] = useState(null);
+  const [isImageUploading, setIsImageUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   const statesData = useSelector(states);
@@ -121,27 +125,57 @@ const Personal = () => {
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    const maxSize = 5 * 1024 * 1024;
 
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Please select a valid image file (JPG, JPEG, or PNG).');
+      ShowToastMessage(ERROR, 'Please select a valid image file (JPG, JPEG, or PNG).');
       return false;
     }
-    if (file.size > maxSize) {
-      toast.error('File size exceeds the maximum limit (5MB).');
+    if (file.size > maxFileSize) {
+      ShowToastMessage(ERROR, 'File size exceeds the maximum limit (5MB).');
       return false;
     }
     return true;
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file && isFileValid(file)) {
       const thumbnail = URL.createObjectURL(file);
       setSelectedImage(file);
       setSelectedImagePreview(thumbnail);
     }
+
+    try {
+      setIsImageUploading(true);
+      const res = await profileImageUploadService(file.name);
+      setImageUrlRes(res?.data?.data);
+    } catch (error) {
+      setIsImageUploading(false);
+      setImageUrlRes(null);
+    }
   };
+
+  const uploadImage = async (uploadUrl) => {
+    try {
+      const res = await profileImageUploadToAzureService(uploadUrl, selectedImage, {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': selectedImage.type,
+      });
+
+      if (res) {
+        setIsImageUploading(false);
+      }
+    } catch {
+      ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again!');
+      setIsImageUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (imageUrlRes) {
+      uploadImage(imageUrlRes.upload_url);
+    }
+  }, [imageUrlRes]);
 
   useEffect(() => {
     if (watch('country')?.value !== userDetailsData?.client_info?.office_address?.country?._id) {
@@ -232,14 +266,28 @@ const Personal = () => {
       zip_code: zipCode,
     };
 
-    const reqData = {
-      company_name,
-      title,
-      company_tagline,
-      company_industry,
-      company_strength,
-      office_address,
-    };
+    let reqData;
+
+    if (imageUrlRes) {
+      reqData = {
+        company_name,
+        title,
+        company_tagline,
+        company_industry,
+        company_strength,
+        office_address,
+        company_logo: imageUrlRes.file_key,
+      };
+    } else {
+      reqData = {
+        company_name,
+        title,
+        company_tagline,
+        company_industry,
+        company_strength,
+        office_address,
+      };
+    }
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
   };
@@ -285,6 +333,10 @@ const Personal = () => {
 
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
+      if (res?.client_info?.company_logo.length > 0) {
+        setSelectedImage(res.client_info?.company_logo);
+        setSelectedImagePreview(res.client_info?.company_logo);
+      }
       if (res?.client_info?.company_name.length > 0) {
         setValue('companyName', res?.client_info?.company_name, { shouldValidate: true });
       }
@@ -387,8 +439,13 @@ const Personal = () => {
                   className="file-input"
                   ref={fileInputRef}
                 />
-                <Button color="primary" className="ml-2 mr-1" onClick={() => fileInputRef.current.click()}>
-                  Update Picture
+                <Button
+                  color="primary"
+                  className="ml-2 mr-1"
+                  disabled={isImageUploading}
+                  onClick={() => fileInputRef.current.click()}
+                >
+                  {isImageUploading ? <Spinner size="sm" /> : 'Upload Logo'}
                 </Button>
               </div>
               <Info size={18} color={theme.infoIcon} id="logo-info" />
@@ -635,9 +692,6 @@ const Personal = () => {
                       render={({ field }) => (
                         <Input
                           {...field}
-                          type="number"
-                          onWheel={(e) => e.target.blur()}
-                          min={0}
                           placeholder="Enter zip code"
                           invalid={errors.zipCode && true}
                           autoComplete="none"
@@ -741,7 +795,7 @@ const Personal = () => {
               <span className="me-50">Skip</span>
               <ChevronRight size={14} />
             </Button>
-            <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+            <Button color="primary" type="submit" disabled={isImageUploading || !isValid || profileDetailsIsLoading}>
               {profileDetailsIsLoading ? (
                 <Spinner size="sm" />
               ) : (

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Route, Routes, useMatch, useNavigate } from 'react-router-dom';
-import { Button } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
-import { getItem } from '../../utility/localStorageControl';
-import { userData } from '../../redux/selectors/dashboardSelectors';
+import { getProfilePercentage } from '../../redux/actions/dashboardActions';
+import CreateProjectButton from './overview/CreateProjectButton';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 
 const MarketPlaceContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -19,9 +19,9 @@ const MarketPlaceContainer = styled.div`
 `;
 
 const MarketPlace = () => {
-  const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // Primary filters
 
   // Adjust the number of lines based on the desired limit
@@ -30,13 +30,16 @@ const MarketPlace = () => {
     useMatch('/marketplace/clients') ||
     useMatch('/marketplace/all_listings') ||
     useMatch('/marketplace/my_listings') ||
-    useMatch('/marketplace/talents');
+    useMatch('/marketplace/talents') ||
+    useMatch('/marketplace/teams') ||
+    useMatch('/marketplace/my_bids');
 
   const [primaryFilter, setPrimaryFilter] = useState(routesMatch?.pathname?.split('/')?.[2]);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    dispatch(getProfilePercentage());
   }, []);
 
   // Secondary filters
@@ -46,8 +49,7 @@ const MarketPlace = () => {
     navigate(`/marketplace/${props}`);
   };
 
-  // const userData = useSelector(selectAuthUserData);
-  const userDataLocal = getItem('userData');
+  const userDataLocal = useSelector(selectAuthUserData);
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const SecondComp = () => <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />;
@@ -57,23 +59,18 @@ const MarketPlace = () => {
     all_listings: 'All listings',
     my_listings: 'My listings',
     talents: 'Talent',
+    teams: 'Teams',
+    my_bids: 'My bids',
   };
 
   return (
     <MarketPlaceContainer>
-      <div className="d-flex justify-content-between">
-        <BreadCrumbs
-          data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
-        />
+      <BreadCrumbs
+        data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
+      />
 
-        {userDetailsData?.user_type === 'CLIENT' && (
-          <Link to="/create-project">
-            <Button as="link" color="primary">
-              Create Project
-            </Button>
-          </Link>
-        )}
-      </div>
+      <CreateProjectButton />
+
       <PrimaryFilter
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}
@@ -83,8 +80,10 @@ const MarketPlace = () => {
       <Routes>
         <Route path="all_listings" element={<SecondComp />} />
         <Route path="my_listings" element={<SecondComp />} />
+        <Route path="my_bids" element={<SecondComp />} />
         <Route path="clients" element={<SecondComp />} />
         <Route path="talents" element={<SecondComp />} />
+        <Route path="teams" element={<SecondComp />} />
       </Routes>
     </MarketPlaceContainer>
   );

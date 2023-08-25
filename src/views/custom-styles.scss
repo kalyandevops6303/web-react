@@ -3,6 +3,25 @@
     margin: 0 auto;
 }
 
+.listing-team-members-modal-style {
+    width: 1050px !important;
+    margin: 0 auto;
+}
+
+.invite-talent-listing-modal-style {
+    width: 750px !important;
+    margin: 0 auto;
+}
+
+.gray-modal {
+    .modal-header {
+        background-color: #f8f8f8;
+    }
+    .modal-body {
+        background-color: #f8f8f8;
+    }
+}
+
 .custom-reset-password-modal-style {
     width: 500px !important;
     margin: 0 auto;
@@ -11,6 +30,10 @@
 .custom-larger-than-medium-modal-style {
     width: 540px !important;
     margin: 0 auto;
+}
+.custom-modal-style-sm {
+    width: 30% !important;
+    margin: auto;
 }
 
 .modal-dialog {
@@ -23,6 +46,10 @@
 @media (max-width: 768px) {
     .custom-modal-project-details {
         width: 100% !important;
+    }
+    .custom-modal-style-sm {
+        width: 30% !important;
+        
     }
 
 }

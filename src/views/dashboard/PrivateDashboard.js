@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -11,27 +11,129 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { userData } from '../../redux/selectors/dashboardSelectors';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
+import CompleteProfileModal from '../modals/CompleteProfileModal';
+import TeamSection from './overview/TeamSection';
+import TalentListing from './overview/TalentListing';
+// import TeamListing from './overview/TeamListing';
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import { getItem } from '../../utility/localStorageControl';
+import InviteTalentToTeam from '../invite-talent-to-team';
+import RemoveMemberModal from '../modals/RemoveMemberModal';
+import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 
 const PrivateDashboard = () => {
-  const userDetailsData = useSelector(userData);
+  const navigate = useNavigate();
+
+  const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
+  const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
+  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+  const [deleteModal, setDeletModal] = useState(false);
+  const [deleteModalData, setDeleteModalData] = useState();
+
+  const toggleListingTeamMembersModal = () => {
+    setListingTeamMembersModal(!listingTeamMembersModal);
+  };
+
+  const toggleInviteTeamMemberModal = () => {
+    setInviteTeamMemberModal(!inviteTeamMemberModal);
+  };
+
+  const userDetailsData = useSelector(selectUserData);
+  const profilePercentageData = useSelector(profilePercentage);
+
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
   }, []);
+
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+
+  const toggleCompleteProfileModal = () => {
+    setCompleteProfileModal(!completeProfileModal);
+  };
+
+  const onCreateProjectClick = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModal(true);
+    } else {
+      navigate('/create-project');
+    }
+  };
+
+  const onTeamInvite = () => {
+    setInviteTeamMemberModal(true);
+    setInviteTalentToTeamModal(true);
+  };
+
+  const inviteToken = getItem('inviteToken');
+  const isInviteRead = getItem('isInviteRead');
+  const inviteId = getItem('inviteId');
+  useEffect(() => {
+    if (inviteToken && !isInviteRead) {
+      navigate(`/team-invitation/${inviteId}`);
+    }
+  }, []);
+
+  const handleRemoveMember = (data) => {
+    setDeletModal(true);
+    setDeleteModalData(data);
+  };
+
   return (
     <div>
-      <div className="d-flex justify-content-between">
-        <BreadCrumbs data={[{ title: 'Dashboard' }]} />
-        {userDetailsData?.user_type === userTypes.client && (
-          <Link to="/create-project">
-            <Button as="link" color="primary">
-              Create Project
-            </Button>
+      {completeProfileModal && (
+        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+      )}
+      {listingTeamMembersModal && (
+        <ListingTeamMembersModal
+          modal={listingTeamMembersModal}
+          toggleModal={toggleListingTeamMembersModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+          onRemove={handleRemoveMember}
+        />
+      )}
+      {deleteModal && (
+        <RemoveMemberModal modal={deleteModal} data={deleteModalData} toggleModal={() => setDeletModal(!deleteModal)} />
+      )}
+
+      <BreadCrumbs data={[{ title: 'Dashboard' }]} />
+      {userDetailsData?.user_type === userTypes.client && (
+        <DashboardHeaderWrapper>
+          <Button as="link" color="primary" onClick={onCreateProjectClick}>
+            Create Project
+          </Button>
+        </DashboardHeaderWrapper>
+      )}
+      {userDetailsData?.user_type === userTypes.team && (
+        <DashboardHeaderWrapper>
+          <Button as="link" color="primary" onClick={onTeamInvite}>
+            Invite Talent
+          </Button>
+        </DashboardHeaderWrapper>
+      )}
+      {inviteTalentToTeamModal && (
+        <InviteTalentToTeam
+          inviteTeamMemberModal={inviteTeamMemberModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+        />
+      )}
+      {userDetailsData?.user_type === userTypes.talent && (
+        <CreateTeamButtonWrapper>
+          <Link to="/create-team/profile-details">
+            <span className="text-decoration-underline font-medium-2">Create Team</span>
           </Link>
-        )}
-      </div>
+        </CreateTeamButtonWrapper>
+      )}
+
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />
@@ -45,10 +147,31 @@ const PrivateDashboard = () => {
       </Row>
       <Row>
         <Col lg="8" sm="12">
-          <Header>Projects</Header>
-          <ProjectListing />
+          <section className="mb-2">
+            <Header className="mb-1">Projects</Header>
+            <ProjectListing />
+          </section>
+          {userDetailsData?.user_type === userTypes.team && (
+            <section className="mb-2">
+              <Header className="mb-1">Talents</Header>
+              <TalentListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.talent && (
+            <section className="mb-2">
+              <Header className="mb-1">Teams</Header>
+              {/* <TeamListing /> */}
+            </section>
+          )}
         </Col>
         <Col lg="4" sm="12">
+          {userDetailsData?.user_type === userTypes.team && (
+            <TeamSection
+              modal={listingTeamMembersModal}
+              toggleModal={toggleListingTeamMembersModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            />
+          )}
           <Alerts />
           <Disputes />
           <Meetings />

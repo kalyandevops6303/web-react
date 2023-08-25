@@ -11,6 +11,8 @@ import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBod
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
+import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
+
 import Project from './Project';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
@@ -20,10 +22,16 @@ import 'slick-carousel/slick/slick-theme.css';
 import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
 
 import Tag from '../../../@core/components/tags';
-import { profilePercentage, recommendedProjects, userData } from '../../../redux/selectors/dashboardSelectors';
+import {
+  profilePercentage,
+  recommendedProjects,
+  recommendedProjectsLoading,
+  userData,
+} from '../../../redux/selectors/dashboardSelectors';
 import { getRecommendedProjects } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -120,11 +128,12 @@ const ProjectListing = () => {
     arrows: true,
   };
 
-  const userDetailsData = useSelector(userData);
+  const userDetailsData = useSelector(selectUserData);
   const recommendedProjectsData = useSelector(recommendedProjects);
+  const isRecommendedLoading = useSelector(recommendedProjectsLoading);
 
   useEffect(() => {
-    if (userDetailsData?.user_type === userTypes.talent) {
+    if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
       dispatch(getRecommendedProjects());
     }
   }, [userDetailsData]);
@@ -133,6 +142,13 @@ const ProjectListing = () => {
     e.stopPropagation();
     navigate('/marketplace/all_listings', { state: { isRecommended: true } });
   };
+  const [isSliderLoading, setIsSliderLoading] = useState(false);
+  useEffect(() => {
+    setIsSliderLoading(true);
+    setTimeout(() => {
+      setIsSliderLoading(false);
+    }, 1000);
+  }, [open]);
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
@@ -165,12 +181,12 @@ const ProjectListing = () => {
         </AccordionBody>
       </AccordionItem>
       <AccordionItem>
-        {userDetailsData?.user_type === userTypes.talent && (
+        {userDetailsData?.user_type !== userTypes.client && (
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Recommended Projects <Tag>{recommendedProjectsData?.data?.length} </Tag>
+                  Recommended Projects <Tag>{recommendedProjectsData?.data?.length || 0} </Tag>
                 </span>
                 {recommendedProjectsData?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
@@ -180,15 +196,21 @@ const ProjectListing = () => {
               </AccordionHeadStyle>
             </AccordionHeader>
             <AccordionBody accordionId="3">
-              <ProjectsListingWrap>
-                {isTab ? (
-                  recommendedProjectsData?.data?.map((project) => (
-                    <Project key={project.id} data={project} recommended />
-                  ))
-                ) : (
-                  <>
-                    {recommendedProjectsData?.data?.length > 0 ? (
-                      recommendedProjectsData?.data?.length >= 4 ? (
+              {isSliderLoading || isRecommendedLoading ? (
+                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                </div>
+              ) : (
+                <ProjectsListingWrap>
+                  {recommendedProjectsData?.data?.length > 0 && isTab ? (
+                    recommendedProjectsData?.data?.map((project) => (
+                      <Project key={project.id} data={project} recommended />
+                    ))
+                  ) : recommendedProjectsData?.data?.length > 0 ? (
+                    <>
+                      {recommendedProjectsData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {recommendedProjectsData?.data?.map((project, index) => (
                             <Project className={`slide-${index}`} key={project.id} data={project} recommended />
@@ -200,21 +222,21 @@ const ProjectListing = () => {
                             <Project className="custom-slider-project" key={project.id} data={project} recommended />
                           ))}
                         </div>
-                      )
-                    ) : (
-                      <Empty
-                        active={false}
-                        isEducationNotCompleted={returnDetailsForMarketPlace(
-                          userDetailsData?.user_type,
-                          profilePercentageData?.values_missing,
-                        )}
-                        recommended
-                        payment={false}
-                      />
-                    )}
-                  </>
-                )}
-              </ProjectsListingWrap>
+                      )}
+                    </>
+                  ) : (
+                    <Empty
+                      active={false}
+                      isEducationNotCompleted={returnDetailsForMarketPlace(
+                        userDetailsData?.user_type,
+                        profilePercentageData?.values_missing,
+                      )}
+                      recommended
+                      payment={false}
+                    />
+                  )}
+                </ProjectsListingWrap>
+              )}
             </AccordionBody>
           </>
         )}

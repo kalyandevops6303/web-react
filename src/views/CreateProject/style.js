@@ -134,10 +134,22 @@ export const RequirementsFormContainer = styled.div`
     }
   }
 
+  .select__multi-value .select__multi-value__label {
+    padding: 0.26rem 0.3rem 0.26rem 0.6rem;
+  }
+
+  .select__multi-value .select__multi-value__remove {
+    padding-left: 0.5rem;
+  }
+
   .select__multi-value__remove {
     svg {
       color: ${theme.white};
     }
+  }
+
+  .select__multi-value {
+    margin: 0.1rem 0.7rem 0.1rem 0;
   }
 
   .time-zone-border {
@@ -234,14 +246,14 @@ export const TimeWrapper = styled.section`
   }
   .weekdays {
     padding-right: 20px;
-    border-right: ${(props) => (props.isBorder ? `1px solid ${theme.borderInputColor}` : 'none')};
+    border-right: 1px solid ${theme.borderInputColor};
 
     ul {
       justify-content: space-between;
     }
   }
   .weekends {
-    padding-left: ${(props) => (props.isPadding ? '20px' : '0')};
+    padding-left: 20px;
 
     ul {
       gap: 14px;
@@ -322,10 +334,11 @@ export const NavsContainer = styled.div`
 `;
 
 export const TableContainer = styled.div`
+  max-height: 500px;
+  overflow-y: scroll;
+
   .user-pic {
-    border-radius: 50%;
-    border: 1px solid ${theme.bodyColor};
-    width: fit-content;
+    cursor: auto !important;
   }
 
   .badge {
@@ -374,9 +387,7 @@ export const InviteUsersListContainer = styled.div`
   overflow-y: scroll;
 
   .user-pic {
-    border-radius: 50%;
-    border: 1px solid ${theme.bodyColor};
-    width: fit-content;
+    cursor: auto !important;
   }
 
   .badge {

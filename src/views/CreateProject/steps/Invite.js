@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import { Check, Search, Share2, Star, User } from 'react-feather';
+import { Check, Search, Share2, Star } from 'react-feather';
 import {
   Badge,
   Button,
@@ -21,6 +21,8 @@ import {
   TabContent,
   TabPane,
 } from 'reactstrap';
+import Avatar from '@components/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import theme from '../../../configs/themeVariables';
 import { BlueBgIconContainer, NavsContainer, TableContainer } from '../style';
@@ -28,8 +30,8 @@ import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { giveStrokeColor } from '../../../utility/Utils';
 import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
-import SendInvitationModal from '../SendInvitationModal';
-import InvitationSentModal from '../InvitationSentModal';
+import SendInvitationModal from '../../modals/SendInvitationModal';
+import InvitationSentModal from '../../modals/InvitationSentModal';
 import {
   almaMaterTalents,
   bestTalents,
@@ -225,6 +227,7 @@ const Invite = ({ stepper }) => {
           setInvitationSentModal={setInvitationSentModal}
           message={message}
           setMessage={setMessage}
+          description="You are inviting the below to join your project."
         />
       )}
       {invitationSentModal && (
@@ -240,6 +243,7 @@ const Invite = ({ stepper }) => {
           invitedIds={invitedIds}
           setInvitedIds={setInvitedIds}
           setSelectedTalents={setSelectedTalents}
+          description="You’ve sent a project invitation"
         />
       )}
       <Card>
@@ -323,9 +327,12 @@ const Invite = ({ stepper }) => {
                         <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
-                              <div className="user-pic p-25 me-2">
-                                <User size={28} />
-                              </div>
+                              <Avatar
+                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
+                                imgHeight="38"
+                                imgWidth="38"
+                                className="me-2 user-pic"
+                              />
                               <Link to={`/profile/talent/${item.user_id}`} target="_blank">
                                 <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
                               </Link>
@@ -408,9 +415,16 @@ const Invite = ({ stepper }) => {
                         <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
-                              <div className="user-pic p-25 me-2">
-                                <User size={28} />
-                              </div>
+                              <Avatar
+                                img={
+                                  item?.talent_details?.image_uri?.length > 0
+                                    ? item?.talent_details?.image_uri
+                                    : defaultAvatar
+                                }
+                                imgHeight="38"
+                                imgWidth="38"
+                                className="me-2 user-pic"
+                              />
                               <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
                                 <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
                               </Link>
@@ -495,9 +509,12 @@ const Invite = ({ stepper }) => {
                         <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
-                              <div className="user-pic p-25 me-2">
-                                <User size={28} />
-                              </div>
+                              <Avatar
+                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
+                                imgHeight="38"
+                                imgWidth="38"
+                                className="me-2 user-pic"
+                              />
                               <Link to={`/profile/talent/${item.user_id}`} target="_blank">
                                 <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
                               </Link>
@@ -571,7 +588,7 @@ const Invite = ({ stepper }) => {
       </Card>
       <div className="d-flex justify-content-end align-items-center">
         <div>
-          <Link to="/marketplace/all_listings">
+          <Link to="/marketplace/my_listings">
             <Button color="primary" outline>
               <span className="px-2">Close</span>
             </Button>

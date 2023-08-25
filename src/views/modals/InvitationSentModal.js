@@ -1,20 +1,22 @@
+/* eslint-disable no-undef */
 import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { Star, User } from 'react-feather';
+import { Star } from 'react-feather';
+import Avatar from '@components/avatar';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col, Badge, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
 import GreatJobTick from '../../assets/images/greatJobGif.gif';
-import { InviteUsersListContainer } from './style';
+import { InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
 import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
-import { inviteTalents } from '../../redux/actions/createProjectActions';
+import { inviteTalents } from '../../redux/actions/inviteTalent';
 
 const InvitationSentModal = ({
   modal,
   toggleModal,
   selectedTalents,
-  projectId,
   message,
   toggleSendInvitationModal,
   selectedIds,
@@ -22,6 +24,7 @@ const InvitationSentModal = ({
   invitedIds,
   setInvitedIds,
   setSelectedTalents,
+  description,
 }) => {
   const dispatch = useDispatch();
 
@@ -40,9 +43,16 @@ const InvitationSentModal = ({
 
   const onInviteTalents = () => {
     const userIds = selectedTalents.map((talent) => talent.user_id);
-    const userEmails = selectedTalents.map((talent) => talent.user_details.email);
-
-    dispatch(inviteTalents(projectId, { emails: userEmails, talent_ids: userIds, message }, onSuccess));
+    dispatch(
+      inviteTalents(
+        {
+          talent_ids: userIds,
+          message,
+          redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+        },
+        onSuccess,
+      ),
+    );
   };
 
   useEffect(() => {
@@ -91,17 +101,20 @@ const InvitationSentModal = ({
           <div className="w-100">
             <h2 className="fw-bold font-large-1 mb-1">Great Job!</h2>
             <h4 className="fw-bold font-small-5">Invitation sent</h4>
-            <p className="fw-light font-medium-3 mt-75">You’ve sent a project invitation</p>
+            <p className="fw-light font-medium-3 mt-75">{description}</p>
             <InviteUsersListContainer>
               {selectedTalents.map((talent) => (
                 <Row key={talent.id} className="d-flex align-items-center mb-2 mx-0">
                   <Col sm="12" md="12" lg="12">
                     <div className="d-flex align-items-center">
-                      <div className="user-pic p-75 me-2">
-                        <User size={30} />
-                      </div>
+                      <Avatar
+                        img={talent?.image_uri?.length > 0 ? talent?.image_uri : defaultAvatar}
+                        imgHeight="48"
+                        imgWidth="48"
+                        className="me-2 user-pic"
+                      />
                       <div>
-                        <p className="font-medium-1 fw-bold m-0 mb-75">{`${talent.first_name} ${talent.last_name}`}</p>
+                        <p className="font-medium-1 fw-bold m-0 mb-50">{`${talent.first_name} ${talent.last_name}`}</p>
                         <div className="d-flex align-items-center">
                           <Badge>
                             <div className="d-flex align-items-center">
@@ -138,7 +151,6 @@ InvitationSentModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   selectedTalents: Proptypes.array,
-  projectId: Proptypes.string,
   message: Proptypes.string,
   toggleSendInvitationModal: Proptypes.func,
   selectedIds: Proptypes.array,
@@ -146,13 +158,13 @@ InvitationSentModal.propTypes = {
   invitedIds: Proptypes.array,
   setInvitedIds: Proptypes.func,
   setSelectedTalents: Proptypes.func,
+  description: Proptypes.string,
 };
 
 InvitationSentModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   selectedTalents: [],
-  projectId: '',
   message: '',
   toggleSendInvitationModal: () => {},
   selectedIds: [],
@@ -160,4 +172,5 @@ InvitationSentModal.defaultProps = {
   invitedIds: [],
   setInvitedIds: () => {},
   setSelectedTalents: () => {},
+  description: '',
 };

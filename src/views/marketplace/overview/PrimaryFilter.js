@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ThumbsUp, Users } from 'react-feather';
+import { ThumbsUp, User, Users } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
@@ -13,7 +13,6 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state.marketPlace.cardData);
 
-  // const userData = useSelector(selectAuthUserData);
   const userData = getItem('userData');
 
   useEffect(() => {
@@ -33,34 +32,60 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
           className="stat-box cursor-pointer"
         />
       </Col>
-      {userType === userTypes.client && (
-        <>
-          <Col onClick={() => handlePrimaryChangeFilter('my_listings')}>
-            <Statbox
-              isActive={selected === 'my_listings'}
-              isMarketPlaceTab
-              title={selectCardData?.my_listings}
-              desc="My Listings"
-              icon={<ThumbsUp height={20} />}
-              color="light-turquoise"
-              className="stat-box cursor-pointer"
-            />
-          </Col>
-          <Col onClick={() => handlePrimaryChangeFilter('talents')}>
-            <Statbox
-              isActive={selected === 'talents'}
-              className="stat-box cursor-pointer"
-              isMarketPlaceTab
-              title={selectCardData?.talents}
-              desc="Talent"
-              icon={<Users height={20} />}
-              color="light-purple"
-            />
-          </Col>
-        </>
+      {userType === userTypes.client ? (
+        <Col onClick={() => handlePrimaryChangeFilter('my_listings')}>
+          <Statbox
+            isActive={selected === 'my_listings'}
+            isMarketPlaceTab
+            title={selectCardData?.my_listings}
+            desc="My Listings"
+            icon={<ThumbsUp height={20} />}
+            color="light-turquoise"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
+      ) : (
+        <Col onClick={() => handlePrimaryChangeFilter('my_bids')}>
+          <Statbox
+            isActive={selected === 'my_bids'}
+            isMarketPlaceTab
+            title={selectCardData?.my_bids}
+            desc="My Bids"
+            icon={<ThumbsUp height={20} />}
+            color="light-turquoise"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
       )}
 
-      {userType === userTypes.talent && (
+      {(userType === userTypes.client || userType === userTypes.team) && (
+        <Col onClick={() => handlePrimaryChangeFilter('talents')}>
+          <Statbox
+            isActive={selected === 'talents'}
+            className="stat-box cursor-pointer"
+            isMarketPlaceTab
+            title={selectCardData?.talents}
+            desc="Talent"
+            icon={<User height={20} />}
+            color="light-purple"
+          />
+        </Col>
+      )}
+      {(userType === userTypes.client || userType === userTypes.talent) && (
+        <Col onClick={() => handlePrimaryChangeFilter('teams')}>
+          <Statbox
+            isActive={selected === 'teams'}
+            className="stat-box cursor-pointer"
+            isMarketPlaceTab
+            title={selectCardData?.teams}
+            desc="Teams"
+            icon={<Users height={20} />}
+            color="light-purple"
+          />
+        </Col>
+      )}
+
+      {(userType === userTypes.talent || userType === userTypes.team) && (
         <>
           <Col onClick={() => handlePrimaryChangeFilter('clients')}>
             <Statbox
@@ -73,21 +98,21 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
               color="light-purple"
             />
           </Col>
-          {!isTab && (
+          {!isTab && userType !== userTypes.team && (
             <Col>
               <div />
             </Col>
           )}
         </>
       )}
-      {!isTab && (
+      {!isTab && (userType === userTypes.team || userType === userTypes.client) && (
         <>
           <Col>
             <div />
           </Col>
-          <Col>
+          {/* <Col>
             <div />
-          </Col>
+          </Col> */}
         </>
       )}
     </Row>
