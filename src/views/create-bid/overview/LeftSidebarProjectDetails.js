@@ -32,9 +32,13 @@ const LeftSidebarProjectDetails = () => {
   }, []);
 
   const [daysLeft, setDaysLeft] = useState(0);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (projectDetailsData) {
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      setTags([...projectDetailsData?.proficiency?.skills, ...projectDetailsData?.proficiency?.tools]);
+
       setDaysLeft(
         Math.max(
           0,
@@ -114,20 +118,11 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          <BadgeGroup
-            inline
-            color="light-blue"
-            title="Tags"
-            data={[{ name: 'JS' }, { name: 'HTML HTML' }, { name: 'REACT' }, { name: 'Javascript' }]}
-          />
+          <BadgeGroup inline color="light-blue" title="Tags" data={tags} />
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>
-            <CardText className="value">
-              The data collection and payment system is designed to allow automotive companies to compensate users for
-              sharing their data. By collecting data such as driving habits, vehicle usage, road conditions and other
-              environmental data
-            </CardText>
+            <CardText className="value">{projectDetailsData?.details?.description}</CardText>
           </div>
 
           <div className="d-flex gap-1 mt-3 justify-content-center">

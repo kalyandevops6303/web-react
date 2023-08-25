@@ -14,6 +14,7 @@ import FixedSimpleMilestoneView from './overview/FixedSimpleMilestoneView';
 import SimpleTeamView from './overview/SimpleTeamView';
 import AdvanceTeamView from './overview/AdvanceTeamView';
 import VariableAdvanceMilestoneView from './overview/VariableAdvanceMilestoneView';
+import { projectDetails } from '../../redux/selectors/createBidSelectors';
 
 const CreateBid = () => {
   const location = useLocation();
@@ -23,6 +24,7 @@ const CreateBid = () => {
   const [progressPercent, setProgressPercent] = useState(null);
 
   const selectUserDetailsData = useSelector(selectUserData);
+  const projectDetailsData = useSelector(projectDetails);
 
   const changeStep = (step) => {
     setCurrentStep(step);
@@ -44,7 +46,13 @@ const CreateBid = () => {
 
   return (
     <>
-      <BreadCrumbs data={[{ title: 'Marketplace' }, { title: 'Project name' }]} />
+      <BreadCrumbs
+        data={[
+          { title: 'Marketplace', link: 'marketplace/all_listings' },
+          { title: projectDetailsData?.details?.name || 'Project' },
+          { title: 'Create Bid', link: '#' },
+        ]}
+      />
       <Row>
         <Col lg="3">
           <LeftSidebarProjectDetails />
@@ -69,9 +77,10 @@ const CreateBid = () => {
           <Routes>
             {(params.bidType === 'variable-simple' || params.bidType === 'fixed-simple') &&
               selectUserDetailsData?.user_type === userTypes.team && <Route path="team" element={<SimpleTeamView />} />}
-            {params.bidType === 'variable-advanced' && selectUserDetailsData?.user_type === userTypes.team && (
-              <Route path="team" element={<AdvanceTeamView />} />
-            )}
+            {(params.bidType === 'variable-advanced' || params.bidType === 'fixed-advanced') &&
+              selectUserDetailsData?.user_type === userTypes.team && (
+                <Route path="team" element={<AdvanceTeamView />} />
+              )}
             {params.bidType === 'variable-simple' && (
               <Route path="milestone" element={<VariableSimpleMilestoneView />} />
             )}
