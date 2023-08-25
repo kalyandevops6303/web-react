@@ -15,6 +15,7 @@ import SimpleTeamView from './overview/SimpleTeamView';
 import AdvanceTeamView from './overview/AdvanceTeamView';
 import VariableAdvanceMilestoneView from './overview/VariableAdvanceMilestoneView';
 import { projectDetails } from '../../redux/selectors/createBidSelectors';
+import FixedAdvanceMilestoneView from './overview/FixedAdvanceMilestoneView';
 
 const CreateBid = () => {
   const location = useLocation();
@@ -48,7 +49,7 @@ const CreateBid = () => {
     <>
       <BreadCrumbs
         data={[
-          { title: 'Marketplace', link: 'marketplace/all_listings' },
+          { title: 'Marketplace', link: '/marketplace/all_listings' },
           { title: projectDetailsData?.details?.name || 'Project' },
           { title: 'Create Bid', link: '#' },
         ]}
@@ -88,6 +89,7 @@ const CreateBid = () => {
               <Route path="milestone" element={<VariableAdvanceMilestoneView />} />
             )}
             {params.bidType === 'fixed-simple' && <Route path="milestone" element={<FixedSimpleMilestoneView />} />}
+            {params.bidType === 'fixed-advanced' && <Route path="milestone" element={<FixedAdvanceMilestoneView />} />}
             <Route path="preview" element={<Preview />} />
           </Routes>
         </Col>
