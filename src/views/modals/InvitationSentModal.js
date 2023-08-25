@@ -11,9 +11,12 @@ import GreatJobTick from '../../assets/images/greatJobGif.gif';
 import { InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
 import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
-import { inviteTalents } from '../../redux/actions/inviteTalent';
+import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
+import { inviteTalents } from '../../redux/actions/createProjectActions';
+import { getItem } from '../../utility/localStorageControl';
 
 const InvitationSentModal = ({
+  projectId,
   modal,
   toggleModal,
   selectedTalents,
@@ -43,16 +46,23 @@ const InvitationSentModal = ({
 
   const onInviteTalents = () => {
     const userIds = selectedTalents.map((talent) => talent.user_id);
-    dispatch(
-      inviteTalents(
-        {
-          talent_ids: userIds,
-          message,
-          redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
-        },
-        onSuccess,
-      ),
-    );
+    const userEmails = selectedTalents.map((talent) => talent.user_details.email);
+    const teamId = getItem('team_id');
+    if (teamId) {
+      dispatch(
+        inviteTalentForTeam(
+          {
+            project_id: projectId,
+            talent_ids: userIds,
+            message,
+            redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+          },
+          onSuccess,
+        ),
+      );
+    } else {
+      dispatch(inviteTalents(projectId, { emails: userEmails, talent_ids: userIds, message }, onSuccess));
+    }
   };
 
   useEffect(() => {
@@ -149,6 +159,7 @@ export default InvitationSentModal;
 
 InvitationSentModal.propTypes = {
   modal: Proptypes.bool,
+  projectId: Proptypes.string,
   toggleModal: Proptypes.func,
   selectedTalents: Proptypes.array,
   message: Proptypes.string,
@@ -166,6 +177,7 @@ InvitationSentModal.defaultProps = {
   toggleModal: () => {},
   selectedTalents: [],
   message: '',
+  projectId: '',
   toggleSendInvitationModal: () => {},
   selectedIds: [],
   setSelectedIds: () => {},
