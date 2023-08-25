@@ -5,6 +5,7 @@ import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { Paperclip } from 'react-feather';
 import BadgeGroup from '../../../@core/components/badge-group';
 import { LeftSidebarProjectDetailsWrapper } from '../style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
@@ -32,9 +33,13 @@ const LeftSidebarProjectDetails = () => {
   }, []);
 
   const [daysLeft, setDaysLeft] = useState(0);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (projectDetailsData) {
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      setTags([...projectDetailsData?.proficiency?.skills, ...projectDetailsData?.proficiency?.tools]);
+
       setDaysLeft(
         Math.max(
           0,
@@ -107,27 +112,26 @@ const LeftSidebarProjectDetails = () => {
             <CardTitle className="main-title mb-75">Project Details</CardTitle>
           </section>
 
-          <div className="d-flex mb-75">
-            <span className="info-key">Posted date:</span>
-            <CardText className="info-value">
-              {projectDetailsData?.listing_details?.start_date.replaceAll('-', '/')}
-            </CardText>
+          <div className="d-flex justify-content-between mb-75">
+            <div className="d-flex">
+              <span className="info-key">Posted date:</span>
+              <CardText className="info-value">
+                {projectDetailsData?.listing_details?.start_date.replaceAll('-', '/')}
+              </CardText>
+            </div>
+            {projectDetailsData?.details?.documents?.length > 0 && (
+              <div className="d-flex align-items-center">
+                <Paperclip size={14} />
+                <span className="ms-25">{projectDetailsData?.details?.documents?.length}</span>
+              </div>
+            )}
           </div>
 
-          <BadgeGroup
-            inline
-            color="light-blue"
-            title="Tags"
-            data={[{ name: 'JS' }, { name: 'HTML HTML' }, { name: 'REACT' }, { name: 'Javascript' }]}
-          />
+          <BadgeGroup inline color="light-blue" title="Tags" data={tags} />
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>
-            <CardText className="value">
-              The data collection and payment system is designed to allow automotive companies to compensate users for
-              sharing their data. By collecting data such as driving habits, vehicle usage, road conditions and other
-              environmental data
-            </CardText>
+            <CardText className="value">{projectDetailsData?.details?.description}</CardText>
           </div>
 
           <div className="d-flex gap-1 mt-3 justify-content-center">
