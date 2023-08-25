@@ -41,14 +41,15 @@ const Login = () => {
 
   const urlSearchParams = new URLSearchParams(window.location.search);
   const dataParam = urlSearchParams.get('data');
-  // const inviteId = urlSearchParams.get('invite_id');
+  const inviteId = urlSearchParams.get('invite_id');
 
   const onValidUrlSuccess = () => {
     setValidUrl(true);
     setItem('inviteToken', dataParam);
     setItem('isInviteRead', false);
+    setItem('inviteId', inviteId);
     if (isLoggedIn) {
-      navigate(`/team-invitation/64e4eb63c4c0a33056afe4c4`);
+      navigate(`/team-invitation/${inviteId}`);
     }
   };
 

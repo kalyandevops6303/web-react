@@ -67,9 +67,16 @@ const dashboardSlice = createSlice({
     }),
     getTeamMemberSuccess: (state, action) => ({
       ...state,
-      getTeamMember: action.payload,
+      // getTeamMember: action.payload,
       getTeamMemberLoading: false,
+      memberCurrentPreview: action.payload.data,
+      getTeamMember:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.getTeamMember, ...action.payload.data],
+      getMemberMetaData: action.payload.metadata,
     }),
+
     getTeamMemberFailure: (state, action) => ({
       ...state,
       getTeamMemberLoading: false,
@@ -83,8 +90,14 @@ const dashboardSlice = createSlice({
     }),
     getInvitedMemberSuccess: (state, action) => ({
       ...state,
-      getInvitedMember: action.payload,
+
       getInvitedMemberLoading: false,
+      invitedMemberCurrentPreview: action.payload.data,
+      getInvitedMember:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.getInvitedMember, ...action.payload.data],
+      invitedMemberMetaData: action.payload.metadata,
     }),
     getInvitedMemberFailure: (state, action) => ({
       ...state,
@@ -171,6 +184,23 @@ const dashboardSlice = createSlice({
       getMyTeamLoading: false,
       error: action.payload,
     }),
+
+    removeMemberRequest: (state) => ({
+      ...state,
+      removeMemberLoading: true,
+      error: null,
+    }),
+    removeMemberSuccess: (state) => ({
+      ...state,
+      removeMemberLoading: true,
+      error: null,
+    }),
+
+    removeMemberFailure: (state, action) => ({
+      ...state,
+      removeMemberLoading: false,
+      error: action.payload,
+    }),
     getProjectInvitesSuccess: (state, action) => ({
       ...state,
       projectInvites: action.payload,
@@ -193,6 +223,9 @@ export const {
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
   recommendedProjectsFailure,
+  removeMemberRequest,
+  removeMemberSuccess,
+  removeMemberFailure,
   profilePercentageRequest,
   profilePercentageSuccess,
   profilePercentageFailure,

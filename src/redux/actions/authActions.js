@@ -58,6 +58,7 @@ import {
   userDataFailure,
   userDataSuccess,
   switchProfileSuccess,
+  getUserDataSuccess,
 } from '../reducers/auth';
 import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -280,6 +281,7 @@ const getUserData = () => async (dispatch) => {
       res = await userDataService();
     }
     dispatch(userDataSuccess(res.data.data));
+    dispatch(getUserDataSuccess(res.data.data?.user_type));
     setItem('userData', res.data.data);
   } catch (error) {
     errorHandler(error, userDataFailure);

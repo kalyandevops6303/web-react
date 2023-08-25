@@ -1,6 +1,5 @@
 // ** Third Party Components
 import classNames from 'classnames';
-import { DateTime } from 'luxon';
 import { Info } from 'react-feather';
 
 // ** Custom Components
@@ -8,6 +7,7 @@ import { Info } from 'react-feather';
 import { useSelector } from 'react-redux';
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText, ButtonGroup, Button } from 'reactstrap';
+import DateTime from '../../../lib/date-time';
 import { EarningAmount, EarningCardWrapper } from './style';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../../utility/constants/Constant';

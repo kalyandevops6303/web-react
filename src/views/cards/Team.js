@@ -1,8 +1,8 @@
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { DateTime } from 'luxon';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
+import DateTime from '../../lib/date-time';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { TeamCardWrap } from './style';
 
