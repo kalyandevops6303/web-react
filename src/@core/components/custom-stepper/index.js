@@ -69,7 +69,7 @@ const CustomStep = ({ onChangeStep, steps, currentStep }) => {
         <div
           onClick={() => handleChangeStep(item.title.toLowerCase())}
           key={item.title}
-          className={` stepper ${currentStep === item.title.toLowerCase() ? 'active' : 'cursor-pointer'}`}
+          className={`stepper ${currentStep === item.title.toLowerCase() ? 'active' : 'cursor-pointer'}`}
         >
           <span className="stepper-box">{item.icon}</span>
           <span className="stepper-label">

@@ -75,7 +75,7 @@ const Routes = [
     element: <ProjectDetails />,
   },
   {
-    path: '/project-details/:projectId/:projectStep/details',
+    path: '/project-details/:projectId/:projectStep/:bidId',
     element: <BidDetails />,
   },
   {

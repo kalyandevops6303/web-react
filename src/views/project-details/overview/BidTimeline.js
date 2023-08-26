@@ -1,170 +1,23 @@
 import React, { useState } from 'react';
-import Select from 'react-select';
-import DataTable from 'react-data-table-component';
-import Avatar from '@components/avatar';
-import lisa from '@src/assets/images/portrait/small/lisa.png';
-import PdfIcon from '@src/assets/images/PDF.svg';
-
-import {
-  Accordion,
-  AccordionBody,
-  AccordionHeader,
-  AccordionItem,
-  Badge,
-  Card,
-  CardBody,
-  CardText,
-  Col,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Label,
-  Row,
-} from 'reactstrap';
-import { ChevronDown, ChevronRight, Eye, MoreVertical, Paperclip, Search } from 'react-feather';
-import hat from '@src/assets/images/hat.png';
-import Invited from '@src/assets/images/invited.png';
-import Rating from 'react-rating';
-
-import FilledStar from '@src/assets/images/filler_star.png';
-import EmptyStar from '@src/assets/images/empty_star.png';
+import { Accordion, Card, CardBody, CardText } from 'reactstrap';
+import { ChevronRight } from 'react-feather';
+import { useSelector } from 'react-redux';
 import theme from '../../../configs/themeVariables';
 import Timeline from '../../../@core/components/timeline';
-import { selectThemeColors } from '../../../utility/Utils';
 import NameInfo from '../../../@core/components/name-info';
-import { AccordionHeadStyle } from '../style';
+import { selectUserType } from '../../../redux/selectors/authSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
+import ReceivedBids from './ReceivedBids';
+import BidPreviewModal from '../../modals/BidPreviewModal';
+import BidSubmitted from './BidSubmitted';
 
 const BidTimeline = () => {
   const [open, setOpen] = useState('1');
-
-  const sortingOptions = [
-    { label: 'New', value: 'NEW' },
-    { label: 'Recommended', value: 'RECOMMADED' },
-  ];
+  const userType = useSelector(selectUserType);
+  const [bidModal, setBidModal] = useState(false);
+  const toggleBidModal = () => setBidModal(!bidModal);
 
   const toggle = (id) => (open === id ? setOpen() : setOpen(id));
-
-  const tableColumns = [
-    {
-      name: 'NAME',
-      sortable: true,
-      minWidth: '28%',
-      selector: (row) => row.name,
-    },
-    {
-      name: 'RATING',
-      sortable: true,
-      minWidth: '16%',
-      selector: (row) => row.rating,
-    },
-    {
-      name: 'BID AMT',
-      sortable: true,
-      minWidth: '14%',
-      selector: (row) => row.bid,
-    },
-    {
-      name: 'ATTACHMENTS',
-      sortable: true,
-      minWidth: '18%',
-      selector: (row) => row.attachments,
-    },
-    {
-      name: 'STATUS',
-      sortable: true,
-      minWidth: '12%',
-      selector: (row) => row.status,
-    },
-
-    {
-      name: 'ACTION',
-      sortable: true,
-      minWidth: '6%',
-      selector: (row) => row.action,
-    },
-  ];
-
-  const tableDataset = [
-    {
-      name: (
-        <div className="d-flex gap-50 align-items-center">
-          <Badge className="almamator-badge">
-            <img src={hat} alt="user-badge" />
-          </Badge>
-          <Badge className="invited-badge">
-            <img src={Invited} alt="user-badge" />
-          </Badge>
-
-          <div className="d-flex gap-1 align-items-center">
-            <Avatar img={lisa} imgHeight="32" imgWidth="32" />
-            <div>
-              <span className="font-weight-bold d-block table-user-name">Trumio</span>
-              <span className="table-user-sub">Ronnie roy</span>
-            </div>
-          </div>
-        </div>
-      ),
-      rating: (
-        <>
-          <Rating
-            className="mb-25"
-            initialRating={3.5}
-            emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
-            fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
-            readonly
-          />
-          <div className="table-user-sub">56 Projects</div>
-        </>
-      ),
-      bid: '$1000',
-      attachments: (
-        <div>
-          <Paperclip size={18} color={theme.bodyColor} /> <span>2</span>
-        </div>
-      ),
-      status: 'Active',
-      action: (
-        <div className="d-flex gap-1">
-          <Eye size={22} color={theme.bodyColor} />
-          <MoreVertical size={18} color={theme.bodyColor} />
-        </div>
-      ),
-    },
-    {
-      name: (
-        <div className="d-flex gap-50 align-items-center">
-          <Badge className="almamator-badge hide">
-            <img src={hat} alt="user-badge" />
-          </Badge>
-          <Badge className="invited-badge">
-            <img src={Invited} alt="user-badge" />
-          </Badge>
-
-          <div className="d-flex gap-1 align-items-center">
-            <Avatar img={lisa} imgHeight="32" imgWidth="32" />
-            <div>
-              <span className="font-weight-bold d-block table-user-name">Trumio</span>
-              <span className="table-user-sub">Ronnie roy</span>
-            </div>
-          </div>
-        </div>
-      ),
-      rating: '4',
-      bid: '$1000',
-      attachments: (
-        <div>
-          <Paperclip size={18} color={theme.bodyColor} /> <span>2</span>
-        </div>
-      ),
-      status: 'Active',
-      action: (
-        <div className="d-flex gap-1">
-          <Eye size={22} color={theme.bodyColor} />
-          <MoreVertical size={18} color={theme.bodyColor} />
-        </div>
-      ),
-    },
-  ];
 
   const contractUpdates = [
     {
@@ -205,41 +58,10 @@ const BidTimeline = () => {
     },
   ];
 
-  const bidUpdates = [
-    {
-      status: 'Bid Accepted',
-      color: theme.info,
-    },
-    {
-      status: 'Bid Shortlisted',
-      color: theme.info,
-    },
-
-    {
-      status: 'Bid Reviewed',
-      color: theme.orangeColor,
-      user_details: {
-        name: 'Leona Watkins (Client)',
-        org_name: 'CEO of pixinvent',
-      },
-    },
-
-    {
-      status: 'Bid submitted',
-      color: theme.orangeColor,
-      bid_details: {
-        duration: '5w',
-        total_hours: '225h',
-        talent_cost: '$1400',
-        file: '',
-      },
-    },
-  ];
-
   const contractDataSet = [];
   contractUpdates.map((item) =>
     contractDataSet.push({
-      meta: '45 min ago',
+      meta: item?.time,
       color: item.color,
       customContent: (
         <div className="d-flex justify-content-between mb-1">
@@ -247,48 +69,6 @@ const BidTimeline = () => {
             <h6 className="mb-25">{item.status}</h6>
             <span className="d-block mb-1">Feb 1, 23</span>
             {item.user_details && <NameInfo name={item.user_details.name} info={item.user_details.org_name} />}
-          </div>
-          <div className="meta-data">
-            <span className="time">45min ago</span>
-            <span className="card-cta">View</span>
-          </div>
-        </div>
-      ),
-    }),
-  );
-
-  const bidUpdatesDataSet = [];
-  bidUpdates.map((item) =>
-    bidUpdatesDataSet.push({
-      color: item.color,
-      customContent: (
-        <div className="d-flex justify-content-between mb-1">
-          <div>
-            <h6 className="mb-25">{item.status}</h6>
-            <span className="d-block mb-1">Feb 1, 23</span>
-            {item.user_details && <NameInfo name={item.user_details.name} info={item.user_details.org_name} />}
-
-            {item.bid_details && (
-              <>
-                <div className="d-flex gap-1 mb-75">
-                  <span className="d-flex align-items-center gap-25">
-                    <h6 className="mb-0">Duration: </h6>
-                    <span className="">{item.bid_details.duration}</span>
-                  </span>
-                  <span className="d-flex align-items-center gap-25">
-                    <h6 className="mb-0">Total Hours: </h6>
-                    <span className="">{item.bid_details.total_hours}</span>
-                  </span>
-                  <span className="d-flex align-items-center gap-25">
-                    <h6 className="mb-0">Total Cost: </h6>
-                    <span className="">{item.bid_details.talent_cost}</span>
-                  </span>
-                </div>
-                <div className="d-flex gap-25 align-items-center">
-                  <img src={PdfIcon} alt="pdficon" /> <h6 className="mb-0">Proposal.pdf</h6>
-                </div>
-              </>
-            )}
           </div>
           <div className="meta-data">
             <span className="time">45min ago</span>
@@ -300,7 +80,40 @@ const BidTimeline = () => {
   );
 
   const isDisabled = true;
-  const bidStageData = [
+
+  const bidStageDataForTalentTeam = [
+    {
+      isDisabled: true,
+      color: theme.purpleTimelimeColor,
+      customContent: (
+        <Card>
+          <CardBody className="basic-title">
+            <div className="d-flex justify-content-between">
+              <CardText className={`fw-bold mb-0  ${isDisabled ? 'disabled-color' : ''}`}>Contract</CardText>
+              {!isDisabled && (
+                <div className="d-flex gap-50 align-items-center">
+                  <span className="card-cta">Sign contract</span>
+                  <ChevronRight size={16} />
+                </div>
+              )}
+            </div>
+          </CardBody>
+        </Card>
+      ),
+    },
+
+    {
+      isDisabled: false,
+      color: theme.orangeColor,
+      customContent: (
+        <Accordion className="accordion-timeline" open={open} toggle={toggle}>
+          {userType !== userTypes.client && <BidSubmitted />}
+        </Accordion>
+      ),
+    },
+  ];
+
+  const bidStageDataForClient = [
     {
       isDisabled: false,
       color: theme.orangeColor,
@@ -320,155 +133,23 @@ const BidTimeline = () => {
         </Card>
       ),
     },
-    {
-      isDisabled: false,
-      color: theme.orangeColor,
-      customContent: (
-        <Card>
-          <CardBody className="basic-title">
-            <div className="d-flex justify-content-between">
-              <div className="d-flex gap-25 align-items-center">
-                <CardText className="fw-bold mb-0">Contract</CardText>
-                <span className="indicator" />
-              </div>
-              <div className="d-flex gap-50 align-items-center">
-                <span className="card-cta">Sign contract</span>
-                <ChevronRight size={16} />
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-      ),
-    },
-    {
-      isDisabled: false,
-      color: theme.orangeColor,
-      customContent: (
-        <Accordion className="accordion-timeline" open={open} toggle={toggle}>
-          <AccordionItem>
-            <AccordionHeader targetId="1">
-              <AccordionHeadStyle>
-                <span className="title-head">Contract</span>
-                <div className="d-flex gap-1 aling-items-center">
-                  <CardText className="d-none view-all-cta">Give rating</CardText>
-
-                  <div className="me-1">
-                    <span className="key">Updated Date</span>
-                    <CardText className="value">Mar 1, 23</CardText>
-                  </div>
-                </div>
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="1" className="accordion-status-body">
-              <Timeline data={contractDataSet} />
-            </AccordionBody>
-          </AccordionItem>
-        </Accordion>
-      ),
-    },
 
     {
       color: theme.purpleTimelimeColor,
       isDisabled: true,
       customContent: (
         <Accordion className="accordion-timeline" open={open} toggle={toggle}>
-          <AccordionItem>
-            <AccordionHeader targetId="1">
-              <AccordionHeadStyle>
-                <span className="title-head">Received bids</span>
-                <div className="d-flex gap-1 aling-items-center">
-                  <CardText className="d-none view-all-cta">Give rating</CardText>
-                  <div>
-                    <span className="key">Duration</span>
-                    <CardText className="value">5w</CardText>
-                  </div>
-                  <div className="me-1">
-                    <span className="key">Talent Cost</span>
-                    <CardText className="value">$1,000</CardText>
-                  </div>
-                </div>
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="1">
-              <div className="accordion-body-desc">
-                <CardText className="desc mb-0">
-                  Your proposal request has reached the best solution partners around the globe. Below are the list of
-                  solution partner that have submitted bid for your proposal request.
-                </CardText>
-                <Row className="justify-content-between w-100 mb-2">
-                  <Col className="d-flex align-items-end" sm="12" md="12" lg="4">
-                    <InputGroup className="input-group-merge">
-                      <InputGroupText className="ps-1 pe-50">
-                        <Search size={14} color={theme.textMuted} />
-                      </InputGroupText>
-                      <Input placeholder="Search talent name" value={12} />
-                    </InputGroup>
-                  </Col>
-                  <Col sm="12" md="12" lg="3">
-                    <Label className="form-label">Project Status</Label>
-                    <Select
-                      options={sortingOptions}
-                      classNamePrefix="select"
-                      placeholder="Select type"
-                      theme={selectThemeColors}
-                    />
-                  </Col>
-                </Row>
-                <CardText>10/500 Invited</CardText>
-              </div>
-
-              <div className="react-dataTable mt-1">
-                <DataTable
-                  noHeader
-                  pagination={false}
-                  columns={tableColumns}
-                  paginationPerPage={7}
-                  className="react-dataTable"
-                  sortIcon={<ChevronDown size={10} />}
-                  data={tableDataset}
-                  classNamePrefix="react-dataTable"
-                />
-              </div>
-            </AccordionBody>
-          </AccordionItem>
-        </Accordion>
-      ),
-    },
-    {
-      isDisabled: false,
-      color: theme.orangeColor,
-      customContent: (
-        <Accordion className="accordion-timeline" open={open} toggle={toggle}>
-          <AccordionItem>
-            <AccordionHeader targetId="1">
-              <AccordionHeadStyle>
-                <span className="title-head">Bid Submitted</span>
-
-                <div className="d-flex gap-1 aling-items-center">
-                  <CardText className="d-none view-all-cta">Give rating</CardText>
-
-                  <div className="d-flex gap-1 aling-items-center">
-                    <div>
-                      <span className="key">Duration</span>
-                      <CardText className="value">5w</CardText>
-                    </div>
-                    <div className="me-1">
-                      <span className="key">Talent Cost</span>
-                      <CardText className="value">$1,000</CardText>
-                    </div>
-                  </div>
-                </div>
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="1" className="accordion-status-body">
-              <Timeline data={bidUpdatesDataSet} />
-            </AccordionBody>
-          </AccordionItem>
+          {userType === userTypes.client && <ReceivedBids />}
         </Accordion>
       ),
     },
   ];
-  return <Timeline data={bidStageData} />;
+  return (
+    <>
+      <Timeline data={userType === userTypes.client ? bidStageDataForClient : bidStageDataForTalentTeam} />;
+      {bidModal && <BidPreviewModal modal={bidModal} toggleModal={toggleBidModal} />}
+    </>
+  );
 };
 
 export default BidTimeline;

@@ -70,8 +70,8 @@ const LeftSidebarProjectDetails = () => {
                   ? projectDetailsData?.client_details?.company_logo
                   : defaultAvatar
               }
-              imgHeight="32"
-              imgWidth="32"
+              imgHeight="35"
+              imgWidth="35"
               className="project-details-card-photo me-1 mt-50"
             />
             <div>
@@ -114,7 +114,15 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          <BadgeGroup inline color="light-blue" title="Tags" data={projectDetailsData?.proficiency?.skills} />
+          <BadgeGroup
+            inline
+            color="light-blue"
+            title="Tags"
+            data={[
+              ...(projectDetailsData?.proficiency?.skills || []),
+              ...(projectDetailsData?.proficiency?.tools || []),
+            ]}
+          />
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>

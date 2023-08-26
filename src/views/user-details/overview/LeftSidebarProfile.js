@@ -25,7 +25,15 @@ import { CustomBadge } from '../../styled';
 import { getItem } from '../../../utility/localStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
 
-const LeftSidebarProfile = ({ isTalentView, isTeamView, isInvited, isClient, data, isEditable }) => {
+const LeftSidebarProfile = ({
+  isTalentView,
+  isInvited,
+  isProjectDetailsView,
+  isTeamView,
+  isClient,
+  data,
+  isEditable,
+}) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
@@ -60,6 +68,7 @@ const LeftSidebarProfile = ({ isTalentView, isTeamView, isInvited, isClient, dat
               </div>
             )}
             {!(isClient && userData?.user_type === userTypes.client) &&
+              !isProjectDetailsView &&
               !isEditable &&
               !isTeamView &&
               (data?.is_favourited ? (
@@ -90,9 +99,6 @@ const LeftSidebarProfile = ({ isTalentView, isTeamView, isInvited, isClient, dat
             {isTeamView && (
               <img src={data?.team_logo?.length > 0 ? data?.team_logo : avatar7} alt="user" width={112} height={120} />
             )}
-            {isInvited && (
-              <img src={data?.team_logo?.length > 0 ? data?.team_logo : avatar7} alt="user" width={112} height={120} />
-            )}
           </div>
 
           {isEditable && isTalentView && (
@@ -110,14 +116,7 @@ const LeftSidebarProfile = ({ isTalentView, isTeamView, isInvited, isClient, dat
               <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name}`}</CardText>
             </div>
           )}
-          {isInvited && (
-            <div className="public">
-              <CardText className="text-center user-name mb-50 fw-300">
-                {`${data?.first_name} ${data?.last_name}`}
-              </CardText>
-              <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name}`}</CardText>
-            </div>
-          )}
+
           {isClient && (
             <div className="public">
               <CardText className="text-center user-name mb-25 fw-300">{`${
@@ -352,7 +351,7 @@ const LeftSidebarProfile = ({ isTalentView, isTeamView, isInvited, isClient, dat
                 <CardText className="report-text m-0 text-center mt-1 fw-bold">Report</CardText>
               </div>
             )}
-            {isInvited && (
+            {isProjectDetailsView && (
               <div className="invited-box">
                 <div className="d-flex gap-1 mt-3 justify-content-center">
                   <Button size="md" className="w-50" outline color="primary">
@@ -377,6 +376,7 @@ LeftSidebarProfile.propTypes = {
   isClient: PropTypes.bool,
   isTalentView: PropTypes.bool,
   isTeamView: PropTypes.bool,
+  isProjectDetailsView: PropTypes.bool,
   isInvited: PropTypes.bool,
 };
 LeftSidebarProfile.defaultProps = {
@@ -385,6 +385,7 @@ LeftSidebarProfile.defaultProps = {
   isClient: false,
   isTalentView: false,
   isTeamView: false,
+  isProjectDetailsView: false,
   isInvited: false,
 };
 

@@ -1,6 +1,6 @@
 import Rating from 'react-rating';
 import Proptypes from 'prop-types';
-import lisa from '@src/assets/images/portrait/small/lisa.png';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '@components/avatar';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
@@ -16,9 +16,11 @@ const MemberRow = ({ data, withReview }) => (
         <section className="d-flex justify-content-between">
           <div className="d-flex align-items-center gap-1">
             <div className="name-info d-flex gap-50 align-items-center">
-              <Avatar img={lisa} imgHeight="38" imgWidth="38" />
+              <Avatar img={data?.image_uri || defaultAvatar} imgHeight="38" imgWidth="38" />
               <div className="ms-50">
-                <h6 className="mb-0 fw-bolder">{data.name}</h6>
+                <h6 className="mb-0 fw-bolder">
+                  {data?.first_name} {data?.last_name}
+                </h6>
                 {!withReview && <span className="mb-50 font-small-2 role">{data.role}</span>}
               </div>
             </div>
@@ -35,12 +37,12 @@ const MemberRow = ({ data, withReview }) => (
               </div>
             )}
             <div className="me-2">
-              <span className="key">Invited on</span>
-              <CardText className="value">Mar 1, 23</CardText>
+              <span className="key">Accepted on</span>
+              <CardText className="value">-</CardText>
             </div>
-            <div className="me-1">
+            <div className="me-1 d-none">
               <span className="key">Status</span>
-              <CardText className="value">Accepted</CardText>
+              <CardText className="value">-</CardText>
             </div>
           </div>
           {withReview ? (
@@ -48,7 +50,7 @@ const MemberRow = ({ data, withReview }) => (
               <Mail size={20} className="mail-icon" color={theme.activeColor} />
             </span>
           ) : (
-            <Trash2 className="delete-icon" color={theme.red} />
+            <Trash2 className="delete-icon d-none" color={theme.red} />
           )}
         </section>
       </CardBody>
