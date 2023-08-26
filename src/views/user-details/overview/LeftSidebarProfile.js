@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
-import { Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
@@ -14,18 +14,27 @@ import BehanceIcon from '@src/assets/images/behance.png';
 import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
-import { GitHub, Heart, Link, Linkedin} from 'react-feather';
+import { GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
 import { LeftSidebarProfileWrapper } from './style';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import { CustomBadge } from '../../styled';
 import { getItem } from '../../../utility/localStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
-import TwitterXIcon from "../../../assets/images/logo/X-logo.svg";
+import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 
-const LeftSidebarProfile = ({ isTalentView, isTeamView, isClient, data, isEditable }) => {
+const LeftSidebarProfile = ({
+  isTalentView,
+  isInvited,
+  isProjectDetailsView,
+  isTeamView,
+  isClient,
+  data,
+  isEditable,
+}) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
@@ -50,19 +59,30 @@ const LeftSidebarProfile = ({ isTalentView, isTeamView, isClient, data, isEditab
     <LeftSidebarProfileWrapper>
       <Card>
         <CardBody>
-          {!(isClient && userData?.user_type === userTypes.client) &&
-            !isEditable &&
-            !isTeamView &&
-            (data?.is_favourited ? (
-              <Heart
-                className="cursor-pointer d-flex ms-auto heart"
-                fill={theme.red}
-                stroke={theme.red}
-                onClick={handleUnLike}
-              />
-            ) : (
-              <Heart className="cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
-            ))}
+          <div>
+            {isInvited && (
+              <div className="d-flex gap-50 align-items-center">
+                <UserCheck size={16} />
+                <CustomBadge>
+                  <Badge className="INVITED">Invited</Badge>
+                </CustomBadge>
+              </div>
+            )}
+            {!(isClient && userData?.user_type === userTypes.client) &&
+              !isProjectDetailsView &&
+              !isEditable &&
+              !isTeamView &&
+              (data?.is_favourited ? (
+                <Heart
+                  className="cursor-pointer d-flex ms-auto heart"
+                  fill={theme.red}
+                  stroke={theme.red}
+                  onClick={handleUnLike}
+                />
+              ) : (
+                <Heart className="cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
+              ))}
+          </div>
 
           <div className="user-image">
             {isClient && (
@@ -97,6 +117,7 @@ const LeftSidebarProfile = ({ isTalentView, isTeamView, isClient, data, isEditab
               <CardText className="text-center mb-50 fw-bold">{`${data?.role?.name}`}</CardText>
             </div>
           )}
+
           {isClient && (
             <div className="public">
               <CardText className="text-center user-name mb-25 fw-300">{`${
@@ -257,9 +278,7 @@ const LeftSidebarProfile = ({ isTalentView, isTeamView, isClient, data, isEditab
                       <a href={item?.url} target="_blank" rel="noopener noreferrer">
                         <Avatar
                           color="light-primary"
-                          icon={
-                            <img src={TwitterXIcon} alt='' width={20} height={20} />
-                          }
+                          icon={<img src={TwitterXIcon} alt="" width={20} height={20} />}
                           onClick={item?.url}
                           className="me-1 p-25 mb-1"
                           id={`tooltip-links-${index}`}
@@ -310,15 +329,14 @@ const LeftSidebarProfile = ({ isTalentView, isTeamView, isClient, data, isEditab
               </div>
             )}
 
-            {isTeamView ? (
-              <span />
-            ) : isEditable ? (
+            {isEditable && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50" color="primary" onClick={onEditClick}>
                   Edit
                 </Button>
               </div>
-            ) : (
+            )}
+            {!isEditable && (
               // To be taken for team memebers
               <div className="d-none">
                 <div className="d-flex gap-1 mt-3 justify-content-center">
@@ -330,6 +348,18 @@ const LeftSidebarProfile = ({ isTalentView, isTeamView, isClient, data, isEditab
                   </Button>
                 </div>
                 <CardText className="report-text m-0 text-center mt-1 fw-bold">Report</CardText>
+              </div>
+            )}
+            {isProjectDetailsView && (
+              <div className="invited-box">
+                <div className="d-flex gap-1 mt-3 justify-content-center">
+                  <Button size="md" className="w-50" outline color="primary">
+                    View Profile
+                  </Button>
+                  <Button size="md" className="w-50" color="primary">
+                    Message
+                  </Button>
+                </div>
               </div>
             )}
           </section>
@@ -345,6 +375,8 @@ LeftSidebarProfile.propTypes = {
   isClient: PropTypes.bool,
   isTalentView: PropTypes.bool,
   isTeamView: PropTypes.bool,
+  isProjectDetailsView: PropTypes.bool,
+  isInvited: PropTypes.bool,
 };
 LeftSidebarProfile.defaultProps = {
   isEditable: false,
@@ -352,6 +384,8 @@ LeftSidebarProfile.defaultProps = {
   isClient: false,
   isTalentView: false,
   isTeamView: false,
+  isProjectDetailsView: false,
+  isInvited: false,
 };
 
 export default LeftSidebarProfile;

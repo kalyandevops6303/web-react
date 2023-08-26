@@ -27,6 +27,9 @@ import CreateBid from '../../views/create-bid';
 import TeamInvitation from '../../views/team-invitation';
 import CreateTeam from '../../views/createTeam';
 import ComingSoon from '../../views/auth/ComingSoon';
+import ProjectDetails from '../../views/project-details';
+import BidDetails from '../../views/project-details/BidDetails';
+import ContractView from '../../views/project-details/ContractView';
 import { userOnboarding } from '../../utility/constants/Constant';
 
 const getLayout = {
@@ -67,6 +70,18 @@ const Routes = [
   {
     path: '/marketplace/*',
     element: <MarketPlace />,
+  },
+  {
+    path: '/project-details/:projectId/*',
+    element: <ProjectDetails />,
+  },
+  {
+    path: '/project-details/:projectId/:projectStep/:bidId',
+    element: <BidDetails />,
+  },
+  {
+    path: '/project-details/:projectId/contract',
+    element: <ContractView />,
   },
 
   {

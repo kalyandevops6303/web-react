@@ -430,6 +430,8 @@ export const TextEditorContainer = styled.div`
 
   .ql-toolbar.ql-snow + .ql-container.ql-snow {
     min-height: 150px;
+    max-height: 35rem;
+    overflow-y: auto;
   }
 `;
 

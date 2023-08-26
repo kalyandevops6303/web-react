@@ -79,6 +79,14 @@ const API = {
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
   },
+  projectDetails: {
+    getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
+    getProjectTeamMember: `${apiCreateProjectEndpoint}/api/v1/project-course/list-workers`,
+    getReceivedBids: `${apiCreateProjectEndpoint}/api/v1/bid/selection/list-bids`,
+    getBidReview: `${apiCreateProjectEndpoint}/api/v1/bid/selection/review-bid`,
+    assignBid: `${apiCreateProjectEndpoint}/api/v1/bid/selection/assign-bid`,
+    commonBidInfo: `${apiCreateProjectEndpoint}/api/v1/common/bid/info`,
+  },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
     favoriteTalents: `${apiAuthEndpoint}/api/v1/team/favourite-talents`,

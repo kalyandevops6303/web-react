@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+import { ChevronRight } from 'react-feather';
 import React from 'react';
 import Proptypes from 'prop-types';
 import {
@@ -17,7 +19,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
-import { ChevronRight } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
@@ -107,6 +108,13 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
         }
       }
     }
+  };
+
+  const isViewable =
+    window.location.pathname.split('/').includes('my_bids') ||
+    window.location.pathname.split('/').includes('my_listings');
+  const handleRedirectTodetailsView = () => {
+    navigate(`/project-details/${data?._id}/bid`);
   };
 
   return (
@@ -216,29 +224,41 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
               <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
             </CardBody>
           </Card>
-          {(selectUserDetailsData?.user_type === userTypes.talent ||
-            selectUserDetailsData?.user_type === userTypes.team) && (
+
+          {isViewable ? (
             <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-              <Button color="flat-danger" className="me-1">
-                Report
+              <Button onClick={handleRedirectTodetailsView} color="primary">
+                <span className="me-50">View Bid</span>
+                <ChevronRight size={14} />
               </Button>
-              <Button
-                color="primary"
-                disabled={checkBidLoadingIsLoading}
-                onClick={() => {
-                  setSelectedProject(data);
-                  dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
-                }}
-              >
-                {checkBidLoadingIsLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <>
-                    <span className="me-50">Create Bid</span>
-                    <ChevronRight size={14} />
-                  </>
-                )}
-              </Button>
+            </div>
+          ) : (
+            <div>
+              {(selectUserDetailsData?.user_type === userTypes.talent ||
+                selectUserDetailsData?.user_type === userTypes.team) && (
+                <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
+                  <Button color="flat-danger" className="me-1">
+                    Report
+                  </Button>
+                  <Button
+                    color="primary"
+                    disabled={checkBidLoadingIsLoading}
+                    onClick={() => {
+                      setSelectedProject(data);
+                      dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
+                    }}
+                  >
+                    {checkBidLoadingIsLoading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <>
+                        <span className="me-50">Create Bid</span>
+                        <ChevronRight size={14} />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </ViewProjectDetailModalWrap>
