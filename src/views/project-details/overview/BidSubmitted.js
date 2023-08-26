@@ -12,6 +12,7 @@ import { getBidDetails } from '../../../redux/actions/projectDetailsAction';
 import Timeline from '../../../@core/components/timeline';
 import theme from '../../../configs/themeVariables';
 import NameInfo from '../../../@core/components/name-info';
+import BidPreviewModal from '../../modals/BidPreviewModal';
 
 const BidSubmitted = () => {
   const userData = useSelector(selectUserData);
@@ -157,6 +158,7 @@ const BidSubmitted = () => {
       <AccordionBody accordionId="1" className="accordion-status-body">
         <Timeline data={bidUpdatesDataSet} />
       </AccordionBody>
+      {bidModal && <BidPreviewModal modal={bidModal} toggleModal={toggleBidModal} />}
     </AccordionItem>
   );
 };

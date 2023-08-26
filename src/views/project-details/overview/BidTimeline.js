@@ -8,14 +8,11 @@ import NameInfo from '../../../@core/components/name-info';
 import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ReceivedBids from './ReceivedBids';
-import BidPreviewModal from '../../modals/BidPreviewModal';
 import BidSubmitted from './BidSubmitted';
 
 const BidTimeline = () => {
   const [open, setOpen] = useState('1');
   const userType = useSelector(selectUserType);
-  const [bidModal, setBidModal] = useState(false);
-  const toggleBidModal = () => setBidModal(!bidModal);
 
   const toggle = (id) => (open === id ? setOpen() : setOpen(id));
 
@@ -147,7 +144,6 @@ const BidTimeline = () => {
   return (
     <>
       <Timeline data={userType === userTypes.client ? bidStageDataForClient : bidStageDataForTalentTeam} />;
-      {bidModal && <BidPreviewModal modal={bidModal} toggleModal={toggleBidModal} />}
     </>
   );
 };
