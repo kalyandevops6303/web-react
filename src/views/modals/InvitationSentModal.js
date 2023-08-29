@@ -17,6 +17,7 @@ import { getItem } from '../../utility/localStorageControl';
 
 const InvitationSentModal = ({
   projectId,
+  inviteRole,
   modal,
   toggleModal,
   selectedTalents,
@@ -46,20 +47,29 @@ const InvitationSentModal = ({
 
   const onInviteTalents = () => {
     const userIds = selectedTalents.map((talent) => talent.user_id);
-    const userEmails = selectedTalents.map((talent) => talent.user_details.email);
+    const userEmails = selectedTalents.map((talent) => talent?.user_details?.email);
     const teamId = getItem('team_id');
+    const postData = {
+      invitation_type: projectId ? 'PROJECT_TEAM' : 'TEAM',
+      message,
+      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+      from_entity: {
+        team_id: teamId,
+      },
+      to_entity: {
+        user_ids: userIds,
+      },
+      invited_for: {
+        team_id: teamId,
+        role: inviteRole,
+      },
+    };
+    if (projectId) {
+      postData.invited_for.project_id = projectId;
+    }
+
     if (teamId) {
-      dispatch(
-        inviteTalentForTeam(
-          {
-            project_id: projectId,
-            talent_ids: userIds,
-            message,
-            redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
-          },
-          onSuccess,
-        ),
-      );
+      dispatch(inviteTalentForTeam({ data: postData, onSuccess }));
     } else {
       dispatch(inviteTalents(projectId, { emails: userEmails, talent_ids: userIds, message }, onSuccess));
     }
@@ -159,6 +169,7 @@ export default InvitationSentModal;
 
 InvitationSentModal.propTypes = {
   modal: Proptypes.bool,
+  inviteRole: Proptypes.string,
   projectId: Proptypes.string,
   toggleModal: Proptypes.func,
   selectedTalents: Proptypes.array,
@@ -185,4 +196,5 @@ InvitationSentModal.defaultProps = {
   setInvitedIds: () => {},
   setSelectedTalents: () => {},
   description: '',
+  inviteRole: '',
 };

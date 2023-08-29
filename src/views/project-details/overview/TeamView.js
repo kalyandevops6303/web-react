@@ -1,20 +1,38 @@
-import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
+import { Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { TeamVieWrapper } from '../style';
+import { MemberRowWrapper, TeamVieWrapper } from '../style';
 import MemberRow from './MemberRow';
-import { getTeamMembers } from '../../../redux/actions/projectDetailsAction';
+import { getTeamMembers, getUnassignedRoles } from '../../../redux/actions/projectDetailsAction';
+import InviteTalentToTeam from '../../invite-talent-to-team';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const TeamView = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const userData = useSelector(selectUserData);
   const teamMembers = useSelector((state) => state.projectDetails.getTeamMember);
-
+  const unassigned = useSelector((state) => state.projectDetails.unassignedRole);
   useEffect(() => {
     dispatch(getTeamMembers({ project_id: params.projectId }));
+    dispatch(getUnassignedRoles({ project_id: params.projectId }));
   }, []);
 
+  const [inviteModal, setInviteModal] = useState(false);
+  const [inviteRole, setInviteRole] = useState(false);
+  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+
+  const handleAssign = (data) => {
+    setInviteModal(true);
+    setInviteTalentToTeamModal(true);
+    setInviteRole(data?.role);
+  };
+
+  const toggleModal = () => {
+    setInviteModal(!inviteModal);
+  };
   return (
     <TeamVieWrapper>
       <Card>
@@ -30,17 +48,49 @@ const TeamView = () => {
 
       {/* TODO: API in progess */}
 
-      {/* <Card>
-        <CardTitle className="main-card-title">Add Team Member</CardTitle>
-        <CardBody className="main-card-body">
-          <MemberRowWrapper>
-            <Card>
+      {userData?.user_type === userTypes.team && (
+        <Card>
+          <CardTitle className="main-card-title">Add Team Member</CardTitle>
+          <CardBody className="main-card-body">
+            <MemberRowWrapper>
+              {unassigned?.map((item) => (
+                <Card key={item?.user_id}>
+                  <CardBody>
+                    <div className="d-flex align-items-center justify-content-between  gap-1">
+                      <CardText className="d-flex gap-25 fw-bold me-4 mt-auto mb-auto">
+                        {item?.role} <span className="indicator" />
+                      </CardText>
+                      <Button
+                        onClick={() => handleAssign({ role: item?.role })}
+                        color="primary"
+                        type="secondary"
+                        outline
+                      >
+                        Assign team member
+                      </Button>
+                      <div className="d-flex">
+                        <div className="me-2">
+                          <span className="key">Duration</span>
+                          <CardText className="value">{item?.number_of_weeks}w</CardText>
+                        </div>
+                        <div className="me-1">
+                          <span className="key">Hours/week</span>
+                          <CardText className="value">{item?.hours_per_week}</CardText>
+                        </div>
+                      </div>
+                    </div>
+                  </CardBody>
+                </Card>
+              ))}
+              {/* <Card>
               <CardBody>
                 <div className="d-flex align-items-center justify-content-between  gap-1">
                   <CardText className="d-flex gap-25 fw-bold me-4 mt-auto mb-auto">
-                    Designer <span className="indicator" />
+                    Back end developer <span className="indicator" />
                   </CardText>
-                  <Input placeholder="Assign team member" />
+                  <Button color="primary" type="secondary" outline>
+                    Assign team member
+                  </Button>
                   <div className="d-flex">
                     <div className="me-2">
                       <span className="key">Duration</span>
@@ -54,10 +104,33 @@ const TeamView = () => {
                 </div>
               </CardBody>
             </Card>
-          </MemberRowWrapper>
-        </CardBody>
-      </Card>
-      <Card>
+            <Card>
+              <CardBody>
+                <div className="d-flex align-items-center justify-content-between  gap-1">
+                  <CardText className="d-flex gap-25 fw-bold me-4 mt-auto mb-auto">
+                    Back end developer <span className="indicator" />
+                  </CardText>
+                  <Button onClick={handleAssign} color="primary" type="secondary" outline>
+                    Assign team member
+                  </Button>
+                  <div className="d-flex">
+                    <div className="me-2">
+                      <span className="key">Duration</span>
+                      <CardText className="value">11w</CardText>
+                    </div>
+                    <div className="me-1">
+                      <span className="key">Hours/week</span>
+                      <CardText className="value">125</CardText>
+                    </div>
+                  </div>
+                </div>
+              </CardBody>
+            </Card> */}
+            </MemberRowWrapper>
+          </CardBody>
+        </Card>
+      )}
+      {/* <Card>
         <CardTitle className="main-card-title">Invite Sent</CardTitle>
         <CardBody className="main-card-body">
           {Members.map((item) => (
@@ -65,6 +138,15 @@ const TeamView = () => {
           ))}
         </CardBody>
       </Card> */}
+      {inviteTalentToTeamModal && (
+        <InviteTalentToTeam
+          inviteTeamMemberModal={inviteModal}
+          toggleInviteTeamMemberModal={toggleModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+          inviteRole={inviteRole}
+          projectId={params.projectId}
+        />
+      )}
     </TeamVieWrapper>
   );
 };

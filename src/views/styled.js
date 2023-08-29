@@ -252,6 +252,14 @@ const GrayBorderContainer = styled.div`
   }
 `;
 
+const InviteHeadContainer = styled.div`
+  border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+
+  .custom-header-margin {
+    margin-top: -2.2rem;
+  }
+`;
+
 export const BlueNavsContainer = styled.div`
   .nav {
     border-radius: 0;
@@ -313,6 +321,7 @@ export {
   TimeWrapper,
   CreateBidRadioOption,
   GrayBorderContainer,
+  InviteHeadContainer,
   GrayCardWrapper,
   TeamCreatedModalImageWrapper,
 };

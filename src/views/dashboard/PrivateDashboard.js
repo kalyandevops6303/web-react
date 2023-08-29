@@ -17,12 +17,12 @@ import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/styl
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
-// import TeamListing from './overview/TeamListing';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { getItem } from '../../utility/localStorageControl';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
+import TeamListing from './overview/TeamListing';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -75,9 +75,15 @@ const PrivateDashboard = () => {
   const inviteToken = getItem('inviteToken');
   const isInviteRead = getItem('isInviteRead');
   const inviteId = getItem('inviteId');
+  const projectId = getItem('projectId');
+
   useEffect(() => {
     if (inviteToken && !isInviteRead) {
-      navigate(`/team-invitation/${inviteId}`);
+      if (projectId && inviteId) {
+        navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+      } else if (inviteId) {
+        navigate(`/team-invitation/${inviteId}`);
+      }
     }
   }, []);
 
@@ -160,7 +166,7 @@ const PrivateDashboard = () => {
           {userDetailsData?.user_type === userTypes.talent && (
             <section className="mb-2">
               <Header className="mb-1">Teams</Header>
-              {/* <TeamListing /> */}
+              <TeamListing />
             </section>
           )}
         </Col>

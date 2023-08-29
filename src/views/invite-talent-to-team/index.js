@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import SendInvitationModal from '../modals/SendInvitationModal';
 import InvitationSentModal from '../modals/InvitationSentModal';
 import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
+import ShareInviteModal from '../modals/ShareInviteModal';
 
-const InviteTalentToTeam = ({ inviteTeamMemberModal, toggleInviteTeamMemberModal }) => {
+const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, toggleInviteTeamMemberModal }) => {
   const [selectedTalents, setSelectedTalents] = useState([]);
   const [invitedIds, setInvitedIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
-
+  const [shareModal, setShareModal] = useState(false);
   //   const userDetailsData = useSelector(selectUserData);
   const [message, setMessage] = useState('');
   const [sendInvitationModal, setSendInvitationModal] = useState(false);
@@ -26,10 +27,15 @@ const InviteTalentToTeam = ({ inviteTeamMemberModal, toggleInviteTeamMemberModal
   //     setInviteTeamMemberModal(true);
   //   };
 
+  const toggleInviteModal = () => {
+    setShareModal(!shareModal);
+  };
   return (
     <>
       {inviteTeamMemberModal && (
         <InviteTeamMemberModal
+          inviteRole={inviteRole}
+          projectId={projectId}
           selectedTalents={selectedTalents}
           setSelectedTalents={setSelectedTalents}
           invitedIds={invitedIds}
@@ -37,12 +43,15 @@ const InviteTalentToTeam = ({ inviteTeamMemberModal, toggleInviteTeamMemberModal
           selectedIds={selectedIds}
           setSelectedIds={setSelectedIds}
           modal={inviteTeamMemberModal}
+          toggleInviteShareModal={toggleInviteModal}
           toggleModal={toggleInviteTeamMemberModal}
           setSendInvitationModal={setSendInvitationModal}
         />
       )}
       {sendInvitationModal && (
         <SendInvitationModal
+          projectId={projectId}
+          inviteRole={inviteRole}
           modal={sendInvitationModal}
           toggleModal={toggleSendInvitationModal}
           selectedTalents={selectedTalents}
@@ -54,10 +63,11 @@ const InviteTalentToTeam = ({ inviteTeamMemberModal, toggleInviteTeamMemberModal
       )}
       {invitationSentModal && (
         <InvitationSentModal
+          projectId={projectId}
+          inviteRole={inviteRole}
           modal={invitationSentModal}
           toggleModal={toggleInvitationSentModal}
           selectedTalents={selectedTalents}
-          projectId=""
           message={message}
           toggleSendInvitationModal={toggleSendInvitationModal}
           selectedIds={selectedIds}
@@ -68,15 +78,27 @@ const InviteTalentToTeam = ({ inviteTeamMemberModal, toggleInviteTeamMemberModal
           description="You’ve sent a team member invitation"
         />
       )}
+      {shareModal && (
+        <ShareInviteModal
+          projectId={projectId}
+          inviteRole={inviteRole}
+          modal={shareModal}
+          toggleModal={toggleInviteModal}
+        />
+      )}
     </>
   );
 };
 InviteTalentToTeam.propTypes = {
   inviteTeamMemberModal: PropTypes.bool,
   toggleInviteTeamMemberModal: PropTypes.func,
+  projectId: PropTypes.string,
+  inviteRole: PropTypes.string,
 };
 InviteTalentToTeam.defaultProps = {
   inviteTeamMemberModal: false,
   toggleInviteTeamMemberModal: () => {},
+  projectId: '',
+  inviteRole: '',
 };
 export default InviteTalentToTeam;

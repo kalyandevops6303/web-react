@@ -4,12 +4,15 @@ import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
 import { Route, Routes, useLocation } from 'react-router-dom';
+
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
 import CustomStep from '../../@core/components/custom-stepper';
-import { steps } from './overview/constants';
+import { InviteView, steps } from './overview/constants';
 import BidView from './overview/BidView';
 import TeamView from './overview/TeamView';
 import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
+import InviteMemberCard from './overview/InviteMemberCard';
+import InvitationView from './overview/InvitationView';
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -24,23 +27,31 @@ const ProjectDetails = () => {
     window?.scrollTo(0, 0);
   }, []);
 
+  const isInviteView = location?.pathname?.includes('project-invitation');
+
   return (
     <>
       <BreadCrumbs
-        data={[
-          { title: 'Marketplace', link: '/marketplace/all_listings' },
-          { title: projectDetailsData?.details?.name },
-        ]}
+        data={
+          isInviteView
+            ? [{ title: projectDetailsData?.details?.name }]
+            : [
+                { title: 'Marketplace', link: '/marketplace/all_listings' },
+                { title: projectDetailsData?.details?.name },
+              ]
+        }
       />
       <Row>
         <Col lg="3">
+          {isInviteView && <InviteMemberCard />}
           <LeftSidebarProjectDetails />
         </Col>
         <Col lg="9">
-          <CustomStep steps={steps} currentStep={currentStep} onChangeStep={changeStep} />
+          <CustomStep steps={isInviteView ? InviteView : steps} currentStep={currentStep} onChangeStep={changeStep} />
           <Routes>
             <Route path="bid" element={<BidView />} />
             <Route path="team" element={<TeamView />} />
+            <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
           </Routes>
         </Col>
       </Row>
