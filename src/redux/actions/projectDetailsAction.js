@@ -1,9 +1,13 @@
 import {
+  acceptInvitation,
   getBidDetailsService,
   getCommonBidDetailsService,
+  getInvitedByService,
   getProjectTeamMemberServive,
   getReceivedBidsService,
+  getUnassignedRoleService,
   projectDetailsService,
+  rejectInvitation,
   updateBidStatusService,
 } from '../../services/projectDetailsServices';
 import errorHandler from '../../utility/errorHandler';
@@ -11,12 +15,18 @@ import {
   getBidInfoFailure,
   getBidInfoRequest,
   getBidInfoSuccess,
+  getInvitedByFailure,
+  getInvitedByRequest,
+  getInvitedBySuccess,
   getReceivedBidsFailure,
   getReceivedBidsRequest,
   getReceivedBidsSuccess,
   getTeamMemberFailure,
   getTeamMemberRequest,
   getTeamMemberSuccess,
+  getUnassignedRoleFailure,
+  getUnassignedRoleRequest,
+  getUnassignedRoleSuccess,
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
@@ -41,6 +51,18 @@ const getTeamMembers =
       dispatch(getTeamMemberSuccess(res.data.data));
     } catch (error) {
       errorHandler(error, getTeamMemberFailure);
+    }
+  };
+
+const getUnassignedRoles =
+  ({ project_id }) =>
+  async (dispatch) => {
+    dispatch(getUnassignedRoleRequest());
+    try {
+      const res = await getUnassignedRoleService({ project_id });
+      dispatch(getUnassignedRoleSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getUnassignedRoleFailure);
     }
   };
 
@@ -84,5 +106,44 @@ const updateBidStatus =
       errorHandler(error);
     }
   };
-// eslint-disable-next-line import/prefer-default-export
-export { getProjectDetails, updateBidStatus, getTeamMembers, getReceivedBids, getBidDetails };
+
+const getWhoInvited =
+  ({ id, onSuccess, onError }) =>
+  async (dispatch) => {
+    dispatch(getInvitedByRequest());
+    try {
+      const res = await getInvitedByService({ invitation_id: id });
+      dispatch(getInvitedBySuccess(res.data.data));
+      onSuccess(res.data.data);
+    } catch (error) {
+      onError();
+      errorHandler(error, getInvitedByFailure);
+    }
+  };
+
+const updateInvitation =
+  ({ status, id, onSuccess, onError }) =>
+  async () => {
+    try {
+      if (status === 'ACCEPTED') {
+        await acceptInvitation({ id });
+      }
+      if (status === 'DECLINED') {
+        await rejectInvitation({ id });
+      }
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+export {
+  updateInvitation,
+  getWhoInvited,
+  getProjectDetails,
+  getUnassignedRoles,
+  updateBidStatus,
+  getTeamMembers,
+  getReceivedBids,
+  getBidDetails,
+};

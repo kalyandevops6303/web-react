@@ -27,6 +27,28 @@ const steps = [
     icon: <Star size={18} />,
   },
 ];
+const InviteView = [
+  {
+    title: 'Project',
+    subtitle: 'About work details',
+    icon: <Box size={18} />,
+  },
+  {
+    title: 'Milestone',
+    subtitle: 'Status & dispute',
+    icon: <Box size={18} />,
+  },
+  {
+    title: 'Payment',
+    subtitle: 'Pay transaction',
+    icon: <CreditCard size={18} />,
+  },
+  {
+    title: 'Rating',
+    subtitle: 'Give and get ratings',
+    icon: <Star size={18} />,
+  },
+];
 
 const currentProfile = {
   _id: '6486b30ba51384fb6948e724',
@@ -162,4 +184,4 @@ const Members = [
     role: 'Developer',
   },
 ];
-export { steps, currentProfile, dummyText, Members };
+export { steps, currentProfile, dummyText, Members, InviteView };

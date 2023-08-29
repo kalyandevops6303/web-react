@@ -81,17 +81,23 @@ const API = {
   },
   projectDetails: {
     getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
-    getProjectTeamMember: `${apiCreateProjectEndpoint}/api/v1/project-course/list-workers`,
+    getProjectTeamMember: `${apiCreateProjectEndpoint}/api/v1/project-course/assigned-roles`,
     getReceivedBids: `${apiCreateProjectEndpoint}/api/v1/bid/selection/list-bids`,
     getBidReview: `${apiCreateProjectEndpoint}/api/v1/bid/selection/review-bid`,
     assignBid: `${apiCreateProjectEndpoint}/api/v1/bid/selection/assign-bid`,
     commonBidInfo: `${apiCreateProjectEndpoint}/api/v1/common/bid/info`,
+    unassignRole: `${apiCreateProjectEndpoint}/api/v1/project-course/unassigned-roles`,
+    accept: `${apiAuthEndpoint}/api/v1/invitation/accept`, // put invite id
+    reject: `${apiAuthEndpoint}/api/v1/invitation/reject`, // put invite id
+    getInvitaion: `${apiAuthEndpoint}/api/v1/invitation`,
+    getSentInvitaion: `${apiAuthEndpoint}/api/v1/invitations/sent`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
     favoriteTalents: `${apiAuthEndpoint}/api/v1/team/favourite-talents`,
     almaMaterTalents: `${apiAuthEndpoint}/api/v1/team/alma-mater-talents`,
-    sendInvitaion: `${apiAuthEndpoint}/api/v1/team/send-invitations`,
+    sendInvitaion: `${apiAuthEndpoint}/api/v1/invitation/send`,
+    getTeamMember: `${apiAuthEndpoint}/api/v1/team/members`,
   },
   marketplace: {
     client: {

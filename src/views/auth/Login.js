@@ -42,14 +42,20 @@ const Login = () => {
   const urlSearchParams = new URLSearchParams(window.location.search);
   const dataParam = urlSearchParams.get('data');
   const inviteId = urlSearchParams.get('invite_id');
+  const projectId = urlSearchParams.get('project_id');
 
   const onValidUrlSuccess = () => {
     setValidUrl(true);
     setItem('inviteToken', dataParam);
     setItem('isInviteRead', false);
     setItem('inviteId', inviteId);
+    setItem('projectId', projectId);
     if (isLoggedIn) {
-      navigate(`/team-invitation/${inviteId}`);
+      if (projectId && inviteId) {
+        navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+      } else if (inviteId) {
+        navigate(`/team-invitation/${inviteId}`);
+      }
     }
   };
 
@@ -57,6 +63,10 @@ const Login = () => {
 
   useEffect(() => {
     if (dataParam) {
+      removeItem('inviteToken');
+      removeItem('isInviteRead');
+      removeItem('inviteId');
+      removeItem('projectId');
       dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
     }
   }, []);

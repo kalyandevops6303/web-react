@@ -91,10 +91,49 @@ const projectDetails = createSlice({
       getReceivedBidsLoading: false,
       error: action.payload,
     }),
+    getUnassignedRoleRequest: (state) => ({
+      ...state,
+      getUnassignedRoleLoading: true,
+      error: null,
+    }),
+    getUnassignedRoleSuccess: (state, action) => ({
+      ...state,
+      getUnassignedRoleLoading: false,
+      unassignedRole: action.payload,
+    }),
+
+    getUnassignedRoleFailure: (state, action) => ({
+      ...state,
+      getUnassignedRoleLoading: false,
+      error: action.payload,
+    }),
+
+    getInvitedByRequest: (state) => ({
+      ...state,
+      getInvitedByLoading: true,
+      error: null,
+    }),
+    getInvitedBySuccess: (state, action) => ({
+      ...state,
+      getInvitedByLoading: false,
+      invitedBy: action.payload,
+    }),
+
+    getInvitedByFailure: (state, action) => ({
+      ...state,
+      getInvitedByLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
 export const {
+  getInvitedByRequest,
+  getInvitedBySuccess,
+  getInvitedByFailure,
+  getUnassignedRoleRequest,
+  getUnassignedRoleSuccess,
+  getUnassignedRoleFailure,
   getBidInfoRequest,
   getBidInfoSuccess,
   getBidInfoFailure,

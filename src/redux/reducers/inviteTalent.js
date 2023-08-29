@@ -87,6 +87,22 @@ const inviteTalentSlice = createSlice({
       inviteTalentsLoading: false,
       error: action.payload,
     }),
+
+    teamMemberForInviteRequest: (state) => ({
+      ...state,
+      teamMemberForInviteLoading: true,
+      error: null,
+    }),
+    teamMemberForInviteSuccess: (state, action) => ({
+      ...state,
+      teamMemberForInviteLoading: false,
+      teamMemberForInvite: action.payload,
+    }),
+    teamMemberForInviteFailure: (state, action) => ({
+      ...state,
+      teamMemberForInviteLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -107,6 +123,9 @@ export const {
   inviteTalentsRequest,
   inviteTalentsSuccess,
   inviteTalentsFailure,
+  teamMemberForInviteRequest,
+  teamMemberForInviteSuccess,
+  teamMemberForInviteFailure,
 } = inviteTalentSlice.actions;
 
 export default inviteTalentSlice.reducer;
