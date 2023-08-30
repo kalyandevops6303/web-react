@@ -25,6 +25,7 @@ import Search from '../../views/search';
 import Notifications from '../../views/notifications';
 import CreateBid from '../../views/create-bid';
 import TeamInvitation from '../../views/team-invitation';
+import Disputes from '../../views/disputes';
 import CreateTeam from '../../views/createTeam';
 import ComingSoon from '../../views/auth/ComingSoon';
 import ProjectDetails from '../../views/project-details';
@@ -135,6 +136,10 @@ const Routes = [
     meta: {
       layout: 'blank',
     },
+  },
+  {
+    path: '/disputes',
+    element: <Disputes />,
   },
 ];
 
