@@ -58,8 +58,8 @@ const UserCard = ({ data, userType }) => {
   };
   const isSearchPage = location.pathname.split('/').includes('search');
 
-  const clientSkills = data?.project_area_of_interest?.skills;
-  const talentSkills = data?.expertise?.skills;
+  const clientSkills = data?.project_area_of_interest?.skills ?? [];
+  const talentSkills = data?.expertise?.skills ?? [];
 
   return (
     <UserCardWrap userType={userType}>
@@ -167,7 +167,7 @@ const UserCard = ({ data, userType }) => {
                 title="Skills"
                 data={
                   data?.user_type === userTypes.client
-                    ? [...clientSkills].sort((a, b) => b.name.length - a.name.length)
+                    ? [...clientSkills]?.sort((a, b) => b.name.length - a.name.length)
                     : [...talentSkills].sort((a, b) => b.name.length - a.name.length)
                 }
                 color="light-blue"
