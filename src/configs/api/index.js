@@ -32,6 +32,7 @@ const API = {
     currencies: `${apiAuthEndpoint}/api/v1/static/currency/all`,
     companyIndustries: `${apiAuthEndpoint}/api/v1/static/company-industry/all`,
     projectAreas: `${apiAuthEndpoint}/api/v1/static/project-area/all`,
+    services: `${apiAuthEndpoint}/api/v1/static/services/all`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
