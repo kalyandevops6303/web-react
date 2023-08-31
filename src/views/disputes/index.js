@@ -4,17 +4,26 @@ import { Button, Card, CardBody, Col, Row } from 'reactstrap';
 import { BookOpen, CheckCircle } from 'react-feather';
 import RaiseDisputeModal from './overview/RaiseDisputeModal';
 import Statbox from '../user-details/overview/Statbox';
+import DisputeDetailsModal from './overview/DisputeDetailsModal';
 
 const index = () => {
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
+  const [disputeDetailsModal, setDisputeDetailsModal] = useState(null);
 
   const toggleRaiseDisputeModal = () => {
     setRaiseDisputeModal(!raiseDisputeModal);
   };
 
+  const toggleDisputeDetailsModal = () => {
+    setDisputeDetailsModal(!disputeDetailsModal);
+  };
+
   return (
     <>
       {raiseDisputeModal && <RaiseDisputeModal modal={raiseDisputeModal} toggleModal={toggleRaiseDisputeModal} />}
+      {disputeDetailsModal && (
+        <DisputeDetailsModal modal={disputeDetailsModal} toggleModal={toggleDisputeDetailsModal} />
+      )}
       <div className="d-flex justify-content-between align-items-center">
         <BreadCrumbs data={[{ title: 'Dashboard', link: '/dashboard' }, { title: 'Disputes' }]} />
         <Button color="primary" className="mb-2" onClick={() => setRaiseDisputeModal(true)}>
@@ -57,7 +66,7 @@ const index = () => {
         </Col>
       </Row>
 
-      <Card className="cursor-pointer mb-1">
+      <Card className="cursor-pointer mb-1" onClick={() => setDisputeDetailsModal(true)}>
         <CardBody className="py-1">
           <Row className="d-flex align-items-center">
             <Col sm="12" md="6" lg="1">

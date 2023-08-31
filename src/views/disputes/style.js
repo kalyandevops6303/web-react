@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 
-const DisputeFormContainer = styled.div`
+export const DisputeFormContainer = styled.div`
   .select__placeholder {
     font-size: 12px;
     color: ${theme.textMuted};
@@ -38,4 +38,9 @@ const DisputeFormContainer = styled.div`
   }
 `;
 
-export default DisputeFormContainer;
+export const DisputeDetailsContainer = styled.div`
+  .blue-btn {
+    font-size: 16px;
+    color: ${theme.activeNavPillText};
+  }
+`;

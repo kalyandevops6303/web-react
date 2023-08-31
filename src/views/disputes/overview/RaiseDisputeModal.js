@@ -9,7 +9,7 @@ import { Modal, ModalHeader, ModalBody, Form, Row, Col, Label, FormFeedback, Inp
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { returnFilteredDropdownOptions, selectThemeColors } from '../../../utility/Utils';
 import { paginatedInstitutesService, talentRolesService } from '../../../services/staticServices';
-import DisputeFormContainer from '../style';
+import { DisputeFormContainer } from '../style';
 
 const RaiseDisputeModal = ({ modal, toggleModal }) => {
   const DisputeSchema = yup.object().shape({
