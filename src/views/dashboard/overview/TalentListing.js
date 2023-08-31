@@ -23,7 +23,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
 
-import Tag from '../../../@core/components/tags';
 import {
   profilePercentage,
   selectJoinRequestMember,
@@ -175,9 +174,7 @@ const TalentListing = () => {
       <AccordionItem>
         <AccordionHeader targetId="1">
           <AccordionHeadStyle>
-            <span className="d-flex align-items-center">
-              Join Requests <Tag>{joinRequests?.data?.length} </Tag>
-            </span>
+            <span className="d-flex align-items-center">Join Requests</span>
             {joinRequests?.data?.length > 0 && (
               <CardText onClick={handleViewAll} className="view-all-cta">
                 View All
@@ -231,9 +228,7 @@ const TalentListing = () => {
       <AccordionItem>
         <AccordionHeader targetId="2">
           <AccordionHeadStyle>
-            <span className="d-flex align-items-center">
-              Recommended Talents <Tag>{recommendedTalent?.data?.length} </Tag>
-            </span>
+            <span className="d-flex align-items-center">Recommended Talents</span>
             {recommendedTalent?.data?.length > 0 && (
               <CardText onClick={handleViewAll} className="view-all-cta">
                 View All
