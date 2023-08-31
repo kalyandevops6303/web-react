@@ -21,7 +21,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
 
-import Tag from '../../../@core/components/tags';
 import {
   profilePercentage,
   recommendedProjects,
@@ -153,9 +152,7 @@ const ProjectListing = () => {
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
       <AccordionItem>
-        <AccordionHeader targetId="1">
-          Active Projects <Tag>0</Tag>
-        </AccordionHeader>
+        <AccordionHeader targetId="1">Active Projects</AccordionHeader>
         <AccordionBody accordionId="1">
           <ProjectsListingWrap>
             {isTab ? (
@@ -167,9 +164,7 @@ const ProjectListing = () => {
         </AccordionBody>
       </AccordionItem>
       <AccordionItem>
-        <AccordionHeader targetId="2">
-          Upcoming Projects <Tag>0</Tag>
-        </AccordionHeader>
+        <AccordionHeader targetId="2">Upcoming Projects</AccordionHeader>
         <AccordionBody accordionId="2">
           <ProjectsListingWrap>
             {isTab ? (
@@ -185,9 +180,7 @@ const ProjectListing = () => {
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Recommended Projects <Tag>{recommendedProjectsData?.data?.length || 0} </Tag>
-                </span>
+                <span className="d-flex align-items-center">Recommended Projects</span>
                 {recommendedProjectsData?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All
@@ -242,9 +235,7 @@ const ProjectListing = () => {
         )}
         {userDetailsData?.user_type === userTypes.client && (
           <>
-            <AccordionHeader targetId="3">
-              Upcoming Payments <Tag>0 new</Tag>
-            </AccordionHeader>
+            <AccordionHeader targetId="3">Upcoming Payments</AccordionHeader>
             <AccordionBody accordionId="3">
               <ProjectsListingWrap>
                 {isTab ? (

@@ -27,7 +27,13 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 import { AccountImageContainer, ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
 import theme from '../../configs/themeVariables';
 import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
-import { languagesService, skillsService, timezonesService, toolsService } from '../../services/staticServices';
+import {
+  languagesService,
+  servicesService,
+  skillsService,
+  timezonesService,
+  toolsService,
+} from '../../services/staticServices';
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
 import TeamCreatedModal from './TeamCreatedModal';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
@@ -303,7 +309,7 @@ const Profile = () => {
       };
     }
     try {
-      const response = await languagesService();
+      const response = await servicesService();
 
       const options = response?.data?.data?.map((service) => ({ label: service.name, value: service._id }));
 

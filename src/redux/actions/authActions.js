@@ -83,7 +83,7 @@ const fcmUnsubscribeNotification = (fcmToken) => async () => {
   try {
     await fcmUnsubscribeService(fcmToken);
   } catch (error) {
-    errorHandler(error);
+    console.error(error);
   }
 };
 
@@ -249,7 +249,6 @@ const logoutAction =
     }
     dispatch(logOut());
     dispatch(clearTeams());
-    // dispatch(clearData());
     dispatch(clearNotificationsData());
     onSuccess();
   };
