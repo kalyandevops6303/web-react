@@ -118,6 +118,13 @@ const API = {
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     getInvitation: `${apiAuthEndpoint}/api/v1/team/get-invitation`,
   },
+  myTeams: {
+    cardInfo: `${apiOnboardingEndpoint}/api/v1/my-teams/cards-info`,
+    listTeams: `${apiOnboardingEndpoint}/api/v1/my-teams`,
+    listInvites: `${apiOnboardingEndpoint}/api/v1/my-teams/invitations`,
+    listJoinReq: `${apiOnboardingEndpoint}/api/v1/my-teams/join-requests`,
+    listFav: `${apiOnboardingEndpoint}/api/v1/my-teams/favorites`,
+  },
 };
 
 export default API;

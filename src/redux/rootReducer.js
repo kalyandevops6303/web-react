@@ -15,6 +15,7 @@ import marketPlace from './reducers/marketPlace';
 import gloabalSearch from './reducers/gloabalSearch';
 import notifications from './reducers/notifications';
 import team from './reducers/team';
+import myTeams from './reducers/myTeams';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   team,
   search: gloabalSearch,
   inviteTalent,
+  myTeams,
 
   // Add more reducers if needed
 });
