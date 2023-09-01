@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   raiseDisputeLoading: false,
+  allDisputesLoading: false,
+  allDisputes: null,
   error: null,
 };
 
@@ -23,9 +25,32 @@ const disputeSlice = createSlice({
       raiseDisputeLoading: false,
       error: action.payload,
     }),
+
+    allDisputesRequest: (state) => ({
+      ...state,
+      allDisputesLoading: true,
+      error: null,
+    }),
+    allDisputesSuccess: (state, action) => ({
+      ...state,
+      allDisputesLoading: false,
+      allDisputes: action.payload,
+    }),
+    allDisputesFailure: (state, action) => ({
+      ...state,
+      allDisputesLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
-export const { raiseDisputeRequest, raiseDisputeSuccess, raiseDisputeFailure } = disputeSlice.actions;
+export const {
+  raiseDisputeRequest,
+  raiseDisputeSuccess,
+  raiseDisputeFailure,
+  allDisputesRequest,
+  allDisputesSuccess,
+  allDisputesFailure,
+} = disputeSlice.actions;
 
 export default disputeSlice.reducer;

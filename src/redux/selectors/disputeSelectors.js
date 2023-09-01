@@ -1,6 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-const staticSelector = (state) => state.staticData;
+const disputeSelector = (state) => state.dispute;
 
-// eslint-disable-next-line import/prefer-default-export
-export const raiseDisputeLoading = createSelector(staticSelector, (staticData) => staticData.raiseDisputeLoading);
+export const raiseDisputeLoading = createSelector(disputeSelector, (dispute) => dispute.raiseDisputeLoading);
+
+export const allDisputesLoading = createSelector(disputeSelector, (dispute) => dispute.allDisputesLoading);
+
+export const allDisputes = createSelector(disputeSelector, (dispute) => dispute.allDisputes);

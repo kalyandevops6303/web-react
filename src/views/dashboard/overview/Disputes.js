@@ -6,7 +6,7 @@ const Disputes = () => (
   <Card>
     <CardHeader>
       <CardTitle tag="h4">Disputes</CardTitle>
-      <Link to="/disputes">
+      <Link to="/disputes/all">
         <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
           View All
         </CardText>

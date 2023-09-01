@@ -138,7 +138,7 @@ const Routes = [
     },
   },
   {
-    path: '/disputes',
+    path: '/disputes/*',
     element: <Disputes />,
   },
 ];

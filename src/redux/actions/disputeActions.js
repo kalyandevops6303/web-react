@@ -1,6 +1,13 @@
 import errorHandler from '../../utility/errorHandler';
-import { raiseDisputeFailure, raiseDisputeRequest, raiseDisputeSuccess } from '../reducers/dispute';
-import { raiseDisputeService } from '../../services/disputeServices';
+import {
+  allDisputesFailure,
+  allDisputesRequest,
+  allDisputesSuccess,
+  raiseDisputeFailure,
+  raiseDisputeRequest,
+  raiseDisputeSuccess,
+} from '../reducers/dispute';
+import { allDisputesService, raiseDisputeService } from '../../services/disputeServices';
 
 const raiseNewDispute = (data, onSuccess) => async (dispatch) => {
   dispatch(raiseDisputeRequest());
@@ -13,5 +20,14 @@ const raiseNewDispute = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { raiseNewDispute };
+const getAllDisputes = (page, pageSize, oldData) => async (dispatch) => {
+  dispatch(allDisputesRequest());
+  try {
+    const res = await allDisputesService(page, pageSize);
+    dispatch(allDisputesSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
+  } catch (error) {
+    errorHandler(error, allDisputesFailure);
+  }
+};
+
+export { raiseNewDispute, getAllDisputes };

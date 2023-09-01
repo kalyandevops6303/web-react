@@ -6,4 +6,7 @@ const paginatedProjectsService = (page, search) =>
 
 const raiseDisputeService = (data) => DataService.post(API.dispute.raiseDispute, data);
 
-export { paginatedProjectsService, raiseDisputeService };
+const allDisputesService = (page, pageSize) =>
+  DataService.get(`${API.dispute.allDisputes}?page=${page}&page_size=${pageSize}`);
+
+export { paginatedProjectsService, raiseDisputeService, allDisputesService };
