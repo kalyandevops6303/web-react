@@ -11,6 +11,9 @@ import GreatJobTick from '../../assets/images/greatJobGif.gif';
 import { InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
 import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
+
+import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors/inviteTalentSelector';
+
 import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
 import { inviteTalents } from '../../redux/actions/createProjectActions';
 import { getItem } from '../../utility/localStorageControl';
@@ -33,7 +36,7 @@ const InvitationSentModal = ({
   const dispatch = useDispatch();
 
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
-
+  const isTeaminviteLoading = useSelector(teamInviteLoading);
   const [timer, setTimer] = useState(5);
   const zeroLoggedRef = useRef(false);
   const intervalId = useRef();
@@ -153,11 +156,16 @@ const InvitationSentModal = ({
           </div>
         </div>
         <div className="d-flex justify-content-end mt-1 mb-2">
-          <Button color="flat-danger" className="me-1" onClick={handleRecallClick} disabled={inviteTalentsIsLoading}>
+          <Button
+            color="flat-danger"
+            className="me-1"
+            onClick={handleRecallClick}
+            disabled={inviteTalentsIsLoading || isTeaminviteLoading}
+          >
             Recall ({timer}s)
           </Button>
-          <Button color="primary" onClick={closeModal} disabled={inviteTalentsIsLoading}>
-            {inviteTalentsIsLoading ? <Spinner size="sm" /> : <>Close</>}
+          <Button color="primary" onClick={closeModal} disabled={inviteTalentsIsLoading || isTeaminviteLoading}>
+            {inviteTalentsIsLoading || isTeaminviteLoading ? <Spinner size="sm" /> : <>Close</>}
           </Button>
         </div>
       </ModalBody>

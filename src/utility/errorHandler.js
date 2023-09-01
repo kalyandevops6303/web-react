@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 import ShowToastMessage from '../@core/components/toast';
 // eslint-disable-next-line import/no-cycle
-import { logoutAction } from '../redux/actions/authActions';
 import { store } from '../redux/store';
+import { fcmUnsubscribeService } from '../services/authServices';
 import { ERROR } from './constants/ToastTypes';
 import { getItem } from './localStorageControl';
 
@@ -28,15 +28,18 @@ const handleError = (err, callBack) => {
 };
 
 const fcmToken = getItem('fcmToken');
-const handleErrorCode = (err, callBack) => {
+const handleErrorCode = async (err, callBack) => {
   if (err?.response?.status === 401) {
     showErrorNotification('Session expired!');
-    setTimeout(() => {
-      const onSuccess = () => {
-        window.location.href = '/auth/login';
-      };
-      dispatch(logoutAction({ fcmToken, onSuccess }));
-    }, 500);
+    if (fcmToken) {
+      try {
+        await fcmUnsubscribeService(fcmToken);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    window.location.href = '/auth/login';
+    localStorage.clear();
   } else {
     handleError(err, callBack);
   }

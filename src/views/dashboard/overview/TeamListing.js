@@ -23,7 +23,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
 
-import Tag from '../../../@core/components/tags';
 import {
   profilePercentage,
   selectGetMyTeam,
@@ -180,9 +179,7 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  My teams <Tag>{myTeam?.data?.length} </Tag>
-                </span>
+                <span className="d-flex align-items-center">My teams</span>
                 {myTeam?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All
@@ -254,9 +251,7 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Team invites {teamInvitation?.data?.length ? <Tag>{teamInvitation?.data?.length} </Tag> : ''}
-                </span>
+                <span className="d-flex align-items-center">Team invites</span>
                 {teamInvitation?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All
@@ -328,9 +323,7 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Recommended Teams {recommendedTeams?.data?.length ? <Tag>{recommendedTeams?.data?.length}</Tag> : ''}
-                </span>
+                <span className="d-flex align-items-center">Recommended Teams</span>
                 {recommendedTeams?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All

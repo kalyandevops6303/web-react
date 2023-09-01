@@ -5,13 +5,14 @@ import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import BadgeGroup from '../../../@core/components/badge-group';
+import BadgeGroup from '../../../@core/components/badge-group-dynamic-count';
 import { LeftSidebarProjectDetailsWrapper } from '../style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { CustomBadge } from '../../styled';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import DateTime from '../../../lib/date-time';
 import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
+import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -114,19 +115,22 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          <BadgeGroup
-            inline
-            color="light-blue"
-            title="Tags"
-            data={[
-              ...(projectDetailsData?.proficiency?.skills || []),
-              ...(projectDetailsData?.proficiency?.tools || []),
-            ]}
-          />
+          {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
+            <BadgeGroup
+              title="Skills"
+              data={[
+                ...(projectDetailsData?.proficiency?.skills || []),
+                ...(projectDetailsData?.proficiency?.tools || []),
+              ]}
+              color="light-blue"
+            />
+          )}
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>
-            <CardText className="value">{projectDetailsData?.details?.description}</CardText>
+            <CardText className="value">
+              <ShowMoreLess content={projectDetailsData?.details?.description} maxLength={250} />
+            </CardText>
           </div>
 
           <div className="d-flex gap-1 mt-3 justify-content-center">
