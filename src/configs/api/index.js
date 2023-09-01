@@ -59,9 +59,9 @@ const API = {
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
     // team
-    getTeamMember: `${apiOnboardingEndpoint}/api/v1/team/get-members`,
-    getInvitedMember: `${apiOnboardingEndpoint}/api/v1/team/invited-members`,
-    joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-request`,
+    getTeamMember: `${apiOnboardingEndpoint}/api/v1/teams/get-members`,
+    getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members`,
+    joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-requests`,
     recommendedTalent: `${apiOnboardingEndpoint}/api/v1/teams/recommended-talents`,
     validateUrl: `${apiAuthEndpoint}/api/v1/team/invite-member/validate-deep-link`,
     updateInvitation: `${apiAuthEndpoint}/api/v1/team/invite-member/update-invite`,
