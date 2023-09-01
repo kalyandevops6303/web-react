@@ -17,6 +17,22 @@ const myTeamsSlice = createSlice({
       ...state,
       cardData: action.payload,
     }),
+    getListReq: (state) => ({
+      ...state,
+      loading: true,
+    }),
+    getListErr: (state) => ({
+      ...state,
+      loading: false,
+    }),
+    storeSuccessData: (state, action) => ({
+      ...state,
+      currentPreview: action.payload.data,
+      listData:
+        action.payload.metadata.current_page === 1 ? action.payload.data : [...state.listData, ...action.payload.data],
+      metaData: action.payload.metadata,
+      loading: false,
+    }),
     clearData: (state) => ({
       ...state,
       currentPreview: [],
@@ -27,6 +43,6 @@ const myTeamsSlice = createSlice({
   },
 });
 
-export const { getCardInfoSuccess, clearData } = myTeamsSlice.actions;
+export const { getCardInfoSuccess, storeSuccessData, clearData, getListReq, getListErr } = myTeamsSlice.actions;
 
 export default myTeamsSlice.reducer;

@@ -10,7 +10,6 @@ import CollInactive from '@src/assets/images/coll_inactive.png';
 import ExpandActive from '@src/assets/images/expand_active.png';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import debounce from '../../../lib/debounce';
@@ -18,36 +17,39 @@ import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors, useIsTab } from '../../../utility/Utils';
-import { getListProjects, getUsers } from '../../../redux/actions/marketPlaceActions';
+import { getItem } from '../../../utility/localStorageControl';
+
 import {
   companyIndustriesService,
   projectAreasService,
   skillsService,
   toolsService,
 } from '../../../services/staticServices';
-import UserCard from '../../cards/UserCard';
-import ProjectCard from '../../cards/ProjectCard';
-import { clearData } from '../../../redux/reducers/marketPlace';
+import { clearData } from '../../../redux/reducers/myTeams';
+
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import { userTypes } from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
+import {
+  getFavListing,
+  getInvitationListing,
+  getReqListing,
+  getTeamListing,
+} from '../../../redux/actions/myTeamActions';
+import UserCard from '../../cards/UserCard';
+import ProjectCard from '../../cards/ProjectCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
   const dispatch = useDispatch();
-  const location = useLocation();
   const isTab = useIsTab();
   const popoverRef = useRef(null);
 
+  const userData = getItem('userData');
+
   const [hasMore, setHasMore] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
-  const selectMarketPlaceData = useSelector((state) => state.marketPlace.listData);
-  const selectMarkeMetaData = useSelector((state) => state.marketPlace.metaData);
-  const currentPreview = useSelector((state) => state.marketPlace.currentPreview);
-  const isLoading = useSelector((state) => state.marketPlace.loading);
-
-  const metaData = { page: 1, page_size: 10 };
   const [secondFilterState, setSecondFilterState] = useState({
     statuses: [],
     project_types: [],
@@ -57,12 +59,18 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     industries: [],
     project_areas: [],
   });
-  const [isRecommanded, setIsRecommanded] = useState(location?.state?.isRecommended || false);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const selectMyTeamData = useSelector((state) => state?.myTeams?.listData);
+  const selectMyTeamMetaData = useSelector((state) => state?.myTeams?.metaData);
+  const currentPreview = useSelector((state) => state?.myTeams?.currentPreview);
+  const isLoading = useSelector((state) => state?.myTeams?.loading);
+
+  const metaData = { page: 1, page_size: 10 };
 
   // Function to toggle the popover
   const togglePopover = () => {
@@ -74,14 +82,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'In-review', value: 'IN_REVIEW' },
     { label: 'Terminated', value: 'TERMINATED' },
     { label: 'Closed', value: 'CLOSED' },
+    { label: 'Disputed', value: 'DISPUTED' },
+    { label: 'Completed', value: 'COMPLETED' },
   ];
   const projectTypesOptions = [
     { label: 'Fixed', value: 'FIXED' },
     { label: 'Variable', value: 'VARIABLE' },
-  ];
-  const sortingOptions = [
-    { label: 'New', value: 'NEW' },
-    { label: 'Recommended', value: 'RECOMMADED' },
   ];
 
   const onSuccess = () => {};
@@ -119,44 +125,34 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   useEffect(() => {
     setHasMore(true);
-    if (currentPreview.length === 0 || selectMarketPlaceData?.length === selectMarkeMetaData?.total_records) {
+    if (currentPreview?.length === 0 || selectMyTeamData?.length === selectMyTeamMetaData?.total_records) {
       setHasMore(false);
     }
   }, [currentPreview]);
 
   useEffect(() => {
     dispatch(clearData());
-    const valuesOnly = {};
+
+    const filterData = {};
+
     Object.keys(secondFilterState).forEach((key) => {
-      valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+      filterData[key] = secondFilterState[key].map((item) => item.value);
     });
-    if (primaryFilter === 'talents' || primaryFilter === 'clients') {
-      dispatch(
-        getUsers({
-          isRecommanded,
-          metaData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
-    } else {
-      dispatch(
-        getListProjects({
-          isMyListing: primaryFilter === 'my_listings',
-          isRecommanded,
-          metaData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
+
+    if (primaryFilter === 'my-teams') {
+      dispatch(getTeamListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
     }
-  }, [secondFilterState, searchText, primaryFilter, isRecommanded]);
+    if (primaryFilter === 'invitations') {
+      dispatch(getInvitationListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
+    }
+    if (primaryFilter === 'join-requests') {
+      dispatch(getReqListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
+    }
+
+    if (primaryFilter === 'favourites') {
+      dispatch(getFavListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
+    }
+  }, [secondFilterState, searchText, primaryFilter]);
 
   const onChangeStatus = (value) => {
     setSecondFilterState({
@@ -165,27 +161,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     });
   };
 
-  useEffect(() => {
-    if (location?.state?.isRecommended) {
-      setSecondFilterState({
-        ...secondFilterState,
-        sort_by: [{ label: 'Recommended', value: 'RECOMMADED' }],
-      });
-      setIsRecommanded(true);
-    }
-  }, [location]);
-
-  const onChangeSort = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      sort_by: [value],
-    });
-    if (value.value === 'RECOMMADED') {
-      setIsRecommanded(true);
-    } else {
-      setIsRecommanded(false);
-    }
-  };
+  // const onChangeSort = (value) => {
+  //   setSecondFilterState({
+  //     ...secondFilterState,
+  //     sort_by: [value],
+  //   });
+  // };
   const inputRef = useRef();
 
   const onChangeProjectType = (value) => {
@@ -232,7 +213,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (inputRef.current) {
       inputRef.current.value = '';
     }
-    setIsRecommanded(false);
   };
   const loadSkillsOptions = async (search) => {
     if (search) {
@@ -255,6 +235,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       return { options: [] };
     }
   };
+
   const loadToolsOptions = async (search) => {
     if (search) {
       return {
@@ -276,6 +257,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       return { options: [] };
     }
   };
+
   const loadCompanyIndustriesOptions = async (search) => {
     if (search) {
       return {
@@ -331,46 +313,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const fetchMore = () => {
-    const newMeteData = {
-      ...metaData,
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      page: selectMarkeMetaData?.current_page + 1 || 1,
-    };
-
-    const valuesOnly = {};
-    Object.keys(secondFilterState).forEach((key) => {
-      valuesOnly[key] = secondFilterState[key].map((item) => item.value);
-    });
-    if (primaryFilter === 'talents' || primaryFilter === 'clients') {
-      dispatch(
-        getUsers({
-          isRecommanded,
-          metaData: newMeteData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
-    } else {
-      dispatch(
-        getListProjects({
-          isMyListing: primaryFilter === 'my_listings',
-          isRecommanded,
-          metaData: newMeteData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
-    }
+    // const newMeteData = {
+    //   ...metaData,
+    //   // eslint-disable-next-line no-unsafe-optional-chaining
+    //   page: selectMyTeamMetaData?.current_page + 1 || 1,
+    // };
   };
-
-  const isUsers =
-    location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
 
   const ExpandCollapseComp = (
     <>
@@ -425,7 +373,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Input
                 innerRef={inputRef}
                 onChange={debounce(handleSearchTextChange, 300)}
-                placeholder={isUsers ? 'Search users' : 'Search project name, user name'}
+                placeholder={
+                  // eslint-disable-next-line no-nested-ternary
+                  userType === userTypes.talent
+                    ? 'Search team name, client name'
+                    : userType === userTypes.client
+                    ? 'Search talent name, team name'
+                    : 'Search client name'
+                }
               />
             </InputGroup>
           </div>
@@ -437,23 +392,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             ) : (
               <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
                 {ExpandCollapseComp}
-              </Col>
-            )}
-            {(userType === userTypes.talent || primaryFilter === 'talents') && (
-              <Col>
-                <Label className="form-label">Sort by</Label>
-                <Select
-                  options={sortingOptions}
-                  classNamePrefix="select"
-                  placeholder="Select type"
-                  theme={selectThemeColors}
-                  onChange={onChangeSort}
-                  value={
-                    secondFilterState.sort_by.length > 0
-                      ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
-                      : null
-                  }
-                />
               </Col>
             )}
             {primaryFilter !== 'talents' && primaryFilter !== 'clients' && (
@@ -473,7 +411,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && (
+            {primaryFilter === 'invitations' && (
               <Col>
                 <Label className="form-label">Payment type</Label>
                 <Select
@@ -593,31 +531,36 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         <ComponentSpinner />
       ) : (
         <InfiniteScroll
-          dataLength={selectMarketPlaceData?.length}
+          dataLength={selectMyTeamData?.length ?? 0}
           next={fetchMore}
           hasMore={hasMore}
           endMessage={
             <div className="d-flex justify-content-center ">
-              {selectMarketPlaceData?.length > 0 ? (
+              {selectMyTeamData?.length > 0 ? (
                 <span className="mt-2">You have seen it all!</span>
               ) : (
-                <NoDataFoundComponent isRecommanded={isRecommanded} data={selectMarketPlaceData} />
+                <NoDataFoundComponent data={selectMyTeamData} />
               )}
             </div>
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          {selectMarketPlaceData?.map((item) => {
-            const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
-            return (
-              <CardComponent
-                key={item?._id || item?.id}
-                data={item}
-                isPopoverOpen={popoverOpen}
-                isExpanded={isExpanded}
-              />
-            );
-          })}
+          <div className="d-flex flex-wrap justify-content-between">
+            {selectMyTeamData?.map((item) => {
+              const CardComponent =
+                // eslint-disable-next-line no-nested-ternary
+                primaryFilter === 'join-requests' || primaryFilter === 'favourites' ? UserCard : ProjectCard;
+              return (
+                <CardComponent
+                  key={item?._id || item?.id}
+                  data={item}
+                  isPopoverOpen={popoverOpen}
+                  isExpanded={isExpanded}
+                  userType={userData?.user_type}
+                />
+              );
+            })}
+          </div>
         </InfiniteScroll>
       )}
     </>

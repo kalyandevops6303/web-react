@@ -27,13 +27,17 @@ const MyTeams = () => {
   // Adjust the number of lines based on the desired limit
 
   const routesMatch =
-    useMatch('/teams/all') ||
-    useMatch('/teams/recommended') ||
-    useMatch('/teams/invited') ||
-    useMatch('/teams/join_request') ||
-    useMatch('/teams/Favorite');
+    useMatch('/my-teams') ||
+    useMatch('/my-teams/invitations') ||
+    useMatch('/my-teams/join-requests') ||
+    useMatch('/my-teams/favourites');
 
-  const [primaryFilter, setPrimaryFilter] = useState(routesMatch?.pathname?.split('/')?.[2]);
+  const initialState =
+    routesMatch?.pathname === '/my-teams'
+      ? routesMatch?.pathname?.split('/')?.[1]
+      : routesMatch?.pathname?.split('/')?.[2];
+
+  const [primaryFilter, setPrimaryFilter] = useState(initialState);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -44,7 +48,7 @@ const MyTeams = () => {
 
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
-    navigate(`/teams/${props}`);
+    navigate(`/${props}`);
   };
 
   // const userData = useSelector(selectAuthUserData);
@@ -54,17 +58,16 @@ const MyTeams = () => {
   const SecondComp = () => <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />;
 
   const primaryEnum = {
-    all: 'Teams',
-    recommended: 'Recommended',
-    invited: 'Invited',
-    join_request: 'Join Request',
-    favorite: 'Favorite',
+    'my-teams': 'All Teams',
+    invitations: 'Invited',
+    'join-requests': 'Join Request',
+    favourites: 'Favorite',
   };
 
   return (
     <TeamsContainer>
       <div className="d-flex justify-content-between">
-        <BreadCrumbs data={[{ title: 'My Teams', link: '/teams/all' }, { title: primaryEnum[primaryFilter] }]} />
+        <BreadCrumbs data={[{ title: 'My Teams', link: '/my-teams' }, { title: primaryEnum[primaryFilter] }]} />
 
         {userDetailsData?.user_type === 'CLIENT' && (
           <Link to="/create-project">
@@ -81,11 +84,10 @@ const MyTeams = () => {
         userType={userDataLocal?.user_type}
       />
       <Routes>
-        <Route path="all" element={<SecondComp />} />
-        <Route path="recommended" element={<SecondComp />} />
-        <Route path="invited" element={<SecondComp />} />
-        <Route path="join_request" element={<SecondComp />} />
-        <Route path="Favorite" element={<SecondComp />} />
+        <Route path="/" element={<SecondComp />} />
+        <Route path="invitations" element={<SecondComp />} />
+        <Route path="join-requests" element={<SecondComp />} />
+        <Route path="favourites" element={<SecondComp />} />
       </Routes>
     </TeamsContainer>
   );

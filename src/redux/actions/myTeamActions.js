@@ -1,6 +1,12 @@
-import { getCardService } from '../../services/myTeamServices';
+import {
+  getCardService,
+  getFavoriteService,
+  getInvitationsService,
+  getJoinReqService,
+  getTeamsService,
+} from '../../services/myTeamServices';
 
-import { getCardInfoSuccess } from '../reducers/myTeams';
+import { getCardInfoSuccess, getListReq, storeSuccessData } from '../reducers/myTeams';
 
 import errorHandler from '../../utility/errorHandler';
 
@@ -17,6 +23,70 @@ const getCardInfo =
     }
   };
 
-const getTeamListing = () => {};
+const getTeamListing =
+  ({ searchText, metaData, onSuccess, onError, filterData, userType }) =>
+  async (dispatch) => {
+    if (metaData?.page === 1) {
+      getListReq();
+    }
 
-export { getCardInfo, getTeamListing };
+    try {
+      const res = await getTeamsService({ searchText, metaData, filterData, userType });
+      dispatch(storeSuccessData(res?.data?.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+
+const getInvitationListing =
+  ({ searchText, metaData, onSuccess, onError, filterData, userType }) =>
+  async (dispatch) => {
+    if (metaData?.page === 1) {
+      getListReq();
+    }
+
+    try {
+      const res = await getInvitationsService({ searchText, metaData, filterData, userType });
+      dispatch(storeSuccessData(res?.data?.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+
+const getReqListing =
+  ({ searchText, metaData, onSuccess, onError, filterData, userType }) =>
+  async (dispatch) => {
+    if (metaData?.page === 1) {
+      getListReq();
+    }
+    try {
+      const res = await getJoinReqService({ searchText, metaData, filterData, userType });
+      dispatch(storeSuccessData(res?.data?.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+
+const getFavListing =
+  ({ searchText, metaData, onSuccess, onError, filterData, userType }) =>
+  async (dispatch) => {
+    if (metaData?.page === 1) {
+      getListReq();
+    }
+    try {
+      const res = await getFavoriteService({ searchText, metaData, filterData, userType });
+      dispatch(storeSuccessData(res?.data?.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+
+export { getCardInfo, getTeamListing, getFavListing, getInvitationListing, getReqListing };

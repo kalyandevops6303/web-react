@@ -75,7 +75,7 @@ const Routes = [
     element: <Projects />,
   },
   {
-    path: '/teams/*',
+    path: '/my-teams/*',
     element: <MyTeams />,
   },
 

@@ -15,6 +15,10 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
   // const userData = useSelector(selectAuthUserData);
   const userData = getItem('userData');
 
+  useEffect(() => {
+    dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {} }));
+  }, []);
+
   const TAB_NAMES = {
     ALL_TEAMS: 'Teams',
     CLIENT: 'Team/Talent',
@@ -24,15 +28,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
   };
 
   const PATH_NAMES = {
-    ALL_TEAMS: 'all',
-    INVITED: 'invited',
-    JOIN_REQ: 'join_request',
-    FAV: 'favorite',
+    ALL_TEAMS: 'my-teams',
+    INVITED: 'my-teams/invitations',
+    JOIN_REQ: 'my-teams/join-requests',
+    FAV: 'my-teams/favourites',
   };
-
-  useEffect(() => {
-    dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {} }));
-  }, []);
 
   return (
     <Row className="primary-row">
@@ -49,7 +49,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
       </Col>
       <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.INVITED)}>
         <Statbox
-          isActive={selected === PATH_NAMES.INVITED}
+          isActive={selected === PATH_NAMES.INVITED.split('/')[1]}
           className="stat-box cursor-pointer"
           isMarketPlaceTab
           title={selectCardData?.invited ?? 0}
@@ -61,7 +61,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
       {userData?.user_type === userTypes.talent ? (
         <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.JOIN_REQ)}>
           <Statbox
-            isActive={selected === PATH_NAMES.JOIN_REQ}
+            isActive={selected === PATH_NAMES.JOIN_REQ.split('/')[1]}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
             title={selectCardData?.join_request ?? 0}
@@ -73,7 +73,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
       ) : null}
       <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.FAV)}>
         <Statbox
-          isActive={selected === PATH_NAMES.FAV}
+          isActive={selected === PATH_NAMES.FAV.split('/')[1]}
           className="stat-box cursor-pointer"
           isMarketPlaceTab
           title={selectCardData?.favourites ?? 0}
@@ -91,7 +91,7 @@ PrimaryFilter.propTypes = {
   handlePrimaryChangeFilter: PropTypes.func,
 };
 PrimaryFilter.defaultProps = {
-  selected: 'all-listings',
+  selected: 'my-teams',
   handlePrimaryChangeFilter: () => {},
 };
 
