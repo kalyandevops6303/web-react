@@ -24,6 +24,7 @@ import {
 import ResendOTPComp from './components/ResendOTP';
 import OtpInput from '../../lib/otp-input';
 import LogoComp from './components/LogoComp';
+import SpeechEmoji from "../../assets/images/logo/speech_baloon.png";
 
 const VerifyPhone = () => {
   const dispatch = useDispatch();
@@ -85,7 +86,7 @@ const VerifyPhone = () => {
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
-          Two Step Verification 💬
+          Two Step Verification <img className='speech-emoji' src={SpeechEmoji} alt='' />
         </CardTitle>
 
         <CardText className="mb-2 card-text">
