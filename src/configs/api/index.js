@@ -32,6 +32,7 @@ const API = {
     currencies: `${apiAuthEndpoint}/api/v1/static/currency/all`,
     companyIndustries: `${apiAuthEndpoint}/api/v1/static/company-industry/all`,
     projectAreas: `${apiAuthEndpoint}/api/v1/static/project-area/all`,
+    disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -142,6 +143,10 @@ const API = {
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     getInvitation: `${apiAuthEndpoint}/api/v1/team/get-invitation`,
+  },
+  dispute: {
+    paginatedProjects: `${apiCreateProjectEndpoint}/api/v1/disputes/project-names`,
+    raiseDispute: `${apiCreateProjectEndpoint}/api/v1/disputes`,
   },
 };
 

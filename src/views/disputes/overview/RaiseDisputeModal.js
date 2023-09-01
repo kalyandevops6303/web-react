@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import Proptypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import '../../custom-styles.scss';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
-import { Modal, ModalHeader, ModalBody, Form, Row, Col, Label, FormFeedback, Input, Button } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Form, Row, Col, Label, FormFeedback, Input, Button, Spinner } from 'reactstrap';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { returnFilteredDropdownOptions, selectThemeColors } from '../../../utility/Utils';
-import { paginatedInstitutesService, talentRolesService } from '../../../services/staticServices';
+import { disputeTypesService } from '../../../services/staticServices';
 import { DisputeFormContainer } from '../style';
+import { paginatedProjectsService } from '../../../services/disputeServices';
+import { raiseNewDispute } from '../../../redux/actions/disputeActions';
+import { raiseDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 
 const RaiseDisputeModal = ({ modal, toggleModal }) => {
   const DisputeSchema = yup.object().shape({
@@ -43,16 +47,30 @@ const RaiseDisputeModal = ({ modal, toggleModal }) => {
     resolver: yupResolver(DisputeSchema),
   });
 
-  const [talentRolesOptions, setTalentRolesOptions] = useState(null);
+  const dispatch = useDispatch();
 
-  const onSubmit = () => {};
+  const [disputeTypesOptions, setDisputeTypesOptions] = useState(null);
 
-  const loadInstitutesOptions = async (search, prevOptions, { page }) => {
+  const raiseDisputeIsLoading = useSelector(raiseDisputeLoading);
+
+  const onSubmit = (data) => {
+    const { projectName, disputeType, disputeDetails } = data;
+
+    const reqData = {
+      project_id: projectName.value,
+      dispute_type: disputeType.value,
+      description: disputeDetails,
+    };
+
+    dispatch(raiseNewDispute(reqData, toggleModal));
+  };
+
+  const loadProjectsOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await paginatedInstitutesService(page, search);
+      const response = await paginatedProjectsService(page, search);
 
       return {
-        options: response?.data?.data?.data?.map((institute) => ({ label: institute.name, value: institute._id })),
+        options: response?.data?.data?.data?.map((project) => ({ label: project.name, value: project._id })),
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -63,18 +81,18 @@ const RaiseDisputeModal = ({ modal, toggleModal }) => {
     }
   };
 
-  const loadTalentRolesOptions = async (search) => {
+  const loadDisputeTypesOptions = async (search) => {
     if (search) {
       return {
-        options: returnFilteredDropdownOptions(search, talentRolesOptions),
+        options: returnFilteredDropdownOptions(search, disputeTypesOptions),
       };
     }
     try {
-      const response = await talentRolesService();
+      const response = await disputeTypesService();
 
-      const options = response?.data?.map((role) => ({ label: role.name, value: role._id }));
+      const options = response?.data?.data?.map((dispute) => ({ label: dispute.name, value: dispute._id }));
 
-      setTalentRolesOptions(options);
+      setDisputeTypesOptions(options);
 
       return {
         options,
@@ -107,7 +125,7 @@ const RaiseDisputeModal = ({ modal, toggleModal }) => {
                     <AsyncPaginate
                       debounceTimeout={1000}
                       additional={{ page: 1 }}
-                      loadOptions={loadInstitutesOptions}
+                      loadOptions={loadProjectsOptions}
                       classNamePrefix="select"
                       placeholder="Select project name"
                       theme={selectThemeColors}
@@ -131,7 +149,7 @@ const RaiseDisputeModal = ({ modal, toggleModal }) => {
                   invalid={errors.disputeType && true}
                   render={({ field }) => (
                     <AsyncPaginate
-                      loadOptions={loadTalentRolesOptions}
+                      loadOptions={loadDisputeTypesOptions}
                       classNamePrefix="select"
                       placeholder="Select dispute type"
                       theme={selectThemeColors}
@@ -169,8 +187,8 @@ const RaiseDisputeModal = ({ modal, toggleModal }) => {
               <Button outline color="primary" className="me-2" onClick={toggleModal}>
                 Cancel
               </Button>
-              <Button color="primary" type="submit" disabled={!isValid}>
-                Submit
+              <Button color="primary" type="submit" disabled={!isValid || raiseDisputeIsLoading}>
+                {raiseDisputeIsLoading ? <Spinner size="sm" /> : 'Submit'}
               </Button>
             </div>
           </Form>
