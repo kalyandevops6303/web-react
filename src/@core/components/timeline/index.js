@@ -14,7 +14,7 @@ const Timeline = (props) => {
     > .timeline-point-indicator {
       border: 0;
       background-color: ${(props) => props.color} !important;
-      opacity: ${(props) => (props.isDisabled ? '0.8' : '')};
+      opacity: ${(props) => (props.isDisabled ? '0.5' : '')};
       &:before {
         background: ${(props) => props.color} !important;
         opacity: 0.2;

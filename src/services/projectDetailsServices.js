@@ -36,7 +36,36 @@ const acceptInvitation = ({ id }) => DataService.put(`${API.projectDetails.accep
 
 const rejectInvitation = ({ id }) => DataService.put(`${API.projectDetails.reject}/${id}`);
 
+// Contract flow
+
+const checkDocumentActivatedService = ({ project_id, doc_type }) =>
+  DataService.get(`${API.projectDetails.checkDocumentActivated}?doc_type=${doc_type}&project_id=${project_id}`);
+
+const getDocumentService = ({ project_id, doc_type }) =>
+  DataService.get(`${API.projectDetails.getDocument}?doc_type=${doc_type}&project_id=${project_id}`);
+
+const getDocumentTimelineService = ({ project_id }) =>
+  DataService.get(`${API.projectDetails.getDocumentTimeline}?project_id=${project_id}`);
+
+const sendDocumentService = ({ project_id, doc_type, data, validity }) =>
+  DataService.post(
+    `${API.projectDetails.sendDocument}?doc_type=${doc_type}&project_id=${project_id}&validity=${validity}`,
+    data,
+  );
+
+const signContractByTalentServive = ({ project_id }) =>
+  DataService.put(`${API.projectDetails.signContractByTalent}?project_id=${project_id}`);
+
+const terminateContractService = ({ project_id }) =>
+  DataService.put(`${API.projectDetails.terminateContract}?project_id=${project_id}`);
+
 export {
+  getDocumentService,
+  checkDocumentActivatedService,
+  getDocumentTimelineService,
+  sendDocumentService,
+  signContractByTalentServive,
+  terminateContractService,
   acceptInvitation,
   rejectInvitation,
   getInvitedByService,

@@ -80,7 +80,7 @@ const Routes = [
     element: <BidDetails />,
   },
   {
-    path: '/project-details/:projectId/contract',
+    path: '/project-details/:projectId/:projectStep/contract',
     element: <ContractView />,
   },
 

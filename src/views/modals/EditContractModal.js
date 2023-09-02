@@ -1,5 +1,5 @@
 import React from 'react';
-import Proptypes from 'prop-types';
+import PropTypes from 'prop-types';
 import * as yup from 'yup';
 import ReactQuill from 'react-quill';
 import { Button, CardText, Form, FormFeedback, Modal, ModalBody, ModalHeader } from 'reactstrap';
@@ -8,13 +8,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { TextEditorContainer } from '../CreateProject/style';
 import { EditContractWrap } from './style';
 
-const EditContractModal = ({ modal, toggleModal, data }) => {
+const EditContractModal = ({ setDocumentData, modal, toggleModal, data }) => {
   const ProjectDetailsSchema = yup.object().shape({
     contractDetails: yup.string().required('Contract details is required'),
   });
   const {
     control,
     formState: { errors },
+    handleSubmit,
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(ProjectDetailsSchema),
@@ -22,6 +23,12 @@ const EditContractModal = ({ modal, toggleModal, data }) => {
       contractDetails: data,
     },
   });
+
+  const onSubmit = (formData) => {
+    const { contractDetails } = formData;
+    setDocumentData(contractDetails);
+    toggleModal();
+  };
 
   return (
     <Modal
@@ -35,9 +42,8 @@ const EditContractModal = ({ modal, toggleModal, data }) => {
       <ModalBody>
         <EditContractWrap>
           <CardText className="modal-title-edit">Edit Standard Contract</CardText>
-          <Form>
+          <Form onSubmit={handleSubmit(onSubmit)}>
             <Controller
-              id="contractDetails"
               name="contractDetails"
               control={control}
               render={({ field }) => (
@@ -48,10 +54,12 @@ const EditContractModal = ({ modal, toggleModal, data }) => {
             />
             {errors.contractDetails && <FormFeedback>{errors.contractDetails.message}</FormFeedback>}
             <div className="d-flex gap-1 mt-3 justify-content-end">
-              <Button outline color="primary">
+              <Button outline color="primary" onClick={toggleModal}>
                 Cancel
               </Button>
-              <Button color="primary">Save</Button>
+              <Button color="primary" type="submit">
+                Save
+              </Button>
             </div>
           </Form>
         </EditContractWrap>
@@ -59,15 +67,19 @@ const EditContractModal = ({ modal, toggleModal, data }) => {
     </Modal>
   );
 };
+
 EditContractModal.propTypes = {
-  modal: Proptypes.bool,
-  toggleModal: Proptypes.func,
-  data: Proptypes.object,
+  modal: PropTypes.bool,
+  toggleModal: PropTypes.func,
+  data: PropTypes.object,
+  setDocumentData: PropTypes.func, // Add this prop if you want to set document data
 };
 
 EditContractModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   data: {},
+  setDocumentData: () => {}, // Add this default prop if you want to set document data
 };
+
 export default EditContractModal;

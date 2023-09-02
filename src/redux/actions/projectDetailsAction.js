@@ -1,20 +1,35 @@
 import {
   acceptInvitation,
+  checkDocumentActivatedService,
   getBidDetailsService,
   getCommonBidDetailsService,
+  getDocumentService,
+  getDocumentTimelineService,
   getInvitedByService,
   getProjectTeamMemberServive,
   getReceivedBidsService,
   getUnassignedRoleService,
   projectDetailsService,
   rejectInvitation,
+  sendDocumentService,
+  signContractByTalentServive,
+  terminateContractService,
   updateBidStatusService,
 } from '../../services/projectDetailsServices';
 import errorHandler from '../../utility/errorHandler';
 import {
+  checkDocumentActivatedFailure,
+  checkDocumentActivatedRequest,
+  checkDocumentActivatedSuccess,
   getBidInfoFailure,
   getBidInfoRequest,
   getBidInfoSuccess,
+  getDocumentFailure,
+  getDocumentRequest,
+  getDocumentSuccess,
+  getDocumentTimelineFailure,
+  getDocumentTimelineRequest,
+  getDocumentTimelineSuccess,
   getInvitedByFailure,
   getInvitedByRequest,
   getInvitedBySuccess,
@@ -30,6 +45,15 @@ import {
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
+  sendDocumentFailure,
+  sendDocumentRequest,
+  sendDocumentSuccess,
+  signContractByTalentFailure,
+  signContractByTalentRequest,
+  signContractByTalentSuccess,
+  terminateContractFailure,
+  terminateContractRequest,
+  terminateContractSuccess,
 } from '../reducers/projectDetails';
 
 const getProjectDetails = (projectId) => async (dispatch) => {
@@ -137,7 +161,97 @@ const updateInvitation =
       errorHandler(error);
     }
   };
+
+// Contract flow
+
+const checkDocumentActivated =
+  ({ project_id, doc_type }) =>
+  async (dispatch) => {
+    dispatch(checkDocumentActivatedRequest());
+    try {
+      const res = await checkDocumentActivatedService({ project_id, doc_type });
+      if (doc_type === 'CONTRACT') {
+        dispatch(checkDocumentActivatedSuccess({ isContract: res.data.data.is_document }));
+      }
+      if (doc_type === 'NDA') {
+        dispatch(checkDocumentActivatedSuccess({ isNDA: res.data.data.is_document }));
+      }
+    } catch (error) {
+      errorHandler(error, checkDocumentActivatedFailure);
+    }
+  };
+
+// Action creator for getting document timeline
+
+const getDocument =
+  ({ project_id, doc_type }) =>
+  async (dispatch) => {
+    dispatch(getDocumentRequest());
+    try {
+      const res = await getDocumentService({ project_id, doc_type });
+      dispatch(getDocumentSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getDocumentFailure);
+    }
+  };
+
+const getDocumentTimeline =
+  ({ project_id }) =>
+  async (dispatch) => {
+    dispatch(getDocumentTimelineRequest());
+    try {
+      const res = await getDocumentTimelineService({ project_id });
+      dispatch(getDocumentTimelineSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getDocumentTimelineFailure);
+    }
+  };
+
+// Action creator for sending a document
+const sendDocument =
+  ({ project_id, doc_type, validity, data }) =>
+  async (dispatch) => {
+    dispatch(sendDocumentRequest());
+    try {
+      await sendDocumentService({ project_id, doc_type, validity, data });
+      dispatch(sendDocumentSuccess());
+    } catch (error) {
+      errorHandler(error, sendDocumentFailure);
+    }
+  };
+
+// Action creator for signing a contract by talent
+const signContractByTalent =
+  ({ project_id }) =>
+  async (dispatch) => {
+    dispatch(signContractByTalentRequest());
+    try {
+      await signContractByTalentServive({ project_id });
+      dispatch(signContractByTalentSuccess());
+    } catch (error) {
+      errorHandler(error, signContractByTalentFailure);
+    }
+  };
+
+// Action creator for terminating a contract
+const terminateContract =
+  ({ project_id }) =>
+  async (dispatch) => {
+    dispatch(terminateContractRequest());
+    try {
+      await terminateContractService({ project_id });
+      dispatch(terminateContractSuccess());
+    } catch (error) {
+      errorHandler(error, terminateContractFailure);
+    }
+  };
+
 export {
+  checkDocumentActivated,
+  getDocumentTimeline,
+  sendDocument,
+  signContractByTalent,
+  terminateContract,
   updateInvitation,
   getWhoInvited,
   getProjectDetails,
@@ -146,4 +260,5 @@ export {
   getTeamMembers,
   getReceivedBids,
   getBidDetails,
+  getDocument,
 };

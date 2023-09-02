@@ -92,6 +92,13 @@ const API = {
     reject: `${apiAuthEndpoint}/api/v1/invitation/reject`, // put invite id
     getInvitaion: `${apiAuthEndpoint}/api/v1/invitation`,
     getSentInvitaion: `${apiAuthEndpoint}/api/v1/invitations/sent`,
+    // contract flow
+    checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
+    getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
+    getDocumentTimeline: `${apiCreateProjectEndpoint}/api/v1/legal/document/timeline`,
+    sendDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document/send`,
+    signContractByTalent: `${apiCreateProjectEndpoint}/api/v1/legal/document/sign`,
+    terminateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/terminate`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,

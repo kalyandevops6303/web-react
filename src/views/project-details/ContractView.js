@@ -1,27 +1,42 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Card, CardBody, CardText, CardTitle, Col, Input, Label, Row } from 'reactstrap';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Card, CardBody, CardText, CardTitle, Col, FormFeedback, Input, Label, Row } from 'reactstrap';
 import ReactHtmlParser from 'react-html-parser';
 import html2pdf from 'html2pdf.js';
 import { ArrowLeft } from 'react-feather';
 import DownloadImg from '@src/assets/images/download.png';
 import EditImg from '@src/assets/images/edit.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { DateTime } from 'luxon';
 import { BackButtonContainer, BackIconContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
-import LeftSidebarProfile from '../user-details/overview/LeftSidebarProfile';
+import LeftSidebarProfile from './overview/LeftSidebarProjectDetails';
 import NameInfo from '../../@core/components/name-info';
 import EditContractModal from '../modals/EditContractModal';
 import TerminateContractModal from '../modals/TerminateContractModal';
 import { ContractDetailsWrap } from './style';
-import { currentProfile, dummyText } from './overview/constants';
+import { currentProfile } from './overview/constants';
+import { projectDetails, selectDocument } from '../../redux/selectors/projectDetailsSelectors';
+import { getDocument, sendDocument } from '../../redux/actions/projectDetailsAction';
 
 const ContractView = () => {
   const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isTerminateModalOpen, setIsTerminateModalOpen] = useState(false);
+  const projectInfo = useSelector(projectDetails);
+  const param = useParams();
+  const dispatch = useDispatch();
+  const document = useSelector(selectDocument);
+  const [documentData, setDocumentData] = useState(document?.contract);
+  const [checked, setChecked] = useState(false);
+  const [checkError, setCheckError] = useState(false);
   const toggleModal = () => {
     setIsEditModalOpen(!isEditModalOpen);
   };
+
+  useEffect(() => {
+    setDocumentData(document?.contract);
+  }, [document]);
 
   const toggleTerminateModal = () => {
     setIsTerminateModalOpen(!isTerminateModalOpen);
@@ -37,6 +52,29 @@ const ContractView = () => {
     };
 
     html2pdf().from(element).set(opt).save();
+  };
+
+  useEffect(() => {
+    dispatch(getDocument({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
+  }, []);
+
+  const handleSignDoc = () => {
+    if (!checked) {
+      setCheckError(true);
+    } else {
+      dispatch(
+        sendDocument({
+          project_id: param?.projectId,
+          doc_type: 'CONTRACT',
+          validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
+          data: documentData,
+        }),
+      );
+    }
+  };
+  const onCheckChange = () => {
+    setChecked(!checked);
+    setCheckError(false);
   };
 
   return (
@@ -68,69 +106,80 @@ const ContractView = () => {
                       {isTerminateModalOpen && (
                         <TerminateContractModal toggleModal={toggleTerminateModal} modal={isTerminateModalOpen} />
                       )}
-                      <span className="icon-bg cursor-pointer" onClick={toggleModal}>
-                        <img src={EditImg} alt="edit" />
-                      </span>
-                      {isEditModalOpen && (
-                        <EditContractModal toggleModal={toggleModal} data={dummyText} modal={isEditModalOpen} />
+                      {!document?.is_contract_sent && (
+                        <span className="icon-bg cursor-pointer" onClick={toggleModal}>
+                          <img src={EditImg} alt="edit" />
+                        </span>
                       )}
-                      <span className="icon-bg cursor-pointer" onClick={() => downloadPdf(dummyText)}>
+                      {isEditModalOpen && (
+                        <EditContractModal
+                          setDocumentData={setDocumentData}
+                          toggleModal={toggleModal}
+                          data={documentData}
+                          modal={isEditModalOpen}
+                        />
+                      )}
+                      <span className="icon-bg cursor-pointer" onClick={() => downloadPdf(documentData)}>
                         <img src={DownloadImg} alt="download" />
                       </span>
                     </div>
                   </div>
-                  <div className="contract-text-container">{ReactHtmlParser(dummyText)}</div>
+                  <div className="contract-text-container">{ReactHtmlParser(documentData)}</div>
                 </CardBody>
               </Card>
               <div className="d-flex justify-content-between checkbox-wrap">
                 <Label className="checkbox-label" for="contract-sign">
-                  <Input className="me-75" type="checkbox" id="contract-sign" name="agreeTerms" />I have read terms and
-                  conditions
+                  <Input
+                    onChange={onCheckChange}
+                    checked={checked}
+                    className="me-75"
+                    type="checkbox"
+                    id="contract-sign"
+                    name="agreeTerms"
+                  />
+                  I have read terms and conditions
                 </Label>
               </div>
-
+              {checkError && <FormFeedback>Please confirm that you have read the terms and conditions</FormFeedback>}
               <div className="team-sign-section mt-2">
                 <h6 className="fw-bolder">Client</h6>
                 <div className="d-flex justify-content-between mb-1">
-                  <NameInfo name="James c" info="CEO" />
+                  <NameInfo
+                    img={projectInfo?.client_details?.image_uri}
+                    name={`${projectInfo?.client_details?.first_name} ${projectInfo?.client_details?.last_name}`}
+                    info={projectInfo?.client_details?.company_name}
+                  />
                   <div>
-                    <Button color="primary" className="btn-sm-block mb-75">
-                      Confirm Agreement
+                    <Button
+                      disabled={document?.is_contract_sent}
+                      onClick={handleSignDoc}
+                      color="primary"
+                      className="btn-sm-block mb-75"
+                    >
+                      {document?.is_contract_sent ? 'Sent' : 'Confirm Agreement'}
                     </Button>
-                    <CardText className="mb-1">Sign on: 10/10/2021</CardText>
+                    <CardText className="mb-1">Sign on: -</CardText>
                   </div>
                 </div>
               </div>
 
               <div className="team-sign-section mt-2">
                 <h6 className="fw-bolder">Team</h6>
-                <div className="d-flex justify-content-between mb-1">
-                  <NameInfo name="James c" info="CEO" />
-                  <div>
-                    <Button color="primary" className="btn-sm-block mb-75">
-                      Confirm Agreement
-                    </Button>
-                    <CardText className="mb-1">Sign on: 10/10/2021</CardText>
+                {document?.workers.map((worker) => (
+                  <div key={worker?.user_id} className="d-flex justify-content-between mb-1">
+                    <NameInfo
+                      img={worker?.image_uri}
+                      name={`${worker?.first_name} ${worker?.last_name}`}
+                      info={worker?.role}
+                    />
+                    <div>
+                      <Button disabled color="primary" className="btn-sm-block mb-75">
+                        {worker?.is_signed ? 'Signed' : 'Pending Agreement'}
+                      </Button>
+                      <CardText className="mb-1">Sign on: -</CardText>
+                    </div>
                   </div>
-                </div>
-                <div className="d-flex justify-content-between mb-1">
-                  <NameInfo name="James c" info="CEO" />
-                  <div>
-                    <Button color="primary" className="btn-sm-block mb-75">
-                      Confirm Agreement
-                    </Button>
-                    <CardText className="mb-1">Sign on: 10/10/2021</CardText>
-                  </div>
-                </div>
-                <div className="d-flex justify-content-between mb-1">
-                  <NameInfo name="James c" info="CEO" />
-                  <div>
-                    <Button color="primary" className="btn-sm-block mb-75">
-                      Confirm Agreement
-                    </Button>
-                    <CardText className="mb-1">Sign on: 10/10/2021</CardText>
-                  </div>
-                </div>
+                ))}
               </div>
             </CardBody>
           </Card>

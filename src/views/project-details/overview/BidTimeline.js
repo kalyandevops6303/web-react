@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router';
 import { Accordion, Card, CardBody, CardText } from 'reactstrap';
 import { ChevronRight } from 'react-feather';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import theme from '../../../configs/themeVariables';
 import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
@@ -9,8 +10,22 @@ import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ReceivedBids from './ReceivedBids';
 import BidSubmitted from './BidSubmitted';
+import { checkDocumentActivated } from '../../../redux/actions/projectDetailsAction';
+import { projectDetails, selectIsContract, selectIsNDA } from '../../../redux/selectors/projectDetailsSelectors';
 
 const BidTimeline = () => {
+  const param = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isContract = useSelector(selectIsContract);
+  const isNDA = useSelector(selectIsNDA);
+  const projectDetailsData = useSelector(projectDetails);
+
+  useEffect(() => {
+    dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'CONTRACT' }));
+    dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'NDA' }));
+  }, []);
+
   const [open, setOpen] = useState('1');
   const userType = useSelector(selectUserType);
 
@@ -76,18 +91,41 @@ const BidTimeline = () => {
     }),
   );
 
-  const isDisabled = true;
+  const handleContract = () => {
+    navigate('contract');
+  };
 
   const bidStageDataForTalentTeam = [
     {
-      isDisabled: true,
+      isVisible: projectDetailsData?.nda?.is_nda,
+      isDisabled: !isNDA,
+      color: theme.orangeColor,
+      customContent: (
+        <Card>
+          <CardBody className="basic-title">
+            <div className="d-flex justify-content-between">
+              <CardText className={`fw-bold mb-0  ${!isNDA ? 'disabled-color' : ''}`}>NDA</CardText>
+              {isNDA && (
+                <div className="d-flex gap-50 align-items-center">
+                  <span className="card-cta">Sign NDA</span>
+                  <ChevronRight size={16} />
+                </div>
+              )}
+            </div>
+          </CardBody>
+        </Card>
+      ),
+    },
+    {
+      isVisible: true,
+      isDisabled: !isContract,
       color: theme.purpleTimelimeColor,
       customContent: (
         <Card>
           <CardBody className="basic-title">
             <div className="d-flex justify-content-between">
-              <CardText className={`fw-bold mb-0  ${isDisabled ? 'disabled-color' : ''}`}>Contract</CardText>
-              {!isDisabled && (
+              <CardText className={`fw-bold mb-0  ${!isContract ? 'disabled-color' : ''}`}>Contract</CardText>
+              {isContract && (
                 <div className="d-flex gap-50 align-items-center">
                   <span className="card-cta">Sign contract</span>
                   <ChevronRight size={16} />
@@ -100,28 +138,52 @@ const BidTimeline = () => {
     },
 
     {
+      isVisible: true,
       isDisabled: false,
-      color: theme.orangeColor,
+      color: theme.info,
       customContent: (
         <Accordion className="accordion-timeline" open={open} toggle={toggle}>
           {userType !== userTypes.client && <BidSubmitted />}
         </Accordion>
       ),
     },
-  ];
+  ].filter((item) => item.isVisible);
 
   const bidStageDataForClient = [
     {
-      isDisabled: false,
+      isVisible: projectDetailsData?.nda?.is_nda,
+      isDisabled: !isNDA,
       color: theme.orangeColor,
       customContent: (
         <Card>
           <CardBody className="basic-title">
             <div className="d-flex justify-content-between">
-              <CardText className={`fw-bold mb-0  ${isDisabled ? 'disabled-color' : ''}`}>Contract</CardText>
-              {!isDisabled && (
+              <CardText className={`fw-bold mb-0  ${!isNDA ? 'disabled-color' : ''}`}>NDA</CardText>
+              {isNDA && (
                 <div className="d-flex gap-50 align-items-center">
-                  <span className="card-cta">Sign contract</span>
+                  <span className="card-cta">Send NDA</span>
+                  <ChevronRight size={16} />
+                </div>
+              )}
+            </div>
+          </CardBody>
+        </Card>
+      ),
+    },
+    {
+      isVisible: true,
+      isDisabled: !isContract,
+      color: theme.purpleColor,
+      customContent: (
+        <Card>
+          <CardBody className="basic-title">
+            <div className="d-flex justify-content-between">
+              <CardText className={`fw-bold mb-0  ${!isContract ? 'disabled-color' : ''}`}>Contract</CardText>
+              {isContract && (
+                <div className="d-flex gap-50 align-items-center">
+                  <span onClick={handleContract} className="card-cta">
+                    Send contract
+                  </span>
                   <ChevronRight size={16} />
                 </div>
               )}
@@ -132,8 +194,8 @@ const BidTimeline = () => {
     },
 
     {
-      color: theme.purpleTimelimeColor,
-      isDisabled: true,
+      color: theme.info,
+      isDisabled: false,
       customContent: (
         <Accordion className="accordion-timeline" open={open} toggle={toggle}>
           {userType === userTypes.client && <ReceivedBids />}
