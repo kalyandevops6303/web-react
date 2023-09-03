@@ -41,14 +41,14 @@ const getTeamListing =
   };
 
 const getInvitationListing =
-  ({ searchText, metaData, onSuccess, onError, filterData, userType }) =>
+  ({ metaData, onSuccess, onError, filterData, userType }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       getListReq();
     }
 
     try {
-      const res = await getInvitationsService({ searchText, metaData, filterData, userType });
+      const res = await getInvitationsService({ metaData, filterData, userType });
       dispatch(storeSuccessData(res?.data?.data));
       onSuccess();
     } catch (error) {

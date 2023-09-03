@@ -1,8 +1,6 @@
 /* eslint-disable no-undef */
 import { Col, Input, InputGroup, InputGroupText, Label, Popover, PopoverBody, Row } from 'reactstrap';
-import { AsyncPaginate } from 'react-select-async-paginate';
 import { useState, useEffect, useRef } from 'react';
-import classNames from 'classnames';
 import { RefreshCcw, Search } from 'react-feather';
 import CollActive from '@src/assets/images/coll_active.png';
 import ExpandInactive from '@src/assets/images/expand_inactive.png';
@@ -19,14 +17,7 @@ import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors, useIsTab } from '../../../utility/Utils';
 import { getItem } from '../../../utility/localStorageControl';
 
-import {
-  companyIndustriesService,
-  projectAreasService,
-  skillsService,
-  toolsService,
-} from '../../../services/staticServices';
 import { clearData } from '../../../redux/reducers/myTeams';
-
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -53,16 +44,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [secondFilterState, setSecondFilterState] = useState({
     statuses: [],
     project_types: [],
-    skills: [],
-    tools: [],
-    sort_by: [],
-    industries: [],
-    project_areas: [],
+    invited_by: [],
+    project_status: [],
+    invite_types: [],
+    user_type: [],
   });
-  const [skillsOptions, setSkillsOptions] = useState(null);
-  const [toolsOptions, setToolsOptions] = useState(null);
-  const [companyIndustriesOptions, setCompanyIndustriesOptions] = useState(null);
-  const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const selectMyTeamData = useSelector((state) => state?.myTeams?.listData);
@@ -77,7 +63,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     setPopoverOpen(!popoverOpen);
   };
 
-  const statusesOptions = [
+  const projectStatusOptions = [
     { label: 'Open', value: 'OPEN' },
     { label: 'In-review', value: 'IN_REVIEW' },
     { label: 'Terminated', value: 'TERMINATED' },
@@ -88,6 +74,26 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const projectTypesOptions = [
     { label: 'Fixed', value: 'FIXED' },
     { label: 'Variable', value: 'VARIABLE' },
+  ];
+  const invitedByOptions = [
+    { label: 'Talent', value: 'TALENT' },
+    { label: 'Client', value: 'CLIENT' },
+  ];
+  const statusOptions = [
+    { label: 'Accepted', value: 'ACCEPTED' },
+    { label: 'Rejected', value: 'REJECTED' },
+    { label: 'Pending', value: 'PENDING' },
+  ];
+  const inviteTypeOptions = [
+    { label: 'Team Invites', value: 'TEAM_INVITES' },
+    { label: 'Team Requests', value: 'TEAM_REQUESTS' },
+    { label: 'Talent Requests', value: 'TALENT_REQUESTS' },
+  ];
+
+  const userTypeOptions = [
+    { label: 'Talent', value: 'TALENT' },
+    { label: 'Client', value: 'CLIENT' },
+    { label: 'Team', value: 'TEAM' },
   ];
 
   const onSuccess = () => {};
@@ -140,10 +146,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     });
 
     if (primaryFilter === 'my-teams') {
-      dispatch(getTeamListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
+      dispatch(getTeamListing({ searchText, metaData, onSuccess, onError, filterData }));
     }
     if (primaryFilter === 'invitations') {
-      dispatch(getInvitationListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
+      dispatch(getInvitationListing({ metaData, onSuccess, onError, filterData, userType }));
     }
     if (primaryFilter === 'join-requests') {
       dispatch(getReqListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
@@ -154,156 +160,27 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [secondFilterState, searchText, primaryFilter]);
 
-  const onChangeStatus = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      statuses: [value],
-    });
-  };
-
-  // const onChangeSort = (value) => {
-  //   setSecondFilterState({
-  //     ...secondFilterState,
-  //     sort_by: [value],
-  //   });
-  // };
   const inputRef = useRef();
 
-  const onChangeProjectType = (value) => {
+  const onChangeFilter = (key, value) => {
     setSecondFilterState({
       ...secondFilterState,
-      project_types: [value],
+      [key]: [value],
     });
   };
-  const onChangeSkill = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      skills: [value],
-    });
-  };
-  const onChangeTools = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      tools: [value],
-    });
-  };
-  const onChangeIndustry = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      industries: [value],
-    });
-  };
-  const onChangeArea = (value) => {
-    setSecondFilterState({
-      ...secondFilterState,
-      project_areas: [value],
-    });
-  };
+
   const handleReset = () => {
     setSecondFilterState({
       statuses: [],
       project_types: [],
-      skills: [],
-      tools: [],
-      sort_by: [],
-      industries: [],
-      project_areas: [],
+      invited_by: [],
+      project_status: [],
+      invite_types: [],
+      user_type: [],
     });
     setSearchText('');
     if (inputRef.current) {
       inputRef.current.value = '';
-    }
-  };
-  const loadSkillsOptions = async (search) => {
-    if (search) {
-      return {
-        options: skillsOptions.filter(
-          (skill) =>
-            skill.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            skill.label.toLowerCase().includes(search.toLowerCase()),
-        ),
-      };
-    }
-    try {
-      const response = await skillsService();
-      const options = response?.data?.data?.map((skill) => ({ label: skill.name, value: skill._id }));
-      setSkillsOptions(options);
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
-
-  const loadToolsOptions = async (search) => {
-    if (search) {
-      return {
-        options: toolsOptions.filter(
-          (tool) =>
-            tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            tool.label.toLowerCase().includes(search.toLowerCase()),
-        ),
-      };
-    }
-    try {
-      const response = await toolsService();
-      const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool._id }));
-      setToolsOptions(options);
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
-
-  const loadCompanyIndustriesOptions = async (search) => {
-    if (search) {
-      return {
-        options: companyIndustriesOptions.filter(
-          (industry) =>
-            industry.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            industry.label.toLowerCase().includes(search.toLowerCase()),
-        ),
-      };
-    }
-    try {
-      const response = await companyIndustriesService();
-
-      const options = response?.data?.data?.map((industry) => ({ label: industry.name, value: industry._id }));
-
-      setCompanyIndustriesOptions(options);
-
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
-    }
-  };
-  const loadAreaOptions = async (search) => {
-    if (search) {
-      return {
-        options: projectAreasOptions.filter(
-          (area) =>
-            area.label.toLowerCase().startsWith(search.toLowerCase()) ||
-            area.label.toLowerCase().includes(search.toLowerCase()),
-        ),
-      };
-    }
-    try {
-      const response = await projectAreasService();
-
-      const options = response?.data?.data?.map((area) => ({ label: area.name, value: area._id }));
-
-      setProjectAreasOptions(options);
-
-      return {
-        options,
-      };
-    } catch (error) {
-      return { options: [] };
     }
   };
 
@@ -394,15 +271,55 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 {ExpandCollapseComp}
               </Col>
             )}
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && (
+            {primaryFilter === 'invitations' || primaryFilter === 'favourites' ? (
               <Col>
-                <Label className="form-label">Status</Label>
+                <Label className="form-label">User Type</Label>
                 <Select
-                  options={statusesOptions}
+                  options={userTypeOptions}
+                  classNamePrefix="select"
+                  placeholder="Select User Type"
+                  theme={selectThemeColors}
+                  onChange={(value) => onChangeFilter('project_status', value)}
+                  value={
+                    secondFilterState.user_type.length > 0
+                      ? {
+                          value: secondFilterState.user_type[0].value,
+                          label: secondFilterState.user_type[0].label,
+                        }
+                      : null
+                  }
+                />
+              </Col>
+            ) : null}
+            {primaryFilter === 'my-teams' ? (
+              <Col>
+                <Label className="form-label">Project Status</Label>
+                <Select
+                  options={projectStatusOptions}
                   classNamePrefix="select"
                   placeholder="Select status"
                   theme={selectThemeColors}
-                  onChange={onChangeStatus}
+                  onChange={(value) => onChangeFilter('project_status', value)}
+                  value={
+                    secondFilterState.project_status.length > 0
+                      ? {
+                          value: secondFilterState.project_status[0].value,
+                          label: secondFilterState.project_status[0].label,
+                        }
+                      : null
+                  }
+                />
+              </Col>
+            ) : null}
+            {primaryFilter === 'invitations' || primaryFilter === 'join-requests' ? (
+              <Col>
+                <Label className="form-label">Status</Label>
+                <Select
+                  options={statusOptions}
+                  classNamePrefix="select"
+                  placeholder="Select status"
+                  theme={selectThemeColors}
+                  onChange={(value) => onChangeFilter('statuses', value)}
                   value={
                     secondFilterState.statuses.length > 0
                       ? { value: secondFilterState.statuses[0].value, label: secondFilterState.statuses[0].label }
@@ -410,16 +327,16 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   }
                 />
               </Col>
-            )}
+            ) : null}
             {primaryFilter === 'invitations' && (
               <Col>
-                <Label className="form-label">Payment type</Label>
+                <Label className="form-label">Project type</Label>
                 <Select
                   options={projectTypesOptions}
                   classNamePrefix="select"
                   placeholder="Select type"
                   theme={selectThemeColors}
-                  onChange={onChangeProjectType}
+                  onChange={(value) => onChangeFilter('project_types', value)}
                   value={
                     secondFilterState.project_types.length > 0
                       ? {
@@ -431,82 +348,46 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents') && (
+            {primaryFilter === 'invitations' ? (
               <Col>
-                <Label className="form-label">Skills</Label>
-                <AsyncPaginate
-                  loadOptions={loadSkillsOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select skill"
+                <Label className="form-label">Invited By</Label>
+                <Select
+                  options={invitedByOptions}
+                  classNamePrefix="select"
+                  placeholder="Select user"
                   theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={onChangeSkill}
+                  onChange={(value) => onChangeFilter('invited_by', value)}
                   value={
-                    secondFilterState.skills.length > 0
-                      ? { value: secondFilterState.skills[0].value, label: secondFilterState.skills[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents') && (
-              <Col>
-                <Label className="form-label">Tools</Label>
-                <AsyncPaginate
-                  loadOptions={loadToolsOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select tool"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={onChangeTools}
-                  value={
-                    secondFilterState.tools.length > 0
-                      ? { value: secondFilterState.tools[0].value, label: secondFilterState.tools[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {primaryFilter === 'clients' && (
-              <Col>
-                <Label className="form-label">Company industry</Label>
-                <AsyncPaginate
-                  loadOptions={loadCompanyIndustriesOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select industry"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={onChangeIndustry}
-                  value={
-                    secondFilterState.industries.length > 0
-                      ? { value: secondFilterState.industries[0].value, label: secondFilterState.industries[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-
-            {primaryFilter === 'clients' && (
-              <Col>
-                <Label className="form-label">Project Area</Label>
-                <AsyncPaginate
-                  loadOptions={loadAreaOptions}
-                  classNamePrefix="wide"
-                  placeholder="Select area"
-                  theme={selectThemeColors}
-                  className={classNames('react-select')}
-                  onChange={onChangeArea}
-                  value={
-                    secondFilterState.project_areas.length > 0
+                    secondFilterState.invited_by.length > 0
                       ? {
-                          value: secondFilterState.project_areas[0].value,
-                          label: secondFilterState.project_areas[0].label,
+                          value: secondFilterState.invited_by[0].value,
+                          label: secondFilterState.invited_by[0].label,
                         }
                       : null
                   }
                 />
               </Col>
-            )}
+            ) : null}
+            {primaryFilter === 'join-requests' ? (
+              <Col>
+                <Label className="form-label">Invite Type</Label>
+                <Select
+                  options={inviteTypeOptions}
+                  classNamePrefix="select"
+                  placeholder="Select user"
+                  theme={selectThemeColors}
+                  onChange={(value) => onChangeFilter('invited_by', value)}
+                  value={
+                    secondFilterState.invite_types.length > 0
+                      ? {
+                          value: secondFilterState.invite_types[0].value,
+                          label: secondFilterState.invite_types[0].label,
+                        }
+                      : null
+                  }
+                />
+              </Col>
+            ) : null}
             {!isTab && (
               <Col className="reset-btn cursor-pointer" onClick={handleReset}>
                 <div className="reset-icon">
