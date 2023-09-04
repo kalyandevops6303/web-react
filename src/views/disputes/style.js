@@ -44,3 +44,9 @@ export const DisputeDetailsContainer = styled.div`
     color: ${theme.activeNavPillText};
   }
 `;
+
+export const DisputeClosedModalContainer = styled.div`
+  .text-blue {
+    color: ${theme.lightBlueColor};
+  }
+`;

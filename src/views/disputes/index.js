@@ -13,6 +13,7 @@ import { allDisputes, allDisputesLoading } from '../../redux/selectors/disputeSe
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import capitalize from '../../lib/capitalize';
+import DisputeClosedModal from './overview/DisputeClosedModal';
 
 const index = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const index = () => {
 
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [disputeDetailsModal, setDisputeDetailsModal] = useState(null);
+  const [disputeClosedModal, setDisputeClosedModal] = useState(null);
 
   const allDisputesIsLoading = useSelector(allDisputesLoading);
   const allDisputesData = useSelector(allDisputes);
@@ -30,6 +32,10 @@ const index = () => {
 
   const toggleDisputeDetailsModal = () => {
     setDisputeDetailsModal(!disputeDetailsModal);
+  };
+
+  const toggleDisputeClosedModal = () => {
+    setDisputeClosedModal(!disputeClosedModal);
   };
 
   // const routesMatch = useMatch('/disputes/all') || useMatch('/disputes/open') || useMatch('/disputes/resolved');
@@ -62,6 +68,7 @@ const index = () => {
       {disputeDetailsModal && (
         <DisputeDetailsModal modal={disputeDetailsModal} toggleModal={toggleDisputeDetailsModal} />
       )}
+      {disputeClosedModal && <DisputeClosedModal modal={disputeClosedModal} toggleModal={toggleDisputeClosedModal} />}
       <div className="d-flex justify-content-between align-items-center">
         <BreadCrumbs data={[{ title: 'Dashboard', link: '/dashboard' }, { title: 'Disputes' }]} />
         <Button color="primary" className="mb-2" onClick={() => setRaiseDisputeModal(true)}>
@@ -119,7 +126,7 @@ const index = () => {
         >
           {allDisputesData?.data?.length > 0 ? (
             allDisputesData?.data?.map((item) => (
-              <Card className="cursor-pointer mb-1" key={item?._id}>
+              <Card className="cursor-pointer mb-1" key={item?._id} onClick={() => setDisputeClosedModal(true)}>
                 <CardBody className="py-1">
                   <Row className="d-flex align-items-center">
                     <Col sm="12" md="6" lg="1">
