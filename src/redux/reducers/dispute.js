@@ -6,6 +6,8 @@ const initialState = {
   allDisputes: null,
   acceptDisputeLoading: false,
   replyOnDisputeLoading: false,
+  disputeRepliesLoading: false,
+  disputeReplies: null,
   error: null,
 };
 
@@ -73,6 +75,22 @@ const disputeSlice = createSlice({
       replyOnDisputeLoading: false,
       error: action.payload,
     }),
+
+    disputeRepliesRequest: (state) => ({
+      ...state,
+      disputeRepliesLoading: true,
+      error: null,
+    }),
+    disputeRepliesSuccess: (state, action) => ({
+      ...state,
+      disputeRepliesLoading: false,
+      disputeReplies: action.payload,
+    }),
+    disputeRepliesFailure: (state, action) => ({
+      ...state,
+      disputeRepliesLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -89,6 +107,9 @@ export const {
   replyOnDisputeRequest,
   replyOnDisputeSuccess,
   replyOnDisputeFailure,
+  disputeRepliesRequest,
+  disputeRepliesSuccess,
+  disputeRepliesFailure,
 } = disputeSlice.actions;
 
 export default disputeSlice.reducer;

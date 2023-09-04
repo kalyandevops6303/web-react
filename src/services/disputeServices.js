@@ -13,10 +13,21 @@ const acceptDisputeService = (disputeId) => DataService.put(`${API.dispute.accep
 
 const replyOnDisputeService = (data) => DataService.post(API.dispute.replyOnDispute, data);
 
+const disputeRepliesService = (disputeId, page, pageSize) =>
+  DataService.get(`${API.dispute.disputeReplies}/${disputeId}?page=${page}&page_size=${pageSize}`);
+
+const disputeReplyFileUploadService = (filename, disputeId) =>
+  DataService.get(`${API.dispute.disputeReplyFileUpload}?filename=${filename}&dispute_id=${disputeId}`);
+
+const disputeReplyFileUploadToAzureService = (url, data, headers) => DataService.putWithoutToken(url, data, headers);
+
 export {
   paginatedProjectsService,
   raiseDisputeService,
   allDisputesService,
   acceptDisputeService,
   replyOnDisputeService,
+  disputeRepliesService,
+  disputeReplyFileUploadService,
+  disputeReplyFileUploadToAzureService,
 };

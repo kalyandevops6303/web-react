@@ -150,6 +150,8 @@ const API = {
     allDisputes: `${apiCreateProjectEndpoint}/api/v1/disputes`,
     acceptDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/accept`,
     replyOnDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/reply`,
+    disputeReplies: `${apiCreateProjectEndpoint}/api/v1/disputes/replies`,
+    disputeReplyFileUpload: `${apiCreateProjectEndpoint}/api/v1/dispute/file`,
   },
 };
 

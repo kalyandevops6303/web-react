@@ -50,3 +50,8 @@ export const DisputeClosedModalContainer = styled.div`
     color: ${theme.lightBlueColor};
   }
 `;
+
+export const RepliesContainer = styled.div`
+  max-height: 400px;
+  overflow-y: auto;
+`;
