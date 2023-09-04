@@ -54,6 +54,12 @@ const USD = {
   name: 'US Dollar',
   code: 'USD',
 };
+const disputeStatuses = {
+  open: 'OPEN',
+  underReview: 'UNDER_REVIEW',
+  responded: 'RESPONDED',
+  resolved: 'RESOLVED',
+};
 export {
   ERROR_CODES,
   checkPoints,
@@ -67,4 +73,5 @@ export {
   createBidSteps,
   bidTypes,
   USD,
+  disputeStatuses,
 };

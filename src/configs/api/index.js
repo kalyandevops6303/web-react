@@ -148,6 +148,7 @@ const API = {
     paginatedProjects: `${apiCreateProjectEndpoint}/api/v1/disputes/project-names`,
     raiseDispute: `${apiCreateProjectEndpoint}/api/v1/disputes`,
     allDisputes: `${apiCreateProjectEndpoint}/api/v1/disputes`,
+    acceptDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/accept`,
   },
 };
 

@@ -7,3 +7,5 @@ export const raiseDisputeLoading = createSelector(disputeSelector, (dispute) => 
 export const allDisputesLoading = createSelector(disputeSelector, (dispute) => dispute.allDisputesLoading);
 
 export const allDisputes = createSelector(disputeSelector, (dispute) => dispute.allDisputes);
+
+export const acceptDisputeLoading = createSelector(disputeSelector, (dispute) => dispute.acceptDisputeLoading);

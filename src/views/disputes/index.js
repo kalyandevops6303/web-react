@@ -8,16 +8,24 @@ import RaiseDisputeModal from './overview/RaiseDisputeModal';
 import Statbox from '../user-details/overview/Statbox';
 import InfiniteScroll from '../../lib/infinite-scroll';
 import DisputeDetailsModal from './overview/DisputeDetailsModal';
-import { getAllDisputes } from '../../redux/actions/disputeActions';
+import { acceptDisputeApi, getAllDisputes } from '../../redux/actions/disputeActions';
 import { allDisputes, allDisputesLoading } from '../../redux/selectors/disputeSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
-import capitalize from '../../lib/capitalize';
 import DisputeClosedModal from './overview/DisputeClosedModal';
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import { disputeStatuses } from '../../utility/constants/Constant';
 
 const index = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const statusEnum = {
+    OPEN: 'Open',
+    UNDER_REVIEW: 'Under Review',
+    RESPONDED: 'Responded',
+    RESOLVED: 'Resolved',
+  };
 
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [disputeDetailsModal, setDisputeDetailsModal] = useState(null);
@@ -25,6 +33,7 @@ const index = () => {
 
   const allDisputesIsLoading = useSelector(allDisputesLoading);
   const allDisputesData = useSelector(allDisputes);
+  const selectUserDetails = useSelector(selectUserData);
 
   const toggleRaiseDisputeModal = () => {
     setRaiseDisputeModal(!raiseDisputeModal);
@@ -60,6 +69,16 @@ const index = () => {
         allDisputesData?.data,
       ),
     );
+  };
+
+  const onDisputeClick = (dispute) => {
+    const { status, dispute_against, _id } = dispute;
+
+    if (status === disputeStatuses.open && dispute_against.includes(selectUserDetails._id)) {
+      dispatch(acceptDisputeApi(_id, setDisputeDetailsModal(true)));
+    } else {
+      setDisputeDetailsModal(true);
+    }
   };
 
   return (
@@ -126,7 +145,7 @@ const index = () => {
         >
           {allDisputesData?.data?.length > 0 ? (
             allDisputesData?.data?.map((item) => (
-              <Card className="cursor-pointer mb-1" key={item?._id} onClick={() => setDisputeClosedModal(true)}>
+              <Card className="cursor-pointer mb-1" key={item?._id} onClick={() => onDisputeClick(item)}>
                 <CardBody className="py-1">
                   <Row className="d-flex align-items-center">
                     <Col sm="12" md="6" lg="1">
@@ -138,7 +157,7 @@ const index = () => {
                     <Col sm="12" md="6" lg="3">
                       <Row>
                         <Col sm="12" md="6" lg="7" className="d-flex justify-content-end">
-                          <p className="mb-0 fw-bold font-medium-1">{capitalize(item?.status)}</p>
+                          <p className="mb-0 fw-bold font-medium-1">{statusEnum[item?.status]}</p>
                         </Col>
                         <Col sm="12" md="6" lg="5" className="d-flex justify-content-end">
                           <div>

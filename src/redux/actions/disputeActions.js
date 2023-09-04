@@ -1,5 +1,8 @@
 import errorHandler from '../../utility/errorHandler';
 import {
+  acceptDisputeFailure,
+  acceptDisputeRequest,
+  acceptDisputeSuccess,
   allDisputesFailure,
   allDisputesRequest,
   allDisputesSuccess,
@@ -7,7 +10,7 @@ import {
   raiseDisputeRequest,
   raiseDisputeSuccess,
 } from '../reducers/dispute';
-import { allDisputesService, raiseDisputeService } from '../../services/disputeServices';
+import { acceptDisputeService, allDisputesService, raiseDisputeService } from '../../services/disputeServices';
 
 const raiseNewDispute = (data, onSuccess) => async (dispatch) => {
   dispatch(raiseDisputeRequest());
@@ -30,4 +33,15 @@ const getAllDisputes = (page, pageSize, oldData) => async (dispatch) => {
   }
 };
 
-export { raiseNewDispute, getAllDisputes };
+const acceptDisputeApi = (disputeId, onSuccess) => async (dispatch) => {
+  dispatch(acceptDisputeRequest());
+  try {
+    const res = await acceptDisputeService(disputeId);
+    dispatch(acceptDisputeSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, acceptDisputeFailure);
+  }
+};
+
+export { raiseNewDispute, getAllDisputes, acceptDisputeApi };
