@@ -14,22 +14,16 @@ import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import DisputeClosedModal from './overview/DisputeClosedModal';
 import { selectUserData } from '../../redux/selectors/authSelectors';
-import { disputeStatuses } from '../../utility/constants/Constant';
+import { disputeStatusEnum, disputeStatuses } from '../../utility/constants/Constant';
 
 const index = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const statusEnum = {
-    OPEN: 'Open',
-    UNDER_REVIEW: 'Under Review',
-    RESPONDED: 'Responded',
-    RESOLVED: 'Resolved',
-  };
-
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [disputeDetailsModal, setDisputeDetailsModal] = useState(null);
   const [disputeClosedModal, setDisputeClosedModal] = useState(null);
+  const [selectedDispute, setSelectedDispute] = useState(null);
 
   const allDisputesIsLoading = useSelector(allDisputesLoading);
   const allDisputesData = useSelector(allDisputes);
@@ -74,6 +68,8 @@ const index = () => {
   const onDisputeClick = (dispute) => {
     const { status, dispute_against, _id } = dispute;
 
+    setSelectedDispute(dispute);
+
     if (status === disputeStatuses.open && dispute_against.includes(selectUserDetails._id)) {
       dispatch(acceptDisputeApi(_id, setDisputeDetailsModal(true)));
     } else {
@@ -85,7 +81,11 @@ const index = () => {
     <>
       {raiseDisputeModal && <RaiseDisputeModal modal={raiseDisputeModal} toggleModal={toggleRaiseDisputeModal} />}
       {disputeDetailsModal && (
-        <DisputeDetailsModal modal={disputeDetailsModal} toggleModal={toggleDisputeDetailsModal} />
+        <DisputeDetailsModal
+          modal={disputeDetailsModal}
+          toggleModal={toggleDisputeDetailsModal}
+          selectedDispute={selectedDispute}
+        />
       )}
       {disputeClosedModal && <DisputeClosedModal modal={disputeClosedModal} toggleModal={toggleDisputeClosedModal} />}
       <div className="d-flex justify-content-between align-items-center">
@@ -157,7 +157,7 @@ const index = () => {
                     <Col sm="12" md="6" lg="3">
                       <Row>
                         <Col sm="12" md="6" lg="7" className="d-flex justify-content-end">
-                          <p className="mb-0 fw-bold font-medium-1">{statusEnum[item?.status]}</p>
+                          <p className="mb-0 fw-bold font-medium-1">{disputeStatusEnum[item?.status]}</p>
                         </Col>
                         <Col sm="12" md="6" lg="5" className="d-flex justify-content-end">
                           <div>

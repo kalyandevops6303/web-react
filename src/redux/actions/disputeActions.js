@@ -9,8 +9,16 @@ import {
   raiseDisputeFailure,
   raiseDisputeRequest,
   raiseDisputeSuccess,
+  replyOnDisputeFailure,
+  replyOnDisputeRequest,
+  replyOnDisputeSuccess,
 } from '../reducers/dispute';
-import { acceptDisputeService, allDisputesService, raiseDisputeService } from '../../services/disputeServices';
+import {
+  acceptDisputeService,
+  allDisputesService,
+  raiseDisputeService,
+  replyOnDisputeService,
+} from '../../services/disputeServices';
 
 const raiseNewDispute = (data, onSuccess) => async (dispatch) => {
   dispatch(raiseDisputeRequest());
@@ -44,4 +52,15 @@ const acceptDisputeApi = (disputeId, onSuccess) => async (dispatch) => {
   }
 };
 
-export { raiseNewDispute, getAllDisputes, acceptDisputeApi };
+const replyOnDisputeApi = (data, onSuccess) => async (dispatch) => {
+  dispatch(replyOnDisputeRequest());
+  try {
+    const res = await replyOnDisputeService(data);
+    dispatch(replyOnDisputeSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, replyOnDisputeFailure);
+  }
+};
+
+export { raiseNewDispute, getAllDisputes, acceptDisputeApi, replyOnDisputeApi };

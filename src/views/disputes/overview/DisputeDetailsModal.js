@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import '../../custom-styles.scss';
-import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Modal, ModalHeader, ModalBody, Form, Row, Col, Input, Button } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Row, Col, Input, Button, Spinner } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import { Upload } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -13,8 +11,12 @@ import theme from '../../../configs/themeVariables';
 import Timeline from '../../../@core/components/timeline';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
+import { disputeStatusEnum } from '../../../utility/constants/Constant';
+import DateTime from '../../../lib/date-time';
+import { replyOnDisputeApi } from '../../../redux/actions/disputeActions';
+import { replyOnDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 
-const DisputeDetailsModal = ({ modal, toggleModal }) => {
+const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
   const timelineData = [
     {
       isDisabled: false,
@@ -88,30 +90,31 @@ const DisputeDetailsModal = ({ modal, toggleModal }) => {
     },
   ];
 
-  const ResponseSchema = yup.object().shape({
-    response: yup
-      .string()
-      .min(100, 'Response must be at least 100 characters')
-      .max(2000, 'Response must be 2000 characters or less')
-      .required('Response is required'),
-  });
+  const dispatch = useDispatch();
 
-  const {
-    control,
-    handleSubmit,
-    trigger,
-    formState: { errors },
-  } = useForm({
-    mode: 'onChange',
-    resolver: yupResolver(ResponseSchema),
-  });
+  const replyOnDisputeIsLoading = useSelector(replyOnDisputeLoading);
+
+  const { dispute_number, project, status, created_at, _id } = selectedDispute;
 
   const [updatedTimelineData, setUpdatedTimelineData] = useState(timelineData);
   const [isReplyBoxPresent, setIsReplyBoxPresent] = useState(false);
 
+  const rep = useRef('');
+
+  const onSuccess = () => {
+    setIsReplyBoxPresent(false);
+    rep.current = '';
+  };
+
   const onSubmit = () => {
-    trigger();
-    if (errors) {
+    if (rep.current.length > 0) {
+      const data = {
+        dispute_id: _id,
+        reply: rep.current,
+      };
+
+      dispatch(replyOnDisputeApi(data, onSuccess));
+    } else {
       ShowToastMessage(ERROR, 'Please enter your response to dispute before submitting');
     }
   };
@@ -131,32 +134,29 @@ const DisputeDetailsModal = ({ modal, toggleModal }) => {
             <p className="fw-bold mb-0">Response Dispute</p>
           </div>
           <div>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-              <Row className="mb-1">
-                <Col sm="12" md="12" lg="6">
-                  <Controller
-                    id="response"
-                    name="response"
-                    control={control}
-                    render={({ field }) => (
-                      <Input {...field} type="textarea" placeholder="Enter your respone to dispute" rows="3" />
-                    )}
-                  />
-                </Col>
-              </Row>
-              <Button color="primary" className="mt-2 d-flex align-items-center py-50">
-                <Upload size={18} className="me-75" />
-                Upload
+            <Row className="mb-1">
+              <Col sm="12" md="12" lg="6">
+                <Input
+                  type="textarea"
+                  placeholder="Enter your response to dispute"
+                  rows="3"
+                  // eslint-disable-next-line no-return-assign
+                  onChange={(e) => (rep.current = e.target.value)}
+                />
+              </Col>
+            </Row>
+            <Button color="primary" className="mt-2 d-flex align-items-center py-50">
+              <Upload size={18} className="me-75" />
+              Upload
+            </Button>
+            <div className="d-flex justify-content-end">
+              <Button outline color="primary" className="me-3" onClick={onCancelClick}>
+                Cancel
               </Button>
-              <div className="d-flex justify-content-end">
-                <Button outline color="primary" className="me-3" onClick={onCancelClick}>
-                  Cancel
-                </Button>
-                <Button color="primary" onClick={onSubmit}>
-                  Submit
-                </Button>
-              </div>
-            </Form>
+              <Button color="primary" onClick={onSubmit} disabled={replyOnDisputeIsLoading}>
+                {replyOnDisputeIsLoading ? <Spinner size="sm" /> : 'Submit'}
+              </Button>
+            </div>
           </div>
         </div>
       ),
@@ -175,17 +175,17 @@ const DisputeDetailsModal = ({ modal, toggleModal }) => {
         <DisputeDetailsContainer>
           <div className="d-flex justify-content-between align-items-center mt-1">
             <div>
-              <h4 className="font-medium-4 mb-25">#557630</h4>
-              <p className="fw-bold font-medium-1 mb-0">Project name - Elementum pulvinar etiam non</p>
+              <h4 className="font-medium-4 mb-25">#{dispute_number}</h4>
+              <p className="fw-bold font-medium-1 mb-0">Project name - {project?.details?.name}</p>
             </div>
             <div className="d-flex">
               <div className="text-end me-2">
                 <p className="mb-25">Status</p>
-                <h4 className="font-medium-1">Resolved</h4>
+                <h4 className="font-medium-1">{disputeStatusEnum[status]}</h4>
               </div>
               <div className="text-end">
                 <p className="mb-25">Raised On</p>
-                <h4 className="font-medium-1">Apr 28, 23</h4>
+                <h4 className="font-medium-1">{DateTime.fromMillis(created_at).toFormat('MMM dd, yy')}</h4>
               </div>
             </div>
           </div>
@@ -207,9 +207,11 @@ export default DisputeDetailsModal;
 DisputeDetailsModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  selectedDispute: Proptypes.object,
 };
 
 DisputeDetailsModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  selectedDispute: {},
 };

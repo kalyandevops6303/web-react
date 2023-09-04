@@ -9,3 +9,5 @@ export const allDisputesLoading = createSelector(disputeSelector, (dispute) => d
 export const allDisputes = createSelector(disputeSelector, (dispute) => dispute.allDisputes);
 
 export const acceptDisputeLoading = createSelector(disputeSelector, (dispute) => dispute.acceptDisputeLoading);
+
+export const replyOnDisputeLoading = createSelector(disputeSelector, (dispute) => dispute.replyOnDisputeLoading);

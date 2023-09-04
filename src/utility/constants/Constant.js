@@ -60,6 +60,12 @@ const disputeStatuses = {
   responded: 'RESPONDED',
   resolved: 'RESOLVED',
 };
+const disputeStatusEnum = {
+  OPEN: 'Open',
+  UNDER_REVIEW: 'Under Review',
+  RESPONDED: 'Responded',
+  RESOLVED: 'Resolved',
+};
 export {
   ERROR_CODES,
   checkPoints,
@@ -74,4 +80,5 @@ export {
   bidTypes,
   USD,
   disputeStatuses,
+  disputeStatusEnum,
 };

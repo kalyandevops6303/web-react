@@ -11,4 +11,12 @@ const allDisputesService = (page, pageSize) =>
 
 const acceptDisputeService = (disputeId) => DataService.put(`${API.dispute.acceptDispute}/${disputeId}`);
 
-export { paginatedProjectsService, raiseDisputeService, allDisputesService, acceptDisputeService };
+const replyOnDisputeService = (data) => DataService.post(API.dispute.replyOnDispute, data);
+
+export {
+  paginatedProjectsService,
+  raiseDisputeService,
+  allDisputesService,
+  acceptDisputeService,
+  replyOnDisputeService,
+};
