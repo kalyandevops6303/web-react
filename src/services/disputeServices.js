@@ -6,8 +6,14 @@ const paginatedProjectsService = (page, search) =>
 
 const raiseDisputeService = (data) => DataService.post(API.dispute.raiseDispute, data);
 
-const allDisputesService = (page, pageSize) =>
-  DataService.get(`${API.dispute.allDisputes}?page=${page}&page_size=${pageSize}`);
+const allDisputesService = (type, page, pageSize) => {
+  if (type) {
+    return DataService.get(`${API.dispute.allDisputes}?dispute_type=${type}&page=${page}&page_size=${pageSize}`);
+    // eslint-disable-next-line no-else-return
+  } else {
+    return DataService.get(`${API.dispute.allDisputes}?page=${page}&page_size=${pageSize}`);
+  }
+};
 
 const acceptDisputeService = (disputeId) => DataService.put(`${API.dispute.acceptDispute}/${disputeId}`);
 

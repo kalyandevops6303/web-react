@@ -9,8 +9,9 @@ import DisputeClosedGif from '../../../assets/images/disputeClosed.gif';
 import { DisputeClosedModalContainer } from '../style';
 import { getAllDisputes, resolveDisputeApi } from '../../../redux/actions/disputeActions';
 import { resolveDisputeLoading } from '../../../redux/selectors/disputeSelectors';
+import { disputeStatuses } from '../../../utility/constants/Constant';
 
-const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetailsModal }) => {
+const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetailsModal, primaryFilter }) => {
   const dispatch = useDispatch();
 
   const { _id, dispute_type, created_by, description } = selectedDispute;
@@ -18,7 +19,13 @@ const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetails
   const resolveDisputeIsLoading = useSelector(resolveDisputeLoading);
 
   const onSuccess = () => {
-    dispatch(getAllDisputes(1, 10, []));
+    if (primaryFilter === 'all') {
+      dispatch(getAllDisputes(null, 1, 10, []));
+    } else if (primaryFilter === 'open') {
+      dispatch(getAllDisputes(disputeStatuses.open, 1, 10, []));
+    } else if (primaryFilter === 'resolved') {
+      dispatch(getAllDisputes(disputeStatuses.resolved, 1, 10, []));
+    }
     toggleModal();
     toggleDetailsModal();
   };
@@ -65,6 +72,7 @@ DisputeClosedModal.propTypes = {
   toggleModal: Proptypes.func,
   selectedDispute: Proptypes.object,
   toggleDetailsModal: Proptypes.func,
+  primaryFilter: Proptypes.string,
 };
 
 DisputeClosedModal.defaultProps = {
@@ -72,4 +80,5 @@ DisputeClosedModal.defaultProps = {
   toggleModal: () => {},
   selectedDispute: {},
   toggleDetailsModal: () => {},
+  primaryFilter: '',
 };

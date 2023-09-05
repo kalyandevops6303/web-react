@@ -39,10 +39,12 @@ const raiseNewDispute = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-const getAllDisputes = (page, pageSize, oldData) => async (dispatch) => {
-  dispatch(allDisputesRequest());
+const getAllDisputes = (type, page, pageSize, oldData) => async (dispatch) => {
+  if (page === 1) {
+    dispatch(allDisputesRequest());
+  }
   try {
-    const res = await allDisputesService(page, pageSize);
+    const res = await allDisputesService(type, page, pageSize);
     dispatch(allDisputesSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, allDisputesFailure);

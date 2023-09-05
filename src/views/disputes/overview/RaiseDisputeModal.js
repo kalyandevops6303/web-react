@@ -14,8 +14,9 @@ import { DisputeFormContainer } from '../style';
 import { paginatedProjectsService } from '../../../services/disputeServices';
 import { getAllDisputes, raiseNewDispute } from '../../../redux/actions/disputeActions';
 import { raiseDisputeLoading } from '../../../redux/selectors/disputeSelectors';
+import { disputeStatuses } from '../../../utility/constants/Constant';
 
-const RaiseDisputeModal = ({ modal, toggleModal }) => {
+const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter }) => {
   const DisputeSchema = yup.object().shape({
     projectName: yup
       .object()
@@ -54,7 +55,13 @@ const RaiseDisputeModal = ({ modal, toggleModal }) => {
   const raiseDisputeIsLoading = useSelector(raiseDisputeLoading);
 
   const onSuccess = () => {
-    dispatch(getAllDisputes(1, 10, []));
+    if (primaryFilter === 'all') {
+      dispatch(getAllDisputes(null, 1, 10, []));
+    } else if (primaryFilter === 'open') {
+      dispatch(getAllDisputes(disputeStatuses.open, 1, 10, []));
+    } else if (primaryFilter === 'resolved') {
+      dispatch(getAllDisputes(disputeStatuses.resolved, 1, 10, []));
+    }
     toggleModal();
   };
 
@@ -208,9 +215,11 @@ export default RaiseDisputeModal;
 RaiseDisputeModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  primaryFilter: Proptypes.string,
 };
 
 RaiseDisputeModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  primaryFilter: '',
 };

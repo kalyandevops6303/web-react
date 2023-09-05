@@ -24,7 +24,7 @@ import { disputeReplyFileUploadService, disputeReplyFileUploadToAzureService } f
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import DisputeClosedModal from './DisputeClosedModal';
 
-const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
+const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilter }) => {
   const dispatch = useDispatch();
 
   const replyOnDisputeIsLoading = useSelector(replyOnDisputeLoading);
@@ -362,6 +362,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
           toggleModal={toggleDisputeClosedModal}
           selectedDispute={selectedDispute}
           toggleDetailsModal={toggleModal}
+          primaryFilter={primaryFilter}
         />
       )}
       <ModalHeader toggle={toggleModal} />
@@ -423,10 +424,12 @@ DisputeDetailsModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   selectedDispute: Proptypes.object,
+  primaryFilter: Proptypes.string,
 };
 
 DisputeDetailsModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   selectedDispute: {},
+  primaryFilter: '',
 };
