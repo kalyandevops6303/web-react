@@ -1,6 +1,6 @@
 import { getTeamService, createTeamService, getInvitedByService } from '../../services/teamServices';
 import errorHandler from '../../utility/errorHandler';
-import { getTeamSuccess } from '../reducers/team';
+import { getTeamCreated, getTeamSuccess } from '../reducers/team';
 
 const getTeams =
   ({ onSuccess }) =>
@@ -14,9 +14,11 @@ const getTeams =
     }
   };
 
-const createTeam = (data, onSuccess, onError) => async () => {
+const createTeam = (data, onSuccess, onError) => async (dispatch) => {
   try {
-    await createTeamService(data);
+    const res = await createTeamService(data);
+
+    dispatch(getTeamCreated(res.data.data));
     onSuccess();
   } catch (error) {
     onError();

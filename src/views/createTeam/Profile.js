@@ -157,6 +157,7 @@ const Profile = () => {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -758,20 +759,18 @@ const Profile = () => {
                             invalid={errors.weekdayStartTime && true}
                             render={({ field }) => (
                               <Select
-                                options={
-                                  watch('weekdayEndTime')
-                                    ? timeOptions.filter(
-                                        (t) => parseInt(t.value, 10) < parseInt(watch('weekdayEndTime').value, 10),
-                                      )
-                                    : timeOptions
-                                }
+                                {...field}
+                                options={timeOptions}
                                 classNamePrefix="select"
                                 placeholder="Select start time"
                                 theme={selectThemeColors}
                                 className={classNames('react-select', {
                                   'is-invalid': errors && errors.weekdayStartTime,
                                 })}
-                                {...field}
+                                onChange={(selectedOption) => {
+                                  field.onChange(selectedOption);
+                                  setValue('weekdayEndTime', null);
+                                }}
                               />
                             )}
                           />

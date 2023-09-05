@@ -231,6 +231,7 @@ export const ProfileFormContainer = styled.div`
       width: 100px;
       height: 100px;
       border-radius: 50%;
+      object-fit: cover;
     }
   }
 
