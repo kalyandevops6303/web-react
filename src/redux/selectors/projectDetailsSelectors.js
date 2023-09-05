@@ -13,3 +13,7 @@ export const selectIsNDA = createSelector(projectDetailsSelector, (state) => sta
 export const selectIsContract = createSelector(projectDetailsSelector, (state) => state?.isContract);
 
 export const selectDocument = createSelector(projectDetailsSelector, (state) => state?.document);
+
+export const selectContractTimeline = createSelector(projectDetailsSelector, (state) => state?.contractTimeline);
+
+export const selectNDATimeline = createSelector(projectDetailsSelector, (state) => state?.ndaTimeline);

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Card, CardBody, CardTitle } from 'reactstrap';
 import { BidWrapper } from '../style';
 import BidTimeline from './BidTimeline';
@@ -12,4 +13,4 @@ const BidView = () => (
     </Card>
   </BidWrapper>
 );
-export default BidView;
+export default memo(BidView);

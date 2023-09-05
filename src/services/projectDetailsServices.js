@@ -44,8 +44,8 @@ const checkDocumentActivatedService = ({ project_id, doc_type }) =>
 const getDocumentService = ({ project_id, doc_type }) =>
   DataService.get(`${API.projectDetails.getDocument}?doc_type=${doc_type}&project_id=${project_id}`);
 
-const getDocumentTimelineService = ({ project_id }) =>
-  DataService.get(`${API.projectDetails.getDocumentTimeline}?project_id=${project_id}`);
+const getDocumentTimelineService = ({ project_id, doc_type }) =>
+  DataService.get(`${API.projectDetails.getDocumentTimeline}?project_id=${project_id}&doc_type=${doc_type}`);
 
 const sendDocumentService = ({ project_id, doc_type, data, validity }) =>
   DataService.post(
@@ -53,8 +53,8 @@ const sendDocumentService = ({ project_id, doc_type, data, validity }) =>
     data,
   );
 
-const signContractByTalentServive = ({ project_id }) =>
-  DataService.put(`${API.projectDetails.signContractByTalent}?project_id=${project_id}`);
+const signContractByTalentServive = ({ project_id, doc_type }) =>
+  DataService.put(`${API.projectDetails.signContractByTalent}?project_id=${project_id}&doc_type=${doc_type}`);
 
 const terminateContractService = ({ project_id }) =>
   DataService.put(`${API.projectDetails.terminateContract}?project_id=${project_id}`);

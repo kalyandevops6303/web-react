@@ -17,13 +17,17 @@ import TerminateContractModal from '../modals/TerminateContractModal';
 import { ContractDetailsWrap } from './style';
 import { currentProfile } from './overview/constants';
 import { projectDetails, selectDocument } from '../../redux/selectors/projectDetailsSelectors';
-import { getDocument, sendDocument } from '../../redux/actions/projectDetailsAction';
+import { getDocument, sendDocument, signContractByTalent } from '../../redux/actions/projectDetailsAction';
+import { selectUserData, selectUserType } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
 const ContractView = () => {
   const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isTerminateModalOpen, setIsTerminateModalOpen] = useState(false);
   const projectInfo = useSelector(projectDetails);
+  const userType = useSelector(selectUserType);
+  const userData = useSelector(selectUserData);
   const param = useParams();
   const dispatch = useDispatch();
   const document = useSelector(selectDocument);
@@ -58,7 +62,7 @@ const ContractView = () => {
     dispatch(getDocument({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
   }, []);
 
-  const handleSignDoc = () => {
+  const handleSendDocByClient = () => {
     if (!checked) {
       setCheckError(true);
     } else {
@@ -68,6 +72,18 @@ const ContractView = () => {
           doc_type: 'CONTRACT',
           validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
           data: documentData,
+        }),
+      );
+    }
+  };
+  const handleSignDoc = () => {
+    if (!checked) {
+      setCheckError(true);
+    } else {
+      dispatch(
+        signContractByTalent({
+          project_id: param?.projectId,
+          doc_type: 'CONTRACT',
         }),
       );
     }
@@ -100,9 +116,11 @@ const ContractView = () => {
                   <div className="d-flex justify-content-between ">
                     <CardTitle className="mb-1"> Contract</CardTitle>
                     <div className="d-flex gap-1 align-items-center mb-75">
-                      <CardText className="terminate me-1" onClick={toggleTerminateModal}>
-                        Terminate
-                      </CardText>
+                      {userType === userTypes.client && (
+                        <CardText className="terminate me-1" onClick={toggleTerminateModal}>
+                          Terminate
+                        </CardText>
+                      )}
                       {isTerminateModalOpen && (
                         <TerminateContractModal toggleModal={toggleTerminateModal} modal={isTerminateModalOpen} />
                       )}
@@ -152,7 +170,7 @@ const ContractView = () => {
                   <div>
                     <Button
                       disabled={document?.is_contract_sent}
-                      onClick={handleSignDoc}
+                      onClick={handleSendDocByClient}
                       color="primary"
                       className="btn-sm-block mb-75"
                     >
@@ -173,9 +191,21 @@ const ContractView = () => {
                       info={worker?.role}
                     />
                     <div>
-                      <Button disabled color="primary" className="btn-sm-block mb-75">
-                        {worker?.is_signed ? 'Signed' : 'Pending Agreement'}
-                      </Button>
+                      {userData?._id === worker?.user_id ? (
+                        <Button
+                          onClick={handleSignDoc}
+                          disabled={worker?.is_signed}
+                          color="primary"
+                          className="btn-sm-block mb-75"
+                        >
+                          {worker?.is_signed ? 'Signed' : 'Confirm Agreement'}
+                        </Button>
+                      ) : (
+                        <Button disabled color="primary" className="btn-sm-block mb-75">
+                          {worker?.is_signed ? 'Signed' : 'Pending Agreement'}
+                        </Button>
+                      )}
+
                       <CardText className="mb-1">Sign on: -</CardText>
                     </div>
                   </div>

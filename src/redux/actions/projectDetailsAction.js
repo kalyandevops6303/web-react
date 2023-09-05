@@ -171,10 +171,10 @@ const checkDocumentActivated =
     try {
       const res = await checkDocumentActivatedService({ project_id, doc_type });
       if (doc_type === 'CONTRACT') {
-        dispatch(checkDocumentActivatedSuccess({ isContract: res.data.data.is_document }));
+        dispatch(checkDocumentActivatedSuccess({ isContract: res.data.data }));
       }
       if (doc_type === 'NDA') {
-        dispatch(checkDocumentActivatedSuccess({ isNDA: res.data.data.is_document }));
+        dispatch(checkDocumentActivatedSuccess({ isNDA: res.data.data }));
       }
     } catch (error) {
       errorHandler(error, checkDocumentActivatedFailure);
@@ -196,12 +196,19 @@ const getDocument =
   };
 
 const getDocumentTimeline =
-  ({ project_id }) =>
+  ({ project_id, doc_type }) =>
   async (dispatch) => {
     dispatch(getDocumentTimelineRequest());
     try {
-      const res = await getDocumentTimelineService({ project_id });
+      const res = await getDocumentTimelineService({ project_id, doc_type });
       dispatch(getDocumentTimelineSuccess(res.data.data));
+
+      if (doc_type === 'CONTRACT') {
+        dispatch(getDocumentTimelineSuccess({ contractTimeline: res.data.data }));
+      }
+      if (doc_type === 'NDA') {
+        dispatch(getDocumentTimelineSuccess({ ndaTimeline: res.data.data }));
+      }
     } catch (error) {
       errorHandler(error, getDocumentTimelineFailure);
     }
@@ -222,11 +229,11 @@ const sendDocument =
 
 // Action creator for signing a contract by talent
 const signContractByTalent =
-  ({ project_id }) =>
+  ({ project_id, doc_type }) =>
   async (dispatch) => {
     dispatch(signContractByTalentRequest());
     try {
-      await signContractByTalentServive({ project_id });
+      await signContractByTalentServive({ project_id, doc_type });
       dispatch(signContractByTalentSuccess());
     } catch (error) {
       errorHandler(error, signContractByTalentFailure);

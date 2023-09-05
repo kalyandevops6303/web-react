@@ -14,6 +14,7 @@ const projectDetails = createSlice({
   name: 'projectDetails',
   initialState,
   reducers: {
+    clearProjectData: () => initialState,
     projectDetailsRequest: (state) => ({
       ...state,
       projectDetailsLoading: true,
@@ -166,7 +167,7 @@ const projectDetails = createSlice({
     getDocumentTimelineSuccess: (state, action) => ({
       ...state,
       getDocumentTimelineLoading: false,
-      documentTimeline: action.payload,
+      ...action.payload,
     }),
     getDocumentTimelineFailure: (state, action) => ({
       ...state,
@@ -258,6 +259,7 @@ export const {
   projectDetailsRequest,
   projectDetailsSuccess,
   projectDetailsFailure,
+  clearProjectData,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

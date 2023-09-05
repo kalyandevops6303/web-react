@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 
@@ -233,7 +233,11 @@ const ReceivedBids = () => {
           <CardText className="d-none">10/500 Invited</CardText>
         </div>
 
-        <div className="react-dataTable mt-1" style={{ maxHeight: '400px' }} id="scrollDivForReceivedBids">
+        <div
+          className="react-dataTable mt-1"
+          style={{ overflowY: 'auto', maxHeight: '400px' }}
+          id="scrollDivForReceivedBids"
+        >
           <InfiniteScroll
             dataLength={receivedBids?.length}
             next={fetchMore}
@@ -263,4 +267,4 @@ const ReceivedBids = () => {
   );
 };
 
-export default ReceivedBids;
+export default memo(ReceivedBids);

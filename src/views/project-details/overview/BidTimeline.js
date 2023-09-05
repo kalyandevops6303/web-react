@@ -5,13 +5,18 @@ import { ChevronRight } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import theme from '../../../configs/themeVariables';
 import Timeline from '../../../@core/components/timeline';
-import NameInfo from '../../../@core/components/name-info';
-import { selectUserType } from '../../../redux/selectors/authSelectors';
+import { selectUserData, selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ReceivedBids from './ReceivedBids';
 import BidSubmitted from './BidSubmitted';
-import { checkDocumentActivated } from '../../../redux/actions/projectDetailsAction';
+import {
+  checkDocumentActivated,
+  getBidDetails,
+  getDocumentTimeline,
+} from '../../../redux/actions/projectDetailsAction';
 import { projectDetails, selectIsContract, selectIsNDA } from '../../../redux/selectors/projectDetailsSelectors';
+import ContractTimeline from './ContractTimeline';
+import NDATimeline from './NDATimeline';
 
 const BidTimeline = () => {
   const param = useParams();
@@ -20,76 +25,28 @@ const BidTimeline = () => {
   const isContract = useSelector(selectIsContract);
   const isNDA = useSelector(selectIsNDA);
   const projectDetailsData = useSelector(projectDetails);
+  const userData = useSelector(selectUserData);
 
   useEffect(() => {
     dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'CONTRACT' }));
     dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'NDA' }));
   }, []);
 
+  useEffect(() => {
+    if (userData?.user_type !== userTypes.client) {
+      dispatch(getBidDetails({ project_id: param?.projectId }));
+    }
+  }, []);
+
+  useEffect(() => {
+    dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
+    dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'NDA' }));
+  }, []);
+
   const [open, setOpen] = useState('1');
   const userType = useSelector(selectUserType);
 
   const toggle = (id) => (open === id ? setOpen() : setOpen(id));
-
-  const contractUpdates = [
-    {
-      status: 'Project started',
-      color: theme.info,
-    },
-    {
-      status: 'Signed - Contract Document',
-      color: theme.orangeColor,
-      user_details: {
-        name: 'Tim Waker (Team Member)',
-        org_name: 'R&D',
-      },
-    },
-    {
-      status: 'Signed - Contract Document)',
-      color: theme.orangeColor,
-      user_details: {
-        name: 'Leona Watkins (Client)',
-        org_name: 'CEO of pixinvent',
-      },
-    },
-    {
-      status: 'Signed - Contract Document',
-      color: theme.orangeColor,
-      user_details: {
-        name: 'Rose (Team Member)',
-        org_name: 'R&D',
-      },
-    },
-    {
-      status: 'Signed - Contract Document',
-      color: theme.orangeColor,
-      user_details: {
-        name: 'Rose (Team Member)',
-        org_name: 'R&D',
-      },
-    },
-  ];
-
-  const contractDataSet = [];
-  contractUpdates.map((item) =>
-    contractDataSet.push({
-      meta: item?.time,
-      color: item.color,
-      customContent: (
-        <div className="d-flex justify-content-between mb-1">
-          <div>
-            <h6 className="mb-25">{item.status}</h6>
-            <span className="d-block mb-1">Feb 1, 23</span>
-            {item.user_details && <NameInfo name={item.user_details.name} info={item.user_details.org_name} />}
-          </div>
-          <div className="meta-data">
-            <span className="time">45min ago</span>
-            <span className="card-cta">View</span>
-          </div>
-        </div>
-      ),
-    }),
-  );
 
   const handleContract = () => {
     navigate('contract');
@@ -98,42 +55,64 @@ const BidTimeline = () => {
   const bidStageDataForTalentTeam = [
     {
       isVisible: projectDetailsData?.nda?.is_nda,
-      isDisabled: !isNDA,
+      isDisabled: !isNDA?.is_document,
       color: theme.orangeColor,
       customContent: (
-        <Card>
-          <CardBody className="basic-title">
-            <div className="d-flex justify-content-between">
-              <CardText className={`fw-bold mb-0  ${!isNDA ? 'disabled-color' : ''}`}>NDA</CardText>
-              {isNDA && (
-                <div className="d-flex gap-50 align-items-center">
-                  <span className="card-cta">Sign NDA</span>
-                  <ChevronRight size={16} />
+        <div>
+          {isNDA?.is_signed ? (
+            <Accordion className="accordion-timeline" open={open} toggle={toggle}>
+              <NDATimeline />
+            </Accordion>
+          ) : (
+            <Card>
+              <CardBody className="basic-title">
+                <div className="d-flex justify-content-between">
+                  <CardText className={`fw-bold mb-0  ${!isNDA?.is_document ? 'disabled-color' : ''}`}>NDA</CardText>
+                  {isNDA?.is_document && (
+                    <div className="d-flex gap-50 align-items-center">
+                      <span onClick={handleContract} className="card-cta">
+                        Sign NDA
+                      </span>
+                      <ChevronRight size={16} />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </CardBody>
-        </Card>
+              </CardBody>
+            </Card>
+          )}
+        </div>
       ),
     },
     {
       isVisible: true,
-      isDisabled: !isContract,
+      isDisabled: !isContract?.is_document,
       color: theme.purpleTimelimeColor,
       customContent: (
-        <Card>
-          <CardBody className="basic-title">
-            <div className="d-flex justify-content-between">
-              <CardText className={`fw-bold mb-0  ${!isContract ? 'disabled-color' : ''}`}>Contract</CardText>
-              {isContract && (
-                <div className="d-flex gap-50 align-items-center">
-                  <span className="card-cta">Sign contract</span>
-                  <ChevronRight size={16} />
+        <div>
+          {isContract?.is_signed ? (
+            <Accordion className="accordion-timeline" open={open} toggle={toggle}>
+              {userType !== userTypes.client && <ContractTimeline />}
+            </Accordion>
+          ) : (
+            <Card>
+              <CardBody className="basic-title">
+                <div className="d-flex justify-content-between">
+                  <CardText className={`fw-bold mb-0  ${!isContract?.is_document ? 'disabled-color' : ''}`}>
+                    Contract
+                  </CardText>
+                  {isContract?.is_document && (
+                    <div className="d-flex gap-50 align-items-center">
+                      <span onClick={handleContract} className="card-cta">
+                        Sign contract
+                      </span>
+                      <ChevronRight size={16} />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </CardBody>
-        </Card>
+              </CardBody>
+            </Card>
+          )}
+        </div>
       ),
     },
 
@@ -148,51 +127,67 @@ const BidTimeline = () => {
       ),
     },
   ].filter((item) => item.isVisible);
-
   const bidStageDataForClient = [
     {
       isVisible: projectDetailsData?.nda?.is_nda,
-      isDisabled: !isNDA,
+      isDisabled: !isNDA?.is_document,
       color: theme.orangeColor,
       customContent: (
-        <Card>
-          <CardBody className="basic-title">
-            <div className="d-flex justify-content-between">
-              <CardText className={`fw-bold mb-0  ${!isNDA ? 'disabled-color' : ''}`}>NDA</CardText>
-              {isNDA && (
-                <div className="d-flex gap-50 align-items-center">
-                  <span className="card-cta">Send NDA</span>
-                  <ChevronRight size={16} />
+        <div>
+          {isNDA?.is_signed ? (
+            <Accordion className="accordion-timeline" open={open} toggle={toggle}>
+              <NDATimeline />
+            </Accordion>
+          ) : (
+            <Card>
+              <CardBody className="basic-title">
+                <div className="d-flex justify-content-between">
+                  <CardText className={`fw-bold mb-0  ${!isNDA?.is_document ? 'disabled-color' : ''}`}>NDA</CardText>
+                  {isNDA?.is_document && (
+                    <div className="d-flex gap-50 align-items-center">
+                      <span onClick={handleContract} className="card-cta">
+                        Sign NDA
+                      </span>
+                      <ChevronRight size={16} />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </CardBody>
-        </Card>
+              </CardBody>
+            </Card>
+          )}
+        </div>
       ),
     },
     {
       isVisible: true,
-      isDisabled: !isContract,
-      color: theme.purpleColor,
+      isDisabled: !isContract?.is_document,
+      color: theme.orangeColor,
       customContent: (
-        <Card>
-          <CardBody className="basic-title">
-            <div className="d-flex justify-content-between">
-              <CardText className={`fw-bold mb-0  ${!isContract ? 'disabled-color' : ''}`}>Contract</CardText>
-              {isContract && (
-                <div className="d-flex gap-50 align-items-center">
-                  <span onClick={handleContract} className="card-cta">
-                    Send contract
-                  </span>
-                  <ChevronRight size={16} />
+        <div>
+          {isContract?.is_signed ? (
+            <Accordion className="accordion-timeline" open={open} toggle={toggle}>
+              <ContractTimeline />
+            </Accordion>
+          ) : (
+            <Card>
+              <CardBody className="basic-title">
+                <div className="d-flex justify-content-between">
+                  <CardText className={`fw-bold mb-0  ${!isContract?.is_document ? 'disabled-color' : ''}`}>
+                    Contract
+                  </CardText>
+                  {isContract?.is_document && (
+                    <div className="d-flex gap-50 align-items-center">
+                      <span className="card-cta">Sign Contract</span>
+                      <ChevronRight size={16} />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </CardBody>
-        </Card>
+              </CardBody>
+            </Card>
+          )}
+        </div>
       ),
     },
-
     {
       color: theme.info,
       isDisabled: false,
