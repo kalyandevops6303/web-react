@@ -9,6 +9,9 @@ import {
   disputeRepliesFailure,
   disputeRepliesRequest,
   disputeRepliesSuccess,
+  disputesCountFailure,
+  disputesCountRequest,
+  disputesCountSuccess,
   raiseDisputeFailure,
   raiseDisputeRequest,
   raiseDisputeSuccess,
@@ -23,6 +26,7 @@ import {
   acceptDisputeService,
   allDisputesService,
   disputeRepliesService,
+  disputesCountService,
   raiseDisputeService,
   replyOnDisputeService,
   resolveDisputeService,
@@ -77,7 +81,6 @@ const getDisputeReplies = (disputeId, page, pageSize, oldData) => async (dispatc
   dispatch(disputeRepliesRequest());
   try {
     const res = await disputeRepliesService(disputeId, page, pageSize);
-    // dispatch(disputeRepliesSuccess(res.data.data));
     dispatch(disputeRepliesSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, disputeRepliesFailure);
@@ -95,4 +98,22 @@ const resolveDisputeApi = (disputeId, onSuccess) => async (dispatch) => {
   }
 };
 
-export { raiseNewDispute, getAllDisputes, acceptDisputeApi, replyOnDisputeApi, getDisputeReplies, resolveDisputeApi };
+const getDisputesCount = () => async (dispatch) => {
+  dispatch(disputesCountRequest());
+  try {
+    const res = await disputesCountService();
+    dispatch(disputesCountSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, disputesCountFailure);
+  }
+};
+
+export {
+  raiseNewDispute,
+  getAllDisputes,
+  acceptDisputeApi,
+  replyOnDisputeApi,
+  getDisputeReplies,
+  resolveDisputeApi,
+  getDisputesCount,
+};

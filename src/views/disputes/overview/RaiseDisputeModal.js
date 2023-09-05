@@ -12,7 +12,7 @@ import { returnFilteredDropdownOptions, selectThemeColors } from '../../../utili
 import { disputeTypesService } from '../../../services/staticServices';
 import { DisputeFormContainer } from '../style';
 import { paginatedProjectsService } from '../../../services/disputeServices';
-import { getAllDisputes, raiseNewDispute } from '../../../redux/actions/disputeActions';
+import { getAllDisputes, getDisputesCount, raiseNewDispute } from '../../../redux/actions/disputeActions';
 import { raiseDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 import { disputeStatuses } from '../../../utility/constants/Constant';
 
@@ -62,6 +62,7 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter }) => {
     } else if (primaryFilter === 'resolved') {
       dispatch(getAllDisputes(disputeStatuses.resolved, 1, 10, []));
     }
+    dispatch(getDisputesCount());
     toggleModal();
   };
 

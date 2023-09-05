@@ -9,6 +9,8 @@ const initialState = {
   disputeRepliesLoading: false,
   disputeReplies: null,
   resolveDisputeLoading: false,
+  disputesCount: null,
+  disputesCountLoading: false,
   error: null,
 };
 
@@ -108,6 +110,22 @@ const disputeSlice = createSlice({
       error: action.payload,
     }),
 
+    disputesCountRequest: (state) => ({
+      ...state,
+      disputesCountLoading: true,
+      error: null,
+    }),
+    disputesCountSuccess: (state, action) => ({
+      ...state,
+      disputesCountLoading: false,
+      disputesCount: action.payload,
+    }),
+    disputesCountFailure: (state, action) => ({
+      ...state,
+      disputesCountLoading: false,
+      error: action.payload,
+    }),
+
     clearDisputeReplies: (state) => ({
       ...state,
       disputeReplies: null,
@@ -134,6 +152,9 @@ export const {
   resolveDisputeRequest,
   resolveDisputeSuccess,
   resolveDisputeFailure,
+  disputesCountRequest,
+  disputesCountSuccess,
+  disputesCountFailure,
   clearDisputeReplies,
 } = disputeSlice.actions;
 

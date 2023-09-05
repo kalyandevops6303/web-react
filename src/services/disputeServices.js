@@ -29,6 +29,8 @@ const disputeReplyFileUploadToAzureService = (url, data, headers) => DataService
 
 const resolveDisputeService = (disputeId) => DataService.put(`${API.dispute.resolveDispute}/${disputeId}`);
 
+const disputesCountService = () => DataService.get(API.dispute.disputesCount);
+
 export {
   paginatedProjectsService,
   raiseDisputeService,
@@ -39,4 +41,5 @@ export {
   disputeReplyFileUploadService,
   disputeReplyFileUploadToAzureService,
   resolveDisputeService,
+  disputesCountService,
 };

@@ -7,7 +7,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Button, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
 import DisputeClosedGif from '../../../assets/images/disputeClosed.gif';
 import { DisputeClosedModalContainer } from '../style';
-import { getAllDisputes, resolveDisputeApi } from '../../../redux/actions/disputeActions';
+import { getAllDisputes, getDisputesCount, resolveDisputeApi } from '../../../redux/actions/disputeActions';
 import { resolveDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 import { disputeStatuses } from '../../../utility/constants/Constant';
 
@@ -26,6 +26,7 @@ const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetails
     } else if (primaryFilter === 'resolved') {
       dispatch(getAllDisputes(disputeStatuses.resolved, 1, 10, []));
     }
+    dispatch(getDisputesCount());
     toggleModal();
     toggleDetailsModal();
   };

@@ -10,8 +10,8 @@ import Statbox from '../user-details/overview/Statbox';
 import InfiniteScroll from '../../lib/infinite-scroll';
 import DateTime from '../../lib/date-time';
 import DisputeDetailsModal from './overview/DisputeDetailsModal';
-import { acceptDisputeApi, getAllDisputes } from '../../redux/actions/disputeActions';
-import { allDisputes, allDisputesLoading } from '../../redux/selectors/disputeSelectors';
+import { acceptDisputeApi, getAllDisputes, getDisputesCount } from '../../redux/actions/disputeActions';
+import { allDisputes, allDisputesLoading, disputesCount } from '../../redux/selectors/disputeSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import { selectUserData } from '../../redux/selectors/authSelectors';
@@ -30,6 +30,7 @@ const index = () => {
   const allDisputesIsLoading = useSelector(allDisputesLoading);
   const allDisputesData = useSelector(allDisputes);
   const selectUserDetails = useSelector(selectUserData);
+  const disputesCountData = useSelector(disputesCount);
 
   const toggleRaiseDisputeModal = () => {
     setRaiseDisputeModal(!raiseDisputeModal);
@@ -56,6 +57,8 @@ const index = () => {
     } else if (primaryFilter === 'resolved') {
       dispatch(getAllDisputes(disputeStatuses.resolved, 1, 10, []));
     }
+
+    dispatch(getDisputesCount());
   }, [primaryFilter]);
 
   const loadNewDisputes = () => {
@@ -85,6 +88,7 @@ const index = () => {
     } else if (primaryFilter === 'resolved') {
       dispatch(getAllDisputes(disputeStatuses.resolved, 1, 10, []));
     }
+    dispatch(getDisputesCount());
     setDisputeDetailsModal(true);
   };
 
@@ -201,7 +205,7 @@ const index = () => {
           <Statbox
             isMarketPlaceTab
             isActive={primaryFilter === 'open'}
-            title={5}
+            title={disputesCountData?.open_disputes}
             desc="Open"
             icon={<BookOpen size={40} />}
             color="light-purple"
@@ -212,7 +216,7 @@ const index = () => {
           <Statbox
             isMarketPlaceTab
             isActive={primaryFilter === 'resolved'}
-            title={10}
+            title={disputesCountData?.resolved_disputes}
             desc="Resolved"
             icon={<CheckCircle size={40} />}
             color="light-success"

@@ -17,3 +17,7 @@ export const disputeRepliesLoading = createSelector(disputeSelector, (dispute) =
 export const disputeReplies = createSelector(disputeSelector, (dispute) => dispute.disputeReplies);
 
 export const resolveDisputeLoading = createSelector(disputeSelector, (dispute) => dispute.resolveDisputeLoading);
+
+export const disputesCountLoading = createSelector(disputeSelector, (dispute) => dispute.disputesCountLoading);
+
+export const disputesCount = createSelector(disputeSelector, (dispute) => dispute.disputesCount);
