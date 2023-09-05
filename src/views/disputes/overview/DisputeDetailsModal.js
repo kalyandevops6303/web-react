@@ -2,7 +2,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import '../../custom-styles.scss';
-import { Modal, ModalHeader, ModalBody, Row, Col, Input, Button, Spinner } from 'reactstrap';
+import * as yup from 'yup';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Modal, ModalHeader, ModalBody, Row, Col, Input, Button, Spinner, Form, FormFeedback } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { FileText, Upload } from 'react-feather';
 import Avatar from '@components/avatar';
@@ -25,6 +28,24 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import DisputeClosedModal from './DisputeClosedModal';
 
 const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilter }) => {
+  const ResponseSchema = yup.object().shape({
+    response: yup
+      .string()
+      .min(100, 'Response must be at least 100 characters')
+      .max(2000, 'Response must be 2000 characters or less')
+      .required('Response is required'),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(ResponseSchema),
+  });
+
   const dispatch = useDispatch();
 
   const replyOnDisputeIsLoading = useSelector(replyOnDisputeLoading);
@@ -48,11 +69,42 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
   const [updatedTimelineData, setUpdatedTimelineData] = useState([]);
   const [isReplyBoxPresent, setIsReplyBoxPresent] = useState(false);
   const [disputeClosedModal, setDisputeClosedModal] = useState(null);
-  const rep = useRef('');
   const filesRef = useRef();
 
   const toggleDisputeClosedModal = () => {
     setDisputeClosedModal(!disputeClosedModal);
+  };
+
+  const onCancelClick = () => {
+    setIsReplyBoxPresent(false);
+    setFiles([]);
+    reset();
+  };
+
+  const onSuccess = () => {
+    onCancelClick();
+    dispatch(getDisputeReplies(_id, 1, 10, []));
+  };
+
+  const onSubmit = (data) => {
+    let reqData = {};
+    if (files.length > 0) {
+      reqData = {
+        dispute_id: _id,
+        reply: data.response,
+        documents: files.map((file) => ({
+          file_name: file?.file?.name || file?.file?.file_name,
+          file_key: file.uploadData.file_key,
+        })),
+      };
+    } else {
+      reqData = {
+        dispute_id: _id,
+        reply: data.response,
+      };
+    }
+
+    dispatch(replyOnDisputeApi(reqData, onSuccess, onCancelClick));
   };
 
   const isFileValid = (file) => {
@@ -118,10 +170,6 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
     onDrop,
   });
 
-  const renderFilePreview = () => {
-    <FileText size="18" className="me-75 mb-50" />;
-  };
-
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
@@ -133,10 +181,14 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
       {files.map((file, index) => (
         <div
           key={file.id}
-          className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
+          className={
+            index !== files.length - 1
+              ? 'd-flex align-items-center mb-1 justify-content-between'
+              : 'd-flex align-items-center justify-content-between'
+          }
         >
           <div>
-            {renderFilePreview(file.file)}
+            <FileText size="18" className="me-75 mb-50" />
             {file.file.name}
           </div>
           <div>
@@ -153,94 +205,6 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
       ))}
     </>
   );
-
-  const onSuccess = () => {
-    setIsReplyBoxPresent(false);
-    rep.current = '';
-    dispatch(getDisputeReplies(_id, 1, 10, []));
-  };
-
-  const onSubmit = () => {
-    if (rep.current.length > 0) {
-      const data = {
-        dispute_id: _id,
-        reply: rep.current,
-      };
-
-      dispatch(replyOnDisputeApi(data, onSuccess));
-    } else {
-      ShowToastMessage(ERROR, 'Please enter your response to dispute before submitting');
-    }
-  };
-
-  const onCancelClick = () => {
-    setUpdatedTimelineData(updatedTimelineData);
-    setIsReplyBoxPresent(false);
-  };
-
-  const onReplyClick = () => {
-    const newReply = {
-      isDisabled: false,
-      color: theme.orangeColor,
-      customContent: (
-        <div>
-          <div className="mb-25">
-            <p className="fw-bold mb-0">Response Dispute</p>
-          </div>
-          <div>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Input
-                  type="textarea"
-                  placeholder="Enter your response to dispute"
-                  rows="3"
-                  // eslint-disable-next-line no-return-assign
-                  onChange={(e) => (rep.current = e.target.value)}
-                />
-                {files.length ? (
-                  <>
-                    <div className="px-1 mt-50">{fileList()}</div>
-                    <div {...getRootProps({ className: 'dropzone' })}>
-                      <input {...getInputProps()} />
-                      <div className="d-flex align-items-center upload-btn cursor-pointer mt-1">
-                        <UploadIconContainer>
-                          <Upload size={18} color={theme.activeNavPillText} />
-                        </UploadIconContainer>
-                        <h5 className="fw-bold mb-0 mx-75">Upload</h5>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div>
-                    <div {...getRootProps({ className: 'dropzone' })}>
-                      <input {...getInputProps()} />
-                      <Button color="primary" className="mt-2 d-flex align-items-center py-50">
-                        <Upload size={18} className="me-75" />
-                        Upload
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </Col>
-            </Row>
-            <div className="d-flex justify-content-end">
-              <Button outline color="primary" className="me-3" onClick={onCancelClick}>
-                Cancel
-              </Button>
-              <Button color="primary" onClick={onSubmit} disabled={replyOnDisputeIsLoading}>
-                {replyOnDisputeIsLoading ? <Spinner size="sm" /> : 'Submit'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      ),
-    };
-
-    if (!isReplyBoxPresent) {
-      setUpdatedTimelineData([newReply, ...updatedTimelineData]);
-      setIsReplyBoxPresent(true);
-    }
-  };
 
   useEffect(() => {
     if (status === disputeStatuses.responded || status === disputeStatuses.resolved) {
@@ -270,6 +234,22 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
           </div>
           <p className="fw-bold mt-1 mb-75">{dispute_type?.name}</p>
           <p className="font-medium-1">{reply.reply}</p>
+          {reply?.documents?.length > 0 && (
+            <div>
+              {reply?.documents?.map((document) => (
+                <a
+                  href={document.download_url}
+                  key={document.download_url}
+                  className="mb-50 d-flex cursor-pointer"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FileText size="18" className="me-75 mb-50" />
+                  <p className="mb-0">{document.file_name}</p>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       ),
     }));
@@ -368,7 +348,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
       <ModalHeader toggle={toggleModal} />
       <ModalBody className="pt-0 px-5">
         <DisputeDetailsContainer>
-          <div className="d-flex justify-content-between align-items-center mt-1">
+          <div className="d-flex justify-content-between align-items-center mt-1 ps-1">
             <div>
               <h4 className="font-medium-4 mb-25">#{dispute_number}</h4>
               <p className="fw-bold font-medium-1 mb-0">Project name - {project?.details?.name}</p>
@@ -392,9 +372,90 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
               >
                 Dispute Resolved
               </p>
-              <p className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer" onClick={onReplyClick}>
+              <p
+                className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"
+                onClick={() => {
+                  if (!isReplyBoxPresent) {
+                    reset();
+                    setIsReplyBoxPresent(true);
+                  }
+                }}
+              >
                 Reply
               </p>
+            </div>
+          )}
+          {isReplyBoxPresent && (
+            <div className="ps-4">
+              <div className="mb-25">
+                <p className="fw-bold mb-0">Response Dispute</p>
+              </div>
+              <div>
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                  <Row className="mb-1">
+                    <Col sm="12" md="12" lg="6">
+                      <Controller
+                        id="response"
+                        name="response"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            type="textarea"
+                            placeholder="Enter your respone to dispute"
+                            rows="3"
+                            invalid={errors.response && true}
+                          />
+                        )}
+                      />
+                      {errors.response && <FormFeedback>{errors.response.message}</FormFeedback>}
+                      {files.length ? (
+                        <>
+                          <div className="mt-50">{fileList()}</div>
+                          <div {...getRootProps({ className: 'dropzone' })}>
+                            <input {...getInputProps()} />
+                            <div className="d-flex align-items-center upload-btn cursor-pointer mt-1">
+                              <UploadIconContainer>
+                                <Upload size={18} color={theme.activeNavPillText} />
+                              </UploadIconContainer>
+                              <h5 className="fw-bold mb-0 mx-75">Upload</h5>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div>
+                          <div {...getRootProps({ className: 'dropzone' })}>
+                            <input {...getInputProps()} />
+                            <Button color="primary" type="button" className="mt-2 d-flex align-items-center py-50">
+                              <Upload size={18} className="me-75" />
+                              Upload
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </Col>
+                  </Row>
+                  <div className="d-flex justify-content-end">
+                    <Button
+                      outline
+                      color="primary"
+                      type="button"
+                      className="me-3"
+                      onClick={onCancelClick}
+                      disabled={replyOnDisputeIsLoading || uploadingFiles.length > 0}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      color="primary"
+                      type="submit"
+                      disabled={replyOnDisputeIsLoading || uploadingFiles.length > 0}
+                    >
+                      {replyOnDisputeIsLoading ? <Spinner size="sm" /> : 'Submit'}
+                    </Button>
+                  </div>
+                </Form>
+              </div>
             </div>
           )}
           {updatedTimelineData?.length === 0 ? (

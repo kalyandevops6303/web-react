@@ -43,6 +43,18 @@ export const DisputeDetailsContainer = styled.div`
     font-size: 16px;
     color: ${theme.activeNavPillText};
   }
+
+  .upload-btn {
+    width: fit-content;
+
+    h5 {
+      color: ${theme.activeNavPillText};
+    }
+  }
+
+  a {
+    color: ${theme.headingTextColor};
+  }
 `;
 
 export const DisputeClosedModalContainer = styled.div`
