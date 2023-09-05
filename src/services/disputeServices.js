@@ -21,6 +21,8 @@ const disputeReplyFileUploadService = (filename, disputeId) =>
 
 const disputeReplyFileUploadToAzureService = (url, data, headers) => DataService.putWithoutToken(url, data, headers);
 
+const resolveDisputeService = (disputeId) => DataService.put(`${API.dispute.resolveDispute}/${disputeId}`);
+
 export {
   paginatedProjectsService,
   raiseDisputeService,
@@ -30,4 +32,5 @@ export {
   disputeRepliesService,
   disputeReplyFileUploadService,
   disputeReplyFileUploadToAzureService,
+  resolveDisputeService,
 };

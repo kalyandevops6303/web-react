@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import '../../custom-styles.scss';
@@ -20,6 +21,8 @@ import { getDisputeReplies, replyOnDisputeApi } from '../../../redux/actions/dis
 import { disputeReplies, replyOnDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 import { UploadIconContainer } from '../../Onboarding/style';
 import { disputeReplyFileUploadService, disputeReplyFileUploadToAzureService } from '../../../services/disputeServices';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import DisputeClosedModal from './DisputeClosedModal';
 
 const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
   const dispatch = useDispatch();
@@ -44,8 +47,13 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [updatedTimelineData, setUpdatedTimelineData] = useState([]);
   const [isReplyBoxPresent, setIsReplyBoxPresent] = useState(false);
+  const [disputeClosedModal, setDisputeClosedModal] = useState(null);
   const rep = useRef('');
   const filesRef = useRef();
+
+  const toggleDisputeClosedModal = () => {
+    setDisputeClosedModal(!disputeClosedModal);
+  };
 
   const isFileValid = (file) => {
     if (file.size > maxFileSize) {
@@ -235,7 +243,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
   };
 
   useEffect(() => {
-    if (status === disputeStatuses.responded) {
+    if (status === disputeStatuses.responded || status === disputeStatuses.resolved) {
       dispatch(getDisputeReplies(_id, 1, 10, []));
     }
   }, []);
@@ -255,7 +263,9 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
             <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" className="me-50" />
             <div>
               <p className="fw-bold mb-0">{`${reply?.created_by?.first_name} ${reply?.created_by?.last_name}`}</p>
-              <p className="mb-0">R&D</p>
+              <p className="mb-0">
+                {'company_name' in reply?.created_by ? reply?.created_by?.company_name : reply?.created_by?.role?.name}
+              </p>
             </div>
           </div>
           <p className="fw-bold mt-1 mb-75">{dispute_type?.name}</p>
@@ -267,53 +277,66 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
     if (disputeRepliesData?.metadata?.has_next_page) {
       setUpdatedTimelineData(timelineRepliesData);
     } else {
-      const additionalData = [
-        {
-          isDisabled: false,
-          color: theme.orangeColor,
-          customContent: (
-            <div>
-              <div className="d-flex justify-content-between mb-25">
-                <p className="fw-bold mb-0">Under Review</p>
-                <p className="font-small-3 mb-0">{DateTime?.fromMillis(accepted_on)?.toRelative()}</p>
-              </div>
-              <p>{DateTime.fromMillis(accepted_on).toFormat('MMM dd, yy')}</p>
-              <div className="d-flex align-items-center">
-                <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" className="me-50" />
-                <div>
-                  <p className="fw-bold mb-0">{`${accepted_by?.first_name} ${accepted_by?.last_name}`}</p>
-                  <p className="mb-0">R&D</p>
-                </div>
+      const underReviewData = {
+        isDisabled: false,
+        color: theme.orangeColor,
+        customContent: (
+          <div>
+            <div className="d-flex justify-content-between mb-25">
+              <p className="fw-bold mb-0">Under Review</p>
+              <p className="font-small-3 mb-0">{DateTime?.fromMillis(accepted_on)?.toRelative()}</p>
+            </div>
+            <p>{DateTime.fromMillis(accepted_on).toFormat('MMM dd, yy')}</p>
+            <div className="d-flex align-items-center">
+              <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" className="me-50" />
+              <div>
+                <p className="fw-bold mb-0">{`${accepted_by?.first_name} ${accepted_by?.last_name}`}</p>
+                <p className="mb-0">
+                  {'company_name' in accepted_by ? accepted_by?.company_name : accepted_by?.role?.name}
+                </p>
               </div>
             </div>
-          ),
-        },
-        {
-          isDisabled: false,
-          color: theme.orangeColor,
-          customContent: (
-            <div>
-              <div className="d-flex justify-content-between mb-25">
-                <p className="fw-bold mb-0">Dispute Raised</p>
-                <p className="font-small-3 mb-0">{DateTime?.fromMillis(created_at)?.toRelative()}</p>
-              </div>
-              <p>{DateTime.fromMillis(created_at).toFormat('MMM dd, yy')}</p>
-              <div className="d-flex align-items-center">
-                <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" className="me-50" />
-                <div>
-                  <p className="fw-bold mb-0">{`${created_by?.first_name} ${created_by?.last_name}`}</p>
-                  <p className="mb-0">CEO of Figma</p>
-                </div>
-              </div>
-              <p className="fw-bold mt-1 mb-75">{dispute_type?.name}</p>
-              <p className="font-medium-1">{description || ''}</p>
+          </div>
+        ),
+      };
+      const disputeRaisedData = {
+        isDisabled: false,
+        color: theme.orangeColor,
+        customContent: (
+          <div>
+            <div className="d-flex justify-content-between mb-25">
+              <p className="fw-bold mb-0">Dispute Raised</p>
+              <p className="font-small-3 mb-0">{DateTime?.fromMillis(created_at)?.toRelative()}</p>
             </div>
-          ),
-        },
-      ];
+            <p>{DateTime.fromMillis(created_at).toFormat('MMM dd, yy')}</p>
+            <div className="d-flex align-items-center">
+              <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" className="me-50" />
+              <div>
+                <p className="fw-bold mb-0">{`${created_by?.first_name} ${created_by?.last_name}`}</p>
+                <p className="mb-0">
+                  {'company_name' in created_by ? created_by?.company_name : created_by?.role?.name}
+                </p>
+              </div>
+            </div>
+            <p className="fw-bold mt-1 mb-75">{dispute_type?.name}</p>
+            <p className="font-medium-1">{description || ''}</p>
+          </div>
+        ),
+      };
 
-      if (timelineRepliesData && additionalData) {
-        setUpdatedTimelineData([...timelineRepliesData, ...additionalData]);
+      if (timelineRepliesData) {
+        if (accepted_on > 0) {
+          setUpdatedTimelineData([...timelineRepliesData, underReviewData, disputeRaisedData]);
+        } else {
+          setUpdatedTimelineData([...timelineRepliesData, disputeRaisedData]);
+        }
+      } else {
+        // eslint-disable-next-line no-lonely-if
+        if (accepted_on > 0) {
+          setUpdatedTimelineData([underReviewData, disputeRaisedData]);
+        } else {
+          setUpdatedTimelineData([disputeRaisedData]);
+        }
       }
     }
   }, [disputeRepliesData]);
@@ -333,6 +356,14 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
 
   return (
     <Modal isOpen={modal} contentClassName="listing-team-members-modal-style" className="modal-dialog-centered">
+      {disputeClosedModal && (
+        <DisputeClosedModal
+          modal={disputeClosedModal}
+          toggleModal={toggleDisputeClosedModal}
+          selectedDispute={selectedDispute}
+          toggleDetailsModal={toggleModal}
+        />
+      )}
       <ModalHeader toggle={toggleModal} />
       <ModalBody className="pt-0 px-5">
         <DisputeDetailsContainer>
@@ -352,22 +383,34 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute }) => {
               </div>
             </div>
           </div>
-          <div className="d-flex justify-content-end align-items-center my-2">
-            <p className="text-decoration-underline fw-bold blue-btn mb-0 me-3 cursor-pointer">Dispute Resolved</p>
-            <p className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer" onClick={onReplyClick}>
-              Reply
-            </p>
-          </div>
-          <RepliesContainer id="scrollableTimeline">
-            <InfiniteScroll
-              dataLength={disputeRepliesData?.data?.length || 0}
-              next={loadMoreReplies}
-              hasMore={disputeRepliesData?.metadata?.has_next_page}
-              scrollableTarget="scrollableTimeline"
-            >
-              <Timeline data={updatedTimelineData} />
-            </InfiniteScroll>
-          </RepliesContainer>
+          {status !== disputeStatuses.resolved && (
+            <div className="d-flex justify-content-end align-items-center mt-2">
+              <p
+                className="text-decoration-underline fw-bold blue-btn mb-0 me-3 cursor-pointer"
+                onClick={() => setDisputeClosedModal(true)}
+              >
+                Dispute Resolved
+              </p>
+              <p className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer" onClick={onReplyClick}>
+                Reply
+              </p>
+            </div>
+          )}
+          {updatedTimelineData?.length === 0 ? (
+            <ComponentSpinner className="mt-5" />
+          ) : (
+            <RepliesContainer id="scrollableTimeline" className="mt-2">
+              <InfiniteScroll
+                dataLength={disputeRepliesData?.data?.length || 0}
+                next={loadMoreReplies}
+                hasMore={disputeRepliesData?.metadata?.has_next_page}
+                scrollableTarget="scrollableTimeline"
+                loader={<div className="d-flex justify-content-center">Loading...</div>}
+              >
+                <Timeline data={updatedTimelineData} />
+              </InfiniteScroll>
+            </RepliesContainer>
+          )}
         </DisputeDetailsContainer>
       </ModalBody>
     </Modal>

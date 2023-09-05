@@ -7,14 +7,15 @@ import { BookOpen, CheckCircle } from 'react-feather';
 import RaiseDisputeModal from './overview/RaiseDisputeModal';
 import Statbox from '../user-details/overview/Statbox';
 import InfiniteScroll from '../../lib/infinite-scroll';
+import DateTime from '../../lib/date-time';
 import DisputeDetailsModal from './overview/DisputeDetailsModal';
 import { acceptDisputeApi, getAllDisputes } from '../../redux/actions/disputeActions';
 import { allDisputes, allDisputesLoading } from '../../redux/selectors/disputeSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
-import DisputeClosedModal from './overview/DisputeClosedModal';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { disputeStatusEnum, disputeStatuses } from '../../utility/constants/Constant';
+import { clearDisputeReplies } from '../../redux/reducers/dispute';
 
 const index = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const index = () => {
 
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [disputeDetailsModal, setDisputeDetailsModal] = useState(null);
-  const [disputeClosedModal, setDisputeClosedModal] = useState(null);
+
   const [selectedDispute, setSelectedDispute] = useState(null);
 
   const allDisputesIsLoading = useSelector(allDisputesLoading);
@@ -35,10 +36,6 @@ const index = () => {
 
   const toggleDisputeDetailsModal = () => {
     setDisputeDetailsModal(!disputeDetailsModal);
-  };
-
-  const toggleDisputeClosedModal = () => {
-    setDisputeClosedModal(!disputeClosedModal);
   };
 
   // const routesMatch = useMatch('/disputes/all') || useMatch('/disputes/open') || useMatch('/disputes/resolved');
@@ -65,13 +62,20 @@ const index = () => {
     );
   };
 
+  const onAcceptSuccess = () => {
+    dispatch(getAllDisputes(1, 10, []));
+    setDisputeDetailsModal(true);
+  };
+
   const onDisputeClick = (dispute) => {
+    dispatch(clearDisputeReplies());
+
     const { status, dispute_against, _id } = dispute;
 
     setSelectedDispute(dispute);
 
     if (status === disputeStatuses.open && dispute_against.includes(selectUserDetails._id)) {
-      dispatch(acceptDisputeApi(_id, setDisputeDetailsModal(true)));
+      dispatch(acceptDisputeApi(_id, onAcceptSuccess));
     } else {
       setDisputeDetailsModal(true);
     }
@@ -87,7 +91,6 @@ const index = () => {
           selectedDispute={selectedDispute}
         />
       )}
-      {disputeClosedModal && <DisputeClosedModal modal={disputeClosedModal} toggleModal={toggleDisputeClosedModal} />}
       <div className="d-flex justify-content-between align-items-center">
         <BreadCrumbs data={[{ title: 'Dashboard', link: '/dashboard' }, { title: 'Disputes' }]} />
         <Button color="primary" className="mb-2" onClick={() => setRaiseDisputeModal(true)}>
@@ -156,14 +159,16 @@ const index = () => {
                     </Col>
                     <Col sm="12" md="6" lg="3">
                       <Row>
-                        <Col sm="12" md="6" lg="7" className="d-flex justify-content-end">
+                        <Col sm="12" md="6" lg="7" className="d-flex justify-content-end align-items-end">
                           <p className="mb-0 fw-bold font-medium-1">{disputeStatusEnum[item?.status]}</p>
                         </Col>
                         <Col sm="12" md="6" lg="5" className="d-flex justify-content-end">
                           <div>
                             <p className="mb-0">Resolved On</p>
                             <p className="mb-0 fw-bold font-medium-1 text-end">
-                              {item?.resolved_on > 0 ? new Date(item?.resolved_on).toDateString() : '-'}
+                              {item?.resolved_on > 0
+                                ? DateTime.fromMillis(item?.resolved_on).toFormat('MMM dd, yy')
+                                : '-'}
                             </p>
                           </div>
                         </Col>

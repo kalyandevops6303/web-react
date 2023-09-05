@@ -12,7 +12,7 @@ import { returnFilteredDropdownOptions, selectThemeColors } from '../../../utili
 import { disputeTypesService } from '../../../services/staticServices';
 import { DisputeFormContainer } from '../style';
 import { paginatedProjectsService } from '../../../services/disputeServices';
-import { raiseNewDispute } from '../../../redux/actions/disputeActions';
+import { getAllDisputes, raiseNewDispute } from '../../../redux/actions/disputeActions';
 import { raiseDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 
 const RaiseDisputeModal = ({ modal, toggleModal }) => {
@@ -53,6 +53,11 @@ const RaiseDisputeModal = ({ modal, toggleModal }) => {
 
   const raiseDisputeIsLoading = useSelector(raiseDisputeLoading);
 
+  const onSuccess = () => {
+    dispatch(getAllDisputes(1, 10, []));
+    toggleModal();
+  };
+
   const onSubmit = (data) => {
     const { projectName, disputeType, disputeDetails } = data;
 
@@ -62,7 +67,7 @@ const RaiseDisputeModal = ({ modal, toggleModal }) => {
       description: disputeDetails,
     };
 
-    dispatch(raiseNewDispute(reqData, toggleModal));
+    dispatch(raiseNewDispute(reqData, onSuccess));
   };
 
   const loadProjectsOptions = async (search, prevOptions, { page }) => {
