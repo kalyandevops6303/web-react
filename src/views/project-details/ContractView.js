@@ -18,7 +18,7 @@ import { ContractDetailsWrap } from './style';
 import { currentProfile } from './overview/constants';
 import { projectDetails, selectDocument } from '../../redux/selectors/projectDetailsSelectors';
 import { getDocument, sendDocument, signContractByTalent } from '../../redux/actions/projectDetailsAction';
-import { selectUserData, selectUserType } from '../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserType } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 
 const ContractView = () => {
@@ -27,7 +27,7 @@ const ContractView = () => {
   const [isTerminateModalOpen, setIsTerminateModalOpen] = useState(false);
   const projectInfo = useSelector(projectDetails);
   const userType = useSelector(selectUserType);
-  const userData = useSelector(selectUserData);
+  const userData = useSelector(selectSavedUserData);
   const param = useParams();
   const dispatch = useDispatch();
   const document = useSelector(selectDocument);
@@ -93,6 +93,29 @@ const ContractView = () => {
     setCheckError(false);
   };
 
+  const moveAllObjectsToBeginning = (array, targetId) => {
+    if (array?.length < 1) {
+      return [];
+    }
+    const targetObjects = array?.filter((item) => item.user_id === targetId);
+
+    if (targetObjects?.length > 0) {
+      const newArray = array?.filter((item) => item.user_id !== targetId); // Create a new array without matching objects
+      newArray.unshift(...targetObjects); // Add all matching objects to the beginning
+      return newArray; // Return the new array
+    }
+
+    return array; // Return the original array if no matching objects are found
+  };
+  const updatedWorkers = moveAllObjectsToBeginning(document?.workers, userData?._id);
+
+  const isUserNotSigned = (array, userId) => {
+    const user = array?.find((item) => item.user_id === userId);
+    if (user) {
+      return !user.is_signed;
+    }
+    return false;
+  };
   return (
     <ContractDetailsWrap>
       <BackButtonContainer className="p-0 mb-1">
@@ -145,19 +168,21 @@ const ContractView = () => {
                   <div className="contract-text-container">{ReactHtmlParser(documentData)}</div>
                 </CardBody>
               </Card>
-              <div className="d-flex justify-content-between checkbox-wrap">
-                <Label className="checkbox-label" for="contract-sign">
-                  <Input
-                    onChange={onCheckChange}
-                    checked={checked}
-                    className="me-75"
-                    type="checkbox"
-                    id="contract-sign"
-                    name="agreeTerms"
-                  />
-                  I have read terms and conditions
-                </Label>
-              </div>
+              {isUserNotSigned(updatedWorkers, userData?._id) && (
+                <div className="d-flex justify-content-between checkbox-wrap">
+                  <Label className="checkbox-label" for="contract-sign">
+                    <Input
+                      onChange={onCheckChange}
+                      checked={checked}
+                      className="me-75"
+                      type="checkbox"
+                      id="contract-sign"
+                      name="agreeTerms"
+                    />
+                    I have read terms and conditions
+                  </Label>
+                </div>
+              )}
               {checkError && <FormFeedback>Please confirm that you have read the terms and conditions</FormFeedback>}
               <div className="team-sign-section mt-2">
                 <h6 className="fw-bolder">Client</h6>
@@ -174,16 +199,16 @@ const ContractView = () => {
                       color="primary"
                       className="btn-sm-block mb-75"
                     >
-                      {document?.is_contract_sent ? 'Sent' : 'Confirm Agreement'}
+                      {document?.is_contract_sent ? 'Confirmed Agreement' : 'Confirm Agreement'}
                     </Button>
                     <CardText className="mb-1">Sign on: -</CardText>
                   </div>
                 </div>
               </div>
 
-              <div className="team-sign-section mt-2">
+              <div className="team-sign-section mt-2" style={{ maxHeight: '26rem', overflowY: 'auto' }}>
                 <h6 className="fw-bolder">Team</h6>
-                {document?.workers.map((worker) => (
+                {updatedWorkers?.map((worker) => (
                   <div key={worker?.user_id} className="d-flex justify-content-between mb-1">
                     <NameInfo
                       img={worker?.image_uri}
@@ -196,17 +221,17 @@ const ContractView = () => {
                           onClick={handleSignDoc}
                           disabled={worker?.is_signed}
                           color="primary"
-                          className="btn-sm-block mb-75"
+                          className="btn-sm-block mb-25"
                         >
-                          {worker?.is_signed ? 'Signed' : 'Confirm Agreement'}
+                          {worker?.is_signed ? 'Confirmed Agreement' : 'Confirm Agreement'}
                         </Button>
                       ) : (
-                        <Button disabled color="primary" className="btn-sm-block mb-75">
-                          {worker?.is_signed ? 'Signed' : 'Pending Agreement'}
+                        <Button disabled color="primary" className="btn-sm-block mb-25">
+                          {worker?.is_signed ? 'Confirmed Agreement' : 'Pending Agreement'}
                         </Button>
                       )}
 
-                      <CardText className="mb-1">Sign on: -</CardText>
+                      <CardText className="mb-50">Sign on: -</CardText>
                     </div>
                   </div>
                 ))}
