@@ -33,6 +33,7 @@ const API = {
     companyIndustries: `${apiAuthEndpoint}/api/v1/static/company-industry/all`,
     projectAreas: `${apiAuthEndpoint}/api/v1/static/project-area/all`,
     services: `${apiAuthEndpoint}/api/v1/static/services/all`,
+    disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -143,6 +144,17 @@ const API = {
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     getInvitation: `${apiAuthEndpoint}/api/v1/team/get-invitation`,
+  },
+  dispute: {
+    paginatedProjects: `${apiCreateProjectEndpoint}/api/v1/disputes/project-names`,
+    raiseDispute: `${apiCreateProjectEndpoint}/api/v1/disputes`,
+    allDisputes: `${apiCreateProjectEndpoint}/api/v1/disputes`,
+    acceptDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/accept`,
+    replyOnDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/reply`,
+    disputeReplies: `${apiCreateProjectEndpoint}/api/v1/disputes/replies`,
+    disputeReplyFileUpload: `${apiCreateProjectEndpoint}/api/v1/dispute/file`,
+    resolveDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/resolve`,
+    disputesCount: `${apiCreateProjectEndpoint}/api/v1/disputes/count`,
   },
 };
 

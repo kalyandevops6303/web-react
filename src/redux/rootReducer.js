@@ -17,6 +17,7 @@ import notifications from './reducers/notifications';
 import createBid from './reducers/createBid';
 import projectDetails from './reducers/projectDetails';
 import team from './reducers/team';
+import dispute from './reducers/dispute';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   search: gloabalSearch,
   createBid,
   inviteTalent,
+  dispute,
 
   // Add more reducers if needed
 });

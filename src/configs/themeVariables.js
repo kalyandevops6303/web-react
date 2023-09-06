@@ -82,6 +82,7 @@ const lightBlueBgRadio = 'rgba(1,133,228,0.06)';
 const lightGrayBgRadio = 'rgba(130, 134, 139, 0.03)';
 const errorBannerBg = 'rgba(234, 84, 85, 0.12)';
 const infoBannerBg = '#d8e8f3';
+const openDisputesChartColor = '#FFCC80';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -168,5 +169,6 @@ const theme = {
   infoBannerBg,
   tableHeaderColor,
   purpleTimelimeColor,
+  openDisputesChartColor,
 };
 export default theme;

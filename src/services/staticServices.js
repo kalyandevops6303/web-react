@@ -34,6 +34,8 @@ const projectAreasService = () => DataService.get(API.static.projectAreas);
 
 const servicesService = () => DataService.get(API.static.services);
 
+const disputeTypesService = () => DataService.get(API.static.disputeTypes);
+
 export {
   talentRolesService,
   languagesService,
@@ -51,4 +53,5 @@ export {
   companyIndustriesService,
   projectAreasService,
   servicesService,
+  disputeTypesService,
 };

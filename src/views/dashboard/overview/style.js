@@ -450,6 +450,23 @@ const TeamSectionWrapper = styled(CardWrapper)`
   }
 `;
 
+const DisputesLegend = styled.div`
+  width: 16px;
+  height: 6px;
+  border-radius: 5px;
+  background: ${(props) => props.fillColor};
+`;
+
+const DisputesChartContainer = styled.div`
+  position: relative;
+
+  .total-disputes {
+    position: absolute;
+    top: 32%;
+    left: 37%;
+  }
+`;
+
 export {
   TagsWrap,
   CardWrapper,
@@ -463,4 +480,6 @@ export {
   DashboardHeaderWrapper,
   TeamSectionWrapper,
   CreateTeamButtonWrapper,
+  DisputesLegend,
+  DisputesChartContainer,
 };
