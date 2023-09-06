@@ -224,7 +224,12 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
           </div>
           <p>{DateTime.fromMillis(reply?.created_at).toFormat('MMM dd, yy')}</p>
           <div className="d-flex align-items-center">
-            <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" className="me-50" />
+            <Avatar
+              img={reply?.created_by?.image_uri?.length > 0 ? reply?.created_by?.image_uri : defaultAvatar}
+              imgHeight="38"
+              imgWidth="38"
+              className="me-50"
+            />
             <div>
               <p className="fw-bold mb-0">{`${reply?.created_by?.first_name} ${reply?.created_by?.last_name}`}</p>
               <p className="mb-0">
@@ -268,7 +273,12 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
             </div>
             <p>{DateTime.fromMillis(accepted_on).toFormat('MMM dd, yy')}</p>
             <div className="d-flex align-items-center">
-              <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" className="me-50" />
+              <Avatar
+                img={accepted_by?.image_uri?.length > 0 ? accepted_by?.image_uri : defaultAvatar}
+                imgHeight="38"
+                imgWidth="38"
+                className="me-50"
+              />
               <div>
                 <p className="fw-bold mb-0">{`${accepted_by?.first_name} ${accepted_by?.last_name}`}</p>
                 <p className="mb-0">
@@ -290,7 +300,12 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
             </div>
             <p>{DateTime.fromMillis(created_at).toFormat('MMM dd, yy')}</p>
             <div className="d-flex align-items-center">
-              <Avatar img={defaultAvatar} imgHeight="38" imgWidth="38" className="me-50" />
+              <Avatar
+                img={created_by?.image_uri?.length > 0 ? created_by?.image_uri : defaultAvatar}
+                imgHeight="38"
+                imgWidth="38"
+                className="me-50"
+              />
               <div>
                 <p className="fw-bold mb-0">{`${created_by?.first_name} ${created_by?.last_name}`}</p>
                 <p className="mb-0">
