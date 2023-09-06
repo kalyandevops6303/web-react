@@ -104,12 +104,12 @@ const UserDropdown = () => {
     }
   `;
 
-  const handleShowModal = () => {
-    ShowToastMessage('success', `Profile switched successfully`);
+  const handleShowModal = (selected) => {
+    !selected && ShowToastMessage('success', `Profile switched successfully`);
     navigate('/dashboard');
   };
-  const handleSwitch = (data) => {
-    dispatch(switchProfile({ data, onSuccess: handleShowModal }));
+  const handleSwitch = (data, selected) => {
+    dispatch(switchProfile({ data, onSuccess: handleShowModal, selected }));
   };
 
   const userName = isTeamLoggedIn
@@ -182,7 +182,7 @@ const UserDropdown = () => {
                 savedUserDetails?._id === userDetailsData?._id ? 'isActive' : ''
               }`}
               // tag={Link}
-              onClick={() => handleSwitch(savedUserDetails)}
+              onClick={() => handleSwitch(savedUserDetails, savedUserDetails?._id === userDetailsData?._id)}
 
               // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
             >
@@ -229,7 +229,7 @@ const UserDropdown = () => {
             {teams?.map((team) => (
               <DropdownItem
                 className={`d-flex justify-content-between ${userDetailsData?._id === team?._id ? 'isActive' : ''}`} // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
-                onClick={() => handleSwitch(team)}
+                onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
               >
                 <section className="user-info-avatar d-flex align-items-center">
                   <div className="user-info me-1 user-nav">
