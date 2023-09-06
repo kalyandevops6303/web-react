@@ -39,40 +39,40 @@ const Alerts = () => {
             <Link to="/notifications">View All</Link>
           </CardText>
         </CardHeader>
-        {userDetailsData?.user_type !== userTypes.team && (
-          <Card className="card-inside">
-            <CardHeader>
-              <CardTitle tag="h4">Profile Completion!</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <CardText className="mb-50">
-                Make it easier for others to find you by <br /> completing your profile.
-              </CardText>
-              <span className="font-weight-bold percentage ">{profilePercentageData?.profile_completed}%</span>
-              <Progress
-                style={{ height: '0.5rem' }}
-                className={`${giveProgressBarColorClassName(profilePercentageData?.profile_completed)} mt-25`}
-                value={profilePercentageData?.profile_completed}
-              />
-              {returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing) && (
-                <CardText
-                  className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"
-                  onClick={() =>
-                    onAddDetailsClick(
-                      returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                        ?.path,
-                    )
-                  }
-                >
-                  {
+
+        <Card className="card-inside">
+          <CardHeader>
+            <CardTitle tag="h4">Profile Completion!</CardTitle>
+          </CardHeader>
+          <CardBody>
+            <CardText className="mb-50">
+              Make it easier for others to find you by <br /> completing your profile.
+            </CardText>
+            <span className="font-weight-bold percentage ">{profilePercentageData?.profile_completed}%</span>
+            <Progress
+              style={{ height: '0.5rem' }}
+              className={`${giveProgressBarColorClassName(profilePercentageData?.profile_completed)} mt-25`}
+              value={profilePercentageData?.profile_completed}
+            />
+            {returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing) && (
+              <CardText
+                className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"
+                onClick={() =>
+                  onAddDetailsClick(
                     returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                      ?.label
-                  }
-                </CardText>
-              )}
-            </CardBody>
-          </Card>
-        )}
+                      ?.path,
+                  )
+                }
+              >
+                {
+                  returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
+                    ?.label
+                }
+              </CardText>
+            )}
+          </CardBody>
+        </Card>
+
         <Card className="card-inside d-none">
           <CardHeader>
             <CardTitle tag="h4">Upcoming Projects</CardTitle>
@@ -81,11 +81,7 @@ const Alerts = () => {
             <CardText className="text-center card-text font-small-4 mt-20 mb-2 text-primary">None available</CardText>
           </CardBody>
         </Card>
-        {userDetailsData?.user_type === userTypes.team && (
-          <CardBody className="d-flex justify-content-center align-items-center">
-            <CardText className="text-center card-text font-small-4 mt-20 mb-2 text-primary">None available</CardText>
-          </CardBody>
-        )}
+
         {userDetailsData?.user_type === userTypes.client && (
           <>
             <Card className="card-inside d-none">
