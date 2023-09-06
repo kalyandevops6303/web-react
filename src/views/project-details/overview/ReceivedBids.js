@@ -42,7 +42,7 @@ const ReceivedBids = () => {
   const [hasMore, setHasMore] = useState(true);
   const totalInvited = useSelector((state) => state.projectDetails.invitedMemberForProjectByClient);
   const selectReceivedBidsMetadata = useSelector((state) => state.projectDetails.receivedBidsMetaData);
-  const selectReceivedBidscurrentPreview = useSelector((state) => state.dashboard.receivedBidsCurrentPreview);
+  const selectReceivedBidscurrentPreview = useSelector((state) => state.projectDetails.receivedBidsPreview);
   const metadata = { page: 1, page_size: 10 };
   const [searchText, setSearchText] = useState('');
   const [status, setStatus] = useState('');

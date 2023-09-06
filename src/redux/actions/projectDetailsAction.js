@@ -201,7 +201,6 @@ const getDocumentTimeline =
     dispatch(getDocumentTimelineRequest());
     try {
       const res = await getDocumentTimelineService({ project_id, doc_type });
-      dispatch(getDocumentTimelineSuccess(res.data.data));
 
       if (doc_type === 'CONTRACT') {
         dispatch(getDocumentTimelineSuccess({ contractTimeline: res.data.data }));

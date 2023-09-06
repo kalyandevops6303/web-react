@@ -9,9 +9,9 @@ import NameInfo from '../../../@core/components/name-info';
 import { selectNDATimeline } from '../../../redux/selectors/projectDetailsSelectors';
 
 const NDATimeline = () => {
-  const contractTimeline = useSelector(selectNDATimeline);
+  const documentTimeline = useSelector(selectNDATimeline);
   const bidUpdatesDataSet = [];
-  contractTimeline?.timeline.map((item) =>
+  documentTimeline?.timeline.map((item) =>
     bidUpdatesDataSet.push({
       color: theme.purpleTimelimeColor,
       customContent: (
@@ -35,7 +35,7 @@ const NDATimeline = () => {
     <AccordionItem>
       <AccordionHeader targetId="1">
         <AccordionHeadStyle>
-          <span className="title-head">Contract</span>
+          <span className="title-head">NDA</span>
 
           <div className="d-flex gap-1 aling-items-center">
             <CardText className="d-none view-all-cta">Give rating</CardText>
@@ -45,8 +45,8 @@ const NDATimeline = () => {
               <div className="me-1">
                 <span className="key">Updated at</span>
                 <CardText className="value">
-                  {contractTimeline?.updated_at
-                    ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
+                  {documentTimeline?.updated_at
+                    ? DateTime.fromMillis(documentTimeline?.updated_at).toFormat('MMM dd, yy')
                     : '-'}
                 </CardText>
               </div>

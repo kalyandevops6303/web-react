@@ -2,13 +2,16 @@ import React from 'react';
 import { AccordionBody, AccordionHeader, AccordionItem, CardText } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
+import { useNavigate } from 'react-router-dom';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import theme from '../../../configs/themeVariables';
 import NameInfo from '../../../@core/components/name-info';
-import { selectContractTimeline } from '../../../redux/selectors/projectDetailsSelectors';
+import { selectContractTimeline, selectIsContract } from '../../../redux/selectors/projectDetailsSelectors';
 
 const ContractTimeline = () => {
+  const navigate = useNavigate();
+  const isContract = useSelector(selectIsContract);
   const contractTimeline = useSelector(selectContractTimeline);
   const bidUpdatesDataSet = [];
   contractTimeline?.timeline.map((item) =>
@@ -31,32 +34,51 @@ const ContractTimeline = () => {
       ),
     }),
   );
+  const handleContract = () => {
+    navigate('contract');
+  };
   return (
     <AccordionItem>
       <AccordionHeader targetId="1">
         <AccordionHeadStyle>
           <span className="title-head">Contract</span>
 
-          <div className="d-flex gap-1 aling-items-center">
-            <CardText className="d-none view-all-cta">Give rating</CardText>
-            <CardText className="view-all-cta">View</CardText>
-
-            <div className="d-flex gap-1 aling-items-center">
-              <div className="me-1">
-                <span className="key">Updated at</span>
-                <CardText className="value">
-                  {contractTimeline?.updated_at
-                    ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
-                    : '-'}
+          <div>
+            {isContract?.is_signed ? (
+              <div className="d-flex gap-1 aling-items-center">
+                <CardText className="d-none view-all-cta">Give rating</CardText>
+                <CardText onClick={handleContract} className="view-all-cta">
+                  View
                 </CardText>
+
+                <div className="d-flex gap-1 aling-items-center">
+                  <div className="me-1">
+                    <span className="key">Updated at</span>
+                    <CardText className="value">
+                      {contractTimeline?.updated_at
+                        ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
+                        : '-'}
+                    </CardText>
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="p-75 d-flex gap-50 align-items-center">
+                <span onClick={handleContract} className="card-cta">
+                  Sign contract
+                </span>
+              </div>
+            )}
           </div>
         </AccordionHeadStyle>
       </AccordionHeader>
-      <AccordionBody accordionId="1" className="accordion-status-body">
-        <Timeline data={bidUpdatesDataSet} />
-      </AccordionBody>
+      {bidUpdatesDataSet?.length > 0 && (
+        <AccordionBody accordionId="1" className="accordion-status-body">
+          <div style={{ maxHeight: '27rem', overflowY: 'auto' }} className="pe-50">
+            <Timeline data={bidUpdatesDataSet} />
+          </div>
+        </AccordionBody>
+      )}
     </AccordionItem>
   );
 };

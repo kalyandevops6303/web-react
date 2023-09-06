@@ -18,14 +18,12 @@ import { clearProjectData } from '../../redux/reducers/projectDetails';
 const ProjectDetails = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
+  const projectDetailsData = useSelector(projectDetails);
 
   const changeStep = (step) => {
     setCurrentStep(step);
   };
-  const projectDetailsData = useSelector(projectDetails);
-
   useEffect(() => {
     window?.scrollTo(0, 0);
     return () => {
@@ -33,7 +31,6 @@ const ProjectDetails = () => {
     };
   }, []);
 
-  // console.log('renderfromprojectdetails');
   const isInviteView = location?.pathname?.includes('project-invitation');
 
   return (
