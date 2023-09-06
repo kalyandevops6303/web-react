@@ -46,7 +46,12 @@ const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetails
             <h4 className="my-1">{dispute_type?.name}</h4>
             <p className="font-medium-3">{description || ''}</p>
             <div className="d-flex align-items-center mt-1">
-              <Avatar img={defaultAvatar} imgHeight="50" imgWidth="50" className="me-1" />
+              <Avatar
+                img={created_by?.image_uri?.length > 0 ? created_by?.image_uri : defaultAvatar}
+                imgHeight="50"
+                imgWidth="50"
+                className="me-1"
+              />
               <div>
                 <p className="fw-bold font-medium-3 mb-0">{`${created_by?.first_name} ${created_by?.last_name}`}</p>
                 <p className="mb-0">
