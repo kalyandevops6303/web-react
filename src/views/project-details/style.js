@@ -422,6 +422,34 @@ const MemberRowWrapper = styled.div`
   }
 `;
 
+const RatingNavsContainer = styled.div`
+  .nav {
+    border-radius: 0;
+  }
+
+  .nav-link {
+    font-weight: 400;
+  }
+
+  .nav-tabs .nav-link {
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 16px;
+  }
+
+  .nav-tabs .nav-link.active {
+    border-bottom: 2px solid ${theme.activeNavPillText} !important;
+    margin-bottom: -2px;
+    color: ${theme.activeNavPillText};
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .nav-tabs .nav-link:after {
+    background: none !important;
+  }
+`;
+
 export {
   BidWrapper,
   TeamVieWrapper,
@@ -430,4 +458,5 @@ export {
   BidDetailsWrap,
   AccordionHeadStyle,
   MemberRowWrapper,
+  RatingNavsContainer,
 };
