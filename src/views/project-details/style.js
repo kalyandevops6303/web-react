@@ -450,6 +450,35 @@ const RatingNavsContainer = styled.div`
   }
 `;
 
+const RatingsFormContainer = styled.div`
+  .label-asterisk {
+    color: ${theme.red};
+    margin-left: 4px;
+  }
+
+  .user-details {
+    width: 15%;
+  }
+
+  .form-container {
+    width: 60%;
+  }
+`;
+
+const RatingTag = styled.div`
+  border-radius: 12px;
+  border: 1px solid ${theme.turquoiseColor};
+  background: ${(props) => (props.active ? theme.turquoiseColor : theme.ratingTagBg)};
+  width: fit-content;
+  cursor: pointer;
+
+  p {
+    color: ${(props) => (props.active ? theme.white : theme.lightTurquoiseColor)};
+    font-size: 12px;
+    font-weight: 600;
+  }
+`;
+
 export {
   BidWrapper,
   TeamVieWrapper,
@@ -459,4 +488,6 @@ export {
   AccordionHeadStyle,
   MemberRowWrapper,
   RatingNavsContainer,
+  RatingsFormContainer,
+  RatingTag,
 };
