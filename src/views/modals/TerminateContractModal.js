@@ -2,15 +2,13 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle } from 'reactstrap';
 import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { DeleteModalWrapper } from './style';
 import { terminateContract } from '../../redux/actions/projectDetailsAction';
 
-const TerminateContractModal = ({ terminateData, modal, toggleModal }) => {
+const TerminateContractModal = ({ project_id, docType, terminateData, modal, toggleModal }) => {
   const dispatch = useDispatch();
-  const param = useParams();
   const onClose = () => {
     toggleModal();
   };
@@ -18,9 +16,10 @@ const TerminateContractModal = ({ terminateData, modal, toggleModal }) => {
     onClose();
   };
   const onTerminate = () => {
-    dispatch(terminateContract({ project_id: param?.projectId, doc_type: 'CONTRACT', onSuccess }));
+    dispatch(terminateContract({ project_id, doc_type: docType, onSuccess }));
   };
 
+  const isContractView = docType === 'CONTRACT';
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={onClose} />
@@ -30,10 +29,14 @@ const TerminateContractModal = ({ terminateData, modal, toggleModal }) => {
             <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
             <div>
               <CardTitle className="modal-title-custom">Early termination</CardTitle>
-              <CardSubtitle className="mb-75 fw-bold subtitle">Terminate Contract</CardSubtitle>
+              <CardSubtitle className="mb-75 fw-bold subtitle">
+                Terminate {isContractView ? 'Contract' : 'NDA'}
+              </CardSubtitle>
 
               <CardText className="desc fw-light w-76">
-                Are you sure you would want to terminate the contract? You will have to uploade or sign a new contract
+                {`Are you sure you would want to terminate the ${
+                  isContractView ? 'contract' : 'NDA'
+                }? You will have to uploade or sign a new ${isContractView ? 'contract' : 'NDA'}.`}
               </CardText>
               <section className="d-flex gap-2 stats">
                 <div>
@@ -48,11 +51,11 @@ const TerminateContractModal = ({ terminateData, modal, toggleModal }) => {
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 justify-content-end">
-            <Button outline color="primary">
+            <Button onClick={onClose} outline color="primary">
               Cancel
             </Button>
             <Button color="danger" onClick={onTerminate}>
-              Terminate Contract
+              Terminate {isContractView ? 'Contract' : 'NDA'}
             </Button>
           </div>
         </DeleteModalWrapper>
@@ -67,10 +70,14 @@ TerminateContractModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   terminateData: Proptypes.object,
+  docType: Proptypes.string,
+  project_id: Proptypes.string,
 };
 
 TerminateContractModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   terminateData: {},
+  docType: '',
+  project_id: '',
 };

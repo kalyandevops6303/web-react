@@ -6,11 +6,12 @@ import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitl
 import AcceptGif from '../../assets/images/gifs/accept_contract.gif';
 import { AcceptModalWrapper } from './style';
 
-const ConfirmContractModal = ({ terminateData, onAccept, modal, toggleModal }) => {
+const ConfirmContractModal = ({ docType, terminateData, onAccept, modal, toggleModal }) => {
   const onClose = () => {
     toggleModal();
   };
   const isLoading = useSelector((state) => state.projectDetails.sendDocumentLoading);
+  const isContractView = docType === 'CONTRACT';
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
@@ -20,10 +21,14 @@ const ConfirmContractModal = ({ terminateData, onAccept, modal, toggleModal }) =
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" src={AcceptGif} width={150} height={150} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Sign Contract</CardTitle>
-              <CardSubtitle className="mb-75 fw-bold subtitle">Agree & Accept Contract</CardSubtitle>
+              <CardTitle className="modal-title-custom">Sign {isContractView ? 'Contract' : 'NDA'}</CardTitle>
+              <CardSubtitle className="mb-75 fw-bold subtitle">
+                Agree & Accept {isContractView ? 'Contract' : 'NDA'}
+              </CardSubtitle>
 
-              <CardText className="desc fw-light">Are you sure you want to sign the contract? </CardText>
+              <CardText className="desc fw-light">
+                Are you sure you want to sign the {isContractView ? 'contract' : 'NDA'}
+              </CardText>
               <section className="d-flex gap-2 stats">
                 <div>
                   <CardText className="value mb-25">{terminateData?.name || 'Talent/Team name'}</CardText>
@@ -57,6 +62,7 @@ ConfirmContractModal.propTypes = {
   toggleModal: Proptypes.func,
   terminateData: Proptypes.object,
   onAccept: Proptypes.func,
+  docType: Proptypes.string,
 };
 
 ConfirmContractModal.defaultProps = {
@@ -64,4 +70,5 @@ ConfirmContractModal.defaultProps = {
   toggleModal: () => {},
   terminateData: {},
   onAccept: () => {},
+  docType: '',
 };

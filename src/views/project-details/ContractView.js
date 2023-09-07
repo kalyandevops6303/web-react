@@ -35,15 +35,35 @@ const ContractView = () => {
   const param = useParams();
   const dispatch = useDispatch();
   const document = useSelector(selectDocument);
-  const [documentData, setDocumentData] = useState(document?.contract);
+  const isNDAview = param?.docType === 'nda';
+  const isContractView = param?.docType === 'contract';
+  const documentRes = isNDAview ? document?.nda : document?.contract;
+  const [documentData, setDocumentData] = useState(documentRes);
   const [checked, setChecked] = useState(false);
   const [checkError, setCheckError] = useState(false);
+
   const toggleModal = () => {
     setIsEditModalOpen(!isEditModalOpen);
   };
 
+  const getDocType = () => {
+    if (isNDAview) {
+      return 'NDA';
+    }
+    if (isContractView) {
+      return 'CONTRACT';
+    }
+    return '';
+  };
+  const CapitalizeDocType = () => {
+    if (getDocType() === 'CONTRACT') {
+      return 'Contract';
+    }
+    return getDocType();
+  };
+
   useEffect(() => {
-    setDocumentData(document?.contract);
+    setDocumentData(documentRes);
   }, [document]);
 
   const toggleTerminateModal = () => {
@@ -58,7 +78,7 @@ const ContractView = () => {
   const downloadPdf = (element) => {
     const opt = {
       margin: 10,
-      filename: 'project_name_contract.pdf',
+      filename: `project_name_${getDocType()?.toLocaleLowerCase()}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -68,7 +88,7 @@ const ContractView = () => {
   };
 
   useEffect(() => {
-    dispatch(getDocument({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
+    dispatch(getDocument({ project_id: param?.projectId, doc_type: getDocType() }));
   }, []);
 
   const handleOpenAcceptModal = (userId) => {
@@ -84,7 +104,7 @@ const ContractView = () => {
     dispatch(
       sendDocument({
         project_id: param?.projectId,
-        doc_type: 'CONTRACT',
+        doc_type: getDocType(),
         validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
         data: documentData,
         onSuccess: () => setIsAcceptModalOpen(false),
@@ -92,18 +112,14 @@ const ContractView = () => {
     );
   };
   const handleSignDoc = (id) => {
-    // if (!checked) {
-    //   setCheckError(true);
-    // } else {
     dispatch(
       signContractByTalent({
         project_id: param?.projectId,
-        doc_type: 'CONTRACT',
+        doc_type: getDocType(),
         user_id: id,
         onSuccess: () => setIsAcceptModalOpen(false),
       }),
     );
-    // }
   };
   const onCheckChange = () => {
     setChecked(!checked);
@@ -138,7 +154,7 @@ const ContractView = () => {
           <BackIconContainer>
             <ArrowLeft size={18} color={theme.white} />
           </BackIconContainer>
-          <h4 className="m-0 fw-light blue-text mt-25 mx-50">Sign Contract</h4>
+          <h4 className="m-0 fw-light blue-text mt-25 mx-50">{`Sign ${CapitalizeDocType()}`}</h4>
         </div>
       </BackButtonContainer>
       <Row>
@@ -147,12 +163,12 @@ const ContractView = () => {
         </Col>
         <Col lg="9">
           <Card className="gray-bg ">
-            <CardTitle className="main-card-title gray-bg">Standard Contract</CardTitle>
+            <CardTitle className="main-card-title gray-bg">{`Standard ${CapitalizeDocType()}`}</CardTitle>
             <CardBody>
               <Card>
                 <CardBody className="contract-card-body">
                   <div className="d-flex justify-content-between ">
-                    <CardTitle className="mb-1"> Contract</CardTitle>
+                    <CardTitle className="mb-1"> {CapitalizeDocType()}</CardTitle>
                     <div className="d-flex gap-1 align-items-center mb-75">
                       {userType === userTypes.client && (
                         <CardText className="terminate me-1" onClick={toggleTerminateModal}>
@@ -164,6 +180,8 @@ const ContractView = () => {
                           terminateData={terminateData}
                           toggleModal={toggleTerminateModal}
                           modal={isTerminateModalOpen}
+                          docType={getDocType()}
+                          project_id={param?.projectId}
                         />
                       )}
                       {isAcceptModalOpen && (
@@ -176,6 +194,8 @@ const ContractView = () => {
                               ? handleSendDocByClient
                               : () => handleSignDoc(acceptModalData?.userId)
                           }
+                          docType={getDocType()}
+                          project_id={param?.projectId}
                         />
                       )}
                       <span className="icon-bg cursor-pointer" onClick={toggleModal}>
@@ -188,6 +208,8 @@ const ContractView = () => {
                           toggleModal={toggleModal}
                           data={documentData}
                           modal={isEditModalOpen}
+                          docType={getDocType()}
+                          project_id={param?.projectId}
                         />
                       )}
                       <span className="icon-bg cursor-pointer" onClick={() => downloadPdf(documentData)}>
@@ -198,7 +220,9 @@ const ContractView = () => {
                   <div className="contract-text-container">{ReactHtmlParser(documentData)}</div>
                 </CardBody>
               </Card>
-              {(document?.is_contract_sent === false || isUserNotSigned(updatedWorkers, userData?._id)) && (
+              {(document?.is_contract_sent === false ||
+                document?.is_nda_sent === false ||
+                isUserNotSigned(updatedWorkers, userData?._id)) && (
                 <div className="d-flex justify-content-between checkbox-wrap">
                   <Label className="checkbox-label" for="contract-sign">
                     <Input

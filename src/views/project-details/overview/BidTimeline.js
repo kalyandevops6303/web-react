@@ -39,8 +39,8 @@ const BidTimeline = () => {
 
   const toggle = (id) => (open === id ? setOpen() : setOpen(id));
 
-  const handleContract = () => {
-    navigate('contract');
+  const handleDoc = ({ type }) => {
+    navigate(`doc/${type}`);
   };
 
   const bidStageData = [
@@ -57,7 +57,7 @@ const BidTimeline = () => {
                   <CardText className={`fw-bold mb-0  ${!isNDA?.is_document ? 'disabled-color' : ''}`}>NDA</CardText>
                   {isNDA?.is_document && (
                     <div className="d-flex gap-50 align-items-center">
-                      <span onClick={handleContract} className="card-cta">
+                      <span onClick={() => handleDoc({ type: 'nda' })} className="card-cta">
                         Sign NDA
                       </span>
                       <ChevronRight size={16} />
@@ -77,7 +77,7 @@ const BidTimeline = () => {
                   <CardText className={`fw-bold mb-0  ${!isNDA?.is_document ? 'disabled-color' : ''}`}>NDA</CardText>
                   {isNDA?.is_document && (
                     <div className="d-flex gap-50 align-items-center">
-                      <span onClick={handleContract} className="card-cta">
+                      <span onClick={() => handleDoc({ type: 'nda' })} className="card-cta">
                         Sign NDA
                       </span>
                       <ChevronRight size={16} />
@@ -150,7 +150,7 @@ const BidTimeline = () => {
                   </CardText>
                   {isContract?.is_document && (
                     <div className="d-flex gap-50 align-items-center">
-                      <span onClick={handleContract} className="card-cta">
+                      <span onClick={() => handleDoc({ type: 'contract' })} className="card-cta">
                         Sign contract
                       </span>
                       <ChevronRight size={16} />
@@ -172,7 +172,7 @@ const BidTimeline = () => {
                   </CardText>
                   {isContract?.is_document && (
                     <div className="d-flex gap-50 align-items-center">
-                      <span onClick={handleContract} className="card-cta">
+                      <span onClick={() => handleDoc({ type: 'contract' })} className="card-cta">
                         Sign contract
                       </span>
                       <ChevronRight size={16} />
@@ -208,7 +208,7 @@ const BidTimeline = () => {
     },
   ].filter((item) => item.isVisible);
 
-  return <div>{isNDA && isContract && <Timeline data={bidStageData} />}</div>;
+  return <div>{isContract && <Timeline data={bidStageData} />}</div>;
 };
 
 export default BidTimeline;

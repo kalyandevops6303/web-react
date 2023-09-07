@@ -35,7 +35,7 @@ const ContractTimeline = () => {
     }),
   );
   const handleContract = () => {
-    navigate('contract');
+    navigate('doc/contract');
   };
   return (
     <AccordionItem>

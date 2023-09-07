@@ -11,7 +11,7 @@ import { EditContractWrap } from './style';
 import { updateContract } from '../../redux/actions/projectDetailsAction';
 import ShowToastMessage from '../../@core/components/toast';
 
-const EditContractModal = ({ setDocumentData, modal, toggleModal, data }) => {
+const EditContractModal = ({ docType, setDocumentData, modal, toggleModal, data }) => {
   const ProjectDetailsSchema = yup.object().shape({
     contractDetails: yup.string().required('Contract details is required'),
   });
@@ -28,6 +28,7 @@ const EditContractModal = ({ setDocumentData, modal, toggleModal, data }) => {
       contractDetails: data,
     },
   });
+  const isContractView = docType === 'CONTRACT';
 
   const onSubmit = (formData) => {
     const { contractDetails } = formData;
@@ -39,7 +40,7 @@ const EditContractModal = ({ setDocumentData, modal, toggleModal, data }) => {
         setDocumentData(contractDetails);
         toggleModal();
       };
-      dispatch(updateContract({ project_id: data?.project_id, doc_type: 'CONTRACT', onSuccess }));
+      dispatch(updateContract({ project_id: data?.project_id, doc_type: docType, onSuccess }));
     }
   };
 
@@ -54,7 +55,7 @@ const EditContractModal = ({ setDocumentData, modal, toggleModal, data }) => {
 
       <ModalBody>
         <EditContractWrap>
-          <CardText className="modal-title-edit">Edit Standard Contract</CardText>
+          <CardText className="modal-title-edit">Edit Standard {isContractView ? 'Contract' : 'NDA'}</CardText>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="contractDetails"
@@ -86,6 +87,7 @@ EditContractModal.propTypes = {
   toggleModal: PropTypes.func,
   data: PropTypes.object,
   setDocumentData: PropTypes.func, // Add this prop if you want to set document data
+  docType: PropTypes.string,
 };
 
 EditContractModal.defaultProps = {
@@ -93,6 +95,7 @@ EditContractModal.defaultProps = {
   toggleModal: () => {},
   data: {},
   setDocumentData: () => {}, // Add this default prop if you want to set document data
+  docType: '',
 };
 
 export default EditContractModal;
