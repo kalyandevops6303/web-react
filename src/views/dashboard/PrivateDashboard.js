@@ -75,7 +75,11 @@ const PrivateDashboard = () => {
   };
 
   const onCreateTeam = () => {
-    if (profilePercentageData?.profile_completed < 100) {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
       setCompleteProfileModalInfoText('team');
       setCompleteProfileModal(true);
     } else {
