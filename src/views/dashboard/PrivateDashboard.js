@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -33,6 +33,9 @@ const PrivateDashboard = () => {
   const [deleteModal, setDeletModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState();
 
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+  const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
+
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
   };
@@ -49,8 +52,6 @@ const PrivateDashboard = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const [completeProfileModal, setCompleteProfileModal] = useState(null);
-
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
   };
@@ -61,6 +62,7 @@ const PrivateDashboard = () => {
       profilePercentageData?.values_missing?.includes('educational_institute') ||
       profilePercentageData?.values_missing?.includes('availability')
     ) {
+      setCompleteProfileModalInfoText('project');
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');
@@ -70,6 +72,15 @@ const PrivateDashboard = () => {
   const onTeamInvite = () => {
     setInviteTeamMemberModal(true);
     setInviteTalentToTeamModal(true);
+  };
+
+  const onCreateTeam = () => {
+    if (profilePercentageData?.profile_completed < 100) {
+      setCompleteProfileModalInfoText('team');
+      setCompleteProfileModal(true);
+    } else {
+      navigate('/create-team/profile-details');
+    }
   };
 
   const inviteToken = getItem('inviteToken');
@@ -95,7 +106,11 @@ const PrivateDashboard = () => {
   return (
     <div>
       {completeProfileModal && (
-        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+        <CompleteProfileModal
+          modal={completeProfileModal}
+          toggleModal={toggleCompleteProfileModal}
+          modalInfoText={completeProfileModalInfoText}
+        />
       )}
       {listingTeamMembersModal && (
         <ListingTeamMembersModal
@@ -134,9 +149,9 @@ const PrivateDashboard = () => {
       )}
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
-          <Link to="/create-team/profile-details">
-            <span className="text-decoration-underline font-medium-2">Create Team</span>
-          </Link>
+          <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateTeam}>
+            Create Team
+          </span>
         </CreateTeamButtonWrapper>
       )}
 

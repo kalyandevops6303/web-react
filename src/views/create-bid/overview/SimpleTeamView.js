@@ -59,7 +59,7 @@ const SimpleTeamView = () => {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control,
     name: 'projectRolesDetails',
   });
@@ -165,7 +165,7 @@ const SimpleTeamView = () => {
   };
 
   const handleAddSuggestedRole = (name) => {
-    append({ role: name, member: undefined });
+    insert(0, { role: name, member: undefined });
   };
 
   const handleRemoveSuggestedRole = (name) => {
@@ -242,7 +242,7 @@ const SimpleTeamView = () => {
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>
-              <h5 className="font-medium-1 mt-1">Estimate project team roles, effort and costs</h5>
+              <h5 className="font-medium-1 mt-1">Estimate project team roles</h5>
               {recommendedRolesOptions?.length > 0 && (
                 <>
                   <p>Recommended roles based on project listing</p>
@@ -251,26 +251,22 @@ const SimpleTeamView = () => {
                       <div
                         className={
                           watch('projectRolesDetails').find((item) => item.role === role)
-                            ? 'active-role-pill'
-                            : 'inactive-role-pill'
+                            ? 'active-role-pill cursor-pointer'
+                            : 'inactive-role-pill cursor-pointer'
                         }
                         key={role}
+                        onClick={() =>
+                          (watch('projectRolesDetails').find((item) => item.role === role)
+                            ? handleRemoveSuggestedRole(role)
+                            : handleAddSuggestedRole(role))
+                        }
                       >
                         <Badge pill className="px-1 py-50 d-flex align-items-center">
                           <h6 className="m-0 fw-light">{role}</h6>
                           {watch('projectRolesDetails').find((item) => item.role === role) ? (
-                            <Minus
-                              size={18}
-                              className="ms-50 cursor-pointer"
-                              onClick={() => handleRemoveSuggestedRole(role)}
-                            />
+                            <Minus size={18} className="ms-50 cursor-pointer" />
                           ) : (
-                            <Plus
-                              size={18}
-                              color={theme.wizardStepSvgColor}
-                              className="ms-50 cursor-pointer"
-                              onClick={() => handleAddSuggestedRole(role)}
-                            />
+                            <Plus size={18} color={theme.wizardStepSvgColor} className="ms-50 cursor-pointer" />
                           )}
                         </Badge>
                       </div>

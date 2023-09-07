@@ -396,7 +396,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   {ExpandCollapseComp}
                 </Col>
               ))}
-            {(userType === userTypes.talent || primaryFilter === 'talents' || primaryFilter === 'teams') && (
+            {(userType === userTypes.talent ||
+              userType === userTypes.team ||
+              primaryFilter === 'talents' ||
+              primaryFilter === 'teams') && (
               <Col>
                 <Label className="form-label">Sort by</Label>
                 <Select

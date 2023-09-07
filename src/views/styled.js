@@ -311,6 +311,11 @@ const TeamCreatedModalImageWrapper = styled.section`
   justify-content: center;
   align-items: center;
 `;
+const TeamCreatedModalLogoImg = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+`;
 
 export {
   CardWrapper,
@@ -324,4 +329,5 @@ export {
   InviteHeadContainer,
   GrayCardWrapper,
   TeamCreatedModalImageWrapper,
+  TeamCreatedModalLogoImg,
 };

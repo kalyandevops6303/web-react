@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   teams: [],
+  teamCreated: {},
 };
 
 const teamSlice = createSlice({
@@ -12,12 +13,18 @@ const teamSlice = createSlice({
       ...state,
       teams: action.payload,
     }),
+    getTeamCreated: (state, action) => ({
+      ...state,
+      teamCreated: action.payload,
+    }),
+
     clearTeams: () => ({
       teams: [],
+      teamCreated: {},
     }),
   },
 });
 
-export const { getTeamSuccess, clearTeams } = teamSlice.actions;
+export const { getTeamSuccess, clearTeams, getTeamCreated } = teamSlice.actions;
 
 export default teamSlice.reducer;

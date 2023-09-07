@@ -12,11 +12,13 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
 import TagsSection from './TagsSection';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
+import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
 
 const UserSection = ({ users, name }) => (
   <div className="user-section">
@@ -40,6 +42,7 @@ UserSection.propTypes = {
 
 const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
+  const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -166,13 +169,21 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
               </>
             )}
           </div>
-
-          <div
-            // onClick={() => setShowModal(true)}
-            className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
-          >
-            View Details
-          </div>
+          {isTeamLoggedIn ? (
+            <div
+              // onClick={() => setShowModal(true)}
+              className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
+            >
+              View Talent Profile
+            </div>
+          ) : (
+            <div
+              // onClick={() => setShowModal(true)}
+              className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
+            >
+              View Details
+            </div>
+          )}
         </CardBody>
       </Card>
       {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
