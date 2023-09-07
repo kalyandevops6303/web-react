@@ -148,17 +148,17 @@ const LeftSidebarProfile = ({
               </CardText>
             </div>
           )}
-          {isEditable && !isTeamView && (
-            <div className="profile-completion mt-2">
-              <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
-              <Progress
-                style={{ height: '0.4rem', borderRadius: '6px' }}
-                className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
-                value={profilePercentageData?.profile_completed}
-              />
-              <CardText className="font-small-3 mt-25">Profile Completion</CardText>
-            </div>
-          )}
+
+          <div className="profile-completion mt-2">
+            <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
+            <Progress
+              style={{ height: '0.4rem', borderRadius: '6px' }}
+              className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
+              value={profilePercentageData?.profile_completed}
+            />
+            <CardText className="font-small-3 mt-25">Profile Completion</CardText>
+          </div>
+
           <section className="user-details mt-2">
             <CardTitle className="info-detail-title main mb-75">Details</CardTitle>
             {data?.educational_institute?.map((item, index) => (

@@ -437,7 +437,7 @@ const VariableSimpleMilestoneView = () => {
                     <Col sm="12" md="12" lg="3" className="ps-50">
                       <div>
                         <Label className="form-label" for="estimatedStartDate">
-                          Estimated Start Date<span className="label-asterisk me-50">*</span>
+                          Start Date<span className="label-asterisk me-50">*</span>
                         </Label>
                         <Controller
                           control={control}
