@@ -236,6 +236,21 @@ const projectDetails = createSlice({
       terminateContractLoading: false,
       error: action.payload,
     }),
+
+    updateContractRequest: (state) => ({
+      ...state,
+      updateContractLoading: true,
+      error: null,
+    }),
+    updateContractSuccess: (state) => ({
+      ...state,
+      updateContractLoading: false,
+    }),
+    updateContractFailure: (state, action) => ({
+      ...state,
+      updateContractLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -277,6 +292,9 @@ export const {
   projectDetailsSuccess,
   projectDetailsFailure,
   clearProjectData,
+  updateContractRequest,
+  updateContractSuccess,
+  updateContractFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

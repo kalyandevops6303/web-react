@@ -61,8 +61,11 @@ const terminateContractService = ({ project_id, doc_type }) =>
     `${API.projectDetails.terminateContract}?project_id=${project_id}&doc_type=${doc_type}&decline_bid=true`,
   );
 
+const updateContractService = ({ project_id, doc_type }) =>
+  DataService.delete(`${API.projectDetails.updateContract}?project_id=${project_id}&doc_type=${doc_type}`);
 export {
   getDocumentService,
+  updateContractService,
   checkDocumentActivatedService,
   getDocumentTimelineService,
   sendDocumentService,

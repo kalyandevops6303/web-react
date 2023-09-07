@@ -26,11 +26,13 @@ const BidTimeline = () => {
   useEffect(() => {
     dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'CONTRACT' }));
     dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
-    // if (projectDetailsData?.nda?.is_nda) {
-    dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'NDA' }));
-    dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'NDA' }));
-    // }
   }, []);
+  useEffect(() => {
+    if (projectDetailsData?.nda?.is_nda) {
+      dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'NDA' }));
+      dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'NDA' }));
+    }
+  }, [projectDetailsData]);
 
   const [open, setOpen] = useState('1');
   const userType = useSelector(selectUserType);

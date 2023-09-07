@@ -15,6 +15,7 @@ import {
   signContractByTalentServive,
   terminateContractService,
   updateBidStatusService,
+  updateContractService,
 } from '../../services/projectDetailsServices';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -54,6 +55,9 @@ import {
   terminateContractFailure,
   terminateContractRequest,
   terminateContractSuccess,
+  updateContractFailure,
+  updateContractRequest,
+  updateContractSuccess,
 } from '../reducers/projectDetails';
 
 const getProjectDetails = (projectId) => async (dispatch) => {
@@ -255,9 +259,23 @@ const terminateContract =
     }
   };
 
+const updateContract =
+  ({ project_id, doc_type, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(updateContractRequest());
+    try {
+      await updateContractService({ project_id, doc_type });
+      dispatch(updateContractSuccess());
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, updateContractFailure);
+    }
+  };
+
 export {
   checkDocumentActivated,
   getDocumentTimeline,
+  updateContract,
   sendDocument,
   signContractByTalent,
   terminateContract,

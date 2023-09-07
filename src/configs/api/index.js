@@ -99,6 +99,7 @@ const API = {
     sendDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document/send`,
     signContractByTalent: `${apiCreateProjectEndpoint}/api/v1/legal/document/sign`,
     terminateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/terminate`,
+    updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
