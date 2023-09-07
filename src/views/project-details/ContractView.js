@@ -37,6 +37,7 @@ const ContractView = () => {
   const document = useSelector(selectDocument);
   const isNDAview = param?.docType === 'nda';
   const isContractView = param?.docType === 'contract';
+  const isFreshDoc = !param?.docId;
   const documentRes = isNDAview ? document?.nda : document?.contract;
   const [documentData, setDocumentData] = useState(documentRes);
   const [checked, setChecked] = useState(false);
@@ -88,15 +89,15 @@ const ContractView = () => {
   };
 
   useEffect(() => {
-    dispatch(getDocument({ project_id: param?.projectId, doc_type: getDocType() }));
+    dispatch(getDocument({ document_id: param?.docId || '', project_id: param?.projectId, doc_type: getDocType() }));
   }, []);
 
-  const handleOpenAcceptModal = (userId) => {
+  const handleOpenAcceptModal = (worker) => {
     if (!checked) {
       setCheckError(true);
     } else {
       setIsAcceptModalOpen(true);
-      setAcceptModalData({ userId });
+      setAcceptModalData({ user_id: worker?.user_id, role: worker?.role });
     }
   };
 
@@ -111,12 +112,13 @@ const ContractView = () => {
       }),
     );
   };
-  const handleSignDoc = (id) => {
+  const handleSignDoc = (data) => {
     dispatch(
       signContractByTalent({
         project_id: param?.projectId,
         doc_type: getDocType(),
-        user_id: id,
+        user_id: data?.user_id,
+        role: data?.role,
         onSuccess: () => setIsAcceptModalOpen(false),
       }),
     );
@@ -147,6 +149,7 @@ const ContractView = () => {
     }
     return false;
   };
+
   return (
     <ContractDetailsWrap>
       <BackButtonContainer className="p-0 mb-1">
@@ -163,14 +166,16 @@ const ContractView = () => {
         </Col>
         <Col lg="9">
           <Card className="gray-bg ">
-            <CardTitle className="main-card-title gray-bg">{`Standard ${CapitalizeDocType()}`}</CardTitle>
+            <CardTitle className="main-card-title gray-bg">{`Standard ${CapitalizeDocType()} ${
+              !isFreshDoc ? '(View only)' : ''
+            }`}</CardTitle>
             <CardBody>
               <Card>
                 <CardBody className="contract-card-body">
                   <div className="d-flex justify-content-between ">
                     <CardTitle className="mb-1"> {CapitalizeDocType()}</CardTitle>
                     <div className="d-flex gap-1 align-items-center mb-75">
-                      {userType === userTypes.client && (
+                      {isContractView && isFreshDoc && userType === userTypes.client && !document?.is_terminated && (
                         <CardText className="terminate me-1" onClick={toggleTerminateModal}>
                           Terminate
                         </CardText>
@@ -190,17 +195,17 @@ const ContractView = () => {
                           toggleModal={toggleAcceptModal}
                           modal={isAcceptModalOpen}
                           onAccept={
-                            userType === userTypes.client
-                              ? handleSendDocByClient
-                              : () => handleSignDoc(acceptModalData?.userId)
+                            userType === userTypes.client ? handleSendDocByClient : () => handleSignDoc(acceptModalData)
                           }
                           docType={getDocType()}
                           project_id={param?.projectId}
                         />
                       )}
-                      <span className="icon-bg cursor-pointer" onClick={toggleModal}>
-                        <img src={EditImg} alt="edit" />
-                      </span>
+                      {isFreshDoc && userType === userTypes.client && (
+                        <span className="icon-bg cursor-pointer" onClick={toggleModal}>
+                          <img src={EditImg} alt="edit" />
+                        </span>
+                      )}
 
                       {isEditModalOpen && (
                         <EditContractModal
@@ -220,21 +225,25 @@ const ContractView = () => {
                   <div className="contract-text-container">{ReactHtmlParser(documentData)}</div>
                 </CardBody>
               </Card>
-              {(document?.is_contract_sent === false ||
-                document?.is_nda_sent === false ||
-                isUserNotSigned(updatedWorkers, userData?._id)) && (
-                <div className="d-flex justify-content-between checkbox-wrap">
-                  <Label className="checkbox-label" for="contract-sign">
-                    <Input
-                      onChange={onCheckChange}
-                      checked={checked}
-                      className="me-75"
-                      type="checkbox"
-                      id="contract-sign"
-                      name="agreeTerms"
-                    />
-                    I have read terms and conditions
-                  </Label>
+              {isFreshDoc && (
+                <div>
+                  {(document?.is_contract_sent === false ||
+                    document?.is_nda_sent === false ||
+                    isUserNotSigned(updatedWorkers, userData?._id)) && (
+                    <div className="d-flex justify-content-between checkbox-wrap">
+                      <Label className="checkbox-label" for="contract-sign">
+                        <Input
+                          onChange={onCheckChange}
+                          checked={checked}
+                          className="me-75"
+                          type="checkbox"
+                          id="contract-sign"
+                          name="agreeTerms"
+                        />
+                        I have read terms and conditions
+                      </Label>
+                    </div>
+                  )}
                 </div>
               )}
               {checkError && <FormFeedback>Please confirm that you have read the terms and conditions</FormFeedback>}
@@ -248,14 +257,31 @@ const ContractView = () => {
                   />
                   <div>
                     <Button
-                      disabled={document?.is_contract_sent}
+                      style={{ minWidth: '14.5rem' }}
+                      disabled={
+                        isFreshDoc === false ||
+                        userType !== userTypes.client ||
+                        document?.is_contract_sent ||
+                        document?.is_nda_sent
+                      }
                       onClick={handleOpenAcceptModal}
                       color="primary"
-                      className="btn-sm-block mb-75"
+                      className="btn-sm-block mb-25 mt-1"
                     >
-                      {document?.is_contract_sent ? 'Confirmed Agreement' : 'Confirm Agreement'}
+                      {document?.is_contract_sent || document?.is_nda_sent
+                        ? 'Confirmed Agreement'
+                        : 'Confirm Agreement'}
                     </Button>
-                    <CardText className="mb-1">Sign on: -</CardText>
+                    {document?.client_signed_document_date ? (
+                      <CardText className="">
+                        Signed on:{' '}
+                        {document?.client_signed_document_date
+                          ? DateTime?.fromMillis(document?.client_signed_document_date)?.toFormat('MMM dd, yy')
+                          : ''}
+                      </CardText>
+                    ) : (
+                      ''
+                    )}
                   </div>
                 </div>
               </div>
@@ -272,20 +298,29 @@ const ContractView = () => {
                     <div>
                       {userData?._id === worker?.user_id ? (
                         <Button
-                          onClick={() => handleOpenAcceptModal(worker?.user_id)}
-                          disabled={worker?.is_signed}
+                          style={{ minWidth: '14.5rem' }}
+                          onClick={() => handleOpenAcceptModal(worker)}
+                          disabled={isFreshDoc === false || worker?.is_signed}
                           color="primary"
-                          className="btn-sm-block mb-25"
+                          className="btn-sm-block mb-25 mt-1"
                         >
                           {worker?.is_signed ? 'Confirmed Agreement' : 'Confirm Agreement'}
                         </Button>
                       ) : (
-                        <Button disabled color="primary" className="btn-sm-block mb-25">
+                        <Button
+                          style={{ minWidth: '14.5rem' }}
+                          disabled
+                          color="primary"
+                          className="btn-sm-block mb-25 mt-1"
+                        >
                           {worker?.is_signed ? 'Confirmed Agreement' : 'Pending Agreement'}
                         </Button>
                       )}
 
-                      <CardText className="mb-50">Sign on: -</CardText>
+                      <CardText className="">
+                        <span className={!worker?.is_signed && 'invisible'}>Signed on: </span>
+                        {worker?.signed_on ? DateTime?.fromMillis(worker?.signed_on)?.toFormat('MMM dd, yy') : ''}
+                      </CardText>
                     </div>
                   </div>
                 ))}

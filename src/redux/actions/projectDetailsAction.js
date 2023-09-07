@@ -15,7 +15,6 @@ import {
   signContractByTalentServive,
   terminateContractService,
   updateBidStatusService,
-  updateContractService,
 } from '../../services/projectDetailsServices';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -168,37 +167,6 @@ const updateInvitation =
 
 // Contract flow
 
-const checkDocumentActivated =
-  ({ project_id, doc_type }) =>
-  async (dispatch) => {
-    dispatch(checkDocumentActivatedRequest());
-    try {
-      const res = await checkDocumentActivatedService({ project_id, doc_type });
-      if (doc_type === 'CONTRACT') {
-        dispatch(checkDocumentActivatedSuccess({ isContract: res.data.data }));
-      }
-      if (doc_type === 'NDA') {
-        dispatch(checkDocumentActivatedSuccess({ isNDA: res.data.data }));
-      }
-    } catch (error) {
-      errorHandler(error, checkDocumentActivatedFailure);
-    }
-  };
-
-// Action creator for getting document timeline
-
-const getDocument =
-  ({ project_id, doc_type }) =>
-  async (dispatch) => {
-    dispatch(getDocumentRequest());
-    try {
-      const res = await getDocumentService({ project_id, doc_type });
-      dispatch(getDocumentSuccess(res.data.data));
-    } catch (error) {
-      errorHandler(error, getDocumentFailure);
-    }
-  };
-
 const getDocumentTimeline =
   ({ project_id, doc_type }) =>
   async (dispatch) => {
@@ -217,6 +185,40 @@ const getDocumentTimeline =
     }
   };
 
+const checkDocumentActivated =
+  ({ project_id, doc_type }) =>
+  async (dispatch) => {
+    dispatch(checkDocumentActivatedRequest());
+    try {
+      const res = await checkDocumentActivatedService({ project_id, doc_type });
+      if (res.data.data.show_document) {
+        dispatch(getDocumentTimeline({ project_id, doc_type }));
+      }
+      if (doc_type === 'CONTRACT') {
+        dispatch(checkDocumentActivatedSuccess({ isContract: res.data.data }));
+      }
+      if (doc_type === 'NDA') {
+        dispatch(checkDocumentActivatedSuccess({ isNDA: res.data.data }));
+      }
+    } catch (error) {
+      errorHandler(error, checkDocumentActivatedFailure);
+    }
+  };
+
+// Action creator for getting document timeline
+
+const getDocument =
+  ({ project_id, doc_type, document_id }) =>
+  async (dispatch) => {
+    dispatch(getDocumentRequest());
+    try {
+      const res = await getDocumentService({ project_id, doc_type, document_id });
+      dispatch(getDocumentSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getDocumentFailure);
+    }
+  };
+
 // Action creator for sending a document
 const sendDocument =
   ({ project_id, doc_type, validity, data, onSuccess }) =>
@@ -225,6 +227,7 @@ const sendDocument =
     try {
       await sendDocumentService({ project_id, doc_type, validity, data });
       dispatch(sendDocumentSuccess());
+      dispatch(getDocument({ document_id: '', project_id, doc_type }));
       onSuccess();
     } catch (error) {
       errorHandler(error, sendDocumentFailure);
@@ -233,11 +236,11 @@ const sendDocument =
 
 // Action creator for signing a contract by talent
 const signContractByTalent =
-  ({ project_id, doc_type, user_id, onSuccess }) =>
+  ({ project_id, doc_type, user_id, role, onSuccess }) =>
   async (dispatch) => {
     dispatch(signContractByTalentRequest());
     try {
-      await signContractByTalentServive({ project_id, doc_type });
+      await signContractByTalentServive({ project_id, doc_type, role });
       dispatch(signContractByTalentSuccess({ user_id }));
       onSuccess();
     } catch (error) {
@@ -247,11 +250,14 @@ const signContractByTalent =
 
 // Action creator for terminating a contract
 const terminateContract =
-  ({ project_id, doc_type, onSuccess }) =>
+  ({ project_id, doc_type, onSuccess, isNDA }) =>
   async (dispatch) => {
     dispatch(terminateContractRequest());
     try {
       await terminateContractService({ project_id, doc_type });
+      if (isNDA) {
+        await terminateContractService({ project_id, doc_type: 'NDA' });
+      }
       dispatch(terminateContractSuccess());
       onSuccess();
     } catch (error) {
@@ -260,11 +266,12 @@ const terminateContract =
   };
 
 const updateContract =
-  ({ project_id, doc_type, onSuccess }) =>
+  ({ project_id, doc_type, onSuccess, data, validity }) =>
   async (dispatch) => {
     dispatch(updateContractRequest());
     try {
-      await updateContractService({ project_id, doc_type });
+      await sendDocumentService({ project_id, doc_type, data, validity });
+      dispatch(getDocument({ document_id: '', project_id, doc_type }));
       dispatch(updateContractSuccess());
       onSuccess();
     } catch (error) {

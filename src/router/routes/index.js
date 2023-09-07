@@ -84,7 +84,7 @@ const Routes = [
     element: <ContractView />,
   },
   {
-    path: '/project-details/:projectId/:projectStep/:docType/:docId/*',
+    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
     element: <ContractView />,
   },
   {

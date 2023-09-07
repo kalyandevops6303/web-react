@@ -22,8 +22,8 @@ const projectDetails = createSlice({
     }),
     projectDetailsSuccess: (state, action) => ({
       ...state,
-      projectDetailsLoading: false,
       projectDetails: action.payload,
+      projectDetailsLoading: false,
     }),
     projectDetailsFailure: (state, action) => ({
       ...state,
@@ -184,7 +184,6 @@ const projectDetails = createSlice({
     sendDocumentSuccess: (state) => ({
       ...state,
       sendDocumentLoading: false,
-      document: { ...state.document, is_contract_sent: true },
     }),
     sendDocumentFailure: (state, action) => ({
       ...state,

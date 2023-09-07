@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactQuill from 'react-quill';
+import { DateTime } from 'luxon';
 import { Button, CardText, Form, FormFeedback, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,7 +12,7 @@ import { EditContractWrap } from './style';
 import { updateContract } from '../../redux/actions/projectDetailsAction';
 import ShowToastMessage from '../../@core/components/toast';
 
-const EditContractModal = ({ docType, setDocumentData, modal, toggleModal, data }) => {
+const EditContractModal = ({ docType, project_id, setDocumentData, modal, toggleModal, data }) => {
   const ProjectDetailsSchema = yup.object().shape({
     contractDetails: yup.string().required('Contract details is required'),
   });
@@ -40,7 +41,15 @@ const EditContractModal = ({ docType, setDocumentData, modal, toggleModal, data 
         setDocumentData(contractDetails);
         toggleModal();
       };
-      dispatch(updateContract({ project_id: data?.project_id, doc_type: docType, onSuccess }));
+      dispatch(
+        updateContract({
+          project_id,
+          doc_type: docType,
+          validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
+          onSuccess,
+          data: contractDetails,
+        }),
+      );
     }
   };
 
@@ -88,6 +97,7 @@ EditContractModal.propTypes = {
   data: PropTypes.object,
   setDocumentData: PropTypes.func, // Add this prop if you want to set document data
   docType: PropTypes.string,
+  project_id: PropTypes.string,
 };
 
 EditContractModal.defaultProps = {
@@ -96,6 +106,7 @@ EditContractModal.defaultProps = {
   data: {},
   setDocumentData: () => {}, // Add this default prop if you want to set document data
   docType: '',
+  project_id: '',
 };
 
 export default EditContractModal;

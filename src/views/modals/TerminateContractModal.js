@@ -1,14 +1,18 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { useDispatch } from 'react-redux';
-import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle, Spinner } from 'reactstrap';
 import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { DeleteModalWrapper } from './style';
 import { terminateContract } from '../../redux/actions/projectDetailsAction';
+import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
 
 const TerminateContractModal = ({ project_id, docType, terminateData, modal, toggleModal }) => {
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.projectDetails.terminateContractLoading);
+  const projectInfo = useSelector(projectDetails);
+
   const onClose = () => {
     toggleModal();
   };
@@ -16,7 +20,7 @@ const TerminateContractModal = ({ project_id, docType, terminateData, modal, tog
     onClose();
   };
   const onTerminate = () => {
-    dispatch(terminateContract({ project_id, doc_type: docType, onSuccess }));
+    dispatch(terminateContract({ isNDA: projectInfo?.nda?.is_nda, project_id, doc_type: docType, onSuccess }));
   };
 
   const isContractView = docType === 'CONTRACT';
@@ -55,7 +59,7 @@ const TerminateContractModal = ({ project_id, docType, terminateData, modal, tog
               Cancel
             </Button>
             <Button color="danger" onClick={onTerminate}>
-              Terminate {isContractView ? 'Contract' : 'NDA'}
+              {isLoading ? <Spinner /> : <span>{`Terminate ${isContractView ? 'Contract' : 'NDA'}`}</span>}
             </Button>
           </div>
         </DeleteModalWrapper>
