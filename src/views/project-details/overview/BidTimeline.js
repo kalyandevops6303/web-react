@@ -48,7 +48,23 @@ const BidTimeline = () => {
       color: theme.orangeColor,
       customContent: (
         <div>
-          {isNDA?.is_document ? (
+          {userType === userTypes.client && !isNDA?.is_signed ? (
+            <Card>
+              <CardBody className="basic-title">
+                <div className="d-flex justify-content-between">
+                  <CardText className={`fw-bold mb-0  ${!isNDA?.is_document ? 'disabled-color' : ''}`}>NDA</CardText>
+                  {isNDA?.is_document && (
+                    <div className="d-flex gap-50 align-items-center">
+                      <span onClick={handleContract} className="card-cta">
+                        Sign NDA
+                      </span>
+                      <ChevronRight size={16} />
+                    </div>
+                  )}
+                </div>
+              </CardBody>
+            </Card>
+          ) : isNDA?.is_document ? (
             <Accordion className="accordion-timeline" open={open} toggle={toggle}>
               <NDATimeline />
             </Accordion>
@@ -123,9 +139,27 @@ const BidTimeline = () => {
               <ContractTimeline />
             </Accordion>
           )} */}
-          {isContract?.is_document ? (
+          {userType === userTypes.client && !isContract?.is_signed ? (
+            <Card>
+              <CardBody className="basic-title">
+                <div className="d-flex justify-content-between">
+                  <CardText className={`fw-bold mb-0  ${!isContract?.is_document ? 'disabled-color' : ''}`}>
+                    Contract
+                  </CardText>
+                  {isContract?.is_document && (
+                    <div className="d-flex gap-50 align-items-center">
+                      <span onClick={handleContract} className="card-cta">
+                        Sign contract
+                      </span>
+                      <ChevronRight size={16} />
+                    </div>
+                  )}
+                </div>
+              </CardBody>
+            </Card>
+          ) : isContract?.is_document ? (
             <Accordion className="accordion-timeline" open={open} toggle={toggle}>
-              {userType !== userTypes.client && <ContractTimeline />}
+              <ContractTimeline />
             </Accordion>
           ) : (
             <Card>

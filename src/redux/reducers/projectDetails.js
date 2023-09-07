@@ -151,6 +151,7 @@ const projectDetails = createSlice({
     getDocumentSuccess: (state, action) => ({
       ...state,
       getDocumentLoading: false,
+      projectWorkers: action.payload.workers,
       document: action.payload,
     }),
     getDocumentFailure: (state, action) => ({
@@ -183,6 +184,7 @@ const projectDetails = createSlice({
     sendDocumentSuccess: (state) => ({
       ...state,
       sendDocumentLoading: false,
+      document: { ...state.document, is_contract_sent: true },
     }),
     sendDocumentFailure: (state, action) => ({
       ...state,
@@ -195,10 +197,25 @@ const projectDetails = createSlice({
       signContractByTalentLoading: true,
       error: null,
     }),
-    signContractByTalentSuccess: (state) => ({
-      ...state,
-      signContractByTalentLoading: false,
-    }),
+    signContractByTalentSuccess: (state, action) => {
+      // Find all workers with the matching user_id
+      const updatedWorkers = state?.document?.workers.map((worker) => {
+        if (worker.user_id === action.payload.user_id) {
+          return { ...worker, is_signed: true };
+        }
+        return worker;
+      });
+
+      return {
+        ...state,
+        signContractByTalentLoading: false,
+        document: {
+          ...state.document,
+          workers: updatedWorkers,
+        },
+      };
+    },
+
     signContractByTalentFailure: (state, action) => ({
       ...state,
       signContractByTalentLoading: false,

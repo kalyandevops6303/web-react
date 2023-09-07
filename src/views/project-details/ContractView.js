@@ -20,11 +20,15 @@ import { projectDetails, selectDocument } from '../../redux/selectors/projectDet
 import { getDocument, sendDocument, signContractByTalent } from '../../redux/actions/projectDetailsAction';
 import { selectSavedUserData, selectUserType } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import ConfirmContractModal from '../modals/ConfirmContractModal';
 
 const ContractView = () => {
   const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isTerminateModalOpen, setIsTerminateModalOpen] = useState(false);
+  const [terminateData, setTerminateData] = useState();
+  const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+  const [acceptModalData, setAcceptModalData] = useState();
   const projectInfo = useSelector(projectDetails);
   const userType = useSelector(selectUserType);
   const userData = useSelector(selectSavedUserData);
@@ -44,6 +48,11 @@ const ContractView = () => {
 
   const toggleTerminateModal = () => {
     setIsTerminateModalOpen(!isTerminateModalOpen);
+    setTerminateData(document);
+  };
+
+  const toggleAcceptModal = () => {
+    setIsAcceptModalOpen(false);
   };
 
   const downloadPdf = (element) => {
@@ -62,31 +71,39 @@ const ContractView = () => {
     dispatch(getDocument({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
   }, []);
 
-  const handleSendDocByClient = () => {
+  const handleOpenAcceptModal = (userId) => {
     if (!checked) {
       setCheckError(true);
     } else {
-      dispatch(
-        sendDocument({
-          project_id: param?.projectId,
-          doc_type: 'CONTRACT',
-          validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
-          data: documentData,
-        }),
-      );
+      setIsAcceptModalOpen(true);
+      setAcceptModalData({ userId });
     }
   };
-  const handleSignDoc = () => {
-    if (!checked) {
-      setCheckError(true);
-    } else {
-      dispatch(
-        signContractByTalent({
-          project_id: param?.projectId,
-          doc_type: 'CONTRACT',
-        }),
-      );
-    }
+
+  const handleSendDocByClient = () => {
+    dispatch(
+      sendDocument({
+        project_id: param?.projectId,
+        doc_type: 'CONTRACT',
+        validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
+        data: documentData,
+        onSuccess: () => setIsAcceptModalOpen(false),
+      }),
+    );
+  };
+  const handleSignDoc = (id) => {
+    // if (!checked) {
+    //   setCheckError(true);
+    // } else {
+    dispatch(
+      signContractByTalent({
+        project_id: param?.projectId,
+        doc_type: 'CONTRACT',
+        user_id: id,
+        onSuccess: () => setIsAcceptModalOpen(false),
+      }),
+    );
+    // }
   };
   const onCheckChange = () => {
     setChecked(!checked);
@@ -98,13 +115,11 @@ const ContractView = () => {
       return [];
     }
     const targetObjects = array?.filter((item) => item.user_id === targetId);
-
     if (targetObjects?.length > 0) {
       const newArray = array?.filter((item) => item.user_id !== targetId); // Create a new array without matching objects
       newArray.unshift(...targetObjects); // Add all matching objects to the beginning
       return newArray; // Return the new array
     }
-
     return array; // Return the original array if no matching objects are found
   };
   const updatedWorkers = moveAllObjectsToBeginning(document?.workers, userData?._id);
@@ -145,13 +160,28 @@ const ContractView = () => {
                         </CardText>
                       )}
                       {isTerminateModalOpen && (
-                        <TerminateContractModal toggleModal={toggleTerminateModal} modal={isTerminateModalOpen} />
+                        <TerminateContractModal
+                          terminateData={terminateData}
+                          toggleModal={toggleTerminateModal}
+                          modal={isTerminateModalOpen}
+                        />
                       )}
-                      {!document?.is_contract_sent && (
-                        <span className="icon-bg cursor-pointer" onClick={toggleModal}>
-                          <img src={EditImg} alt="edit" />
-                        </span>
+                      {isAcceptModalOpen && (
+                        <ConfirmContractModal
+                          terminateData={acceptModalData}
+                          toggleModal={toggleAcceptModal}
+                          modal={isAcceptModalOpen}
+                          onAccept={
+                            userType === userTypes.client
+                              ? handleSendDocByClient
+                              : () => handleSignDoc(acceptModalData?.userId)
+                          }
+                        />
                       )}
+                      <span className="icon-bg cursor-pointer" onClick={toggleModal}>
+                        <img src={EditImg} alt="edit" />
+                      </span>
+
                       {isEditModalOpen && (
                         <EditContractModal
                           setDocumentData={setDocumentData}
@@ -168,7 +198,7 @@ const ContractView = () => {
                   <div className="contract-text-container">{ReactHtmlParser(documentData)}</div>
                 </CardBody>
               </Card>
-              {isUserNotSigned(updatedWorkers, userData?._id) && (
+              {(document?.is_contract_sent === false || isUserNotSigned(updatedWorkers, userData?._id)) && (
                 <div className="d-flex justify-content-between checkbox-wrap">
                   <Label className="checkbox-label" for="contract-sign">
                     <Input
@@ -195,7 +225,7 @@ const ContractView = () => {
                   <div>
                     <Button
                       disabled={document?.is_contract_sent}
-                      onClick={handleSendDocByClient}
+                      onClick={handleOpenAcceptModal}
                       color="primary"
                       className="btn-sm-block mb-75"
                     >
@@ -218,7 +248,7 @@ const ContractView = () => {
                     <div>
                       {userData?._id === worker?.user_id ? (
                         <Button
-                          onClick={handleSignDoc}
+                          onClick={() => handleOpenAcceptModal(worker?.user_id)}
                           disabled={worker?.is_signed}
                           color="primary"
                           className="btn-sm-block mb-25"

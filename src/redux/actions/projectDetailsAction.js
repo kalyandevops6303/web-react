@@ -215,12 +215,13 @@ const getDocumentTimeline =
 
 // Action creator for sending a document
 const sendDocument =
-  ({ project_id, doc_type, validity, data }) =>
+  ({ project_id, doc_type, validity, data, onSuccess }) =>
   async (dispatch) => {
     dispatch(sendDocumentRequest());
     try {
       await sendDocumentService({ project_id, doc_type, validity, data });
       dispatch(sendDocumentSuccess());
+      onSuccess();
     } catch (error) {
       errorHandler(error, sendDocumentFailure);
     }
@@ -228,12 +229,13 @@ const sendDocument =
 
 // Action creator for signing a contract by talent
 const signContractByTalent =
-  ({ project_id, doc_type }) =>
+  ({ project_id, doc_type, user_id, onSuccess }) =>
   async (dispatch) => {
     dispatch(signContractByTalentRequest());
     try {
       await signContractByTalentServive({ project_id, doc_type });
-      dispatch(signContractByTalentSuccess());
+      dispatch(signContractByTalentSuccess({ user_id }));
+      onSuccess();
     } catch (error) {
       errorHandler(error, signContractByTalentFailure);
     }
@@ -241,12 +243,13 @@ const signContractByTalent =
 
 // Action creator for terminating a contract
 const terminateContract =
-  ({ project_id }) =>
+  ({ project_id, doc_type, onSuccess }) =>
   async (dispatch) => {
     dispatch(terminateContractRequest());
     try {
-      await terminateContractService({ project_id });
+      await terminateContractService({ project_id, doc_type });
       dispatch(terminateContractSuccess());
+      onSuccess();
     } catch (error) {
       errorHandler(error, terminateContractFailure);
     }

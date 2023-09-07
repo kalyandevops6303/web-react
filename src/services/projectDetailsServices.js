@@ -56,8 +56,10 @@ const sendDocumentService = ({ project_id, doc_type, data, validity }) =>
 const signContractByTalentServive = ({ project_id, doc_type }) =>
   DataService.put(`${API.projectDetails.signContractByTalent}?project_id=${project_id}&doc_type=${doc_type}`);
 
-const terminateContractService = ({ project_id }) =>
-  DataService.put(`${API.projectDetails.terminateContract}?project_id=${project_id}`);
+const terminateContractService = ({ project_id, doc_type }) =>
+  DataService.delete(
+    `${API.projectDetails.terminateContract}?project_id=${project_id}&doc_type=${doc_type}&decline_bid=true`,
+  );
 
 export {
   getDocumentService,
