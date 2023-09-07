@@ -455,14 +455,6 @@ const RatingsFormContainer = styled.div`
     color: ${theme.red};
     margin-left: 4px;
   }
-
-  .user-details {
-    width: 15%;
-  }
-
-  .form-container {
-    width: 60%;
-  }
 `;
 
 const RatingTag = styled.div`
@@ -470,7 +462,6 @@ const RatingTag = styled.div`
   border: 1px solid ${theme.turquoiseColor};
   background: ${(props) => (props.active ? theme.turquoiseColor : theme.ratingTagBg)};
   width: fit-content;
-  cursor: pointer;
 
   p {
     color: ${(props) => (props.active ? theme.white : theme.lightTurquoiseColor)};
