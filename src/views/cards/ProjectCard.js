@@ -26,6 +26,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
+
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);

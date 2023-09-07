@@ -13,7 +13,7 @@ const getTeamsService = ({ searchText, metaData, filterData, isTeam = false, tea
   if (!isEmpty(filterData?.project_status)) QUERY += `&project_status=${filterData?.project_status[0]}`;
   if (team_id?.length) QUERY += `&team_id=${team_id}`;
 
-  DataService.get(`${API.myTeams.listTeams}?${QUERY}`);
+  return DataService.get(`${API.myTeams.listTeams}?${QUERY}`);
 };
 
 const getInvitationsService = ({ metaData, filterData, userType, isTeam = false, team_id = '' }) => {
