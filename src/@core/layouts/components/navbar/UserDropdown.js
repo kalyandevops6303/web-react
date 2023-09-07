@@ -26,8 +26,6 @@ import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { selectSavedUserData, selectIsTeamLoggedIn, selectUserData } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
 import { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { useEffect } from 'react';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 
 const UserDropdown = () => {
@@ -105,7 +103,6 @@ const UserDropdown = () => {
   `;
 
   const handleShowModal = (selected) => {
-    !selected && ShowToastMessage('success', `Profile switched successfully`);
     navigate('/dashboard');
   };
   const handleSwitch = (data, selected) => {
