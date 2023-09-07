@@ -15,6 +15,7 @@ import gloabalSearch from './reducers/gloabalSearch';
 import notifications from './reducers/notifications';
 import createBid from './reducers/createBid';
 import team from './reducers/team';
+import PaymentDetails from './reducers/PaymentDetails';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   team,
   search: gloabalSearch,
   createBid,
+  PaymentDetails,
 
   // Add more reducers if needed
 });
