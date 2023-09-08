@@ -250,14 +250,12 @@ const signContractByTalent =
 
 // Action creator for terminating a contract
 const terminateContract =
-  ({ project_id, doc_type, onSuccess, isNDA }) =>
+  ({ project_id, doc_type, onSuccess }) =>
   async (dispatch) => {
     dispatch(terminateContractRequest());
     try {
       await terminateContractService({ project_id, doc_type });
-      if (isNDA) {
-        await terminateContractService({ project_id, doc_type: 'NDA' });
-      }
+
       dispatch(terminateContractSuccess());
       onSuccess();
     } catch (error) {
