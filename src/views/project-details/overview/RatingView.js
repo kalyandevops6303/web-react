@@ -26,6 +26,7 @@ import Rating from '../../../lib/rating';
 import { RatingNavsContainer, RatingTag, RatingsFormContainer } from '../style';
 import { GrayBorderContainer, GrayCardWrapper } from '../../styled';
 import theme from '../../../configs/themeVariables';
+import RatingSubmitSuccessModal from '../../modals/RatingSubmitSuccessModal';
 
 const RatingView = () => {
   const RatingSchema = yup.object().shape({
@@ -49,7 +50,6 @@ const RatingView = () => {
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
@@ -64,6 +64,7 @@ const RatingView = () => {
   };
 
   const [activeTab, setTabActive] = useState(tabNames.submitRating);
+  const [thankYouModal, setThankYouModal] = useState(null);
 
   const toggleTabs = (tab) => {
     if (activeTab !== tab) {
@@ -71,8 +72,13 @@ const RatingView = () => {
     }
   };
 
+  const toggleThankYouModal = () => {
+    setThankYouModal(!thankYouModal);
+  };
+
   return (
     <div>
+      {thankYouModal && <RatingSubmitSuccessModal modal={thankYouModal} toggleModal={toggleThankYouModal} />}
       <RatingNavsContainer>
         <Nav tabs className="font-medium border-bottom">
           <NavItem className="me-3">
@@ -198,7 +204,13 @@ const RatingView = () => {
                           </Row>
 
                           <div className="d-flex justify-content-end align-items-center pb-2">
-                            <Button color="primary" type="button" outline className="me-2" onClick={() => reset()}>
+                            <Button
+                              color="primary"
+                              type="button"
+                              outline
+                              className="me-2"
+                              onClick={() => setThankYouModal(true)}
+                            >
                               Cancel
                             </Button>
                             <Button color="primary" type="submit">
