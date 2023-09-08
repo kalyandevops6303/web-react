@@ -34,6 +34,7 @@ const API = {
     projectAreas: `${apiAuthEndpoint}/api/v1/static/project-area/all`,
     services: `${apiAuthEndpoint}/api/v1/static/services/all`,
     disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
+    ratingTags: `${apiAuthEndpoint}/api/v1/static/tags/filter`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
