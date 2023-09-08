@@ -162,7 +162,7 @@ const BidTimeline = () => {
       isDisabled: false,
       customContent: (
         <Accordion className="accordion-timeline" open={open} toggle={toggle}>
-          {userType === userTypes.client && <ReceivedBids />}
+          {userType === userTypes.client && <ReceivedBids projectName={projectDetailsData?.details?.name} />}
         </Accordion>
       ),
     },

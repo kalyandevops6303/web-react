@@ -1,6 +1,8 @@
+/* eslint-disable no-undef */
 import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
+import PropTypes from 'prop-types';
 
 import {
   AccordionBody,
@@ -15,7 +17,7 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import { debounce } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ChevronDown, Eye, MoreVertical, Paperclip, Search } from 'react-feather';
@@ -34,10 +36,11 @@ import { AccordionHeadStyle } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getReceivedBids } from '../../../redux/actions/projectDetailsAction';
 
-const ReceivedBids = () => {
+const ReceivedBids = ({ projectName }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const receivedBids = useSelector((state) => state.projectDetails.receivedBids);
   const [hasMore, setHasMore] = useState(true);
   const totalInvited = useSelector((state) => state.projectDetails.invitedMemberForProjectByClient);
@@ -118,7 +121,11 @@ const ReceivedBids = () => {
   ];
 
   const handleRedirectTobidDetails = (item) => {
-    navigate(`${item?._id}`);
+    const state = {
+      projectName,
+      link: location?.pathname,
+    };
+    navigate(`${item?._id}?project_name=${projectName}`, { state });
   };
 
   const receivedBidsDataset = [];
@@ -265,6 +272,13 @@ const ReceivedBids = () => {
       </AccordionBody>
     </AccordionItem>
   );
+};
+
+ReceivedBids.propTypes = {
+  projectName: PropTypes.string,
+};
+ReceivedBids.defaultProps = {
+  projectName: '',
 };
 
 export default memo(ReceivedBids);

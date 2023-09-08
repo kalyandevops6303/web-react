@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChevronLeft } from 'react-feather';
 import { Button, Card, CardBody, CardText, CardTitle, Col, Row, Table } from 'reactstrap';
@@ -14,16 +14,27 @@ import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
 import { userTypes } from '../../utility/constants/Constant';
 import { formatFileSize } from '../../utility/Utils';
+import AcceptBidModal from '../modals/AccpetBidModal';
+import RejectBidModal from '../modals/RejectBidModal';
 
 const BidDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const param = useParams();
+  const [acceptBidModal, setAcceptBidModal] = useState(false);
+  const [rejectBidModal, setRejectBidModal] = useState(false);
+
   const [bidStatus, setBidStatus] = useState('');
   const [isBidStatusUpating, setIsBidStatusUpating] = useState(false);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleCancel = () => {
+    setAcceptBidModal(false);
+    setRejectBidModal(false);
+  };
 
   const handleBack = () => {
     navigate(-1);
@@ -43,6 +54,7 @@ const BidDetails = () => {
         onSuccess: () => {
           setIsBidStatusUpating(false);
           setBidStatus(status);
+          handleCancel();
         },
         onError: () => setIsBidStatusUpating(false),
       }),
@@ -52,24 +64,51 @@ const BidDetails = () => {
   return (
     <BidDetailsWrap>
       <div className="d-flex justify-content-between mb-1">
-        <BreadCrumbs data={[{ title: 'Bid Details' }]} />
+        <BreadCrumbs
+          data={[
+            { title: 'Marketplace', link: '/marketplace/all_listings' },
+            { title: location?.state?.projectName, link: location?.state?.link },
+            { title: 'Bid Details' },
+          ]}
+        />
         {isBidStatusUpating ? (
           'Updating...'
         ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'DECLINED' ? (
           <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
         ) : (
           <div className="d-flex gap-2 align-items-center">
-            <CardText onClick={() => handleUpadteStatus('REJECTED')} className="report-text m-0 text-center fw-bold">
+            <CardText
+              onClick={() => setRejectBidModal(true)}
+              className="cursor-pointer report-text m-0 text-center fw-bold"
+            >
               Reject
             </CardText>
             <span>
-              <Button onClick={() => handleUpadteStatus('ACCEPTED')} className="d-contents" color="primary">
+              <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
                 Accept
               </Button>
             </span>
           </div>
         )}
       </div>
+      {acceptBidModal && (
+        <AcceptBidModal
+          modal={acceptBidModal}
+          toggleModal={handleCancel}
+          data={bidInfo}
+          onAccept={() => handleUpadteStatus('ACCEPTED')}
+          isLoading={isBidStatusUpating}
+        />
+      )}
+      {rejectBidModal && (
+        <RejectBidModal
+          modal={rejectBidModal}
+          toggleModal={handleCancel}
+          data={bidInfo}
+          onAccept={() => handleUpadteStatus('REJECTED')}
+          isLoading={isBidStatusUpating}
+        />
+      )}
 
       <Row>
         <Col lg="3">
@@ -164,13 +203,21 @@ const BidDetails = () => {
             ) : (
               <div className="d-flex gap-2 align-items-center">
                 <CardText
-                  onClick={() => handleUpadteStatus('REJECTED')}
+                  onClick={() => {
+                    setRejectBidModal(true);
+                  }}
                   className="report-text m-0 text-center fw-bold"
                 >
                   Reject
                 </CardText>
                 <span>
-                  <Button onClick={() => handleUpadteStatus('ACCEPTED')} className="d-contents" color="primary">
+                  <Button
+                    onClick={() => {
+                      setAcceptBidModal(true);
+                    }}
+                    className="d-contents"
+                    color="primary"
+                  >
                     Accept
                   </Button>
                 </span>
