@@ -175,10 +175,16 @@ const ContractView = () => {
                   <div className="d-flex justify-content-between ">
                     <CardTitle className="mb-1"> {CapitalizeDocType()}</CardTitle>
                     <div className="d-flex gap-1 align-items-center mb-75">
-                      {isContractView && isFreshDoc && userType === userTypes.client && !document?.is_terminated && (
-                        <CardText className="terminate me-1" onClick={toggleTerminateModal}>
-                          Terminate
-                        </CardText>
+                      {isContractView && isFreshDoc && userType === userTypes.client && (
+                        <div>
+                          {document?.is_terminated ? (
+                            <CardText className="terminate me-1">Terminated</CardText>
+                          ) : (
+                            <CardText className="terminate me-1" onClick={toggleTerminateModal}>
+                              Terminate
+                            </CardText>
+                          )}
+                        </div>
                       )}
                       {isTerminateModalOpen && (
                         <TerminateContractModal

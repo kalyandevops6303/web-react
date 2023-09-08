@@ -197,22 +197,28 @@ const projectDetails = createSlice({
       error: null,
     }),
     signContractByTalentSuccess: (state, action) => {
-      // Find all workers with the matching user_id
-      const updatedWorkers = state?.document?.workers.map((worker) => {
-        if (worker.user_id === action.payload.user_id) {
-          return { ...worker, is_signed: true };
-        }
-        return worker;
-      });
+      const { role } = action.payload;
 
-      return {
-        ...state,
-        signContractByTalentLoading: false,
-        document: {
-          ...state.document,
-          workers: updatedWorkers,
-        },
-      };
+      // Find the index of the first worker with the matching role
+      const workerIndex = state?.document?.workers.findIndex((worker) => !worker.is_signed && worker.role === role);
+
+      if (workerIndex !== -1) {
+        // If a matching worker is found, update it
+        const updatedWorkers = [...state.document.workers];
+        updatedWorkers[workerIndex] = { ...updatedWorkers[workerIndex], is_signed: true };
+
+        return {
+          ...state,
+          signContractByTalentLoading: false,
+          document: {
+            ...state.document,
+            workers: updatedWorkers,
+          },
+        };
+      }
+
+      // If no matching worker is found, return the original state
+      return state;
     },
 
     signContractByTalentFailure: (state, action) => ({
@@ -229,6 +235,7 @@ const projectDetails = createSlice({
     terminateContractSuccess: (state) => ({
       ...state,
       terminateContractLoading: false,
+      document: { ...state.document, is_terminated: true },
     }),
     terminateContractFailure: (state, action) => ({
       ...state,

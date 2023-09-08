@@ -22,18 +22,16 @@ const BidTimeline = () => {
   const isContract = useSelector(selectIsContract);
   const isNDA = useSelector(selectIsNDA);
   const projectDetailsData = useSelector(projectDetails);
-  // const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
 
   const userType = useSelector(selectUserType);
 
   useEffect(() => {
     dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'CONTRACT' }));
-    // dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
   }, []);
   useEffect(() => {
     if (projectDetailsData?.nda?.is_nda) {
       dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'NDA' }));
-      // dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'NDA' }));
     }
   }, [projectDetailsData]);
 
@@ -46,7 +44,6 @@ const BidTimeline = () => {
   const [open, setOpen] = useState('1');
 
   const toggle = (id) => (open === id ? setOpen() : setOpen(id));
-
   const handleDoc = ({ type }) => {
     navigate(`doc/${type}`);
   };
@@ -55,7 +52,7 @@ const BidTimeline = () => {
     {
       isVisible: projectDetailsData?.nda?.is_nda,
       isDisabled: isNDA?.show_document === false,
-      color: theme.orangeColor,
+      color: theme.purpleTimelimeColor,
       customContent: (
         <div>
           {userType === userTypes.client && !isNDA?.is_signed ? (
@@ -101,7 +98,7 @@ const BidTimeline = () => {
     {
       isVisible: true,
       isDisabled: isContract?.show_document === false,
-      color: theme.purpleTimelimeColor,
+      color: theme.orangeColor,
       customContent: (
         <div>
           {userType === userTypes.client && !isContract?.is_signed ? (
@@ -152,7 +149,7 @@ const BidTimeline = () => {
     {
       isVisible: userType !== userTypes.client,
       isDisabled: false,
-      color: theme.info,
+      color: theme.timelineSuccessColor,
       customContent: (
         <Accordion className="accordion-timeline" open={open} toggle={toggle}>
           {userType !== userTypes.client && <BidSubmitted />}
@@ -161,7 +158,7 @@ const BidTimeline = () => {
     },
     {
       isVisible: userType === userTypes.client,
-      color: theme.info,
+      color: theme.timelineSuccessColor,
       isDisabled: false,
       customContent: (
         <Accordion className="accordion-timeline" open={open} toggle={toggle}>
@@ -171,24 +168,30 @@ const BidTimeline = () => {
     },
   ].filter((item) => item.isVisible);
 
-  // if (isDocLoading || isBidInfoLoading) {
-  //   return 'Loading';
-  // }
-
   return (
     <div>
-      {isContract && (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && isNDA)) && (
-        <Timeline data={bidStageData} />
+      {userType !== userTypes.client && bidInfo && (
+        // If the user type is talent, check if bidInfo is available before proceeding.
+        <div>
+          {isContract &&
+            // If isContract is true...
+            (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && isNDA)) && (
+              // If projectDetailsData?.nda?.is_nda is true, check isNDA before rendering Timeline.
+              <Timeline data={bidStageData} />
+            )}
+        </div>
       )}
-      {/* {userType === userTypes.talent && bidInfo ? (
-        <Timeline data={bidStageData} />
-      ) : userType === userTypes.client ? (
-        <Timeline data={bidStageData} />
-      ) : null} */}
-
-      {/* <Timeline data={bidStageData} /> */}
-
-      {/* {bidInfo && isContract && <Timeline data={bidStageData} />} */}
+      {userType === userTypes.client && (
+        // If the user type is client, no need to check bidInfo.
+        <div>
+          {isContract &&
+            // If isContract is true...
+            (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && isNDA)) && (
+              // If projectDetailsData?.nda?.is_nda is true, check isNDA before rendering Timeline.
+              <Timeline data={bidStageData} />
+            )}
+        </div>
+      )}
     </div>
   );
 };

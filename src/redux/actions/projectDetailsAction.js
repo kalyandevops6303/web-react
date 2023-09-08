@@ -236,12 +236,12 @@ const sendDocument =
 
 // Action creator for signing a contract by talent
 const signContractByTalent =
-  ({ project_id, doc_type, user_id, role, onSuccess }) =>
+  ({ project_id, doc_type, role, onSuccess }) =>
   async (dispatch) => {
     dispatch(signContractByTalentRequest());
     try {
       await signContractByTalentServive({ project_id, doc_type, role });
-      dispatch(signContractByTalentSuccess({ user_id }));
+      dispatch(signContractByTalentSuccess({ role }));
       onSuccess();
     } catch (error) {
       errorHandler(error, signContractByTalentFailure);
