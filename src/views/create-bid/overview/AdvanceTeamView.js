@@ -80,7 +80,7 @@ const AdvanceTeamView = () => {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control,
     name: 'projectRolesDetails',
   });
@@ -187,7 +187,7 @@ const AdvanceTeamView = () => {
   };
 
   const handleAddSuggestedRole = (name) => {
-    append({ role: name, member: undefined, rate: undefined });
+    insert(0, { role: name, member: undefined, rate: undefined });
   };
 
   const handleRemoveSuggestedRole = (name) => {
@@ -275,26 +275,22 @@ const AdvanceTeamView = () => {
                       <div
                         className={
                           watch('projectRolesDetails').find((item) => item.role === role)
-                            ? 'active-role-pill'
-                            : 'inactive-role-pill'
+                            ? 'active-role-pill cursor-pointer'
+                            : 'inactive-role-pill cursor-pointer'
                         }
                         key={role}
+                        onClick={() =>
+                          (watch('projectRolesDetails').find((item) => item.role === role)
+                            ? handleRemoveSuggestedRole(role)
+                            : handleAddSuggestedRole(role))
+                        }
                       >
                         <Badge pill className="px-1 py-50 d-flex align-items-center">
                           <h6 className="m-0 fw-light">{role}</h6>
                           {watch('projectRolesDetails').find((item) => item.role === role) ? (
-                            <Minus
-                              size={18}
-                              className="ms-50 cursor-pointer"
-                              onClick={() => handleRemoveSuggestedRole(role)}
-                            />
+                            <Minus size={18} className="ms-50 cursor-pointer" />
                           ) : (
-                            <Plus
-                              size={18}
-                              color={theme.wizardStepSvgColor}
-                              className="ms-50 cursor-pointer"
-                              onClick={() => handleAddSuggestedRole(role)}
-                            />
+                            <Plus size={18} color={theme.wizardStepSvgColor} className="ms-50 cursor-pointer" />
                           )}
                         </Badge>
                       </div>
@@ -312,7 +308,7 @@ const AdvanceTeamView = () => {
                   <p className="roles-list-header">Team Member</p>
                 </Col>
                 <Col sm="12" md="5" lg="3">
-                  <p className="roles-list-header">$ Hours/Rate</p>
+                  <p className="roles-list-header">$ Hourly Rate</p>
                 </Col>
                 <Col sm="12" md="5" lg="2">
                   <div className="d-flex justify-content-end me-2">

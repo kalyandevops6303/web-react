@@ -97,7 +97,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
             </div>
           ) : (
             <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
-              View Details
+              View Invites
             </div>
           )}
         </CardBody>

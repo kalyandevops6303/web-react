@@ -67,7 +67,7 @@ const API = {
     validateUrl: `${apiAuthEndpoint}/api/v1/team/invite-member/validate-deep-link`,
     updateInvitation: `${apiAuthEndpoint}/api/v1/team/invite-member/update-invite`,
     removeMember: `${apiAuthEndpoint}/api/v1/team/delete-member`,
-    teamProfilePercentage: `${apiAuthEndpoint}/api/v1/teams/profile-percentage`,
+    teamProfilePercentage: `${apiOnboardingEndpoint}/api/v1/teams/profile-percentage`,
 
     // talent
     recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,

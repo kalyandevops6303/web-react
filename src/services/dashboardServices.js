@@ -31,6 +31,8 @@ const validateUrlService = (data) => DataService.post(API.dashboard.validateUrl,
 
 const updateInvitationService = (data) => DataService.post(API.dashboard.updateInvitation, data);
 
+const teamProfilePercentageService = () => DataService.get(API.dashboard.teamProfilePercentage);
+
 export {
   userDataService,
   removeMemberService,
@@ -46,4 +48,5 @@ export {
   getProjectInviteService,
   validateUrlService,
   updateInvitationService,
+  teamProfilePercentageService,
 };

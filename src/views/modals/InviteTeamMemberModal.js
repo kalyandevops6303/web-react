@@ -184,7 +184,7 @@ const InviteTeamMemberModal = ({
             setSelectedTalents([...selectedTalents, user]);
           }}
         >
-          <h5 className="m-0 fw-light font-medium-1">Invite</h5>
+          <h5 className="m-0 fw-light font-medium-1">Select</h5>
         </div>
       );
     }
