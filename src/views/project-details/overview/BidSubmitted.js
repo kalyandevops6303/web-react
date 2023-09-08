@@ -1,32 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PdfIcon from '@src/assets/images/PDF.svg';
 
 import { AccordionBody, AccordionHeader, AccordionItem, CardText } from 'reactstrap';
-import { useParams } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import { AccordionHeadStyle } from '../style';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
-import { userTypes } from '../../../utility/constants/Constant';
-import { getBidDetails } from '../../../redux/actions/projectDetailsAction';
 import Timeline from '../../../@core/components/timeline';
 import theme from '../../../configs/themeVariables';
 import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
 
 const BidSubmitted = () => {
-  const userData = useSelector(selectUserData);
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
-  const param = useParams();
   const [bidModal, setBidModal] = useState(false);
   const toggleBidModal = () => setBidModal(!bidModal);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (userData?.user_type !== userTypes.client) {
-      dispatch(getBidDetails({ project_id: param?.projectId }));
-    }
-  }, []);
 
   const timelineEntries = {};
   bidInfo?.timeline?.forEach((entry) => {

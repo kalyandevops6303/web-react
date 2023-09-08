@@ -14,6 +14,7 @@ const projectDetails = createSlice({
   name: 'projectDetails',
   initialState,
   reducers: {
+    clearProjectData: () => initialState,
     projectDetailsRequest: (state) => ({
       ...state,
       projectDetailsLoading: true,
@@ -21,8 +22,8 @@ const projectDetails = createSlice({
     }),
     projectDetailsSuccess: (state, action) => ({
       ...state,
-      projectDetailsLoading: false,
       projectDetails: action.payload,
+      projectDetailsLoading: false,
     }),
     projectDetailsFailure: (state, action) => ({
       ...state,
@@ -124,10 +125,160 @@ const projectDetails = createSlice({
       getInvitedByLoading: false,
       error: action.payload,
     }),
+
+    // Contract flow
+    checkDocumentActivatedRequest: (state) => ({
+      ...state,
+      checkDocumentActivatedLoading: true,
+      error: null,
+    }),
+    checkDocumentActivatedSuccess: (state, action) => ({
+      ...state,
+      checkDocumentActivatedLoading: false,
+      ...action.payload,
+    }),
+    checkDocumentActivatedFailure: (state, action) => ({
+      ...state,
+      checkDocumentActivatedLoading: false,
+      error: action.payload,
+    }),
+
+    getDocumentRequest: (state) => ({
+      ...state,
+      getDocumentLoading: true,
+      error: null,
+    }),
+    getDocumentSuccess: (state, action) => ({
+      ...state,
+      getDocumentLoading: false,
+      projectWorkers: action.payload.workers,
+      document: action.payload,
+    }),
+    getDocumentFailure: (state, action) => ({
+      ...state,
+      getDocumentLoading: false,
+      error: action.payload,
+    }),
+
+    getDocumentTimelineRequest: (state) => ({
+      ...state,
+      getDocumentTimelineLoading: true,
+      error: null,
+    }),
+    getDocumentTimelineSuccess: (state, action) => ({
+      ...state,
+      getDocumentTimelineLoading: false,
+      ...action.payload,
+    }),
+    getDocumentTimelineFailure: (state, action) => ({
+      ...state,
+      getDocumentTimelineLoading: false,
+      error: action.payload,
+    }),
+
+    sendDocumentRequest: (state) => ({
+      ...state,
+      sendDocumentLoading: true,
+      error: null,
+    }),
+    sendDocumentSuccess: (state) => ({
+      ...state,
+      sendDocumentLoading: false,
+    }),
+    sendDocumentFailure: (state, action) => ({
+      ...state,
+      sendDocumentLoading: false,
+      error: action.payload,
+    }),
+
+    signContractByTalentRequest: (state) => ({
+      ...state,
+      signContractByTalentLoading: true,
+      error: null,
+    }),
+    signContractByTalentSuccess: (state, action) => {
+      const { role } = action.payload;
+
+      // Find the index of the first worker with the matching role
+      const workerIndex = state?.document?.workers.findIndex((worker) => !worker.is_signed && worker.role === role);
+
+      if (workerIndex !== -1) {
+        // If a matching worker is found, update it
+        const updatedWorkers = [...state.document.workers];
+        updatedWorkers[workerIndex] = { ...updatedWorkers[workerIndex], is_signed: true };
+
+        return {
+          ...state,
+          signContractByTalentLoading: false,
+          document: {
+            ...state.document,
+            workers: updatedWorkers,
+          },
+        };
+      }
+
+      // If no matching worker is found, return the original state
+      return state;
+    },
+
+    signContractByTalentFailure: (state, action) => ({
+      ...state,
+      signContractByTalentLoading: false,
+      error: action.payload,
+    }),
+
+    terminateContractRequest: (state) => ({
+      ...state,
+      terminateContractLoading: true,
+      error: null,
+    }),
+    terminateContractSuccess: (state) => ({
+      ...state,
+      terminateContractLoading: false,
+      document: { ...state.document, is_terminated: true },
+    }),
+    terminateContractFailure: (state, action) => ({
+      ...state,
+      terminateContractLoading: false,
+      error: action.payload,
+    }),
+
+    updateContractRequest: (state) => ({
+      ...state,
+      updateContractLoading: true,
+      error: null,
+    }),
+    updateContractSuccess: (state) => ({
+      ...state,
+      updateContractLoading: false,
+    }),
+    updateContractFailure: (state, action) => ({
+      ...state,
+      updateContractLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
 export const {
+  checkDocumentActivatedRequest,
+  checkDocumentActivatedSuccess,
+  checkDocumentActivatedFailure,
+  getDocumentTimelineRequest,
+  getDocumentTimelineSuccess,
+  getDocumentTimelineFailure,
+  getDocumentRequest,
+  getDocumentSuccess,
+  getDocumentFailure,
+  sendDocumentRequest,
+  sendDocumentSuccess,
+  sendDocumentFailure,
+  signContractByTalentRequest,
+  signContractByTalentSuccess,
+  signContractByTalentFailure,
+  terminateContractRequest,
+  terminateContractSuccess,
+  terminateContractFailure,
   getInvitedByRequest,
   getInvitedBySuccess,
   getInvitedByFailure,
@@ -146,6 +297,10 @@ export const {
   projectDetailsRequest,
   projectDetailsSuccess,
   projectDetailsFailure,
+  clearProjectData,
+  updateContractRequest,
+  updateContractSuccess,
+  updateContractFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

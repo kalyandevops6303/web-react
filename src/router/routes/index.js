@@ -81,10 +81,13 @@ const Routes = [
     element: <BidDetails />,
   },
   {
-    path: '/project-details/:projectId/contract',
+    path: '/project-details/:projectId/:projectStep/doc/:docType/*',
     element: <ContractView />,
   },
-
+  {
+    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
+    element: <ContractView />,
+  },
   {
     path: '/auth/*',
     element: <AuthRoute />,

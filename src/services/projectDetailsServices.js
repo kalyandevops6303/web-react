@@ -36,7 +36,46 @@ const acceptInvitation = ({ id }) => DataService.put(`${API.projectDetails.accep
 
 const rejectInvitation = ({ id }) => DataService.put(`${API.projectDetails.reject}/${id}`);
 
+// Contract flow
+
+const checkDocumentActivatedService = ({ project_id, doc_type }) =>
+  DataService.get(`${API.projectDetails.checkDocumentActivated}?doc_type=${doc_type}&project_id=${project_id}`);
+
+const getDocumentService = ({ project_id, doc_type, document_id }) => {
+  if (document_id) {
+    return DataService.get(
+      `${API.projectDetails.getDocument}?doc_type=${doc_type}&project_id=${project_id}&document_id=${document_id}`,
+    );
+  }
+  return DataService.get(`${API.projectDetails.getDocument}?doc_type=${doc_type}&project_id=${project_id}`);
+};
+
+const getDocumentTimelineService = ({ project_id, doc_type }) =>
+  DataService.get(`${API.projectDetails.getDocumentTimeline}?project_id=${project_id}&doc_type=${doc_type}`);
+
+const sendDocumentService = ({ project_id, doc_type, data, validity }) =>
+  DataService.post(
+    `${API.projectDetails.sendDocument}?doc_type=${doc_type}&project_id=${project_id}&validity=${validity}`,
+    data,
+  );
+
+const signContractByTalentServive = ({ project_id, doc_type, role }) =>
+  DataService.put(
+    `${API.projectDetails.signContractByTalent}?project_id=${project_id}&doc_type=${doc_type}&role=${role}`,
+  );
+
+const terminateContractService = ({ project_id, doc_type }) =>
+  DataService.delete(
+    `${API.projectDetails.terminateContract}?project_id=${project_id}&doc_type=${doc_type}&decline_bid=true`,
+  );
+
 export {
+  getDocumentService,
+  checkDocumentActivatedService,
+  getDocumentTimelineService,
+  sendDocumentService,
+  signContractByTalentServive,
+  terminateContractService,
   acceptInvitation,
   rejectInvitation,
   getInvitedByService,

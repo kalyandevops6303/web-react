@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState, memo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -13,24 +13,28 @@ import TeamView from './overview/TeamView';
 import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
 import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
+import { clearProjectData } from '../../redux/reducers/projectDetails';
 
 const ProjectDetails = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
+  const projectDetailsData = useSelector(projectDetails);
 
   const changeStep = (step) => {
     setCurrentStep(step);
   };
-  const projectDetailsData = useSelector(projectDetails);
-
   useEffect(() => {
     window?.scrollTo(0, 0);
+    return () => {
+      dispatch(clearProjectData());
+    };
   }, []);
 
   const isInviteView = location?.pathname?.includes('project-invitation');
 
   return (
-    <>
+    <div>
       <BreadCrumbs
         data={
           isInviteView
@@ -55,8 +59,8 @@ const ProjectDetails = () => {
           </Routes>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 
-export default ProjectDetails;
+export default memo(ProjectDetails);

@@ -158,6 +158,7 @@ const theme = {
   greenBtnBg,
   noDataFoundTextColor,
   info: infoColor,
+  timelineSuccessColor: infoColor,
   secondary: secondaryColor,
   cardBgBlue,
   cardShadowLight,

@@ -273,3 +273,32 @@ export const formatFileSize = (bytes) => {
   }
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 };
+
+export const getProjectStatus = (status) => {
+  switch (status) {
+    case 'SIGNED':
+      return 'Signed - Contract Document';
+    case 'TERMINATED':
+      return 'Terminated - Early Termination of contract';
+    case 'PROJECT_STARTED':
+      return 'Project Started';
+    case 'PROJECT_COMPLETED':
+      return 'Project Completed';
+    default:
+      return '';
+  }
+};
+export const getTimeLineDotColor = (status) => {
+  switch (status) {
+    case 'SIGNED':
+      return theme.orangeColor;
+    case 'TERMINATED':
+      return theme.red;
+    case 'PROJECT_STARTED':
+      return theme.timelineSuccessColor;
+    case 'PROJECT_COMPLETED':
+      return theme.purpleColor;
+    default:
+      return '';
+  }
+};

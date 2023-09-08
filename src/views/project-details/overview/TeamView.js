@@ -17,7 +17,9 @@ const TeamView = () => {
   const unassigned = useSelector((state) => state.projectDetails.unassignedRole);
   useEffect(() => {
     dispatch(getTeamMembers({ project_id: params.projectId }));
-    dispatch(getUnassignedRoles({ project_id: params.projectId }));
+    if (userData?.user_type === userTypes.team) {
+      dispatch(getUnassignedRoles({ project_id: params.projectId }));
+    }
   }, []);
 
   const [inviteModal, setInviteModal] = useState(false);

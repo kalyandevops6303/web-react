@@ -9,7 +9,7 @@ import BadgeGroup from '../../../@core/components/badge-group-dynamic-count';
 import { LeftSidebarProjectDetailsWrapper } from '../style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { CustomBadge } from '../../styled';
-import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
+import { projectDetails, projectDetailsLoading } from '../../../redux/selectors/projectDetailsSelectors';
 import DateTime from '../../../lib/date-time';
 import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
@@ -27,6 +27,8 @@ const LeftSidebarProjectDetails = () => {
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
   };
+
+  const isLoading = useSelector(projectDetailsLoading);
 
   useEffect(() => {
     dispatch(getProjectDetails(params.projectId));
@@ -49,7 +51,9 @@ const LeftSidebarProjectDetails = () => {
       );
     }
   }, [projectDetailsData]);
-
+  if (isLoading) {
+    return <>Loading</>;
+  }
   return (
     <LeftSidebarProjectDetailsWrapper>
       <Card>

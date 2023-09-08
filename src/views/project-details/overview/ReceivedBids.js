@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable no-undef */
+import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
+import PropTypes from 'prop-types';
 
 import {
   AccordionBody,
@@ -15,7 +17,7 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import { debounce } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ChevronDown, Eye, MoreVertical, Paperclip, Search } from 'react-feather';
@@ -34,15 +36,16 @@ import { AccordionHeadStyle } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getReceivedBids } from '../../../redux/actions/projectDetailsAction';
 
-const ReceivedBids = () => {
+const ReceivedBids = ({ projectName }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const receivedBids = useSelector((state) => state.projectDetails.receivedBids);
   const [hasMore, setHasMore] = useState(true);
   const totalInvited = useSelector((state) => state.projectDetails.invitedMemberForProjectByClient);
   const selectReceivedBidsMetadata = useSelector((state) => state.projectDetails.receivedBidsMetaData);
-  const selectReceivedBidscurrentPreview = useSelector((state) => state.dashboard.receivedBidsCurrentPreview);
+  const selectReceivedBidscurrentPreview = useSelector((state) => state.projectDetails.receivedBidsPreview);
   const metadata = { page: 1, page_size: 10 };
   const [searchText, setSearchText] = useState('');
   const [status, setStatus] = useState('');
@@ -118,7 +121,11 @@ const ReceivedBids = () => {
   ];
 
   const handleRedirectTobidDetails = (item) => {
-    navigate(`${item?._id}`);
+    const state = {
+      projectName,
+      link: location?.pathname,
+    };
+    navigate(`${item?._id}?project_name=${projectName}`, { state });
   };
 
   const receivedBidsDataset = [];
@@ -233,7 +240,11 @@ const ReceivedBids = () => {
           <CardText className="d-none">10/500 Invited</CardText>
         </div>
 
-        <div className="react-dataTable mt-1" style={{ maxHeight: '400px' }} id="scrollDivForReceivedBids">
+        <div
+          className="react-dataTable mt-1"
+          style={{ overflowY: 'auto', maxHeight: '400px' }}
+          id="scrollDivForReceivedBids"
+        >
           <InfiniteScroll
             dataLength={receivedBids?.length}
             next={fetchMore}
@@ -263,4 +274,11 @@ const ReceivedBids = () => {
   );
 };
 
-export default ReceivedBids;
+ReceivedBids.propTypes = {
+  projectName: PropTypes.string,
+};
+ReceivedBids.defaultProps = {
+  projectName: '',
+};
+
+export default memo(ReceivedBids);
