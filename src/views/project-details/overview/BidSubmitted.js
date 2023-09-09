@@ -122,7 +122,7 @@ const BidSubmitted = () => {
             <span className="time">{item?.time ? DateTime?.fromMillis(item?.time)?.toRelative() : '-'}</span>
             {item.status === 'Bid Submitted' && (
               <span className="card-cta" onClick={toggleBidModal}>
-                View
+                View Bid
               </span>
             )}
           </div>

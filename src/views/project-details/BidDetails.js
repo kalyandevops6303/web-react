@@ -59,7 +59,10 @@ const BidDetails = () => {
           <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
         ) : (
           <div className="d-flex gap-2 align-items-center">
-            <CardText onClick={() => handleUpadteStatus('REJECTED')} className="report-text m-0 text-center fw-bold">
+            <CardText
+              onClick={() => handleUpadteStatus('REJECTED')}
+              className="report-text m-0 text-center fw-bold cursor-pointer"
+            >
               Reject
             </CardText>
             <span>
@@ -165,7 +168,7 @@ const BidDetails = () => {
               <div className="d-flex gap-2 align-items-center">
                 <CardText
                   onClick={() => handleUpadteStatus('REJECTED')}
-                  className="report-text m-0 text-center fw-bold"
+                  className="report-text m-0 text-center fw-bold cursor-pointer"
                 >
                   Reject
                 </CardText>

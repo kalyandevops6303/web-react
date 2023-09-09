@@ -13,6 +13,7 @@ import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors
 import DateTime from '../../../lib/date-time';
 import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
+import { formatDate } from '../../../utility/Utils';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const LeftSidebarProjectDetails = () => {
   const projectDetailsData = useSelector(projectDetails);
 
   const statusEnum = {
-    OPEN: 'Open Listing',
+    OPEN: 'Open',
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
@@ -111,7 +112,7 @@ const LeftSidebarProjectDetails = () => {
           <div className="d-flex mb-75">
             <span className="info-key">Posted date:</span>
             <CardText className="info-value">
-              {projectDetailsData?.listing_details?.start_date.replaceAll('-', '/')}
+              {formatDate(projectDetailsData?.listing_details?.start_date.replaceAll('-', '/'))}
             </CardText>
           </div>
 

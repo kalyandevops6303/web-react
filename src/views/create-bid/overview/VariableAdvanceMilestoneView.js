@@ -577,6 +577,8 @@ const VariableAdvanceMilestoneView = () => {
 
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
+    // eslint-disable-next-line no-undef
+    setTimeout(() => window.scrollTo(0, 0), 30);
   }, []);
 
   return (

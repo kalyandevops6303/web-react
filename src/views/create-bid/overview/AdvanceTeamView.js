@@ -259,6 +259,8 @@ const AdvanceTeamView = () => {
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
     dispatch(getRoles(params.projectId));
+    // eslint-disable-next-line no-undef
+    setTimeout(() => window.scrollTo(0, 0), 30);
   }, []);
 
   return (
@@ -287,9 +289,9 @@ const AdvanceTeamView = () => {
                         }
                         key={role}
                         onClick={() =>
-                          watch('projectRolesDetails').find((item) => item.role === role)
+                          (watch('projectRolesDetails').find((item) => item.role === role)
                             ? handleRemoveSuggestedRole(role)
-                            : handleAddSuggestedRole(role)
+                            : handleAddSuggestedRole(role))
                         }
                       >
                         <Badge pill className="px-1 py-50 d-flex align-items-center">

@@ -36,8 +36,9 @@ const CustomBadge = styled.span`
     color: ${theme.lightBlueColor};
   }
   .OPEN {
-    background: ${theme.succesGreenBg};
-    color: ${theme.succesGreenColor};
+    background: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor};
+    border: 1px solid ${theme.blueColor};
   }
   .IN_REVIEW {
     background: ${theme.orange}1f;

@@ -81,19 +81,19 @@ const ReceivedBids = () => {
     {
       name: 'NAME',
       sortable: true,
-      minWidth: '28%',
+      minWidth: '27%',
       selector: (row) => row.name,
     },
     {
       name: 'RATING',
       sortable: true,
-      minWidth: '16%',
+      minWidth: '17%',
       selector: (row) => row.rating,
     },
     {
       name: 'BID AMT',
       sortable: true,
-      minWidth: '14%',
+      minWidth: '13%',
       selector: (row) => row.bid,
     },
     {
@@ -106,7 +106,7 @@ const ReceivedBids = () => {
       name: 'STATUS',
       sortable: true,
       minWidth: '12%',
-      selector: (row) => row.status,
+      selector: (row) => (row.status === 'DECLINED' ? 'REJECTED' : row.status),
     },
 
     {
@@ -244,7 +244,6 @@ const ReceivedBids = () => {
               </div>
             }
             scrollableTarget="scrollDivForReceivedBids"
-            loader={<div className="d-flex justify-content-center">Loading...</div>}
           >
             <DataTable
               noHeader

@@ -23,7 +23,7 @@ const LeftSidebarProjectDetails = () => {
   const projectDetailsData = useSelector(projectDetails);
 
   const statusEnum = {
-    OPEN: 'Open Listing',
+    OPEN: 'Open',
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
