@@ -97,7 +97,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
             </div>
           ) : (
             <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
-              View Invites
+              Explore Teams
             </div>
           )}
         </CardBody>
@@ -171,6 +171,8 @@ const TeamListing = () => {
       setIsSliderLoading(false);
     }, 1000);
   }, [open]);
+
+  // console.log(recommendedTeams);
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
@@ -408,3 +410,6 @@ Empty.defaultProps = {
   isEducationNotCompleted: false,
   isTeam: false,
 };
+
+// no team when then explore teams text recommd team
+// 535. page focus on top scroll top.

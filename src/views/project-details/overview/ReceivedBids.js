@@ -176,10 +176,10 @@ const ReceivedBids = () => {
   );
 
   const statusOption = [
-    { label: 'Active', value: 'ACTIVE' },
+    { label: 'New', value: 'NEW' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
-    { label: 'Declined', value: 'DECLINED' },
+    { label: 'Rejected', value: 'REJECTED' },
   ];
   const handleSearchTextChange = (e) => {
     setSearchText(e.target.value);
@@ -190,7 +190,7 @@ const ReceivedBids = () => {
     <AccordionItem>
       <AccordionHeader targetId="1">
         <AccordionHeadStyle>
-          <span className="title-head">Received bids</span>
+          <span className="title-head">Received Bids</span>
           <div className="d-flex gap-1 aling-items-center">
             <CardText className="d-none view-all-cta">Give rating</CardText>
             <div>

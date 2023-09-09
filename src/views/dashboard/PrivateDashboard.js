@@ -23,6 +23,7 @@ import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
+import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -32,6 +33,8 @@ const PrivateDashboard = () => {
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const [deleteModal, setDeletModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState();
+
+  const [raisedDisputeModal, setRaisedDisputeModal] = useState(null);
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
@@ -107,6 +110,10 @@ const PrivateDashboard = () => {
     setDeleteModalData(data);
   };
 
+  const handleRaiseDispute = () => {
+    setRaisedDisputeModal(true);
+  };
+
   return (
     <div>
       {completeProfileModal && (
@@ -127,6 +134,10 @@ const PrivateDashboard = () => {
       )}
       {deleteModal && (
         <RemoveMemberModal modal={deleteModal} data={deleteModalData} toggleModal={() => setDeletModal(!deleteModal)} />
+      )}
+
+      {raisedDisputeModal && (
+        <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
       )}
 
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
@@ -198,7 +209,7 @@ const PrivateDashboard = () => {
             />
           )}
           <Alerts />
-          <Disputes />
+          <Disputes handleRaiseDispute={handleRaiseDispute} />
           <Meetings />
         </Col>
       </Row>

@@ -142,9 +142,7 @@ const BidTimeline = () => {
     },
   ];
   return (
-    <>
-      <Timeline data={userType === userTypes.client ? bidStageDataForClient : bidStageDataForTalentTeam} />;
-    </>
+    <Timeline data={userType === userTypes.client ? bidStageDataForClient : bidStageDataForTalentTeam} />
   );
 };
 

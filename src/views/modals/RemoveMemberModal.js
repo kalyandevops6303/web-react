@@ -55,7 +55,7 @@ const RemoveMemberModal = ({ modal, toggleModal, data }) => {
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 me-1 justify-content-end">
-            <Button outline color="primary">
+            <Button outline color="primary" onClick={() => onClose()}>
               Cancel
             </Button>
             <Button onClick={() => handleRemoveMember(data)} color="danger">

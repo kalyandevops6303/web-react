@@ -84,6 +84,10 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
     navigate('/marketplace/talents', { state: { isRecommended: true } });
   };
 
+  const handleViewTeamProfile = () => {
+    navigate('/marketplace/teams', { state: { isRecommended: true } });
+  };
+
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
@@ -119,9 +123,16 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           ) : (
             <TagsSection fullWidth open={open} tags={data?.skills} />
           )}
-          <div className="d-flex">
-            <RatingBadge number="0" />
-            <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+          <div className="d-flex flex-column ">
+            <div className="mb-1">
+              <TagsSection fullWidth open={open} tags={data?.expertise?.skills} />
+            </div>
+            <div className="d-flex">
+              <RatingBadge number={data?.rating} />
+              <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                {data?.projects_worked_on_count} Projects
+              </CardText>
+            </div>
           </div>
 
           <div className="main-row">
@@ -191,10 +202,10 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
             </div>
           ) : (
             <div
-              // onClick={() => setShowModal(true)}
+              onClick={handleViewTeamProfile}
               className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
             >
-              View Invite
+              View Team
             </div>
           )}
         </CardBody>
