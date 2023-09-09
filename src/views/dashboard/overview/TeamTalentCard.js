@@ -12,6 +12,7 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
@@ -50,6 +51,8 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
 
+  const navigate = useNavigate();
+
   const handleToggle = () => {
     setShowModal(!showModal);
   };
@@ -75,6 +78,10 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
     } else {
       return theme.green;
     }
+  };
+
+  const handleViewTalentProfile = () => {
+    navigate('/marketplace/talents', { state: { isRecommended: true } });
   };
 
   return (
@@ -177,7 +184,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           </div>
           {isTeamLoggedIn ? (
             <div
-              // onClick={() => setShowModal(true)}
+              onClick={handleViewTalentProfile}
               className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
             >
               View Talent Profile
@@ -187,7 +194,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
               // onClick={() => setShowModal(true)}
               className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
             >
-              View Details
+              View Invite
             </div>
           )}
         </CardBody>
