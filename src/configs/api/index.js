@@ -157,6 +157,11 @@ const API = {
     resolveDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/resolve`,
     disputesCount: `${apiCreateProjectEndpoint}/api/v1/disputes/count`,
   },
+  rating: {
+    giveRating: `${apiCreateProjectEndpoint}/api/v1/ratings`,
+    yourSubmittedRating: `${apiCreateProjectEndpoint}/api/v1/ratings/your-provided-rating`,
+    yourRating: `${apiCreateProjectEndpoint}/api/v1/ratings/your-rating`,
+  },
 };
 
 export default API;
