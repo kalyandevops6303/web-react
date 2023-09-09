@@ -410,6 +410,3 @@ Empty.defaultProps = {
   isEducationNotCompleted: false,
   isTeam: false,
 };
-
-// no team when then explore teams text recommd team
-// 535. page focus on top scroll top.
