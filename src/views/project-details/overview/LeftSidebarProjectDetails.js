@@ -14,10 +14,19 @@ import DateTime from '../../../lib/date-time';
 import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { formatDate } from '../../../utility/Utils';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
+import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const userData = useSelector(selectUserData);
+  const [inviteModal, setInviteModal] = useState(false);
+  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+  const toggleModal = () => {
+    setInviteModal(!inviteModal);
+  };
 
   const projectDetailsData = useSelector(projectDetails);
 
@@ -55,6 +64,11 @@ const LeftSidebarProjectDetails = () => {
   if (isLoading) {
     return <>Loading</>;
   }
+
+  const handleInvite = () => {
+    setInviteModal(true);
+    setInviteTalentToTeamModal(true);
+  };
   return (
     <LeftSidebarProjectDetailsWrapper>
       <Card>
@@ -138,13 +152,34 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          <div className="d-flex gap-1 mt-3 justify-content-center">
-            <Button className="w-50" color="primary">
-              Message
-            </Button>
-          </div>
+          {userData?.user_type === userTypes.client ? (
+            <div>
+              <div className="d-flex gap-1 mt-3 justify-content-center">
+                <Button className="w-50 d-none" outline color="danger">
+                  Delete
+                </Button>
+                <Button className="w-50" color="primary" onClick={handleInvite}>
+                  Invite
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="d-flex gap-1 mt-3 justify-content-center">
+              <Button className="w-50" color="primary">
+                Message
+              </Button>
+            </div>
+          )}
         </CardBody>
       </Card>
+      {inviteTalentToTeamModal && (
+        <InviteTalentToTeamForProjectDetails
+          inviteTeamMemberModal={inviteModal}
+          toggleInviteTeamMemberModal={toggleModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+          projectId={params.projectId}
+        />
+      )}
     </LeftSidebarProjectDetailsWrapper>
   );
 };

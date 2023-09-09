@@ -56,6 +56,7 @@ const ProjectDetails = () => {
             <Route path="bid" element={<BidView />} />
             <Route path="team" element={<TeamView />} />
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
+            <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />
           </Routes>
         </Col>
       </Row>

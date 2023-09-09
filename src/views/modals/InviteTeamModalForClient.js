@@ -19,7 +19,7 @@ import {
   TabContent,
   TabPane,
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Check, Search, Share2, Star } from 'react-feather';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import Avatar from '@components/avatar';
@@ -31,24 +31,11 @@ import AlmaMaterImg from '../../assets/images/almaMater.png';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import InfiniteScroll from '../../lib/infinite-scroll';
 import { giveStrokeColor } from '../../utility/Utils';
-import {
-  getAlmaMaterTalents,
-  getBestTalents,
-  getFavoriteTalents,
-  getTeamMemberForInvite,
-} from '../../redux/actions/inviteTalent';
+import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../redux/actions/createProjectActions';
 
-import {
-  almaMaterTalents,
-  bestTalents,
-  favoriteTalents,
-  teamMemberForInvite,
-} from '../../redux/selectors/inviteTalentSelector';
+import { almaMaterTalents, bestTalents, favoriteTalents } from '../../redux/selectors/createProjectSelectors';
 
-import { selectUserData } from '../../redux/selectors/authSelectors';
-import { userTypes } from '../../utility/constants/Constant';
-
-const InviteTeamMemberModal = ({
+const InviteTeamModalForClient = ({
   invitedIds,
   selectedIds,
   setSelectedIds,
@@ -68,16 +55,15 @@ const InviteTeamMemberModal = ({
     teamMember: '4',
   };
 
+  const param = useParams();
   const dispatch = useDispatch();
 
   const bestTalentsData = useSelector(bestTalents);
   const favoriteTalentsData = useSelector(favoriteTalents);
   const almaMaterTalentsData = useSelector(almaMaterTalents);
-  const teamMemberForInviteData = useSelector(teamMemberForInvite);
 
   const [activeTab, setTabActive] = useState(tabNames.favourite);
   const [searchValue, setSearchValue] = useState('');
-  const userData = useSelector(selectUserData);
 
   const toggleTabs = (tab) => {
     if (activeTab !== tab) {
@@ -88,6 +74,7 @@ const InviteTeamMemberModal = ({
   const loadNewBestTalents = () => {
     dispatch(
       getBestTalents(
+        param?.projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         bestTalentsData?.metadata?.current_page + 1,
@@ -100,6 +87,7 @@ const InviteTeamMemberModal = ({
   const loadNewFavoriteTalents = () => {
     dispatch(
       getFavoriteTalents(
+        param?.projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         favoriteTalentsData?.metadata?.current_page + 1,
@@ -112,23 +100,12 @@ const InviteTeamMemberModal = ({
   const loadNewAlmaMaterTalents = () => {
     dispatch(
       getAlmaMaterTalents(
+        param?.projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         almaMaterTalentsData?.metadata?.current_page + 1,
         10,
         almaMaterTalentsData?.data,
-      ),
-    );
-  };
-  const loadNewTeamMembers = () => {
-    dispatch(
-      getTeamMemberForInvite(
-        searchValue,
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        almaMaterTalentsData?.metadata?.current_page + 1,
-        10,
-        almaMaterTalentsData?.data,
-        projectId,
       ),
     );
   };
@@ -137,12 +114,9 @@ const InviteTeamMemberModal = ({
     let delayDebounceFn = null;
 
     delayDebounceFn = setTimeout(() => {
-      dispatch(getBestTalents(searchValue, 1, 10, []));
-      dispatch(getFavoriteTalents(searchValue, 1, 10, []));
-      dispatch(getAlmaMaterTalents(searchValue, 1, 10, []));
-      if (userData?.user_type !== userTypes.client && projectId) {
-        dispatch(getTeamMemberForInvite(searchValue, 1, 10, [], projectId));
-      }
+      dispatch(getBestTalents(param?.projectId, searchValue, 1, 10, []));
+      dispatch(getFavoriteTalents(param?.projectId, searchValue, 1, 10, []));
+      dispatch(getAlmaMaterTalents(param?.projectId, searchValue, 1, 10, []));
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
@@ -169,13 +143,13 @@ const InviteTeamMemberModal = ({
         </div>
       );
       // eslint-disable-next-line
-    } else if (selectedIds.includes(userId)) {
+    } else if (selectedIds?.includes(userId)) {
       return (
         <div
           className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
           onClick={() => {
-            setSelectedIds(selectedIds.filter((data) => data !== userId));
-            setSelectedTalents(selectedTalents.filter((data) => data.user_id !== userId));
+            setSelectedIds(selectedIds?.filter((data) => data !== userId));
+            setSelectedTalents(selectedTalents?.filter((data) => data.user_id !== userId));
           }}
         >
           <Check size={18} color={theme.green} />
@@ -190,7 +164,7 @@ const InviteTeamMemberModal = ({
             setSelectedTalents([...selectedTalents, user]);
           }}
         >
-          <h5 className="m-0 fw-light font-medium-1">Select</h5>
+          <h5 className="m-0 fw-light font-medium-1">Invite</h5>
         </div>
       );
     }
@@ -250,7 +224,7 @@ const InviteTeamMemberModal = ({
         <div className="px-2 py-2">
           <p className="fw-bold font-medium-1 mb-50">
             Invite talent to {projectId ? 'work on this project ' : 'join your team'}
-            {userData?.user_type !== userTypes.client && inviteRole ? `as a ${inviteRole}` : ''}
+            {inviteRole ? `as a ${inviteRole}` : ''}
           </p>
           <p className="pe-5">
             <span className="fw-bold"> Note:</span> If a talent is not already part of your team, they will need to join
@@ -301,18 +275,6 @@ const InviteTeamMemberModal = ({
                     <img src={AlmaMaterImg} alt="alma-mater" className="ms-50" />
                   </NavLink>
                 </NavItem>
-                {userData?.user_type !== userTypes.client && projectId && (
-                  <NavItem>
-                    <NavLink
-                      active={activeTab === tabNames.teamMember}
-                      onClick={() => {
-                        toggleTabs(tabNames.teamMember);
-                      }}
-                    >
-                      Team Member
-                    </NavLink>
-                  </NavItem>
-                )}
               </Nav>
             </BlueNavsContainer>
           </Row>
@@ -590,94 +552,6 @@ const InviteTeamMemberModal = ({
                 </TableContainer>
               )}
             </TabPane>
-            <TabPane tabId={tabNames.teamMember}>
-              {activeTab === tabNames.teamMember && (
-                <TableContainer id="scrollableDiv">
-                  <InfiniteScroll
-                    dataLength={teamMemberForInviteData?.data?.length || 0}
-                    next={loadNewTeamMembers}
-                    hasMore={teamMemberForInviteData?.metadata?.has_next_page}
-                    scrollableTarget="scrollableDiv"
-                  >
-                    {teamMemberForInviteData?.data?.length > 0 ? (
-                      teamMemberForInviteData?.data?.map((item) => (
-                        <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
-                          <Col sm="2" md="3" lg="4">
-                            <div className="d-flex align-items-center">
-                              <Avatar
-                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
-                                imgHeight="38"
-                                imgWidth="38"
-                                className="me-2 user-pic"
-                              />
-                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
-                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
-                              </Link>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="4">
-                            <div className="d-flex align-items-center">
-                              <Badge>
-                                <div className="d-flex align-items-center">
-                                  <Star
-                                    size={12}
-                                    color={theme.starRatingBg}
-                                    fill={theme.starRatingBg}
-                                    className="me-50"
-                                  />
-                                  <p className="m-0 fw-bolder rating-text">{item.rating}</p>
-                                </div>
-                              </Badge>
-                              <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="2">
-                            <div className="circular-progressbar-container">
-                              <CircularProgressbarWithChildren
-                                value={item.match_percentage}
-                                styles={{
-                                  path: {
-                                    stroke: giveStrokeColor(item.match_percentage),
-                                    strokeLinecap: 'round',
-                                    transition: 'stroke-dashoffset 0.5s ease 0s',
-                                    transform: 'rotate(0turn)',
-                                    transformOrigin: 'center center',
-                                  },
-                                  trail: {
-                                    stroke: theme.progressBarBg,
-                                    strokeLinecap: 'round',
-                                    transform: 'rotate(0turn)',
-                                    transformOrigin: 'center center',
-                                  },
-                                }}
-                              >
-                                <div className="d-flex justify-content-center align-items-center">
-                                  <p className="percentage-text m-0">{item.match_percentage}%</p>
-                                </div>
-                              </CircularProgressbarWithChildren>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item, 'alma')}
-                          </Col>
-                        </Row>
-                      ))
-                    ) : (
-                      <div className="no-data-found-container d-flex flex-column align-items-center py-1">
-                        <img
-                          src={NoDataFoundGif}
-                          alt="no-data"
-                          width={200}
-                          height={200}
-                          className="no-data-found-gif"
-                        />
-                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
-                      </div>
-                    )}
-                  </InfiniteScroll>
-                </TableContainer>
-              )}
-            </TabPane>
           </TabContent>
           <div className="d-flex justify-content-end align-items-center">
             <div>
@@ -699,9 +573,9 @@ const InviteTeamMemberModal = ({
   );
 };
 
-export default InviteTeamMemberModal;
+export default InviteTeamModalForClient;
 
-InviteTeamMemberModal.propTypes = {
+InviteTeamModalForClient.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   invitedIds: Proptypes.bool,
@@ -715,7 +589,7 @@ InviteTeamMemberModal.propTypes = {
   inviteRole: Proptypes.string,
 };
 
-InviteTeamMemberModal.defaultProps = {
+InviteTeamModalForClient.defaultProps = {
   modal: false,
   toggleModal: () => {},
   invitedIds: false,

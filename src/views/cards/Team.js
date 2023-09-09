@@ -1,5 +1,6 @@
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import DateTime from '../../lib/date-time';
@@ -24,7 +25,9 @@ const Team = ({ data }) => {
         <CardBody>
           <div className="d-flex justify-content-between">
             <CardTitle className="card-title mb-1 d-flex justify-space-between">
-              <span>{data?.name}</span>
+              <Link to={`/profile/team/${data?._id}`}>
+                <span>{data?.name}</span>
+              </Link>
             </CardTitle>
             <span className="me-3">{data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}</span>
           </div>

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-nested-ternary */
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -26,6 +27,7 @@ import { getItem } from '../../../utility/localStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
+import { inviteTalents } from '../../../redux/actions/inviteTalent';
 
 const LeftSidebarProfile = ({
   isTalentView,
@@ -40,6 +42,7 @@ const LeftSidebarProfile = ({
   const param = useParams();
   const navigate = useNavigate();
   const userData = getItem('userData');
+  const teamId = getItem('teamId');
 
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
@@ -68,6 +71,24 @@ const LeftSidebarProfile = ({
     }
     isTeamView && dispatch(getProfilePercentage());
   }, []);
+  const handleJoinTeam = () => {
+    const newPostData = {
+      message: '',
+      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+      requests_to: {
+        user_ids: [],
+        team_ids: [param?.userId],
+        email_ids: [],
+      },
+      request_for: {
+        project_id: '',
+        team_id: '',
+        role: '',
+      },
+    };
+    const onSuccess = () => {};
+    dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
+  };
 
   return (
     <LeftSidebarProfileWrapper>
@@ -374,6 +395,13 @@ const LeftSidebarProfile = ({
                     Message
                   </Button>
                 </div>
+              </div>
+            )}
+            {isTeamView && !teamId && userData?.user_type === userTypes.talent && (
+              <div className="d-flex gap-1 mt-3 justify-content-center">
+                <Button className="w-50" color="primary" onClick={handleJoinTeam}>
+                  Join Team
+                </Button>
               </div>
             )}
           </section>

@@ -15,8 +15,8 @@ import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelecto
 import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors/inviteTalentSelector';
 
 import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
-import { inviteTalents } from '../../redux/actions/createProjectActions';
 import { getItem } from '../../utility/localStorageControl';
+import { userTypes } from '../../utility/constants/Constant';
 
 const InvitationSentModal = ({
   projectId,
@@ -50,32 +50,28 @@ const InvitationSentModal = ({
 
   const onInviteTalents = () => {
     const userIds = selectedTalents.map((talent) => talent.user_id);
+    const teamIds = selectedTalents
+      .filter((user) => user?.user_type === userTypes.team) // Filter out non-team users
+      .map((user) => user?.team_id); // Map to an array of team_ids
+
     const userEmails = selectedTalents.map((talent) => talent?.user_details?.email);
     const teamId = getItem('team_id');
-    const postData = {
-      invitation_type: projectId ? 'PROJECT_TEAM' : 'TEAM',
+    const newPostData = {
       message,
       redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
-      from_entity: {
-        team_id: teamId,
+      requests_to: {
+        user_ids: userIds || [],
+        team_ids: teamIds.length > 0 ? teamIds : [],
+        email_ids: userEmails || [],
       },
-      to_entity: {
-        user_ids: userIds,
-      },
-      invited_for: {
-        team_id: teamId,
-        role: inviteRole,
+      request_for: {
+        project_id: projectId || '',
+        team_id: teamId || '',
+        role: inviteRole || '',
       },
     };
-    if (projectId) {
-      postData.invited_for.project_id = projectId;
-    }
 
-    if (teamId) {
-      dispatch(inviteTalentForTeam({ data: postData, onSuccess }));
-    } else {
-      dispatch(inviteTalents(projectId, { emails: userEmails, talent_ids: userIds, message }, onSuccess));
-    }
+    dispatch(inviteTalentForTeam({ data: newPostData, onSuccess }));
   };
 
   useEffect(() => {

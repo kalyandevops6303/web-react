@@ -3,10 +3,15 @@ import PropTypes from 'prop-types';
 
 import SendInvitationModal from '../modals/SendInvitationModal';
 import InvitationSentModal from '../modals/InvitationSentModal';
-import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
 import ShareInviteModal from '../modals/ShareInviteModal';
+import InviteTeamModalForClient from '../modals/InviteTeamModalForClient';
 
-const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, toggleInviteTeamMemberModal }) => {
+const InviteTalentToTeamForProjectDetails = ({
+  projectId,
+  inviteRole,
+  inviteTeamMemberModal,
+  toggleInviteTeamMemberModal,
+}) => {
   const [selectedTalents, setSelectedTalents] = useState([]);
   const [invitedIds, setInvitedIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -29,7 +34,7 @@ const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, togg
   return (
     <>
       {inviteTeamMemberModal && (
-        <InviteTeamMemberModal
+        <InviteTeamModalForClient
           inviteRole={inviteRole}
           projectId={projectId}
           selectedTalents={selectedTalents}
@@ -85,16 +90,16 @@ const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, togg
     </>
   );
 };
-InviteTalentToTeam.propTypes = {
+InviteTalentToTeamForProjectDetails.propTypes = {
   inviteTeamMemberModal: PropTypes.bool,
   toggleInviteTeamMemberModal: PropTypes.func,
   projectId: PropTypes.string,
   inviteRole: PropTypes.string,
 };
-InviteTalentToTeam.defaultProps = {
+InviteTalentToTeamForProjectDetails.defaultProps = {
   inviteTeamMemberModal: false,
   toggleInviteTeamMemberModal: () => {},
   projectId: '',
   inviteRole: '',
 };
-export default InviteTalentToTeam;
+export default InviteTalentToTeamForProjectDetails;

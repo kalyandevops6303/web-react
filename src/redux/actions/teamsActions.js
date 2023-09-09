@@ -1,4 +1,4 @@
-import { getTeamService, createTeamService, getInvitedByService, updateTeamService } from '../../services/teamServices';
+import { getTeamService, createTeamService, getInviteDetails, updateTeamService } from '../../services/teamServices';
 import errorHandler from '../../utility/errorHandler';
 import {
   getTeamCreated,
@@ -7,6 +7,7 @@ import {
   updateTeamRequest,
   updateTeamSuccess,
 } from '../reducers/team';
+import { getInvitedBySuccess } from '../reducers/projectDetails';
 
 const getTeams =
   ({ onSuccess }) =>
@@ -45,9 +46,10 @@ const updateTeam = (data, onSuccess) => async (dispatch) => {
 
 const getWhoInvited =
   ({ id, onSuccess, onError }) =>
-  async () => {
+  async (dispatch) => {
     try {
-      const res = await getInvitedByService({ invitation_id: id });
+      const res = await getInviteDetails(id);
+      dispatch(getInvitedBySuccess(res.data.data));
       onSuccess(res.data.data);
     } catch (error) {
       onError();

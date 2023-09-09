@@ -35,25 +35,23 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
   const onSubmit = () => {
     const allEmails = customEmailsValue.map((email) => email.label);
     const teamId = getItem('team_id');
-    const postData = {
-      invitation_type: projectId ? 'PROJECT_TEAM' : 'TEAM',
+
+    const newPostData = {
       message: '',
       redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
-      from_entity: {
-        team_id: teamId,
-      },
-      to_entity: {
+      requests_to: {
+        user_ids: [],
+        team_ids: [],
         email_ids: allEmails,
       },
-      invited_for: {
+      request_for: {
+        project_id: projectId || '',
         team_id: teamId,
-        role: inviteRole,
+        role: inviteRole || '',
       },
     };
-    if (projectId) {
-      postData.invited_for.project_id = projectId;
-    }
-    dispatch(inviteTalents({ data: postData, onSuccess }));
+
+    dispatch(inviteTalents({ data: newPostData, onSuccess }));
   };
 
   const handleKeyDown = (event) => {

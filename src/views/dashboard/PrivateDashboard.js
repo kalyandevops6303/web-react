@@ -90,24 +90,37 @@ const PrivateDashboard = () => {
     }
   };
 
-  const inviteToken = getItem('inviteToken');
   const isInviteRead = getItem('isInviteRead');
-  const inviteId = getItem('inviteId');
-  const projectId = getItem('projectId');
 
   useEffect(() => {
-    if (inviteToken && !isInviteRead) {
-      if (projectId && inviteId) {
-        navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-      } else if (inviteId) {
-        navigate(`/team-invitation/${inviteId}`);
-      }
+    if (!isInviteRead) {
+      const redirectionFunction = () => {
+        const inviteId = getItem('inviteId');
+        const projectId = getItem('projectId');
+        const status = getItem('requestStatus');
+        if (status === 'Project Invitation Request') {
+          navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
+        }
+        if (status === 'Team Invitation Request') {
+          navigate(`/team-invitation/${inviteId}`);
+        }
+        if (status === 'Project Team Invitation Request') {
+          navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+        }
+        if (status === 'Team Join Request') {
+          navigate(`/join-request/${inviteId}`);
+        }
+      };
+      redirectionFunction();
     }
   }, []);
 
   const handleRemoveMember = (data) => {
     setDeletModal(true);
     setDeleteModalData(data);
+  };
+  const handleJoinTeam = () => {
+    navigate('/marketplace/teams');
   };
 
   const handleRaiseDispute = () => {
@@ -164,8 +177,14 @@ const PrivateDashboard = () => {
       )}
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
-          <Button as="link" color="primary" onClick={onCreateTeam}>
+          <span
+            className="me-1 mt-50 text-decoration-underline font-medium-2 link-primary cursor-pointer"
+            onClick={onCreateTeam}
+          >
             Create Team
+          </span>
+          <Button as="link" color="primary" onClick={handleJoinTeam}>
+            Join Team
           </Button>
         </CreateTeamButtonWrapper>
       )}
