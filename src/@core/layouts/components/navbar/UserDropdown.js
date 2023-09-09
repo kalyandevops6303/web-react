@@ -26,8 +26,6 @@ import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { selectSavedUserData, selectIsTeamLoggedIn, selectUserData } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
 import { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { useEffect } from 'react';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 
 const UserDropdown = () => {
@@ -187,21 +185,6 @@ const UserDropdown = () => {
               // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
             >
               <section className="user-info-avatar d-flex align-items-center">
-                <div className="user-info me-1 user-nav">
-                  <span className="mb-50 user-name fw-bold text-start d-block" id="username">
-                    {savedUserName}
-                  </span>
-                  {savedUserName?.length > 15 && (
-                    <UncontrolledTooltip placement="right" target="username">
-                      <div className="d-flex flex-column align-items-start">
-                        <p className="text-start m-0">{savedUserName}</p>
-                      </div>
-                    </UncontrolledTooltip>
-                  )}
-                  <span className="w-100 font-small-3 d-block user-status text-start">
-                    {capitalize(savedUserDetails?.user_type) || 'Role'}
-                  </span>
-                </div>
                 {savedUserDetails?.user_type === userTypes.talent ? (
                   <Avatar
                     img={
@@ -223,6 +206,21 @@ const UserDropdown = () => {
                     imgWidth="40"
                   />
                 )}
+                <div className="user-info ms-1 ms user-nav">
+                  <span className="mb-50 user-name fw-bold text-start d-block" id="username">
+                    {savedUserName}
+                  </span>
+                  {savedUserName?.length > 15 && (
+                    <UncontrolledTooltip placement="right" target="username">
+                      <div className="d-flex flex-column align-items-start">
+                        <p className="text-start m-0">{savedUserName}</p>
+                      </div>
+                    </UncontrolledTooltip>
+                  )}
+                  <span className="w-100 font-small-3 d-block user-status text-start">
+                    {capitalize(savedUserDetails?.user_type) || 'Role'}
+                  </span>
+                </div>
               </section>
               {savedUserDetails?._id === userDetailsData?._id && <Check className="m-auto ms-3 me-0" size={14} />}
             </DropdownItem>
@@ -232,7 +230,9 @@ const UserDropdown = () => {
                 onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
               >
                 <section className="user-info-avatar d-flex align-items-center">
-                  <div className="user-info me-1 user-nav">
+                  <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
+
+                  <div className="user-info ms-1 user-nav">
                     <span className="mb-50 user-name fw-bold text-start d-block" id="username">
                       {team?.name}
                     </span>
@@ -247,7 +247,6 @@ const UserDropdown = () => {
                       {capitalize(team?.user_type) || 'Role'}
                     </span>
                   </div>
-                  <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
                 </section>
                 {userDetailsData?._id === team?._id && <Check className="m-auto ms-3 me-0" size={14} />}
               </DropdownItem>

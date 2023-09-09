@@ -84,19 +84,19 @@ const ReceivedBids = ({ projectName }) => {
     {
       name: 'NAME',
       sortable: true,
-      minWidth: '28%',
+      minWidth: '27%',
       selector: (row) => row.name,
     },
     {
       name: 'RATING',
       sortable: true,
-      minWidth: '16%',
+      minWidth: '17%',
       selector: (row) => row.rating,
     },
     {
       name: 'BID AMT',
       sortable: true,
-      minWidth: '14%',
+      minWidth: '13%',
       selector: (row) => row.bid,
     },
     {
@@ -109,7 +109,7 @@ const ReceivedBids = ({ projectName }) => {
       name: 'STATUS',
       sortable: true,
       minWidth: '12%',
-      selector: (row) => row.status,
+      selector: (row) => (row.status === 'DECLINED' ? 'REJECTED' : row.status),
     },
 
     {
@@ -183,10 +183,10 @@ const ReceivedBids = ({ projectName }) => {
   );
 
   const statusOption = [
-    { label: 'Active', value: 'ACTIVE' },
+    { label: 'New', value: 'NEW' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
-    { label: 'Declined', value: 'DECLINED' },
+    { label: 'Rejected', value: 'REJECTED' },
   ];
   const handleSearchTextChange = (e) => {
     setSearchText(e.target.value);
@@ -197,7 +197,7 @@ const ReceivedBids = ({ projectName }) => {
     <AccordionItem>
       <AccordionHeader targetId="1">
         <AccordionHeadStyle>
-          <span className="title-head">Received bids</span>
+          <span className="title-head">Received Bids</span>
           <div className="d-flex gap-1 aling-items-center">
             <CardText className="d-none view-all-cta">Give rating</CardText>
             <div>
@@ -255,7 +255,6 @@ const ReceivedBids = ({ projectName }) => {
               </div>
             }
             scrollableTarget="scrollDivForReceivedBids"
-            loader={<div className="d-flex justify-content-center">Loading...</div>}
           >
             <DataTable
               noHeader

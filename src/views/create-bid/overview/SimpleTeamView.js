@@ -165,7 +165,14 @@ const SimpleTeamView = () => {
   };
 
   const handleAddSuggestedRole = (name) => {
-    insert(0, { role: name, member: undefined });
+    const projectRolesDetails = watch('projectRolesDetails');
+    const emptyFieldIndex = projectRolesDetails.findIndex((item) => !item.role);
+
+    if (emptyFieldIndex !== -1) {
+      insert(0, { role: name, member: undefined });
+    } else {
+      append({ role: name, member: undefined });
+    }
   };
 
   const handleRemoveSuggestedRole = (name) => {
@@ -228,6 +235,8 @@ const SimpleTeamView = () => {
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
     dispatch(getRoles(params.projectId));
+    // eslint-disable-next-line no-undef
+    setTimeout(() => window.scrollTo(0, 0), 30);
   }, []);
 
   return (

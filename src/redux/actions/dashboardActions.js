@@ -13,6 +13,7 @@ import {
   validateUrlService,
   updateInvitationService,
   removeMemberService,
+  teamProfilePercentageService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -191,6 +192,16 @@ const updateInvitation =
     }
   };
 
+const getTeamProfilePercentage = () => async (dispatch) => {
+  dispatch(profilePercentageRequest());
+  try {
+    const res = await teamProfilePercentageService();
+    dispatch(profilePercentageSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, profilePercentageFailure);
+  }
+};
+
 export {
   validateUrl,
   removeTeamMember,
@@ -205,4 +216,5 @@ export {
   getTeamInvitation,
   getMyTeam,
   getProjectInvites,
+  getTeamProfilePercentage,
 };

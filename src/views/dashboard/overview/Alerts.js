@@ -5,7 +5,11 @@ import { Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'react
 import DateTime from '../../../lib/date-time';
 import { AlertCardWrapper } from './style';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
-import { getProfilePercentage, getProjectInvites } from '../../../redux/actions/dashboardActions';
+import {
+  getProfilePercentage,
+  getProjectInvites,
+  getTeamProfilePercentage,
+} from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -14,15 +18,19 @@ const Alerts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(getProjectInvites());
-    dispatch(getProfilePercentage());
-  }, []);
-
   const projectInvites = useSelector((state) => state.dashboard.projectInvites);
 
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
+
+  useEffect(() => {
+    dispatch(getProjectInvites());
+    if (userDetailsData?.user_type === userTypes.team) {
+      dispatch(getTeamProfilePercentage());
+    } else {
+      dispatch(getProfilePercentage());
+    }
+  }, []);
 
   const onAddDetailsClick = (path) => {
     navigate(path, {

@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -25,6 +25,7 @@ import { CustomBadge } from '../../styled';
 import { getItem } from '../../../utility/localStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
+import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 
 const LeftSidebarProfile = ({
   isTalentView,
@@ -60,6 +61,13 @@ const LeftSidebarProfile = ({
       });
     }
   };
+  useEffect(() => {
+    if (isTalentView || isClient) {
+      dispatch(getProfilePercentage());
+      return;
+    }
+    isTeamView && dispatch(getProfilePercentage());
+  }, []);
 
   return (
     <LeftSidebarProfileWrapper>

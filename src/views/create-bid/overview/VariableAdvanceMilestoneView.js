@@ -577,6 +577,8 @@ const VariableAdvanceMilestoneView = () => {
 
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
+    // eslint-disable-next-line no-undef
+    setTimeout(() => window.scrollTo(0, 0), 30);
   }, []);
 
   return (
@@ -659,7 +661,7 @@ const VariableAdvanceMilestoneView = () => {
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">{milestoneDuration}w</p>
                                 </div>
                                 <div className="ms-2">
-                                  <Label className="fw-normal form-label ">Hours</Label>
+                                  <Label className="fw-normal form-label ">Total Hours</Label>
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">{milestoneHours}h</p>
                                 </div>
                                 <div>

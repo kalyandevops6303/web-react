@@ -13,6 +13,8 @@ import { CustomBadge } from '../../styled';
 import { getProjectDetails } from '../../../redux/actions/createBidActions';
 import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
+import { formatDate } from '../../../utility/Utils';
+import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -21,7 +23,7 @@ const LeftSidebarProjectDetails = () => {
   const projectDetailsData = useSelector(projectDetails);
 
   const statusEnum = {
-    OPEN: 'Open Listing',
+    OPEN: 'Open',
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
@@ -116,7 +118,7 @@ const LeftSidebarProjectDetails = () => {
             <div className="d-flex">
               <span className="info-key">Posted date:</span>
               <CardText className="info-value">
-                {projectDetailsData?.listing_details?.start_date.replaceAll('-', '/')}
+                {formatDate(projectDetailsData?.listing_details?.start_date.replaceAll('-', '/'))}
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (
@@ -131,7 +133,9 @@ const LeftSidebarProjectDetails = () => {
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>
-            <CardText className="value">{projectDetailsData?.details?.description}</CardText>
+            <CardText className="value">
+              <ShowMoreLess content={projectDetailsData?.details?.description} maxLength={200} />
+            </CardText>
           </div>
 
           <div className="d-flex gap-1 mt-3 justify-content-center">

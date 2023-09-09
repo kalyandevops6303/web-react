@@ -23,6 +23,7 @@ import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
+import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -32,6 +33,8 @@ const PrivateDashboard = () => {
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const [deleteModal, setDeletModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState();
+
+  const [raisedDisputeModal, setRaisedDisputeModal] = useState(null);
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
@@ -75,7 +78,11 @@ const PrivateDashboard = () => {
   };
 
   const onCreateTeam = () => {
-    if (profilePercentageData?.profile_completed < 100) {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
       setCompleteProfileModalInfoText('team');
       setCompleteProfileModal(true);
     } else {
@@ -103,6 +110,10 @@ const PrivateDashboard = () => {
     setDeleteModalData(data);
   };
 
+  const handleRaiseDispute = () => {
+    setRaisedDisputeModal(true);
+  };
+
   return (
     <div>
       {completeProfileModal && (
@@ -123,6 +134,10 @@ const PrivateDashboard = () => {
       )}
       {deleteModal && (
         <RemoveMemberModal modal={deleteModal} data={deleteModalData} toggleModal={() => setDeletModal(!deleteModal)} />
+      )}
+
+      {raisedDisputeModal && (
+        <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
       )}
 
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
@@ -149,9 +164,9 @@ const PrivateDashboard = () => {
       )}
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
-          <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateTeam}>
+          <Button as="link" color="primary" onClick={onCreateTeam}>
             Create Team
-          </span>
+          </Button>
         </CreateTeamButtonWrapper>
       )}
 
@@ -194,7 +209,7 @@ const PrivateDashboard = () => {
             />
           )}
           <Alerts />
-          <Disputes />
+          <Disputes handleRaiseDispute={handleRaiseDispute} />
           <Meetings />
         </Col>
       </Row>
