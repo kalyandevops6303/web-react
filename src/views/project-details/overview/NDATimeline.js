@@ -20,7 +20,7 @@ const NDATimeline = () => {
       customContent: (
         <div className="d-flex justify-content-between mb-1">
           <div>
-            <h6 className="mb-25">{getProjectStatus(item?.status)}</h6>
+            <h6 className="mb-25">{getProjectStatus({ status: item?.status, type: 'NDA' })}</h6>
             <span className="d-block mb-1">
               {item?.signed_on ? DateTime.fromMillis(item?.signed_on).toFormat('MMM dd, yy') : '-'}
             </span>

@@ -274,12 +274,12 @@ export const formatFileSize = (bytes) => {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 };
 
-export const getProjectStatus = (status) => {
+export const getProjectStatus = ({ status, type }) => {
   switch (status) {
     case 'SIGNED':
-      return 'Signed - Contract Document';
+      return `Signed - ${type === 'CONTRACT' ? 'Contract' : 'NDA'} Document`;
     case 'TERMINATED':
-      return 'Terminated - Early Termination of contract';
+      return `Terminated - Early Termination of ${type === 'CONTRACT' ? 'contract' : 'NDA'}`;
     case 'PROJECT_STARTED':
       return 'Project Started';
     case 'PROJECT_COMPLETED':
