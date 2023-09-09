@@ -187,7 +187,14 @@ const AdvanceTeamView = () => {
   };
 
   const handleAddSuggestedRole = (name) => {
-    insert(0, { role: name, member: undefined, rate: undefined });
+    const projectRolesDetails = watch('projectRolesDetails');
+    const emptyFieldIndex = projectRolesDetails.findIndex((item) => !item.role);
+
+    if (emptyFieldIndex !== -1) {
+      insert(0, { role: name, member: undefined, rate: undefined });
+    } else {
+      append({ role: name, member: undefined, rate: undefined });
+    }
   };
 
   const handleRemoveSuggestedRole = (name) => {
@@ -280,9 +287,9 @@ const AdvanceTeamView = () => {
                         }
                         key={role}
                         onClick={() =>
-                          (watch('projectRolesDetails').find((item) => item.role === role)
+                          watch('projectRolesDetails').find((item) => item.role === role)
                             ? handleRemoveSuggestedRole(role)
-                            : handleAddSuggestedRole(role))
+                            : handleAddSuggestedRole(role)
                         }
                       >
                         <Badge pill className="px-1 py-50 d-flex align-items-center">

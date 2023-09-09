@@ -14,6 +14,7 @@ import { getProjectDetails } from '../../../redux/actions/createBidActions';
 import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
 import { formatDate } from '../../../utility/Utils';
+import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -132,7 +133,9 @@ const LeftSidebarProjectDetails = () => {
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>
-            <CardText className="value">{projectDetailsData?.details?.description}</CardText>
+            <CardText className="value">
+              <ShowMoreLess content={projectDetailsData?.details?.description} maxLength={200} />
+            </CardText>
           </div>
 
           <div className="d-flex gap-1 mt-3 justify-content-center">
