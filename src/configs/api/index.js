@@ -120,7 +120,6 @@ const API = {
       listProject: `${apiOnboardingEndpoint}/api/v1/talent/list-projects`,
       listClients: `${apiOnboardingEndpoint}/api/v1/talent/list-clients`,
     },
-
     cardInfo: `${apiOnboardingEndpoint}/api/v1/marketplace/cards-info`,
     listProject: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects`,
     listTalents: `${apiOnboardingEndpoint}/api/v1/marketplace/list-talents`,
@@ -151,6 +150,7 @@ const API = {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
+    update: `${apiAuthEndpoint}/api/v1/team/update`,
     getInvitation: `${apiAuthEndpoint}/api/v1/team/get-invitation`,
   },
   dispute: {

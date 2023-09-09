@@ -1,8 +1,9 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import React, { useEffect, useRef, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import * as yup from 'yup';
 import Select from 'react-select';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
@@ -20,7 +21,7 @@ import {
   Spinner,
   UncontrolledTooltip,
 } from 'reactstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Camera, ChevronLeft, ChevronRight, Info, UserPlus } from 'react-feather';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
@@ -37,7 +38,10 @@ import {
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
 import TeamCreatedModal from './TeamCreatedModal';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
-import { createTeam } from '../../redux/actions/teamsActions';
+import { createTeam, updateTeam } from '../../redux/actions/teamsActions';
+import { userData } from '../../redux/selectors/dashboardSelectors';
+import { getTeamById } from '../../services/teamServices';
+import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -171,6 +175,7 @@ const Profile = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   const [teamCreatedModal, setTeamCreatedModal] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
@@ -182,7 +187,11 @@ const Profile = () => {
   const [imageUrlRes, setImageUrlRes] = useState(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [isTeamcreating, setIsTeamcreating] = useState(false);
+  const [teamDetails, setTeamDetails] = useState(null);
   const fileInputRef = useRef(null);
+
+  const userDetailsData = useSelector(userData);
+  const updateTeamIsLoading = useSelector(updateTeamLoading);
 
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
@@ -243,13 +252,16 @@ const Profile = () => {
       uploadImage(imageUrlRes.upload_url);
     }
   }, [imageUrlRes]);
+
   const onSuccess = () => {
     setIsTeamcreating(false);
     setTeamCreatedModal(true);
   };
+
   const onError = () => {
     setIsTeamcreating(false);
   };
+
   const onSubmit = (data) => {
     const {
       availabilityDays,
@@ -285,22 +297,73 @@ const Profile = () => {
         days: availabilityDays?.includes('weekends') ? weekends : null,
       },
     };
-    const reqData = {
-      name: teamName,
-      // team_logo,
-      tagline: teamTagline,
-      introduction: teamIntroduction,
-      services: servicesSelected,
-      languages_supported,
-      tools: toolsSelected,
-      skills: skillsSelected,
-      availability,
-    };
-    if (imageUrlRes) {
-      reqData.team_logo = imageUrlRes.file_key;
+    let reqData;
+
+    if (location?.state?.isEditing) {
+      if (imageUrlRes) {
+        reqData = {
+          _id: userDetailsData._id,
+          name: teamName,
+          team_logo: imageUrlRes.file_key,
+          tagline: teamTagline,
+          introduction: teamIntroduction,
+          services: servicesSelected,
+          languages_supported,
+          tools: toolsSelected,
+          skills: skillsSelected,
+          availability,
+        };
+      } else {
+        reqData = {
+          _id: userDetailsData._id,
+          name: teamName,
+          tagline: teamTagline,
+          introduction: teamIntroduction,
+          services: servicesSelected,
+          languages_supported,
+          tools: toolsSelected,
+          skills: skillsSelected,
+          availability,
+        };
+      }
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (imageUrlRes) {
+        reqData = {
+          name: teamName,
+          team_logo: imageUrlRes.file_key,
+          tagline: teamTagline,
+          introduction: teamIntroduction,
+          services: servicesSelected,
+          languages_supported,
+          tools: toolsSelected,
+          skills: skillsSelected,
+          availability,
+        };
+      } else {
+        reqData = {
+          name: teamName,
+          tagline: teamTagline,
+          introduction: teamIntroduction,
+          services: servicesSelected,
+          languages_supported,
+          tools: toolsSelected,
+          skills: skillsSelected,
+          availability,
+        };
+      }
     }
-    setIsTeamcreating(true);
-    dispatch(createTeam(removeEmptyKeys(reqData), onSuccess, onError));
+
+    if (location?.state?.isEditing) {
+      const onApiSuccess = () => {
+        navigate('/dashboard');
+      };
+
+      dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
+    } else {
+      setIsTeamcreating(true);
+      dispatch(createTeam(removeEmptyKeys(reqData), onSuccess, onError));
+    }
   };
 
   const loadServicesOptions = async (search) => {
@@ -417,6 +480,127 @@ const Profile = () => {
 
   const availabilityDays = watch('availabilityDays');
 
+  const getTeamDetails = async () => {
+    const res = await getTeamById(userDetailsData._id);
+    if (res) {
+      setTeamDetails(res.data.data);
+    }
+  };
+
+  useEffect(() => {
+    getTeamDetails();
+  }, []);
+
+  useEffect(() => {
+    if (location?.state?.isEditing) {
+      if (teamDetails) {
+        if (teamDetails?.team_logo.length > 0) {
+          setSelectedImage(teamDetails.team_logo);
+          setSelectedImagePreview(teamDetails.team_logo);
+        }
+        if (teamDetails?.name?.length > 0) {
+          setValue('teamName', teamDetails?.name, { shouldValidate: true });
+        }
+        if (teamDetails?.tagline?.length > 0) {
+          setValue('teamTagline', teamDetails?.tagline, { shouldValidate: true });
+        }
+        if (teamDetails?.introduction?.length > 0) {
+          setValue('teamIntroduction', teamDetails?.introduction, { shouldValidate: true });
+        }
+        if (teamDetails?.services?.length > 0) {
+          setValue(
+            'services',
+            teamDetails?.services.map((service) => ({
+              label: service.name,
+              value: service._id,
+            })),
+            { shouldValidate: true },
+          );
+        }
+        if (teamDetails?.languages_supported?.length > 0) {
+          setValue(
+            'languagesSupported',
+            teamDetails?.languages_supported.map((language) => ({
+              label: language.name,
+              value: language._id,
+            })),
+            { shouldValidate: true },
+          );
+        }
+        if (teamDetails?.tools.length > 0) {
+          setValue(
+            'tools',
+            teamDetails?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+            { shouldValidate: true },
+          );
+        }
+        if (teamDetails?.skills.length > 0) {
+          setValue(
+            'skills',
+            teamDetails?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+            { shouldValidate: true },
+          );
+        }
+        if ('timezone' in teamDetails?.availability) {
+          if (teamDetails?.availability?.timezone) {
+            setValue(
+              'preferredWorkingTimeZone',
+              {
+                label: `${teamDetails?.availability?.timezone?.name} (${teamDetails?.availability?.timezone?.abbreviation})`,
+                value: teamDetails?.availability?.timezone,
+              },
+              { shouldValidate: true },
+            );
+          }
+
+          let talentAvailabilityDays = [];
+          if ('weekdays_avl' in teamDetails?.availability) {
+            if ('days' in teamDetails?.availability?.weekdays_avl) {
+              talentAvailabilityDays = [...talentAvailabilityDays, 'weekdays'];
+              setValue('weekdays', teamDetails?.availability?.weekdays_avl?.days, { shouldValidate: true });
+              setValue(
+                'weekdayStartTime',
+                timeOptions.find(
+                  (time) => parseInt(time.value, 10) === teamDetails?.availability?.weekdays_avl?.start_time,
+                ),
+                { shouldValidate: true },
+              );
+              setValue(
+                'weekdayEndTime',
+                timeOptions.find(
+                  (time) => parseInt(time.value, 10) === teamDetails?.availability?.weekdays_avl?.end_time,
+                ),
+                { shouldValidate: true },
+              );
+            }
+          }
+          if ('weekends_avl' in teamDetails?.availability) {
+            if ('days' in teamDetails?.availability?.weekends_avl) {
+              talentAvailabilityDays = [...talentAvailabilityDays, 'weekends'];
+              setValue('weekends', teamDetails?.availability?.weekends_avl?.days, { shouldValidate: true });
+              setValue(
+                'weekendStartTime',
+                timeOptions.find(
+                  (time) => parseInt(time.value, 10) === teamDetails?.availability?.weekends_avl?.start_time,
+                ),
+                { shouldValidate: true },
+              );
+              setValue(
+                'weekendEndTime',
+                timeOptions.find(
+                  (time) => parseInt(time.value, 10) === teamDetails?.availability?.weekends_avl?.end_time,
+                ),
+                { shouldValidate: true },
+              );
+            }
+          }
+
+          setValue('availabilityDays', talentAvailabilityDays, { shouldValidate: true });
+        }
+      }
+    }
+  }, [teamDetails]);
+
   return (
     <ProfileFormContainer>
       {teamCreatedModal && <TeamCreatedModal modal={teamCreatedModal} toggleModal={toggleTeamCreatedModal} />}
@@ -446,6 +630,7 @@ const Profile = () => {
                 <Button
                   color="primary"
                   className="ml-2 mr-1 d-flex align-items-center py-50"
+                  disabled={isImageUploading}
                   onClick={() => fileInputRef.current.click()}
                 >
                   <Camera className="me-50" />
@@ -1092,9 +1277,15 @@ const Profile = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" outline>
-              <span className="me-50">{isTeamcreating ? <Spinner size="sm" /> : 'Save'}</span>
-              <ChevronRight size={14} />
+            <Button color="primary" outline disabled={isImageUploading || isTeamcreating || updateTeamIsLoading}>
+              {isTeamcreating || updateTeamIsLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span className="me-50">Save</span>
+                  <ChevronRight size={14} />
+                </>
+              )}
             </Button>
           </div>
         </div>

@@ -50,9 +50,15 @@ const LeftSidebarProfile = ({
   const profilePercentageData = useSelector(profilePercentage);
 
   const onEditClick = () => {
-    navigate(`/${data.user_type.toLowerCase()}-onboarding/account-details`, {
-      state: { isEditing: true },
-    });
+    if (data.user_type === userTypes.team) {
+      navigate(`/create-team/profile-details`, {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate(`/${data.user_type.toLowerCase()}-onboarding/account-details`, {
+        state: { isEditing: true },
+      });
+    }
   };
 
   return (
