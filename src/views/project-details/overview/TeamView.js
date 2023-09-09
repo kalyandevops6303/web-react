@@ -62,22 +62,25 @@ const TeamView = () => {
                       <CardText className="d-flex gap-25 fw-bold me-4 mt-auto mb-auto">
                         {item?.role} <span className="indicator" />
                       </CardText>
-                      <Button
-                        onClick={() => handleAssign({ role: item?.role })}
-                        color="primary"
-                        type="secondary"
-                        outline
-                      >
-                        Assign team member
-                      </Button>
-                      <div className="d-flex">
-                        <div className="me-2">
-                          <span className="key">Duration</span>
-                          <CardText className="value">{item?.number_of_weeks}w</CardText>
-                        </div>
-                        <div className="me-1">
-                          <span className="key">Hours/week</span>
-                          <CardText className="value">{item?.hours_per_week}</CardText>
+
+                      <div className="d-flex gap-3">
+                        <Button
+                          onClick={() => handleAssign({ role: item?.role })}
+                          color="primary"
+                          type="secondary"
+                          outline
+                        >
+                          Assign team member
+                        </Button>
+                        <div className="d-flex">
+                          <div className="me-2">
+                            <span className="key">Duration</span>
+                            <CardText className="value">{item?.number_of_weeks}w</CardText>
+                          </div>
+                          <div className="me-1">
+                            <span className="key">Hours/week</span>
+                            <CardText className="value">{item?.hours_per_week}</CardText>
+                          </div>
                         </div>
                       </div>
                     </div>

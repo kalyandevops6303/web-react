@@ -23,7 +23,7 @@ import {
   bestTalentsService,
   favoriteTalentsService,
   getTeamMeberforInviteService,
-  inviteTalentsService,
+  inviteRequestService,
 } from '../../services/inviteTeamMemberService';
 
 const getBestTalents = (searchText, page, pageSize, oldData) => async (dispatch) => {
@@ -57,23 +57,23 @@ const getAlmaMaterTalents = (searchText, page, pageSize, oldData) => async (disp
 };
 
 const inviteTalents =
-  ({ data, onSuccess }) =>
+  ({ data, onSuccess, isJoinRequest }) =>
   async (dispatch) => {
     dispatch(inviteTalentsRequest());
     try {
-      const res = await inviteTalentsService(data);
+      const res = await inviteRequestService(data);
       dispatch(inviteTalentsSuccess(res.data.data));
-      ShowToastMessage(SUCCESS, 'Invited successfully');
+      ShowToastMessage(SUCCESS, isJoinRequest ? 'Join request sent' : 'Invited successfully');
       onSuccess();
     } catch (error) {
       console.error(error);
       errorHandler(error, inviteTalentsFailure);
     }
   };
-const getTeamMemberForInvite = (searchText, page, pageSize, oldData) => async (dispatch) => {
+const getTeamMemberForInvite = (searchText, page, pageSize, oldData, projectId) => async (dispatch) => {
   dispatch(teamMemberForInviteRequest());
   try {
-    const res = await getTeamMeberforInviteService(searchText, page, pageSize);
+    const res = await getTeamMeberforInviteService(searchText, page, pageSize, projectId);
     dispatch(teamMemberForInviteSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, teamMemberForInviteFailure);

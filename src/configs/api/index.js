@@ -108,6 +108,10 @@ const API = {
     almaMaterTalents: `${apiAuthEndpoint}/api/v1/team/alma-mater-talents`,
     sendInvitaion: `${apiAuthEndpoint}/api/v1/invitation/send`,
     getTeamMember: `${apiAuthEndpoint}/api/v1/team/members`,
+
+    // Updated API to invite talent/team and for client
+    requests: `${apiAuthEndpoint}/api/v1/requests`,
+    validateRequest: `${apiAuthEndpoint}/api/v1/requests/validation`,
   },
   marketplace: {
     client: {
@@ -151,7 +155,7 @@ const API = {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
-    getInvitation: `${apiAuthEndpoint}/api/v1/team/get-invitation`,
+    getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
   },
   dispute: {
     paginatedProjects: `${apiCreateProjectEndpoint}/api/v1/disputes/project-names`,

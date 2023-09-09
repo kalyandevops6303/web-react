@@ -41,21 +41,34 @@ const Login = () => {
 
   const urlSearchParams = new URLSearchParams(window.location.search);
   const dataParam = urlSearchParams.get('data');
-  const inviteId = urlSearchParams.get('invite_id');
-  const projectId = urlSearchParams.get('project_id');
 
-  const onValidUrlSuccess = () => {
+  const onValidUrlSuccess = (res) => {
     setValidUrl(true);
-    setItem('inviteToken', dataParam);
     setItem('isInviteRead', false);
-    setItem('inviteId', inviteId);
-    setItem('projectId', projectId);
+    setItem('inviteId', res.request_id);
+    setItem('projectId', res?.request_for?.project_id);
+    setItem('requestStatus', res.head_message);
+
     if (isLoggedIn) {
-      if (projectId && inviteId) {
-        navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-      } else if (inviteId) {
-        navigate(`/team-invitation/${inviteId}`);
-      }
+      const redirectionFunction = ({ projectId, inviteId, status }) => {
+        if (status === 'Project Invitation Request') {
+          navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
+        }
+        if (status === 'Team Invitation Request') {
+          navigate(`/team-invitation/${inviteId}`);
+        }
+        if (status === 'Project Team Invitation Request') {
+          navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+        }
+        if (status === 'Team Join Request') {
+          navigate(`/join-request/${inviteId}`);
+        }
+      };
+      redirectionFunction({
+        status: res.head_message,
+        projectId: res.request_for.project_id,
+        inviteId: res.request_id,
+      });
     }
   };
 

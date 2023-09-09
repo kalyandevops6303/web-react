@@ -16,11 +16,23 @@ const almaMaterTalentsService = (searchText, page, pageSize) =>
 
 const inviteTalentsService = (data) => DataService.post(`${API.inviteTeamMember.sendInvitaion}`, data);
 
-const getTeamMeberforInviteService = (searchText, page, pageSize) =>
-  DataService.get(`${API.inviteTeamMember.getTeamMember}?search_text=${searchText}&page=${page}&page_size=${pageSize}`);
+const inviteRequestService = (data) => DataService.post(`${API.inviteTeamMember.requests}`, data);
+const validateUrlService = ({ token }) =>
+  DataService.get(`${API.inviteTeamMember.validateRequest}?request_token=${token}`);
+
+const getTeamMeberforInviteService = (searchText, page, pageSize, projectId) =>
+  DataService.get(
+    `${API.inviteTeamMember.getTeamMember}?search_text=${searchText}&page=${page}&page_size=${pageSize}&project_id=${projectId}`,
+  );
+
+const updateInvitationService = ({ action, request_id }) =>
+  DataService.put(`${API.inviteTeamMember.requests}/${request_id}?action=${action}&request_id=${request_id}`);
 
 export {
   bestTalentsService,
+  updateInvitationService,
+  validateUrlService,
+  inviteRequestService,
   getTeamMeberforInviteService,
   favoriteTalentsService,
   almaMaterTalentsService,

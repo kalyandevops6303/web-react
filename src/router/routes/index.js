@@ -134,6 +134,11 @@ const Routes = [
     element: <TeamInvitation />,
   },
   {
+    path: '/join-request/:inviteId',
+    element: <TeamInvitation />,
+  },
+
+  {
     path: '/create-team/:section-details',
     element: <CreateTeam />,
     meta: {
