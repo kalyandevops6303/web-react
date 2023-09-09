@@ -40,7 +40,7 @@ const TerminateContractModal = ({ project_id, docType, terminateData, modal, tog
               <CardText className="desc fw-light w-76">
                 {`Are you sure you would want to terminate the ${
                   isContractView ? 'contract' : 'NDA'
-                }? You will have to uploade or sign a new ${isContractView ? 'contract' : 'NDA'}.`}
+                }? You will have to upload or sign a new ${isContractView ? 'contract' : 'NDA'}.`}
               </CardText>
               <section className="d-flex gap-2 stats">
                 <div>
