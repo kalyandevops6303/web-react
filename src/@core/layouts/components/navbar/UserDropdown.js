@@ -103,6 +103,7 @@ const UserDropdown = () => {
   `;
 
   const handleShowModal = (selected) => {
+    !selected && ShowToastMessage('success', `Profile switched successfully`);
     navigate('/dashboard');
   };
   const handleSwitch = (data, selected) => {

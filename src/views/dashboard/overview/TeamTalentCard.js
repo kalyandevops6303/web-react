@@ -19,17 +19,22 @@ import ProjectModal from '../../modals/ProjectModal';
 import TagsSection from './TagsSection';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
+import AlmaMaterImg from '../../../assets/images/almaMater.png';
 
-const UserSection = ({ users, name }) => (
+const UserSection = ({ users, name, isAlma }) => (
   <div className="user-section">
     <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
           <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
+          {isAlma && <img src={AlmaMaterImg} alt="alma-mater" />}
         </span>
       ) : (
-        <AvatarGroup size="sm" data={users} />
+        <span className="d-flex avatars">
+          <AvatarGroup size="sm" data={users} />
+          {isAlma && <img src={AlmaMaterImg} alt="alma-mater" />}
+        </span>
       )}
     </div>
   </div>
@@ -38,6 +43,7 @@ const UserSection = ({ users, name }) => (
 UserSection.propTypes = {
   users: PropTypes.array,
   name: PropTypes.string,
+  isAlma: PropTypes.bool,
 };
 
 const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
