@@ -158,7 +158,7 @@ const TalentListing = () => {
 
   const handleViewAll = (e) => {
     e.stopPropagation();
-    navigate('/marketplace/all_listings', { state: { isRecommended: true } });
+    navigate('/marketplace/talents', { state: { isRecommended: true } });
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {

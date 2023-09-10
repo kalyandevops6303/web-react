@@ -129,14 +129,14 @@ const BidSubmitted = () => {
             <div className="d-flex gap-1 aling-items-center">
               <div>
                 <span className="key">Duration</span>
-                <CardText className="value">
+                <CardText className="value text-end">
                   {bidInfo?.total_estimated_duration?.duration}
                   {bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                 </CardText>
               </div>
               <div className="me-1">
                 <span className="key">Talent Cost</span>
-                <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
+                <CardText className="value text-end">${bidInfo?.total_estimated_cost}</CardText>
               </div>
             </div>
           </div>

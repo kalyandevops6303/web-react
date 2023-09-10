@@ -206,7 +206,7 @@ const BidDetails = () => {
                   onClick={() => {
                     setRejectBidModal(true);
                   }}
-                  className="report-text m-0 text-center fw-bold"
+                  className="report-text m-0 text-center fw-bold cursor-pointer"
                 >
                   Reject
                 </CardText>

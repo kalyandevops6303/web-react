@@ -162,9 +162,9 @@ const TeamListing = () => {
   const recommendedTeams = useSelector(selectRecommendedTeams);
   const isRecommendedTeamsLoading = useSelector(selectRecommendedTeamsLoading);
 
-  const handleViewAll = (e) => {
+  const handleViewAll = (e, path) => {
     e.stopPropagation();
-    navigate('/marketplace/all_listings', { state: { isRecommended: true } });
+    navigate(path, { state: { isRecommended: true } });
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
@@ -185,7 +185,7 @@ const TeamListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">My teams</span>
                 {myTeam?.data?.length > 0 && (
-                  <CardText onClick={handleViewAll} className="view-all-cta">
+                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -329,7 +329,7 @@ const TeamListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Recommended Teams</span>
                 {recommendedTeams?.data?.length > 0 && (
-                  <CardText onClick={handleViewAll} className="view-all-cta">
+                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
