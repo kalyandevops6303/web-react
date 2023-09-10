@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import propTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Card, CardBody, CardHeader, CardText, CardTitle } from 'reactstrap';
 import { Cell, Pie, PieChart } from 'recharts';
 import { getDisputesCount } from '../../../redux/actions/disputeActions';
@@ -33,12 +34,20 @@ const Disputes = ({ handleRaiseDispute }) => {
     <Card>
       <CardHeader>
         <CardTitle tag="h4">Disputes</CardTitle>
-        <CardText
-          className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer"
-          onClick={handleRaiseDispute}
-        >
-          Raise Dispute
-        </CardText>
+        {disputesCountData?.resolved_disputes + disputesCountData?.open_disputes > 0 ? (
+          <Link to="/disputes/all">
+            <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
+              View All
+            </CardText>
+          </Link>
+        ) : (
+          <CardText
+            className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer"
+            onClick={handleRaiseDispute}
+          >
+            Raise Dispute
+          </CardText>
+        )}
       </CardHeader>
       <CardBody className="pt-0 pb-1">
         {(disputesCountData?.open_disputes || disputesCountData?.resolved_disputes) > 0 ? (
