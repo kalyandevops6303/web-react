@@ -423,6 +423,7 @@ const TagsWrap = styled.div`
 const CreateTeamButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
+  gap: 1rem;
   margin-bottom: 1rem;
   margin-top: -3.5rem;
 

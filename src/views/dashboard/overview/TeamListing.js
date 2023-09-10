@@ -96,8 +96,11 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
               Explore Projects
             </div>
           ) : (
-            <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
-              Explore Teams
+            <div
+              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+              onClick={() => navigate('/marketplace/teams')}
+            >
+              View Teams
             </div>
           )}
         </CardBody>
@@ -111,7 +114,6 @@ const AccordionHeadStyle = styled.div`
   justify-content: space-between;
   width: 100%;
   .view-all-cta {
-    display: none;
     font-size: 0.875rem;
     color: ${theme.activeColor};
     text-decoration: underline;

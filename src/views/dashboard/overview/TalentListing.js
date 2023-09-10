@@ -94,7 +94,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
             </div>
           ) : (
             <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
-              View Details
+              Invite Talent
             </div>
           )}
         </CardBody>
@@ -108,7 +108,6 @@ const AccordionHeadStyle = styled.div`
   justify-content: space-between;
   width: 100%;
   .view-all-cta {
-    display: none;
     font-size: 0.875rem;
     color: ${theme.activeColor};
     text-decoration: underline;

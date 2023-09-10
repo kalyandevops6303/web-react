@@ -177,12 +177,9 @@ const PrivateDashboard = () => {
       )}
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
-          <span
-            className="me-1 mt-50 text-decoration-underline font-medium-2 link-primary cursor-pointer"
-            onClick={onCreateTeam}
-          >
+          <Button as="link" color="primary" onClick={onCreateTeam}>
             Create Team
-          </span>
+          </Button>
           <Button as="link" color="primary" onClick={handleJoinTeam}>
             Join Team
           </Button>

@@ -170,7 +170,7 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                       {data?.client_details?.company_name}
                     </CardText>
                   </div>
-                  <div className="d-flex flex-grow-1">
+                  <div className="d-flex flex-grow-1 align-items-center">
                     <RatingBadge number="0" />
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
                   </div>

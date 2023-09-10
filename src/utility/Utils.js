@@ -302,3 +302,29 @@ export const getTimeLineDotColor = (status) => {
       return '';
   }
 };
+
+// Helper function to get the day with ordinal suffix
+const getDayWithOrdinalSuffix = (day) => {
+  const suffixes = ['th', 'st', 'nd', 'rd'];
+  const relevantDigits = day < 30 ? day % 20 : day % 30;
+  const suffix = relevantDigits <= 3 ? suffixes[relevantDigits] : suffixes[0];
+  return `${day}${suffix}`;
+};
+
+export const formattedDate = (value) => {
+  if (!value) return value;
+
+  const date = new Date(value);
+
+  const day = date.getDate();
+  const month = date.toLocaleString('en-US', { month: 'long' });
+  const year = date.getFullYear();
+
+  // Add the ordinal suffix to the day
+  const dayWithOrdinal = getDayWithOrdinalSuffix(day);
+
+  // Format the date string
+  const formattedDateString = `${dayWithOrdinal} ${month} ${year}`;
+
+  return formattedDateString;
+};
