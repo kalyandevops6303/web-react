@@ -137,6 +137,12 @@ const BidDetailsWrap = styled.div`
       color: ${theme.activeColor};
     }
   }
+  .edit-bid-btn {
+    color: ${theme.activeNavPillText};
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: underline;
+  }
 `;
 const BidWrapper = styled.div`
   .basic-title {
