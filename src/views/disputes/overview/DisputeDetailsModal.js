@@ -207,9 +207,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
   );
 
   useEffect(() => {
-    if (status === disputeStatuses.responded || status === disputeStatuses.resolved) {
-      dispatch(getDisputeReplies(_id, 1, 10, []));
-    }
+    dispatch(getDisputeReplies(_id, 1, 10, []));
   }, []);
 
   useEffect(() => {
