@@ -52,6 +52,7 @@ const FixedSimpleMilestoneView = () => {
       yup.object().shape({
         duration: yup
           .number()
+          .integer('Duration must be an integer')
           .min(1, 'Duration must be at least 1')
           .typeError('Please enter a number')
           .required('Duration is required'),
