@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // ** React Imports
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -32,7 +32,6 @@ const Login = () => {
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
   const isLoggedIn = useSelector(selectIsLoggedIn);
-  const [validUrl, setValidUrl] = useState(false);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -43,24 +42,23 @@ const Login = () => {
   const dataParam = urlSearchParams.get('data');
 
   const onValidUrlSuccess = (res) => {
-    setValidUrl(true);
     setItem('isInviteRead', false);
     setItem('inviteId', res.request_id);
-    setItem('projectId', res?.request_for?.project_id);
+    setItem('projectId', res.request_for.project_id);
     setItem('requestStatus', res.head_message);
 
     if (isLoggedIn) {
       const redirectionFunction = ({ projectId, inviteId, status }) => {
-        if (status === 'Project Invitation Request') {
+        if (status === 'Project Invitation Request' && projectId && inviteId) {
           navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
         }
-        if (status === 'Team Invitation Request') {
+        if (status === 'Team Invitation Request' && inviteId) {
           navigate(`/team-invitation/${inviteId}`);
         }
-        if (status === 'Project Team Invitation Request') {
+        if (status === 'Project Team Invitation Request' && projectId && inviteId) {
           navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
         }
-        if (status === 'Team Join Request') {
+        if (status === 'Team Join Request' && inviteId) {
           navigate(`/join-request/${inviteId}`);
         }
       };
@@ -81,14 +79,10 @@ const Login = () => {
       removeItem('inviteId');
       removeItem('projectId');
       dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isLoggedIn) {
+    } else if (isLoggedIn) {
       navigate('/dashboard');
     }
-  }, [validUrl, isLoggedIn]);
+  }, [isLoggedIn]);
 
   // Valid link
   // When user is logged in and he clicks mail, login => dashboard

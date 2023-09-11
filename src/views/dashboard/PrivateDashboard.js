@@ -98,16 +98,16 @@ const PrivateDashboard = () => {
         const inviteId = getItem('inviteId');
         const projectId = getItem('projectId');
         const status = getItem('requestStatus');
-        if (status === 'Project Invitation Request') {
+        if (status === 'Project Invitation Request' && projectId && inviteId) {
           navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
         }
-        if (status === 'Team Invitation Request') {
+        if (status === 'Team Invitation Request' && inviteId) {
           navigate(`/team-invitation/${inviteId}`);
         }
-        if (status === 'Project Team Invitation Request') {
+        if (status === 'Project Team Invitation Request' && projectId && inviteId) {
           navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
         }
-        if (status === 'Team Join Request') {
+        if (status === 'Team Join Request' && inviteId) {
           navigate(`/join-request/${inviteId}`);
         }
       };
