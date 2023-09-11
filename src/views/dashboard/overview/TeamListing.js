@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
-import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
 import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
 import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
@@ -54,7 +53,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
         <CardBody className="empty empty-h-25">
           <div>
             {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
-            {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
+            {recommended && <img src={TeamNoDataGif} className="empty-gif" alt="empty-gif" />}
             {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {active && (
               <CardText className="get-started">
@@ -374,13 +373,13 @@ const TeamListing = () => {
                     </>
                   ) : (
                     <Empty
-                      isTeam
                       active={false}
                       isEducationNotCompleted={returnDetailsForMarketPlace(
                         userDetailsData?.user_type,
                         profilePercentageData?.values_missing,
                       )}
                       payment={false}
+                      recommended
                     />
                   )}
                 </ProjectsListingWrap>

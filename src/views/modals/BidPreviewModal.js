@@ -24,16 +24,16 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
             <CardTitle className="main-card-title">Project Bid Estimation</CardTitle>
             <CardBody className="main-card-body bid-eta">
               <div>
-                <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
-                <CardText className="key">Total Bid Amount</CardText>
-              </div>
-              <div>
                 <CardText className="value">
                   {bidInfo?.total_estimated_duration?.duration}
                   {bidInfo?.total_estimated_duration?.duration_type &&
                     bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                 </CardText>
                 <CardText className="key">Estimation Duration</CardText>
+              </div>
+              <div>
+                <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
+                <CardText className="key">Total Bid Amount</CardText>
               </div>
             </CardBody>
           </Card>

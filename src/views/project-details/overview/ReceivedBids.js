@@ -183,10 +183,10 @@ const ReceivedBids = ({ projectName }) => {
   );
 
   const statusOption = [
-    { label: 'New', value: 'NEW' },
+    { label: 'New', value: 'ACTIVE' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
-    { label: 'Rejected', value: 'REJECTED' },
+    { label: 'Rejected', value: 'DECLINED' },
   ];
   const handleSearchTextChange = (e) => {
     setSearchText(e.target.value);
