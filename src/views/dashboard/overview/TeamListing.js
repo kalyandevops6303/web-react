@@ -96,8 +96,11 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
               Explore Projects
             </div>
           ) : (
-            <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
-              Explore Teams
+            <div
+              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+              onClick={() => navigate('/marketplace/teams')}
+            >
+              View Teams
             </div>
           )}
         </CardBody>
@@ -111,7 +114,6 @@ const AccordionHeadStyle = styled.div`
   justify-content: space-between;
   width: 100%;
   .view-all-cta {
-    display: none;
     font-size: 0.875rem;
     color: ${theme.activeColor};
     text-decoration: underline;
@@ -160,9 +162,9 @@ const TeamListing = () => {
   const recommendedTeams = useSelector(selectRecommendedTeams);
   const isRecommendedTeamsLoading = useSelector(selectRecommendedTeamsLoading);
 
-  const handleViewAll = (e) => {
+  const handleViewAll = (e, path) => {
     e.stopPropagation();
-    navigate('/marketplace/all_listings', { state: { isRecommended: true } });
+    navigate(path, { state: { isRecommended: true } });
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
@@ -183,7 +185,7 @@ const TeamListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">My teams</span>
                 {myTeam?.data?.length > 0 && (
-                  <CardText onClick={handleViewAll} className="view-all-cta">
+                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -327,7 +329,7 @@ const TeamListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Recommended Teams</span>
                 {recommendedTeams?.data?.length > 0 && (
-                  <CardText onClick={handleViewAll} className="view-all-cta">
+                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
                   </CardText>
                 )}

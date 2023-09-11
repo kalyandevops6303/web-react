@@ -202,11 +202,11 @@ const ReceivedBids = ({ projectName }) => {
             <CardText className="d-none view-all-cta">Give rating</CardText>
             <div>
               <span className="key">Received</span>
-              <CardText className="value">{selectReceivedBidsMetadata?.total_records}</CardText>
+              <CardText className="value text-end">{selectReceivedBidsMetadata?.total_records}</CardText>
             </div>
             <div className="me-1">
               <span className="key">Invited</span>
-              <CardText className="value">{totalInvited}</CardText>
+              <CardText className="value text-end">{totalInvited}</CardText>
             </div>
           </div>
         </AccordionHeadStyle>
@@ -231,7 +231,7 @@ const ReceivedBids = ({ projectName }) => {
               <Select
                 options={statusOption}
                 classNamePrefix="select"
-                placeholder="Select type"
+                placeholder="Select project status"
                 theme={selectThemeColors}
                 onChange={(e) => setStatus(e.value)}
               />

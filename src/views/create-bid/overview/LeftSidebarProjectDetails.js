@@ -13,7 +13,7 @@ import { CustomBadge } from '../../styled';
 import { getProjectDetails } from '../../../redux/actions/createBidActions';
 import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
-import { formatDate } from '../../../utility/Utils';
+import { formattedDate } from '../../../utility/Utils';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 
 const LeftSidebarProjectDetails = () => {
@@ -118,7 +118,7 @@ const LeftSidebarProjectDetails = () => {
             <div className="d-flex">
               <span className="info-key">Posted date:</span>
               <CardText className="info-value">
-                {formatDate(projectDetailsData?.listing_details?.start_date.replaceAll('-', '/'))}
+                {formattedDate(projectDetailsData?.listing_details?.start_date)}
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (

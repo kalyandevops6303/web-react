@@ -12,7 +12,7 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
@@ -51,8 +51,6 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
 
-  const navigate = useNavigate();
-
   const handleToggle = () => {
     setShowModal(!showModal);
   };
@@ -78,14 +76,6 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
     } else {
       return theme.green;
     }
-  };
-
-  const handleViewTalentProfile = () => {
-    navigate('/marketplace/talents', { state: { isRecommended: true } });
-  };
-
-  const handleViewTeamProfile = () => {
-    navigate('/marketplace/teams', { state: { isRecommended: true } });
   };
 
   return (
@@ -123,10 +113,8 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           ) : (
             <TagsSection fullWidth open={open} tags={data?.skills} />
           )}
-          <div className="d-flex flex-column ">
-            <div className="mb-1">
-              <TagsSection fullWidth open={open} tags={data?.expertise?.skills} />
-            </div>
+          <div className="d-flex flex-column">
+            <TagsSection fullWidth open={open} tags={data?.expertise?.skills} />
             <div className="d-flex">
               <RatingBadge number={data?.rating} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
@@ -138,7 +126,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           <div className="main-row">
             {isRecommendedTeam ? (
               <>
-                <UserSection tagName="Team" name={data?.name} users={users} />
+                <UserSection tagName="Team" name={data?.name} users={users} isAlma={data?.is_alma_mater} />
                 <div className="bottom-detail d-flex mt-1">
                   <div className="design-planning-wrapper">
                     {/* <div className="design-planning">
@@ -164,7 +152,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
                       imgWidth: 33,
                     },
                   ]}
-                  isAlma={data?.is_alma_matter}
+                  isAlma={data?.is_alma_mater}
                 />
                 <div className="circular-progressbar-container-large mt-1">
                   <CircularProgressbarWithChildren
@@ -194,18 +182,12 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
             )}
           </div>
           {isTeamLoggedIn ? (
-            <div
-              onClick={handleViewTalentProfile}
-              className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
-            >
-              View Talent Profile
+            <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50">
+              <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
             </div>
           ) : (
-            <div
-              onClick={handleViewTeamProfile}
-              className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
-            >
-              View Team
+            <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50">
+              <Link to={`/profile/team/${data?._id}`}>View Team</Link>
             </div>
           )}
         </CardBody>

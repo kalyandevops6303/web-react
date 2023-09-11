@@ -3,7 +3,7 @@ import { Badge, UncontrolledTooltip } from 'reactstrap';
 import BadgeGroupWrap from './style';
 import { CustomBadge } from '../../../views/styled';
 
-const BadgeGroup = ({ title, data, color }) => {
+const BadgeGroup = ({ title, data, color, gapWrap }) => {
   if (!data || data.length === 0) {
     return null;
   }
@@ -56,7 +56,9 @@ const BadgeGroup = ({ title, data, color }) => {
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
         <div className="info-key">{title || ''}</div>
-        <div className="badge-box mt-75">{data && data?.map(renderBadge)}</div>
+        <div className={`badge-box mt-75 ${gapWrap && 'd-flex flex-wrap gap-50'}`}>
+          {data && data?.map(renderBadge)}
+        </div>
       </div>
     </BadgeGroupWrap>
   );

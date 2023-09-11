@@ -220,8 +220,8 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" gapWrap />
+              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" gapWrap />
             </CardBody>
           </Card>
 
