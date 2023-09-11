@@ -42,7 +42,7 @@ const ConfirmContractModal = ({ docType, terminateData, onAccept, modal, toggleM
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 justify-content-end">
-            <Button outline color="primary">
+            <Button outline color="primary" onClick={onClose}>
               Cancel
             </Button>
             <Button color="primary" onClick={onAccept}>
