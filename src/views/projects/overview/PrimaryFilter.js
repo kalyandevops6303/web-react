@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import Statbox from '../../user-details/overview/Statbox';
 import { getItem } from '../../../utility/localStorageControl';
-import { getCardInfo } from '../../../redux/actions/marketPlaceActions';
+import { getCardInfo } from '../../../redux/actions/projectActions';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
   const dispatch = useDispatch();
-  const selectCardData = useSelector((state) => state.marketPlace.cardData);
+  const selectCardData = useSelector((state) => state.project.cardData);
 
   // const userData = useSelector(selectAuthUserData);
   const userData = getItem('userData');
@@ -20,7 +20,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
 
   return (
     <Row className="primary-row">
-      <Col onClick={() => handlePrimaryChangeFilter('ongoing')}>
+      <Col onClick={() => handlePrimaryChangeFilter('ONGOING')}>
         <Statbox
           isActive={selected === 'ongoing'}
           isMarketPlaceTab
@@ -33,7 +33,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
       </Col>
       {/* {userType === userTypes.client && ( */}
       <>
-        <Col onClick={() => handlePrimaryChangeFilter('upcoming')}>
+        <Col onClick={() => handlePrimaryChangeFilter('UPCOMING')}>
           <Statbox
             isActive={selected === 'upcoming'}
             isMarketPlaceTab
@@ -44,7 +44,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
             className="stat-box cursor-pointer"
           />
         </Col>
-        <Col onClick={() => handlePrimaryChangeFilter('completed')}>
+        <Col onClick={() => handlePrimaryChangeFilter('COMPLETED')}>
           <Statbox
             isActive={selected === 'completed'}
             className="stat-box cursor-pointer"
@@ -59,7 +59,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
       {/* )} */}
       {/* {userType === userTypes.talent && ( */}
       <>
-        <Col onClick={() => handlePrimaryChangeFilter('terminated')}>
+        <Col onClick={() => handlePrimaryChangeFilter('TERMINATED')}>
           <Statbox
             isActive={selected === 'terminated'}
             className="stat-box cursor-pointer"
@@ -70,7 +70,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
             color="light-dark-red"
           />
         </Col>
-        <Col onClick={() => handlePrimaryChangeFilter('dispute')}>
+        <Col onClick={() => handlePrimaryChangeFilter('DISPUTE')}>
           <Statbox
             isActive={selected === 'dispute'}
             className="stat-box cursor-pointer"

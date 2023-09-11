@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -21,19 +21,11 @@ const ProjectContainer = styled.div`
 const Projects = () => {
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
-  const navigate = useNavigate();
   // Primary filters
 
   // Adjust the number of lines based on the desired limit
 
-  const routesMatch =
-    useMatch('/projects/ongoing') ||
-    useMatch('/projects/upcoming') ||
-    useMatch('/projects/completed') ||
-    useMatch('/projects/terminated') ||
-    useMatch('/projects/dispute');
-
-  const [primaryFilter, setPrimaryFilter] = useState(routesMatch?.pathname?.split('/')?.[2]);
+  const [primaryFilter, setPrimaryFilter] = useState('ongoing');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -44,28 +36,23 @@ const Projects = () => {
 
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
-    navigate(`/projects/${props}`);
   };
 
   // const userData = useSelector(selectAuthUserData);
   const userDataLocal = getItem('userData');
 
-  // eslint-disable-next-line react/no-unstable-nested-components
-  const SecondComp = () => <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />;
-
   const primaryEnum = {
-    clients: 'Clients',
-    all_listings: 'All listings',
-    my_listings: 'My listings',
-    talents: 'Talent',
+    ongoing: 'Ongoing',
+    upcoming: 'Upcoming',
+    completed: 'Completed',
+    terminated: 'Terminated',
+    dispute: 'Dispute',
   };
 
   return (
     <ProjectContainer>
       <div className="d-flex justify-content-between">
-        <BreadCrumbs
-          data={[{ title: 'Project', link: '/project/all_listings' }, { title: primaryEnum[primaryFilter] }]}
-        />
+        <BreadCrumbs data={[{ title: 'Project', link: '/projects' }, { title: primaryEnum[primaryFilter] }]} />
 
         {userDetailsData?.user_type === 'CLIENT' && (
           <Link to="/create-project">
@@ -81,13 +68,7 @@ const Projects = () => {
         isTab={isTab}
         userType={userDataLocal?.user_type}
       />
-      <Routes>
-        <Route path="ongoing" element={<SecondComp />} />
-        <Route path="upcoming" element={<SecondComp />} />
-        <Route path="completed" element={<SecondComp />} />
-        <Route path="terminated" element={<SecondComp />} />
-        <Route path="dispute" element={<SecondComp />} />
-      </Routes>
+      <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />
     </ProjectContainer>
   );
 };

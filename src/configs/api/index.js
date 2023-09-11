@@ -125,6 +125,10 @@ const API = {
     listJoinReq: `${apiOnboardingEndpoint}/api/v1/my-teams/join-requests`,
     listFav: `${apiOnboardingEndpoint}/api/v1/my-teams/favourites`,
   },
+  project: {
+    cardInfo: `${apiOnboardingEndpoint}/api/v1/projects/card-info`,
+    projects: `${apiOnboardingEndpoint}/api/v1/projects`,
+  },
 };
 
 export default API;
