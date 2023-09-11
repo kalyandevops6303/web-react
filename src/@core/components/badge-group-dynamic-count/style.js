@@ -27,7 +27,7 @@ export const BadgeGroupWrap = styled.div`
       .badge {
         margin: 0 0.5rem 0.5rem 0;
         font-size: 0.75rem;
-        max-width: 14rem;
+        max-width: 97%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
