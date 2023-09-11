@@ -174,8 +174,6 @@ const TeamListing = () => {
     }, 1000);
   }, [open]);
 
-  // console.log(recommendedTeams);
-
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
       <AccordionItem>
@@ -183,7 +181,7 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">My teams</span>
+                <span className="d-flex align-items-center">My Teams</span>
                 {myTeam?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
@@ -255,7 +253,7 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Team invites</span>
+                <span className="d-flex align-items-center">Team Invites</span>
                 {teamInvitation?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All

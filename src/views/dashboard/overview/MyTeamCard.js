@@ -10,9 +10,12 @@ import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { ProjectWrapper } from './style';
 import ProjectModal from '../../modals/ProjectModal';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
+import { setItem } from '../../../utility/localStorageControl';
 
 const UserSection = ({ users, name }) => (
   <div className="user-section">
@@ -36,6 +39,7 @@ UserSection.propTypes = {
 
 const MyTeamCard = ({ data, className }) => {
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -51,6 +55,11 @@ const MyTeamCard = ({ data, className }) => {
       imgWidth: 33,
     }),
   );
+
+  const handleViewTeam = (id) => {
+    setItem('team_id', id);
+    navigate(`/profile/team/${id}`);
+  };
 
   return (
     <ProjectWrapper className={className}>
@@ -72,8 +81,8 @@ const MyTeamCard = ({ data, className }) => {
               )}
             </div>
             <div
-              // onClick={() => setShowModal(true)}
               className="cursor-pointer font-small-4 font-weight-normal text-center text-primary project-cta mt-25"
+              onClick={() => handleViewTeam(data?._id)}
             >
               View
             </div>
