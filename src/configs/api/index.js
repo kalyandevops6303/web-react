@@ -34,6 +34,7 @@ const API = {
     projectAreas: `${apiAuthEndpoint}/api/v1/static/project-area/all`,
     services: `${apiAuthEndpoint}/api/v1/static/services/all`,
     disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
+    ratingTags: `${apiAuthEndpoint}/api/v1/static/tags/filter`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -168,6 +169,11 @@ const API = {
     disputeReplyFileUpload: `${apiCreateProjectEndpoint}/api/v1/dispute/file`,
     resolveDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/resolve`,
     disputesCount: `${apiCreateProjectEndpoint}/api/v1/disputes/count`,
+  },
+  rating: {
+    giveRating: `${apiCreateProjectEndpoint}/api/v1/ratings`,
+    yourSubmittedRating: `${apiCreateProjectEndpoint}/api/v1/ratings/your-provided-rating`,
+    yourRating: `${apiCreateProjectEndpoint}/api/v1/ratings/your-rating`,
   },
 };
 

@@ -10,6 +10,7 @@ import {
   institutesService,
   languagesService,
   projectAreasService,
+  ratingTagsService,
   skillsService,
   statesService,
   talentRolesService,
@@ -62,6 +63,9 @@ import {
   disputeTypesRequest,
   disputeTypesSuccess,
   disputeTypesFailure,
+  ratingTagsRequest,
+  ratingTagsSuccess,
+  ratingTagsFailure,
 } from '../reducers/static';
 
 const getTalentRoles = () => async (dispatch) => {
@@ -214,6 +218,16 @@ const getDisputeTypes = () => async (dispatch) => {
   }
 };
 
+const getRatingTags = (userType) => async (dispatch) => {
+  dispatch(ratingTagsRequest());
+  try {
+    const res = await ratingTagsService(userType);
+    dispatch(ratingTagsSuccess(res.data));
+  } catch (error) {
+    errorHandler(error, ratingTagsFailure);
+  }
+};
+
 export {
   getTalentRoles,
   getLanguages,
@@ -230,4 +244,5 @@ export {
   getCompanyIndustries,
   getProjectAreas,
   getDisputeTypes,
+  getRatingTags,
 };

@@ -18,6 +18,7 @@ import createBid from './reducers/createBid';
 import projectDetails from './reducers/projectDetails';
 import team from './reducers/team';
 import dispute from './reducers/dispute';
+import rating from './reducers/rating';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
   createBid,
   inviteTalent,
   dispute,
+  rating,
 
   // Add more reducers if needed
 });

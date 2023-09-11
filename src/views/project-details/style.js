@@ -428,6 +428,54 @@ const MemberRowWrapper = styled.div`
   }
 `;
 
+const RatingNavsContainer = styled.div`
+  .nav {
+    border-radius: 0;
+  }
+
+  .nav-link {
+    font-weight: 400;
+  }
+
+  .nav-tabs .nav-link {
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 16px;
+  }
+
+  .nav-tabs .nav-link.active {
+    border-bottom: 2px solid ${theme.activeNavPillText} !important;
+    margin-bottom: -2px;
+    color: ${theme.activeNavPillText};
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .nav-tabs .nav-link:after {
+    background: none !important;
+  }
+`;
+
+const RatingsFormContainer = styled.div`
+  .label-asterisk {
+    color: ${theme.red};
+    margin-left: 4px;
+  }
+`;
+
+const RatingTag = styled.div`
+  border-radius: 12px;
+  border: 1px solid ${theme.turquoiseColor};
+  background: ${(props) => (props.active ? theme.turquoiseColor : theme.ratingTagBg)};
+  width: fit-content;
+
+  p {
+    color: ${(props) => (props.active ? theme.white : theme.lightTurquoiseColor)};
+    font-size: 12px;
+    font-weight: 600;
+  }
+`;
+
 export {
   BidWrapper,
   TeamVieWrapper,
@@ -436,4 +484,7 @@ export {
   BidDetailsWrap,
   AccordionHeadStyle,
   MemberRowWrapper,
+  RatingNavsContainer,
+  RatingsFormContainer,
+  RatingTag,
 };
