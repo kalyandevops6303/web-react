@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { RatingNavsContainer } from '../style';
-import RatingSubmitSuccessModal from '../../modals/RatingSubmitSuccessModal';
 import SubmitRating from './SubmitRating';
 import YourRatings from './YourRatings';
 
@@ -12,7 +11,6 @@ const RatingView = () => {
   };
 
   const [activeTab, setTabActive] = useState(tabNames.submitRating);
-  const [thankYouModal, setThankYouModal] = useState(null);
 
   const toggleTabs = (tab) => {
     if (activeTab !== tab) {
@@ -20,13 +18,8 @@ const RatingView = () => {
     }
   };
 
-  const toggleThankYouModal = () => {
-    setThankYouModal(!thankYouModal);
-  };
-
   return (
     <div>
-      {thankYouModal && <RatingSubmitSuccessModal modal={thankYouModal} toggleModal={toggleThankYouModal} />}
       <RatingNavsContainer>
         <Nav tabs className="font-medium border-bottom">
           <NavItem className="me-3">
