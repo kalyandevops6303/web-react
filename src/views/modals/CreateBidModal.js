@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
 import { CreateBidRadioOption } from '../styled';
 import { createBid } from '../../redux/actions/createBidActions';
 import { bidTypes, userTypes } from '../../utility/constants/Constant';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 
-const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
+const CreateBidModal = ({ modal, toggleModal, selectedProject, toggleCompleteProfileModal }) => {
   const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   const [selectedFlow, setSelectedFlow] = useState('');
+
+  const profilePercentageData = useSelector(profilePercentage);
 
   const onSuccess = (bidData) => {
     const { bid_id, bid_type, project_type, entity } = bidData;
@@ -30,6 +34,20 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
     }
   };
 
+  const handleCreateBid = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      toggleCompleteProfileModal();
+      return;
+    }
+
+    setSelectedFlow(bidTypes.simple);
+    dispatch(createBid(selectedProject._id, bidTypes.simple, onSuccess));
+  };
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={toggleModal} />
@@ -40,10 +58,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
           <CreateBidRadioOption
             className="me-1 cursor-pointer"
             active={selectedFlow === bidTypes.simple}
-            onClick={() => {
-              setSelectedFlow(bidTypes.simple);
-              dispatch(createBid(selectedProject._id, bidTypes.simple, onSuccess));
-            }}
+            onClick={handleCreateBid}
           >
             <div className="form-check form-check-inline checkbox-custom-margin">
               <Input type="radio" id="simple" checked={selectedFlow === bidTypes.simple} />
@@ -91,10 +106,12 @@ CreateBidModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   selectedProject: Proptypes.object,
+  toggleCompleteProfileModal: Proptypes.func,
 };
 
 CreateBidModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   selectedProject: {},
+  toggleCompleteProfileModal: () => {},
 };
