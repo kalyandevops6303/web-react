@@ -34,7 +34,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject, toggleCompletePro
     }
   };
 
-  const handleCreateBid = () => {
+  const handleCreateBid = (type) => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
@@ -44,7 +44,12 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject, toggleCompletePro
       return;
     }
 
-    setSelectedFlow(bidTypes.simple);
+    if (type === 'simple') {
+      setSelectedFlow(bidTypes.simple);
+      dispatch(createBid(selectedProject._id, bidTypes.simple, onSuccess));
+      return;
+    }
+    setSelectedFlow(bidTypes.advanced);
     dispatch(createBid(selectedProject._id, bidTypes.simple, onSuccess));
   };
 
@@ -58,7 +63,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject, toggleCompletePro
           <CreateBidRadioOption
             className="me-1 cursor-pointer"
             active={selectedFlow === bidTypes.simple}
-            onClick={handleCreateBid}
+            onClick={() => handleCreateBid('simple')}
           >
             <div className="form-check form-check-inline checkbox-custom-margin">
               <Input type="radio" id="simple" checked={selectedFlow === bidTypes.simple} />
@@ -76,10 +81,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject, toggleCompletePro
           <CreateBidRadioOption
             className="ms-1 cursor-pointer"
             active={selectedFlow === bidTypes.advanced}
-            onClick={() => {
-              setSelectedFlow(bidTypes.advanced);
-              dispatch(createBid(selectedProject._id, bidTypes.advanced, onSuccess));
-            }}
+            onClick={() => handleCreateBid('advance')}
           >
             <div className="form-check form-check-inline checkbox-custom-margin">
               <Input type="radio" id="advance" checked={selectedFlow === bidTypes.advanced} />

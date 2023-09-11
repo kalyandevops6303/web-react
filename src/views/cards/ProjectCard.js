@@ -76,7 +76,7 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   };
 
   const toggleCompleteProfileModal = () => {
-    toggleCreateBidModal();
+    setCreateBidModal(false);
     setCompleteProfileModal(!completeProfileModal);
   };
 
