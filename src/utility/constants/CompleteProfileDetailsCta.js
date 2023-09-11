@@ -51,8 +51,7 @@ const CompleteProfileDetailsCta = {
     {
       keyToMatch: 'team_logo',
       label: 'Complete Your Profile',
-      // path: `/${userOnboarding.client}/educational-details`,
-      path: `/dashboard`,
+      path: '/create-team/profile-details',
     },
   ],
 };
