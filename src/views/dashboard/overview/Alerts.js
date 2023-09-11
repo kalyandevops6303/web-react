@@ -151,7 +151,7 @@ const Alerts = () => {
                 <CardTitle tag="h4">Team Invitations</CardTitle>
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
-                <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">
+                <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary fw-bold">
                   None received
                 </CardText>
               </CardBody>
