@@ -224,6 +224,7 @@ const TimeWrapper = styled.section`
 `;
 
 const CreateBidRadioOption = styled.div`
+  min-height: 210px;
   padding: 1rem;
   border-radius: 6px;
   border: ${(props) => (props.active ? `1px solid ${theme.activeNavPillText}` : `1px solid ${theme.darkBorder}`)};
