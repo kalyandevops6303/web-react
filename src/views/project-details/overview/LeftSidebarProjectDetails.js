@@ -136,7 +136,7 @@ const LeftSidebarProjectDetails = () => {
 
           {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
             <BadgeGroup
-              title="Skills"
+              title="Tags"
               data={[
                 ...(projectDetailsData?.proficiency?.skills || []),
                 ...(projectDetailsData?.proficiency?.tools || []),
