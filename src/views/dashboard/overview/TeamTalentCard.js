@@ -12,7 +12,7 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
@@ -21,6 +21,7 @@ import TagsSection from './TagsSection';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
+import { setItem } from '../../../utility/localStorageControl';
 
 const UserSection = ({ users, name, isAlma }) => (
   <div className="user-section">
@@ -50,6 +51,7 @@ UserSection.propTypes = {
 const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
+  const navigate = useNavigate();
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -76,6 +78,11 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
     } else {
       return theme.green;
     }
+  };
+
+  const handleViewTeam = (id) => {
+    setItem('team_id', id);
+    navigate(`/profile/team/${id}`);
   };
 
   return (
@@ -186,8 +193,11 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
               <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
             </div>
           ) : (
-            <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50">
-              <Link to={`/profile/team/${data?._id}`}>View Team</Link>
+            <div
+              className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
+              onClick={() => handleViewTeam(data?._id)}
+            >
+              View Team
             </div>
           )}
         </CardBody>

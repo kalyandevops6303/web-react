@@ -183,10 +183,10 @@ const ReceivedBids = ({ projectName }) => {
   );
 
   const statusOption = [
-    { label: 'New', value: 'NEW' },
+    { label: 'New', value: 'ACTIVE' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
-    { label: 'Rejected', value: 'REJECTED' },
+    { label: 'Rejected', value: 'DECLINED' },
   ];
   const handleSearchTextChange = (e) => {
     setSearchText(e.target.value);
@@ -218,12 +218,12 @@ const ReceivedBids = ({ projectName }) => {
             solution partner that have submitted bid for your proposal request.
           </CardText>
           <Row className="justify-content-between w-100 mb-2">
-            <Col className="d-flex align-items-end" sm="12" md="12" lg="4">
+            <Col className="d-flex align-items-end" sm="12" md="12" lg="5">
               <InputGroup className="input-group-merge">
                 <InputGroupText className="ps-1 pe-50">
                   <Search size={14} color={theme.textMuted} />
                 </InputGroupText>
-                <Input placeholder="Search talent name" onChange={debounce(handleSearchTextChange, 300)} />
+                <Input placeholder="Search team or talent name" onChange={debounce(handleSearchTextChange, 300)} />
               </InputGroup>
             </Col>
             <Col sm="12" md="12" lg="3">

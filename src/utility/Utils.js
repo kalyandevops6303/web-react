@@ -314,17 +314,33 @@ const getDayWithOrdinalSuffix = (day) => {
 export const formattedDate = (value) => {
   if (!value) return value;
 
-  const date = new Date(value);
+  // Split the input date string into day, month, and year
+  const [day, month, year] = value.split('-').map(Number);
 
-  const day = date.getDate();
-  const month = date.toLocaleString('en-US', { month: 'long' });
-  const year = date.getFullYear();
+  if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year)) return value;
 
   // Add the ordinal suffix to the day
   const dayWithOrdinal = getDayWithOrdinalSuffix(day);
 
+  // Get the month name based on the month number
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  const monthName = monthNames[month - 1];
+
   // Format the date string
-  const formattedDateString = `${dayWithOrdinal} ${month} ${year}`;
+  const formattedDateString = `${dayWithOrdinal} ${monthName} ${year}`;
 
   return formattedDateString;
 };

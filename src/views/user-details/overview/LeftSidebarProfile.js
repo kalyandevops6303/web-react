@@ -26,7 +26,7 @@ import { CustomBadge } from '../../styled';
 import { getItem } from '../../../utility/localStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
-import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
+import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 
 const LeftSidebarProfile = ({
@@ -69,7 +69,7 @@ const LeftSidebarProfile = ({
       dispatch(getProfilePercentage());
       return;
     }
-    isTeamView && dispatch(getProfilePercentage());
+    isTeamView && dispatch(getTeamProfilePercentage());
   }, []);
   const handleJoinTeam = () => {
     const newPostData = {

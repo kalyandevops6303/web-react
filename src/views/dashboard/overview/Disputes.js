@@ -78,7 +78,7 @@ const Disputes = ({ handleRaiseDispute }) => {
             </DisputesChartContainer>
           </div>
         ) : (
-          <CardText className="text-center card-text font-small-5 mt-20 mb-2 text-primary">
+          <CardText className="text-center card-text font-small-5 mt-20 mb-2 fw-bold text-primary">
             No Dispute raised !
           </CardText>
         )}

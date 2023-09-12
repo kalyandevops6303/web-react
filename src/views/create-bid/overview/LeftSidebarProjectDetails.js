@@ -83,7 +83,7 @@ const LeftSidebarProjectDetails = () => {
             />
             <div>
               <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
-              <div className="d-flex">
+              <div className="d-flex flex-wrap">
                 <RatingBadge number={projectDetailsData?.client_details?.rating} />
                 <CardText className="ps-75 font-small-2 fw-300 rating-label">
                   {projectDetailsData?.client_details?.projects_listed_count} Projects
@@ -115,9 +115,9 @@ const LeftSidebarProjectDetails = () => {
           </section>
 
           <div className="d-flex justify-content-between mb-75">
-            <div className="d-flex">
+            <div className="d-flex flex-wrap gap-25">
               <span className="info-key">Posted date:</span>
-              <CardText className="info-value">
+              <CardText className="info-value ">
                 {formattedDate(projectDetailsData?.listing_details?.start_date)}
               </CardText>
             </div>

@@ -210,6 +210,16 @@ const BidWrapper = styled.div`
     .accordion-body {
       color: ${theme.bodyColor};
       padding: 0;
+
+      // Select
+      .select__value-container {
+        padding: 0;
+        padding-left: 8px;
+      }
+      .select__indicator {
+        padding: 0;
+        padding-right: 8px;
+      }
     }
     .accordion-body-desc {
       padding: 0 0 0 1.6rem;

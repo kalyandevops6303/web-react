@@ -19,6 +19,7 @@ import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import CreateBidModal from '../modals/CreateBidModal';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import CompleteProfileModal from '../modals/CompleteProfileModal';
 
 const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -72,6 +74,12 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const toggleCreateBidModal = () => {
     setCreateBidModal(!createBidModal);
   };
+
+  const toggleCompleteProfileModal = () => {
+    setCreateBidModal(false);
+    setCompleteProfileModal(!completeProfileModal);
+  };
+
   const handleLike = () => {
     dispatch(makeFavFromMarketplace({ project_id: data?._id }));
   };
@@ -218,7 +226,20 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
         />
       )}
       {createBidModal && (
-        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={selectedProject} />
+        <CreateBidModal
+          modal={createBidModal}
+          toggleModal={toggleCreateBidModal}
+          toggleCompleteProfileModal={toggleCompleteProfileModal}
+          selectedProject={selectedProject}
+        />
+      )}
+
+      {completeProfileModal && (
+        <CompleteProfileModal
+          modal={completeProfileModal}
+          toggleModal={toggleCompleteProfileModal}
+          modalInfoText="team"
+        />
       )}
     </ProjectCardWrap>
   );
