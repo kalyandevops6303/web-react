@@ -1,55 +1,49 @@
 /* eslint-disable no-undef */
-import { Col, Input, InputGroup, InputGroupText, Label, Popover, PopoverBody, Row } from 'reactstrap';
-import { AsyncPaginate } from 'react-select-async-paginate';
+import { Input, InputGroup, InputGroupText } from 'reactstrap';
 import { useState, useEffect, useRef } from 'react';
-import classNames from 'classnames';
-import { RefreshCcw, Search } from 'react-feather';
-import CollActive from '@src/assets/images/coll_active.png';
-import ExpandInactive from '@src/assets/images/expand_inactive.png';
-import CollInactive from '@src/assets/images/coll_inactive.png';
-import ExpandActive from '@src/assets/images/expand_active.png';
 import { useDispatch, useSelector } from 'react-redux';
+import { Search } from 'react-feather';
 import { PropTypes } from 'prop-types';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
-import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { selectThemeColors, useIsTab } from '../../../utility/Utils';
 import { getProjectListing } from '../../../redux/actions/projectActions';
-import ProjectCard from '../../cards/ProjectCard';
+import ProjectCard from '../../cards/MyProjectCard';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
-import { userTypes } from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
 
+// eslint-disable-next-line react/prop-types
 const SecondaryFilters = ({ primaryFilter }) => {
   const [searchText, setSearchText] = useState('');
   const dispatch = useDispatch();
-  const isTab = useIsTab();
   const popoverRef = useRef(null);
 
   const [hasMore, setHasMore] = useState(true);
-  const [isExpanded, setIsExpanded] = useState(false);
   const selectProjectData = useSelector((state) => state.project.listData);
   const selectProjectMetaData = useSelector((state) => state.project.metaData);
-  const currentPreview = useSelector((state) => state.marketPlace.currentPreview);
-  const isLoading = useSelector((state) => state.marketPlace.loading);
+  const currentPreview = useSelector((state) => state.project.currentPreview);
+  const isLoading = useSelector((state) => state.project.loading);
 
   const metaData = { page: 1, page_size: 10 };
 
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   // Function to toggle the popover
-  const togglePopover = () => {
-    setPopoverOpen(!popoverOpen);
-  };
+  // const togglePopover = () => {
+  //   setPopoverOpen(!popoverOpen);
+  // };
 
   const onSuccess = () => {};
   const onError = () => {
     setHasMore(false);
   };
 
+  const handleSearchTextChange = (e) => {
+    setSearchText(e.target.value);
+    e.preventDefault();
+  };
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
@@ -91,66 +85,15 @@ const SecondaryFilters = ({ primaryFilter }) => {
 
   const inputRef = useRef();
 
-  const handleReset = () => {
-    setSearchText('');
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-  };
-
-  const handleSearchTextChange = (e) => {
-    setSearchText(e.target.value);
-    e.preventDefault();
-  };
-
   const fetchMore = () => {
-    const newMeteData = {
+    const newMetaData = {
       ...metaData,
       // eslint-disable-next-line no-unsafe-optional-chaining
       page: selectProjectData?.current_page + 1 || 1,
     };
-  };
 
-  const ExpandCollapseComp = (
-    <>
-      <Label className="view-label me-1">View:</Label>
-      <img src={isExpanded ? ExpandActive : CollActive} alt="collactive" />
-      <Popover
-        innerRef={popoverRef}
-        placement="right"
-        isOpen={popoverOpen}
-        target="popoverButton"
-        toggle={togglePopover}
-      >
-        <PopoverBody className="show-more-popover-body">
-          <div
-            className={`d-flex align-items-center tooltip-option tooltip-option-${
-              isExpanded === true ? 'active' : 'inactive'
-            }`}
-            onClick={() => {
-              setIsExpanded(true);
-              setPopoverOpen(false);
-            }}
-          >
-            <img className="me-50" src={isExpanded ? ExpandActive : ExpandInactive} alt="collactive" />
-            <span>Expand</span>
-          </div>
-          <div
-            className={`d-flex align-items-center tooltip-option tooltip-option-${
-              isExpanded === false ? 'active' : 'inactive'
-            }`}
-            onClick={() => {
-              setIsExpanded(false);
-              setPopoverOpen(false);
-            }}
-          >
-            <img className="me-50" src={isExpanded ? CollInactive : CollActive} alt="collactive" />
-            <span>Compress</span>
-          </div>
-        </PopoverBody>
-      </Popover>
-    </>
-  );
+    dispatch(getProjectListing({ searchText, metaData: newMetaData, onSuccess, onError, primaryFilter }));
+  };
 
   return (
     <>
@@ -168,34 +111,6 @@ const SecondaryFilters = ({ primaryFilter }) => {
               />
             </InputGroup>
           </div>
-          <Row>
-            {isTab ? (
-              <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
-                {ExpandCollapseComp}
-              </div>
-            ) : (
-              <Col className="d-flex mt-auto mb-50 cursor-pointer" id="popoverButton">
-                {ExpandCollapseComp}
-              </Col>
-            )}
-
-            {!isTab && (
-              <Col className="reset-btn cursor-pointer" onClick={handleReset}>
-                <div className="reset-icon">
-                  <RefreshCcw size={18} color={theme.activeNavPillText} />
-                </div>
-                <span className="reset-label">Reset</span>
-              </Col>
-            )}
-            {isTab && (
-              <div className="reset-btn cursor-pointer" onClick={handleReset}>
-                <div className="reset-icon">
-                  <RefreshCcw size={18} color={theme.activeNavPillText} />
-                </div>
-                <span className="reset-label">Reset</span>
-              </div>
-            )}
-          </Row>
         </SecondaryFiltersWrap>
       </FormWrapper>
 
@@ -224,7 +139,7 @@ const SecondaryFilters = ({ primaryFilter }) => {
                 key={item?._id || item?.id}
                 data={item}
                 isPopoverOpen={popoverOpen}
-                isExpanded={isExpanded}
+                isExpanded={false}
                 isProjectWithTeam
                 isTeam
               />
@@ -238,11 +153,9 @@ const SecondaryFilters = ({ primaryFilter }) => {
 
 SecondaryFilters.propTypes = {
   primaryFilter: PropTypes.string,
-  userType: PropTypes.string,
 };
 SecondaryFilters.defaultProps = {
   primaryFilter: '',
-  userType: '',
 };
 
 export default SecondaryFilters;

@@ -1,8 +1,6 @@
 import API from '../configs/api';
 import DataService from '../configs/dataService/dataService';
 
-const isEmpty = (array) => !array?.length;
-
 const getCardService = () => DataService.get(API.project.cardInfo);
 
 const getProjectListingService = ({ metaData, primaryFilter, team_id = '', isTeam = false, searchText }) => {

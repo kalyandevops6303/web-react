@@ -71,7 +71,7 @@ const Routes = [
   },
 
   {
-    path: '/projects/*',
+    path: '/projects',
     element: <Projects />,
   },
   {

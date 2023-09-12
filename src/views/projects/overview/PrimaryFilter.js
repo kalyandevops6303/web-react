@@ -20,9 +20,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
 
   return (
     <Row className="primary-row">
-      <Col onClick={() => handlePrimaryChangeFilter('ONGOING')}>
+      <Col onClick={() => handlePrimaryChangeFilter('CLOSED')}>
         <Statbox
-          isActive={selected === 'ongoing'}
+          isActive={selected === 'CLOSED'}
           isMarketPlaceTab
           title={selectCardData?.ongoing || 0}
           desc="Ongoing"
@@ -33,9 +33,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
       </Col>
       {/* {userType === userTypes.client && ( */}
       <>
-        <Col onClick={() => handlePrimaryChangeFilter('UPCOMING')}>
+        <Col onClick={() => handlePrimaryChangeFilter('IN_REVIEW')}>
           <Statbox
-            isActive={selected === 'upcoming'}
+            isActive={selected === 'IN_REVIEW'}
             isMarketPlaceTab
             title={selectCardData?.upcoming || 0}
             desc="Upcoming"
@@ -46,7 +46,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
         </Col>
         <Col onClick={() => handlePrimaryChangeFilter('COMPLETED')}>
           <Statbox
-            isActive={selected === 'completed'}
+            isActive={selected === 'COMPLETED'}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
             title={selectCardData?.completed || 0}
@@ -56,12 +56,10 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
           />
         </Col>
       </>
-      {/* )} */}
-      {/* {userType === userTypes.talent && ( */}
       <>
         <Col onClick={() => handlePrimaryChangeFilter('TERMINATED')}>
           <Statbox
-            isActive={selected === 'terminated'}
+            isActive={selected === 'TERMINATED'}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
             title={selectCardData?.terminated || 0}
@@ -70,13 +68,13 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
             color="light-dark-red"
           />
         </Col>
-        <Col onClick={() => handlePrimaryChangeFilter('DISPUTE')}>
+        <Col onClick={() => handlePrimaryChangeFilter('DISPUTED')}>
           <Statbox
-            isActive={selected === 'dispute'}
+            isActive={selected === 'DISPUTED'}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
             title={selectCardData?.dispute || 0}
-            desc="Dispute"
+            desc="Disputed"
             icon={<UserX height={20} />}
             color="light-red"
           />
