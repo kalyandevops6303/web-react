@@ -236,7 +236,8 @@ const ProjectWrapper = styled.div`
     height: 40px;
   }
   .active-project-users {
-    height: 36px;
+    height: 34px;
+    margin: 0.8rem 0;
   }
   .main-row {
     display: flex;
