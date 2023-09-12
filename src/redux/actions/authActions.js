@@ -59,6 +59,7 @@ import {
   userDataSuccess,
   switchProfileSuccess,
   getUserDataSuccess,
+  cometChatLogin,
 } from '../reducers/auth';
 import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -95,6 +96,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     onSuccess(res.data.data);
     if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
       dispatch(loginSuccess(res.data.data));
+      dispatch(cometChatLogin(res.data.data.comet_chat_token));
       setItem('isUserVisited', true);
     } else {
       dispatch(loginSuccess(false));

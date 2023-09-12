@@ -64,6 +64,13 @@ const LeftSidebarProfile = ({
       });
     }
   };
+
+  const onMessageClick = () => {
+    navigate(`/chat`, {
+      state: { targetId: param?.userId },
+    });
+  };
+
   useEffect(() => {
     if (isTalentView || isClient) {
       dispatch(getProfilePercentage());
@@ -373,12 +380,12 @@ const LeftSidebarProfile = ({
             )}
             {!isEditable && (
               // To be taken for team memebers
-              <div className="d-none">
+              <div className="">
                 <div className="d-flex gap-1 mt-3 justify-content-center">
                   <Button className="w-50" outline color="primary">
                     Invite
                   </Button>
-                  <Button className="w-50" color="primary">
+                  <Button className="w-50" color="primary" onClick={onMessageClick}>
                     Message
                   </Button>
                 </div>

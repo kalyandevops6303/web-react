@@ -23,6 +23,8 @@ const App = () => {
       let data;
       const tokenFunc = async () => {
         data = await getToken();
+        // eslint-disable-next-line no-console
+        console.log('DATA TOKEN', data);
         if (data) {
           dispatch(fcmSubscribeNotification(data));
           // await fcmSubscribeService(data);
