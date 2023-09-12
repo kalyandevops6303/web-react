@@ -115,9 +115,9 @@ const LeftSidebarProjectDetails = () => {
           </section>
 
           <div className="d-flex justify-content-between mb-75">
-            <div className="d-flex">
+            <div className="d-flex flex-wrap gap-25">
               <span className="info-key">Posted date:</span>
-              <CardText className="info-value">
+              <CardText className="info-value ">
                 {formattedDate(projectDetailsData?.listing_details?.start_date)}
               </CardText>
             </div>
