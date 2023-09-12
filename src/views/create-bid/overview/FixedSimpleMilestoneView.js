@@ -60,7 +60,14 @@ const FixedSimpleMilestoneView = () => {
           .number()
           .min(1, 'Cost must be at least 1')
           .typeError('Please enter a number')
-          .required('Talent cost is required'),
+          .required('Talent cost is required')
+          .test('maxDecimalPlaces', 'Talent cost can have up to 2 decimal places', (value) => {
+            if (value === undefined) {
+              return true; // Optional field, no validation needed if empty
+            }
+            const decimalCount = (value.toString().split('.')[1] || '').length;
+            return decimalCount <= 2;
+          }),
         name: yup
           .string()
           .min(4, 'Name must be at least 4 characters')
@@ -560,9 +567,10 @@ const FixedSimpleMilestoneView = () => {
                                             e.stopPropagation();
                                           }}
                                         />
-                                        {getValues('milestones')[milestoneIndex].duration > 0 && (
-                                          <InputGroupText className="ps-0">w</InputGroupText>
-                                        )}
+                                        {getValues('milestones')[milestoneIndex].duration > 0 ||
+                                          (Number.isInteger(getValues('milestones')[milestoneIndex].duration) && (
+                                            <InputGroupText className="ps-0">w</InputGroupText>
+                                          ))}
                                       </InputGroup>
                                     )}
                                   />
