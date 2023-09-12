@@ -32,6 +32,7 @@ import ProjectDetails from '../../views/project-details';
 import BidDetails from '../../views/project-details/BidDetails';
 import ContractView from '../../views/project-details/ContractView';
 import { userOnboarding } from '../../utility/constants/Constant';
+import ProjectsListing from '../../views/projects';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -71,6 +72,10 @@ const Routes = [
   {
     path: '/marketplace/*',
     element: <MarketPlace />,
+  },
+  {
+    path: '/projects/*',
+    element: <ProjectsListing />,
   },
   {
     path: '/project-details/:projectId/*',

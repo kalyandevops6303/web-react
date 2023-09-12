@@ -94,6 +94,12 @@ const API = {
     getInvitaion: `${apiAuthEndpoint}/api/v1/invitation`,
     getSentInvitaion: `${apiAuthEndpoint}/api/v1/invitations/sent`,
   },
+  projectMilestones: {
+    getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,
+    getProjectTransactions: `${apiCreateProjectEndpoint}/api/v1/project/transactions`,
+    submitMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/submission`,
+    acceptMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/acceptance`,
+  },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
     favoriteTalents: `${apiAuthEndpoint}/api/v1/team/favourite-talents`,
