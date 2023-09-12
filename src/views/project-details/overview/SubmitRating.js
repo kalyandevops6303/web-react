@@ -247,8 +247,8 @@ const SubmitRating = () => {
                   <Col sm="12" md="6" lg="2">
                     <div className="d-flex flex-column align-items-center">
                       <Avatar img={getSubmittedImage()} imgHeight="98" imgWidth="98" />
-                      <p className="fw-bolder mt-1 mb-0">{getSubmittedName()}</p>
-                      <p className="font-small-3">{getSubmittedOtherInfo()}</p>
+                      <p className="fw-bolder mt-1 mb-0 text-center">{getSubmittedName()}</p>
+                      <p className="font-small-3 text-center">{getSubmittedOtherInfo()}</p>
                     </div>
                   </Col>
                   <Col sm="12" md="6" lg="9">
@@ -291,8 +291,8 @@ const SubmitRating = () => {
                     <Col sm="12" md="6" lg="2">
                       <div className="d-flex flex-column align-items-center">
                         <Avatar img={getFormImage()} imgHeight="98" imgWidth="98" />
-                        <p className="fw-bolder mt-1 mb-0">{getFormName()}</p>
-                        <p className="font-small-3">{getFormOtherInfo()}</p>
+                        <p className="fw-bolder mt-1 mb-0 text-center">{getFormName()}</p>
+                        <p className="font-small-3 text-center">{getFormOtherInfo()}</p>
                       </div>
                     </Col>
                     <Col sm="12" md="6" lg="9">
