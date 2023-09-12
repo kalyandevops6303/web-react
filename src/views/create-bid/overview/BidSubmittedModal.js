@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useNavigate, useParams } from 'react-router';
@@ -6,7 +7,8 @@ import { Button, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
 import { AccountCreatedImageContainer } from '../../Onboarding/style';
 import AccountCreatedGif from '../../../assets/images/accountCreatedGif.gif';
 import { saveSubmitBid } from '../../../redux/actions/createBidActions';
-import { submitBidLoading } from '../../../redux/selectors/createBidSelectors';
+import { bidDetails, submitBidLoading } from '../../../redux/selectors/createBidSelectors';
+import { inviteTalents } from '../../../redux/actions/inviteTalent';
 
 const BidSubmittedModal = ({ modal, toggleModal }) => {
   const params = useParams();
@@ -14,7 +16,9 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
   const navigate = useNavigate();
 
   const submitBidIsLoading = useSelector(submitBidLoading);
+  const bidDetailsData = useSelector(bidDetails);
 
+  const [loadingState, setLoadingState] = useState(false);
   const [timer, setTimer] = useState(5);
   const zeroLoggedRef = useRef(false);
   const intervalId = useRef();
@@ -24,8 +28,49 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
     navigate('/marketplace/my_bids');
   };
 
+  const emptyCall = () => {};
+
+  const fetchAndProcessDataWithLoadingState = async () => {
+    const data = bidDetailsData?.workers?.map((worker) => {
+      const reqData = {
+        redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+        requests_to: {
+          user_ids: [worker.user_id],
+        },
+        request_for: {
+          project_id: bidDetailsData?.project_id,
+          team_id: bidDetailsData?.bid_by?.entity_id,
+          role: worker.role,
+        },
+      };
+
+      return reqData;
+    });
+
+    try {
+      setLoadingState(true);
+
+      const apiPromises = [];
+
+      data.forEach((item, index) => {
+        const apiCallPromise =
+          index !== data.length - 1
+            ? dispatch(inviteTalents({ data: item, onSuccess: emptyCall }))
+            : dispatch(inviteTalents({ data: item, onSuccess }));
+
+        apiPromises.push(apiCallPromise);
+      });
+
+      await Promise.all(apiPromises);
+
+      setLoadingState(false);
+    } catch (error) {
+      setLoadingState(false);
+    }
+  };
+
   const onDoneClick = () => {
-    dispatch(saveSubmitBid(params.bidId, onSuccess));
+    dispatch(saveSubmitBid(params.bidId, fetchAndProcessDataWithLoadingState));
   };
 
   useEffect(() => {
@@ -66,7 +111,7 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={submitBidIsLoading ? null : closeModal} />
+      <ModalHeader toggle={submitBidIsLoading || loadingState ? null : closeModal} />
       <ModalBody>
         <div className="d-flex justify-content-between pr-1">
           <AccountCreatedImageContainer>
@@ -88,8 +133,8 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
           <Button color="flat-danger" className="me-1" onClick={handleRecallClick} disabled={submitBidIsLoading}>
             Oops, Recall ({timer}s)
           </Button>
-          <Button color="primary" onClick={closeModal} disabled={submitBidIsLoading}>
-            {submitBidIsLoading ? <Spinner size="sm" /> : <>Done</>}
+          <Button color="primary" onClick={closeModal} disabled={submitBidIsLoading || loadingState}>
+            {submitBidIsLoading || loadingState ? <Spinner size="sm" /> : <>Done</>}
           </Button>
         </div>
       </ModalBody>
