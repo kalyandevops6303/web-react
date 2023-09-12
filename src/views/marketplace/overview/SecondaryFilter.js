@@ -26,7 +26,7 @@ import {
   toolsService,
 } from '../../../services/staticServices';
 import UserCard from '../../cards/UserCard';
-import ProjectCard from '../../cards/ProjectCard';
+import ProjectCard from '../../cards/MarketPlaceProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
