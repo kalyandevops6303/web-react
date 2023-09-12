@@ -108,6 +108,30 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
                 {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
               </Col>
             </Row>
+            <div className="divider my-2">
+              <div className="divider-text">Or</div>
+            </div>
+            <Row>
+              <Col sm="12" md="12" lg="12">
+                <CreatableSelect
+                  classNamePrefix="select"
+                  theme={selectThemeColors}
+                  inputId="emails"
+                  name="emails"
+                  components={customSelectComponents}
+                  inputValue={inputValue}
+                  isClearable
+                  isMulti
+                  menuIsOpen={false}
+                  onChange={(newValue) => setCustomEmailsValue(newValue)}
+                  onInputChange={(newValue) => setInputValue(newValue)}
+                  onKeyDown={(e) => handleKeyDown(e)}
+                  placeholder="Lorem ipsum dolor sit amet, consectet"
+                  value={customEmailsValue}
+                />
+                {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
+              </Col>
+            </Row>
             <div className="d-flex justify-content-end">
               <Button
                 color="primary"
