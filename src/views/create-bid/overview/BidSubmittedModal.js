@@ -9,6 +9,7 @@ import AccountCreatedGif from '../../../assets/images/accountCreatedGif.gif';
 import { saveSubmitBid } from '../../../redux/actions/createBidActions';
 import { bidDetails, submitBidLoading } from '../../../redux/selectors/createBidSelectors';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const BidSubmittedModal = ({ modal, toggleModal }) => {
   const params = useParams();
@@ -70,7 +71,11 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
   };
 
   const onDoneClick = () => {
-    dispatch(saveSubmitBid(params.bidId, fetchAndProcessDataWithLoadingState));
+    if (bidDetailsData?.bid_by?.entity === userTypes.team) {
+      dispatch(saveSubmitBid(params.bidId, fetchAndProcessDataWithLoadingState));
+    } else {
+      dispatch(saveSubmitBid(params.bidId, onSuccess));
+    }
   };
 
   useEffect(() => {
