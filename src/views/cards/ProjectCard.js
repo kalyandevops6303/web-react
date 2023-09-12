@@ -20,7 +20,7 @@ import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 
-const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpen }) => {
+const ProjectCard = ({ isProjectWithTeam = true, isTeam, isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -57,6 +57,14 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
     }
   };
 
+  const avatarGroup = data?.worker_details?.workers?.map((worker) => ({
+    title: `${worker?.first_name} ${worker?.last_name}`,
+    img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
+    placement: 'bottom',
+    imgHeight: 33,
+    imgWidth: 33,
+  }));
+
   const divRef = useRef(null);
 
   useEffect(() => {
@@ -66,77 +74,15 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
     }
   }, []);
 
-  const avatarGroupArr = [
-    {
-      title: 'Billy Hopkins',
-      img: defaultAvatar,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Amy Carson',
-      img: defaultAvatar,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Brandon Miles',
-      img: defaultAvatar,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Daisy Weber',
-      img: defaultAvatar,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Jenny Looper',
-      img: defaultAvatar,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-  ];
-
   const isRecommended = data?.match_percentage >= 0;
+
   const ProjectWithTeamUI = (
     <div className={`d-flex  gap-1 mb-2 ${isRecommended || isProjectWithTeam ? '' : 'align-items-center'}`}>
-      <section className="d-flex w-50">
-        <img
-          className={`market-place-card-photo me-75 ${isRecommended ? 'mt-25' : ''}`}
-          src={defaultAvatar}
-          alt="avatar"
-        />
-        <div
-          className={`${
-            isRecommended || isProjectWithTeam ? '' : ' d-flex w-100 align-items-center'
-          } name-info-rating-wrapper`}
-        >
-          <div className="flex-grow-1">
-            <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-              {data?.client_details?.first_name} {data?.client_details?.last_name}
-            </CardTitle>
-            <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-              {data?.client_details?.company_name}
-            </CardText>
-          </div>
-          <div className="d-flex flex-grow-1 mt-25">
-            <RatingBadge number="0" />
-            <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
-          </div>
-        </div>
-      </section>
       <div className="w-50">
         <div className="flex-grow-1">
           <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">Research and development</CardTitle>
         </div>
-        <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroupArr.slice(0, 3)} />
+        <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup.slice(0, 3)} />
 
         <div className="d-flex flex-grow-1 mt-25">
           <RatingBadge number="0" />
@@ -150,11 +96,11 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
       <div className="flex-grow-1">
         <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">Research and development</CardTitle>
       </div>
-      <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroupArr.slice(0, 3)} />
+      <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup.slice(0, 3)} />
 
       <div className="d-flex flex-grow-1 mt-25">
-        <RatingBadge number="0" />
-        <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+        {/* <RatingBadge number="0" />
+        <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText> */}
       </div>
     </div>
   );
@@ -164,15 +110,15 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
       <div>
         <div className="flex-grow-1">
           <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-            {data?.client_details?.first_name} {data?.client_details?.last_name}
+            {data?.client?.first_name} {data?.client?.last_name}
           </CardTitle>
           <CardText className="font-small-3 fw-300 ms-25 mb-25 marketplace-card-role">
-            {data?.client_details?.company_name}
+            {data?.client?.company_name}
           </CardText>
         </div>
         <div className="d-flex flex-grow-1">
-          <RatingBadge number="0" />
-          <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+          {/* <RatingBadge number="0" />
+          <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText> */}
         </div>
       </div>
       <div className="circular-progressbar-container mt-25">
@@ -208,11 +154,9 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
       <div className="d-flex w-100 align-items-center">
         <div className="flex-grow-1">
           <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-            {data?.client_details?.first_name} {data?.client_details?.last_name}
+            {data?.client?.first_name} {data?.client?.last_name}
           </CardTitle>
-          <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-            {data?.client_details?.company_name}
-          </CardText>
+          <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.company_name}</CardText>
         </div>
         <div className="d-flex flex-grow-1">
           <RatingBadge number="0" />
@@ -244,7 +188,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
               </div>
               <CardTitle className="d-flex align-items-center">
                 <span className="cursor-pointer" onClick={() => setShowModal(true)}>
-                  {data?.details?.name}{' '}
+                  {data?.name}{' '}
                 </span>
                 {!isSearchPage && (
                   <span>
@@ -272,27 +216,25 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
                     </>
                   )}
                 </CardText>
-                {data?.match_percentage > 1 && (
-                  <CardText className="project d-flex align-items-center">
-                    <img src={LikeIcon} alt="recommanded_icon" className="recom" /> Recommended
-                  </CardText>
-                )}
+                <CardText className=" project mb-1">{`Assigned Date - ${
+                  data?.total_estimated_cost
+                }$ | ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')}`}</CardText>
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
-                  {data?.client_details?.office_address?.country?.name || 'Location'}
+                  {data?.client?.office_address?.country?.name || 'Location'}
                 </CardText>
                 <CardText className=" mb-1">
-                  {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}
+                  {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
                 </CardText>
               </div>
 
               {!showFullText ? (
                 <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
-                  {data?.details?.description}
+                  {data?.description}
                 </div>
               ) : (
                 <div className="my-div" ref={divRef}>
-                  {data?.details?.description}
+                  {data?.description}
                 </div>
               )}
 
@@ -303,8 +245,8 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
               )}
             </Col>
             <Col lg="4">
-              {isProjectWithTeam ? ProjectWithTeamUI : isTeam ? TeamUI : isRecommended ? RecommendedUI : ''}
-              {!isProjectWithTeam && !isRecommended && !isTeam && BaseInfoUI}
+              {true && ProjectWithTeamUI}
+              {/* {!isProjectWithTeam && !isRecommended && !isTeam && BaseInfoUI} */}
               {/* <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
                 <Avatar
                   img={data?.client_details?.image_uri?.length > 0 ? data?.client_details?.image_uri : defaultAvatar}

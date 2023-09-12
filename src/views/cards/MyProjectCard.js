@@ -16,12 +16,13 @@ import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
+import ProjectModal from '../modals/ProjectModal';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 
 const MyProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
-  //   const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -29,9 +30,9 @@ const MyProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverO
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);
 
-  //   const handleToggle = () => {
-  //     setShowModal(!showModal);
-  //   };
+  const handleToggle = () => {
+    setShowModal(!showModal);
+  };
 
   const handleToggleView = () => {
     setShowFullText(!showFullText);
@@ -226,7 +227,7 @@ const MyProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverO
                 )}
               </div>
               <CardTitle className="d-flex align-items-center">
-                <span className="cursor-pointer" onClick="">
+                <span className="cursor-pointer" onClick={() => setShowModal(true)}>
                   {data?.name}{' '}
                 </span>
               </CardTitle>
@@ -271,7 +272,7 @@ const MyProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverO
           </Row>
         </CardBody>
       </Card>
-      {/* {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />} */}
+      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
     </ProjectCardWrap>
   );
 };
