@@ -13,7 +13,6 @@ import { CustomBadge } from '../../styled';
 import { getProjectDetails } from '../../../redux/actions/createBidActions';
 import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
-import { formattedDate } from '../../../utility/Utils';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 
 const LeftSidebarProjectDetails = () => {
@@ -118,7 +117,8 @@ const LeftSidebarProjectDetails = () => {
             <div className="d-flex flex-wrap gap-25">
               <span className="info-key">Posted date:</span>
               <CardText className="info-value ">
-                {formattedDate(projectDetailsData?.listing_details?.start_date)}
+                {' '}
+                {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)}
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (

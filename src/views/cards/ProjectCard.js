@@ -76,7 +76,7 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   };
 
   const toggleCompleteProfileModal = () => {
-    setCreateBidModal(false);
+    setShowModal(false);
     setCompleteProfileModal(!completeProfileModal);
   };
 
@@ -223,15 +223,11 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
           toggleModal={handleToggle}
           setCreateBidModal={setCreateBidModal}
           setSelectedProject={setSelectedProject}
+          toggleCompleteProfileModal={toggleCompleteProfileModal}
         />
       )}
       {createBidModal && (
-        <CreateBidModal
-          modal={createBidModal}
-          toggleModal={toggleCreateBidModal}
-          toggleCompleteProfileModal={toggleCompleteProfileModal}
-          selectedProject={selectedProject}
-        />
+        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={selectedProject} />
       )}
 
       {completeProfileModal && (
