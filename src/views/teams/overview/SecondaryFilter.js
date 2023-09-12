@@ -147,15 +147,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
     if (primaryFilter === 'my-teams') {
       dispatch(getTeamListing({ searchText, metaData, onSuccess, onError, filterData }));
-    }
-    if (primaryFilter === 'invitations') {
+    } else if (primaryFilter === 'invitations') {
       dispatch(getInvitationListing({ metaData, onSuccess, onError, filterData, userType }));
-    }
-    if (primaryFilter === 'join-requests') {
+    } else if (primaryFilter === 'join-requests') {
       dispatch(getReqListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
-    }
-
-    if (primaryFilter === 'favourites') {
+    } else if (primaryFilter === 'favourites') {
       dispatch(getFavListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
     }
   }, [secondFilterState, searchText, primaryFilter]);
@@ -190,11 +186,26 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const fetchMore = () => {
-    // const newMeteData = {
-    //   ...metaData,
-    //   // eslint-disable-next-line no-unsafe-optional-chaining
-    //   page: selectMyTeamMetaData?.current_page + 1 || 1,
-    // };
+    const newMeteData = {
+      ...metaData,
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      page: selectMyTeamMetaData?.current_page + 1 || 1,
+    };
+
+    const valuesOnly = {};
+    Object.keys(secondFilterState).forEach((key) => {
+      valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+    });
+
+    if (primaryFilter === 'my-teams') {
+      dispatch(getTeamListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData }));
+    } else if (primaryFilter === 'invitations') {
+      dispatch(getInvitationListing({ metaData: newMeteData, onSuccess, onError, filterData, userType }));
+    } else if (primaryFilter === 'join-requests') {
+      dispatch(getReqListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData, userType }));
+    } else if (primaryFilter === 'favourites') {
+      dispatch(getFavListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData, userType }));
+    }
   };
 
   const ExpandCollapseComp = (
@@ -426,23 +437,25 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          <div className="d-flex flex-wrap justify-content-between">
-            {selectMyTeamData?.map((item) => {
-              const CardComponent =
-                // eslint-disable-next-line no-nested-ternary
-                primaryFilter === 'join-requests' || primaryFilter === 'favourites' ? UserCard : ProjectCard;
-              return (
-                <CardComponent
-                  key={item?._id || item?.id}
-                  data={item}
-                  isPopoverOpen={popoverOpen}
-                  isExpanded={isExpanded}
-                  userType={userData?.user_type}
-                  isTeam={primaryFilter === 'my-teams'}
-                />
-              );
-            })}
-          </div>
+          {selectMyTeamData?.length ? (
+            <div className="d-flex flex-wrap justify-content-between">
+              {selectMyTeamData?.map((item) => {
+                const CardComponent =
+                  // eslint-disable-next-line no-nested-ternary
+                  primaryFilter === 'join-requests' || primaryFilter === 'favourites' ? UserCard : ProjectCard;
+                return (
+                  <CardComponent
+                    key={item?._id || item?.id}
+                    data={item}
+                    isPopoverOpen={popoverOpen}
+                    isExpanded={isExpanded}
+                    userType={userData?.user_type}
+                    isTeam={primaryFilter === 'my-teams'}
+                  />
+                );
+              })}
+            </div>
+          ) : null}
         </InfiniteScroll>
       )}
     </>
