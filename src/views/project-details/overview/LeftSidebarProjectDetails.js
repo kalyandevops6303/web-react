@@ -13,7 +13,6 @@ import { projectDetails, projectDetailsLoading } from '../../../redux/selectors/
 import DateTime from '../../../lib/date-time';
 import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
-import { formattedDate } from '../../../utility/Utils';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
@@ -130,7 +129,9 @@ const LeftSidebarProjectDetails = () => {
 
           <div className="d-flex mb-75 flex-wrap gap-25">
             <span className="info-key">Posted date:</span>
-            <CardText className="info-value">{formattedDate(projectDetailsData?.listing_details?.start_date)}</CardText>
+            <CardText className="info-value">
+              {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)}
+            </CardText>
           </div>
 
           {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (

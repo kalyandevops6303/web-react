@@ -25,7 +25,7 @@ import { setItem } from '../../../utility/localStorageControl';
 
 const UserSection = ({ users, name, isAlma }) => (
   <div className="user-section">
-    <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
+    <CardText className="truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
@@ -189,7 +189,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
             )}
           </div>
           {isTeamLoggedIn ? (
-            <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50">
+            <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1">
               <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
             </div>
           ) : (

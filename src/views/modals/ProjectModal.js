@@ -30,6 +30,7 @@ import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -68,12 +69,20 @@ const ViewProjectDetailModalWrap = styled.div`
   }
 `;
 
-const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelectedProject }) => {
+const ProjectModal = ({
+  modal,
+  toggleModal,
+  data,
+  setCreateBidModal,
+  setSelectedProject,
+  toggleCompleteProfileModal,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
+  const profilePercentageData = useSelector(profilePercentage);
 
   const onNoBidFound = () => {
     toggleModal();
@@ -115,6 +124,20 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
     window.location.pathname.split('/').includes('my_listings');
   const handleRedirectTodetailsView = () => {
     navigate(`/project-details/${data?._id}/bid`);
+  };
+
+  const handleCreateBid = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      toggleCompleteProfileModal();
+      
+    } else {
+      setSelectedProject(data);
+      dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
+    }
   };
 
   return (
@@ -240,14 +263,7 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
                   <Button color="flat-danger" className="me-1">
                     Report
                   </Button>
-                  <Button
-                    color="primary"
-                    disabled={checkBidLoadingIsLoading}
-                    onClick={() => {
-                      setSelectedProject(data);
-                      dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
-                    }}
-                  >
+                  <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
                     {checkBidLoadingIsLoading ? (
                       <Spinner size="sm" />
                     ) : (
@@ -275,6 +291,7 @@ ProjectModal.propTypes = {
   data: Proptypes.object,
   setCreateBidModal: Proptypes.func,
   setSelectedProject: Proptypes.func,
+  toggleCompleteProfileModal: Proptypes.func,
 };
 
 ProjectModal.defaultProps = {
@@ -283,4 +300,5 @@ ProjectModal.defaultProps = {
   data: {},
   setCreateBidModal: () => {},
   setSelectedProject: () => {},
+  toggleCompleteProfileModal: () => {},
 };
