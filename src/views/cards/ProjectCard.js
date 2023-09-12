@@ -20,7 +20,7 @@ import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 
-const ProjectCard = ({ isProjectWithTeam = true, isTeam, isExpanded, data, isPopoverOpen }) => {
+const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -78,6 +78,31 @@ const ProjectCard = ({ isProjectWithTeam = true, isTeam, isExpanded, data, isPop
 
   const ProjectWithTeamUI = (
     <div className={`d-flex  gap-1 mb-2 ${isRecommended || isProjectWithTeam ? '' : 'align-items-center'}`}>
+      <section className="d-flex w-50">
+        <img
+          className={`market-place-card-photo me-75 ${isRecommended ? 'mt-25' : ''}`}
+          src={defaultAvatar}
+          alt="avatar"
+        />
+        <div
+          className={`${
+            isRecommended || isProjectWithTeam ? '' : ' d-flex w-100 align-items-center'
+          } name-info-rating-wrapper`}
+        >
+          <div className="flex-grow-1">
+            <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
+              {data?.client?.first_name} {data?.client?.last_name}
+            </CardTitle>
+            <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
+          </div>
+          <div className="d-flex flex-grow-1 mt-25">
+            <RatingBadge number={Math.round(data?.client?.rating)} />
+            <CardText className="ps-1 font-small-3 fw-300 rating-label">
+              {data?.client?.project_count} Projects
+            </CardText>
+          </div>
+        </div>
+      </section>
       <div className="w-50">
         <div className="flex-grow-1">
           <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">Research and development</CardTitle>
@@ -86,7 +111,7 @@ const ProjectCard = ({ isProjectWithTeam = true, isTeam, isExpanded, data, isPop
 
         <div className="d-flex flex-grow-1 mt-25">
           <RatingBadge number="0" />
-          <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+          <CardText className="ps-1 font-small-3 fw-300 rating-label"> {data?.client?.project_count} Projects</CardText>
         </div>
       </div>
     </div>
@@ -245,7 +270,9 @@ const ProjectCard = ({ isProjectWithTeam = true, isTeam, isExpanded, data, isPop
               )}
             </Col>
             <Col lg="4">
-              {true && ProjectWithTeamUI}
+              {isProjectWithTeam ? ProjectWithTeamUI : null}
+              {isTeam ? TeamUI : null}
+              {!isTeam && !isProjectWithTeam && BaseInfoUI}
               {/* {!isProjectWithTeam && !isRecommended && !isTeam && BaseInfoUI} */}
               {/* <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
                 <Avatar

@@ -9,7 +9,7 @@ import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { getProjectListing } from '../../../redux/actions/projectActions';
-import ProjectCard from '../../cards/MyProjectCard';
+import ProjectCard from '../../cards/ProjectCard';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import NoDataFoundComponent from './NoDataFoundComp';
@@ -141,7 +141,6 @@ const SecondaryFilters = ({ primaryFilter }) => {
                 isPopoverOpen={popoverOpen}
                 isExpanded={false}
                 isProjectWithTeam
-                isTeam
               />
             );
           })}

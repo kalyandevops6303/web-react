@@ -438,6 +438,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   isPopoverOpen={popoverOpen}
                   isExpanded={isExpanded}
                   userType={userData?.user_type}
+                  isTeam={primaryFilter === 'my-teams'}
                 />
               );
             })}
