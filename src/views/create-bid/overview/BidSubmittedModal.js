@@ -8,7 +8,7 @@ import { AccountCreatedImageContainer } from '../../Onboarding/style';
 import AccountCreatedGif from '../../../assets/images/accountCreatedGif.gif';
 import { saveSubmitBid } from '../../../redux/actions/createBidActions';
 import { bidDetails, submitBidLoading } from '../../../redux/selectors/createBidSelectors';
-import { inviteTalents } from '../../../redux/actions/inviteTalent';
+import { inviteTalentsToProject } from '../../../redux/actions/inviteTalent';
 import { userTypes } from '../../../utility/constants/Constant';
 
 const BidSubmittedModal = ({ modal, toggleModal }) => {
@@ -56,8 +56,8 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
       data.forEach((item, index) => {
         const apiCallPromise =
           index !== data.length - 1
-            ? dispatch(inviteTalents({ data: item, onSuccess: emptyCall }))
-            : dispatch(inviteTalents({ data: item, onSuccess }));
+            ? dispatch(inviteTalentsToProject({ data: item, onSuccess: emptyCall }))
+            : dispatch(inviteTalentsToProject({ data: item, onSuccess }));
 
         apiPromises.push(apiCallPromise);
       });
@@ -135,7 +135,12 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
           </div>
         </div>
         <div className="d-flex justify-content-end align-items-center mt-2 mb-2 pe-1">
-          <Button color="flat-danger" className="me-1" onClick={handleRecallClick} disabled={submitBidIsLoading}>
+          <Button
+            color="flat-danger"
+            className="me-1"
+            onClick={handleRecallClick}
+            disabled={submitBidIsLoading || loadingState}
+          >
             Oops, Recall ({timer}s)
           </Button>
           <Button color="primary" onClick={closeModal} disabled={submitBidIsLoading || loadingState}>

@@ -56,6 +56,19 @@ const getAlmaMaterTalents = (searchText, page, pageSize, oldData) => async (disp
   }
 };
 
+const inviteTalentsToProject =
+  ({ data, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(inviteTalentsRequest());
+    try {
+      const res = await inviteRequestService(data);
+      dispatch(inviteTalentsSuccess(res.data.data));
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, inviteTalentsFailure);
+    }
+  };
+
 const inviteTalents =
   ({ data, onSuccess, isJoinRequest }) =>
   async (dispatch) => {
@@ -80,4 +93,11 @@ const getTeamMemberForInvite = (searchText, page, pageSize, oldData, projectId) 
   }
 };
 
-export { getBestTalents, getTeamMemberForInvite, getFavoriteTalents, getAlmaMaterTalents, inviteTalents };
+export {
+  getBestTalents,
+  getTeamMemberForInvite,
+  getFavoriteTalents,
+  getAlmaMaterTalents,
+  inviteTalents,
+  inviteTalentsToProject,
+};
