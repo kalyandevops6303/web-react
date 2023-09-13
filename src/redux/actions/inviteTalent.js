@@ -70,7 +70,7 @@ const inviteTalentsToProject =
   };
 
 const inviteTalents =
-  ({ data, onSuccess, isJoinRequest }) =>
+  ({ data, onSuccess, isJoinRequest, onError }) =>
   async (dispatch) => {
     dispatch(inviteTalentsRequest());
     try {
@@ -79,6 +79,9 @@ const inviteTalents =
       ShowToastMessage(SUCCESS, isJoinRequest ? 'Join request sent' : 'Invited successfully');
       onSuccess();
     } catch (error) {
+      if (onError) {
+        onError();
+      }
       console.error(error);
       errorHandler(error, inviteTalentsFailure);
     }

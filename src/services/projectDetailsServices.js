@@ -72,7 +72,13 @@ const terminateContractService = ({ project_id, doc_type }) =>
     `${API.projectDetails.terminateContract}?project_id=${project_id}&doc_type=${doc_type}&decline_bid=true`,
   );
 
+const getInvitatedByService = ({ project_id, metadata }) =>
+  DataService.get(
+    `${API.projectDetails.requests}?&page=${metadata?.page}&page_size=${metadata?.page_size}&project_id=${project_id}`,
+  );
+
 export {
+  getInvitatedByService,
   getDocumentService,
   checkDocumentActivatedService,
   getDocumentTimelineService,

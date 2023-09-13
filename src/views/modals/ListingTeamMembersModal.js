@@ -192,8 +192,14 @@ const InvitedMemberComponent = () => {
         [id]: false, // Set the loading state back to false
       }));
     };
+    const onError = () => {
+      setLoadingItems((prevLoadingItems) => ({
+        ...prevLoadingItems,
+        [id]: false, // Set the loading state back to false
+      }));
+    };
 
-    dispatch(inviteTalents({ data: newPostData, onSuccess }));
+    dispatch(inviteTalents({ data: newPostData, onSuccess, onError }));
   };
   return (
     <div>

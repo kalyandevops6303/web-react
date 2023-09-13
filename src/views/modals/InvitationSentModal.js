@@ -18,6 +18,7 @@ import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors
 import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
 import { getItem } from '../../utility/localStorageControl';
 import { userTypes } from '../../utility/constants/Constant';
+import { returnFormattedRating } from '../../utility/Utils';
 
 const InvitationSentModal = ({
   projectId,

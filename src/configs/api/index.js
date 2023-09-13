@@ -97,6 +97,7 @@ const API = {
     getInvitaion: `${apiAuthEndpoint}/api/v1/invitation`,
     getSentInvitaion: `${apiAuthEndpoint}/api/v1/invitations/sent`,
     removeWorker: `${apiCreateProjectEndpoint}/api/v1/project-course/workers`,
+    requests: `${apiAuthEndpoint}/api/v1/requests`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
