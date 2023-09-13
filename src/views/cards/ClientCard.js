@@ -61,7 +61,7 @@ const ClientCard = ({ data, userType }) => {
 
   return (
     <UserCardWrap userType={userType} clientCard>
-      <Card>
+      <Card style={{ height: '230px' }}>
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center">
@@ -168,14 +168,14 @@ const ClientCard = ({ data, userType }) => {
               {data?.project_area_of_interest?.area ? (
                 <div className="badge-box-wrap mb-50">
                   <div className="info-key">Area of intrest</div>
-                  <Badge className="" color="light-info">
+                  <Badge className="mt-50" color="light-info">
                     {data?.project_area_of_interest?.area?.name}
                   </Badge>
                 </div>
               ) : null}
-              <div className="badge-box-wrap mb-50">
+              <div className="badge-box-wrap mb-50 mt-1">
                 <div className="info-key">Desired Skills</div>
-                <div className="d-flex flex-row flex-wrap gap-1">
+                <div className="d-flex flex-row flex-wrap gap-1 mt-50">
                   {clientSkills?.map((skill) => (
                     <div className="badge-box mt-25" key={skill?._id}>
                       <Badge className="" color="light-info">
