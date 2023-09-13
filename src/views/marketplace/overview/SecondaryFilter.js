@@ -25,7 +25,6 @@ import {
   skillsService,
   toolsService,
 } from '../../../services/staticServices';
-import UserCard from '../../cards/UserCard';
 import ProjectCard from '../../cards/ProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -33,6 +32,7 @@ import '../../custom-styles.scss';
 import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
 import Institute from '../../cards/Team';
+import ClientCard from '../../cards/ClientCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -583,7 +583,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               const CardComponent =
                 // eslint-disable-next-line no-nested-ternary
                 primaryFilter === 'talents' || primaryFilter === 'clients'
-                  ? UserCard
+                  ? ClientCard
                   : primaryFilter === 'teams'
                   ? Institute
                   : ProjectCard;
