@@ -69,11 +69,14 @@ const LeftSidebarProfile = ({
   };
 
   useEffect(() => {
-    if ((isTalentView || isClient) && showProfilePercent) {
-      dispatch(getProfilePercentage());
-      return;
+    if (showProfilePercent) {
+      if (isTalentView || isClient) {
+        dispatch(getProfilePercentage());
+      }
+      if (isTeamView) {
+        dispatch(getTeamProfilePercentage());
+      }
     }
-    isTeamView && showProfilePercent && dispatch(getTeamProfilePercentage());
   }, []);
 
   const handleJoinTeam = () => {
