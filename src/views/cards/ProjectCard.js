@@ -2,30 +2,22 @@
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
-import LikeIcon from '@src/assets/images/like.png';
 import AvatarGroup from '@components/avatar-group';
 import { useState, useEffect, useRef } from 'react';
-import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import { useDispatch } from 'react-redux';
-// import Avatar from '@components/avatar';
-import { Heart } from 'react-feather';
-import { useLocation } from 'react-router-dom';
+// import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../lib/date-time';
-import theme from '../../configs/themeVariables';
-import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import BadgeGroup from '../../@core/components/badge-group';
+// import theme from '../../configs/themeVariables';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import ProjectWithTeamUI from './ProjectWithTeamUI';
+import BaseInfoUI from './BaseInfoCardUI';
 
 const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
-  const dispatch = useDispatch();
-  const location = useLocation();
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -46,16 +38,16 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
   };
-  const giveStrokeColor = (percentage) => {
-    if (percentage <= 40) {
-      return theme.red;
-      // eslint-disable-next-line
-    } else if (percentage > 40 && percentage <= 70) {
-      return theme.orange;
-    } else {
-      return theme.green;
-    }
-  };
+  // const giveStrokeColor = (percentage) => {
+  //   if (percentage <= 40) {
+  //     return theme.red;
+  //     // eslint-disable-next-line
+  //   } else if (percentage > 40 && percentage <= 70) {
+  //     return theme.orange;
+  //   } else {
+  //     return theme.green;
+  //   }
+  // };
 
   const avatarGroup = data?.worker_details?.workers?.map((worker) => ({
     title: `${worker?.first_name} ${worker?.last_name}`,
@@ -74,54 +66,14 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
     }
   }, []);
 
-  const isRecommended = data?.match_percentage >= 0;
-
-  const ProjectWithTeamUI = (
-    <div className={`d-flex  gap-1 mb-2 ${isRecommended || isProjectWithTeam ? '' : 'align-items-center'}`}>
-      <section className="d-flex w-50">
-        <img
-          className={`market-place-card-photo me-75 ${isRecommended ? 'mt-25' : ''}`}
-          src={defaultAvatar}
-          alt="avatar"
-        />
-        <div
-          className={`${
-            isRecommended || isProjectWithTeam ? '' : ' d-flex w-100 align-items-center'
-          } name-info-rating-wrapper`}
-        >
-          <div className="flex-grow-1">
-            <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-              {data?.client?.first_name} {data?.client?.last_name}
-            </CardTitle>
-            <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
-          </div>
-          <div className="d-flex flex-grow-1 mt-25">
-            <RatingBadge number={Math.round(data?.client?.rating)} />
-            <CardText className="ps-1 font-small-3 fw-300 rating-label">
-              {data?.client?.project_count} Projects
-            </CardText>
-          </div>
-        </div>
-      </section>
-      <div className="w-50">
-        <div className="flex-grow-1">
-          <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">Research and development</CardTitle>
-        </div>
-        <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup.slice(0, 3)} />
-
-        <div className="d-flex flex-grow-1 mt-25">
-          <RatingBadge number="0" />
-          <CardText className="ps-1 font-small-3 fw-300 rating-label"> {data?.client?.project_count} Projects</CardText>
-        </div>
-      </div>
-    </div>
-  );
   const TeamUI = (
     <div className="w-50">
       <div className="flex-grow-1">
-        <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">Research and development</CardTitle>
+        <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
+          {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
+        </CardTitle>
       </div>
-      <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup.slice(0, 3)} />
+      <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup?.slice(0, 3)} />
 
       <div className="d-flex flex-grow-1 mt-25">
         {/* <RatingBadge number="0" />
@@ -129,74 +81,49 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
       </div>
     </div>
   );
-  const RecommendedUI = (
-    <div className="d-flex mb-2">
-      <img className="market-place-card-photo me-75 mt-75" src={defaultAvatar} alt="avatar" />
-      <div>
-        <div className="flex-grow-1">
-          <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-            {data?.client?.first_name} {data?.client?.last_name}
-          </CardTitle>
-          <CardText className="font-small-3 fw-300 ms-25 mb-25 marketplace-card-role">
-            {data?.client?.company_name}
-          </CardText>
-        </div>
-        <div className="d-flex flex-grow-1">
-          {/* <RatingBadge number="0" />
-          <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText> */}
-        </div>
-      </div>
-      <div className="circular-progressbar-container mt-25">
-        <CircularProgressbarWithChildren
-          value={data?.match_percentage}
-          styles={{
-            path: {
-              stroke: giveStrokeColor(data?.match_percentage),
-              strokeLinecap: 'round',
-              transition: 'stroke-dashoffset 0.5s ease 0s',
-              transform: 'rotate(0turn)',
-              transformOrigin: 'center center',
-            },
-            trail: {
-              stroke: theme.progressBarBg,
-              strokeLinecap: 'round',
-              transform: 'rotate(0turn)',
-              transformOrigin: 'center center',
-            },
-          }}
-        >
-          <div className="d-flex justify-content-center align-items-center">
-            <p className="percentage-text m-0">{data?.match_percentage}%</p>
-          </div>
-        </CircularProgressbarWithChildren>
-      </div>
-    </div>
-  );
-
-  const BaseInfoUI = (
-    <div className="d-flex mb-2 align-items-center">
-      <img className="market-place-card-photo me-75" src={defaultAvatar} alt="avatar" />
-      <div className="d-flex w-100 align-items-center">
-        <div className="flex-grow-1">
-          <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-            {data?.client?.first_name} {data?.client?.last_name}
-          </CardTitle>
-          <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.company_name}</CardText>
-        </div>
-        <div className="d-flex flex-grow-1">
-          <RatingBadge number="0" />
-          <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
-        </div>
-      </div>
-    </div>
-  );
-  const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ project_id: data?._id }));
-  };
-  const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ project_id: data?._id }));
-  };
-  const isSearchPage = location.pathname.split('/').includes('search');
+  // const RecommendedUI = (
+  //   <div className="d-flex mb-2">
+  //     <img className="market-place-card-photo me-75 mt-75" src={defaultAvatar} alt="avatar" />
+  //     <div>
+  //       <div className="flex-grow-1">
+  //         <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
+  //           {data?.client?.first_name} {data?.client?.last_name}
+  //         </CardTitle>
+  //         <CardText className="font-small-3 fw-300 ms-25 mb-25 marketplace-card-role">
+  //           {data?.client?.company_name}
+  //         </CardText>
+  //       </div>
+  //       <div className="d-flex flex-grow-1">
+  //         {/* <RatingBadge number="0" />
+  //         <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText> */}
+  //       </div>
+  //     </div>
+  //     <div className="circular-progressbar-container mt-25">
+  //       <CircularProgressbarWithChildren
+  //         value={data?.match_percentage}
+  //         styles={{
+  //           path: {
+  //             stroke: giveStrokeColor(data?.match_percentage),
+  //             strokeLinecap: 'round',
+  //             transition: 'stroke-dashoffset 0.5s ease 0s',
+  //             transform: 'rotate(0turn)',
+  //             transformOrigin: 'center center',
+  //           },
+  //           trail: {
+  //             stroke: theme.progressBarBg,
+  //             strokeLinecap: 'round',
+  //             transform: 'rotate(0turn)',
+  //             transformOrigin: 'center center',
+  //           },
+  //         }}
+  //       >
+  //         <div className="d-flex justify-content-center align-items-center">
+  //           <p className="percentage-text m-0">{data?.match_percentage}%</p>
+  //         </div>
+  //       </CircularProgressbarWithChildren>
+  //     </div>
+  //   </div>
+  // );
 
   return (
     <ProjectCardWrap>
@@ -215,21 +142,6 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
                 <span className="cursor-pointer" onClick={() => setShowModal(true)}>
                   {data?.name}{' '}
                 </span>
-                {!isSearchPage && (
-                  <span>
-                    {data?.is_favorite ? (
-                      <Heart
-                        className="cursor-pointer d-flex m-auto ms-75  heart"
-                        fill={theme.red}
-                        stroke={theme.red}
-                        onClick={handleUnLike}
-                        size={20}
-                      />
-                    ) : (
-                      <Heart className="cursor-pointer d-flex m-auto ms-75 heart" onClick={handleLike} size={20} />
-                    )}
-                  </span>
-                )}
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">
                 <CardText className="project">
@@ -243,7 +155,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
                 </CardText>
                 <CardText className=" project mb-1">{`Assigned Date - ${
                   data?.total_estimated_cost
-                }$ | ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')}`}</CardText>
+                }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText>
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
                   {data?.client?.office_address?.country?.name || 'Location'}
@@ -270,9 +182,10 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
               )}
             </Col>
             <Col lg="4">
-              {isProjectWithTeam ? ProjectWithTeamUI : null}
+              {isProjectWithTeam ? <ProjectWithTeamUI data={data} /> : null}
               {isTeam ? TeamUI : null}
-              {!isTeam && !isProjectWithTeam && BaseInfoUI}
+              {!isTeam && !isProjectWithTeam && <BaseInfoUI data={data} />}
+              {/* {!isProjectWithTeam &&  <BaseInfoUI data={data} />} */}
               {/* {!isProjectWithTeam && !isRecommended && !isTeam && BaseInfoUI} */}
               {/* <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
                 <Avatar
@@ -322,8 +235,6 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
                   </div>
                 )}
               </div> */}
-              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
             </Col>
           </Row>
         </CardBody>

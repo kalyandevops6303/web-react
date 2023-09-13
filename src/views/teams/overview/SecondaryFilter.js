@@ -30,6 +30,7 @@ import {
 } from '../../../redux/actions/myTeamActions';
 import UserCard from '../../cards/UserCard';
 import ProjectCard from '../../cards/ProjectCard';
+import TeamCard from '../../cards/TeamCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -47,7 +48,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     invited_by: [],
     project_status: [],
     invite_types: [],
-    user_type: [],
+    user_type: [{ label: 'Talent', value: 'TALENT' }],
+    type: [{ label: 'all', value: 'all' }],
+    filter_types: [],
   });
   const [popoverOpen, setPopoverOpen] = useState(false);
 
@@ -90,10 +93,20 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'Talent Requests', value: 'TALENT_REQUESTS' },
   ];
 
+  const typeOptions = [
+    { label: 'all', value: 'all' },
+    { label: 'alma matter', value: 'alma matter' },
+  ];
+
   const userTypeOptions = [
     { label: 'Talent', value: 'TALENT' },
     { label: 'Client', value: 'CLIENT' },
     { label: 'Team', value: 'TEAM' },
+  ];
+
+  const filterTypeOptions = [
+    { label: 'Favorites', value: 'FAVOURITE' },
+    { label: 'Alma matter', value: 'ALMA_MATTER' },
   ];
 
   const onSuccess = () => {};
@@ -138,9 +151,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   useEffect(() => {
     dispatch(clearData());
-
     const filterData = {};
-
     Object.keys(secondFilterState).forEach((key) => {
       filterData[key] = secondFilterState[key].map((item) => item.value);
     });
@@ -172,7 +183,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       invited_by: [],
       project_status: [],
       invite_types: [],
-      user_type: [],
+      user_type: [{ label: 'Talent', value: 'TALENT' }],
+      type: [{ label: 'all', value: 'all' }],
+      filter_types: [],
     });
     setSearchText('');
     if (inputRef.current) {
@@ -183,6 +196,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const handleSearchTextChange = (e) => {
     setSearchText(e.target.value);
     e.preventDefault();
+  };
+
+  const getCardComp = () => {
+    if (primaryFilter === 'favourites') return UserCard;
+    if (primaryFilter === 'join-requests' || primaryFilter === 'invitations') return TeamCard;
+    return ProjectCard;
   };
 
   const fetchMore = () => {
@@ -253,25 +272,29 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     <>
       <FormWrapper>
         <SecondaryFiltersWrap>
-          <div className="mt-auto">
-            <InputGroup className="input-group-merge marketplace-search">
-              <InputGroupText>
-                <Search size={14} />
-              </InputGroupText>
-              <Input
-                innerRef={inputRef}
-                onChange={debounce(handleSearchTextChange, 300)}
-                placeholder={
-                  // eslint-disable-next-line no-nested-ternary
-                  userType === userTypes.talent
-                    ? 'Search team name, client name'
-                    : userType === userTypes.client
-                    ? 'Search talent name, team name'
-                    : 'Search client name'
-                }
-              />
-            </InputGroup>
-          </div>
+          {primaryFilter === 'favourites' || primaryFilter === 'join-requests' ? (
+            <div className="w-50" />
+          ) : (
+            <div className="mt-auto">
+              <InputGroup className="input-group-merge marketplace-search">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  innerRef={inputRef}
+                  onChange={debounce(handleSearchTextChange, 300)}
+                  placeholder={
+                    // eslint-disable-next-line no-nested-ternary
+                    userType === userTypes.talent
+                      ? 'Search team name, client name'
+                      : userType === userTypes.client
+                      ? 'Search talent name, team name'
+                      : 'Search client name'
+                  }
+                />
+              </InputGroup>
+            </div>
+          )}
           <Row>
             {isTab ? (
               <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
@@ -290,7 +313,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   classNamePrefix="select"
                   placeholder="Select User Type"
                   theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('project_status', value)}
+                  onChange={(value) => onChangeFilter('user_type', value)}
                   value={
                     secondFilterState.user_type.length > 0
                       ? {
@@ -380,19 +403,59 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               </Col>
             ) : null}
             {primaryFilter === 'join-requests' ? (
+              <>
+                <Col>
+                  <Label className="form-label">Invite Type</Label>
+                  <Select
+                    options={inviteTypeOptions}
+                    classNamePrefix="select"
+                    placeholder="Select user"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('invite_types', value)}
+                    value={
+                      secondFilterState.invite_types.length > 0
+                        ? {
+                            value: secondFilterState.invite_types[0].value,
+                            label: secondFilterState.invite_types[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+                <Col>
+                  <Label className="form-label">Type</Label>
+                  <Select
+                    options={filterTypeOptions}
+                    classNamePrefix="select"
+                    placeholder="Select user"
+                    theme={selectThemeColors}
+                    onChange={(value) => onChangeFilter('filter_types', value)}
+                    value={
+                      secondFilterState.filter_types.length > 0
+                        ? {
+                            value: secondFilterState.filter_types[0].value,
+                            label: secondFilterState.filter_types[0].label,
+                          }
+                        : null
+                    }
+                  />
+                </Col>
+              </>
+            ) : null}
+            {primaryFilter === 'favourites' ? (
               <Col>
-                <Label className="form-label">Invite Type</Label>
+                <Label className="form-label">Type</Label>
                 <Select
-                  options={inviteTypeOptions}
+                  options={typeOptions}
                   classNamePrefix="select"
-                  placeholder="Select user"
+                  placeholder="Select type"
                   theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('invited_by', value)}
+                  onChange={(value) => onChangeFilter('type', value)}
                   value={
-                    secondFilterState.invite_types.length > 0
+                    secondFilterState.type.length > 0
                       ? {
-                          value: secondFilterState.invite_types[0].value,
-                          label: secondFilterState.invite_types[0].label,
+                          value: secondFilterState.type[0].value,
+                          label: secondFilterState.type[0].label,
                         }
                       : null
                   }
@@ -440,9 +503,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           {selectMyTeamData?.length ? (
             <div className="d-flex flex-wrap justify-content-between">
               {selectMyTeamData?.map((item) => {
-                const CardComponent =
-                  // eslint-disable-next-line no-nested-ternary
-                  primaryFilter === 'join-requests' || primaryFilter === 'favourites' ? UserCard : ProjectCard;
+                const CardComponent = getCardComp();
+
                 return (
                   <CardComponent
                     key={item?._id || item?.id}
@@ -450,7 +512,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     isPopoverOpen={popoverOpen}
                     isExpanded={isExpanded}
                     userType={userData?.user_type}
-                    isTeam={primaryFilter === 'my-teams'}
+                    isProjectWithTeam={primaryFilter === 'my-teams'}
+                    isTeam={primaryFilter === 'invitations' || primaryFilter === 'join-requests'}
                   />
                 );
               })}

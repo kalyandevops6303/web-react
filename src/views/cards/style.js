@@ -58,7 +58,8 @@ const ProjectCardWrap = styled(CardWrap)`
   }
 
   .market-place-card-photo {
-    height: 2rem;
+    height: 2.5rem;
+    width: 2.5rem;
     border-radius: 50%;
     cursor: auto !important;
   }
@@ -132,6 +133,7 @@ const TeamCardWrap = styled(CardWrap)`
 
   .market-place-card-photo {
     height: 2.2rem;
+    width: 2.2rem;
     border-radius: 50%;
     cursor: auto !important;
   }

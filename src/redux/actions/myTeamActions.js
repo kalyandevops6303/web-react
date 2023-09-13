@@ -27,7 +27,7 @@ const getTeamListing =
   ({ searchText, metaData, onSuccess, onError, filterData, userType }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
-      getListReq();
+      dispatch(getListReq());
     }
 
     try {
@@ -44,7 +44,7 @@ const getInvitationListing =
   ({ metaData, onSuccess, onError, filterData, userType }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
-      getListReq();
+      dispatch(getListReq());
     }
 
     try {
@@ -61,7 +61,7 @@ const getReqListing =
   ({ searchText, metaData, onSuccess, onError, filterData, userType }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
-      getListReq();
+      dispatch(getListReq());
     }
     try {
       const res = await getJoinReqService({ searchText, metaData, filterData, userType });
@@ -76,6 +76,10 @@ const getReqListing =
 const getFavListing =
   ({ searchText, metaData, onSuccess, onError, filterData, userType }) =>
   async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
+
     try {
       const res = await getFavoriteService({ searchText, metaData, filterData, userType });
       dispatch(storeSuccessData(res?.data?.data));
