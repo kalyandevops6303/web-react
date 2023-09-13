@@ -76,9 +76,6 @@ const getReqListing =
 const getFavListing =
   ({ searchText, metaData, onSuccess, onError, filterData, userType }) =>
   async (dispatch) => {
-    if (metaData?.page === 1) {
-      getListReq();
-    }
     try {
       const res = await getFavoriteService({ searchText, metaData, filterData, userType });
       dispatch(storeSuccessData(res?.data?.data));

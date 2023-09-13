@@ -192,9 +192,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       page: selectMyTeamMetaData?.current_page + 1 || 1,
     };
 
-    const valuesOnly = {};
+    const filterData = {};
     Object.keys(secondFilterState).forEach((key) => {
-      valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+      filterData[key] = secondFilterState[key].map((item) => item.value);
     });
 
     if (primaryFilter === 'my-teams') {
