@@ -28,6 +28,7 @@ import { userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
 
 const LeftSidebarProfile = ({
   isTalentView,
@@ -43,6 +44,10 @@ const LeftSidebarProfile = ({
   const navigate = useNavigate();
   const userData = getItem('userData');
   const teamId = getItem('teamId');
+  const userDataSelector = useSelector(selectUserData);
+  const profilePercentageData = useSelector(profilePercentage);
+
+  const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
@@ -50,8 +55,6 @@ const LeftSidebarProfile = ({
   const handleUnLike = () => {
     dispatch(removeFavourite(param?.userId));
   };
-
-  const profilePercentageData = useSelector(profilePercentage);
 
   const onEditClick = () => {
     if (data.user_type === userTypes.team) {
@@ -64,14 +67,18 @@ const LeftSidebarProfile = ({
       });
     }
   };
+
   useEffect(() => {
-    if (isTalentView || isClient) {
-      dispatch(getProfilePercentage());
-      return;
+    if (showProfilePercent) {
+      if (isTalentView || isClient) {
+        dispatch(getProfilePercentage());
+      }
+      if (isTeamView) {
+        dispatch(getTeamProfilePercentage());
+      }
     }
-    // eslint-disable-next-line no-unused-expressions
-    isTeamView && dispatch(getTeamProfilePercentage());
   }, []);
+
   const handleJoinTeam = () => {
     const newPostData = {
       message: '',
@@ -185,15 +192,17 @@ const LeftSidebarProfile = ({
             </div>
           )}
 
-          <div className="profile-completion mt-2">
-            <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
-            <Progress
-              style={{ height: '0.4rem', borderRadius: '6px' }}
-              className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
-              value={profilePercentageData?.profile_completed}
-            />
-            <CardText className="font-small-3 mt-25">Profile Completion</CardText>
-          </div>
+          {showProfilePercent && (
+            <div className="profile-completion mt-2">
+              <CardText className="mb-25">{profilePercentageData?.profile_completed}%</CardText>
+              <Progress
+                style={{ height: '0.4rem', borderRadius: '6px' }}
+                className={giveProgressBarColorClassName(profilePercentageData?.profile_completed)}
+                value={profilePercentageData?.profile_completed}
+              />
+              <CardText className="font-small-3 mt-25">Profile Completion</CardText>
+            </div>
+          )}
 
           <section className="user-details mt-2">
             <CardTitle className="info-detail-title main mb-75">Details</CardTitle>
