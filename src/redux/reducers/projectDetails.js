@@ -218,7 +218,10 @@ const projectDetails = createSlice({
       }
 
       // If no matching worker is found, return the original state
-      return state;
+      return {
+        ...state,
+        signContractByTalentLoading: false,
+      };
     },
 
     signContractByTalentFailure: (state, action) => ({

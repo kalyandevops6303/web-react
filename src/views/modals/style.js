@@ -115,6 +115,7 @@ const EditContractWrap = styled.div`
 `;
 
 const MessageIconWrap = styled.div`
+  cursor: pointer;
   .mail-bg {
     background-color: ${theme.activeColor}1f;
     border-radius: 50%;

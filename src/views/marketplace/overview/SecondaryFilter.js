@@ -565,14 +565,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           hasMore={hasMore}
           endMessage={
             <div className="d-flex justify-content-center ">
-              {selectMarketPlaceData?.length > 0 ? (
-                <span className="mt-2">You have seen it all!</span>
-              ) : (
+              {selectMarketPlaceData?.length === 0 ? (
                 <NoDataFoundComponent
                   isMyListing={primaryFilter === 'my_listings'}
                   isRecommanded={isRecommanded}
                   data={selectMarketPlaceData}
                 />
+              ) : (
+                ''
               )}
             </div>
           }

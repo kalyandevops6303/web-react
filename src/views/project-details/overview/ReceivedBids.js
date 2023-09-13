@@ -20,6 +20,7 @@ import {
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { debounce } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import styled from 'styled-components';
 import { ChevronDown, Eye, MoreVertical, Paperclip, Search } from 'react-feather';
 import DataTable from 'react-data-table-component';
 import Rating from 'react-rating';
@@ -35,6 +36,14 @@ import { selectThemeColors } from '../../../utility/Utils';
 import { AccordionHeadStyle } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getReceivedBids } from '../../../redux/actions/projectDetailsAction';
+
+const TableWrapper = styled.div`
+  .rdt_TableHeadRow {
+    &:first-child > div:first-child > div:first-child {
+      margin-left: 4rem;
+    }
+  }
+`;
 
 const ReceivedBids = ({ projectName }) => {
   const dispatch = useDispatch();
@@ -61,7 +70,9 @@ const ReceivedBids = ({ projectName }) => {
   }, [selectReceivedBidscurrentPreview]);
 
   useEffect(() => {
-    dispatch(getReceivedBids({ metadata, search_text: searchText, bid_status: status, project_id: param?.projectId }));
+    dispatch(
+      getReceivedBids({ metadata, search_text: searchText, bid_status: status?.value, project_id: param?.projectId }),
+    );
   }, [searchText, status]);
 
   const fetchMore = () => {
@@ -82,39 +93,39 @@ const ReceivedBids = ({ projectName }) => {
 
   const tableColumns = [
     {
-      name: 'NAME',
-      sortable: true,
+      name: 'TEAM/TALENT NAME',
+      sortable: false,
       minWidth: '27%',
       selector: (row) => row.name,
     },
     {
       name: 'RATING',
-      sortable: true,
+      sortable: false,
       minWidth: '17%',
       selector: (row) => row.rating,
     },
     {
       name: 'BID AMT',
-      sortable: true,
+      sortable: false,
       minWidth: '13%',
       selector: (row) => row.bid,
     },
     {
       name: 'ATTACHMENTS',
-      sortable: true,
+      sortable: false,
       minWidth: '18%',
       selector: (row) => row.attachments,
     },
     {
       name: 'STATUS',
-      sortable: true,
+      sortable: false,
       minWidth: '12%',
       selector: (row) => (row.status === 'DECLINED' ? 'REJECTED' : row.status),
     },
 
     {
       name: 'ACTION',
-      sortable: true,
+      sortable: false,
       minWidth: '6%',
       selector: (row) => row.action,
     },
@@ -193,6 +204,10 @@ const ReceivedBids = ({ projectName }) => {
     e.preventDefault();
   };
 
+  const handleDropdown = (value) => {
+    setStatus(value);
+  };
+
   return (
     <AccordionItem>
       <AccordionHeader targetId="1">
@@ -229,45 +244,44 @@ const ReceivedBids = ({ projectName }) => {
             <Col sm="12" md="12" lg="3">
               <Label className="form-label">Project Status</Label>
               <Select
+                isClearable
+                value={status}
                 options={statusOption}
                 classNamePrefix="select"
                 placeholder="Select project status"
                 theme={selectThemeColors}
-                onChange={(e) => setStatus(e.value)}
+                onChange={handleDropdown}
               />
             </Col>
           </Row>
           <CardText className="d-none">10/500 Invited</CardText>
         </div>
 
-        <div
-          className="react-dataTable mt-1"
-          style={{ overflowY: 'auto', maxHeight: '400px' }}
-          id="scrollDivForReceivedBids"
-        >
-          <InfiniteScroll
-            dataLength={receivedBids?.length}
-            next={fetchMore}
-            hasMore={hasMore}
-            endMessage={
-              <div className="d-flex justify-content-center ">
-                {receivedBids?.length > 0 ? <span className="mt-2 d-none">You have seen it all!</span> : ''}
-              </div>
-            }
-            scrollableTarget="scrollDivForReceivedBids"
+        <TableWrapper>
+          <div
+            className="react-dataTable mt-1"
+            style={{ overflowY: 'auto', maxHeight: '400px' }}
+            id="scrollDivForReceivedBids"
           >
-            <DataTable
-              noHeader
-              pagination={false}
-              columns={tableColumns}
-              paginationPerPage={7}
-              className="react-dataTable"
-              sortIcon={<ChevronDown size={10} />}
-              data={receivedBidsDataset}
-              classNamePrefix="react-dataTable"
-            />
-          </InfiniteScroll>
-        </div>
+            <InfiniteScroll
+              dataLength={receivedBids?.length}
+              next={fetchMore}
+              hasMore={hasMore}
+              scrollableTarget="scrollDivForReceivedBids"
+            >
+              <DataTable
+                noHeader
+                pagination={false}
+                columns={tableColumns}
+                paginationPerPage={7}
+                className="react-dataTable"
+                sortIcon={<ChevronDown size={10} />}
+                data={receivedBidsDataset}
+                classNamePrefix="react-dataTable"
+              />
+            </InfiniteScroll>
+          </div>
+        </TableWrapper>
       </AccordionBody>
     </AccordionItem>
   );

@@ -50,7 +50,7 @@ const TeamView = () => {
 
       {/* TODO: API in progess */}
 
-      {userData?.user_type === userTypes.team && (
+      {userData?.user_type === userTypes.team && unassigned?.length > 0 && (
         <Card>
           <CardTitle className="main-card-title">Add Team Member</CardTitle>
           <CardBody className="main-card-body">

@@ -45,7 +45,14 @@ const NDATimeline = () => {
     <AccordionItem>
       <AccordionHeader targetId="1">
         <AccordionHeadStyle>
-          <span className="title-head">NDA</span>
+          <span className="d-flex title-head">
+            NDA
+            {isContract?.is_contract_terminated === false ? (
+              <span> {!isContract?.is_signed ? <span className="indicator" /> : ''}</span>
+            ) : (
+              ''
+            )}
+          </span>
 
           {isContract?.is_contract_terminated === false ? (
             <div>

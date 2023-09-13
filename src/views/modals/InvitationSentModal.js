@@ -26,9 +26,7 @@ const InvitationSentModal = ({
   selectedTalents,
   message,
   toggleSendInvitationModal,
-  selectedIds,
   setSelectedIds,
-  invitedIds,
   setInvitedIds,
   setSelectedTalents,
   description,
@@ -43,7 +41,7 @@ const InvitationSentModal = ({
 
   const onSuccess = () => {
     toggleModal();
-    setInvitedIds([...invitedIds, ...selectedIds]);
+    setInvitedIds([]);
     setSelectedIds([]);
     setSelectedTalents([]);
   };
@@ -179,9 +177,7 @@ InvitationSentModal.propTypes = {
   selectedTalents: Proptypes.array,
   message: Proptypes.string,
   toggleSendInvitationModal: Proptypes.func,
-  selectedIds: Proptypes.array,
   setSelectedIds: Proptypes.func,
-  invitedIds: Proptypes.array,
   setInvitedIds: Proptypes.func,
   setSelectedTalents: Proptypes.func,
   description: Proptypes.string,
@@ -194,9 +190,7 @@ InvitationSentModal.defaultProps = {
   message: '',
   projectId: '',
   toggleSendInvitationModal: () => {},
-  selectedIds: [],
   setSelectedIds: () => {},
-  invitedIds: [],
   setInvitedIds: () => {},
   setSelectedTalents: () => {},
   description: '',

@@ -54,18 +54,14 @@ const TeamSection = ({ toggleModal }) => {
           </CardText>
         </CardHeader>
         <CardBody>
-          <div id="scrollableDivTeamMember" style={{ height: '18rem', overflowY: 'auto' }}>
+          <div id="scrollableDivTeamMember" style={{ maxHeight: '18rem', overflowY: 'auto' }}>
             <InfiniteScroll
               dataLength={teamMembers?.length}
               next={fetchMore}
               hasMore={hasMore}
               endMessage={
                 <div className="d-flex justify-content-center ">
-                  {teamMembers?.length > 0 ? (
-                    <span className="mt-2">You have seen it all!</span>
-                  ) : (
-                    <span className="mt-2">No data found!</span>
-                  )}
+                  {teamMembers?.length === 0 ? <span className="mt-2">No data found!</span> : ''}
                 </div>
               }
               scrollableTarget="scrollableDivTeamMember"

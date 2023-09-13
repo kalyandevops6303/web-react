@@ -115,18 +115,23 @@ const getRecommendedTalent = (id) => async (dispatch) => {
   }
 };
 
-const removeTeamMember = (data) => async (dispatch) => {
-  dispatch(removeMemberRequest());
-  try {
-    const metadata = { page: 1, page_size: 10 };
-    await removeMemberService(data);
-    dispatch(removeMemberSuccess(data));
-    dispatch(getTeamMembers({ metadata }));
-    ShowToastMessage(SUCCESS, 'Member Removed');
-  } catch (error) {
-    errorHandler(error, removeMemberFailure);
-  }
-};
+const removeTeamMember =
+  ({ postData: data, onSuccess, isSelfRemove }) =>
+  async (dispatch) => {
+    dispatch(removeMemberRequest());
+    try {
+      const metadata = { page: 1, page_size: 10 };
+      await removeMemberService(data);
+      dispatch(removeMemberSuccess(data));
+      if (!isSelfRemove) {
+        dispatch(getTeamMembers({ metadata }));
+      }
+      onSuccess();
+      ShowToastMessage(SUCCESS, 'Member Removed');
+    } catch (error) {
+      errorHandler(error, removeMemberFailure);
+    }
+  };
 
 const getRecommendedTeams = () => async (dispatch) => {
   dispatch(recommendedTeamsRequest());

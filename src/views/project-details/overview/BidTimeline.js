@@ -1,4 +1,5 @@
 /* eslint-disable no-nested-ternary */
+import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Accordion, Card, CardBody, CardText } from 'reactstrap';
@@ -14,6 +15,17 @@ import { checkDocumentActivated, getBidDetails } from '../../../redux/actions/pr
 import { projectDetails, selectIsContract, selectIsNDA } from '../../../redux/selectors/projectDetailsSelectors';
 import ContractTimeline from './ContractTimeline';
 import NDATimeline from './NDATimeline';
+
+const BidTimelineWrapper = styled.div`
+  .indicator {
+    display: block;
+    height: 0.5rem;
+    width: 0.5rem;
+    border-radius: 50%;
+    background: ${theme.red};
+    align-self: flex-start;
+  }
+`;
 
 const BidTimeline = () => {
   const param = useParams();
@@ -59,7 +71,9 @@ const BidTimeline = () => {
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
-                  <CardText className={`fw-bold mb-0  ${!isNDA?.show_document ? 'disabled-color' : ''}`}>NDA</CardText>
+                  <CardText className={`d-flex fw-bold mb-0  ${!isNDA?.show_document ? 'disabled-color' : ''}`}>
+                    NDA {isNDA?.show_document && <span className="indicator" />}
+                  </CardText>
                   {isNDA?.show_document && (
                     <div className="d-flex gap-50 align-items-center">
                       <span onClick={() => handleDoc({ type: 'nda' })} className="card-cta">
@@ -79,7 +93,9 @@ const BidTimeline = () => {
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
-                  <CardText className={`fw-bold mb-0  ${!isNDA?.show_document ? 'disabled-color' : ''}`}>NDA</CardText>
+                  <CardText className={`d-flex fw-bold mb-0  ${!isNDA?.show_document ? 'disabled-color' : ''}`}>
+                    NDA {isNDA?.show_document && <span className="indicator" />}
+                  </CardText>
                   {isNDA?.show_document && (
                     <div className="d-flex gap-50 align-items-center">
                       <span onClick={() => handleDoc({ type: 'nda' })} className="card-cta">
@@ -105,8 +121,9 @@ const BidTimeline = () => {
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
-                  <CardText className={`fw-bold mb-0  ${!isContract?.show_document ? 'disabled-color' : ''}`}>
+                  <CardText className={`d-flex fw-bold mb-0  ${!isContract?.show_document ? 'disabled-color' : ''}`}>
                     Contract
+                    {isContract?.show_document && <span className="indicator" />}
                   </CardText>
                   {isContract?.show_document && (
                     <div className="d-flex gap-50 align-items-center">
@@ -128,7 +145,7 @@ const BidTimeline = () => {
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
                   <CardText className={`fw-bold mb-0  ${!isContract?.show_document ? 'disabled-color' : ''}`}>
-                    Contract
+                    Contract {isContract?.show_document && <span className="indicator" />}
                   </CardText>
                   {isContract?.show_document && (
                     <div className="d-flex gap-50 align-items-center">
@@ -169,7 +186,7 @@ const BidTimeline = () => {
   ].filter((item) => item.isVisible);
 
   return (
-    <div>
+    <BidTimelineWrapper>
       {userType !== userTypes.client && bidInfo && (
         // If the user type is talent, check if bidInfo is available before proceeding.
         <div>
@@ -192,7 +209,7 @@ const BidTimeline = () => {
             )}
         </div>
       )}
-    </div>
+    </BidTimelineWrapper>
   );
 };
 

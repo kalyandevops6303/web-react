@@ -133,7 +133,6 @@ const ProjectModal = ({
       profilePercentageData?.values_missing?.includes('availability')
     ) {
       toggleCompleteProfileModal();
-      
     } else {
       setSelectedProject(data);
       dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
@@ -260,7 +259,7 @@ const ProjectModal = ({
               {(selectUserDetailsData?.user_type === userTypes.talent ||
                 selectUserDetailsData?.user_type === userTypes.team) && (
                 <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-                  <Button color="flat-danger" className="me-1">
+                  <Button color="flat-danger" className=" d-none me-1">
                     Report
                   </Button>
                   <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>

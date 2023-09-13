@@ -1,7 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '@components/avatar';
 import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle } from 'reactstrap';
@@ -9,13 +9,20 @@ import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { RemoveMemberModalWrapper } from './style';
 import { removeTeamMember } from '../../redux/actions/dashboardActions';
 import { getItem } from '../../utility/localStorageControl';
+import { switchProfile } from '../../redux/actions/authActions';
+import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 
 const RemoveMemberModal = ({ modal, toggleModal, data }) => {
   const dispatch = useDispatch();
+  const savedUserDetails = useSelector(selectSavedUserData);
+
   const onClose = () => {
     toggleModal();
   };
 
+  const onSuccess = () => {
+    dispatch(switchProfile({ data: savedUserDetails, onSuccess: () => {}, selected: false }));
+  };
   const handleRemoveMember = (removeData) => {
     onClose();
     const teamId = getItem('team_id');
@@ -24,7 +31,7 @@ const RemoveMemberModal = ({ modal, toggleModal, data }) => {
       team_id: teamId,
       is_deleted: true,
     };
-    dispatch(removeTeamMember(postData));
+    dispatch(removeTeamMember({ postData, onSuccess, isSelfRemove: savedUserDetails?._id === removeData.user_id }));
   };
 
   return (

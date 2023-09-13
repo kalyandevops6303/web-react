@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
-import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
@@ -43,7 +43,7 @@ const LeftSidebarProfile = ({
   const navigate = useNavigate();
   const userData = getItem('userData');
   const teamId = getItem('teamId');
-
+  const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
@@ -69,6 +69,7 @@ const LeftSidebarProfile = ({
       dispatch(getProfilePercentage());
       return;
     }
+    // eslint-disable-next-line no-unused-expressions
     isTeamView && dispatch(getTeamProfilePercentage());
   }, []);
   const handleJoinTeam = () => {
@@ -400,7 +401,7 @@ const LeftSidebarProfile = ({
             {isTeamView && !teamId && userData?.user_type === userTypes.talent && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50" color="primary" onClick={handleJoinTeam}>
-                  Join Team
+                  {inJoinTeamLoading ? <Spinner /> : 'Join Team'}
                 </Button>
               </div>
             )}

@@ -47,7 +47,15 @@ const ContractTimeline = () => {
     <AccordionItem>
       <AccordionHeader targetId="1">
         <AccordionHeadStyle>
-          <span className="title-head">Contract</span>
+          {/* <span className="title-head">Contract</span> */}
+          <span className="d-flex title-head">
+            Contract
+            {isContract?.is_contract_terminated === false ? (
+              <span> {!isContract?.is_signed ? <span className="indicator" /> : ''}</span>
+            ) : (
+              ''
+            )}
+          </span>
 
           {isContract?.is_contract_terminated === false ? (
             <div>
