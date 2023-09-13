@@ -81,6 +81,7 @@ const FixedAdvanceMilestoneView = () => {
                 yup
                   .number()
                   .min(1, 'Duration must be at least 1')
+                  .test('is-integer', 'Duration must be an integer', (value) => Number.isInteger(value))
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Duration is required'),
@@ -932,12 +933,31 @@ const FixedAdvanceMilestoneView = () => {
                                                           />
                                                           {getValues('milestones')[milestoneIndex].workers?.find(
                                                             (w) => w.role === worker.role,
-                                                          )?.duration > 0 && (
-                                                            <InputGroupText className="ps-0">w</InputGroupText>
-                                                          )}
+                                                          )?.duration > 0 &&
+                                                            Number.isInteger(
+                                                              +getValues('milestones')[milestoneIndex].workers?.find(
+                                                                (w) => w.role === worker.role,
+                                                              )?.duration ?? 0,
+                                                            ) && <InputGroupText className="ps-0">w</InputGroupText>}
                                                         </InputGroup>
                                                       )}
                                                     />
+                                                    {errors &&
+                                                      errors.milestones &&
+                                                      errors.milestones.length > 0 &&
+                                                      errors.milestones[milestoneIndex] &&
+                                                      errors.milestones[milestoneIndex].workers &&
+                                                      errors.milestones[milestoneIndex].workers.length > 0 &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex] &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex]
+                                                        .duration && (
+                                                        <FormFeedback>
+                                                          {
+                                                            errors.milestones[milestoneIndex].workers[workerIndex]
+                                                              .duration.message
+                                                          }
+                                                        </FormFeedback>
+                                                      )}
                                                   </Col>
                                                   <Col sm="12" md="6" lg="6">
                                                     <Controller
@@ -978,9 +998,12 @@ const FixedAdvanceMilestoneView = () => {
                                                           />
                                                           {getValues('milestones')[milestoneIndex].workers?.find(
                                                             (w) => w.role === worker.role,
-                                                          )?.hours > 0 && (
-                                                            <InputGroupText className="ps-0">h</InputGroupText>
-                                                          )}
+                                                          )?.hours > 0 &&
+                                                            getValues('milestones')[milestoneIndex].workers?.find(
+                                                              (w) => w.role === worker.role,
+                                                            )?.hours < 169 && (
+                                                              <InputGroupText className="ps-0">h</InputGroupText>
+                                                            )}
                                                         </InputGroup>
                                                       )}
                                                     />
