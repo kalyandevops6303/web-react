@@ -31,7 +31,7 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import '../../custom-styles.scss';
 import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
-import Institute from '../../cards/Team';
+import TeamCard from '../../cards/TeamCard';
 import ClientCard from '../../cards/ClientCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
@@ -585,7 +585,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 primaryFilter === 'talents' || primaryFilter === 'clients'
                   ? ClientCard
                   : primaryFilter === 'teams'
-                  ? Institute
+                  ? TeamCard
                   : ProjectCard;
               return (
                 <CardComponent

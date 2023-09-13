@@ -141,7 +141,7 @@ const TeamCardWrap = styled(CardWrap)`
   }
 `;
 const UserCardWrap = styled(CardWrap)`
-  width: 50%;
+  width: ${(props) => (props.clientCard ? '30%' : '50%')};
   @media only screen and (max-device-width: 600px) {
     width: 100%;
   }

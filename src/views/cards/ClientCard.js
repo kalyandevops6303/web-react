@@ -1,19 +1,17 @@
-import { Badge, Card, CardBody, CardText, CardTitle, Col, Row, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Card, CardBody, CardText, CardTitle, Col } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { Heart } from 'react-feather';
+import { Heart, MapPin } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import Avatar from '@components/avatar';
-import hat from '@src/assets/images/hat.png';
+import hat from '@src/assets/images/hat.svg';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { UserCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
-import { returnFormattedRating } from '../../utility/Utils';
 
 const giveStrokeColor = (percentage) => {
   if (percentage <= 40) {
@@ -47,7 +45,9 @@ const ClientCard = ({ data, userType }) => {
     if (data?.user_type === userTypes.client) return { title: 'Clients', link: '' };
     return { title: 'Talent', link: '' };
   };
-  const description = data?.company_tagline || data?.professional_intro;
+  // const description = data?.company_tagline || data?.professional_intro;
+
+  const locationDetails = data?.user_type === userTypes.client ? data?.office_address : data?.current_residency;
 
   const handleLike = () => {
     dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
@@ -55,140 +55,138 @@ const ClientCard = ({ data, userType }) => {
   const handleUnLike = () => {
     dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
   };
-  const isSearchPage = location.pathname.split('/').includes('search');
+
+  const clientSkills = data?.project_area_of_interest?.skills ?? [];
+  // const areaOfInterest = data?.project_area_of_interest?.area ?? [];
+
   return (
-    <UserCardWrap userType={userType}>
+    <UserCardWrap userType={userType} clientCard>
       <Card>
         <CardBody>
-          <Row>
-            <Col lg="6" className="pe-0">
-              <div className="d-flex justify-content-between">
+          <Col className="d-flex justify-content-between">
+            <div className="d-flex align-items-center">
+              <Avatar
+                img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
+                imgHeight="40"
+                imgWidth="40"
+                className={`market-place-card-photo me-1 mb-1 `}
+              />
+              <div className="d-flex flex-column">
+                <CardTitle className="d-flex truncate-2 text-decoration-none marketplace-card-title mb-0">
+                  <Link
+                    state={{
+                      from: {
+                        primary: fromLocationPrimary(),
+                        secondary: fromLocationSecondary() || fromLocationSearch(),
+                      },
+                    }}
+                    to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
+                  >
+                    {data?.first_name}&nbsp;
+                    {data?.last_name}
+                  </Link>
+                </CardTitle>
+                <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
+                  {data?.user_type === userTypes.client
+                    ? data?.company_name || 'Company Name'
+                    : data?.role?.name || 'Role'}
+                </CardText>
+
                 <div className="d-flex">
-                  <Avatar
-                    img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
-                    imgHeight="30"
-                    imgWidth="30"
-                    className={`market-place-card-photo me-1 mt-25 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
-                  />
-                  <div>
-                    <span className="d-flex">
-                      <CardTitle className="d-flex truncate-1 text-decoration-none marketplace-card-title mb-0">
-                        <Link
-                          state={{
-                            from: {
-                              primary: fromLocationPrimary(),
-                              secondary: fromLocationSecondary() || fromLocationSearch(),
-                            },
-                          }}
-                          to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
-                        >
-                          {data?.first_name}&nbsp;
-                          {data?.last_name}
-                        </Link>
-                      </CardTitle>
-                      {!isSearchPage && (
-                        <span>
-                          {data?.is_favorite ? (
-                            <Heart
-                              className="cursor-pointer d-flex ms-50  heart"
-                              fill={theme.red}
-                              stroke={theme.red}
-                              onClick={handleUnLike}
-                              size={18}
-                            />
-                          ) : (
-                            <Heart className="cursor-pointer d-flex  ms-50 heart" onClick={handleLike} size={18} />
-                          )}
-                        </span>
+                  {locationDetails ? (
+                    <div className="d-flex align-items-center">
+                      <MapPin size={20} className="me-50" />
+                      {locationDetails?.city?.name ? (
+                        <span className="ml-50">{locationDetails?.city?.name},&nbsp;</span>
+                      ) : (
+                        ''
                       )}
-                      {data?.is_alma_mater && (
-                        <Badge className="alma-mater ms-50">
-                          <img src={hat} alt="client-badge" />
-                        </Badge>
-                      )}
-                    </span>
-                    <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
-                      {data?.user_type === userTypes.client
-                        ? data?.company_name || 'Company Name'
-                        : data?.role?.name || 'Role'}
-                    </CardText>
-                    <div className="d-flex">
-                      <RatingBadge number={returnFormattedRating(data?.rating)} />
-                      <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                        {data?.user_type === userTypes.talent ? data?.projects_worked_on_count : 0} Projects
-                      </CardText>
+                      {locationDetails?.country?.name ? <span>{locationDetails?.country?.name}</span> : ''}
                     </div>
-                  </div>
-                  {data?.match_percentage >= 0 && (
-                    <div className="circular-progressbar-container ms-50 mt-25">
-                      <CircularProgressbarWithChildren
-                        value={data?.match_percentage}
-                        styles={{
-                          path: {
-                            stroke: giveStrokeColor(data?.match_percentage),
-                            strokeLinecap: 'round',
-                            transition: 'stroke-dashoffset 0.5s ease 0s',
-                            transform: 'rotate(0turn)',
-                            transformOrigin: 'center center',
-                          },
-                          trail: {
-                            stroke: theme.progressBarBg,
-                            strokeLinecap: 'round',
-                            transform: 'rotate(0turn)',
-                            transformOrigin: 'center center',
-                          },
-                        }}
-                      >
-                        <div className="d-flex justify-content-center align-items-center">
-                          <p className="percentage-text m-0">{data?.match_percentage}%</p>
-                        </div>
-                      </CircularProgressbarWithChildren>
-                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+            <div className="d-flex flex-column align-items-start">
+              <div className="d-flex w-100 justify-content-end">
+                {true && (
+                  <Badge className="bg-white" style={{ marginTop: '-5px' }}>
+                    <img src={hat} alt="client-badge" />
+                  </Badge>
+                )}
+                <div className="mb-25">
+                  {data?.is_favorite ? (
+                    <Heart
+                      className="cursor-pointer d-flex heart"
+                      fill={theme.red}
+                      stroke={theme.red}
+                      onClick={handleUnLike}
+                      size={20}
+                    />
+                  ) : (
+                    <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
                   )}
                 </div>
               </div>
-              <CardText
-                id={`tooltip-${data?.user_id}`}
-                className={`mt-75 desc ${userType === 'client' ? 'truncate-4' : 'truncate-3'}`}
-              >
-                {description}
-              </CardText>
-              {description?.length > 80 && (
-                <UncontrolledTooltip placement="right" target={`tooltip-${data?.user_id}`}>
-                  <p className="m-0 text-start">{data?.company_tagline || data?.professional_intro}</p>
-                </UncontrolledTooltip>
-              )}
-            </Col>
 
-            <Col lg="6">
-              {data?.user_type === userTypes.client && (
-                <BadgeGroup
-                  title="Area of interest"
-                  data={data?.project_area_of_interest?.area?.name ? data?.project_area_of_interest?.area : []}
-                  color="light-blue"
-                  user_id={data?.user_id}
-                />
-              )}
-              <BadgeGroup
-                title="Skills"
-                data={
-                  data?.user_type === userTypes.client
-                    ? data?.project_area_of_interest?.skills
-                    : data?.expertise?.skills
-                }
-                color="light-blue"
-                user_id={data?.user_id}
-              />
-              <BadgeGroup
-                title="Tools"
-                data={
-                  data?.user_type === userTypes.client ? data?.project_area_of_interest?.tools : data?.expertise?.tools
-                }
-                color="light-blue"
-                user_id={data?.user_id}
-              />
-            </Col>
-          </Row>
+              <div className="d-flex mt-1">
+                <RatingBadge number={Math.round(data?.rating ?? 0)} />
+                <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+              </div>
+            </div>
+          </Col>
+
+          <div className="d-flex">
+            <div
+              className="circular-progressbar-container mt-1"
+              style={{ marginRight: '15px', width: '50px', height: '50px' }}
+            >
+              <CircularProgressbarWithChildren
+                value={data?.match_percentage}
+                styles={{
+                  path: {
+                    stroke: giveStrokeColor(data?.match_percentage),
+                    strokeLinecap: 'round',
+                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                  trail: {
+                    stroke: theme.progressBarBg,
+                    strokeLinecap: 'round',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                }}
+              >
+                <div className="d-flex justify-content-center align-items-center">
+                  <p className="percentage-text m-0">{data?.match_percentage ?? 80}%</p>
+                </div>
+              </CircularProgressbarWithChildren>
+            </div>
+            <div className="mt-1 w-100">
+              {data?.project_area_of_interest?.area ? (
+                <div className="badge-box-wrap mb-50">
+                  <div className="info-key">Area of intrest</div>
+                  <Badge className="" color="light-info">
+                    {data?.project_area_of_interest?.area?.name}
+                  </Badge>
+                </div>
+              ) : null}
+              <div className="badge-box-wrap mb-50">
+                <div className="info-key">Desired Skills</div>
+                <div className="d-flex flex-row flex-wrap gap-1">
+                  {clientSkills?.map((skill) => (
+                    <div className="badge-box mt-25" key={skill?._id}>
+                      <Badge className="" color="light-info">
+                        {skill?.name}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </CardBody>
       </Card>
     </UserCardWrap>
