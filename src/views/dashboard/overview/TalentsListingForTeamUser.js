@@ -49,7 +49,7 @@ UserSection.propTypes = {
   isAlma: PropTypes.bool,
 };
 
-const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
+const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const navigate = useNavigate();
@@ -124,9 +124,9 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           <div className="d-flex flex-column">
             <TagsSection fullWidth open={open} tags={data?.expertise?.skills} />
             <div className="d-flex">
-              <RatingBadge number={returnFormattedRating(data?.rating)} />
+              <RatingBadge number={returnFormattedRating(data?.talent_info?.rating)} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {data?.projects_worked_on_count} Projects
+                {data?.talent_info?.projects_worked_on_count} Projects
               </CardText>
             </div>
           </div>
@@ -134,7 +134,12 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           <div className="main-row">
             {isRecommendedTeam ? (
               <>
-                <UserSection tagName="Team" name={data?.name} users={users} isAlma={data?.is_alma_mater} />
+                <UserSection
+                  tagName="Team"
+                  name={`${data?.talent_info?.first_name} ${data?.talent_info?.last_name}`}
+                  users={users}
+                  isAlma={data?.is_alma_mater}
+                />
                 <div className="bottom-detail d-flex mt-1">
                   <div className="design-planning-wrapper">
                     {/* <div className="design-planning">
@@ -150,11 +155,11 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
               <>
                 <UserSection
                   tagName="Client"
-                  name={`${data?.first_name} ${data?.last_name}`}
+                  name={`${data?.talent_info?.first_name} ${data?.talent_info?.last_name}`}
                   users={[
                     {
-                      title: `${data?.first_name} ${data?.last_name}`,
-                      img: data?.image_uri || avatar7,
+                      title: `${data?.talent_info?.first_name} ${data?.talent_info?.last_name}`,
+                      img: data?.talent_info?.image_uri || avatar7,
                       placement: 'bottom',
                       imgHeight: 33,
                       imgWidth: 33,
@@ -191,7 +196,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           </div>
           {isTeamLoggedIn ? (
             <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1">
-              <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
+              <Link to={`/profile/talent/${data?.talent_info?.user_id}`}>View Talent Profile</Link>
             </div>
           ) : (
             <div
@@ -208,10 +213,10 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   );
 };
 
-TeamTalentCard.propTypes = {
+TalentsListingForTeamUser.propTypes = {
   data: PropTypes.object,
   className: PropTypes.string,
   isRecommendedTeam: PropTypes.bool,
   open: PropTypes.string,
 };
-export default TeamTalentCard;
+export default TalentsListingForTeamUser;

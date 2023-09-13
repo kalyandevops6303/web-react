@@ -567,10 +567,10 @@ const FixedSimpleMilestoneView = () => {
                                             e.stopPropagation();
                                           }}
                                         />
-                                        {getValues('milestones')[milestoneIndex].duration > 0 ||
-                                          (Number.isInteger(getValues('milestones')[milestoneIndex].duration) && (
+                                        {getValues('milestones')[milestoneIndex].duration > 0 &&
+                                          Number.isInteger(+getValues('milestones')[milestoneIndex].duration) && (
                                             <InputGroupText className="ps-0">w</InputGroupText>
-                                          ))}
+                                          )}
                                       </InputGroup>
                                     )}
                                   />

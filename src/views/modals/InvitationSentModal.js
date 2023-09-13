@@ -143,7 +143,7 @@ const InvitationSentModal = ({
                           <Badge>
                             <div className="d-flex align-items-center">
                               <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
-                              <p className="m-0 fw-bolder rating-text">{talent.rating}</p>
+                              <p className="m-0 fw-bolder rating-text">{returnFormattedRating(talent.rating)}</p>
                             </div>
                           </Badge>
                           <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>

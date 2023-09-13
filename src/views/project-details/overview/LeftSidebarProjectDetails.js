@@ -134,7 +134,7 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          <div className="d-flex w-50">
+          <div className="d-flex">
             {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
               <BadgeGroup
                 title="Skills"

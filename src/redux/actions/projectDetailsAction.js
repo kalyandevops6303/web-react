@@ -1,3 +1,4 @@
+import ShowToastMessage from '../../@core/components/toast';
 import {
   acceptInvitation,
   checkDocumentActivatedService,
@@ -11,11 +12,13 @@ import {
   getUnassignedRoleService,
   projectDetailsService,
   rejectInvitation,
+  removeWorkerService,
   sendDocumentService,
   signContractByTalentServive,
   terminateContractService,
   updateBidStatusService,
 } from '../../services/projectDetailsServices';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
   checkDocumentActivatedFailure,
@@ -45,6 +48,9 @@ import {
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
+  removeWorkerFailure,
+  removeWorkerRequest,
+  removeWorkerSuccess,
   sendDocumentFailure,
   sendDocumentRequest,
   sendDocumentSuccess,
@@ -164,6 +170,18 @@ const updateInvitation =
       errorHandler(error);
     }
   };
+
+const removeWorkerFromProjectTeam = (projectId, teamId, workerId, onSuccess) => async (dispatch) => {
+  dispatch(removeWorkerRequest());
+  try {
+    const res = await removeWorkerService(projectId, teamId, workerId);
+    dispatch(removeWorkerSuccess(res.data.data));
+    onSuccess();
+    ShowToastMessage(SUCCESS, res.data.data);
+  } catch (error) {
+    errorHandler(error, removeWorkerFailure);
+  }
+};
 
 // Contract flow
 
@@ -293,4 +311,5 @@ export {
   getReceivedBids,
   getBidDetails,
   getDocument,
+  removeWorkerFromProjectTeam,
 };

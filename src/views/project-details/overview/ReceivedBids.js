@@ -16,6 +16,7 @@ import {
   InputGroupText,
   Label,
   Row,
+  UncontrolledTooltip,
 } from 'reactstrap';
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { debounce } from 'lodash';
@@ -33,7 +34,7 @@ import EmptyStar from '@src/assets/images/empty_star.png';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { selectThemeColors } from '../../../utility/Utils';
-import { AccordionHeadStyle } from '../style';
+import { AccordionHeadStyle, UserNameWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getReceivedBids } from '../../../redux/actions/projectDetailsAction';
 
@@ -140,7 +141,7 @@ const ReceivedBids = ({ projectName }) => {
   };
 
   const receivedBidsDataset = [];
-  receivedBids?.map((item) =>
+  receivedBids?.map((item, index) =>
     receivedBidsDataset.push({
       name: (
         <div className="d-flex gap-50 align-items-center">
@@ -154,8 +155,24 @@ const ReceivedBids = ({ projectName }) => {
           <div className="d-flex gap-1 align-items-center">
             <Avatar img={item?.logo || defaultAvatar} imgHeight="32" imgWidth="32" />
             <div>
-              <span className="font-weight-bold d-block table-user-name">{item?.name}</span>
-              <span className="table-user-sub d-none">{item?.name}</span>
+              {item?.name.length > 5 ? (
+                <>
+                  <UncontrolledTooltip target={`tooltip-${index}`}>{item?.name}</UncontrolledTooltip>
+                  <UserNameWrapper>
+                    <span className="font-weight-bold d-block table-user-name" id={`tooltip-${index}`}>
+                      {item?.name}
+                    </span>
+                    <span className="table-user-sub d-none">{item?.name}</span>
+                  </UserNameWrapper>
+                </>
+              ) : (
+                <UserNameWrapper>
+                  <span className="font-weight-bold d-block table-user-name" id={`tooltip-${index}`}>
+                    {item?.name}
+                  </span>
+                  <span className="table-user-sub d-none">{item?.name}</span>
+                </UserNameWrapper>
+              )}
             </div>
           </div>
         </div>

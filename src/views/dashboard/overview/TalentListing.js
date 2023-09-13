@@ -15,6 +15,7 @@ import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
 
 import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
 
+import TalentsListingForTeamUser from './TalentsListingForTeamUser';
 import TeamTalentCard from './TeamTalentCard';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
@@ -191,19 +192,31 @@ const TalentListing = () => {
           ) : (
             <ProjectsListingWrap>
               {joinRequests?.data?.length > 0 && isTab ? (
-                joinRequests?.data?.map((project) => <TeamTalentCard key={project.id} data={project} recommended />)
+                joinRequests?.data?.map((project) => (
+                  <TalentsListingForTeamUser key={project.id} data={project} recommended />
+                ))
               ) : joinRequests?.data?.length > 0 ? (
                 <>
                   {joinRequests?.data?.length >= 4 ? (
                     <Slider {...settings}>
                       {joinRequests?.data?.map((project, index) => (
-                        <TeamTalentCard className={`slide-${index}`} key={project.id} data={project} recommended />
+                        <TalentsListingForTeamUser
+                          className={`slide-${index}`}
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
                       ))}
                     </Slider>
                   ) : (
                     <div className="custom-slider-wrap">
                       {joinRequests?.data?.map((project) => (
-                        <TeamTalentCard className="custom-slider-project" key={project.id} data={project} recommended />
+                        <TalentsListingForTeamUser
+                          className="custom-slider-project"
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
                       ))}
                     </div>
                   )}

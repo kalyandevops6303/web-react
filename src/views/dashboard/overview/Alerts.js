@@ -23,6 +23,7 @@ const Alerts = () => {
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
 
+  const isProfileCompleted = profilePercentageData?.profile_completed === 100;
   useEffect(() => {
     dispatch(getProjectInvites());
     if (userDetailsData?.user_type === userTypes.team) {
@@ -37,7 +38,6 @@ const Alerts = () => {
       state: { isEditing: true },
     });
   };
-
   return (
     <AlertCardWrapper>
       <Card>
@@ -47,39 +47,40 @@ const Alerts = () => {
             <Link to="/notifications">View All</Link>
           </CardText>
         </CardHeader>
-
-        <Card className="card-inside">
-          <CardHeader>
-            <CardTitle tag="h4">Profile Completion!</CardTitle>
-          </CardHeader>
-          <CardBody>
-            <CardText className="mb-50">
-              Make it easier for others to find you by <br /> completing your profile.
-            </CardText>
-            <span className="font-weight-bold percentage ">{profilePercentageData?.profile_completed}%</span>
-            <Progress
-              style={{ height: '0.5rem' }}
-              className={`${giveProgressBarColorClassName(profilePercentageData?.profile_completed)} mt-25`}
-              value={profilePercentageData?.profile_completed}
-            />
-            {returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing) && (
-              <CardText
-                className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"
-                onClick={() =>
-                  onAddDetailsClick(
-                    returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                      ?.path,
-                  )
-                }
-              >
-                {
-                  returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                    ?.label
-                }
+        {!isProfileCompleted && (
+          <Card className="card-inside">
+            <CardHeader>
+              <CardTitle tag="h4">Profile Completion!</CardTitle>
+            </CardHeader>
+            <CardBody>
+              <CardText className="mb-50">
+                Make it easier for others to find you by <br /> completing your profile.
               </CardText>
-            )}
-          </CardBody>
-        </Card>
+              <span className="font-weight-bold percentage ">{profilePercentageData?.profile_completed}%</span>
+              <Progress
+                style={{ height: '0.5rem' }}
+                className={`${giveProgressBarColorClassName(profilePercentageData?.profile_completed)} mt-25`}
+                value={profilePercentageData?.profile_completed}
+              />
+              {returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing) && (
+                <CardText
+                  className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"
+                  onClick={() =>
+                    onAddDetailsClick(
+                      returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
+                        ?.path,
+                    )
+                  }
+                >
+                  {
+                    returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
+                      ?.label
+                  }
+                </CardText>
+              )}
+            </CardBody>
+          </Card>
+        )}
 
         <Card className="card-inside d-none">
           <CardHeader>
