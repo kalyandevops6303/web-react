@@ -7,6 +7,7 @@ const initialState = {
   getTeamMemberLoading: false,
   receivedBids: [],
   getReceivedBidsLoading: false,
+  removeWorkerLoading: false,
   error: null,
 };
 
@@ -260,6 +261,21 @@ const projectDetails = createSlice({
       updateContractLoading: false,
       error: action.payload,
     }),
+
+    removeWorkerRequest: (state) => ({
+      ...state,
+      removeWorkerLoading: true,
+      error: null,
+    }),
+    removeWorkerSuccess: (state) => ({
+      ...state,
+      removeWorkerLoading: false,
+    }),
+    removeWorkerFailure: (state, action) => ({
+      ...state,
+      removeWorkerLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -304,6 +320,9 @@ export const {
   updateContractRequest,
   updateContractSuccess,
   updateContractFailure,
+  removeWorkerRequest,
+  removeWorkerSuccess,
+  removeWorkerFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;
