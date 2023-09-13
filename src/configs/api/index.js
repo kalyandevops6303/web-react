@@ -62,7 +62,7 @@ const API = {
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
     // team
     getTeamMember: `${apiOnboardingEndpoint}/api/v1/teams/get-members`,
-    getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members`,
+    getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members-new`,
     joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-requests`,
     recommendedTalent: `${apiOnboardingEndpoint}/api/v1/teams/recommended-talents`,
     validateUrl: `${apiAuthEndpoint}/api/v1/team/invite-member/validate-deep-link`,

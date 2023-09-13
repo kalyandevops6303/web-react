@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useState } from 'react';
+import { useLocation } from 'react-router';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import CreatableSelect from 'react-select/creatable';
@@ -14,6 +15,8 @@ import { inviteTalentsLoading } from '../../redux/selectors/inviteTalentSelector
 
 const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
   const [validEmailError, setValidEmailError] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -29,6 +32,9 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
   });
 
   const onSuccess = () => {
+    if (location.pathname === '/create-team/profile-details') {
+      navigate('/dashboard');
+    }
     toggleModal();
   };
 

@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Star } from 'react-feather';
 import Avatar from '@components/avatar';
@@ -32,6 +33,8 @@ const InvitationSentModal = ({
   description,
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
   const isTeaminviteLoading = useSelector(teamInviteLoading);
@@ -44,6 +47,10 @@ const InvitationSentModal = ({
     setInvitedIds([]);
     setSelectedIds([]);
     setSelectedTalents([]);
+
+    if (location.pathname === '/create-team/profile-details') {
+      navigate('/dashboard');
+    }
   };
 
   const onInviteTalents = () => {
