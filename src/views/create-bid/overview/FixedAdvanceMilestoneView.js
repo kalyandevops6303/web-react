@@ -910,37 +910,43 @@ const FixedAdvanceMilestoneView = () => {
                                                           .duration &&
                                                         true
                                                       }
-                                                      render={({ field }) => (
-                                                        <InputGroup className="input-group-merge">
-                                                          <Input
-                                                            {...field}
-                                                            placeholder="0w"
-                                                            type="number"
-                                                            min={0}
-                                                            onWheel={(e) => e.target.blur()}
-                                                            invalid={
-                                                              errors &&
-                                                              errors.milestones &&
-                                                              errors.milestones.length > 0 &&
-                                                              errors.milestones[milestoneIndex] &&
-                                                              errors.milestones[milestoneIndex].workers &&
-                                                              errors.milestones[milestoneIndex].workers.length > 0 &&
-                                                              errors.milestones[milestoneIndex].workers[workerIndex] &&
-                                                              errors.milestones[milestoneIndex].workers[workerIndex]
-                                                                .duration &&
-                                                              true
-                                                            }
-                                                          />
-                                                          {getValues('milestones')[milestoneIndex].workers?.find(
+                                                      render={({ field }) => {
+                                                        const durationValue =
+                                                          getValues('milestones')[milestoneIndex]?.workers?.find(
                                                             (w) => w.role === worker.role,
-                                                          )?.duration > 0 &&
-                                                            Number.isInteger(
-                                                              +getValues('milestones')[milestoneIndex].workers?.find(
-                                                                (w) => w.role === worker.role,
-                                                              )?.duration ?? 0,
-                                                            ) && <InputGroupText className="ps-0">w</InputGroupText>}
-                                                        </InputGroup>
-                                                      )}
+                                                          )?.duration ?? 0;
+
+                                                        const isInteger = Number.isInteger(+durationValue);
+
+                                                        return (
+                                                          <InputGroup className="input-group-merge">
+                                                            <Input
+                                                              {...field}
+                                                              placeholder="0w"
+                                                              type="number"
+                                                              min={0}
+                                                              onWheel={(e) => e.target.blur()}
+                                                              invalid={
+                                                                errors &&
+                                                                errors.milestones &&
+                                                                errors.milestones.length > 0 &&
+                                                                errors.milestones[milestoneIndex] &&
+                                                                errors.milestones[milestoneIndex].workers &&
+                                                                errors.milestones[milestoneIndex].workers.length > 0 &&
+                                                                errors.milestones[milestoneIndex].workers[
+                                                                  workerIndex
+                                                                ] &&
+                                                                errors.milestones[milestoneIndex].workers[workerIndex]
+                                                                  .duration &&
+                                                                true
+                                                              }
+                                                            />
+                                                            {durationValue > 0 && isInteger && (
+                                                              <InputGroupText className="ps-0">w</InputGroupText>
+                                                            )}
+                                                          </InputGroup>
+                                                        );
+                                                      }}
                                                     />
                                                     {errors &&
                                                       errors.milestones &&
