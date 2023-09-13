@@ -13,6 +13,7 @@ import { UserCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { returnFormattedRating } from '../../utility/Utils';
 
 const giveStrokeColor = (percentage) => {
   if (percentage <= 40) {
@@ -112,8 +113,10 @@ const UserCard = ({ data, userType }) => {
                         : data?.role?.name || 'Role'}
                     </CardText>
                     <div className="d-flex">
-                      <RatingBadge number="0" />
-                      <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+                      <RatingBadge number={returnFormattedRating(data?.rating)} />
+                      <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                        {data?.user_type === userTypes.talent ? data?.projects_worked_on_count : 0} Projects
+                      </CardText>
                     </div>
                   </div>
                   {data?.match_percentage >= 0 && (
