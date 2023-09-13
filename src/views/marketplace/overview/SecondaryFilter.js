@@ -33,6 +33,7 @@ import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from 
 import NoDataFoundComponent from './NoDataFoundComp';
 import TeamCard from '../../cards/TeamCard';
 import ClientCard from '../../cards/ClientCard';
+import TalentCard from '../../cards/TalentCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -582,7 +583,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             {selectMarketPlaceData?.map((item) => {
               const CardComponent =
                 // eslint-disable-next-line no-nested-ternary
-                primaryFilter === 'talents' || primaryFilter === 'clients'
+                primaryFilter === 'talents'
+                  ? TalentCard
+                  : // eslint-disable-next-line no-nested-ternary
+                  primaryFilter === 'clients'
                   ? ClientCard
                   : primaryFilter === 'teams'
                   ? TeamCard

@@ -6,6 +6,7 @@ import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import hat from '@src/assets/images/hat.png';
 import { Heart } from 'react-feather';
+import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import DateTime from '../../lib/date-time';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
@@ -31,6 +32,17 @@ const Team = ({ data }) => {
   };
   const handleUnLike = () => {
     dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
+  };
+
+  const giveStrokeColor = (percentage) => {
+    if (percentage <= 40) {
+      return theme.red;
+      // eslint-disable-next-line
+    } else if (percentage > 40 && percentage <= 70) {
+      return theme.orange;
+    } else {
+      return theme.green;
+    }
   };
 
   return (
@@ -67,7 +79,7 @@ const Team = ({ data }) => {
             </div>
             <div className="w-25">
               <div className="d-flex flex-column align-items-start">
-                <div className="d-flex w-100 justify-content-end">
+                <div className="d-flex w-100 justify-content-end gap-1">
                   {true && (
                     <Badge className="bg-white" style={{ marginTop: '-3px' }}>
                       <img src={hat} alt="client-badge" width={20} height={20} />
@@ -86,9 +98,35 @@ const Team = ({ data }) => {
                       <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
                     )}
                   </div>
+                  {data?.match_percentage ? (
+                    <div className="circular-progressbar-container">
+                      <CircularProgressbarWithChildren
+                        value={data?.match_percentage}
+                        styles={{
+                          path: {
+                            stroke: giveStrokeColor(data?.match_percentage),
+                            strokeLinecap: 'round',
+                            transition: 'stroke-dashoffset 0.5s ease 0s',
+                            transform: 'rotate(0turn)',
+                            transformOrigin: 'center center',
+                          },
+                          trail: {
+                            stroke: theme.progressBarBg,
+                            strokeLinecap: 'round',
+                            transform: 'rotate(0turn)',
+                            transformOrigin: 'center center',
+                          },
+                        }}
+                      >
+                        <div className="d-flex justify-content-center align-items-center">
+                          <p className="percentage-text m-0">{data?.match_percentage ?? 80}%</p>
+                        </div>
+                      </CircularProgressbarWithChildren>
+                    </div>
+                  ) : null}
                 </div>
               </div>
-              <div className="w-50">
+              <div className="">
                 <BadgeGroup title="Skills" data={data?.skills} color="light-blue" user_id={data?.user_id} />
                 <BadgeGroup title="Tools" data={data?.tools} color="light-blue" user_id={data?.user_id} />
               </div>
