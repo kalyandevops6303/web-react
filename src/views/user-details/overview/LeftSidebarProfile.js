@@ -21,7 +21,7 @@ import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
-import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import { giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
 import { getItem } from '../../../utility/localStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -171,16 +171,16 @@ const LeftSidebarProfile = ({
             </div>
           )}
 
-          {!isEditable && (
+          {(isClient || isTalentView) && (
             <div className="projects-rating projects-rating-public">
               <Rating
-                initialRating={0}
+                initialRating={returnFormattedRating(data?.rating)}
                 emptySymbol={<img height={22} src={EmptyStar} alt="Empty star" />}
                 fullSymbol={<img height={22} src={FilledStar} alt="Filled star" />}
                 readonly
               />
               <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
-                0 Projects | 0 reviews
+                {data?.projects_worked_on_count} Projects | 0 Reviews
               </CardText>
             </div>
           )}

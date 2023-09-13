@@ -20,6 +20,7 @@ import ProjectModal from '../modals/ProjectModal';
 import CreateBidModal from '../modals/CreateBidModal';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
+import { returnFormattedRating } from '../../utility/Utils';
 
 const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const dispatch = useDispatch();
@@ -179,8 +180,10 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                     </CardText>
                   </div>
                   <div className="d-flex flex-grow-1 align-items-center">
-                    <RatingBadge number="0" />
-                    <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+                    <RatingBadge number={returnFormattedRating(data?.client_details?.rating)} />
+                    <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                      {data?.client_details?.projects_listed_count} Projects
+                    </CardText>
                   </div>
                 </div>
                 {data?.match_percentage >= 0 && (
