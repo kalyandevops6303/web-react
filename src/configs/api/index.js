@@ -73,7 +73,7 @@ const API = {
 
     // talent
     recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,
-    teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite`,
+    teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite-new`,
     getMyTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     projectInvites: `${apiOnboardingEndpoint}/api/v1/user/alerts/invitations`,
 
