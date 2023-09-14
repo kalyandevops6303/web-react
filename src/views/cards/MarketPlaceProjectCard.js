@@ -32,6 +32,7 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
 
   const statusEnum = {
     OPEN: 'Open Listing',
+    ON_GOING: 'On Going',
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',

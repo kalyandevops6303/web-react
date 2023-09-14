@@ -40,7 +40,8 @@ const CustomBadge = styled.span`
     color: ${theme.lightBlueColor};
     border: 1px solid ${theme.blueColor};
   }
-  .IN_REVIEW {
+  .IN_REVIEW,
+  .ON_GOING {
     background: ${theme.orange}1f;
     color: ${theme.orange};
   }
