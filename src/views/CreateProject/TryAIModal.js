@@ -160,7 +160,7 @@ const TryAIModal = ({ modal, toggleModal, onSuccess }) => {
                 color="primary"
                 className="me-2"
                 onClick={toggleModal}
-                disabled={!isValid || createProjectAIisLoading}
+                disabled={createProjectAIisLoading}
               >
                 Back
               </Button>
