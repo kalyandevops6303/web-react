@@ -3,7 +3,7 @@ import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { CustomBadge } from '../../../views/styled';
 import { BadgeGroupWrap } from './style';
 
-const BadgeGroup = ({ user_id, data, title, color ,id}) => {
+const BadgeGroup = ({ user_id, data, title, color, id }) => {
   const [visibleTags, setVisibleTags] = useState([]);
   const [hiddenTagsCount, setHiddenTagsCount] = useState(0);
   if (!data || data.length === 0) {
@@ -108,7 +108,9 @@ const BadgeGroup = ({ user_id, data, title, color ,id}) => {
   return (
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
-        <div className="info-key" style={{fontSize:'13px'}}>{title || ''}</div>
+        <div className="info-key" style={{ fontSize: '13px' }}>
+          {title || ''}
+        </div>
         <div className="d-flex align-items-center">
           <div className="badge-box mt-25">{visibleTags && visibleTags?.map(renderBadge)}</div>
           {hiddenTagsCount > 0 && (

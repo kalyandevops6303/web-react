@@ -137,7 +137,7 @@ const LeftSidebarProjectDetails = () => {
           <div className="d-flex">
             {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
               <BadgeGroup
-                title="Skills"
+                title="Tags"
                 data={[
                   ...(projectDetailsData?.proficiency?.skills || []),
                   ...(projectDetailsData?.proficiency?.tools || []),
