@@ -379,7 +379,7 @@ const LeftSidebarProfile = ({
               </div>
             )}
             {!isEditable && (
-              // To be taken for team memebers
+              // To be taken for team members
               <div className="">
                 <div className="d-flex gap-1 mt-3 justify-content-center">
                   <Button className="w-50" outline color="primary">
@@ -398,7 +398,7 @@ const LeftSidebarProfile = ({
                   <Button size="md" className="w-50" outline color="primary">
                     View Profile
                   </Button>
-                  <Button size="md" className="w-50" color="primary">
+                  <Button size="md" className="w-50" color="primary" onClick={onMessageClick}>
                     Message
                   </Button>
                 </div>

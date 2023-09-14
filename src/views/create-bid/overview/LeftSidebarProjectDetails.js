@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Avatar from '@components/avatar';
@@ -18,6 +18,7 @@ import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
 
   const projectDetailsData = useSelector(projectDetails);
@@ -55,6 +56,12 @@ const LeftSidebarProjectDetails = () => {
       );
     }
   }, [projectDetailsData]);
+
+  const onMessageClick = () => {
+    navigate(`/chat`, {
+      state: { targetId: projectDetailsData?.client_details?.user_id },
+    });
+  };
 
   return (
     <LeftSidebarProjectDetailsWrapper>
@@ -139,7 +146,7 @@ const LeftSidebarProjectDetails = () => {
           </div>
 
           <div className="d-flex gap-1 mt-3 justify-content-center">
-            <Button className="w-50" color="primary">
+            <Button className="w-50" color="primary" onClick={onMessageClick}>
               Message
             </Button>
           </div>
