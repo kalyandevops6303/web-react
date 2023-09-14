@@ -600,7 +600,7 @@ const FixedAdvanceMilestoneView = () => {
               </div>
             </CardHeader>
             <CardBody className="pt-2 pb-0">
-              {totalCost > projectDetailsData?.pay_type?.fixed_cost ? (
+              {totalCost > projectDetailsData?.pay_type?.fixed_cost && (
                 <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
                   <Info size={18} color={theme.red} className="me-50" />
                   <p className="font-medium-1 m-0 error">
@@ -608,15 +608,14 @@ const FixedAdvanceMilestoneView = () => {
                     the project. Please adjust your cost in order to submit the bid
                   </p>
                 </div>
-              ) : (
-                <div className="fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
-                  <Info size={18} color={theme.activeNavPillText} className="me-50" />
-                  <p className="font-medium-1 m-0 info">
-                    <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
-                    distributed between each talent
-                  </p>
-                </div>
               )}
+              <div className="d-none fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
+                <Info size={18} color={theme.activeNavPillText} className="me-50" />
+                <p className="font-medium-1 m-0 info">
+                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
+                  distributed between each talent
+                </p>
+              </div>
               <Card className="white-card-bg">
                 <CardBody>
                   <Row className="d-flex justify-content-between">

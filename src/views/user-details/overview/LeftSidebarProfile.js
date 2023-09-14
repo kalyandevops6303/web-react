@@ -274,6 +274,19 @@ const LeftSidebarProfile = ({
             )}
             {isTeamView && (
               <>
+                {data?.services && data?.services?.length !== 0 && (
+                  <div className="d-flex mb-50 ">
+                    <span className="info-key me-25">Services:</span>
+                    <div className="d-flex flex-wrap">
+                      {data.services.map((item, index) => (
+                        <span key={item?.id} className="me-25">
+                          {item?.name}
+                          {index !== data.services.length - 1 && ', '}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <BadgeGroup color="light-blue" title="Skills" data={data?.skills} />
                 <BadgeGroup color="light-blue" title="Tools" data={data?.tools} />
                 <BadgeGroup color="light-blue" title="Language" data={data?.languages_supported} />

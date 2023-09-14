@@ -60,7 +60,7 @@ const VariableSimpleMilestoneView = () => {
           .min(1, 'Cost must be at least 1')
           .typeError('Please enter a number')
           .required('Talent cost is required')
-          .test('maxDecimalPlaces', 'Talent cost can have up to 2 decimal places', (value) => {
+          .test('maxDecimalPlaces', 'Cost can have up to 2 decimal places', (value) => {
             if (value === undefined) {
               return true; // Optional field, no validation needed if empty
             }
