@@ -7,13 +7,26 @@ import { PropTypes } from 'prop-types';
 import { projectMilestonesService } from '../../../services/projectMilestoneService';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { formatDate } from '../../../utility/Utils';
+import errorHandler from '../../../utility/errorHandler';
 
 const getTagSettings = (tag) => {
   if (tag === 'COMPLETED') {
     return { theme: 'light-success', text: 'Completed' };
   }
+  if (tag === 'CREATED') {
+    return { theme: 'light-success', text: 'Created' };
+  }
   if (tag === 'IN_PROGRESS') {
     return { theme: 'light-warning', text: 'In Progress' };
+  }
+  if (tag === 'ON_GOING') {
+    return { theme: 'light-warning', text: 'On Going' };
+  }
+  if (tag === 'YET_TO_START') {
+    return { theme: 'light-success', text: 'Yet to start' };
+  }
+  if (tag === 'IN_REVIEW') {
+    return { theme: 'light-primary', text: 'In Review' };
   }
   return { theme: 'light-primary', text: tag };
 };
@@ -24,9 +37,13 @@ const MilestoneListing = ({ setSelectedMilestone }) => {
 
   useEffect(() => {
     if (projectDetailsData?._id) {
-      projectMilestonesService(projectDetailsData._id).then((res) => {
-        setMilestones(res.data.data);
-      });
+      try {
+        projectMilestonesService(projectDetailsData._id).then((res) => {
+          setMilestones(res.data.data);
+        });
+      } catch (error) {
+        errorHandler(error);
+      }
     }
   }, [projectDetailsData?._id]);
   return (
@@ -40,7 +57,9 @@ const MilestoneListing = ({ setSelectedMilestone }) => {
                 <Badge color={getTagSettings(mile.status).theme}>{getTagSettings(mile.status).text}</Badge>
                 <div className="ms-2">
                   <CardText className="fw-normal mb-0 fs-6">Start Date</CardText>
-                  <CardText className="fw-bolder fs-5 mb-0">{formatDate(mile.start_date)}</CardText>
+                  <CardText className="fw-bolder fs-5 mb-0">
+                    {mile.start_date ? formatDate(mile.start_date) : '-'}
+                  </CardText>
                 </div>
                 <div className="mx-2">
                   <CardText className="fw-normal mb-0 fs-6">Completed</CardText>

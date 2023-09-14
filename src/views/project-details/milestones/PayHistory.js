@@ -3,7 +3,7 @@ import { Badge, Card, CardText, Table } from 'reactstrap';
 import Proptypes from 'prop-types';
 import { formatDate } from '../../../utility/Utils';
 
-const PayHistory = ({ transactions }) => (
+const PayHistory = ({ transactions = [] }) => (
   <Card className="gray-card p-0">
     <div className="p-2 pb-0">
       <CardText className="fs-4 mb-0 fw-bold">Payment History</CardText>
@@ -25,7 +25,7 @@ const PayHistory = ({ transactions }) => (
               <td className="fw-bolder">{item?._id}</td>
               <td>{formatDate(item?.created_at)}</td>
               <td>
-                <Badge color={item.status === 'PENDING' ? 'light-danger' : 'light-success'}>{item?.status}</Badge>
+                <Badge color={item?.status === 'PENDING' ? 'light-danger' : 'light-success'}>{item?.status}</Badge>
               </td>
               <td>${item?.amount}</td>
             </tr>

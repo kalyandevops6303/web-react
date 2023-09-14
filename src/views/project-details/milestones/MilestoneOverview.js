@@ -121,7 +121,11 @@ const MilestoneOverview = ({ selectedMilestone }) => {
           payments = res.data.data.pay_outs.map((item) => item?.[Object.keys(item)?.[0]]?.[0]);
         }
         if (res.data.data.my_payments) {
-          payments = res.data.data.my_payments.map((item) => item?.[Object.keys(item)?.[0]]?.[0]);
+          res.data.data.my_payments.forEach((item) => {
+            if (item?.[Object.keys(item)?.[0]]?.[0]) {
+              payments.push(item?.[Object.keys(item)?.[0]]?.[0]);
+            }
+          });
         }
         setTransactions(payments);
       });

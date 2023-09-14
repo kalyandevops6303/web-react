@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
+import { FileText } from 'react-feather';
+
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
+import { maxFileSize } from './constants/Constant';
+import ShowToastMessage from '../@core/components/toast';
+import { ERROR } from './constants/ToastTypes';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -272,4 +277,30 @@ export const formatFileSize = (bytes) => {
     return `${(bytes / 1024).toFixed(2)} KB`;
   }
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+};
+
+export const isFileValid = (file) => {
+  if (file.size > maxFileSize) {
+    ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
+    return false;
+  }
+  return true;
+};
+
+export const renderFilePreview = (file) => {
+  if (file?.type?.startsWith('image')) {
+    return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
+    // eslint-disable-next-line
+  } else {
+    return <FileText size="18" className="me-75 mb-50" />;
+  }
+};
+
+export const renderFileSize = (size) => {
+  if (Math.round(size / 100) / 10 > 1000) {
+    return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
+    // eslint-disable-next-line
+  } else {
+    return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
+  }
 };
