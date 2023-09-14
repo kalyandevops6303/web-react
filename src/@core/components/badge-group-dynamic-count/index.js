@@ -108,7 +108,7 @@ const BadgeGroup = ({ user_id, data, title, color ,id}) => {
   return (
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
-        <div className="info-key">{title || ''}</div>
+        <div className="info-key" style={{fontSize:'13px'}}>{title || ''}</div>
         <div className="d-flex align-items-center">
           <div className="badge-box mt-25">{visibleTags && visibleTags?.map(renderBadge)}</div>
           {hiddenTagsCount > 0 && (

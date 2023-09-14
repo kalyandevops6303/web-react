@@ -200,7 +200,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const getCardComp = () => {
     if (primaryFilter === 'favourites') return UserCard;
-    if (primaryFilter === 'join-requests' || primaryFilter === 'invitations') return TeamCard;
+    if (primaryFilter === 'join-requests') return TeamCard;
     return ProjectCard;
   };
 

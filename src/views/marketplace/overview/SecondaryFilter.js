@@ -584,7 +584,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          <div className="d-flex flex-wrap justify-content-between">
+          <div
+            className="justify-content-between grid-layout"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(3,4fr)', placeItems: 'center' }}
+          >
             {selectMarketPlaceData?.map((item) => {
               const CardComponent =
                 // eslint-disable-next-line no-nested-ternary

@@ -6,10 +6,10 @@ import { Heart } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
-import BadgeGroup from '../../@core/components/badge-group';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 
 const ProjectWithTeamUI = ({ data }) => {
   const dispatch = useDispatch();
@@ -54,21 +54,26 @@ const ProjectWithTeamUI = ({ data }) => {
         </div>
       </div>
       <div className="d-flex align-items-center">
-        <section className="d-flex w-50">
-          <img className={`market-place-card-photo me-75 `} src={defaultAvatar} alt="avatar" />
-          <div>
-            <div className="flex-grow-1">
-              <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                {data?.client?.first_name} {data?.client?.last_name}
-              </CardTitle>
-              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
+        <section className="w-50">
+          <div className="d-flex">
+            <img className={`market-place-card-photo me-75 `} src={defaultAvatar} alt="avatar" />
+            <div>
+              <div className="flex-grow-1">
+                <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
+                  {data?.client?.first_name} {data?.client?.last_name}
+                </CardTitle>
+                <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
+              </div>
+              <div className="d-flex flex-grow-1 mt-25">
+                <RatingBadge number={Math.round(data?.client?.rating)} />
+                <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                  {data?.client?.project_count} Projects
+                </CardText>
+              </div>
             </div>
-            <div className="d-flex flex-grow-1 mt-25">
-              <RatingBadge number={Math.round(data?.client?.rating)} />
-              <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {data?.client?.project_count} Projects
-              </CardText>
-            </div>
+          </div>
+          <div className="d-flex" style={{ marginTop: '35px' }}>
+            <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
           </div>
         </section>
         <div className="w-50">
@@ -86,11 +91,10 @@ const ProjectWithTeamUI = ({ data }) => {
               {data?.client?.project_count} Projects
             </CardText>
           </div>
+          <div className="mt-2">
+            <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
+          </div>
         </div>
-      </div>
-      <div className="d-flex">
-        <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
-        <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
       </div>
     </div>
   );

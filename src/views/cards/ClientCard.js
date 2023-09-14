@@ -61,7 +61,7 @@ const ClientCard = ({ data, userType }) => {
 
   return (
     <UserCardWrap userType={userType} clientCard>
-      <Card style={{ height: '260px' }}>
+      <Card style={{ height: '270px' }}>
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center">
@@ -137,16 +137,16 @@ const ClientCard = ({ data, userType }) => {
           </Col>
 
           <div className="d-flex">
-            {data?.match_percentage ? (
+            {true ? (
               <div
                 className="circular-progressbar-container mt-1"
                 style={{ marginRight: '15px', width: '50px', height: '50px' }}
               >
                 <CircularProgressbarWithChildren
-                  value={data?.match_percentage}
+                  value={data?.match_percentage ?? 0}
                   styles={{
                     path: {
-                      stroke: giveStrokeColor(data?.match_percentage),
+                      stroke: giveStrokeColor(data?.match_percentage ?? 0),
                       strokeLinecap: 'round',
                       transition: 'stroke-dashoffset 0.5s ease 0s',
                       transform: 'rotate(0turn)',
@@ -161,7 +161,7 @@ const ClientCard = ({ data, userType }) => {
                   }}
                 >
                   <div className="d-flex justify-content-center align-items-center">
-                    <p className="percentage-text m-0">{data?.match_percentage ?? 80}%</p>
+                    <p className="percentage-text m-0">{data?.match_percentage ?? 0}%</p>
                   </div>
                 </CircularProgressbarWithChildren>
               </div>
@@ -179,9 +179,9 @@ const ClientCard = ({ data, userType }) => {
                   </Badge>
                 </div>
               ) : null}
-              <div className="badge-box-wrap mb-50 mt-1">
+              <div className="badge-box-wrap mb-20 mt-1">
                 <div className="info-key">Desired Skills</div>
-                <div className="d-flex flex-row flex-wrap gap-1 mt-50">
+                <div className="d-flex flex-row flex-wrap gap-50 mt-20">
                   {clientSkills?.map((skill, index) => (
                     <div className="badge-box mt-25" key={skill?._id}>
                       <Badge
