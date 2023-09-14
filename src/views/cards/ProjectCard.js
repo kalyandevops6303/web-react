@@ -146,11 +146,15 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
               </div>
 
               {!showFullText ? (
-                <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                <div
+                  className="my-div"
+                  ref={divRef}
+                  style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
+                >
                   {data?.details?.description}
                 </div>
               ) : (
-                <div className="my-div" ref={divRef}>
+                <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
                   {data?.details?.description}
                 </div>
               )}

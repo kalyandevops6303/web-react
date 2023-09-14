@@ -378,7 +378,7 @@ const Preview = ({
           <h4 className="m-0 mt-1">Project Description</h4>
         </CardHeader>
         <hr className="m-0 card-header-border" />
-        <CardBody>{projectDetails?.projectDescription}</CardBody>
+        <CardBody style={{ whiteSpace: 'pre-line' }}>{projectDetails?.projectDescription}</CardBody>
       </Card>
       {files && files.length > 0 && fileList()}
       <Card>
