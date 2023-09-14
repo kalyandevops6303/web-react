@@ -33,6 +33,14 @@ const updateInvitationService = (data) => DataService.post(API.dashboard.updateI
 
 const teamProfilePercentageService = () => DataService.get(API.dashboard.teamProfilePercentage);
 
+const activeProjectsForClientService = () => DataService.get(API.dashboard.activeProjectsForClient);
+
+const upcomingProjectsForClientService = () => DataService.get(API.dashboard.upcomingProjectsForClient);
+
+const projectsBidsForClientService = () => DataService.get(API.dashboard.projectsBidsForClient);
+
+const recommendedTeamsForClientService = () => DataService.get(API.dashboard.recommendedTeamsForClient);
+
 export {
   userDataService,
   removeMemberService,
@@ -49,4 +57,8 @@ export {
   validateUrlService,
   updateInvitationService,
   teamProfilePercentageService,
+  activeProjectsForClientService,
+  upcomingProjectsForClientService,
+  projectsBidsForClientService,
+  recommendedTeamsForClientService,
 };

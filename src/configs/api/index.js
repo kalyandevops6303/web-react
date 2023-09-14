@@ -75,6 +75,12 @@ const API = {
     teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite`,
     getMyTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     projectInvites: `${apiOnboardingEndpoint}/api/v1/user/alerts/invitations`,
+
+    // client
+    activeProjectsForClient: `${apiOnboardingEndpoint}/api/v1/client/active-projects`,
+    upcomingProjectsForClient: `${apiOnboardingEndpoint}/api/v1/client/upcoming-projects`,
+    projectsBidsForClient: `${apiOnboardingEndpoint}/api/v1/client/open-listing`,
+    recommendedTeamsForClient: `${apiOnboardingEndpoint}/api/v1/client/recommended-teams`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
