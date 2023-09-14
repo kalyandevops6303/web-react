@@ -28,7 +28,11 @@ const getTeamMeberforInviteService = (searchText, page, pageSize, projectId) =>
 const updateInvitationService = ({ action, request_id }) =>
   DataService.put(`${API.inviteTeamMember.requests}/${request_id}?action=${action}&request_id=${request_id}`);
 
+const getRequestStatusService = ({ entity_type, entity_id }) =>
+  DataService.get(`${API.inviteTeamMember.status}?entity_type=${entity_type}&entity_id=${entity_id}`);
+
 export {
+  getRequestStatusService,
   bestTalentsService,
   updateInvitationService,
   validateUrlService,

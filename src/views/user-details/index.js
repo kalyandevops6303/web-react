@@ -14,24 +14,25 @@ import RecentProjects from './overview/RecentProjects';
 import Reviews from './overview/Reviews';
 import { getProfile } from '../../redux/actions/profileActions';
 import { selectCurrentProfile, selectError, selectLoading } from '../../redux/selectors/profileSelectors';
-import { getItem } from '../../utility/localStorageControl';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { clearData } from '../../redux/reducers/profile';
 import Error from '../Error';
 import { userTypes } from '../../utility/constants/Constant';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
   const param = useParams();
-
   const location = useLocation();
+  const userData = useSelector(selectAuthUserData);
 
+  const isEditable = userData?._id === param?.userId;
   useEffect(() => {
     dispatch(clearData());
     // eslint-disable-next-line no-undef
     window?.scrollTo(0, 0);
 
-    dispatch(getProfile(param?.userId, param?.userType.toUpperCase()));
+    dispatch(getProfile(param?.userId, param?.userType.toUpperCase(), isEditable));
   }, []);
 
   const isClient = param?.userType.toUpperCase() === userTypes.client;
@@ -41,7 +42,7 @@ const UserDetails = () => {
   const currentProfile = useSelector(selectCurrentProfile);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
-  const userData = getItem('userData');
+  // const userData = getItem('userData');
 
   const calculateAvailableHoursPerWeek = (availability) => {
     // Calculate weekday hours per week

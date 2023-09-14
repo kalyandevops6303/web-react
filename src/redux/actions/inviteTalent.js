@@ -11,6 +11,9 @@ import {
   favoriteTalentsFailure,
   favoriteTalentsRequest,
   favoriteTalentsSuccess,
+  getRequestStatusFailure,
+  getRequestStatusRequest,
+  getRequestStatusSuccess,
   inviteTalentsFailure,
   inviteTalentsRequest,
   inviteTalentsSuccess,
@@ -22,34 +25,56 @@ import {
   almaMaterTalentsService,
   bestTalentsService,
   favoriteTalentsService,
+  getRequestStatusService,
   getTeamMeberforInviteService,
   inviteRequestService,
 } from '../../services/inviteTeamMemberService';
+import {
+  almaMaterTalentsProjectService,
+  bestTalentsForProjectService,
+  favoriteTalentsForProjectService,
+} from '../../services/projectDetailsServices';
 
-const getBestTalents = (searchText, page, pageSize, oldData) => async (dispatch) => {
+const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   dispatch(bestTalentsRequest());
   try {
-    const res = await bestTalentsService(searchText, page, pageSize);
+    let res;
+    if (projectId) {
+      res = await bestTalentsForProjectService(projectId, searchText, page, pageSize);
+    } else {
+      res = await bestTalentsService(searchText, page, pageSize);
+    }
     dispatch(bestTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, bestTalentsFailure);
   }
 };
 
-const getFavoriteTalents = (searchText, page, pageSize, oldData) => async (dispatch) => {
+const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   dispatch(favoriteTalentsRequest());
   try {
-    const res = await favoriteTalentsService(searchText, page, pageSize);
+    let res;
+    if (projectId) {
+      res = await favoriteTalentsForProjectService(projectId, searchText, page, pageSize);
+    } else {
+      res = await favoriteTalentsService(searchText, page, pageSize);
+    }
     dispatch(favoriteTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, favoriteTalentsFailure);
   }
 };
 
-const getAlmaMaterTalents = (searchText, page, pageSize, oldData) => async (dispatch) => {
+const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   dispatch(almaMaterTalentsRequest());
   try {
-    const res = await almaMaterTalentsService(searchText, page, pageSize);
+    let res;
+    if (projectId) {
+      res = await almaMaterTalentsProjectService(projectId, searchText, page, pageSize);
+    } else {
+      res = await almaMaterTalentsService(searchText, page, pageSize);
+    }
+
     dispatch(almaMaterTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, almaMaterTalentsFailure);
@@ -86,7 +111,7 @@ const inviteTalents =
       errorHandler(error, inviteTalentsFailure);
     }
   };
-const getTeamMemberForInvite = (searchText, page, pageSize, oldData, projectId) => async (dispatch) => {
+const getTeamMemberForInvite = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   dispatch(teamMemberForInviteRequest());
   try {
     const res = await getTeamMeberforInviteService(searchText, page, pageSize, projectId);
@@ -96,7 +121,20 @@ const getTeamMemberForInvite = (searchText, page, pageSize, oldData, projectId) 
   }
 };
 
+const getRequestStatus =
+  ({ entity_type, entity_id }) =>
+  async (dispatch) => {
+    dispatch(getRequestStatusRequest());
+    try {
+      const res = await getRequestStatusService({ entity_type, entity_id });
+      dispatch(getRequestStatusSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getRequestStatusFailure);
+    }
+  };
+
 export {
+  getRequestStatus,
   getBestTalents,
   getTeamMemberForInvite,
   getFavoriteTalents,

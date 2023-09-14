@@ -201,6 +201,23 @@ const dashboardSlice = createSlice({
       removeMemberLoading: false,
       error: action.payload,
     }),
+    getAlertRequest: (state) => ({
+      ...state,
+      getAlertLoading: true,
+      error: null,
+    }),
+    getAlertSuccess: (state, action) => ({
+      ...state,
+      getAlertLoading: true,
+      alerts: action.payload,
+      error: null,
+    }),
+
+    getAlertFailure: (state, action) => ({
+      ...state,
+      getAlertLoading: false,
+      error: action.payload,
+    }),
     getProjectInvitesSuccess: (state, action) => ({
       ...state,
       projectInvites: action.payload,
@@ -220,6 +237,10 @@ const dashboardSlice = createSlice({
 });
 
 export const {
+  getAlertRequest,
+  getAlertSuccess,
+  getAlertFailure,
+
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
   recommendedProjectsFailure,

@@ -77,7 +77,25 @@ const getInvitatedByService = ({ project_id, metadata }) =>
     `${API.projectDetails.requests}?&page=${metadata?.page}&page_size=${metadata?.page_size}&project_id=${project_id}`,
   );
 
+const bestTalentsForProjectService = (projectId, searchText, page, pageSize) =>
+  DataService.get(
+    `${API.projectDetails.bestTalents}?search_text=${searchText}&page=${page}&page_size=${pageSize}&project_id=${projectId}`,
+  );
+
+const favoriteTalentsForProjectService = (projectId, searchText, page, pageSize) =>
+  DataService.get(
+    `${API.projectDetails.favoriteTalents}?search_text=${searchText}&page=${page}&page_size=${pageSize}&project_id=${projectId}`,
+  );
+
+const almaMaterTalentsProjectService = (projectId, searchText, page, pageSize) =>
+  DataService.get(
+    `${API.projectDetails.almaMaterTalents}?search_text=${searchText}&page=${page}&page_size=${pageSize}&project_id=${projectId}`,
+  );
+
 export {
+  bestTalentsForProjectService,
+  favoriteTalentsForProjectService,
+  almaMaterTalentsProjectService,
   getInvitatedByService,
   getDocumentService,
   checkDocumentActivatedService,
