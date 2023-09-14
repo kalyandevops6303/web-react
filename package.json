@@ -26,7 +26,7 @@
     "dateformat": "4.0.0",
     "emoji-mart": "5.5.2",
     "events": "3.3.0",
-    "firebase": "10.1.0",
+    "firebase": "8.0.0",
     "html-react-parser": "1.4.5",
     "html2pdf.js": "0.9.3",
     "i18next": "22.0.5",
