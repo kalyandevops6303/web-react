@@ -382,7 +382,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                     Invite
                   </Button>
                 )}
-                {!isEditable && (
+                {!isEditable && !isTeamView && (
                   <Button className="w-50" color="primary" onClick={onMessageClick}>
                     Message
                   </Button>
@@ -391,13 +391,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               <CardText className="d-none report-text m-0 text-center mt-1 fw-bold">Report</CardText>
             </div>
 
-            {!data?.is_team_member && isTeamView && !teamId && userData?.user_type === userTypes.talent && (
-              <div className="d-flex gap-1 mt-1 justify-content-center">
-                <Button className="w-50" color="primary" onClick={handleJoinTeam}>
-                  {inJoinTeamLoading ? <Spinner size="sm" /> : 'Join Team'}
-                </Button>
-              </div>
-            )}
             {!data?.is_team_member && isTeamView && !teamId && userData?.user_type === userTypes.talent && (
               <div className="d-flex gap-1 mt-1 justify-content-center">
                 <Button className="w-50" color="primary" onClick={handleJoinTeam}>

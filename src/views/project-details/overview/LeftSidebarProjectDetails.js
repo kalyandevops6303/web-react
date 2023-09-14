@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Avatar from '@components/avatar';
@@ -19,6 +19,7 @@ import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/Inv
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
   const userData = useSelector(selectUserData);
   const [inviteModal, setInviteModal] = useState(false);
@@ -67,6 +68,12 @@ const LeftSidebarProjectDetails = () => {
   const handleInvite = () => {
     setInviteModal(true);
     setInviteTalentToTeamModal(true);
+  };
+
+  const onMessageClick = () => {
+    navigate(`/chat`, {
+      state: { targetId: undefined },
+    });
   };
 
   return (
@@ -154,7 +161,7 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          {userData?.user_type === userTypes.client ? (
+          {userData?.user_type === userTypes.client && (
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50 d-none" outline color="danger">
@@ -163,15 +170,23 @@ const LeftSidebarProjectDetails = () => {
                 <Button className="w-50" color="primary" onClick={handleInvite}>
                   Invite
                 </Button>
+                {projectDetailsData?.status === 'ON_GOING' && (
+                  <Button className="w-50" outline color="primary" onClick={onMessageClick}>
+                    Message
+                  </Button>
+                )}
               </div>
             </div>
-          ) : (
-            <div className="d-flex gap-1 mt-3 justify-content-center">
-              <Button className="w-50" color="primary">
-                Message
-              </Button>
-            </div>
           )}
+
+          {projectDetailsData?.status === 'ON_GOING' &&
+            projectDetailsData?.worker_details?.entity_id === userData._id && (
+              <div className="d-flex gap-1 mt-3 justify-content-center">
+                <Button className="w-50" color="primary" onClick={onMessageClick}>
+                  Message
+                </Button>
+              </div>
+            )}
         </CardBody>
       </Card>
       {inviteTalentToTeamModal && (

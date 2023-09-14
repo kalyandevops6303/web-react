@@ -32,20 +32,9 @@ const NavbarUser = () => {
     });
   };
 
-  const fetchUnreadCount = useCallback(async () => {
-    try {
-      const unreadMsgs = await CometChat.getUnreadMessageCountForAllUsers();
-      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
-
-      setUserUnreadMsgCount(totalCount);
-    } catch (error) {
-      console.error('Error fetching unread message count:', error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchUnreadCount();
-  }, [fetchUnreadCount]);
+  CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
+    setUserUnreadMsgCount(Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0));
+  });
 
   return (
     <ul className="nav navbar-nav align-items-center ms-auto">

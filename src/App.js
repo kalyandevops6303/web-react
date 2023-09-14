@@ -44,11 +44,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    loginUser(cometAuthToken);
-  }, []);
-
-  useEffect(() => {
     if (isLoggedIn && !fcmToken) {
+      loginUser(cometAuthToken);
       let data;
       const tokenFunc = async () => {
         data = await getToken();

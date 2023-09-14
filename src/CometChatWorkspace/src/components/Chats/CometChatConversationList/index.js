@@ -122,7 +122,7 @@ class CometChatConversationList extends React.Component {
           this.props.onItemClick(targetItem.conversationWith, targetItem.conversationType);
         })
         .catch((error) => {
-          console.log('ERROR', error);
+          console.log('ERROR COMET', error);
         });
     }
   }
