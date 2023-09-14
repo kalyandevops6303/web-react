@@ -23,7 +23,7 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 
-const MilestoneDetailsTab = ({ selectedMilestone }) => {
+const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [links, setLinks] = useState(selectedMilestone.links);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +45,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           file_name: file.file.name,
         })),
       });
+      await fetchProjectMilestones();
       setTeamButtonText('Submitted');
     } catch (error) {
       errorHandler(error);
@@ -58,6 +59,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     try {
       setClientButtonText('Accepting...');
       await acceptMilestoneService(selectedMilestone._id);
+      await fetchProjectMilestones();
       setClientButtonText('Accepted');
     } catch (error) {
       errorHandler(error);
@@ -349,6 +351,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
 
 MilestoneDetailsTab.propTypes = {
   selectedMilestone: Proptypes.object.isRequired,
+  fetchProjectMilestones: Proptypes.func.isRequired,
 };
 
 export default MilestoneDetailsTab;

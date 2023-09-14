@@ -78,6 +78,11 @@ const TabWrapper = styled.div`
     padding-bottom: 16px;
   }
 
+  .role-text {
+    color: ${theme.gray};
+    font-size: 12px;
+  }
+
   .cursor-pointer {
     cursor: pointer;
   }
@@ -106,9 +111,10 @@ const TabWrapper = styled.div`
   }
 `;
 
-const MilestoneOverview = ({ selectedMilestone }) => {
+const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, milestonesData, selectedMilestoneIndex }) => {
   const [tab, setTab] = useState('Details');
   const [transactions, setTransactions] = useState([]);
+  const [teamPayments, setTeamPayments] = useState([]);
 
   const userDataLocal = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
@@ -126,6 +132,9 @@ const MilestoneOverview = ({ selectedMilestone }) => {
               payments.push(item?.[Object.keys(item)?.[0]]?.[0]);
             }
           });
+        }
+        if (res.data.data.team_payments) {
+          setTeamPayments(res.data.data.team_payments);
         }
         setTransactions(payments);
       });
@@ -164,7 +173,7 @@ const MilestoneOverview = ({ selectedMilestone }) => {
       </div>
 
       <div className={`tabcontent ${tab === 'Details' ? 'active-tabcontent' : ''}`}>
-        <MilestoneDetailsTab selectedMilestone={selectedMilestone} />
+        <MilestoneDetailsTab fetchProjectMilestones={fetchProjectMilestones} selectedMilestone={selectedMilestone} />
       </div>
 
       <div className={`tabcontent ${tab === 'Pay Outs' ? 'active-tabcontent' : ''}`}>
@@ -172,7 +181,11 @@ const MilestoneOverview = ({ selectedMilestone }) => {
       </div>
       {userDataLocal.user_type === userTypes.client ? null : (
         <div className={`tabcontent ${tab === 'Team Payments' ? 'active-tabcontent' : ''}`}>
-          <TeamPayments />
+          <TeamPayments
+            selectedMilestoneIndex={selectedMilestoneIndex}
+            milestonesData={milestonesData}
+            teamPayments={teamPayments}
+          />
         </div>
       )}
     </TabWrapper>
@@ -180,6 +193,9 @@ const MilestoneOverview = ({ selectedMilestone }) => {
 };
 MilestoneOverview.propTypes = {
   selectedMilestone: Proptypes.object.isRequired,
+  fetchProjectMilestones: Proptypes.func.isRequired,
+  milestonesData: Proptypes.arrayOf(Proptypes.object).isRequired,
+  selectedMilestoneIndex: Proptypes.number.isRequired,
 };
 
 export default MilestoneOverview;

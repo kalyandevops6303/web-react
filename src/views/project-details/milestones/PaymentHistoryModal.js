@@ -2,19 +2,29 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import '../../custom-styles.scss';
 import { Modal, ModalHeader, ModalBody, Table, Badge, CardText, Button } from 'reactstrap';
+import { formatDate } from '../../../utility/Utils';
 
-const PaymentHistoryModal = ({ isOpen, toggleModal }) => (
+const PaymentHistoryModal = ({ isOpen, toggleModal, name, role, payments, amount }) => (
   <Modal isOpen={isOpen} contentClassName="custom-modal-style" className="modal-dialog-centered">
     <ModalHeader toggle={toggleModal} />
     <ModalBody className="pt-0 pb-2">
       <div className="w-100 mb-2 d-flex align-items-center justify-content-between">
         <div>
-          <p className="fw-bolder mb-0">Pat</p>
+          <p className="fw-bolder mb-0">{name}</p>
+          <p
+            style={{
+              color: '#B9B9C3',
+              fontSize: '12px',
+            }}
+            className="fs-6 mb-0"
+          >
+            {role}
+          </p>
         </div>
         <div className="d-flex align-items-center">
           <div className="ms-2">
             <CardText className="fw-normal text-end mb-0 fs-6">Amount</CardText>
-            <CardText className="fw-bolder fs-5 mb-0">$ 1250</CardText>
+            <CardText className="fw-bolder fs-5 mb-0">$ {amount}</CardText>
           </div>
         </div>
       </div>
@@ -35,37 +45,12 @@ const PaymentHistoryModal = ({ isOpen, toggleModal }) => (
             </tr>
           </thead>
           <tbody>
-            {[
-              {
-                transaction_id: '53972',
-                date: '20 June 21',
-                status: 'Paid',
-                amount: '10800.89',
-              },
-              {
-                transaction_id: '53972',
-                date: '20 June 21',
-                status: 'Paid',
-                amount: '10800.89',
-              },
-              {
-                transaction_id: '53972',
-                date: '19 June 21',
-                status: 'Paid',
-                amount: '10800.89',
-              },
-              {
-                transaction_id: '53972',
-                date: '19 June 21',
-                status: 'Paid',
-                amount: '10800.89',
-              },
-            ]?.map((item) => (
+            {payments?.map((item) => (
               <tr key={item?._id}>
-                <td className="fw-bolder">#{item?.transaction_id}</td>
-                <td>{item?.date}</td>
+                <td className="fw-bolder">#{item?._id}</td>
+                <td>{formatDate(item?.created_at)}</td>
                 <td>
-                  <Badge color="light-success">{item?.status}</Badge>
+                  <Badge color={item?.status === 'PENDING' ? 'light-danger' : 'light-success'}>{item?.status}</Badge>
                 </td>
                 <td>${item?.amount}</td>
               </tr>
@@ -87,6 +72,10 @@ export default PaymentHistoryModal;
 PaymentHistoryModal.propTypes = {
   isOpen: Proptypes.bool,
   toggleModal: Proptypes.func,
+  name: Proptypes.string.isRequired,
+  role: Proptypes.string.isRequired,
+  amount: Proptypes.number.isRequired,
+  payments: Proptypes.arrayOf(Proptypes.object).isRequired,
 };
 
 PaymentHistoryModal.defaultProps = {
