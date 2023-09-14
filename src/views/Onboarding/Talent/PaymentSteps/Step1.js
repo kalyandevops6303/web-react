@@ -10,6 +10,7 @@ import { userOnboarding } from '../../../../utility/constants/Constant';
 
 import { paymentDetailsSuccess } from '../../../../redux/reducers/PaymentDetails';
 
+// eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep }) => {
   const navigate = useNavigate();
   const location = useLocation();

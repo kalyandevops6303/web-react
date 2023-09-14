@@ -120,6 +120,9 @@ const API = {
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
   },
+  payment: {
+    create: `${apiAuthEndpoint}/api/v1/tax-info`,
+  },
 };
 
 export default API;

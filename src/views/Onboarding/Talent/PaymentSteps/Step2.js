@@ -13,6 +13,8 @@ import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
 import { paymentDetailsSuccess, saveTaxIdDetails } from '../../../../redux/reducers/PaymentDetails';
+import { savePaymentDetails } from '../../../../redux/actions/paymentActions';
+import { selectAuthUserData } from '../../../../redux/selectors/authSelectors';
 
 const Step2 = ({ setStep }) => {
   const [confirmSign, setConfirmSign] = useState({
@@ -21,7 +23,8 @@ const Step2 = ({ setStep }) => {
   });
   const [isDocumentConfirmed, setIsDocumentConfirmed] = useState(false);
 
-  const { userType, selectedTaxId, taxId, taxClass, taxName } = useSelector((state) => state.PaymentDetails);
+  const { userType, selectedTaxId, taxId, taxClass, taxName, working } = useSelector((state) => state.PaymentDetails);
+  const userDataLocal = useSelector(selectAuthUserData);
 
   const taxIdentitySchema = Yup.object().shape({
     taxName: Yup.string()
@@ -92,7 +95,14 @@ const Step2 = ({ setStep }) => {
 
   const onSubmit = (data) => {
     dispatch(saveTaxIdDetails(data));
-    setStep(3);
+    const newData = {
+      [userDataLocal?.user_type === 'client' ? 'client_info' : 'talent_info']: {
+        tax_user_type: userType === 'us_person' ? 'US' : 'NON_US',
+        is_working_in_us: working === 'in_us',
+      },
+    };
+    dispatch(savePaymentDetails(newData));
+    // setStep(3);
   };
 
   return (
