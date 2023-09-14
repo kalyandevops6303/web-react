@@ -48,25 +48,7 @@ const Login = () => {
     setItem('requestStatus', res.head_message);
 
     if (isLoggedIn) {
-      const redirectionFunction = ({ projectId, inviteId, status }) => {
-        if (status === 'Project Invitation Request' && projectId && inviteId) {
-          navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
-        }
-        if (status === 'Team Invitation Request' && inviteId) {
-          navigate(`/team-invitation/${inviteId}`);
-        }
-        if (status === 'Project Team Invitation Request' && projectId && inviteId) {
-          navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-        }
-        if (status === 'Team Join Request' && inviteId) {
-          navigate(`/join-request/${inviteId}`);
-        }
-      };
-      redirectionFunction({
-        status: res.head_message,
-        projectId: res.request_for.project_id,
-        inviteId: res.request_id,
-      });
+      navigate('/dashboard');
     }
   };
 

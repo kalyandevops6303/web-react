@@ -18,7 +18,6 @@ import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
 import { selectUserData } from '../../redux/selectors/authSelectors';
-import { getItem } from '../../utility/localStorageControl';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
@@ -90,31 +89,6 @@ const PrivateDashboard = () => {
       navigate('/create-team/profile-details');
     }
   };
-
-  const isInviteRead = getItem('isInviteRead');
-
-  useEffect(() => {
-    if (!isInviteRead) {
-      const redirectionFunction = () => {
-        const inviteId = getItem('inviteId');
-        const projectId = getItem('projectId');
-        const status = getItem('requestStatus');
-        if (status === 'Project Invitation Request' && projectId && inviteId) {
-          navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
-        }
-        if (status === 'Team Invitation Request' && inviteId) {
-          navigate(`/team-invitation/${inviteId}`);
-        }
-        if (status === 'Project Team Invitation Request' && projectId && inviteId) {
-          navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-        }
-        if (status === 'Team Join Request' && inviteId) {
-          navigate(`/join-request/${inviteId}`);
-        }
-      };
-      redirectionFunction();
-    }
-  }, []);
 
   const handleRemoveMember = (data) => {
     setDeletModal(true);
