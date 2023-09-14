@@ -1,4 +1,4 @@
-import { Badge, Card, CardBody, CardText, CardTitle, Col } from 'reactstrap';
+import { Badge, Card, CardBody, CardText, CardTitle, Col, UncontrolledTooltip } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
@@ -61,7 +61,7 @@ const ClientCard = ({ data, userType }) => {
 
   return (
     <UserCardWrap userType={userType} clientCard>
-      <Card style={{ height: '230px' }}>
+      <Card style={{ height: '260px' }}>
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center">
@@ -109,7 +109,7 @@ const ClientCard = ({ data, userType }) => {
             </div>
             <div className="d-flex flex-column align-items-start">
               <div className="d-flex w-100 justify-content-end">
-                {true && (
+                {data?.is_alma_mater && (
                   <Badge className="bg-white" style={{ marginTop: '-5px' }}>
                     <img src={hat} alt="client-badge" />
                   </Badge>
@@ -137,38 +137,44 @@ const ClientCard = ({ data, userType }) => {
           </Col>
 
           <div className="d-flex">
-            <div
-              className="circular-progressbar-container mt-1"
-              style={{ marginRight: '15px', width: '50px', height: '50px' }}
-            >
-              <CircularProgressbarWithChildren
-                value={data?.match_percentage}
-                styles={{
-                  path: {
-                    stroke: giveStrokeColor(data?.match_percentage),
-                    strokeLinecap: 'round',
-                    transition: 'stroke-dashoffset 0.5s ease 0s',
-                    transform: 'rotate(0turn)',
-                    transformOrigin: 'center center',
-                  },
-                  trail: {
-                    stroke: theme.progressBarBg,
-                    strokeLinecap: 'round',
-                    transform: 'rotate(0turn)',
-                    transformOrigin: 'center center',
-                  },
-                }}
+            {data?.match_percentage ? (
+              <div
+                className="circular-progressbar-container mt-1"
+                style={{ marginRight: '15px', width: '50px', height: '50px' }}
               >
-                <div className="d-flex justify-content-center align-items-center">
-                  <p className="percentage-text m-0">{data?.match_percentage ?? 80}%</p>
-                </div>
-              </CircularProgressbarWithChildren>
-            </div>
+                <CircularProgressbarWithChildren
+                  value={data?.match_percentage}
+                  styles={{
+                    path: {
+                      stroke: giveStrokeColor(data?.match_percentage),
+                      strokeLinecap: 'round',
+                      transition: 'stroke-dashoffset 0.5s ease 0s',
+                      transform: 'rotate(0turn)',
+                      transformOrigin: 'center center',
+                    },
+                    trail: {
+                      stroke: theme.progressBarBg,
+                      strokeLinecap: 'round',
+                      transform: 'rotate(0turn)',
+                      transformOrigin: 'center center',
+                    },
+                  }}
+                >
+                  <div className="d-flex justify-content-center align-items-center">
+                    <p className="percentage-text m-0">{data?.match_percentage ?? 80}%</p>
+                  </div>
+                </CircularProgressbarWithChildren>
+              </div>
+            ) : null}
             <div className="mt-1 w-100">
               {data?.project_area_of_interest?.area ? (
                 <div className="badge-box-wrap mb-50">
                   <div className="info-key">Area of intrest</div>
-                  <Badge className="mt-50" color="light-info">
+                  <Badge
+                    className="mt-50"
+                    color=""
+                    style={{ color: theme.lightBlueColor, backgroundColor: theme.lightBlueBgColor }}
+                  >
                     {data?.project_area_of_interest?.area?.name}
                   </Badge>
                 </div>
@@ -176,11 +182,21 @@ const ClientCard = ({ data, userType }) => {
               <div className="badge-box-wrap mb-50 mt-1">
                 <div className="info-key">Desired Skills</div>
                 <div className="d-flex flex-row flex-wrap gap-1 mt-50">
-                  {clientSkills?.map((skill) => (
+                  {clientSkills?.map((skill, index) => (
                     <div className="badge-box mt-25" key={skill?._id}>
-                      <Badge className="" color="light-info">
+                      <Badge
+                        id={`tooltip-${skill?._id}-${index}`}
+                        className={`${skill?.name?.length > 20 ? 'truncate-1' : ''}`}
+                        color=""
+                        style={{ color: theme.lightBlueColor, backgroundColor: theme.lightBlueBgColor }}
+                      >
                         {skill?.name}
                       </Badge>
+                      {skill?.name?.length > 20 ? (
+                        <UncontrolledTooltip target={`tooltip-${skill?._id}-${index}`}>
+                          {skill?.name}
+                        </UncontrolledTooltip>
+                      ) : null}
                     </div>
                   ))}
                 </div>

@@ -72,9 +72,9 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                     </>
                   )}
                 </CardText>
-                <CardText className=" project mb-1">{`Assigned Date - ${
+                {/* <CardText className=" project mb-1">{`Assigned Date - ${
                   data?.total_estimated_cost
-                }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText>
+                }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText> */}
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
                   {data?.client?.office_address?.country?.name || 'Location'}

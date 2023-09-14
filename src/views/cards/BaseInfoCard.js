@@ -55,30 +55,32 @@ const BaseInfoCard = ({ data }) => {
             <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
           )}
 
-          <div className="circular-progressbar-container m-0">
-            <CircularProgressbarWithChildren
-              value={data?.match_percentage}
-              styles={{
-                path: {
-                  stroke: giveStrokeColor(data?.match_percentage),
-                  strokeLinecap: 'round',
-                  transition: 'stroke-dashoffset 0.5s ease 0s',
-                  transform: 'rotate(0turn)',
-                  transformOrigin: 'center center',
-                },
-                trail: {
-                  stroke: theme.progressBarBg,
-                  strokeLinecap: 'round',
-                  transform: 'rotate(0turn)',
-                  transformOrigin: 'center center',
-                },
-              }}
-            >
-              <div className="d-flex justify-content-center align-items-center">
-                <p className="percentage-text m-0">{data?.match_percentage}%</p>
-              </div>
-            </CircularProgressbarWithChildren>
-          </div>
+          {data?.match_percentage ? (
+            <div className="circular-progressbar-container m-0">
+              <CircularProgressbarWithChildren
+                value={data?.match_percentage}
+                styles={{
+                  path: {
+                    stroke: giveStrokeColor(data?.match_percentage),
+                    strokeLinecap: 'round',
+                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                  trail: {
+                    stroke: theme.progressBarBg,
+                    strokeLinecap: 'round',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                }}
+              >
+                <div className="d-flex justify-content-center align-items-center">
+                  <p className="percentage-text m-0">{data?.match_percentage}%</p>
+                </div>
+              </CircularProgressbarWithChildren>
+            </div>
+          ) : null}
         </div>
       </div>
       <div className="d-flex mb-2 align-items-center">
@@ -86,14 +88,16 @@ const BaseInfoCard = ({ data }) => {
           className="market-place-card-photo me-75"
           src={clientDetails?.image_uri.length ? clientDetails?.image_uri : defaultAvatar}
           alt="avatar"
+          width={40}
+          height={50}
         />
         <div className="d-flex w-100 align-items-center">
           <div className="flex-grow-1">
             <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-              {clientDetails.first_name} {clientDetails.last_name}
+              {clientDetails?.first_name} {clientDetails?.last_name}
             </CardTitle>
             <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-              {clientDetails.title ?? clientDetails?.company_name}
+              {clientDetails?.title ?? clientDetails?.company_name}
             </CardText>
           </div>
           <div className="d-flex flex-grow-1">
