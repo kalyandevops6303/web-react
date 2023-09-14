@@ -17,15 +17,15 @@ const TryAIModal = ({ modal, toggleModal, onSuccess }) => {
 
   const QuestionSchema = yup.object().shape({
     description: yup.string().min(2, 'Description must be at least 2 characters').required('is required'),
-    What_are_you_trying_to_build: yup
+    what_are_you_trying_to_build: yup
       .string()
       .min(2, 'This field must be at least 2 characters')
       .required('is required'),
-    Why_do_you_want_to_build_it: yup
+    why_do_you_want_to_build_it: yup
       .string()
       .min(2, 'This field must be at least 2 characters')
       .required('is required'),
-    Who_is_going_to_use_it: yup.string().min(2, 'This field must be at least 2 characters').required('is required'),
+    who_is_going_to_use_it: yup.string().min(2, 'This field must be at least 2 characters').required('is required'),
     features: yup.string().min(2, 'Features must be at least 2 characters').required('is required'),
   });
 
@@ -39,8 +39,8 @@ const TryAIModal = ({ modal, toggleModal, onSuccess }) => {
   });
 
   const onAISuccess = (data) => {
-    const skillsOptions = data.Tech_Stack;
-    const toolsOptions = data.Tools;
+    const skillsOptions = data.tech_stack;
+    const toolsOptions = data.tools;
     dispatch(filterAISkills(skillsOptions));
     dispatch(filterAITools(toolsOptions));
     onSuccess({
@@ -50,14 +50,14 @@ const TryAIModal = ({ modal, toggleModal, onSuccess }) => {
   };
 
   const onSubmit = (data) => {
-    const { description, What_are_you_trying_to_build, Why_do_you_want_to_build_it, Who_is_going_to_use_it, features } =
+    const { description, what_are_you_trying_to_build, why_do_you_want_to_build_it, who_is_going_to_use_it, features } =
       data;
 
     const reqData = {
       description,
-      What_are_you_trying_to_build,
-      Why_do_you_want_to_build_it,
-      Who_is_going_to_use_it,
+      what_are_you_trying_to_build,
+      why_do_you_want_to_build_it,
+      who_is_going_to_use_it,
       features,
     };
 
@@ -90,53 +90,53 @@ const TryAIModal = ({ modal, toggleModal, onSuccess }) => {
                 {errors.description && <FormFeedback>{errors.description.message}</FormFeedback>}
               </Col>
               <Col sm="12" md="12" className="mb-1">
-                <Label className="form-label" for="What_are_you_trying_to_build">
+                <Label className="form-label" for="what_are_you_trying_to_build">
                   What are you trying to build? <span className="label-asterisk text-danger">*</span>
                 </Label>
                 <Controller
-                  id="What_are_you_trying_to_build"
-                  name="What_are_you_trying_to_build"
+                  id="what_are_you_trying_to_build"
+                  name="what_are_you_trying_to_build"
                   control={control}
-                  invalid={errors.What_are_you_trying_to_build && true}
+                  invalid={errors.what_are_you_trying_to_build && true}
                   render={({ field }) => (
-                    <Input {...field} type="textarea" rows="1" invalid={errors.What_are_you_trying_to_build && true} />
+                    <Input {...field} type="textarea" rows="1" invalid={errors.what_are_you_trying_to_build && true} />
                   )}
                 />
-                {errors.What_are_you_trying_to_build && (
-                  <FormFeedback>{errors.What_are_you_trying_to_build.message}</FormFeedback>
+                {errors.what_are_you_trying_to_build && (
+                  <FormFeedback>{errors.what_are_you_trying_to_build.message}</FormFeedback>
                 )}
               </Col>
               <Col sm="12" md="12" className="mb-1">
-                <Label className="form-label" for="Why_do_you_want_to_build_it">
+                <Label className="form-label" for="why_do_you_want_to_build_it">
                   Why do you want to build it? <span className="label-asterisk text-danger">*</span>
                 </Label>
                 <Controller
-                  id="Why_do_you_want_to_build_it"
-                  name="Why_do_you_want_to_build_it"
+                  id="why_do_you_want_to_build_it"
+                  name="why_do_you_want_to_build_it"
                   control={control}
-                  invalid={errors.Why_do_you_want_to_build_it && true}
+                  invalid={errors.why_do_you_want_to_build_it && true}
                   render={({ field }) => (
-                    <Input {...field} type="textarea" rows="1" invalid={errors.Why_do_you_want_to_build_it && true} />
+                    <Input {...field} type="textarea" rows="1" invalid={errors.why_do_you_want_to_build_it && true} />
                   )}
                 />
-                {errors.Why_do_you_want_to_build_it && (
-                  <FormFeedback>{errors.Why_do_you_want_to_build_it.message}</FormFeedback>
+                {errors.why_do_you_want_to_build_it && (
+                  <FormFeedback>{errors.why_do_you_want_to_build_it.message}</FormFeedback>
                 )}
               </Col>
               <Col sm="12" md="12" className="mb-1">
-                <Label className="form-label" for="Who_is_going_to_use_it">
+                <Label className="form-label" for="who_is_going_to_use_it">
                   Who is going to use it? <span className="label-asterisk text-danger">*</span>
                 </Label>
                 <Controller
-                  id="Who_is_going_to_use_it"
-                  name="Who_is_going_to_use_it"
+                  id="who_is_going_to_use_it"
+                  name="who_is_going_to_use_it"
                   control={control}
-                  invalid={errors.Who_is_going_to_use_it && true}
+                  invalid={errors.who_is_going_to_use_it && true}
                   render={({ field }) => (
-                    <Input {...field} type="textarea" rows="1" invalid={errors.Who_is_going_to_use_it && true} />
+                    <Input {...field} type="textarea" rows="1" invalid={errors.who_is_going_to_use_it && true} />
                   )}
                 />
-                {errors.Who_is_going_to_use_it && <FormFeedback>{errors.Who_is_going_to_use_it.message}</FormFeedback>}
+                {errors.who_is_going_to_use_it && <FormFeedback>{errors.who_is_going_to_use_it.message}</FormFeedback>}
               </Col>
               <Col sm="12" md="12">
                 <Label className="form-label" for="features">

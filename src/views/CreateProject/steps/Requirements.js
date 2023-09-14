@@ -22,6 +22,8 @@ import {
   FormFeedback,
   UncontrolledTooltip,
   Badge,
+  CardText,
+  CardTitle,
 } from 'reactstrap';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -394,11 +396,14 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   const onSuccess = (data) => {
     const { aiData } = data;
-    if ('Title' in aiData) {
-      setValue('projectName', aiData?.Title, { shouldValidate: true });
+    if ('title' in aiData) {
+      setValue('projectName', aiData?.title, { shouldValidate: true });
     }
-    if ('Executive_Summary' in aiData) {
-      setValue('projectDescription', aiData?.Executive_Summary, { shouldValidate: true });
+    if ('executive_summary' in aiData) {
+      setValue('projectDescription', aiData?.executive_summary, { shouldValidate: true });
+    }
+    if ('duration' in aiData) {
+      setValue('expectedDuration', aiData?.duration, { shouldValidate: true });
     }
   };
 
@@ -653,7 +658,15 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Card>
             <CardHeader>
-              <h4 className="m-0 mt-1">Project Details</h4>
+              <CardTitle>
+                <h4 className="m-0 mt-1">Project Details</h4>
+              </CardTitle>
+              <CardText>
+                <Button onClick={handleAIClick} color="primary" className="d-flex align-items-center">
+                  <span className="me-50">Try AI Assist</span>
+                  <ChevronRight size={14} />
+                </Button>
+              </CardText>
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>
@@ -781,16 +794,6 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                           </div>
                         </div>
                       </DropzoneContainer>
-                    </Col>
-                    <Col>
-                      <div className="h-100">
-                        <div className="d-flex justify-content-end align-items-end h-100">
-                          <Button onClick={handleAIClick} color="primary">
-                            <span className="me-50">Try AI</span>
-                            <ChevronRight size={14} />
-                          </Button>
-                        </div>
-                      </div>
                     </Col>
                   </Row>
                 )}
