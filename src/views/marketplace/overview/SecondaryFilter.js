@@ -586,7 +586,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         >
           <div
             className="justify-content-between grid-layout"
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(3,4fr)', placeItems: 'center' }}
+            style={
+              primaryFilter === 'clients'
+                ? { display: 'grid', gridTemplateColumns: 'repeat(3,4fr)', placeItems: 'center' }
+                : {}
+            }
           >
             {selectMarketPlaceData?.map((item) => {
               const CardComponent =
