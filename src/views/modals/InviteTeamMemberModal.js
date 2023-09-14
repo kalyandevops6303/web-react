@@ -88,6 +88,7 @@ const InviteTeamMemberModal = ({
   const loadNewBestTalents = () => {
     dispatch(
       getBestTalents(
+        projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         bestTalentsData?.metadata?.current_page + 1,
@@ -100,6 +101,7 @@ const InviteTeamMemberModal = ({
   const loadNewFavoriteTalents = () => {
     dispatch(
       getFavoriteTalents(
+        projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         favoriteTalentsData?.metadata?.current_page + 1,
@@ -112,6 +114,7 @@ const InviteTeamMemberModal = ({
   const loadNewAlmaMaterTalents = () => {
     dispatch(
       getAlmaMaterTalents(
+        projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         almaMaterTalentsData?.metadata?.current_page + 1,
@@ -123,12 +126,12 @@ const InviteTeamMemberModal = ({
   const loadNewTeamMembers = () => {
     dispatch(
       getTeamMemberForInvite(
+        projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         almaMaterTalentsData?.metadata?.current_page + 1,
         10,
         almaMaterTalentsData?.data,
-        projectId,
       ),
     );
   };
@@ -137,11 +140,11 @@ const InviteTeamMemberModal = ({
     let delayDebounceFn = null;
 
     delayDebounceFn = setTimeout(() => {
-      dispatch(getBestTalents(searchValue, 1, 10, []));
-      dispatch(getFavoriteTalents(searchValue, 1, 10, []));
-      dispatch(getAlmaMaterTalents(searchValue, 1, 10, []));
+      dispatch(getBestTalents(projectId, searchValue, 1, 10, []));
+      dispatch(getFavoriteTalents(projectId, searchValue, 1, 10, []));
+      dispatch(getAlmaMaterTalents(projectId, searchValue, 1, 10, []));
       if (userData?.user_type !== userTypes.client && projectId) {
-        dispatch(getTeamMemberForInvite(searchValue, 1, 10, [], projectId));
+        dispatch(getTeamMemberForInvite(projectId, searchValue, 1, 10, []));
       }
     }, 500);
 

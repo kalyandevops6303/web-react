@@ -106,6 +106,10 @@ const API = {
     signContractByTalent: `${apiCreateProjectEndpoint}/api/v1/legal/document/sign`,
     terminateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/terminate`,
     updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
+    // invite get
+    bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
+    favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
+    almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
@@ -117,6 +121,9 @@ const API = {
     // Updated API to invite talent/team and for client
     requests: `${apiAuthEndpoint}/api/v1/requests`,
     validateRequest: `${apiAuthEndpoint}/api/v1/requests/validation`,
+
+    // get status requests
+    status: `${apiOnboardingEndpoint}/api/v1/request/get`,
   },
   marketplace: {
     client: {
@@ -141,6 +148,7 @@ const API = {
   },
   notifications: {
     allNotifications: `${apiOnboardingEndpoint}/api/v1/notification/all`,
+    alerts: `${apiOnboardingEndpoint}/api/v1/alerts`,
     subscribe: `${apiAuthEndpoint}/api/v1/user/subscribe`,
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
   },
