@@ -1,4 +1,5 @@
 import ShowToastMessage from '../../@core/components/toast';
+import { makeFavService, makeFavTeamService, removeFavService } from '../../services/profileServices';
 import {
   acceptInvitation,
   checkDocumentActivatedService,
@@ -19,6 +20,7 @@ import {
   terminateContractService,
   updateBidStatusService,
 } from '../../services/projectDetailsServices';
+import { userTypes } from '../../utility/constants/Constant';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -49,9 +51,11 @@ import {
   getUnassignedRoleFailure,
   getUnassignedRoleRequest,
   getUnassignedRoleSuccess,
+  makeFavSuccess,
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
+  removeFavSuccess,
   removeWorkerFailure,
   removeWorkerRequest,
   removeWorkerSuccess,
@@ -311,7 +315,30 @@ const updateContract =
     }
   };
 
+const makeFavourite = (id, user_type) => async (dispatch) => {
+  try {
+    if (user_type === userTypes.team) {
+      await makeFavTeamService(id);
+    } else {
+      await makeFavService(id, user_type);
+    }
+    dispatch(makeFavSuccess(id));
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+const removeFavourite = (id) => async (dispatch) => {
+  try {
+    await removeFavService({ user_id: id });
+    dispatch(removeFavSuccess(id));
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 export {
+  makeFavourite,
+  removeFavourite,
   getInvitedMember,
   checkDocumentActivated,
   getDocumentTimeline,

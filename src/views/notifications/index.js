@@ -13,9 +13,14 @@ import getNotifications from '../../redux/actions/notificationsActions';
 import { notifications } from '../../redux/selectors/notificationsSelectors';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import { clearNotificationsData } from '../../redux/reducers/notifications';
-import { setItem } from '../../utility/localStorageControl';
+import SwitchConfirmModal from '../modals/SwitchConfirm';
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
 const Notifications = () => {
+  const [switchProfileModal, setSwitchProfileModal] = useState(false);
+  const userData = useSelector(selectUserData);
+  const [switchData, setSwitchData] = useState();
   const navigate = useNavigate();
   const priorities = {
     PRIORITY_1: 'red',
@@ -52,16 +57,58 @@ const Notifications = () => {
     setSelectedPriority(option);
     dispatch(getNotifications(option.value, 1, 10, []));
   };
+
+  const redirectionFunction = ({ projectId, inviteId, status }) => {
+    if (status === 'Project Invitation Request' && projectId && inviteId) {
+      navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
+    } else if (status === 'Team Invitation Request' && inviteId) {
+      navigate(`/team-invitation/${inviteId}`);
+    } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
+      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+    } else if (status === 'Team Join Request' && inviteId) {
+      navigate(`/join-request/${inviteId}`);
+    } else {
+      navigate(`/project-details/${projectId}/bid`);
+    }
+  };
+  const isReqeustFlowStatus = (status) => {
+    switch (status) {
+      case 'Project Invitation Request':
+        return true;
+      case 'Team Invitation Request':
+        return true;
+      case 'Project Team Invitation Request':
+        return true;
+      case 'Team Join Request':
+        return true;
+      default:
+        return false;
+    }
+  };
   const handleNotification = (data) => {
-    if (data?.notification_type === 'TEAM_INVITATION') {
-      navigate(`/team-invitation/${data.custom_payload?.invitation_id}`);
+    setSwitchData(data);
+
+    if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
+      setSwitchProfileModal(true);
+    } else if (isReqeustFlowStatus(data?.title)) {
+      redirectionFunction({
+        status: data?.title,
+        projectId: data?.custom_payload?.request_for?.project_id,
+        inviteId: data?.custom_payload?.request_id,
+      });
+    } else {
+      redirectionFunction({ projectId: data?.custom_payload?.project_id });
     }
-    if (data?.notification_type === 'PROJECT_INVITATION') {
-      navigate(
-        `/project-details/${data.custom_payload?.project_id}/project/project-invitation/${data.custom_payload?.invitation_id}`,
-      );
-    }
-    setItem('inviteToken', data.custom_payload?.token);
+
+    // if (data?.notification_type === 'TEAM_INVITATION') {
+    //   navigate(`/team-invitation/${data.custom_payload?.invitation_id}`);
+    // }
+    // if (data?.notification_type === 'PROJECT_INVITATION') {
+    //   navigate(
+    //     `/project-details/${data.custom_payload?.project_id}/project/project-invitation/${data.custom_payload?.invitation_id}`,
+    //   );
+    // }
+    // setItem('inviteToken', data.custom_payload?.token);
   };
   return (
     <>
@@ -99,13 +146,13 @@ const Notifications = () => {
             <BorderCardContainer
               onClick={() => handleNotification(item)}
               key={item?._id}
-              priorityColor={priorities[item.priority]}
+              priorityColor={priorities?.[item?.custom_payload?.priority]}
             >
-              <Card>
+              <Card className="cursor-pointer">
                 <CardBody>
                   <div className="d-flex justify-content-between">
                     <div className="d-flex align-items-center">
-                      <NotificationBadgeContainer priorityColor={priorities[item.priority]}>
+                      <NotificationBadgeContainer priorityColor={priorities?.[item?.custom_payload?.priority]}>
                         <div className="position-relative">
                           <Badge pill color="danger" className="badge-up" />
                           <Bell color={theme.white} size={18} />
@@ -129,6 +176,13 @@ const Notifications = () => {
             <img src={NoDataFoundGif} alt="no-data" width={200} height={200} className="no-data-found-gif" />
             <p className="m-0 fw-bold font-medium-3">No Data Found</p>
           </div>
+        )}
+        {switchProfileModal && (
+          <SwitchConfirmModal
+            data={switchData}
+            modal={switchProfileModal}
+            toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
+          />
         )}
       </InfiniteScroll>
     </>

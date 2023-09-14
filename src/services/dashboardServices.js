@@ -33,7 +33,7 @@ const updateInvitationService = (data) => DataService.post(API.dashboard.updateI
 
 const teamProfilePercentageService = () => DataService.get(API.dashboard.teamProfilePercentage);
 
-const alertService = () => DataService.get(`${API.notifications.alerts}?page=1&page_size=5`);
+const alertService = () => DataService.get(`${API.notifications.alerts}?page=1&page_size=4`);
 
 export {
   alertService,

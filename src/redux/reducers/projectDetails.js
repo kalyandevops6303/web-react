@@ -298,10 +298,28 @@ const projectDetails = createSlice({
       getInvitedMemberLoading: false,
       error: action.payload,
     }),
+
+    makeFavSuccess: (state) => ({
+      ...state,
+      projectDetails: {
+        ...state.projectDetails,
+        bidInfo: {
+          ...state.projectDetails.bidInfo,
+          is_favorite: true,
+        },
+      },
+    }),
+
+    removeFavSuccess: (state) => ({
+      ...state,
+      projectDetails: { ...state.projectDetails.bidInfo, is_favorite: false },
+    }),
   },
 });
 
 export const {
+  makeFavSuccess,
+  removeFavSuccess,
   getInvitedMemberFailure,
   getInvitedMemberRequest,
   getInvitedMemberSuccess,

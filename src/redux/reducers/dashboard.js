@@ -21,6 +21,7 @@ const initialState = {
   profilePercentage: null,
   profilePercentageLoading: false,
   projectInvites: [],
+  alerts: [],
   error: null,
 };
 
