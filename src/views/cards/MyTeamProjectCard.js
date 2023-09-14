@@ -35,6 +35,8 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
+    COMPLETED: 'Completed',
+    ON_GOING: 'On Going',
   };
   const divRef = useRef(null);
 
@@ -44,6 +46,7 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
       setIsContentOverflowing(divElement.scrollHeight > divElement.clientHeight);
     }
   }, []);
+
   return (
     <ProjectCardWrap>
       <Card>

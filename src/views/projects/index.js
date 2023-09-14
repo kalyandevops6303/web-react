@@ -27,7 +27,7 @@ const Projects = () => {
 
   // Adjust the number of lines based on the desired limit
 
-  const [primaryFilter, setPrimaryFilter] = useState('CLOSED');
+  const [primaryFilter, setPrimaryFilter] = useState('ONGOING');
 
   const metaData = { page: 1, page_size: 10 };
 

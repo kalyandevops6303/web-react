@@ -68,11 +68,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const projectStatusOptions = [
-    { label: 'Open', value: 'OPEN' },
+    { label: 'Ongoing', value: 'ON_GOING' },
     { label: 'In-review', value: 'IN_REVIEW' },
     { label: 'Terminated', value: 'TERMINATED' },
     { label: 'Closed', value: 'CLOSED' },
-    { label: 'Disputed', value: 'DISPUTED' },
     { label: 'Completed', value: 'COMPLETED' },
   ];
   const projectTypesOptions = [

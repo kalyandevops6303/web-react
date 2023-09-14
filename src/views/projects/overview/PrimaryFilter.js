@@ -20,9 +20,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
 
   return (
     <Row className="primary-row">
-      <Col onClick={() => handlePrimaryChangeFilter('CLOSED')}>
+      <Col onClick={() => handlePrimaryChangeFilter('ONGOING')}>
         <Statbox
-          isActive={selected === 'CLOSED'}
+          isActive={selected === 'ONGOING'}
           isMarketPlaceTab
           title={selectCardData?.ongoing || 0}
           desc="Ongoing"
@@ -33,9 +33,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
       </Col>
       {/* {userType === userTypes.client && ( */}
       <>
-        <Col onClick={() => handlePrimaryChangeFilter('IN_REVIEW')}>
+        <Col onClick={() => handlePrimaryChangeFilter('UPCOMING')}>
           <Statbox
-            isActive={selected === 'IN_REVIEW'}
+            isActive={selected === 'UPCOMING'}
             isMarketPlaceTab
             title={selectCardData?.upcoming || 0}
             desc="Upcoming"
@@ -68,7 +68,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
             color="light-dark-red"
           />
         </Col>
-        <Col onClick={() => handlePrimaryChangeFilter('DISPUTED')}>
+        <Col onClick={() => handlePrimaryChangeFilter('DISPUTE')}>
           <Statbox
             isActive={selected === 'DISPUTED'}
             className="stat-box cursor-pointer"

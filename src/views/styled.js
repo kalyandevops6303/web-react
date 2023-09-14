@@ -40,14 +40,18 @@ const CustomBadge = styled.span`
     color: ${theme.lightBlueColor};
     border: 1px solid ${theme.blueColor};
   }
-  .IN_REVIEW,
-  .ON_GOING {
+  .COMPLETED {
+    background: ${theme.lightGreenBg} !important;
+    color: ${theme.lighGreenColor};
+    border: 1px solid ${theme.lighGreenColor};
+  }
+  .IN_REVIEW {
     background: ${theme.orange}1f;
     color: ${theme.orange};
   }
   .ON_GOING {
-    background: ${theme.orange}1f;
-    color: ${theme.orange};
+    background: ${theme.blueColor}1f;
+    color: ${theme.lightBlueColor};
   }
   .TERMINATED {
     background: ${theme.darkRedColor}1f;

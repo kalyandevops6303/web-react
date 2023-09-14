@@ -37,6 +37,7 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
+    COMPLETED: 'Completed',
   };
 
   const divRef = useRef(null);
