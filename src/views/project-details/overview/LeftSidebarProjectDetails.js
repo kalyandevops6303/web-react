@@ -134,16 +134,18 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
-            <BadgeGroup
-              title="Tags"
-              data={[
-                ...(projectDetailsData?.proficiency?.skills || []),
-                ...(projectDetailsData?.proficiency?.tools || []),
-              ]}
-              color="light-blue"
-            />
-          )}
+          <div className="d-flex">
+            {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
+              <BadgeGroup
+                title="Skills"
+                data={[
+                  ...(projectDetailsData?.proficiency?.skills || []),
+                  ...(projectDetailsData?.proficiency?.tools || []),
+                ]}
+                color="light-blue"
+              />
+            )}
+          </div>
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>

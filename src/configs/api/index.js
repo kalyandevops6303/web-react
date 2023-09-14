@@ -62,7 +62,7 @@ const API = {
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
     // team
     getTeamMember: `${apiOnboardingEndpoint}/api/v1/teams/get-members`,
-    getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members`,
+    getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members-new`,
     joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-requests`,
     recommendedTalent: `${apiOnboardingEndpoint}/api/v1/teams/recommended-talents`,
     validateUrl: `${apiAuthEndpoint}/api/v1/team/invite-member/validate-deep-link`,
@@ -97,6 +97,7 @@ const API = {
     getInvitaion: `${apiAuthEndpoint}/api/v1/invitation`,
     getSentInvitaion: `${apiAuthEndpoint}/api/v1/invitations/sent`,
     removeWorker: `${apiCreateProjectEndpoint}/api/v1/project-course/workers`,
+    requests: `${apiAuthEndpoint}/api/v1/requests`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
@@ -105,6 +106,10 @@ const API = {
     signContractByTalent: `${apiCreateProjectEndpoint}/api/v1/legal/document/sign`,
     terminateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/terminate`,
     updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
+    // invite get
+    bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
+    favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
+    almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
@@ -116,6 +121,9 @@ const API = {
     // Updated API to invite talent/team and for client
     requests: `${apiAuthEndpoint}/api/v1/requests`,
     validateRequest: `${apiAuthEndpoint}/api/v1/requests/validation`,
+
+    // get status requests
+    status: `${apiOnboardingEndpoint}/api/v1/request/get`,
   },
   marketplace: {
     client: {
@@ -140,6 +148,7 @@ const API = {
   },
   notifications: {
     allNotifications: `${apiOnboardingEndpoint}/api/v1/notification/all`,
+    alerts: `${apiOnboardingEndpoint}/api/v1/alerts`,
     subscribe: `${apiAuthEndpoint}/api/v1/user/subscribe`,
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
   },
@@ -158,6 +167,7 @@ const API = {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
+    update: `${apiAuthEndpoint}/api/v1/team/update`,
     getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
   },
   dispute: {

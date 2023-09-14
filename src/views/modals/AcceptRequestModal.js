@@ -5,7 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitl
 import AcceptGif from '../../assets/images/gifs/accept_bid.gif';
 import { AcceptModalWrapper } from './style';
 
-const AcceptBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
+const AcceptRequestModal = ({ title, isLoading, data, onAccept, modal, toggleModal }) => {
   const onClose = () => {
     toggleModal();
   };
@@ -18,30 +18,32 @@ const AcceptBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" style={{ margin: 'auto' }} src={AcceptGif} width={160} height={160} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Great Choice</CardTitle>
-              <CardSubtitle className="mb-75 fw-bold subtitle">Accept bid</CardSubtitle>
+              <CardTitle className="modal-title-custom">{title}</CardTitle>
+              <CardSubtitle className="mb-75 fw-bold subtitle">Accept request</CardSubtitle>
 
               <CardText className="desc fw-light">
-                By accepting this bid you are assigning this project to the below{' '}
+                By accepting this request you will be added to that team/project by
               </CardText>
               <section className="d-flex gap-2 stats">
                 <div>
-                  <CardText className="value mb-25">{data?.name || 'Talent/Team name'}</CardText>
-                  <small className="key">Talent/Team name</small>
+                  <CardText className="value mb-25">
+                    {`${data?.request_from?.first_name} ${data?.request_from?.last_name}` || 'Talent/Team name'}
+                  </CardText>
+                  <small className="key">{data?.request_from?.role}</small>
                 </div>
-                <div>
+                <div className="d-none">
                   <CardText className="value mb-25">$-</CardText>
                   <small className="key">Project value</small>
                 </div>
               </section>
             </div>
           </div>
-          <div className="d-flex gap-1 mt-3 justify-content-end">
+          <div className="d-flex gap-1 mt-2 justify-content-end">
             <Button onClick={onClose} outline color="primary">
               Cancel
             </Button>
             <Button disabled={isLoading} color="primary" onClick={onAccept}>
-              {isLoading ? <Spinner /> : 'Accept Bid'}
+              {isLoading ? <Spinner size="sm" /> : 'Accept'}
             </Button>
           </div>
         </AcceptModalWrapper>
@@ -50,9 +52,10 @@ const AcceptBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
   );
 };
 
-export default AcceptBidModal;
+export default AcceptRequestModal;
 
-AcceptBidModal.propTypes = {
+AcceptRequestModal.propTypes = {
+  title: Proptypes.string,
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
@@ -60,7 +63,8 @@ AcceptBidModal.propTypes = {
   isLoading: Proptypes.bool,
 };
 
-AcceptBidModal.defaultProps = {
+AcceptRequestModal.defaultProps = {
+  title: 'Request',
   modal: false,
   toggleModal: () => {},
   data: {},

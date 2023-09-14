@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Star } from 'react-feather';
 import Avatar from '@components/avatar';
@@ -17,6 +18,7 @@ import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors
 import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
 import { getItem } from '../../utility/localStorageControl';
 import { userTypes } from '../../utility/constants/Constant';
+import { returnFormattedRating } from '../../utility/Utils';
 
 const InvitationSentModal = ({
   projectId,
@@ -32,6 +34,8 @@ const InvitationSentModal = ({
   description,
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
   const isTeaminviteLoading = useSelector(teamInviteLoading);
@@ -44,6 +48,10 @@ const InvitationSentModal = ({
     setInvitedIds([]);
     setSelectedIds([]);
     setSelectedTalents([]);
+
+    if (location.pathname === '/create-team/profile-details') {
+      navigate('/dashboard');
+    }
   };
 
   const onInviteTalents = () => {

@@ -12,6 +12,7 @@ import {
   getProjectInviteService,
   removeMemberService,
   teamProfilePercentageService,
+  alertService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -46,6 +47,9 @@ import {
   removeMemberRequest,
   removeMemberFailure,
   removeMemberSuccess,
+  getAlertRequest,
+  getAlertSuccess,
+  getAlertFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -205,7 +209,18 @@ const getTeamProfilePercentage = () => async (dispatch) => {
   }
 };
 
+const getAlerts = () => async (dispatch) => {
+  dispatch(getAlertRequest());
+  try {
+    const res = await alertService();
+    dispatch(getAlertSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, getAlertFailure);
+  }
+};
+
 export {
+  getAlerts,
   validateUrl,
   removeTeamMember,
   updateInvitation,
