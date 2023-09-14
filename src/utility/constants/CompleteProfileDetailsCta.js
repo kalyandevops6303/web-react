@@ -47,6 +47,13 @@ const CompleteProfileDetailsCta = {
       path: `/${userOnboarding.client}/personal-details`,
     },
   ],
+  TEAM: [
+    {
+      keyToMatch: 'team_logo',
+      label: 'Complete Your Profile',
+      path: '/create-team/profile-details',
+    },
+  ],
 };
 
 // eslint-disable-next-line consistent-return
@@ -77,6 +84,8 @@ const returnCompleteProfileDetailsCta = (userType, missingValues) => {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_logo');
   } else if (userType === 'CLIENT' && missingValues?.includes('company_strength')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'company_strength');
+  } else if (userType === 'TEAM' && missingValues?.includes('team_logo')) {
+    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'team_logo');
   } else {
     return null;
   }

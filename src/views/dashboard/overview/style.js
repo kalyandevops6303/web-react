@@ -236,7 +236,8 @@ const ProjectWrapper = styled.div`
     height: 40px;
   }
   .active-project-users {
-    height: 36px;
+    height: 34px;
+    margin: 0.8rem 0;
   }
   .main-row {
     display: flex;
@@ -423,6 +424,8 @@ const TagsWrap = styled.div`
 const CreateTeamButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 1rem;
   margin-top: -3.5rem;
 
@@ -450,6 +453,23 @@ const TeamSectionWrapper = styled(CardWrapper)`
   }
 `;
 
+const DisputesLegend = styled.div`
+  width: 16px;
+  height: 6px;
+  border-radius: 5px;
+  background: ${(props) => props.fillColor};
+`;
+
+const DisputesChartContainer = styled.div`
+  position: relative;
+
+  .total-disputes {
+    position: absolute;
+    top: 32%;
+    left: 37%;
+  }
+`;
+
 export {
   TagsWrap,
   CardWrapper,
@@ -463,4 +483,6 @@ export {
   DashboardHeaderWrapper,
   TeamSectionWrapper,
   CreateTeamButtonWrapper,
+  DisputesLegend,
+  DisputesChartContainer,
 };

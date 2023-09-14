@@ -83,7 +83,7 @@ const fcmUnsubscribeNotification = (fcmToken) => async () => {
   try {
     await fcmUnsubscribeService(fcmToken);
   } catch (error) {
-    errorHandler(error);
+    console.error(error);
   }
 };
 
@@ -249,7 +249,6 @@ const logoutAction =
     }
     dispatch(logOut());
     dispatch(clearTeams());
-    // dispatch(clearData());
     dispatch(clearNotificationsData());
     onSuccess();
   };
@@ -289,7 +288,7 @@ const getUserData = () => async (dispatch) => {
 };
 
 const switchProfile =
-  ({ data, onSuccess }) =>
+  ({ data, onSuccess, selected }) =>
   async (dispatch) => {
     try {
       dispatch(switchProfileSuccess(data));
@@ -298,7 +297,7 @@ const switchProfile =
       } else {
         removeItem('team_id');
       }
-      onSuccess();
+      onSuccess(selected);
       // dispatch(clearPostState());
     } catch (err) {
       errorHandler(err);

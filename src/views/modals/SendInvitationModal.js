@@ -7,6 +7,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import '../custom-styles.scss';
 import { InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
+import { returnFormattedRating } from '../../utility/Utils';
 
 const SendInvitationModal = ({
   modal,
@@ -42,7 +43,7 @@ const SendInvitationModal = ({
                   <Badge>
                     <div className="d-flex align-items-center">
                       <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
-                      <p className="m-0 fw-bolder rating-text">{talent.rating}</p>
+                      <p className="m-0 fw-bolder rating-text">{returnFormattedRating(talent.rating)}</p>
                     </div>
                   </Badge>
                   <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>

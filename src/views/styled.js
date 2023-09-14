@@ -36,8 +36,9 @@ const CustomBadge = styled.span`
     color: ${theme.lightBlueColor};
   }
   .OPEN {
-    background: ${theme.succesGreenBg};
-    color: ${theme.succesGreenColor};
+    background: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor};
+    border: 1px solid ${theme.blueColor};
   }
   .IN_REVIEW {
     background: ${theme.orange}1f;
@@ -51,6 +52,15 @@ const CustomBadge = styled.span`
   .LISTING_EXPIRED {
     background: ${theme.disabledGrayColor}1f;
     color: ${theme.disabledGrayColor};
+  }
+  .OPEN_PROJECT {
+    background: ${theme.blueColor}1f !important;
+    color: ${theme.blueColor};
+    border: ${(props) => props.bordered && '1px solid'};
+  }
+  .INVITED {
+    color: ${theme.purpleColor};
+    background: ${theme.purpleColor}1f !important;
   }
 `;
 
@@ -178,13 +188,13 @@ const TimeWrapper = styled.section`
     height: 8px;
     width: 8px;
     display: block;
-    background: rgba(217, 217, 217, 0.5);
+    background: ${theme.dotBg};
     border-radius: 50%;
     margin: auto;
     margin-bottom: 6px;
   }
   .active {
-    background: #28c76f;
+    background: ${theme.green};
   }
   .line {
     width: 1px;
@@ -214,11 +224,42 @@ const TimeWrapper = styled.section`
   }
 `;
 
+const CreateBidRadioOption = styled.div`
+  min-height: 210px;
+  padding: 1rem;
+  border-radius: 6px;
+  border: ${(props) => (props.active ? `1px solid ${theme.activeNavPillText}` : `1px solid ${theme.darkBorder}`)};
+  background-color: ${(props) => (props.active ? `${theme.lightBlueBgRadio}` : `${theme.lightGrayBgRadio}`)};
+
+  .form-check-input:not(:disabled):checked {
+    box-shadow: 0px 2px 4px ${theme.checkboxShadow};
+  }
+
+  .form-check-input:checked {
+    background-color: ${theme.activeNavPillText};
+    border-color: ${theme.activeNavPillText};
+  }
+
+  .label {
+    p {
+      color: ${(props) => (props.active ? `${theme.activeNavPillText}` : `${theme.secondary}`)};
+    }
+  }
+`;
+
 const GrayBorderContainer = styled.div`
   border-bottom: 1px solid ${theme.cardHeaderBorderColor};
 
   .custom-header-margin {
     margin-top: -1.6rem;
+  }
+`;
+
+const InviteHeadContainer = styled.div`
+  border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+
+  .custom-header-margin {
+    margin-top: -2.2rem;
   }
 `;
 
@@ -273,6 +314,11 @@ const TeamCreatedModalImageWrapper = styled.section`
   justify-content: center;
   align-items: center;
 `;
+const TeamCreatedModalLogoImg = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+`;
 
 export {
   CardWrapper,
@@ -281,7 +327,10 @@ export {
   FormWrapper,
   SecondaryFiltersWrap,
   TimeWrapper,
+  CreateBidRadioOption,
   GrayBorderContainer,
+  InviteHeadContainer,
   GrayCardWrapper,
   TeamCreatedModalImageWrapper,
+  TeamCreatedModalLogoImg,
 };

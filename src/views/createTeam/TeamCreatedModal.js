@@ -1,14 +1,18 @@
 import React from 'react';
 import Proptypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import '../custom-styles.scss';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { UserPlus } from 'react-feather';
 import GreatJobGif from '../../assets/images/greatJobGif.gif';
-import { TeamCreatedModalImageWrapper } from '../styled';
+import { TeamCreatedModalImageWrapper, TeamCreatedModalLogoImg } from '../styled';
+import { selectCreatedTeamData } from '../../redux/selectors/teamSelectors';
 
 const TeamCreatedModal = ({ modal }) => {
   const navigate = useNavigate();
+
+  const teamData = useSelector(selectCreatedTeamData);
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader />
@@ -21,9 +25,13 @@ const TeamCreatedModal = ({ modal }) => {
             <p className="font-medium-2">You successfully created a team</p>
             <div className="my-1 d-flex align-items-center">
               <TeamCreatedModalImageWrapper>
-                <UserPlus size={30} />
+                {teamData?.team_logo ? (
+                  <TeamCreatedModalLogoImg src={teamData.team_logo} alt="team-logo" />
+                ) : (
+                  <UserPlus size={30} />
+                )}
               </TeamCreatedModalImageWrapper>
-              <h3 className="fw-bold m-0 ms-1">Team Name</h3>
+              <h3 className="fw-bold m-0 ms-1">{teamData?.name}</h3>
             </div>
             <p>
               <span className="fw-bolder">Note : </span>The next step is to add more team members to <br /> this team

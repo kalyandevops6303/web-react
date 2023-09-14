@@ -1,70 +1,149 @@
-/* eslint-disable react/prop-types */
-import React from 'react';
-import { CardText, CardTitle, Badge, Col, Card, CardBody } from 'reactstrap';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import hat from '@src/assets/images/hat.svg';
-import { Heart } from 'react-feather';
+import { Card, CardBody, CardText, CardTitle, Badge } from 'reactstrap';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
-import theme from '../../configs/themeVariables';
-import BadgeGroup from '../../@core/components/badge-group';
-import { ProjectCardWrap } from './style';
+import hat from '@src/assets/images/hat.png';
+import { Heart } from 'react-feather';
+import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import DateTime from '../../lib/date-time';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
+import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
+import { TeamCardWrap } from './style';
+import theme from '../../configs/themeVariables';
+import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 
-function TeamCard({ data }) {
-  const avatarGroup = data?.team_members?.length
-    ? data?.team_members?.map((worker) => ({
-        title: `${worker?.first_name} ${worker?.last_name}`,
-        img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
-        placement: 'bottom',
-        imgHeight: 33,
-        imgWidth: 33,
-      }))
-    : [];
+const Team = ({ data }) => {
+  const dispatch = useDispatch();
+  const users = [];
+  data?.team_members?.map((user) =>
+    users.push({
+      title: `${user?.full_name}` || 'user',
+      img: user?.profile_picture || avatar7,
+      placement: 'bottom',
+      imgHeight: 33,
+      imgWidth: 33,
+    }),
+  );
+
+  const handleLike = () => {
+    dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
+  };
+  const handleUnLike = () => {
+    dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
+  };
+
+  const giveStrokeColor = (percentage) => {
+    if (percentage <= 40) {
+      return theme.red;
+      // eslint-disable-next-line
+    } else if (percentage > 40 && percentage <= 70) {
+      return theme.orange;
+    } else {
+      return theme.green;
+    }
+  };
 
   return (
-    <ProjectCardWrap>
+    <TeamCardWrap>
       <Card>
         <CardBody>
-          <div className="d-flex justify-content-between">
-            <div className="d-flex flex-column w-75">
-              <CardTitle className="d-flex truncate-2 text-primary">{data?.name}</CardTitle>
-              <CardText>{data?.introduction}</CardText>
-              <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup?.slice(0, 3)} />
-              <div className="d-flex flex-grow-1 mt-25">
-                <RatingBadge number={Math.round(data?.rating ?? 0)} />
-                <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                  {data?.client?.project_count ?? 0} Projects
-                </CardText>
+          <div className="d-flex">
+            <div className="w-75">
+              <div className="d-flex justify-content-between">
+                <CardTitle className="card-title mb-1 d-flex justify-space-between">
+                  <Link to={`/profile/team/${data?._id}`}>
+                    <span>{data?.name}</span>
+                  </Link>
+                </CardTitle>
+                <span className="me-3">
+                  {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
+                </span>
+              </div>
+              <CardText className="team-desc mb-1">{data?.introduction} </CardText>
+
+              <div className="avatar-wrap mb-1">
+                {users.length > 4 ? (
+                  <span className="d-flex avatars">
+                    <AvatarGroup size="md" className="mr-4" data={users.slice(0, 3)} />
+                  </span>
+                ) : (
+                  <AvatarGroup size="md" data={users} />
+                )}
+              </div>
+              <div className="d-flex">
+                <RatingBadge number={data?.rating ?? 0} />
+                <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
               </div>
             </div>
-
-            <Col>
-              <div className="d-flex align-items-center justify-content-end">
-                {true && (
-                  <Badge className="alma-mater ms-50 bg-white">
-                    <img src={hat} alt="client-badge" width={20} height={20} />
-                  </Badge>
-                )}
-                {data?.is_favorite ? (
-                  <Heart
-                    className="cursor-pointer d-flex ms-50 heart"
-                    fill={theme.red}
-                    stroke={theme.red}
-                    onClick=""
-                    size={18}
-                  />
-                ) : (
-                  <Heart className="cursor-pointer d-flex  ms-50 heart" onClick="" size={18} />
-                )}
+            <div className="w-25">
+              <div className="d-flex flex-column align-items-start">
+                <div className="d-flex w-100 justify-content-end gap-1">
+                  {true && (
+                    <Badge className="bg-white" style={{ marginTop: '-3px' }}>
+                      <img src={hat} alt="client-badge" width={20} height={20} />
+                    </Badge>
+                  )}
+                  <div className="mb-25">
+                    {data?.is_favorite ? (
+                      <Heart
+                        className="cursor-pointer d-flex heart"
+                        fill={theme.red}
+                        stroke={theme.red}
+                        onClick={handleUnLike}
+                        size={20}
+                      />
+                    ) : (
+                      <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                    )}
+                  </div>
+                  {data?.match_percentage ? (
+                    <div style={{ width: '35px', height: '35px', marginTop: '-8px' }}>
+                      <CircularProgressbarWithChildren
+                        value={data?.match_percentage}
+                        styles={{
+                          path: {
+                            stroke: giveStrokeColor(data?.match_percentage),
+                            strokeLinecap: 'round',
+                            transition: 'stroke-dashoffset 0.5s ease 0s',
+                            transform: 'rotate(0turn)',
+                            transformOrigin: 'center center',
+                          },
+                          trail: {
+                            stroke: theme.progressBarBg,
+                            strokeLinecap: 'round',
+                            transform: 'rotate(0turn)',
+                            transformOrigin: 'center center',
+                          },
+                        }}
+                      >
+                        <div className="d-flex justify-content-center align-items-center">
+                          <p className="m-0" style={{ fontSize: '10px' }}>
+                            {data?.match_percentage ?? 0}%
+                          </p>
+                        </div>
+                      </CircularProgressbarWithChildren>
+                    </div>
+                  ) : null}
+                </div>
               </div>
-              <BadgeGroup title="Skills" data={data?.skills} color="light-blue" />
-              <BadgeGroup title="Tools" data={data?.tools} color="light-blue" />
-            </Col>
+              <div className="">
+                <BadgeGroup title="Skills" data={data?.skills} color="light-blue" user_id={data?.user_id} />
+                <BadgeGroup title="Tools" data={data?.tools} color="light-blue" user_id={data?.user_id} />
+              </div>
+            </div>
           </div>
         </CardBody>
       </Card>
-    </ProjectCardWrap>
+    </TeamCardWrap>
   );
-}
+};
 
-export default TeamCard;
+Team.propTypes = {
+  data: PropTypes.object,
+};
+Team.defaultProps = {
+  data: {},
+};
+export default Team;

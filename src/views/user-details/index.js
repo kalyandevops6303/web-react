@@ -94,6 +94,7 @@ const UserDetails = () => {
   if (error) {
     return <Error />;
   }
+
   return (
     <>
       <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} />

@@ -60,3 +60,11 @@ export const companyIndustriesLoading = createSelector(
 export const projectAreas = createSelector(staticSelector, (staticData) => staticData.projectAreas);
 
 export const projectAreasLoading = createSelector(staticSelector, (staticData) => staticData.projectAreasLoading);
+
+export const disputeTypes = createSelector(staticSelector, (staticData) => staticData.disputeTypes);
+
+export const disputeTypesLoading = createSelector(staticSelector, (staticData) => staticData.disputeTypesLoading);
+
+export const ratingTags = createSelector(staticSelector, (staticData) => staticData.ratingTags);
+
+export const ratingTagsLoading = createSelector(staticSelector, (staticData) => staticData.ratingTagsLoading);

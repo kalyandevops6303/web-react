@@ -11,17 +11,22 @@ import GreatJobTick from '../../assets/images/greatJobGif.gif';
 import { InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
 import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelectors';
-import { inviteTalents } from '../../redux/actions/inviteTalent';
+
+import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors/inviteTalentSelector';
+
+import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
+import { getItem } from '../../utility/localStorageControl';
+import { userTypes } from '../../utility/constants/Constant';
 
 const InvitationSentModal = ({
+  projectId,
+  inviteRole,
   modal,
   toggleModal,
   selectedTalents,
   message,
   toggleSendInvitationModal,
-  selectedIds,
   setSelectedIds,
-  invitedIds,
   setInvitedIds,
   setSelectedTalents,
   description,
@@ -29,30 +34,42 @@ const InvitationSentModal = ({
   const dispatch = useDispatch();
 
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
-
+  const isTeaminviteLoading = useSelector(teamInviteLoading);
   const [timer, setTimer] = useState(5);
   const zeroLoggedRef = useRef(false);
   const intervalId = useRef();
 
   const onSuccess = () => {
     toggleModal();
-    setInvitedIds([...invitedIds, ...selectedIds]);
+    setInvitedIds([]);
     setSelectedIds([]);
     setSelectedTalents([]);
   };
 
   const onInviteTalents = () => {
     const userIds = selectedTalents.map((talent) => talent.user_id);
-    dispatch(
-      inviteTalents(
-        {
-          talent_ids: userIds,
-          message,
-          redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
-        },
-        onSuccess,
-      ),
-    );
+    const teamIds = selectedTalents
+      .filter((user) => user?.user_type === userTypes.team) // Filter out non-team users
+      .map((user) => user?.team_id); // Map to an array of team_ids
+
+    const userEmails = selectedTalents.map((talent) => talent?.user_details?.email);
+    const teamId = getItem('team_id');
+    const newPostData = {
+      message,
+      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+      requests_to: {
+        user_ids: userIds || [],
+        team_ids: teamIds.length > 0 ? teamIds : [],
+        email_ids: userEmails || [],
+      },
+      request_for: {
+        project_id: projectId || '',
+        team_id: teamId || '',
+        role: inviteRole || '',
+      },
+    };
+
+    dispatch(inviteTalentForTeam({ data: newPostData, onSuccess }));
   };
 
   useEffect(() => {
@@ -119,7 +136,7 @@ const InvitationSentModal = ({
                           <Badge>
                             <div className="d-flex align-items-center">
                               <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
-                              <p className="m-0 fw-bolder rating-text">{talent.rating}</p>
+                              <p className="m-0 fw-bolder rating-text">{returnFormattedRating(talent.rating)}</p>
                             </div>
                           </Badge>
                           <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
@@ -133,11 +150,16 @@ const InvitationSentModal = ({
           </div>
         </div>
         <div className="d-flex justify-content-end mt-1 mb-2">
-          <Button color="flat-danger" className="me-1" onClick={handleRecallClick} disabled={inviteTalentsIsLoading}>
+          <Button
+            color="flat-danger"
+            className="me-1"
+            onClick={handleRecallClick}
+            disabled={inviteTalentsIsLoading || isTeaminviteLoading}
+          >
             Recall ({timer}s)
           </Button>
-          <Button color="primary" onClick={closeModal} disabled={inviteTalentsIsLoading}>
-            {inviteTalentsIsLoading ? <Spinner size="sm" /> : <>Close</>}
+          <Button color="primary" onClick={closeModal} disabled={inviteTalentsIsLoading || isTeaminviteLoading}>
+            {inviteTalentsIsLoading || isTeaminviteLoading ? <Spinner size="sm" /> : <>Close</>}
           </Button>
         </div>
       </ModalBody>
@@ -149,13 +171,13 @@ export default InvitationSentModal;
 
 InvitationSentModal.propTypes = {
   modal: Proptypes.bool,
+  inviteRole: Proptypes.string,
+  projectId: Proptypes.string,
   toggleModal: Proptypes.func,
   selectedTalents: Proptypes.array,
   message: Proptypes.string,
   toggleSendInvitationModal: Proptypes.func,
-  selectedIds: Proptypes.array,
   setSelectedIds: Proptypes.func,
-  invitedIds: Proptypes.array,
   setInvitedIds: Proptypes.func,
   setSelectedTalents: Proptypes.func,
   description: Proptypes.string,
@@ -166,11 +188,11 @@ InvitationSentModal.defaultProps = {
   toggleModal: () => {},
   selectedTalents: [],
   message: '',
+  projectId: '',
   toggleSendInvitationModal: () => {},
-  selectedIds: [],
   setSelectedIds: () => {},
-  invitedIds: [],
   setInvitedIds: () => {},
   setSelectedTalents: () => {},
   description: '',
+  inviteRole: '',
 };

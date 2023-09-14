@@ -13,6 +13,7 @@ import getNotifications from '../../redux/actions/notificationsActions';
 import { notifications } from '../../redux/selectors/notificationsSelectors';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import { clearNotificationsData } from '../../redux/reducers/notifications';
+import { setItem } from '../../utility/localStorageControl';
 
 const Notifications = () => {
   const navigate = useNavigate();
@@ -52,9 +53,15 @@ const Notifications = () => {
     dispatch(getNotifications(option.value, 1, 10, []));
   };
   const handleNotification = (data) => {
-    if (data?.title === 'Team Invite') {
+    if (data?.notification_type === 'TEAM_INVITATION') {
       navigate(`/team-invitation/${data.custom_payload?.invitation_id}`);
     }
+    if (data?.notification_type === 'PROJECT_INVITATION') {
+      navigate(
+        `/project-details/${data.custom_payload?.project_id}/project/project-invitation/${data.custom_payload?.invitation_id}`,
+      );
+    }
+    setItem('inviteToken', data.custom_payload?.token);
   };
   return (
     <>

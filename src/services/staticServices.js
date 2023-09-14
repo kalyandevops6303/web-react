@@ -32,6 +32,12 @@ const companyIndustriesService = () => DataService.get(API.static.companyIndustr
 
 const projectAreasService = () => DataService.get(API.static.projectAreas);
 
+const servicesService = () => DataService.get(API.static.services);
+
+const disputeTypesService = () => DataService.get(API.static.disputeTypes);
+
+const ratingTagsService = (userType) => DataService.get(`${API.static.ratingTags}?tag_for=${userType}`);
+
 export {
   talentRolesService,
   languagesService,
@@ -48,4 +54,7 @@ export {
   currenciesService,
   companyIndustriesService,
   projectAreasService,
+  servicesService,
+  disputeTypesService,
+  ratingTagsService,
 };

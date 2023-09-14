@@ -32,6 +32,9 @@ const API = {
     currencies: `${apiAuthEndpoint}/api/v1/static/currency/all`,
     companyIndustries: `${apiAuthEndpoint}/api/v1/static/company-industry/all`,
     projectAreas: `${apiAuthEndpoint}/api/v1/static/project-area/all`,
+    services: `${apiAuthEndpoint}/api/v1/static/services/all`,
+    disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
+    ratingTags: `${apiAuthEndpoint}/api/v1/static/tags/filter`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -58,13 +61,15 @@ const API = {
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
     // team
-    getTeamMember: `${apiOnboardingEndpoint}/api/v1/team/get-members`,
-    getInvitedMember: `${apiOnboardingEndpoint}/api/v1/team/invited-members`,
-    joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-request`,
+    getTeamMember: `${apiOnboardingEndpoint}/api/v1/teams/get-members`,
+    getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members`,
+    joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-requests`,
     recommendedTalent: `${apiOnboardingEndpoint}/api/v1/teams/recommended-talents`,
     validateUrl: `${apiAuthEndpoint}/api/v1/team/invite-member/validate-deep-link`,
     updateInvitation: `${apiAuthEndpoint}/api/v1/team/invite-member/update-invite`,
     removeMember: `${apiAuthEndpoint}/api/v1/team/delete-member`,
+    teamProfilePercentage: `${apiOnboardingEndpoint}/api/v1/teams/profile-percentage`,
+
     // talent
     recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,
     teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite`,
@@ -79,11 +84,38 @@ const API = {
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
   },
+  projectDetails: {
+    getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
+    getProjectTeamMember: `${apiCreateProjectEndpoint}/api/v1/project-course/assigned-roles`,
+    getReceivedBids: `${apiCreateProjectEndpoint}/api/v1/bid/selection/list-bids`,
+    getBidReview: `${apiCreateProjectEndpoint}/api/v1/bid/selection/review-bid`,
+    assignBid: `${apiCreateProjectEndpoint}/api/v1/bid/selection/assign-bid`,
+    commonBidInfo: `${apiCreateProjectEndpoint}/api/v1/common/bid/info`,
+    unassignRole: `${apiCreateProjectEndpoint}/api/v1/project-course/unassigned-roles`,
+    accept: `${apiAuthEndpoint}/api/v1/invitation/accept`, // put invite id
+    reject: `${apiAuthEndpoint}/api/v1/invitation/reject`, // put invite id
+    getInvitaion: `${apiAuthEndpoint}/api/v1/invitation`,
+    getSentInvitaion: `${apiAuthEndpoint}/api/v1/invitations/sent`,
+    removeWorker: `${apiCreateProjectEndpoint}/api/v1/project-course/workers`,
+    // contract flow
+    checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
+    getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
+    getDocumentTimeline: `${apiCreateProjectEndpoint}/api/v1/legal/document/timeline`,
+    sendDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document/send`,
+    signContractByTalent: `${apiCreateProjectEndpoint}/api/v1/legal/document/sign`,
+    terminateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/terminate`,
+    updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
+  },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
     favoriteTalents: `${apiAuthEndpoint}/api/v1/team/favourite-talents`,
     almaMaterTalents: `${apiAuthEndpoint}/api/v1/team/alma-mater-talents`,
-    sendInvitaion: `${apiAuthEndpoint}/api/v1/team/send-invitations`,
+    sendInvitaion: `${apiAuthEndpoint}/api/v1/invitation/send`,
+    getTeamMember: `${apiAuthEndpoint}/api/v1/team/members`,
+
+    // Updated API to invite talent/team and for client
+    requests: `${apiAuthEndpoint}/api/v1/requests`,
+    validateRequest: `${apiAuthEndpoint}/api/v1/requests/validation`,
   },
   marketplace: {
     client: {
@@ -96,7 +128,6 @@ const API = {
       listProject: `${apiOnboardingEndpoint}/api/v1/talent/list-projects`,
       listClients: `${apiOnboardingEndpoint}/api/v1/talent/list-clients`,
     },
-
     cardInfo: `${apiOnboardingEndpoint}/api/v1/marketplace/cards-info`,
     listProject: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects`,
     listTalents: `${apiOnboardingEndpoint}/api/v1/marketplace/list-talents`,
@@ -112,11 +143,38 @@ const API = {
     subscribe: `${apiAuthEndpoint}/api/v1/user/subscribe`,
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
   },
+  createBid: {
+    checkBid: `${apiCreateProjectEndpoint}/api/v1/bid/check`,
+    createBid: `${apiCreateProjectEndpoint}/api/v1/bid/create`,
+    projectInfo: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
+    bidInfo: `${apiCreateProjectEndpoint}/api/v1/bid/info`,
+    roles: `${apiCreateProjectEndpoint}/api/v1/bid/roles`,
+    setWorkers: `${apiCreateProjectEndpoint}/api/v1/bid/set-workers`,
+    setMilestones: `${apiCreateProjectEndpoint}/api/v1/bid/set-milestones`,
+    milestoneFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
+    submitBid: `${apiCreateProjectEndpoint}/api/v1/bid/submit`,
+  },
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
-    getInvitation: `${apiAuthEndpoint}/api/v1/team/get-invitation`,
+    getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
+  },
+  dispute: {
+    paginatedProjects: `${apiCreateProjectEndpoint}/api/v1/disputes/project-names`,
+    raiseDispute: `${apiCreateProjectEndpoint}/api/v1/disputes`,
+    allDisputes: `${apiCreateProjectEndpoint}/api/v1/disputes`,
+    acceptDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/accept`,
+    replyOnDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/reply`,
+    disputeReplies: `${apiCreateProjectEndpoint}/api/v1/disputes/replies`,
+    disputeReplyFileUpload: `${apiCreateProjectEndpoint}/api/v1/dispute/file`,
+    resolveDispute: `${apiCreateProjectEndpoint}/api/v1/disputes/resolve`,
+    disputesCount: `${apiCreateProjectEndpoint}/api/v1/disputes/count`,
+  },
+  rating: {
+    giveRating: `${apiCreateProjectEndpoint}/api/v1/ratings`,
+    yourSubmittedRating: `${apiCreateProjectEndpoint}/api/v1/ratings/your-provided-rating`,
+    yourRating: `${apiCreateProjectEndpoint}/api/v1/ratings/your-rating`,
   },
   myTeams: {
     cardInfo: `${apiOnboardingEndpoint}/api/v1/my-teams/cards-info`,

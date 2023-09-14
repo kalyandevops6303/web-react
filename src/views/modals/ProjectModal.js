@@ -1,12 +1,36 @@
+/* eslint-disable no-undef */
+import { ChevronRight } from 'react-feather';
 import React from 'react';
 import Proptypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody, Card, CardHeader, CardTitle, CardBody, Row, Col, CardText } from 'reactstrap';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardBody,
+  Row,
+  Col,
+  CardText,
+  Button,
+  Spinner,
+} from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
 import '../custom-styles.scss';
 import AvailableTimeComp from '../../@core/components/available-time-comp';
+import { userTypes } from '../../utility/constants/Constant';
+import { getCheckBid } from '../../redux/actions/createBidActions';
+import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR } from '../../utility/constants/ToastTypes';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -45,8 +69,76 @@ const ViewProjectDetailModalWrap = styled.div`
   }
 `;
 
-// eslint-disable-next-line arrow-body-style
-const ProjectModal = ({ modal, toggleModal, data }) => {
+const ProjectModal = ({
+  modal,
+  toggleModal,
+  data,
+  setCreateBidModal,
+  setSelectedProject,
+  toggleCompleteProfileModal,
+}) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const checkBidLoadingIsLoading = useSelector(checkBidLoading);
+  const selectUserDetailsData = useSelector(selectUserData);
+  const profilePercentageData = useSelector(profilePercentage);
+
+  const onNoBidFound = () => {
+    toggleModal();
+    setCreateBidModal(true);
+  };
+
+  const onBidFound = (bidData) => {
+    const { bid_id, bid_type, project_type, entity, workers, milestones, status } = bidData;
+
+    if (status !== 'DRAFT') {
+      ShowToastMessage(ERROR, 'You have already submitted a bid for this project');
+    } else {
+      toggleModal();
+      if (entity === userTypes.talent) {
+        if (milestones) {
+          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
+        } else {
+          navigate(
+            `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
+          );
+        }
+      } else {
+        // eslint-disable-next-line no-lonely-if
+        if (milestones && workers) {
+          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
+        } else if (workers && !milestones) {
+          navigate(
+            `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
+          );
+        } else if (!workers && !milestones) {
+          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`);
+        }
+      }
+    }
+  };
+
+  const isViewable =
+    window.location.pathname.split('/').includes('my_bids') ||
+    window.location.pathname.split('/').includes('my_listings');
+  const handleRedirectTodetailsView = () => {
+    navigate(`/project-details/${data?._id}/bid`);
+  };
+
+  const handleCreateBid = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      toggleCompleteProfileModal();
+    } else {
+      setSelectedProject(data);
+      dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
+    }
+  };
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -150,10 +242,40 @@ const ProjectModal = ({ modal, toggleModal, data }) => {
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" gapWrap />
+              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" gapWrap />
             </CardBody>
           </Card>
+
+          {isViewable ? (
+            <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
+              <Button onClick={handleRedirectTodetailsView} color="primary">
+                <span className="me-50">View Bid</span>
+                <ChevronRight size={14} />
+              </Button>
+            </div>
+          ) : (
+            <div>
+              {(selectUserDetailsData?.user_type === userTypes.talent ||
+                selectUserDetailsData?.user_type === userTypes.team) && (
+                <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
+                  <Button color="flat-danger" className=" d-none me-1">
+                    Report
+                  </Button>
+                  <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
+                    {checkBidLoadingIsLoading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <>
+                        <span className="me-50">Create Bid</span>
+                        <ChevronRight size={14} />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </ViewProjectDetailModalWrap>
       </ModalBody>
     </Modal>
@@ -166,10 +288,16 @@ ProjectModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
+  setCreateBidModal: Proptypes.func,
+  setSelectedProject: Proptypes.func,
+  toggleCompleteProfileModal: Proptypes.func,
 };
 
 ProjectModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   data: {},
+  setCreateBidModal: () => {},
+  setSelectedProject: () => {},
+  toggleCompleteProfileModal: () => {},
 };

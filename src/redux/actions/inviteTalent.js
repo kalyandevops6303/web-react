@@ -14,12 +14,16 @@ import {
   inviteTalentsFailure,
   inviteTalentsRequest,
   inviteTalentsSuccess,
+  teamMemberForInviteFailure,
+  teamMemberForInviteRequest,
+  teamMemberForInviteSuccess,
 } from '../reducers/inviteTalent';
 import {
   almaMaterTalentsService,
   bestTalentsService,
   favoriteTalentsService,
-  inviteTalentsService,
+  getTeamMeberforInviteService,
+  inviteRequestService,
 } from '../../services/inviteTeamMemberService';
 
 const getBestTalents = (searchText, page, pageSize, oldData) => async (dispatch) => {
@@ -52,17 +56,48 @@ const getAlmaMaterTalents = (searchText, page, pageSize, oldData) => async (disp
   }
 };
 
-const inviteTalents = (data, onSuccess) => async (dispatch) => {
-  dispatch(inviteTalentsRequest());
+const inviteTalentsToProject =
+  ({ data, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(inviteTalentsRequest());
+    try {
+      const res = await inviteRequestService(data);
+      dispatch(inviteTalentsSuccess(res.data.data));
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, inviteTalentsFailure);
+    }
+  };
+
+const inviteTalents =
+  ({ data, onSuccess, isJoinRequest }) =>
+  async (dispatch) => {
+    dispatch(inviteTalentsRequest());
+    try {
+      const res = await inviteRequestService(data);
+      dispatch(inviteTalentsSuccess(res.data.data));
+      ShowToastMessage(SUCCESS, isJoinRequest ? 'Join request sent' : 'Invited successfully');
+      onSuccess();
+    } catch (error) {
+      console.error(error);
+      errorHandler(error, inviteTalentsFailure);
+    }
+  };
+const getTeamMemberForInvite = (searchText, page, pageSize, oldData, projectId) => async (dispatch) => {
+  dispatch(teamMemberForInviteRequest());
   try {
-    const res = await inviteTalentsService(data);
-    dispatch(inviteTalentsSuccess(res.data.data));
-    ShowToastMessage(SUCCESS, 'Invited successfully');
-    onSuccess();
+    const res = await getTeamMeberforInviteService(searchText, page, pageSize, projectId);
+    dispatch(teamMemberForInviteSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
-    console.error(error);
-    errorHandler(error, inviteTalentsFailure);
+    errorHandler(error, teamMemberForInviteFailure);
   }
 };
 
-export { getBestTalents, getFavoriteTalents, getAlmaMaterTalents, inviteTalents };
+export {
+  getBestTalents,
+  getTeamMemberForInvite,
+  getFavoriteTalents,
+  getAlmaMaterTalents,
+  inviteTalents,
+  inviteTalentsToProject,
+};

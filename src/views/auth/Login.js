@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // ** React Imports
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -32,7 +32,6 @@ const Login = () => {
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
   const isLoggedIn = useSelector(selectIsLoggedIn);
-  const [validUrl, setValidUrl] = useState(false);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -41,15 +40,33 @@ const Login = () => {
 
   const urlSearchParams = new URLSearchParams(window.location.search);
   const dataParam = urlSearchParams.get('data');
-  const inviteId = urlSearchParams.get('invite_id');
 
-  const onValidUrlSuccess = () => {
-    setValidUrl(true);
-    setItem('inviteToken', dataParam);
+  const onValidUrlSuccess = (res) => {
     setItem('isInviteRead', false);
-    setItem('inviteId', inviteId);
+    setItem('inviteId', res.request_id);
+    setItem('projectId', res.request_for.project_id);
+    setItem('requestStatus', res.head_message);
+
     if (isLoggedIn) {
-      navigate(`/team-invitation/${inviteId}`);
+      const redirectionFunction = ({ projectId, inviteId, status }) => {
+        if (status === 'Project Invitation Request' && projectId && inviteId) {
+          navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
+        }
+        if (status === 'Team Invitation Request' && inviteId) {
+          navigate(`/team-invitation/${inviteId}`);
+        }
+        if (status === 'Project Team Invitation Request' && projectId && inviteId) {
+          navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+        }
+        if (status === 'Team Join Request' && inviteId) {
+          navigate(`/join-request/${inviteId}`);
+        }
+      };
+      redirectionFunction({
+        status: res.head_message,
+        projectId: res.request_for.project_id,
+        inviteId: res.request_id,
+      });
     }
   };
 
@@ -57,15 +74,15 @@ const Login = () => {
 
   useEffect(() => {
     if (dataParam) {
+      removeItem('inviteToken');
+      removeItem('isInviteRead');
+      removeItem('inviteId');
+      removeItem('projectId');
       dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isLoggedIn) {
+    } else if (isLoggedIn) {
       navigate('/dashboard');
     }
-  }, [validUrl, isLoggedIn]);
+  }, [isLoggedIn]);
 
   // Valid link
   // When user is logged in and he clicks mail, login => dashboard

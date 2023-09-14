@@ -32,7 +32,7 @@ import { profileDetailsLoading } from '../../../redux/selectors/clientOnboarding
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { USD, userOnboarding } from '../../../utility/constants/Constant';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -124,6 +124,7 @@ const Availability = () => {
       availabilityDays: [],
       weekdays: [],
       weekends: [],
+      currencyPreference: { label: 'USD', value: USD._id },
     },
   });
 
@@ -783,6 +784,7 @@ const Availability = () => {
                   invalid={errors.currencyPreference && true}
                   render={({ field }) => (
                     <AsyncPaginate
+                      isDisabled
                       loadOptions={loadCurrenciesOptions}
                       classNamePrefix="select"
                       placeholder="Select one"

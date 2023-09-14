@@ -5,7 +5,11 @@ import { Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'react
 import DateTime from '../../../lib/date-time';
 import { AlertCardWrapper } from './style';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
-import { getProfilePercentage, getProjectInvites } from '../../../redux/actions/dashboardActions';
+import {
+  getProfilePercentage,
+  getProjectInvites,
+  getTeamProfilePercentage,
+} from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -14,22 +18,26 @@ const Alerts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(getProjectInvites());
-    dispatch(getProfilePercentage());
-  }, []);
-
   const projectInvites = useSelector((state) => state.dashboard.projectInvites);
 
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
+
+  const isProfileCompleted = profilePercentageData?.profile_completed === 100;
+  useEffect(() => {
+    dispatch(getProjectInvites());
+    if (userDetailsData?.user_type === userTypes.team) {
+      dispatch(getTeamProfilePercentage());
+    } else {
+      dispatch(getProfilePercentage());
+    }
+  }, []);
 
   const onAddDetailsClick = (path) => {
     navigate(path, {
       state: { isEditing: true },
     });
   };
-
   return (
     <AlertCardWrapper>
       <Card>
@@ -39,7 +47,7 @@ const Alerts = () => {
             <Link to="/notifications">View All</Link>
           </CardText>
         </CardHeader>
-        {userDetailsData?.user_type !== userTypes.team && (
+        {!isProfileCompleted && (
           <Card className="card-inside">
             <CardHeader>
               <CardTitle tag="h4">Profile Completion!</CardTitle>
@@ -73,6 +81,7 @@ const Alerts = () => {
             </CardBody>
           </Card>
         )}
+
         <Card className="card-inside d-none">
           <CardHeader>
             <CardTitle tag="h4">Upcoming Projects</CardTitle>
@@ -81,11 +90,7 @@ const Alerts = () => {
             <CardText className="text-center card-text font-small-4 mt-20 mb-2 text-primary">None available</CardText>
           </CardBody>
         </Card>
-        {userDetailsData?.user_type === userTypes.team && (
-          <CardBody className="d-flex justify-content-center align-items-center">
-            <CardText className="text-center card-text font-small-4 mt-20 mb-2 text-primary">None available</CardText>
-          </CardBody>
-        )}
+
         {userDetailsData?.user_type === userTypes.client && (
           <>
             <Card className="card-inside d-none">
@@ -147,7 +152,7 @@ const Alerts = () => {
                 <CardTitle tag="h4">Team Invitations</CardTitle>
               </CardHeader>
               <CardBody className="d-flex justify-content-center align-items-center">
-                <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary">
+                <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary fw-bold">
                   None received
                 </CardText>
               </CardBody>

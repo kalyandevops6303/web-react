@@ -1,4 +1,6 @@
 /* eslint-disable no-useless-escape */
+import { Box, Check, Watch } from 'react-feather';
+
 const ERROR_CODES = {
   EC_401: 401,
   EC_404: 404,
@@ -22,6 +24,16 @@ const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
 };
+const createBidSteps = [
+  { title: 'Team', subtitle: 'Add role & hourly rates', icon: <Box size={18} /> },
+  { title: 'Milestone', subtitle: 'Add milestone & role', icon: <Watch size={18} /> },
+  { title: 'Preview', subtitle: 'Review before posting', icon: <Check size={18} /> },
+];
+const maxFileSize = 5000000; // 5MB
+const bidTypes = {
+  simple: 'SIMPLE',
+  advanced: 'ADVANCED',
+};
 const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
@@ -36,8 +48,25 @@ const projectTypesOptions = [
 const sortingOptions = [
   { label: 'New', value: 'NEW' },
   { label: 'Recommended', value: 'RECOMMADED' },
+  { label: 'Favorite', value: 'FAVOURITE' },
 ];
-const maxFileSize = 5000000; // 5MB
+const USD = {
+  _id: '6478b0d1679b91d695ad534a',
+  name: 'US Dollar',
+  code: 'USD',
+};
+const disputeStatuses = {
+  open: 'OPEN',
+  underReview: 'UNDER_REVIEW',
+  responded: 'RESPONDED',
+  resolved: 'RESOLVED',
+};
+const disputeStatusEnum = {
+  OPEN: 'Open',
+  UNDER_REVIEW: 'Under Review',
+  RESPONDED: 'Responded',
+  RESOLVED: 'Resolved',
+};
 export {
   ERROR_CODES,
   checkPoints,
@@ -48,4 +77,9 @@ export {
   projectTypesOptions,
   validEmailRegex,
   maxFileSize,
+  createBidSteps,
+  bidTypes,
+  USD,
+  disputeStatuses,
+  disputeStatusEnum,
 };

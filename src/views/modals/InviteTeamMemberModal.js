@@ -20,19 +20,33 @@ import {
   TabPane,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { Check, Search, Star } from 'react-feather';
+import { Check, Search, Share2, Star } from 'react-feather';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { BlueNavsContainer, GrayBorderContainer } from '../styled';
+import { BlueNavsContainer, InviteHeadContainer } from '../styled';
 import theme from '../../configs/themeVariables';
-import { TableContainer } from '../CreateProject/style';
+import { BlueBgIconContainer, TableContainer } from '../CreateProject/style';
 import AlmaMaterImg from '../../assets/images/almaMater.png';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import InfiniteScroll from '../../lib/infinite-scroll';
-import { giveStrokeColor } from '../../utility/Utils';
-import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../redux/actions/inviteTalent';
-import { almaMaterTalents, bestTalents, favoriteTalents } from '../../redux/selectors/inviteTalentSelector';
+import { giveStrokeColor, returnFormattedRating } from '../../utility/Utils';
+import {
+  getAlmaMaterTalents,
+  getBestTalents,
+  getFavoriteTalents,
+  getTeamMemberForInvite,
+} from '../../redux/actions/inviteTalent';
+
+import {
+  almaMaterTalents,
+  bestTalents,
+  favoriteTalents,
+  teamMemberForInvite,
+} from '../../redux/selectors/inviteTalentSelector';
+
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
 const InviteTeamMemberModal = ({
   invitedIds,
@@ -41,13 +55,17 @@ const InviteTeamMemberModal = ({
   selectedTalents,
   setSelectedTalents,
   setSendInvitationModal,
+  toggleInviteShareModal,
   modal,
   toggleModal,
+  projectId,
+  inviteRole,
 }) => {
   const tabNames = {
     favourite: '1',
     recommended: '2',
     almaMater: '3',
+    teamMember: '4',
   };
 
   const dispatch = useDispatch();
@@ -55,9 +73,11 @@ const InviteTeamMemberModal = ({
   const bestTalentsData = useSelector(bestTalents);
   const favoriteTalentsData = useSelector(favoriteTalents);
   const almaMaterTalentsData = useSelector(almaMaterTalents);
+  const teamMemberForInviteData = useSelector(teamMemberForInvite);
 
   const [activeTab, setTabActive] = useState(tabNames.favourite);
   const [searchValue, setSearchValue] = useState('');
+  const userData = useSelector(selectUserData);
 
   const toggleTabs = (tab) => {
     if (activeTab !== tab) {
@@ -100,6 +120,18 @@ const InviteTeamMemberModal = ({
       ),
     );
   };
+  const loadNewTeamMembers = () => {
+    dispatch(
+      getTeamMemberForInvite(
+        searchValue,
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        almaMaterTalentsData?.metadata?.current_page + 1,
+        10,
+        almaMaterTalentsData?.data,
+        projectId,
+      ),
+    );
+  };
 
   useEffect(() => {
     let delayDebounceFn = null;
@@ -108,6 +140,9 @@ const InviteTeamMemberModal = ({
       dispatch(getBestTalents(searchValue, 1, 10, []));
       dispatch(getFavoriteTalents(searchValue, 1, 10, []));
       dispatch(getAlmaMaterTalents(searchValue, 1, 10, []));
+      if (userData?.user_type !== userTypes.client && projectId) {
+        dispatch(getTeamMemberForInvite(searchValue, 1, 10, [], projectId));
+      }
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
@@ -122,7 +157,7 @@ const InviteTeamMemberModal = ({
     let userId;
 
     if (type === 'fav') {
-      userId = user.talent_details.user_id;
+      userId = user.user_id;
     } else {
       userId = user.user_id;
     }
@@ -155,7 +190,7 @@ const InviteTeamMemberModal = ({
             setSelectedTalents([...selectedTalents, user]);
           }}
         >
-          <h5 className="m-0 fw-light font-medium-1">Invite</h5>
+          <h5 className="m-0 fw-light font-medium-1">Select</h5>
         </div>
       );
     }
@@ -192,17 +227,31 @@ const InviteTeamMemberModal = ({
     setSendInvitationModal(true);
   };
 
+  const handleShare = () => {
+    toggleModal();
+    toggleInviteShareModal();
+  };
+
   return (
     <Modal isOpen={modal} contentClassName="invite-talent-listing-modal-style" className="modal-dialog-centered">
       <ModalHeader toggle={toggleModal} />
       <ModalBody className="p-0">
-        <GrayBorderContainer className="px-2">
-          <div className="custom-header-margin">
-            <h3 className="font-medium-3 mb-1">Invite Talent</h3>
+        <InviteHeadContainer className="px-2">
+          <div className="custom-header-margin d-flex justify-content-between align-items-center">
+            <h3 className="font-medium-3">Invite Talent</h3>
+            <div className="d-flex mb-50 align-items-center upload-btn cursor-pointer" onClick={handleShare}>
+              <BlueBgIconContainer className="p-50">
+                <Share2 size={24} color={theme.activeNavPillText} />
+              </BlueBgIconContainer>
+              <h5 className="mb-0 mx-75 fw-bolder">Share</h5>
+            </div>
           </div>
-        </GrayBorderContainer>
+        </InviteHeadContainer>
         <div className="px-2 py-2">
-          <p className="fw-bold font-medium-1 mb-50">Invite talent to work on this project</p>
+          <p className="fw-bold font-medium-1 mb-50">
+            Invite talent to {projectId ? 'work on this project ' : 'join your team'}
+            {userData?.user_type !== userTypes.client && inviteRole ? `as a ${inviteRole}` : ''}
+          </p>
           <p className="pe-5">
             <span className="fw-bold"> Note:</span> If a talent is not already part of your team, they will need to join
             before they can be added to the project
@@ -221,7 +270,7 @@ const InviteTeamMemberModal = ({
           <Row className="d-flex justify-content-between mt-2">
             <BlueNavsContainer>
               <Nav tabs className="font-medium border-bottom ps-1">
-                <NavItem className="me-3">
+                <NavItem className="me-1">
                   <NavLink
                     active={activeTab === tabNames.favourite}
                     onClick={() => {
@@ -231,7 +280,7 @@ const InviteTeamMemberModal = ({
                     Favorite Talent
                   </NavLink>
                 </NavItem>
-                <NavItem className="me-3">
+                <NavItem className="me-1">
                   <NavLink
                     active={activeTab === tabNames.recommended}
                     onClick={() => {
@@ -241,7 +290,7 @@ const InviteTeamMemberModal = ({
                     Recommended Talent
                   </NavLink>
                 </NavItem>
-                <NavItem>
+                <NavItem className="me-1">
                   <NavLink
                     active={activeTab === tabNames.almaMater}
                     onClick={() => {
@@ -252,6 +301,18 @@ const InviteTeamMemberModal = ({
                     <img src={AlmaMaterImg} alt="alma-mater" className="ms-50" />
                   </NavLink>
                 </NavItem>
+                {userData?.user_type !== userTypes.client && projectId && (
+                  <NavItem>
+                    <NavLink
+                      active={activeTab === tabNames.teamMember}
+                      onClick={() => {
+                        toggleTabs(tabNames.teamMember);
+                      }}
+                    >
+                      Team Member
+                    </NavLink>
+                  </NavItem>
+                )}
               </Nav>
             </BlueNavsContainer>
           </Row>
@@ -274,17 +335,13 @@ const InviteTeamMemberModal = ({
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
                               <Avatar
-                                img={
-                                  item?.talent_details?.image_uri?.length > 0
-                                    ? item?.talent_details?.image_uri
-                                    : defaultAvatar
-                                }
+                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
                                 imgHeight="38"
                                 imgWidth="38"
                                 className="me-2 user-pic"
                               />
-                              <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
-                                <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
+                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
+                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
                               </Link>
                             </div>
                           </Col>
@@ -298,12 +355,10 @@ const InviteTeamMemberModal = ({
                                     fill={theme.starRatingBg}
                                     className="me-50"
                                   />
-                                  <p className="m-0 fw-bolder rating-text">{item.talent_details.rating}</p>
+                                  <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                 </div>
                               </Badge>
-                              <p className="m-0 font-small-3 fw-bold ms-1">
-                                {item.talent_details.projects_worked_on_count} Projects
-                              </p>
+                              <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="2">
@@ -388,7 +443,7 @@ const InviteTeamMemberModal = ({
                                     fill={theme.starRatingBg}
                                     className="me-50"
                                   />
-                                  <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                  <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                 </div>
                               </Badge>
                               <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
@@ -476,7 +531,95 @@ const InviteTeamMemberModal = ({
                                     fill={theme.starRatingBg}
                                     className="me-50"
                                   />
-                                  <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                  <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
+                                </div>
+                              </Badge>
+                              <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
+                            </div>
+                          </Col>
+                          <Col sm="2" md="3" lg="2">
+                            <div className="circular-progressbar-container">
+                              <CircularProgressbarWithChildren
+                                value={item.match_percentage}
+                                styles={{
+                                  path: {
+                                    stroke: giveStrokeColor(item.match_percentage),
+                                    strokeLinecap: 'round',
+                                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                                    transform: 'rotate(0turn)',
+                                    transformOrigin: 'center center',
+                                  },
+                                  trail: {
+                                    stroke: theme.progressBarBg,
+                                    strokeLinecap: 'round',
+                                    transform: 'rotate(0turn)',
+                                    transformOrigin: 'center center',
+                                  },
+                                }}
+                              >
+                                <div className="d-flex justify-content-center align-items-center">
+                                  <p className="percentage-text m-0">{item.match_percentage}%</p>
+                                </div>
+                              </CircularProgressbarWithChildren>
+                            </div>
+                          </Col>
+                          <Col sm="2" md="3" lg="2">
+                            {renderActionButton(item, 'alma')}
+                          </Col>
+                        </Row>
+                      ))
+                    ) : (
+                      <div className="no-data-found-container d-flex flex-column align-items-center py-1">
+                        <img
+                          src={NoDataFoundGif}
+                          alt="no-data"
+                          width={200}
+                          height={200}
+                          className="no-data-found-gif"
+                        />
+                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
+                      </div>
+                    )}
+                  </InfiniteScroll>
+                </TableContainer>
+              )}
+            </TabPane>
+            <TabPane tabId={tabNames.teamMember}>
+              {activeTab === tabNames.teamMember && (
+                <TableContainer id="scrollableDiv">
+                  <InfiniteScroll
+                    dataLength={teamMemberForInviteData?.data?.length || 0}
+                    next={loadNewTeamMembers}
+                    hasMore={teamMemberForInviteData?.metadata?.has_next_page}
+                    scrollableTarget="scrollableDiv"
+                  >
+                    {teamMemberForInviteData?.data?.length > 0 ? (
+                      teamMemberForInviteData?.data?.map((item) => (
+                        <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
+                          <Col sm="2" md="3" lg="4">
+                            <div className="d-flex align-items-center">
+                              <Avatar
+                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
+                                imgHeight="38"
+                                imgWidth="38"
+                                className="me-2 user-pic"
+                              />
+                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
+                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                              </Link>
+                            </div>
+                          </Col>
+                          <Col sm="2" md="3" lg="4">
+                            <div className="d-flex align-items-center">
+                              <Badge>
+                                <div className="d-flex align-items-center">
+                                  <Star
+                                    size={12}
+                                    color={theme.starRatingBg}
+                                    fill={theme.starRatingBg}
+                                    className="me-50"
+                                  />
+                                  <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                 </div>
                               </Badge>
                               <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
@@ -561,6 +704,9 @@ InviteTeamMemberModal.propTypes = {
   selectedTalents: Proptypes.bool,
   setSelectedTalents: Proptypes.func,
   setSendInvitationModal: Proptypes.func,
+  toggleInviteShareModal: Proptypes.func,
+  projectId: Proptypes.string,
+  inviteRole: Proptypes.string,
 };
 
 InviteTeamMemberModal.defaultProps = {
@@ -572,4 +718,7 @@ InviteTeamMemberModal.defaultProps = {
   selectedTalents: false,
   setSelectedTalents: () => {},
   setSendInvitationModal: () => {},
+  toggleInviteShareModal: () => {},
+  projectId: '',
+  inviteRole: '',
 };

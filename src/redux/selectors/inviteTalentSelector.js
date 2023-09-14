@@ -23,6 +23,16 @@ export const almaMaterTalentsLoading = createSelector(
   (inviteTalent) => inviteTalent.almaMaterTalentsLoading,
 );
 
+export const teamMemberForInvite = createSelector(
+  inviteTalentSelector,
+  (inviteTalent) => inviteTalent.teamMemberForInvite,
+);
+
+export const teamMemberForInviteLoading = createSelector(
+  inviteTalentSelector,
+  (inviteTalent) => inviteTalent.teamMemberForInviteLoading,
+);
+
 export const inviteTalentsLoading = createSelector(
   inviteTalentSelector,
   (inviteTalent) => inviteTalent.inviteTalentsLoading,

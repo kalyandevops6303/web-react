@@ -166,6 +166,13 @@ const LeftSidebarProfileWrapper = styled.div`
     width: 9rem;
     flex-direction: column;
   }
+
+  // Invited box
+  .invited-box {
+    button {
+      padding: 0.8rem 1rem;
+    }
+  }
 `;
 
 const UserBioWrap = styled.div`
