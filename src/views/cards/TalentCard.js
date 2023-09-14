@@ -118,7 +118,7 @@ function TalentCard({ data }) {
                     )}
                   </div>
                   {data?.match_percentage ? (
-                    <div className="circular-progressbar-container">
+                    <div style={{ width: '35px', height: '35px', marginTop: '-8px' }}>
                       <CircularProgressbarWithChildren
                         value={data?.match_percentage}
                         styles={{
@@ -138,7 +138,9 @@ function TalentCard({ data }) {
                         }}
                       >
                         <div className="d-flex justify-content-center align-items-center">
-                          <p className="percentage-text m-0">{data?.match_percentage ?? 80}%</p>
+                          <p className="m-0" style={{ fontSize: '10px' }}>
+                            {data?.match_percentage ?? 80}%
+                          </p>
                         </div>
                       </CircularProgressbarWithChildren>
                     </div>

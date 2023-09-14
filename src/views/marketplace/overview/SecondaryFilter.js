@@ -69,6 +69,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const isRecommanded = sort_by[0]?.value === 'RECOMMADED';
+  const isFavorite = sort_by[0]?.value === 'FAVOURITE';
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -119,6 +120,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       dispatch(
         getUsers({
           isRecommanded,
+          isFavorite,
           primaryFilter,
           metaData,
           userType,
@@ -134,6 +136,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           isMyListing: primaryFilter === 'my_listings',
           isMyBids: primaryFilter === 'my_bids',
           isRecommanded,
+          isFavorite,
           metaData,
           userType,
           onSuccess,
@@ -143,7 +146,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         }),
       );
     }
-  }, [secondFilterState, searchText, primaryFilter, isRecommanded]);
+  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite]);
 
   useEffect(() => {
     if (location?.state?.isRecommended) {
@@ -298,6 +301,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       dispatch(
         getUsers({
           isRecommanded,
+          isFavorite,
           primaryFilter,
           metaData: newMeteData,
           userType,
@@ -313,6 +317,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           isMyListing: primaryFilter === 'my_listings',
           isMyBids: primaryFilter === 'my_bids',
           isRecommanded,
+          isFavorite,
           metaData: newMeteData,
           userType,
           onSuccess,

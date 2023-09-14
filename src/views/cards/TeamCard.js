@@ -99,7 +99,7 @@ const Team = ({ data }) => {
                     )}
                   </div>
                   {data?.match_percentage ? (
-                    <div className="circular-progressbar-container">
+                    <div style={{ width: '35px', height: '35px', marginTop: '-8px' }}>
                       <CircularProgressbarWithChildren
                         value={data?.match_percentage}
                         styles={{
@@ -119,7 +119,9 @@ const Team = ({ data }) => {
                         }}
                       >
                         <div className="d-flex justify-content-center align-items-center">
-                          <p className="percentage-text m-0">{data?.match_percentage ?? 80}%</p>
+                          <p className="m-0" style={{ fontSize: '10px' }}>
+                            {data?.match_percentage ?? 0}%
+                          </p>
                         </div>
                       </CircularProgressbarWithChildren>
                     </div>
