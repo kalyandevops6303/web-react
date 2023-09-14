@@ -11,31 +11,31 @@ const appId = COMETCHAT_CONSTANTS.APP_ID;
 const region = COMETCHAT_CONSTANTS.REGION;
 const appSetting = new CometChat.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
 
-CometChat.init(appId, appSetting).then(
-  () => {
-    console.log('Initialisation successfully completed!');
-  },
-  (error) => {
-    console.log('Initialisation failed with error:', error);
-  },
-);
+// CometChat.init(appId, appSetting).then(
+//   () => {
+//     console.log('Initialisation successfully completed!');
+//   },
+//   (error) => {
+//     console.log('Initialisation failed with error:', error);
+//   },
+// );
 
-const loginUser = async (authToken) => {
-  const user = await CometChat.login(authToken);
-  console.log(user, 'USER COMET');
-  const fcmToken = await requestPermission();
-  console.log(fcmToken, 'FCM COMET');
-  const response = await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
-    fcmToken,
-  });
-  console.log(response, 'RES COMET');
-};
+// const loginUser = async (authToken) => {
+//   const user = await CometChat.login(authToken);
+//   console.log(user, 'USER COMET');
+//   const fcmToken = await requestPermission();
+//   console.log(fcmToken, 'FCM COMET');
+//   const response = await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
+//     fcmToken,
+//   });
+//   console.log(response, 'RES COMET');
+// };
 
 // Documenting the authentication flow
-function TrumioChat({ authToken, targetId, targetType = 'user', style, ...rest }) {
-  useEffect(() => {
-    loginUser(authToken);
-  }, []);
+function TrumioChat({ authToken, targetId = undefined, targetType = 'user', style, ...rest }) {
+  // useEffect(() => {
+  //   loginUser(authToken);
+  // }, []);
 
   // loginUser("superhero1");
   return (

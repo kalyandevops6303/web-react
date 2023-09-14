@@ -16,7 +16,7 @@ const Chat = () => {
         backgroundColor: 'white',
       }}
       authToken={authToken}
-      targetId={targetId}
+      targetId={targetId || undefined}
       targetType="user"
     />
   );

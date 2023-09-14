@@ -18,3 +18,11 @@ export const NotificationIconContainer = styled.div`
     background-color: ${theme.red};
   }
 `;
+
+export const MessageIconContainer = styled.div`
+  position: relative;
+  border-right: 1px solid ${theme.cardHeaderBorderColor};
+  margin-right: 8px;
+  padding-right: 14px;
+  cursor: pointer;
+`;
