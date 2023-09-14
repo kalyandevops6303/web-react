@@ -21,7 +21,6 @@ import TagsSection from './TagsSection';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
-import { setItem } from '../../../utility/localStorageControl';
 import { returnFormattedRating } from '../../../utility/Utils';
 
 const UserSection = ({ users, name, isAlma }) => (
@@ -49,7 +48,7 @@ UserSection.propTypes = {
   isAlma: PropTypes.bool,
 };
 
-const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
+const RecommendedTeamsCardForClient = ({ isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const navigate = useNavigate();
@@ -82,7 +81,6 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   };
 
   const handleViewTeam = (id) => {
-    setItem('team_id', id);
     navigate(`/profile/team/${id}`);
   };
 
@@ -124,9 +122,9 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           <div className="d-flex flex-column">
             <TagsSection fullWidth open={open} tags={data?.expertise?.skills} />
             <div className="d-flex">
-              <RatingBadge number={returnFormattedRating(data?.rating) || 0} />
+              <RatingBadge number={returnFormattedRating(data?.rating)} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {data?.projects_worked_on_count || 0} Projects
+                {data?.projects_worked_on_count} Projects
               </CardText>
             </div>
           </div>
@@ -138,11 +136,11 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
                 <div className="bottom-detail d-flex mt-1">
                   <div className="design-planning-wrapper">
                     {/* <div className="design-planning">
-                      <CardText className="mb-25">Start date</CardText>
-                      <h6 className="mb-0">{`${
-                        DateTime.fromMillis(data?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
-                      }`}</h6>
-                    </div> */}
+                        <CardText className="mb-25">Start date</CardText>
+                        <h6 className="mb-0">{`${
+                          DateTime.fromMillis(data?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
+                        }`}</h6>
+                      </div> */}
                   </div>
                 </div>
               </>
@@ -208,10 +206,11 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   );
 };
 
-TeamTalentCard.propTypes = {
+export default RecommendedTeamsCardForClient;
+
+RecommendedTeamsCardForClient.propTypes = {
   data: PropTypes.object,
   className: PropTypes.string,
   isRecommendedTeam: PropTypes.bool,
   open: PropTypes.string,
 };
-export default TeamTalentCard;

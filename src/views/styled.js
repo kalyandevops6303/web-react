@@ -44,6 +44,10 @@ const CustomBadge = styled.span`
     background: ${theme.orange}1f;
     color: ${theme.orange};
   }
+  .ON_GOING {
+    background: ${theme.orange}1f;
+    color: ${theme.orange};
+  }
   .TERMINATED {
     background: ${theme.darkRedColor}1f;
     color: ${theme.darkRedColor};

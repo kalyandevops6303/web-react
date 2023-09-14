@@ -15,6 +15,9 @@ export const HeaderContainer = styled.div`
     .version {
       margin-top: 0.4rem;
     }
+    .onboarding-header-logo {
+      max-height: 28px;
+    }
   }
 `;
 

@@ -21,6 +21,7 @@ import { userTypes } from '../../../utility/constants/Constant';
 import { getItem } from '../../../utility/localStorageControl';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const InvitedMemberComponent = () => {
   const inviteMembers = useSelector((state) => state.projectDetails.getInvitedMember);
@@ -98,7 +99,7 @@ const InvitedMemberComponent = () => {
     <div>
       {inviteMembers?.length > 0 && (
         <Card>
-          <CardTitle className="main-card-title">Invite Sent</CardTitle>
+          <CardTitle className="main-card-title">Invites Sent</CardTitle>
 
           <div id="scrollableDivInvitedMemberModal" className="p-2" style={{ maxHeight: '22rem', overflowY: 'auto' }}>
             <InfiniteScroll
@@ -112,7 +113,7 @@ const InvitedMemberComponent = () => {
                 <Card key={data?._id}>
                   <CardBody>
                     <section className="d-flex justify-content-between">
-                      <div className="d-flex align-items-center gap-1">
+                      <div className="d-flex align-items-center gap-1 w-100">
                         <div style={{ flex: '2' }} className="name-info d-flex gap-50 align-items-center">
                           <Avatar img={data?.send_to?.image_uri || defaultAvatar} imgHeight="38" imgWidth="38" />
                           <div className="ms-50">
@@ -126,7 +127,7 @@ const InvitedMemberComponent = () => {
                         </CardText>
                         <div style={{ flex: '2' }} className="me-4">
                           <Rating
-                            initialRating={data?.send_to?.rating}
+                            initialRating={returnFormattedRating(data?.send_to?.rating)}
                             emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
                             fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
                             readonly

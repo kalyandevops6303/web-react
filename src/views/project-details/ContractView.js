@@ -246,13 +246,13 @@ const ContractView = () => {
                           id="contract-sign"
                           name="agreeTerms"
                         />
-                        I have read terms and conditions
+                        I have read Terms and Conditions
                       </Label>
                     </div>
                   )}
                 </div>
               )}
-              {checkError && <FormFeedback>Please confirm that you have read the terms and conditions</FormFeedback>}
+              {checkError && <FormFeedback>Please confirm that you have read the Terms and Conditions</FormFeedback>}
               <div className="team-sign-section mt-2">
                 <h6 className="fw-bolder">Client</h6>
                 <div className="d-flex justify-content-between mb-1">
