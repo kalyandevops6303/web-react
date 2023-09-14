@@ -400,14 +400,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
 
             {!data?.is_team_member && isTeamView && !teamId && userData?.user_type === userTypes.talent && (
               <div className="d-flex gap-1 mt-1 justify-content-center">
-                <Button className="w-50" color="primary" onClick={handleJoinTeam}>
-                  {inJoinTeamLoading ? <Spinner size="sm" /> : 'Join Team'}
-                </Button>
-              </div>
-            )}
-            {!data?.is_team_member && isTeamView && !teamId && userData?.user_type === userTypes.talent && (
-              <div className="d-flex gap-1 mt-1 justify-content-center">
-                <Button className="w-50" color="primary" onClick={handleJoinTeam}>
+                <Button disabled={inJoinTeamLoading} className="w-50" color="primary" onClick={handleJoinTeam}>
                   {inJoinTeamLoading ? <Spinner size="sm" /> : 'Join Team'}
                 </Button>
               </div>

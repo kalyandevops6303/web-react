@@ -60,7 +60,7 @@ const InvitationSentModal = ({
       .filter((user) => user?.user_type === userTypes.team) // Filter out non-team users
       .map((user) => user?.team_id); // Map to an array of team_ids
 
-    const userEmails = selectedTalents.map((talent) => talent?.user_details?.email);
+    // const userEmails = selectedTalents.map((talent) => talent?.user_details?.email);
     const teamId = getItem('team_id');
     const newPostData = {
       message,
@@ -68,7 +68,7 @@ const InvitationSentModal = ({
       requests_to: {
         user_ids: userIds || [],
         team_ids: teamIds.length > 0 ? teamIds : [],
-        email_ids: userEmails || [],
+        email_ids: [],
       },
       request_for: {
         project_id: projectId || '',

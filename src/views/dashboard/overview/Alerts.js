@@ -1,36 +1,103 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { DateTime } from 'luxon';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
 import { AlertCardWrapper } from './style';
-import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
+import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { getAlerts, getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { userTypes } from '../../../utility/constants/Constant';
+import SwitchConfirmModal from '../../modals/SwitchConfirm';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
 
 const Alerts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const userDetailsData = useSelector(userData);
+  const [switchProfileModal, setSwitchProfileModal] = useState(false);
+  const [switchData, setSwitchData] = useState();
+  const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
+  const alerts = useSelector((state) => state.dashboard.alerts);
 
   const isProfileCompleted = profilePercentageData?.profile_completed === 100;
   useEffect(() => {
-    // dispatch(getProjectInvites());
     dispatch(getAlerts());
     if (userDetailsData?.user_type === userTypes.team) {
       dispatch(getTeamProfilePercentage());
     } else {
       dispatch(getProfilePercentage());
     }
-  }, []);
+  }, [userDetailsData]);
 
   const onAddDetailsClick = (path) => {
     navigate(path, {
       state: { isEditing: true },
     });
+  };
+
+  const isReqeustFlowStatus = (status) => {
+    switch (status) {
+      case 'Project Invitation Request':
+        return true;
+      case 'Team Invitation Request':
+        return true;
+      case 'Project Team Invitation Request':
+        return true;
+      case 'Team Join Request':
+        return true;
+      default:
+        return false;
+    }
+  };
+  const getStatusShortName = (status) => {
+    switch (status) {
+      case 'Project Invitation Request':
+        return 'Project Invitation';
+
+      case 'Team Invitation Request':
+        return 'Team Invitation';
+
+      case 'Project Team Invitation Request':
+        return 'Project Invitation';
+
+      case 'Team Join Request':
+        return 'Join Request';
+
+      default:
+        return status;
+    }
+  };
+  const redirectionFunction = ({ projectId, inviteId, status }) => {
+    if (status === 'Project Invitation Request' && projectId && inviteId) {
+      navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
+    } else if (status === 'Team Invitation Request' && inviteId) {
+      navigate(`/team-invitation/${inviteId}`);
+    } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
+      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+    } else if (status === 'Team Join Request' && inviteId) {
+      navigate(`/join-request/${inviteId}`);
+    } else {
+      navigate(`/project-details/${projectId}/bid`);
+    }
+  };
+
+  const handleView = (data) => {
+    // setSwitchProfileModal(true);
+    setSwitchData(data);
+
+    if (userDetailsData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
+      setSwitchProfileModal(true);
+    } else if (isReqeustFlowStatus(data?.title)) {
+      redirectionFunction({
+        status: data?.title,
+        projectId: data?.custom_payload?.request_for?.project_id,
+        inviteId: data?.custom_payload?.request_id,
+      });
+    } else {
+      redirectionFunction({ projectId: data?.custom_payload?.project_id });
+    }
   };
   return (
     <AlertCardWrapper>
@@ -109,60 +176,41 @@ const Alerts = () => {
             </Card>
           </>
         )}
-        {/* {userDetailsData?.user_type === userTypes.talent && (
-          <>
-            <Card className="card-inside">
-              <CardHeader>
-                <CardTitle tag="h4">Project Invitations</CardTitle>
-              </CardHeader>
-              <CardBody>
-                {projectInvites?.data?.length > 0 ? (
-                  <div>
-                    {projectInvites?.data?.slice(0, 3)?.map((item) => (
-                      <div key={item?._id} className="mb-1">
-                        <div className="d-flex justify-content-between">
-                          <p className="font-medium-1 m-0">{item?.project_name}</p>
-                          <p className="relative-time font-small-2 fw-light m-0 ms-50">
-                            {item?.invitation_sent ? DateTime?.fromMillis(item?.invitation_sent)?.toRelative() : ''}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                    {projectInvites?.metadata?.total_records > 3 && (
-                      <span className="additional-text text-center d-block">
-                        +{projectInvites.metadata.total_records - 3} more
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <CardText className="text-center card-text font-medium-1 fw-bold mt-20 mb-2 text-primary">
-                    No invitations !
-                  </CardText>
-                )}
-              </CardBody>
-            </Card>
-            <Card className="card-inside d-none">
-              <CardHeader>
-                <CardTitle tag="h4">Team Invitations</CardTitle>
-              </CardHeader>
-              <CardBody className="d-flex justify-content-center align-items-center">
-                <CardText className="text-center card-text font-small-3 mt-20 mb-2 text-primary fw-bold">
-                  None received
-                </CardText>
-              </CardBody>
-            </Card>
-          </>
-        )} */}
 
-        {/* <div key={item?._id} className="mb-1">
-                        <div className="d-flex justify-content-between">
-                          <p className="font-medium-1 m-0">{item?.project_name}</p>
-                          <p className="relative-time font-small-2 fw-light m-0 ms-50">
-                            {item?.invitation_sent ? DateTime?.fromMillis(item?.invitation_sent)?.toRelative() : ''}
-                          </p>
-                        </div>
-                      </div> */}
+        <div>
+          {alerts &&
+            alerts?.alerts?.map((item) => (
+              <Card key={item?._id} className="card-inside">
+                <CardHeader className="d-flex">
+                  <CardTitle tag="h4">{getStatusShortName(item?.title)}</CardTitle>
+                  <p className="relative-time font-small-2 fw-light m-0 ms-50">
+                    {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : ''}
+                  </p>
+                </CardHeader>
+                <CardBody>
+                  <div key={item?._id}>
+                    <div className="d-flex justify-content-between">
+                      <p className="font-small-3 m-0">{item?.message || 'Name'}</p>
+                      <CardText className="cursor-pointer text-primary" onClick={() => handleView(item)}>
+                        View
+                      </CardText>
+                    </div>
+                  </div>
+                </CardBody>
+              </Card>
+            ))}
+          {alerts?.total_count?.count > 4 && (
+            <span className="mb-1 additional-text text-center d-block">+{alerts.total_count.count - 4} more</span>
+          )}
+        </div>
       </Card>
+      {switchProfileModal && (
+        <SwitchConfirmModal
+          data={switchData}
+          modal={switchProfileModal}
+          toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
+        />
+      )}
     </AlertCardWrapper>
   );
 };

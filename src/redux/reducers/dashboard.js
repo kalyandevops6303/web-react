@@ -29,6 +29,7 @@ const initialState = {
   projectsBidsForClientLoading: false,
   recommendedTeamsForClient: null,
   recommendedTeamsForClientLoading: false,
+  alerts: [],
   error: null,
 };
 

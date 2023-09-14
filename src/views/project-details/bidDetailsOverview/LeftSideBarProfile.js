@@ -18,7 +18,7 @@ import Rating from 'react-rating';
 import { GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
-import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
+import { makeFavourite, removeFavourite } from '../../../redux/actions/projectDetailsAction';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
@@ -50,10 +50,10 @@ const LeftSidebarProfile = ({
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
   const handleLike = () => {
-    dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
+    dispatch(makeFavourite(data?.team_id, data?.user_type));
   };
   const handleUnLike = () => {
-    dispatch(removeFavourite(param?.userId));
+    dispatch(removeFavourite(data?._id));
   };
 
   const onEditClick = () => {
@@ -111,15 +111,15 @@ const LeftSidebarProfile = ({
                 </CustomBadge>
               </div>
             )}
-            {data?.is_favourited ? (
+            {data?.is_favorite ? (
               <Heart
-                className="cursor-pointer d-flex ms-auto heart"
+                className="d-none cursor-pointer d-flex ms-auto heart"
                 fill={theme.red}
                 stroke={theme.red}
                 onClick={handleUnLike}
               />
             ) : (
-              <Heart className="cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
+              <Heart className="d-none cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
             )}
           </div>
 
@@ -170,7 +170,7 @@ const LeftSidebarProfile = ({
           {isTeamView && (
             <div className="public">
               <CardText className="text-center user-name fw-bold mb-25 ">{data?.name}</CardText>
-              <CardText className="text-center mb-50 fw-300">{`${data?.created_by?.first_name} ${data?.created_by?.last_name}`}</CardText>
+              <CardText className="d-none text-center mb-50 fw-300">{`${data?.created_by?.first_name} ${data?.created_by?.last_name}`}</CardText>
             </div>
           )}
 
