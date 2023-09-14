@@ -48,6 +48,30 @@ const selectTeamInvitationLoading = createSelector(dashboardSelector, (dashboard
 const selectGetMyTeam = createSelector(dashboardSelector, (dashboard) => dashboard.getMyTeam);
 const selectGetMyTeamLoading = createSelector(dashboardSelector, (dashboard) => dashboard.getMyTeamLoading);
 
+const activeProjectsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.activeProjectsForClient);
+const activeProjectsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.activeProjectsForClientLoading,
+);
+
+const upcomingProjectsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.upcomingProjectsForClient);
+const upcomingProjectsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.upcomingProjectsForClientLoading,
+);
+
+const projectsBidsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.projectsBidsForClient);
+const projectsBidsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.projectsBidsForClientLoading,
+);
+
+const recommendedTeamsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.recommendedTeamsForClient);
+const recommendedTeamsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.recommendedTeamsForClientLoading,
+);
+
 export {
   userData,
   userDataLoading,
@@ -69,4 +93,12 @@ export {
   selectTeamInvitationLoading,
   selectGetMyTeam,
   selectGetMyTeamLoading,
+  activeProjectsForClient,
+  activeProjectsForClientLoading,
+  upcomingProjectsForClient,
+  upcomingProjectsForClientLoading,
+  projectsBidsForClient,
+  projectsBidsForClientLoading,
+  recommendedTeamsForClient,
+  recommendedTeamsForClientLoading,
 };

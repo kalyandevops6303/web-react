@@ -13,6 +13,10 @@ import {
   removeMemberService,
   teamProfilePercentageService,
   alertService,
+  activeProjectsForClientService,
+  upcomingProjectsForClientService,
+  projectsBidsForClientService,
+  recommendedTeamsForClientService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -50,6 +54,18 @@ import {
   getAlertRequest,
   getAlertSuccess,
   getAlertFailure,
+  activeProjectsForClientRequest,
+  activeProjectsForClientSuccess,
+  activeProjectsForClientFailure,
+  upcomingProjectsForClientRequest,
+  upcomingProjectsForClientSuccess,
+  upcomingProjectsForClientFailure,
+  projectsBidsForClientRequest,
+  projectsBidsForClientSuccess,
+  projectsBidsForClientFailure,
+  recommendedTeamsForClientRequest,
+  recommendedTeamsForClientSuccess,
+  recommendedTeamsForClientFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -219,6 +235,46 @@ const getAlerts = () => async (dispatch) => {
   }
 };
 
+const getActiveProjectsForClient = () => async (dispatch) => {
+  dispatch(activeProjectsForClientRequest());
+  try {
+    const res = await activeProjectsForClientService();
+    dispatch(activeProjectsForClientSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, activeProjectsForClientFailure);
+  }
+};
+
+const getUpcomingProjectsForClient = () => async (dispatch) => {
+  dispatch(upcomingProjectsForClientRequest());
+  try {
+    const res = await upcomingProjectsForClientService();
+    dispatch(upcomingProjectsForClientSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, upcomingProjectsForClientFailure);
+  }
+};
+
+const getProjectsBidsForClient = () => async (dispatch) => {
+  dispatch(projectsBidsForClientRequest());
+  try {
+    const res = await projectsBidsForClientService();
+    dispatch(projectsBidsForClientSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, projectsBidsForClientFailure);
+  }
+};
+
+const getRecommendedTeamsForClient = () => async (dispatch) => {
+  dispatch(recommendedTeamsForClientRequest());
+  try {
+    const res = await recommendedTeamsForClientService();
+    dispatch(recommendedTeamsForClientSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, recommendedTeamsForClientFailure);
+  }
+};
+
 export {
   getAlerts,
   validateUrl,
@@ -235,4 +291,8 @@ export {
   getMyTeam,
   getProjectInvites,
   getTeamProfilePercentage,
+  getActiveProjectsForClient,
+  getUpcomingProjectsForClient,
+  getProjectsBidsForClient,
+  getRecommendedTeamsForClient,
 };

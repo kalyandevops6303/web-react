@@ -35,6 +35,14 @@ const teamProfilePercentageService = () => DataService.get(API.dashboard.teamPro
 
 const alertService = () => DataService.get(`${API.notifications.alerts}?page=1&page_size=5`);
 
+const activeProjectsForClientService = () => DataService.get(API.dashboard.activeProjectsForClient);
+
+const upcomingProjectsForClientService = () => DataService.get(API.dashboard.upcomingProjectsForClient);
+
+const projectsBidsForClientService = () => DataService.get(API.dashboard.projectsBidsForClient);
+
+const recommendedTeamsForClientService = () => DataService.get(API.dashboard.recommendedTeamsForClient);
+
 export {
   alertService,
   userDataService,
@@ -52,4 +60,8 @@ export {
   validateUrlService,
   updateInvitationService,
   teamProfilePercentageService,
+  activeProjectsForClientService,
+  upcomingProjectsForClientService,
+  projectsBidsForClientService,
+  recommendedTeamsForClientService,
 };

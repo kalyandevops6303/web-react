@@ -21,6 +21,7 @@ import { userTypes } from '../../../utility/constants/Constant';
 import { getItem } from '../../../utility/localStorageControl';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const InvitedMemberComponent = () => {
   const inviteMembers = useSelector((state) => state.projectDetails.getInvitedMember);
@@ -126,7 +127,7 @@ const InvitedMemberComponent = () => {
                         </CardText>
                         <div style={{ flex: '2' }} className="me-4">
                           <Rating
-                            initialRating={data?.send_to?.rating}
+                            initialRating={returnFormattedRating(data?.send_to?.rating)}
                             emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
                             fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
                             readonly

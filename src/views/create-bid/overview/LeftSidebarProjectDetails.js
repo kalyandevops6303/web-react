@@ -14,6 +14,7 @@ import { getProjectDetails } from '../../../redux/actions/createBidActions';
 import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -83,7 +84,7 @@ const LeftSidebarProjectDetails = () => {
             <div>
               <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
               <div className="d-flex flex-wrap">
-                <RatingBadge number={projectDetailsData?.client_details?.rating?.toFixed(1)} />
+                <RatingBadge number={returnFormattedRating(projectDetailsData?.client_details?.rating)} />
                 <CardText className="ps-75 font-small-2 fw-300 rating-label">
                   {projectDetailsData?.client_details?.projects_listed_count} Projects
                 </CardText>

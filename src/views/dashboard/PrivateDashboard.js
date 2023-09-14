@@ -24,6 +24,7 @@ import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
 import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
+import OpenListing from './overview/OpenListing';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -203,6 +204,12 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
+          {userDetailsData?.user_type === userTypes.client && (
+            <section className="mb-2">
+              <Header className="mb-1">Open Listings</Header>
+              <OpenListing />
+            </section>
+          )}
           {userDetailsData?.user_type === userTypes.team && (
             <section className="mb-2">
               <Header className="mb-1">Talents</Header>
