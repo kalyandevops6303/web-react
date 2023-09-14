@@ -344,3 +344,14 @@ export const formattedDate = (value) => {
 
   return formattedDateString;
 };
+
+export const returnFormattedRating = (num) => {
+  // Check if the number is an integer
+  if (Number.isInteger(num)) {
+    return num; // Return the number as is
+    // eslint-disable-next-line no-else-return
+  } else {
+    // Round the number to one decimal place for float or decimal numbers
+    return Math.round(num * 10) / 10;
+  }
+};

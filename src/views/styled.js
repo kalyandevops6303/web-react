@@ -84,6 +84,7 @@ const SecondaryFiltersWrap = styled.div`
   gap: 1rem;
   margin-top: 0.4rem;
   margin-bottom: 2rem;
+
   .marketplace-search {
     min-width: 18rem;
   }

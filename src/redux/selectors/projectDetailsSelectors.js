@@ -6,6 +6,8 @@ export const projectDetails = createSelector(projectDetailsSelector, (state) => 
 
 export const projectDetailsLoading = createSelector(projectDetailsSelector, (state) => state.projectDetailsLoading);
 
+export const removeWorkerLoading = createSelector(projectDetailsSelector, (state) => state.removeWorkerLoading);
+
 // Contract flow
 
 export const selectIsNDA = createSelector(projectDetailsSelector, (state) => state?.isNDA);

@@ -7,6 +7,7 @@ const initialState = {
   getTeamMemberLoading: false,
   receivedBids: [],
   getReceivedBidsLoading: false,
+  removeWorkerLoading: false,
   error: null,
 };
 
@@ -218,7 +219,10 @@ const projectDetails = createSlice({
       }
 
       // If no matching worker is found, return the original state
-      return state;
+      return {
+        ...state,
+        signContractByTalentLoading: false,
+      };
     },
 
     signContractByTalentFailure: (state, action) => ({
@@ -257,10 +261,50 @@ const projectDetails = createSlice({
       updateContractLoading: false,
       error: action.payload,
     }),
+
+    removeWorkerRequest: (state) => ({
+      ...state,
+      removeWorkerLoading: true,
+      error: null,
+    }),
+    removeWorkerSuccess: (state) => ({
+      ...state,
+      removeWorkerLoading: false,
+    }),
+    removeWorkerFailure: (state, action) => ({
+      ...state,
+      removeWorkerLoading: false,
+      error: action.payload,
+    }),
+
+    getInvitedMemberRequest: (state) => ({
+      ...state,
+      getInvitedMemberLoading: true,
+      error: null,
+    }),
+    getInvitedMemberSuccess: (state, action) => ({
+      ...state,
+
+      getInvitedMemberLoading: false,
+      invitedMemberCurrentPreview: action.payload.data,
+      getInvitedMember:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.getInvitedMember, ...action.payload.data],
+      invitedMemberMetaData: action.payload.metadata,
+    }),
+    getInvitedMemberFailure: (state, action) => ({
+      ...state,
+      getInvitedMemberLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
 export const {
+  getInvitedMemberFailure,
+  getInvitedMemberRequest,
+  getInvitedMemberSuccess,
   checkDocumentActivatedRequest,
   checkDocumentActivatedSuccess,
   checkDocumentActivatedFailure,
@@ -301,6 +345,9 @@ export const {
   updateContractRequest,
   updateContractSuccess,
   updateContractFailure,
+  removeWorkerRequest,
+  removeWorkerSuccess,
+  removeWorkerFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

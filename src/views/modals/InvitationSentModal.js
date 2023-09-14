@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Star } from 'react-feather';
 import Avatar from '@components/avatar';
@@ -17,6 +18,7 @@ import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors
 import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
 import { getItem } from '../../utility/localStorageControl';
 import { userTypes } from '../../utility/constants/Constant';
+import { returnFormattedRating } from '../../utility/Utils';
 
 const InvitationSentModal = ({
   projectId,
@@ -26,14 +28,14 @@ const InvitationSentModal = ({
   selectedTalents,
   message,
   toggleSendInvitationModal,
-  selectedIds,
   setSelectedIds,
-  invitedIds,
   setInvitedIds,
   setSelectedTalents,
   description,
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
   const isTeaminviteLoading = useSelector(teamInviteLoading);
@@ -43,9 +45,13 @@ const InvitationSentModal = ({
 
   const onSuccess = () => {
     toggleModal();
-    setInvitedIds([...invitedIds, ...selectedIds]);
+    setInvitedIds([]);
     setSelectedIds([]);
     setSelectedTalents([]);
+
+    if (location.pathname === '/create-team/profile-details') {
+      navigate('/dashboard');
+    }
   };
 
   const onInviteTalents = () => {
@@ -138,7 +144,7 @@ const InvitationSentModal = ({
                           <Badge>
                             <div className="d-flex align-items-center">
                               <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
-                              <p className="m-0 fw-bolder rating-text">{talent.rating}</p>
+                              <p className="m-0 fw-bolder rating-text">{returnFormattedRating(talent.rating)}</p>
                             </div>
                           </Badge>
                           <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
@@ -179,9 +185,7 @@ InvitationSentModal.propTypes = {
   selectedTalents: Proptypes.array,
   message: Proptypes.string,
   toggleSendInvitationModal: Proptypes.func,
-  selectedIds: Proptypes.array,
   setSelectedIds: Proptypes.func,
-  invitedIds: Proptypes.array,
   setInvitedIds: Proptypes.func,
   setSelectedTalents: Proptypes.func,
   description: Proptypes.string,
@@ -194,9 +198,7 @@ InvitationSentModal.defaultProps = {
   message: '',
   projectId: '',
   toggleSendInvitationModal: () => {},
-  selectedIds: [],
   setSelectedIds: () => {},
-  invitedIds: [],
   setInvitedIds: () => {},
   setSelectedTalents: () => {},
   description: '',

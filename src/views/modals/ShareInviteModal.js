@@ -1,10 +1,12 @@
 /* eslint-disable no-undef */
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import CreatableSelect from 'react-select/creatable';
-import { Button, Modal, ModalHeader, ModalBody, Row, FormFeedback, Col, Spinner } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Row, FormFeedback, Col, Spinner, Input, InputGroup } from 'reactstrap';
 import '../custom-styles.scss';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { selectThemeColors } from '../../utility/Utils';
 import { validEmailRegex } from '../../utility/constants/Constant';
 import { RequirementsFormContainer } from '../CreateProject/style';
@@ -14,10 +16,15 @@ import { inviteTalentsLoading } from '../../redux/selectors/inviteTalentSelector
 
 const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
   const [validEmailError, setValidEmailError] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [customEmailsValue, setCustomEmailsValue] = useState([]);
+
+  const [shareInputValue, setShareInputValue] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
 
   const customSelectComponents = {
     DropdownIndicator: null,
@@ -29,6 +36,9 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
   });
 
   const onSuccess = () => {
+    if (location.pathname === '/create-team/profile-details') {
+      navigate('/dashboard');
+    }
     toggleModal();
   };
 
@@ -76,6 +86,13 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
     }
   };
 
+  const handleCopy = () => {
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 1500);
+  };
+
   return (
     <Modal
       isOpen={modal}
@@ -106,6 +123,31 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
                   value={customEmailsValue}
                 />
                 {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
+              </Col>
+            </Row>
+            <div className="divider my-2">
+              <div className="divider-text">Or</div>
+            </div>
+            <Row>
+              <Col sm="12" md="12" lg="12">
+                <div className="mb-1">
+                  <InputGroup>
+                    <Input
+                      type="url"
+                      id="share"
+                      name="share"
+                      placeholder="Lorem ipsum dolor sit amet, consectet."
+                      onChange={(e) => setShareInputValue(e.target.value)}
+                    />
+                    <div className="input-group-append">
+                      <CopyToClipboard text={shareInputValue} onCopy={handleCopy}>
+                        <Button color="primary" type="button">
+                          {isCopied ? 'Copied' : 'Copy Link'}
+                        </Button>
+                      </CopyToClipboard>
+                    </div>
+                  </InputGroup>
+                </div>
               </Col>
             </Row>
             <div className="d-flex justify-content-end">

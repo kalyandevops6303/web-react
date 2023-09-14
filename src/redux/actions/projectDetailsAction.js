@@ -1,3 +1,4 @@
+import ShowToastMessage from '../../@core/components/toast';
 import {
   acceptInvitation,
   checkDocumentActivatedService,
@@ -5,17 +6,20 @@ import {
   getCommonBidDetailsService,
   getDocumentService,
   getDocumentTimelineService,
+  getInvitatedByService,
   getInvitedByService,
   getProjectTeamMemberServive,
   getReceivedBidsService,
   getUnassignedRoleService,
   projectDetailsService,
   rejectInvitation,
+  removeWorkerService,
   sendDocumentService,
   signContractByTalentServive,
   terminateContractService,
   updateBidStatusService,
 } from '../../services/projectDetailsServices';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
   checkDocumentActivatedFailure,
@@ -33,6 +37,9 @@ import {
   getInvitedByFailure,
   getInvitedByRequest,
   getInvitedBySuccess,
+  getInvitedMemberFailure,
+  getInvitedMemberRequest,
+  getInvitedMemberSuccess,
   getReceivedBidsFailure,
   getReceivedBidsRequest,
   getReceivedBidsSuccess,
@@ -45,6 +52,9 @@ import {
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
+  removeWorkerFailure,
+  removeWorkerRequest,
+  removeWorkerSuccess,
   sendDocumentFailure,
   sendDocumentRequest,
   sendDocumentSuccess,
@@ -78,6 +88,18 @@ const getTeamMembers =
       dispatch(getTeamMemberSuccess(res.data.data));
     } catch (error) {
       errorHandler(error, getTeamMemberFailure);
+    }
+  };
+
+const getInvitedMember =
+  ({ metadata, project_id }) =>
+  async (dispatch) => {
+    dispatch(getInvitedMemberRequest());
+    try {
+      const res = await getInvitatedByService({ metadata, project_id });
+      dispatch(getInvitedMemberSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getInvitedMemberFailure);
     }
   };
 
@@ -164,6 +186,18 @@ const updateInvitation =
       errorHandler(error);
     }
   };
+
+const removeWorkerFromProjectTeam = (projectId, teamId, workerId, onSuccess) => async (dispatch) => {
+  dispatch(removeWorkerRequest());
+  try {
+    const res = await removeWorkerService(projectId, teamId, workerId);
+    dispatch(removeWorkerSuccess(res.data.data));
+    onSuccess();
+    ShowToastMessage(SUCCESS, res.data.data);
+  } catch (error) {
+    errorHandler(error, removeWorkerFailure);
+  }
+};
 
 // Contract flow
 
@@ -278,6 +312,7 @@ const updateContract =
   };
 
 export {
+  getInvitedMember,
   checkDocumentActivated,
   getDocumentTimeline,
   updateContract,
@@ -293,4 +328,5 @@ export {
   getReceivedBids,
   getBidDetails,
   getDocument,
+  removeWorkerFromProjectTeam,
 };

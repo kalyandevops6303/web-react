@@ -2,7 +2,7 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle, Spinner } from 'reactstrap';
-import AcceptGif from '../../assets/images/gifs/green_check.gif';
+import AcceptGif from '../../assets/images/gifs/accept_bid.gif';
 import { AcceptModalWrapper } from './style';
 
 const AcceptBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
@@ -16,13 +16,13 @@ const AcceptBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
       <ModalBody>
         <AcceptModalWrapper>
           <div className="d-flex justify-content-between pr-1">
-            <img className="gif" style={{ margin: 'auto' }} src={AcceptGif} width={120} height={120} alt="gif" />
+            <img className="gif" style={{ margin: 'auto' }} src={AcceptGif} width={160} height={160} alt="gif" />
             <div className="content-side">
               <CardTitle className="modal-title-custom">Great Choice</CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">Accept bid</CardSubtitle>
 
               <CardText className="desc fw-light">
-                By accepting this bid your assigning this project to the below{' '}
+                By accepting this bid you are assigning this project to the below{' '}
               </CardText>
               <section className="d-flex gap-2 stats">
                 <div>

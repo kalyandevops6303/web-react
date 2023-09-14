@@ -36,22 +36,30 @@ const ProjectCardWrap = styled(CardWrap)`
       }
     }
   }
+  .name-info-rating-wrapper {
+    width: 70%;
+  }
   .marketplace-card-title {
+    line-height: 1.25rem;
     font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 1.3125rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .marketplace-card-role {
+    font-size: 0.8rem !important;
     color: ${theme.gray};
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 400;
+    font-weight: 300;
     line-height: 1.125rem;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .market-place-card-photo {
-    height: 2rem;
+    height: 2.5rem;
+    width: 2.5rem;
     border-radius: 50%;
     cursor: auto !important;
   }
@@ -125,6 +133,7 @@ const TeamCardWrap = styled(CardWrap)`
 
   .market-place-card-photo {
     height: 2.2rem;
+    width: 2.2rem;
     border-radius: 50%;
     cursor: auto !important;
   }
@@ -141,7 +150,7 @@ const TeamCardWrap = styled(CardWrap)`
   }
 `;
 const UserCardWrap = styled(CardWrap)`
-  width: 50%;
+  width: ${(props) => (props.clientCard ? '100%' : '50%')};
   @media only screen and (max-device-width: 600px) {
     width: 100%;
   }

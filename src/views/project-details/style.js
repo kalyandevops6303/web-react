@@ -291,6 +291,22 @@ const BidWrapper = styled.div`
     padding: 0.3rem;
   }
 `;
+
+const UserNameWrapper = styled.div`
+  .table-user-name {
+    @media (min-width: 992px) and (max-width: 1200px) {
+      max-width: 3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 890px) {
+      max-width: 2.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+`;
+
 const TeamVieWrapper = styled.div`
   .basic-title {
     padding-left: 1.2rem;
@@ -497,4 +513,5 @@ export {
   RatingNavsContainer,
   RatingsFormContainer,
   RatingTag,
+  UserNameWrapper,
 };

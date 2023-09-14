@@ -30,7 +30,7 @@ import { BlueBgIconContainer, TableContainer } from '../CreateProject/style';
 import AlmaMaterImg from '../../assets/images/almaMater.png';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import InfiniteScroll from '../../lib/infinite-scroll';
-import { giveStrokeColor } from '../../utility/Utils';
+import { giveStrokeColor, returnFormattedRating } from '../../utility/Utils';
 import {
   getAlmaMaterTalents,
   getBestTalents,
@@ -88,6 +88,7 @@ const InviteTeamMemberModal = ({
   const loadNewBestTalents = () => {
     dispatch(
       getBestTalents(
+        projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         bestTalentsData?.metadata?.current_page + 1,
@@ -100,6 +101,7 @@ const InviteTeamMemberModal = ({
   const loadNewFavoriteTalents = () => {
     dispatch(
       getFavoriteTalents(
+        projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         favoriteTalentsData?.metadata?.current_page + 1,
@@ -112,6 +114,7 @@ const InviteTeamMemberModal = ({
   const loadNewAlmaMaterTalents = () => {
     dispatch(
       getAlmaMaterTalents(
+        projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         almaMaterTalentsData?.metadata?.current_page + 1,
@@ -123,12 +126,12 @@ const InviteTeamMemberModal = ({
   const loadNewTeamMembers = () => {
     dispatch(
       getTeamMemberForInvite(
+        projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
         almaMaterTalentsData?.metadata?.current_page + 1,
         10,
         almaMaterTalentsData?.data,
-        projectId,
       ),
     );
   };
@@ -137,11 +140,11 @@ const InviteTeamMemberModal = ({
     let delayDebounceFn = null;
 
     delayDebounceFn = setTimeout(() => {
-      dispatch(getBestTalents(searchValue, 1, 10, []));
-      dispatch(getFavoriteTalents(searchValue, 1, 10, []));
-      dispatch(getAlmaMaterTalents(searchValue, 1, 10, []));
+      dispatch(getBestTalents(projectId, searchValue, 1, 10, []));
+      dispatch(getFavoriteTalents(projectId, searchValue, 1, 10, []));
+      dispatch(getAlmaMaterTalents(projectId, searchValue, 1, 10, []));
       if (userData?.user_type !== userTypes.client && projectId) {
-        dispatch(getTeamMemberForInvite(searchValue, 1, 10, [], projectId));
+        dispatch(getTeamMemberForInvite(projectId, searchValue, 1, 10, []));
       }
     }, 500);
 
@@ -157,7 +160,7 @@ const InviteTeamMemberModal = ({
     let userId;
 
     if (type === 'fav') {
-      userId = user.talent_details.user_id;
+      userId = user.user_id;
     } else {
       userId = user.user_id;
     }
@@ -335,17 +338,13 @@ const InviteTeamMemberModal = ({
                           <Col sm="2" md="3" lg="4">
                             <div className="d-flex align-items-center">
                               <Avatar
-                                img={
-                                  item?.talent_details?.image_uri?.length > 0
-                                    ? item?.talent_details?.image_uri
-                                    : defaultAvatar
-                                }
+                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
                                 imgHeight="38"
                                 imgWidth="38"
                                 className="me-2 user-pic"
                               />
-                              <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
-                                <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
+                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
+                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
                               </Link>
                             </div>
                           </Col>
@@ -359,12 +358,10 @@ const InviteTeamMemberModal = ({
                                     fill={theme.starRatingBg}
                                     className="me-50"
                                   />
-                                  <p className="m-0 fw-bolder rating-text">{item.talent_details.rating}</p>
+                                  <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                 </div>
                               </Badge>
-                              <p className="m-0 font-small-3 fw-bold ms-1">
-                                {item.talent_details.projects_worked_on_count} Projects
-                              </p>
+                              <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
                             </div>
                           </Col>
                           <Col sm="2" md="3" lg="2">
@@ -449,7 +446,7 @@ const InviteTeamMemberModal = ({
                                     fill={theme.starRatingBg}
                                     className="me-50"
                                   />
-                                  <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                  <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                 </div>
                               </Badge>
                               <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
@@ -537,7 +534,7 @@ const InviteTeamMemberModal = ({
                                     fill={theme.starRatingBg}
                                     className="me-50"
                                   />
-                                  <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                  <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                 </div>
                               </Badge>
                               <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
@@ -625,7 +622,7 @@ const InviteTeamMemberModal = ({
                                     fill={theme.starRatingBg}
                                     className="me-50"
                                   />
-                                  <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                  <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                 </div>
                               </Badge>
                               <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>

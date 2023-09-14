@@ -9,8 +9,9 @@ import {
   makeFavSuccess,
   removeFavSuccess,
 } from '../reducers/profile';
+import { getRequestStatus } from './inviteTalent';
 
-const getProfile = (id, user_type) => async (dispatch) => {
+const getProfile = (id, user_type, isEditable) => async (dispatch) => {
   dispatch(getProfileRequest());
   let res;
   try {
@@ -22,6 +23,9 @@ const getProfile = (id, user_type) => async (dispatch) => {
     }
     if (user_type === userTypes.team) {
       res = await getTeamById(id);
+    }
+    if (res.data.data.user_type !== userTypes.client && !isEditable) {
+      dispatch(getRequestStatus({ entity_type: res.data.data?.user_type, entity_id: res.data.data?._id }));
     }
     dispatch(getProfileSuccess(res.data.data));
   } catch (error) {
