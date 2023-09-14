@@ -42,6 +42,7 @@ import { createTeam, updateTeam } from '../../redux/actions/teamsActions';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getTeamById } from '../../services/teamServices';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
+import InviteTalentToTeam from '../invite-talent-to-team';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -177,6 +178,9 @@ const Profile = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [teamCreatedModal, setTeamCreatedModal] = useState(null);
+  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+  const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
+
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
   const [servicesOptions, setServicesOptions] = useState(null);
@@ -601,9 +605,28 @@ const Profile = () => {
     }
   }, [teamDetails]);
 
+  const toggleInviteTeamMemberModal = () => {
+    setInviteTeamMemberModal(!inviteTeamMemberModal);
+  };
+  const onInvite = () => {
+    setInviteTeamMemberModal(true);
+    setInviteTalentToTeamModal(true);
+    setTeamCreatedModal(false);
+  };
+
   return (
     <ProfileFormContainer>
-      {teamCreatedModal && <TeamCreatedModal modal={teamCreatedModal} toggleModal={toggleTeamCreatedModal} />}
+      {teamCreatedModal && (
+        <TeamCreatedModal onInvite={onInvite} modal={teamCreatedModal} toggleModal={toggleTeamCreatedModal} />
+      )}
+      {/* <Button onClick={onInvite}>Invite me</Button> */}
+      {inviteTalentToTeamModal && (
+        <InviteTalentToTeam
+          inviteTeamMemberModal={inviteTeamMemberModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+        />
+      )}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>

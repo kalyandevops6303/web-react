@@ -103,10 +103,29 @@ const inviteTalentSlice = createSlice({
       teamMemberForInviteLoading: false,
       error: action.payload,
     }),
+
+    getRequestStatusRequest: (state) => ({
+      ...state,
+      getRequestStatusLoading: true,
+      error: null,
+    }),
+    getRequestStatusSuccess: (state, action) => ({
+      ...state,
+      getRequestStatusLoading: false,
+      getRequestStatus: action.payload,
+    }),
+    getRequestStatusFailure: (state, action) => ({
+      ...state,
+      teamMemberForInviteLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
 export const {
+  getRequestStatusFailure,
+  getRequestStatusSuccess,
+  getRequestStatusRequest,
   createProjectRequest,
   createProjectSuccess,
   createProjectFailure,

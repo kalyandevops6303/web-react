@@ -84,6 +84,7 @@ const SecondaryFiltersWrap = styled.div`
   gap: 1rem;
   margin-top: 0.4rem;
   margin-bottom: 2rem;
+
   .marketplace-search {
     min-width: 18rem;
   }
@@ -224,6 +225,7 @@ const TimeWrapper = styled.section`
 `;
 
 const CreateBidRadioOption = styled.div`
+  min-height: 210px;
   padding: 1rem;
   border-radius: 6px;
   border: ${(props) => (props.active ? `1px solid ${theme.activeNavPillText}` : `1px solid ${theme.darkBorder}`)};

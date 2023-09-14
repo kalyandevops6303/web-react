@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { Button, Modal, ModalHeader, ModalBody, Card, CardBody, Row, Col } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Card, CardBody, Row, Col, Spinner } from 'reactstrap';
 import { Mail, Trash2 } from 'react-feather';
 import { capitalize } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import Avatar from '@components/avatar';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -13,14 +14,13 @@ import { GrayBorderContainer } from '../styled';
 import theme from '../../configs/themeVariables';
 import { getInvitedMember, getTeamMembers } from '../../redux/actions/dashboardActions';
 import { selectGetInvitedMember, selectGetTeamMember } from '../../redux/selectors/dashboardSelectors';
-import { selectUserData } from '../../redux/selectors/authSelectors';
 import { MessageIconWrap } from './style';
+import { getItem } from '../../utility/localStorageControl';
+import { inviteTalents } from '../../redux/actions/inviteTalent';
 
 const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) => {
   const teamMembers = useSelector(selectGetTeamMember);
-  const userData = useSelector(selectUserData);
   const [hasMore, setHasMore] = useState(true);
-
   const dispatch = useDispatch();
   const selectTeamMembersMetadata = useSelector((state) => state.dashboard.getMemberMetaData);
   const selectTeamMembercurrentPreview = useSelector((state) => state.dashboard.memberCurrentPreview);
@@ -64,11 +64,7 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
           hasMore={hasMore}
           endMessage={
             <div className="d-flex justify-content-center ">
-              {teamMembers?.length > 0 ? (
-                <span className="mt-2">You have seen it all!</span>
-              ) : (
-                <span className="mt-2">No data found!</span>
-              )}
+              {teamMembers?.length === 0 ? <span className="mt-2">No data found!</span> : ''}
             </div>
           }
           scrollableTarget="scrollableDivTeamMemberModal"
@@ -79,20 +75,26 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
               <CardBody className="py-1">
                 <Row className="d-flex align-items-center">
                   <Col sm="12" md="3" lg="4">
-                    <div className="d-flex align-items-center">
-                      <Avatar
-                        img={item?.image_uri || defaultAvatar}
-                        imgHeight="38"
-                        imgWidth="38"
-                        className="me-2 user-pic"
-                      />
-                      <div>
-                        <p className="fw-bolder m-0">
-                          {item?.first_name} {item?.last_name}
-                        </p>
-                        <p className="font-small-3 m-0">{item?.role?.name}</p>
+                    <Link
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                      to={`/profile/talent/${item?.user_id}`}
+                      target="_blank"
+                    >
+                      <div className="d-flex align-items-center">
+                        <Avatar
+                          img={item?.image_uri || defaultAvatar}
+                          imgHeight="38"
+                          imgWidth="38"
+                          className="me-2 user-pic"
+                        />
+                        <div>
+                          <p className="fw-bolder m-0">
+                            {item?.first_name} {item?.last_name}
+                          </p>
+                          <p className="font-small-3 m-0">{item?.role?.name}</p>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   </Col>
                   <Col sm="12" md="3" lg="2">
                     <p className="fw-bold m-0">Team Member</p>
@@ -104,7 +106,7 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
                     </p>
                   </Col>
                   <Col sm="12" md="1" lg="1">
-                    {userData?.created_by?.user_id !== item?.user_id && (
+                    {teamMembers?.length > 1 && (
                       <div className="d-flex justify-content-end">
                         <Trash2 onClick={() => handleRemoveMember(item)} color={theme.red} className="cursor-pointer" />
                       </div>
@@ -131,8 +133,10 @@ TeamMembersComponent.defaultProps = {
 const InvitedMemberComponent = () => {
   const inviteMembers = useSelector(selectGetInvitedMember);
   const [hasMore, setHasMore] = useState(true);
+  const [loadingItems, setLoadingItems] = useState({});
 
   const dispatch = useDispatch();
+
   const selectInvitedMembersMetadata = useSelector((state) => state.dashboard.invitedMemberMetaData);
   const selectInvitedMembercurrentPreview = useSelector((state) => state.dashboard.invitedMemberCurrentPreview);
   const metadata = { page: 1, page_size: 10 };
@@ -159,6 +163,44 @@ const InvitedMemberComponent = () => {
     };
     dispatch(getInvitedMember({ metadata: newMeteData }));
   };
+  const teamId = getItem('team_id');
+
+  const handleSendMail = ({ id }) => {
+    setLoadingItems((prevLoadingItems) => ({
+      ...prevLoadingItems,
+      [id]: true,
+    }));
+
+    const newPostData = {
+      message: '',
+      // eslint-disable-next-line no-undef
+      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+      requests_to: {
+        user_ids: [id],
+        team_ids: [],
+        email_ids: [],
+      },
+      request_for: {
+        project_id: '',
+        team_id: teamId || '',
+        role: '',
+      },
+    };
+    const onSuccess = () => {
+      setLoadingItems((prevLoadingItems) => ({
+        ...prevLoadingItems,
+        [id]: false, // Set the loading state back to false
+      }));
+    };
+    const onError = () => {
+      setLoadingItems((prevLoadingItems) => ({
+        ...prevLoadingItems,
+        [id]: false, // Set the loading state back to false
+      }));
+    };
+
+    dispatch(inviteTalents({ data: newPostData, onSuccess, onError }));
+  };
   return (
     <div>
       {inviteMembers?.length > 0 && (
@@ -174,11 +216,7 @@ const InvitedMemberComponent = () => {
               hasMore={hasMore}
               endMessage={
                 <div className="d-flex justify-content-center ">
-                  {inviteMembers?.length > 0 ? (
-                    <span className="mt-2">You have seen it all!</span>
-                  ) : (
-                    <span className="mt-2">No data found!</span>
-                  )}
+                  {inviteMembers?.length > 0 ? <span className="mt-2">No data found!</span> : ''}
                 </div>
               }
               scrollableTarget="scrollableDivInvitedMemberModal"
@@ -218,11 +256,17 @@ const InvitedMemberComponent = () => {
                       </Col>
 
                       <Col sm="12" md="1" lg="1">
-                        <MessageIconWrap>
-                          <span className="mail-bg">
-                            <Mail size={20} className="mail-icon" color={theme.activeColor} />
-                          </span>
-                        </MessageIconWrap>
+                        {loadingItems[item?._id] ? (
+                          <div className="d-flex justify-content-center">
+                            <Spinner size="sm" />
+                          </div>
+                        ) : (
+                          <MessageIconWrap onClick={() => handleSendMail({ id: item?._id })}>
+                            <span className="mail-bg">
+                              <Mail size={20} className="mail-icon" color={theme.activeColor} />
+                            </span>
+                          </MessageIconWrap>
+                        )}
                       </Col>
                     </Row>
                   </CardBody>

@@ -11,6 +11,7 @@ const ConfirmContractModal = ({ docType, terminateData, onAccept, modal, toggleM
     toggleModal();
   };
   const isLoading = useSelector((state) => state.projectDetails.sendDocumentLoading);
+  const isSignLoading = useSelector((state) => state.projectDetails.signContractByTalentLoading);
   const isContractView = docType === 'CONTRACT';
 
   return (
@@ -42,11 +43,11 @@ const ConfirmContractModal = ({ docType, terminateData, onAccept, modal, toggleM
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 justify-content-end">
-            <Button outline color="primary" onClick={onClose}>
+            <Button disabled={isSignLoading || isLoading} outline color="primary" onClick={onClose}>
               Cancel
             </Button>
             <Button color="primary" onClick={onAccept}>
-              {isLoading ? <Spinner size="sm" /> : 'Agree & Sign'}
+              {isSignLoading || isLoading ? <Spinner size="sm" /> : 'Agree & Sign'}
             </Button>
           </div>
         </AcceptModalWrapper>

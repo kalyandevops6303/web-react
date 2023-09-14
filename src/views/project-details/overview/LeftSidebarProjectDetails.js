@@ -13,7 +13,6 @@ import { projectDetails, projectDetailsLoading } from '../../../redux/selectors/
 import DateTime from '../../../lib/date-time';
 import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
-import { formattedDate } from '../../../utility/Utils';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
@@ -97,7 +96,7 @@ const LeftSidebarProjectDetails = () => {
             />
             <div>
               <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
-              <div className="d-flex">
+              <div className="d-flex flex-wrap">
                 <RatingBadge number={projectDetailsData?.client_details?.rating} />
                 <CardText className="ps-75 font-small-2 fw-300 rating-label">
                   {projectDetailsData?.client_details?.projects_listed_count} Projects
@@ -128,21 +127,25 @@ const LeftSidebarProjectDetails = () => {
             <CardTitle className="main-title mb-75">Project Details</CardTitle>
           </section>
 
-          <div className="d-flex mb-75">
+          <div className="d-flex mb-75 flex-wrap gap-25">
             <span className="info-key">Posted date:</span>
-            <CardText className="info-value">{formattedDate(projectDetailsData?.listing_details?.start_date)}</CardText>
+            <CardText className="info-value">
+              {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)}
+            </CardText>
           </div>
 
-          {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
-            <BadgeGroup
-              title="Skills"
-              data={[
-                ...(projectDetailsData?.proficiency?.skills || []),
-                ...(projectDetailsData?.proficiency?.tools || []),
-              ]}
-              color="light-blue"
-            />
-          )}
+          <div className="d-flex">
+            {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
+              <BadgeGroup
+                title="Skills"
+                data={[
+                  ...(projectDetailsData?.proficiency?.skills || []),
+                  ...(projectDetailsData?.proficiency?.tools || []),
+                ]}
+                color="light-blue"
+              />
+            )}
+          </div>
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>

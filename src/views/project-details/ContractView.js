@@ -207,7 +207,7 @@ const ContractView = () => {
                           project_id={param?.projectId}
                         />
                       )}
-                      {isFreshDoc && userType === userTypes.client && (
+                      {!document?.is_terminated && isFreshDoc && userType === userTypes.client && (
                         <span className="icon-bg cursor-pointer" onClick={toggleModal}>
                           <img src={EditImg} alt="edit" />
                         </span>
@@ -293,7 +293,7 @@ const ContractView = () => {
               </div>
 
               <div className="team-sign-section mt-2" style={{ maxHeight: '26rem', overflowY: 'auto' }}>
-                <h6 className="fw-bolder">Team</h6>
+                <h6 className="fw-bolder">{updatedWorkers?.length > 0 ? 'Team' : ''} </h6>
                 {updatedWorkers?.map((worker) => (
                   <div key={worker?.user_id} className="d-flex justify-content-between mb-1">
                     <NameInfo

@@ -166,7 +166,7 @@ const Search = () => {
                       currentFilterData?.length > 0 ? '' : 'no-data'
                     } `}
                   >
-                    {currentFilterData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+                    {currentFilterData?.length === 0 ? 'No data found!' : ''}
                   </div>
                 }
                 loader={<div className="d-flex justify-content-center align-items-center">Loading...</div>}

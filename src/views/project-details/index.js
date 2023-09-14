@@ -14,6 +14,7 @@ import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
 import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
+import RatingView from './overview/RatingView';
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -55,6 +56,7 @@ const ProjectDetails = () => {
           <Routes>
             <Route path="bid" element={<BidView />} />
             <Route path="team" element={<TeamView />} />
+            <Route path="rating" element={<RatingView />} />
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
             <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />
           </Routes>

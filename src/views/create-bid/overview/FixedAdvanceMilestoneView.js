@@ -96,6 +96,7 @@ const FixedAdvanceMilestoneView = () => {
                 yup
                   .number()
                   .min(1, 'Hours must be at least 1')
+                  .max(168, 'Hours must be at most 168')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Hours is required'),
@@ -983,6 +984,21 @@ const FixedAdvanceMilestoneView = () => {
                                                         </InputGroup>
                                                       )}
                                                     />
+                                                    {errors &&
+                                                      errors.milestones &&
+                                                      errors.milestones.length > 0 &&
+                                                      errors.milestones[milestoneIndex] &&
+                                                      errors.milestones[milestoneIndex].workers &&
+                                                      errors.milestones[milestoneIndex].workers.length > 0 &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex] &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex].hours && (
+                                                        <FormFeedback>
+                                                          {
+                                                            errors.milestones[milestoneIndex].workers[workerIndex].hours
+                                                              .message
+                                                          }
+                                                        </FormFeedback>
+                                                      )}
                                                   </Col>
                                                 </Row>
                                               </Col>

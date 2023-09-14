@@ -137,6 +137,12 @@ const BidDetailsWrap = styled.div`
       color: ${theme.activeColor};
     }
   }
+  .edit-bid-btn {
+    color: ${theme.activeNavPillText};
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: underline;
+  }
 `;
 const BidWrapper = styled.div`
   .basic-title {
@@ -204,6 +210,16 @@ const BidWrapper = styled.div`
     .accordion-body {
       color: ${theme.bodyColor};
       padding: 0;
+
+      // Select
+      .select__value-container {
+        padding: 0;
+        padding-left: 8px;
+      }
+      .select__indicator {
+        padding: 0;
+        padding-right: 8px;
+      }
     }
     .accordion-body-desc {
       padding: 0 0 0 1.6rem;
@@ -275,6 +291,22 @@ const BidWrapper = styled.div`
     padding: 0.3rem;
   }
 `;
+
+const UserNameWrapper = styled.div`
+  .table-user-name {
+    @media (min-width: 992px) and (max-width: 1200px) {
+      max-width: 3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 890px) {
+      max-width: 2.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+`;
+
 const TeamVieWrapper = styled.div`
   .basic-title {
     padding-left: 1.2rem;
@@ -422,6 +454,54 @@ const MemberRowWrapper = styled.div`
   }
 `;
 
+const RatingNavsContainer = styled.div`
+  .nav {
+    border-radius: 0;
+  }
+
+  .nav-link {
+    font-weight: 400;
+  }
+
+  .nav-tabs .nav-link {
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 16px;
+  }
+
+  .nav-tabs .nav-link.active {
+    border-bottom: 2px solid ${theme.activeNavPillText} !important;
+    margin-bottom: -2px;
+    color: ${theme.activeNavPillText};
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .nav-tabs .nav-link:after {
+    background: none !important;
+  }
+`;
+
+const RatingsFormContainer = styled.div`
+  .label-asterisk {
+    color: ${theme.red};
+    margin-left: 4px;
+  }
+`;
+
+const RatingTag = styled.div`
+  border-radius: 12px;
+  border: 1px solid ${theme.turquoiseColor};
+  background: ${(props) => (props.active ? theme.turquoiseColor : theme.ratingTagBg)};
+  width: fit-content;
+
+  p {
+    color: ${(props) => (props.active ? theme.white : theme.lightTurquoiseColor)};
+    font-size: 12px;
+    font-weight: 600;
+  }
+`;
+
 export {
   BidWrapper,
   TeamVieWrapper,
@@ -430,4 +510,8 @@ export {
   BidDetailsWrap,
   AccordionHeadStyle,
   MemberRowWrapper,
+  RatingNavsContainer,
+  RatingsFormContainer,
+  RatingTag,
+  UserNameWrapper,
 };

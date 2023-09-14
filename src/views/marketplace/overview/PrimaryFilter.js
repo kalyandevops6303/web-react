@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ThumbsUp, User, Users } from 'react-feather';
+import { ThumbsUp, User, Users, File } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
@@ -57,6 +57,19 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
           />
         </Col>
       )}
+      {userType === userTypes.client ? (
+        <Col onClick={() => handlePrimaryChangeFilter('my_bids')}>
+          <Statbox
+            isActive={selected === 'my_bids'}
+            isMarketPlaceTab
+            title={selectCardData?.bids_submitted}
+            desc="Bid Received"
+            icon={<File height={20} />}
+            color="light-primary"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
+      ) : null}
 
       {(userType === userTypes.client || userType === userTypes.team) && (
         <Col onClick={() => handlePrimaryChangeFilter('talents')}>
@@ -106,14 +119,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
         </>
       )}
       {!isTab && (userType === userTypes.team || userType === userTypes.client) && (
-        <>
-          <Col>
-            <div />
-          </Col>
-          {/* <Col>
-            <div />
-          </Col> */}
-        </>
+        <Col>
+          <div />
+        </Col>
       )}
     </Row>
   );

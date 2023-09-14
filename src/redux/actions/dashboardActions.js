@@ -12,6 +12,7 @@ import {
   getProjectInviteService,
   removeMemberService,
   teamProfilePercentageService,
+  alertService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -46,6 +47,9 @@ import {
   removeMemberRequest,
   removeMemberFailure,
   removeMemberSuccess,
+  getAlertRequest,
+  getAlertSuccess,
+  getAlertFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -115,18 +119,23 @@ const getRecommendedTalent = (id) => async (dispatch) => {
   }
 };
 
-const removeTeamMember = (data) => async (dispatch) => {
-  dispatch(removeMemberRequest());
-  try {
-    const metadata = { page: 1, page_size: 10 };
-    await removeMemberService(data);
-    dispatch(removeMemberSuccess(data));
-    dispatch(getTeamMembers({ metadata }));
-    ShowToastMessage(SUCCESS, 'Member Removed');
-  } catch (error) {
-    errorHandler(error, removeMemberFailure);
-  }
-};
+const removeTeamMember =
+  ({ postData: data, onSuccess, isSelfRemove }) =>
+  async (dispatch) => {
+    dispatch(removeMemberRequest());
+    try {
+      const metadata = { page: 1, page_size: 10 };
+      await removeMemberService(data);
+      dispatch(removeMemberSuccess(data));
+      if (!isSelfRemove) {
+        dispatch(getTeamMembers({ metadata }));
+      }
+      onSuccess();
+      ShowToastMessage(SUCCESS, 'Member Removed');
+    } catch (error) {
+      errorHandler(error, removeMemberFailure);
+    }
+  };
 
 const getRecommendedTeams = () => async (dispatch) => {
   dispatch(recommendedTeamsRequest());
@@ -200,7 +209,18 @@ const getTeamProfilePercentage = () => async (dispatch) => {
   }
 };
 
+const getAlerts = () => async (dispatch) => {
+  dispatch(getAlertRequest());
+  try {
+    const res = await alertService();
+    dispatch(getAlertSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, getAlertFailure);
+  }
+};
+
 export {
+  getAlerts,
   validateUrl,
   removeTeamMember,
   updateInvitation,

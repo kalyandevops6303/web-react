@@ -22,10 +22,11 @@ import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { setItem } from '../../../utility/localStorageControl';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const UserSection = ({ users, name, isAlma }) => (
   <div className="user-section">
-    <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
+    <CardText className="truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
@@ -123,7 +124,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           <div className="d-flex flex-column">
             <TagsSection fullWidth open={open} tags={data?.expertise?.skills} />
             <div className="d-flex">
-              <RatingBadge number={data?.rating} />
+              <RatingBadge number={returnFormattedRating(data?.rating)} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {data?.projects_worked_on_count} Projects
               </CardText>
@@ -189,7 +190,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
             )}
           </div>
           {isTeamLoggedIn ? (
-            <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50">
+            <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1">
               <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
             </div>
           ) : (
