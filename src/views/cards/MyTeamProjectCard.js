@@ -3,20 +3,19 @@ import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap
 import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
-
+// import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import DateTime from '../../lib/date-time';
+// import theme from '../../configs/themeVariables';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
-import BaseInfoUI from './BaseInfoCard';
-import CreateBidModal from '../modals/CreateBidModal';
-import CompleteProfileModal from '../modals/CompleteProfileModal';
+import ProjectWithTeamUI from './ProjectWithTeamUI';
+import BaseInfoUI from './BaseInfoCardUI';
 
-const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
+const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
-  const [completeProfileModal, setCompleteProfileModal] = useState(null);
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -37,7 +36,6 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
   };
-
   const divRef = useRef(null);
 
   useEffect(() => {
@@ -46,19 +44,6 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
       setIsContentOverflowing(divElement.scrollHeight > divElement.clientHeight);
     }
   }, []);
-
-  const [createBidModal, setCreateBidModal] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
-
-  const toggleCreateBidModal = () => {
-    setCreateBidModal(!createBidModal);
-  };
-
-  const toggleCompleteProfileModal = () => {
-    setShowModal(false);
-    setCompleteProfileModal(!completeProfileModal);
-  };
-
   return (
     <ProjectCardWrap>
       <Card>
@@ -74,7 +59,7 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
               </div>
               <CardTitle className="d-flex align-items-center">
                 <span className="cursor-pointer" onClick={() => setShowModal(true)}>
-                  {data?.details?.name ?? data?.name}
+                  {data?.name}{' '}
                 </span>
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">
@@ -87,9 +72,9 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                     </>
                   )}
                 </CardText>
-                {/* <CardText className=" project mb-1">{`Assigned Date - ${
+                <CardText className=" project mb-1">{`Assigned Date - ${
                   data?.total_estimated_cost
-                }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText> */}
+                }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText>
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
                   {data?.client?.office_address?.country?.name || 'Location'}
@@ -101,11 +86,11 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
 
               {!showFullText ? (
                 <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
-                  {data?.details?.description ?? data?.description}
+                  {data?.description}
                 </div>
               ) : (
                 <div className="my-div" ref={divRef}>
-                  {data?.details?.description ?? data?.description}
+                  {data?.description}
                 </div>
               )}
 
@@ -116,45 +101,31 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
               )}
             </Col>
             <Col lg="4">
-              <BaseInfoUI data={data} />
+              {isProjectWithTeam ? <ProjectWithTeamUI data={data} /> : null}
+              {!isTeam && !isProjectWithTeam && <BaseInfoUI data={data} />}
             </Col>
           </Row>
         </CardBody>
       </Card>
-      {showModal && (
-        <ProjectModal
-          data={data}
-          modal={showModal}
-          toggleModal={handleToggle}
-          setCreateBidModal={setCreateBidModal}
-          setSelectedProject={setSelectedProject}
-          toggleCompleteProfileModal={toggleCompleteProfileModal}
-        />
-      )}
-      {createBidModal && (
-        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={selectedProject} />
-      )}
-      {completeProfileModal && (
-        <CompleteProfileModal
-          modal={completeProfileModal}
-          toggleModal={toggleCompleteProfileModal}
-          modalInfoText="team"
-        />
-      )}
+      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} isMyTeam />}
     </ProjectCardWrap>
   );
 };
 
-MarketPlaceProjectCard.propTypes = {
+MyTeamProjectCard.propTypes = {
   isExpanded: PropTypes.bool,
   data: PropTypes.object,
   isPopoverOpen: PropTypes.bool,
+  isProjectWithTeam: PropTypes.bool,
+  isTeam: PropTypes.bool,
 };
 
-MarketPlaceProjectCard.defaultProps = {
+MyTeamProjectCard.defaultProps = {
   isExpanded: false,
   data: {},
   isPopoverOpen: false,
+  isProjectWithTeam: false,
+  isTeam: false,
 };
 
-export default MarketPlaceProjectCard;
+export default MyTeamProjectCard;

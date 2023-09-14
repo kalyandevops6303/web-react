@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
 import { ChevronRight } from 'react-feather';
 import React from 'react';
@@ -76,6 +77,7 @@ const ProjectModal = ({
   setCreateBidModal,
   setSelectedProject,
   toggleCompleteProfileModal,
+  isMyTeam,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -247,7 +249,7 @@ const ProjectModal = ({
             </CardBody>
           </Card>
 
-          {isViewable ? (
+          {isMyTeam ? null : isViewable ? (
             <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
               <Button onClick={handleRedirectTodetailsView} color="primary">
                 <span className="me-50">View Bid</span>
@@ -286,6 +288,7 @@ export default ProjectModal;
 
 ProjectModal.propTypes = {
   modal: Proptypes.bool,
+  isMyTeam: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
   setCreateBidModal: Proptypes.func,
@@ -295,6 +298,7 @@ ProjectModal.propTypes = {
 
 ProjectModal.defaultProps = {
   modal: false,
+  isMyTeam: false,
   toggleModal: () => {},
   data: {},
   setCreateBidModal: () => {},
