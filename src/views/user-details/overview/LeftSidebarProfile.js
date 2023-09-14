@@ -378,7 +378,7 @@ const LeftSidebarProfile = ({
                 </Button>
               </div>
             )}
-            {!isEditable && (
+            {!isEditable && !isTeamView && (
               // To be taken for team members
               <div className="">
                 <div className="d-flex gap-1 mt-3 justify-content-center">

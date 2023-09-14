@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, MessageSquare } from 'react-feather';
@@ -16,27 +17,35 @@ const NavbarUser = () => {
   const navigate = useNavigate();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isNotificationCount = useSelector((state) => state.notifications.notificationCount);
+
+  const [userUnreadMsgCount, setUserUnreadMsgCount] = useState(0);
+
   const userData = useSelector(selectUserData);
   const userId = userData?._id;
   const handleNotificaionClick = () => {
     isNotificationCount && dispatch(notificationCount(false));
   };
 
-  CometChat.getUnreadMessageCountForUser(userId)
-    .then((unreadMessageCount) => {
-      console.log(unreadMessageCount);
-      const count = unreadMessageCount[userId];
-      console.log(`Unread messages count for ${userId}: ${count}`);
-    })
-    .catch((error) => {
-      console.error('Error fetching unread message count:', error);
-    });
-
   const handleChatNavigate = () => {
     navigate(`/chat`, {
       state: { targetId: undefined },
     });
   };
+
+  const fetchUnreadCount = useCallback(async () => {
+    try {
+      const unreadMsgs = await CometChat.getUnreadMessageCountForAllUsers();
+      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
+
+      setUserUnreadMsgCount(totalCount);
+    } catch (error) {
+      console.error('Error fetching unread message count:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUnreadCount();
+  }, [fetchUnreadCount]);
 
   return (
     <ul className="nav navbar-nav align-items-center ms-auto">
@@ -53,6 +62,7 @@ const NavbarUser = () => {
           </NotificationIconContainer>
           <MessageIconContainer>
             <div onClick={handleChatNavigate}>
+              {userUnreadMsgCount !== 0 && <span className="msg-notification-dot">{userUnreadMsgCount}</span>}
               <MessageSquare size={20} color={theme.bodyColor} />
             </div>
           </MessageIconContainer>

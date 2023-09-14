@@ -87,6 +87,7 @@ const ThemeNavbar = (props) => {
       dispatch(getTeams({ onSuccess }));
     }
   }, [userData]);
+
   return (
     <HeadWrapper className={className}>
       <div className="bookmark-wrapper d-flex align-items-center">
