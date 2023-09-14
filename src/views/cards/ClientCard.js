@@ -61,7 +61,7 @@ const ClientCard = ({ data, userType }) => {
 
   return (
     <UserCardWrap userType={userType} clientCard>
-      <Card style={{ height: '270px' }}>
+      <Card style={{ minHeight: '240px' }}>
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center">
@@ -186,13 +186,13 @@ const ClientCard = ({ data, userType }) => {
                     <div className="badge-box mt-25" key={skill?._id}>
                       <Badge
                         id={`tooltip-${skill?._id}-${index}`}
-                        className={`${skill?.name?.length > 20 ? 'truncate-1' : ''}`}
+                        className={`${skill?.name?.length > 12 ? 'truncate-1' : ''}`}
                         color=""
                         style={{ color: theme.lightBlueColor, backgroundColor: theme.lightBlueBgColor }}
                       >
                         {skill?.name}
                       </Badge>
-                      {skill?.name?.length > 20 ? (
+                      {skill?.name?.length > 12 ? (
                         <UncontrolledTooltip target={`tooltip-${skill?._id}-${index}`}>
                           {skill?.name}
                         </UncontrolledTooltip>

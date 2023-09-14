@@ -119,14 +119,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
         </>
       )}
       {!isTab && (userType === userTypes.team || userType === userTypes.client) && (
-        <>
-          <Col>
-            <div />
-          </Col>
-          {/* <Col>
-            <div />
-          </Col> */}
-        </>
+        <Col>
+          <div />
+        </Col>
       )}
     </Row>
   );

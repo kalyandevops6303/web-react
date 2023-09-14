@@ -82,6 +82,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
           color="light-dark-red"
         />
       </Col>
+      <Col>
+        <div />
+      </Col>
     </Row>
   );
 };

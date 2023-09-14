@@ -59,7 +59,7 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
               </div>
               <CardTitle className="d-flex align-items-center">
                 <span className="cursor-pointer" onClick={() => setShowModal(true)}>
-                  {data?.details?.name}
+                  {data?.details?.name ?? data?.name}
                 </span>
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">
@@ -86,11 +86,11 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
 
               {!showFullText ? (
                 <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
-                  {data?.details?.description}
+                  {data?.details?.description ?? data?.description}
                 </div>
               ) : (
                 <div className="my-div" ref={divRef}>
-                  {data?.details?.description}
+                  {data?.details?.description ?? data?.description}
                 </div>
               )}
 

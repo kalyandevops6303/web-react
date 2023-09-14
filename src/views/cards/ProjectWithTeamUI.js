@@ -31,6 +31,10 @@ const ProjectWithTeamUI = ({ data }) => {
       }))
     : [];
 
+  // eslint-disable-next-line no-unsafe-optional-chaining
+  const clientSkills = data?.proficiency?.skills ?? [];
+  const clientTools = data?.proficiency?.tools ?? [];
+
   return (
     <div className="d-flex flex-column  gap-1 mb-2">
       <div className="d-flex align-items-center justify-content-end">
@@ -73,7 +77,11 @@ const ProjectWithTeamUI = ({ data }) => {
             </div>
           </div>
           <div className="d-flex" style={{ marginTop: '35px' }}>
-            <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+            <BadgeGroup
+              title="Tools"
+              data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
+              color="light-blue"
+            />
           </div>
         </section>
         <div className="w-50">
@@ -92,7 +100,11 @@ const ProjectWithTeamUI = ({ data }) => {
             </CardText>
           </div>
           <div className="mt-2">
-            <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
+            <BadgeGroup
+              title="Skills"
+              data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
+              color="light-blue"
+            />
           </div>
         </div>
       </div>

@@ -31,6 +31,7 @@ import {
 import UserCard from '../../cards/UserCard';
 import ProjectCard from '../../cards/ProjectCard';
 import TeamCard from '../../cards/TeamCard';
+import MarketPlaceProjectCard from '../../cards/MarketPlaceProjectCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -201,6 +202,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const getCardComp = () => {
     if (primaryFilter === 'favourites') return UserCard;
     if (primaryFilter === 'join-requests') return TeamCard;
+    if (primaryFilter === 'invitations') return MarketPlaceProjectCard;
     return ProjectCard;
   };
 
