@@ -26,7 +26,7 @@ const BadgeGroup = ({ title, data, color, gapWrap }) => {
 
   const renderBadge = (item, index) => {
     const { name } = item;
-    const isLongName = name.length > 35;
+    const isLongName = name?.length > 35;
     const badgeClassName = isLongName ? `${color} truncate-1` : color;
     const badgeColor = `${color} badge`;
 

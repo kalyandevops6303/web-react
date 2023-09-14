@@ -41,7 +41,7 @@ const MemberRow = ({ data, withReview }) => {
                   {!withReview && <span className="mb-50 font-small-2 role">{data.role}</span>}
                 </div>
               </div>
-              <CardText className="fw-bold m-auto me-4">{withReview ? data.role : 'Team Member'}</CardText>
+              <CardText className="fw-bold m-auto me-4">{withReview ? data?.role?.name : 'Team Member'}</CardText>
               {withReview && (
                 <div className="me-4">
                   <Rating
@@ -56,7 +56,7 @@ const MemberRow = ({ data, withReview }) => {
               <div className="me-2">
                 <span className="key">Accepted on</span>
                 <CardText className="value">
-                  {data?.accepted_date ? DateTime.fromMillis(data?.accepted_date).toFormat('MMM dd, yy') : '-'}
+                  {data?.invited_on ? DateTime.fromMillis(data?.invited_on).toFormat('MMM dd, yy') : '-'}
                 </CardText>
               </div>
               <div className="me-1 d-none">

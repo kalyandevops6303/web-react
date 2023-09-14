@@ -25,14 +25,15 @@ import {
   skillsService,
   toolsService,
 } from '../../../services/staticServices';
-import UserCard from '../../cards/UserCard';
-import ProjectCard from '../../cards/ProjectCard';
+import ProjectCard from '../../cards/MarketPlaceProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
-import Institute from '../../cards/Team';
+import TeamCard from '../../cards/TeamCard';
+import ClientCard from '../../cards/ClientCard';
+import TalentCard from '../../cards/TalentCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -68,6 +69,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const isRecommanded = sort_by[0]?.value === 'RECOMMADED';
+  const isFavorite = sort_by[0]?.value === 'FAVOURITE';
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -118,6 +120,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       dispatch(
         getUsers({
           isRecommanded,
+          isFavorite,
           primaryFilter,
           metaData,
           userType,
@@ -133,6 +136,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           isMyListing: primaryFilter === 'my_listings',
           isMyBids: primaryFilter === 'my_bids',
           isRecommanded,
+          isFavorite,
           metaData,
           userType,
           onSuccess,
@@ -142,7 +146,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         }),
       );
     }
-  }, [secondFilterState, searchText, primaryFilter, isRecommanded]);
+  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite]);
 
   useEffect(() => {
     if (location?.state?.isRecommended) {
@@ -297,6 +301,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       dispatch(
         getUsers({
           isRecommanded,
+          isFavorite,
           primaryFilter,
           metaData: newMeteData,
           userType,
@@ -312,6 +317,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           isMyListing: primaryFilter === 'my_listings',
           isMyBids: primaryFilter === 'my_bids',
           isRecommanded,
+          isFavorite,
           metaData: newMeteData,
           userType,
           onSuccess,
@@ -578,14 +584,24 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          <div className="d-flex flex-wrap justify-content-between">
+          <div
+            className="justify-content-between grid-layout"
+            style={
+              primaryFilter === 'clients'
+                ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                : {}
+            }
+          >
             {selectMarketPlaceData?.map((item) => {
               const CardComponent =
                 // eslint-disable-next-line no-nested-ternary
-                primaryFilter === 'talents' || primaryFilter === 'clients'
-                  ? UserCard
+                primaryFilter === 'talents'
+                  ? TalentCard
+                  : // eslint-disable-next-line no-nested-ternary
+                  primaryFilter === 'clients'
+                  ? ClientCard
                   : primaryFilter === 'teams'
-                  ? Institute
+                  ? TeamCard
                   : ProjectCard;
               return (
                 <CardComponent

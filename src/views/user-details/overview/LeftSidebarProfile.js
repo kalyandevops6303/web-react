@@ -21,32 +21,24 @@ import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
-import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import { giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
 import { getItem } from '../../../utility/localStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 
-const LeftSidebarProfile = ({
-  isTalentView,
-  isInvited,
-  isProjectDetailsView,
-  isTeamView,
-  isClient,
-  data,
-  isEditable,
-}) => {
+const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
-  const userData = getItem('userData');
-  const teamId = getItem('teamId');
+  const userData = useSelector(selectAuthUserData);
+  const teamId = getItem('team_id');
+  const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
-
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
   const handleLike = () => {
@@ -178,16 +170,16 @@ const LeftSidebarProfile = ({
             </div>
           )}
 
-          {!isEditable && (
+          {(isClient || isTalentView) && (
             <div className="projects-rating projects-rating-public">
               <Rating
-                initialRating={0}
+                initialRating={returnFormattedRating(data?.rating)}
                 emptySymbol={<img height={22} src={EmptyStar} alt="Empty star" />}
                 fullSymbol={<img height={22} src={FilledStar} alt="Filled star" />}
                 readonly
               />
               <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
-                0 Projects | 0 reviews
+                {data?.projects_worked_on_count} Projects | 0 Reviews
               </CardText>
             </div>
           )}
@@ -212,7 +204,6 @@ const LeftSidebarProfile = ({
                 <CardText className="font-small-3">{item?.education?.name}</CardText>
               </div>
             ))}
-
             {isClient && (
               <>
                 <div className="d-flex mb-75">
@@ -245,7 +236,6 @@ const LeftSidebarProfile = ({
                 )}
               </div>
             )}
-
             {isClient && (
               <BadgeGroup
                 color="light-success-2"
@@ -307,7 +297,6 @@ const LeftSidebarProfile = ({
                   : []
               }
             />
-
             {!isTeamView && (
               <div className="social-links">
                 <CardText className="Info-key mt-50 mb-50">Social Links</CardText>
@@ -386,7 +375,6 @@ const LeftSidebarProfile = ({
                 />
               </div>
             )}
-
             {isEditable && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50" color="primary" onClick={onEditClick}>
@@ -394,36 +382,33 @@ const LeftSidebarProfile = ({
                 </Button>
               </div>
             )}
-            {!isEditable && (
-              // To be taken for team memebers
-              <div className="d-none">
-                <div className="d-flex gap-1 mt-3 justify-content-center">
+            <div>
+              <div className="d-flex gap-1 mt-3 justify-content-center">
+                {!isEditable && teamId && data?.user_type === userTypes.talent && (
                   <Button className="w-50" outline color="primary">
                     Invite
                   </Button>
+                )}
+                {!isEditable && (
                   <Button className="w-50" color="primary">
                     Message
                   </Button>
-                </div>
-                <CardText className="report-text m-0 text-center mt-1 fw-bold">Report</CardText>
+                )}
               </div>
-            )}
-            {isProjectDetailsView && (
-              <div className="invited-box">
-                <div className="d-flex gap-1 mt-3 justify-content-center">
-                  <Button size="md" className="w-50" outline color="primary">
-                    View Profile
-                  </Button>
-                  <Button size="md" className="w-50" color="primary">
-                    Message
-                  </Button>
-                </div>
-              </div>
-            )}
-            {isTeamView && !teamId && userData?.user_type === userTypes.talent && (
-              <div className="d-flex gap-1 mt-3 justify-content-center">
+              <CardText className="d-none report-text m-0 text-center mt-1 fw-bold">Report</CardText>
+            </div>
+
+            {!data?.is_team_member && isTeamView && !teamId && userData?.user_type === userTypes.talent && (
+              <div className="d-flex gap-1 mt-1 justify-content-center">
                 <Button className="w-50" color="primary" onClick={handleJoinTeam}>
-                  {inJoinTeamLoading ? <Spinner /> : 'Join Team'}
+                  {inJoinTeamLoading ? <Spinner size="sm" /> : 'Join Team'}
+                </Button>
+              </div>
+            )}
+            {!data?.is_team_member && isTeamView && !teamId && userData?.user_type === userTypes.talent && (
+              <div className="d-flex gap-1 mt-1 justify-content-center">
+                <Button className="w-50" color="primary" onClick={handleJoinTeam}>
+                  {inJoinTeamLoading ? <Spinner size="sm" /> : 'Join Team'}
                 </Button>
               </div>
             )}
@@ -435,7 +420,6 @@ const LeftSidebarProfile = ({
 };
 
 LeftSidebarProfile.propTypes = {
-  isEditable: PropTypes.bool,
   data: PropTypes.object,
   isClient: PropTypes.bool,
   isTalentView: PropTypes.bool,
@@ -444,7 +428,6 @@ LeftSidebarProfile.propTypes = {
   isInvited: PropTypes.bool,
 };
 LeftSidebarProfile.defaultProps = {
-  isEditable: false,
   data: {},
   isClient: false,
   isTalentView: false,

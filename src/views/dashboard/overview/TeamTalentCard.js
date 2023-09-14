@@ -22,6 +22,7 @@ import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { setItem } from '../../../utility/localStorageControl';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const UserSection = ({ users, name, isAlma }) => (
   <div className="user-section">
@@ -123,7 +124,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           <div className="d-flex flex-column">
             <TagsSection fullWidth open={open} tags={data?.expertise?.skills} />
             <div className="d-flex">
-              <RatingBadge number={data?.rating} />
+              <RatingBadge number={returnFormattedRating(data?.rating)} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {data?.projects_worked_on_count} Projects
               </CardText>

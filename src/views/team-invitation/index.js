@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { capitalize } from 'lodash';
 import Avatar from '@components/avatar';
@@ -10,18 +10,26 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../lib/date-time';
 import { GrayBorderContainer, GrayCardWrapper } from '../styled';
 import InfoIcon from '../../assets/images/timeline-info-icon.png';
-import { updateInvitation } from '../../redux/actions/dashboardActions';
+import { getProfilePercentage, updateInvitation } from '../../redux/actions/dashboardActions';
 import { setItem } from '../../utility/localStorageControl';
 import { getWhoInvited } from '../../redux/actions/teamsActions';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import theme from '../../configs/themeVariables';
+import CompleteProfileModal from '../modals/CompleteProfileModal';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import AcceptRequestModal from '../modals/AcceptRequestModal';
+import RejectRequestModal from '../modals/RejectRequestModal';
 
 const TeamInvitation = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const [invitedByData, setInvitedByData] = useState('');
+  const [accpetModal, setAccpetModal] = useState(false);
+  const [rejectModal, setRejectModal] = useState(false);
   const [status, setStatus] = useState(invitedByData?.request_status);
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
+  const profilePercentageData = useSelector(profilePercentage);
+
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
   const breadCrumb = [{ title: 'Dashboard' }, { title: invitedByData?.request_type }];
 
@@ -43,7 +51,25 @@ const TeamInvitation = () => {
     dispatch(getWhoInvited({ id: params.inviteId, onSuccess, onError }));
   }, []);
 
-  const handleAccept = () => {
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+
+  const toggleCompleteProfileModal = () => {
+    setCompleteProfileModal(!completeProfileModal);
+  };
+
+  const handleCancel = () => {
+    setCompleteProfileModal(false);
+    setAccpetModal(false);
+    setRejectModal(false);
+  };
+
+  useEffect(() => {
+    if (!profilePercentageData) {
+      dispatch(getProfilePercentage());
+    }
+  }, []);
+
+  const onAccept = () => {
     const data = {
       action: 'ACCEPT',
       request_id: params.inviteId,
@@ -55,6 +81,7 @@ const TeamInvitation = () => {
         onSuccess: () => {
           setStatus('ACCEPTED');
           setIsStatusUpdating(false);
+          setAccpetModal(false);
         },
         onError: () => {
           setIsStatusUpdating(false);
@@ -62,7 +89,20 @@ const TeamInvitation = () => {
       }),
     );
   };
-  const handleDecline = () => {
+
+  const handleAccept = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModal(true);
+    } else {
+      setAccpetModal(true);
+    }
+  };
+
+  const onReject = () => {
     const data = {
       action: 'REJECT',
       request_id: params.inviteId,
@@ -72,14 +112,18 @@ const TeamInvitation = () => {
       updateInvitation({
         data,
         onSuccess: () => {
-          setStatus('DECLINED');
+          setStatus('REJECTED');
           setIsStatusUpdating(false);
+          setRejectModal(false);
         },
         onError: () => {
           setIsStatusUpdating(false);
         },
       }),
     );
+  };
+  const handleDecline = () => {
+    setRejectModal(true);
   };
   if (isGetWhoInvitedLoading) {
     <ComponentSpinner />;
@@ -88,6 +132,30 @@ const TeamInvitation = () => {
   return (
     <>
       <BreadCrumbs data={breadCrumb} />
+      {completeProfileModal && (
+        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+      )}
+      {accpetModal && (
+        <AcceptRequestModal
+          title={invitedByData?.request_type}
+          isLoading={isStatusUpdating}
+          data={invitedByData}
+          onAccept={onAccept}
+          modal={accpetModal}
+          toggleModal={handleCancel}
+        />
+      )}
+      {rejectModal && (
+        <RejectRequestModal
+          title={invitedByData?.request_type}
+          isLoading={isStatusUpdating}
+          data={invitedByData}
+          onReject={onReject}
+          modal={rejectModal}
+          toggleModal={handleCancel}
+        />
+      )}
+
       <Row>
         <Col sm="12" md="12" lg="10">
           <GrayCardWrapper>
@@ -109,7 +177,7 @@ const TeamInvitation = () => {
                         ) : status === 'PENDING' ? (
                           <div className="d-flex text-blue text-decoration-underline">
                             <p className="me-2 cursor-pointer mb-0" onClick={handleDecline}>
-                              Decline
+                              Reject
                             </p>
                             <p className="cursor-pointer mb-0" onClick={handleAccept}>
                               Accept

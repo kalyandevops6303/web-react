@@ -22,7 +22,7 @@ const AcceptBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
               <CardSubtitle className="mb-75 fw-bold subtitle">Accept bid</CardSubtitle>
 
               <CardText className="desc fw-light">
-                By accepting this bid your assigning this project to the below{' '}
+                By accepting this bid you are assigning this project to the below{' '}
               </CardText>
               <section className="d-flex gap-2 stats">
                 <div>

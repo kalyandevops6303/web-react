@@ -1,8 +1,8 @@
-import { Badge, Card, CardBody, CardText, CardTitle, Col, Row, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Card, CardBody, CardText, CardTitle, Col } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { Heart } from 'react-feather';
+import { Heart, MapPin } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import Avatar from '@components/avatar';
 import hat from '@src/assets/images/hat.png';
@@ -46,7 +46,9 @@ const UserCard = ({ data, userType }) => {
     if (data?.user_type === userTypes.client) return { title: 'Clients', link: '' };
     return { title: 'Talent', link: '' };
   };
-  const description = data?.company_tagline || data?.professional_intro;
+  // const description = data?.company_tagline || data?.professional_intro;
+
+  const locationDetails = data?.user_type === userTypes.client ? data?.office_address : data?.current_residency;
 
   const handleLike = () => {
     dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
@@ -55,137 +57,124 @@ const UserCard = ({ data, userType }) => {
     dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
   };
   const isSearchPage = location.pathname.split('/').includes('search');
+
+  const clientSkills = data?.project_area_of_interest?.skills ?? [];
+  const talentSkills = data?.expertise?.skills ?? [];
+
   return (
     <UserCardWrap userType={userType}>
       <Card>
         <CardBody>
-          <Row>
-            <Col lg="6" className="pe-0">
-              <div className="d-flex justify-content-between">
-                <div className="d-flex">
-                  <Avatar
-                    img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
-                    imgHeight="30"
-                    imgWidth="30"
-                    className={`market-place-card-photo me-1 mt-25 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
-                  />
-                  <div>
-                    <span className="d-flex">
-                      <CardTitle className="d-flex truncate-1 text-decoration-none marketplace-card-title mb-0">
-                        <Link
-                          state={{
-                            from: {
-                              primary: fromLocationPrimary(),
-                              secondary: fromLocationSecondary() || fromLocationSearch(),
-                            },
-                          }}
-                          to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
-                        >
-                          {data?.first_name}&nbsp;
-                          {data?.last_name}
-                        </Link>
-                      </CardTitle>
-                      {!isSearchPage && (
-                        <span>
-                          {data?.is_favorite ? (
-                            <Heart
-                              className="cursor-pointer d-flex ms-50  heart"
-                              fill={theme.red}
-                              stroke={theme.red}
-                              onClick={handleUnLike}
-                              size={18}
-                            />
-                          ) : (
-                            <Heart className="cursor-pointer d-flex  ms-50 heart" onClick={handleLike} size={18} />
-                          )}
-                        </span>
-                      )}
-                      {data?.is_alma_mater && (
-                        <Badge className="alma-mater ms-50">
-                          <img src={hat} alt="client-badge" />
-                        </Badge>
-                      )}
-                    </span>
-                    <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
-                      {data?.user_type === userTypes.client
-                        ? data?.company_name || 'Company Name'
-                        : data?.role?.name || 'Role'}
-                    </CardText>
-                    <div className="d-flex">
-                      <RatingBadge number="0" />
-                      <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
-                    </div>
-                  </div>
-                  {data?.match_percentage >= 0 && (
-                    <div className="circular-progressbar-container ms-50 mt-25">
-                      <CircularProgressbarWithChildren
-                        value={data?.match_percentage}
-                        styles={{
-                          path: {
-                            stroke: giveStrokeColor(data?.match_percentage),
-                            strokeLinecap: 'round',
-                            transition: 'stroke-dashoffset 0.5s ease 0s',
-                            transform: 'rotate(0turn)',
-                            transformOrigin: 'center center',
-                          },
-                          trail: {
-                            stroke: theme.progressBarBg,
-                            strokeLinecap: 'round',
-                            transform: 'rotate(0turn)',
-                            transformOrigin: 'center center',
-                          },
-                        }}
-                      >
-                        <div className="d-flex justify-content-center align-items-center">
-                          <p className="percentage-text m-0">{data?.match_percentage}%</p>
-                        </div>
-                      </CircularProgressbarWithChildren>
-                    </div>
+          <Col className="d-flex justify-content-between">
+            <div className="d-flex align-items-center">
+              <Avatar
+                img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
+                imgHeight="40"
+                imgWidth="40"
+                className={`market-place-card-photo me-1 mb-1 `}
+              />
+              <div className="d-flex flex-column">
+                <CardTitle className="d-flex truncate-2 text-decoration-none marketplace-card-title mb-0">
+                  <Link
+                    state={{
+                      from: {
+                        primary: fromLocationPrimary(),
+                        secondary: fromLocationSecondary() || fromLocationSearch(),
+                      },
+                    }}
+                    to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
+                  >
+                    {data?.first_name}&nbsp;
+                    {data?.last_name}
+                  </Link>
+                  {data?.is_alma_matter && (
+                    <Badge className="alma-mater ms-50 bg-white">
+                      <img src={hat} alt="client-badge" />
+                    </Badge>
                   )}
-                </div>
+                </CardTitle>
+                <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
+                  {data?.user_type === userTypes.client
+                    ? data?.company_name || 'Company Name'
+                    : data?.role?.name || 'Role'}
+                </CardText>
               </div>
-              <CardText
-                id={`tooltip-${data?.user_id}`}
-                className={`mt-75 desc ${userType === 'client' ? 'truncate-4' : 'truncate-3'}`}
-              >
-                {description}
-              </CardText>
-              {description?.length > 80 && (
-                <UncontrolledTooltip placement="right" target={`tooltip-${data?.user_id}`}>
-                  <p className="m-0 text-start">{data?.company_tagline || data?.professional_intro}</p>
-                </UncontrolledTooltip>
+            </div>
+            <div className="d-flex">
+              {!isSearchPage && (
+                <span>
+                  {data?.is_favorite ? (
+                    <Heart
+                      className="cursor-pointer d-flex ms-50  heart"
+                      fill={theme.red}
+                      stroke={theme.red}
+                      onClick={handleUnLike}
+                      size={18}
+                    />
+                  ) : (
+                    <Heart className="cursor-pointer d-flex  ms-50 heart" onClick={handleLike} size={18} />
+                  )}
+                </span>
               )}
-            </Col>
-
-            <Col lg="6">
-              {data?.user_type === userTypes.client && (
-                <BadgeGroup
-                  title="Area of interest"
-                  data={data?.project_area_of_interest?.area?.name ? data?.project_area_of_interest?.area : []}
-                  color="light-blue"
-                  user_id={data?.user_id}
-                />
+              {data?.match_percentage >= 0 && (
+                <div className="circular-progressbar-container ms-50">
+                  <CircularProgressbarWithChildren
+                    value={data?.match_percentage}
+                    styles={{
+                      path: {
+                        stroke: giveStrokeColor(data?.match_percentage),
+                        strokeLinecap: 'round',
+                        transition: 'stroke-dashoffset 0.5s ease 0s',
+                        transform: 'rotate(0turn)',
+                        transformOrigin: 'center center',
+                      },
+                      trail: {
+                        stroke: theme.progressBarBg,
+                        strokeLinecap: 'round',
+                        transform: 'rotate(0turn)',
+                        transformOrigin: 'center center',
+                      },
+                    }}
+                  >
+                    <div className="d-flex justify-content-center align-items-center">
+                      <p className="percentage-text m-0">{data?.match_percentage}%</p>
+                    </div>
+                  </CircularProgressbarWithChildren>
+                </div>
               )}
+            </div>
+          </Col>
+          <Col className="d-flex justify-content-between">
+            <div className="d-flex flex-column w-50">
+              {locationDetails ? (
+                <div className="d-flex align-items-center mt-1">
+                  <MapPin size={20} className="me-50" />
+                  {locationDetails?.city?.name ? (
+                    <span className="ml-50">{locationDetails?.city?.name},&nbsp;</span>
+                  ) : (
+                    ''
+                  )}
+                  {locationDetails?.country?.name ? <span>{locationDetails?.country?.name}</span> : ''}
+                </div>
+              ) : null}
+              <div className="d-flex mt-50">
+                <RatingBadge number="0" />
+                <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+              </div>
+            </div>
+            <div className="d-flex w-50">
               <BadgeGroup
                 title="Skills"
                 data={
                   data?.user_type === userTypes.client
-                    ? data?.project_area_of_interest?.skills
-                    : data?.expertise?.skills
+                    ? [...clientSkills]?.sort((a, b) => b.name.length - a.name.length)
+                    : [...talentSkills].sort((a, b) => b.name.length - a.name.length)
                 }
                 color="light-blue"
                 user_id={data?.user_id}
               />
-              <BadgeGroup
-                title="Tools"
-                data={
-                  data?.user_type === userTypes.client ? data?.project_area_of_interest?.tools : data?.expertise?.tools
-                }
-                color="light-blue"
-                user_id={data?.user_id}
-              />
-            </Col>
-          </Row>
+            </div>
+          </Col>
         </CardBody>
       </Card>
     </UserCardWrap>

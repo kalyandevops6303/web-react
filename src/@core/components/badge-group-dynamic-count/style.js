@@ -16,7 +16,6 @@ export const BadgeGroupWrap = styled.div`
     .badge-box {
       max-height: 2rem;
       overflow: hidden;
-      width: 100%;
 
       .info-key {
         font-weight: 400;

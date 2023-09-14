@@ -8,7 +8,6 @@ import { Button, Card, CardBody, CardText, CardTitle, Col, Row, Table } from 're
 import BreadCrumbs from '@components/breadcrumbs';
 import { DateTime } from 'luxon';
 import PdfIcon from '@src/assets/images/pdfimg.png';
-import LeftSidebarProfile from '../user-details/overview/LeftSidebarProfile';
 import theme from '../../configs/themeVariables';
 import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
@@ -16,6 +15,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import { formatFileSize } from '../../utility/Utils';
 import AcceptBidModal from '../modals/AccpetBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
+import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
 
 const BidDetails = () => {
   const dispatch = useDispatch();

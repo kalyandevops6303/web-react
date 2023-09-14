@@ -159,15 +159,15 @@ const ProjectModal = ({
               <Row className="mb-2">
                 <Col lg="5">
                   <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.details?.name}</CardTitle>
+                    <CardTitle className="mb-25 fw-bolder">{data?.name}</CardTitle>
                     <CardText className="project-name">Project Name</CardText>
                   </div>
                 </Col>
                 <Col lg="3">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
-                      {data?.details?.expected_duration?.duration}
-                      {data?.details?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
+                      {data?.expected_duration?.duration}
+                      {data?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
                     </CardTitle>
                     <CardText className="project-name">Expected Duration</CardText>
                   </div>
@@ -232,7 +232,7 @@ const ProjectModal = ({
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <CardText className="fw-300 ms-75 project-desc"> {data?.details?.description} </CardText>
+              <CardText className="fw-300 ms-75 project-desc"> {data?.description} </CardText>
             </CardBody>
           </Card>
           <Card>

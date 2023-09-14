@@ -6,6 +6,7 @@ import {
   getCommonBidDetailsService,
   getDocumentService,
   getDocumentTimelineService,
+  getInvitatedByService,
   getInvitedByService,
   getProjectTeamMemberServive,
   getReceivedBidsService,
@@ -36,6 +37,9 @@ import {
   getInvitedByFailure,
   getInvitedByRequest,
   getInvitedBySuccess,
+  getInvitedMemberFailure,
+  getInvitedMemberRequest,
+  getInvitedMemberSuccess,
   getReceivedBidsFailure,
   getReceivedBidsRequest,
   getReceivedBidsSuccess,
@@ -84,6 +88,18 @@ const getTeamMembers =
       dispatch(getTeamMemberSuccess(res.data.data));
     } catch (error) {
       errorHandler(error, getTeamMemberFailure);
+    }
+  };
+
+const getInvitedMember =
+  ({ metadata, project_id }) =>
+  async (dispatch) => {
+    dispatch(getInvitedMemberRequest());
+    try {
+      const res = await getInvitatedByService({ metadata, project_id });
+      dispatch(getInvitedMemberSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getInvitedMemberFailure);
     }
   };
 
@@ -296,6 +312,7 @@ const updateContract =
   };
 
 export {
+  getInvitedMember,
   checkDocumentActivated,
   getDocumentTimeline,
   updateContract,
