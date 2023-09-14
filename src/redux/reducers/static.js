@@ -29,6 +29,10 @@ const initialState = {
   companyIndustriesLoading: false,
   projectAreas: null,
   projectAreasLoading: false,
+  disputeTypes: null,
+  disputeTypesLoading: false,
+  ratingTags: null,
+  ratingTagsLoading: false,
   error: null,
 };
 
@@ -259,6 +263,38 @@ const staticDataSlice = createSlice({
       projectAreasLoading: false,
       error: action.payload,
     }),
+
+    disputeTypesRequest: (state) => ({
+      ...state,
+      disputeTypesLoading: true,
+      error: null,
+    }),
+    disputeTypesSuccess: (state, action) => ({
+      ...state,
+      disputeTypesLoading: false,
+      disputeTypes: action.payload,
+    }),
+    disputeTypesFailure: (state, action) => ({
+      ...state,
+      disputeTypesLoading: false,
+      error: action.payload,
+    }),
+
+    ratingTagsRequest: (state) => ({
+      ...state,
+      ratingTagsLoading: true,
+      error: null,
+    }),
+    ratingTagsSuccess: (state, action) => ({
+      ...state,
+      ratingTagsLoading: false,
+      ratingTags: action.payload,
+    }),
+    ratingTagsFailure: (state, action) => ({
+      ...state,
+      ratingTagsLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -305,6 +341,12 @@ export const {
   projectAreasRequest,
   projectAreasSuccess,
   projectAreasFailure,
+  disputeTypesRequest,
+  disputeTypesSuccess,
+  disputeTypesFailure,
+  ratingTagsRequest,
+  ratingTagsSuccess,
+  ratingTagsFailure,
 } = staticDataSlice.actions;
 
 export default staticDataSlice.reducer;

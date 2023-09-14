@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -17,11 +17,36 @@ import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/styl
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
-import TeamListing from './overview/TeamListing';
 import { selectUserData } from '../../redux/selectors/authSelectors';
+import { getItem } from '../../utility/localStorageControl';
+import InviteTalentToTeam from '../invite-talent-to-team';
+import RemoveMemberModal from '../modals/RemoveMemberModal';
+import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
+import TeamListing from './overview/TeamListing';
+import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
+import OpenListing from './overview/OpenListing';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
+
+  const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
+  const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
+  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+  const [deleteModal, setDeletModal] = useState(false);
+  const [deleteModalData, setDeleteModalData] = useState();
+
+  const [raisedDisputeModal, setRaisedDisputeModal] = useState(null);
+
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+  const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
+
+  const toggleListingTeamMembersModal = () => {
+    setListingTeamMembersModal(!listingTeamMembersModal);
+  };
+
+  const toggleInviteTeamMemberModal = () => {
+    setInviteTeamMemberModal(!inviteTeamMemberModal);
+  };
 
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
@@ -30,8 +55,6 @@ const PrivateDashboard = () => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
   }, []);
-
-  const [completeProfileModal, setCompleteProfileModal] = useState(null);
 
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
@@ -43,17 +66,94 @@ const PrivateDashboard = () => {
       profilePercentageData?.values_missing?.includes('educational_institute') ||
       profilePercentageData?.values_missing?.includes('availability')
     ) {
+      setCompleteProfileModalInfoText('project');
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');
     }
   };
 
+  const onTeamInvite = () => {
+    setInviteTeamMemberModal(true);
+    setInviteTalentToTeamModal(true);
+  };
+
+  const onCreateTeam = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModalInfoText('team');
+      setCompleteProfileModal(true);
+    } else {
+      navigate('/create-team/profile-details');
+    }
+  };
+
+  const isInviteRead = getItem('isInviteRead');
+
+  useEffect(() => {
+    if (!isInviteRead) {
+      const redirectionFunction = () => {
+        const inviteId = getItem('inviteId');
+        const projectId = getItem('projectId');
+        const status = getItem('requestStatus');
+        if (status === 'Project Invitation Request' && projectId && inviteId) {
+          navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
+        }
+        if (status === 'Team Invitation Request' && inviteId) {
+          navigate(`/team-invitation/${inviteId}`);
+        }
+        if (status === 'Project Team Invitation Request' && projectId && inviteId) {
+          navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+        }
+        if (status === 'Team Join Request' && inviteId) {
+          navigate(`/join-request/${inviteId}`);
+        }
+      };
+      redirectionFunction();
+    }
+  }, []);
+
+  const handleRemoveMember = (data) => {
+    setDeletModal(true);
+    setDeleteModalData(data);
+  };
+  const handleJoinTeam = () => {
+    navigate('/marketplace/teams');
+  };
+
+  const handleRaiseDispute = () => {
+    setRaisedDisputeModal(true);
+  };
+
   return (
     <div>
       {completeProfileModal && (
-        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+        <CompleteProfileModal
+          modal={completeProfileModal}
+          toggleModal={toggleCompleteProfileModal}
+          modalInfoText={completeProfileModalInfoText}
+        />
       )}
+      {listingTeamMembersModal && (
+        <ListingTeamMembersModal
+          modal={listingTeamMembersModal}
+          toggleModal={toggleListingTeamMembersModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+          onRemove={handleRemoveMember}
+        />
+      )}
+      {deleteModal && (
+        <RemoveMemberModal modal={deleteModal} data={deleteModalData} toggleModal={() => setDeletModal(!deleteModal)} />
+      )}
+
+      {raisedDisputeModal && (
+        <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
+      )}
+
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
@@ -62,13 +162,31 @@ const PrivateDashboard = () => {
           </Button>
         </DashboardHeaderWrapper>
       )}
+      {userDetailsData?.user_type === userTypes.team && (
+        <DashboardHeaderWrapper>
+          <Button as="link" color="primary" onClick={onTeamInvite}>
+            Invite Talent
+          </Button>
+        </DashboardHeaderWrapper>
+      )}
+      {inviteTalentToTeamModal && (
+        <InviteTalentToTeam
+          inviteTeamMemberModal={inviteTeamMemberModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+        />
+      )}
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
-          <Link to="/create-team/profile-details">
-            <span className="text-decoration-underline font-medium-2">Create Team</span>
-          </Link>
+          <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateTeam}>
+            Create Team
+          </span>
+          <Button as="link" color="primary" onClick={handleJoinTeam}>
+            Join Team
+          </Button>
         </CreateTeamButtonWrapper>
       )}
+
       <Row>
         <Col lg="4" sm="12">
           <EarningCard />
@@ -86,6 +204,12 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
+          {userDetailsData?.user_type === userTypes.client && (
+            <section className="mb-2">
+              <Header className="mb-1">Open Listings</Header>
+              <OpenListing />
+            </section>
+          )}
           {userDetailsData?.user_type === userTypes.team && (
             <section className="mb-2">
               <Header className="mb-1">Talents</Header>
@@ -100,9 +224,15 @@ const PrivateDashboard = () => {
           )}
         </Col>
         <Col lg="4" sm="12">
-          {userDetailsData?.user_type === userTypes.team && <TeamSection />}
+          {userDetailsData?.user_type === userTypes.team && (
+            <TeamSection
+              modal={listingTeamMembersModal}
+              toggleModal={toggleListingTeamMembersModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            />
+          )}
           <Alerts />
-          <Disputes />
+          <Disputes handleRaiseDispute={handleRaiseDispute} />
           <Meetings />
         </Col>
       </Row>

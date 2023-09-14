@@ -126,6 +126,26 @@ const ThemeNavbar = (props) => {
           >
             Marketplace
           </NavLink>
+          <NavLink
+            className={
+              (location?.pathname?.split('/')?.[1] === 'projects' || location?.state?.from?.primary === 'projects'
+                ? 'is-active'
+                : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+            }
+            to="/projects"
+          >
+            Project
+          </NavLink>
+          <NavLink
+            className={
+              (location?.pathname?.split('/')?.[1] === 'my-teams' || location?.state?.from?.primary === 'my-teams'
+                ? 'is-active'
+                : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+            }
+            to="/my-teams"
+          >
+            My Team
+          </NavLink>
         </>
       )}
 

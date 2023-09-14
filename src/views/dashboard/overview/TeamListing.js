@@ -9,10 +9,10 @@ import { useNavigate } from 'react-router';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
-import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
 import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
 import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
+import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 
 import TeamTalentCard from './TeamTalentCard';
 import TeamInvitationCard from './TeamInvitationCard';
@@ -23,7 +23,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
 
-import Tag from '../../../@core/components/tags';
 import {
   profilePercentage,
   selectGetMyTeam,
@@ -97,8 +96,11 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
               Explore Projects
             </div>
           ) : (
-            <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
-              View Details
+            <div
+              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+              onClick={() => navigate('/marketplace/teams')}
+            >
+              View Teams
             </div>
           )}
         </CardBody>
@@ -112,7 +114,6 @@ const AccordionHeadStyle = styled.div`
   justify-content: space-between;
   width: 100%;
   .view-all-cta {
-    display: none;
     font-size: 0.875rem;
     color: ${theme.activeColor};
     text-decoration: underline;
@@ -161,9 +162,9 @@ const TeamListing = () => {
   const recommendedTeams = useSelector(selectRecommendedTeams);
   const isRecommendedTeamsLoading = useSelector(selectRecommendedTeamsLoading);
 
-  const handleViewAll = (e) => {
+  const handleViewAll = (e, path) => {
     e.stopPropagation();
-    navigate('/marketplace/all_listings', { state: { isRecommended: true } });
+    navigate(path, { state: { isRecommended: true } });
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
@@ -180,11 +181,9 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  My teams <Tag>{myTeam?.data?.length} </Tag>
-                </span>
+                <span className="d-flex align-items-center">My Teams</span>
                 {myTeam?.data?.length > 0 && (
-                  <CardText onClick={handleViewAll} className="view-all-cta">
+                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -254,9 +253,7 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Team invites {teamInvitation?.data?.length ? <Tag>{teamInvitation?.data?.length} </Tag> : ''}
-                </span>
+                <span className="d-flex align-items-center">Team Invites</span>
                 {teamInvitation?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All
@@ -328,11 +325,9 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">
-                  Recommended Teams {recommendedTeams?.data?.length ? <Tag>{recommendedTeams?.data?.length}</Tag> : ''}
-                </span>
+                <span className="d-flex align-items-center">Recommended Teams</span>
                 {recommendedTeams?.data?.length > 0 && (
-                  <CardText onClick={handleViewAll} className="view-all-cta">
+                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -379,13 +374,13 @@ const TeamListing = () => {
                     </>
                   ) : (
                     <Empty
-                      isTeam
                       active={false}
                       isEducationNotCompleted={returnDetailsForMarketPlace(
                         userDetailsData?.user_type,
                         profilePercentageData?.values_missing,
                       )}
                       payment={false}
+                      recommended
                     />
                   )}
                 </ProjectsListingWrap>

@@ -11,12 +11,6 @@ import CreateProjectButton from './overview/CreateProjectButton';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 
 const MarketPlaceContainer = styled.div`
-  .marketplace-search {
-    .input-group-text {
-      padding: 0.571rem 0.6rem 0.571rem 0.8rem;
-    }
-  }
-
   @media only screen and (max-device-width: 600px) {
     .primary-row {
       display: block;

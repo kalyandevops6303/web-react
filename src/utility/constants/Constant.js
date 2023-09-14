@@ -48,7 +48,25 @@ const projectTypesOptions = [
 const sortingOptions = [
   { label: 'New', value: 'NEW' },
   { label: 'Recommended', value: 'RECOMMADED' },
+  { label: 'Favorite', value: 'FAVOURITE' },
 ];
+const USD = {
+  _id: '6478b0d1679b91d695ad534a',
+  name: 'US Dollar',
+  code: 'USD',
+};
+const disputeStatuses = {
+  open: 'OPEN',
+  underReview: 'UNDER_REVIEW',
+  responded: 'RESPONDED',
+  resolved: 'RESOLVED',
+};
+const disputeStatusEnum = {
+  OPEN: 'Open',
+  UNDER_REVIEW: 'Under Review',
+  RESPONDED: 'Responded',
+  RESOLVED: 'Resolved',
+};
 export {
   ERROR_CODES,
   checkPoints,
@@ -61,4 +79,7 @@ export {
   maxFileSize,
   createBidSteps,
   bidTypes,
+  USD,
+  disputeStatuses,
+  disputeStatusEnum,
 };

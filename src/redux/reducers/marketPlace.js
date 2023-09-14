@@ -46,7 +46,6 @@ const marketPlaceSlice = createSlice({
     makeFavFromMarketplaceSuccess: (state, action) => {
       // Extract user_id, user_type, and _id from the action payload.
       const { user_id, user_type, _id } = action.payload;
-
       // Determine which property to match based on the presence of user_id and user_type.
       const propertyToMatch = user_id && user_type ? { user_id, user_type } : { _id };
 

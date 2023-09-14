@@ -242,6 +242,72 @@ const MilestoneSectionWrapper = styled.div`
       color: ${theme.activeNavPillText};
     }
   }
+
+  .fixed-cost-banner {
+    border-radius: 6px;
+  }
+
+  .error-banner {
+    background: ${theme.errorBannerBg};
+
+    p {
+      color: ${theme.red};
+    }
+  }
+
+  .info-banner {
+    background: ${theme.infoBannerBg};
+
+    p {
+      color: ${theme.activeNavPillText};
+    }
+  }
+
+  .green-amount {
+    color: ${theme.green};
+  }
+
+  .red-amount {
+    color: ${theme.red};
+  }
+
+  .select__control {
+    border-color: ${theme.inputBorderColor};
+
+    svg {
+      color: ${theme.textMuted};
+    }
+
+    .select__placeholder {
+      color: ${theme.textMuted};
+    }
+  }
+
+  .form-check-input:not(:disabled):checked {
+    box-shadow: 0px 2px 4px ${theme.checkboxShadow};
+  }
+
+  .form-check-input:checked {
+    background-color: ${theme.activeNavPillText};
+    border-color: ${theme.activeNavPillText};
+  }
+
+  .custom-checkbox-border {
+    .form-check-input {
+      border: 1.5px solid ${theme.inputBorderColor};
+    }
+    .form-check-input:checked {
+      border: 1.5px solid ${theme.activeNavPillText};
+    }
+  }
+
+  .form-check-label.form-label {
+    color: ${theme.checkboxLabel};
+  }
+
+  .checkbox-custom-margin {
+    margin-right: 5px;
+  }
 `;
 
 const PreviewSectionWrapper = styled.div`

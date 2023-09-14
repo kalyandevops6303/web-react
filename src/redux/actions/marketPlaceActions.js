@@ -33,7 +33,7 @@ const getCardInfo =
   };
 
 const getListProjects =
-  ({ isMyListing, isRecommanded, isMyBids, metaData, onSuccess, onError, postData, searchText }) =>
+  ({ isMyListing, isRecommanded, isMyBids, metaData, onSuccess, onError, postData, searchText, isFavorite }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
@@ -42,13 +42,18 @@ const getListProjects =
     try {
       if (isMyBids) {
         res = await getBidProjectService({
-          postData: { ...postData, is_recommended: isRecommanded },
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
           searchText,
           metaData,
         });
       } else {
         res = await getListProjectService({
-          postData: { ...postData, is_my_listings: isMyListing, is_recommended: isRecommanded },
+          postData: {
+            ...postData,
+            is_my_listings: isMyListing,
+            is_recommended: isRecommanded,
+            is_favourite: isFavorite,
+          },
           searchText,
           metaData,
         });
@@ -63,7 +68,7 @@ const getListProjects =
   };
 
 const getUsers =
-  ({ isRecommanded, metaData, primaryFilter, onSuccess, onError, postData, searchText }) =>
+  ({ isRecommanded, metaData, primaryFilter, onSuccess, onError, postData, searchText, isFavorite }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
@@ -72,18 +77,22 @@ const getUsers =
       let res;
       if (primaryFilter === 'talents') {
         res = await getTalentsService({
-          postData: { ...postData, is_recommended: isRecommanded },
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
           searchText,
           metaData,
         });
       } else if (primaryFilter === 'clients') {
         res = await getClientsService({
-          postData: { ...postData, is_recommended: isRecommanded },
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
           searchText,
           metaData,
         });
       } else if (primaryFilter === 'teams') {
-        res = await getTeamsService({ postData: { ...postData, is_recommended: isRecommanded }, searchText, metaData });
+        res = await getTeamsService({
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
+          searchText,
+          metaData,
+        });
       }
       dispatch(getUsersSuccess(res.data.data));
       onSuccess();

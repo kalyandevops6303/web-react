@@ -5,34 +5,46 @@ import authReducer from './reducers/auth';
 import staticReducer from './reducers/static';
 import talentOnboardingReducer from './reducers/talentOnboarding';
 import clientOnboardingReducer from './reducers/clientOnboarding';
-import dashboardReducer from './reducers/dashboard';
 import layout from './layout';
 import navbar from './navbar';
 import profile from './reducers/profile';
 import createProject from './reducers/createProject';
+import inviteTalent from './reducers/inviteTalent';
+import dashboard from './reducers/dashboard';
 import marketPlace from './reducers/marketPlace';
 import gloabalSearch from './reducers/gloabalSearch';
 import notifications from './reducers/notifications';
 import createBid from './reducers/createBid';
+import projectDetails from './reducers/projectDetails';
 import team from './reducers/team';
 import PaymentDetails from './reducers/PaymentDetails';
+import myTeams from './reducers/myTeams';
+import project from './reducers/project';
+import dispute from './reducers/dispute';
+import rating from './reducers/rating';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   staticData: staticReducer,
   talentOnboarding: talentOnboardingReducer,
   clientOnboarding: clientOnboardingReducer,
-  dashboard: dashboardReducer,
+  dashboard,
   currentProfile: profile,
   createProject,
   marketPlace,
   notifications,
+  projectDetails,
   layout,
   navbar,
   team,
   search: gloabalSearch,
   createBid,
   PaymentDetails,
+  inviteTalent,
+  myTeams,
+  project,
+  dispute,
+  rating,
 
   // Add more reducers if needed
 });

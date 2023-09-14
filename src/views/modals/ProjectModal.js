@@ -1,3 +1,6 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-undef */
+import { ChevronRight } from 'react-feather';
 import React from 'react';
 import Proptypes from 'prop-types';
 import {
@@ -17,7 +20,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
-import { ChevronRight } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
 import BadgeGroup from '../../@core/components/badge-group';
@@ -29,6 +31,7 @@ import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -67,12 +70,21 @@ const ViewProjectDetailModalWrap = styled.div`
   }
 `;
 
-const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelectedProject }) => {
+const ProjectModal = ({
+  modal,
+  toggleModal,
+  data,
+  setCreateBidModal,
+  setSelectedProject,
+  toggleCompleteProfileModal,
+  isMyTeam,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
+  const profilePercentageData = useSelector(profilePercentage);
 
   const onNoBidFound = () => {
     toggleModal();
@@ -109,6 +121,26 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
     }
   };
 
+  const isViewable =
+    window.location.pathname.split('/').includes('my_bids') ||
+    window.location.pathname.split('/').includes('my_listings');
+  const handleRedirectTodetailsView = () => {
+    navigate(`/project-details/${data?._id}/bid`);
+  };
+
+  const handleCreateBid = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      toggleCompleteProfileModal();
+    } else {
+      setSelectedProject(data);
+      dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
+    }
+  };
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -129,15 +161,15 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
               <Row className="mb-2">
                 <Col lg="5">
                   <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.details?.name}</CardTitle>
+                    <CardTitle className="mb-25 fw-bolder">{data?.name}</CardTitle>
                     <CardText className="project-name">Project Name</CardText>
                   </div>
                 </Col>
                 <Col lg="3">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
-                      {data?.details?.expected_duration?.duration}
-                      {data?.details?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
+                      {data?.expected_duration?.duration}
+                      {data?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
                     </CardTitle>
                     <CardText className="project-name">Expected Duration</CardText>
                   </div>
@@ -202,7 +234,7 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <CardText className="fw-300 ms-75 project-desc"> {data?.details?.description} </CardText>
+              <CardText className="fw-300 ms-75 project-desc"> {data?.description} </CardText>
             </CardBody>
           </Card>
           <Card>
@@ -212,33 +244,38 @@ const ProjectModal = ({ modal, toggleModal, data, setCreateBidModal, setSelected
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" gapWrap />
+              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" gapWrap />
             </CardBody>
           </Card>
-          {(selectUserDetailsData?.user_type === userTypes.talent ||
-            selectUserDetailsData?.user_type === userTypes.team) && (
+
+          {isMyTeam ? null : isViewable ? (
             <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-              <Button color="flat-danger" className="me-1">
-                Report
+              <Button onClick={handleRedirectTodetailsView} color="primary">
+                <span className="me-50">View Bid</span>
+                <ChevronRight size={14} />
               </Button>
-              <Button
-                color="primary"
-                disabled={checkBidLoadingIsLoading}
-                onClick={() => {
-                  setSelectedProject(data);
-                  dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
-                }}
-              >
-                {checkBidLoadingIsLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  <>
-                    <span className="me-50">Create Bid</span>
-                    <ChevronRight size={14} />
-                  </>
-                )}
-              </Button>
+            </div>
+          ) : (
+            <div>
+              {(selectUserDetailsData?.user_type === userTypes.talent ||
+                selectUserDetailsData?.user_type === userTypes.team) && (
+                <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
+                  <Button color="flat-danger" className=" d-none me-1">
+                    Report
+                  </Button>
+                  <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
+                    {checkBidLoadingIsLoading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <>
+                        <span className="me-50">Create Bid</span>
+                        <ChevronRight size={14} />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </ViewProjectDetailModalWrap>
@@ -251,16 +288,20 @@ export default ProjectModal;
 
 ProjectModal.propTypes = {
   modal: Proptypes.bool,
+  isMyTeam: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
   setCreateBidModal: Proptypes.func,
   setSelectedProject: Proptypes.func,
+  toggleCompleteProfileModal: Proptypes.func,
 };
 
 ProjectModal.defaultProps = {
   modal: false,
+  isMyTeam: false,
   toggleModal: () => {},
   data: {},
   setCreateBidModal: () => {},
   setSelectedProject: () => {},
+  toggleCompleteProfileModal: () => {},
 };

@@ -23,8 +23,9 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
-import { removeItem } from '../../utility/localStorageControl';
+import { removeItem, setItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
+import { validateUrl } from '../../redux/actions/dashboardActions';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -37,11 +38,60 @@ const Login = () => {
     password: yup.string().required('Password is required'),
   });
 
-  useEffect(() => {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const dataParam = urlSearchParams.get('data');
+
+  const onValidUrlSuccess = (res) => {
+    setItem('isInviteRead', false);
+    setItem('inviteId', res.request_id);
+    setItem('projectId', res.request_for.project_id);
+    setItem('requestStatus', res.head_message);
+
     if (isLoggedIn) {
+      const redirectionFunction = ({ projectId, inviteId, status }) => {
+        if (status === 'Project Invitation Request' && projectId && inviteId) {
+          navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
+        }
+        if (status === 'Team Invitation Request' && inviteId) {
+          navigate(`/team-invitation/${inviteId}`);
+        }
+        if (status === 'Project Team Invitation Request' && projectId && inviteId) {
+          navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+        }
+        if (status === 'Team Join Request' && inviteId) {
+          navigate(`/join-request/${inviteId}`);
+        }
+      };
+      redirectionFunction({
+        status: res.head_message,
+        projectId: res.request_for.project_id,
+        inviteId: res.request_id,
+      });
+    }
+  };
+
+  const onInvalidUrlSuccess = () => {};
+
+  useEffect(() => {
+    if (dataParam) {
+      removeItem('inviteToken');
+      removeItem('isInviteRead');
+      removeItem('inviteId');
+      removeItem('projectId');
+      dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
+    } else if (isLoggedIn) {
       navigate('/dashboard');
     }
-  }, []);
+  }, [isLoggedIn]);
+
+  // Valid link
+  // When user is logged in and he clicks mail, login => dashboard
+  // When user is not looged in and he clicks mail, login =>
+
+  // Invalid link
+  // When user is logged in and he clicks mail, login => dashboard, show message link expired
+  // When user is not looged in and he clicks mail, show link expired message on login
+
   useEffect(() => {
     dispatch(clearDataSuccess());
   }, []);

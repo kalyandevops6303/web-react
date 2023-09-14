@@ -11,10 +11,10 @@ import { Card, CardTitle, CardBody, CardText, Badge } from 'reactstrap';
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import hat from '@src/assets/images/hat.png';
-
 import { useState } from 'react';
-import { DateTime } from 'luxon';
 import { ProjectWrapper } from './style';
+import DateTime from '../../../lib/date-time';
+
 import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
 import { CustomBadge } from '../../styled';

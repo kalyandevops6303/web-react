@@ -46,7 +46,7 @@ const TeamInvitaionCard = ({ data, className }) => {
 
   data?.team_members?.map((user) =>
     users.push({
-      title: `${user?.talent_info?.first_name} ${user?.talent_info?.last_name}` || 'user',
+      title: `${user?.first_name} ${user?.last_name}` || 'user',
       img: user.image_uri || avatar7,
       placement: 'bottom',
       imgHeight: 33,

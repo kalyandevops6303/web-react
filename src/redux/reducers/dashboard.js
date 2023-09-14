@@ -4,7 +4,7 @@ const initialState = {
   userDataLoading: false,
   recommendedProjects: null,
   recommendedProjectsLoading: false,
-  getTeamMember: null,
+  getTeamMember: [],
   getTeamMemberLoading: false,
   getInvitedMember: null,
   getInvitedMemberLoading: false,
@@ -21,6 +21,15 @@ const initialState = {
   profilePercentage: null,
   profilePercentageLoading: false,
   projectInvites: [],
+  activeProjectsForClient: null,
+  activeProjectsForClientLoading: false,
+  upcomingProjectsForClient: null,
+  upcomingProjectsForClientLoading: false,
+  projectsBidsForClient: null,
+  projectsBidsForClientLoading: false,
+  recommendedTeamsForClient: null,
+  recommendedTeamsForClientLoading: false,
+  alerts: [],
   error: null,
 };
 
@@ -67,9 +76,16 @@ const dashboardSlice = createSlice({
     }),
     getTeamMemberSuccess: (state, action) => ({
       ...state,
-      getTeamMember: action.payload,
+      // getTeamMember: action.payload,
       getTeamMemberLoading: false,
+      memberCurrentPreview: action.payload.data,
+      getTeamMember:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.getTeamMember, ...action.payload.data],
+      getMemberMetaData: action.payload.metadata,
     }),
+
     getTeamMemberFailure: (state, action) => ({
       ...state,
       getTeamMemberLoading: false,
@@ -83,8 +99,14 @@ const dashboardSlice = createSlice({
     }),
     getInvitedMemberSuccess: (state, action) => ({
       ...state,
-      getInvitedMember: action.payload,
+
       getInvitedMemberLoading: false,
+      invitedMemberCurrentPreview: action.payload.data,
+      getInvitedMember:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.getInvitedMember, ...action.payload.data],
+      invitedMemberMetaData: action.payload.metadata,
     }),
     getInvitedMemberFailure: (state, action) => ({
       ...state,
@@ -171,6 +193,40 @@ const dashboardSlice = createSlice({
       getMyTeamLoading: false,
       error: action.payload,
     }),
+
+    removeMemberRequest: (state) => ({
+      ...state,
+      removeMemberLoading: true,
+      error: null,
+    }),
+    removeMemberSuccess: (state) => ({
+      ...state,
+      removeMemberLoading: true,
+      error: null,
+    }),
+
+    removeMemberFailure: (state, action) => ({
+      ...state,
+      removeMemberLoading: false,
+      error: action.payload,
+    }),
+    getAlertRequest: (state) => ({
+      ...state,
+      getAlertLoading: true,
+      error: null,
+    }),
+    getAlertSuccess: (state, action) => ({
+      ...state,
+      getAlertLoading: true,
+      alerts: action.payload,
+      error: null,
+    }),
+
+    getAlertFailure: (state, action) => ({
+      ...state,
+      getAlertLoading: false,
+      error: action.payload,
+    }),
     getProjectInvitesSuccess: (state, action) => ({
       ...state,
       projectInvites: action.payload,
@@ -186,13 +242,84 @@ const dashboardSlice = createSlice({
       profilePercentageLoading: false,
       error: null,
     }),
+
+    activeProjectsForClientRequest: (state) => ({
+      ...state,
+      activeProjectsForClientLoading: true,
+      error: null,
+    }),
+    activeProjectsForClientSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForClient: action.payload,
+      activeProjectsForClientLoading: false,
+    }),
+    activeProjectsForClientFailure: (state, action) => ({
+      ...state,
+      activeProjectsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForClientRequest: (state) => ({
+      ...state,
+      upcomingProjectsForClientLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForClientSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForClient: action.payload,
+      upcomingProjectsForClientLoading: false,
+    }),
+    upcomingProjectsForClientFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    projectsBidsForClientRequest: (state) => ({
+      ...state,
+      projectsBidsForClientLoading: true,
+      error: null,
+    }),
+    projectsBidsForClientSuccess: (state, action) => ({
+      ...state,
+      projectsBidsForClient: action.payload,
+      projectsBidsForClientLoading: false,
+    }),
+    projectsBidsForClientFailure: (state, action) => ({
+      ...state,
+      projectsBidsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    recommendedTeamsForClientRequest: (state) => ({
+      ...state,
+      recommendedTeamsForClientLoading: true,
+      error: null,
+    }),
+    recommendedTeamsForClientSuccess: (state, action) => ({
+      ...state,
+      recommendedTeamsForClient: action.payload,
+      recommendedTeamsForClientLoading: false,
+    }),
+    recommendedTeamsForClientFailure: (state, action) => ({
+      ...state,
+      recommendedTeamsForClientLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
 export const {
+  getAlertRequest,
+  getAlertSuccess,
+  getAlertFailure,
+
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
   recommendedProjectsFailure,
+  removeMemberRequest,
+  removeMemberSuccess,
+  removeMemberFailure,
   profilePercentageRequest,
   profilePercentageSuccess,
   profilePercentageFailure,
@@ -219,6 +346,18 @@ export const {
   getMyTeamFailure,
   getProjectInvitesSuccess,
   clearData,
+  activeProjectsForClientRequest,
+  activeProjectsForClientSuccess,
+  activeProjectsForClientFailure,
+  upcomingProjectsForClientRequest,
+  upcomingProjectsForClientSuccess,
+  upcomingProjectsForClientFailure,
+  projectsBidsForClientRequest,
+  projectsBidsForClientSuccess,
+  projectsBidsForClientFailure,
+  recommendedTeamsForClientRequest,
+  recommendedTeamsForClientSuccess,
+  recommendedTeamsForClientFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

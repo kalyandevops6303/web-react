@@ -36,16 +36,19 @@ const App = () => {
 
   useEffect(() => {
     const channel = new BroadcastChannel('data-channel');
-
-    channel?.addEventListener('message', () => {
-      // Handle the received data from the service worker
-      dispatch(notificationCount(true));
-    });
+    if (channel) {
+      channel?.addEventListener('message', () => {
+        // Handle the received data from the service worker
+        dispatch(notificationCount(true));
+      });
+    }
 
     return () => {
       // Cleanup when the component unmounts
-      channel?.removeEventListener('message');
-      channel?.close();
+      if (channel) {
+        channel?.removeEventListener('message');
+        channel?.close();
+      }
     };
   }, []);
   messaging?.onMessage((payload) => {
@@ -80,11 +83,11 @@ const App = () => {
     }
   });
   return (
-    <React.StrictMode>
-      <Suspense fallback={null}>
-        <Router />
-      </Suspense>
-    </React.StrictMode>
+    // <React.StrictMode>
+    <Suspense fallback={null}>
+      <Router />
+    </Suspense>
+    // </React.StrictMode>
   );
 };
 

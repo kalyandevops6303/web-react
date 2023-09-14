@@ -236,7 +236,8 @@ const ProjectWrapper = styled.div`
     height: 40px;
   }
   .active-project-users {
-    height: 36px;
+    height: 34px;
+    margin: 0.8rem 0;
   }
   .main-row {
     display: flex;
@@ -303,6 +304,58 @@ const ProjectWrapper = styled.div`
     font-weight: 600;
     font-size: 12px;
     margin: auto;
+  }
+
+  .active-project-name {
+    color: #5e5873;
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  .team-badge {
+    border-radius: 17px;
+    background: rgba(48, 214, 211, 0.12);
+    width: fit-content;
+
+    p {
+      color: #30d6d2;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+
+  .active-project-team-name {
+    color: #5e5873;
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .active-project-simple-heading {
+    color: #b9b9c3;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: -10px;
+  }
+
+  .active-project-milestone-name {
+    color: #5e5873;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .bids-count-wrapper {
+    .bid-label {
+      color: #6e6b7b;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .bid-count {
+      color: #5e5873;
+      font-size: 16px;
+      font-weight: 400;
+    }
   }
 `;
 
@@ -423,6 +476,8 @@ const TagsWrap = styled.div`
 const CreateTeamButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 1rem;
   margin-top: -3.5rem;
 
@@ -450,6 +505,23 @@ const TeamSectionWrapper = styled(CardWrapper)`
   }
 `;
 
+const DisputesLegend = styled.div`
+  width: 16px;
+  height: 6px;
+  border-radius: 5px;
+  background: ${(props) => props.fillColor};
+`;
+
+const DisputesChartContainer = styled.div`
+  position: relative;
+
+  .total-disputes {
+    position: absolute;
+    top: 32%;
+    left: 37%;
+  }
+`;
+
 export {
   TagsWrap,
   CardWrapper,
@@ -463,4 +535,6 @@ export {
   DashboardHeaderWrapper,
   TeamSectionWrapper,
   CreateTeamButtonWrapper,
+  DisputesLegend,
+  DisputesChartContainer,
 };

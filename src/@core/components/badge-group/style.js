@@ -14,6 +14,9 @@ const BadgeGroupWrap = styled.div`
       }
       .badge {
         margin: 0 0.5rem 0.9rem 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
       }
     }
   }

@@ -10,6 +10,13 @@ import {
   getRecommendedTeamService,
   getTeamInvitationService,
   getProjectInviteService,
+  removeMemberService,
+  teamProfilePercentageService,
+  alertService,
+  activeProjectsForClientService,
+  upcomingProjectsForClientService,
+  projectsBidsForClientService,
+  recommendedTeamsForClientService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -41,7 +48,28 @@ import {
   getMyTeamFailure,
   getMyTeamRequest,
   getMyTeamSuccess,
+  removeMemberRequest,
+  removeMemberFailure,
+  removeMemberSuccess,
+  getAlertRequest,
+  getAlertSuccess,
+  getAlertFailure,
+  activeProjectsForClientRequest,
+  activeProjectsForClientSuccess,
+  activeProjectsForClientFailure,
+  upcomingProjectsForClientRequest,
+  upcomingProjectsForClientSuccess,
+  upcomingProjectsForClientFailure,
+  projectsBidsForClientRequest,
+  projectsBidsForClientSuccess,
+  projectsBidsForClientFailure,
+  recommendedTeamsForClientRequest,
+  recommendedTeamsForClientSuccess,
+  recommendedTeamsForClientFailure,
 } from '../reducers/dashboard';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
+import { updateInvitationService, validateUrlService } from '../../services/inviteTeamMemberService';
 
 const getRecommendedProjects = () => async (dispatch) => {
   dispatch(recommendedProjectsRequest());
@@ -63,25 +91,29 @@ const getProfilePercentage = () => async (dispatch) => {
   }
 };
 
-const getTeamMembers = () => async (dispatch) => {
-  dispatch(getTeamMemberRequest());
-  try {
-    const res = await getTeamMemberService();
-    dispatch(getTeamMemberSuccess(res.data.data));
-  } catch (error) {
-    errorHandler(error, getTeamMemberFailure);
-  }
-};
+const getTeamMembers =
+  ({ metadata }) =>
+  async (dispatch) => {
+    dispatch(getTeamMemberRequest());
+    try {
+      const res = await getTeamMemberService({ metadata });
+      dispatch(getTeamMemberSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getTeamMemberFailure);
+    }
+  };
 
-const getInvitedMember = () => async (dispatch) => {
-  dispatch(getInvitedMemberRequest());
-  try {
-    const res = await getInvitedTeamMemberService();
-    dispatch(getInvitedMemberSuccess(res.data.data));
-  } catch (error) {
-    errorHandler(error, getInvitedMemberFailure);
-  }
-};
+const getInvitedMember =
+  ({ metadata }) =>
+  async (dispatch) => {
+    dispatch(getInvitedMemberRequest());
+    try {
+      const res = await getInvitedTeamMemberService({ metadata });
+      dispatch(getInvitedMemberSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getInvitedMemberFailure);
+    }
+  };
 
 const getJoinRequest = (id) => async (dispatch) => {
   dispatch(joinRequestMemberRequest());
@@ -102,6 +134,24 @@ const getRecommendedTalent = (id) => async (dispatch) => {
     errorHandler(error, recommendedTalentFailure);
   }
 };
+
+const removeTeamMember =
+  ({ postData: data, onSuccess, isSelfRemove }) =>
+  async (dispatch) => {
+    dispatch(removeMemberRequest());
+    try {
+      const metadata = { page: 1, page_size: 10 };
+      await removeMemberService(data);
+      dispatch(removeMemberSuccess(data));
+      if (!isSelfRemove) {
+        dispatch(getTeamMembers({ metadata }));
+      }
+      onSuccess();
+      ShowToastMessage(SUCCESS, 'Member Removed');
+    } catch (error) {
+      errorHandler(error, removeMemberFailure);
+    }
+  };
 
 const getRecommendedTeams = () => async (dispatch) => {
   dispatch(recommendedTeamsRequest());
@@ -141,8 +191,95 @@ const getProjectInvites = () => async (dispatch) => {
     errorHandler(error);
   }
 };
+const validateUrl =
+  ({ data, onSuccess, onError }) =>
+  async () => {
+    try {
+      const res = await validateUrlService({ token: data });
+      onSuccess(res.data.data);
+    } catch (error) {
+      onError();
+      ShowToastMessage(ERROR, 'Invalid request');
+    }
+  };
+
+const updateInvitation =
+  ({ data, onSuccess, onError }) =>
+  async () => {
+    try {
+      await updateInvitationService(data);
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+
+const getTeamProfilePercentage = () => async (dispatch) => {
+  dispatch(profilePercentageRequest());
+  try {
+    const res = await teamProfilePercentageService();
+    dispatch(profilePercentageSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, profilePercentageFailure);
+  }
+};
+
+const getAlerts = () => async (dispatch) => {
+  dispatch(getAlertRequest());
+  try {
+    const res = await alertService();
+    dispatch(getAlertSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, getAlertFailure);
+  }
+};
+
+const getActiveProjectsForClient = () => async (dispatch) => {
+  dispatch(activeProjectsForClientRequest());
+  try {
+    const res = await activeProjectsForClientService();
+    dispatch(activeProjectsForClientSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, activeProjectsForClientFailure);
+  }
+};
+
+const getUpcomingProjectsForClient = () => async (dispatch) => {
+  dispatch(upcomingProjectsForClientRequest());
+  try {
+    const res = await upcomingProjectsForClientService();
+    dispatch(upcomingProjectsForClientSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, upcomingProjectsForClientFailure);
+  }
+};
+
+const getProjectsBidsForClient = () => async (dispatch) => {
+  dispatch(projectsBidsForClientRequest());
+  try {
+    const res = await projectsBidsForClientService();
+    dispatch(projectsBidsForClientSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, projectsBidsForClientFailure);
+  }
+};
+
+const getRecommendedTeamsForClient = () => async (dispatch) => {
+  dispatch(recommendedTeamsForClientRequest());
+  try {
+    const res = await recommendedTeamsForClientService();
+    dispatch(recommendedTeamsForClientSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, recommendedTeamsForClientFailure);
+  }
+};
 
 export {
+  getAlerts,
+  validateUrl,
+  removeTeamMember,
+  updateInvitation,
   getRecommendedProjects,
   getProfilePercentage,
   getTeamMembers,
@@ -153,4 +290,9 @@ export {
   getTeamInvitation,
   getMyTeam,
   getProjectInvites,
+  getTeamProfilePercentage,
+  getActiveProjectsForClient,
+  getUpcomingProjectsForClient,
+  getProjectsBidsForClient,
+  getRecommendedTeamsForClient,
 };
