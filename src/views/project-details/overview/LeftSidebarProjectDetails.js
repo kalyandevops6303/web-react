@@ -16,6 +16,7 @@ import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -97,7 +98,7 @@ const LeftSidebarProjectDetails = () => {
             <div>
               <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
               <div className="d-flex flex-wrap">
-                <RatingBadge number={projectDetailsData?.client_details?.rating} />
+                <RatingBadge number={returnFormattedRating(projectDetailsData?.client_details?.rating)} />
                 <CardText className="ps-75 font-small-2 fw-300 rating-label">
                   {projectDetailsData?.client_details?.projects_listed_count} Projects
                 </CardText>
