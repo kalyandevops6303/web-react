@@ -11,7 +11,7 @@ const getClientProjectService = (data) => DataService.get(API.profile.clientProj
 
 const makeFavService = (id, user_type) => DataService.post(API.profile.addToFav, { user_id: id, user_type });
 
-const makeFavTeamService = (id) => DataService.post(API.profile.addToFavTeam, { team_id: id });
+const makeFavTeamService = (id, user_type) => DataService.post(API.profile.addToFavTeam, { team_id: id, user_type });
 
 const removeFavService = (data) => DataService.post(API.profile.removeFav, data);
 

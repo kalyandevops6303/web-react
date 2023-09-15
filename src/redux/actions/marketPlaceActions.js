@@ -18,6 +18,7 @@ import {
   removeFavFromMarketplaceSuccess,
 } from '../reducers/marketPlace';
 import { makeFavService, makeProjectFavService, removeFavService } from '../../services/profileServices';
+import { userTypes } from '../../utility/constants/Constant';
 
 const getCardInfo =
   ({ onSuccess, onError }) =>
@@ -111,18 +112,34 @@ const makeFavFromMarketplace =
       } else {
         await makeFavService(user_id, user_type);
       }
-      dispatch(makeFavFromMarketplaceSuccess({ user_id, user_type, _id: project_id }));
+      if (user_type === userTypes.team) {
+        dispatch(makeFavFromMarketplaceSuccess({ _id: user_id }));
+      } else {
+        dispatch(makeFavFromMarketplaceSuccess({ user_id, user_type, _id: project_id }));
+      }
     } catch (error) {
       errorHandler(error);
     }
   };
 const removeFavFromMarketplace =
-  ({ user_id, project_id }) =>
+  ({ user_id, project_id, team_id }) =>
   async (dispatch) => {
     try {
-      const data = project_id ? { project_id } : { user_id };
+      let data;
+      if (project_id) {
+        data = { project_id };
+      } else if (team_id) {
+        data = { team_id };
+      } else {
+        data = { user_id };
+      }
       await removeFavService(data);
-      dispatch(removeFavFromMarketplaceSuccess({ _id: project_id, user_id }));
+
+      if (team_id) {
+        dispatch(removeFavFromMarketplaceSuccess({ _id: team_id }));
+      } else {
+        dispatch(removeFavFromMarketplaceSuccess({ _id: project_id, user_id }));
+      }
     } catch (error) {
       errorHandler(error);
     }

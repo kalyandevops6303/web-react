@@ -1,5 +1,5 @@
 import ShowToastMessage from '../../@core/components/toast';
-import { makeFavService, makeFavTeamService, removeFavService } from '../../services/profileServices';
+import { makeFavService, removeFavService } from '../../services/profileServices';
 import {
   acceptInvitation,
   checkDocumentActivatedService,
@@ -318,7 +318,7 @@ const updateContract =
 const makeFavourite = (id, user_type) => async (dispatch) => {
   try {
     if (user_type === userTypes.team) {
-      await makeFavTeamService(id);
+      await makeFavService(id, user_type);
     } else {
       await makeFavService(id, user_type);
     }
