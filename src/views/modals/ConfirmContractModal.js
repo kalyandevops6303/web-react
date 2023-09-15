@@ -6,7 +6,7 @@ import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitl
 import AcceptGif from '../../assets/images/gifs/accept_contract.gif';
 import { AcceptModalWrapper } from './style';
 
-const ConfirmContractModal = ({ docType, terminateData, onAccept, modal, toggleModal }) => {
+const ConfirmContractModal = ({ docType, modalData, onAccept, modal, toggleModal }) => {
   const onClose = () => {
     toggleModal();
   };
@@ -31,12 +31,12 @@ const ConfirmContractModal = ({ docType, terminateData, onAccept, modal, toggleM
                 Are you sure you want to sign the {isContractView ? 'contract' : 'NDA'}
               </CardText>
               <section className="d-flex gap-2 stats">
-                <div>
-                  <CardText className="value mb-25">{terminateData?.name || 'Talent/Team name'}</CardText>
-                  <small className="key">Talent/Team name</small>
+                <div style={{ minWidth: '10rem' }}>
+                  <CardText className="value mb-25">{modalData?.name || 'Talent/Team name'}</CardText>
+                  <small className="key">{modalData?.role || ' Talent/Team name'}</small>
                 </div>
-                <div>
-                  <CardText className="value mb-25">$-</CardText>
+                <div className="d-none">
+                  <CardText className="value mb-25">${modalData?.value}</CardText>
                   <small className="key">Project value</small>
                 </div>
               </section>
@@ -61,7 +61,7 @@ export default ConfirmContractModal;
 ConfirmContractModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  terminateData: Proptypes.object,
+  modalData: Proptypes.object,
   onAccept: Proptypes.func,
   docType: Proptypes.string,
 };
@@ -69,7 +69,7 @@ ConfirmContractModal.propTypes = {
 ConfirmContractModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  terminateData: {},
+  modalData: {},
   onAccept: () => {},
   docType: '',
 };

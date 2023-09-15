@@ -16,6 +16,7 @@ import { formatFileSize } from '../../utility/Utils';
 import AcceptBidModal from '../modals/AccpetBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const BidDetails = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const BidDetails = () => {
     navigate(-1);
   };
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const isLoading = useSelector((state) => state.projectDetails.getBidInfoLoading);
 
   useEffect(() => {
     dispatch(getBidDetails({ bid_id: param?.bidId }));
@@ -60,6 +62,8 @@ const BidDetails = () => {
       }),
     );
   };
+
+  if (isLoading) return <ComponentSpinner />;
 
   return (
     <BidDetailsWrap>
@@ -93,6 +97,14 @@ const BidDetails = () => {
       </div>
       {acceptBidModal && (
         <AcceptBidModal
+          modalData={{
+            name:
+              bidInfo?.user_details?.user_type === userTypes.team
+                ? bidInfo?.user_details?.name
+                : `${bidInfo?.user_details?.first_name} ${bidInfo?.user_details?.last_name}`,
+            role: bidInfo?.user_details?.user_type === userTypes.team ? 'Team Name' : bidInfo?.user_details?.role?.name,
+            value: bidInfo?.total_estimated_cost,
+          }}
           modal={acceptBidModal}
           toggleModal={handleCancel}
           data={bidInfo}
@@ -102,6 +114,14 @@ const BidDetails = () => {
       )}
       {rejectBidModal && (
         <RejectBidModal
+          modalData={{
+            name:
+              bidInfo?.user_details?.user_type === userTypes.team
+                ? bidInfo?.user_details?.name
+                : `${bidInfo?.user_details?.first_name} ${bidInfo?.user_details?.last_name}`,
+            role: bidInfo?.user_details?.user_type === userTypes.team ? 'Team Name' : bidInfo?.user_details?.role?.name,
+            value: bidInfo?.total_estimated_cost,
+          }}
           modal={rejectBidModal}
           toggleModal={handleCancel}
           data={bidInfo}

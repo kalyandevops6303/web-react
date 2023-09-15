@@ -97,7 +97,7 @@ const ContractView = () => {
       setCheckError(true);
     } else {
       setIsAcceptModalOpen(true);
-      setAcceptModalData({ user_id: worker?.user_id, role: worker?.role });
+      setAcceptModalData({ name: worker?.name, user_id: worker?.user_id, role: worker?.role });
     }
   };
 
@@ -188,6 +188,7 @@ const ContractView = () => {
                       )}
                       {isTerminateModalOpen && (
                         <TerminateContractModal
+                          modalData={{ name: 'Vigh', role: 'FE', org: 'Wowo', value: '100' }}
                           terminateData={terminateData}
                           toggleModal={toggleTerminateModal}
                           modal={isTerminateModalOpen}
@@ -197,7 +198,8 @@ const ContractView = () => {
                       )}
                       {isAcceptModalOpen && (
                         <ConfirmContractModal
-                          terminateData={acceptModalData}
+                          modalData={acceptModalData}
+                          // terminateData={acceptModalData}
                           toggleModal={toggleAcceptModal}
                           modal={isAcceptModalOpen}
                           onAccept={
@@ -270,7 +272,12 @@ const ContractView = () => {
                         document?.is_contract_sent ||
                         document?.is_nda_sent
                       }
-                      onClick={handleOpenAcceptModal}
+                      onClick={() =>
+                        handleOpenAcceptModal({
+                          name: `${projectInfo?.client_details?.first_name} ${projectInfo?.client_details?.last_name}`,
+                          role: projectInfo?.client_details?.company_name,
+                        })
+                      }
                       color="primary"
                       className="btn-sm-block mb-25 mt-1"
                     >
@@ -305,7 +312,12 @@ const ContractView = () => {
                       {userData?._id === worker?.user_id ? (
                         <Button
                           style={{ minWidth: '14.5rem' }}
-                          onClick={() => handleOpenAcceptModal(worker)}
+                          onClick={() =>
+                            handleOpenAcceptModal({
+                              name: `${worker?.first_name} ${worker?.last_name}`,
+                              role: worker?.role,
+                            })
+                          }
                           disabled={isFreshDoc === false || worker?.is_signed}
                           color="primary"
                           className="btn-sm-block mb-25 mt-1"

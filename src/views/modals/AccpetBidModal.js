@@ -5,7 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitl
 import AcceptGif from '../../assets/images/gifs/accept_bid.gif';
 import { AcceptModalWrapper } from './style';
 
-const AcceptBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
+const AcceptBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) => {
   const onClose = () => {
     toggleModal();
   };
@@ -25,13 +25,13 @@ const AcceptBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
                 By accepting this bid you are assigning this project to the below{' '}
               </CardText>
               <section className="d-flex gap-2 stats">
-                <div>
-                  <CardText className="value mb-25">{data?.name || 'Talent/Team name'}</CardText>
-                  <small className="key">Talent/Team name</small>
+                <div style={{ minWidth: '10rem' }}>
+                  <CardText className="value mb-25">{modalData?.name || 'Talent/Team name'}</CardText>
+                  <small className="key">{modalData?.role || 'Talent/Team name'}</small>
                 </div>
                 <div>
-                  <CardText className="value mb-25">$-</CardText>
-                  <small className="key">Project value</small>
+                  <CardText className="value mb-25">${modalData?.value}</CardText>
+                  <small className="key">Bid value</small>
                 </div>
               </section>
             </div>
@@ -41,7 +41,7 @@ const AcceptBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
               Cancel
             </Button>
             <Button disabled={isLoading} color="primary" onClick={onAccept}>
-              {isLoading ? <Spinner /> : 'Accept Bid'}
+              {isLoading ? <Spinner size="sm" /> : 'Accept Bid'}
             </Button>
           </div>
         </AcceptModalWrapper>
@@ -55,7 +55,7 @@ export default AcceptBidModal;
 AcceptBidModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  data: Proptypes.object,
+  modalData: Proptypes.object,
   onAccept: Proptypes.func,
   isLoading: Proptypes.bool,
 };
@@ -63,7 +63,7 @@ AcceptBidModal.propTypes = {
 AcceptBidModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  data: {},
+  modalData: {},
   onAccept: () => {},
   isLoading: false,
 };
