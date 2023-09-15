@@ -36,6 +36,8 @@ const LeftSidebarProjectDetails = () => {
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
+    ON_GOING: 'On Going',
+    COMPLETED: 'COMPLETED',
   };
 
   const isLoading = useSelector(projectDetailsLoading);

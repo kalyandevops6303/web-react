@@ -179,7 +179,7 @@ const Alerts = () => {
 
         <div>
           {alerts &&
-            alerts?.alerts?.map((item) => (
+            alerts?.alerts?.data.map((item) => (
               <Card key={item?._id} className="card-inside">
                 <CardHeader className="d-flex">
                   <CardTitle tag="h4">{getStatusShortName(item?.title)}</CardTitle>
@@ -199,8 +199,10 @@ const Alerts = () => {
                 </CardBody>
               </Card>
             ))}
-          {alerts?.total_count?.count > 4 && (
-            <span className="mb-1 additional-text text-center d-block">+{alerts.total_count.count - 4} more</span>
+          {alerts?.alerts?.metadata?.total_records > 4 && (
+            <span className="mb-1 additional-text text-center d-block">
+              +{alerts.alerts.metadata.total_records - 4} more
+            </span>
           )}
         </div>
       </Card>

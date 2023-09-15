@@ -7,7 +7,7 @@ import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import CompleteProfileGif from '../../assets/images/completeYourProfileGif.gif';
 import { switchProfile } from '../../redux/actions/authActions';
 
-const SwitchConfirmModal = ({ data, modal, toggleModal }) => {
+const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -23,18 +23,22 @@ const SwitchConfirmModal = ({ data, modal, toggleModal }) => {
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
     } else {
-      navigate(`/project-details/${projectId}`);
+      navigate(`/project-details/${projectId}/bid`);
     }
   };
 
   const onSuccess = () => {
     toggleModal();
 
-    redirectionFunction({
-      status: data?.title,
-      projectId: data?.custom_payload?.request_to?.project_id || data?.custom_payload?.project_id,
-      inviteId: data?.custom_payload?.request_id,
-    });
+    if (data?.isDisputesNotification) {
+      disputesRedirection(data?.notification_type);
+    } else {
+      redirectionFunction({
+        status: data?.title,
+        projectId: data?.custom_payload?.request_to?.project_id || data?.custom_payload?.project_id,
+        inviteId: data?.custom_payload?.request_id,
+      });
+    }
   };
 
   const handleSwitch = () => {
@@ -78,10 +82,12 @@ SwitchConfirmModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
+  disputesRedirection: Proptypes.func,
 };
 
 SwitchConfirmModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   data: {},
+  disputesRedirection: () => {},
 };

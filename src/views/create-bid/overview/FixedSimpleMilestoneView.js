@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
+  Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
@@ -19,7 +20,6 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
 import classNames from 'classnames';
@@ -139,6 +139,15 @@ const FixedSimpleMilestoneView = () => {
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
 
+  const [open, setOpen] = useState(1);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
+
   const calculateTotalValues = () => {
     const totalDuration = allMilestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
 
@@ -253,7 +262,11 @@ const FixedSimpleMilestoneView = () => {
       (milestone) => milestone.duration > 0 && milestone.talentCost > 0 && milestone.name.trim() !== '',
     );
 
-    if (allMilestonesValid) {
+    if (!allMilestonesValid) {
+      ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
+    } else if (totalCost > projectDetailsData?.pay_type?.fixed_cost) {
+      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed cost.');
+    } else if (allMilestonesValid) {
       milestonesAppend({
         name: undefined,
         description: undefined,
@@ -262,6 +275,8 @@ const FixedSimpleMilestoneView = () => {
         deliverables: [''],
         otherDetails: {},
       });
+
+      toggle(getValues('milestones')?.length);
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
@@ -515,7 +530,7 @@ const FixedSimpleMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <UncontrolledAccordion className="mb-2">
+              <Accordion className="mb-2" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => (
                   <Card className="white-card-bg" key={milestone.id}>
                     <CardBody className="p-0">
@@ -836,7 +851,7 @@ const FixedSimpleMilestoneView = () => {
                     </CardBody>
                   </Card>
                 ))}
-              </UncontrolledAccordion>
+              </Accordion>
             </CardBody>
           </Card>
           <Card className="mt-2">

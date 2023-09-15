@@ -161,15 +161,15 @@ const ProjectModal = ({
               <Row className="mb-2">
                 <Col lg="5">
                   <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.name}</CardTitle>
+                    <CardTitle className="mb-25 fw-bolder">{data?.details?.name}</CardTitle>
                     <CardText className="project-name">Project Name</CardText>
                   </div>
                 </Col>
                 <Col lg="3">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
-                      {data?.expected_duration?.duration}
-                      {data?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
+                      {data?.details?.expected_duration?.duration}
+                      {data?.details?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
                     </CardTitle>
                     <CardText className="project-name">Expected Duration</CardText>
                   </div>
@@ -252,10 +252,10 @@ const ProjectModal = ({
             </CardBody>
           </Card>
 
-          {isMyTeam ? null : isViewable ? (
+          {isMyTeam ? null : isViewable && data?.bid_status !== 'DRAFT' ? (
             <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
               <Button onClick={handleRedirectTodetailsView} color="primary">
-                <span className="me-50">View Bid</span>
+                <span className="me-50">View</span>
                 <ChevronRight size={14} />
               </Button>
             </div>
@@ -272,7 +272,7 @@ const ProjectModal = ({
                       <Spinner size="sm" />
                     ) : (
                       <>
-                        <span className="me-50">Create Bid</span>
+                        <span className="me-50">{data?.bid_status ? 'Go to bid' : 'Create Bid'} </span>
                         <ChevronRight size={14} />
                       </>
                     )}

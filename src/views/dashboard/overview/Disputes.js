@@ -35,7 +35,7 @@ const Disputes = ({ handleRaiseDispute }) => {
       <CardHeader>
         <CardTitle tag="h4">Disputes</CardTitle>
         {disputesCountData?.resolved_disputes + disputesCountData?.open_disputes > 0 ? (
-          <Link to="/disputes/all">
+          <Link to="/disputes/open">
             <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
               View All
             </CardText>

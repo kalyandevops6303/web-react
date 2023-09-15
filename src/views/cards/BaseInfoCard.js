@@ -37,23 +37,25 @@ const BaseInfoCard = ({ data }) => {
   return (
     <div>
       <div className="d-flex justify-content-end">
-        <div className="d-flex align-items-center gap-1">
+        <div className="d-flex align-items-center gap-50">
           {data?.is_alma_mater && (
             <Badge className="alma-mater ms-50 bg-white">
-              <img src={hat} alt="client-badge" className="bg-white" width={20} height={20} />
+              <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
           )}
-          {data?.is_favorite ? (
-            <Heart
-              className="cursor-pointer d-flex heart"
-              fill={theme.red}
-              stroke={theme.red}
-              onClick={handleUnLike}
-              size={20}
-            />
-          ) : (
-            <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
-          )}
+          <div className="mb-25">
+            {data?.is_favorite ? (
+              <Heart
+                className="cursor-pointer d-flex heart"
+                fill={theme.red}
+                stroke={theme.red}
+                onClick={handleUnLike}
+                size={20}
+              />
+            ) : (
+              <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+            )}
+          </div>
 
           {data?.match_percentage ? (
             <div className="circular-progressbar-container m-0">
