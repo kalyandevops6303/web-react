@@ -21,6 +21,8 @@ import { updatePaymentDetails } from '../../../../redux/actions/paymentActions';
 import { states, statesLoading, cities, citiesLoading } from '../../../../redux/selectors/staticSelectors';
 import CertificationUS from './CertificationUs';
 import CertificationNonUs from './CertificationNonUs';
+import AccountCreatedModal from '../../AccountCreatedModal';
+import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 
 const Step3 = ({ setStep }) => {
   const { userType } = useSelector((state) => state.PaymentDetails);
@@ -28,6 +30,8 @@ const Step3 = ({ setStep }) => {
   const isUsPerson = false;
 
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [statesOptions, setStatesOptions] = useState(null);
@@ -36,19 +40,12 @@ const Step3 = ({ setStep }) => {
   const [taxPayer, setTaxPayer] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(!isUsPerson);
   const [isAgreed, setIsAgreed] = useState(false);
+  const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
-
-  // const onSuccess = () => {
-  //   if (location?.state?.isEditing) {
-  //     navigate('/dashboard');
-  //   } else {
-  //     setAccountCreatedModal(true);
-  //   }
-  // };
 
   const usWFormsSchema = Yup.object().shape({
     fullName: Yup.string()
@@ -191,12 +188,33 @@ const Step3 = ({ setStep }) => {
     setCopyAddress((prev) => !prev);
   };
 
+  const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
+
+  const onSuccess = () => {
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      setAccountCreatedModal(true);
+    }
+  };
+
+  const onSkipClick = () => {
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      dispatch(saveCheckpointComplete(onSuccess));
+    }
+  };
+
   const onSubmit = (data) => {
     console.log(data);
   };
 
   return (
     <ProfileFormContainer>
+      {accountCreatedModal && (
+        <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
+      )}
       <h4>{userType === 'non_us_person' ? 'STEP 3 - US Form W8BEN' : 'STEP 3 - US W-9 Form'}</h4>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card className="w-75">
@@ -620,7 +638,7 @@ const Step3 = ({ setStep }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" outline className="me-2" onClick={() => {}}>
+            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
               <span className="me-50">Skip stripe setup</span>
               <ChevronRight size={14} />
             </Button>
