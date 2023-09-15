@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import EarningCard from './overview/Earning';
@@ -11,7 +11,7 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { checkBidsAccepted, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
@@ -24,9 +24,11 @@ import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
 import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
 import OpenListing from './overview/OpenListing';
+import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
@@ -49,10 +51,13 @@ const PrivateDashboard = () => {
 
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
+  const checkBidsAcceptedData = useSelector(checkBidsAccepted);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+
+    dispatch(getCheckBidsAccepted());
   }, []);
 
   const toggleCompleteProfileModal = () => {
@@ -206,7 +211,7 @@ const PrivateDashboard = () => {
             />
           )}
           <Alerts />
-          <Disputes handleRaiseDispute={handleRaiseDispute} />
+          {checkBidsAcceptedData?.data?.length > 0 && <Disputes handleRaiseDispute={handleRaiseDispute} />}
           <Meetings />
         </Col>
       </Row>

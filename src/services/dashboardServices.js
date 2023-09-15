@@ -43,6 +43,13 @@ const projectsBidsForClientService = () => DataService.get(API.dashboard.project
 
 const recommendedTeamsForClientService = () => DataService.get(API.dashboard.recommendedTeamsForClient);
 
+const checkBidsAcceptedService = () =>
+  DataService.post(API.dashboard.checkBidsAccepted, {
+    // statuses: [],
+    // project_types: [],
+    bid_statuses: ['ACCEPTED'],
+  });
+
 export {
   alertService,
   userDataService,
@@ -64,4 +71,5 @@ export {
   upcomingProjectsForClientService,
   projectsBidsForClientService,
   recommendedTeamsForClientService,
+  checkBidsAcceptedService,
 };
