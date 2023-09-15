@@ -75,6 +75,18 @@ const recommendedTeamsForClientLoading = createSelector(
 const checkBidsAccepted = createSelector(dashboardSelector, (dashboard) => dashboard.checkBidsAccepted);
 const checkBidsAcceptedLoading = createSelector(dashboardSelector, (dashboard) => dashboard.checkBidsAcceptedLoading);
 
+const activeProjectsForTalent = createSelector(dashboardSelector, (dashboard) => dashboard.activeProjectsForTalent);
+const activeProjectsForTalentLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.activeProjectsForTalentLoading,
+);
+
+const upcomingProjectsForTalent = createSelector(dashboardSelector, (dashboard) => dashboard.upcomingProjectsForTalent);
+const upcomingProjectsForTalentLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.upcomingProjectsForTalentLoading,
+);
+
 export {
   userData,
   userDataLoading,
@@ -106,4 +118,8 @@ export {
   recommendedTeamsForClientLoading,
   checkBidsAccepted,
   checkBidsAcceptedLoading,
+  activeProjectsForTalent,
+  activeProjectsForTalentLoading,
+  upcomingProjectsForTalent,
+  upcomingProjectsForTalentLoading,
 };

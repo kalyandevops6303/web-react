@@ -81,6 +81,8 @@ const API = {
     teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite-new`,
     getMyTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     projectInvites: `${apiOnboardingEndpoint}/api/v1/user/alerts/invitations`,
+    activeProjectsForTalent: `${apiOnboardingEndpoint}/api/v1/talent/active-projects`,
+    upcomingProjectsForTalent: `${apiOnboardingEndpoint}/api/v1/talent/upcoming-projects`,
 
     // client
     activeProjectsForClient: `${apiOnboardingEndpoint}/api/v1/client/active-projects`,

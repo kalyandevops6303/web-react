@@ -24,23 +24,31 @@ import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
 import {
   activeProjectsForClient,
   activeProjectsForClientLoading,
+  activeProjectsForTalent,
+  activeProjectsForTalentLoading,
   profilePercentage,
   recommendedProjects,
   recommendedProjectsLoading,
   upcomingProjectsForClient,
   upcomingProjectsForClientLoading,
+  upcomingProjectsForTalent,
+  upcomingProjectsForTalentLoading,
   userData,
 } from '../../../redux/selectors/dashboardSelectors';
 import {
   getActiveProjectsForClient,
+  getActiveProjectsForTalent,
   getRecommendedProjects,
   getUpcomingProjectsForClient,
+  getUpcomingProjectsForTalent,
 } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import ActiveProjectCard from './ActiveProjectCard';
 import UpcomingProjectCard from './UpcomingProjectCard';
+import ActiveProjectCardForTalent from './ActiveProjectCardForTalent';
+import UpcomingProjectCardForTalent from './UpcomingProjectCardForTalent';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -158,6 +166,12 @@ const ProjectListing = () => {
   const upcomingProjectsForClientData = useSelector(upcomingProjectsForClient);
   const upcomingProjectsForClientIsLoading = useSelector(upcomingProjectsForClientLoading);
 
+  const activeProjectsForTalentData = useSelector(activeProjectsForTalent);
+  const activeProjectsForTalentIsLoading = useSelector(activeProjectsForTalentLoading);
+
+  const upcomingProjectsForTalentData = useSelector(upcomingProjectsForTalent);
+  const upcomingProjectsForTalentIsLoading = useSelector(upcomingProjectsForTalentLoading);
+
   useEffect(() => {
     if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
       dispatch(getRecommendedProjects());
@@ -180,10 +194,16 @@ const ProjectListing = () => {
     if (open === '1') {
       if (userDetailsData?.user_type === userTypes.client) {
         dispatch(getActiveProjectsForClient());
+      } else if (userDetailsData?.user_type === userTypes.talent) {
+        dispatch(getActiveProjectsForTalent());
       }
     }
-    if (userDetailsData?.user_type === userTypes.client) {
-      dispatch(getUpcomingProjectsForClient());
+    if (open === '2') {
+      if (userDetailsData?.user_type === userTypes.client) {
+        dispatch(getUpcomingProjectsForClient());
+      } else if (userDetailsData?.user_type === userTypes.talent) {
+        dispatch(getUpcomingProjectsForTalent());
+      }
     }
   }, [open]);
 
@@ -194,34 +214,6 @@ const ProjectListing = () => {
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
-      {userDetailsData?.user_type !== userTypes.client && (
-        <>
-          <AccordionItem>
-            <AccordionHeader targetId="1">Active Projects</AccordionHeader>
-            <AccordionBody accordionId="1">
-              <ProjectsListingWrap>
-                {isTab ? (
-                  <Empty active recommended={false} payment={false} />
-                ) : (
-                  <Empty active recommended={false} payment={false} />
-                )}
-              </ProjectsListingWrap>
-            </AccordionBody>
-          </AccordionItem>
-          <AccordionItem>
-            <AccordionHeader targetId="2">Upcoming Projects</AccordionHeader>
-            <AccordionBody accordionId="2">
-              <ProjectsListingWrap>
-                {isTab ? (
-                  <Empty active={false} recommended payment={false} />
-                ) : (
-                  <Empty active={false} recommended payment={false} />
-                )}
-              </ProjectsListingWrap>
-            </AccordionBody>
-          </AccordionItem>
-        </>
-      )}
       {userDetailsData?.user_type === userTypes.client && (
         <>
           <AccordionItem>
@@ -315,6 +307,132 @@ const ProjectListing = () => {
                         <div className="custom-slider-wrap">
                           {upcomingProjectsForClientData?.data?.map((project) => (
                             <UpcomingProjectCard className="custom-slider-project" key={project._id} data={project} />
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Empty
+                      active={false}
+                      isEducationNotCompleted={returnDetailsForMarketPlace(
+                        userDetailsData?.user_type,
+                        profilePercentageData?.values_missing,
+                      )}
+                      recommended
+                      payment={false}
+                    />
+                  )}
+                </ProjectsListingWrap>
+              )}
+            </AccordionBody>
+          </AccordionItem>
+        </>
+      )}
+      {userDetailsData?.user_type === userTypes.talent && (
+        <>
+          <AccordionItem>
+            <AccordionHeader targetId="1">
+              <AccordionHeadStyle>
+                <span className="d-flex align-items-center">Active Projects</span>
+                {activeProjectsForTalentData?.data?.length > 0 && (
+                  <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_bids')} className="view-all-cta">
+                    View All
+                  </CardText>
+                )}
+              </AccordionHeadStyle>
+            </AccordionHeader>
+            <AccordionBody accordionId="1">
+              {isSliderLoading || activeProjectsForTalentIsLoading ? (
+                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                </div>
+              ) : (
+                <ProjectsListingWrap>
+                  {activeProjectsForTalentData?.data?.length > 0 && isTab ? (
+                    activeProjectsForTalentData?.data?.map((project) => (
+                      <ActiveProjectCardForTalent key={project._id} data={project} />
+                    ))
+                  ) : activeProjectsForTalentData?.data?.length > 0 ? (
+                    <>
+                      {activeProjectsForTalentData?.data?.length >= 4 ? (
+                        <Slider {...settings}>
+                          {activeProjectsForTalentData?.data?.map((project, index) => (
+                            <ActiveProjectCardForTalent className={`slide-${index}`} key={project._id} data={project} />
+                          ))}
+                        </Slider>
+                      ) : (
+                        <div className="custom-slider-wrap">
+                          {activeProjectsForTalentData?.data?.map((project) => (
+                            <ActiveProjectCardForTalent
+                              className="custom-slider-project"
+                              key={project._id}
+                              data={project}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Empty
+                      active={false}
+                      isEducationNotCompleted={returnDetailsForMarketPlace(
+                        userDetailsData?.user_type,
+                        profilePercentageData?.values_missing,
+                      )}
+                      recommended
+                      payment={false}
+                    />
+                  )}
+                </ProjectsListingWrap>
+              )}
+            </AccordionBody>
+          </AccordionItem>
+          <AccordionItem>
+            <AccordionHeader targetId="2">
+              <AccordionHeadStyle>
+                <span className="d-flex align-items-center">Upcoming Projects</span>
+                {activeProjectsForClientData?.data?.length > 0 && (
+                  <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_listings')} className="view-all-cta">
+                    View All
+                  </CardText>
+                )}
+              </AccordionHeadStyle>
+            </AccordionHeader>
+            <AccordionBody accordionId="2">
+              {isSliderLoading || upcomingProjectsForTalentIsLoading ? (
+                <div style={{ height: '250px' }} className="d-flex justify-content-center gap-1">
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                </div>
+              ) : (
+                <ProjectsListingWrap>
+                  {upcomingProjectsForTalentData?.data?.length > 0 && isTab ? (
+                    upcomingProjectsForTalentData?.data?.map((project) => (
+                      <UpcomingProjectCardForTalent key={project._id} data={project} />
+                    ))
+                  ) : upcomingProjectsForTalentData?.data?.length > 0 ? (
+                    <>
+                      {upcomingProjectsForTalentData?.data?.length >= 4 ? (
+                        <Slider {...settings}>
+                          {upcomingProjectsForTalentData?.data?.map((project, index) => (
+                            <UpcomingProjectCardForTalent
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
+                          ))}
+                        </Slider>
+                      ) : (
+                        <div className="custom-slider-wrap">
+                          {upcomingProjectsForTalentData?.data?.map((project) => (
+                            <UpcomingProjectCardForTalent
+                              className="custom-slider-project"
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
                         </div>
                       )}

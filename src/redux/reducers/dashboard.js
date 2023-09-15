@@ -31,6 +31,10 @@ const initialState = {
   recommendedTeamsForClientLoading: false,
   checkBidsAccepted: null,
   checkBidsAcceptedLoading: false,
+  activeProjectsForTalent: null,
+  activeProjectsForTalentLoading: false,
+  upcomingProjectsForTalent: null,
+  upcomingProjectsForTalentLoading: false,
   alerts: [],
   error: null,
 };
@@ -324,6 +328,38 @@ const dashboardSlice = createSlice({
       checkBidsAcceptedLoading: false,
       error: action.payload,
     }),
+
+    activeProjectsForTalentRequest: (state) => ({
+      ...state,
+      activeProjectsForTalentLoading: true,
+      error: null,
+    }),
+    activeProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForTalent: action.payload,
+      activeProjectsForTalentLoading: false,
+    }),
+    activeProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      activeProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForTalentRequest: (state) => ({
+      ...state,
+      upcomingProjectsForTalentLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForTalent: action.payload,
+      upcomingProjectsForTalentLoading: false,
+    }),
+    upcomingProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -331,7 +367,6 @@ export const {
   getAlertRequest,
   getAlertSuccess,
   getAlertFailure,
-
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
   recommendedProjectsFailure,
@@ -379,6 +414,12 @@ export const {
   checkBidsAcceptedRequest,
   checkBidsAcceptedSuccess,
   checkBidsAcceptedFailure,
+  activeProjectsForTalentRequest,
+  activeProjectsForTalentSuccess,
+  activeProjectsForTalentFailure,
+  upcomingProjectsForTalentRequest,
+  upcomingProjectsForTalentSuccess,
+  upcomingProjectsForTalentFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;
