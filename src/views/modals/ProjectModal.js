@@ -232,14 +232,10 @@ const ProjectModal = ({
               </CardTitle>
             </CardHeader>
             <CardBody>
-<<<<<<< HEAD
               <CardText className="fw-300 ms-75 project-desc" style={{ whiteSpace: 'pre-line' }}>
                 {' '}
                 {data?.details?.description}{' '}
               </CardText>
-=======
-              <CardText className="fw-300 ms-75 project-desc"> {data?.description} </CardText>
->>>>>>> feature/milestone-4
             </CardBody>
           </Card>
           <Card>
