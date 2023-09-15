@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardBody, Label, Input } from 'reactstrap';
 
 const CertificationNonUs = ({ isAgreed, onChange }) => (
-  <Card>
+  <Card className="w-75">
     <CardHeader>
       <h4 className="m-0 mt-1">Certification</h4>
     </CardHeader>

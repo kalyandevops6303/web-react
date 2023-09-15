@@ -3,7 +3,7 @@ import { Card, CardHeader, CardBody, Row, Label, Button } from 'reactstrap';
 
 // eslint-disable-next-line react/prop-types
 const CertificationUS = ({ onConfirm }) => (
-  <Card>
+  <Card className="w-75">
     <CardHeader>
       <h4 className="m-0 mt-1">Certification</h4>
     </CardHeader>
