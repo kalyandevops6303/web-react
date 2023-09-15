@@ -12,6 +12,7 @@ import { UserCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import TextToolTip from './TextToolTip';
 
 const giveStrokeColor = (percentage) => {
   if (percentage <= 40) {
@@ -23,7 +24,6 @@ const giveStrokeColor = (percentage) => {
     return theme.green;
   }
 };
-
 const ClientCard = ({ data, userType }) => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -40,25 +40,20 @@ const ClientCard = ({ data, userType }) => {
     if (location.pathname.split('/').includes('clients')) return { title: 'Clients', link: location.pathname };
     return '';
   };
-
   const fromLocationSearch = () => {
     if (data?.user_type === userTypes.client) return { title: 'Clients', link: '' };
     return { title: 'Talent', link: '' };
   };
   // const description = data?.company_tagline || data?.professional_intro;
-
   const locationDetails = data?.user_type === userTypes.client ? data?.office_address : data?.current_residency;
-
   const handleLike = () => {
     dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
   };
   const handleUnLike = () => {
     dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
   };
-
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
   // const areaOfInterest = data?.project_area_of_interest?.area ?? [];
-
   return (
     <UserCardWrap userType={userType} clientCard>
       <Card style={{ minHeight: '240px' }}>
@@ -69,7 +64,7 @@ const ClientCard = ({ data, userType }) => {
                 img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
                 imgHeight="40"
                 imgWidth="40"
-                className={`market-place-card-photo me-1 mb-1 `}
+                className={`client-card-photo me-1 mb-1 `}
               />
               <div className="d-flex flex-column">
                 <CardTitle className="d-flex truncate-2 text-decoration-none marketplace-card-title mb-0">
@@ -91,24 +86,27 @@ const ClientCard = ({ data, userType }) => {
                     ? data?.company_name || 'Company Name'
                     : data?.role?.name || 'Role'}
                 </CardText>
-
-                <div className="d-flex">
+                <div className="d-flex" style={{ marginLeft: '-2px' }}>
                   {locationDetails ? (
                     <div className="d-flex align-items-center">
                       <MapPin size={20} className="me-50" />
                       {locationDetails?.city?.name ? (
-                        <span className="ml-50">{locationDetails?.city?.name},&nbsp;</span>
+                        <TextToolTip text={`${locationDetails?.city?.name} `} id={data?.user_id} />
                       ) : (
                         ''
                       )}
-                      {locationDetails?.country?.name ? <span>{locationDetails?.country?.name}</span> : ''}
+                      {locationDetails?.country?.name ? (
+                        <TextToolTip text={` , ${locationDetails?.country?.name}`} id={data?.user_id} />
+                      ) : (
+                        ''
+                      )}
                     </div>
                   ) : null}
                 </div>
               </div>
             </div>
             <div className="d-flex flex-column align-items-start">
-              <div className="d-flex w-100 justify-content-end">
+              <div className="d-flex w-100 gap-50 justify-content-end">
                 {data?.is_alma_mater && (
                   <Badge className="bg-white" style={{ marginTop: '-5px' }}>
                     <img src={hat} alt="client-badge" />
@@ -128,14 +126,14 @@ const ClientCard = ({ data, userType }) => {
                   )}
                 </div>
               </div>
-
               <div className="d-flex mt-1">
                 <RatingBadge number={Math.round(data?.rating ?? 0)} />
-                <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+                <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                  {data?.project_listed_count ?? 0} Projects
+                </CardText>
               </div>
             </div>
           </Col>
-
           <div className="d-flex">
             {true ? (
               <div
@@ -166,10 +164,10 @@ const ClientCard = ({ data, userType }) => {
                 </CircularProgressbarWithChildren>
               </div>
             ) : null}
-            <div className="mt-1 w-100">
+            <div className=" w-100">
               {data?.project_area_of_interest?.area ? (
-                <div className="badge-box-wrap mb-50">
-                  <div className="info-key">Area of intrest</div>
+                <div className="mt-1 badge-box-wrap mb-50">
+                  <div className="info-key">Area of Interest</div>
                   <Badge
                     className="mt-50"
                     color=""
@@ -182,10 +180,10 @@ const ClientCard = ({ data, userType }) => {
               <div className="badge-box-wrap mb-20 mt-1">
                 <div className="info-key">Desired Skills</div>
                 <div className="d-flex flex-row flex-wrap gap-50 mt-20">
-                  {clientSkills?.map((skill, index) => (
+                  {clientSkills?.map((skill) => (
                     <div className="badge-box mt-25" key={skill?._id}>
                       <Badge
-                        id={`tooltip-${skill?._id}-${index}`}
+                        id={`tooltip-${skill?._id}-${data?.user_id}`}
                         className={`${skill?.name?.length > 12 ? 'truncate-1' : ''}`}
                         color=""
                         style={{ color: theme.lightBlueColor, backgroundColor: theme.lightBlueBgColor }}
@@ -193,7 +191,7 @@ const ClientCard = ({ data, userType }) => {
                         {skill?.name}
                       </Badge>
                       {skill?.name?.length > 12 ? (
-                        <UncontrolledTooltip target={`tooltip-${skill?._id}-${index}`}>
+                        <UncontrolledTooltip target={`tooltip-${skill?._id}-${data?.user_id}`}>
                           {skill?.name}
                         </UncontrolledTooltip>
                       ) : null}

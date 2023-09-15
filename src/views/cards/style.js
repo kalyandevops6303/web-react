@@ -164,7 +164,7 @@ const UserCardWrap = styled(CardWrap)`
     margin-bottom: -1px;
   }
   .truncate-1 {
-    max-width: 9rem;
+    max-width: 7rem;
     display: inline-block;
     display: block;
     -webkit-line-clamp: 1;
@@ -207,6 +207,15 @@ const UserCardWrap = styled(CardWrap)`
 
   .market-place-card-photo {
     height: 2rem;
+    border-radius: 50%;
+    cursor: auto !important;
+  }
+
+  .client-card-photo {
+    // height: 2rem;
+    border: 3px solid white;
+    fill: #fff;
+    filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.14));
     border-radius: 50%;
     cursor: auto !important;
   }
