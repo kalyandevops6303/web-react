@@ -20,6 +20,8 @@ import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import AcceptRequestModal from '../../modals/AcceptRequestModal';
 import RejectRequestModal from '../../modals/RejectRequestModal';
+import CreateBidModal from '../../modals/CreateBidModal';
+import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
 const InvitationView = () => {
   const dispatch = useDispatch();
@@ -27,12 +29,14 @@ const InvitationView = () => {
   // const inviteToken = getItem('inviteToken');
   const params = useParams();
   const [invitedByData, setInvitedByData] = useState('');
+  const [createBidModal, setCreateBidModal] = useState(null);
+
   const [accpetModal, setAccpetModal] = useState(false);
   const [rejectModal, setRejectModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
 
   const profilePercentageData = useSelector(profilePercentage);
-
+  const projectDetailsData = useSelector(projectDetails);
   const [status, setStatus] = useState(invitedByData?.request_status);
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
@@ -45,6 +49,9 @@ const InvitationView = () => {
     setGetWhoInvitedLoading(false);
 
     setStatus(res?.request_status);
+  };
+  const toggleCreateBidModal = () => {
+    setCreateBidModal(!createBidModal);
   };
 
   const onError = () => {
@@ -175,6 +182,13 @@ const InvitationView = () => {
       {completeProfileModal && (
         <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
       )}
+      {createBidModal && (
+        <CreateBidModal
+          modal={createBidModal}
+          toggleModal={toggleCreateBidModal}
+          selectedProject={projectDetailsData}
+        />
+      )}
       {accpetModal && (
         <AcceptRequestModal
           title={invitedByData?.request_type}
@@ -223,7 +237,7 @@ const InvitationView = () => {
                         </div>
                       ) : status === 'READ_ONLY' ? (
                         <div className="d-flex text-blue text-decoration-underline">
-                          <p className="cursor-pointer mb-0" onClick={handleAccept}>
+                          <p className="cursor-pointer mb-0" onClick={() => setCreateBidModal(true)}>
                             Create bid
                           </p>
                         </div>
