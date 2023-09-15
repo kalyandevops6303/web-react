@@ -6,7 +6,7 @@ import MoneyIcon from '@src/assets/images/money.png';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Paperclip } from 'react-feather';
-import BadgeGroup from '../../../@core/components/badge-group';
+import BadgeGroup from '../../../@core/components/badge-group-dynamic-count';
 import { LeftSidebarProjectDetailsWrapper } from '../style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { CustomBadge } from '../../styled';
@@ -35,13 +35,9 @@ const LeftSidebarProjectDetails = () => {
   }, []);
 
   const [daysLeft, setDaysLeft] = useState(0);
-  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (projectDetailsData) {
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      setTags([...projectDetailsData?.proficiency?.skills, ...projectDetailsData?.proficiency?.tools]);
-
       setDaysLeft(
         Math.max(
           0,
@@ -130,7 +126,18 @@ const LeftSidebarProjectDetails = () => {
             )}
           </div>
 
-          <BadgeGroup inline color="light-blue" title="Tags" data={tags} />
+          <div className="d-flex">
+            {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
+              <BadgeGroup
+                title="Tags"
+                data={[
+                  ...(projectDetailsData?.proficiency?.skills || []),
+                  ...(projectDetailsData?.proficiency?.tools || []),
+                ]}
+                color="light-blue"
+              />
+            )}
+          </div>
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>
