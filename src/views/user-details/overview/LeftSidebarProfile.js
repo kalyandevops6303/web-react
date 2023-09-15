@@ -275,6 +275,12 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   title="Language"
                   data={unionBy(data?.languages_speak, data?.languages_read, data?.languages_write, 'name')}
                 />
+                <BadgeGroup
+                  color="light-success-2"
+                  title="Team Associations"
+                  data={data?.team_associations}
+                  isTeamAssociations
+                />
               </>
             )}
             {isTeamView && (
