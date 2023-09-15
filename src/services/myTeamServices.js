@@ -23,9 +23,9 @@ const getInvitationsService = ({ metaData, filterData, userType }) => {
 
   // filter query options
   if (!isEmpty(filterData?.project_types)) QUERY += `&project=${filterData?.project_types[0]}`;
+  if (userType !== 'CLIENT') QUERY += `&user_type=${userType}`;
   if (!isEmpty(filterData?.invited_by)) QUERY += `&invited_by=${filterData?.invited_by[0]}`;
   if (!isEmpty(filterData?.statuses)) QUERY += `&status=${filterData?.statuses[0]}`;
-  if (!isEmpty(filterData?.user_type)) QUERY += `&user_type=${filterData?.user_type[0]}`;
   if (!isEmpty(filterData?.filter_types)) QUERY += `&filter_type=${filterData?.filter_types[0]}`;
 
   return DataService.get(`${API.myTeams.listInvites}?${QUERY}`);

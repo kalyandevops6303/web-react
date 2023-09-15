@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 // import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import { useNavigate } from 'react-router-dom';
 import DateTime from '../../lib/date-time';
 // import theme from '../../configs/themeVariables';
 import { ProjectCardWrap } from './style';
@@ -16,6 +17,8 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -47,6 +50,10 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
     }
   }, []);
 
+  const handleShowProject = () => {
+    navigate(`/project-details/${data?._id}/bid`, { state: { team_id: data?.worker_details?._id } });
+  };
+
   return (
     <ProjectCardWrap>
       <Card>
@@ -61,7 +68,7 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
                 </CustomBadge>
               </div>
               <CardTitle className="d-flex align-items-center">
-                <span className="cursor-pointer" onClick={() => setShowModal(true)}>
+                <span className="cursor-pointer" onClick={handleShowProject}>
                   {data?.name}{' '}
                 </span>
               </CardTitle>
@@ -75,9 +82,9 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
                     </>
                   )}
                 </CardText>
-                <CardText className=" project mb-1">{`Assigned Date - ${
-                  data?.total_estimated_cost
-                }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText>
+                <CardText className=" project mb-1">{`Assigned Date: ${DateTime?.fromMillis(
+                  data?.assigned_date ?? 0,
+                ).toFormat('dd-MM-yy')}`}</CardText>
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
                   {data?.client?.office_address?.country?.name || 'Location'}

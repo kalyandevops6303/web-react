@@ -31,6 +31,7 @@ const ProjectWithTeamUI = ({ data }) => {
       }))
     : [];
 
+  const clientDetails = data?.client ?? data?.client_details;
   // eslint-disable-next-line no-unsafe-optional-chaining
   const clientSkills = data?.proficiency?.skills ?? [];
   const clientTools = data?.proficiency?.tools ?? [];
@@ -41,7 +42,7 @@ const ProjectWithTeamUI = ({ data }) => {
         <div className="d-flex align-items-center gap-1">
           {data?.is_alma_mater && (
             <Badge className="alma-mater ms-50 bg-white">
-              <img src={hat} alt="client-badge" className="bg-white" width={20} height={20} />
+              <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
           )}
           <div style={{ display: 'none' }}>
@@ -60,10 +61,17 @@ const ProjectWithTeamUI = ({ data }) => {
           </div>
         </div>
       </div>
-      <div className="d-flex align-items-center">
+      <div className="d-flex">
         <section className="w-50">
           <div className="d-flex">
-            <img className={`market-place-card-photo me-75 `} src={defaultAvatar} alt="avatar" />
+            <img
+              className="market-place-card-photo me-75"
+              src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
+              alt="avatar"
+              width={40}
+              height={50}
+              style={{ objectFit: 'cover' }}
+            />
             <div>
               <div className="flex-grow-1">
                 <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
@@ -93,7 +101,11 @@ const ProjectWithTeamUI = ({ data }) => {
               {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
             </CardTitle>
           </div>
-          <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup?.slice(0, 3)} />
+          {avatarGroup?.length > 0 ? (
+            <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup?.slice(0, 3)} />
+          ) : (
+            <div className="mt-2" />
+          )}
 
           <div className="d-flex flex-grow-1 mt-25">
             <RatingBadge number="0" />

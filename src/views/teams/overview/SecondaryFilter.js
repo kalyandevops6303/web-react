@@ -97,11 +97,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'alma matter', value: 'alma matter' },
   ];
 
-  const userTypeOptions = [
-    { label: 'Talent', value: 'TALENT' },
-    { label: 'Team', value: 'TEAM' },
-  ];
-
+  // const userTypeOptions = [
+  //   { label: 'Talent', value: 'TALENT' },
+  //   { label: 'Team', value: 'TEAM' },
+  // ];
   const filterTypeOptions = [
     { label: 'Favorites', value: 'FAVOURITE' },
     { label: 'Alma matter', value: 'ALMA_MATTER' },
@@ -304,7 +303,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 {ExpandCollapseComp}
               </Col>
             )}
-            {primaryFilter === 'invitations' || primaryFilter === 'favourites' ? (
+            {/* {primaryFilter === 'invitations' || primaryFilter === 'favourites' ? (
               <Col>
                 <Label className="form-label">User Type</Label>
                 <Select
@@ -323,7 +322,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   }
                 />
               </Col>
-            ) : null}
+            ) : null} */}
             {primaryFilter === 'my-teams' ? (
               <Col>
                 <Label className="form-label">Project Status</Label>
