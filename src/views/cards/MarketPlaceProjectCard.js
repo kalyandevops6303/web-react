@@ -3,6 +3,8 @@ import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap
 import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
@@ -11,12 +13,20 @@ import ProjectModal from '../modals/ProjectModal';
 import BaseInfoUI from './BaseInfoCard';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+  const userData = useSelector(selectUserData);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
+  const isViewable =
+    // eslint-disable-next-line no-undef
+    window.location.pathname.split('/').includes('my_bids') ||
+    // eslint-disable-next-line no-undef
+    window.location.pathname.split('/').includes('my_listings');
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -61,6 +71,16 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     setCompleteProfileModal(!completeProfileModal);
   };
 
+  const handleShowProject = () => {
+    if (userData?._id === data?.client_details?.user_id) {
+      navigate(`/project-details/${data?._id}/bid`);
+    } else if ((data?.has_bid || isViewable) && data?.bid_status !== 'DRAFT') {
+      navigate(`/project-details/${data?._id}/bid`);
+    } else {
+      setShowModal(true);
+    }
+  };
+
   return (
     <ProjectCardWrap>
       <Card>
@@ -75,7 +95,7 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                 </CustomBadge>
               </div>
               <CardTitle className="d-flex align-items-center">
-                <span className="cursor-pointer" onClick={() => setShowModal(true)}>
+                <span className="cursor-pointer" onClick={handleShowProject}>
                   {data?.details?.name ?? data?.name}
                 </span>
               </CardTitle>
