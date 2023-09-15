@@ -11,10 +11,10 @@ import { getCardInfoSuccess, getListReq, storeSuccessData } from '../reducers/my
 import errorHandler from '../../utility/errorHandler';
 
 const getCardInfo =
-  ({ onSuccess, onError }) =>
+  ({ onSuccess, onError, userType }) =>
   async (dispatch) => {
     try {
-      const res = await getCardService();
+      const res = await getCardService({ userType });
       dispatch(getCardInfoSuccess(res.data.data));
       onSuccess();
     } catch (error) {
