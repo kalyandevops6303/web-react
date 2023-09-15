@@ -81,7 +81,7 @@ const FixedAdvanceMilestoneView = () => {
                 yup
                   .number()
                   .min(1, 'Duration must be at least 1')
-                  .test('is-integer', 'Duration must be an integer', (value) => Number.isInteger(value))
+                  .integer('Duration must be a integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Duration is required'),
@@ -98,6 +98,7 @@ const FixedAdvanceMilestoneView = () => {
                   .number()
                   .min(1, 'Hours must be at least 1')
                   .max(168, 'Hours must be at most 168')
+                  .integer('Hours must be an integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Hours is required'),
