@@ -253,7 +253,11 @@ const FixedSimpleMilestoneView = () => {
       (milestone) => milestone.duration > 0 && milestone.talentCost > 0 && milestone.name.trim() !== '',
     );
 
-    if (allMilestonesValid) {
+    if (!allMilestonesValid) {
+      ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
+    } else if (totalCost > projectDetailsData?.pay_type?.fixed_cost) {
+      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed cost.');
+    } else if (allMilestonesValid) {
       milestonesAppend({
         name: undefined,
         description: undefined,
