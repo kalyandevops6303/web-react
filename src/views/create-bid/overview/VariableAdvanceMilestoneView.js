@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
+  Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
@@ -19,7 +20,6 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
 import classNames from 'classnames';
@@ -80,7 +80,7 @@ const VariableAdvanceMilestoneView = () => {
                 yup
                   .number()
                   .min(1, 'Duration must be at least 1')
-                  .test('is-integer', 'Duration must be an integer', (value) => Number.isInteger(value))
+                  .integer('Duration must be a integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Duration is required'),
@@ -97,6 +97,7 @@ const VariableAdvanceMilestoneView = () => {
                   .number()
                   .min(1, 'Hours must be at least 1')
                   .max(168, 'Hours must be at most 168')
+                  .integer('Hours must be an integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Hours is required'),
@@ -161,6 +162,15 @@ const VariableAdvanceMilestoneView = () => {
   const [allWorkers, setAllWorkers] = useState([]);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
+
+  const [open, setOpen] = useState(1);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
 
   const calculateMilestoneValues = (milestoneIndex) => {
     const milestoneDuration = allMilestones[milestoneIndex]?.workers
@@ -375,6 +385,8 @@ const VariableAdvanceMilestoneView = () => {
           otherDetails: worker,
         })),
       });
+
+      toggle(getValues('milestones')?.length);
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
@@ -644,7 +656,7 @@ const VariableAdvanceMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <UncontrolledAccordion className="mb-2">
+              <Accordion className="mb-2" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => {
                   const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(milestoneIndex);
 
@@ -773,7 +785,10 @@ const VariableAdvanceMilestoneView = () => {
                                       <Col sm="12" md="6" lg="5">
                                         <div className="d-flex align-items-center">
                                           <p className="roles-list-header m-0 me-50">Select Roles</p>
-                                          <Info size={18} color={theme.infoIcon} />
+                                          <Info size={18} color={theme.infoIcon} id="selected-info" />
+                                          <UncontrolledTooltip placement="top" target="selected-info">
+                                            <p className="m-0">Select the role required to deliver this milestone</p>
+                                          </UncontrolledTooltip>
                                         </div>
                                       </Col>
                                       <Col sm="12" md="6" lg="7">
@@ -781,7 +796,10 @@ const VariableAdvanceMilestoneView = () => {
                                           <Col sm="12" md="6" lg="6">
                                             <div className="d-flex align-items-center">
                                               <p className="roles-list-header m-0 me-50">Duration</p>
-                                              <Info size={18} color={theme.infoIcon} />
+                                              <Info size={18} color={theme.infoIcon} id="duration-info" />
+                                              <UncontrolledTooltip placement="top" target="duration-info">
+                                                <p className="m-0">W = Week</p>
+                                              </UncontrolledTooltip>
                                             </div>
                                           </Col>
                                           <Col sm="12" md="6" lg="6">
@@ -1109,7 +1127,7 @@ const VariableAdvanceMilestoneView = () => {
                     </Card>
                   );
                 })}
-              </UncontrolledAccordion>
+              </Accordion>
             </CardBody>
           </Card>
           <Card className="mt-2">

@@ -71,6 +71,17 @@ const Notifications = () => {
       navigate(`/project-details/${projectId}/bid`);
     }
   };
+
+  const disputesRedirection = (type) => {
+    if (type === 'DISPUTE_CREATED' || type === 'DISPUTE_UPDATED') {
+      navigate(`/disputes/open`);
+    } else if (type === 'DISPUTE_RESOLVED') {
+      navigate(`/disputes/resolved`);
+    } else {
+      navigate(`/disputes/open`);
+    }
+  };
+
   const isReqeustFlowStatus = (status) => {
     switch (status) {
       case 'Project Invitation Request':
@@ -85,8 +96,25 @@ const Notifications = () => {
         return false;
     }
   };
+
+  const isDisputesNotification = (type) => {
+    switch (type) {
+      case 'DISPUTE_CREATED':
+        return true;
+      case 'DISPUTE_UPDATED':
+        return true;
+      case 'DISPUTE_RESOLVED':
+        return true;
+      default:
+        return false;
+    }
+  };
+
   const handleNotification = (data) => {
-    setSwitchData(data);
+    setSwitchData({
+      ...data,
+      isDisputesNotification: isDisputesNotification(data?.notification_type),
+    });
 
     if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
       setSwitchProfileModal(true);
@@ -96,6 +124,8 @@ const Notifications = () => {
         projectId: data?.custom_payload?.request_for?.project_id,
         inviteId: data?.custom_payload?.request_id,
       });
+    } else if (isDisputesNotification(data?.notification_type)) {
+      disputesRedirection(data?.notification_type);
     } else {
       redirectionFunction({ projectId: data?.custom_payload?.project_id });
     }
@@ -182,6 +212,7 @@ const Notifications = () => {
             data={switchData}
             modal={switchProfileModal}
             toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
+            disputesRedirection={disputesRedirection}
           />
         )}
       </InfiniteScroll>

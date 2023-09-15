@@ -72,6 +72,9 @@ const recommendedTeamsForClientLoading = createSelector(
   (dashboard) => dashboard.recommendedTeamsForClientLoading,
 );
 
+const checkBidsAccepted = createSelector(dashboardSelector, (dashboard) => dashboard.checkBidsAccepted);
+const checkBidsAcceptedLoading = createSelector(dashboardSelector, (dashboard) => dashboard.checkBidsAcceptedLoading);
+
 export {
   userData,
   userDataLoading,
@@ -101,4 +104,6 @@ export {
   projectsBidsForClientLoading,
   recommendedTeamsForClient,
   recommendedTeamsForClientLoading,
+  checkBidsAccepted,
+  checkBidsAcceptedLoading,
 };

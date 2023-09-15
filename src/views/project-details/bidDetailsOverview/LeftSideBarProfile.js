@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -15,7 +15,7 @@ import BehanceIcon from '@src/assets/images/behance.png';
 import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
-import { GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
+import { GitHub, Heart, Linkedin, Link, UserCheck } from 'react-feather';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/projectDetailsAction';
@@ -394,9 +394,11 @@ const LeftSidebarProfile = ({
             {isProjectDetailsView && (
               <div className="invited-box">
                 <div className="d-flex gap-1 mt-3 justify-content-center">
-                  <Button size="md" className="w-50" outline color="primary">
-                    View Profile
-                  </Button>
+                  <RouterLink className="w-50" to={`/profile/${data?.user_type?.toLowerCase()}/${data?.user_id}`}>
+                    <Button className="w-100" size="md" outline color="primary">
+                      View Profile
+                    </Button>
+                  </RouterLink>
                   <Button size="md" className="w-50" color="primary">
                     Message
                   </Button>

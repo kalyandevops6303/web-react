@@ -254,10 +254,10 @@ const ProjectModal = ({
             </CardBody>
           </Card>
 
-          {isMyTeam ? null : isViewable ? (
+          {isMyTeam ? null : isViewable && data?.bid_status !== 'DRAFT' ? (
             <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
               <Button onClick={handleRedirectTodetailsView} color="primary">
-                <span className="me-50">View Bid</span>
+                <span className="me-50">View</span>
                 <ChevronRight size={14} />
               </Button>
             </div>
@@ -269,16 +269,23 @@ const ProjectModal = ({
                   <Button color="flat-danger" className=" d-none me-1">
                     Report
                   </Button>
-                  <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
-                    {checkBidLoadingIsLoading ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <>
-                        <span className="me-50">Create Bid</span>
-                        <ChevronRight size={14} />
-                      </>
-                    )}
-                  </Button>
+                  {data?.has_bid ? (
+                    <Button color="primary" onClick={handleRedirectTodetailsView}>
+                      <span className="me-50">View Bid</span>
+                      <ChevronRight size={14} />
+                    </Button>
+                  ) : (
+                    <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
+                      {checkBidLoadingIsLoading ? (
+                        <Spinner size="sm" />
+                      ) : (
+                        <>
+                          <span className="me-50">Create Bid</span>
+                          <ChevronRight size={14} />
+                        </>
+                      )}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
