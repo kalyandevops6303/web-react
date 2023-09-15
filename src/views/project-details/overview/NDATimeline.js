@@ -14,7 +14,7 @@ const NDATimeline = () => {
   const isContract = useSelector(selectIsNDA);
   const contractTimeline = useSelector(selectNDATimeline);
   const bidUpdatesDataSet = [];
-  contractTimeline?.timeline.map((item) =>
+  contractTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
       color: getTimeLineDotColor(item?.status),
       customContent: (
