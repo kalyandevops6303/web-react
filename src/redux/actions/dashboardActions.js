@@ -17,6 +17,7 @@ import {
   upcomingProjectsForClientService,
   projectsBidsForClientService,
   recommendedTeamsForClientService,
+  checkBidsAcceptedService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -66,6 +67,9 @@ import {
   recommendedTeamsForClientRequest,
   recommendedTeamsForClientSuccess,
   recommendedTeamsForClientFailure,
+  checkBidsAcceptedRequest,
+  checkBidsAcceptedSuccess,
+  checkBidsAcceptedFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -275,6 +279,16 @@ const getRecommendedTeamsForClient = () => async (dispatch) => {
   }
 };
 
+const getCheckBidsAccepted = () => async (dispatch) => {
+  dispatch(checkBidsAcceptedRequest());
+  try {
+    const res = await checkBidsAcceptedService();
+    dispatch(checkBidsAcceptedSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, checkBidsAcceptedFailure);
+  }
+};
+
 export {
   getAlerts,
   validateUrl,
@@ -295,4 +309,5 @@ export {
   getUpcomingProjectsForClient,
   getProjectsBidsForClient,
   getRecommendedTeamsForClient,
+  getCheckBidsAccepted,
 };

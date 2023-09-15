@@ -29,6 +29,8 @@ const initialState = {
   projectsBidsForClientLoading: false,
   recommendedTeamsForClient: null,
   recommendedTeamsForClientLoading: false,
+  checkBidsAccepted: null,
+  checkBidsAcceptedLoading: false,
   alerts: [],
   error: null,
 };
@@ -306,6 +308,22 @@ const dashboardSlice = createSlice({
       recommendedTeamsForClientLoading: false,
       error: action.payload,
     }),
+
+    checkBidsAcceptedRequest: (state) => ({
+      ...state,
+      checkBidsAcceptedLoading: true,
+      error: null,
+    }),
+    checkBidsAcceptedSuccess: (state, action) => ({
+      ...state,
+      checkBidsAccepted: action.payload,
+      checkBidsAcceptedLoading: false,
+    }),
+    checkBidsAcceptedFailure: (state, action) => ({
+      ...state,
+      checkBidsAcceptedLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -358,6 +376,9 @@ export const {
   recommendedTeamsForClientRequest,
   recommendedTeamsForClientSuccess,
   recommendedTeamsForClientFailure,
+  checkBidsAcceptedRequest,
+  checkBidsAcceptedSuccess,
+  checkBidsAcceptedFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

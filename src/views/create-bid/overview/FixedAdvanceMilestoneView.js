@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
+  Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
@@ -20,7 +21,6 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
 import classNames from 'classnames';
@@ -81,7 +81,7 @@ const FixedAdvanceMilestoneView = () => {
                 yup
                   .number()
                   .min(1, 'Duration must be at least 1')
-                  .test('is-integer', 'Duration must be an integer', (value) => Number.isInteger(value))
+                  .integer('Duration must be a integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Duration is required'),
@@ -98,6 +98,7 @@ const FixedAdvanceMilestoneView = () => {
                   .number()
                   .min(1, 'Hours must be at least 1')
                   .max(168, 'Hours must be at most 168')
+                  .integer('Hours must be an integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Hours is required'),
@@ -163,6 +164,15 @@ const FixedAdvanceMilestoneView = () => {
   const [allWorkers, setAllWorkers] = useState([]);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
+
+  const [open, setOpen] = useState(1);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
 
   const calculateMilestoneValues = (milestoneIndex) => {
     const milestoneDuration = allMilestones[milestoneIndex]?.workers
@@ -362,7 +372,11 @@ const FixedAdvanceMilestoneView = () => {
           .every((worker) => worker.duration > 0 && worker.hours > 0),
     );
 
-    if (allMilestonesValid) {
+    if (!allMilestonesValid) {
+      ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
+    } else if (totalCost > projectDetailsData?.pay_type?.fixed_cost) {
+      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed cost.');
+    } else if (allMilestonesValid && totalCost <= projectDetailsData?.pay_type?.fixed_cost) {
       milestonesAppend({
         milestoneId: uuidv4(),
         name: undefined,
@@ -377,6 +391,8 @@ const FixedAdvanceMilestoneView = () => {
           otherDetails: worker,
         })),
       });
+
+      toggle(getValues('milestones')?.length);
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
@@ -680,7 +696,7 @@ const FixedAdvanceMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <UncontrolledAccordion className="mb-2">
+              <Accordion className="mb-2" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => {
                   const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(milestoneIndex);
 
@@ -1145,7 +1161,7 @@ const FixedAdvanceMilestoneView = () => {
                     </Card>
                   );
                 })}
-              </UncontrolledAccordion>
+              </Accordion>
             </CardBody>
           </Card>
           <Card className="mt-2">
