@@ -16,6 +16,7 @@ const NavbarUser = () => {
   const handleNotificaionClick = () => {
     isNotificationCount && dispatch(notificationCount(false));
   };
+
   return (
     <ul className="nav navbar-nav align-items-center ms-auto">
       <NavbarSearch />
