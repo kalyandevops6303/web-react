@@ -35,6 +35,10 @@ const initialState = {
   activeProjectsForTalentLoading: false,
   upcomingProjectsForTalent: null,
   upcomingProjectsForTalentLoading: false,
+  activeProjectsForTeam: null,
+  activeProjectsForTeamLoading: false,
+  upcomingProjectsForTeam: null,
+  upcomingProjectsForTeamLoading: false,
   alerts: [],
   error: null,
 };
@@ -360,6 +364,38 @@ const dashboardSlice = createSlice({
       upcomingProjectsForTalentLoading: false,
       error: action.payload,
     }),
+
+    activeProjectsForTeamRequest: (state) => ({
+      ...state,
+      activeProjectsForTeamLoading: true,
+      error: null,
+    }),
+    activeProjectsForTeamSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForTeam: action.payload,
+      activeProjectsForTeamLoading: false,
+    }),
+    activeProjectsForTeamFailure: (state, action) => ({
+      ...state,
+      activeProjectsForTeamLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForTeamRequest: (state) => ({
+      ...state,
+      upcomingProjectsForTeamLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForTeamSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForTeam: action.payload,
+      upcomingProjectsForTeamLoading: false,
+    }),
+    upcomingProjectsForTeamFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForTeamLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -420,6 +456,12 @@ export const {
   upcomingProjectsForTalentRequest,
   upcomingProjectsForTalentSuccess,
   upcomingProjectsForTalentFailure,
+  activeProjectsForTeamRequest,
+  activeProjectsForTeamSuccess,
+  activeProjectsForTeamFailure,
+  upcomingProjectsForTeamRequest,
+  upcomingProjectsForTeamSuccess,
+  upcomingProjectsForTeamFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

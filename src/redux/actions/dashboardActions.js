@@ -20,6 +20,8 @@ import {
   checkBidsAcceptedService,
   activeProjectsForTalentService,
   upcomingProjectsForTalentService,
+  activeProjectsForTeamService,
+  upcomingProjectsForTeamService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -78,6 +80,12 @@ import {
   upcomingProjectsForTalentRequest,
   upcomingProjectsForTalentSuccess,
   upcomingProjectsForTalentFailure,
+  activeProjectsForTeamRequest,
+  activeProjectsForTeamSuccess,
+  activeProjectsForTeamFailure,
+  upcomingProjectsForTeamRequest,
+  upcomingProjectsForTeamSuccess,
+  upcomingProjectsForTeamFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -317,6 +325,26 @@ const getUpcomingProjectsForTalent = () => async (dispatch) => {
   }
 };
 
+const getActiveProjectsForTeam = () => async (dispatch) => {
+  dispatch(activeProjectsForTeamRequest());
+  try {
+    const res = await activeProjectsForTeamService();
+    dispatch(activeProjectsForTeamSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, activeProjectsForTeamFailure);
+  }
+};
+
+const getUpcomingProjectsForTeam = () => async (dispatch) => {
+  dispatch(upcomingProjectsForTeamRequest());
+  try {
+    const res = await upcomingProjectsForTeamService();
+    dispatch(upcomingProjectsForTeamSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, upcomingProjectsForTeamFailure);
+  }
+};
+
 export {
   getAlerts,
   validateUrl,
@@ -340,4 +368,6 @@ export {
   getCheckBidsAccepted,
   getActiveProjectsForTalent,
   getUpcomingProjectsForTalent,
+  getActiveProjectsForTeam,
+  getUpcomingProjectsForTeam,
 };

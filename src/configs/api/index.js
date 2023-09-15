@@ -75,6 +75,8 @@ const API = {
     updateInvitation: `${apiAuthEndpoint}/api/v1/team/invite-member/update-invite`,
     removeMember: `${apiAuthEndpoint}/api/v1/team/delete-member`,
     teamProfilePercentage: `${apiOnboardingEndpoint}/api/v1/teams/profile-percentage`,
+    activeProjectsForTeam: `${apiOnboardingEndpoint}/api/v1/teams/active-projects`,
+    upcomingProjectsForTeam: `${apiOnboardingEndpoint}/api/v1/teams/upcoming-projects`,
 
     // talent
     recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,

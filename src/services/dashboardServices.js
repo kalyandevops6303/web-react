@@ -52,6 +52,10 @@ const activeProjectsForTalentService = () => DataService.get(API.dashboard.activ
 
 const upcomingProjectsForTalentService = () => DataService.get(API.dashboard.upcomingProjectsForTalent);
 
+const activeProjectsForTeamService = () => DataService.get(API.dashboard.activeProjectsForTeam);
+
+const upcomingProjectsForTeamService = () => DataService.get(API.dashboard.upcomingProjectsForTeam);
+
 export {
   alertService,
   userDataService,
@@ -76,4 +80,6 @@ export {
   checkBidsAcceptedService,
   activeProjectsForTalentService,
   upcomingProjectsForTalentService,
+  activeProjectsForTeamService,
+  upcomingProjectsForTeamService,
 };

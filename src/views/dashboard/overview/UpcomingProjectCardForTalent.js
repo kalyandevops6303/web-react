@@ -49,7 +49,7 @@ const UpcomingProjectCardForTalent = ({ data, className }) => {
               </div>
               <div className="design-planning">
                 <CardText className="mb-25">Amount</CardText>
-                <h6 className="mb-0">{data?.amount}</h6>
+                <h6 className="mb-0">${data?.amount}</h6>
               </div>
             </div>
           </div>

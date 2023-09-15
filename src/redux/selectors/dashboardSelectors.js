@@ -87,6 +87,18 @@ const upcomingProjectsForTalentLoading = createSelector(
   (dashboard) => dashboard.upcomingProjectsForTalentLoading,
 );
 
+const activeProjectsForTeam = createSelector(dashboardSelector, (dashboard) => dashboard.activeProjectsForTeam);
+const activeProjectsForTeamLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.activeProjectsForTeamLoading,
+);
+
+const upcomingProjectsForTeam = createSelector(dashboardSelector, (dashboard) => dashboard.upcomingProjectsForTeam);
+const upcomingProjectsForTeamLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.upcomingProjectsForTeamLoading,
+);
+
 export {
   userData,
   userDataLoading,
@@ -122,4 +134,8 @@ export {
   activeProjectsForTalentLoading,
   upcomingProjectsForTalent,
   upcomingProjectsForTalentLoading,
+  activeProjectsForTeam,
+  activeProjectsForTeamLoading,
+  upcomingProjectsForTeam,
+  upcomingProjectsForTeamLoading,
 };
