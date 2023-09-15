@@ -29,7 +29,7 @@ import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
-import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
+import SendInvitationModal from '../../modals/SendInvitationModal';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -42,7 +42,10 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const profilePercentageData = useSelector(profilePercentage);
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
-  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+
+  const [selectedTalent, setSelectedTalent] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [sendInviteModal, setSendInviteModal] = useState(null);
 
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
@@ -93,13 +96,14 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
   };
 
-  const toggleModal = () => {
-    setInviteModal(!inviteTalentToTeamModal);
+  const toggleSendInviteModal = () => {
+    setSendInviteModal(!sendInviteModal);
   };
 
-  // const handleInvite = () => {
-  //   setInviteTalentToTeamModal(true);
-  // };
+  const handleInviteTalent = () => {
+    setSelectedTalent([data]);
+    setSendInviteModal(true);
+  };
 
   return (
     <LeftSidebarProfileWrapper>
@@ -396,11 +400,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 {!isEditable && teamId && data?.user_type === userTypes.talent && (
-                  // <Button className="w-50" outline color="primary" onClick={handleInvite}>
-                  //   Invite
-                  // </Button>
-
-                  <Button className="w-50" outline color="primary">
+                  <Button className="w-50" outline color="primary" onClick={handleInviteTalent}>
                     Invite
                   </Button>
                 )}
@@ -423,12 +423,14 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           </section>
         </CardBody>
       </Card>
-      {inviteTalentToTeamModal && (
-        <InviteTalentToTeamForProjectDetails
-          inviteTeamMemberModal={inviteTalentToTeamModal}
-          toggleInviteTeamMemberModal={toggleModal}
-          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
-          projectId={param.projectId}
+      {sendInviteModal && (
+        <SendInvitationModal
+          modal={sendInviteModal}
+          toggleModal={toggleSendInviteModal}
+          selectedTalents={selectedTalent}
+          message={inputMessage}
+          setMessage={setInputMessage}
+          description="You are inviting the below to join your team."
         />
       )}
     </LeftSidebarProfileWrapper>
