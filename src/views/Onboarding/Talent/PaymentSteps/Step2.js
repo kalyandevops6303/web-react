@@ -20,6 +20,7 @@ import { selectAuthUserData } from '../../../../redux/selectors/authSelectors';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
 
+// eslint-disable-next-line react/prop-types
 const Step2 = ({ setStep }) => {
   const [confirmSign, setConfirmSign] = useState({
     checkbox1: false,
@@ -50,7 +51,7 @@ const Step2 = ({ setStep }) => {
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(taxIdentitySchema),
@@ -100,7 +101,7 @@ const Step2 = ({ setStep }) => {
     );
   };
 
-  const onSuccess = () => {
+  const onComplete = () => {
     if (location?.state?.isEditing) {
       navigate('/dashboard');
     } else {
@@ -108,11 +109,15 @@ const Step2 = ({ setStep }) => {
     }
   };
 
+  const onSuccess = () => {
+    setStep(3);
+  };
+
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
       navigate('/dashboard');
     } else {
-      dispatch(saveCheckpointComplete(onSuccess));
+      dispatch(saveCheckpointComplete(onComplete, onComplete));
     }
   };
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
@@ -125,7 +130,7 @@ const Step2 = ({ setStep }) => {
         is_working_in_us: working === 'in_us',
       },
     };
-    // dispatch(savePaymentDetails(newData));
+    dispatch(savePaymentDetails(newData, onSuccess));
     setStep(3);
   };
 
