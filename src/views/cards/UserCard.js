@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Heart, MapPin } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import Avatar from '@components/avatar';
-import hat from '@src/assets/images/hat.png';
+import hat from '@src/assets/images/hat.svg';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
