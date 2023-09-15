@@ -2,7 +2,7 @@
 import { UncontrolledTooltip } from 'reactstrap';
 
 const TextToolTip = ({ text, id }) => {
-  const isLongText = text?.length > 8;
+  const isLongText = text?.length > 12;
   return (
     <div>
       <span id={`tooltip-${id}`} className={`${isLongText ? 'truncate-1' : ''}`}>

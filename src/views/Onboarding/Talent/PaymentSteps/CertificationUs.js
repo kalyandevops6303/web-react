@@ -2,8 +2,8 @@ import React from 'react';
 import { Card, CardHeader, CardBody, Row, Label, Button } from 'reactstrap';
 
 // eslint-disable-next-line react/prop-types
-const CertificationUS = ({ onConfirm }) => (
-  <Card>
+const CertificationUS = ({ onConfirm, isConfirmed }) => (
+  <Card className="w-75">
     <CardHeader>
       <h4 className="m-0 mt-1">Certification</h4>
     </CardHeader>
@@ -39,7 +39,13 @@ const CertificationUS = ({ onConfirm }) => (
 
       <Row>
         <Label>Confirmation of U.S person</Label>
-        <Button color="primary" onClick={onConfirm} className="mt-1 mb-1" style={{ width: '120px' }}>
+        <Button
+          color="primary"
+          disabled={isConfirmed}
+          onClick={onConfirm}
+          className="mt-1 mb-1"
+          style={{ width: '120px' }}
+        >
           I Confirm
         </Button>
         <Label className="fs-6">Sign on:-</Label>
