@@ -1,6 +1,7 @@
 const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
 const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
+const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT_AI}:4005`;
 
 const API = {
   auth: {
@@ -26,7 +27,9 @@ const API = {
     paginatedInstitutes: `${apiAuthEndpoint}/api/v1/static/institute/paginated`,
     educations: `${apiAuthEndpoint}/api/v1/static/education/all`,
     tools: `${apiAuthEndpoint}/api/v1/static/tools/all`,
+    toolsAI: `${apiAuthEndpoint}/api/v1/static/tools/search-by-name`,
     skills: `${apiAuthEndpoint}/api/v1/static/skills/all`,
+    skillsAI: `${apiAuthEndpoint}/api/v1/static/skills/search-by-name`,
     certificates: `${apiAuthEndpoint}/api/v1/static/certificates/all`,
     timezones: `${apiAuthEndpoint}/api/v1/static/timezone/all`,
     currencies: `${apiAuthEndpoint}/api/v1/static/currency/all`,
@@ -85,6 +88,7 @@ const API = {
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
+    createProjectAI: `${apiCreateProjectAIEndpoint}/api/v1/short_product_requirements`,
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project/best-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,

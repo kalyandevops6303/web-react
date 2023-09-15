@@ -16,9 +16,13 @@ const initialState = {
   educations: null,
   educationsLoading: false,
   tools: null,
+  toolsFromAI: null,
   toolsLoading: false,
+  toolsFromAILoading: false,
   skills: null,
+  skillsFromAI: null,
   skillsLoading: false,
+  skillsFromAILoading: false,
   certificates: null,
   certificatesLoading: false,
   timezones: null,
@@ -168,6 +172,22 @@ const staticDataSlice = createSlice({
       error: action.payload,
     }),
 
+    toolsAIRequest: (state) => ({
+      ...state,
+      toolsFromAILoading: true,
+      error: null,
+    }),
+    toolsAISuccess: (state, action) => ({
+      ...state,
+      toolsFromAILoading: false,
+      toolsFromAI: action.payload,
+    }),
+    toolsAIFailure: (state, action) => ({
+      ...state,
+      toolsFromAILoading: false,
+      error: action.payload,
+    }),
+
     skillsRequest: (state) => ({
       ...state,
       skillsLoading: true,
@@ -182,6 +202,28 @@ const staticDataSlice = createSlice({
       ...state,
       skillsLoading: false,
       error: action.payload,
+    }),
+
+    skillsAIRequest: (state) => ({
+      ...state,
+      skillsFromAILoading: true,
+      error: null,
+    }),
+    skillsAISuccess: (state, action) => ({
+      ...state,
+      skillsFromAILoading: false,
+      skillsFromAI: action.payload,
+    }),
+    skillsAIFailure: (state, action) => ({
+      ...state,
+      skillsFromAILoading: false,
+      error: action.payload,
+    }),
+
+    clearAIToolsAndSkills: (state) => ({
+      ...state,
+      skillsFromAI: null,
+      toolsFromAI: null,
     }),
 
     certificatesRequest: (state) => ({
@@ -323,9 +365,15 @@ export const {
   toolsRequest,
   toolsSuccess,
   toolsFailure,
+  toolsAIRequest,
+  toolsAISuccess,
+  toolsAIFailure,
   skillsRequest,
   skillsSuccess,
   skillsFailure,
+  skillsAIRequest,
+  skillsAISuccess,
+  skillsAIFailure,
   certificatesRequest,
   certificatesSuccess,
   certificatesFailure,
@@ -347,6 +395,7 @@ export const {
   ratingTagsRequest,
   ratingTagsSuccess,
   ratingTagsFailure,
+  clearAIToolsAndSkills,
 } = staticDataSlice.actions;
 
 export default staticDataSlice.reducer;
