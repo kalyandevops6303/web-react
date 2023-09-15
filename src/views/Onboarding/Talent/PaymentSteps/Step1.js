@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Col, Form, Card, CardBody, CardHeader, Input } from 'reactstrap';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,12 +9,15 @@ import theme from '../../../../configs/themeVariables';
 import { userOnboarding } from '../../../../utility/constants/Constant';
 
 import { paymentDetailsSuccess } from '../../../../redux/reducers/PaymentDetails';
+import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
+import AccountCreatedModal from '../../AccountCreatedModal';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const { userType, working } = useSelector((state) => state.PaymentDetails);
 
@@ -37,6 +40,8 @@ const Step1 = ({ setStep }) => {
     );
   };
 
+  const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
+
   const handleWorkOptionChange = (e) => {
     dispatch(
       paymentDetailsSuccess({
@@ -50,8 +55,26 @@ const Step1 = ({ setStep }) => {
     setStep(2);
   };
 
+  const onSuccess = () => {
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      setAccountCreatedModal(true);
+    }
+  };
+
+  const onSkipClick = () => {
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      dispatch(saveCheckpointComplete(onSuccess));
+    }
+  };
   return (
     <ProfileFormContainer>
+      {accountCreatedModal && (
+        <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
+      )}
       <h2 className="m-0 mt-1 mb-2">STEP 1 - Tax Situation Assessment</h2>
       <Form>
         <Card className="w-75">
@@ -122,6 +145,10 @@ const Step1 = ({ setStep }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
+            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+              <span className="me-50">Skip</span>
+              <ChevronRight size={14} />
+            </Button>
             <Button color="primary" type="submit" onClick={handleNextClick}>
               <>
                 <span className="me-50">

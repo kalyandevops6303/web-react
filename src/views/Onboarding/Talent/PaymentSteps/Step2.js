@@ -11,11 +11,14 @@ import classNames from 'classnames';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { selectThemeColors } from '@utils';
 
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
 import { paymentDetailsSuccess, saveTaxIdDetails } from '../../../../redux/reducers/PaymentDetails';
 import { savePaymentDetails } from '../../../../redux/actions/paymentActions';
 import { selectAuthUserData } from '../../../../redux/selectors/authSelectors';
+import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
+import AccountCreatedModal from '../../AccountCreatedModal';
 
 const Step2 = ({ setStep }) => {
   const [confirmSign, setConfirmSign] = useState({
@@ -23,6 +26,7 @@ const Step2 = ({ setStep }) => {
     checkbox2: false,
   });
   const [isDocumentConfirmed, setIsDocumentConfirmed] = useState(false);
+  const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const { userType, selectedTaxId, taxId, taxClass, taxName, working } = useSelector((state) => state.PaymentDetails);
   const userDataLocal = useSelector(selectAuthUserData);
@@ -69,6 +73,8 @@ const Step2 = ({ setStep }) => {
   }, []);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const taxClassificationOptions = [{ label: 'Individual', value: 'INDIVIDUAL' }];
 
@@ -94,6 +100,23 @@ const Step2 = ({ setStep }) => {
     );
   };
 
+  const onSuccess = () => {
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      setAccountCreatedModal(true);
+    }
+  };
+
+  const onSkipClick = () => {
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      dispatch(saveCheckpointComplete(onSuccess));
+    }
+  };
+  const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
+
   const onSubmit = (data) => {
     dispatch(saveTaxIdDetails(data));
     const newData = {
@@ -108,6 +131,10 @@ const Step2 = ({ setStep }) => {
 
   return (
     <ProfileFormContainer>
+      {accountCreatedModal && (
+        <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
+      )}
+
       <h4>STEP 2 - Taxpayer Identification</h4>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card className="w-75">
@@ -294,7 +321,7 @@ const Step2 = ({ setStep }) => {
           </Card>
         ) : null}
 
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
+        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
           <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
@@ -302,6 +329,10 @@ const Step2 = ({ setStep }) => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
+            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+              <span className="me-50">Skip</span>
+              <ChevronRight size={14} />
+            </Button>
             <Button
               color="primary"
               type="submit"
