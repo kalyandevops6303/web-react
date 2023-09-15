@@ -7,34 +7,22 @@ import { useForm, Controller } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import classNames from 'classnames';
 import Select from 'react-select';
+import * as Yup from 'yup';
 import Flatpickr from 'react-flatpickr';
 
 import { selectThemeColors } from '@utils';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
 import { returnFilteredDropdownOptions } from '../../../../utility/Utils';
 import { countriesService } from '../../../../services/staticServices';
 import { getStates, getCities } from '../../../../redux/actions/staticActions';
+import { updatePaymentDetails } from '../../../../redux/actions/paymentActions';
 import { states, statesLoading, cities, citiesLoading } from '../../../../redux/selectors/staticSelectors';
 import CertificationUS from './CertificationUs';
 import CertificationNonUs from './CertificationNonUs';
 
 const Step3 = ({ setStep }) => {
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors, isValid },
-  } = useForm({
-    mode: 'onChange',
-    resolver: '',
-    defaultValues: {
-      fullName: '',
-      citizen: '',
-    },
-  });
-
   const { userType } = useSelector((state) => state.PaymentDetails);
 
   const isUsPerson = false;
@@ -45,6 +33,9 @@ const Step3 = ({ setStep }) => {
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
   const [copyAddress, setCopyAddress] = useState(false);
+  const [taxPayer, setTaxPayer] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(!isUsPerson);
+  const [isAgreed, setIsAgreed] = useState(false);
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
@@ -58,6 +49,92 @@ const Step3 = ({ setStep }) => {
   //     setAccountCreatedModal(true);
   //   }
   // };
+
+  const usWFormsSchema = Yup.object().shape({
+    fullName: Yup.string()
+      .min(3, 'name must be at least 3 characters')
+      .max(25, 'name must be at most 25 characters')
+      .matches(/^[a-zA-Z0-9 _]+$/, 'name should not contain special characters')
+      .required('name is required'),
+    citizen: Yup.object()
+      .shape({
+        label: Yup.string().required('This is required'),
+        value: Yup.string().required('This is required'),
+      })
+      .required('This is required'),
+    pAddress: Yup.string(),
+    pHouseNo: Yup.string(),
+    pCountry: Yup.object()
+      .shape({
+        label: Yup.string().required('This is required'),
+        value: Yup.string().required('This is required'),
+      })
+      .required('This is required'),
+    pState: Yup.object()
+      .shape({
+        label: Yup.string().required('This is required'),
+        value: Yup.string().required('This is required'),
+      })
+      .required('This is required'),
+    pCity: Yup.object()
+      .shape({
+        label: Yup.string().required('This is required'),
+        value: Yup.string().required('This is required'),
+      })
+      .required('This is required'),
+    pZipCode: Yup.string().required('This is required'),
+
+    mAddress: Yup.string(),
+    mHouseNo: Yup.string(),
+    mCountry: Yup.object()
+      .shape({
+        label: Yup.string().required('This is required'),
+        value: Yup.string().required('This is required'),
+      })
+      .required('This is required'),
+    mState: Yup.object()
+      .shape({
+        label: Yup.string().required('This is required'),
+        value: Yup.string().required('This is required'),
+      })
+      .required('This is required'),
+    mCity: Yup.object()
+      .shape({
+        label: Yup.string().required('This is required'),
+        value: Yup.string().required('This is required'),
+      })
+      .required('This is required'),
+    mZipCode: Yup.string().required('This is required'),
+    refNo: Yup.string().required('This is required'),
+    dob: Yup.string(),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(usWFormsSchema),
+    defaultValues: {
+      fullName: '',
+      citizen: '',
+      pAddress: '',
+      pHouseNo: '',
+      pState: '',
+      pCountry: '',
+      pCity: '',
+      pZipCode: '',
+      mAddress: '',
+      mHouseNo: '',
+      mState: '',
+      mCountry: '',
+      mCity: '',
+      mZipCode: '',
+    },
+  });
 
   useEffect(() => {
     if (watch('country')) {
@@ -102,6 +179,10 @@ const Step3 = ({ setStep }) => {
     }
   };
 
+  const handleTaxPayerNoOption = (e) => {
+    setTaxPayer(e.target.name);
+  };
+
   const onBackClick = () => {
     setStep((prev) => prev - 1);
   };
@@ -110,7 +191,9 @@ const Step3 = ({ setStep }) => {
     setCopyAddress((prev) => !prev);
   };
 
-  const onSubmit = () => {};
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   return (
     <ProfileFormContainer>
@@ -169,7 +252,7 @@ const Step3 = ({ setStep }) => {
                       />
                     )}
                   />
-                  {errors.citizen && <FormFeedback>{errors.citizen.label.message}</FormFeedback>}
+                  {errors.citizen && <FormFeedback>{errors.citizen?.label?.message}</FormFeedback>}
                 </Col>
               </Row>
 
@@ -189,7 +272,7 @@ const Step3 = ({ setStep }) => {
                       <Input {...field} placeholder="Enter street address" invalid={errors.pAddress && true} />
                     )}
                   />
-                  {errors.pAddress && <FormFeedback>{errors.pAddress.message}</FormFeedback>}
+                  {errors.pAddress && <FormFeedback>{errors.pAddress?.message}</FormFeedback>}
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="pHouseNo">
@@ -203,7 +286,7 @@ const Step3 = ({ setStep }) => {
                       <Input {...field} placeholder="Enter house number" invalid={errors.pHouseNo && true} />
                     )}
                   />
-                  {errors.pHouseNo && <FormFeedback>{errors.pHouseNo.message}</FormFeedback>}
+                  {errors.pHouseNo && <FormFeedback>{errors.pHouseNo?.message}</FormFeedback>}
                 </Col>
               </Row>
               <Row className="mb-1 mt-1">
@@ -229,7 +312,7 @@ const Step3 = ({ setStep }) => {
                       />
                     )}
                   />
-                  {errors.pCountry && <FormFeedback>{errors.pCountry.label.message}</FormFeedback>}
+                  {errors.pCountry && <FormFeedback>{errors.pCountry.label?.message}</FormFeedback>}
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="pState">
@@ -256,7 +339,7 @@ const Step3 = ({ setStep }) => {
                       />
                     )}
                   />
-                  {errors.pState && <FormFeedback>{errors.pState.label.message}</FormFeedback>}
+                  {errors.pState && <FormFeedback>{errors.pState.label?.message}</FormFeedback>}
                 </Col>
               </Row>
               <Row>
@@ -265,11 +348,11 @@ const Step3 = ({ setStep }) => {
                     City<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
-                    id="pState"
-                    name="pState"
+                    id="pCity"
+                    name="pCity"
                     control={control}
-                    invalid={errors.pState && true}
-                    value={watch('pState')}
+                    invalid={errors.pCity && true}
+                    value={watch('pCity')}
                     render={({ field }) => (
                       <Select
                         isLoading={citiesIsLoading}
@@ -280,13 +363,13 @@ const Step3 = ({ setStep }) => {
                         placeholder="Select your city"
                         theme={selectThemeColors}
                         className={classNames('react-select', {
-                          'is-invalid': errors && errors.pState,
+                          'is-invalid': errors && errors.pCity,
                         })}
                         {...field}
                       />
                     )}
                   />
-                  {errors.pState && <FormFeedback>{errors.pState.label.message}</FormFeedback>}
+                  {errors.pCity && <FormFeedback>{errors.pCity.label?.message}</FormFeedback>}
                   <Label>NOTE : Do not use a P.O. box or in-care-of address</Label>
                 </Col>
                 <Col sm="6" md="6" lg="6">
@@ -306,7 +389,7 @@ const Step3 = ({ setStep }) => {
                       />
                     )}
                   />
-                  {errors.pZipCode && <FormFeedback>{errors.pZipCode.message}</FormFeedback>}
+                  {errors.pZipCode && <FormFeedback>{errors.pZipCode?.message}</FormFeedback>}
                 </Col>
               </Row>
 
@@ -330,7 +413,7 @@ const Step3 = ({ setStep }) => {
                       <Input {...field} placeholder="Enter street address" invalid={errors.mAddress && true} />
                     )}
                   />
-                  {errors.mAddress && <FormFeedback>{errors.mAddress.message}</FormFeedback>}
+                  {errors.mAddress && <FormFeedback>{errors.mAddress?.message}</FormFeedback>}
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="mHouseNo">
@@ -344,7 +427,7 @@ const Step3 = ({ setStep }) => {
                       <Input {...field} placeholder="Enter house number" invalid={errors.mHouseNo && true} />
                     )}
                   />
-                  {errors.mHouseNo && <FormFeedback>{errors.mHouseNo.message}</FormFeedback>}
+                  {errors.mHouseNo && <FormFeedback>{errors.mHouseNo?.message}</FormFeedback>}
                 </Col>
               </Row>
               <Row className="mb-1 mt-1">
@@ -370,7 +453,7 @@ const Step3 = ({ setStep }) => {
                       />
                     )}
                   />
-                  {errors.mCountry && <FormFeedback>{errors.mCountry.label.message}</FormFeedback>}
+                  {errors.mCountry && <FormFeedback>{errors.mCountry.label?.message}</FormFeedback>}
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="mState">
@@ -397,7 +480,7 @@ const Step3 = ({ setStep }) => {
                       />
                     )}
                   />
-                  {errors.mState && <FormFeedback>{errors.mState.label.message}</FormFeedback>}
+                  {errors.mState && <FormFeedback>{errors.mState.label?.message}</FormFeedback>}
                 </Col>
               </Row>
               <Row>
@@ -427,7 +510,7 @@ const Step3 = ({ setStep }) => {
                       />
                     )}
                   />
-                  {errors.mCity && <FormFeedback>{errors.mCity.label.message}</FormFeedback>}
+                  {errors.mCity && <FormFeedback>{errors.mCity.label?.message}</FormFeedback>}
                   <Label>NOTE : Do not use a P.O. box or in-care-of address</Label>
                 </Col>
                 <Col sm="6" md="6" lg="6">
@@ -447,72 +530,88 @@ const Step3 = ({ setStep }) => {
                       />
                     )}
                   />
-                  {errors.mZipCode && <FormFeedback>{errors.mZipCode.message}</FormFeedback>}
+                  {errors.mZipCode && <FormFeedback>{errors.mZipCode?.message}</FormFeedback>}
                 </Col>
               </Row>
 
               <h4 className="mt-3 mb-2">Do you have a US Taxpayer Identification number?</h4>
               <div className="d-flex gap-3">
                 <div className="d-flex gap-50">
-                  <Input type="radio" checked={false} onChange="" />
+                  <Input
+                    type="radio"
+                    name="option1"
+                    checked={taxPayer === 'option1'}
+                    onChange={handleTaxPayerNoOption}
+                  />
                   <Label className="fs-6">Yes</Label>
                 </div>
                 <div className="d-flex gap-50">
-                  <Input type="radio" checked onChange="" />
+                  <Input
+                    type="radio"
+                    name="option2"
+                    checked={taxPayer === 'option2'}
+                    onChange={handleTaxPayerNoOption}
+                  />
                   <Label className="fs-6">No</Label>
                 </div>
               </div>
 
-              <Row className="mb-1 mt-1">
-                <Col sm="6" md="6" lg="6">
-                  <Label className="form-label" for="zipCode">
-                    Reference number(s) (see instructions)<span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id="zipCode"
-                    name="zipCode"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        placeholder="Enter you Reference number(s)"
-                        invalid={errors.zipCode && true}
-                        autoComplete="none"
-                      />
-                    )}
-                  />
-                  {errors.zipCode && <FormFeedback>{errors.zipCode.message}</FormFeedback>}
-                </Col>
-                <Col>
-                  <Label className="form-label" for="startDate">
-                    Date of birth (see instructions)<span className="label-asterisk">*</span>
-                  </Label>
-                  <Controller
-                    control={control}
-                    id="dob"
-                    name="dob"
-                    render={({ field }) => (
-                      <Flatpickr
-                        {...field}
-                        placeholder="Enter MM-DD-YYYY"
-                        options={{
-                          minDate: 'today',
-                          dateFormat: 'm-d-Y',
-                        }}
-                        className={classNames('form-control', {
-                          'is-invalid': errors && errors.dob,
-                        })}
-                      />
-                    )}
-                  />
-                  {errors.dob && <FormFeedback>{errors.dob.message}</FormFeedback>}
-                </Col>
-              </Row>
+              {taxPayer === 'option1' ? (
+                <Row className="mb-1 mt-1">
+                  <Col sm="6" md="6" lg="6">
+                    <Label className="form-label" for="refNo">
+                      Reference number(s) (see instructions)<span className="label-asterisk me-50">*</span>
+                    </Label>
+                    <Controller
+                      id="refNo"
+                      name="refNo"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          placeholder="Enter you Reference number(s)"
+                          invalid={errors.refNo && true}
+                          autoComplete="none"
+                        />
+                      )}
+                    />
+                    {errors.refNo && <FormFeedback>{errors.refNo?.message}</FormFeedback>}
+                  </Col>
+                  <Col>
+                    <Label className="form-label" for="startDate">
+                      Date of birth (see instructions)<span className="label-asterisk">*</span>
+                    </Label>
+                    <Controller
+                      control={control}
+                      id="dob"
+                      name="dob"
+                      render={({ field }) => (
+                        <Flatpickr
+                          {...field}
+                          placeholder="Enter MM-DD-YYYY"
+                          options={{
+                            minDate: 'today',
+                            dateFormat: 'm-d-Y',
+                          }}
+                          className={classNames('form-control', {
+                            'is-invalid': errors && errors.dob,
+                          })}
+                        />
+                      )}
+                    />
+                    {errors.dob && <FormFeedback>{errors.dob?.message}</FormFeedback>}
+                  </Col>
+                </Row>
+              ) : null}
             </div>
           </CardBody>
         </Card>
 
-        {isUsPerson ? <CertificationUS /> : <CertificationNonUs />}
+        {isUsPerson ? (
+          <CertificationUS onConfirm={() => setIsConfirmed(true)} />
+        ) : (
+          <CertificationNonUs isAgreed={isAgreed} onChange={() => setIsAgreed(!isAgreed)} />
+        )}
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
           <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
@@ -525,7 +624,7 @@ const Step3 = ({ setStep }) => {
               <span className="me-50">Skip stripe setup</span>
               <ChevronRight size={14} />
             </Button>
-            <Button color="primary" type="submit" onClick={() => {}}>
+            <Button color="primary" type="submit" disabled={!isConfirmed || !isAgreed}>
               <>
                 <span className="me-50">Set Up Stripe</span>
                 <ChevronRight size={14} />

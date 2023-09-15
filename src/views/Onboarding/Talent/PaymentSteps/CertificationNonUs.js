@@ -1,7 +1,7 @@
-import React from 'react';
-import { Card, CardHeader, CardBody, Row, Label, Button, Input } from 'reactstrap';
+import React, { useState } from 'react';
+import { Card, CardHeader, CardBody, Label, Input } from 'reactstrap';
 
-const CertificationNonUs = ({ isAgreed = false, onChange }) => (
+const CertificationNonUs = ({ isAgreed, onChange }) => (
   <Card>
     <CardHeader>
       <h4 className="m-0 mt-1">Certification</h4>
@@ -45,7 +45,7 @@ const CertificationNonUs = ({ isAgreed = false, onChange }) => (
       </p>
 
       <div className="d-flex gap-50">
-        <Input type="checkbox" checked={isAgreed} onChange={onChange} />
+        <Input type="checkbox" name="checkbox6" checked={isAgreed} onChange={onChange} />
         <Label className="fs-6">
           I certify that i have the capacity to sign the person identified on line 1 of this form
         </Label>

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Card, CardBody, CardHeader, Input, Label, Row, FormFeedback } from 'reactstrap';
 import { ChevronLeft, ChevronRight } from 'react-feather';
@@ -101,8 +102,8 @@ const Step2 = ({ setStep }) => {
         is_working_in_us: working === 'in_us',
       },
     };
-    dispatch(savePaymentDetails(newData));
-    // setStep(3);
+    // dispatch(savePaymentDetails(newData));
+    setStep(3);
   };
 
   return (
