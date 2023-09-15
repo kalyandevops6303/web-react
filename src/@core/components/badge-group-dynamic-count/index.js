@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { CustomBadge } from '../../../views/styled';
 import { BadgeGroupWrap } from './style';
+import uuidv4 from '../../../lib/uuidv4';
 
 const BadgeGroup = ({ user_id, data, title, color, id }) => {
   const [visibleTags, setVisibleTags] = useState([]);
@@ -104,7 +105,7 @@ const BadgeGroup = ({ user_id, data, title, color, id }) => {
     return tagWidth;
   };
 
-  const customBadgeId = `tooltip-${id}-${user_id}`; // Generate a unique ID using uuidv4()
+  const customBadgeId = `tooltip-${uuidv4()}`; // Generate a unique ID using uuidv4()
   return (
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
