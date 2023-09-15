@@ -28,10 +28,10 @@ const Team = ({ data }) => {
   );
 
   const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
+    dispatch(makeFavFromMarketplace({ user_id: data?._id, user_type: data?.user_type }));
   };
   const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
+    dispatch(removeFavFromMarketplace({ team_id: data?._id }));
   };
 
   const giveStrokeColor = (percentage) => {
