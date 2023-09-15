@@ -31,6 +31,14 @@ const initialState = {
   recommendedTeamsForClientLoading: false,
   checkBidsAccepted: null,
   checkBidsAcceptedLoading: false,
+  activeProjectsForTalent: null,
+  activeProjectsForTalentLoading: false,
+  upcomingProjectsForTalent: null,
+  upcomingProjectsForTalentLoading: false,
+  activeProjectsForTeam: null,
+  activeProjectsForTeamLoading: false,
+  upcomingProjectsForTeam: null,
+  upcomingProjectsForTeamLoading: false,
   alerts: [],
   error: null,
 };
@@ -324,6 +332,70 @@ const dashboardSlice = createSlice({
       checkBidsAcceptedLoading: false,
       error: action.payload,
     }),
+
+    activeProjectsForTalentRequest: (state) => ({
+      ...state,
+      activeProjectsForTalentLoading: true,
+      error: null,
+    }),
+    activeProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForTalent: action.payload,
+      activeProjectsForTalentLoading: false,
+    }),
+    activeProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      activeProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForTalentRequest: (state) => ({
+      ...state,
+      upcomingProjectsForTalentLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForTalent: action.payload,
+      upcomingProjectsForTalentLoading: false,
+    }),
+    upcomingProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
+
+    activeProjectsForTeamRequest: (state) => ({
+      ...state,
+      activeProjectsForTeamLoading: true,
+      error: null,
+    }),
+    activeProjectsForTeamSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForTeam: action.payload,
+      activeProjectsForTeamLoading: false,
+    }),
+    activeProjectsForTeamFailure: (state, action) => ({
+      ...state,
+      activeProjectsForTeamLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForTeamRequest: (state) => ({
+      ...state,
+      upcomingProjectsForTeamLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForTeamSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForTeam: action.payload,
+      upcomingProjectsForTeamLoading: false,
+    }),
+    upcomingProjectsForTeamFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForTeamLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -331,7 +403,6 @@ export const {
   getAlertRequest,
   getAlertSuccess,
   getAlertFailure,
-
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
   recommendedProjectsFailure,
@@ -379,6 +450,18 @@ export const {
   checkBidsAcceptedRequest,
   checkBidsAcceptedSuccess,
   checkBidsAcceptedFailure,
+  activeProjectsForTalentRequest,
+  activeProjectsForTalentSuccess,
+  activeProjectsForTalentFailure,
+  upcomingProjectsForTalentRequest,
+  upcomingProjectsForTalentSuccess,
+  upcomingProjectsForTalentFailure,
+  activeProjectsForTeamRequest,
+  activeProjectsForTeamSuccess,
+  activeProjectsForTeamFailure,
+  upcomingProjectsForTeamRequest,
+  upcomingProjectsForTeamSuccess,
+  upcomingProjectsForTeamFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

@@ -8,7 +8,7 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 
-const UpcomingProjectCard = ({ data, className }) => {
+const UpcomingProjectCardForTalent = ({ data, className }) => {
   const navigate = useNavigate();
 
   const viewProject = () => {
@@ -20,43 +20,26 @@ const UpcomingProjectCard = ({ data, className }) => {
       <Card className="card-app-design">
         <CardBody>
           <p className="active-project-name">{data?.name}</p>
-          <div className="team-badge px-1">
-            <p className="mb-25">Team</p>
+          <div className="client-badge px-1">
+            <p className="mb-25">Client</p>
           </div>
-          <p className="active-project-team-name">
-            {'name' in data?.bid_by ? data?.bid_by?.name : `${data?.bid_by?.first_name} ${data?.bid_by?.last_name}`}
-          </p>
+          <p className="active-project-team-name mb-50">{`${data?.client_info?.first_name} ${data?.client_info?.last_name}`}</p>
           <div className="mb-1">
-            {data?.worker_details.length > 3 ? (
-              <span className="d-flex avatars">
-                <AvatarGroup
-                  size="sm"
-                  className="mr-4"
-                  data={[
-                    ...data?.worker_details?.slice(0, 3)?.map((worker) => ({
-                      title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
-                      img: worker.image_uri || defaultAvatar,
-                      placement: 'bottom',
-                      imgHeight: 33,
-                      imgWidth: 33,
-                    })),
-                  ]}
-                />
-              </span>
-            ) : (
+            <span className="d-flex avatars">
               <AvatarGroup
                 size="sm"
+                className="mr-4"
                 data={[
-                  ...data?.worker_details?.map((worker) => ({
-                    title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
-                    img: worker.image_uri || defaultAvatar,
+                  {
+                    title: `${data?.client_info?.first_name} ${data?.client_info?.last_name} ` || 'user',
+                    img: data?.client_info.image_uri || defaultAvatar,
                     placement: 'bottom',
                     imgHeight: 33,
                     imgWidth: 33,
-                  })),
+                  },
                 ]}
               />
-            )}
+            </span>
           </div>
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper">
@@ -82,14 +65,14 @@ const UpcomingProjectCard = ({ data, className }) => {
   );
 };
 
-export default UpcomingProjectCard;
+export default UpcomingProjectCardForTalent;
 
-UpcomingProjectCard.propTypes = {
+UpcomingProjectCardForTalent.propTypes = {
   data: Proptypes.object,
   className: Proptypes.string,
 };
 
-UpcomingProjectCard.defaultProps = {
+UpcomingProjectCardForTalent.defaultProps = {
   data: {},
   className: '',
 };

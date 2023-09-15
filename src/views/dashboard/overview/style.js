@@ -357,6 +357,18 @@ const ProjectWrapper = styled.div`
       font-weight: 400;
     }
   }
+
+  .client-badge {
+    border-radius: 17px;
+    background: rgba(0, 94, 255, 0.12);
+    width: fit-content;
+
+    p {
+      color: #005eff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
 `;
 
 const ProjectsListingWrap = styled.div`

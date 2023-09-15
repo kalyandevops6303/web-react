@@ -45,10 +45,16 @@ const recommendedTeamsForClientService = () => DataService.get(API.dashboard.rec
 
 const checkBidsAcceptedService = () =>
   DataService.post(API.dashboard.checkBidsAccepted, {
-    // statuses: [],
-    // project_types: [],
     bid_statuses: ['ACCEPTED'],
   });
+
+const activeProjectsForTalentService = () => DataService.get(API.dashboard.activeProjectsForTalent);
+
+const upcomingProjectsForTalentService = () => DataService.get(API.dashboard.upcomingProjectsForTalent);
+
+const activeProjectsForTeamService = () => DataService.get(API.dashboard.activeProjectsForTeam);
+
+const upcomingProjectsForTeamService = () => DataService.get(API.dashboard.upcomingProjectsForTeam);
 
 export {
   alertService,
@@ -72,4 +78,8 @@ export {
   projectsBidsForClientService,
   recommendedTeamsForClientService,
   checkBidsAcceptedService,
+  activeProjectsForTalentService,
+  upcomingProjectsForTalentService,
+  activeProjectsForTeamService,
+  upcomingProjectsForTeamService,
 };

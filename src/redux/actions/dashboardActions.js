@@ -18,6 +18,10 @@ import {
   projectsBidsForClientService,
   recommendedTeamsForClientService,
   checkBidsAcceptedService,
+  activeProjectsForTalentService,
+  upcomingProjectsForTalentService,
+  activeProjectsForTeamService,
+  upcomingProjectsForTeamService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -70,6 +74,18 @@ import {
   checkBidsAcceptedRequest,
   checkBidsAcceptedSuccess,
   checkBidsAcceptedFailure,
+  activeProjectsForTalentRequest,
+  activeProjectsForTalentSuccess,
+  activeProjectsForTalentFailure,
+  upcomingProjectsForTalentRequest,
+  upcomingProjectsForTalentSuccess,
+  upcomingProjectsForTalentFailure,
+  activeProjectsForTeamRequest,
+  activeProjectsForTeamSuccess,
+  activeProjectsForTeamFailure,
+  upcomingProjectsForTeamRequest,
+  upcomingProjectsForTeamSuccess,
+  upcomingProjectsForTeamFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -289,6 +305,46 @@ const getCheckBidsAccepted = () => async (dispatch) => {
   }
 };
 
+const getActiveProjectsForTalent = () => async (dispatch) => {
+  dispatch(activeProjectsForTalentRequest());
+  try {
+    const res = await activeProjectsForTalentService();
+    dispatch(activeProjectsForTalentSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, activeProjectsForTalentFailure);
+  }
+};
+
+const getUpcomingProjectsForTalent = () => async (dispatch) => {
+  dispatch(upcomingProjectsForTalentRequest());
+  try {
+    const res = await upcomingProjectsForTalentService();
+    dispatch(upcomingProjectsForTalentSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, upcomingProjectsForTalentFailure);
+  }
+};
+
+const getActiveProjectsForTeam = () => async (dispatch) => {
+  dispatch(activeProjectsForTeamRequest());
+  try {
+    const res = await activeProjectsForTeamService();
+    dispatch(activeProjectsForTeamSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, activeProjectsForTeamFailure);
+  }
+};
+
+const getUpcomingProjectsForTeam = () => async (dispatch) => {
+  dispatch(upcomingProjectsForTeamRequest());
+  try {
+    const res = await upcomingProjectsForTeamService();
+    dispatch(upcomingProjectsForTeamSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, upcomingProjectsForTeamFailure);
+  }
+};
+
 export {
   getAlerts,
   validateUrl,
@@ -310,4 +366,8 @@ export {
   getProjectsBidsForClient,
   getRecommendedTeamsForClient,
   getCheckBidsAccepted,
+  getActiveProjectsForTalent,
+  getUpcomingProjectsForTalent,
+  getActiveProjectsForTeam,
+  getUpcomingProjectsForTeam,
 };
