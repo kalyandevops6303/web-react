@@ -86,6 +86,8 @@ const ProjectModal = ({
   const selectUserDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
 
+  const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
+
   const onNoBidFound = () => {
     toggleModal();
     setCreateBidModal(true);
@@ -161,15 +163,15 @@ const ProjectModal = ({
               <Row className="mb-2">
                 <Col lg="5">
                   <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.name}</CardTitle>
+                    <CardTitle className="mb-25 fw-bolder">{data?.name ?? data?.details?.name}</CardTitle>
                     <CardText className="project-name">Project Name</CardText>
                   </div>
                 </Col>
                 <Col lg="3">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
-                      {data?.expected_duration?.duration}
-                      {data?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
+                      {expextedDuration?.duration}
+                      {expextedDuration?.duration_type?.charAt(0)?.toLowerCase()}
                     </CardTitle>
                     <CardText className="project-name">Expected Duration</CardText>
                   </div>
