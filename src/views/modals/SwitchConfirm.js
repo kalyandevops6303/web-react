@@ -23,7 +23,7 @@ const SwitchConfirmModal = ({ data, modal, toggleModal }) => {
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
     } else {
-      navigate(`/project-details/${projectId}`);
+      navigate(`/project-details/${projectId}/bid`);
     }
   };
 
