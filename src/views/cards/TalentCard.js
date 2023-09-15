@@ -7,7 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { Heart } from 'react-feather';
-import hat from '@src/assets/images/hat.png';
+import hat from '@src/assets/images/hat.svg';
 import { TeamCardWrap } from './style';
 import { userTypes } from '../../utility/constants/Constant';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
