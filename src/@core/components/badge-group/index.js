@@ -3,7 +3,7 @@ import { Badge, UncontrolledTooltip } from 'reactstrap';
 import BadgeGroupWrap from './style';
 import { CustomBadge } from '../../../views/styled';
 
-const BadgeGroup = ({ title, data, color, gapWrap }) => {
+const BadgeGroup = ({ title, data, color, gapWrap, isTeamAssociations }) => {
   if (!data || data.length === 0) {
     return null;
   }
@@ -25,8 +25,9 @@ const BadgeGroup = ({ title, data, color, gapWrap }) => {
   }
 
   const renderBadge = (item, index) => {
+    console.log(item);
     const { name } = item;
-    const isLongName = name?.length > 35;
+    const isLongName = isTeamAssociations ? item.length > 35 : name?.length > 35;
     const badgeClassName = isLongName ? `${color} truncate-1` : color;
     const badgeColor = `${color} badge`;
 
@@ -36,7 +37,7 @@ const BadgeGroup = ({ title, data, color, gapWrap }) => {
           <>
             <CustomBadge>
               <Badge className={badgeClassName} color={badgeColor} id={`tooltip-${index}`}>
-                {name}
+                {name || item}
               </Badge>
             </CustomBadge>
             <UncontrolledTooltip target={`tooltip-${index}`}>{name}</UncontrolledTooltip>
@@ -44,7 +45,7 @@ const BadgeGroup = ({ title, data, color, gapWrap }) => {
         ) : (
           <CustomBadge>
             <Badge className={badgeClassName} color={badgeColor}>
-              {name}
+              {name || item}
             </Badge>
           </CustomBadge>
         )}

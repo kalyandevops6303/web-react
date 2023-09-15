@@ -678,6 +678,9 @@ const FixedAdvanceMilestoneView = () => {
                         <div className="d-flex align-items-center m-0">
                           <Label className="form-label">Fixed Cost</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
+                          <UncontrolledTooltip placement="top" target="fixed-info">
+                            Predetermined project cost fixed by the client
+                          </UncontrolledTooltip>
                         </div>
                         <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
                           $ {projectDetailsData?.pay_type?.fixed_cost}
@@ -825,7 +828,10 @@ const FixedAdvanceMilestoneView = () => {
                                       <Col sm="12" md="6" lg="5">
                                         <div className="d-flex align-items-center">
                                           <p className="roles-list-header m-0 me-50">Select Roles</p>
-                                          <Info size={18} color={theme.infoIcon} />
+                                          <Info size={18} color={theme.infoIcon} id="selected-info" />
+                                          <UncontrolledTooltip placement="top" target="selected-info">
+                                            <p className="m-0">Select the role required to deliver this milestone</p>
+                                          </UncontrolledTooltip>
                                         </div>
                                       </Col>
                                       <Col sm="12" md="6" lg="7">
@@ -833,7 +839,10 @@ const FixedAdvanceMilestoneView = () => {
                                           <Col sm="12" md="6" lg="6">
                                             <div className="d-flex align-items-center">
                                               <p className="roles-list-header m-0 me-50">Duration</p>
-                                              <Info size={18} color={theme.infoIcon} />
+                                              <Info size={18} color={theme.infoIcon} id="duration-info" />
+                                              <UncontrolledTooltip placement="top" target="duration-info">
+                                                <p className="m-0">W = Week</p>
+                                              </UncontrolledTooltip>
                                             </div>
                                           </Col>
                                           <Col sm="12" md="6" lg="6">

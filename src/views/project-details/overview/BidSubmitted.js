@@ -88,10 +88,10 @@ const BidSubmitted = () => {
                       {bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                     </span>
                   </span>
-                  <span className="d-flex align-items-center gap-25">
+                  {/* <span className="d-flex align-items-center gap-25">
                     <h6 className="mb-0">Total Hours: </h6>
                     <span className="">{bidInfo?.total_numbers_of_hours}</span>
-                  </span>
+                  </span> */}
                   <span className="d-flex align-items-center gap-25">
                     <h6 className="mb-0">Total Cost: </h6>
                     <span className="">${bidInfo?.total_estimated_cost}</span>
