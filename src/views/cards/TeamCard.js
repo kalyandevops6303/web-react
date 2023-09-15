@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
-import hat from '@src/assets/images/hat.png';
+import hat from '@src/assets/images/hat.svg';
 import { Heart } from 'react-feather';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import DateTime from '../../lib/date-time';

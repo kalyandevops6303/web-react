@@ -70,7 +70,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
         </Col>
         <Col onClick={() => handlePrimaryChangeFilter('DISPUTE')}>
           <Statbox
-            isActive={selected === 'DISPUTED'}
+            isActive={selected === 'DISPUTE'}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
             title={selectCardData?.dispute || 0}
