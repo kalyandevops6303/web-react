@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { PropTypes } from 'prop-types';
 import { Card, CardHeader, CardBody, Label, Input } from 'reactstrap';
 
 const CertificationNonUs = ({ isAgreed, onChange }) => (
@@ -53,5 +54,15 @@ const CertificationNonUs = ({ isAgreed, onChange }) => (
     </CardBody>
   </Card>
 );
+
+CertificationNonUs.propTypes = {
+  isAgreed: PropTypes.bool,
+  onChange: PropTypes.func,
+};
+
+CertificationNonUs.defaultProps = {
+  isAgreed: false,
+  onChange: () => {},
+};
 
 export default CertificationNonUs;

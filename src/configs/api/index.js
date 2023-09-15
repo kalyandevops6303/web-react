@@ -2,6 +2,7 @@ const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
 const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
 const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT_AI}:4005`;
+const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
 
 const API = {
   auth: {
@@ -209,7 +210,7 @@ const API = {
     projects: `${apiOnboardingEndpoint}/api/v1/projects`,
   },
   payment: {
-    create: `${apiAuthEndpoint}/api/v1/tax-info`,
+    create: `${apiPaymentEndPoint}/api/v1/tax-info`,
   },
 };
 

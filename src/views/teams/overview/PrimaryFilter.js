@@ -40,7 +40,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
         <Statbox
           isActive={selected === PATH_NAMES.ALL_TEAMS}
           isMarketPlaceTab
-          title={selectCardData?.project_team ?? 0}
+          title={selectCardData?.project_team ?? selectCardData?.teams_and_talents}
           desc={userData?.user_type === userTypes.client ? TAB_NAMES.CLIENT : TAB_NAMES.ALL_TEAMS}
           icon={<Users height={20} />}
           color="light-turquoise"

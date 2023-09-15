@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import Select from 'react-select';
 import * as Yup from 'yup';
 import Flatpickr from 'react-flatpickr';
+import { PropTypes } from 'prop-types';
 
 import { selectThemeColors } from '@utils';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -25,9 +26,9 @@ import AccountCreatedModal from '../../AccountCreatedModal';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 
 const Step3 = ({ setStep }) => {
-  const { userType } = useSelector((state) => state.PaymentDetails);
+  const { userType, working, taxClass, taxId } = useSelector((state) => state.PaymentDetails);
 
-  const isUsPerson = false;
+  const isUsPerson = userType === 'us_person';
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -38,8 +39,8 @@ const Step3 = ({ setStep }) => {
   const [citiesOptions, setCitiesOptions] = useState(null);
   const [copyAddress, setCopyAddress] = useState(false);
   const [taxPayer, setTaxPayer] = useState(false);
-  const [isConfirmed, setIsConfirmed] = useState(!isUsPerson);
-  const [isAgreed, setIsAgreed] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const statesData = useSelector(states);
@@ -103,15 +104,15 @@ const Step3 = ({ setStep }) => {
       .required('This is required'),
     mZipCode: Yup.string().required('This is required'),
     refNo: Yup.string().required('This is required'),
-    dob: Yup.string(),
+    dob: Yup.date().typeError('DOB is required').required('DOB is required'),
   });
 
   const {
     control,
     handleSubmit,
     watch,
-    setValue,
-    formState: { errors, isValid },
+
+    formState: { errors },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(usWFormsSchema),
@@ -134,16 +135,16 @@ const Step3 = ({ setStep }) => {
   });
 
   useEffect(() => {
-    if (watch('country')) {
-      dispatch(getStates(watch('country').value));
+    if (watch('pCountry')) {
+      dispatch(getStates(watch('pCountry').value));
     }
-  }, [watch('country')]);
+  }, [watch('pCountry')]);
 
   useEffect(() => {
-    if (watch('state')) {
-      dispatch(getCities(watch('state').value));
+    if (watch('pState')) {
+      dispatch(getCities(watch('pState').value));
     }
-  }, [watch('state')]);
+  }, [watch('pState')]);
 
   useEffect(() => {
     const requiredData = statesData?.map((state) => ({ label: state.name, value: state._id }));
@@ -207,7 +208,48 @@ const Step3 = ({ setStep }) => {
   };
 
   const onSubmit = (data) => {
-    console.log(data);
+    const wDetails = {
+      [isUsPerson ? 'w9details' : 'w8bendetails']: {
+        full_name: data?.fullName,
+        country_of_citizenship: data?.citizen?.label,
+        permanent_residence: {
+          country: data?.pCountry?.label,
+          state: data?.pState?.label,
+          city: data?.pCity?.label,
+          street_address: data?.pAddress,
+          house_number: data?.pHouseNo,
+          zip_code: data?.pZipCode,
+        },
+        mailing_address: {
+          country: data?.mCountry?.label,
+          state: data?.mState?.label,
+          city: data?.mCity?.label,
+          street_address: data?.mAddress,
+          house_number: data?.mHouseNo,
+          zip_code: data?.mZipCode,
+        },
+        has_us_tax_id: false,
+        us_tax_id_reference_number: data?.refNo,
+        dob: data?.dob,
+      },
+    };
+    const newData = {
+      talent_info: {
+        tax_user_type: userType === 'us_person' ? 'US' : 'NON_US',
+        is_working_in_us: working === 'in_us',
+        tax_identification: {
+          is_us_person: userType === 'us_person',
+          legal_name: data?.fullName,
+          federal_tax_classification: taxClass,
+          social_security_number: taxId,
+          employee_identification_number: taxId,
+          national_taxpayer_number: taxId,
+        },
+        ...wDetails,
+      },
+    };
+
+    dispatch(updatePaymentDetails(newData, onSuccess));
   };
 
   return (
@@ -626,7 +668,7 @@ const Step3 = ({ setStep }) => {
         </Card>
 
         {isUsPerson ? (
-          <CertificationUS onConfirm={() => setIsConfirmed(true)} />
+          <CertificationUS isConfirmed={isConfirmed} onConfirm={() => setIsConfirmed(true)} />
         ) : (
           <CertificationNonUs isAgreed={isAgreed} onChange={() => setIsAgreed(!isAgreed)} />
         )}
@@ -653,6 +695,14 @@ const Step3 = ({ setStep }) => {
       </Form>
     </ProfileFormContainer>
   );
+};
+
+Step3.propTypes = {
+  setStep: PropTypes.func,
+};
+
+Step3.defaultProps = {
+  setStep: () => {},
 };
 
 export default Step3;
