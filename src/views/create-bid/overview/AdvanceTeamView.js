@@ -390,6 +390,7 @@ const AdvanceTeamView = () => {
                         render={({ field }) => (
                           <Select
                             {...field}
+                            maxMenuHeight={170}
                             isLoading={rolesIsLoading}
                             options={allTeamMembersOptions}
                             classNamePrefix="select"

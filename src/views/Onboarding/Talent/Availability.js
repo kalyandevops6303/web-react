@@ -111,9 +111,7 @@ const Availability = () => {
     hourlyRate: yup
       .number()
       .min(1, 'Hourly rate should be atleast 1')
-      .test('maxDigitsAfterDecimal', 'Hourly Rate must be upto two decimal places', (number) =>
-        /^\d+(\.\d{1,2})?$/.test(number),
-      )
+      .integer('Hourly rate must be an integer')
       .typeError('Hourly rate must be a number')
       .required('Hourly rate is required'),
   });
@@ -799,7 +797,7 @@ const Availability = () => {
                     <AsyncPaginate
                       isDisabled
                       loadOptions={loadCurrenciesOptions}
-                      menuPosition='fixed'
+                      menuPosition="fixed"
                       minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select one"

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
+  Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
@@ -18,7 +19,6 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
 import classNames from 'classnames';
@@ -29,7 +29,7 @@ import { useDropzone } from 'react-dropzone';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChevronLeft, ChevronRight, FileText, Info, Plus, Upload } from 'react-feather';
-import { MilestoneSectionWrapper } from '../style';
+import { InfoContainer, MilestoneSectionWrapper } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -136,6 +136,15 @@ const VariableSimpleMilestoneView = () => {
   const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
+
+  const [open, setOpen] = useState(1);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
 
   const calculateTotalValues = () => {
     const totalDuration = allMilestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
@@ -260,6 +269,8 @@ const VariableSimpleMilestoneView = () => {
         deliverables: [''],
         otherDetails: {},
       });
+
+      toggle(getValues('milestones')?.length);
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
@@ -442,6 +453,12 @@ const VariableSimpleMilestoneView = () => {
             </CardHeader>
             <CardBody className="pt-2 pb-0">
               <Card className="white-card-bg">
+                {selectUserDetailsData.user_type === userTypes.team && (
+                  <InfoContainer>
+                    <Info style={{ marginRight: '5px' }} />
+                    Variable Price: The variable cost will be equally distributed between each talent
+                  </InfoContainer>
+                )}
                 <CardBody>
                   <Row className="d-flex justify-content-between">
                     <Col sm="12" md="12" lg="3" className="ps-50">
@@ -483,7 +500,7 @@ const VariableSimpleMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <UncontrolledAccordion className="mb-2">
+              <Accordion className="mb-2" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => (
                   <Card className="white-card-bg" key={milestone.id}>
                     <CardBody className="p-0">
@@ -804,7 +821,7 @@ const VariableSimpleMilestoneView = () => {
                     </CardBody>
                   </Card>
                 ))}
-              </UncontrolledAccordion>
+              </Accordion>
             </CardBody>
           </Card>
           <Card className="mt-2">

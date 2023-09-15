@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-nested-ternary */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -29,6 +29,7 @@ import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
+import SendInvitationModal from '../../modals/SendInvitationModal';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -41,6 +42,11 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const profilePercentageData = useSelector(profilePercentage);
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
+
+  const [selectedTalent, setSelectedTalent] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [sendInviteModal, setSendInviteModal] = useState(null);
+
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
@@ -88,6 +94,15 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     };
     const onSuccess = () => {};
     dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
+  };
+
+  const toggleSendInviteModal = () => {
+    setSendInviteModal(!sendInviteModal);
+  };
+
+  const handleInviteTalent = () => {
+    setSelectedTalent([data]);
+    setSendInviteModal(true);
   };
 
   return (
@@ -260,6 +275,12 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   title="Language"
                   data={unionBy(data?.languages_speak, data?.languages_read, data?.languages_write, 'name')}
                 />
+                <BadgeGroup
+                  color="light-success-2"
+                  title="Team Associations"
+                  data={data?.team_associations}
+                  isTeamAssociations
+                />
               </>
             )}
             {isTeamView && (
@@ -385,7 +406,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 {!isEditable && teamId && data?.user_type === userTypes.talent && (
-                  <Button className="w-50" outline color="primary">
+                  <Button className="w-50" outline color="primary" onClick={handleInviteTalent}>
                     Invite
                   </Button>
                 )}
@@ -408,6 +429,16 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           </section>
         </CardBody>
       </Card>
+      {sendInviteModal && (
+        <SendInvitationModal
+          modal={sendInviteModal}
+          toggleModal={toggleSendInviteModal}
+          selectedTalents={selectedTalent}
+          message={inputMessage}
+          setMessage={setInputMessage}
+          description="You are inviting the below to join your team."
+        />
+      )}
     </LeftSidebarProfileWrapper>
   );
 };

@@ -100,9 +100,9 @@ const LeftSidebarProjectDetails = () => {
             <div>
               <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
               <div className="d-flex flex-wrap">
-                <RatingBadge number={returnFormattedRating(projectDetailsData?.client_details?.rating)} />
+                <RatingBadge number={returnFormattedRating(projectDetailsData?.client_details?.rating) || 0} />
                 <CardText className="ps-75 font-small-2 fw-300 rating-label">
-                  {projectDetailsData?.client_details?.projects_listed_count} Projects
+                  {projectDetailsData?.client_details?.projects_listed_count || 0} Projects
                 </CardText>
               </div>
             </div>
