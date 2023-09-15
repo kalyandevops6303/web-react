@@ -497,6 +497,9 @@ const FixedSimpleMilestoneView = () => {
                         <div className="d-flex align-items-center m-0">
                           <Label className="form-label">Fixed Cost</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
+                          <UncontrolledTooltip placement="top" target="fixed-info">
+                            <p className="m-0">Predetermined project cost fixed by the client</p>
+                          </UncontrolledTooltip>
                         </div>
                         <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
                           $ {projectDetailsData?.pay_type?.fixed_cost}

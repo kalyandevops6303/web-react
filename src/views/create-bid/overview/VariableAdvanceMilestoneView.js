@@ -773,7 +773,10 @@ const VariableAdvanceMilestoneView = () => {
                                       <Col sm="12" md="6" lg="5">
                                         <div className="d-flex align-items-center">
                                           <p className="roles-list-header m-0 me-50">Select Roles</p>
-                                          <Info size={18} color={theme.infoIcon} />
+                                          <Info size={18} color={theme.infoIcon} id="selected-info" />
+                                          <UncontrolledTooltip placement="top" target="selected-info">
+                                            <p className="m-0">Select the role required to deliver this milestone</p>
+                                          </UncontrolledTooltip>
                                         </div>
                                       </Col>
                                       <Col sm="12" md="6" lg="7">
@@ -781,7 +784,10 @@ const VariableAdvanceMilestoneView = () => {
                                           <Col sm="12" md="6" lg="6">
                                             <div className="d-flex align-items-center">
                                               <p className="roles-list-header m-0 me-50">Duration</p>
-                                              <Info size={18} color={theme.infoIcon} />
+                                              <Info size={18} color={theme.infoIcon} id="duration-info" />
+                                              <UncontrolledTooltip placement="top" target="duration-info">
+                                                <p className="m-0">W = Week</p>
+                                              </UncontrolledTooltip>
                                             </div>
                                           </Col>
                                           <Col sm="12" md="6" lg="6">

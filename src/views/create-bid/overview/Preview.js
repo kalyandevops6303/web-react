@@ -98,6 +98,9 @@ const Preview = () => {
                 <div className="d-flex align-items-center">
                   <CardText className="key m-0">Estimated Duration</CardText>
                   <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
+                  <UncontrolledTooltip placement="right" target="duration-info">
+                    <p className="m-0">Sum total of all milestone duration hours/week</p>
+                  </UncontrolledTooltip>
                 </div>
               </div>
               <div>
