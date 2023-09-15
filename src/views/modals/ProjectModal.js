@@ -267,12 +267,8 @@ const ProjectModal = ({
                   <Button color="flat-danger" className=" d-none me-1">
                     Report
                   </Button>
-                  {data?.has_bid ? (
-                    <Button color="primary" onClick={handleRedirectTodetailsView}>
-                      <span className="me-50">View Bid</span>
-                      <ChevronRight size={14} />
-                    </Button>
-                  ) : (
+
+                  {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') && (
                     <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
                       {checkBidLoadingIsLoading ? (
                         <Spinner size="sm" />

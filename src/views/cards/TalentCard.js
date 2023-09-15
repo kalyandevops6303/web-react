@@ -100,6 +100,7 @@ function TalentCard({ data }) {
                           ) : (
                             ''
                           )}
+                          ,&nbsp;
                           {locationDetails?.country?.name ? (
                             <TextToolTip text={locationDetails?.country?.name} id={data?.user_id} />
                           ) : (

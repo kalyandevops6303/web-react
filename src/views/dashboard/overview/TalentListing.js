@@ -176,7 +176,7 @@ const TalentListing = () => {
           <AccordionHeadStyle>
             <span className="d-flex align-items-center">Join Requests</span>
             {joinRequests?.data?.length > 0 && (
-              <CardText onClick={handleViewAll} className="view-all-cta">
+              <CardText onClick={() => navigate('/my-teams/join-requests')} className="d-none view-all-cta">
                 View All
               </CardText>
             )}
