@@ -1,5 +1,5 @@
 import { getCardService, getProjectListingService } from '../../services/projectServices';
-import { getCardInfoSuccess, storeSuccessData } from '../reducers/project';
+import { getCardInfoSuccess, getListReq, storeSuccessData } from '../reducers/project';
 
 import errorHandler from '../../utility/errorHandler';
 
@@ -19,6 +19,9 @@ const getCardInfo =
 const getProjectListing =
   ({ searchText, metaData, onSuccess, onError, primaryFilter, team_id, isTeam }) =>
   async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
     try {
       const res = await getProjectListingService({ metaData, primaryFilter, team_id, isTeam, searchText });
       dispatch(storeSuccessData(res?.data?.data));

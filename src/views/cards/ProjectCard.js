@@ -39,6 +39,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
     COMPLETED: 'Completed',
+    ON_GOING: 'On Going',
   };
   // const giveStrokeColor = (percentage) => {
   //   if (percentage <= 40) {

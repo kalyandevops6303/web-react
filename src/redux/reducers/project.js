@@ -17,6 +17,14 @@ const projectSlice = createSlice({
       ...state,
       cardData: action.payload,
     }),
+    getListReq: (state) => ({
+      ...state,
+      loading: true,
+    }),
+    getListErr: (state) => ({
+      ...state,
+      loading: false,
+    }),
     storeSuccessData: (state, action) => {
       if (!action.payload?.data) return;
       // eslint-disable-next-line consistent-return
@@ -34,6 +42,6 @@ const projectSlice = createSlice({
   },
 });
 
-export const { getCardInfoSuccess, storeSuccessData } = projectSlice.actions;
+export const { getCardInfoSuccess, storeSuccessData, getListErr, getListReq } = projectSlice.actions;
 
 export default projectSlice.reducer;
