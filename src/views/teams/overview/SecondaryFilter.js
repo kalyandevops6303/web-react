@@ -15,7 +15,6 @@ import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors, useIsTab } from '../../../utility/Utils';
-import { getItem } from '../../../utility/localStorageControl';
 
 import { clearData } from '../../../redux/reducers/myTeams';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -32,14 +31,13 @@ import UserCard from '../../cards/UserCard';
 import TeamCard from '../../cards/TeamCard';
 import MarketPlaceProjectCard from '../../cards/MarketPlaceProjectCard';
 import MyTeamProjectCard from '../../cards/MyTeamProjectCard';
+import TalentCard from '../../cards/TalentCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
   const dispatch = useDispatch();
   const isTab = useIsTab();
   const popoverRef = useRef(null);
-
-  const userData = getItem('userData');
 
   const [hasMore, setHasMore] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -81,6 +79,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const invitedByOptions = [
     { label: 'Talent', value: 'TALENT' },
     { label: 'Client', value: 'CLIENT' },
+    { label: 'Team', value: 'TEAM' },
   ];
   const statusOptions = [
     { label: 'Accepted', value: 'ACCEPTED' },
@@ -100,7 +99,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const userTypeOptions = [
     { label: 'Talent', value: 'TALENT' },
-    { label: 'Client', value: 'CLIENT' },
     { label: 'Team', value: 'TEAM' },
   ];
 
@@ -157,7 +155,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     });
 
     if (primaryFilter === 'my-teams') {
-      dispatch(getTeamListing({ searchText, metaData, onSuccess, onError, filterData }));
+      dispatch(getTeamListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
     } else if (primaryFilter === 'invitations') {
       dispatch(getInvitationListing({ metaData, onSuccess, onError, filterData, userType }));
     } else if (primaryFilter === 'join-requests') {
@@ -200,6 +198,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const getCardComp = () => {
     if (primaryFilter === 'favourites') return UserCard;
+    if (primaryFilter === 'join-requests' && userType === 'TEAM') return TalentCard;
     if (primaryFilter === 'join-requests') return TeamCard;
     if (primaryFilter === 'invitations') return MarketPlaceProjectCard;
     return MyTeamProjectCard;
@@ -216,7 +215,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       filterData[key] = secondFilterState[key].map((item) => item.value);
     });
-
     if (primaryFilter === 'my-teams') {
       dispatch(getTeamListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData }));
     } else if (primaryFilter === 'invitations') {
@@ -512,7 +510,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     data={item}
                     isPopoverOpen={popoverOpen}
                     isExpanded={isExpanded}
-                    userType={userData?.user_type}
+                    userType={userType}
                     isProjectWithTeam={primaryFilter === 'my-teams'}
                     isTeam={primaryFilter === 'invitations' || primaryFilter === 'join-requests'}
                   />

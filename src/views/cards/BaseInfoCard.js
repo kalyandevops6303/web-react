@@ -88,7 +88,7 @@ const BaseInfoCard = ({ data }) => {
       <div className="d-flex mb-2 align-items-center">
         <img
           className="market-place-card-photo me-75"
-          src={clientDetails?.image_uri.length ? clientDetails?.image_uri : defaultAvatar}
+          src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
           alt="avatar"
           width={40}
           height={50}

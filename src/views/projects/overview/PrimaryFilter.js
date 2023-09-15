@@ -4,18 +4,14 @@ import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import Statbox from '../../user-details/overview/Statbox';
-import { getItem } from '../../../utility/localStorageControl';
 import { getCardInfo } from '../../../redux/actions/projectActions';
 
-const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
+const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state.project.cardData);
 
-  // const userData = useSelector(selectAuthUserData);
-  const userData = getItem('userData');
-
   useEffect(() => {
-    dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {} }));
+    dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
   }, []);
 
   return (
@@ -98,10 +94,12 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
 PrimaryFilter.propTypes = {
   selected: PropTypes.string,
   handlePrimaryChangeFilter: PropTypes.func,
+  userType: PropTypes.string,
 };
 PrimaryFilter.defaultProps = {
   selected: 'all-listings',
   handlePrimaryChangeFilter: () => {},
+  userType: '',
 };
 
 export default PrimaryFilter;

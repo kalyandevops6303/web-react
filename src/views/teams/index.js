@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
-import { getItem } from '../../utility/localStorageControl';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 
 const TeamsContainer = styled.div`
@@ -51,11 +50,8 @@ const MyTeams = () => {
     navigate(`/${props}`);
   };
 
-  // const userData = useSelector(selectAuthUserData);
-  const userDataLocal = getItem('userData');
-
   // eslint-disable-next-line react/no-unstable-nested-components
-  const SecondComp = () => <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />;
+  const SecondComp = () => <SecondaryFilters userType={userDetailsData?.user_type} primaryFilter={primaryFilter} />;
 
   const primaryEnum = {
     'my-teams': 'All Teams',
@@ -81,7 +77,7 @@ const MyTeams = () => {
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}
         isTab={isTab}
-        userType={userDataLocal?.user_type}
+        userType={userDetailsData?.user_type}
       />
       <Routes>
         <Route path="/" element={<SecondComp />} />

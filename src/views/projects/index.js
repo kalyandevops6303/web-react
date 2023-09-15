@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
-import { getItem } from '../../utility/localStorageControl';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getProjectListing } from '../../redux/actions/projectActions';
 
@@ -40,11 +39,8 @@ const Projects = () => {
 
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
-    dispatch(getProjectListing({ primaryFilter, metaData }));
+    dispatch(getProjectListing({ primaryFilter, metaData, userType: userDetailsData?.user_type }));
   };
-
-  // const userData = useSelector(selectAuthUserData);
-  const userDataLocal = getItem('userData');
 
   const primaryEnum = {
     CLOSED: 'Ongoing',
@@ -71,9 +67,9 @@ const Projects = () => {
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}
         isTab={isTab}
-        userType={userDataLocal?.user_type}
+        userType={userDetailsData?.user_type}
       />
-      <SecondaryFilters primaryFilter={primaryFilter} />
+      <SecondaryFilters primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />
     </ProjectContainer>
   );
 };
