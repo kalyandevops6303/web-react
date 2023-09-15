@@ -78,7 +78,7 @@ const fcmUnsubscribeNotification = (fcmToken) => async () => {
   try {
     await fcmUnsubscribeService(fcmToken);
   } catch (error) {
-    errorHandler(error);
+    console.error(error);
   }
 };
 
