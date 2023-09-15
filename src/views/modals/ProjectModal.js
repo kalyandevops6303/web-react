@@ -267,16 +267,23 @@ const ProjectModal = ({
                   <Button color="flat-danger" className=" d-none me-1">
                     Report
                   </Button>
-                  <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
-                    {checkBidLoadingIsLoading ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <>
-                        <span className="me-50">{data?.bid_status ? 'Go to bid' : 'Create Bid'} </span>
-                        <ChevronRight size={14} />
-                      </>
-                    )}
-                  </Button>
+                  {data?.has_bid ? (
+                    <Button color="primary" onClick={handleRedirectTodetailsView}>
+                      <span className="me-50">View Bid</span>
+                      <ChevronRight size={14} />
+                    </Button>
+                  ) : (
+                    <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
+                      {checkBidLoadingIsLoading ? (
+                        <Spinner size="sm" />
+                      ) : (
+                        <>
+                          <span className="me-50">Create Bid</span>
+                          <ChevronRight size={14} />
+                        </>
+                      )}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>

@@ -215,9 +215,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         yup
           .number()
           .min(1, 'Fixed cost is required')
-          .test('maxDigitsAfterDecimal', 'Fixed cost must be upto two decimal places', (number) =>
-            /^\d+(\.\d{1,2})?$/.test(number),
-          )
+          .integer('Fixed cost must be an integer')
           .typeError('Please enter a number')
           .required('Fixed cost is required'),
     }),
