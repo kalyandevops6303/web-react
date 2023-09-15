@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
+  Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
@@ -20,7 +21,6 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
 import classNames from 'classnames';
@@ -164,6 +164,15 @@ const FixedAdvanceMilestoneView = () => {
   const [allWorkers, setAllWorkers] = useState([]);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
+
+  const [open, setOpen] = useState(1);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
 
   const calculateMilestoneValues = (milestoneIndex) => {
     const milestoneDuration = allMilestones[milestoneIndex]?.workers
@@ -382,6 +391,8 @@ const FixedAdvanceMilestoneView = () => {
           otherDetails: worker,
         })),
       });
+
+      toggle(getValues('milestones')?.length);
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
@@ -685,7 +696,7 @@ const FixedAdvanceMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <UncontrolledAccordion className="mb-2">
+              <Accordion className="mb-2" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => {
                   const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(milestoneIndex);
 
@@ -1150,7 +1161,7 @@ const FixedAdvanceMilestoneView = () => {
                     </Card>
                   );
                 })}
-              </UncontrolledAccordion>
+              </Accordion>
             </CardBody>
           </Card>
           <Card className="mt-2">
