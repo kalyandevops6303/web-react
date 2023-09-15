@@ -42,7 +42,7 @@ const TerminateContractModal = ({ project_id, docType, modalData, modal, toggleM
                   isContractView ? 'contract' : 'NDA'
                 }? You will have to upload or sign a new ${isContractView ? 'contract' : 'NDA'}.`}
               </CardText>
-              <section className="d-flex gap-2 stats">
+              <section className="d-none d-flex gap-2 stats">
                 <div style={{ minWidth: '10rem' }}>
                   <CardText className="value mb-25">{modalData?.name || 'Talent/Team name'}</CardText>
                   <small className="key">Talent/Team name</small>
