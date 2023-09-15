@@ -29,7 +29,7 @@ import { useDropzone } from 'react-dropzone';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChevronLeft, ChevronRight, FileText, Info, Plus, Upload } from 'react-feather';
-import { MilestoneSectionWrapper } from '../style';
+import { InfoContainer, MilestoneSectionWrapper } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -442,6 +442,12 @@ const VariableSimpleMilestoneView = () => {
             </CardHeader>
             <CardBody className="pt-2 pb-0">
               <Card className="white-card-bg">
+                {selectUserDetailsData.user_type === userTypes.team && (
+                  <InfoContainer>
+                    <Info style={{ marginRight: '5px' }} />
+                    Variable Price: The variable cost will be equally distributed between each talent
+                  </InfoContainer>
+                )}
                 <CardBody>
                   <Row className="d-flex justify-content-between">
                     <Col sm="12" md="12" lg="3" className="ps-50">

@@ -332,6 +332,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const isUsers =
     location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
 
+  const inMyBids = location.pathname?.split('/')?.includes('my_bids');
+
   const ExpandCollapseComp = (
     <>
       <Label className="view-label me-1">View:</Label>
@@ -405,24 +407,25 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             {(userType === userTypes.talent ||
               userType === userTypes.team ||
               primaryFilter === 'talents' ||
-              primaryFilter === 'teams') && (
-              <Col>
-                <Label className="form-label">Sort by</Label>
-                <Select
-                  isClearable
-                  options={sortingOptions}
-                  classNamePrefix="select"
-                  placeholder="Select type"
-                  theme={selectThemeColors}
-                  onChange={onChangeSort}
-                  value={
-                    secondFilterState.sort_by.length > 0
-                      ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
+              primaryFilter === 'teams') &&
+              !inMyBids && (
+                <Col>
+                  <Label className="form-label">Sort by</Label>
+                  <Select
+                    isClearable
+                    options={sortingOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={onChangeSort}
+                    value={
+                      secondFilterState.sort_by.length > 0
+                        ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
             {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
               <Col>
                 <Label className="form-label">Status</Label>
