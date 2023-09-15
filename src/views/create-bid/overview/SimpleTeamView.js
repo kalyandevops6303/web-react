@@ -365,6 +365,7 @@ const SimpleTeamView = () => {
                           }
                           render={({ field }) => (
                             <Select
+                              maxMenuHeight={170}
                               isLoading={rolesIsLoading}
                               options={allTeamMembersOptions}
                               classNamePrefix="select"
