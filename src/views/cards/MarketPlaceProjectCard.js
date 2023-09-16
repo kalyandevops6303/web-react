@@ -114,7 +114,9 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen, isTeam }) => 
                 }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText> */}
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
-                  {data?.client?.office_address?.country?.name || 'Location'}
+                  {data?.client?.office_address?.country?.name ||
+                    data?.client_details?.office_address?.country?.name ||
+                    'Location'}
                 </CardText>
                 <CardText className=" mb-1">
                   {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
