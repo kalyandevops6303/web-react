@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
 import { TagsContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat, formatDateWithDash } from '../../../utility/Utils';
+import { convertTo12HourFormat } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
@@ -235,9 +235,14 @@ const Preview = ({
     const nda = {
       is_nda: projectDetails?.nda === 'yes',
     };
+    const start_date = Date.parse(listingDetails?.startDate);
+    const end_date = Date.parse(listingDetails?.endDate);
+
     const listing_details = {
-      start_date: formatDateWithDash(listingDetails?.startDate),
-      end_date: formatDateWithDash(listingDetails?.endDate),
+      // start_date: formatDateWithDash(listingDetails?.startDate),
+      // end_date: formatDateWithDash(listingDetails?.endDate),
+      start_date,
+      end_date,
     };
 
     const requiredData = {
