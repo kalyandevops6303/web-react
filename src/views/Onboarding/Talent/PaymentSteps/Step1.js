@@ -51,7 +51,12 @@ const Step1 = ({ setStep }) => {
     );
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = (e) => {
+    if (userType === 'student') {
+      // email support
+      e.preventDefault();
+      return;
+    }
     setStep(2);
   };
 

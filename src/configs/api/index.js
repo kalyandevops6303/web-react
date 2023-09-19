@@ -215,7 +215,8 @@ const API = {
     projects: `${apiOnboardingEndpoint}/api/v1/projects`,
   },
   payment: {
-    create: `${apiPaymentEndPoint}/api/v1/tax-info`,
+    taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,
+    paymentAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
   },
 };
 

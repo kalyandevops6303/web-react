@@ -141,14 +141,27 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                 alt="user"
                 width={112}
                 height={120}
+                style={{ objectFit: 'cover' }}
               />
             )}
 
             {isTalentView && (
-              <img src={data?.image_uri?.length > 0 ? data?.image_uri : avatar7} alt="user" width={112} height={120} />
+              <img
+                src={data?.image_uri?.length > 0 ? data?.image_uri : avatar7}
+                alt="user"
+                width={112}
+                height={120}
+                style={{ objectFit: 'cover' }}
+              />
             )}
             {isTeamView && (
-              <img src={data?.team_logo?.length > 0 ? data?.team_logo : avatar7} alt="user" width={112} height={120} />
+              <img
+                src={data?.team_logo?.length > 0 ? data?.team_logo : avatar7}
+                alt="user"
+                width={112}
+                height={120}
+                style={{ objectFit: 'cover' }}
+              />
             )}
           </div>
 

@@ -1,7 +1,8 @@
 import API from '../configs/api';
 import DataService from '../configs/dataService/dataService';
 
-const createUserService = (data) => DataService.post(API.payment.create, data);
-const updateUserService = (data) => DataService.put(API.payment.create, data);
+const createUserService = (data) => DataService.post(API.payment.taxInfo, data);
+const updateUserService = (data) => DataService.put(API.payment.taxInfo, data);
+const setupStripeAccountService = (data) => DataService.post(API.payment.paymentAccount, data);
 
-export { createUserService, updateUserService };
+export { createUserService, updateUserService, setupStripeAccountService };

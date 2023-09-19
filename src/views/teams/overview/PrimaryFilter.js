@@ -23,7 +23,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
     CLIENT: 'Team/Talent',
     INVITED: 'Invited',
     JOIN_REQ: 'Join Request',
-    FAV: 'Favorite',
+    FAV: 'Favourite',
     TEAM: 'Projects',
   };
 

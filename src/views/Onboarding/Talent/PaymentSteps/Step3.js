@@ -7,7 +7,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import classNames from 'classnames';
 import Select from 'react-select';
-import * as Yup from 'yup';
 import Flatpickr from 'react-flatpickr';
 import { PropTypes } from 'prop-types';
 
@@ -24,6 +23,8 @@ import CertificationUS from './CertificationUs';
 import CertificationNonUs from './CertificationNonUs';
 import AccountCreatedModal from '../../AccountCreatedModal';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
+
+import { formSchema, usWFormsSchema } from '../Schema';
 
 const Step3 = ({ setStep }) => {
   const { userType, working, taxClass, taxId } = useSelector((state) => state.PaymentDetails);
@@ -48,74 +49,16 @@ const Step3 = ({ setStep }) => {
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
 
-  const usWFormsSchema = Yup.object().shape({
-    fullName: Yup.string()
-      .min(3, 'name must be at least 3 characters')
-      .max(25, 'name must be at most 25 characters')
-      .matches(/^[a-zA-Z0-9 _]+$/, 'name should not contain special characters')
-      .required('name is required'),
-    citizen: Yup.object()
-      .shape({
-        label: Yup.string().required('This is required'),
-        value: Yup.string().required('This is required'),
-      })
-      .required('This is required'),
-    pAddress: Yup.string(),
-    pHouseNo: Yup.string(),
-    pCountry: Yup.object()
-      .shape({
-        label: Yup.string().required('This is required'),
-        value: Yup.string().required('This is required'),
-      })
-      .required('This is required'),
-    pState: Yup.object()
-      .shape({
-        label: Yup.string().required('This is required'),
-        value: Yup.string().required('This is required'),
-      })
-      .required('This is required'),
-    pCity: Yup.object()
-      .shape({
-        label: Yup.string().required('This is required'),
-        value: Yup.string().required('This is required'),
-      })
-      .required('This is required'),
-    pZipCode: Yup.string().required('This is required'),
-
-    mAddress: Yup.string(),
-    mHouseNo: Yup.string(),
-    mCountry: Yup.object()
-      .shape({
-        label: Yup.string().required('This is required'),
-        value: Yup.string().required('This is required'),
-      })
-      .required('This is required'),
-    mState: Yup.object()
-      .shape({
-        label: Yup.string().required('This is required'),
-        value: Yup.string().required('This is required'),
-      })
-      .required('This is required'),
-    mCity: Yup.object()
-      .shape({
-        label: Yup.string().required('This is required'),
-        value: Yup.string().required('This is required'),
-      })
-      .required('This is required'),
-    mZipCode: Yup.string().required('This is required'),
-    refNo: Yup.string().required('This is required'),
-    dob: Yup.date().typeError('DOB is required').required('DOB is required'),
-  });
-
   const {
     control,
     handleSubmit,
     watch,
-
     formState: { errors },
+    getValues,
+    setValue,
   } = useForm({
     mode: 'onChange',
-    resolver: yupResolver(usWFormsSchema),
+    resolver: yupResolver(taxPayer === 'option1' ? formSchema : usWFormsSchema),
     defaultValues: {
       fullName: '',
       citizen: '',
@@ -131,6 +74,8 @@ const Step3 = ({ setStep }) => {
       mCountry: '',
       mCity: '',
       mZipCode: '',
+      dob: '',
+      refNo: '',
     },
   });
 
@@ -198,6 +143,26 @@ const Step3 = ({ setStep }) => {
       setAccountCreatedModal(true);
     }
   };
+
+  useEffect(() => {
+    if (copyAddress) {
+      const { pAddress, pHouseNo, pCountry, pCity, pState, pZipCode } = getValues();
+
+      setValue('mAddress', pAddress);
+      setValue('mHouseNo', pHouseNo);
+      setValue('mCountry', pCountry);
+      setValue('mCity', pCity);
+      setValue('mState', pState);
+      setValue('mZipCode', pZipCode);
+    } else {
+      setValue('mAddress', '');
+      setValue('mHouseNo', '');
+      setValue('mCountry', '');
+      setValue('mCity', '');
+      setValue('mState', '');
+      setValue('mZipCode', '');
+    }
+  }, [copyAddress]);
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
@@ -470,10 +435,15 @@ const Step3 = ({ setStep }) => {
                     name="mAddress"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} placeholder="Enter street address" invalid={errors.mAddress && true} />
+                      <Input
+                        {...field}
+                        disabled={copyAddress}
+                        placeholder="Enter street address"
+                        invalid={!copyAddress && errors.mAddress && true}
+                      />
                     )}
                   />
-                  {errors.mAddress && <FormFeedback>{errors.mAddress?.message}</FormFeedback>}
+                  {!copyAddress && errors.mAddress && <FormFeedback>{errors.mAddress?.message}</FormFeedback>}
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="mHouseNo">
@@ -684,7 +654,7 @@ const Step3 = ({ setStep }) => {
               <span className="me-50">Skip stripe setup</span>
               <ChevronRight size={14} />
             </Button>
-            <Button color="primary" type="submit" disabled={!isConfirmed || !isAgreed}>
+            <Button color="primary" type="submit" disabled={isUsPerson ? !isConfirmed : !isAgreed}>
               <>
                 <span className="me-50">Set Up Stripe</span>
                 <ChevronRight size={14} />

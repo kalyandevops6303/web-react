@@ -40,11 +40,11 @@ const Step2 = ({ setStep }) => {
       .required('name is required'),
     taxClass: Yup.object()
       .shape({
-        label: Yup.string().required('This is required'),
+        label: Yup.string().required('Tax classification is required'),
         value: Yup.string().required('This is required'),
       })
       .required('This is required'),
-    taxId: Yup.string().required('This field is required'),
+    taxId: Yup.string().required('Tax Id is required'),
   });
 
   const {
@@ -65,7 +65,7 @@ const Step2 = ({ setStep }) => {
     if (taxName?.length) {
       setValue('taxName', taxName);
     }
-    if (taxClass?.length) {
+    if (taxClass?.label?.length) {
       setValue('taxClass', taxClass);
     }
     if (taxId?.length) {
@@ -220,7 +220,7 @@ const Step2 = ({ setStep }) => {
                     />
                   )}
                 />
-                {errors.taxClass && <FormFeedback>{errors.taxClass.message}</FormFeedback>}
+                {errors.taxClass && <FormFeedback>{errors.taxClass?.label?.message}</FormFeedback>}
               </Col>
             </Row>
             <h5 className="mb-1 mt-2 w-50">Taxpayer identification number type</h5>
