@@ -128,6 +128,13 @@ const API = {
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
   },
+  projectMilestones: {
+    getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,
+    getProjectTransactions: `${apiCreateProjectEndpoint}/api/v1/project/transactions`,
+    submitMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/submission`,
+    acceptMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/acceptance`,
+    projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
+  },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
     favoriteTalents: `${apiAuthEndpoint}/api/v1/team/favourite-talents`,
