@@ -15,7 +15,7 @@ import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 
-const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen, isTeam }) => {
+const MarketPlaceProjectCard = ({ isSearchPage, isExpanded, data, isPopoverOpen, isTeam }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -140,7 +140,7 @@ const MarketPlaceProjectCard = ({ isExpanded, data, isPopoverOpen, isTeam }) => 
               )}
             </Col>
             <Col lg="4">
-              <BaseInfoUI data={data} />
+              <BaseInfoUI isSearchPage={isSearchPage} data={data} />
             </Col>
           </Row>
         </CardBody>
@@ -175,6 +175,7 @@ MarketPlaceProjectCard.propTypes = {
   data: PropTypes.object,
   isPopoverOpen: PropTypes.bool,
   isTeam: PropTypes.bool,
+  isSearchPage: PropTypes.bool,
 };
 
 MarketPlaceProjectCard.defaultProps = {
@@ -182,6 +183,7 @@ MarketPlaceProjectCard.defaultProps = {
   data: {},
   isPopoverOpen: false,
   isTeam: false,
+  isSearchPage: false,
 };
 
 export default MarketPlaceProjectCard;

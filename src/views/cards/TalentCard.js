@@ -16,7 +16,7 @@ import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/ac
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import TextToolTip from './TextToolTip';
 
-function TalentCard({ data }) {
+function TalentCard({ data, isSearchPage }) {
   const dispatch = useDispatch();
   const location = useLocation();
   const fromLocationPrimary = () => {
@@ -122,19 +122,21 @@ function TalentCard({ data }) {
                       <img src={hat} alt="client-badge" width={20} height={20} />
                     </Badge>
                   )}
-                  <div className="mb-25">
-                    {data?.is_favorite ? (
-                      <Heart
-                        className="cursor-pointer d-flex heart"
-                        fill={theme.red}
-                        stroke={theme.red}
-                        onClick={handleUnLike}
-                        size={20}
-                      />
-                    ) : (
-                      <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
-                    )}
-                  </div>
+                  {!isSearchPage && (
+                    <div className="mb-25">
+                      {data?.is_favorite ? (
+                        <Heart
+                          className="cursor-pointer d-flex heart"
+                          fill={theme.red}
+                          stroke={theme.red}
+                          onClick={handleUnLike}
+                          size={20}
+                        />
+                      ) : (
+                        <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                      )}
+                    </div>
+                  )}
                   {data?.match_percentage ? (
                     <div style={{ width: '35px', height: '35px', marginTop: '-8px' }}>
                       <CircularProgressbarWithChildren
@@ -178,8 +180,10 @@ function TalentCard({ data }) {
 }
 TalentCard.propTypes = {
   data: PropTypes.object,
+  isSearchPage: PropTypes.bool,
 };
 TalentCard.defaultProps = {
   data: {},
+  isSearchPage: false,
 };
 export default TalentCard;

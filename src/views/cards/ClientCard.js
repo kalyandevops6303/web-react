@@ -25,7 +25,7 @@ const giveStrokeColor = (percentage) => {
     return theme.green;
   }
 };
-const ClientCard = ({ data, userType }) => {
+const ClientCard = ({ isSearchPage, data, userType }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const fromLocationPrimary = () => {
@@ -113,19 +113,21 @@ const ClientCard = ({ data, userType }) => {
                     <img src={hat} alt="client-badge" />
                   </Badge>
                 )}
-                <div className="mb-25">
-                  {data?.is_favorite ? (
-                    <Heart
-                      className="cursor-pointer d-flex heart"
-                      fill={theme.red}
-                      stroke={theme.red}
-                      onClick={handleUnLike}
-                      size={20}
-                    />
-                  ) : (
-                    <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
-                  )}
-                </div>
+                {!isSearchPage && (
+                  <div className="mb-25">
+                    {data?.is_favorite ? (
+                      <Heart
+                        className="cursor-pointer d-flex heart"
+                        fill={theme.red}
+                        stroke={theme.red}
+                        onClick={handleUnLike}
+                        size={20}
+                      />
+                    ) : (
+                      <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                    )}
+                  </div>
+                )}
               </div>
               <div className="d-flex mt-1">
                 <RatingBadge number={Math.round(data?.rating ?? 0)} />
@@ -136,35 +138,33 @@ const ClientCard = ({ data, userType }) => {
             </div>
           </Col>
           <div className="d-flex">
-            {true ? (
-              <div
-                className="circular-progressbar-container mt-1"
-                style={{ marginRight: '15px', width: '50px', height: '50px' }}
+            <div
+              className={`circular-progressbar-container mt-1 ${isSearchPage ? 'invisible' : ''}`}
+              style={{ marginRight: '15px', width: '50px', height: '50px' }}
+            >
+              <CircularProgressbarWithChildren
+                value={data?.match_percentage ?? 0}
+                styles={{
+                  path: {
+                    stroke: giveStrokeColor(data?.match_percentage ?? 0),
+                    strokeLinecap: 'round',
+                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                  trail: {
+                    stroke: theme.progressBarBg,
+                    strokeLinecap: 'round',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                }}
               >
-                <CircularProgressbarWithChildren
-                  value={data?.match_percentage ?? 0}
-                  styles={{
-                    path: {
-                      stroke: giveStrokeColor(data?.match_percentage ?? 0),
-                      strokeLinecap: 'round',
-                      transition: 'stroke-dashoffset 0.5s ease 0s',
-                      transform: 'rotate(0turn)',
-                      transformOrigin: 'center center',
-                    },
-                    trail: {
-                      stroke: theme.progressBarBg,
-                      strokeLinecap: 'round',
-                      transform: 'rotate(0turn)',
-                      transformOrigin: 'center center',
-                    },
-                  }}
-                >
-                  <div className="d-flex justify-content-center align-items-center">
-                    <p className="percentage-text m-0">{data?.match_percentage ?? 0}%</p>
-                  </div>
-                </CircularProgressbarWithChildren>
-              </div>
-            ) : null}
+                <div className="d-flex justify-content-center align-items-center">
+                  <p className="percentage-text m-0">{data?.match_percentage ?? 0}%</p>
+                </div>
+              </CircularProgressbarWithChildren>
+            </div>
             <div className=" w-100">
               {data?.project_area_of_interest?.area ? (
                 <div className="mt-1 badge-box-wrap mb-50">
@@ -210,9 +210,11 @@ const ClientCard = ({ data, userType }) => {
 ClientCard.propTypes = {
   data: PropTypes.object,
   userType: PropTypes.string,
+  isSearchPage: PropTypes.bool,
 };
 ClientCard.defaultProps = {
   data: {},
   userType: 'string',
+  isSearchPage: false,
 };
 export default ClientCard;

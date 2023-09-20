@@ -11,7 +11,7 @@ import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 
-const BaseInfoCard = ({ data }) => {
+const BaseInfoCard = ({ isSearchPage, data }) => {
   const dispatch = useDispatch();
 
   const clientDetails = data?.client ?? data?.client_details;
@@ -43,19 +43,21 @@ const BaseInfoCard = ({ data }) => {
               <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
           )}
-          <div className="mb-25">
-            {data?.is_favorite ? (
-              <Heart
-                className="cursor-pointer d-flex heart"
-                fill={theme.red}
-                stroke={theme.red}
-                onClick={handleUnLike}
-                size={20}
-              />
-            ) : (
-              <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
-            )}
-          </div>
+          {!isSearchPage && (
+            <div className="mb-25">
+              {data?.is_favorite ? (
+                <Heart
+                  className="cursor-pointer d-flex heart"
+                  fill={theme.red}
+                  stroke={theme.red}
+                  onClick={handleUnLike}
+                  size={20}
+                />
+              ) : (
+                <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+              )}
+            </div>
+          )}
 
           {data?.match_percentage ? (
             <div className="circular-progressbar-container m-0">
@@ -120,9 +122,11 @@ const BaseInfoCard = ({ data }) => {
 
 BaseInfoCard.propTypes = {
   data: PropTypes.object,
+  isSearchPage: PropTypes.bool,
 };
 
 BaseInfoCard.defaultProps = {
   data: {},
+  isSearchPage: false,
 };
 export default BaseInfoCard;

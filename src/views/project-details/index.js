@@ -13,6 +13,7 @@ import TeamView from './overview/TeamView';
 import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
 import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
+import Milestone from './milestones/Milestone';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import RatingView from './overview/RatingView';
 // import { DateTime } from 'luxon';
@@ -58,6 +59,7 @@ const ProjectDetails = () => {
           <CustomStep steps={isInviteView ? InviteView : steps} currentStep={currentStep} onChangeStep={changeStep} />
           <Routes>
             <Route path="bid" element={<BidView />} />
+            <Route path="milestone" element={<Milestone />} />
             <Route path="team" element={<TeamView />} />
             <Route path="rating" element={<RatingView />} />
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
