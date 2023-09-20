@@ -27,11 +27,12 @@ import {
   getReqListing,
   getTeamListing,
 } from '../../../redux/actions/myTeamActions';
-import UserCard from '../../cards/UserCard';
+
 import TeamCard from '../../cards/TeamCard';
 import MarketPlaceProjectCard from '../../cards/MarketPlaceProjectCard';
 import MyTeamProjectCard from '../../cards/MyTeamProjectCard';
 import TalentCard from '../../cards/TalentCard';
+import ClientCard from '../../cards/ClientCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -97,10 +98,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     { label: 'alma mater', value: 'alma mater' },
   ];
 
-  // const userTypeOptions = [
-  //   { label: 'Talent', value: 'TALENT' },
-  //   { label: 'Team', value: 'TEAM' },
-  // ];
+  const userTypeOptions = [
+    { label: 'Talent', value: 'TALENT' },
+    { label: 'Team', value: 'TEAM' },
+    { label: 'Client', value: 'CLIENT' },
+  ];
   const filterTypeOptions = [
     { label: 'Favorites', value: 'FAVOURITE' },
     { label: 'Alma mater', value: 'ALMA_MATER' },
@@ -196,7 +198,16 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const getCardComp = () => {
-    if (primaryFilter === 'favourites') return UserCard;
+    if (primaryFilter === 'favourites') {
+      if (secondFilterState?.user_type[0]?.value === 'TALENT') {
+        return TalentCard;
+      }
+      if (secondFilterState?.user_type[0]?.value === 'TEAM') {
+        return TeamCard;
+      }
+
+      return ClientCard;
+    }
     if (primaryFilter === 'join-requests' && userType === 'TEAM') return TalentCard;
     if (primaryFilter === 'join-requests') return TeamCard;
     if (primaryFilter === 'invitations') return MarketPlaceProjectCard;
@@ -303,7 +314,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 {ExpandCollapseComp}
               </Col>
             )}
-            {/* {primaryFilter === 'invitations' || primaryFilter === 'favourites' ? (
+            {primaryFilter === 'favourites' ? (
               <Col>
                 <Label className="form-label">User Type</Label>
                 <Select
@@ -322,7 +333,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   }
                 />
               </Col>
-            ) : null} */}
+            ) : null}
             {primaryFilter === 'my-teams' ? (
               <Col>
                 <Label className="form-label">Project Status</Label>
@@ -499,7 +510,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
           {selectMyTeamData?.length ? (
-            <div className="d-flex flex-wrap justify-content-between">
+            <div
+              className="justify-content-between grid-layout"
+              style={
+                secondFilterState.user_type[0]?.value === 'CLIENT'
+                  ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                  : {}
+              }
+            >
               {selectMyTeamData?.map((item) => {
                 const CardComponent = getCardComp();
 

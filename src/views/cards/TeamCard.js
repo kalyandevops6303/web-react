@@ -7,7 +7,6 @@ import AvatarGroup from '@components/avatar-group';
 import hat from '@src/assets/images/hat.svg';
 import { Heart } from 'react-feather';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import DateTime from '../../lib/date-time';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { TeamCardWrap } from './style';
@@ -19,8 +18,8 @@ const Team = ({ data, isSearchPage }) => {
   const users = [];
   data?.team_members?.map((user) =>
     users.push({
-      title: `${user?.full_name}` || 'user',
-      img: user?.profile_picture || avatar7,
+      title: `${user?.full_name ?? user?.first_name}` || 'user',
+      img: (user?.profile_picture ?? user?.image_uri) || avatar7,
       placement: 'bottom',
       imgHeight: 33,
       imgWidth: 33,
@@ -57,9 +56,9 @@ const Team = ({ data, isSearchPage }) => {
                     <span>{data?.name}</span>
                   </Link>
                 </CardTitle>
-                <span className="me-3">
+                {/* <span className="me-3">
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
-                </span>
+                </span> */}
               </div>
               <CardText className="team-desc mb-1">{data?.introduction} </CardText>
 
