@@ -14,7 +14,7 @@ import { TeamCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 
-const Team = ({ data }) => {
+const Team = ({ data, isSearchPage }) => {
   const dispatch = useDispatch();
   const users = [];
   data?.team_members?.map((user) =>
@@ -80,24 +80,26 @@ const Team = ({ data }) => {
             <div className="w-25">
               <div className="d-flex flex-column align-items-start">
                 <div className="d-flex w-100 justify-content-end gap-1">
-                  {true && (
+                  {data?.is_alma_mater && (
                     <Badge className="bg-white" style={{ marginTop: '-3px' }}>
                       <img src={hat} alt="client-badge" width={20} height={20} />
                     </Badge>
                   )}
-                  <div className="mb-25">
-                    {data?.is_favorite ? (
-                      <Heart
-                        className="cursor-pointer d-flex heart"
-                        fill={theme.red}
-                        stroke={theme.red}
-                        onClick={handleUnLike}
-                        size={20}
-                      />
-                    ) : (
-                      <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
-                    )}
-                  </div>
+                  {!isSearchPage && (
+                    <div className="mb-25">
+                      {data?.is_favorite ? (
+                        <Heart
+                          className="cursor-pointer d-flex heart"
+                          fill={theme.red}
+                          stroke={theme.red}
+                          onClick={handleUnLike}
+                          size={20}
+                        />
+                      ) : (
+                        <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                      )}
+                    </div>
+                  )}
                   {data?.match_percentage ? (
                     <div style={{ width: '35px', height: '35px', marginTop: '-8px' }}>
                       <CircularProgressbarWithChildren
@@ -142,8 +144,10 @@ const Team = ({ data }) => {
 
 Team.propTypes = {
   data: PropTypes.object,
+  isSearchPage: PropTypes.bool,
 };
 Team.defaultProps = {
   data: {},
+  isSearchPage: false,
 };
 export default Team;
