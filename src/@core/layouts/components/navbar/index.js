@@ -133,6 +133,7 @@ const ThemeNavbar = (props) => {
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
             to="/projects"
+            onClick={()=>localStorage.removeItem("selectedProjectTab")}
           >
             Project
           </NavLink>
