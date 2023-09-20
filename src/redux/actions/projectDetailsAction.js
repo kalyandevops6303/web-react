@@ -144,7 +144,9 @@ const getBidDetails =
       }
       dispatch(getBidInfoSuccess(res.data.data));
     } catch (error) {
-      errorHandler(error, getBidInfoFailure);
+      // errorHandler(error, getBidInfoFailure);
+      dispatch(getBidInfoFailure(error));
+      console.error(error);
     }
   };
 

@@ -15,12 +15,15 @@ import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import RatingView from './overview/RatingView';
+// import { DateTime } from 'luxon';
 
 const ProjectDetails = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
   const projectDetailsData = useSelector(projectDetails);
+
+  // console.log(DateTime.now().toMillis());
 
   const changeStep = (step) => {
     setCurrentStep(step);
