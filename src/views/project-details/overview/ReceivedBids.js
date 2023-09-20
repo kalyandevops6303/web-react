@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable no-undef */
+import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
+import PropTypes from 'prop-types';
 
 import {
   AccordionBody,
@@ -14,10 +16,12 @@ import {
   InputGroupText,
   Label,
   Row,
+  UncontrolledTooltip,
 } from 'reactstrap';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import { debounce } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import styled from 'styled-components';
 import { ChevronDown, Eye, MoreVertical, Paperclip, Search } from 'react-feather';
 import DataTable from 'react-data-table-component';
 import Rating from 'react-rating';
@@ -30,19 +34,28 @@ import EmptyStar from '@src/assets/images/empty_star.png';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { selectThemeColors } from '../../../utility/Utils';
-import { AccordionHeadStyle } from '../style';
+import { AccordionHeadStyle, UserNameWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getReceivedBids } from '../../../redux/actions/projectDetailsAction';
 
-const ReceivedBids = () => {
+const TableWrapper = styled.div`
+  .rdt_TableHeadRow {
+    &:first-child > div:first-child > div:first-child {
+      margin-left: 4rem;
+    }
+  }
+`;
+
+const ReceivedBids = ({ projectName }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const receivedBids = useSelector((state) => state.projectDetails.receivedBids);
   const [hasMore, setHasMore] = useState(true);
   const totalInvited = useSelector((state) => state.projectDetails.invitedMemberForProjectByClient);
   const selectReceivedBidsMetadata = useSelector((state) => state.projectDetails.receivedBidsMetaData);
-  const selectReceivedBidscurrentPreview = useSelector((state) => state.dashboard.receivedBidsCurrentPreview);
+  const selectReceivedBidscurrentPreview = useSelector((state) => state.projectDetails.receivedBidsPreview);
   const metadata = { page: 1, page_size: 10 };
   const [searchText, setSearchText] = useState('');
   const [status, setStatus] = useState('');
@@ -58,7 +71,9 @@ const ReceivedBids = () => {
   }, [selectReceivedBidscurrentPreview]);
 
   useEffect(() => {
-    dispatch(getReceivedBids({ metadata, search_text: searchText, bid_status: status, project_id: param?.projectId }));
+    dispatch(
+      getReceivedBids({ metadata, search_text: searchText, bid_status: status?.value, project_id: param?.projectId }),
+    );
   }, [searchText, status]);
 
   const fetchMore = () => {
@@ -79,50 +94,54 @@ const ReceivedBids = () => {
 
   const tableColumns = [
     {
-      name: 'NAME',
-      sortable: true,
-      minWidth: '28%',
+      name: 'TEAM/TALENT NAME',
+      sortable: false,
+      minWidth: '27%',
       selector: (row) => row.name,
     },
     {
       name: 'RATING',
-      sortable: true,
-      minWidth: '16%',
+      sortable: false,
+      minWidth: '17%',
       selector: (row) => row.rating,
     },
     {
       name: 'BID AMT',
-      sortable: true,
-      minWidth: '14%',
+      sortable: false,
+      minWidth: '13%',
       selector: (row) => row.bid,
     },
     {
       name: 'ATTACHMENTS',
-      sortable: true,
+      sortable: false,
       minWidth: '18%',
       selector: (row) => row.attachments,
     },
     {
       name: 'STATUS',
-      sortable: true,
+      sortable: false,
       minWidth: '12%',
-      selector: (row) => row.status,
+      selector: (row) => (row.status === 'DECLINED' ? 'REJECTED' : row.status),
     },
 
     {
       name: 'ACTION',
-      sortable: true,
+      sortable: false,
       minWidth: '6%',
       selector: (row) => row.action,
     },
   ];
 
   const handleRedirectTobidDetails = (item) => {
-    navigate(`${item?._id}`);
+    const state = {
+      projectName,
+      link: location?.pathname,
+    };
+    navigate(`${item?._id}?project_name=${projectName}`, { state });
   };
 
   const receivedBidsDataset = [];
-  receivedBids?.map((item) =>
+  receivedBids?.map((item, index) =>
     receivedBidsDataset.push({
       name: (
         <div className="d-flex gap-50 align-items-center">
@@ -136,8 +155,24 @@ const ReceivedBids = () => {
           <div className="d-flex gap-1 align-items-center">
             <Avatar img={item?.logo || defaultAvatar} imgHeight="32" imgWidth="32" />
             <div>
-              <span className="font-weight-bold d-block table-user-name">{item?.name}</span>
-              <span className="table-user-sub d-none">{item?.name}</span>
+              {item?.name.length > 5 ? (
+                <>
+                  <UncontrolledTooltip target={`tooltip-${index}`}>{item?.name}</UncontrolledTooltip>
+                  <UserNameWrapper>
+                    <span className="font-weight-bold d-block table-user-name" id={`tooltip-${index}`}>
+                      {item?.name}
+                    </span>
+                    <span className="table-user-sub d-none">{item?.name}</span>
+                  </UserNameWrapper>
+                </>
+              ) : (
+                <UserNameWrapper>
+                  <span className="font-weight-bold d-block table-user-name" id={`tooltip-${index}`}>
+                    {item?.name}
+                  </span>
+                  <span className="table-user-sub d-none">{item?.name}</span>
+                </UserNameWrapper>
+              )}
             </div>
           </div>
         </div>
@@ -176,30 +211,34 @@ const ReceivedBids = () => {
   );
 
   const statusOption = [
-    { label: 'Active', value: 'ACTIVE' },
+    { label: 'New', value: 'ACTIVE' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
-    { label: 'Declined', value: 'DECLINED' },
+    { label: 'Rejected', value: 'DECLINED' },
   ];
   const handleSearchTextChange = (e) => {
     setSearchText(e.target.value);
     e.preventDefault();
   };
 
+  const handleDropdown = (value) => {
+    setStatus(value);
+  };
+
   return (
     <AccordionItem>
       <AccordionHeader targetId="1">
         <AccordionHeadStyle>
-          <span className="title-head">Received bids</span>
+          <span className="title-head">Received Bids</span>
           <div className="d-flex gap-1 aling-items-center">
             <CardText className="d-none view-all-cta">Give rating</CardText>
             <div>
               <span className="key">Received</span>
-              <CardText className="value">{selectReceivedBidsMetadata?.total_records}</CardText>
+              <CardText className="value text-end">{selectReceivedBidsMetadata?.total_records}</CardText>
             </div>
             <div className="me-1">
               <span className="key">Invited</span>
-              <CardText className="value">{totalInvited}</CardText>
+              <CardText className="value text-end">{totalInvited}</CardText>
             </div>
           </div>
         </AccordionHeadStyle>
@@ -211,56 +250,65 @@ const ReceivedBids = () => {
             solution partner that have submitted bid for your proposal request.
           </CardText>
           <Row className="justify-content-between w-100 mb-2">
-            <Col className="d-flex align-items-end" sm="12" md="12" lg="4">
+            <Col className="d-flex align-items-end" sm="12" md="12" lg="5">
               <InputGroup className="input-group-merge">
                 <InputGroupText className="ps-1 pe-50">
                   <Search size={14} color={theme.textMuted} />
                 </InputGroupText>
-                <Input placeholder="Search talent name" onChange={debounce(handleSearchTextChange, 300)} />
+                <Input placeholder="Search team or talent name" onChange={debounce(handleSearchTextChange, 300)} />
               </InputGroup>
             </Col>
             <Col sm="12" md="12" lg="3">
               <Label className="form-label">Project Status</Label>
               <Select
+                isClearable
+                value={status}
                 options={statusOption}
                 classNamePrefix="select"
-                placeholder="Select type"
+                placeholder="Select project status"
                 theme={selectThemeColors}
-                onChange={(e) => setStatus(e.value)}
+                onChange={handleDropdown}
               />
             </Col>
           </Row>
           <CardText className="d-none">10/500 Invited</CardText>
         </div>
 
-        <div className="react-dataTable mt-1" style={{ maxHeight: '400px' }} id="scrollDivForReceivedBids">
-          <InfiniteScroll
-            dataLength={receivedBids?.length}
-            next={fetchMore}
-            hasMore={hasMore}
-            endMessage={
-              <div className="d-flex justify-content-center ">
-                {receivedBids?.length > 0 ? <span className="mt-2 d-none">You have seen it all!</span> : ''}
-              </div>
-            }
-            scrollableTarget="scrollDivForReceivedBids"
-            loader={<div className="d-flex justify-content-center">Loading...</div>}
+        <TableWrapper>
+          <div
+            className="react-dataTable mt-1"
+            style={{ overflowY: 'auto', maxHeight: '400px' }}
+            id="scrollDivForReceivedBids"
           >
-            <DataTable
-              noHeader
-              pagination={false}
-              columns={tableColumns}
-              paginationPerPage={7}
-              className="react-dataTable"
-              sortIcon={<ChevronDown size={10} />}
-              data={receivedBidsDataset}
-              classNamePrefix="react-dataTable"
-            />
-          </InfiniteScroll>
-        </div>
+            <InfiniteScroll
+              dataLength={receivedBids?.length}
+              next={fetchMore}
+              hasMore={hasMore}
+              scrollableTarget="scrollDivForReceivedBids"
+            >
+              <DataTable
+                noHeader
+                pagination={false}
+                columns={tableColumns}
+                paginationPerPage={7}
+                className="react-dataTable"
+                sortIcon={<ChevronDown size={10} />}
+                data={receivedBidsDataset}
+                classNamePrefix="react-dataTable"
+              />
+            </InfiniteScroll>
+          </div>
+        </TableWrapper>
       </AccordionBody>
     </AccordionItem>
   );
 };
 
-export default ReceivedBids;
+ReceivedBids.propTypes = {
+  projectName: PropTypes.string,
+};
+ReceivedBids.defaultProps = {
+  projectName: '',
+};
+
+export default memo(ReceivedBids);

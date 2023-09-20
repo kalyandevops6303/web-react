@@ -31,7 +31,33 @@ const validateUrlService = (data) => DataService.post(API.dashboard.validateUrl,
 
 const updateInvitationService = (data) => DataService.post(API.dashboard.updateInvitation, data);
 
+const teamProfilePercentageService = () => DataService.get(API.dashboard.teamProfilePercentage);
+
+const alertService = () => DataService.get(`${API.notifications.alerts}?page=1&page_size=4`);
+
+const activeProjectsForClientService = () => DataService.get(API.dashboard.activeProjectsForClient);
+
+const upcomingProjectsForClientService = () => DataService.get(API.dashboard.upcomingProjectsForClient);
+
+const projectsBidsForClientService = () => DataService.get(API.dashboard.projectsBidsForClient);
+
+const recommendedTeamsForClientService = () => DataService.get(API.dashboard.recommendedTeamsForClient);
+
+const checkBidsAcceptedService = () =>
+  DataService.post(API.dashboard.checkBidsAccepted, {
+    bid_statuses: ['ACCEPTED'],
+  });
+
+const activeProjectsForTalentService = () => DataService.get(API.dashboard.activeProjectsForTalent);
+
+const upcomingProjectsForTalentService = () => DataService.get(API.dashboard.upcomingProjectsForTalent);
+
+const activeProjectsForTeamService = () => DataService.get(API.dashboard.activeProjectsForTeam);
+
+const upcomingProjectsForTeamService = () => DataService.get(API.dashboard.upcomingProjectsForTeam);
+
 export {
+  alertService,
   userDataService,
   removeMemberService,
   recommendedProjectsService,
@@ -46,4 +72,14 @@ export {
   getProjectInviteService,
   validateUrlService,
   updateInvitationService,
+  teamProfilePercentageService,
+  activeProjectsForClientService,
+  upcomingProjectsForClientService,
+  projectsBidsForClientService,
+  recommendedTeamsForClientService,
+  checkBidsAcceptedService,
+  activeProjectsForTalentService,
+  upcomingProjectsForTalentService,
+  activeProjectsForTeamService,
+  upcomingProjectsForTeamService,
 };

@@ -2,13 +2,14 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Clock, Home, Link, User } from 'react-feather';
+import { Clock, Home, Link, User, Shield } from 'react-feather';
 import { TabsContainer } from '../style';
 import Account from '../Account';
 import Personal from './Personal';
 import Educational from './Educational';
 import Availability from './Availability';
 import Social from './Social';
+import Payment from './Payment';
 import { userOnboarding } from '../../../utility/constants/Constant';
 import EducationTabInactiveImg from '../../../assets/images/educationTabInactive.png';
 import EducationTabActiveImg from '../../../assets/images/educationTabActive.png';
@@ -53,6 +54,12 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Social</span>
           </NavLink>
         </NavItem>
+        <NavItem>
+          <NavLink active={location.pathname.includes('payment-details')}>
+            <Shield className="font-medium-3 me-50" />
+            <span className="fw-bold">Payment</span>
+          </NavLink>
+        </NavItem>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
@@ -70,7 +77,7 @@ const Tabs = ({ tabNames, active }) => {
         <TabPane tabId={tabNames.Social}>
           {location.pathname === `/${userOnboarding.talent}/social-details` && <Social />}
         </TabPane>
-        <TabPane tabId={tabNames.Payment}>Payment</TabPane>
+        <TabPane tabId={tabNames.Payment}>{location.pathname.includes('payment-details') ? <Payment /> : null}</TabPane>
       </TabContent>
     </TabsContainer>
   );

@@ -12,7 +12,7 @@ import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { DisputeDetailsContainer, RepliesContainer } from '../style';
 import theme from '../../../configs/themeVariables';
-import Timeline from '../../../@core/components/timeline';
+import DisputesTimeline from '../../../@core/components/disputes-timeline';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { disputeStatusEnum, disputeStatuses, maxFileSize } from '../../../utility/constants/Constant';
@@ -207,9 +207,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
   );
 
   useEffect(() => {
-    if (status === disputeStatuses.responded || status === disputeStatuses.resolved) {
-      dispatch(getDisputeReplies(_id, 1, 10, []));
-    }
+    dispatch(getDisputeReplies(_id, 1, 10, []));
   }, []);
 
   useEffect(() => {
@@ -484,7 +482,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
                 scrollableTarget="scrollableTimeline"
                 loader={<div className="d-flex justify-content-center">Loading...</div>}
               >
-                <Timeline data={updatedTimelineData} />
+                <DisputesTimeline data={updatedTimelineData} />
               </InfiniteScroll>
             </RepliesContainer>
           )}

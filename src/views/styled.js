@@ -36,10 +36,17 @@ const CustomBadge = styled.span`
     color: ${theme.lightBlueColor};
   }
   .OPEN {
-    background: ${theme.succesGreenBg};
-    color: ${theme.succesGreenColor};
+    background: ${theme.lightBlueBgColor} !important;
+    color: ${theme.lightBlueColor};
+    border: 1px solid ${theme.blueColor};
   }
-  .IN_REVIEW {
+  .COMPLETED {
+    background: ${theme.lightGreenBg} !important;
+    color: ${theme.lighGreenColor};
+    border: 1px solid ${theme.lighGreenColor};
+  }
+  .IN_REVIEW,
+  .ON_GOING {
     background: ${theme.orange}1f;
     color: ${theme.orange};
   }
@@ -83,6 +90,7 @@ const SecondaryFiltersWrap = styled.div`
   gap: 1rem;
   margin-top: 0.4rem;
   margin-bottom: 2rem;
+
   .marketplace-search {
     min-width: 18rem;
   }
@@ -223,6 +231,7 @@ const TimeWrapper = styled.section`
 `;
 
 const CreateBidRadioOption = styled.div`
+  min-height: 210px;
   padding: 1rem;
   border-radius: 6px;
   border: ${(props) => (props.active ? `1px solid ${theme.activeNavPillText}` : `1px solid ${theme.darkBorder}`)};

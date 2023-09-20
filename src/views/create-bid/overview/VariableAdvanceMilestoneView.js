@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
+  Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
@@ -19,7 +20,6 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
 import classNames from 'classnames';
@@ -80,6 +80,7 @@ const VariableAdvanceMilestoneView = () => {
                 yup
                   .number()
                   .min(1, 'Duration must be at least 1')
+                  .integer('Duration must be a integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Duration is required'),
@@ -95,6 +96,8 @@ const VariableAdvanceMilestoneView = () => {
                 yup
                   .number()
                   .min(1, 'Hours must be at least 1')
+                  .max(168, 'Hours must be at most 168')
+                  .integer('Hours must be an integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Hours is required'),
@@ -159,6 +162,15 @@ const VariableAdvanceMilestoneView = () => {
   const [allWorkers, setAllWorkers] = useState([]);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
+
+  const [open, setOpen] = useState(1);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
 
   const calculateMilestoneValues = (milestoneIndex) => {
     const milestoneDuration = allMilestones[milestoneIndex]?.workers
@@ -373,6 +385,8 @@ const VariableAdvanceMilestoneView = () => {
           otherDetails: worker,
         })),
       });
+
+      toggle(getValues('milestones')?.length);
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
@@ -577,6 +591,8 @@ const VariableAdvanceMilestoneView = () => {
 
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
+    // eslint-disable-next-line no-undef
+    setTimeout(() => window.scrollTo(0, 0), 30);
   }, []);
 
   return (
@@ -640,7 +656,7 @@ const VariableAdvanceMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <UncontrolledAccordion className="mb-2">
+              <Accordion className="mb-2" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => {
                   const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(milestoneIndex);
 
@@ -659,7 +675,7 @@ const VariableAdvanceMilestoneView = () => {
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">{milestoneDuration}w</p>
                                 </div>
                                 <div className="ms-2">
-                                  <Label className="fw-normal form-label ">Hours</Label>
+                                  <Label className="fw-normal form-label ">Total Hours</Label>
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">{milestoneHours}h</p>
                                 </div>
                                 <div>
@@ -769,7 +785,10 @@ const VariableAdvanceMilestoneView = () => {
                                       <Col sm="12" md="6" lg="5">
                                         <div className="d-flex align-items-center">
                                           <p className="roles-list-header m-0 me-50">Select Roles</p>
-                                          <Info size={18} color={theme.infoIcon} />
+                                          <Info size={18} color={theme.infoIcon} id="selected-info" />
+                                          <UncontrolledTooltip placement="top" target="selected-info">
+                                            <p className="m-0">Select the role required to deliver this milestone</p>
+                                          </UncontrolledTooltip>
                                         </div>
                                       </Col>
                                       <Col sm="12" md="6" lg="7">
@@ -777,7 +796,10 @@ const VariableAdvanceMilestoneView = () => {
                                           <Col sm="12" md="6" lg="6">
                                             <div className="d-flex align-items-center">
                                               <p className="roles-list-header m-0 me-50">Duration</p>
-                                              <Info size={18} color={theme.infoIcon} />
+                                              <Info size={18} color={theme.infoIcon} id="duration-info" />
+                                              <UncontrolledTooltip placement="top" target="duration-info">
+                                                <p className="m-0">W = Week</p>
+                                              </UncontrolledTooltip>
                                             </div>
                                           </Col>
                                           <Col sm="12" md="6" lg="6">
@@ -869,35 +891,60 @@ const VariableAdvanceMilestoneView = () => {
                                                           .duration &&
                                                         true
                                                       }
-                                                      render={({ field }) => (
-                                                        <InputGroup className="input-group-merge">
-                                                          <Input
-                                                            {...field}
-                                                            placeholder="0w"
-                                                            type="number"
-                                                            min={0}
-                                                            onWheel={(e) => e.target.blur()}
-                                                            invalid={
-                                                              errors &&
-                                                              errors.milestones &&
-                                                              errors.milestones.length > 0 &&
-                                                              errors.milestones[milestoneIndex] &&
-                                                              errors.milestones[milestoneIndex].workers &&
-                                                              errors.milestones[milestoneIndex].workers.length > 0 &&
-                                                              errors.milestones[milestoneIndex].workers[workerIndex] &&
-                                                              errors.milestones[milestoneIndex].workers[workerIndex]
-                                                                .duration &&
-                                                              true
-                                                            }
-                                                          />
-                                                          {getValues('milestones')[milestoneIndex].workers?.find(
+                                                      render={({ field }) => {
+                                                        const durationValue =
+                                                          getValues('milestones')[milestoneIndex]?.workers?.find(
                                                             (w) => w.role === worker.role,
-                                                          )?.duration > 0 && (
-                                                            <InputGroupText className="ps-0">w</InputGroupText>
-                                                          )}
-                                                        </InputGroup>
-                                                      )}
+                                                          )?.duration ?? 0;
+
+                                                        const isInteger = Number.isInteger(+durationValue);
+
+                                                        return (
+                                                          <InputGroup className="input-group-merge">
+                                                            <Input
+                                                              {...field}
+                                                              placeholder="0w"
+                                                              type="number"
+                                                              min={0}
+                                                              onWheel={(e) => e.target.blur()}
+                                                              invalid={
+                                                                errors &&
+                                                                errors.milestones &&
+                                                                errors.milestones.length > 0 &&
+                                                                errors.milestones[milestoneIndex] &&
+                                                                errors.milestones[milestoneIndex].workers &&
+                                                                errors.milestones[milestoneIndex].workers.length > 0 &&
+                                                                errors.milestones[milestoneIndex].workers[
+                                                                  workerIndex
+                                                                ] &&
+                                                                errors.milestones[milestoneIndex].workers[workerIndex]
+                                                                  .duration &&
+                                                                true
+                                                              }
+                                                            />
+                                                            {durationValue > 0 && isInteger && (
+                                                              <InputGroupText className="ps-0">w</InputGroupText>
+                                                            )}
+                                                          </InputGroup>
+                                                        );
+                                                      }}
                                                     />
+                                                    {errors &&
+                                                      errors.milestones &&
+                                                      errors.milestones.length > 0 &&
+                                                      errors.milestones[milestoneIndex] &&
+                                                      errors.milestones[milestoneIndex].workers &&
+                                                      errors.milestones[milestoneIndex].workers.length > 0 &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex] &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex]
+                                                        .duration && (
+                                                        <FormFeedback>
+                                                          {
+                                                            errors.milestones[milestoneIndex].workers[workerIndex]
+                                                              .duration.message
+                                                          }
+                                                        </FormFeedback>
+                                                      )}
                                                   </Col>
                                                   <Col sm="12" md="6" lg="6">
                                                     <Controller
@@ -938,12 +985,30 @@ const VariableAdvanceMilestoneView = () => {
                                                           />
                                                           {getValues('milestones')[milestoneIndex].workers?.find(
                                                             (w) => w.role === worker.role,
-                                                          )?.hours > 0 && (
-                                                            <InputGroupText className="ps-0">h</InputGroupText>
-                                                          )}
+                                                          )?.hours > 0 &&
+                                                            getValues('milestones')[milestoneIndex].workers?.find(
+                                                              (w) => w.role === worker.role,
+                                                            )?.hours < 169 && (
+                                                              <InputGroupText className="ps-0">h</InputGroupText>
+                                                            )}
                                                         </InputGroup>
                                                       )}
                                                     />
+                                                    {errors &&
+                                                      errors.milestones &&
+                                                      errors.milestones.length > 0 &&
+                                                      errors.milestones[milestoneIndex] &&
+                                                      errors.milestones[milestoneIndex].workers &&
+                                                      errors.milestones[milestoneIndex].workers.length > 0 &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex] &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex].hours && (
+                                                        <FormFeedback>
+                                                          {
+                                                            errors.milestones[milestoneIndex].workers[workerIndex].hours
+                                                              .message
+                                                          }
+                                                        </FormFeedback>
+                                                      )}
                                                   </Col>
                                                 </Row>
                                               </Col>
@@ -1062,7 +1127,7 @@ const VariableAdvanceMilestoneView = () => {
                     </Card>
                   );
                 })}
-              </UncontrolledAccordion>
+              </Accordion>
             </CardBody>
           </Card>
           <Card className="mt-2">

@@ -12,6 +12,7 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
@@ -19,17 +20,24 @@ import ProjectModal from '../../modals/ProjectModal';
 import TagsSection from './TagsSection';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
+import AlmaMaterImg from '../../../assets/images/almaMater.png';
+import { setItem } from '../../../utility/localStorageControl';
+import { returnFormattedRating } from '../../../utility/Utils';
 
-const UserSection = ({ users, name }) => (
+const UserSection = ({ users, name, isAlma }) => (
   <div className="user-section">
-    <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
+    <CardText className="truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
           <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
+          {isAlma && <img src={AlmaMaterImg} alt="alma-mater" />}
         </span>
       ) : (
-        <AvatarGroup size="sm" data={users} />
+        <span className="d-flex avatars">
+          <AvatarGroup size="sm" data={users} />
+          {isAlma && <img src={AlmaMaterImg} alt="alma-mater" />}
+        </span>
       )}
     </div>
   </div>
@@ -38,11 +46,13 @@ const UserSection = ({ users, name }) => (
 UserSection.propTypes = {
   users: PropTypes.array,
   name: PropTypes.string,
+  isAlma: PropTypes.bool,
 };
 
 const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
+  const navigate = useNavigate();
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -52,7 +62,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
 
   data?.team_members?.map((user) =>
     users.push({
-      title: `${user?.talent_info?.first_name} ${user?.talent_info?.last_name}` || 'user',
+      title: `${user?.first_name} ${user?.last_name}` || 'user',
       img: user.image_uri || avatar7,
       placement: 'bottom',
       imgHeight: 33,
@@ -69,6 +79,11 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
     } else {
       return theme.green;
     }
+  };
+
+  const handleViewTeam = (id) => {
+    setItem('team_id', id);
+    navigate(`/profile/team/${id}`);
   };
 
   return (
@@ -106,15 +121,20 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           ) : (
             <TagsSection fullWidth open={open} tags={data?.skills} />
           )}
-          <div className="d-flex">
-            <RatingBadge number="0" />
-            <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+          <div className="d-flex flex-column">
+            <TagsSection fullWidth open={open} tags={data?.expertise?.skills} />
+            <div className="d-flex">
+              <RatingBadge number={returnFormattedRating(data?.rating) || 0} />
+              <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                {data?.projects_worked_on_count || 0} Projects
+              </CardText>
+            </div>
           </div>
 
           <div className="main-row">
             {isRecommendedTeam ? (
               <>
-                <UserSection tagName="Team" name={data?.name} users={users} />
+                <UserSection tagName="Team" name={data?.name} users={users} isAlma={data?.is_alma_mater} />
                 <div className="bottom-detail d-flex mt-1">
                   <div className="design-planning-wrapper">
                     {/* <div className="design-planning">
@@ -140,7 +160,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
                       imgWidth: 33,
                     },
                   ]}
-                  isAlma={data?.is_alma_matter}
+                  isAlma={data?.is_alma_mater}
                 />
                 <div className="circular-progressbar-container-large mt-1">
                   <CircularProgressbarWithChildren
@@ -170,18 +190,15 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
             )}
           </div>
           {isTeamLoggedIn ? (
-            <div
-              // onClick={() => setShowModal(true)}
-              className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
-            >
-              View Talent Profile
+            <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1">
+              <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
             </div>
           ) : (
             <div
-              // onClick={() => setShowModal(true)}
-              className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
+              className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
+              onClick={() => handleViewTeam(data?._id)}
             >
-              View Details
+              View Team
             </div>
           )}
         </CardBody>

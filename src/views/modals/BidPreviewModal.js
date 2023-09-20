@@ -1,32 +1,56 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import '../custom-styles.scss';
 import { DateTime } from 'luxon';
 import { Modal, ModalHeader, ModalBody, CardTitle, CardText, Card, CardBody, Table } from 'reactstrap';
 import PdfIcon from '@src/assets/images/pdfimg.png';
 import { formatFileSize } from '../../utility/Utils';
 import { BidDetailsWrap } from '../project-details/style';
+import { userTypes } from '../../utility/constants/Constant';
 
 const BidPreviewModal = ({ modal, toggleModal }) => {
+  const navigate = useNavigate();
+
   const onClose = () => {
     toggleModal();
   };
 
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
 
+  const onEditBidClick = () => {
+    if (bidInfo?.bid_by?.entity === userTypes.talent) {
+      navigate(
+        `/create-bid/${bidInfo?.project_id}/${bidInfo?.project_type.toLowerCase()}-${bidInfo?.bid_type.toLowerCase()}/${
+          bidInfo?._id
+        }/milestone`,
+      );
+    } else {
+      navigate(
+        `/create-bid/${bidInfo?.project_id}/${bidInfo?.project_type.toLowerCase()}-${bidInfo?.bid_type.toLowerCase()}/${
+          bidInfo?._id
+        }/team`,
+      );
+    }
+  };
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style-70" className="modal-dialog-centered">
-      <ModalHeader toggle={onClose} />
-      <ModalBody>
+      <ModalHeader toggle={onClose} className="py-0 pt-50" />
+      <ModalBody className="pt-0">
         <BidDetailsWrap>
+          <div className="d-flex justify-content-between">
+            <p className="font-medium-3 fw-bold">Bid Submitted Preview</p>
+            {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'DECLINED' && (
+              <p className="edit-bid-btn mt-1 cursor-pointer" onClick={onEditBidClick}>
+                Edit Bid
+              </p>
+            )}
+          </div>
           <Card>
             <CardTitle className="main-card-title">Project Bid Estimation</CardTitle>
             <CardBody className="main-card-body bid-eta">
-              <div>
-                <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
-                <CardText className="key">Total Bid Amount</CardText>
-              </div>
               <div>
                 <CardText className="value">
                   {bidInfo?.total_estimated_duration?.duration}
@@ -34,6 +58,10 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
                     bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                 </CardText>
                 <CardText className="key">Estimation Duration</CardText>
+              </div>
+              <div>
+                <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
+                <CardText className="key">Total Bid Amount</CardText>
               </div>
             </CardBody>
           </Card>

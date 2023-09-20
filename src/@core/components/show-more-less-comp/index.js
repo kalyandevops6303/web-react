@@ -12,7 +12,7 @@ const ShowMoreLess = ({ content, maxLength }) => {
   const displayedContent = isExpanded ? content : content?.slice(0, maxLength);
 
   return (
-    <p>
+    <p style={{ whiteSpace: 'pre-line' }}>
       <span>{displayedContent}</span>
       {content?.length > maxLength && (
         <span className="cursor-pointer" style={{ color: theme.activeNavPillText }} onClick={toggleExpanded}>

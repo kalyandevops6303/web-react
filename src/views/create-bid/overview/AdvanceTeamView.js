@@ -187,7 +187,15 @@ const AdvanceTeamView = () => {
   };
 
   const handleAddSuggestedRole = (name) => {
-    append({ role: name, member: undefined, rate: undefined });
+    const projectRolesDetails = watch('projectRolesDetails');
+    const emptyFieldIndex = projectRolesDetails.findIndex((item) => !item.role);
+
+    if (emptyFieldIndex !== -1) {
+      projectRolesDetails[emptyFieldIndex].role = name;
+      setValue('projectRolesDetails', [...projectRolesDetails]);
+    } else {
+      append({ role: name, member: undefined, rate: undefined });
+    }
   };
 
   const handleRemoveSuggestedRole = (name) => {
@@ -252,6 +260,8 @@ const AdvanceTeamView = () => {
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
     dispatch(getRoles(params.projectId));
+    // eslint-disable-next-line no-undef
+    setTimeout(() => window.scrollTo(0, 0), 30);
   }, []);
 
   return (
@@ -275,26 +285,25 @@ const AdvanceTeamView = () => {
                       <div
                         className={
                           watch('projectRolesDetails').find((item) => item.role === role)
-                            ? 'active-role-pill'
-                            : 'inactive-role-pill'
+                            ? 'active-role-pill cursor-pointer'
+                            : 'inactive-role-pill cursor-pointer'
                         }
                         key={role}
+                        onClick={() => {
+                          const isRoleExist = watch('projectRolesDetails').some((item) => item.role === role);
+                          if (isRoleExist) {
+                            handleRemoveSuggestedRole(role);
+                          } else {
+                            handleAddSuggestedRole(role);
+                          }
+                        }}
                       >
                         <Badge pill className="px-1 py-50 d-flex align-items-center">
                           <h6 className="m-0 fw-light">{role}</h6>
                           {watch('projectRolesDetails').find((item) => item.role === role) ? (
-                            <Minus
-                              size={18}
-                              className="ms-50 cursor-pointer"
-                              onClick={() => handleRemoveSuggestedRole(role)}
-                            />
+                            <Minus size={18} className="ms-50 cursor-pointer" />
                           ) : (
-                            <Plus
-                              size={18}
-                              color={theme.wizardStepSvgColor}
-                              className="ms-50 cursor-pointer"
-                              onClick={() => handleAddSuggestedRole(role)}
-                            />
+                            <Plus size={18} color={theme.wizardStepSvgColor} className="ms-50 cursor-pointer" />
                           )}
                         </Badge>
                       </div>
@@ -312,7 +321,7 @@ const AdvanceTeamView = () => {
                   <p className="roles-list-header">Team Member</p>
                 </Col>
                 <Col sm="12" md="5" lg="3">
-                  <p className="roles-list-header">$ Hours/Rate</p>
+                  <p className="roles-list-header">$ Hourly Rate</p>
                 </Col>
                 <Col sm="12" md="5" lg="2">
                   <div className="d-flex justify-content-end me-2">
@@ -381,6 +390,7 @@ const AdvanceTeamView = () => {
                         render={({ field }) => (
                           <Select
                             {...field}
+                            maxMenuHeight={170}
                             isLoading={rolesIsLoading}
                             options={allTeamMembersOptions}
                             classNamePrefix="select"

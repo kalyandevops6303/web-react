@@ -59,7 +59,7 @@ const SimpleTeamView = () => {
     },
   });
 
-  const { fields, append, remove, insert } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'projectRolesDetails',
   });
@@ -165,7 +165,15 @@ const SimpleTeamView = () => {
   };
 
   const handleAddSuggestedRole = (name) => {
-    insert(0, { role: name, member: undefined });
+    const projectRolesDetails = watch('projectRolesDetails');
+    const emptyFieldIndex = projectRolesDetails.findIndex((item) => !item.role);
+
+    if (emptyFieldIndex !== -1) {
+      projectRolesDetails[emptyFieldIndex].role = name;
+      setValue('projectRolesDetails', [...projectRolesDetails]);
+    } else {
+      append({ role: name, member: undefined });
+    }
   };
 
   const handleRemoveSuggestedRole = (name) => {
@@ -228,6 +236,8 @@ const SimpleTeamView = () => {
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
     dispatch(getRoles(params.projectId));
+    // eslint-disable-next-line no-undef
+    setTimeout(() => window.scrollTo(0, 0), 30);
   }, []);
 
   return (
@@ -255,11 +265,14 @@ const SimpleTeamView = () => {
                             : 'inactive-role-pill cursor-pointer'
                         }
                         key={role}
-                        onClick={() =>
-                          (watch('projectRolesDetails').find((item) => item.role === role)
-                            ? handleRemoveSuggestedRole(role)
-                            : handleAddSuggestedRole(role))
-                        }
+                        onClick={() => {
+                          const isRoleExist = watch('projectRolesDetails').some((item) => item.role === role);
+                          if (isRoleExist) {
+                            handleRemoveSuggestedRole(role);
+                          } else {
+                            handleAddSuggestedRole(role);
+                          }
+                        }}
                       >
                         <Badge pill className="px-1 py-50 d-flex align-items-center">
                           <h6 className="m-0 fw-light">{role}</h6>
@@ -352,6 +365,7 @@ const SimpleTeamView = () => {
                           }
                           render={({ field }) => (
                             <Select
+                              maxMenuHeight={170}
                               isLoading={rolesIsLoading}
                               options={allTeamMembersOptions}
                               classNamePrefix="select"

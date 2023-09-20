@@ -15,6 +15,7 @@ import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
 
 import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
 
+import TalentsListingForTeamUser from './TalentsListingForTeamUser';
 import TeamTalentCard from './TeamTalentCard';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
@@ -94,7 +95,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
             </div>
           ) : (
             <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
-              View Details
+              Invite Talent
             </div>
           )}
         </CardBody>
@@ -108,7 +109,6 @@ const AccordionHeadStyle = styled.div`
   justify-content: space-between;
   width: 100%;
   .view-all-cta {
-    display: none;
     font-size: 0.875rem;
     color: ${theme.activeColor};
     text-decoration: underline;
@@ -159,7 +159,7 @@ const TalentListing = () => {
 
   const handleViewAll = (e) => {
     e.stopPropagation();
-    navigate('/marketplace/all_listings', { state: { isRecommended: true } });
+    navigate('/marketplace/talents', { state: { isRecommended: true } });
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
@@ -176,7 +176,7 @@ const TalentListing = () => {
           <AccordionHeadStyle>
             <span className="d-flex align-items-center">Join Requests</span>
             {joinRequests?.data?.length > 0 && (
-              <CardText onClick={handleViewAll} className="view-all-cta">
+              <CardText onClick={() => navigate('/my-teams/join-requests')} className="d-none view-all-cta">
                 View All
               </CardText>
             )}
@@ -192,19 +192,31 @@ const TalentListing = () => {
           ) : (
             <ProjectsListingWrap>
               {joinRequests?.data?.length > 0 && isTab ? (
-                joinRequests?.data?.map((project) => <TeamTalentCard key={project.id} data={project} recommended />)
+                joinRequests?.data?.map((project) => (
+                  <TalentsListingForTeamUser key={project.id} data={project} recommended />
+                ))
               ) : joinRequests?.data?.length > 0 ? (
                 <>
                   {joinRequests?.data?.length >= 4 ? (
                     <Slider {...settings}>
                       {joinRequests?.data?.map((project, index) => (
-                        <TeamTalentCard className={`slide-${index}`} key={project.id} data={project} recommended />
+                        <TalentsListingForTeamUser
+                          className={`slide-${index}`}
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
                       ))}
                     </Slider>
                   ) : (
                     <div className="custom-slider-wrap">
                       {joinRequests?.data?.map((project) => (
-                        <TeamTalentCard className="custom-slider-project" key={project.id} data={project} recommended />
+                        <TalentsListingForTeamUser
+                          className="custom-slider-project"
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
                       ))}
                     </div>
                   )}

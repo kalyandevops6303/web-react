@@ -40,6 +40,7 @@ const statusesOptions = [
   { label: 'In-review', value: 'IN_REVIEW' },
   { label: 'Terminated', value: 'TERMINATED' },
   { label: 'Closed', value: 'CLOSED' },
+  { label: 'On Going', value: 'ON_GOING' },
 ];
 const projectTypesOptions = [
   { label: 'Fixed', value: 'FIXED' },
@@ -48,6 +49,7 @@ const projectTypesOptions = [
 const sortingOptions = [
   { label: 'New', value: 'NEW' },
   { label: 'Recommended', value: 'RECOMMADED' },
+  { label: 'Favorite', value: 'FAVOURITE' },
 ];
 const USD = {
   _id: '6478b0d1679b91d695ad534a',

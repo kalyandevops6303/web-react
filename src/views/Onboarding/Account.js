@@ -249,7 +249,12 @@ const Account = () => {
           <CardBody>
             <div className="d-flex align-items-center pb-2 image-container">
               {selectedImage && selectedImagePreview ? (
-                <img src={selectedImagePreview} alt="profile" className="selected-image" />
+                <img
+                  src={selectedImagePreview}
+                  alt="profile"
+                  className="selected-image"
+                  style={{ objectFit: 'cover' }}
+                />
               ) : (
                 <AccountImageContainer>
                   <UserPlus size={50} />

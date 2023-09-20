@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import EarningCard from './overview/Earning';
@@ -11,27 +11,32 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { checkBidsAccepted, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
 import { selectUserData } from '../../redux/selectors/authSelectors';
-import { getItem } from '../../utility/localStorageControl';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
+import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
+import OpenListing from './overview/OpenListing';
+import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const [deleteModal, setDeletModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState();
+
+  const [raisedDisputeModal, setRaisedDisputeModal] = useState(null);
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
@@ -46,10 +51,13 @@ const PrivateDashboard = () => {
 
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
+  const checkBidsAcceptedData = useSelector(checkBidsAccepted);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+
+    dispatch(getCheckBidsAccepted());
   }, []);
 
   const toggleCompleteProfileModal = () => {
@@ -75,7 +83,11 @@ const PrivateDashboard = () => {
   };
 
   const onCreateTeam = () => {
-    if (profilePercentageData?.profile_completed < 100) {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
       setCompleteProfileModalInfoText('team');
       setCompleteProfileModal(true);
     } else {
@@ -83,24 +95,16 @@ const PrivateDashboard = () => {
     }
   };
 
-  const inviteToken = getItem('inviteToken');
-  const isInviteRead = getItem('isInviteRead');
-  const inviteId = getItem('inviteId');
-  const projectId = getItem('projectId');
-
-  useEffect(() => {
-    if (inviteToken && !isInviteRead) {
-      if (projectId && inviteId) {
-        navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-      } else if (inviteId) {
-        navigate(`/team-invitation/${inviteId}`);
-      }
-    }
-  }, []);
-
   const handleRemoveMember = (data) => {
     setDeletModal(true);
     setDeleteModalData(data);
+  };
+  const handleJoinTeam = () => {
+    navigate('/marketplace/teams');
+  };
+
+  const handleRaiseDispute = () => {
+    setRaisedDisputeModal(true);
   };
 
   return (
@@ -123,6 +127,10 @@ const PrivateDashboard = () => {
       )}
       {deleteModal && (
         <RemoveMemberModal modal={deleteModal} data={deleteModalData} toggleModal={() => setDeletModal(!deleteModal)} />
+      )}
+
+      {raisedDisputeModal && (
+        <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
       )}
 
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
@@ -152,6 +160,9 @@ const PrivateDashboard = () => {
           <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateTeam}>
             Create Team
           </span>
+          <Button as="link" color="primary" onClick={handleJoinTeam}>
+            Join Team
+          </Button>
         </CreateTeamButtonWrapper>
       )}
 
@@ -172,6 +183,12 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
+          {userDetailsData?.user_type === userTypes.client && (
+            <section className="mb-2">
+              <Header className="mb-1">Open Listings</Header>
+              <OpenListing />
+            </section>
+          )}
           {userDetailsData?.user_type === userTypes.team && (
             <section className="mb-2">
               <Header className="mb-1">Talents</Header>
@@ -194,7 +211,7 @@ const PrivateDashboard = () => {
             />
           )}
           <Alerts />
-          <Disputes />
+          {checkBidsAcceptedData?.data?.length > 0 && <Disputes handleRaiseDispute={handleRaiseDispute} />}
           <Meetings />
         </Col>
       </Row>

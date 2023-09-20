@@ -67,7 +67,7 @@ const CustomStep = ({ onChangeStep, steps, currentStep }) => {
     <CustomStepWrap>
       {steps.map((item) => (
         <div
-          onClick={() => handleChangeStep(item.title.toLowerCase())}
+          onClick={item?.isDisabled ? () => {} : () => handleChangeStep(item.title.toLowerCase())}
           key={item.title}
           className={`stepper ${currentStep === item.title.toLowerCase() ? 'active' : 'cursor-pointer'}`}
         >

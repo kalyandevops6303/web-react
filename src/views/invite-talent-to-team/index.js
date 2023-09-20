@@ -11,7 +11,6 @@ const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, togg
   const [invitedIds, setInvitedIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [shareModal, setShareModal] = useState(false);
-  //   const userDetailsData = useSelector(selectUserData);
   const [message, setMessage] = useState('');
   const [sendInvitationModal, setSendInvitationModal] = useState(false);
   const [invitationSentModal, setInvitationSentModal] = useState(false);
@@ -23,9 +22,6 @@ const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, togg
   const toggleInvitationSentModal = () => {
     setInvitationSentModal(!invitationSentModal);
   };
-  //   const onTeamInvite = () => {
-  //     setInviteTeamMemberModal(true);
-  //   };
 
   const toggleInviteModal = () => {
     setShareModal(!shareModal);

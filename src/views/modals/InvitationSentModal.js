@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Star } from 'react-feather';
 import Avatar from '@components/avatar';
@@ -15,8 +16,9 @@ import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelecto
 import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors/inviteTalentSelector';
 
 import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
-import { inviteTalents } from '../../redux/actions/createProjectActions';
 import { getItem } from '../../utility/localStorageControl';
+import { userTypes } from '../../utility/constants/Constant';
+import { returnFormattedRating } from '../../utility/Utils';
 
 const InvitationSentModal = ({
   projectId,
@@ -26,14 +28,14 @@ const InvitationSentModal = ({
   selectedTalents,
   message,
   toggleSendInvitationModal,
-  selectedIds,
   setSelectedIds,
-  invitedIds,
   setInvitedIds,
   setSelectedTalents,
   description,
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
   const isTeaminviteLoading = useSelector(teamInviteLoading);
@@ -43,39 +45,39 @@ const InvitationSentModal = ({
 
   const onSuccess = () => {
     toggleModal();
-    setInvitedIds([...invitedIds, ...selectedIds]);
+    setInvitedIds([]);
     setSelectedIds([]);
     setSelectedTalents([]);
+
+    if (location.pathname === '/create-team/profile-details') {
+      navigate('/dashboard');
+    }
   };
 
   const onInviteTalents = () => {
     const userIds = selectedTalents.map((talent) => talent.user_id);
-    const userEmails = selectedTalents.map((talent) => talent?.user_details?.email);
+    const teamIds = selectedTalents
+      .filter((user) => user?.user_type === userTypes.team) // Filter out non-team users
+      .map((user) => user?.team_id); // Map to an array of team_ids
+
+    // const userEmails = selectedTalents.map((talent) => talent?.user_details?.email);
     const teamId = getItem('team_id');
-    const postData = {
-      invitation_type: projectId ? 'PROJECT_TEAM' : 'TEAM',
+    const newPostData = {
       message,
       redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
-      from_entity: {
-        team_id: teamId,
+      requests_to: {
+        user_ids: userIds || [],
+        team_ids: teamIds.length > 0 ? teamIds : [],
+        email_ids: [],
       },
-      to_entity: {
-        user_ids: userIds,
-      },
-      invited_for: {
-        team_id: teamId,
-        role: inviteRole,
+      request_for: {
+        project_id: projectId || '',
+        team_id: teamId || '',
+        role: inviteRole || '',
       },
     };
-    if (projectId) {
-      postData.invited_for.project_id = projectId;
-    }
 
-    if (teamId) {
-      dispatch(inviteTalentForTeam({ data: postData, onSuccess }));
-    } else {
-      dispatch(inviteTalents(projectId, { emails: userEmails, talent_ids: userIds, message }, onSuccess));
-    }
+    dispatch(inviteTalentForTeam({ data: newPostData, onSuccess }));
   };
 
   useEffect(() => {
@@ -142,7 +144,7 @@ const InvitationSentModal = ({
                           <Badge>
                             <div className="d-flex align-items-center">
                               <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
-                              <p className="m-0 fw-bolder rating-text">{talent.rating}</p>
+                              <p className="m-0 fw-bolder rating-text">{returnFormattedRating(talent.rating)}</p>
                             </div>
                           </Badge>
                           <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
@@ -183,9 +185,7 @@ InvitationSentModal.propTypes = {
   selectedTalents: Proptypes.array,
   message: Proptypes.string,
   toggleSendInvitationModal: Proptypes.func,
-  selectedIds: Proptypes.array,
   setSelectedIds: Proptypes.func,
-  invitedIds: Proptypes.array,
   setInvitedIds: Proptypes.func,
   setSelectedTalents: Proptypes.func,
   description: Proptypes.string,
@@ -198,9 +198,7 @@ InvitationSentModal.defaultProps = {
   message: '',
   projectId: '',
   toggleSendInvitationModal: () => {},
-  selectedIds: [],
   setSelectedIds: () => {},
-  invitedIds: [],
   setInvitedIds: () => {},
   setSelectedTalents: () => {},
   description: '',

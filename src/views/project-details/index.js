@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState, memo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -14,24 +14,32 @@ import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
 import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
 import Milestone from './milestones/Milestone';
+import { clearProjectData } from '../../redux/reducers/projectDetails';
+import RatingView from './overview/RatingView';
+// import { DateTime } from 'luxon';
 
 const ProjectDetails = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
+  const projectDetailsData = useSelector(projectDetails);
+
+  // console.log(DateTime.now().toMillis());
 
   const changeStep = (step) => {
     setCurrentStep(step);
   };
-  const projectDetailsData = useSelector(projectDetails);
-
   useEffect(() => {
     window?.scrollTo(0, 0);
+    return () => {
+      dispatch(clearProjectData());
+    };
   }, []);
 
   const isInviteView = location?.pathname?.includes('project-invitation');
 
   return (
-    <>
+    <div>
       <BreadCrumbs
         data={
           isInviteView
@@ -53,12 +61,14 @@ const ProjectDetails = () => {
             <Route path="bid" element={<BidView />} />
             <Route path="milestone" element={<Milestone />} />
             <Route path="team" element={<TeamView />} />
+            <Route path="rating" element={<RatingView />} />
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
+            <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />
           </Routes>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 
-export default ProjectDetails;
+export default memo(ProjectDetails);

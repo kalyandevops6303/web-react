@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
+  Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
@@ -19,7 +20,6 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
 import classNames from 'classnames';
@@ -52,6 +52,7 @@ const FixedSimpleMilestoneView = () => {
       yup.object().shape({
         duration: yup
           .number()
+          .integer('Duration must be an integer')
           .min(1, 'Duration must be at least 1')
           .typeError('Please enter a number')
           .required('Duration is required'),
@@ -59,7 +60,14 @@ const FixedSimpleMilestoneView = () => {
           .number()
           .min(1, 'Cost must be at least 1')
           .typeError('Please enter a number')
-          .required('Talent cost is required'),
+          .required('Talent cost is required')
+          .test('maxDecimalPlaces', 'Cost can have up to 2 decimal places', (value) => {
+            if (value === undefined) {
+              return true; // Optional field, no validation needed if empty
+            }
+            const decimalCount = (value.toString().split('.')[1] || '').length;
+            return decimalCount <= 2;
+          }),
         name: yup
           .string()
           .min(4, 'Name must be at least 4 characters')
@@ -130,6 +138,15 @@ const FixedSimpleMilestoneView = () => {
   const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
+
+  const [open, setOpen] = useState(1);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
 
   const calculateTotalValues = () => {
     const totalDuration = allMilestones.reduce((total, milestone) => total + Number(milestone.duration || 0), 0);
@@ -245,7 +262,11 @@ const FixedSimpleMilestoneView = () => {
       (milestone) => milestone.duration > 0 && milestone.talentCost > 0 && milestone.name.trim() !== '',
     );
 
-    if (allMilestonesValid) {
+    if (!allMilestonesValid) {
+      ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
+    } else if (totalCost > projectDetailsData?.pay_type?.fixed_cost) {
+      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed cost.');
+    } else if (allMilestonesValid) {
       milestonesAppend({
         name: undefined,
         description: undefined,
@@ -254,6 +275,8 @@ const FixedSimpleMilestoneView = () => {
         deliverables: [''],
         otherDetails: {},
       });
+
+      toggle(getValues('milestones')?.length);
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
@@ -416,6 +439,8 @@ const FixedSimpleMilestoneView = () => {
 
   useEffect(() => {
     dispatch(getBidDetails(params.bidId, onGetBidDetailsSuccess));
+    // eslint-disable-next-line no-undef
+    setTimeout(() => window.scrollTo(0, 0), 30);
   }, []);
 
   return (
@@ -433,7 +458,7 @@ const FixedSimpleMilestoneView = () => {
               </div>
             </CardHeader>
             <CardBody className="pt-2 pb-0">
-              {totalCost > projectDetailsData?.pay_type?.fixed_cost ? (
+              {totalCost > projectDetailsData?.pay_type?.fixed_cost && (
                 <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
                   <Info size={18} color={theme.red} className="me-50" />
                   <p className="font-medium-1 m-0 error">
@@ -441,15 +466,14 @@ const FixedSimpleMilestoneView = () => {
                     the project. Please adjust your cost in order to submit the bid
                   </p>
                 </div>
-              ) : (
-                <div className="fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
-                  <Info size={18} color={theme.activeNavPillText} className="me-50" />
-                  <p className="font-medium-1 m-0 info">
-                    <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
-                    distributed between each talent
-                  </p>
-                </div>
               )}
+              <div className="d-none fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
+                <Info size={18} color={theme.activeNavPillText} className="me-50" />
+                <p className="font-medium-1 m-0 info">
+                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
+                  distributed between each talent
+                </p>
+              </div>
               <Card className="white-card-bg">
                 <CardBody>
                   <Row className="d-flex justify-content-between">
@@ -488,6 +512,9 @@ const FixedSimpleMilestoneView = () => {
                         <div className="d-flex align-items-center m-0">
                           <Label className="form-label">Fixed Cost</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
+                          <UncontrolledTooltip placement="top" target="fixed-info">
+                            <p className="m-0">Predetermined project cost fixed by the client</p>
+                          </UncontrolledTooltip>
                         </div>
                         <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
                           $ {projectDetailsData?.pay_type?.fixed_cost}
@@ -506,7 +533,7 @@ const FixedSimpleMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <UncontrolledAccordion className="mb-2">
+              <Accordion className="mb-2" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => (
                   <Card className="white-card-bg" key={milestone.id}>
                     <CardBody className="p-0">
@@ -557,9 +584,10 @@ const FixedSimpleMilestoneView = () => {
                                             e.stopPropagation();
                                           }}
                                         />
-                                        {getValues('milestones')[milestoneIndex].duration > 0 && (
-                                          <InputGroupText className="ps-0">w</InputGroupText>
-                                        )}
+                                        {getValues('milestones')[milestoneIndex].duration > 0 &&
+                                          Number.isInteger(+getValues('milestones')[milestoneIndex].duration) && (
+                                            <InputGroupText className="ps-0">w</InputGroupText>
+                                          )}
                                       </InputGroup>
                                     )}
                                   />
@@ -826,7 +854,7 @@ const FixedSimpleMilestoneView = () => {
                     </CardBody>
                   </Card>
                 ))}
-              </UncontrolledAccordion>
+              </Accordion>
             </CardBody>
           </Card>
           <Card className="mt-2">

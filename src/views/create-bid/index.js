@@ -69,11 +69,20 @@ const CreateBid = () => {
               currentStep={currentStep}
               onChangeStep={changeStep}
             />
-            <ProgressBarWrapper>
-              <Progress value={progressPercent} className="p-0">
-                {progressPercent}%
-              </Progress>
-            </ProgressBarWrapper>
+
+            {selectUserDetailsData?.user_type === userTypes.talent ? (
+              <ProgressBarWrapper className="w-75">
+                <Progress value={progressPercent} className="p-0">
+                  {progressPercent}%
+                </Progress>
+              </ProgressBarWrapper>
+            ) : (
+              <ProgressBarWrapper>
+                <Progress value={progressPercent} className="p-0">
+                  {progressPercent}%
+                </Progress>
+              </ProgressBarWrapper>
+            )}
           </Row>
           <Routes>
             {(params.bidType === 'variable-simple' || params.bidType === 'fixed-simple') &&

@@ -9,24 +9,38 @@ import BadgeGroup from '../../../@core/components/badge-group-dynamic-count';
 import { LeftSidebarProjectDetailsWrapper } from '../style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { CustomBadge } from '../../styled';
-import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
+import { projectDetails, projectDetailsLoading } from '../../../redux/selectors/projectDetailsSelectors';
 import DateTime from '../../../lib/date-time';
 import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
+import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const userData = useSelector(selectUserData);
+  const [inviteModal, setInviteModal] = useState(false);
+  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+  const toggleModal = () => {
+    setInviteModal(!inviteModal);
+  };
 
   const projectDetailsData = useSelector(projectDetails);
 
   const statusEnum = {
-    OPEN: 'Open Listing',
+    OPEN: 'Open',
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
+    ON_GOING: 'On Going',
+    COMPLETED: 'COMPLETED',
   };
+
+  const isLoading = useSelector(projectDetailsLoading);
 
   useEffect(() => {
     dispatch(getProjectDetails(params.projectId));
@@ -49,6 +63,14 @@ const LeftSidebarProjectDetails = () => {
       );
     }
   }, [projectDetailsData]);
+  if (isLoading) {
+    return <>Loading</>;
+  }
+
+  const handleInvite = () => {
+    setInviteModal(true);
+    setInviteTalentToTeamModal(true);
+  };
 
   return (
     <LeftSidebarProjectDetailsWrapper>
@@ -77,10 +99,10 @@ const LeftSidebarProjectDetails = () => {
             />
             <div>
               <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
-              <div className="d-flex">
-                <RatingBadge number={projectDetailsData?.client_details?.rating} />
+              <div className="d-flex flex-wrap">
+                <RatingBadge number={returnFormattedRating(projectDetailsData?.client_details?.rating) || 0} />
                 <CardText className="ps-75 font-small-2 fw-300 rating-label">
-                  {projectDetailsData?.client_details?.projects_listed_count} Projects
+                  {projectDetailsData?.client_details?.projects_listed_count || 0} Projects
                 </CardText>
               </div>
             </div>
@@ -108,23 +130,25 @@ const LeftSidebarProjectDetails = () => {
             <CardTitle className="main-title mb-75">Project Details</CardTitle>
           </section>
 
-          <div className="d-flex mb-75">
+          <div className="d-flex mb-75 flex-wrap gap-25">
             <span className="info-key">Posted date:</span>
             <CardText className="info-value">
-              {projectDetailsData?.listing_details?.start_date.replaceAll('-', '/')}
+              {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)}
             </CardText>
           </div>
 
-          {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
-            <BadgeGroup
-              title="Skills"
-              data={[
-                ...(projectDetailsData?.proficiency?.skills || []),
-                ...(projectDetailsData?.proficiency?.tools || []),
-              ]}
-              color="light-blue"
-            />
-          )}
+          <div className="d-flex">
+            {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
+              <BadgeGroup
+                title="Tags"
+                data={[
+                  ...(projectDetailsData?.proficiency?.skills || []),
+                  ...(projectDetailsData?.proficiency?.tools || []),
+                ]}
+                color="light-blue"
+              />
+            )}
+          </div>
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>
@@ -133,13 +157,34 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          <div className="d-flex gap-1 mt-3 justify-content-center">
-            <Button className="w-50" color="primary">
-              Message
-            </Button>
-          </div>
+          {userData?.user_type === userTypes.client ? (
+            <div>
+              <div className="d-flex gap-1 mt-3 justify-content-center">
+                <Button className="w-50 d-none" outline color="danger">
+                  Delete
+                </Button>
+                <Button className="w-50" color="primary" onClick={handleInvite}>
+                  Invite
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="d-flex gap-1 mt-3 justify-content-center">
+              <Button className="w-50" color="primary">
+                Message
+              </Button>
+            </div>
+          )}
         </CardBody>
       </Card>
+      {inviteTalentToTeamModal && (
+        <InviteTalentToTeamForProjectDetails
+          inviteTeamMemberModal={inviteModal}
+          toggleInviteTeamMemberModal={toggleModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+          projectId={params.projectId}
+        />
+      )}
     </LeftSidebarProjectDetailsWrapper>
   );
 };

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // ** React Imports
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -32,7 +32,6 @@ const Login = () => {
   const navigate = useNavigate();
   const isLoading = useSelector(selectAuthLoading);
   const isLoggedIn = useSelector(selectIsLoggedIn);
-  const [validUrl, setValidUrl] = useState(false);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -41,21 +40,15 @@ const Login = () => {
 
   const urlSearchParams = new URLSearchParams(window.location.search);
   const dataParam = urlSearchParams.get('data');
-  const inviteId = urlSearchParams.get('invite_id');
-  const projectId = urlSearchParams.get('project_id');
 
-  const onValidUrlSuccess = () => {
-    setValidUrl(true);
-    setItem('inviteToken', dataParam);
+  const onValidUrlSuccess = (res) => {
     setItem('isInviteRead', false);
-    setItem('inviteId', inviteId);
-    setItem('projectId', projectId);
+    setItem('inviteId', res.request_id);
+    setItem('projectId', res.request_for.project_id);
+    setItem('requestStatus', res.head_message);
+
     if (isLoggedIn) {
-      if (projectId && inviteId) {
-        navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-      } else if (inviteId) {
-        navigate(`/team-invitation/${inviteId}`);
-      }
+      navigate('/dashboard');
     }
   };
 
@@ -68,14 +61,10 @@ const Login = () => {
       removeItem('inviteId');
       removeItem('projectId');
       dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isLoggedIn) {
+    } else if (isLoggedIn) {
       navigate('/dashboard');
     }
-  }, [validUrl, isLoggedIn]);
+  }, [isLoggedIn]);
 
   // Valid link
   // When user is logged in and he clicks mail, login => dashboard

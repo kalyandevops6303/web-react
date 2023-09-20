@@ -15,11 +15,13 @@ const steps = [
     title: 'Milestone',
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
+    isDisabled: true,
   },
   {
     title: 'Payment',
     subtitle: 'Pay transaction',
     icon: <CreditCard size={18} />,
+    isDisabled: true,
   },
   {
     title: 'Rating',
@@ -37,16 +39,19 @@ const InviteView = [
     title: 'Milestone',
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
+    isDisabled: true,
   },
   {
     title: 'Payment',
     subtitle: 'Pay transaction',
     icon: <CreditCard size={18} />,
+    isDisabled: true,
   },
   {
     title: 'Rating',
     subtitle: 'Give and get ratings',
     icon: <Star size={18} />,
+    isDisabled: true,
   },
 ];
 

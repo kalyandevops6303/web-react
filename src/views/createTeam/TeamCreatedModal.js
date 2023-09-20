@@ -1,6 +1,6 @@
 import React from 'react';
 import Proptypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import '../custom-styles.scss';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -8,11 +8,20 @@ import { UserPlus } from 'react-feather';
 import GreatJobGif from '../../assets/images/greatJobGif.gif';
 import { TeamCreatedModalImageWrapper, TeamCreatedModalLogoImg } from '../styled';
 import { selectCreatedTeamData } from '../../redux/selectors/teamSelectors';
+import { switchProfile } from '../../redux/actions/authActions';
 
-const TeamCreatedModal = ({ modal }) => {
+const TeamCreatedModal = ({ onInvite, modal }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const teamData = useSelector(selectCreatedTeamData);
+
+  const handleGetStarted = () => {
+    const onSuccess = () => {
+      onInvite();
+    };
+    dispatch(switchProfile({ data: teamData, onSuccess, selected: false }));
+  };
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader />
@@ -42,7 +51,7 @@ const TeamCreatedModal = ({ modal }) => {
           <Button color="primary" outline className="me-2" onClick={() => navigate('/dashboard')}>
             Close
           </Button>
-          <Button onClick={() => navigate('/dashboard')} color="primary">
+          <Button onClick={handleGetStarted} color="primary">
             Get Started
           </Button>
         </div>
@@ -55,8 +64,10 @@ export default TeamCreatedModal;
 
 TeamCreatedModal.propTypes = {
   modal: Proptypes.bool,
+  onInvite: Proptypes.func,
 };
 
 TeamCreatedModal.defaultProps = {
   modal: false,
+  onInvite: () => {},
 };

@@ -18,6 +18,7 @@ import {
   removeFavFromMarketplaceSuccess,
 } from '../reducers/marketPlace';
 import { makeFavService, makeProjectFavService, removeFavService } from '../../services/profileServices';
+import { userTypes } from '../../utility/constants/Constant';
 
 const getCardInfo =
   ({ onSuccess, onError }) =>
@@ -33,7 +34,7 @@ const getCardInfo =
   };
 
 const getListProjects =
-  ({ isMyListing, isRecommanded, isMyBids, metaData, onSuccess, onError, postData, searchText }) =>
+  ({ isMyListing, isRecommanded, isMyBids, metaData, onSuccess, onError, postData, searchText, isFavorite }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
@@ -42,13 +43,18 @@ const getListProjects =
     try {
       if (isMyBids) {
         res = await getBidProjectService({
-          postData: { ...postData, is_recommended: isRecommanded },
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
           searchText,
           metaData,
         });
       } else {
         res = await getListProjectService({
-          postData: { ...postData, is_my_listings: isMyListing, is_recommended: isRecommanded },
+          postData: {
+            ...postData,
+            is_my_listings: isMyListing,
+            is_recommended: isRecommanded,
+            is_favourite: isFavorite,
+          },
           searchText,
           metaData,
         });
@@ -63,7 +69,7 @@ const getListProjects =
   };
 
 const getUsers =
-  ({ isRecommanded, metaData, primaryFilter, onSuccess, onError, postData, searchText }) =>
+  ({ isRecommanded, metaData, primaryFilter, onSuccess, onError, postData, searchText, isFavorite }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
@@ -72,18 +78,22 @@ const getUsers =
       let res;
       if (primaryFilter === 'talents') {
         res = await getTalentsService({
-          postData: { ...postData, is_recommended: isRecommanded },
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
           searchText,
           metaData,
         });
       } else if (primaryFilter === 'clients') {
         res = await getClientsService({
-          postData: { ...postData, is_recommended: isRecommanded },
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
           searchText,
           metaData,
         });
       } else if (primaryFilter === 'teams') {
-        res = await getTeamsService({ postData: { ...postData, is_recommended: isRecommanded }, searchText, metaData });
+        res = await getTeamsService({
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
+          searchText,
+          metaData,
+        });
       }
       dispatch(getUsersSuccess(res.data.data));
       onSuccess();
@@ -102,18 +112,34 @@ const makeFavFromMarketplace =
       } else {
         await makeFavService(user_id, user_type);
       }
-      dispatch(makeFavFromMarketplaceSuccess({ user_id, user_type, _id: project_id }));
+      if (user_type === userTypes.team) {
+        dispatch(makeFavFromMarketplaceSuccess({ _id: user_id }));
+      } else {
+        dispatch(makeFavFromMarketplaceSuccess({ user_id, user_type, _id: project_id }));
+      }
     } catch (error) {
       errorHandler(error);
     }
   };
 const removeFavFromMarketplace =
-  ({ user_id, project_id }) =>
+  ({ user_id, project_id, team_id }) =>
   async (dispatch) => {
     try {
-      const data = project_id ? { project_id } : { user_id };
+      let data;
+      if (project_id) {
+        data = { project_id };
+      } else if (team_id) {
+        data = { team_id };
+      } else {
+        data = { user_id };
+      }
       await removeFavService(data);
-      dispatch(removeFavFromMarketplaceSuccess({ _id: project_id, user_id }));
+
+      if (team_id) {
+        dispatch(removeFavFromMarketplaceSuccess({ _id: team_id }));
+      } else {
+        dispatch(removeFavFromMarketplaceSuccess({ _id: project_id, user_id }));
+      }
     } catch (error) {
       errorHandler(error);
     }

@@ -36,9 +36,76 @@ const acceptInvitation = ({ id }) => DataService.put(`${API.projectDetails.accep
 
 const rejectInvitation = ({ id }) => DataService.put(`${API.projectDetails.reject}/${id}`);
 
+const removeWorkerService = (projectId, teamId, workerId) =>
+  DataService.put(`${API.projectDetails.removeWorker}?project_id=${projectId}&team_id=${teamId}&worker_id=${workerId}`);
+
+// Contract flow
+
+const checkDocumentActivatedService = ({ project_id, doc_type }) =>
+  DataService.get(`${API.projectDetails.checkDocumentActivated}?doc_type=${doc_type}&project_id=${project_id}`);
+
+const getDocumentService = ({ project_id, doc_type, document_id }) => {
+  if (document_id) {
+    return DataService.get(
+      `${API.projectDetails.getDocument}?doc_type=${doc_type}&project_id=${project_id}&document_id=${document_id}`,
+    );
+  }
+  return DataService.get(`${API.projectDetails.getDocument}?doc_type=${doc_type}&project_id=${project_id}`);
+};
+
+const getDocumentTimelineService = ({ project_id, doc_type }) =>
+  DataService.get(`${API.projectDetails.getDocumentTimeline}?project_id=${project_id}&doc_type=${doc_type}`);
+
+const sendDocumentService = ({ project_id, doc_type, data, validity }) =>
+  DataService.post(
+    `${API.projectDetails.sendDocument}?doc_type=${doc_type}&project_id=${project_id}&validity=${validity}`,
+    data,
+  );
+
+const signContractByTalentServive = ({ project_id, doc_type, role }) =>
+  DataService.put(
+    `${API.projectDetails.signContractByTalent}?project_id=${project_id}&doc_type=${doc_type}&role=${role}`,
+  );
+
+const terminateContractService = ({ project_id, doc_type }) =>
+  DataService.delete(
+    `${API.projectDetails.terminateContract}?project_id=${project_id}&doc_type=${doc_type}&decline_bid=true`,
+  );
+
+const getInvitatedByService = ({ project_id, metadata }) =>
+  DataService.get(
+    `${API.projectDetails.requests}?&page=${metadata?.page}&page_size=${metadata?.page_size}&project_id=${project_id}`,
+  );
+
+const bestTalentsForProjectService = (projectId, searchText, page, pageSize) =>
+  DataService.get(
+    `${API.projectDetails.bestTalents}?search_text=${searchText}&page=${page}&page_size=${pageSize}&project_id=${projectId}`,
+  );
+
+const favoriteTalentsForProjectService = (projectId, searchText, page, pageSize) =>
+  DataService.get(
+    `${API.projectDetails.favoriteTalents}?search_text=${searchText}&page=${page}&page_size=${pageSize}&project_id=${projectId}`,
+  );
+
+const almaMaterTalentsProjectService = (projectId, searchText, page, pageSize) =>
+  DataService.get(
+    `${API.projectDetails.almaMaterTalents}?search_text=${searchText}&page=${page}&page_size=${pageSize}&project_id=${projectId}`,
+  );
+
 export {
+  bestTalentsForProjectService,
+  favoriteTalentsForProjectService,
+  almaMaterTalentsProjectService,
+  getInvitatedByService,
+  getDocumentService,
+  checkDocumentActivatedService,
+  getDocumentTimelineService,
+  sendDocumentService,
+  signContractByTalentServive,
+  terminateContractService,
   acceptInvitation,
   rejectInvitation,
+  removeWorkerService,
   getInvitedByService,
   projectDetailsService,
   getBidDetailsService,

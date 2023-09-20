@@ -302,5 +302,86 @@ export const renderFileSize = (size) => {
     // eslint-disable-next-line
   } else {
     return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
+  }};
+
+export const getProjectStatus = ({ status, type }) => {
+  switch (status) {
+    case 'SIGNED':
+      return `Signed - ${type === 'CONTRACT' ? 'Contract' : 'NDA'} Document`;
+    case 'TERMINATED':
+      return `Terminated - Early Termination of ${type === 'CONTRACT' ? 'contract' : 'NDA'}`;
+    case 'PROJECT_STARTED':
+      return 'Project Started';
+    case 'PROJECT_COMPLETED':
+      return 'Project Completed';
+    default:
+      return '';
+  }
+};
+export const getTimeLineDotColor = (status) => {
+  switch (status) {
+    case 'SIGNED':
+      return theme.orangeColor;
+    case 'TERMINATED':
+      return theme.red;
+    case 'PROJECT_STARTED':
+      return theme.timelineSuccessColor;
+    case 'PROJECT_COMPLETED':
+      return theme.purpleColor;
+    default:
+      return '';
+  }
+};
+
+// Helper function to get the day with ordinal suffix
+const getDayWithOrdinalSuffix = (day) => {
+  const suffixes = ['th', 'st', 'nd', 'rd'];
+  const relevantDigits = day < 30 ? day % 20 : day % 30;
+  const suffix = relevantDigits <= 3 ? suffixes[relevantDigits] : suffixes[0];
+  return `${day}${suffix}`;
+};
+
+export const formattedDate = (value) => {
+  if (!value) return value;
+
+  // Split the input date string into day, month, and year
+  const [day, month, year] = value.split('-').map(Number);
+
+  if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year)) return value;
+
+  // Add the ordinal suffix to the day
+  const dayWithOrdinal = getDayWithOrdinalSuffix(day);
+
+  // Get the month name based on the month number
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  const monthName = monthNames[month - 1];
+
+  // Format the date string
+  const formattedDateString = `${dayWithOrdinal} ${monthName} ${year}`;
+
+  return formattedDateString;
+};
+
+export const returnFormattedRating = (num) => {
+  // Check if the number is an integer
+  if (Number.isInteger(num)) {
+    return num; // Return the number as is
+    // eslint-disable-next-line no-else-return
+  } else {
+    // Round the number to one decimal place for float or decimal numbers
+    return Math.round(num * 10) / 10;
   }
 };

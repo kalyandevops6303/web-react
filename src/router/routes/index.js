@@ -32,6 +32,8 @@ import ProjectDetails from '../../views/project-details';
 import BidDetails from '../../views/project-details/BidDetails';
 import ContractView from '../../views/project-details/ContractView';
 import { userOnboarding } from '../../utility/constants/Constant';
+import Projects from '../../views/projects';
+import MyTeams from '../../views/teams';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -81,8 +83,20 @@ const Routes = [
     element: <BidDetails />,
   },
   {
-    path: '/project-details/:projectId/contract',
+    path: '/project-details/:projectId/:projectStep/doc/:docType/*',
     element: <ContractView />,
+  },
+  {
+    path: '/project-details/:projectId/:projectStep/doc/:docType/:docId/*',
+    element: <ContractView />,
+  },
+  {
+    path: '/projects',
+    element: <Projects />,
+  },
+  {
+    path: '/my-teams/*',
+    element: <MyTeams />,
   },
 
   {
@@ -130,6 +144,11 @@ const Routes = [
     path: '/team-invitation/:inviteId',
     element: <TeamInvitation />,
   },
+  {
+    path: '/join-request/:inviteId',
+    element: <TeamInvitation />,
+  },
+
   {
     path: '/create-team/:section-details',
     element: <CreateTeam />,
