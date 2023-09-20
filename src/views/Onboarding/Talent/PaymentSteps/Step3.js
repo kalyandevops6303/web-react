@@ -27,7 +27,7 @@ import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardi
 import { formSchema, usWFormsSchema } from '../Schema';
 
 const Step3 = ({ setStep }) => {
-  const { userType, working, taxClass, taxId } = useSelector((state) => state.PaymentDetails);
+  const { userType } = useSelector((state) => state.PaymentDetails);
 
   const isUsPerson = userType === 'us_person';
 
@@ -193,23 +193,13 @@ const Step3 = ({ setStep }) => {
           house_number: data?.mHouseNo,
           zip_code: data?.mZipCode,
         },
-        has_us_tax_id: false,
+        has_us_tax_id: taxPayer === 'option1',
         us_tax_id_reference_number: data?.refNo,
         dob: data?.dob,
       },
     };
     const newData = {
       talent_info: {
-        tax_user_type: userType === 'us_person' ? 'US' : 'NON_US',
-        is_working_in_us: working === 'in_us',
-        tax_identification: {
-          is_us_person: userType === 'us_person',
-          legal_name: data?.fullName,
-          federal_tax_classification: taxClass,
-          social_security_number: taxId,
-          employee_identification_number: taxId,
-          national_taxpayer_number: taxId,
-        },
         ...wDetails,
       },
     };
@@ -454,7 +444,12 @@ const Step3 = ({ setStep }) => {
                     name="mHouseNo"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} placeholder="Enter house number" invalid={errors.mHouseNo && true} />
+                      <Input
+                        {...field}
+                        placeholder="Enter house number"
+                        disabled={copyAddress}
+                        invalid={errors.mHouseNo && true}
+                      />
                     )}
                   />
                   {errors.mHouseNo && <FormFeedback>{errors.mHouseNo?.message}</FormFeedback>}
@@ -475,6 +470,7 @@ const Step3 = ({ setStep }) => {
                         loadOptions={loadCountriesOptions}
                         classNamePrefix="select"
                         placeholder="Select your country"
+                        isDisabled={copyAddress}
                         theme={selectThemeColors}
                         className={classNames('react-select', {
                           'is-invalid': errors && errors.mCountry,
@@ -498,6 +494,7 @@ const Step3 = ({ setStep }) => {
                     render={({ field }) => (
                       <Select
                         isLoading={statesIsLoading}
+                        isDisabled={copyAddress}
                         options={statesOptions}
                         menuPosition="fixed"
                         classNamePrefix="select"
@@ -529,6 +526,7 @@ const Step3 = ({ setStep }) => {
                         isLoading={citiesIsLoading}
                         menuPosition="fixed"
                         minMenuHeight={200}
+                        isDisabled={copyAddress}
                         options={citiesOptions}
                         classNamePrefix="select"
                         placeholder="Select your city"
@@ -556,6 +554,7 @@ const Step3 = ({ setStep }) => {
                         {...field}
                         placeholder="Enter zip code"
                         invalid={errors.mZipCode && true}
+                        disabled={copyAddress}
                         autoComplete="none"
                       />
                     )}
@@ -620,7 +619,7 @@ const Step3 = ({ setStep }) => {
                           {...field}
                           placeholder="Enter MM-DD-YYYY"
                           options={{
-                            minDate: 'today',
+                            minDate: '01-01-1923',
                             dateFormat: 'm-d-Y',
                           }}
                           className={classNames('form-control', {

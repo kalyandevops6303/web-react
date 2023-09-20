@@ -16,7 +16,6 @@ import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
 import { paymentDetailsSuccess, saveTaxIdDetails } from '../../../../redux/reducers/PaymentDetails';
 import { savePaymentDetails } from '../../../../redux/actions/paymentActions';
-import { selectAuthUserData } from '../../../../redux/selectors/authSelectors';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
 
@@ -30,7 +29,6 @@ const Step2 = ({ setStep }) => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const { userType, selectedTaxId, taxId, taxClass, taxName, working } = useSelector((state) => state.PaymentDetails);
-  const userDataLocal = useSelector(selectAuthUserData);
 
   const taxIdentitySchema = Yup.object().shape({
     taxName: Yup.string()
@@ -125,13 +123,12 @@ const Step2 = ({ setStep }) => {
   const onSubmit = (data) => {
     dispatch(saveTaxIdDetails(data));
     const newData = {
-      [userDataLocal?.user_type === 'client' ? 'client_info' : 'talent_info']: {
+      talent_info: {
         tax_user_type: userType === 'us_person' ? 'US' : 'NON_US',
         is_working_in_us: working === 'in_us',
       },
     };
     dispatch(savePaymentDetails(newData, onSuccess));
-    setStep(3);
   };
 
   return (
