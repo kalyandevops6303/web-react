@@ -121,8 +121,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             {!(isClient && userData?.user_type === userTypes.client) &&
               !isProjectDetailsView &&
               !isEditable &&
-              !isTeamView &&
-              (data?.is_favourited ? (
+              (data?.is_favourite ? (
                 <Heart
                   className="cursor-pointer d-flex ms-auto heart"
                   fill={theme.red}

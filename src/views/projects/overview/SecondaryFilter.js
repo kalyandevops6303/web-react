@@ -93,7 +93,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     const newMetaData = {
       ...metaData,
       // eslint-disable-next-line no-unsafe-optional-chaining
-      page: selectProjectData?.current_page + 1 || 1,
+      page: selectProjectMetaData?.current_page + 1 || 1,
     };
 
     dispatch(

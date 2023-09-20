@@ -20,7 +20,6 @@ import {
   terminateContractService,
   updateBidStatusService,
 } from '../../services/projectDetailsServices';
-import { userTypes } from '../../utility/constants/Constant';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -319,12 +318,8 @@ const updateContract =
 
 const makeFavourite = (id, user_type) => async (dispatch) => {
   try {
-    if (user_type === userTypes.team) {
-      await makeFavService(id, user_type);
-    } else {
-      await makeFavService(id, user_type);
-    }
-    dispatch(makeFavSuccess(id));
+    await makeFavService(id, user_type);
+    dispatch(makeFavSuccess());
   } catch (error) {
     errorHandler(error);
   }
@@ -332,7 +327,7 @@ const makeFavourite = (id, user_type) => async (dispatch) => {
 const removeFavourite = (id) => async (dispatch) => {
   try {
     await removeFavService({ user_id: id });
-    dispatch(removeFavSuccess(id));
+    dispatch(removeFavSuccess());
   } catch (error) {
     errorHandler(error);
   }
