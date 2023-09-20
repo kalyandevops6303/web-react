@@ -50,10 +50,10 @@ const LeftSidebarProfile = ({
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
   const handleLike = () => {
-    dispatch(makeFavourite(data?.team_id, data?.user_type));
+    dispatch(makeFavourite(data?.user_id || data?.team_id, data?.user_type));
   };
   const handleUnLike = () => {
-    dispatch(removeFavourite(data?._id));
+    dispatch(removeFavourite(data?.user_id || data?.team_id));
   };
 
   const onEditClick = () => {
@@ -113,13 +113,13 @@ const LeftSidebarProfile = ({
             )}
             {data?.is_favorite ? (
               <Heart
-                className="d-none cursor-pointer d-flex ms-auto heart"
+                className=" cursor-pointer d-flex ms-auto heart"
                 fill={theme.red}
                 stroke={theme.red}
                 onClick={handleUnLike}
               />
             ) : (
-              <Heart className="d-none cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
+              <Heart className=" cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
             )}
           </div>
 

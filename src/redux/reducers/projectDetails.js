@@ -302,10 +302,10 @@ const projectDetails = createSlice({
 
     makeFavSuccess: (state) => ({
       ...state,
-      projectDetails: {
-        ...state.projectDetails,
-        bidInfo: {
-          ...state.projectDetails.bidInfo,
+      bidInfo: {
+        ...state.bidInfo,
+        user_details: {
+          ...state.bidInfo.user_details,
           is_favorite: true,
         },
       },
@@ -313,7 +313,13 @@ const projectDetails = createSlice({
 
     removeFavSuccess: (state) => ({
       ...state,
-      projectDetails: { ...state.projectDetails.bidInfo, is_favorite: false },
+      bidInfo: {
+        ...state.bidInfo,
+        user_details: {
+          ...state.bidInfo.user_details,
+          is_favorite: false,
+        },
+      },
     }),
   },
 });

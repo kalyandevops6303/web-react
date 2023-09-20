@@ -45,7 +45,7 @@ const getFavoriteService = ({ metaData, filterData, userType }) => {
   let QUERY = `is_team=${userType === 'TEAM'}&page=${metaData?.page}&page_size=${metaData?.page_size}`;
 
   if (!isEmpty(filterData?.user_type)) QUERY += `&user_type=${filterData?.user_type[0]}`;
-  if (filterData?.type[0] === 'alma matter') QUERY += `&is_alma_matter=true`;
+  if (filterData?.type[0] === 'alma mater') QUERY += `&is_alma_mater=true`;
 
   return DataService.get(`${API.myTeams.listFav}?${QUERY}`);
 };

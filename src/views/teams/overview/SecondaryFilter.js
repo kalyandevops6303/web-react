@@ -94,7 +94,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const typeOptions = [
     { label: 'all', value: 'all' },
-    { label: 'alma matter', value: 'alma matter' },
+    { label: 'alma mater', value: 'alma mater' },
   ];
 
   // const userTypeOptions = [
@@ -103,7 +103,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   // ];
   const filterTypeOptions = [
     { label: 'Favorites', value: 'FAVOURITE' },
-    { label: 'Alma matter', value: 'ALMA_MATTER' },
+    { label: 'Alma mater', value: 'ALMA_MATER' },
   ];
 
   const onSuccess = () => {};

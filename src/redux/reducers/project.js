@@ -25,20 +25,16 @@ const projectSlice = createSlice({
       ...state,
       loading: false,
     }),
-    storeSuccessData: (state, action) => {
-      if (!action.payload?.data) return;
-      // eslint-disable-next-line consistent-return
-      return {
-        ...state,
-        currentPreview: action.payload?.data,
-        listData:
-          action.payload?.metadata?.current_page === 1
-            ? action.payload?.data
-            : [...state.listData, ...action.payload.data],
-        metaData: action.payload?.metadata,
-        loading: false,
-      };
-    },
+    storeSuccessData: (state, action) => ({
+      ...state,
+      currentPreview: action.payload?.data,
+      listData:
+        action.payload?.metadata?.current_page === 1
+          ? action.payload?.data
+          : [...state.listData, ...action.payload.data],
+      metaData: action.payload?.metadata,
+      loading: false,
+    }),
   },
 });
 

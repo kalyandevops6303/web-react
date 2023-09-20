@@ -87,7 +87,7 @@ const UserCard = ({ data, userType }) => {
                     {data?.first_name}&nbsp;
                     {data?.last_name}
                   </Link>
-                  {data?.is_alma_matter && (
+                  {data?.is_alma_mater && (
                     <Badge className="alma-mater ms-50 bg-white">
                       <img src={hat} alt="client-badge" />
                     </Badge>

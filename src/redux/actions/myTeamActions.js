@@ -29,7 +29,6 @@ const getTeamListing =
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
-
     try {
       const res = await getTeamsService({ searchText, metaData, filterData, userType });
       dispatch(storeSuccessData(res?.data?.data));
