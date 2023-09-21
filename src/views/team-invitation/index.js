@@ -213,7 +213,13 @@ const TeamInvitation = () => {
                         </div>
                         {invitedByData?.request_type === 'Team Join Request' && <p className="mt-auto">to join</p>}
                         <div>
-                          <Link to={`/profile/team/${invitedByData?.request_from?.team_id}`}>
+                          <Link
+                            to={`/profile/team/${
+                              invitedByData?.request_type === 'Team Join Request'
+                                ? invitedByData?.request_for?.team_id
+                                : invitedByData?.request_from?.team_id
+                            }`}
+                          >
                             <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
                               {invitedByData?.request_for?.team_name || invitedByData?.request_from?.team_name}
                             </p>
