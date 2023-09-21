@@ -41,11 +41,11 @@ const Projects = () => {
   };
 
   const primaryEnum = {
-    CLOSED: 'Ongoing',
-    IN_REVIEW: 'Upcoming',
+    ONGOING: 'Ongoing',
+    UPCOMING: 'Upcoming',
     COMPLETED: 'Completed',
     TERMINATED: 'Terminated',
-    DISPUTED: 'Disputed',
+    DISPUTE: 'Disputed',
   };
 
   return (

@@ -83,7 +83,7 @@ const Social = () => {
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/payment-details`);
+      navigate(`/${userOnboarding.talent}/payment-details`, { state: { isEditing: true } });
     } else {
       navigate(`/${userOnboarding.talent}/payment-details`);
     }
@@ -91,7 +91,7 @@ const Social = () => {
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/payment-details`);
+      navigate(`/${userOnboarding.talent}/payment-details`, { state: { isEditing: true } });
     } else {
       navigate(`/${userOnboarding.talent}/payment-details`);
     }
