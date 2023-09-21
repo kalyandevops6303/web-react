@@ -9,6 +9,7 @@ import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import InfoIcon from '@src/assets/images/timeline-info-icon.png';
 
+import { Link } from 'react-router-dom';
 import { setItem } from '../../../utility/localStorageControl';
 
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -22,6 +23,7 @@ import AcceptRequestModal from '../../modals/AcceptRequestModal';
 import RejectRequestModal from '../../modals/RejectRequestModal';
 import CreateBidModal from '../../modals/CreateBidModal';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const InvitationView = () => {
   const dispatch = useDispatch();
@@ -260,17 +262,25 @@ const InvitationView = () => {
                           className="me-50 user-pic"
                         />
                         <div>
-                          <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
-                            {invitedByData?.request_from?.first_name} {invitedByData?.request_from?.last_name}
-                          </p>
+                          <Link
+                            to={`/profile/${
+                              invitedByData?.request_from?.user_type === userTypes.client ? 'client' : 'talent'
+                            }/${invitedByData?.request_from?.user_id}`}
+                          >
+                            <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
+                              {invitedByData?.request_from?.first_name} {invitedByData?.request_from?.last_name}
+                            </p>
+                          </Link>
                           <p className="m-0">{invitedByData?.request_from?.role || 'Role'} </p>
                         </div>
                       </div>
                       <div className="d-flex align-items-center">
                         <div>
-                          <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
-                            {invitedByData?.request_for?.team_name || invitedByData?.request_from?.team_name}
-                          </p>
+                          <Link to={`/profile/team/${invitedByData?.request_from?.team_id}`}>
+                            <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
+                              {invitedByData?.request_for?.team_name || invitedByData?.request_from?.team_name}
+                            </p>
+                          </Link>
                           <p className="m-0">
                             {invitedByData?.request_for?.team_name || invitedByData?.request_from?.team_name
                               ? 'Team Name'

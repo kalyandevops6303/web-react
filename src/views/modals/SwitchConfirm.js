@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import CompleteProfileGif from '../../assets/images/completeYourProfileGif.gif';
 import { switchProfile } from '../../redux/actions/authActions';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR } from '../../utility/constants/ToastTypes';
 
 const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection }) => {
   const navigate = useNavigate();
@@ -45,6 +47,8 @@ const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection }) =
     const teamData = teams?.filter((team) => team._id === data?.custom_payload?.switch_team_id);
     if (teamData?.length > 0) {
       dispatch(switchProfile({ data: teamData[0], onSuccess, selected: false }));
+    } else {
+      ShowToastMessage(ERROR, 'You are not a member of that team');
     }
   };
 

@@ -30,6 +30,10 @@ const profileSlice = createSlice({
       ...state,
       userProfile: { ...state.userProfile, is_favourite: true },
     }),
+    makeTeamMemberSuccess: (state) => ({
+      ...state,
+      userProfile: { ...state.userProfile, is_team_member: true },
+    }),
     removeFavSuccess: (state) => ({
       ...state,
       userProfile: { ...state.userProfile, is_favourite: false },
@@ -43,7 +47,14 @@ const profileSlice = createSlice({
   },
 });
 
-export const { getProfileRequest, getProfileSuccess, getProfileFailure, makeFavSuccess, clearData, removeFavSuccess } =
-  profileSlice.actions;
+export const {
+  getProfileRequest,
+  makeTeamMemberSuccess,
+  getProfileSuccess,
+  getProfileFailure,
+  makeFavSuccess,
+  clearData,
+  removeFavSuccess,
+} = profileSlice.actions;
 
 export default profileSlice.reducer;

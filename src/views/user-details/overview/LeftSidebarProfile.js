@@ -26,10 +26,18 @@ import { CustomBadge } from '../../styled';
 import { getItem } from '../../../utility/localStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
-import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
+import {
+  getProfilePercentage,
+  getTeamProfilePercentage,
+  updateInvitation,
+} from '../../../redux/actions/dashboardActions';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import SendInvitationModal from '../../modals/SendInvitationModal';
+import AcceptRequestModal from '../../modals/AcceptRequestModal';
+import CompleteProfileModal from '../../modals/CompleteProfileModal';
+import { makeTeamMemberSuccess } from '../../../redux/reducers/profile';
+import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -42,10 +50,55 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const profilePercentageData = useSelector(profilePercentage);
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
-
+  const requestStatusData = useSelector((state) => state.inviteTalent.getRequestStatus);
   const [selectedTalent, setSelectedTalent] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [sendInviteModal, setSendInviteModal] = useState(null);
+  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+  const [accpetModal, setAccpetModal] = useState(false);
+
+  const onAccept = () => {
+    const postData = {
+      action: 'ACCEPT',
+      request_id: requestStatusData._id,
+    };
+    setIsStatusUpdating(true);
+    dispatch(
+      updateInvitation({
+        data: postData,
+        onSuccess: () => {
+          setIsStatusUpdating(false);
+          setAccpetModal(false);
+          dispatch(getRequestStatusSuccess(null));
+          dispatch(makeTeamMemberSuccess());
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
+  };
+  const handleAcceptRequest = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModal(true);
+    } else {
+      setAccpetModal(true);
+    }
+  };
+
+  const toggleCompleteProfileModal = () => {
+    setCompleteProfileModal(!completeProfileModal);
+  };
+
+  const handleCancel = () => {
+    setCompleteProfileModal(false);
+    setAccpetModal(false);
+  };
 
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
@@ -107,6 +160,19 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
 
   return (
     <LeftSidebarProfileWrapper>
+      {completeProfileModal && (
+        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+      )}
+      {accpetModal && (
+        <AcceptRequestModal
+          title={requestStatusData?.request_type}
+          isLoading={isStatusUpdating}
+          data={requestStatusData}
+          onAccept={onAccept}
+          modal={accpetModal}
+          toggleModal={handleCancel}
+        />
+      )}
       <Card>
         <CardBody>
           <div>
@@ -417,11 +483,56 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             )}
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                {!isEditable && teamId && data?.user_type === userTypes.talent && (
-                  <Button className="w-50" outline color="primary" onClick={handleInviteTalent}>
-                    Invite
-                  </Button>
+                {requestStatusData && (
+                  <span className="w-50">
+                    {!isEditable && teamId && data?.user_type === userTypes.talent && (
+                      <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
+                        Accept
+                      </Button>
+                    )}
+                    {isTeamView && (
+                      <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
+                        Accept
+                      </Button>
+                    )}
+                  </span>
                 )}
+                {/* {requestStatusData && (
+                  <span className="w-50">
+                    {isTeamView && (
+                      <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
+                        Accept
+                      </Button>
+                    )}
+                  </span>
+                )} */}
+
+                {!requestStatusData &&
+                  !isEditable &&
+                  !data?.is_team_member &&
+                  teamId &&
+                  data?.user_type === userTypes.talent && (
+                    <Button className="w-50" outline color="primary" onClick={handleInviteTalent}>
+                      Invite
+                    </Button>
+                  )}
+                {!requestStatusData &&
+                  !data?.is_team_member &&
+                  isTeamView &&
+                  !teamId &&
+                  userData?.user_type === userTypes.talent && (
+                    <div className="w-50 d-flex gap-1 justify-content-center">
+                      <Button
+                        disabled={inJoinTeamLoading}
+                        className="w-100"
+                        color="primary"
+                        outline
+                        onClick={handleJoinTeam}
+                      >
+                        {inJoinTeamLoading ? <Spinner size="sm" /> : 'Join Team'}
+                      </Button>
+                    </div>
+                  )}
                 {!isEditable && (
                   <Button className="w-50" color="primary">
                     Message
@@ -430,14 +541,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               </div>
               <CardText className="d-none report-text m-0 text-center mt-1 fw-bold">Report</CardText>
             </div>
-
-            {!data?.is_team_member && isTeamView && !teamId && userData?.user_type === userTypes.talent && (
-              <div className="d-flex gap-1 mt-1 justify-content-center">
-                <Button disabled={inJoinTeamLoading} className="w-50" color="primary" onClick={handleJoinTeam}>
-                  {inJoinTeamLoading ? <Spinner size="sm" /> : 'Join Team'}
-                </Button>
-              </div>
-            )}
           </section>
         </CardBody>
       </Card>
