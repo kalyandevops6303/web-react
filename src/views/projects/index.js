@@ -24,7 +24,8 @@ const Projects = () => {
 
   // Adjust the number of lines based on the desired limit
 
-  const [primaryFilter, setPrimaryFilter] = useState('ONGOING');
+  // eslint-disable-next-line no-undef
+  const [primaryFilter, setPrimaryFilter] = useState(localStorage?.getItem('selectedProjectTab') ?? 'ONGOING');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -35,6 +36,8 @@ const Projects = () => {
 
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
+    // eslint-disable-next-line no-undef
+    localStorage.setItem('selectedProjectTab', props);
   };
 
   const primaryEnum = {
