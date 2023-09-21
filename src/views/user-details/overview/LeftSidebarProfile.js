@@ -482,6 +482,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               </div>
             )}
             <div>
+              {/* Sensitive code below, If any changes done please check with all personas in each user type profile */}
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 {requestStatusData && (
                   <span className="w-50">
@@ -497,15 +498,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                     )}
                   </span>
                 )}
-                {/* {requestStatusData && (
-                  <span className="w-50">
-                    {isTeamView && (
-                      <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
-                        Accept
-                      </Button>
-                    )}
-                  </span>
-                )} */}
 
                 {!requestStatusData &&
                   !isEditable &&
