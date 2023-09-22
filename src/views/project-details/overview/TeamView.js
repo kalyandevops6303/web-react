@@ -7,6 +7,7 @@ import Rating from 'react-rating';
 import { DateTime } from 'luxon';
 import { Mail } from 'react-feather';
 
+import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '@components/avatar';
 import FilledStar from '@src/assets/images/filler_star.png';
@@ -204,7 +205,12 @@ const TeamView = () => {
           {teamMembers?.length > 0 ? (
             teamMembers?.map((item) => <MemberRow data={item} key={item.user_id} withReview={false} />)
           ) : (
-            <CardText className="d-flex justify-content-center">No team members yet</CardText>
+            <>
+              <img src={TeamNoDataGif} width={230} height={170} className="d-flex empty-gif m-auto" alt="empty-gif" />
+              <div className="font-weig ht-normal text-center text-primary project-cta mt-25 cursor-pointer">
+                No team members found
+              </div>
+            </>
           )}
         </CardBody>
       </Card>
