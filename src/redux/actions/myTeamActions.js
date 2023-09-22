@@ -11,10 +11,10 @@ import { getCardInfoSuccess, getListReq, storeSuccessData } from '../reducers/my
 import errorHandler from '../../utility/errorHandler';
 
 const getCardInfo =
-  ({ onSuccess, onError }) =>
+  ({ onSuccess, onError, userType }) =>
   async (dispatch) => {
     try {
-      const res = await getCardService();
+      const res = await getCardService({ userType });
       dispatch(getCardInfoSuccess(res.data.data));
       onSuccess();
     } catch (error) {
@@ -29,7 +29,6 @@ const getTeamListing =
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
-
     try {
       const res = await getTeamsService({ searchText, metaData, filterData, userType });
       dispatch(storeSuccessData(res?.data?.data));

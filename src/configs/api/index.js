@@ -1,6 +1,8 @@
 const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
 const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
+const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
+const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
 
 const API = {
   auth: {
@@ -26,7 +28,9 @@ const API = {
     paginatedInstitutes: `${apiAuthEndpoint}/api/v1/static/institute/paginated`,
     educations: `${apiAuthEndpoint}/api/v1/static/education/all`,
     tools: `${apiAuthEndpoint}/api/v1/static/tools/all`,
+    toolsAI: `${apiAuthEndpoint}/api/v1/static/tools/search-by-name`,
     skills: `${apiAuthEndpoint}/api/v1/static/skills/all`,
+    skillsAI: `${apiAuthEndpoint}/api/v1/static/skills/search-by-name`,
     certificates: `${apiAuthEndpoint}/api/v1/static/certificates/all`,
     timezones: `${apiAuthEndpoint}/api/v1/static/timezone/all`,
     currencies: `${apiAuthEndpoint}/api/v1/static/currency/all`,
@@ -55,11 +59,13 @@ const API = {
     addToFav: `${apiOnboardingEndpoint}/api/v1/favourite/set-user`,
     removeFav: `${apiOnboardingEndpoint}/api/v1/favourite/remove`,
     addToFavProject: `${apiOnboardingEndpoint}/api/v1/favourite/set-project`,
+    addToFavTeam: `${apiOnboardingEndpoint}/api/v1/favourite/set-team`,
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
+    checkBidsAccepted: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
     // team
     getTeamMember: `${apiOnboardingEndpoint}/api/v1/teams/get-members`,
     getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members-new`,
@@ -69,15 +75,26 @@ const API = {
     updateInvitation: `${apiAuthEndpoint}/api/v1/team/invite-member/update-invite`,
     removeMember: `${apiAuthEndpoint}/api/v1/team/delete-member`,
     teamProfilePercentage: `${apiOnboardingEndpoint}/api/v1/teams/profile-percentage`,
+    activeProjectsForTeam: `${apiOnboardingEndpoint}/api/v1/teams/active-projects`,
+    upcomingProjectsForTeam: `${apiOnboardingEndpoint}/api/v1/teams/upcoming-projects`,
 
     // talent
     recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,
-    teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite`,
+    teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite-new`,
     getMyTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     projectInvites: `${apiOnboardingEndpoint}/api/v1/user/alerts/invitations`,
+    activeProjectsForTalent: `${apiOnboardingEndpoint}/api/v1/talent/active-projects`,
+    upcomingProjectsForTalent: `${apiOnboardingEndpoint}/api/v1/talent/upcoming-projects`,
+
+    // client
+    activeProjectsForClient: `${apiOnboardingEndpoint}/api/v1/client/active-projects`,
+    upcomingProjectsForClient: `${apiOnboardingEndpoint}/api/v1/client/upcoming-projects`,
+    projectsBidsForClient: `${apiOnboardingEndpoint}/api/v1/client/open-listing`,
+    recommendedTeamsForClient: `${apiOnboardingEndpoint}/api/v1/client/recommended-teams`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
+    createProjectAI: `${apiCreateProjectAIEndpoint}/api/v1/short_product_requirements`,
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project/best-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
@@ -110,6 +127,13 @@ const API = {
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
+  },
+  projectMilestones: {
+    getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,
+    getProjectTransactions: `${apiCreateProjectEndpoint}/api/v1/project/transactions`,
+    submitMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/submission`,
+    acceptMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/acceptance`,
+    projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
@@ -196,6 +220,10 @@ const API = {
   project: {
     cardInfo: `${apiOnboardingEndpoint}/api/v1/projects/card-info`,
     projects: `${apiOnboardingEndpoint}/api/v1/projects`,
+  },
+  payment: {
+    taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,
+    paymentAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
   },
 };
 

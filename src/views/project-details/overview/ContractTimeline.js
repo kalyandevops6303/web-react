@@ -14,7 +14,7 @@ const ContractTimeline = () => {
   const isContract = useSelector(selectIsContract);
   const contractTimeline = useSelector(selectContractTimeline);
   const bidUpdatesDataSet = [];
-  contractTimeline?.timeline.map((item) =>
+  contractTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
       color: getTimeLineDotColor(item?.status),
       customContent: (

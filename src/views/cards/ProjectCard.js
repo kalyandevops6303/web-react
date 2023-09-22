@@ -3,6 +3,7 @@ import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap
 import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router';
 // import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import DateTime from '../../lib/date-time';
 // import theme from '../../configs/themeVariables';
@@ -19,7 +20,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);
@@ -38,6 +39,8 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
+    COMPLETED: 'Completed',
+    ON_GOING: 'On Going',
   };
   // const giveStrokeColor = (percentage) => {
   //   if (percentage <= 40) {
@@ -79,6 +82,20 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
     setCompleteProfileModal(!completeProfileModal);
   };
 
+  const handleRedirection = () => {
+    const isMyProjectMyTeam =
+      // eslint-disable-next-line no-undef
+      window.location.pathname.split('/').includes('projects') ||
+      // eslint-disable-next-line no-undef
+      window.location.pathname.split('/').includes('my-teams');
+
+    if (isMyProjectMyTeam) {
+      navigate(`/project-details/${data?._id}/bid`);
+    } else {
+      setShowModal(true);
+    }
+  };
+
   return (
     <ProjectCardWrap>
       <Card>
@@ -93,7 +110,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
                 </CustomBadge>
               </div>
               <CardTitle className="d-flex align-items-center">
-                <span className="cursor-pointer" onClick={() => setShowModal(true)}>
+                <span className="cursor-pointer" onClick={handleRedirection}>
                   {data?.name}{' '}
                 </span>
               </CardTitle>
@@ -107,9 +124,9 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
                     </>
                   )}
                 </CardText>
-                <CardText className=" project mb-1">{`Assigned Date - ${
-                  data?.total_estimated_cost
-                }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText>
+                <CardText className=" project mb-1">{`Assigned Date: ${DateTime?.fromMillis(
+                  data?.assigned_date ?? 0,
+                ).toFormat('dd-MM-yy')}`}</CardText>
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
                   {data?.client?.office_address?.country?.name || 'Location'}
@@ -120,12 +137,16 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
               </div>
 
               {!showFullText ? (
-                <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
-                  {data?.description}
+                <div
+                  className="my-div"
+                  ref={divRef}
+                  style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
+                >
+                  {data?.details?.description}
                 </div>
               ) : (
-                <div className="my-div" ref={divRef}>
-                  {data?.description}
+                <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
+                  {data?.details?.description}
                 </div>
               )}
 

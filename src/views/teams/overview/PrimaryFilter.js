@@ -1,22 +1,21 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect } from 'react';
 import { Users, UserPlus, UserCheck, Heart } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import Statbox from '../../user-details/overview/Statbox';
-import { getItem } from '../../../utility/localStorageControl';
 import { getCardInfo } from '../../../redux/actions/myTeamActions';
 import { userTypes } from '../../../utility/constants/Constant';
 
-const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
+const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state?.myTeams?.cardData);
 
   // const userData = useSelector(selectAuthUserData);
-  const userData = getItem('userData');
 
   useEffect(() => {
-    dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {} }));
+    dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
   }, []);
 
   const TAB_NAMES = {
@@ -24,7 +23,8 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
     CLIENT: 'Team/Talent',
     INVITED: 'Invited',
     JOIN_REQ: 'Join Request',
-    FAV: 'Favorite',
+    FAV: 'Favourite',
+    TEAM: 'Projects',
   };
 
   const PATH_NAMES = {
@@ -40,8 +40,20 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
         <Statbox
           isActive={selected === PATH_NAMES.ALL_TEAMS}
           isMarketPlaceTab
-          title={selectCardData?.project_team ?? 0}
-          desc={userData?.user_type === userTypes.client ? TAB_NAMES.CLIENT : TAB_NAMES.ALL_TEAMS}
+          title={
+            selectCardData?.project_team
+              ? selectCardData?.project_team
+              : selectCardData?.teams_and_talents
+              ? selectCardData?.teams_and_talents
+              : selectCardData?.projects
+          }
+          desc={
+            userType === userTypes.client
+              ? TAB_NAMES.CLIENT
+              : userType === userTypes.talent
+              ? TAB_NAMES.ALL_TEAMS
+              : TAB_NAMES.TEAM
+          }
           icon={<Users height={20} />}
           color="light-turquoise"
           className="stat-box cursor-pointer"
@@ -58,13 +70,13 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
           color="light-dark-red"
         />
       </Col>
-      {userData?.user_type === userTypes.talent ? (
+      {userType !== userTypes.client ? (
         <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.JOIN_REQ)}>
           <Statbox
             isActive={selected === PATH_NAMES.JOIN_REQ.split('/')[1]}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
-            title={selectCardData?.join_request ?? 0}
+            title={selectCardData?.join_request ? selectCardData?.join_request : selectCardData?.join_requests ?? 0}
             desc={TAB_NAMES.JOIN_REQ}
             icon={<UserCheck height={20} />}
             color="light-success"
@@ -92,10 +104,12 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
 PrimaryFilter.propTypes = {
   selected: PropTypes.string,
   handlePrimaryChangeFilter: PropTypes.func,
+  userType: PropTypes.string,
 };
 PrimaryFilter.defaultProps = {
   selected: 'my-teams',
   handlePrimaryChangeFilter: () => {},
+  userType: '',
 };
 
 export default PrimaryFilter;

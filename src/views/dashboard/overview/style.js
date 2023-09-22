@@ -305,6 +305,70 @@ const ProjectWrapper = styled.div`
     font-size: 12px;
     margin: auto;
   }
+
+  .active-project-name {
+    color: #5e5873;
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  .team-badge {
+    border-radius: 17px;
+    background: rgba(48, 214, 211, 0.12);
+    width: fit-content;
+
+    p {
+      color: #30d6d2;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+
+  .active-project-team-name {
+    color: #5e5873;
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .active-project-simple-heading {
+    color: #b9b9c3;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: -10px;
+  }
+
+  .active-project-milestone-name {
+    color: #5e5873;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .bids-count-wrapper {
+    .bid-label {
+      color: #6e6b7b;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .bid-count {
+      color: #5e5873;
+      font-size: 16px;
+      font-weight: 400;
+    }
+  }
+
+  .client-badge {
+    border-radius: 17px;
+    background: rgba(0, 94, 255, 0.12);
+    width: fit-content;
+
+    p {
+      color: #005eff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
 `;
 
 const ProjectsListingWrap = styled.div`

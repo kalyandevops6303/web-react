@@ -80,18 +80,19 @@ const projectDetails = createSlice({
     getBidInfoRequest: (state) => ({
       ...state,
       getBidInfoLoading: true,
-      error: null,
+      errorBidInfo: null,
     }),
     getBidInfoSuccess: (state, action) => ({
       ...state,
       getBidInfoLoading: false,
       bidInfo: action.payload,
+      errorBidInfo: null,
     }),
 
     getBidInfoFailure: (state, action) => ({
       ...state,
       getReceivedBidsLoading: false,
-      error: action.payload,
+      errorBidInfo: action.payload,
     }),
     getUnassignedRoleRequest: (state) => ({
       ...state,
@@ -298,10 +299,34 @@ const projectDetails = createSlice({
       getInvitedMemberLoading: false,
       error: action.payload,
     }),
+
+    makeFavSuccess: (state) => ({
+      ...state,
+      bidInfo: {
+        ...state.bidInfo,
+        user_details: {
+          ...state.bidInfo.user_details,
+          is_favorite: true,
+        },
+      },
+    }),
+
+    removeFavSuccess: (state) => ({
+      ...state,
+      bidInfo: {
+        ...state.bidInfo,
+        user_details: {
+          ...state.bidInfo.user_details,
+          is_favorite: false,
+        },
+      },
+    }),
   },
 });
 
 export const {
+  makeFavSuccess,
+  removeFavSuccess,
   getInvitedMemberFailure,
   getInvitedMemberRequest,
   getInvitedMemberSuccess,

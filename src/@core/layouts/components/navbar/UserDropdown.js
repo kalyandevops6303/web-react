@@ -233,11 +233,11 @@ const UserDropdown = () => {
                   <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
 
                   <div className="user-info ms-1 user-nav">
-                    <span className="mb-50 user-name fw-bold text-start d-block" id="username">
+                    <span className="mb-50 user-name fw-bold text-start d-block" id={`username-${team?._id}`}>
                       {team?.name}
                     </span>
                     {team?.name?.length > 15 && (
-                      <UncontrolledTooltip placement="right" target="username">
+                      <UncontrolledTooltip placement="right" target={`username-${team?._id}`}>
                         <div className="d-flex flex-column align-items-start">
                           <p className="text-start m-0">{team?.name}</p>
                         </div>

@@ -381,6 +381,13 @@ const Profile = () => {
 
       const options = response?.data?.data?.map((service) => ({ label: service.name, value: service._id }));
 
+      const otherIndex = options.findIndex((option) => option.label === 'Other');
+
+      if (otherIndex !== -1) {
+        const otherOption = options.splice(otherIndex, 1)[0];
+        options.push(otherOption);
+      }
+
       setServicesOptions(options);
 
       return {

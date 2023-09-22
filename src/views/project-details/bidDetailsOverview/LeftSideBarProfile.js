@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -15,10 +15,10 @@ import BehanceIcon from '@src/assets/images/behance.png';
 import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
-import { GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
+import { GitHub, Heart, Linkedin, Link, UserCheck } from 'react-feather';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
-import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
+import { makeFavourite, removeFavourite } from '../../../redux/actions/projectDetailsAction';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
@@ -50,10 +50,10 @@ const LeftSidebarProfile = ({
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
   const handleLike = () => {
-    dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
+    dispatch(makeFavourite(data?.user_id || data?.team_id, data?.user_type));
   };
   const handleUnLike = () => {
-    dispatch(removeFavourite(param?.userId));
+    dispatch(removeFavourite(data?.user_id || data?.team_id));
   };
 
   const onEditClick = () => {
@@ -111,15 +111,15 @@ const LeftSidebarProfile = ({
                 </CustomBadge>
               </div>
             )}
-            {data?.is_favourited ? (
+            {data?.is_favorite ? (
               <Heart
-                className="cursor-pointer d-flex ms-auto heart"
+                className=" cursor-pointer d-flex ms-auto heart"
                 fill={theme.red}
                 stroke={theme.red}
                 onClick={handleUnLike}
               />
             ) : (
-              <Heart className="cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
+              <Heart className=" cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
             )}
           </div>
 
@@ -170,7 +170,7 @@ const LeftSidebarProfile = ({
           {isTeamView && (
             <div className="public">
               <CardText className="text-center user-name fw-bold mb-25 ">{data?.name}</CardText>
-              <CardText className="text-center mb-50 fw-300">{`${data?.created_by?.first_name} ${data?.created_by?.last_name}`}</CardText>
+              <CardText className="d-none text-center mb-50 fw-300">{`${data?.created_by?.first_name} ${data?.created_by?.last_name}`}</CardText>
             </div>
           )}
 
@@ -394,9 +394,11 @@ const LeftSidebarProfile = ({
             {isProjectDetailsView && (
               <div className="invited-box">
                 <div className="d-flex gap-1 mt-3 justify-content-center">
-                  <Button size="md" className="w-50" outline color="primary">
-                    View Profile
-                  </Button>
+                  <RouterLink className="w-50" to={`/profile/${data?.user_type?.toLowerCase()}/${data?.user_id}`}>
+                    <Button className="w-100" size="md" outline color="primary">
+                      View Profile
+                    </Button>
+                  </RouterLink>
                   <Button size="md" className="w-50" color="primary">
                     Message
                   </Button>

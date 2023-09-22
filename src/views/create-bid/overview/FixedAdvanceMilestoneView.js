@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
+  Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
@@ -20,7 +21,6 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
 import classNames from 'classnames';
@@ -81,6 +81,7 @@ const FixedAdvanceMilestoneView = () => {
                 yup
                   .number()
                   .min(1, 'Duration must be at least 1')
+                  .integer('Duration must be a integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Duration is required'),
@@ -97,6 +98,7 @@ const FixedAdvanceMilestoneView = () => {
                   .number()
                   .min(1, 'Hours must be at least 1')
                   .max(168, 'Hours must be at most 168')
+                  .integer('Hours must be an integer')
                   .transform((value) => (Number.isNaN(value) ? undefined : value))
                   .typeError('Please enter a number')
                   .required('Hours is required'),
@@ -162,6 +164,15 @@ const FixedAdvanceMilestoneView = () => {
   const [allWorkers, setAllWorkers] = useState([]);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
+
+  const [open, setOpen] = useState(1);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
 
   const calculateMilestoneValues = (milestoneIndex) => {
     const milestoneDuration = allMilestones[milestoneIndex]?.workers
@@ -361,7 +372,11 @@ const FixedAdvanceMilestoneView = () => {
           .every((worker) => worker.duration > 0 && worker.hours > 0),
     );
 
-    if (allMilestonesValid) {
+    if (!allMilestonesValid) {
+      ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
+    } else if (totalCost > projectDetailsData?.pay_type?.fixed_cost) {
+      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed cost.');
+    } else if (allMilestonesValid && totalCost <= projectDetailsData?.pay_type?.fixed_cost) {
       milestonesAppend({
         milestoneId: uuidv4(),
         name: undefined,
@@ -376,6 +391,8 @@ const FixedAdvanceMilestoneView = () => {
           otherDetails: worker,
         })),
       });
+
+      toggle(getValues('milestones')?.length);
     } else {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     }
@@ -599,7 +616,7 @@ const FixedAdvanceMilestoneView = () => {
               </div>
             </CardHeader>
             <CardBody className="pt-2 pb-0">
-              {totalCost > projectDetailsData?.pay_type?.fixed_cost ? (
+              {totalCost > projectDetailsData?.pay_type?.fixed_cost && (
                 <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
                   <Info size={18} color={theme.red} className="me-50" />
                   <p className="font-medium-1 m-0 error">
@@ -607,15 +624,14 @@ const FixedAdvanceMilestoneView = () => {
                     the project. Please adjust your cost in order to submit the bid
                   </p>
                 </div>
-              ) : (
-                <div className="fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
-                  <Info size={18} color={theme.activeNavPillText} className="me-50" />
-                  <p className="font-medium-1 m-0 info">
-                    <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
-                    distributed between each talent
-                  </p>
-                </div>
               )}
+              <div className="d-none fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
+                <Info size={18} color={theme.activeNavPillText} className="me-50" />
+                <p className="font-medium-1 m-0 info">
+                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
+                  distributed between each talent
+                </p>
+              </div>
               <Card className="white-card-bg">
                 <CardBody>
                   <Row className="d-flex justify-content-between">
@@ -662,6 +678,9 @@ const FixedAdvanceMilestoneView = () => {
                         <div className="d-flex align-items-center m-0">
                           <Label className="form-label">Fixed Cost</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
+                          <UncontrolledTooltip placement="top" target="fixed-info">
+                            Predetermined project cost fixed by the client
+                          </UncontrolledTooltip>
                         </div>
                         <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
                           $ {projectDetailsData?.pay_type?.fixed_cost}
@@ -680,7 +699,7 @@ const FixedAdvanceMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <UncontrolledAccordion className="mb-2">
+              <Accordion className="mb-2" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => {
                   const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(milestoneIndex);
 
@@ -809,7 +828,10 @@ const FixedAdvanceMilestoneView = () => {
                                       <Col sm="12" md="6" lg="5">
                                         <div className="d-flex align-items-center">
                                           <p className="roles-list-header m-0 me-50">Select Roles</p>
-                                          <Info size={18} color={theme.infoIcon} />
+                                          <Info size={18} color={theme.infoIcon} id="selected-info" />
+                                          <UncontrolledTooltip placement="top" target="selected-info">
+                                            <p className="m-0">Select the role required to deliver this milestone</p>
+                                          </UncontrolledTooltip>
                                         </div>
                                       </Col>
                                       <Col sm="12" md="6" lg="7">
@@ -817,7 +839,10 @@ const FixedAdvanceMilestoneView = () => {
                                           <Col sm="12" md="6" lg="6">
                                             <div className="d-flex align-items-center">
                                               <p className="roles-list-header m-0 me-50">Duration</p>
-                                              <Info size={18} color={theme.infoIcon} />
+                                              <Info size={18} color={theme.infoIcon} id="duration-info" />
+                                              <UncontrolledTooltip placement="top" target="duration-info">
+                                                <p className="m-0">W = Week</p>
+                                              </UncontrolledTooltip>
                                             </div>
                                           </Col>
                                           <Col sm="12" md="6" lg="6">
@@ -909,35 +934,60 @@ const FixedAdvanceMilestoneView = () => {
                                                           .duration &&
                                                         true
                                                       }
-                                                      render={({ field }) => (
-                                                        <InputGroup className="input-group-merge">
-                                                          <Input
-                                                            {...field}
-                                                            placeholder="0w"
-                                                            type="number"
-                                                            min={0}
-                                                            onWheel={(e) => e.target.blur()}
-                                                            invalid={
-                                                              errors &&
-                                                              errors.milestones &&
-                                                              errors.milestones.length > 0 &&
-                                                              errors.milestones[milestoneIndex] &&
-                                                              errors.milestones[milestoneIndex].workers &&
-                                                              errors.milestones[milestoneIndex].workers.length > 0 &&
-                                                              errors.milestones[milestoneIndex].workers[workerIndex] &&
-                                                              errors.milestones[milestoneIndex].workers[workerIndex]
-                                                                .duration &&
-                                                              true
-                                                            }
-                                                          />
-                                                          {getValues('milestones')[milestoneIndex].workers?.find(
+                                                      render={({ field }) => {
+                                                        const durationValue =
+                                                          getValues('milestones')[milestoneIndex]?.workers?.find(
                                                             (w) => w.role === worker.role,
-                                                          )?.duration > 0 && (
-                                                            <InputGroupText className="ps-0">w</InputGroupText>
-                                                          )}
-                                                        </InputGroup>
-                                                      )}
+                                                          )?.duration ?? 0;
+
+                                                        const isInteger = Number.isInteger(+durationValue);
+
+                                                        return (
+                                                          <InputGroup className="input-group-merge">
+                                                            <Input
+                                                              {...field}
+                                                              placeholder="0w"
+                                                              type="number"
+                                                              min={0}
+                                                              onWheel={(e) => e.target.blur()}
+                                                              invalid={
+                                                                errors &&
+                                                                errors.milestones &&
+                                                                errors.milestones.length > 0 &&
+                                                                errors.milestones[milestoneIndex] &&
+                                                                errors.milestones[milestoneIndex].workers &&
+                                                                errors.milestones[milestoneIndex].workers.length > 0 &&
+                                                                errors.milestones[milestoneIndex].workers[
+                                                                  workerIndex
+                                                                ] &&
+                                                                errors.milestones[milestoneIndex].workers[workerIndex]
+                                                                  .duration &&
+                                                                true
+                                                              }
+                                                            />
+                                                            {durationValue > 0 && isInteger && (
+                                                              <InputGroupText className="ps-0">w</InputGroupText>
+                                                            )}
+                                                          </InputGroup>
+                                                        );
+                                                      }}
                                                     />
+                                                    {errors &&
+                                                      errors.milestones &&
+                                                      errors.milestones.length > 0 &&
+                                                      errors.milestones[milestoneIndex] &&
+                                                      errors.milestones[milestoneIndex].workers &&
+                                                      errors.milestones[milestoneIndex].workers.length > 0 &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex] &&
+                                                      errors.milestones[milestoneIndex].workers[workerIndex]
+                                                        .duration && (
+                                                        <FormFeedback>
+                                                          {
+                                                            errors.milestones[milestoneIndex].workers[workerIndex]
+                                                              .duration.message
+                                                          }
+                                                        </FormFeedback>
+                                                      )}
                                                   </Col>
                                                   <Col sm="12" md="6" lg="6">
                                                     <Controller
@@ -978,9 +1028,12 @@ const FixedAdvanceMilestoneView = () => {
                                                           />
                                                           {getValues('milestones')[milestoneIndex].workers?.find(
                                                             (w) => w.role === worker.role,
-                                                          )?.hours > 0 && (
-                                                            <InputGroupText className="ps-0">h</InputGroupText>
-                                                          )}
+                                                          )?.hours > 0 &&
+                                                            getValues('milestones')[milestoneIndex].workers?.find(
+                                                              (w) => w.role === worker.role,
+                                                            )?.hours < 169 && (
+                                                              <InputGroupText className="ps-0">h</InputGroupText>
+                                                            )}
                                                         </InputGroup>
                                                       )}
                                                     />
@@ -1117,7 +1170,7 @@ const FixedAdvanceMilestoneView = () => {
                     </Card>
                   );
                 })}
-              </UncontrolledAccordion>
+              </Accordion>
             </CardBody>
           </Card>
           <Card className="mt-2">

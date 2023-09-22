@@ -125,10 +125,10 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
                 {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
               </Col>
             </Row>
-            <div className="divider my-2">
+            <div className="divider my-2 d-none">
               <div className="divider-text">Or</div>
             </div>
-            <Row>
+            <Row className="d-none">
               <Col sm="12" md="12" lg="12">
                 <div className="mb-1">
                   <InputGroup>

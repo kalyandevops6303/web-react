@@ -11,7 +11,7 @@ import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 
-const BaseInfoCard = ({ data }) => {
+const BaseInfoCard = ({ isSearchPage, data }) => {
   const dispatch = useDispatch();
 
   const clientDetails = data?.client ?? data?.client_details;
@@ -37,22 +37,26 @@ const BaseInfoCard = ({ data }) => {
   return (
     <div>
       <div className="d-flex justify-content-end">
-        <div className="d-flex align-items-center gap-1">
+        <div className="d-flex align-items-center gap-50">
           {data?.is_alma_mater && (
             <Badge className="alma-mater ms-50 bg-white">
-              <img src={hat} alt="client-badge" className="bg-white" width={20} height={20} />
+              <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
           )}
-          {data?.is_favorite ? (
-            <Heart
-              className="cursor-pointer d-flex heart"
-              fill={theme.red}
-              stroke={theme.red}
-              onClick={handleUnLike}
-              size={20}
-            />
-          ) : (
-            <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+          {!isSearchPage && (
+            <div className="mb-25">
+              {data?.is_favorite ? (
+                <Heart
+                  className="cursor-pointer d-flex heart"
+                  fill={theme.red}
+                  stroke={theme.red}
+                  onClick={handleUnLike}
+                  size={20}
+                />
+              ) : (
+                <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+              )}
+            </div>
           )}
 
           {data?.match_percentage ? (
@@ -86,7 +90,7 @@ const BaseInfoCard = ({ data }) => {
       <div className="d-flex mb-2 align-items-center">
         <img
           className="market-place-card-photo me-75"
-          src={clientDetails?.image_uri.length ? clientDetails?.image_uri : defaultAvatar}
+          src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
           alt="avatar"
           width={40}
           height={50}
@@ -118,9 +122,11 @@ const BaseInfoCard = ({ data }) => {
 
 BaseInfoCard.propTypes = {
   data: PropTypes.object,
+  isSearchPage: PropTypes.bool,
 };
 
 BaseInfoCard.defaultProps = {
   data: {},
+  isSearchPage: false,
 };
 export default BaseInfoCard;

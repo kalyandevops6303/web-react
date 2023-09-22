@@ -21,6 +21,25 @@ const initialState = {
   profilePercentage: null,
   profilePercentageLoading: false,
   projectInvites: [],
+  activeProjectsForClient: null,
+  activeProjectsForClientLoading: false,
+  upcomingProjectsForClient: null,
+  upcomingProjectsForClientLoading: false,
+  projectsBidsForClient: null,
+  projectsBidsForClientLoading: false,
+  recommendedTeamsForClient: null,
+  recommendedTeamsForClientLoading: false,
+  checkBidsAccepted: null,
+  checkBidsAcceptedLoading: false,
+  activeProjectsForTalent: null,
+  activeProjectsForTalentLoading: false,
+  upcomingProjectsForTalent: null,
+  upcomingProjectsForTalentLoading: false,
+  activeProjectsForTeam: null,
+  activeProjectsForTeamLoading: false,
+  upcomingProjectsForTeam: null,
+  upcomingProjectsForTeamLoading: false,
+  alerts: [],
   error: null,
 };
 
@@ -233,6 +252,150 @@ const dashboardSlice = createSlice({
       profilePercentageLoading: false,
       error: null,
     }),
+
+    activeProjectsForClientRequest: (state) => ({
+      ...state,
+      activeProjectsForClientLoading: true,
+      error: null,
+    }),
+    activeProjectsForClientSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForClient: action.payload,
+      activeProjectsForClientLoading: false,
+    }),
+    activeProjectsForClientFailure: (state, action) => ({
+      ...state,
+      activeProjectsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForClientRequest: (state) => ({
+      ...state,
+      upcomingProjectsForClientLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForClientSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForClient: action.payload,
+      upcomingProjectsForClientLoading: false,
+    }),
+    upcomingProjectsForClientFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    projectsBidsForClientRequest: (state) => ({
+      ...state,
+      projectsBidsForClientLoading: true,
+      error: null,
+    }),
+    projectsBidsForClientSuccess: (state, action) => ({
+      ...state,
+      projectsBidsForClient: action.payload,
+      projectsBidsForClientLoading: false,
+    }),
+    projectsBidsForClientFailure: (state, action) => ({
+      ...state,
+      projectsBidsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    recommendedTeamsForClientRequest: (state) => ({
+      ...state,
+      recommendedTeamsForClientLoading: true,
+      error: null,
+    }),
+    recommendedTeamsForClientSuccess: (state, action) => ({
+      ...state,
+      recommendedTeamsForClient: action.payload,
+      recommendedTeamsForClientLoading: false,
+    }),
+    recommendedTeamsForClientFailure: (state, action) => ({
+      ...state,
+      recommendedTeamsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    checkBidsAcceptedRequest: (state) => ({
+      ...state,
+      checkBidsAcceptedLoading: true,
+      error: null,
+    }),
+    checkBidsAcceptedSuccess: (state, action) => ({
+      ...state,
+      checkBidsAccepted: action.payload,
+      checkBidsAcceptedLoading: false,
+    }),
+    checkBidsAcceptedFailure: (state, action) => ({
+      ...state,
+      checkBidsAcceptedLoading: false,
+      error: action.payload,
+    }),
+
+    activeProjectsForTalentRequest: (state) => ({
+      ...state,
+      activeProjectsForTalentLoading: true,
+      error: null,
+    }),
+    activeProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForTalent: action.payload,
+      activeProjectsForTalentLoading: false,
+    }),
+    activeProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      activeProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForTalentRequest: (state) => ({
+      ...state,
+      upcomingProjectsForTalentLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForTalent: action.payload,
+      upcomingProjectsForTalentLoading: false,
+    }),
+    upcomingProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
+
+    activeProjectsForTeamRequest: (state) => ({
+      ...state,
+      activeProjectsForTeamLoading: true,
+      error: null,
+    }),
+    activeProjectsForTeamSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForTeam: action.payload,
+      activeProjectsForTeamLoading: false,
+    }),
+    activeProjectsForTeamFailure: (state, action) => ({
+      ...state,
+      activeProjectsForTeamLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForTeamRequest: (state) => ({
+      ...state,
+      upcomingProjectsForTeamLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForTeamSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForTeam: action.payload,
+      upcomingProjectsForTeamLoading: false,
+    }),
+    upcomingProjectsForTeamFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForTeamLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -240,7 +403,6 @@ export const {
   getAlertRequest,
   getAlertSuccess,
   getAlertFailure,
-
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
   recommendedProjectsFailure,
@@ -273,6 +435,33 @@ export const {
   getMyTeamFailure,
   getProjectInvitesSuccess,
   clearData,
+  activeProjectsForClientRequest,
+  activeProjectsForClientSuccess,
+  activeProjectsForClientFailure,
+  upcomingProjectsForClientRequest,
+  upcomingProjectsForClientSuccess,
+  upcomingProjectsForClientFailure,
+  projectsBidsForClientRequest,
+  projectsBidsForClientSuccess,
+  projectsBidsForClientFailure,
+  recommendedTeamsForClientRequest,
+  recommendedTeamsForClientSuccess,
+  recommendedTeamsForClientFailure,
+  checkBidsAcceptedRequest,
+  checkBidsAcceptedSuccess,
+  checkBidsAcceptedFailure,
+  activeProjectsForTalentRequest,
+  activeProjectsForTalentSuccess,
+  activeProjectsForTalentFailure,
+  upcomingProjectsForTalentRequest,
+  upcomingProjectsForTalentSuccess,
+  upcomingProjectsForTalentFailure,
+  activeProjectsForTeamRequest,
+  activeProjectsForTeamSuccess,
+  activeProjectsForTeamFailure,
+  upcomingProjectsForTeamRequest,
+  upcomingProjectsForTeamSuccess,
+  upcomingProjectsForTeamFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

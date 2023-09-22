@@ -15,7 +15,6 @@ import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors, useIsTab } from '../../../utility/Utils';
-import { getItem } from '../../../utility/localStorageControl';
 
 import { clearData } from '../../../redux/reducers/myTeams';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -28,18 +27,18 @@ import {
   getReqListing,
   getTeamListing,
 } from '../../../redux/actions/myTeamActions';
-import UserCard from '../../cards/UserCard';
-import ProjectCard from '../../cards/ProjectCard';
+
 import TeamCard from '../../cards/TeamCard';
 import MarketPlaceProjectCard from '../../cards/MarketPlaceProjectCard';
+import MyTeamProjectCard from '../../cards/MyTeamProjectCard';
+import TalentCard from '../../cards/TalentCard';
+import ClientCard from '../../cards/ClientCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
   const dispatch = useDispatch();
   const isTab = useIsTab();
   const popoverRef = useRef(null);
-
-  const userData = getItem('userData');
 
   const [hasMore, setHasMore] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -68,11 +67,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const projectStatusOptions = [
-    { label: 'Open', value: 'OPEN' },
+    { label: 'Ongoing', value: 'ON_GOING' },
     { label: 'In-review', value: 'IN_REVIEW' },
     { label: 'Terminated', value: 'TERMINATED' },
     { label: 'Closed', value: 'CLOSED' },
-    { label: 'Disputed', value: 'DISPUTED' },
     { label: 'Completed', value: 'COMPLETED' },
   ];
   const projectTypesOptions = [
@@ -82,6 +80,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const invitedByOptions = [
     { label: 'Talent', value: 'TALENT' },
     { label: 'Client', value: 'CLIENT' },
+    { label: 'Team', value: 'TEAM' },
   ];
   const statusOptions = [
     { label: 'Accepted', value: 'ACCEPTED' },
@@ -96,18 +95,17 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const typeOptions = [
     { label: 'all', value: 'all' },
-    { label: 'alma matter', value: 'alma matter' },
+    { label: 'alma mater', value: 'alma mater' },
   ];
 
   const userTypeOptions = [
     { label: 'Talent', value: 'TALENT' },
-    { label: 'Client', value: 'CLIENT' },
     { label: 'Team', value: 'TEAM' },
+    { label: 'Client', value: 'CLIENT' },
   ];
-
   const filterTypeOptions = [
     { label: 'Favorites', value: 'FAVOURITE' },
-    { label: 'Alma matter', value: 'ALMA_MATTER' },
+    { label: 'Alma mater', value: 'ALMA_MATER' },
   ];
 
   const onSuccess = () => {};
@@ -158,7 +156,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     });
 
     if (primaryFilter === 'my-teams') {
-      dispatch(getTeamListing({ searchText, metaData, onSuccess, onError, filterData }));
+      dispatch(getTeamListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
     } else if (primaryFilter === 'invitations') {
       dispatch(getInvitationListing({ metaData, onSuccess, onError, filterData, userType }));
     } else if (primaryFilter === 'join-requests') {
@@ -200,10 +198,20 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const getCardComp = () => {
-    if (primaryFilter === 'favourites') return UserCard;
+    if (primaryFilter === 'favourites') {
+      if (secondFilterState?.user_type[0]?.value === 'TALENT') {
+        return TalentCard;
+      }
+      if (secondFilterState?.user_type[0]?.value === 'TEAM') {
+        return TeamCard;
+      }
+
+      return ClientCard;
+    }
+    if (primaryFilter === 'join-requests' && userType === 'TEAM') return TalentCard;
     if (primaryFilter === 'join-requests') return TeamCard;
     if (primaryFilter === 'invitations') return MarketPlaceProjectCard;
-    return ProjectCard;
+    return MyTeamProjectCard;
   };
 
   const fetchMore = () => {
@@ -217,7 +225,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       filterData[key] = secondFilterState[key].map((item) => item.value);
     });
-
     if (primaryFilter === 'my-teams') {
       dispatch(getTeamListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData }));
     } else if (primaryFilter === 'invitations') {
@@ -307,7 +314,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 {ExpandCollapseComp}
               </Col>
             )}
-            {primaryFilter === 'invitations' || primaryFilter === 'favourites' ? (
+            {primaryFilter === 'favourites' ? (
               <Col>
                 <Label className="form-label">User Type</Label>
                 <Select
@@ -503,7 +510,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
           {selectMyTeamData?.length ? (
-            <div className="d-flex flex-wrap justify-content-between">
+            <div
+              className="justify-content-between grid-layout"
+              style={
+                secondFilterState.user_type[0]?.value === 'CLIENT'
+                  ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                  : {}
+              }
+            >
               {selectMyTeamData?.map((item) => {
                 const CardComponent = getCardComp();
 
@@ -513,7 +527,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     data={item}
                     isPopoverOpen={popoverOpen}
                     isExpanded={isExpanded}
-                    userType={userData?.user_type}
+                    userType={userType}
                     isProjectWithTeam={primaryFilter === 'my-teams'}
                     isTeam={primaryFilter === 'invitations' || primaryFilter === 'join-requests'}
                   />

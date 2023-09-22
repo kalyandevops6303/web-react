@@ -5,7 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitl
 import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { DeleteModalWrapper } from './style';
 
-const RejectBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
+const RejectBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) => {
   const onClose = () => {
     toggleModal();
   };
@@ -23,13 +23,13 @@ const RejectBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
 
               <CardText className="desc fw-light w-76">You are rejecting this project bid made by the below </CardText>
               <section className="d-flex gap-2 stats">
-                <div>
-                  <CardText className="value mb-25">{data?.name || 'Talent/Team name'}</CardText>
-                  <small className="key">Talent/Team name</small>
+                <div style={{ minWidth: '10rem' }}>
+                  <CardText className="value mb-25">{modalData?.name || 'Talent/Team name'}</CardText>
+                  <small className="key">{modalData?.role || 'Talent/Team name'}</small>
                 </div>
                 <div>
-                  <CardText className="value mb-25">$-</CardText>
-                  <small className="key">Project value</small>
+                  <CardText className="value mb-25">${modalData?.value}</CardText>
+                  <small className="key">Bid value</small>
                 </div>
               </section>
             </div>
@@ -38,7 +38,7 @@ const RejectBidModal = ({ isLoading, data, onAccept, modal, toggleModal }) => {
             <Button onClick={onClose} outline color="primary">
               Cancel
             </Button>
-            <Button color="primary" onClick={onAccept}>
+            <Button color="danger" onClick={onAccept}>
               {isLoading ? <Spinner /> : 'Reject Bid'}
             </Button>
           </div>
@@ -53,7 +53,7 @@ export default RejectBidModal;
 RejectBidModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  data: Proptypes.object,
+  modalData: Proptypes.object,
   onAccept: Proptypes.func,
   isLoading: Proptypes.bool,
 };
@@ -61,7 +61,7 @@ RejectBidModal.propTypes = {
 RejectBidModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  data: {},
+  modalData: {},
   onAccept: () => {},
   isLoading: false,
 };

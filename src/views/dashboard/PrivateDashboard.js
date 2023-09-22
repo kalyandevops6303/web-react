@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, Row } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import EarningCard from './overview/Earning';
@@ -11,22 +11,24 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { checkBidsAccepted, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
 import { selectUserData } from '../../redux/selectors/authSelectors';
-import { getItem } from '../../utility/localStorageControl';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
 import TeamListing from './overview/TeamListing';
 import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
+import OpenListing from './overview/OpenListing';
+import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [listingTeamMembersModal, setListingTeamMembersModal] = useState(null);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
@@ -49,10 +51,13 @@ const PrivateDashboard = () => {
 
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
+  const checkBidsAcceptedData = useSelector(checkBidsAccepted);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+
+    dispatch(getCheckBidsAccepted());
   }, []);
 
   const toggleCompleteProfileModal = () => {
@@ -90,6 +95,7 @@ const PrivateDashboard = () => {
     }
   };
 
+<<<<<<< HEAD
   const isInviteRead = getItem('isInviteRead');
 
   useEffect(() => {
@@ -115,6 +121,8 @@ const PrivateDashboard = () => {
     }
   }, []);
 
+=======
+>>>>>>> feature/milestone-6
   const handleRemoveMember = (data) => {
     setDeletModal(true);
     setDeleteModalData(data);
@@ -203,6 +211,12 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
+          {userDetailsData?.user_type === userTypes.client && (
+            <section className="mb-2">
+              <Header className="mb-1">Open Listings</Header>
+              <OpenListing />
+            </section>
+          )}
           {userDetailsData?.user_type === userTypes.team && (
             <section className="mb-2">
               <Header className="mb-1">Talents</Header>
@@ -225,7 +239,7 @@ const PrivateDashboard = () => {
             />
           )}
           <Alerts />
-          <Disputes handleRaiseDispute={handleRaiseDispute} />
+          {checkBidsAcceptedData?.data?.length > 0 && <Disputes handleRaiseDispute={handleRaiseDispute} />}
           <Meetings />
         </Col>
       </Row>

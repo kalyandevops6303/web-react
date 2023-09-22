@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft } from 'react-feather';
-import { Button, Card, CardBody, CardText, CardTitle, Col, Row, Table } from 'reactstrap';
+import { ChevronLeft, Info } from 'react-feather';
+import { Button, Card, CardBody, CardText, CardTitle, Col, Row, Table, UncontrolledTooltip } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import { DateTime } from 'luxon';
 import PdfIcon from '@src/assets/images/pdfimg.png';
@@ -16,6 +16,7 @@ import { formatFileSize } from '../../utility/Utils';
 import AcceptBidModal from '../modals/AccpetBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const BidDetails = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const BidDetails = () => {
     navigate(-1);
   };
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const isLoading = useSelector((state) => state.projectDetails.getBidInfoLoading);
 
   useEffect(() => {
     dispatch(getBidDetails({ bid_id: param?.bidId }));
@@ -60,6 +62,8 @@ const BidDetails = () => {
       }),
     );
   };
+
+  if (isLoading) return <ComponentSpinner />;
 
   return (
     <BidDetailsWrap>
@@ -93,6 +97,14 @@ const BidDetails = () => {
       </div>
       {acceptBidModal && (
         <AcceptBidModal
+          modalData={{
+            name:
+              bidInfo?.user_details?.user_type === userTypes.team
+                ? bidInfo?.user_details?.name
+                : `${bidInfo?.user_details?.first_name} ${bidInfo?.user_details?.last_name}`,
+            role: bidInfo?.user_details?.user_type === userTypes.team ? 'Team Name' : bidInfo?.user_details?.role?.name,
+            value: bidInfo?.total_estimated_cost,
+          }}
           modal={acceptBidModal}
           toggleModal={handleCancel}
           data={bidInfo}
@@ -102,6 +114,14 @@ const BidDetails = () => {
       )}
       {rejectBidModal && (
         <RejectBidModal
+          modalData={{
+            name:
+              bidInfo?.user_details?.user_type === userTypes.team
+                ? bidInfo?.user_details?.name
+                : `${bidInfo?.user_details?.first_name} ${bidInfo?.user_details?.last_name}`,
+            role: bidInfo?.user_details?.user_type === userTypes.team ? 'Team Name' : bidInfo?.user_details?.role?.name,
+            value: bidInfo?.total_estimated_cost,
+          }}
           modal={rejectBidModal}
           toggleModal={handleCancel}
           data={bidInfo}
@@ -128,7 +148,14 @@ const BidDetails = () => {
             <CardBody className="main-card-body bid-eta">
               <div>
                 <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
-                <CardText className="key">Total Bid Amount</CardText>
+
+                <div className="d-flex align-items-center m-0">
+                  <CardText className="key mb-0">Total Bid Amount</CardText>
+                  <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
+                  <UncontrolledTooltip className="d-none" placement="top" target="amount-info">
+                    <p className="m-0">Predetermined project cost fixed by the client</p>
+                  </UncontrolledTooltip>
+                </div>
               </div>
               <div>
                 <CardText className="value">
@@ -136,7 +163,13 @@ const BidDetails = () => {
                   {bidInfo?.total_estimated_duration?.duration_type &&
                     bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                 </CardText>
-                <CardText className="key">Estimation Duration</CardText>
+                <div className="d-flex align-items-center m-0">
+                  <CardText className="key mb-0">Estimation Duration</CardText>
+                  <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
+                  <UncontrolledTooltip className="d-none" placement="top" target="amount-info">
+                    <p className="m-0">Predetermined project cost fixed by the client</p>
+                  </UncontrolledTooltip>
+                </div>
               </div>
             </CardBody>
           </Card>

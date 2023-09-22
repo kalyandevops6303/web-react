@@ -8,13 +8,8 @@ import { ChevronLeft, ChevronRight, Plus } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
-import {
-  getUserDetails,
-  saveCheckpointComplete,
-  saveProfileDetails,
-  saveSocialProfileDetails,
-} from '../../../redux/actions/talentOnboardingActions';
-import { checkpointCompleteLoading, profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
+import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
+import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
@@ -72,7 +67,7 @@ const Social = () => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
-  const checkpointCompleteIsLoading = useSelector(checkpointCompleteLoading);
+  // const checkpointCompleteIsLoading = useSelector(checkpointCompleteLoading);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
@@ -88,17 +83,17 @@ const Social = () => {
 
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/dashboard');
+      navigate(`/${userOnboarding.talent}/payment-details`);
     } else {
-      setAccountCreatedModal(true);
+      navigate(`/${userOnboarding.talent}/payment-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/dashboard');
+      navigate(`/${userOnboarding.talent}/payment-details`);
     } else {
-      dispatch(saveCheckpointComplete(onSuccess));
+      navigate(`/${userOnboarding.talent}/payment-details`);
     }
   };
 
@@ -129,20 +124,22 @@ const Social = () => {
       social_links,
     };
 
-    if (removeEmptyKeys(reqData)) {
-      if (location?.state?.isEditing) {
-        dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
-      } else {
-        dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
-      }
-    } else {
-      // eslint-disable-next-line no-lonely-if
-      if (location?.state?.isEditing) {
-        navigate('/dashboard');
-      } else {
-        dispatch(saveCheckpointComplete(onSuccess));
-      }
-    }
+    dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+
+    // if (removeEmptyKeys(reqData)) {
+    //   if (location?.state?.isEditing) {
+    //     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    //   } else {
+    //     dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    //   }
+    // } else {
+    //   // eslint-disable-next-line no-lonely-if
+    //   if (location?.state?.isEditing) {
+    //     navigate(`/${userOnboarding.talent}/payment-details`);
+    //   } else {
+    //     dispatch(saveCheckpointComplete(onSuccess));
+    //   }
+    // }
   };
 
   const isValidURL = (url) => {
@@ -392,22 +389,12 @@ const Social = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button
-              color="primary"
-              outline
-              className="me-2"
-              onClick={onSkipClick}
-              disabled={checkpointCompleteIsLoading}
-            >
+            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
               <span className="me-50">Skip</span>
               <ChevronRight size={14} />
             </Button>
 
-            <Button
-              color="primary"
-              type="submit"
-              disabled={!isValid || profileDetailsIsLoading || checkpointCompleteIsLoading}
-            >
+            <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
               {profileDetailsIsLoading ? (
                 <Spinner size="sm" />
               ) : (

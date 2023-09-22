@@ -56,7 +56,7 @@ const MemberRow = ({ data, withReview }) => {
               <div className="me-2">
                 <span className="key">Accepted on</span>
                 <CardText className="value">
-                  {data?.invited_on ? DateTime.fromMillis(data?.invited_on).toFormat('MMM dd, yy') : '-'}
+                  {data?.accepted_date ? DateTime.fromMillis(data?.accepted_date).toFormat('MMM dd, yy') : '-'}
                 </CardText>
               </div>
               <div className="me-1 d-none">

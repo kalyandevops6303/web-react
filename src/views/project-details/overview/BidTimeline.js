@@ -35,6 +35,7 @@ const BidTimeline = () => {
   const isNDA = useSelector(selectIsNDA);
   const projectDetailsData = useSelector(projectDetails);
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const bidInfoError = useSelector((state) => state.projectDetails.errorBidInfo);
 
   const userType = useSelector(selectUserType);
 
@@ -209,6 +210,7 @@ const BidTimeline = () => {
             )}
         </div>
       )}
+      {bidInfoError && <Timeline data={bidStageData} />}
     </BidTimelineWrapper>
   );
 };

@@ -83,20 +83,19 @@ const Social = () => {
       navigate(`/${userOnboarding.client}/availability-details`);
     }
   };
-
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/dashboard');
+      navigate(`/${userOnboarding.talent}/payment-details`);
     } else {
-      setAccountCreatedModal(true);
+      navigate(`/${userOnboarding.talent}/payment-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/dashboard');
+      navigate(`/${userOnboarding.talent}/payment-details`);
     } else {
-      dispatch(saveCheckpointComplete(onSuccess));
+      navigate(`/${userOnboarding.talent}/payment-details`);
     }
   };
 
@@ -390,22 +389,12 @@ const Social = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button
-              color="primary"
-              outline
-              className="me-2"
-              onClick={onSkipClick}
-              disabled={checkpointCompleteIsLoading}
-            >
+            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
               <span className="me-50">Skip</span>
               <ChevronRight size={14} />
             </Button>
 
-            <Button
-              color="primary"
-              type="submit"
-              disabled={!isValid || profileDetailsIsLoading || checkpointCompleteIsLoading}
-            >
+            <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
               {profileDetailsIsLoading ? (
                 <Spinner size="sm" />
               ) : (

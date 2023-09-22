@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const BadgeGroupWrap = styled.div`
+  overflow: hidden;
   .badge-box-wrap {
     .info-key {
       font-weight: 400;

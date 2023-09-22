@@ -382,10 +382,19 @@ const PreviewSectionWrapper = styled.div`
   }
 `;
 
+const InfoContainer = styled.div`
+  background-color: ${theme.infoBannerBg};
+  color: ${theme.blueBorderColor};
+  padding: 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 0.75rem;
+`;
+
 export {
   LeftSidebarProjectDetailsWrapper,
   ProgressBarWrapper,
   TeamSectionWrapper,
   MilestoneSectionWrapper,
   PreviewSectionWrapper,
+  InfoContainer,
 };

@@ -8,7 +8,7 @@ import { DeleteModalWrapper } from './style';
 import { terminateContract } from '../../redux/actions/projectDetailsAction';
 import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
 
-const TerminateContractModal = ({ project_id, docType, terminateData, modal, toggleModal }) => {
+const TerminateContractModal = ({ project_id, docType, modalData, modal, toggleModal }) => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.projectDetails.terminateContractLoading);
   const projectInfo = useSelector(projectDetails);
@@ -42,12 +42,12 @@ const TerminateContractModal = ({ project_id, docType, terminateData, modal, tog
                   isContractView ? 'contract' : 'NDA'
                 }? You will have to upload or sign a new ${isContractView ? 'contract' : 'NDA'}.`}
               </CardText>
-              <section className="d-flex gap-2 stats">
-                <div>
-                  <CardText className="value mb-25">{terminateData?.name || 'Talent/Team name'}</CardText>
+              <section className="d-none d-flex gap-2 stats">
+                <div style={{ minWidth: '10rem' }}>
+                  <CardText className="value mb-25">{modalData?.name || 'Talent/Team name'}</CardText>
                   <small className="key">Talent/Team name</small>
                 </div>
-                <div>
+                <div className="d-none">
                   <CardText className="value mb-25">$-</CardText>
                   <small className="key">Project value</small>
                 </div>
@@ -73,7 +73,7 @@ export default TerminateContractModal;
 TerminateContractModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  terminateData: Proptypes.object,
+  modalData: Proptypes.object,
   docType: Proptypes.string,
   project_id: Proptypes.string,
 };
@@ -81,7 +81,7 @@ TerminateContractModal.propTypes = {
 TerminateContractModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  terminateData: {},
+  modalData: {},
   docType: '',
   project_id: '',
 };

@@ -16,6 +16,7 @@ import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -36,6 +37,8 @@ const LeftSidebarProjectDetails = () => {
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
+    ON_GOING: 'On Going',
+    COMPLETED: 'COMPLETED',
   };
 
   const isLoading = useSelector(projectDetailsLoading);
@@ -104,9 +107,9 @@ const LeftSidebarProjectDetails = () => {
             <div>
               <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
               <div className="d-flex flex-wrap">
-                <RatingBadge number={projectDetailsData?.client_details?.rating} />
+                <RatingBadge number={returnFormattedRating(projectDetailsData?.client_details?.rating) || 0} />
                 <CardText className="ps-75 font-small-2 fw-300 rating-label">
-                  {projectDetailsData?.client_details?.projects_listed_count} Projects
+                  {projectDetailsData?.client_details?.projects_listed_count || 0} Projects
                 </CardText>
               </div>
             </div>
@@ -144,7 +147,7 @@ const LeftSidebarProjectDetails = () => {
           <div className="d-flex">
             {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
               <BadgeGroup
-                title="Skills"
+                title="Tags"
                 data={[
                   ...(projectDetailsData?.proficiency?.skills || []),
                   ...(projectDetailsData?.proficiency?.tools || []),

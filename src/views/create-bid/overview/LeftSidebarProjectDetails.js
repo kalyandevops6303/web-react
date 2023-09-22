@@ -6,7 +6,7 @@ import MoneyIcon from '@src/assets/images/money.png';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Paperclip } from 'react-feather';
-import BadgeGroup from '../../../@core/components/badge-group';
+import BadgeGroup from '../../../@core/components/badge-group-dynamic-count';
 import { LeftSidebarProjectDetailsWrapper } from '../style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { CustomBadge } from '../../styled';
@@ -14,6 +14,7 @@ import { getProjectDetails } from '../../../redux/actions/createBidActions';
 import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -35,13 +36,9 @@ const LeftSidebarProjectDetails = () => {
   }, []);
 
   const [daysLeft, setDaysLeft] = useState(0);
-  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (projectDetailsData) {
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      setTags([...projectDetailsData?.proficiency?.skills, ...projectDetailsData?.proficiency?.tools]);
-
       setDaysLeft(
         Math.max(
           0,
@@ -90,9 +87,9 @@ const LeftSidebarProjectDetails = () => {
             <div>
               <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
               <div className="d-flex flex-wrap">
-                <RatingBadge number={projectDetailsData?.client_details?.rating} />
+                <RatingBadge number={returnFormattedRating(projectDetailsData?.client_details?.rating) || 0} />
                 <CardText className="ps-75 font-small-2 fw-300 rating-label">
-                  {projectDetailsData?.client_details?.projects_listed_count} Projects
+                  {projectDetailsData?.client_details?.projects_listed_count || 0} Projects
                 </CardText>
               </div>
             </div>
@@ -136,7 +133,18 @@ const LeftSidebarProjectDetails = () => {
             )}
           </div>
 
-          <BadgeGroup inline color="light-blue" title="Tags" data={tags} />
+          <div className="d-flex">
+            {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
+              <BadgeGroup
+                title="Tags"
+                data={[
+                  ...(projectDetailsData?.proficiency?.skills || []),
+                  ...(projectDetailsData?.proficiency?.tools || []),
+                ]}
+                color="light-blue"
+              />
+            )}
+          </div>
 
           <div className="project-desc mb-75">
             <div className="project-desc-title">Description:</div>

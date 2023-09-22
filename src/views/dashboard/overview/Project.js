@@ -169,7 +169,7 @@ const Project = ({ open, data, className, recommended }) => {
                   imgWidth: 33,
                 },
               ]}
-              isAlma={data?.client_info?.is_alma_matter}
+              isAlma={data?.client_info?.is_alma_mater}
             />
             {!recommended && <UserSection tagName="Team" name={data.teamName} users={avatarGroupArr} />}
           </div>

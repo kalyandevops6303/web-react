@@ -48,6 +48,57 @@ const selectTeamInvitationLoading = createSelector(dashboardSelector, (dashboard
 const selectGetMyTeam = createSelector(dashboardSelector, (dashboard) => dashboard.getMyTeam);
 const selectGetMyTeamLoading = createSelector(dashboardSelector, (dashboard) => dashboard.getMyTeamLoading);
 
+const activeProjectsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.activeProjectsForClient);
+const activeProjectsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.activeProjectsForClientLoading,
+);
+
+const upcomingProjectsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.upcomingProjectsForClient);
+const upcomingProjectsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.upcomingProjectsForClientLoading,
+);
+
+const projectsBidsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.projectsBidsForClient);
+const projectsBidsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.projectsBidsForClientLoading,
+);
+
+const recommendedTeamsForClient = createSelector(dashboardSelector, (dashboard) => dashboard.recommendedTeamsForClient);
+const recommendedTeamsForClientLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.recommendedTeamsForClientLoading,
+);
+
+const checkBidsAccepted = createSelector(dashboardSelector, (dashboard) => dashboard.checkBidsAccepted);
+const checkBidsAcceptedLoading = createSelector(dashboardSelector, (dashboard) => dashboard.checkBidsAcceptedLoading);
+
+const activeProjectsForTalent = createSelector(dashboardSelector, (dashboard) => dashboard.activeProjectsForTalent);
+const activeProjectsForTalentLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.activeProjectsForTalentLoading,
+);
+
+const upcomingProjectsForTalent = createSelector(dashboardSelector, (dashboard) => dashboard.upcomingProjectsForTalent);
+const upcomingProjectsForTalentLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.upcomingProjectsForTalentLoading,
+);
+
+const activeProjectsForTeam = createSelector(dashboardSelector, (dashboard) => dashboard.activeProjectsForTeam);
+const activeProjectsForTeamLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.activeProjectsForTeamLoading,
+);
+
+const upcomingProjectsForTeam = createSelector(dashboardSelector, (dashboard) => dashboard.upcomingProjectsForTeam);
+const upcomingProjectsForTeamLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.upcomingProjectsForTeamLoading,
+);
+
 export {
   userData,
   userDataLoading,
@@ -69,4 +120,22 @@ export {
   selectTeamInvitationLoading,
   selectGetMyTeam,
   selectGetMyTeamLoading,
+  activeProjectsForClient,
+  activeProjectsForClientLoading,
+  upcomingProjectsForClient,
+  upcomingProjectsForClientLoading,
+  projectsBidsForClient,
+  projectsBidsForClientLoading,
+  recommendedTeamsForClient,
+  recommendedTeamsForClientLoading,
+  checkBidsAccepted,
+  checkBidsAcceptedLoading,
+  activeProjectsForTalent,
+  activeProjectsForTalentLoading,
+  upcomingProjectsForTalent,
+  upcomingProjectsForTalentLoading,
+  activeProjectsForTeam,
+  activeProjectsForTeamLoading,
+  upcomingProjectsForTeam,
+  upcomingProjectsForTeamLoading,
 };

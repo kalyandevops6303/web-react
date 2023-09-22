@@ -1,5 +1,6 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
-import { ChevronRight } from 'react-feather';
+import { ChevronRight, FileText } from 'react-feather';
 import React from 'react';
 import Proptypes from 'prop-types';
 import {
@@ -76,6 +77,7 @@ const ProjectModal = ({
   setCreateBidModal,
   setSelectedProject,
   toggleCompleteProfileModal,
+  isMyTeam,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -83,6 +85,8 @@ const ProjectModal = ({
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
+
+  const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
 
   const onNoBidFound = () => {
     toggleModal();
@@ -139,6 +143,15 @@ const ProjectModal = ({
     }
   };
 
+  const renderFileSize = (size) => {
+    if (Math.round(size / 100) / 10 > 1000) {
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
+      // eslint-disable-next-line
+    } else {
+      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
+    }
+  };
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -159,15 +172,15 @@ const ProjectModal = ({
               <Row className="mb-2">
                 <Col lg="5">
                   <div>
-                    <CardTitle className="mb-25 fw-bolder">{data?.name}</CardTitle>
+                    <CardTitle className="mb-25 fw-bolder">{data?.name ?? data?.details?.name}</CardTitle>
                     <CardText className="project-name">Project Name</CardText>
                   </div>
                 </Col>
                 <Col lg="3">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
-                      {data?.expected_duration?.duration}
-                      {data?.expected_duration?.duration_type?.charAt(0)?.toLowerCase()}
+                      {expextedDuration?.duration}
+                      {expextedDuration?.duration_type?.charAt(0)?.toLowerCase()}
                     </CardTitle>
                     <CardText className="project-name">Expected Duration</CardText>
                   </div>
@@ -232,9 +245,44 @@ const ProjectModal = ({
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <CardText className="fw-300 ms-75 project-desc"> {data?.description} </CardText>
+              <CardText className="fw-300 ms-75 project-desc" style={{ whiteSpace: 'pre-line' }}>
+                {' '}
+                {data?.details?.description}{' '}
+              </CardText>
             </CardBody>
           </Card>
+
+          {data?.details?.documents?.length > 0 && (
+            <Card>
+              <CardBody>
+                {data?.details?.documents.map((document, index) => (
+                  <Row
+                    key={document.file_key}
+                    className={
+                      // eslint-disable-next-line no-unsafe-optional-chaining
+                      index !== data?.details?.documents.length - 1
+                        ? 'd-flex align-items-center mb-1'
+                        : 'd-flex align-items-center'
+                    }
+                  >
+                    <Col sm="6" md="6" lg="8">
+                      <a href={document?.download_url} target="_blank" rel="noopener noreferrer">
+                        <FileText size="18" className="me-75 mb-50" />
+                        {document?.file_name}
+                      </a>
+                    </Col>
+                    <Col sm="6" md="6" lg="2" className="text-end">
+                      {renderFileSize(document?.size)}
+                    </Col>
+                    <Col sm="6" md="6" lg="2" className="text-end">
+                      {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')}
+                    </Col>
+                  </Row>
+                ))}
+              </CardBody>
+            </Card>
+          )}
+
           <Card>
             <CardHeader>
               <CardTitle className="mb-0 d-flex justify-content-between w-100">
@@ -247,10 +295,10 @@ const ProjectModal = ({
             </CardBody>
           </Card>
 
-          {isViewable ? (
+          {isMyTeam ? null : isViewable && data?.bid_status !== 'DRAFT' ? (
             <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
               <Button onClick={handleRedirectTodetailsView} color="primary">
-                <span className="me-50">View Bid</span>
+                <span className="me-50">View</span>
                 <ChevronRight size={14} />
               </Button>
             </div>
@@ -262,16 +310,19 @@ const ProjectModal = ({
                   <Button color="flat-danger" className=" d-none me-1">
                     Report
                   </Button>
-                  <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
-                    {checkBidLoadingIsLoading ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <>
-                        <span className="me-50">Create Bid</span>
-                        <ChevronRight size={14} />
-                      </>
-                    )}
-                  </Button>
+
+                  {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') && (
+                    <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
+                      {checkBidLoadingIsLoading ? (
+                        <Spinner size="sm" />
+                      ) : (
+                        <>
+                          <span className="me-50">Create Bid</span>
+                          <ChevronRight size={14} />
+                        </>
+                      )}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
@@ -286,6 +337,7 @@ export default ProjectModal;
 
 ProjectModal.propTypes = {
   modal: Proptypes.bool,
+  isMyTeam: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
   setCreateBidModal: Proptypes.func,
@@ -295,6 +347,7 @@ ProjectModal.propTypes = {
 
 ProjectModal.defaultProps = {
   modal: false,
+  isMyTeam: false,
   toggleModal: () => {},
   data: {},
   setCreateBidModal: () => {},

@@ -1,4 +1,5 @@
 import ShowToastMessage from '../../@core/components/toast';
+import { makeFavService, removeFavService } from '../../services/profileServices';
 import {
   acceptInvitation,
   checkDocumentActivatedService,
@@ -49,9 +50,11 @@ import {
   getUnassignedRoleFailure,
   getUnassignedRoleRequest,
   getUnassignedRoleSuccess,
+  makeFavSuccess,
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
+  removeFavSuccess,
   removeWorkerFailure,
   removeWorkerRequest,
   removeWorkerSuccess,
@@ -140,7 +143,9 @@ const getBidDetails =
       }
       dispatch(getBidInfoSuccess(res.data.data));
     } catch (error) {
-      errorHandler(error, getBidInfoFailure);
+      // errorHandler(error, getBidInfoFailure);
+      dispatch(getBidInfoFailure(error));
+      console.error(error);
     }
   };
 
@@ -311,7 +316,26 @@ const updateContract =
     }
   };
 
+const makeFavourite = (id, user_type) => async (dispatch) => {
+  try {
+    await makeFavService(id, user_type);
+    dispatch(makeFavSuccess());
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+const removeFavourite = (id) => async (dispatch) => {
+  try {
+    await removeFavService({ user_id: id });
+    dispatch(removeFavSuccess());
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 export {
+  makeFavourite,
+  removeFavourite,
   getInvitedMember,
   checkDocumentActivated,
   getDocumentTimeline,

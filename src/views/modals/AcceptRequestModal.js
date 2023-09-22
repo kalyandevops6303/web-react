@@ -22,15 +22,24 @@ const AcceptRequestModal = ({ title, isLoading, data, onAccept, modal, toggleMod
               <CardSubtitle className="mb-75 fw-bold subtitle">Accept request</CardSubtitle>
 
               <CardText className="desc fw-light">
-                By accepting this request you will be added to that team/project by
+                {`By accepting this request ${
+                  title === 'Team Join Request' ? 'this user' : 'you'
+                } will be added to the `}
+                {title === 'Team Invitation Request' || title === 'Team Join Request' ? 'team' : 'project and team'}
               </CardText>
               <section className="d-flex gap-2 stats">
                 <div>
-                  <CardText className="value mb-25">
-                    {`${data?.request_from?.first_name} ${data?.request_from?.last_name}` || 'Talent/Team name'}
-                  </CardText>
-                  <small className="key">{data?.request_from?.role}</small>
+                  <CardText className="value mb-25">{`${
+                    data?.request_for?.team_name || data?.request_for?.project_name
+                  }`}</CardText>
+                  <small className="key">{data?.request_for?.team_name ? 'Team name' : 'Project name'}</small>
                 </div>
+                {title === 'Project Team Invitation Request' && (
+                  <div>
+                    <CardText className="value mb-25">{`${data?.request_from?.team_name}`}</CardText>
+                    <small className="key">{data?.request_from?.team_name ? 'Team name' : ''}</small>
+                  </div>
+                )}
                 <div className="d-none">
                   <CardText className="value mb-25">$-</CardText>
                   <small className="key">Project value</small>

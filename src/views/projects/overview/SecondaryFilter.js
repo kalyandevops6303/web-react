@@ -15,7 +15,7 @@ import '../../custom-styles.scss';
 import NoDataFoundComponent from './NoDataFoundComp';
 
 // eslint-disable-next-line react/prop-types
-const SecondaryFilters = ({ primaryFilter }) => {
+const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
   const dispatch = useDispatch();
   const popoverRef = useRef(null);
@@ -29,11 +29,6 @@ const SecondaryFilters = ({ primaryFilter }) => {
   const metaData = { page: 1, page_size: 10 };
 
   const [popoverOpen, setPopoverOpen] = useState(false);
-
-  // Function to toggle the popover
-  // const togglePopover = () => {
-  //   setPopoverOpen(!popoverOpen);
-  // };
 
   const onSuccess = () => {};
   const onError = () => {
@@ -80,7 +75,16 @@ const SecondaryFilters = ({ primaryFilter }) => {
   }, [currentPreview]);
 
   useEffect(() => {
-    dispatch(getProjectListing({ searchText, metaData, onSuccess, onError, primaryFilter }));
+    dispatch(
+      getProjectListing({
+        searchText,
+        metaData,
+        onSuccess,
+        onError,
+        primaryFilter,
+        userType,
+      }),
+    );
   }, [searchText, primaryFilter]);
 
   const inputRef = useRef();
@@ -89,10 +93,19 @@ const SecondaryFilters = ({ primaryFilter }) => {
     const newMetaData = {
       ...metaData,
       // eslint-disable-next-line no-unsafe-optional-chaining
-      page: selectProjectData?.current_page + 1 || 1,
+      page: selectProjectMetaData?.current_page + 1 || 1,
     };
 
-    dispatch(getProjectListing({ searchText, metaData: newMetaData, onSuccess, onError, primaryFilter }));
+    dispatch(
+      getProjectListing({
+        searchText,
+        metaData: newMetaData,
+        onSuccess,
+        onError,
+        primaryFilter,
+        userType,
+      }),
+    );
   };
 
   return (
@@ -152,9 +165,11 @@ const SecondaryFilters = ({ primaryFilter }) => {
 
 SecondaryFilters.propTypes = {
   primaryFilter: PropTypes.string,
+  userType: PropTypes.string,
 };
 SecondaryFilters.defaultProps = {
   primaryFilter: '',
+  userType: '',
 };
 
 export default SecondaryFilters;

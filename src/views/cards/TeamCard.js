@@ -4,23 +4,22 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
-import hat from '@src/assets/images/hat.png';
+import hat from '@src/assets/images/hat.svg';
 import { Heart } from 'react-feather';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import DateTime from '../../lib/date-time';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { TeamCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
 
-const Team = ({ data }) => {
+const Team = ({ data, isSearchPage }) => {
   const dispatch = useDispatch();
   const users = [];
   data?.team_members?.map((user) =>
     users.push({
-      title: `${user?.full_name}` || 'user',
-      img: user?.profile_picture || avatar7,
+      title: `${user?.full_name ?? user?.first_name}` || 'user',
+      img: (user?.profile_picture ?? user?.image_uri) || avatar7,
       placement: 'bottom',
       imgHeight: 33,
       imgWidth: 33,
@@ -28,10 +27,10 @@ const Team = ({ data }) => {
   );
 
   const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
+    dispatch(makeFavFromMarketplace({ user_id: data?._id, user_type: data?.user_type }));
   };
   const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
+    dispatch(removeFavFromMarketplace({ team_id: data?._id }));
   };
 
   const giveStrokeColor = (percentage) => {
@@ -57,9 +56,9 @@ const Team = ({ data }) => {
                     <span>{data?.name}</span>
                   </Link>
                 </CardTitle>
-                <span className="me-3">
+                {/* <span className="me-3">
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
-                </span>
+                </span> */}
               </div>
               <CardText className="team-desc mb-1">{data?.introduction} </CardText>
 
@@ -80,24 +79,26 @@ const Team = ({ data }) => {
             <div className="w-25">
               <div className="d-flex flex-column align-items-start">
                 <div className="d-flex w-100 justify-content-end gap-1">
-                  {true && (
+                  {data?.is_alma_mater && (
                     <Badge className="bg-white" style={{ marginTop: '-3px' }}>
                       <img src={hat} alt="client-badge" width={20} height={20} />
                     </Badge>
                   )}
-                  <div className="mb-25">
-                    {data?.is_favorite ? (
-                      <Heart
-                        className="cursor-pointer d-flex heart"
-                        fill={theme.red}
-                        stroke={theme.red}
-                        onClick={handleUnLike}
-                        size={20}
-                      />
-                    ) : (
-                      <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
-                    )}
-                  </div>
+                  {!isSearchPage && (
+                    <div className="mb-25">
+                      {data?.is_favorite ? (
+                        <Heart
+                          className="cursor-pointer d-flex heart"
+                          fill={theme.red}
+                          stroke={theme.red}
+                          onClick={handleUnLike}
+                          size={20}
+                        />
+                      ) : (
+                        <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                      )}
+                    </div>
+                  )}
                   {data?.match_percentage ? (
                     <div style={{ width: '35px', height: '35px', marginTop: '-8px' }}>
                       <CircularProgressbarWithChildren
@@ -142,8 +143,10 @@ const Team = ({ data }) => {
 
 Team.propTypes = {
   data: PropTypes.object,
+  isSearchPage: PropTypes.bool,
 };
 Team.defaultProps = {
   data: {},
+  isSearchPage: false,
 };
 export default Team;
