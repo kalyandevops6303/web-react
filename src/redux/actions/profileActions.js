@@ -72,7 +72,9 @@ const removeFavourite = (id) => async (dispatch) => {
 const getRecentProjects =
   ({ user_id, entity, metadata }) =>
   async (dispatch) => {
-    dispatch(getRecentProjectRequest());
+    if (metadata?.page === 1) {
+      dispatch(getRecentProjectRequest());
+    }
     try {
       const res = await getRecentProjectService({ user_id, entity, metadata });
       dispatch(getRecentProjectSuccess(res.data.data));
@@ -84,7 +86,9 @@ const getRecentProjects =
 const getReview =
   ({ user_id, entity, metadata }) =>
   async (dispatch) => {
-    dispatch(getReviewRequest());
+    if (metadata?.page === 1) {
+      dispatch(getReviewRequest());
+    }
     try {
       const res = await getReviewService({ user_id, entity, metadata });
       dispatch(getReviewSuccess(res.data.data));

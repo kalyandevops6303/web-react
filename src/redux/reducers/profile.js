@@ -49,7 +49,12 @@ const profileSlice = createSlice({
     getRecentProjectSuccess: (state, action) => ({
       ...state,
       isRecentProjectLoading: false,
-      userRecentProject: action.payload,
+      userRecentProjectCurrentPreview: action.payload.data,
+      userRecentProject:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.userRecentProject, ...action.payload.data],
+      userRecentProjectMetaData: action.payload.metadata,
     }),
     getRecentProjectFailure: (state, action) => ({
       ...state,
@@ -65,7 +70,12 @@ const profileSlice = createSlice({
     getReviewSuccess: (state, action) => ({
       ...state,
       isReviewLoading: false,
-      userReview: action.payload,
+      userReviewCurrentPreview: action.payload.data,
+      userReview:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.userReview, ...action.payload.data],
+      userReviewMetaData: action.payload.metadata,
     }),
     getReviewFailure: (state, action) => ({
       ...state,
