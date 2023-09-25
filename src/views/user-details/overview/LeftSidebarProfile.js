@@ -540,7 +540,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                     </div>
                   )}
                 {!isEditable && (
-                  <Button className="w-50" color="primary">
+                  <Button className="w-50" color="primary" onClick={onMessageClick}>
                     Message
                   </Button>
                 )}

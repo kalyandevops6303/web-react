@@ -37,7 +37,9 @@ const App = () => {
 
   const loginUser = async (authToken) => {
     await CometChat.login(authToken);
+    console.log('LOGGED IN COMETCHAT');
     const fcmCometToken = await requestPermission();
+    console.log('FCM TOKEN', fcmCometToken);
     await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
       fcmToken: fcmCometToken,
     });
@@ -78,6 +80,8 @@ const App = () => {
     };
   }, []);
   messaging?.onMessage((payload) => {
+    const notificationTitle = payload.data.message;
+    console.log('PAYLOAD COMET', JSON.parse(notificationTitle));
     if (!('Notification' in window)) {
       console.warn('This browser does not support system notifications.');
     } else if (Notification.permission === 'granted') {

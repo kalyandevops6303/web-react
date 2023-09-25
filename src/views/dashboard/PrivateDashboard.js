@@ -95,34 +95,6 @@ const PrivateDashboard = () => {
     }
   };
 
-<<<<<<< HEAD
-  const isInviteRead = getItem('isInviteRead');
-
-  useEffect(() => {
-    if (!isInviteRead) {
-      const redirectionFunction = () => {
-        const inviteId = getItem('inviteId');
-        const projectId = getItem('projectId');
-        const status = getItem('requestStatus');
-        if (status === 'Project Invitation Request') {
-          navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
-        }
-        if (status === 'Team Invitation Request') {
-          navigate(`/team-invitation/${inviteId}`);
-        }
-        if (status === 'Project Team Invitation Request') {
-          navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-        }
-        if (status === 'Team Join Request') {
-          navigate(`/join-request/${inviteId}`);
-        }
-      };
-      redirectionFunction();
-    }
-  }, []);
-
-=======
->>>>>>> feature/milestone-6
   const handleRemoveMember = (data) => {
     setDeletModal(true);
     setDeleteModalData(data);

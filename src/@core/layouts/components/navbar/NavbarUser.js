@@ -26,7 +26,6 @@ const NavbarUser = () => {
     isNotificationCount && dispatch(notificationCount(false));
   };
 
-<<<<<<< HEAD
   const handleChatNavigate = () => {
     navigate(`/chat`, {
       state: { targetId: undefined },
@@ -37,8 +36,6 @@ const NavbarUser = () => {
     setUserUnreadMsgCount(Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0));
   });
 
-=======
->>>>>>> feature/milestone-6
   return (
     <ul className="nav navbar-nav align-items-center ms-auto">
       <NavbarSearch />
