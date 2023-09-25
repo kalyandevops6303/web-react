@@ -17,12 +17,13 @@ import theme from '../../../../configs/themeVariables';
 import { returnFilteredDropdownOptions } from '../../../../utility/Utils';
 import { countriesService } from '../../../../services/staticServices';
 import { getStates, getCities } from '../../../../redux/actions/staticActions';
-import { updatePaymentDetails } from '../../../../redux/actions/paymentActions';
+import { setupStripeAccount, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
 import { states, statesLoading, cities, citiesLoading } from '../../../../redux/selectors/staticSelectors';
 import CertificationUS from './CertificationUs';
 import CertificationNonUs from './CertificationNonUs';
 import AccountCreatedModal from '../../AccountCreatedModal';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
+import { userData } from '../../../../redux/selectors/dashboardSelectors';
 
 import { formSchema, usWFormsSchema } from '../Schema';
 
@@ -48,6 +49,7 @@ const Step3 = ({ setStep }) => {
   const statesIsLoading = useSelector(statesLoading);
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
+  const userDetailsData = useSelector(userData);
 
   const {
     control,
@@ -136,12 +138,27 @@ const Step3 = ({ setStep }) => {
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
-  const onSuccess = () => {
+  const onAccountCreationSuccess = () => {
     if (location?.state?.isEditing) {
       navigate('/dashboard');
     } else {
       setAccountCreatedModal(true);
     }
+  };
+
+  const onSuccess = () => {
+    const stripeData = {
+      country: userDetailsData?.phone_country?.code,
+      email: userDetailsData?.email,
+      individual: {
+        first_name: userDetailsData?.talent_info?.first_name,
+        last_name: userDetailsData?.talent_info?.last_name,
+      },
+      user_id: userDetailsData?._id,
+      refresh_url: '',
+      return_url: '',
+    };
+    dispatch(setupStripeAccount(stripeData, onAccountCreationSuccess));
   };
 
   useEffect(() => {

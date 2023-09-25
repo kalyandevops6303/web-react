@@ -57,7 +57,7 @@ const MyTeams = () => {
     'my-teams': 'All Teams',
     invitations: 'Invited',
     'join-requests': 'Join Request',
-    favourites: 'Favorite',
+    favourites: 'Favourite',
   };
 
   return (
