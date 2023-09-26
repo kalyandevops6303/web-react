@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input, Label, Row, FormFeedback } from 'reactstrap';
+import { Button, Col, Form, Card, CardBody, CardHeader, Input, Label, Row, FormFeedback, Spinner } from 'reactstrap';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { useForm, Controller } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import * as Yup from 'yup';
 import classNames from 'classnames';
@@ -29,6 +29,8 @@ const Step2 = ({ setStep }) => {
   const [taxUserType, setTaxUserType] = useState('US');
   const [selectedTaxId, setSelectedTaxId] = useState('taxOption1');
 
+  const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,6 +46,7 @@ const Step2 = ({ setStep }) => {
         label: Yup.string().required('Tax classification is required'),
         value: Yup.string().required('This is required'),
       })
+      .transform((value) => (value === null ? undefined : value))
       .required('This is required'),
     taxId: Yup.string().required('Tax Id is required'),
   });
@@ -72,7 +75,10 @@ const Step2 = ({ setStep }) => {
         setValue('taxName', res.tax_identification?.legal_name);
       }
       if (res.tax_identification?.federal_tax_classification?.length > 0) {
-        setValue('taxClass', res.tax_identification?.federal_tax_classification);
+        setValue('taxClass', {
+          label: 'Individual',
+          value: res.tax_identification?.federal_tax_classification,
+        });
       }
       if (res.tax_identification?.social_security_number?.length > 0) {
         setValue('taxId', res.tax_identification?.social_security_number);
@@ -132,17 +138,17 @@ const Step2 = ({ setStep }) => {
         federal_tax_classification: data?.taxClass?.value,
         social_security_number: selectedTaxId === 'taxOption1' ? data?.taxId : '',
         employee_identification_number: selectedTaxId === 'taxOption2' ? data?.taxId : '',
-        national_taxpayer_number: taxUserType === 'non_us_person' ? data?.taxId : '',
+        national_taxpayer_number: taxUserType === 'NON_US' ? data?.taxId : '',
       },
     };
 
-    const newData = {
+    const updatedData = {
       talent_info: {
         ...taxDetails,
       },
     };
 
-    dispatch(updatePaymentDetails(newData, onSuccess));
+    dispatch(updatePaymentDetails(updatedData, onSuccess));
   };
 
   return (
@@ -220,7 +226,7 @@ const Step2 = ({ setStep }) => {
                       placeholder="Individual"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
-                        'is-invalid': errors && errors.taxClass?.label,
+                        'is-invalid': errors && errors.taxClass?.value,
                       })}
                       {...field}
                     />
@@ -353,16 +359,20 @@ const Step2 = ({ setStep }) => {
                   : !confirmSign.checkbox1 || !confirmSign.checkbox2 || !isDocumentConfirmed
               }
             >
-              <>
-                <span className="me-50">
-                  {taxUserType === 'US'
-                    ? 'STEP 3 - US-W-9 form'
-                    : taxUserType === 'NON_US' && selectedTaxId === 'taxOption2'
-                    ? 'Email Customer Support'
-                    : 'STEP 3 - US-W-8 form'}
-                </span>
-                <ChevronRight size={14} />
-              </>
+              {paymentDetailsLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span className="me-50">
+                    {taxUserType === 'US'
+                      ? 'STEP 3 - US-W-9 form'
+                      : taxUserType === 'NON_US' && selectedTaxId === 'taxOption2'
+                      ? 'Email Customer Support'
+                      : 'STEP 3 - US-W-8 form'}
+                  </span>
+                  <ChevronRight size={14} />
+                </>
+              )}
             </Button>
           </div>
         </div>

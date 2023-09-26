@@ -28,7 +28,11 @@ import {
   saveProfileDetails as saveTalentProfileDetails,
   saveTalentAccountDetails,
 } from '../../redux/actions/talentOnboardingActions';
-import { talentAccountDetailsLoading, userDetails } from '../../redux/selectors/talentOnboardingSelectors';
+import {
+  talentAccountDetailsLoading,
+  userDetails,
+  profileDetailsLoading,
+} from '../../redux/selectors/talentOnboardingSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import {
   saveClientAccountDetails,
@@ -83,6 +87,7 @@ const Account = () => {
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
+  const profileDetailsIsLoading = useSelector(profileDetailsLoading);
 
   const [resetPasswordModal, setResetPasswordModal] = useState(null);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
@@ -392,7 +397,7 @@ const Account = () => {
                 : !isValid || clientAccountDetailsIsLoading)
             }
           >
-            {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
+            {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading || profileDetailsIsLoading ? (
               <Spinner size="sm" />
             ) : (
               <>

@@ -1,5 +1,5 @@
 import errorHandler from '../../utility/errorHandler';
-import { paymentDetailsSuccess, paymentDetailsFailure, paymentDetailsRequest } from '../reducers/paymentData';
+import { paymentDetailsSuccess, paymentDetailsFailure, paymentDetailsRequest } from '../reducers/paymentDetails';
 import {
   createUserService,
   updateUserService,

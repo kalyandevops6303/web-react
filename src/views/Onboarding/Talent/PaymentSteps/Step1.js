@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input } from 'reactstrap';
+import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner } from 'reactstrap';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
@@ -20,6 +20,8 @@ const Step1 = ({ setStep }) => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [isWorkingInUS, setIsWorkingInUS] = useState(false);
   const [taxUserType, setTaxUserType] = useState('US');
+
+  const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
@@ -67,16 +69,23 @@ const Step1 = ({ setStep }) => {
       e.preventDefault();
       return;
     }
-    const newData = {
-      talent_info: {
-        tax_user_type: taxUserType,
-        is_working_in_us: isWorkingInUS,
-      },
-    };
 
     if (location?.state?.isEditing) {
+      const newData = {
+        talent_info: {
+          tax_user_type: taxUserType,
+          is_working_in_us: isWorkingInUS,
+        },
+      };
+
       dispatch(updatePaymentDetails(newData, onSuccess));
     } else {
+      const newData = {
+        talent_info: {
+          tax_user_type: taxUserType,
+          is_working_in_us: isWorkingInUS,
+        },
+      };
       dispatch(savePaymentDetails(newData, onSuccess));
     }
   };
@@ -172,12 +181,16 @@ const Step1 = ({ setStep }) => {
               <ChevronRight size={14} />
             </Button>
             <Button color="primary" onClick={handleNextClick}>
-              <>
-                <span className="me-50">
-                  {taxUserType === 'STUDENT' ? 'Email Support Team' : 'STEP 2 - Taxpayer Identification'}
-                </span>
-                <ChevronRight size={14} />
-              </>
+              {paymentDetailsLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span className="me-50">
+                    {taxUserType === 'STUDENT' ? 'Email Support Team' : 'STEP 2 - Taxpayer Identification'}
+                  </span>
+                  <ChevronRight size={14} />
+                </>
+              )}
             </Button>
           </div>
         </div>
