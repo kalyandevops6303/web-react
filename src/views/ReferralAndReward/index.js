@@ -9,6 +9,7 @@ import DataTable from 'react-data-table-component';
 import { NotesContainer, TableContainer } from './style';
 import Statbox from '../user-details/overview/Statbox';
 import DateTime from '../../lib/date-time';
+import ReferNowModal from './overview/ReferNowModal';
 
 const ReferralAndReward = () => {
   // const dispatch = useDispatch();
@@ -22,6 +23,11 @@ const ReferralAndReward = () => {
   const routesMatch = useMatch('/referral-reward/all');
 
   const [primaryFilter, setPrimaryFilter] = useState(routesMatch?.pathname?.split('/')?.[2]);
+  const [referNowModal, setReferNowModal] = useState(null);
+
+  const toggleReferNowModal = () => {
+    setReferNowModal(!referNowModal);
+  };
 
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
@@ -97,6 +103,7 @@ const ReferralAndReward = () => {
       sortable: false,
       minWidth: '25%',
       selector: (row) => row.status,
+      center: true,
     },
     {
       name: 'AMOUNT',
@@ -121,12 +128,13 @@ const ReferralAndReward = () => {
       ),
       joinData: <p className="mb-0 table-data">{DateTime.fromMillis(item?.joinData).toFormat('MM/dd/yyyy')}</p>,
       status: <p className="mb-0 table-data">{showStatusBadge(item?.status)}</p>,
-      amount: <p className="mb-0 table-data">{item?.amount} $</p>,
+      amount: <p className="mb-0 table-data">$ {item?.amount}</p>,
     }),
   );
 
   return (
     <>
+      {referNowModal && <ReferNowModal modal={referNowModal} toggleModal={toggleReferNowModal} />}
       <BreadCrumbs data={[{ title: 'Dashboard' }, { title: 'Rewards', link: '#' }]} />
       <div className="d-flex justify-content-between align-items-start">
         <Row className="primary-row w-50">
@@ -142,7 +150,9 @@ const ReferralAndReward = () => {
             />
           </Col>
         </Row>
-        <Button color="primary">Refer Now</Button>
+        <Button color="primary" onClick={() => setReferNowModal(true)}>
+          Refer Now
+        </Button>
       </div>
       <NotesContainer className="p-2">
         <p className="notes-heading">Note:</p>
