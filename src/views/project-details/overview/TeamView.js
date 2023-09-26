@@ -215,8 +215,6 @@ const TeamView = () => {
         </CardBody>
       </Card>
 
-      {/* TODO: API in progess */}
-
       {userData?.user_type === userTypes.team && unassigned?.length > 0 && (
         <Card>
           <CardTitle className="main-card-title">Add Team Member</CardTitle>
@@ -239,7 +237,9 @@ const TeamView = () => {
                         >
                           Assign team member
                         </Button>
-                        <div className="d-flex">
+                        <div
+                          className={`${item?.number_of_weeks > 0 || item?.hours_per_week > 0 ? '' : 'hidden'} d-flex`}
+                        >
                           <div className="me-2">
                             <span className="key">Duration</span>
                             <CardText className="value">{item?.number_of_weeks}w</CardText>
@@ -254,63 +254,12 @@ const TeamView = () => {
                   </CardBody>
                 </Card>
               ))}
-              {/* <Card>
-              <CardBody>
-                <div className="d-flex align-items-center justify-content-between  gap-1">
-                  <CardText className="d-flex gap-25 fw-bold me-4 mt-auto mb-auto">
-                    Back end developer <span className="indicator" />
-                  </CardText>
-                  <Button color="primary" type="secondary" outline>
-                    Assign team member
-                  </Button>
-                  <div className="d-flex">
-                    <div className="me-2">
-                      <span className="key">Duration</span>
-                      <CardText className="value">11w</CardText>
-                    </div>
-                    <div className="me-1">
-                      <span className="key">Hours/week</span>
-                      <CardText className="value">125</CardText>
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardBody>
-                <div className="d-flex align-items-center justify-content-between  gap-1">
-                  <CardText className="d-flex gap-25 fw-bold me-4 mt-auto mb-auto">
-                    Back end developer <span className="indicator" />
-                  </CardText>
-                  <Button onClick={handleAssign} color="primary" type="secondary" outline>
-                    Assign team member
-                  </Button>
-                  <div className="d-flex">
-                    <div className="me-2">
-                      <span className="key">Duration</span>
-                      <CardText className="value">11w</CardText>
-                    </div>
-                    <div className="me-1">
-                      <span className="key">Hours/week</span>
-                      <CardText className="value">125</CardText>
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card> */}
             </MemberRowWrapper>
           </CardBody>
         </Card>
       )}
       <InvitedMemberComponent />
-      {/* <Card>
-        <CardTitle className="main-card-title">Invite Sent</CardTitle>
-        <CardBody className="main-card-body">
-          {Members.map((item) => (
-            <MemberRow data={item} key={item.name} withReview />
-          ))}
-        </CardBody>
-      </Card> */}
+
       {inviteTalentToTeamModal && (
         <InviteTalentToTeam
           inviteTeamMemberModal={inviteModal}
