@@ -127,7 +127,8 @@ const getRequestStatus =
     dispatch(getRequestStatusRequest());
     try {
       const res = await getRequestStatusService({ entity_type, entity_id });
-      dispatch(getRequestStatusSuccess(res.data.data));
+
+      dispatch(getRequestStatusSuccess(Object.keys(res.data.data).length === 0 ? null : res.data.data));
     } catch (error) {
       errorHandler(error, getRequestStatusFailure);
     }

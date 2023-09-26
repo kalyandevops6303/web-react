@@ -5,6 +5,7 @@ import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { capitalize } from 'lodash';
+import { Link } from 'react-router-dom';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../lib/date-time';
@@ -202,16 +203,27 @@ const TeamInvitation = () => {
                             className="me-50 user-pic"
                           />
                           <div>
-                            <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
-                              {invitedByData?.request_from?.first_name} {invitedByData?.request_from?.last_name}
-                            </p>
+                            <Link to={`/profile/talent/${invitedByData?.request_from?.user_id}`}>
+                              <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
+                                {invitedByData?.request_from?.first_name} {invitedByData?.request_from?.last_name}
+                              </p>
+                            </Link>
                             <p className="m-0">{invitedByData?.request_from?.role || 'Role'} </p>
                           </div>
                         </div>
+                        {invitedByData?.request_type === 'Team Join Request' && <p className="mt-auto">to join</p>}
                         <div>
-                          <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
-                            {invitedByData?.request_for?.team_name || invitedByData?.request_from?.team_name}
-                          </p>
+                          <Link
+                            to={`/profile/team/${
+                              invitedByData?.request_type === 'Team Join Request'
+                                ? invitedByData?.request_for?.team_id
+                                : invitedByData?.request_from?.team_id
+                            }`}
+                          >
+                            <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
+                              {invitedByData?.request_for?.team_name || invitedByData?.request_from?.team_name}
+                            </p>
+                          </Link>
                           <p className="m-0">
                             {invitedByData?.request_for?.team_name || invitedByData?.request_from?.team_name
                               ? 'Team Name'

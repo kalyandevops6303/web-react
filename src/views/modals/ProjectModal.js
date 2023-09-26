@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
-import { ChevronRight } from 'react-feather';
+import { ChevronRight, FileText } from 'react-feather';
 import React from 'react';
 import Proptypes from 'prop-types';
 import {
@@ -143,6 +143,15 @@ const ProjectModal = ({
     }
   };
 
+  const renderFileSize = (size) => {
+    if (Math.round(size / 100) / 10 > 1000) {
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
+      // eslint-disable-next-line
+    } else {
+      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
+    }
+  };
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -242,6 +251,38 @@ const ProjectModal = ({
               </CardText>
             </CardBody>
           </Card>
+
+          {data?.details?.documents?.length > 0 && (
+            <Card>
+              <CardBody>
+                {data?.details?.documents.map((document, index) => (
+                  <Row
+                    key={document.file_key}
+                    className={
+                      // eslint-disable-next-line no-unsafe-optional-chaining
+                      index !== data?.details?.documents.length - 1
+                        ? 'd-flex align-items-center mb-1'
+                        : 'd-flex align-items-center'
+                    }
+                  >
+                    <Col sm="6" md="6" lg="8">
+                      <a href={document?.download_url} target="_blank" rel="noopener noreferrer">
+                        <FileText size="18" className="me-75 mb-50" />
+                        {document?.file_name}
+                      </a>
+                    </Col>
+                    <Col sm="6" md="6" lg="2" className="text-end">
+                      {renderFileSize(document?.size)}
+                    </Col>
+                    <Col sm="6" md="6" lg="2" className="text-end">
+                      {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')}
+                    </Col>
+                  </Row>
+                ))}
+              </CardBody>
+            </Card>
+          )}
+
           <Card>
             <CardHeader>
               <CardTitle className="mb-0 d-flex justify-content-between w-100">

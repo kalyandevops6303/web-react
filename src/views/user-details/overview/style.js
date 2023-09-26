@@ -213,6 +213,7 @@ const RecentProjectsWrap = styled.div`
     box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1) !important;
   }
   .empty {
+    margin-top: -3.5rem;
     padding-top: 1rem;
     min-height: 5rem;
   }
