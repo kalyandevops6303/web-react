@@ -227,6 +227,12 @@ const API = {
     taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,
     paymentAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
   },
+  referralAndReward: {
+    createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
+    validateReferral: `${apiAuthEndpoint}/api/v1/referrals/validation`,
+    convertReferral: `${apiAuthEndpoint}/api/v1/referrals/conversion`,
+    allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
+  },
 };
 
 export default API;

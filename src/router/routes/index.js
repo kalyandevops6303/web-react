@@ -34,6 +34,7 @@ import ContractView from '../../views/project-details/ContractView';
 import { userOnboarding } from '../../utility/constants/Constant';
 import Projects from '../../views/projects';
 import MyTeams from '../../views/teams';
+import ReferralAndReward from '../../views/ReferralAndReward';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -159,6 +160,10 @@ const Routes = [
   {
     path: '/disputes/*',
     element: <Disputes />,
+  },
+  {
+    path: '/referral-reward/*',
+    element: <ReferralAndReward />,
   },
 ];
 

@@ -22,6 +22,7 @@ import myTeams from './reducers/myTeams';
 import project from './reducers/project';
 import dispute from './reducers/dispute';
 import rating from './reducers/rating';
+import referralAndReward from './reducers/referralAndReward';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -45,6 +46,7 @@ const rootReducer = combineReducers({
   project,
   dispute,
   rating,
+  referralAndReward,
 
   // Add more reducers if needed
 });
