@@ -231,6 +231,7 @@ const API = {
     createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
     validateReferral: `${apiAuthEndpoint}/api/v1/referrals/validation`,
     convertReferral: `${apiAuthEndpoint}/api/v1/referrals/conversion`,
+    allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
   },
 };
 

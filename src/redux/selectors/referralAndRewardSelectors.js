@@ -16,3 +16,13 @@ export const convertReferralLoading = createSelector(
   referralAndRewardSelector,
   (referralAndReward) => referralAndReward.convertReferralLoading,
 );
+
+export const allReferralsLoading = createSelector(
+  referralAndRewardSelector,
+  (referralAndReward) => referralAndReward.allReferralsLoading,
+);
+
+export const allReferrals = createSelector(
+  referralAndRewardSelector,
+  (referralAndReward) => referralAndReward.allReferrals,
+);

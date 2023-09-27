@@ -4,6 +4,8 @@ const initialState = {
   createReferralLoading: false,
   validateReferralLoading: false,
   convertReferralLoading: false,
+  allReferralsLoading: false,
+  allReferrals: null,
   error: null,
 };
 
@@ -55,6 +57,22 @@ const referralAndRewardSlice = createSlice({
       convertReferralLoading: false,
       error: action.payload,
     }),
+
+    allReferralsRequest: (state) => ({
+      ...state,
+      allReferralsLoading: true,
+      error: null,
+    }),
+    allReferralsSuccess: (state, action) => ({
+      ...state,
+      allReferralsLoading: false,
+      allReferrals: action.payload,
+    }),
+    allReferralsFailure: (state, action) => ({
+      ...state,
+      allReferralsLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -68,6 +86,9 @@ export const {
   convertReferralRequest,
   convertReferralSuccess,
   convertReferralFailure,
+  allReferralsRequest,
+  allReferralsSuccess,
+  allReferralsFailure,
 } = referralAndRewardSlice.actions;
 
 export default referralAndRewardSlice.reducer;

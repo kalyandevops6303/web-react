@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BreadCrumbs from '@components/breadcrumbs';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMatch, useNavigate } from 'react-router-dom';
 import { Badge, Button, Col, Row } from 'reactstrap';
 import { ChevronDown, User } from 'react-feather';
@@ -9,16 +10,19 @@ import DataTable from 'react-data-table-component';
 import { NotesContainer, TableContainer } from './style';
 import Statbox from '../user-details/overview/Statbox';
 import DateTime from '../../lib/date-time';
+import InfiniteScroll from '../../lib/infinite-scroll';
 import ReferNowModal from './overview/ReferNowModal';
+import { getAllReferrals } from '../../redux/actions/referralAndRewardActions';
+import { allReferrals, allReferralsLoading } from '../../redux/selectors/referralAndRewardSelectors';
+import { userTypes } from '../../utility/constants/Constant';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const ReferralAndReward = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const allDisputesIsLoading = useSelector(allDisputesLoading);
-  // const allDisputesData = useSelector(allDisputes);
-  // const selectUserDetails = useSelector(selectUserData);
-  // const disputesCountData = useSelector(disputesCount);
+  const allReferralsIsLoading = useSelector(allReferralsLoading);
+  const allReferralsData = useSelector(allReferrals);
 
   const routesMatch = useMatch('/referral-reward/all');
 
@@ -34,32 +38,18 @@ const ReferralAndReward = () => {
     navigate(`/referral-reward/${props}`);
   };
 
-  const DATA = [
-    {
-      _id: 1,
-      email: 'nilesh.dangi@wowlabz.com',
-      joinData: 1695633392000,
-      status: 'ACTIVE',
-      amount: 100,
-      company_name: 'Wow Labz',
-    },
-    {
-      _id: 2,
-      email: 'nilesh.dangi@wowlabz.com',
-      joinData: 1695633392000,
-      status: 'INVITED',
-      amount: 0,
-      role: 'Frontend Developer',
-    },
-    {
-      _id: 3,
-      email: 'nilesh.dangi@wowlabz.com',
-      joinData: 1695633392000,
-      status: 'EXPIRED',
-      amount: 570,
-      role: 'DevOps Engineer',
-    },
-  ];
+  useEffect(() => {
+    if (primaryFilter === 'all') {
+      dispatch(getAllReferrals(1, 10, []));
+    }
+  }, [primaryFilter]);
+
+  const loadNewReferrals = () => {
+    if (primaryFilter === 'all') {
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      dispatch(getAllReferrals(allReferralsData?.metadata?.current_page + 1, 10, allReferralsData?.data));
+    }
+  };
 
   // eslint-disable-next-line consistent-return
   const showStatusBadge = (status) => {
@@ -96,7 +86,7 @@ const ReferralAndReward = () => {
       name: 'JOIN DATE',
       sortable: false,
       minWidth: '25%',
-      selector: (row) => row.joinData,
+      selector: (row) => row.joinDate,
     },
     {
       name: 'STATUS',
@@ -114,19 +104,39 @@ const ReferralAndReward = () => {
     },
   ];
 
-  const receivedBidsDataset = [];
-  DATA?.map((item) =>
-    receivedBidsDataset.push({
+  const allReferralsDataset = [];
+  allReferralsData?.data?.map((item) =>
+    allReferralsDataset.push({
       email: (
         <div className="d-flex gap-75 align-items-center">
-          <Avatar img={item?.logo || defaultAvatar} imgHeight="32" imgWidth="32" />
+          <Avatar
+            img={
+              item?.referral_to?.user_type === userTypes.talent
+                ? item?.referral_to?.talent_details?.image_uri || defaultAvatar
+                : item?.referral_to?.client_details?.image_uri || defaultAvatar
+            }
+            imgHeight="32"
+            imgWidth="32"
+          />
           <div>
-            <p className="mb-0 fw-bolder table-data">{item?.email}</p>
-            <p className="mb-0 table-data">{item?.role ? item?.role : item?.company_name}</p>
+            <p className="mb-0 fw-bolder table-data">{item?.referral_to?.email}</p>
+            {(item?.status === 'ACTIVE' || item?.status === 'EXPIRED') && (
+              <p className="mb-0 table-data">
+                {item?.referral_to?.user_type === userTypes.talent
+                  ? `${item?.referral_to?.talent_details?.first_name} ${item?.referral_to?.talent_details?.last_name}`
+                  : `${item?.referral_to?.client_details?.first_name} ${item?.referral_to?.client_details?.last_name}`}
+              </p>
+            )}
           </div>
         </div>
       ),
-      joinData: <p className="mb-0 table-data">{DateTime.fromMillis(item?.joinData).toFormat('MM/dd/yyyy')}</p>,
+      joinDate: (
+        <p className="mb-0 table-data">
+          {item?.referral_to?.joined_date > 0
+            ? DateTime.fromMillis(item?.referral_to?.joined_date).toFormat('MM/dd/yyyy')
+            : '-'}
+        </p>
+      ),
       status: <p className="mb-0 table-data">{showStatusBadge(item?.status)}</p>,
       amount: <p className="mb-0 table-data">$ {item?.amount}</p>,
     }),
@@ -142,7 +152,7 @@ const ReferralAndReward = () => {
             <Statbox
               isMarketPlaceTab
               isActive={primaryFilter === 'all'}
-              title={14}
+              title={allReferralsData?.metadata?.total_records}
               desc="Referral Rewards"
               icon={<User size={40} />}
               color="light-info"
@@ -178,17 +188,27 @@ const ReferralAndReward = () => {
         </ul>
       </NotesContainer>
 
-      <TableContainer className="mt-3">
-        <DataTable
-          noHeader
-          pagination={false}
-          columns={tableColumns}
-          className="react-dataTable"
-          sortIcon={<ChevronDown size={10} />}
-          data={receivedBidsDataset}
-          classNamePrefix="react-dataTable"
-        />
-      </TableContainer>
+      {allReferralsIsLoading ? (
+        <ComponentSpinner className="mt-5" />
+      ) : (
+        <TableContainer className="mt-3">
+          <InfiniteScroll
+            dataLength={allReferralsData?.data?.length || 0}
+            next={loadNewReferrals}
+            hasMore={allReferralsData?.metadata?.has_next_page}
+          >
+            <DataTable
+              noHeader
+              pagination={false}
+              columns={tableColumns}
+              className="react-dataTable"
+              sortIcon={<ChevronDown size={10} />}
+              data={allReferralsDataset}
+              classNamePrefix="react-dataTable"
+            />
+          </InfiniteScroll>
+        </TableContainer>
+      )}
     </>
   );
 };

@@ -1,5 +1,8 @@
 import errorHandler from '../../utility/errorHandler';
 import {
+  allReferralsFailure,
+  allReferralsRequest,
+  allReferralsSuccess,
   convertReferralFailure,
   convertReferralRequest,
   convertReferralSuccess,
@@ -11,6 +14,7 @@ import {
   validateReferralSuccess,
 } from '../reducers/referralAndReward';
 import {
+  allReferralsService,
   convertReferralService,
   createReferralService,
   validateReferralService,
@@ -53,4 +57,16 @@ const convertReferral = (referralId, userId, userType, onSuccess) => async (disp
   }
 };
 
-export { createNewReferral, validateReferral, convertReferral };
+const getAllReferrals = (page, pageSize, oldData) => async (dispatch) => {
+  if (page === 1) {
+    dispatch(allReferralsRequest());
+  }
+  try {
+    const res = await allReferralsService(page, pageSize);
+    dispatch(allReferralsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
+  } catch (error) {
+    errorHandler(error, allReferralsFailure);
+  }
+};
+
+export { createNewReferral, validateReferral, convertReferral, getAllReferrals };

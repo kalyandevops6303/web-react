@@ -118,7 +118,7 @@ const Account = () => {
       const referralData = getItem('referral_data');
       if (referralData) {
         const referralId = referralData?._id;
-        const userId = referralData?.referral_from?.user_id;
+        const userId = userDetailsData?._id;
         const userType = userDetailsData?.user_type;
         dispatch(convertReferral(referralId, userId, userType, onReferralConversionSuccess));
       } else {

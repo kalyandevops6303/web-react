@@ -11,4 +11,7 @@ const convertReferralService = (referralId, userId, userType) =>
     `${API.referralAndReward.convertReferral}?referral_id=${referralId}&user_id=${userId}&user_type=${userType}`,
   );
 
-export { createReferralService, validateReferralService, convertReferralService };
+const allReferralsService = (page, pageSize) =>
+  DataService.get(`${API.referralAndReward.createReferrals}?page=${page}&page_size=${pageSize}`);
+
+export { createReferralService, validateReferralService, convertReferralService, allReferralsService };
