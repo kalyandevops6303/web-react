@@ -75,7 +75,7 @@ const LeftSidebarProjectDetails = () => {
 
   const onMessageClick = () => {
     navigate(`/chat`, {
-      state: { targetId: undefined },
+      state: { targetId: params?.projectId, targetType: 'group' },
     });
   };
 

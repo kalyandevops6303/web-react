@@ -116,6 +116,8 @@ class CometChatConversationList extends React.Component {
 
       this.props.onItemClick(targetId, targetType);
 
+      console.log('TARGET COMET', targetId, targetType);
+
       CometChat.getConversation(targetId, targetType)
         .then((targetItem) => {
           console.log(targetItem, targetId);
