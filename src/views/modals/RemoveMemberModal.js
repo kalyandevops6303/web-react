@@ -20,10 +20,12 @@ const RemoveMemberModal = ({ modal, toggleModal, data }) => {
     toggleModal();
   };
 
-  const onSuccess = () => {
-    dispatch(switchProfile({ data: savedUserDetails, onSuccess: () => {}, selected: false }));
-  };
   const handleRemoveMember = (removeData) => {
+    const onSuccess = () => {
+      if (savedUserDetails?._id === removeData.user_id) {
+        dispatch(switchProfile({ data: savedUserDetails, onSuccess: () => {}, selected: false }));
+      }
+    };
     onClose();
     const teamId = getItem('team_id');
     const postData = {

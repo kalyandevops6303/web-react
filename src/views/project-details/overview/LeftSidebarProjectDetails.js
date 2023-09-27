@@ -63,8 +63,9 @@ const LeftSidebarProjectDetails = () => {
       );
     }
   }, [projectDetailsData]);
+
   if (isLoading) {
-    return <>Loading</>;
+    return <div className="d-none">Loading</div>;
   }
 
   const handleInvite = () => {

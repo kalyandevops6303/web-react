@@ -25,6 +25,7 @@ import TeamListing from './overview/TeamListing';
 import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
 import OpenListing from './overview/OpenListing';
 import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
+import { clearProjectData } from '../../redux/reducers/projectDetails';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ const PrivateDashboard = () => {
     window.scrollTo(0, 0);
 
     dispatch(getCheckBidsAccepted());
+    dispatch(clearProjectData());
   }, []);
 
   const toggleCompleteProfileModal = () => {

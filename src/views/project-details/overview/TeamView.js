@@ -124,7 +124,7 @@ const InvitedMemberComponent = () => {
                           </div>
                         </div>
                         <CardText style={{ flex: '2' }} className="fw-bold m-auto me-4">
-                          {data?.send_to?.role?.name || 'Team Member'}
+                          {data?.request_for?.role || 'Team Member'}
                         </CardText>
                         <div style={{ flex: '2' }} className="me-4">
                           <Rating

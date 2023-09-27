@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
+import { clearProjectData } from '../../redux/reducers/projectDetails';
 
 const ProjectContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -19,6 +20,7 @@ const ProjectContainer = styled.div`
 
 const Projects = () => {
   // Primary filters
+  const dispatch = useDispatch();
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
 
@@ -30,6 +32,7 @@ const Projects = () => {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    dispatch(clearProjectData());
   }, []);
 
   // Secondary filters
