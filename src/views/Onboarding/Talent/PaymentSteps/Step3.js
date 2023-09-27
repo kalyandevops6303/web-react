@@ -22,8 +22,7 @@ import { states, statesLoading, cities, citiesLoading } from '../../../../redux/
 import CertificationUS from './CertificationUs';
 import CertificationNonUs from './CertificationNonUs';
 import AccountCreatedModal from '../../AccountCreatedModal';
-import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
-import { userData } from '../../../../redux/selectors/dashboardSelectors';
+import { getUserDetails, saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 
 import { formSchema, usWFormsSchema } from '../Schema';
 
@@ -43,12 +42,12 @@ const Step3 = ({ setStep }) => {
 
   const isUsPerson = paymentDetailsRes?.tax_user_type === 'US';
   const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
+  const [userDetails, setUserDetails] = useState({});
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
-  const userDetailsData = useSelector(userData);
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
   const {
@@ -218,8 +217,13 @@ const Step3 = ({ setStep }) => {
     }
   };
 
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) setUserDetails(res);
+  };
+
   useEffect(() => {
     dispatch(getPaymentDetails(onGetPaymentDetailsSuccess));
+    dispatch(getUserDetails(onGetUserDetailsSuccess));
   }, []);
 
   const handleTaxPayerNoOption = (e) => {
@@ -246,13 +250,15 @@ const Step3 = ({ setStep }) => {
 
   const onSuccess = () => {
     const stripeData = {
-      country: userDetailsData?.phone_country?.code,
-      email: userDetailsData?.email,
+      country:
+        // eslint-disable-next-line no-nested-ternary
+        userDetails?.phone_country?.code,
+      email: userDetails?.email,
       individual: {
-        first_name: userDetailsData?.talent_info?.first_name,
-        last_name: userDetailsData?.talent_info?.last_name,
+        first_name: userDetails?.talent_info?.first_name,
+        last_name: userDetails?.talent_info?.last_name,
       },
-      user_id: userDetailsData?._id,
+      user_id: userDetails?._id,
       // eslint-disable-next-line no-undef
       refresh_url: window?.location?.href,
       // eslint-disable-next-line no-undef
@@ -311,8 +317,8 @@ const Step3 = ({ setStep }) => {
           zip_code: data?.mZipCode,
         },
         has_us_tax_id: taxPayer === 'option1',
-        us_tax_id_reference_number: data?.refNo,
-        dob: data?.dob,
+        us_tax_id_reference_number: data?.refNo ?? '',
+        dob: data?.dob ?? '',
       },
     };
     const newData = {
