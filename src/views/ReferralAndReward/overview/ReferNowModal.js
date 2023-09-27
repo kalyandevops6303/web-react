@@ -2,23 +2,22 @@ import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import CreatableSelect from 'react-select/creatable';
-import { Button, Modal, ModalHeader, ModalBody, Row, FormFeedback, Col, Spinner, InputGroup, Input } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Row, FormFeedback, Col, Spinner } from 'reactstrap';
 import '../../custom-styles.scss';
-import CopyToClipboard from '../../../lib/copy-clipboard';
-import { inviteTalentsLoading } from '../../../redux/selectors/createProjectSelectors';
 import { selectThemeColors } from '../../../utility/Utils';
 import { RequirementsFormContainer } from '../../CreateProject/style';
 import { validEmailRegex } from '../../../utility/constants/Constant';
+import { createNewReferral } from '../../../redux/actions/referralAndRewardActions';
+import { createReferralLoading } from '../../../redux/selectors/referralAndRewardSelectors';
 
 const ReferNowModal = ({ modal, toggleModal }) => {
   const dispatch = useDispatch();
 
-  const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
+  const createReferralIsLoading = useSelector(createReferralLoading);
 
   const [validEmailError, setValidEmailError] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [customEmailsValue, setCustomEmailsValue] = useState([]);
-  const [copied, setCopied] = useState(false);
 
   const customSelectComponents = {
     DropdownIndicator: null,
@@ -34,9 +33,12 @@ const ReferNowModal = ({ modal, toggleModal }) => {
   };
 
   const onSubmit = () => {
-    // const allEmails = customEmailsValue.map((email) => email.label);
-    onSuccess();
-    dispatch();
+    const allEmails = customEmailsValue.map((email) => email.label);
+
+    // eslint-disable-next-line no-undef
+    const data = { redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth`, emails: allEmails };
+
+    dispatch(createNewReferral(data, onSuccess));
   };
 
   const handleKeyDown = (event) => {
@@ -93,29 +95,15 @@ const ReferNowModal = ({ modal, toggleModal }) => {
                 {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
               </Col>
             </Row>
-            <div className="divider">
-              <div className="divider-text">Or</div>
-            </div>
-            <InputGroup>
-              <Input value="Lorem ipsum dolor sit amet, consectet lorem ipsum dolor sit amet, consectet" />
-              <CopyToClipboard
-                onCopy={() => setCopied(true)}
-                text="Lorem ipsum dolor sit amet, consectet lorem ipsum dolor sit amet, consectet"
-              >
-                <Button color="primary" type="button" disabled={copied}>
-                  {copied ? 'Link Copied!' : 'Copy Link'}
-                </Button>
-              </CopyToClipboard>
-            </InputGroup>
-            <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end mt-50">
               <Button
                 color="primary"
                 type="button"
-                className="mb-1 mt-3"
+                className="mb-1 mt-2"
                 onClick={onSubmit}
-                disabled={customEmailsValue.length === 0 || inviteTalentsIsLoading}
+                disabled={customEmailsValue.length === 0 || createReferralIsLoading}
               >
-                {inviteTalentsIsLoading ? <Spinner size="sm" /> : <>Send Invite</>}
+                {createReferralIsLoading ? <Spinner size="sm" /> : <>Send Invite</>}
               </Button>
             </div>
           </div>
