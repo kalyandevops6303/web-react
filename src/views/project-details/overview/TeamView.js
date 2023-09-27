@@ -17,12 +17,13 @@ import MemberRow from './MemberRow';
 
 import { getInvitedMember, getTeamMembers, getUnassignedRoles } from '../../../redux/actions/projectDetailsAction';
 import InviteTalentToTeam from '../../invite-talent-to-team';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import { getItem } from '../../../utility/localStorageControl';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
 import { returnFormattedRating } from '../../../utility/Utils';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const InvitedMemberComponent = () => {
   const inviteMembers = useSelector((state) => state.projectDetails.getInvitedMember);
@@ -175,8 +176,11 @@ const TeamView = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const userData = useSelector(selectUserData);
+  const savedUser = useSelector(selectSavedUserData);
   const teamMembers = useSelector((state) => state.projectDetails.getTeamMember);
   const unassigned = useSelector((state) => state.projectDetails.unassignedRole);
+  const isTeamLoading = useSelector((state) => state.projectDetails.getTeamMemberLoading);
+  const isUnassignLoading = useSelector((state) => state.projectDetails.getUnassignedRoleLoading);
   useEffect(() => {
     dispatch(getTeamMembers({ project_id: params.projectId }));
     if (userData?.user_type === userTypes.team) {
@@ -197,13 +201,20 @@ const TeamView = () => {
   const toggleModal = () => {
     setInviteModal(!inviteModal);
   };
+  const doesObjectExist = (array, idToCheck) => array?.some((obj) => obj.user_id === idToCheck);
+  const hasDeleleteAccess = doesObjectExist(teamMembers, savedUser?._id);
+  if (isTeamLoading || isUnassignLoading) {
+    return <ComponentSpinner />;
+  }
   return (
     <TeamVieWrapper>
       <Card>
         <CardTitle className="main-card-title">Project Team</CardTitle>
         <CardBody className="main-card-body">
           {teamMembers?.length > 0 ? (
-            teamMembers?.map((item) => <MemberRow data={item} key={item.user_id} withReview={false} />)
+            teamMembers?.map((item) => (
+              <MemberRow hasDeleleteAccess={hasDeleleteAccess} data={item} key={item.user_id} withReview={false} />
+            ))
           ) : (
             <>
               <img src={TeamNoDataGif} width={230} height={170} className="d-flex empty-gif m-auto" alt="empty-gif" />

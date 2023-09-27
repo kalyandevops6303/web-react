@@ -22,6 +22,7 @@ import {
   upcomingProjectsForTalentService,
   activeProjectsForTeamService,
   upcomingProjectsForTeamService,
+  recommendedProjectsTeamService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -90,16 +91,25 @@ import {
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
 import { updateInvitationService, validateUrlService } from '../../services/inviteTeamMemberService';
+import { userTypes } from '../../utility/constants/Constant';
 
-const getRecommendedProjects = () => async (dispatch) => {
-  dispatch(recommendedProjectsRequest());
-  try {
-    const res = await recommendedProjectsService();
-    dispatch(recommendedProjectsSuccess(res.data.data));
-  } catch (error) {
-    errorHandler(error, recommendedProjectsFailure);
-  }
-};
+const getRecommendedProjects =
+  ({ user_type }) =>
+  async (dispatch) => {
+    dispatch(recommendedProjectsRequest());
+    try {
+      let res;
+      if (user_type === userTypes.talent) {
+        res = await recommendedProjectsService();
+      }
+      if (user_type === userTypes.team) {
+        res = await recommendedProjectsTeamService();
+      }
+      dispatch(recommendedProjectsSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, recommendedProjectsFailure);
+    }
+  };
 
 const getProfilePercentage = () => async (dispatch) => {
   dispatch(profilePercentageRequest());

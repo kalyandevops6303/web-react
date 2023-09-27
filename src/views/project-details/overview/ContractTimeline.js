@@ -103,8 +103,8 @@ const ContractTimeline = () => {
               <div className="me-1">
                 <span className="key">Terminated at</span>
                 <CardText className="value">
-                  {contractTimeline?.terminated_at
-                    ? DateTime.fromMillis(contractTimeline?.terminated_at).toFormat('MMM dd, yy')
+                  {isContract?.contract_terminated_at
+                    ? DateTime.fromMillis(isContract?.contract_terminated_at).toFormat('MMM dd, yy')
                     : '-'}
                 </CardText>
               </div>

@@ -135,7 +135,7 @@ const InvitationView = () => {
   };
 
   if (isGetWhoInvitedLoading) {
-    <ComponentSpinner />;
+    return <ComponentSpinner />;
   }
   return (
     <Row>

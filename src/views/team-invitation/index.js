@@ -123,7 +123,7 @@ const TeamInvitation = () => {
     setRejectModal(true);
   };
   if (isGetWhoInvitedLoading) {
-    <ComponentSpinner />;
+    return <ComponentSpinner />;
   }
 
   return (

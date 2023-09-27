@@ -188,7 +188,7 @@ const ProjectListing = () => {
 
   useEffect(() => {
     if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
-      dispatch(getRecommendedProjects());
+      dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
     }
   }, [userDetailsData]);
 
