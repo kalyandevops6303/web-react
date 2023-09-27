@@ -38,10 +38,10 @@ const TeamInvitaionCard = ({ data, className }) => {
   const navigate = useNavigate();
 
   const handleRedirect = () => {
-    if (data?.project) {
-      navigate(`/project/${data?.project?._id}/invitation-view/id`);
+    if (data?.project?._id) {
+      navigate(`/project-details/${data?.project?._id}/project/project-invitation/${data?.request_id}`);
     } else {
-      navigate(`/profile/team/${data?._id}`);
+      navigate(`/team-invitation/${data?.request_id}`);
     }
   };
 

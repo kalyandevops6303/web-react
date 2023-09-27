@@ -255,7 +255,7 @@ const TeamListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Team Invites</span>
                 {teamInvitation?.data?.length > 0 && (
-                  <CardText onClick={handleViewAll} className="d-none view-all-cta">
+                  <CardText onClick={() => navigate('/my-teams')} className=" view-all-cta">
                     View All
                   </CardText>
                 )}
