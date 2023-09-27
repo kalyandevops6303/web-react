@@ -26,6 +26,7 @@ const steps = [
     title: 'Rating',
     subtitle: 'Give and get ratings',
     icon: <Star size={18} />,
+    isDisabled: true,
   },
 ];
 const InviteView = [

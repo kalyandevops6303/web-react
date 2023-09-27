@@ -36,6 +36,12 @@ const ProjectDetails = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (projectDetailsData && projectDetailsData.status === 'COMPLETED') {
+      steps[steps.length - 1].isDisabled = false;
+    }
+  }, [projectDetailsData?.status]);
+
   const isInviteView = location?.pathname?.includes('project-invitation');
 
   return (
