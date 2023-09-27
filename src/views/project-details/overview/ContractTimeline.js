@@ -6,13 +6,18 @@ import { useNavigate } from 'react-router-dom';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
-import { selectContractTimeline, selectIsContract } from '../../../redux/selectors/projectDetailsSelectors';
+import {
+  projectDetails,
+  selectContractTimeline,
+  selectIsContract,
+} from '../../../redux/selectors/projectDetailsSelectors';
 import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 
 const ContractTimeline = () => {
   const navigate = useNavigate();
   const isContract = useSelector(selectIsContract);
   const contractTimeline = useSelector(selectContractTimeline);
+  const projectDetailsData = useSelector(projectDetails);
   const bidUpdatesDataSet = [];
   contractTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
@@ -43,6 +48,9 @@ const ContractTimeline = () => {
   const handleContract = () => {
     navigate('doc/contract');
   };
+  const handleRating = () => {
+    navigate(`/project-details/${projectDetailsData?._id}/rating`);
+  };
   return (
     <AccordionItem>
       <AccordionHeader targetId="1">
@@ -61,11 +69,16 @@ const ContractTimeline = () => {
             <div>
               {isContract?.is_signed ? (
                 <div className="d-flex gap-1 aling-items-center">
-                  <CardText className="d-none view-all-cta">Give rating</CardText>
-                  <CardText onClick={handleContract} className="view-all-cta">
-                    View
-                  </CardText>
-
+                  {projectDetailsData?.status === 'COMPLETED' ? (
+                    <CardText className="view-all-cta" onClick={handleRating}>
+                      Give rating
+                    </CardText>
+                  ) : (
+                    <CardText onClick={handleContract} className="view-all-cta">
+                      View
+                    </CardText>
+                  )}
+                  {/* <CardText className="d-none view-all-cta">Give rating</CardText> */}
                   <div className="d-flex gap-1 aling-items-center">
                     <div className="me-1">
                       <span className="key">Updated at</span>

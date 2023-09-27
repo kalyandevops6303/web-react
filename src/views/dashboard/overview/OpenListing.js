@@ -179,7 +179,7 @@ const OpenListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Projects Bids</span>
                 {projectsBidsForClientData?.data?.length > 0 && (
-                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/my_listings')} className="view-all-cta">
+                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/my_bids')} className="view-all-cta">
                     View All
                   </CardText>
                 )}

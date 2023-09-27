@@ -1307,12 +1307,16 @@ const Profile = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" outline disabled={isImageUploading || isTeamcreating || updateTeamIsLoading}>
+            <Button
+              color="primary"
+              outline={location?.state?.isEditing}
+              disabled={isImageUploading || isTeamcreating || updateTeamIsLoading}
+            >
               {isTeamcreating || updateTeamIsLoading ? (
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">Save</span>
+                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Create team'}</span>
                   <ChevronRight size={14} />
                 </>
               )}
