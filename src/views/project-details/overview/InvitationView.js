@@ -120,7 +120,7 @@ const InvitationView = () => {
       updateInvitation({
         data,
         onSuccess: () => {
-          setStatus('DECLINED');
+          setStatus('REJECTED');
           setRejectModal(false);
           setIsStatusUpdating(false);
         },

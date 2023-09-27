@@ -182,7 +182,7 @@ const updateInvitation =
       if (status === 'ACCEPTED') {
         await acceptInvitation({ id });
       }
-      if (status === 'DECLINED') {
+      if (status === 'REJECTED') {
         await rejectInvitation({ id });
       }
       onSuccess();

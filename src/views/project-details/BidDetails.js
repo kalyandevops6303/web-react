@@ -77,7 +77,7 @@ const BidDetails = () => {
         />
         {isBidStatusUpating ? (
           'Updating...'
-        ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'DECLINED' ? (
+        ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
           <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
         ) : (
           <div className="d-flex gap-2 align-items-center">
@@ -231,7 +231,7 @@ const BidDetails = () => {
             </div>
             {isBidStatusUpating ? (
               'Updating...'
-            ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'DECLINED' ? (
+            ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
               <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
             ) : (
               <div className="d-flex gap-2 align-items-center">

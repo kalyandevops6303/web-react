@@ -121,7 +121,7 @@ const ReceivedBids = ({ projectName }) => {
       name: 'STATUS',
       sortable: false,
       minWidth: '12%',
-      selector: (row) => (row.status === 'DECLINED' ? 'REJECTED' : row.status),
+      selector: (row) => (row.status === 'REJECTED' ? 'REJECTED' : row.status),
     },
 
     {
@@ -214,7 +214,7 @@ const ReceivedBids = ({ projectName }) => {
     { label: 'New', value: 'ACTIVE' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
-    { label: 'Rejected', value: 'DECLINED' },
+    { label: 'Rejected', value: 'REJECTED' },
   ];
   const handleSearchTextChange = (e) => {
     setSearchText(e.target.value);
