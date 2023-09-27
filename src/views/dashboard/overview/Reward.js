@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 // ** Third Party Components
+import { Link } from 'react-router-dom';
 import { User, Briefcase } from 'react-feather';
 
 // ** Custom Components
@@ -45,9 +46,11 @@ const RewardsCard = ({ cols }) => {
       <Card className="card-reward">
         <CardHeader>
           <CardTitle tag="h4">Rewards</CardTitle>
-          <CardText className="d-none text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
-            View All
-          </CardText>
+          <Link to="/referral-reward/all">
+            <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
+              View All
+            </CardText>
+          </Link>
         </CardHeader>
         <CardBody className="reward-body">
           <Row className="reward-comp">{renderData()}</Row>
