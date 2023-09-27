@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   createReferralLoading: false,
   validateReferralLoading: false,
+  convertReferralLoading: false,
   error: null,
 };
 
@@ -39,6 +40,21 @@ const referralAndRewardSlice = createSlice({
       validateReferralLoading: false,
       error: action.payload,
     }),
+
+    convertReferralRequest: (state) => ({
+      ...state,
+      convertReferralLoading: true,
+      error: null,
+    }),
+    convertReferralSuccess: (state) => ({
+      ...state,
+      convertReferralLoading: false,
+    }),
+    convertReferralFailure: (state, action) => ({
+      ...state,
+      convertReferralLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -49,6 +65,9 @@ export const {
   validateReferralRequest,
   validateReferralSuccess,
   validateReferralFailure,
+  convertReferralRequest,
+  convertReferralSuccess,
+  convertReferralFailure,
 } = referralAndRewardSlice.actions;
 
 export default referralAndRewardSlice.reducer;

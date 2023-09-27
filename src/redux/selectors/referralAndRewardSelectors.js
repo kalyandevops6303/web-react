@@ -11,3 +11,8 @@ export const validateReferralLoading = createSelector(
   referralAndRewardSelector,
   (referralAndReward) => referralAndReward.validateReferralLoading,
 );
+
+export const convertReferralLoading = createSelector(
+  referralAndRewardSelector,
+  (referralAndReward) => referralAndReward.convertReferralLoading,
+);

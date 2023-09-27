@@ -19,7 +19,7 @@ import { selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import { getItem } from '../../utility/localStorageControl';
-import { validateNewReferral } from '../../redux/actions/referralAndRewardActions';
+import { validateReferral } from '../../redux/actions/referralAndRewardActions';
 import { validateReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
@@ -36,7 +36,7 @@ const UserType = () => {
   };
   useEffect(() => {
     if (location.search.includes('?referral_token=')) {
-      dispatch(validateNewReferral(location.search.split('?referral_token=')[1]));
+      dispatch(validateReferral(location.search.split('?referral_token=')[1]));
     }
 
     dispatch(clearDataSuccess());

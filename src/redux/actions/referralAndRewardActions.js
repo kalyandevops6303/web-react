@@ -1,5 +1,8 @@
 import errorHandler from '../../utility/errorHandler';
 import {
+  convertReferralFailure,
+  convertReferralRequest,
+  convertReferralSuccess,
   createReferralFailure,
   createReferralRequest,
   createReferralSuccess,
@@ -7,7 +10,11 @@ import {
   validateReferralRequest,
   validateReferralSuccess,
 } from '../reducers/referralAndReward';
-import { createReferralService, validateReferralService } from '../../services/referralAndRewardServices';
+import {
+  convertReferralService,
+  createReferralService,
+  validateReferralService,
+} from '../../services/referralAndRewardServices';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { setItem } from '../../utility/localStorageControl';
@@ -24,7 +31,7 @@ const createNewReferral = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-const validateNewReferral = (token) => async (dispatch) => {
+const validateReferral = (token) => async (dispatch) => {
   dispatch(validateReferralRequest());
   try {
     const res = await validateReferralService(token);
@@ -35,4 +42,15 @@ const validateNewReferral = (token) => async (dispatch) => {
   }
 };
 
-export { createNewReferral, validateNewReferral };
+const convertReferral = (referralId, userId, userType, onSuccess) => async (dispatch) => {
+  dispatch(convertReferralRequest());
+  try {
+    const res = await convertReferralService(referralId, userId, userType);
+    dispatch(convertReferralSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, convertReferralFailure);
+  }
+};
+
+export { createNewReferral, validateReferral, convertReferral };

@@ -39,6 +39,9 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
 import { checkPoints, maxFileSize, userOnboarding, userTypes } from '../../utility/constants/Constant';
+import { convertReferral } from '../../redux/actions/referralAndRewardActions';
+import { getItem, removeItem } from '../../utility/localStorageControl';
+import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -83,6 +86,7 @@ const Account = () => {
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
+  const convertReferralIsLoading = useSelector(convertReferralLoading);
 
   const [resetPasswordModal, setResetPasswordModal] = useState(null);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
@@ -94,6 +98,13 @@ const Account = () => {
 
   const toggleResetPasswordModal = () => setResetPasswordModal(!resetPasswordModal);
 
+  const onReferralConversionSuccess = () => {
+    userDetailsData?.user_type === 'TALENT'
+      ? navigate(`/${userOnboarding.talent}/personal-details`)
+      : navigate(`/${userOnboarding.client}/personal-details`);
+    removeItem('referral_data');
+  };
+
   const onSuccess = () => {
     if (location?.state?.isEditing) {
       userDetailsData?.user_type === 'TALENT'
@@ -104,9 +115,17 @@ const Account = () => {
             state: { isEditing: true },
           });
     } else {
-      userDetailsData?.user_type === 'TALENT'
-        ? navigate(`/${userOnboarding.talent}/personal-details`)
-        : navigate(`/${userOnboarding.client}/personal-details`);
+      const referralData = getItem('referral_data');
+      if (referralData) {
+        const referralId = referralData?._id;
+        const userId = referralData?.referral_from?.user_id;
+        const userType = userDetailsData?.user_type;
+        dispatch(convertReferral(referralId, userId, userType, onReferralConversionSuccess));
+      } else {
+        userDetailsData?.user_type === 'TALENT'
+          ? navigate(`/${userOnboarding.talent}/personal-details`)
+          : navigate(`/${userOnboarding.client}/personal-details`);
+      }
     }
   };
 
@@ -387,12 +406,13 @@ const Account = () => {
             type="submit"
             disabled={
               isImageUploading ||
+              convertReferralIsLoading ||
               (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
                 ? !isValid || talentAccountDetailsIsLoading
                 : !isValid || clientAccountDetailsIsLoading)
             }
           >
-            {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
+            {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading || convertReferralIsLoading ? (
               <Spinner size="sm" />
             ) : (
               <>
