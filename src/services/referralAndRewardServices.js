@@ -3,5 +3,7 @@ import DataService from '../configs/dataService/dataService';
 
 const createReferralService = (data) => DataService.post(API.referralAndReward.createReferrals, data);
 
-// eslint-disable-next-line import/prefer-default-export
-export { createReferralService };
+const validateReferralService = (token) =>
+  DataService.get(`${API.referralAndReward.validateReferral}?referral_token=${token}`);
+
+export { createReferralService, validateReferralService };

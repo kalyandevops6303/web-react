@@ -1,8 +1,16 @@
 import errorHandler from '../../utility/errorHandler';
-import { createReferralFailure, createReferralRequest, createReferralSuccess } from '../reducers/referralAndReward';
-import { createReferralService } from '../../services/referralAndRewardServices';
+import {
+  createReferralFailure,
+  createReferralRequest,
+  createReferralSuccess,
+  validateReferralFailure,
+  validateReferralRequest,
+  validateReferralSuccess,
+} from '../reducers/referralAndReward';
+import { createReferralService, validateReferralService } from '../../services/referralAndRewardServices';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { setItem } from '../../utility/localStorageControl';
 
 const createNewReferral = (data, onSuccess) => async (dispatch) => {
   dispatch(createReferralRequest());
@@ -16,5 +24,15 @@ const createNewReferral = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { createNewReferral };
+const validateNewReferral = (token) => async (dispatch) => {
+  dispatch(validateReferralRequest());
+  try {
+    const res = await validateReferralService(token);
+    dispatch(validateReferralSuccess(res.data.data));
+    setItem('referral_data', res.data.data);
+  } catch (error) {
+    errorHandler(error, validateReferralFailure);
+  }
+};
+
+export { createNewReferral, validateNewReferral };
