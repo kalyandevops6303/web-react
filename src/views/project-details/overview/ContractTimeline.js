@@ -101,7 +101,7 @@ const ContractTimeline = () => {
       </AccordionHeader>
       {bidUpdatesDataSet?.length > 0 && (
         <AccordionBody accordionId="1" className="accordion-status-body">
-          <div style={{ maxHeight: '27rem', overflowY: 'auto' }} className="pe-50">
+          <div style={{ maxHeight: '27rem', overflowY: 'auto' }} className="pt-50 pe-50">
             <Timeline data={bidUpdatesDataSet} />
           </div>
         </AccordionBody>
