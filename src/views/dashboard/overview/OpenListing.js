@@ -187,10 +187,10 @@ const OpenListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="1">
               {isSliderLoading || projectsBidsForClientIsLoading ? (
-                <div style={{ height: '200px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+                <div style={{ height: '200px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                  <img style={{ width: '32%', height: '155px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '155px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '155px' }} src={CardSkeleton} alt="...Loading" />
                 </div>
               ) : (
                 <ProjectsListingWrap>
@@ -250,10 +250,10 @@ const OpenListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="2">
               {isSliderLoading || recommendedTeamsForClientIsLoading ? (
-                <div style={{ height: '220px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+                <div style={{ height: '230px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                  <img style={{ width: '32%', height: '210px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '210px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '210px' }} src={CardSkeleton} alt="...Loading" />
                 </div>
               ) : (
                 <ProjectsListingWrap>

@@ -361,10 +361,10 @@ const ProjectListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="1">
               {isSliderLoading || activeProjectsForTalentIsLoading ? (
-                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                <div style={{ height: '340px' }} className="d-flex justify-content-center gap-1">
+                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
                 </div>
               ) : (
                 <ProjectsListingWrap>
@@ -609,7 +609,7 @@ const ProjectListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="3">
               {isSliderLoading || isRecommendedLoading ? (
-                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+                <div style={{ height: '400px' }} className="d-flex justify-content-center gap-1">
                   <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
                   <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
                   <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />

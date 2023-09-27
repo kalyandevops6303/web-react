@@ -152,7 +152,7 @@ const BidDetails = () => {
                 <div className="d-flex align-items-center m-0">
                   <CardText className="key mb-0">Total Bid Amount</CardText>
                   <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
-                  <UncontrolledTooltip className="d-none" placement="top" target="amount-info">
+                  <UncontrolledTooltip placement="bottom" target="amount-info">
                     <p className="m-0">Predetermined project cost fixed by the client</p>
                   </UncontrolledTooltip>
                 </div>
@@ -165,9 +165,9 @@ const BidDetails = () => {
                 </CardText>
                 <div className="d-flex align-items-center m-0">
                   <CardText className="key mb-0">Estimation Duration</CardText>
-                  <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
-                  <UncontrolledTooltip className="d-none" placement="top" target="amount-info">
-                    <p className="m-0">Predetermined project cost fixed by the client</p>
+                  <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
+                  <UncontrolledTooltip placement="right" target="duration-info">
+                    <p className="m-0">Sum total of all milestone duration hours/week</p>
                   </UncontrolledTooltip>
                 </div>
               </div>

@@ -191,10 +191,10 @@ const TeamListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="1">
               {isSliderLoading || isMyTeamLoading ? (
-                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+                <div style={{ height: '150px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                  <img style={{ width: '32%', height: '140px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '140px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '140px' }} src={CardSkeleton} alt="...Loading" />
                 </div>
               ) : (
                 <ProjectsListingWrap>
@@ -263,10 +263,10 @@ const TeamListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="2">
               {isSliderLoading || isTeamInviteLoading ? (
-                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+                <div style={{ height: '230px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                  <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
                 </div>
               ) : (
                 <ProjectsListingWrap>
@@ -335,10 +335,10 @@ const TeamListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="3">
               {isSliderLoading || isRecommendedTeamsLoading ? (
-                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+                <div style={{ height: '230px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                  <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '32%', height: '220px' }} src={CardSkeleton} alt="...Loading" />
                 </div>
               ) : (
                 <ProjectsListingWrap>
