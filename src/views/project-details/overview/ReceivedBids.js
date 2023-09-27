@@ -259,13 +259,13 @@ const ReceivedBids = ({ projectName }) => {
               </InputGroup>
             </Col>
             <Col sm="12" md="12" lg="3">
-              <Label className="form-label">Project Status</Label>
+              <Label className="form-label">Bid Status</Label>
               <Select
                 isClearable
                 value={status}
                 options={statusOption}
                 classNamePrefix="select"
-                placeholder="Select project status"
+                placeholder="Select bid status"
                 theme={selectThemeColors}
                 onChange={handleDropdown}
               />
