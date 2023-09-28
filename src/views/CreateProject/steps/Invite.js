@@ -34,11 +34,15 @@ import SendInvitationModal from '../../modals/SendInvitationModal';
 import InvitationSentModal from '../../modals/InvitationSentModal';
 import {
   almaMaterTalents,
+  almaMaterTalentsLoading,
   bestTalents,
+  bestTalentsLoading,
   createProjectData,
   favoriteTalents,
+  favoriteTalentsLoading,
 } from '../../../redux/selectors/createProjectSelectors';
 import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../../redux/actions/createProjectActions';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const Invite = ({ stepper }) => {
   const tabNames = {
@@ -53,6 +57,10 @@ const Invite = ({ stepper }) => {
   const favoriteTalentsData = useSelector(favoriteTalents);
   const almaMaterTalentsData = useSelector(almaMaterTalents);
   const createProjectDetails = useSelector(createProjectData);
+
+  const isBestTalentsLoading = useSelector(bestTalentsLoading);
+  const isFavoriteTalentsLoading = useSelector(favoriteTalentsLoading);
+  const isAlmaMaterTalentsLoading = useSelector(almaMaterTalentsLoading);
 
   const [activeTab, setTabActive] = useState(tabNames.best);
   const [invitedIds, setInvitedIds] = useState([]);
@@ -312,278 +320,289 @@ const Invite = ({ stepper }) => {
 
           {invitedIds.length > 0 && <p className="font-small-3">{`${invitedIds?.length} invited`}</p>}
 
-          <TabContent activeTab={activeTab} className="mb-2">
-            <TabPane tabId={tabNames.best}>
-              {activeTab === tabNames.best && (
-                <TableContainer id="scrollableDiv">
-                  <InfiniteScroll
-                    dataLength={bestTalentsData?.data?.length || 0}
-                    next={loadNewBestTalents}
-                    hasMore={bestTalentsData?.metadata?.has_next_page}
-                    scrollableTarget="scrollableDiv"
-                  >
-                    {bestTalentsData?.data?.length > 0 ? (
-                      bestTalentsData?.data?.map((item) => (
-                        <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
-                          <Col sm="2" md="3" lg="4">
-                            <div className="d-flex align-items-center">
-                              <Avatar
-                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
-                                imgHeight="38"
-                                imgWidth="38"
-                                className="me-2 user-pic"
-                              />
-                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
-                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
-                              </Link>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="4">
-                            <div className="d-flex align-items-center">
-                              <Badge>
-                                <div className="d-flex align-items-center">
-                                  <Star
-                                    size={12}
-                                    color={theme.starRatingBg}
-                                    fill={theme.starRatingBg}
-                                    className="me-50"
-                                  />
-                                  <p className="m-0 fw-bolder rating-text">{item.rating}</p>
-                                </div>
-                              </Badge>
-                              <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="2">
-                            <div className="circular-progressbar-container">
-                              <CircularProgressbarWithChildren
-                                value={item.match_percentage}
-                                styles={{
-                                  path: {
-                                    stroke: giveStrokeColor(item.match_percentage),
-                                    strokeLinecap: 'round',
-                                    transition: 'stroke-dashoffset 0.5s ease 0s',
-                                    transform: 'rotate(0turn)',
-                                    transformOrigin: 'center center',
-                                  },
-                                  trail: {
-                                    stroke: theme.progressBarBg,
-                                    strokeLinecap: 'round',
-                                    transform: 'rotate(0turn)',
-                                    transformOrigin: 'center center',
-                                  },
-                                }}
-                              >
-                                <div className="d-flex justify-content-center align-items-center">
-                                  <p className="percentage-text m-0">{item.match_percentage}%</p>
-                                </div>
-                              </CircularProgressbarWithChildren>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item, 'best')}
-                          </Col>
-                        </Row>
-                      ))
-                    ) : (
-                      <div className="no-data-found-container d-flex flex-column align-items-center py-1">
-                        <img
-                          src={NoDataFoundGif}
-                          alt="no-data"
-                          width={200}
-                          height={200}
-                          className="no-data-found-gif"
-                        />
-                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
-                      </div>
-                    )}
-                  </InfiniteScroll>
-                </TableContainer>
-              )}
-            </TabPane>
-            <TabPane tabId={tabNames.favourite}>
-              {activeTab === tabNames.favourite && (
-                <TableContainer id="scrollableDiv">
-                  <InfiniteScroll
-                    dataLength={favoriteTalentsData?.data?.length || 0}
-                    next={loadNewFavoriteTalents}
-                    hasMore={favoriteTalentsData?.metadata?.has_next_page}
-                    scrollableTarget="scrollableDiv"
-                  >
-                    {favoriteTalentsData?.data?.length > 0 ? (
-                      favoriteTalentsData?.data?.map((item) => (
-                        <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
-                          <Col sm="2" md="3" lg="4">
-                            <div className="d-flex align-items-center">
-                              <Avatar
-                                img={
-                                  item?.talent_details?.image_uri?.length > 0
-                                    ? item?.talent_details?.image_uri
-                                    : defaultAvatar
-                                }
-                                imgHeight="38"
-                                imgWidth="38"
-                                className="me-2 user-pic"
-                              />
-                              <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
-                                <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
-                              </Link>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="4">
-                            <div className="d-flex align-items-center">
-                              <Badge>
-                                <div className="d-flex align-items-center">
-                                  <Star
-                                    size={12}
-                                    color={theme.starRatingBg}
-                                    fill={theme.starRatingBg}
-                                    className="me-50"
-                                  />
-                                  <p className="m-0 fw-bolder rating-text">{item.talent_details.rating}</p>
-                                </div>
-                              </Badge>
-                              <p className="m-0 font-small-3 fw-bold ms-1">
-                                {item.talent_details.projects_worked_on_count} Projects
-                              </p>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="2">
-                            <div className="circular-progressbar-container">
-                              <CircularProgressbarWithChildren
-                                value={item.match_percentage}
-                                styles={{
-                                  path: {
-                                    stroke: giveStrokeColor(item.match_percentage),
-                                    strokeLinecap: 'round',
-                                    transition: 'stroke-dashoffset 0.5s ease 0s',
-                                    transform: 'rotate(0turn)',
-                                    transformOrigin: 'center center',
-                                  },
-                                  trail: {
-                                    stroke: theme.progressBarBg,
-                                    strokeLinecap: 'round',
-                                    transform: 'rotate(0turn)',
-                                    transformOrigin: 'center center',
-                                  },
-                                }}
-                              >
-                                <div className="d-flex justify-content-center align-items-center">
-                                  <p className="percentage-text m-0">{item.match_percentage}%</p>
-                                </div>
-                              </CircularProgressbarWithChildren>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item, 'fav')}
-                          </Col>
-                        </Row>
-                      ))
-                    ) : (
-                      <div className="no-data-found-container d-flex flex-column align-items-center py-1">
-                        <img
-                          src={NoDataFoundGif}
-                          alt="no-data"
-                          width={200}
-                          height={200}
-                          className="no-data-found-gif"
-                        />
-                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
-                      </div>
-                    )}
-                  </InfiniteScroll>
-                </TableContainer>
-              )}
-            </TabPane>
-            <TabPane tabId={tabNames.almaMater}>
-              {activeTab === tabNames.almaMater && (
-                <TableContainer id="scrollableDiv">
-                  <InfiniteScroll
-                    dataLength={almaMaterTalentsData?.data?.length || 0}
-                    next={loadNewAlmaMaterTalents}
-                    hasMore={almaMaterTalentsData?.metadata?.has_next_page}
-                    scrollableTarget="scrollableDiv"
-                  >
-                    {almaMaterTalentsData?.data?.length > 0 ? (
-                      almaMaterTalentsData?.data?.map((item) => (
-                        <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
-                          <Col sm="2" md="3" lg="4">
-                            <div className="d-flex align-items-center">
-                              <Avatar
-                                img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
-                                imgHeight="38"
-                                imgWidth="38"
-                                className="me-2 user-pic"
-                              />
-                              <Link to={`/profile/talent/${item.user_id}`} target="_blank">
-                                <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
-                              </Link>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="4">
-                            <div className="d-flex align-items-center">
-                              <Badge>
-                                <div className="d-flex align-items-center">
-                                  <Star
-                                    size={12}
-                                    color={theme.starRatingBg}
-                                    fill={theme.starRatingBg}
-                                    className="me-50"
-                                  />
-                                  <p className="m-0 fw-bolder rating-text">{item.rating}</p>
-                                </div>
-                              </Badge>
-                              <p className="m-0 font-small-3 fw-bold ms-1">{item.projects_worked_on_count} Projects</p>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="2">
-                            <div className="circular-progressbar-container">
-                              <CircularProgressbarWithChildren
-                                value={item.match_percentage}
-                                styles={{
-                                  path: {
-                                    stroke: giveStrokeColor(item.match_percentage),
-                                    strokeLinecap: 'round',
-                                    transition: 'stroke-dashoffset 0.5s ease 0s',
-                                    transform: 'rotate(0turn)',
-                                    transformOrigin: 'center center',
-                                  },
-                                  trail: {
-                                    stroke: theme.progressBarBg,
-                                    strokeLinecap: 'round',
-                                    transform: 'rotate(0turn)',
-                                    transformOrigin: 'center center',
-                                  },
-                                }}
-                              >
-                                <div className="d-flex justify-content-center align-items-center">
-                                  <p className="percentage-text m-0">{item.match_percentage}%</p>
-                                </div>
-                              </CircularProgressbarWithChildren>
-                            </div>
-                          </Col>
-                          <Col sm="2" md="3" lg="2">
-                            {renderActionButton(item, 'alma')}
-                          </Col>
-                        </Row>
-                      ))
-                    ) : (
-                      <div className="no-data-found-container d-flex flex-column align-items-center py-1">
-                        <img
-                          src={NoDataFoundGif}
-                          alt="no-data"
-                          width={200}
-                          height={200}
-                          className="no-data-found-gif"
-                        />
-                        <p className="m-0 fw-bold font-medium-3">No matches found</p>
-                      </div>
-                    )}
-                  </InfiniteScroll>
-                </TableContainer>
-              )}
-            </TabPane>
-          </TabContent>
+          {isBestTalentsLoading || isAlmaMaterTalentsLoading || isFavoriteTalentsLoading ? (
+            <ComponentSpinner />
+          ) : (
+            <TabContent activeTab={activeTab} className="mb-2">
+              <TabPane tabId={tabNames.best}>
+                {activeTab === tabNames.best && (
+                  <TableContainer id="scrollableDiv" style={{ maxHeight: '18rem', overflowY: 'auto' }}>
+                    <InfiniteScroll
+                      dataLength={bestTalentsData?.data?.length || 0}
+                      next={loadNewBestTalents}
+                      hasMore={bestTalentsData?.metadata?.has_next_page}
+                      scrollableTarget="scrollableDiv"
+                      loader={<div className="d-flex justify-content-center">Loading...</div>}
+                    >
+                      {bestTalentsData?.data?.length > 0 ? (
+                        bestTalentsData?.data?.map((item) => (
+                          <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
+                            <Col sm="2" md="3" lg="4">
+                              <div className="d-flex align-items-center">
+                                <Avatar
+                                  img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
+                                  imgHeight="38"
+                                  imgWidth="38"
+                                  className="me-2 user-pic"
+                                />
+                                <Link to={`/profile/talent/${item.user_id}`} target="_blank">
+                                  <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                                </Link>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="4">
+                              <div className="d-flex align-items-center">
+                                <Badge>
+                                  <div className="d-flex align-items-center">
+                                    <Star
+                                      size={12}
+                                      color={theme.starRatingBg}
+                                      fill={theme.starRatingBg}
+                                      className="me-50"
+                                    />
+                                    <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                  </div>
+                                </Badge>
+                                <p className="m-0 font-small-3 fw-bold ms-1">
+                                  {item.projects_worked_on_count} Projects
+                                </p>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="2">
+                              <div className="circular-progressbar-container">
+                                <CircularProgressbarWithChildren
+                                  value={item.match_percentage}
+                                  styles={{
+                                    path: {
+                                      stroke: giveStrokeColor(item.match_percentage),
+                                      strokeLinecap: 'round',
+                                      transition: 'stroke-dashoffset 0.5s ease 0s',
+                                      transform: 'rotate(0turn)',
+                                      transformOrigin: 'center center',
+                                    },
+                                    trail: {
+                                      stroke: theme.progressBarBg,
+                                      strokeLinecap: 'round',
+                                      transform: 'rotate(0turn)',
+                                      transformOrigin: 'center center',
+                                    },
+                                  }}
+                                >
+                                  <div className="d-flex justify-content-center align-items-center">
+                                    <p className="percentage-text m-0">{item.match_percentage}%</p>
+                                  </div>
+                                </CircularProgressbarWithChildren>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="2">
+                              {renderActionButton(item, 'best')}
+                            </Col>
+                          </Row>
+                        ))
+                      ) : (
+                        <div className="no-data-found-container d-flex flex-column align-items-center py-1">
+                          <img
+                            src={NoDataFoundGif}
+                            alt="no-data"
+                            width={200}
+                            height={200}
+                            className="no-data-found-gif"
+                          />
+                          <p className="m-0 fw-bold font-medium-3">No matches found</p>
+                        </div>
+                      )}
+                    </InfiniteScroll>
+                  </TableContainer>
+                )}
+              </TabPane>
+              <TabPane tabId={tabNames.favourite}>
+                {activeTab === tabNames.favourite && (
+                  <TableContainer id="scrollableDiv" style={{ maxHeight: '18rem', overflowY: 'auto' }}>
+                    <InfiniteScroll
+                      dataLength={favoriteTalentsData?.data?.length || 0}
+                      next={loadNewFavoriteTalents}
+                      hasMore={favoriteTalentsData?.metadata?.has_next_page}
+                      scrollableTarget="scrollableDiv"
+                      loader={<div className="d-flex justify-content-center">Loading...</div>}
+                    >
+                      {favoriteTalentsData?.data?.length > 0 ? (
+                        favoriteTalentsData?.data?.map((item) => (
+                          <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
+                            <Col sm="2" md="3" lg="4">
+                              <div className="d-flex align-items-center">
+                                <Avatar
+                                  img={
+                                    item?.talent_details?.image_uri?.length > 0
+                                      ? item?.talent_details?.image_uri
+                                      : defaultAvatar
+                                  }
+                                  imgHeight="38"
+                                  imgWidth="38"
+                                  className="me-2 user-pic"
+                                />
+                                <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
+                                  <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
+                                </Link>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="4">
+                              <div className="d-flex align-items-center">
+                                <Badge>
+                                  <div className="d-flex align-items-center">
+                                    <Star
+                                      size={12}
+                                      color={theme.starRatingBg}
+                                      fill={theme.starRatingBg}
+                                      className="me-50"
+                                    />
+                                    <p className="m-0 fw-bolder rating-text">{item.talent_details.rating}</p>
+                                  </div>
+                                </Badge>
+                                <p className="m-0 font-small-3 fw-bold ms-1">
+                                  {item.talent_details.projects_worked_on_count} Projects
+                                </p>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="2">
+                              <div className="circular-progressbar-container">
+                                <CircularProgressbarWithChildren
+                                  value={item.match_percentage}
+                                  styles={{
+                                    path: {
+                                      stroke: giveStrokeColor(item.match_percentage),
+                                      strokeLinecap: 'round',
+                                      transition: 'stroke-dashoffset 0.5s ease 0s',
+                                      transform: 'rotate(0turn)',
+                                      transformOrigin: 'center center',
+                                    },
+                                    trail: {
+                                      stroke: theme.progressBarBg,
+                                      strokeLinecap: 'round',
+                                      transform: 'rotate(0turn)',
+                                      transformOrigin: 'center center',
+                                    },
+                                  }}
+                                >
+                                  <div className="d-flex justify-content-center align-items-center">
+                                    <p className="percentage-text m-0">{item.match_percentage}%</p>
+                                  </div>
+                                </CircularProgressbarWithChildren>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="2">
+                              {renderActionButton(item, 'fav')}
+                            </Col>
+                          </Row>
+                        ))
+                      ) : (
+                        <div className="no-data-found-container d-flex flex-column align-items-center py-1">
+                          <img
+                            src={NoDataFoundGif}
+                            alt="no-data"
+                            width={200}
+                            height={200}
+                            className="no-data-found-gif"
+                          />
+                          <p className="m-0 fw-bold font-medium-3">No matches found</p>
+                        </div>
+                      )}
+                    </InfiniteScroll>
+                  </TableContainer>
+                )}
+              </TabPane>
+              <TabPane tabId={tabNames.almaMater}>
+                {activeTab === tabNames.almaMater && (
+                  <TableContainer id="scrollableDiv" style={{ maxHeight: '18rem', overflowY: 'auto' }}>
+                    <InfiniteScroll
+                      dataLength={almaMaterTalentsData?.data?.length || 0}
+                      next={loadNewAlmaMaterTalents}
+                      hasMore={almaMaterTalentsData?.metadata?.has_next_page}
+                      scrollableTarget="scrollableDiv"
+                      loader={<div className="d-flex justify-content-center">Loading...</div>}
+                    >
+                      {almaMaterTalentsData?.data?.length > 0 ? (
+                        almaMaterTalentsData?.data?.map((item) => (
+                          <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
+                            <Col sm="2" md="3" lg="4">
+                              <div className="d-flex align-items-center">
+                                <Avatar
+                                  img={item?.image_uri?.length > 0 ? item?.image_uri : defaultAvatar}
+                                  imgHeight="38"
+                                  imgWidth="38"
+                                  className="me-2 user-pic"
+                                />
+                                <Link to={`/profile/talent/${item.user_id}`} target="_blank">
+                                  <p className="font-medium-1 fw-bold m-0">{`${item.first_name} ${item.last_name}`}</p>
+                                </Link>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="4">
+                              <div className="d-flex align-items-center">
+                                <Badge>
+                                  <div className="d-flex align-items-center">
+                                    <Star
+                                      size={12}
+                                      color={theme.starRatingBg}
+                                      fill={theme.starRatingBg}
+                                      className="me-50"
+                                    />
+                                    <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                  </div>
+                                </Badge>
+                                <p className="m-0 font-small-3 fw-bold ms-1">
+                                  {item.projects_worked_on_count} Projects
+                                </p>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="2">
+                              <div className="circular-progressbar-container">
+                                <CircularProgressbarWithChildren
+                                  value={item.match_percentage}
+                                  styles={{
+                                    path: {
+                                      stroke: giveStrokeColor(item.match_percentage),
+                                      strokeLinecap: 'round',
+                                      transition: 'stroke-dashoffset 0.5s ease 0s',
+                                      transform: 'rotate(0turn)',
+                                      transformOrigin: 'center center',
+                                    },
+                                    trail: {
+                                      stroke: theme.progressBarBg,
+                                      strokeLinecap: 'round',
+                                      transform: 'rotate(0turn)',
+                                      transformOrigin: 'center center',
+                                    },
+                                  }}
+                                >
+                                  <div className="d-flex justify-content-center align-items-center">
+                                    <p className="percentage-text m-0">{item.match_percentage}%</p>
+                                  </div>
+                                </CircularProgressbarWithChildren>
+                              </div>
+                            </Col>
+                            <Col sm="2" md="3" lg="2">
+                              {renderActionButton(item, 'alma')}
+                            </Col>
+                          </Row>
+                        ))
+                      ) : (
+                        <div className="no-data-found-container d-flex flex-column align-items-center py-1">
+                          <img
+                            src={NoDataFoundGif}
+                            alt="no-data"
+                            width={200}
+                            height={200}
+                            className="no-data-found-gif"
+                          />
+                          <p className="m-0 fw-bold font-medium-3">No matches found</p>
+                        </div>
+                      )}
+                    </InfiniteScroll>
+                  </TableContainer>
+                )}
+              </TabPane>
+            </TabContent>
+          )}
         </CardBody>
       </Card>
       <div className="d-flex justify-content-end align-items-center">

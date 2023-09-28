@@ -40,7 +40,9 @@ import {
 } from '../reducers/static';
 
 const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(bestTalentsRequest());
+  if (page === 1) {
+    dispatch(bestTalentsRequest());
+  }
   try {
     const res = await bestTalentsService(projectId, searchText, page, pageSize);
     dispatch(bestTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
@@ -50,7 +52,9 @@ const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async
 };
 
 const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(favoriteTalentsRequest());
+  if (page === 1) {
+    dispatch(favoriteTalentsRequest());
+  }
   try {
     const res = await favoriteTalentsService(projectId, searchText, page, pageSize);
     dispatch(favoriteTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
@@ -60,7 +64,9 @@ const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => a
 };
 
 const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(almaMaterTalentsRequest());
+  if (page === 1) {
+    dispatch(almaMaterTalentsRequest());
+  }
   try {
     const res = await almaMaterTalentsService(projectId, searchText, page, pageSize);
     dispatch(almaMaterTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
