@@ -60,13 +60,7 @@ const VariableSimpleMilestoneView = () => {
           .min(1, 'Cost must be at least 1')
           .typeError('Please enter a number')
           .required('Talent cost is required')
-          .test('maxDecimalPlaces', 'Cost can have up to 2 decimal places', (value) => {
-            if (value === undefined) {
-              return true; // Optional field, no validation needed if empty
-            }
-            const decimalCount = (value.toString().split('.')[1] || '').length;
-            return decimalCount <= 2;
-          }),
+          .integer('Cost must be an integer'),
         name: yup
           .string()
           .min(4, 'Name must be at least 4 characters')

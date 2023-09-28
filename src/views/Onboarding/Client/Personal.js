@@ -185,6 +185,7 @@ const Personal = () => {
 
     if (watch('country')) {
       dispatch(getStates(watch('country').value));
+      setCitiesOptions([]);
     }
   }, [watch('country')]);
 
@@ -739,9 +740,10 @@ const Personal = () => {
                   invalid={errors.state && true}
                   render={({ field }) => (
                     <Select
+                      isDisabled={!watch('country')}
                       isLoading={statesIsLoading}
                       options={statesOptions}
-                      menuPosition='fixed'
+                      menuPosition="fixed"
                       minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select your state"
@@ -768,9 +770,10 @@ const Personal = () => {
                   invalid={errors.city && true}
                   render={({ field }) => (
                     <Select
+                      isDisabled={!watch('country') || !watch('state')}
                       isLoading={citiesIsLoading}
                       options={citiesOptions}
-                      menuPosition='fixed'
+                      menuPosition="fixed"
                       minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select your city"

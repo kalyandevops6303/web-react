@@ -27,7 +27,7 @@ import InfiniteScroll from '../../../lib/infinite-scroll';
 import theme from '../../../configs/themeVariables';
 import { BlueBgIconContainer, NavsContainer, TableContainer } from '../style';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
-import { giveStrokeColor } from '../../../utility/Utils';
+import { giveStrokeColor, returnFormattedRating } from '../../../utility/Utils';
 import NoDataFoundGif from '../../../assets/images/noDataFoundGif.gif';
 import InviteModal from '../InviteModal';
 import SendInvitationModal from '../../modals/SendInvitationModal';
@@ -360,7 +360,7 @@ const Invite = ({ stepper }) => {
                                       fill={theme.starRatingBg}
                                       className="me-50"
                                     />
-                                    <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                    <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                   </div>
                                 </Badge>
                                 <p className="m-0 font-small-3 fw-bold ms-1">
@@ -455,7 +455,7 @@ const Invite = ({ stepper }) => {
                                       fill={theme.starRatingBg}
                                       className="me-50"
                                     />
-                                    <p className="m-0 fw-bolder rating-text">{item.talent_details.rating}</p>
+                                    {returnFormattedRating(item.talent_details.rating)}
                                   </div>
                                 </Badge>
                                 <p className="m-0 font-small-3 fw-bold ms-1">
@@ -546,7 +546,7 @@ const Invite = ({ stepper }) => {
                                       fill={theme.starRatingBg}
                                       className="me-50"
                                     />
-                                    <p className="m-0 fw-bolder rating-text">{item.rating}</p>
+                                    <p className="m-0 fw-bolder rating-text">{returnFormattedRating(item.rating)}</p>
                                   </div>
                                 </Badge>
                                 <p className="m-0 font-small-3 fw-bold ms-1">
