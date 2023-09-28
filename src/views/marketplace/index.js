@@ -9,6 +9,7 @@ import PrimaryFilter from './overview/PrimaryFilter';
 import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 import CreateProjectButton from './overview/CreateProjectButton';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { clearProjectData } from '../../redux/reducers/projectDetails';
 
 const MarketPlaceContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -40,6 +41,7 @@ const MarketPlace = () => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
     dispatch(getProfilePercentage());
+    dispatch(clearProjectData());
   }, []);
 
   // Secondary filters

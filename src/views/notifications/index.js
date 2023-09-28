@@ -10,12 +10,13 @@ import DateTime from '../../lib/date-time';
 import { BorderCardContainer, NotificationBadgeContainer } from './style';
 import theme from '../../configs/themeVariables';
 import getNotifications from '../../redux/actions/notificationsActions';
-import { notifications } from '../../redux/selectors/notificationsSelectors';
+import { notifications, notificationsLoading } from '../../redux/selectors/notificationsSelectors';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import { clearNotificationsData } from '../../redux/reducers/notifications';
 import SwitchConfirmModal from '../modals/SwitchConfirm';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
@@ -34,7 +35,7 @@ const Notifications = () => {
   const dispatch = useDispatch();
 
   const notificationsData = useSelector(notifications);
-
+  const isLoading = useSelector(notificationsLoading);
   useEffect(() => {
     dispatch(getNotifications('', 1, 10, []));
 
@@ -140,6 +141,10 @@ const Notifications = () => {
     // }
     // setItem('inviteToken', data.custom_payload?.token);
   };
+
+  if (isLoading) {
+    return <ComponentSpinner />;
+  }
   return (
     <>
       <div className="d-flex justify-content-between mb-2 mt-1">
@@ -170,6 +175,7 @@ const Notifications = () => {
         dataLength={notificationsData?.data?.length || 0}
         next={loadNewNotifications}
         hasMore={notificationsData?.metadata?.has_next_page}
+        loader={<div className="d-flex justify-content-center">Loading...</div>}
       >
         {notificationsData?.data?.length > 0 ? (
           notificationsData?.data?.map((item) => (

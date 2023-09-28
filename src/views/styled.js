@@ -36,9 +36,8 @@ const CustomBadge = styled.span`
     color: ${theme.lightBlueColor};
   }
   .OPEN {
-    background: ${theme.lightBlueBgColor} !important;
-    color: ${theme.lightBlueColor};
-    border: 1px solid ${theme.blueColor};
+    background: ${theme.lightGreenBg} !important;
+    color: ${theme.lighGreenColor};
   }
   .COMPLETED {
     background: ${theme.lightGreenBg} !important;
@@ -60,9 +59,8 @@ const CustomBadge = styled.span`
     color: ${theme.disabledGrayColor};
   }
   .OPEN_PROJECT {
-    background: ${theme.blueColor}1f !important;
-    color: ${theme.blueColor};
-    border: ${(props) => props.bordered && '1px solid'};
+    background: ${theme.lightGreenBg}1f !important;
+    color: ${theme.lighGreenColor};
   }
   .INVITED {
     color: ${theme.purpleColor};

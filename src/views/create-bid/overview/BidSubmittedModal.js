@@ -10,6 +10,7 @@ import { saveSubmitBid } from '../../../redux/actions/createBidActions';
 import { bidDetails, submitBidLoading } from '../../../redux/selectors/createBidSelectors';
 import { inviteTalentsToProject } from '../../../redux/actions/inviteTalent';
 import { userTypes } from '../../../utility/constants/Constant';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const BidSubmittedModal = ({ modal, toggleModal }) => {
   const params = useParams();
@@ -18,6 +19,7 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
 
   const submitBidIsLoading = useSelector(submitBidLoading);
   const bidDetailsData = useSelector(bidDetails);
+  const selectSavedUser = useSelector(selectSavedUserData);
 
   const [loadingState, setLoadingState] = useState(false);
   const [timer, setTimer] = useState(5);
@@ -32,41 +34,47 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
   const emptyCall = () => {};
 
   const fetchAndProcessDataWithLoadingState = async () => {
-    const data = bidDetailsData?.workers?.map((worker) => {
-      const reqData = {
-        redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
-        requests_to: {
-          user_ids: [worker.user_id],
-        },
-        request_for: {
-          project_id: bidDetailsData?.project_id,
-          team_id: bidDetailsData?.bid_by?.entity_id,
-          role: worker.role,
-        },
-      };
+    const data = bidDetailsData?.workers
+      ?.filter((worker) => worker.user_id && worker.user_id !== selectSavedUser?._id)
+      ?.map((worker) => {
+        const reqData = {
+          redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+          requests_to: {
+            user_ids: [worker.user_id],
+          },
+          request_for: {
+            project_id: bidDetailsData?.project_id,
+            team_id: bidDetailsData?.bid_by?.entity_id,
+            role: worker.role,
+          },
+        };
 
-      return reqData;
-    });
-
-    try {
-      setLoadingState(true);
-
-      const apiPromises = [];
-
-      data.forEach((item, index) => {
-        const apiCallPromise =
-          index !== data.length - 1
-            ? dispatch(inviteTalentsToProject({ data: item, onSuccess: emptyCall }))
-            : dispatch(inviteTalentsToProject({ data: item, onSuccess }));
-
-        apiPromises.push(apiCallPromise);
+        return reqData;
       });
 
-      await Promise.all(apiPromises);
+    if (data?.length > 0) {
+      try {
+        setLoadingState(true);
 
-      setLoadingState(false);
-    } catch (error) {
-      setLoadingState(false);
+        const apiPromises = [];
+
+        data.forEach((item, index) => {
+          const apiCallPromise =
+            index !== data.length - 1
+              ? dispatch(inviteTalentsToProject({ data: item, onSuccess: emptyCall }))
+              : dispatch(inviteTalentsToProject({ data: item, onSuccess }));
+
+          apiPromises.push(apiCallPromise);
+        });
+
+        await Promise.all(apiPromises);
+
+        setLoadingState(false);
+      } catch (error) {
+        setLoadingState(false);
+      }
+    } else {
+      onSuccess();
     }
   };
 

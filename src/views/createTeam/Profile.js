@@ -38,7 +38,7 @@ import {
 import timeOptions from '../../utility/constants/TimeDropdownOptions';
 import TeamCreatedModal from './TeamCreatedModal';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
-import { createTeam, updateTeam } from '../../redux/actions/teamsActions';
+import { updateTeam } from '../../redux/actions/teamsActions';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getTeamById } from '../../services/teamServices';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
@@ -82,7 +82,8 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Maximum of five tools can be added'),
+      .max(5, 'Five tools has to be added')
+      .min(5, 'Five tools has to be added'),
     skills: yup
       .array()
       .of(
@@ -92,7 +93,7 @@ const Profile = () => {
         }),
       )
       .max(5, 'Maximum of five skills can be added')
-      .min(1, 'At least one skill is required')
+      .min(5, 'Five skills has to be added')
       .required('Skill is required'),
     preferredWorkingTimeZone: yup
       .object()
@@ -178,8 +179,8 @@ const Profile = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [teamCreatedModal, setTeamCreatedModal] = useState(null);
-  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
-  const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
+  const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(false);
+  const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
@@ -190,8 +191,8 @@ const Profile = () => {
   const [timezonesOptions, setTimezonesOptions] = useState(null);
   const [imageUrlRes, setImageUrlRes] = useState(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
-  const [isTeamcreating, setIsTeamcreating] = useState(false);
   const [teamDetails, setTeamDetails] = useState(null);
+  const [teamCreateData, setTeamCreateData] = useState(null);
   const fileInputRef = useRef(null);
 
   const userDetailsData = useSelector(userData);
@@ -221,6 +222,7 @@ const Profile = () => {
 
     if (file && isFileValid(file)) {
       const thumbnail = URL.createObjectURL(file);
+
       setSelectedImage(file);
       setSelectedImagePreview(thumbnail);
 
@@ -256,15 +258,6 @@ const Profile = () => {
       uploadImage(imageUrlRes.upload_url);
     }
   }, [imageUrlRes]);
-
-  const onSuccess = () => {
-    setIsTeamcreating(false);
-    setTeamCreatedModal(true);
-  };
-
-  const onError = () => {
-    setIsTeamcreating(false);
-  };
 
   const onSubmit = (data) => {
     const {
@@ -362,11 +355,12 @@ const Profile = () => {
       const onApiSuccess = () => {
         navigate('/dashboard');
       };
-
       dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
     } else {
-      setIsTeamcreating(true);
-      dispatch(createTeam(removeEmptyKeys(reqData), onSuccess, onError));
+      setTeamCreateData(removeEmptyKeys(reqData));
+      setTeamCreatedModal(true);
+      // setIsTeamcreating(true);
+      // dispatch(createTeam(removeEmptyKeys(reqData), onSuccess, onError));
     }
   };
 
@@ -624,11 +618,17 @@ const Profile = () => {
   return (
     <ProfileFormContainer>
       {teamCreatedModal && (
-        <TeamCreatedModal onInvite={onInvite} modal={teamCreatedModal} toggleModal={toggleTeamCreatedModal} />
+        <TeamCreatedModal
+          previewImage={selectedImagePreview}
+          teamCreateData={teamCreateData}
+          onInvite={onInvite}
+          modal={teamCreatedModal}
+          toggleModal={toggleTeamCreatedModal}
+        />
       )}
-      {/* <Button onClick={onInvite}>Invite me</Button> */}
       {inviteTalentToTeamModal && (
         <InviteTalentToTeam
+          createTeamView
           inviteTeamMemberModal={inviteTeamMemberModal}
           toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
@@ -1307,12 +1307,16 @@ const Profile = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" outline disabled={isImageUploading || isTeamcreating || updateTeamIsLoading}>
-              {isTeamcreating || updateTeamIsLoading ? (
+            <Button
+              color="primary"
+              outline={location?.state?.isEditing}
+              disabled={isImageUploading || updateTeamIsLoading}
+            >
+              {updateTeamIsLoading ? (
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">Save</span>
+                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Create team'}</span>
                   <ChevronRight size={14} />
                 </>
               )}

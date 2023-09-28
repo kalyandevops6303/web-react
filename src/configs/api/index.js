@@ -71,6 +71,8 @@ const API = {
     // team
     getTeamMember: `${apiOnboardingEndpoint}/api/v1/teams/get-members`,
     getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members-new`,
+    recommendedProjectsTeam: `${apiOnboardingEndpoint}/api/v1/teams/recommended-projects`,
+
     joinRequest: `${apiOnboardingEndpoint}/api/v1/teams/join-requests`,
     recommendedTalent: `${apiOnboardingEndpoint}/api/v1/teams/recommended-talents`,
     validateUrl: `${apiAuthEndpoint}/api/v1/team/invite-member/validate-deep-link`,
@@ -226,6 +228,12 @@ const API = {
   payment: {
     taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,
     paymentAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
+  },
+  referralAndReward: {
+    createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
+    validateReferral: `${apiAuthEndpoint}/api/v1/referrals/validation`,
+    convertReferral: `${apiAuthEndpoint}/api/v1/referrals/conversion`,
+    allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
   },
 };
 

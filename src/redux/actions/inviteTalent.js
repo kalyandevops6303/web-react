@@ -36,7 +36,9 @@ import {
 } from '../../services/projectDetailsServices';
 
 const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(bestTalentsRequest());
+  if (page === 1) {
+    dispatch(bestTalentsRequest());
+  }
   try {
     let res;
     if (projectId) {
@@ -51,7 +53,9 @@ const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async
 };
 
 const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(favoriteTalentsRequest());
+  if (page === 1) {
+    dispatch(favoriteTalentsRequest());
+  }
   try {
     let res;
     if (projectId) {
@@ -66,7 +70,9 @@ const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => a
 };
 
 const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(almaMaterTalentsRequest());
+  if (page === 1) {
+    dispatch(almaMaterTalentsRequest());
+  }
   try {
     let res;
     if (projectId) {
@@ -112,7 +118,10 @@ const inviteTalents =
     }
   };
 const getTeamMemberForInvite = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(teamMemberForInviteRequest());
+  if (page === 1) {
+    dispatch(teamMemberForInviteRequest());
+  }
+
   try {
     const res = await getTeamMeberforInviteService(searchText, page, pageSize, projectId);
     dispatch(teamMemberForInviteSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
