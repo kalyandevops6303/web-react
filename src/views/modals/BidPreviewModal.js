@@ -83,7 +83,7 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
                   <CardText className="key mb-0">Total Bid Amount</CardText>
                   <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
                   <UncontrolledTooltip placement="right" target="duration-info">
-                    <p className="m-0">Need to get this from Ritika</p>
+                    <p className="m-0">A Total of talent cost + duration for all the milestone</p>
                   </UncontrolledTooltip>
                 </div>
               </div>

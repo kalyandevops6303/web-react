@@ -153,7 +153,7 @@ const BidDetails = () => {
                   <CardText className="key mb-0">Total Bid Amount</CardText>
                   <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
                   <UncontrolledTooltip placement="bottom" target="amount-info">
-                    <p className="m-0">Predetermined project cost fixed by the client</p>
+                    <p className="m-0">A Total of talent cost + duration for all the milestone</p>
                   </UncontrolledTooltip>
                 </div>
               </div>
