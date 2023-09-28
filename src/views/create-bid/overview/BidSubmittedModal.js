@@ -52,25 +52,29 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
         return reqData;
       });
 
-    try {
-      setLoadingState(true);
+    if (data?.length > 0) {
+      try {
+        setLoadingState(true);
 
-      const apiPromises = [];
+        const apiPromises = [];
 
-      data.forEach((item, index) => {
-        const apiCallPromise =
-          index !== data.length - 1
-            ? dispatch(inviteTalentsToProject({ data: item, onSuccess: emptyCall }))
-            : dispatch(inviteTalentsToProject({ data: item, onSuccess }));
+        data.forEach((item, index) => {
+          const apiCallPromise =
+            index !== data.length - 1
+              ? dispatch(inviteTalentsToProject({ data: item, onSuccess: emptyCall }))
+              : dispatch(inviteTalentsToProject({ data: item, onSuccess }));
 
-        apiPromises.push(apiCallPromise);
-      });
+          apiPromises.push(apiCallPromise);
+        });
 
-      await Promise.all(apiPromises);
+        await Promise.all(apiPromises);
 
-      setLoadingState(false);
-    } catch (error) {
-      setLoadingState(false);
+        setLoadingState(false);
+      } catch (error) {
+        setLoadingState(false);
+      }
+    } else {
+      onSuccess();
     }
   };
 
