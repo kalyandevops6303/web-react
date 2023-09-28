@@ -6,7 +6,13 @@ import InvitationSentModal from '../modals/InvitationSentModal';
 import InviteTeamMemberModal from '../modals/InviteTeamMemberModal';
 import ShareInviteModal from '../modals/ShareInviteModal';
 
-const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, toggleInviteTeamMemberModal }) => {
+const InviteTalentToTeam = ({
+  createTeamView,
+  projectId,
+  inviteRole,
+  inviteTeamMemberModal,
+  toggleInviteTeamMemberModal,
+}) => {
   const [selectedTalents, setSelectedTalents] = useState([]);
   const [invitedIds, setInvitedIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -30,6 +36,7 @@ const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, togg
     <>
       {inviteTeamMemberModal && (
         <InviteTeamMemberModal
+          createTeamView={createTeamView}
           inviteRole={inviteRole}
           projectId={projectId}
           selectedTalents={selectedTalents}
@@ -46,6 +53,7 @@ const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, togg
       )}
       {sendInvitationModal && (
         <SendInvitationModal
+          createTeamView={createTeamView}
           projectId={projectId}
           inviteRole={inviteRole}
           modal={sendInvitationModal}
@@ -59,6 +67,7 @@ const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, togg
       )}
       {invitationSentModal && (
         <InvitationSentModal
+          createTeamView={createTeamView}
           projectId={projectId}
           inviteRole={inviteRole}
           modal={invitationSentModal}
@@ -76,6 +85,7 @@ const InviteTalentToTeam = ({ projectId, inviteRole, inviteTeamMemberModal, togg
       )}
       {shareModal && (
         <ShareInviteModal
+          createTeamView={createTeamView}
           projectId={projectId}
           inviteRole={inviteRole}
           modal={shareModal}
@@ -90,11 +100,13 @@ InviteTalentToTeam.propTypes = {
   toggleInviteTeamMemberModal: PropTypes.func,
   projectId: PropTypes.string,
   inviteRole: PropTypes.string,
+  createTeamView: PropTypes.bool,
 };
 InviteTalentToTeam.defaultProps = {
   inviteTeamMemberModal: false,
   toggleInviteTeamMemberModal: () => {},
   projectId: '',
   inviteRole: '',
+  createTeamView: false,
 };
 export default InviteTalentToTeam;

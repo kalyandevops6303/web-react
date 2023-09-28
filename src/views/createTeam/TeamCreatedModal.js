@@ -1,44 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import '../custom-styles.scss';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, Spinner } from 'reactstrap';
 import { UserPlus } from 'react-feather';
 import GreatJobGif from '../../assets/images/greatJobGif.gif';
 import { TeamCreatedModalImageWrapper, TeamCreatedModalLogoImg } from '../styled';
-import { selectCreatedTeamData } from '../../redux/selectors/teamSelectors';
 import { switchProfile } from '../../redux/actions/authActions';
+import { createTeam } from '../../redux/actions/teamsActions';
 
-const TeamCreatedModal = ({ onInvite, toggleModal, modal }) => {
+const TeamCreatedModal = ({ previewImage, teamCreateData, onInvite, toggleModal, modal }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const teamData = useSelector(selectCreatedTeamData);
-  const isLoading = useSelector((state) => state.team.loading);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [timer, setTimer] = useState(5);
   const zeroLoggedRef = useRef(false);
   const intervalId = useRef();
 
-  const handleGetStarted = () => {
+  const onCreateTeamSuccess = (data) => {
+    setIsLoading(false);
     const onSuccess = () => {
       onInvite();
     };
-    dispatch(switchProfile({ data: teamData, onSuccess, selected: false }));
+    dispatch(switchProfile({ data, onSuccess, selected: false }));
+  };
+
+  // const onSuccess = () => {
+  //   onInvite();
+  // };
+  // dispatch(switchProfile({ data: teamData, onSuccess, selected: false }));
+
+  const handleGetStarted = () => {
+    setIsLoading(true);
+    dispatch(createTeam({ data: teamCreateData, onSuccess: onCreateTeamSuccess, onError: () => setIsLoading(false) }));
   };
 
   const handleRecallClick = () => {
     toggleModal();
-  };
-
-  const onDoneClick = () => {
-    // if (bidDetailsData?.bid_by?.entity === userTypes.team) {
-    //   dispatch(saveSubmitBid(params.bidId, fetchAndProcessDataWithLoadingState));
-    // } else {
-    //   dispatch(saveSubmitBid(params.bidId, onSuccess));
-    // }
-    // create team api
   };
 
   useEffect(() => {
@@ -48,7 +47,7 @@ const TeamCreatedModal = ({ onInvite, toggleModal, modal }) => {
           if (prevTimer === 1 && !isLoading && !zeroLoggedRef.current) {
             clearInterval(intervalId);
             zeroLoggedRef.current = true;
-            onDoneClick();
+            handleGetStarted();
             return 0;
             // eslint-disable-next-line no-else-return
           } else if (prevTimer > 0) {
@@ -74,7 +73,7 @@ const TeamCreatedModal = ({ onInvite, toggleModal, modal }) => {
   };
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader />
+      <ModalHeader toggle={closeModal} />
       <ModalBody>
         <div className="d-flex justify-content-between align-items-center ps-1">
           <img src={GreatJobGif} width={120} height={120} alt="great-job" className="me-5" />
@@ -84,13 +83,9 @@ const TeamCreatedModal = ({ onInvite, toggleModal, modal }) => {
             <p className="font-medium-2">You successfully created a team</p>
             <div className="my-1 d-flex align-items-center">
               <TeamCreatedModalImageWrapper>
-                {teamData?.team_logo ? (
-                  <TeamCreatedModalLogoImg src={teamData.team_logo} alt="team-logo" />
-                ) : (
-                  <UserPlus size={30} />
-                )}
+                {previewImage ? <TeamCreatedModalLogoImg src={previewImage} alt="team-logo" /> : <UserPlus size={30} />}
               </TeamCreatedModalImageWrapper>
-              <h3 className="fw-bold m-0 ms-1">{teamData?.name}</h3>
+              <h3 className="fw-bold m-0 ms-1">{teamCreateData?.name}</h3>
             </div>
             <p>
               <span className="fw-bolder">Note : </span>The next step is to add more team members to <br /> this team
@@ -124,10 +119,14 @@ TeamCreatedModal.propTypes = {
   modal: Proptypes.bool,
   onInvite: Proptypes.func,
   toggleModal: Proptypes.func,
+  teamCreateData: Proptypes.object,
+  previewImage: Proptypes.string,
 };
 
 TeamCreatedModal.defaultProps = {
   modal: false,
   onInvite: () => {},
   toggleModal: () => {},
+  teamCreateData: {},
+  previewImage: '',
 };

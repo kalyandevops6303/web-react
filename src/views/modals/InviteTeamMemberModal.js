@@ -19,7 +19,7 @@ import {
   TabContent,
   TabPane,
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Check, Search, Share2, Star } from 'react-feather';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import Avatar from '@components/avatar';
@@ -54,6 +54,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const InviteTeamMemberModal = ({
+  createTeamView,
   invitedIds,
   selectedIds,
   setSelectedIds,
@@ -74,6 +75,7 @@ const InviteTeamMemberModal = ({
   };
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const bestTalentsData = useSelector(bestTalents);
   const favoriteTalentsData = useSelector(favoriteTalents);
@@ -245,9 +247,21 @@ const InviteTeamMemberModal = ({
     toggleInviteShareModal();
   };
 
+  const redirectToDashboard = () => {
+    navigate('/dashboard');
+  };
+
+  const handleClose = () => {
+    if (createTeamView) {
+      redirectToDashboard();
+    } else {
+      toggleModal();
+    }
+  };
+
   return (
     <Modal isOpen={modal} contentClassName="invite-talent-listing-modal-style" className="modal-dialog-centered">
-      <ModalHeader toggle={toggleModal} />
+      <ModalHeader toggle={createTeamView ? redirectToDashboard : toggleModal} />
       <ModalBody className="p-0">
         <InviteHeadContainer className="px-2">
           <div className="custom-header-margin d-flex justify-content-between align-items-center">
@@ -706,11 +720,9 @@ const InviteTeamMemberModal = ({
 
           <div className="d-flex justify-content-end align-items-center">
             <div>
-              <Link to="#" onClick={toggleModal}>
-                <Button color="primary" outline>
-                  <span className="px-2">Close</span>
-                </Button>
-              </Link>
+              <Button color="primary" outline onClick={handleClose}>
+                <span className="px-2">Close</span>
+              </Button>
               {selectedIds.length > 0 && (
                 <Button color="primary" className="ms-3" onClick={onSendInvitationModalOpen}>
                   Invite
@@ -727,6 +739,7 @@ const InviteTeamMemberModal = ({
 export default InviteTeamMemberModal;
 
 InviteTeamMemberModal.propTypes = {
+  createTeamView: Proptypes.bool,
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   invitedIds: Proptypes.bool,
@@ -741,6 +754,7 @@ InviteTeamMemberModal.propTypes = {
 };
 
 InviteTeamMemberModal.defaultProps = {
+  createTeamView: false,
   modal: false,
   toggleModal: () => {},
   invitedIds: false,
