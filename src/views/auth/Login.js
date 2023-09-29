@@ -41,8 +41,10 @@ const Login = () => {
   const urlSearchParams = new URLSearchParams(window.location.search);
   const dataParam = urlSearchParams.get('data');
 
-  const onValidUrlSuccess = () => {
-    if (isLoggedIn) {
+  const onValidUrlSuccess = (res) => {
+    if (res.user_status === 'UNREGISTERED') {
+      navigate('/auth');
+    } else if (isLoggedIn) {
       navigate('/dashboard');
     }
   };

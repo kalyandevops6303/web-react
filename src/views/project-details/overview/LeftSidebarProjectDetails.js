@@ -166,9 +166,11 @@ const LeftSidebarProjectDetails = () => {
                 <Button className="w-50 d-none" outline color="danger">
                   Delete
                 </Button>
-                <Button className="w-50" color="primary" onClick={handleInvite}>
-                  Invite
-                </Button>
+                {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') && (
+                  <Button className="w-50" color="primary" onClick={handleInvite}>
+                    Invite
+                  </Button>
+                )}
               </div>
             </div>
           ) : (
