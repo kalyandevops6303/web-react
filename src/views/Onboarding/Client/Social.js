@@ -16,7 +16,6 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { getUserDetails, saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
-import { checkpointCompleteLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Social = () => {
@@ -70,7 +69,6 @@ const Social = () => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
-  const checkpointCompleteIsLoading = useSelector(checkpointCompleteLoading);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
@@ -215,7 +213,7 @@ const Social = () => {
         <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
       )}
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">Social Links</h4>
           </CardHeader>
@@ -381,7 +379,7 @@ const Social = () => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
+        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
           <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
