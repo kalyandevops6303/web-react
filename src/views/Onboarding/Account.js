@@ -265,7 +265,7 @@ const Account = () => {
     <AccountDetailsFormContainer>
       {resetPasswordModal && <ResetPasswordModal modal={resetPasswordModal} toggleModal={toggleResetPasswordModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">Account Details</h4>
           </CardHeader>
@@ -400,7 +400,7 @@ const Account = () => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-end w-75">
           {location?.state?.isEditing && userDetailsData?.oauth_type !== 'google' && (
             <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
               Reset Password
