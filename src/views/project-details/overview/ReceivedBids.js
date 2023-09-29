@@ -38,6 +38,7 @@ import { AccordionHeadStyle, UserNameWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getReceivedBids } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { CustomBadge } from '../../styled';
 
 const TableWrapper = styled.div`
   .rdt_TableHeadRow {
@@ -197,7 +198,13 @@ const ReceivedBids = ({ projectName }) => {
           <Paperclip size={18} color={theme.bodyColor} /> <span>{item?.documents_count}</span>
         </div>
       ),
-      status: <span>{item?.status}</span>,
+      status: (
+        <CustomBadge>
+          <Badge className={`${item?.status} truncate-1`} color="badge">
+            {item.status}
+          </Badge>
+        </CustomBadge>
+      ),
       action: (
         <div className="d-flex gap-1">
           <Eye
