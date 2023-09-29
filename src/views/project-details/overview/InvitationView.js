@@ -10,11 +10,10 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import InfoIcon from '@src/assets/images/timeline-info-icon.png';
 
 import { Link } from 'react-router-dom';
-import { setItem } from '../../../utility/localStorageControl';
 
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { GrayBorderContainer, GrayCardWrapper } from '../../styled';
-import { getWhoInvited } from '../../../redux/actions/teamsActions';
+import { getTeams, getWhoInvited } from '../../../redux/actions/teamsActions';
 import { getProfilePercentage, updateInvitation } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
@@ -42,9 +41,6 @@ const InvitationView = () => {
   const [status, setStatus] = useState(invitedByData?.request_status);
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
-  useEffect(() => {
-    setItem('isInviteRead', true);
-  }, []);
 
   const onSuccess = (res) => {
     setInvitedByData(res);
@@ -63,45 +59,6 @@ const InvitationView = () => {
     setGetWhoInvitedLoading(true);
     dispatch(getWhoInvited({ id: params.inviteId, onSuccess, onError }));
   }, []);
-
-  // const handleAccept = () => {
-  //   const data = {
-  //     action: 'ACCEPT',
-  //     request_id: params.inviteId,
-  //   };
-  //   setIsStatusUpdating(true);
-  //   dispatch(
-  //     updateInvitation({
-  //       data,
-  //       onSuccess: () => {
-  //         setStatus('ACCEPTED');
-  //         setIsStatusUpdating(false);
-  //       },
-  //       onError: () => {
-  //         setIsStatusUpdating(false);
-  //       },
-  //     }),
-  //   );
-  // };
-  // const handleDecline = () => {
-  //   const data = {
-  //     action: 'REJECT',
-  //     request_id: params.inviteId,
-  //   };
-  //   setIsStatusUpdating(true);
-  //   dispatch(
-  //     updateInvitation({
-  //       data,
-  //       onSuccess: () => {
-  //         setStatus('DECLINED');
-  //         setIsStatusUpdating(false);
-  //       },
-  //       onError: () => {
-  //         setIsStatusUpdating(false);
-  //       },
-  //     }),
-  //   );
-  // };
 
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
@@ -132,6 +89,7 @@ const InvitationView = () => {
           setStatus('ACCEPTED');
           setAccpetModal(false);
           setIsStatusUpdating(false);
+          dispatch(getTeams({ onSuccess: () => {} }));
         },
         onError: () => {
           setIsStatusUpdating(false);
@@ -162,7 +120,7 @@ const InvitationView = () => {
       updateInvitation({
         data,
         onSuccess: () => {
-          setStatus('DECLINED');
+          setStatus('REJECTED');
           setRejectModal(false);
           setIsStatusUpdating(false);
         },
@@ -177,7 +135,7 @@ const InvitationView = () => {
   };
 
   if (isGetWhoInvitedLoading) {
-    <ComponentSpinner />;
+    return <ComponentSpinner />;
   }
   return (
     <Row>

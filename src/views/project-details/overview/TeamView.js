@@ -17,12 +17,13 @@ import MemberRow from './MemberRow';
 
 import { getInvitedMember, getTeamMembers, getUnassignedRoles } from '../../../redux/actions/projectDetailsAction';
 import InviteTalentToTeam from '../../invite-talent-to-team';
-import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import { getItem } from '../../../utility/localStorageControl';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
 import { returnFormattedRating } from '../../../utility/Utils';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const InvitedMemberComponent = () => {
   const inviteMembers = useSelector((state) => state.projectDetails.getInvitedMember);
@@ -124,7 +125,7 @@ const InvitedMemberComponent = () => {
                           </div>
                         </div>
                         <CardText style={{ flex: '2' }} className="fw-bold m-auto me-4">
-                          {data?.send_to?.role?.name || 'Team Member'}
+                          {data?.request_for?.role || 'Team Member'}
                         </CardText>
                         <div style={{ flex: '2' }} className="me-4">
                           <Rating
@@ -175,8 +176,11 @@ const TeamView = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const userData = useSelector(selectUserData);
+  const savedUser = useSelector(selectSavedUserData);
   const teamMembers = useSelector((state) => state.projectDetails.getTeamMember);
   const unassigned = useSelector((state) => state.projectDetails.unassignedRole);
+  const isTeamLoading = useSelector((state) => state.projectDetails.getTeamMemberLoading);
+  const isUnassignLoading = useSelector((state) => state.projectDetails.getUnassignedRoleLoading);
   useEffect(() => {
     dispatch(getTeamMembers({ project_id: params.projectId }));
     if (userData?.user_type === userTypes.team) {
@@ -197,13 +201,20 @@ const TeamView = () => {
   const toggleModal = () => {
     setInviteModal(!inviteModal);
   };
+  const doesObjectExist = (array, idToCheck) => array?.some((obj) => obj.user_id === idToCheck);
+  const hasDeleleteAccess = doesObjectExist(teamMembers, savedUser?._id);
+  if (isTeamLoading || isUnassignLoading) {
+    return <ComponentSpinner />;
+  }
   return (
     <TeamVieWrapper>
       <Card>
         <CardTitle className="main-card-title">Project Team</CardTitle>
         <CardBody className="main-card-body">
           {teamMembers?.length > 0 ? (
-            teamMembers?.map((item) => <MemberRow data={item} key={item.user_id} withReview={false} />)
+            teamMembers?.map((item) => (
+              <MemberRow hasDeleleteAccess={hasDeleleteAccess} data={item} key={item.user_id} withReview={false} />
+            ))
           ) : (
             <>
               <img src={TeamNoDataGif} width={230} height={170} className="d-flex empty-gif m-auto" alt="empty-gif" />
@@ -214,8 +225,6 @@ const TeamView = () => {
           )}
         </CardBody>
       </Card>
-
-      {/* TODO: API in progess */}
 
       {userData?.user_type === userTypes.team && unassigned?.length > 0 && (
         <Card>
@@ -239,7 +248,9 @@ const TeamView = () => {
                         >
                           Assign team member
                         </Button>
-                        <div className="d-flex">
+                        <div
+                          className={`${item?.number_of_weeks > 0 || item?.hours_per_week > 0 ? '' : 'hidden'} d-flex`}
+                        >
                           <div className="me-2">
                             <span className="key">Duration</span>
                             <CardText className="value">{item?.number_of_weeks}w</CardText>
@@ -254,63 +265,12 @@ const TeamView = () => {
                   </CardBody>
                 </Card>
               ))}
-              {/* <Card>
-              <CardBody>
-                <div className="d-flex align-items-center justify-content-between  gap-1">
-                  <CardText className="d-flex gap-25 fw-bold me-4 mt-auto mb-auto">
-                    Back end developer <span className="indicator" />
-                  </CardText>
-                  <Button color="primary" type="secondary" outline>
-                    Assign team member
-                  </Button>
-                  <div className="d-flex">
-                    <div className="me-2">
-                      <span className="key">Duration</span>
-                      <CardText className="value">11w</CardText>
-                    </div>
-                    <div className="me-1">
-                      <span className="key">Hours/week</span>
-                      <CardText className="value">125</CardText>
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardBody>
-                <div className="d-flex align-items-center justify-content-between  gap-1">
-                  <CardText className="d-flex gap-25 fw-bold me-4 mt-auto mb-auto">
-                    Back end developer <span className="indicator" />
-                  </CardText>
-                  <Button onClick={handleAssign} color="primary" type="secondary" outline>
-                    Assign team member
-                  </Button>
-                  <div className="d-flex">
-                    <div className="me-2">
-                      <span className="key">Duration</span>
-                      <CardText className="value">11w</CardText>
-                    </div>
-                    <div className="me-1">
-                      <span className="key">Hours/week</span>
-                      <CardText className="value">125</CardText>
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card> */}
             </MemberRowWrapper>
           </CardBody>
         </Card>
       )}
       <InvitedMemberComponent />
-      {/* <Card>
-        <CardTitle className="main-card-title">Invite Sent</CardTitle>
-        <CardBody className="main-card-body">
-          {Members.map((item) => (
-            <MemberRow data={item} key={item.name} withReview />
-          ))}
-        </CardBody>
-      </Card> */}
+
       {inviteTalentToTeamModal && (
         <InviteTalentToTeam
           inviteTeamMemberModal={inviteModal}

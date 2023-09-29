@@ -27,10 +27,10 @@ const BidSubmitted = () => {
 
   const bidUpdates = [
     {
-      status: 'Bid Declined',
+      status: 'Bid Rejected',
       color: theme.red,
-      isVisible: bidInfo?.status === 'DECLINED',
-      time: timelineEntries?.['Bid Declined']?.time || '',
+      isVisible: bidInfo?.status === 'REJECTED',
+      time: timelineEntries?.['Bid Rejected']?.time || '',
     },
     {
       status: 'Bid Accepted',
@@ -41,7 +41,7 @@ const BidSubmitted = () => {
     {
       status: 'Bid Reviewed',
       color: theme.orangeColor,
-      isVisible: bidInfo?.status === 'REVIEWED' || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'DECLINED',
+      isVisible: bidInfo?.status === 'REVIEWED' || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED',
       time: timelineEntries?.['Bid Reviewed']?.time || '',
       user_details: {
         name: timelineEntries?.['Bid Reviewed']?.name || 'Client',

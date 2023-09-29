@@ -11,10 +11,11 @@ import { MemberRowWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import DateTime from '../../../lib/date-time';
 import RemoveProjectTeamMemberModal from '../../modals/RemoveProjectTeamMemberModal';
+import { getItem } from '../../../utility/localStorageControl';
 
-const MemberRow = ({ data, withReview }) => {
+const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
   const [removeProjectTeamMemberModal, setRemoveProjectTeamMemberModal] = useState(null);
-
+  const teamId = getItem('team_id');
   const toggleRemoveProjectTeamMemberModal = () => {
     setRemoveProjectTeamMemberModal(!removeProjectTeamMemberModal);
   };
@@ -64,11 +65,13 @@ const MemberRow = ({ data, withReview }) => {
                 <CardText className="value">-</CardText>
               </div>
             </div>
-            {withReview ? (
+            {withReview && (
               <span className="mail-bg">
                 <Mail size={20} className="mail-icon" color={theme.activeColor} />
               </span>
-            ) : (
+            )}
+
+            {hasDeleleteAccess && teamId && (
               <Trash2
                 className="delete-icon cursor-pointer"
                 color={theme.red}
@@ -84,9 +87,11 @@ const MemberRow = ({ data, withReview }) => {
 MemberRow.propTypes = {
   data: Proptypes.object,
   withReview: Proptypes.bool,
+  hasDeleleteAccess: Proptypes.bool,
 };
 MemberRow.defaultProps = {
   data: {},
   withReview: false,
+  hasDeleleteAccess: false,
 };
 export default MemberRow;

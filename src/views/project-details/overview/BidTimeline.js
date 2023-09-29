@@ -12,9 +12,15 @@ import { userTypes } from '../../../utility/constants/Constant';
 import ReceivedBids from './ReceivedBids';
 import BidSubmitted from './BidSubmitted';
 import { checkDocumentActivated, getBidDetails } from '../../../redux/actions/projectDetailsAction';
-import { projectDetails, selectIsContract, selectIsNDA } from '../../../redux/selectors/projectDetailsSelectors';
+import {
+  projectDetails,
+  projectDetailsLoading,
+  selectIsContract,
+  selectIsNDA,
+} from '../../../redux/selectors/projectDetailsSelectors';
 import ContractTimeline from './ContractTimeline';
 import NDATimeline from './NDATimeline';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const BidTimelineWrapper = styled.div`
   .indicator {
@@ -36,6 +42,8 @@ const BidTimeline = () => {
   const projectDetailsData = useSelector(projectDetails);
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
   const bidInfoError = useSelector((state) => state.projectDetails.errorBidInfo);
+  const isDocLoading = useSelector((state) => state.projectDetails.checkDocumentActivatedLoading);
+  const isLoading = useSelector(projectDetailsLoading);
 
   const userType = useSelector(selectUserType);
 
@@ -181,6 +189,10 @@ const BidTimeline = () => {
       ),
     },
   ].filter((item) => item.isVisible);
+
+  if (isDocLoading || isLoading) {
+    return <ComponentSpinner />;
+  }
 
   return (
     <BidTimelineWrapper>

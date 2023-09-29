@@ -49,7 +49,7 @@ export const TabsContainer = styled.div`
 
   .nav-item {
     .nav-link {
-      cursor: default;
+      cursor: ${(props) => (props.isEditing ? 'pointer' : 'default')};
     }
   }
 `;

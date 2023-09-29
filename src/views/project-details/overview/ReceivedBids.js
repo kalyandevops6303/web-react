@@ -37,6 +37,7 @@ import { selectThemeColors } from '../../../utility/Utils';
 import { AccordionHeadStyle, UserNameWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getReceivedBids } from '../../../redux/actions/projectDetailsAction';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const TableWrapper = styled.div`
   .rdt_TableHeadRow {
@@ -56,6 +57,7 @@ const ReceivedBids = ({ projectName }) => {
   const totalInvited = useSelector((state) => state.projectDetails.invitedMemberForProjectByClient);
   const selectReceivedBidsMetadata = useSelector((state) => state.projectDetails.receivedBidsMetaData);
   const selectReceivedBidscurrentPreview = useSelector((state) => state.projectDetails.receivedBidsPreview);
+  const isLoading = useSelector((state) => state.projectDetails.getReceivedBidsLoading);
   const metadata = { page: 1, page_size: 10 };
   const [searchText, setSearchText] = useState('');
   const [status, setStatus] = useState('');
@@ -121,7 +123,7 @@ const ReceivedBids = ({ projectName }) => {
       name: 'STATUS',
       sortable: false,
       minWidth: '12%',
-      selector: (row) => (row.status === 'DECLINED' ? 'REJECTED' : row.status),
+      selector: (row) => (row.status === 'REJECTED' ? 'REJECTED' : row.status),
     },
 
     {
@@ -214,7 +216,7 @@ const ReceivedBids = ({ projectName }) => {
     { label: 'New', value: 'ACTIVE' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
-    { label: 'Rejected', value: 'DECLINED' },
+    { label: 'Rejected', value: 'REJECTED' },
   ];
   const handleSearchTextChange = (e) => {
     setSearchText(e.target.value);
@@ -274,31 +276,35 @@ const ReceivedBids = ({ projectName }) => {
           <CardText className="d-none">10/500 Invited</CardText>
         </div>
 
-        <TableWrapper>
-          <div
-            className="react-dataTable mt-1"
-            style={{ overflowY: 'auto', maxHeight: '400px' }}
-            id="scrollDivForReceivedBids"
-          >
-            <InfiniteScroll
-              dataLength={receivedBids?.length}
-              next={fetchMore}
-              hasMore={hasMore}
-              scrollableTarget="scrollDivForReceivedBids"
+        {isLoading ? (
+          <ComponentSpinner />
+        ) : (
+          <TableWrapper>
+            <div
+              className="react-dataTable mt-1"
+              style={{ overflowY: 'auto', maxHeight: '400px' }}
+              id="scrollDivForReceivedBids"
             >
-              <DataTable
-                noHeader
-                pagination={false}
-                columns={tableColumns}
-                paginationPerPage={7}
-                className="react-dataTable"
-                sortIcon={<ChevronDown size={10} />}
-                data={receivedBidsDataset}
-                classNamePrefix="react-dataTable"
-              />
-            </InfiniteScroll>
-          </div>
-        </TableWrapper>
+              <InfiniteScroll
+                dataLength={receivedBids?.length}
+                next={fetchMore}
+                hasMore={hasMore}
+                scrollableTarget="scrollDivForReceivedBids"
+              >
+                <DataTable
+                  noHeader
+                  pagination={false}
+                  columns={tableColumns}
+                  paginationPerPage={7}
+                  className="react-dataTable"
+                  sortIcon={<ChevronDown size={10} />}
+                  data={receivedBidsDataset}
+                  classNamePrefix="react-dataTable"
+                />
+              </InfiniteScroll>
+            </div>
+          </TableWrapper>
+        )}
       </AccordionBody>
     </AccordionItem>
   );
