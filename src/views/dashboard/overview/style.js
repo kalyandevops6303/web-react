@@ -455,7 +455,6 @@ const TagsWrap = styled.div`
   .badge-box-wrap {
     max-height: 2rem;
     overflow: hidden;
-    width: 100%;
     .badge {
       margin: 0 0.5rem 0.5rem 0;
       font-size: 0.75rem;
@@ -482,7 +481,7 @@ const TagsWrap = styled.div`
     color: ${theme.lightBlueColor};
     font-weight: 600;
     font-size: 12px;
-    margin: auto;
+    margin: 0 0 0 10px;
   }
 `;
 const CreateTeamButtonWrapper = styled.div`

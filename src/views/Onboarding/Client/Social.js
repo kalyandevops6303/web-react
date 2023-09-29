@@ -16,7 +16,6 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { getUserDetails, saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
-import { checkpointCompleteLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Social = () => {
@@ -70,7 +69,6 @@ const Social = () => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
-  const checkpointCompleteIsLoading = useSelector(checkpointCompleteLoading);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
@@ -85,17 +83,17 @@ const Social = () => {
   };
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/payment-details`);
+      navigate(`/${userOnboarding.client}/payment-details`, { state: { isEditing: true } });
     } else {
-      navigate(`/${userOnboarding.talent}/payment-details`);
+      navigate(`/${userOnboarding.client}/payment-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/payment-details`);
+      navigate(`/${userOnboarding.client}/payment-details`, { state: { isEditing: true } });
     } else {
-      navigate(`/${userOnboarding.talent}/payment-details`);
+      navigate(`/${userOnboarding.client}/payment-details`);
     }
   };
 

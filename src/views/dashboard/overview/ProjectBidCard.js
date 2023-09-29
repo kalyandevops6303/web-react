@@ -16,7 +16,9 @@ const ProjectBidCard = ({ data, className }) => {
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
-          <p className="active-project-name">{data?.name}</p>
+          <p className="active-project-name" style={{ height: '50px' }}>
+            {data?.name}
+          </p>
           <div className="bottom-detail d-flex mt-1 align-items-center">
             <div className="design-planning-wrapper mb-0 w-50">
               <div className="design-planning mb-0">

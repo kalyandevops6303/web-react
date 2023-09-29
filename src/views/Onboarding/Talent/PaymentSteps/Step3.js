@@ -249,22 +249,26 @@ const Step3 = ({ setStep }) => {
   };
 
   const onSuccess = () => {
-    const stripeData = {
-      country:
-        // eslint-disable-next-line no-nested-ternary
-        userDetails?.phone_country?.code,
-      email: userDetails?.email,
-      individual: {
-        first_name: userDetails?.talent_info?.first_name,
-        last_name: userDetails?.talent_info?.last_name,
-      },
-      user_id: userDetails?._id,
-      // eslint-disable-next-line no-undef
-      refresh_url: window?.location?.href,
-      // eslint-disable-next-line no-undef
-      return_url: window.location.href,
-    };
-    dispatch(setupStripeAccount(stripeData, onAccountCreationSuccess));
+    if (location.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      const stripeData = {
+        country:
+          // eslint-disable-next-line no-nested-ternary
+          userDetails?.phone_country?.code,
+        email: userDetails?.email,
+        individual: {
+          first_name: userDetails?.talent_info?.first_name,
+          last_name: userDetails?.talent_info?.last_name,
+        },
+        user_id: userDetails?._id,
+        // eslint-disable-next-line no-undef
+        refresh_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
+        // eslint-disable-next-line no-undef
+        return_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
+      };
+      dispatch(setupStripeAccount(stripeData, onAccountCreationSuccess));
+    }
   };
 
   useEffect(() => {

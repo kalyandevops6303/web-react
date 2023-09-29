@@ -24,6 +24,7 @@ const ClientOnboarding = () => {
     else if (location.pathname === `/${userOnboarding.client}/educational-details`) setActive(tabNames.Educational);
     else if (location.pathname === `/${userOnboarding.client}/availability-details`) setActive(tabNames.Availability);
     else if (location.pathname === `/${userOnboarding.client}/social-details`) setActive(tabNames.Social);
+    else if (location.pathname === `/${userOnboarding.client}/payment-details`) setActive(tabNames.Payment);
   }, [location]);
 
   return (
