@@ -119,10 +119,20 @@ const inviteTalentSlice = createSlice({
       teamMemberForInviteLoading: false,
       error: action.payload,
     }),
+    clearModalData: (state) => ({
+      ...state,
+      bestTalents: null,
+      bestTalentsLoading: false,
+      favoriteTalents: null,
+      favoriteTalentsLoading: false,
+      almaMaterTalents: null,
+      almaMaterTalentsLoading: false,
+    }),
   },
 });
 
 export const {
+  clearModalData,
   getRequestStatusFailure,
   getRequestStatusSuccess,
   getRequestStatusRequest,

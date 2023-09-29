@@ -17,6 +17,7 @@ import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
 import { returnFormattedRating } from '../../../utility/Utils';
+import { clearModalData } from '../../../redux/reducers/createProject';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const LeftSidebarProjectDetails = () => {
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const toggleModal = () => {
     setInviteModal(!inviteModal);
+    dispatch(clearModalData());
   };
 
   const projectDetailsData = useSelector(projectDetails);
