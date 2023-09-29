@@ -24,13 +24,13 @@ import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { setItem } from '../../../utility/localStorageControl';
 import { returnFormattedRating } from '../../../utility/Utils';
 
-const UserSection = ({ users, name, isAlma }) => (
+const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
     <CardText className="truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
-          <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
+          <AvatarGroup totalCount={totalCount} size="sm" className="mr-4" data={users.slice(0, 3)} />
           {isAlma && <img src={AlmaMaterImg} alt="alma-mater" />}
         </span>
       ) : (
@@ -47,6 +47,7 @@ UserSection.propTypes = {
   users: PropTypes.array,
   name: PropTypes.string,
   isAlma: PropTypes.bool,
+  totalCount: PropTypes.number,
 };
 
 const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
@@ -133,7 +134,13 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           <div className="main-row">
             {isRecommendedTeam ? (
               <>
-                <UserSection tagName="Team" name={data?.name} users={users} isAlma={data?.is_alma_mater} />
+                <UserSection
+                  totalCount={data?.team_members_count || data?.workers_count}
+                  tagName="Team"
+                  name={data?.name}
+                  users={users}
+                  isAlma={data?.is_alma_mater}
+                />
                 <div className="bottom-detail d-flex mt-1">
                   <div className="design-planning-wrapper">
                     {/* <div className="design-planning">
@@ -148,6 +155,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
             ) : (
               <>
                 <UserSection
+                  totalCount={data?.team_members_count || data?.workers_count}
                   tagName="Client"
                   name={`${data?.first_name} ${data?.last_name}`}
                   users={[

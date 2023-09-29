@@ -26,6 +26,7 @@ import RaiseDisputeModal from '../disputes/overview/RaiseDisputeModal';
 import OpenListing from './overview/OpenListing';
 import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
+import { clearModalData } from '../../redux/reducers/inviteTalent';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ const PrivateDashboard = () => {
 
   const toggleInviteTeamMemberModal = () => {
     setInviteTeamMemberModal(!inviteTeamMemberModal);
+    dispatch(clearModalData());
   };
 
   const userDetailsData = useSelector(selectUserData);
