@@ -20,7 +20,7 @@ import ProjectModal from '../../modals/ProjectModal';
 import { CustomBadge } from '../../styled';
 import TagsSection from './TagsSection';
 
-const UserSection = ({ users, tagName, name, isAlma }) => (
+const UserSection = ({ totalCount, users, tagName, name, isAlma }) => (
   <div className="user-section">
     <div className="d-flex">
       <Badge className="rounded light-client" color={`light-client'}`}>
@@ -36,7 +36,7 @@ const UserSection = ({ users, tagName, name, isAlma }) => (
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
-          <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
+          <AvatarGroup totalCount={totalCount} size="sm" className="mr-4" data={users.slice(0, 3)} />
         </span>
       ) : (
         <AvatarGroup size="sm" data={users} />
@@ -50,6 +50,7 @@ UserSection.propTypes = {
   isAlma: PropTypes.bool,
   name: PropTypes.string,
   tagName: PropTypes.string,
+  totalCount: PropTypes.number,
 };
 
 const Project = ({ open, data, className, recommended }) => {

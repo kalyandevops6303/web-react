@@ -101,16 +101,20 @@ const ProjectWithTeamUI = ({ data }) => {
               {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
             </CardTitle>
           </div>
-          {avatarGroup?.length > 0 ? (
-            <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup?.slice(0, 3)} />
+          {avatarGroup?.length > 3 ? (
+            <AvatarGroup
+              totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
+              size="sm"
+              className="ms-25 mb-50"
+              data={avatarGroup?.slice(0, 3)}
+            />
           ) : (
-            <div className="mt-2" />
+            <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
           )}
 
           <div className="d-flex flex-grow-1 mt-25">
             <RatingBadge number="0" />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">
-              {' '}
               {data?.client?.project_count} Projects
             </CardText>
           </div>
