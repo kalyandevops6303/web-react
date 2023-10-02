@@ -14,13 +14,13 @@ import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { ProjectWrapper } from './style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 
-const UserSection = ({ users, name }) => (
+const UserSection = ({ totalCount, users, name }) => (
   <div className="user-section">
     <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
-          <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
+          <AvatarGroup totalCount={totalCount} size="sm" className="mr-4" data={users.slice(0, 3)} />
         </span>
       ) : (
         <AvatarGroup size="sm" data={users} />
@@ -32,6 +32,7 @@ const UserSection = ({ users, name }) => (
 UserSection.propTypes = {
   users: PropTypes.array,
   name: PropTypes.string,
+  totalCount: PropTypes.number,
 };
 
 const TeamInvitaionCard = ({ data, className }) => {
@@ -68,7 +69,12 @@ const TeamInvitaionCard = ({ data, className }) => {
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
           </div>
 
-          <UserSection tagName="Team" name={data?.name} users={users} />
+          <UserSection
+            totalCount={data?.team_members_count || data?.workers_count}
+            tagName="Team"
+            name={data?.name}
+            users={users}
+          />
 
           <div
             onClick={handleRedirect}

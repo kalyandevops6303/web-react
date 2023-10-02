@@ -55,6 +55,7 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
                 {data?.worker_details.length > 3 ? (
                   <span className="d-flex avatars">
                     <AvatarGroup
+                      totalCount={data?.team_members_count || data?.workers_count}
                       size="sm"
                       className="mr-4"
                       data={[

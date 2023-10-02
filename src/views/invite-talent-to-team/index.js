@@ -32,6 +32,7 @@ const InviteTalentToTeam = ({
   const toggleInviteModal = () => {
     setShareModal(!shareModal);
   };
+
   return (
     <>
       {inviteTeamMemberModal && (

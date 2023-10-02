@@ -17,6 +17,7 @@ import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
 import { returnFormattedRating } from '../../../utility/Utils';
+import { clearModalData } from '../../../redux/reducers/createProject';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const LeftSidebarProjectDetails = () => {
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const toggleModal = () => {
     setInviteModal(!inviteModal);
+    dispatch(clearModalData());
   };
 
   const projectDetailsData = useSelector(projectDetails);
@@ -164,9 +166,11 @@ const LeftSidebarProjectDetails = () => {
                 <Button className="w-50 d-none" outline color="danger">
                   Delete
                 </Button>
-                <Button className="w-50" color="primary" onClick={handleInvite}>
-                  Invite
-                </Button>
+                {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') && (
+                  <Button className="w-50" color="primary" onClick={handleInvite}>
+                    Invite
+                  </Button>
+                )}
               </div>
             </div>
           ) : (

@@ -125,6 +125,15 @@ const createProjectSlice = createSlice({
       inviteTalentsLoading: false,
       error: action.payload,
     }),
+    clearModalData: (state) => ({
+      ...state,
+      bestTalents: null,
+      bestTalentsLoading: false,
+      favoriteTalents: null,
+      favoriteTalentsLoading: false,
+      almaMaterTalents: null,
+      almaMaterTalentsLoading: false,
+    }),
   },
 });
 
@@ -148,6 +157,7 @@ export const {
   inviteTalentsRequest,
   inviteTalentsSuccess,
   inviteTalentsFailure,
+  clearModalData,
 } = createProjectSlice.actions;
 
 export default createProjectSlice.reducer;

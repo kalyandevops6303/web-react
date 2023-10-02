@@ -9,14 +9,14 @@ import Proptypes from 'prop-types';
 import classnames from 'classnames';
 
 // ** Reactstrap Imports
-import { UncontrolledTooltip } from 'reactstrap';
+import { CardText, UncontrolledTooltip } from 'reactstrap';
 
 // ** Custom Components Imports
 import Avatar from '@components/avatar';
 
 const AvatarGroup = (props) => {
   // ** Props
-  const { data, tag, className, size } = props;
+  const { data, tag, className, size, totalCount } = props;
 
   // ** Conditional Tag
   const Tag = tag || 'div';
@@ -57,6 +57,7 @@ const AvatarGroup = (props) => {
       })}
     >
       {renderData()}
+      {totalCount && <CardText className="d-flex align-items-center ps-50"> + {totalCount - 3}</CardText>}
     </Tag>
   );
 };

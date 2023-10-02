@@ -43,6 +43,7 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getTeamById } from '../../services/teamServices';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
 import InviteTalentToTeam from '../invite-talent-to-team';
+import { clearModalData } from '../../redux/reducers/inviteTalent';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -608,6 +609,7 @@ const Profile = () => {
 
   const toggleInviteTeamMemberModal = () => {
     setInviteTeamMemberModal(!inviteTeamMemberModal);
+    dispatch(clearModalData());
   };
   const onInvite = () => {
     setInviteTeamMemberModal(true);
