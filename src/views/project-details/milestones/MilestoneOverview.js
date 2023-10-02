@@ -11,6 +11,7 @@ import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors
 import { userTypes } from '../../../utility/constants/Constant';
 import TeamPayments from './TeamPayments';
 import { milestoneTransactionsService } from '../../../services/projectMilestoneService';
+import MilestonePayment from './MilestonePayment';
 
 const TabWrapper = styled.div`
   /* Style the tab */
@@ -178,6 +179,7 @@ const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, mileston
 
       <div className={`tabcontent ${tab === 'Pay Outs' ? 'active-tabcontent' : ''}`}>
         <PayHistory transactions={transactions} />
+        <MilestonePayment transactions={transactions} />
       </div>
       {userDataLocal.user_type === userTypes.client ? null : (
         <div className={`tabcontent ${tab === 'Team Payments' ? 'active-tabcontent' : ''}`}>
