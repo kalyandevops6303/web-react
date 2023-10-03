@@ -27,6 +27,7 @@ import OpenListing from './overview/OpenListing';
 import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
+import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const PrivateDashboard = () => {
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
+  const query = useSelector((state) => state.search.query);
 
   const toggleListingTeamMembersModal = () => {
     setListingTeamMembersModal(!listingTeamMembersModal);
@@ -59,6 +61,11 @@ const PrivateDashboard = () => {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+
+    if (query) {
+      dispatch(toggleIsNavbarSearchBarOpen());
+      dispatch(clearQuery(''));
+    }
 
     dispatch(getCheckBidsAccepted());
     dispatch(clearProjectData());
