@@ -3,7 +3,7 @@ import { Badge, Card, CardText, Table } from 'reactstrap';
 import Proptypes from 'prop-types';
 import { formatDate } from '../../../utility/Utils';
 
-const MilestonePayment = ({ transactions = [] }) => (
+const PaymentTable = ({ transactions = [] }) => (
   <Card className="gray-card p-0">
     <div className="p-2 pb-0">
       <CardText className="fs-4 mb-0 fw-bold">Milestone Payment</CardText>
@@ -38,8 +38,8 @@ const MilestonePayment = ({ transactions = [] }) => (
   </Card>
 );
 
-MilestonePayment.propTypes = {
+PaymentTable.propTypes = {
   transactions: Proptypes.array.isRequired,
 };
 
-export default MilestonePayment;
+export default PaymentTable;

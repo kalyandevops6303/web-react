@@ -2,7 +2,7 @@
 import React, { useEffect, useState, memo } from 'react';
 import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
-import { Card, CardBody, Col, Input, Label, Row } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
@@ -15,6 +15,8 @@ import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
 import Milestone from './milestones/Milestone';
 import RatingView from './overview/RatingView';
+import MilestonePaymentBox from './payment/MilestonePaymentBox';
+import PaymentTab from './payment/PaymentTab';
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -47,48 +49,14 @@ const ProjectDetails = () => {
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
           <LeftSidebarProjectDetails />
-          <Col>
-            <h4>Milestone Payment - Due</h4>
-            <Card>
-              <CardBody className="d-flex justify-content-between">
-                <div className="d-flex">
-                  <Input type="checkbox" id="m1" />
-                  <Label for="m1" style={{ marginLeft: '10px', fontSize: '16px' }}>
-                    Milestone #1
-                  </Label>
-                </div>
-                <div>$4539</div>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardBody className="d-flex justify-content-between">
-                <div className="d-flex">
-                  <Input type="checkbox" id="m1" />
-                  <Label for="m1" style={{ marginLeft: '10px', fontSize: '16px' }}>
-                    Milestone #1
-                  </Label>
-                </div>
-                <div>$4539</div>
-              </CardBody>
-            </Card>
-            <Card>
-              <CardBody className="d-flex justify-content-between">
-                <div className="d-flex">
-                  <Input type="checkbox" id="m1" />
-                  <Label for="m1" style={{ marginLeft: '10px', fontSize: '16px' }}>
-                    Milestone #1
-                  </Label>
-                </div>
-                <div>$4539</div>
-              </CardBody>
-            </Card>
-          </Col>
+          <MilestonePaymentBox />
         </Col>
         <Col lg="9">
           <CustomStep steps={isInviteView ? InviteView : steps} currentStep={currentStep} onChangeStep={changeStep} />
           <Routes>
             <Route path="bid" element={<BidView />} />
             <Route path="milestone" element={<Milestone />} />
+            <Route path="payment" element={<PaymentTab />} />
             <Route path="team" element={<TeamView />} />
             <Route path="rating" element={<RatingView />} />
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />

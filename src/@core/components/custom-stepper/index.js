@@ -62,7 +62,6 @@ const CustomStep = ({ onChangeStep, steps, currentStep }) => {
       }
     }
   `;
-  console.log(param);
 
   const handleChangeStep = (step) => {
     console.log(step);
