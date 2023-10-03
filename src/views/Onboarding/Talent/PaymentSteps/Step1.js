@@ -20,11 +20,13 @@ const Step1 = ({ setStep }) => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [isWorkingInUS, setIsWorkingInUS] = useState(false);
   const [taxUserType, setTaxUserType] = useState('US');
+  const [isUserExists, setIsUserExists] = useState(false);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
+      if (res?.created_at) setIsUserExists(true);
       if (res?.is_working_in_us) {
         setIsWorkingInUS(true);
       }
@@ -70,7 +72,7 @@ const Step1 = ({ setStep }) => {
       return;
     }
 
-    if (location?.state?.isEditing) {
+    if (location?.state?.isEditing || isUserExists) {
       const newData = {
         talent_info: {
           tax_user_type: taxUserType,

@@ -67,7 +67,7 @@ const BidDetails = () => {
 
   return (
     <BidDetailsWrap>
-      <div className="d-flex justify-content-between mb-1">
+      <div className="d-flex justify-content-between mb-1" style={{ position: 'relative' }}>
         <BreadCrumbs
           data={[
             { title: 'Marketplace', link: '/marketplace/all_listings' },
@@ -75,25 +75,27 @@ const BidDetails = () => {
             { title: 'Bid Details' },
           ]}
         />
-        {isBidStatusUpating ? (
-          'Updating...'
-        ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
-          <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
-        ) : (
-          <div className="d-flex gap-2 align-items-center">
-            <CardText
-              onClick={() => setRejectBidModal(true)}
-              className="cursor-pointer report-text m-0 text-center fw-bold"
-            >
-              Reject
-            </CardText>
-            <span>
-              <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
-                Accept
-              </Button>
-            </span>
-          </div>
-        )}
+        <div style={{ position: 'fixed', zIndex: 1, right: '20px' }}>
+          {isBidStatusUpating ? (
+            'Updating...'
+          ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
+            <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
+          ) : (
+            <div className="d-flex gap-2 align-items-center">
+              <CardText
+                onClick={() => setRejectBidModal(true)}
+                className="cursor-pointer report-text m-0 text-center fw-bold"
+              >
+                Reject
+              </CardText>
+              <span>
+                <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
+                  Accept
+                </Button>
+              </span>
+            </div>
+          )}
+        </div>
       </div>
       {acceptBidModal && (
         <AcceptBidModal
@@ -229,7 +231,7 @@ const BidDetails = () => {
               </span>
               <CardText className="back-text">Back</CardText>
             </div>
-            {isBidStatusUpating ? (
+            {/* {isBidStatusUpating ? (
               'Updating...'
             ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
               <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
@@ -255,7 +257,7 @@ const BidDetails = () => {
                   </Button>
                 </span>
               </div>
-            )}
+            )} */}
           </div>
         </Col>
       </Row>

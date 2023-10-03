@@ -31,7 +31,8 @@ const Header = styled.div`
 `;
 
 const CustomBadge = styled.span`
-  .light-blue {
+  .light-blue,
+  .NEW {
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
   }
@@ -39,17 +40,20 @@ const CustomBadge = styled.span`
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
   }
-  .COMPLETED {
+  .COMPLETED,
+  .ACCEPTED {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
     border: 1px solid ${theme.lighGreenColor};
   }
   .IN_REVIEW,
-  .ON_GOING {
+  .ON_GOING,
+  .REVIEWED {
     background: ${theme.orange}1f;
     color: ${theme.orange};
   }
-  .TERMINATED {
+  .TERMINATED,
+  .REJECTED {
     background: ${theme.darkRedColor}1f;
     color: ${theme.darkRedColor};
   }

@@ -184,10 +184,10 @@ const TalentListing = () => {
         </AccordionHeader>
         <AccordionBody accordionId="1">
           {isSliderLoading || isJoinRequestLoading ? (
-            <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
-              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+            <div style={{ height: '200px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+              <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
+              <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
+              <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
             </div>
           ) : (
             <ProjectsListingWrap>
@@ -250,10 +250,10 @@ const TalentListing = () => {
         </AccordionHeader>
         <AccordionBody accordionId="2">
           {isSliderLoading || isRecommendedTalentLoading ? (
-            <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
-              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
-              <img style={{ width: '28%', objectFit: 'contain' }} src={CardSkeleton} alt="...Loading" />
+            <div style={{ height: '200px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+              <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
+              <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
+              <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
             </div>
           ) : (
             <ProjectsListingWrap>

@@ -80,7 +80,7 @@ const TeamInvitaionCard = ({ data, className }) => {
             onClick={handleRedirect}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
           >
-            View Details
+            View Invites
           </div>
         </CardBody>
       </Card>

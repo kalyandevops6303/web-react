@@ -117,10 +117,10 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
                   </div>
                 </CircularProgressbarWithChildren>
               </div>
-              <TagsSection open={open} tags={data?.skills} />
+              <TagsSection open={open} tags={data?.expertise?.skills ?? data?.skills} />
             </div>
           ) : (
-            <TagsSection fullWidth open={open} tags={data?.skills} />
+            <TagsSection fullWidth open={open} tags={data?.expertise?.skills ?? data?.skills} />
           )}
           <div className="d-flex flex-column">
             <div className="d-flex">
