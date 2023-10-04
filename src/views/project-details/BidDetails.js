@@ -67,21 +67,22 @@ const BidDetails = () => {
 
   return (
     <BidDetailsWrap>
-      <div className="d-flex justify-content-between mb-1" style={{ position: 'relative' }}>
-        <BreadCrumbs
-          data={[
-            { title: 'Marketplace', link: '/marketplace/all_listings' },
-            { title: location?.state?.projectName, link: location?.state?.link },
-            { title: 'Bid Details' },
-          ]}
-        />
-        <div style={{ position: 'fixed', zIndex: 1, right: '20px' }}>
+      <div className="d-flex justify-content-between mb-5 pb-2 rounded" style={{ position: 'relative' }}>
+        <div className="d-flex justify-content-between fixed-header">
+          <BreadCrumbs
+            data={[
+              { title: 'Marketplace', link: '/marketplace/all_listings' },
+              { title: location?.state?.projectName, link: location?.state?.link },
+              { title: 'Bid Details' },
+            ]}
+          />
+
           {isBidStatusUpating ? (
             'Updating...'
           ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
             <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
           ) : (
-            <div className="d-flex gap-2 align-items-center">
+            <div className="d-flex gap-2 align-items-center pe-1">
               <CardText
                 onClick={() => setRejectBidModal(true)}
                 className="cursor-pointer report-text m-0 text-center fw-bold"

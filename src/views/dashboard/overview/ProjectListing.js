@@ -186,12 +186,6 @@ const ProjectListing = () => {
   const upcomingProjectsForTeamData = useSelector(upcomingProjectsForTeam);
   const upcomingProjectsForTeamIsLoading = useSelector(upcomingProjectsForTeamLoading);
 
-  useEffect(() => {
-    if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
-      dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
-    }
-  }, [userDetailsData]);
-
   const handleViewAll = (e) => {
     e.stopPropagation();
     navigate('/marketplace/all_listings', { state: { isRecommended: true } });
@@ -221,6 +215,11 @@ const ProjectListing = () => {
         dispatch(getUpcomingProjectsForTalent());
       } else if (userDetailsData?.user_type === userTypes.team) {
         dispatch(getUpcomingProjectsForTeam());
+      }
+    }
+    if (open === '3') {
+      if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
+        dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
       }
     }
   }, [open]);
