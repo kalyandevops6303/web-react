@@ -1,21 +1,20 @@
 import React, { useEffect } from 'react';
-import { ThumbsUp, Users } from 'react-feather';
+import { ThumbsUp, User, Users, File } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from '../../user-details/overview/Statbox';
-import { getItem } from '../../../utility/localStorageControl';
 import { getCardInfo } from '../../../redux/actions/marketPlaceActions';
 import { userTypes } from '../../../utility/constants/Constant';
+import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 
-const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType }) => {
+const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state.marketPlace.cardData);
 
-  // const userData = useSelector(selectAuthUserData);
-  const userData = getItem('userData');
-
+  const userData = useSelector(selectAuthUserData);
+  const userType = userData?.user_type;
   useEffect(() => {
     dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {} }));
   }, []);
@@ -33,34 +32,73 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
           className="stat-box cursor-pointer"
         />
       </Col>
-      {userType === userTypes.client && (
-        <>
-          <Col onClick={() => handlePrimaryChangeFilter('my_listings')}>
-            <Statbox
-              isActive={selected === 'my_listings'}
-              isMarketPlaceTab
-              title={selectCardData?.my_listings}
-              desc="My Listings"
-              icon={<ThumbsUp height={20} />}
-              color="light-turquoise"
-              className="stat-box cursor-pointer"
-            />
-          </Col>
-          <Col onClick={() => handlePrimaryChangeFilter('talents')}>
-            <Statbox
-              isActive={selected === 'talents'}
-              className="stat-box cursor-pointer"
-              isMarketPlaceTab
-              title={selectCardData?.talents}
-              desc="Talent"
-              icon={<Users height={20} />}
-              color="light-purple"
-            />
-          </Col>
-        </>
+      {userType === userTypes.client ? (
+        <Col onClick={() => handlePrimaryChangeFilter('my_listings')}>
+          <Statbox
+            isActive={selected === 'my_listings'}
+            isMarketPlaceTab
+            title={selectCardData?.my_listings}
+            desc="My Listings"
+            icon={<ThumbsUp height={20} />}
+            color="light-turquoise"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
+      ) : (
+        <Col onClick={() => handlePrimaryChangeFilter('my_bids')}>
+          <Statbox
+            isActive={selected === 'my_bids'}
+            isMarketPlaceTab
+            title={selectCardData?.my_bids}
+            desc="My Bids"
+            icon={<ThumbsUp height={20} />}
+            color="light-turquoise"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
+      )}
+      {userType === userTypes.client ? (
+        <Col onClick={() => handlePrimaryChangeFilter('my_bids')}>
+          <Statbox
+            isActive={selected === 'my_bids'}
+            isMarketPlaceTab
+            title={selectCardData?.bids_submitted}
+            desc="Bid Received"
+            icon={<File height={20} />}
+            color="light-primary"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
+      ) : null}
+
+      {(userType === userTypes.client || userType === userTypes.team) && (
+        <Col onClick={() => handlePrimaryChangeFilter('talents')}>
+          <Statbox
+            isActive={selected === 'talents'}
+            className="stat-box cursor-pointer"
+            isMarketPlaceTab
+            title={selectCardData?.talents}
+            desc="Talent"
+            icon={<User height={20} />}
+            color="light-purple"
+          />
+        </Col>
+      )}
+      {(userType === userTypes.client || userType === userTypes.talent) && (
+        <Col onClick={() => handlePrimaryChangeFilter('teams')}>
+          <Statbox
+            isActive={selected === 'teams'}
+            className="stat-box cursor-pointer"
+            isMarketPlaceTab
+            title={selectCardData?.teams}
+            desc="Teams"
+            icon={<Users height={20} />}
+            color="light-purple"
+          />
+        </Col>
       )}
 
-      {userType === userTypes.talent && (
+      {(userType === userTypes.talent || userType === userTypes.team) && (
         <>
           <Col onClick={() => handlePrimaryChangeFilter('clients')}>
             <Statbox
@@ -73,22 +111,17 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
               color="light-purple"
             />
           </Col>
-          {!isTab && (
+          {!isTab && userType !== userTypes.team && (
             <Col>
               <div />
             </Col>
           )}
         </>
       )}
-      {!isTab && (
-        <>
-          <Col>
-            <div />
-          </Col>
-          <Col>
-            <div />
-          </Col>
-        </>
+      {!isTab && userType === userTypes.team && (
+        <Col>
+          <div />
+        </Col>
       )}
     </Row>
   );
@@ -96,13 +129,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
 
 PrimaryFilter.propTypes = {
   isTab: PropTypes.bool,
-  userType: PropTypes.string,
   selected: PropTypes.string,
   handlePrimaryChangeFilter: PropTypes.func,
 };
 PrimaryFilter.defaultProps = {
   isTab: false,
-  userType: '',
   selected: 'all-listings',
   handlePrimaryChangeFilter: () => {},
 };

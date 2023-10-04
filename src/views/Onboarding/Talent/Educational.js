@@ -320,7 +320,7 @@ const Educational = () => {
   return (
     <ProfileFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">Education</h4>
           </CardHeader>
@@ -442,7 +442,7 @@ const Educational = () => {
             </Row>
           </CardBody>
         </Card>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">Expertise</h4>
           </CardHeader>
@@ -462,6 +462,8 @@ const Educational = () => {
                     <AsyncPaginate
                       isMulti
                       loadOptions={loadToolsOptions}
+                      menuPosition="fixed"
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select up to 5 tools"
                       theme={selectThemeColors}
@@ -487,6 +489,8 @@ const Educational = () => {
                     <AsyncPaginate
                       isMulti
                       loadOptions={loadCertificatesOptions}
+                      menuPosition="fixed"
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select certificates"
                       theme={selectThemeColors}
@@ -514,6 +518,9 @@ const Educational = () => {
                     <AsyncPaginate
                       isMulti
                       loadOptions={loadSkillsOptions}
+                      menuPosition="fixed"
+                      minMenuHeight={200}
+                      menuPlacement="top"
                       classNamePrefix="select"
                       placeholder="Select up to 5 skills"
                       theme={selectThemeColors}
@@ -529,7 +536,7 @@ const Educational = () => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
+        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
           <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />

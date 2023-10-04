@@ -1,6 +1,5 @@
 // ** Third Party Components
 import classNames from 'classnames';
-import { DateTime } from 'luxon';
 import { Info } from 'react-feather';
 
 // ** Custom Components
@@ -8,6 +7,7 @@ import { Info } from 'react-feather';
 import { useSelector } from 'react-redux';
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText, ButtonGroup, Button } from 'reactstrap';
+import DateTime from '../../../lib/date-time';
 import { EarningAmount, EarningCardWrapper } from './style';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -19,7 +19,7 @@ const EarningCard = () => {
     <EarningCardWrapper>
       <Card className="card-reward">
         <CardHeader className="earning-head">
-          <CardTitle tag="h4">{userDetailsData?.user_type === userTypes.talent ? 'Earnings' : 'Payments'}</CardTitle>
+          <CardTitle tag="h4">{userDetailsData?.user_type === userTypes.client ? 'Payments' : 'Earnings'}</CardTitle>
           <CardText className="d-none text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
             View All
           </CardText>

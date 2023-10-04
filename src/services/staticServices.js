@@ -20,7 +20,11 @@ const educationsService = () => DataService.get(API.static.educations);
 
 const toolsService = () => DataService.get(API.static.tools);
 
+const toolsAIService = (data) => DataService.post(API.static.toolsAI, data);
+
 const skillsService = () => DataService.get(API.static.skills);
+
+const skillsAIService = (data) => DataService.post(API.static.skillsAI, data);
 
 const certificatesService = () => DataService.get(API.static.certificates);
 
@@ -31,6 +35,12 @@ const currenciesService = () => DataService.get(API.static.currencies);
 const companyIndustriesService = () => DataService.get(API.static.companyIndustries);
 
 const projectAreasService = () => DataService.get(API.static.projectAreas);
+
+const servicesService = () => DataService.get(API.static.services);
+
+const disputeTypesService = () => DataService.get(API.static.disputeTypes);
+
+const ratingTagsService = (userType) => DataService.get(`${API.static.ratingTags}?tag_for=${userType}`);
 
 export {
   talentRolesService,
@@ -48,4 +58,9 @@ export {
   currenciesService,
   companyIndustriesService,
   projectAreasService,
+  servicesService,
+  disputeTypesService,
+  ratingTagsService,
+  skillsAIService,
+  toolsAIService,
 };

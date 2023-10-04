@@ -20,6 +20,7 @@ import {
 import OtpInput from '../../lib/otp-input';
 import ResendOTPComp from './components/ResendOTP';
 import LogoComp from './components/LogoComp';
+import SpeechEmoji from "../../assets/images/logo/speech_baloon.png";
 
 const VerifyEmail = () => {
   const dispatch = useDispatch();
@@ -53,8 +54,8 @@ const VerifyEmail = () => {
     <OnBoardWrap>
       <div className="card-onboard">
         <LogoComp />
-        <CardTitle tag="h1" className="card-title-onboard">
-          Two Step Verification 💬
+        <CardTitle tag="h1" className="card-title-onboard title-with-emoij">
+        Two Step Verification <img className='speech-emoji' src={SpeechEmoji} alt='' />
         </CardTitle>
         <CardText className="mb-2 card-text">
           We sent a verification code to your email. Enter it in the field below.

@@ -38,6 +38,7 @@ const darkGreenBgColor = '#E0F7FA';
 const orange = '#FF6D00';
 const blueBorderColorv2 = '#0578FB';
 const blueCardBg = '#E9F3FF';
+const tableHeaderColor = '#F3F2F7';
 const yellowColor = '#feffb8';
 
 // status
@@ -46,6 +47,7 @@ const succesGreenBg = '#20C9971F';
 const joinReqColor = '#00ACC1';
 const joinRe1Bg = '#00ACC11F';
 const purpleColor = '#651FFF';
+const purpleTimelimeColor = '#7367F0';
 const purpleBg = '#651FFF1F';
 const royalBlueColor = '#0D6EFD';
 const royalBlueBg = '#0D6EFD1F';
@@ -53,9 +55,9 @@ const acceptColor = '#0097A7';
 const acceptBg = '#0097A71F';
 const errorColor = '#EA5455';
 const errorBg = '#EA54551F';
-const blueColor = '##00B0FF';
+const blueColor = '#00B0FF';
 const blueBg = '##00B0FF1F';
-const orangeColor = '##FF9F43';
+const orangeColor = '#FF9F43';
 const organgeBg = '##FF9F431F';
 const greenV2Color = '##00C853';
 const greenV2Bg = '##00C8531F';
@@ -74,6 +76,17 @@ const noDataFoundTextColor = '#2963c3';
 const infoColor = '#00CFE8';
 const secondaryColor = '#82868B';
 const cardBgBlue = '#a8dbff1f';
+const cardShadowLight = 'rgba(0, 0, 0, 0.06)';
+const darkBorder = 'rgba(130, 134, 139, 0.12)';
+const lightBlueBgRadio = 'rgba(1,133,228,0.06)';
+const lightGrayBgRadio = 'rgba(130, 134, 139, 0.03)';
+const errorBannerBg = 'rgba(234, 84, 85, 0.12)';
+const infoBannerBg = '#d8e8f3';
+const openDisputesChartColor = '#FFCC80';
+const lightTurquoiseColor = '#21cfcc';
+const ratingTagBg = 'rgba(70, 216, 213, 0.07)';
+const lightGreenBg = 'rgba(40, 199, 111, 0.10);';
+const lighGreenColor = '#28C76F';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -149,8 +162,22 @@ const theme = {
   greenBtnBg,
   noDataFoundTextColor,
   info: infoColor,
+  timelineSuccessColor: infoColor,
   secondary: secondaryColor,
   cardBgBlue,
+  cardShadowLight,
   yellowColor,
+  darkBorder,
+  lightBlueBgRadio,
+  lightGrayBgRadio,
+  errorBannerBg,
+  infoBannerBg,
+  tableHeaderColor,
+  purpleTimelimeColor,
+  openDisputesChartColor,
+  lightTurquoiseColor,
+  ratingTagBg,
+  lighGreenColor,
+  lightGreenBg,
 };
 export default theme;

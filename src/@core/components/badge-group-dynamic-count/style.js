@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const BadgeGroupWrap = styled.div`
+  overflow: hidden;
   .badge-box-wrap {
     .info-key {
       font-weight: 400;
@@ -16,7 +17,6 @@ export const BadgeGroupWrap = styled.div`
     .badge-box {
       max-height: 2rem;
       overflow: hidden;
-      width: 100%;
 
       .info-key {
         font-weight: 400;
@@ -27,7 +27,7 @@ export const BadgeGroupWrap = styled.div`
       .badge {
         margin: 0 0.5rem 0.5rem 0;
         font-size: 0.75rem;
-        max-width: 15rem;
+        max-width: 97%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

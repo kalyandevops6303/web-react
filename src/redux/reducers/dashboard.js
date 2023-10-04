@@ -1,13 +1,45 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  userData: null,
   userDataLoading: false,
   recommendedProjects: null,
   recommendedProjectsLoading: false,
+  getTeamMember: [],
+  getTeamMemberLoading: false,
+  getInvitedMember: null,
+  getInvitedMemberLoading: false,
+  joinRequestMember: null,
+  joinRequestMemberLoading: false,
+  recommendedTalent: null,
+  recommendedTalentLoading: false,
+  recommendedTeams: null,
+  recommendedTeamsLoading: false,
+  teamInvitation: null,
+  teamInvitationLoading: false,
+  getMyTeam: null,
+  getMyTeamLoading: false,
   profilePercentage: null,
   profilePercentageLoading: false,
   projectInvites: [],
+  activeProjectsForClient: null,
+  activeProjectsForClientLoading: false,
+  upcomingProjectsForClient: null,
+  upcomingProjectsForClientLoading: false,
+  projectsBidsForClient: null,
+  projectsBidsForClientLoading: false,
+  recommendedTeamsForClient: null,
+  recommendedTeamsForClientLoading: false,
+  checkBidsAccepted: null,
+  checkBidsAcceptedLoading: false,
+  activeProjectsForTalent: null,
+  activeProjectsForTalentLoading: false,
+  upcomingProjectsForTalent: null,
+  upcomingProjectsForTalentLoading: false,
+  activeProjectsForTeam: null,
+  activeProjectsForTeamLoading: false,
+  upcomingProjectsForTeam: null,
+  upcomingProjectsForTeamLoading: false,
+  alerts: [],
   error: null,
 };
 
@@ -15,22 +47,6 @@ const dashboardSlice = createSlice({
   name: 'dashboard',
   initialState,
   reducers: {
-    userDataRequest: (state) => ({
-      ...state,
-      userDataLoading: true,
-      error: null,
-    }),
-    userDataSuccess: (state, action) => ({
-      ...state,
-      userData: action.payload,
-      userDataLoading: false,
-    }),
-    userDataFailure: (state, action) => ({
-      ...state,
-      userDataLoading: false,
-      error: action.payload,
-    }),
-
     recommendedProjectsRequest: (state) => ({
       ...state,
       recommendedProjectsLoading: true,
@@ -63,6 +79,164 @@ const dashboardSlice = createSlice({
       error: action.payload,
     }),
 
+    getTeamMemberRequest: (state) => ({
+      ...state,
+      getTeamMemberLoading: true,
+      error: null,
+    }),
+    getTeamMemberSuccess: (state, action) => ({
+      ...state,
+      // getTeamMember: action.payload,
+      getTeamMemberLoading: false,
+      memberCurrentPreview: action.payload.data,
+      getTeamMember:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.getTeamMember, ...action.payload.data],
+      getMemberMetaData: action.payload.metadata,
+    }),
+
+    getTeamMemberFailure: (state, action) => ({
+      ...state,
+      getTeamMemberLoading: false,
+      error: action.payload,
+    }),
+
+    getInvitedMemberRequest: (state) => ({
+      ...state,
+      getInvitedMemberLoading: true,
+      error: null,
+    }),
+    getInvitedMemberSuccess: (state, action) => ({
+      ...state,
+
+      getInvitedMemberLoading: false,
+      invitedMemberCurrentPreview: action.payload.data,
+      getInvitedMember:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.getInvitedMember, ...action.payload.data],
+      invitedMemberMetaData: action.payload.metadata,
+    }),
+    getInvitedMemberFailure: (state, action) => ({
+      ...state,
+      getInvitedMemberLoading: false,
+      error: action.payload,
+    }),
+
+    joinRequestMemberRequest: (state) => ({
+      ...state,
+      joinRequestMemberLoading: true,
+      error: null,
+    }),
+    joinRequestMemberSuccess: (state, action) => ({
+      ...state,
+      joinRequestMember: action.payload,
+      joinRequestMemberLoading: false,
+    }),
+    joinRequestMemberFailure: (state, action) => ({
+      ...state,
+      joinRequestMemberLoading: false,
+      error: action.payload,
+    }),
+
+    recommendedTalentRequest: (state) => ({
+      ...state,
+      recommendedTalentLoading: true,
+      error: null,
+    }),
+    recommendedTalentSuccess: (state, action) => ({
+      ...state,
+      recommendedTalent: action.payload,
+      recommendedTalentLoading: false,
+    }),
+    recommendedTalentFailure: (state, action) => ({
+      ...state,
+      recommendedTalentLoading: false,
+      error: action.payload,
+    }),
+
+    recommendedTeamsRequest: (state) => ({
+      ...state,
+      recommendedTeamsLoading: true,
+      error: null,
+    }),
+    recommendedTeamsSuccess: (state, action) => ({
+      ...state,
+      recommendedTeams: action.payload,
+      recommendedTeamsLoading: false,
+    }),
+    recommendedTeamsFailure: (state, action) => ({
+      ...state,
+      recommendedTeamsLoading: false,
+      error: action.payload,
+    }),
+
+    teamInvitationRequest: (state) => ({
+      ...state,
+      teamInvitationLoading: true,
+      error: null,
+    }),
+    teamInvitationSuccess: (state, action) => ({
+      ...state,
+      teamInvitation: action.payload,
+      teamInvitationLoading: false,
+    }),
+    teamInvitationFailure: (state, action) => ({
+      ...state,
+      teamInvitationLoading: false,
+      error: action.payload,
+    }),
+
+    getMyTeamRequest: (state) => ({
+      ...state,
+      getMyTeamLoading: true,
+      error: null,
+    }),
+    getMyTeamSuccess: (state, action) => ({
+      ...state,
+      getMyTeam: action.payload,
+      getMyTeamLoading: false,
+    }),
+    getMyTeamFailure: (state, action) => ({
+      ...state,
+      getMyTeamLoading: false,
+      error: action.payload,
+    }),
+
+    removeMemberRequest: (state) => ({
+      ...state,
+      removeMemberLoading: true,
+      error: null,
+    }),
+    removeMemberSuccess: (state) => ({
+      ...state,
+      removeMemberLoading: true,
+      error: null,
+    }),
+
+    removeMemberFailure: (state, action) => ({
+      ...state,
+      removeMemberLoading: false,
+      error: action.payload,
+    }),
+    getAlertRequest: (state) => ({
+      ...state,
+      getAlertLoading: true,
+      error: null,
+    }),
+    getAlertSuccess: (state, action) => ({
+      ...state,
+      getAlertLoading: true,
+      alerts: action.payload,
+      error: null,
+    }),
+
+    getAlertFailure: (state, action) => ({
+      ...state,
+      getAlertLoading: false,
+      error: action.payload,
+    }),
     getProjectInvitesSuccess: (state, action) => ({
       ...state,
       projectInvites: action.payload,
@@ -78,21 +252,216 @@ const dashboardSlice = createSlice({
       profilePercentageLoading: false,
       error: null,
     }),
+
+    activeProjectsForClientRequest: (state) => ({
+      ...state,
+      activeProjectsForClientLoading: true,
+      error: null,
+    }),
+    activeProjectsForClientSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForClient: action.payload,
+      activeProjectsForClientLoading: false,
+    }),
+    activeProjectsForClientFailure: (state, action) => ({
+      ...state,
+      activeProjectsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForClientRequest: (state) => ({
+      ...state,
+      upcomingProjectsForClientLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForClientSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForClient: action.payload,
+      upcomingProjectsForClientLoading: false,
+    }),
+    upcomingProjectsForClientFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    projectsBidsForClientRequest: (state) => ({
+      ...state,
+      projectsBidsForClientLoading: true,
+      error: null,
+    }),
+    projectsBidsForClientSuccess: (state, action) => ({
+      ...state,
+      projectsBidsForClient: action.payload,
+      projectsBidsForClientLoading: false,
+    }),
+    projectsBidsForClientFailure: (state, action) => ({
+      ...state,
+      projectsBidsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    recommendedTeamsForClientRequest: (state) => ({
+      ...state,
+      recommendedTeamsForClientLoading: true,
+      error: null,
+    }),
+    recommendedTeamsForClientSuccess: (state, action) => ({
+      ...state,
+      recommendedTeamsForClient: action.payload,
+      recommendedTeamsForClientLoading: false,
+    }),
+    recommendedTeamsForClientFailure: (state, action) => ({
+      ...state,
+      recommendedTeamsForClientLoading: false,
+      error: action.payload,
+    }),
+
+    checkBidsAcceptedRequest: (state) => ({
+      ...state,
+      checkBidsAcceptedLoading: true,
+      error: null,
+    }),
+    checkBidsAcceptedSuccess: (state, action) => ({
+      ...state,
+      checkBidsAccepted: action.payload,
+      checkBidsAcceptedLoading: false,
+    }),
+    checkBidsAcceptedFailure: (state, action) => ({
+      ...state,
+      checkBidsAcceptedLoading: false,
+      error: action.payload,
+    }),
+
+    activeProjectsForTalentRequest: (state) => ({
+      ...state,
+      activeProjectsForTalentLoading: true,
+      error: null,
+    }),
+    activeProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForTalent: action.payload,
+      activeProjectsForTalentLoading: false,
+    }),
+    activeProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      activeProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForTalentRequest: (state) => ({
+      ...state,
+      upcomingProjectsForTalentLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForTalentSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForTalent: action.payload,
+      upcomingProjectsForTalentLoading: false,
+    }),
+    upcomingProjectsForTalentFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForTalentLoading: false,
+      error: action.payload,
+    }),
+
+    activeProjectsForTeamRequest: (state) => ({
+      ...state,
+      activeProjectsForTeamLoading: true,
+      error: null,
+    }),
+    activeProjectsForTeamSuccess: (state, action) => ({
+      ...state,
+      activeProjectsForTeam: action.payload,
+      activeProjectsForTeamLoading: false,
+    }),
+    activeProjectsForTeamFailure: (state, action) => ({
+      ...state,
+      activeProjectsForTeamLoading: false,
+      error: action.payload,
+    }),
+
+    upcomingProjectsForTeamRequest: (state) => ({
+      ...state,
+      upcomingProjectsForTeamLoading: true,
+      error: null,
+    }),
+    upcomingProjectsForTeamSuccess: (state, action) => ({
+      ...state,
+      upcomingProjectsForTeam: action.payload,
+      upcomingProjectsForTeamLoading: false,
+    }),
+    upcomingProjectsForTeamFailure: (state, action) => ({
+      ...state,
+      upcomingProjectsForTeamLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
 export const {
-  userDataRequest,
-  userDataSuccess,
-  userDataFailure,
+  getAlertRequest,
+  getAlertSuccess,
+  getAlertFailure,
   recommendedProjectsRequest,
   recommendedProjectsSuccess,
   recommendedProjectsFailure,
+  removeMemberRequest,
+  removeMemberSuccess,
+  removeMemberFailure,
   profilePercentageRequest,
   profilePercentageSuccess,
   profilePercentageFailure,
+  getTeamMemberRequest,
+  getTeamMemberSuccess,
+  getTeamMemberFailure,
+  getInvitedMemberRequest,
+  getInvitedMemberSuccess,
+  getInvitedMemberFailure,
+  joinRequestMemberRequest,
+  joinRequestMemberSuccess,
+  joinRequestMemberFailure,
+  recommendedTalentRequest,
+  recommendedTalentSuccess,
+  recommendedTalentFailure,
+  recommendedTeamsRequest,
+  recommendedTeamsSuccess,
+  recommendedTeamsFailure,
+  teamInvitationRequest,
+  teamInvitationSuccess,
+  teamInvitationFailure,
+  getMyTeamRequest,
+  getMyTeamSuccess,
+  getMyTeamFailure,
   getProjectInvitesSuccess,
   clearData,
+  activeProjectsForClientRequest,
+  activeProjectsForClientSuccess,
+  activeProjectsForClientFailure,
+  upcomingProjectsForClientRequest,
+  upcomingProjectsForClientSuccess,
+  upcomingProjectsForClientFailure,
+  projectsBidsForClientRequest,
+  projectsBidsForClientSuccess,
+  projectsBidsForClientFailure,
+  recommendedTeamsForClientRequest,
+  recommendedTeamsForClientSuccess,
+  recommendedTeamsForClientFailure,
+  checkBidsAcceptedRequest,
+  checkBidsAcceptedSuccess,
+  checkBidsAcceptedFailure,
+  activeProjectsForTalentRequest,
+  activeProjectsForTalentSuccess,
+  activeProjectsForTalentFailure,
+  upcomingProjectsForTalentRequest,
+  upcomingProjectsForTalentSuccess,
+  upcomingProjectsForTalentFailure,
+  activeProjectsForTeamRequest,
+  activeProjectsForTeamSuccess,
+  activeProjectsForTeamFailure,
+  upcomingProjectsForTeamRequest,
+  upcomingProjectsForTeamSuccess,
+  upcomingProjectsForTeamFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

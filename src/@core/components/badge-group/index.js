@@ -3,7 +3,7 @@ import { Badge, UncontrolledTooltip } from 'reactstrap';
 import BadgeGroupWrap from './style';
 import { CustomBadge } from '../../../views/styled';
 
-const BadgeGroup = ({ title, data, color }) => {
+const BadgeGroup = ({ title, data, color, gapWrap, isTeamAssociations }) => {
   if (!data || data.length === 0) {
     return null;
   }
@@ -26,7 +26,7 @@ const BadgeGroup = ({ title, data, color }) => {
 
   const renderBadge = (item, index) => {
     const { name } = item;
-    const isLongName = name.length > 35;
+    const isLongName = isTeamAssociations ? item.length > 35 : name?.length > 35;
     const badgeClassName = isLongName ? `${color} truncate-1` : color;
     const badgeColor = `${color} badge`;
 
@@ -36,7 +36,7 @@ const BadgeGroup = ({ title, data, color }) => {
           <>
             <CustomBadge>
               <Badge className={badgeClassName} color={badgeColor} id={`tooltip-${index}`}>
-                {name}
+                {name || item}
               </Badge>
             </CustomBadge>
             <UncontrolledTooltip target={`tooltip-${index}`}>{name}</UncontrolledTooltip>
@@ -44,7 +44,7 @@ const BadgeGroup = ({ title, data, color }) => {
         ) : (
           <CustomBadge>
             <Badge className={badgeClassName} color={badgeColor}>
-              {name}
+              {name || item}
             </Badge>
           </CustomBadge>
         )}
@@ -56,7 +56,9 @@ const BadgeGroup = ({ title, data, color }) => {
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
         <div className="info-key">{title || ''}</div>
-        <div className="badge-box mt-75">{data && data?.map(renderBadge)}</div>
+        <div className={`badge-box mt-75 ${gapWrap && 'd-flex flex-wrap gap-50'}`}>
+          {data && data?.map(renderBadge)}
+        </div>
       </div>
     </BadgeGroupWrap>
   );

@@ -8,6 +8,9 @@ import {
   bestTalentsFailure,
   bestTalentsRequest,
   bestTalentsSuccess,
+  createProjectAIFailure,
+  createProjectAIRequest,
+  createProjectAISuccess,
   createProjectFailure,
   createProjectRequest,
   createProjectSuccess,
@@ -21,13 +24,25 @@ import {
 import {
   almaMaterTalentsService,
   bestTalentsService,
+  createProjectAIService,
   createProjectService,
   favoriteTalentsService,
   inviteTalentsService,
 } from '../../services/createProjectServices';
+import { skillsAIService, toolsAIService } from '../../services/staticServices';
+import {
+  skillsAIFailure,
+  skillsAIRequest,
+  skillsAISuccess,
+  toolsAIFailure,
+  toolsAIRequest,
+  toolsAISuccess,
+} from '../reducers/static';
 
 const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(bestTalentsRequest());
+  if (page === 1) {
+    dispatch(bestTalentsRequest());
+  }
   try {
     const res = await bestTalentsService(projectId, searchText, page, pageSize);
     dispatch(bestTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
@@ -37,7 +52,9 @@ const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async
 };
 
 const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(favoriteTalentsRequest());
+  if (page === 1) {
+    dispatch(favoriteTalentsRequest());
+  }
   try {
     const res = await favoriteTalentsService(projectId, searchText, page, pageSize);
     dispatch(favoriteTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
@@ -47,7 +64,9 @@ const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => a
 };
 
 const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(almaMaterTalentsRequest());
+  if (page === 1) {
+    dispatch(almaMaterTalentsRequest());
+  }
   try {
     const res = await almaMaterTalentsService(projectId, searchText, page, pageSize);
     dispatch(almaMaterTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
@@ -71,6 +90,38 @@ const createNewProject = (data, onSuccess) => async (dispatch) => {
   }
 };
 
+const createProjectDetailsFromAI = (data, onSuccess) => async (dispatch) => {
+  dispatch(createProjectAIRequest());
+  try {
+    const res = await createProjectAIService(data);
+    dispatch(createProjectAISuccess(res.data.data.response));
+    ShowToastMessage(SUCCESS, res.data.data.message || 'Success');
+    onSuccess(res.data.data.response);
+  } catch (error) {
+    errorHandler(error, createProjectAIFailure);
+  }
+};
+
+const filterAISkills = (skillsData) => async (dispatch) => {
+  dispatch(skillsAIRequest());
+  try {
+    const skillsRes = await skillsAIService(skillsData);
+    dispatch(skillsAISuccess(skillsRes.data.data));
+  } catch (error) {
+    errorHandler(error, skillsAIFailure);
+  }
+};
+
+const filterAITools = (toolsData) => async (dispatch) => {
+  dispatch(toolsAIRequest());
+  try {
+    const toolsRes = await toolsAIService(toolsData);
+    dispatch(toolsAISuccess(toolsRes.data.data));
+  } catch (error) {
+    errorHandler(error, toolsAIFailure);
+  }
+};
+
 const inviteTalents = (projectId, data, onSuccess) => async (dispatch) => {
   dispatch(inviteTalentsRequest());
   try {
@@ -83,4 +134,13 @@ const inviteTalents = (projectId, data, onSuccess) => async (dispatch) => {
   }
 };
 
-export { createNewProject, getBestTalents, getFavoriteTalents, getAlmaMaterTalents, inviteTalents };
+export {
+  createNewProject,
+  getBestTalents,
+  getFavoriteTalents,
+  getAlmaMaterTalents,
+  inviteTalents,
+  createProjectDetailsFromAI,
+  filterAISkills,
+  filterAITools,
+};

@@ -2,7 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   createProject: null,
+  createProjectUsingAI: null,
   createProjectLoading: false,
+  createProjectAILoading: false,
   bestTalents: null,
   bestTalentsLoading: false,
   favoriteTalents: null,
@@ -30,6 +32,22 @@ const createProjectSlice = createSlice({
     createProjectFailure: (state, action) => ({
       ...state,
       createProjectLoading: false,
+      error: action.payload,
+    }),
+
+    createProjectAIRequest: (state) => ({
+      ...state,
+      createProjectAILoading: true,
+      error: null,
+    }),
+    createProjectAISuccess: (state, action) => ({
+      ...state,
+      createProjectAILoading: false,
+      createProjectUsingAI: action.payload,
+    }),
+    createProjectAIFailure: (state, action) => ({
+      ...state,
+      createProjectAILoading: false,
       error: action.payload,
     }),
 
@@ -107,6 +125,15 @@ const createProjectSlice = createSlice({
       inviteTalentsLoading: false,
       error: action.payload,
     }),
+    clearModalData: (state) => ({
+      ...state,
+      bestTalents: null,
+      bestTalentsLoading: false,
+      favoriteTalents: null,
+      favoriteTalentsLoading: false,
+      almaMaterTalents: null,
+      almaMaterTalentsLoading: false,
+    }),
   },
 });
 
@@ -114,6 +141,9 @@ export const {
   createProjectRequest,
   createProjectSuccess,
   createProjectFailure,
+  createProjectAIRequest,
+  createProjectAISuccess,
+  createProjectAIFailure,
   clearCreateProjectData,
   bestTalentsRequest,
   bestTalentsSuccess,
@@ -127,6 +157,7 @@ export const {
   inviteTalentsRequest,
   inviteTalentsSuccess,
   inviteTalentsFailure,
+  clearModalData,
 } = createProjectSlice.actions;
 
 export default createProjectSlice.reducer;

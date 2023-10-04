@@ -3,6 +3,8 @@ import DataService from '../configs/dataService/dataService';
 
 const createProjectService = (data) => DataService.post(API.createProject.createProject, data);
 
+const createProjectAIService = (data) => DataService.post(API.createProject.createProjectAI, data);
+
 const bestTalentsService = (projectId, searchText, page, pageSize) =>
   DataService.get(
     `${API.createProject.bestTalents}?project_id=${projectId}&search_text=${searchText}&page=${page}&page_size=${pageSize}`,
@@ -28,6 +30,7 @@ const projectFileUploadToAzureService = (url, data, headers) => DataService.putW
 
 export {
   createProjectService,
+  createProjectAIService,
   bestTalentsService,
   favoriteTalentsService,
   almaMaterTalentsService,

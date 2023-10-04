@@ -1,31 +1,26 @@
 /* eslint-disable no-nested-ternary */
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { DateTime } from 'luxon';
 import Mpin from '@src/assets/images/map-pin.png';
-import LikeIcon from '@src/assets/images/like.png';
 import { useState, useEffect, useRef } from 'react';
-import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import { useDispatch } from 'react-redux';
-import Avatar from '@components/avatar';
-import { Heart } from 'react-feather';
-import { useLocation } from 'react-router-dom';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import theme from '../../configs/themeVariables';
-import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import BadgeGroup from '../../@core/components/badge-group';
+import { useNavigate } from 'react-router';
+// import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import DateTime from '../../lib/date-time';
+// import theme from '../../configs/themeVariables';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import ProjectWithTeamUI from './ProjectWithTeamUI';
+import BaseInfoUI from './BaseInfoCardUI';
+import CreateBidModal from '../modals/CreateBidModal';
+import CompleteProfileModal from '../modals/CompleteProfileModal';
 
-const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
-  const dispatch = useDispatch();
-  const location = useLocation();
+const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
-
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);
@@ -44,17 +39,27 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
+    COMPLETED: 'Completed',
+    ON_GOING: 'On Going',
   };
-  const giveStrokeColor = (percentage) => {
-    if (percentage <= 40) {
-      return theme.red;
-      // eslint-disable-next-line
-    } else if (percentage > 40 && percentage <= 70) {
-      return theme.orange;
-    } else {
-      return theme.green;
-    }
-  };
+  // const giveStrokeColor = (percentage) => {
+  //   if (percentage <= 40) {
+  //     return theme.red;
+  //     // eslint-disable-next-line
+  //   } else if (percentage > 40 && percentage <= 70) {
+  //     return theme.orange;
+  //   } else {
+  //     return theme.green;
+  //   }
+  // };
+
+  // const avatarGroup = data?.worker_details?.workers?.map((worker) => ({
+  //   title: `${worker?.first_name} ${worker?.last_name}`,
+  //   img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
+  //   placement: 'bottom',
+  //   imgHeight: 33,
+  //   imgWidth: 33,
+  // }));
 
   const divRef = useRef(null);
 
@@ -65,13 +70,31 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     }
   }, []);
 
-  const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ project_id: data?._id }));
+  const [createBidModal, setCreateBidModal] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const toggleCreateBidModal = () => {
+    setCreateBidModal(!createBidModal);
   };
-  const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ project_id: data?._id }));
+
+  const toggleCompleteProfileModal = () => {
+    setShowModal(false);
+    setCompleteProfileModal(!completeProfileModal);
   };
-  const isSearchPage = location.pathname.split('/').includes('search');
+
+  const handleRedirection = () => {
+    const isMyProjectMyTeam =
+      // eslint-disable-next-line no-undef
+      window.location.pathname.split('/').includes('projects') ||
+      // eslint-disable-next-line no-undef
+      window.location.pathname.split('/').includes('my-teams');
+
+    if (isMyProjectMyTeam) {
+      navigate(`/project-details/${data?._id}/bid`);
+    } else {
+      setShowModal(true);
+    }
+  };
 
   return (
     <ProjectCardWrap>
@@ -87,24 +110,9 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                 </CustomBadge>
               </div>
               <CardTitle className="d-flex align-items-center">
-                <span className="cursor-pointer" onClick={() => setShowModal(true)}>
-                  {data?.details?.name}{' '}
+                <span className="cursor-pointer" onClick={handleRedirection}>
+                  {data?.name}{' '}
                 </span>
-                {!isSearchPage && (
-                  <span>
-                    {data?.is_favorite ? (
-                      <Heart
-                        className="cursor-pointer d-flex m-auto ms-75  heart"
-                        fill={theme.red}
-                        stroke={theme.red}
-                        onClick={handleUnLike}
-                        size={20}
-                      />
-                    ) : (
-                      <Heart className="cursor-pointer d-flex m-auto ms-75 heart" onClick={handleLike} size={20} />
-                    )}
-                  </span>
-                )}
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">
                 <CardText className="project">
@@ -116,26 +124,28 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                     </>
                   )}
                 </CardText>
-                {data?.match_percentage > 1 && (
-                  <CardText className="project d-flex align-items-center">
-                    <img src={LikeIcon} alt="recommanded_icon" className="recom" /> Recommended
-                  </CardText>
-                )}
+                <CardText className=" project mb-1">{`Assigned Date: ${DateTime?.fromMillis(
+                  data?.assigned_date ?? 0,
+                ).toFormat('dd-MM-yy')}`}</CardText>
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
-                  {data?.client_details?.office_address?.country?.name || 'Location'}
+                  {data?.client?.office_address?.country?.name || 'Location'}
                 </CardText>
                 <CardText className=" mb-1">
-                  {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}
+                  {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
                 </CardText>
               </div>
 
               {!showFullText ? (
-                <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                <div
+                  className="my-div"
+                  ref={divRef}
+                  style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
+                >
                   {data?.details?.description}
                 </div>
               ) : (
-                <div className="my-div" ref={divRef}>
+                <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
                   {data?.details?.description}
                 </div>
               )}
@@ -147,7 +157,11 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
               )}
             </Col>
             <Col lg="4">
-              <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
+              {isProjectWithTeam ? <ProjectWithTeamUI data={data} /> : null}
+              {!isTeam && !isProjectWithTeam && <BaseInfoUI data={data} />}
+              {/* {!isProjectWithTeam &&  <BaseInfoUI data={data} />} */}
+              {/* {!isProjectWithTeam && !isRecommended && !isTeam && BaseInfoUI} */}
+              {/* <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
                 <Avatar
                   img={data?.client_details?.image_uri?.length > 0 ? data?.client_details?.image_uri : defaultAvatar}
                   imgHeight="30"
@@ -163,9 +177,11 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                       {data?.client_details?.company_name}
                     </CardText>
                   </div>
-                  <div className="d-flex flex-grow-1">
-                    <RatingBadge number="0" />
-                    <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+                  <div className="d-flex flex-grow-1 align-items-center">
+                    <RatingBadge number={returnFormattedRating(data?.client_details?.rating)} />
+                    <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                      {data?.client_details?.projects_listed_count} Projects
+                    </CardText>
                   </div>
                 </div>
                 {data?.match_percentage >= 0 && (
@@ -194,14 +210,32 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                     </CircularProgressbarWithChildren>
                   </div>
                 )}
-              </div>
-              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+              </div> */}
             </Col>
           </Row>
         </CardBody>
       </Card>
-      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
+      {showModal && (
+        <ProjectModal
+          data={data}
+          modal={showModal}
+          toggleModal={handleToggle}
+          setCreateBidModal={setCreateBidModal}
+          setSelectedProject={setSelectedProject}
+          toggleCompleteProfileModal={toggleCompleteProfileModal}
+        />
+      )}
+      {createBidModal && (
+        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={selectedProject} />
+      )}
+
+      {completeProfileModal && (
+        <CompleteProfileModal
+          modal={completeProfileModal}
+          toggleModal={toggleCompleteProfileModal}
+          modalInfoText="team"
+        />
+      )}
     </ProjectCardWrap>
   );
 };
@@ -210,12 +244,16 @@ ProjectCard.propTypes = {
   isExpanded: PropTypes.bool,
   data: PropTypes.object,
   isPopoverOpen: PropTypes.bool,
+  isProjectWithTeam: PropTypes.bool,
+  isTeam: PropTypes.bool,
 };
 
 ProjectCard.defaultProps = {
   isExpanded: false,
   data: {},
   isPopoverOpen: false,
+  isProjectWithTeam: false,
+  isTeam: false,
 };
 
 export default ProjectCard;

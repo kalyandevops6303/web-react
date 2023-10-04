@@ -32,7 +32,7 @@ import { profileDetailsLoading } from '../../../redux/selectors/clientOnboarding
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { USD, userOnboarding } from '../../../utility/constants/Constant';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -124,6 +124,7 @@ const Availability = () => {
       availabilityDays: [],
       weekdays: [],
       weekends: [],
+      currencyPreference: { label: 'USD', value: USD._id },
     },
   });
 
@@ -315,7 +316,7 @@ const Availability = () => {
   return (
     <ProfileFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">Availability</h4>
           </CardHeader>
@@ -765,7 +766,7 @@ const Availability = () => {
             </Row>
           </CardBody>
         </Card>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">Payments</h4>
           </CardHeader>
@@ -783,6 +784,7 @@ const Availability = () => {
                   invalid={errors.currencyPreference && true}
                   render={({ field }) => (
                     <AsyncPaginate
+                      isDisabled
                       loadOptions={loadCurrenciesOptions}
                       classNamePrefix="select"
                       placeholder="Select one"
@@ -799,7 +801,7 @@ const Availability = () => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
+        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
           <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />

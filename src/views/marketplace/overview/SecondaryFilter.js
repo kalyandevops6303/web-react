@@ -25,13 +25,15 @@ import {
   skillsService,
   toolsService,
 } from '../../../services/staticServices';
-import UserCard from '../../cards/UserCard';
-import ProjectCard from '../../cards/ProjectCard';
+import ProjectCard from '../../cards/MarketPlaceProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
+import TeamCard from '../../cards/TeamCard';
+import ClientCard from '../../cards/ClientCard';
+import TalentCard from '../../cards/TalentCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -67,6 +69,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const isRecommanded = sort_by[0]?.value === 'RECOMMADED';
+  const isFavorite = sort_by[0]?.value === 'FAVOURITE';
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -113,10 +116,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       valuesOnly[key] = secondFilterState[key].map((item) => item.value);
     });
-    if (primaryFilter === 'talents' || primaryFilter === 'clients') {
+    if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
       dispatch(
         getUsers({
           isRecommanded,
+          isFavorite,
+          primaryFilter,
           metaData,
           userType,
           onSuccess,
@@ -129,7 +134,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       dispatch(
         getListProjects({
           isMyListing: primaryFilter === 'my_listings',
+          isMyBids: primaryFilter === 'my_bids',
           isRecommanded,
+          isFavorite,
           metaData,
           userType,
           onSuccess,
@@ -139,7 +146,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         }),
       );
     }
-  }, [secondFilterState, searchText, primaryFilter, isRecommanded]);
+  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite]);
 
   useEffect(() => {
     if (location?.state?.isRecommended) {
@@ -290,10 +297,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       valuesOnly[key] = secondFilterState[key].map((item) => item.value);
     });
-    if (primaryFilter === 'talents' || primaryFilter === 'clients') {
+    if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
       dispatch(
         getUsers({
           isRecommanded,
+          isFavorite,
+          primaryFilter,
           metaData: newMeteData,
           userType,
           onSuccess,
@@ -306,7 +315,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       dispatch(
         getListProjects({
           isMyListing: primaryFilter === 'my_listings',
+          isMyBids: primaryFilter === 'my_bids',
           isRecommanded,
+          isFavorite,
           metaData: newMeteData,
           userType,
           onSuccess,
@@ -320,6 +331,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const isUsers =
     location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
+
+  const inMyBids = location.pathname?.split('/')?.includes('my_bids');
 
   const ExpandCollapseComp = (
     <>
@@ -381,6 +394,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           <Row>
             {primaryFilter !== 'talents' &&
               primaryFilter !== 'clients' &&
+              primaryFilter !== 'teams' &&
               (isTab ? (
                 <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
                   {ExpandCollapseComp}
@@ -390,25 +404,29 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   {ExpandCollapseComp}
                 </Col>
               ))}
-            {(userType === userTypes.talent || primaryFilter === 'talents') && (
-              <Col>
-                <Label className="form-label">Sort by</Label>
-                <Select
-                  isClearable
-                  options={sortingOptions}
-                  classNamePrefix="select"
-                  placeholder="Select type"
-                  theme={selectThemeColors}
-                  onChange={onChangeSort}
-                  value={
-                    secondFilterState.sort_by.length > 0
-                      ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && (
+            {(userType === userTypes.talent ||
+              userType === userTypes.team ||
+              primaryFilter === 'talents' ||
+              primaryFilter === 'teams') &&
+              !inMyBids && (
+                <Col>
+                  <Label className="form-label">Sort by</Label>
+                  <Select
+                    isClearable
+                    options={sortingOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={onChangeSort}
+                    value={
+                      secondFilterState.sort_by.length > 0
+                        ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
               <Col>
                 <Label className="form-label">Status</Label>
                 <Select
@@ -426,7 +444,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && (
+            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
               <Col>
                 <Label className="form-label">Payment type</Label>
                 <Select
@@ -447,7 +465,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents') && (
+            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
               <Col>
                 <Label className="form-label">Skills</Label>
                 <AsyncPaginate
@@ -466,7 +484,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents') && (
+            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
               <Col>
                 <Label className="form-label">Tools</Label>
                 <AsyncPaginate
@@ -556,22 +574,38 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           hasMore={hasMore}
           endMessage={
             <div className="d-flex justify-content-center ">
-              {selectMarketPlaceData?.length > 0 ? (
-                <span className="mt-2">You have seen it all!</span>
-              ) : (
+              {selectMarketPlaceData?.length === 0 ? (
                 <NoDataFoundComponent
                   isMyListing={primaryFilter === 'my_listings'}
                   isRecommanded={isRecommanded}
                   data={selectMarketPlaceData}
                 />
+              ) : (
+                ''
               )}
             </div>
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          <div className="d-flex flex-wrap justify-content-between">
+          <div
+            className="justify-content-between grid-layout"
+            style={
+              primaryFilter === 'clients'
+                ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                : {}
+            }
+          >
             {selectMarketPlaceData?.map((item) => {
-              const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
+              const CardComponent =
+                // eslint-disable-next-line no-nested-ternary
+                primaryFilter === 'talents'
+                  ? TalentCard
+                  : // eslint-disable-next-line no-nested-ternary
+                  primaryFilter === 'clients'
+                  ? ClientCard
+                  : primaryFilter === 'teams'
+                  ? TeamCard
+                  : ProjectCard;
               return (
                 <CardComponent
                   key={item?._id || item?.id}

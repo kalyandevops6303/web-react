@@ -36,22 +36,30 @@ const ProjectCardWrap = styled(CardWrap)`
       }
     }
   }
+  .name-info-rating-wrapper {
+    width: 70%;
+  }
   .marketplace-card-title {
+    line-height: 1.25rem;
     font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 1.3125rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .marketplace-card-role {
+    font-size: 0.8rem !important;
     color: ${theme.gray};
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 400;
+    font-weight: 300;
     line-height: 1.125rem;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .market-place-card-photo {
-    height: 2rem;
+    height: 2.5rem;
+    width: 2.5rem;
     border-radius: 50%;
     cursor: auto !important;
   }
@@ -69,7 +77,6 @@ const ProjectCardWrap = styled(CardWrap)`
     width: 35px;
     height: 35px;
     margin-left: 4rem;
-
     .percentage-text {
       font-weight: 400;
       font-size: 10px;
@@ -113,18 +120,20 @@ const ProjectCardWrap = styled(CardWrap)`
   }
 `;
 
-const InstituteCardWrap = styled(CardWrap)`
+const TeamCardWrap = styled(CardWrap)`
+  width: 100%;
   .card-title {
     font-size: 22px;
     color: ${theme.activeNavPillText};
     line-height: 22px;
   }
-  .institute-desc {
+  .team-desc {
     width: 56%;
   }
 
   .market-place-card-photo {
     height: 2.2rem;
+    width: 2.2rem;
     border-radius: 50%;
     cursor: auto !important;
   }
@@ -141,7 +150,7 @@ const InstituteCardWrap = styled(CardWrap)`
   }
 `;
 const UserCardWrap = styled(CardWrap)`
-  width: 50%;
+  width: ${(props) => (props.clientCard ? '100%' : '50%')};
   @media only screen and (max-device-width: 600px) {
     width: 100%;
   }
@@ -155,7 +164,7 @@ const UserCardWrap = styled(CardWrap)`
     margin-bottom: -1px;
   }
   .truncate-1 {
-    max-width: 9rem;
+    max-width: 7rem;
     display: inline-block;
     display: block;
     -webkit-line-clamp: 1;
@@ -198,6 +207,15 @@ const UserCardWrap = styled(CardWrap)`
 
   .market-place-card-photo {
     height: 2rem;
+    border-radius: 50%;
+    cursor: auto !important;
+  }
+
+  .client-card-photo {
+    // height: 2rem;
+    border: 3px solid white;
+    fill: #fff;
+    filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.14));
     border-radius: 50%;
     cursor: auto !important;
   }
@@ -255,4 +273,4 @@ const UserCardWrap = styled(CardWrap)`
     }
   }
 `;
-export { CardWrap, ProjectCardWrap, InstituteCardWrap, UserCardWrap };
+export { CardWrap, ProjectCardWrap, TeamCardWrap, UserCardWrap };

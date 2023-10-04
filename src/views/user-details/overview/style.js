@@ -52,6 +52,30 @@ const StatboxWrap = styled(Card)`
       color: ${theme.purpleColor}; // purple
     }
   }
+  .bg-light-info {
+    background: ${theme.info}1f; // light-purple
+    svg {
+      color: ${theme.info}; // purple
+    }
+  }
+  .bg-light-green {
+    background: ${theme.green}1f; // light-purple
+    svg {
+      color: ${theme.green}; // purple
+    }
+  }
+  .bg-light-dark-red {
+    background: ${theme.darkRedColor}1f; // light-purple
+    svg {
+      color: ${theme.darkRedColor}; // purple
+    }
+  }
+  .bg-light-red {
+    background: ${theme.red}1f; // light-purple
+    svg {
+      color: ${theme.red}; // purple
+    }
+  }
 `;
 
 const LeftSidebarProfileWrapper = styled.div`
@@ -142,6 +166,13 @@ const LeftSidebarProfileWrapper = styled.div`
     width: 9rem;
     flex-direction: column;
   }
+
+  // Invited box
+  .invited-box {
+    button {
+      padding: 0.8rem 1rem;
+    }
+  }
 `;
 
 const UserBioWrap = styled.div`
@@ -182,6 +213,7 @@ const RecentProjectsWrap = styled.div`
     box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1) !important;
   }
   .empty {
+    margin-top: -3.5rem;
     padding-top: 1rem;
     min-height: 5rem;
   }

@@ -31,7 +31,7 @@ import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talen
 import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { USD, userOnboarding } from '../../../utility/constants/Constant';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -111,9 +111,7 @@ const Availability = () => {
     hourlyRate: yup
       .number()
       .min(1, 'Hourly rate should be atleast 1')
-      .test('maxDigitsAfterDecimal', 'Hourly Rate must be upto two decimal places', (number) =>
-        /^\d+(\.\d{1,2})?$/.test(number),
-      )
+      .integer('Hourly rate must be an integer')
       .typeError('Hourly rate must be a number')
       .required('Hourly rate is required'),
   });
@@ -131,6 +129,7 @@ const Availability = () => {
       availabilityDays: [],
       weekdays: [],
       weekends: [],
+      currencyPreference: { label: 'USD', value: USD._id },
     },
   });
 
@@ -328,7 +327,7 @@ const Availability = () => {
   return (
     <ProfileFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">Availability</h4>
           </CardHeader>
@@ -778,7 +777,7 @@ const Availability = () => {
             </Row>
           </CardBody>
         </Card>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">Fees</h4>
           </CardHeader>
@@ -796,7 +795,10 @@ const Availability = () => {
                   invalid={errors.currencyPreference && true}
                   render={({ field }) => (
                     <AsyncPaginate
+                      isDisabled
                       loadOptions={loadCurrenciesOptions}
+                      menuPosition="fixed"
+                      minMenuHeight={200}
                       classNamePrefix="select"
                       placeholder="Select one"
                       theme={selectThemeColors}
@@ -835,7 +837,7 @@ const Availability = () => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
+        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
           <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
