@@ -19,7 +19,7 @@ const UpcomingProjectCard = ({ data, className }) => {
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
-          <p className="active-project-name">{data?.name}</p>
+          <p className="active-project-name truncate-2">{data?.name}</p>
           <div className="team-badge px-1">
             <p className="mb-25">Team</p>
           </div>

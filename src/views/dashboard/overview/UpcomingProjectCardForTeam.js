@@ -19,9 +19,9 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
-          <p className="active-project-name">{data?.name}</p>
-          <div className="d-flex">
-            <div className="me-3">
+          <p className="active-project-name truncate-2">{data?.name}</p>
+          <div className="d-flex justify-content-between">
+            <div className="me-50">
               <div className="client-badge px-1 mb-75">
                 <p className="mb-0">Client</p>
               </div>
@@ -87,12 +87,12 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
             </div>
           </div>
           <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
+            <div className="design-planning-wrapper justify-content-between w-100">
               <div className="design-planning">
                 <CardText className="mb-25">Start Date</CardText>
                 <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
               </div>
-              <div className="design-planning ms-3">
+              <div className="design-planning">
                 <CardText className="mb-25">Amount</CardText>
                 <h6 className="mb-0">${data?.amount}</h6>
               </div>
