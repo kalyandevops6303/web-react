@@ -263,7 +263,7 @@ const TeamListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="2">
               {isSliderLoading || isTeamInviteLoading ? (
-                <div style={{ height: '230px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                <div style={{ height: '250px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
                   <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
                   <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
                   <img style={{ width: '32%', height: '270px' }} src={CardSkeleton} alt="...Loading" />
