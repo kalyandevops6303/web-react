@@ -68,10 +68,7 @@ const BidDetails = () => {
   return (
     <BidDetailsWrap>
       <div className="d-flex justify-content-between mb-5 pb-2 rounded" style={{ position: 'relative' }}>
-        <div
-          className="d-flex justify-content-between p-50"
-          style={{ position: 'fixed', zIndex: 1, backgroundColor: 'white', width: '98%' }}
-        >
+        <div className="d-flex justify-content-between fixed-header">
           <BreadCrumbs
             data={[
               { title: 'Marketplace', link: '/marketplace/all_listings' },
