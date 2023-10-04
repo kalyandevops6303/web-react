@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -19,13 +20,21 @@ const MarketPlaceContainer = styled.div`
   }
 `;
 
+const SecondComp = ({ primaryFilter }) => {
+  const userData = useSelector(selectAuthUserData);
+  return <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
+};
+SecondComp.propTypes = {
+  primaryFilter: PropTypes.string,
+};
+SecondComp.defaultProps = {
+  primaryFilter: '',
+};
+
 const MarketPlace = () => {
   const isTab = useIsTab();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // Primary filters
-
-  // Adjust the number of lines based on the desired limit
 
   const routesMatch =
     useMatch('/marketplace/clients') ||
@@ -44,17 +53,10 @@ const MarketPlace = () => {
     dispatch(clearProjectData());
   }, []);
 
-  // Secondary filters
-
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
     navigate(`/marketplace/${props}`);
   };
-
-  const userDataLocal = useSelector(selectAuthUserData);
-
-  // eslint-disable-next-line react/no-unstable-nested-components
-  const SecondComp = () => <SecondaryFilters userType={userDataLocal?.user_type} primaryFilter={primaryFilter} />;
 
   const primaryEnum = {
     clients: 'Clients',
@@ -70,22 +72,15 @@ const MarketPlace = () => {
       <BreadCrumbs
         data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
       />
-
       <CreateProjectButton />
-
-      <PrimaryFilter
-        selected={primaryFilter}
-        handlePrimaryChangeFilter={handlePrimaryChangeFilter}
-        isTab={isTab}
-        userType={userDataLocal?.user_type}
-      />
+      <PrimaryFilter selected={primaryFilter} handlePrimaryChangeFilter={handlePrimaryChangeFilter} isTab={isTab} />
       <Routes>
-        <Route path="all_listings" element={<SecondComp />} />
-        <Route path="my_listings" element={<SecondComp />} />
-        <Route path="my_bids" element={<SecondComp />} />
-        <Route path="clients" element={<SecondComp />} />
-        <Route path="talents" element={<SecondComp />} />
-        <Route path="teams" element={<SecondComp />} />
+        <Route path="all_listings" element={<SecondComp primaryFilter={primaryFilter} />} />
+        <Route path="my_listings" element={<SecondComp primaryFilter={primaryFilter} />} />
+        <Route path="my_bids" element={<SecondComp primaryFilter={primaryFilter} />} />
+        <Route path="clients" element={<SecondComp primaryFilter={primaryFilter} />} />
+        <Route path="talents" element={<SecondComp primaryFilter={primaryFilter} />} />
+        <Route path="teams" element={<SecondComp primaryFilter={primaryFilter} />} />
       </Routes>
     </MarketPlaceContainer>
   );
