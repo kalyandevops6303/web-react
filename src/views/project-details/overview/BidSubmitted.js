@@ -27,10 +27,10 @@ const BidSubmitted = () => {
 
   const bidUpdates = [
     {
-      status: 'Bid Declined',
+      status: 'Bid Rejected',
       color: theme.red,
-      isVisible: bidInfo?.status === 'DECLINED',
-      time: timelineEntries?.['Bid Declined']?.time || '',
+      isVisible: bidInfo?.status === 'REJECTED',
+      time: timelineEntries?.['Bid Rejected']?.time || '',
     },
     {
       status: 'Bid Accepted',
@@ -41,7 +41,7 @@ const BidSubmitted = () => {
     {
       status: 'Bid Reviewed',
       color: theme.orangeColor,
-      isVisible: bidInfo?.status === 'REVIEWED' || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'DECLINED',
+      isVisible: bidInfo?.status === 'REVIEWED' || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED',
       time: timelineEntries?.['Bid Reviewed']?.time || '',
       user_details: {
         name: timelineEntries?.['Bid Reviewed']?.name || 'Client',
@@ -88,10 +88,14 @@ const BidSubmitted = () => {
                       {bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                     </span>
                   </span>
-                  {/* <span className="d-flex align-items-center gap-25">
-                    <h6 className="mb-0">Total Hours: </h6>
-                    <span className="">{bidInfo?.total_numbers_of_hours}</span>
-                  </span> */}
+                  {bidInfo?.total_numbers_of_hours ? (
+                    <span className="d-flex align-items-center gap-25">
+                      <h6 className="mb-0">Total Hours: </h6>
+                      <span className="">{bidInfo?.total_numbers_of_hours}h</span>
+                    </span>
+                  ) : (
+                    ''
+                  )}
                   <span className="d-flex align-items-center gap-25">
                     <h6 className="mb-0">Total Cost: </h6>
                     <span className="">${bidInfo?.total_estimated_cost}</span>

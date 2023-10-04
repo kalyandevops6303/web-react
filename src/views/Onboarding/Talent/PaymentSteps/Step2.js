@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input, Label, Row, FormFeedback } from 'reactstrap';
+import { Button, Col, Form, Card, CardBody, CardHeader, Input, Label, Row, FormFeedback, Spinner } from 'reactstrap';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,8 +14,7 @@ import { selectThemeColors } from '@utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
-import { paymentDetailsSuccess, saveTaxIdDetails } from '../../../../redux/reducers/PaymentDetails';
-import { savePaymentDetails } from '../../../../redux/actions/paymentActions';
+import { getPaymentDetails, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
 
@@ -27,8 +26,14 @@ const Step2 = ({ setStep }) => {
   });
   const [isDocumentConfirmed, setIsDocumentConfirmed] = useState(false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
+  const [taxUserType, setTaxUserType] = useState('US');
+  const [selectedTaxId, setSelectedTaxId] = useState('taxOption1');
 
-  const { userType, selectedTaxId, taxId, taxClass, taxName, working } = useSelector((state) => state.PaymentDetails);
+  const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const taxIdentitySchema = Yup.object().shape({
     taxName: Yup.string()
@@ -41,6 +46,7 @@ const Step2 = ({ setStep }) => {
         label: Yup.string().required('Tax classification is required'),
         value: Yup.string().required('This is required'),
       })
+      .transform((value) => (value === null ? undefined : value))
       .required('This is required'),
     taxId: Yup.string().required('Tax Id is required'),
   });
@@ -56,24 +62,33 @@ const Step2 = ({ setStep }) => {
     defaultValues: {
       taxName: '',
       taxId: '',
+      taxClass: '',
     },
   });
 
-  useEffect(() => {
-    if (taxName?.length) {
-      setValue('taxName', taxName);
+  const onGetPaymentDetailsSuccess = (res) => {
+    if (res) {
+      if (res?.tax_user_type?.length > 0) {
+        setTaxUserType(res?.tax_user_type);
+      }
+      if (res.tax_identification?.legal_name?.length > 0) {
+        setValue('taxName', res.tax_identification?.legal_name);
+      }
+      if (res.tax_identification?.federal_tax_classification?.length > 0) {
+        setValue('taxClass', {
+          label: 'Individual',
+          value: res.tax_identification?.federal_tax_classification,
+        });
+      }
+      if (res.tax_identification?.social_security_number?.length > 0) {
+        setValue('taxId', res.tax_identification?.social_security_number);
+      }
     }
-    if (taxClass?.label?.length) {
-      setValue('taxClass', taxClass);
-    }
-    if (taxId?.length) {
-      setValue('taxId', taxId);
-    }
-  }, []);
+  };
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
+  useEffect(() => {
+    dispatch(getPaymentDetails(onGetPaymentDetailsSuccess));
+  }, []);
 
   const taxClassificationOptions = [{ label: 'Individual', value: 'INDIVIDUAL' }];
 
@@ -91,12 +106,7 @@ const Step2 = ({ setStep }) => {
   const handleTaxPayerSelect = () => {};
 
   const handleTaxIdSelect = (e) => {
-    dispatch(
-      paymentDetailsSuccess({
-        key: 'selectedTaxId',
-        value: e.target.name,
-      }),
-    );
+    setSelectedTaxId(e.target.name);
   };
 
   const onComplete = () => {
@@ -121,14 +131,24 @@ const Step2 = ({ setStep }) => {
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onSubmit = (data) => {
-    dispatch(saveTaxIdDetails(data));
-    const newData = {
-      talent_info: {
-        tax_user_type: userType === 'us_person' ? 'US' : 'NON_US',
-        is_working_in_us: working === 'in_us',
+    const taxDetails = {
+      tax_identification: {
+        is_us_person: taxUserType === 'US',
+        legal_name: data?.taxName,
+        federal_tax_classification: data?.taxClass?.value,
+        social_security_number: selectedTaxId === 'taxOption1' ? data?.taxId : '',
+        employee_identification_number: selectedTaxId === 'taxOption2' ? data?.taxId : '',
+        national_taxpayer_number: taxUserType === 'NON_US' ? data?.taxId : '',
       },
     };
-    dispatch(savePaymentDetails(newData, onSuccess));
+
+    const updatedData = {
+      talent_info: {
+        ...taxDetails,
+      },
+    };
+
+    dispatch(updatePaymentDetails(updatedData, onSuccess));
   };
 
   return (
@@ -154,19 +174,14 @@ const Step2 = ({ setStep }) => {
               <Col className="d-flex gap-50">
                 <Input
                   type="radio"
-                  checked={userType === 'non_us_person'}
+                  checked={taxUserType === 'NON_US'}
                   name="non_us_person"
                   onChange={handleTaxPayerSelect}
                 />
                 <div>I am not a US person</div>
               </Col>
               <Col className="d-flex gap-50">
-                <Input
-                  type="radio"
-                  checked={userType === 'us_person'}
-                  name="us_person"
-                  onChange={handleTaxPayerSelect}
-                />
+                <Input type="radio" checked={taxUserType === 'US'} name="us_person" onChange={handleTaxPayerSelect} />
                 <div>I am a US person</div>
               </Col>
             </div>
@@ -211,7 +226,7 @@ const Step2 = ({ setStep }) => {
                       placeholder="Individual"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
-                        'is-invalid': errors && errors.taxClass?.label,
+                        'is-invalid': errors && errors.taxClass?.value,
                       })}
                       {...field}
                     />
@@ -230,7 +245,7 @@ const Step2 = ({ setStep }) => {
                   onChange={handleTaxIdSelect}
                 />
                 <div className="w-75">
-                  {userType === 'non_us_person' ? 'National Taxpayer number (NSN)' : 'Social Security number (SSN)'}
+                  {taxUserType === 'NON_US' ? 'National Taxpayer number (NSN)' : 'Social Security number (SSN)'}
                 </div>
               </Col>
               <Col className="d-flex gap-50">
@@ -246,7 +261,7 @@ const Step2 = ({ setStep }) => {
             <Row className="mt-1 mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="taxId">
-                  {userType === 'non_us_person' ? 'NSN/EIN #' : 'SSN/EIN #'}
+                  {taxUserType === 'NON_US' ? 'NSN/EIN #' : 'SSN/EIN #'}
                 </Label>
                 <Controller
                   id="taxId"
@@ -255,7 +270,7 @@ const Step2 = ({ setStep }) => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder={userType === 'non_us_person' ? 'Enter NSN/EIN #' : 'Enter SSN/EIN #'}
+                      placeholder={taxUserType === 'NON_US' ? 'Enter NSN/EIN #' : 'Enter SSN/EIN #'}
                       invalid={errors.taxId && true}
                     />
                   )}
@@ -266,7 +281,7 @@ const Step2 = ({ setStep }) => {
           </CardBody>
         </Card>
 
-        {userType === 'us_person' ? (
+        {taxUserType === 'US' ? (
           <Card className="w-75">
             <CardHeader>
               <h4 className="m-0 mt-1">Tax certifications and confirmation of unchanged status</h4>
@@ -339,21 +354,25 @@ const Step2 = ({ setStep }) => {
               color="primary"
               type="submit"
               disabled={
-                userType === 'non_us_person'
+                taxUserType === 'NON_US'
                   ? false
                   : !confirmSign.checkbox1 || !confirmSign.checkbox2 || !isDocumentConfirmed
               }
             >
-              <>
-                <span className="me-50">
-                  {userType === 'us_person'
-                    ? 'STEP 3 - US-W-9 form'
-                    : userType === 'non_us_person' && selectedTaxId === 'taxOption2'
-                    ? 'Email Customer Support'
-                    : 'STEP 3 - US-W-8 form'}
-                </span>
-                <ChevronRight size={14} />
-              </>
+              {paymentDetailsLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span className="me-50">
+                    {taxUserType === 'US'
+                      ? 'STEP 3 - US-W-9 form'
+                      : taxUserType === 'NON_US' && selectedTaxId === 'taxOption2'
+                      ? 'Email Customer Support'
+                      : 'STEP 3 - US-W-8 form'}
+                  </span>
+                  <ChevronRight size={14} />
+                </>
+              )}
             </Button>
           </div>
         </div>

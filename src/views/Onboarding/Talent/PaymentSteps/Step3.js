@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input, Label, FormFeedback, Row } from 'reactstrap';
+import { Button, Col, Form, Card, CardBody, CardHeader, Input, Label, FormFeedback, Row, Spinner } from 'reactstrap';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { useForm, Controller } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
@@ -17,20 +17,16 @@ import theme from '../../../../configs/themeVariables';
 import { returnFilteredDropdownOptions } from '../../../../utility/Utils';
 import { countriesService } from '../../../../services/staticServices';
 import { getStates, getCities } from '../../../../redux/actions/staticActions';
-import { updatePaymentDetails } from '../../../../redux/actions/paymentActions';
+import { getPaymentDetails, setupStripeAccount, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
 import { states, statesLoading, cities, citiesLoading } from '../../../../redux/selectors/staticSelectors';
 import CertificationUS from './CertificationUs';
 import CertificationNonUs from './CertificationNonUs';
 import AccountCreatedModal from '../../AccountCreatedModal';
-import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
+import { getUserDetails, saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 
 import { formSchema, usWFormsSchema } from '../Schema';
 
 const Step3 = ({ setStep }) => {
-  const { userType } = useSelector((state) => state.PaymentDetails);
-
-  const isUsPerson = userType === 'us_person';
-
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -39,15 +35,20 @@ const Step3 = ({ setStep }) => {
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
   const [copyAddress, setCopyAddress] = useState(false);
-  const [taxPayer, setTaxPayer] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
-  const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
+  const [paymentDetailsRes, setPaymentDetailsRes] = useState(null);
+  const [taxPayer, setTaxPayer] = useState('option2');
+
+  const isUsPerson = paymentDetailsRes?.tax_user_type === 'US';
+  const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
+  const [userDetails, setUserDetails] = useState({});
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
+  const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
   const {
     control,
@@ -122,6 +123,109 @@ const Step3 = ({ setStep }) => {
     }
   };
 
+  const onGetPaymentDetailsSuccess = (res) => {
+    if (res) {
+      setPaymentDetailsRes(res);
+      if (res?.w8bendetails) {
+        setValue('citizen', {
+          label: res?.w8bendetails?.country_of_citizenship,
+          value: res?.w8bendetails?.country_of_citizenship?.toUpperCase(),
+        });
+        setValue('fullName', res.w8bendetails.full_name);
+        setValue('refNo', res?.w8bendetails?.us_tax_id_reference_number);
+        setValue('dob', res?.w8bendetails?.dob);
+        setTaxPayer(res?.w8bendetails?.has_us_tax_id ? 'option1' : 'option2');
+      }
+      if (res?.w9details) {
+        setValue('citizen', {
+          label: res?.w9details?.country_of_citizenship,
+          value: res?.w9details?.country_of_citizenship?.toUpperCase(),
+        });
+        setValue('fullName', res.w9details.full_name);
+        setValue('refNo', res?.w9details?.us_tax_id_reference_number);
+        setValue('dob', res?.w9details?.dob);
+        setTaxPayer(res?.w9details?.has_us_tax_id ? 'option1' : 'option2');
+      }
+      if (res?.w9details?.permanent_residence) {
+        setValue('pCountry', {
+          label: res?.w9details?.permanent_residence?.country,
+          value: res?.w9details?.permanent_residence?.country?.toUpperCase(),
+        });
+        setValue('pState', {
+          label: res?.w9details?.permanent_residence?.state,
+          value: res?.w9details?.permanent_residence?.state?.toUpperCase(),
+        });
+        setValue('pCity', {
+          label: res?.w9details?.permanent_residence?.city,
+          value: res?.w9details?.permanent_residence?.city?.toUpperCase(),
+        });
+        setValue('pAddress', res?.w9details?.permanent_residence?.street_address);
+        setValue('pHouseNo', res?.w9details?.permanent_residence?.house_number);
+        setValue('pZipCode', res?.w9details?.permanent_residence?.zip_code);
+      }
+      if (res?.w8bendetails?.permanent_residence) {
+        setValue('pCountry', {
+          label: res?.w8bendetails?.permanent_residence?.country,
+          value: res?.w8bendetails?.permanent_residence?.country?.toUpperCase(),
+        });
+        setValue('pState', {
+          label: res?.w8bendetails?.permanent_residence?.state,
+          value: res?.w8bendetails?.permanent_residence?.state?.toUpperCase(),
+        });
+        setValue('pCity', {
+          label: res?.w8bendetails?.permanent_residence?.city,
+          value: res?.w8bendetails?.permanent_residence?.city?.toUpperCase(),
+        });
+        setValue('pAddress', res?.w8bendetails?.permanent_residence?.street_address);
+        setValue('pHouseNo', res?.w8bendetails?.permanent_residence?.house_number);
+        setValue('pZipCode', res?.w8bendetails?.permanent_residence?.zip_code);
+      }
+      if (res?.w9details?.mailing_address) {
+        setValue('mCountry', {
+          label: res?.w9details?.mailing_address?.country,
+          value: res?.w9details?.mailing_address?.country?.toUpperCase(),
+        });
+        setValue('mState', {
+          label: res?.w9details?.mailing_address?.state,
+          value: res?.w9details?.mailing_address?.state?.toUpperCase(),
+        });
+        setValue('mCity', {
+          label: res?.w9details?.mailing_address?.city,
+          value: res?.w9details?.mailing_address?.city?.toUpperCase(),
+        });
+        setValue('mAddress', res?.w9details?.mailing_address?.street_address);
+        setValue('mHouseNo', res?.w9details?.mailing_address?.house_number);
+        setValue('mZipCode', res?.w9details?.mailing_address?.zip_code);
+      }
+      if (res?.w8bendetails?.mailing_address) {
+        setValue('mCountry', {
+          label: res?.w8bendetails?.mailing_address?.country,
+          value: res?.w8bendetails?.mailing_address?.country?.toUpperCase(),
+        });
+        setValue('mState', {
+          label: res?.w8bendetails?.mailing_address?.state,
+          value: res?.w8bendetails?.mailing_address?.state?.toUpperCase(),
+        });
+        setValue('mCity', {
+          label: res?.w8bendetails?.mailing_address?.city,
+          value: res?.w8bendetails?.mailing_address?.city?.toUpperCase(),
+        });
+        setValue('mAddress', res?.w8bendetails?.mailing_address?.street_address);
+        setValue('mHouseNo', res?.w8bendetails?.mailing_address?.house_number);
+        setValue('mZipCode', res?.w8bendetails?.mailing_address?.zip_code);
+      }
+    }
+  };
+
+  const onGetUserDetailsSuccess = (res) => {
+    if (res) setUserDetails(res);
+  };
+
+  useEffect(() => {
+    dispatch(getPaymentDetails(onGetPaymentDetailsSuccess));
+    dispatch(getUserDetails(onGetUserDetailsSuccess));
+  }, []);
+
   const handleTaxPayerNoOption = (e) => {
     setTaxPayer(e.target.name);
   };
@@ -136,11 +240,34 @@ const Step3 = ({ setStep }) => {
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
-  const onSuccess = () => {
+  const onAccountCreationSuccess = () => {
     if (location?.state?.isEditing) {
       navigate('/dashboard');
     } else {
       setAccountCreatedModal(true);
+    }
+  };
+
+  const onSuccess = () => {
+    if (location.state?.isEditing) {
+      navigate('/dashboard');
+    } else {
+      const stripeData = {
+        country:
+          // eslint-disable-next-line no-nested-ternary
+          userDetails?.phone_country?.code,
+        email: userDetails?.email,
+        individual: {
+          first_name: userDetails?.talent_info?.first_name,
+          last_name: userDetails?.talent_info?.last_name,
+        },
+        user_id: userDetails?._id,
+        // eslint-disable-next-line no-undef
+        refresh_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
+        // eslint-disable-next-line no-undef
+        return_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
+      };
+      dispatch(setupStripeAccount(stripeData, onAccountCreationSuccess));
     }
   };
 
@@ -194,8 +321,8 @@ const Step3 = ({ setStep }) => {
           zip_code: data?.mZipCode,
         },
         has_us_tax_id: taxPayer === 'option1',
-        us_tax_id_reference_number: data?.refNo,
-        dob: data?.dob,
+        us_tax_id_reference_number: data?.refNo ?? '',
+        dob: data?.dob ?? '',
       },
     };
     const newData = {
@@ -212,11 +339,11 @@ const Step3 = ({ setStep }) => {
       {accountCreatedModal && (
         <AccountCreatedModal modal={accountCreatedModal} toggleModal={toggleAccountCreatedModal} />
       )}
-      <h4>{userType === 'non_us_person' ? 'STEP 3 - US Form W8BEN' : 'STEP 3 - US W-9 Form'}</h4>
+      <h4>{!isUsPerson ? 'STEP 3 - US Form W8BEN' : 'STEP 3 - US W-9 Form'}</h4>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card className="w-75">
           <CardHeader>
-            <h4 className="m-0 mt-1">{userType === 'us_person' ? 'US W-9 Form' : 'US Form W8BEN'}</h4>
+            <h4 className="m-0 mt-1">{isUsPerson ? 'US W-9 Form' : 'US Form W8BEN'}</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
@@ -654,10 +781,14 @@ const Step3 = ({ setStep }) => {
               <ChevronRight size={14} />
             </Button>
             <Button color="primary" type="submit" disabled={isUsPerson ? !isConfirmed : !isAgreed}>
-              <>
-                <span className="me-50">Set Up Stripe</span>
-                <ChevronRight size={14} />
-              </>
+              {paymentDetailsLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span className="me-50">Set Up Stripe</span>
+                  <ChevronRight size={14} />
+                </>
+              )}
             </Button>
           </div>
         </div>

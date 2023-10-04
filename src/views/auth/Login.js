@@ -23,7 +23,7 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
-import { removeItem, setItem } from '../../utility/localStorageControl';
+import { removeItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
 import { validateUrl } from '../../redux/actions/dashboardActions';
 
@@ -42,12 +42,9 @@ const Login = () => {
   const dataParam = urlSearchParams.get('data');
 
   const onValidUrlSuccess = (res) => {
-    setItem('isInviteRead', false);
-    setItem('inviteId', res.request_id);
-    setItem('projectId', res.request_for.project_id);
-    setItem('requestStatus', res.head_message);
-
-    if (isLoggedIn) {
+    if (res.user_status === 'UNREGISTERED') {
+      navigate('/auth');
+    } else if (isLoggedIn) {
       navigate('/dashboard');
     }
   };
@@ -56,10 +53,6 @@ const Login = () => {
 
   useEffect(() => {
     if (dataParam) {
-      removeItem('inviteToken');
-      removeItem('isInviteRead');
-      removeItem('inviteId');
-      removeItem('projectId');
       dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
     } else if (isLoggedIn) {
       navigate('/dashboard');

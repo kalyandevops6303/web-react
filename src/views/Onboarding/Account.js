@@ -28,7 +28,11 @@ import {
   saveProfileDetails as saveTalentProfileDetails,
   saveTalentAccountDetails,
 } from '../../redux/actions/talentOnboardingActions';
-import { talentAccountDetailsLoading, userDetails } from '../../redux/selectors/talentOnboardingSelectors';
+import {
+  talentAccountDetailsLoading,
+  userDetails,
+  profileDetailsLoading,
+} from '../../redux/selectors/talentOnboardingSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import {
   saveClientAccountDetails,
@@ -39,6 +43,9 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
 import { checkPoints, maxFileSize, userOnboarding, userTypes } from '../../utility/constants/Constant';
+import { convertReferral } from '../../redux/actions/referralAndRewardActions';
+import { getItem, removeItem } from '../../utility/localStorageControl';
+import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -83,6 +90,8 @@ const Account = () => {
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
+  const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const convertReferralIsLoading = useSelector(convertReferralLoading);
 
   const [resetPasswordModal, setResetPasswordModal] = useState(null);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
@@ -94,6 +103,13 @@ const Account = () => {
 
   const toggleResetPasswordModal = () => setResetPasswordModal(!resetPasswordModal);
 
+  const onReferralConversionSuccess = () => {
+    userDetailsData?.user_type === 'TALENT'
+      ? navigate(`/${userOnboarding.talent}/personal-details`)
+      : navigate(`/${userOnboarding.client}/personal-details`);
+    removeItem('referral_data');
+  };
+
   const onSuccess = () => {
     if (location?.state?.isEditing) {
       userDetailsData?.user_type === 'TALENT'
@@ -104,9 +120,17 @@ const Account = () => {
             state: { isEditing: true },
           });
     } else {
-      userDetailsData?.user_type === 'TALENT'
-        ? navigate(`/${userOnboarding.talent}/personal-details`)
-        : navigate(`/${userOnboarding.client}/personal-details`);
+      const referralData = getItem('referral_data');
+      if (referralData) {
+        const referralId = referralData?._id;
+        const userId = userDetailsData?._id;
+        const userType = userDetailsData?.user_type;
+        dispatch(convertReferral(referralId, userId, userType, onReferralConversionSuccess));
+      } else {
+        userDetailsData?.user_type === 'TALENT'
+          ? navigate(`/${userOnboarding.talent}/personal-details`)
+          : navigate(`/${userOnboarding.client}/personal-details`);
+      }
     }
   };
 
@@ -241,7 +265,7 @@ const Account = () => {
     <AccountDetailsFormContainer>
       {resetPasswordModal && <ResetPasswordModal modal={resetPasswordModal} toggleModal={toggleResetPasswordModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">Account Details</h4>
           </CardHeader>
@@ -376,7 +400,7 @@ const Account = () => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-end w-75">
           {location?.state?.isEditing && userDetailsData?.oauth_type !== 'google' && (
             <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
               Reset Password
@@ -387,12 +411,16 @@ const Account = () => {
             type="submit"
             disabled={
               isImageUploading ||
+              convertReferralIsLoading ||
               (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
                 ? !isValid || talentAccountDetailsIsLoading
                 : !isValid || clientAccountDetailsIsLoading)
             }
           >
-            {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
+            {talentAccountDetailsIsLoading ||
+            clientAccountDetailsIsLoading ||
+            convertReferralIsLoading ||
+            profileDetailsIsLoading ? (
               <Spinner size="sm" />
             ) : (
               <>

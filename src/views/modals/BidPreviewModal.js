@@ -4,11 +4,23 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import '../custom-styles.scss';
 import { DateTime } from 'luxon';
-import { Modal, ModalHeader, ModalBody, CardTitle, CardText, Card, CardBody, Table } from 'reactstrap';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  CardTitle,
+  CardText,
+  Card,
+  CardBody,
+  Table,
+  UncontrolledTooltip,
+} from 'reactstrap';
 import PdfIcon from '@src/assets/images/pdfimg.png';
+import { Info } from 'react-feather';
 import { formatFileSize } from '../../utility/Utils';
 import { BidDetailsWrap } from '../project-details/style';
 import { userTypes } from '../../utility/constants/Constant';
+import theme from '../../configs/themeVariables';
 
 const BidPreviewModal = ({ modal, toggleModal }) => {
   const navigate = useNavigate();
@@ -42,7 +54,7 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
         <BidDetailsWrap>
           <div className="d-flex justify-content-between">
             <p className="font-medium-3 fw-bold">Bid Submitted Preview</p>
-            {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'DECLINED' && (
+            {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'REJECTED' && (
               <p className="edit-bid-btn mt-1 cursor-pointer" onClick={onEditBidClick}>
                 Edit Bid
               </p>
@@ -57,11 +69,23 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
                   {bidInfo?.total_estimated_duration?.duration_type &&
                     bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                 </CardText>
-                <CardText className="key">Estimation Duration</CardText>
+                <div className="d-flex align-items-center m-0">
+                  <CardText className="key mb-0">Estimation Duration</CardText>
+                  <Info size={14} color={theme.infoIcon} id="bid-info" className="ms-50" />
+                  <UncontrolledTooltip placement="bottom" target="bid-info">
+                    <p className="m-0">Sum total of all milestone duration hours/week</p>
+                  </UncontrolledTooltip>
+                </div>
               </div>
               <div>
                 <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
-                <CardText className="key">Total Bid Amount</CardText>
+                <div className="d-flex align-items-center m-0">
+                  <CardText className="key mb-0">Total Bid Amount</CardText>
+                  <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
+                  <UncontrolledTooltip placement="right" target="duration-info">
+                    <p className="m-0">A Total of talent cost + duration for all the milestone</p>
+                  </UncontrolledTooltip>
+                </div>
               </div>
             </CardBody>
           </Card>

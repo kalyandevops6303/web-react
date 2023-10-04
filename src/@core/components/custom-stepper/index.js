@@ -1,9 +1,13 @@
 import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
+import { useSelector } from 'react-redux';
 
 const CustomStep = ({ onChangeStep, steps, currentStep }) => {
   const navigate = useNavigate();
+  const param = useParams();
+  const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
+
   const CustomStepWrap = styled.div`
     margin-bottom: 1.5rem;
     display: flex;
@@ -58,11 +62,21 @@ const CustomStep = ({ onChangeStep, steps, currentStep }) => {
       }
     }
   `;
+  console.log(param);
 
   const handleChangeStep = (step) => {
+    console.log(step);
     onChangeStep(step);
-    navigate(step);
+    if (step === 'milestone' && invitedByData) {
+      navigate(`milestone/project-invitation/milestone`);
+    } else if (step === 'project') {
+      navigate(-1);
+    } else {
+      navigate(step);
+    }
   };
+  console.log(steps);
+
   return (
     <CustomStepWrap>
       {steps.map((item) => (
@@ -71,6 +85,7 @@ const CustomStep = ({ onChangeStep, steps, currentStep }) => {
           key={item.title}
           className={`stepper ${currentStep === item.title.toLowerCase() ? 'active' : 'cursor-pointer'}`}
         >
+          {console.log(currentStep, item.title.toLowerCase())}
           <span className="stepper-box">{item.icon}</span>
           <span className="stepper-label">
             <span className="stepper-title">{item.title}</span>

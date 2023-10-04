@@ -38,6 +38,7 @@ import AcceptRequestModal from '../../modals/AcceptRequestModal';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { makeTeamMemberSuccess } from '../../../redux/reducers/profile';
 import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
+import InvitationSentModal from '../../modals/InvitationSentModal';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -57,6 +58,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [accpetModal, setAccpetModal] = useState(false);
+  const [invitationSentModal, setInvitationSentModal] = useState(null);
+  const toggleInvitationSentModal = () => setInvitationSentModal(!invitationSentModal);
 
   const onAccept = () => {
     const postData = {
@@ -146,7 +149,16 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
       },
     };
     const onSuccess = () => {};
-    dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
+
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModal(true);
+    } else {
+      dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
+    }
   };
 
   const toggleSendInviteModal = () => {
@@ -482,6 +494,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               </div>
             )}
             <div>
+              {/* Sensitive code below, If any changes done please check with all personas in each user type profile */}
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 {requestStatusData && (
                   <span className="w-50">
@@ -497,15 +510,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                     )}
                   </span>
                 )}
-                {/* {requestStatusData && (
-                  <span className="w-50">
-                    {isTeamView && (
-                      <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
-                        Accept
-                      </Button>
-                    )}
-                  </span>
-                )} */}
 
                 {!requestStatusData &&
                   !isEditable &&
@@ -549,9 +553,21 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           modal={sendInviteModal}
           toggleModal={toggleSendInviteModal}
           selectedTalents={selectedTalent}
+          setInvitationSentModal={setInvitationSentModal}
           message={inputMessage}
           setMessage={setInputMessage}
           description="You are inviting the below to join your team."
+        />
+      )}
+      {invitationSentModal && (
+        <InvitationSentModal
+          modal={invitationSentModal}
+          toggleModal={toggleInvitationSentModal}
+          selectedTalents={selectedTalent}
+          message={inputMessage}
+          toggleSendInvitationModal={toggleSendInviteModal}
+          setSelectedTalents={setSelectedTalent}
+          description="You’ve sent a team member invitation"
         />
       )}
     </LeftSidebarProfileWrapper>

@@ -14,7 +14,7 @@ import { inviteTalents } from '../../redux/actions/inviteTalent';
 import { getItem } from '../../utility/localStorageControl';
 import { inviteTalentsLoading } from '../../redux/selectors/inviteTalentSelector';
 
-const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
+const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, projectId }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -98,6 +98,9 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
       setIsCopied(false);
     }, 1500);
   };
+  const redirectToDashboard = () => {
+    navigate('/dashboard');
+  };
 
   return (
     <Modal
@@ -105,7 +108,7 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
       contentClassName="custom-larger-than-medium-modal-style"
       className="modal-dialog-centered modal-lg"
     >
-      <ModalHeader toggle={toggleModal} />
+      <ModalHeader toggle={createTeamView ? redirectToDashboard : toggleModal} />
       <ModalBody>
         <RequirementsFormContainer>
           <div className="d-flex flex-column px-3">
@@ -177,6 +180,7 @@ const ShareInviteModal = ({ modal, inviteRole, toggleModal, projectId }) => {
 export default ShareInviteModal;
 
 ShareInviteModal.propTypes = {
+  createTeamView: Proptypes.bool,
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   projectId: Proptypes.string,
@@ -184,6 +188,7 @@ ShareInviteModal.propTypes = {
 };
 
 ShareInviteModal.defaultProps = {
+  createTeamView: false,
   modal: false,
   toggleModal: () => {},
   projectId: '',

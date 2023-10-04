@@ -17,13 +17,13 @@ import ProjectModal from '../../modals/ProjectModal';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { setItem } from '../../../utility/localStorageControl';
 
-const UserSection = ({ users, name }) => (
+const UserSection = ({ totalCount, users, name }) => (
   <div className="user-section">
     <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
-          <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
+          <AvatarGroup totalCount={totalCount} size="sm" className="mr-4" data={users.slice(0, 3)} />
         </span>
       ) : (
         <AvatarGroup size="sm" data={users} />
@@ -35,6 +35,7 @@ const UserSection = ({ users, name }) => (
 UserSection.propTypes = {
   users: PropTypes.array,
   name: PropTypes.string,
+  totalCount: PropTypes.number,
 };
 
 const MyTeamCard = ({ data, className }) => {
@@ -74,7 +75,12 @@ const MyTeamCard = ({ data, className }) => {
             <div>
               {users.length > 3 ? (
                 <span className="d-flex avatars">
-                  <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
+                  <AvatarGroup
+                    totalCount={data?.team_members_count || data?.workers_count}
+                    size="sm"
+                    className="mr-4"
+                    data={users.slice(0, 3)}
+                  />
                 </span>
               ) : (
                 <AvatarGroup size="sm" data={users} />

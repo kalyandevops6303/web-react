@@ -1,4 +1,11 @@
-import { getClientService, getTalentService, makeFavService, removeFavService } from '../../services/profileServices';
+import {
+  getClientService,
+  getRecentProjectService,
+  getReviewService,
+  getTalentService,
+  makeFavService,
+  removeFavService,
+} from '../../services/profileServices';
 import { getTeamById } from '../../services/teamServices';
 import { userTypes } from '../../utility/constants/Constant';
 import errorHandler from '../../utility/errorHandler';
@@ -6,6 +13,12 @@ import {
   getProfileFailure,
   getProfileRequest,
   getProfileSuccess,
+  getRecentProjectFailure,
+  getRecentProjectRequest,
+  getRecentProjectSuccess,
+  getReviewFailure,
+  getReviewRequest,
+  getReviewSuccess,
   makeFavSuccess,
   removeFavSuccess,
 } from '../reducers/profile';
@@ -56,4 +69,32 @@ const removeFavourite = (id) => async (dispatch) => {
   }
 };
 
-export { getProfile, makeFavourite, removeFavourite };
+const getRecentProjects =
+  ({ user_id, entity, metadata }) =>
+  async (dispatch) => {
+    if (metadata?.page === 1) {
+      dispatch(getRecentProjectRequest());
+    }
+    try {
+      const res = await getRecentProjectService({ user_id, entity, metadata });
+      dispatch(getRecentProjectSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getRecentProjectFailure);
+    }
+  };
+
+const getReview =
+  ({ user_id, entity, metadata }) =>
+  async (dispatch) => {
+    if (metadata?.page === 1) {
+      dispatch(getReviewRequest());
+    }
+    try {
+      const res = await getReviewService({ user_id, entity, metadata });
+      dispatch(getReviewSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getReviewFailure);
+    }
+  };
+
+export { getProfile, makeFavourite, removeFavourite, getRecentProjects, getReview };

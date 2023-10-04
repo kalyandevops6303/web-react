@@ -31,6 +31,12 @@ const AcceptModalWrapper = styled.div`
       color: ${theme.gray};
     }
     .value {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      width: 15rem;
+      text-overflow: ellipsis;
       font-size: 1.312rem;
       font-weight: 500;
     }

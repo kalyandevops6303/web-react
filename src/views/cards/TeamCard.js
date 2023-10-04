@@ -63,9 +63,14 @@ const Team = ({ data, isSearchPage }) => {
               <CardText className="team-desc mb-1">{data?.introduction} </CardText>
 
               <div className="avatar-wrap mb-1">
-                {users.length > 4 ? (
+                {users.length > 3 ? (
                   <span className="d-flex avatars">
-                    <AvatarGroup size="md" className="mr-4" data={users.slice(0, 3)} />
+                    <AvatarGroup
+                      totalCount={data?.team_members_count || data?.workers_count}
+                      size="md"
+                      className="mr-4"
+                      data={users.slice(0, 3)}
+                    />
                   </span>
                 ) : (
                   <AvatarGroup size="md" data={users} />

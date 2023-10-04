@@ -69,7 +69,7 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
               </div>
               <CardTitle className="d-flex align-items-center">
                 <span className="cursor-pointer" onClick={handleShowProject}>
-                  {data?.name}{' '}
+                  {data?.name}
                 </span>
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">

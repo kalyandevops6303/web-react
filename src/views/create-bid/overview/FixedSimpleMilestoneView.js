@@ -61,13 +61,7 @@ const FixedSimpleMilestoneView = () => {
           .min(1, 'Cost must be at least 1')
           .typeError('Please enter a number')
           .required('Talent cost is required')
-          .test('maxDecimalPlaces', 'Cost can have up to 2 decimal places', (value) => {
-            if (value === undefined) {
-              return true; // Optional field, no validation needed if empty
-            }
-            const decimalCount = (value.toString().split('.')[1] || '').length;
-            return decimalCount <= 2;
-          }),
+          .integer('Cost must be an integer'),
         name: yup
           .string()
           .min(4, 'Name must be at least 4 characters')
@@ -503,8 +497,8 @@ const FixedSimpleMilestoneView = () => {
                         {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
                       </div>
                     </Col>
-                    <Col sm="12" md="12" lg="4" className="d-flex justify-content-between me-1">
-                      <div>
+                    <Col sm="12" md="12" lg="4" className="d-flex justify-content-end me-1">
+                      <div className="me-5">
                         <Label className="form-label">Estimated Duration</Label>
                         <p className="fw-bold font-medium-1 text-end mt-50">{totalDuration}w</p>
                       </div>
@@ -533,7 +527,7 @@ const FixedSimpleMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <Accordion className="mb-2" open={open} toggle={toggle}>
+              <Accordion className="mb-2 accordion-arrow" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => (
                   <Card className="white-card-bg" key={milestone.id}>
                     <CardBody className="p-0">
@@ -545,7 +539,7 @@ const FixedSimpleMilestoneView = () => {
                               <Col sm="12" md="12" lg="3">
                                 <div className="me-2">
                                   <Label className="fw-normal form-label" for="duration">
-                                    Duration
+                                    Duration<span className="label-asterisk me-50">*</span>
                                   </Label>
                                   <Controller
                                     id={`milestones[${milestoneIndex}].duration`}
@@ -603,7 +597,7 @@ const FixedSimpleMilestoneView = () => {
                               <Col sm="12" md="12" lg="4">
                                 <div>
                                   <Label className="fw-normal form-label me-2" for="talentCost">
-                                    Talent Cost
+                                    Talent Cost<span className="label-asterisk me-50">*</span>
                                   </Label>
                                   <Controller
                                     id={`milestones[${milestoneIndex}].talentCost`}
@@ -907,7 +901,7 @@ const FixedSimpleMilestoneView = () => {
               </Row>
             </CardBody>
           </Card>
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center" style={{ paddingBottom: '60px' }}>
             <div
               className="d-flex align-items-center upload-button cursor-pointer"
               onClick={() => {
