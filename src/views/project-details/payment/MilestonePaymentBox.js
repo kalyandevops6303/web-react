@@ -16,6 +16,17 @@ function MilestonePaymentBox() {
           <div>$4539</div>
         </CardBody>
       </Card>
+      <Card style={{ height: '55px' }} className="d-flex justify-content-center">
+        <CardBody className="d-flex justify-content-between">
+          <div className="d-flex">
+            <Input type="checkbox" id="m1" />
+            <Label for="m1" style={{ marginLeft: '10px', fontSize: '16px' }}>
+              Milestone #2
+            </Label>
+          </div>
+          <div>$3539</div>
+        </CardBody>
+      </Card>
     </Col>
   );
 }
