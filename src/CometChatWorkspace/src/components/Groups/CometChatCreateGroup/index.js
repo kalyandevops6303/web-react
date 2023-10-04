@@ -19,6 +19,7 @@ import {
   tableCaptionStyle,
   tableBodyStyle,
   inputStyle,
+  tableFootStyle,
   modalErrorStyle,
   createGroupButton,
   closeCreateGroupPopupButton,

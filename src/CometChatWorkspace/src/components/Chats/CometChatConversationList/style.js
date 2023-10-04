@@ -113,7 +113,7 @@ export const upperArrowImage = () => {
     height: '20px',
     width: '20px',
     marginLeft: '20px',
-    marginTop: '16px',
+    // marginTop: '16px',
     marginRight: '5px',
   };
 };
@@ -132,6 +132,7 @@ export const chatCategoryContainer = () => {
     top: 0,
     zIndex: 2,
     backgroundColor: 'white',
+    marginTop: '1rem',
   };
 };
 export const createIconCss = () => {
@@ -139,7 +140,7 @@ export const createIconCss = () => {
     height: '20px',
     width: '20px',
     marginLeft: '20px',
-    marginTop: '16px',
+    // marginTop: '16px',
     marginRight: '20px',
     cursor: 'pointer',
   };
@@ -160,6 +161,7 @@ export const chatsHeaderDiv = () => {
     display: 'flex',
     width: '100%',
     alignItems: 'center',
+    gap: '0 1rem',
   };
 };
 export const chatsHeaderCloseStyle = (img, theme) => {

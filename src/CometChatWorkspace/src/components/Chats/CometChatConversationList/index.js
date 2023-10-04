@@ -110,21 +110,34 @@ class CometChatConversationList extends React.Component {
     //clearing unreadcount whenever scrolled to the bottom.
     CometChatEvent.on(enums.EVENTS['CLEAR_UNREAD_MESSAGES'], (args) => this.clearUnreadCount(args));
 
-    if (this.props.targetId && this.props.targetType) {
-      let targetType = this.props.targetType;
-      let targetId = this.props.targetId;
-
-      this.props.onItemClick(targetId, targetType);
-
-      console.log('TARGET COMET', targetId, targetType);
-
-      CometChat.getConversation(targetId, targetType)
+    if (this.props.targetId && this.props.targetType === CometChat.RECEIVER_TYPE.USER) {
+      CometChat.getConversation(this.props.targetId, this.props.targetType)
         .then((targetItem) => {
-          console.log(targetItem, targetId);
-          this.props.onItemClick(targetItem.conversationWith, targetItem.conversationType);
+          // If the conversation exists, load it.
+          if (targetItem) {
+            this.props.onItemClick(targetItem.conversationWith, targetItem.conversationType);
+          } else {
+            // If the conversation does not exist, fetch the user details using targetId and open a blank conversation.
+            CometChat.getUser(this.props.targetId)
+              .then((user) => {
+                this.props.onItemClick(user, this.props.targetType);
+              })
+              .catch((error) => {
+                console.error('Error fetching user details:', error);
+              });
+          }
         })
         .catch((error) => {
-          console.log('ERROR COMET', error);
+          console.error('Error fetching conversation:', error);
+
+          // In case of an error (which might also mean the conversation doesn't exist), fetch the user details.
+          CometChat.getUser(this.props.targetId)
+            .then((user) => {
+              this.props.onItemClick(user, this.props.targetType);
+            })
+            .catch((err) => {
+              console.error('Error fetching user details:', err);
+            });
         });
     }
   }
@@ -1194,7 +1207,7 @@ class CometChatConversationList extends React.Component {
                   {this.loggedInUser !== null ? <CometChatAvatar user={this.loggedInUser} /> : null}
                 </div>
                 {this.state.enableSearchConversation ? (
-                  <div css={chatsHeaderContanier()} className="">
+                  <div css={chatsHeaderContanier()} className="container px-0">
                     <input
                       placeholder="Search or start a new chat"
                       css={chatsHeaderSearch()}
