@@ -25,7 +25,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
         <Statbox
           isActive={selected === 'all_listings'}
           isMarketPlaceTab
-          title={selectCardData?.all_listings}
+          title={selectCardData?.all_listings ?? 0}
           desc="All Listings"
           icon={<img src={MoneyIcon} height={22} alt="money" />}
           color="light-warning"
@@ -37,7 +37,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
           <Statbox
             isActive={selected === 'my_listings'}
             isMarketPlaceTab
-            title={selectCardData?.my_listings}
+            title={selectCardData?.my_listings ?? 0}
             desc="My Listings"
             icon={<ThumbsUp height={20} />}
             color="light-turquoise"
@@ -49,7 +49,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
           <Statbox
             isActive={selected === 'my_bids'}
             isMarketPlaceTab
-            title={selectCardData?.my_bids}
+            title={selectCardData?.my_bids ?? 0}
             desc="My Bids"
             icon={<ThumbsUp height={20} />}
             color="light-turquoise"
@@ -62,7 +62,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
           <Statbox
             isActive={selected === 'my_bids'}
             isMarketPlaceTab
-            title={selectCardData?.bids_submitted}
+            title={selectCardData?.bids_submitted ?? 0}
             desc="Bid Received"
             icon={<File height={20} />}
             color="light-primary"
@@ -77,7 +77,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
             isActive={selected === 'talents'}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
-            title={selectCardData?.talents}
+            title={selectCardData?.talents ?? 0}
             desc="Talent"
             icon={<User height={20} />}
             color="light-purple"
@@ -90,7 +90,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
             isActive={selected === 'teams'}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
-            title={selectCardData?.teams}
+            title={selectCardData?.teams ?? 0}
             desc="Teams"
             icon={<Users height={20} />}
             color="light-purple"
@@ -105,7 +105,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
               isActive={selected === 'clients'}
               className="stat-box cursor-pointer"
               isMarketPlaceTab
-              title={selectCardData?.clients}
+              title={selectCardData?.clients ?? 0}
               desc="Clients"
               icon={<Users height={20} />}
               color="light-purple"

@@ -18,7 +18,13 @@ const PaymentTable = ({ transactions = [] }) => {
     }
   };
 
-  const totalAmount = transactions.reduce((acc, curr) => acc + curr.amount, 0);
+  const totalAmount = transactions.reduce((acc, curr) => {
+    if (selectedPayment.includes(curr?._id)) {
+      return acc + curr.amount;
+    }
+    return 0;
+  }, 0);
+
   const trumioFee = (totalAmount * 20) / 100;
   const totalPending = totalAmount + trumioFee;
 

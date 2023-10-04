@@ -45,7 +45,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
               ? selectCardData?.project_team
               : selectCardData?.teams_and_talents
               ? selectCardData?.teams_and_talents
-              : selectCardData?.projects
+              : selectCardData?.projects ?? 0
           }
           desc={
             userType === userTypes.client
