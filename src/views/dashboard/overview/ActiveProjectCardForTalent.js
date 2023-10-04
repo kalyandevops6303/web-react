@@ -34,7 +34,9 @@ const ActiveProjectCardForTalent = ({ data, className }) => {
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="active-project-name mt-1">{data?.name}</p>
+          <p className="truncate-2 mt-1" style={{ height: '40px', color: 'black' }}>
+            {data?.name}
+          </p>
           <div className="client-badge px-1 mb-75">
             <p className="mb-0">Client</p>
           </div>
