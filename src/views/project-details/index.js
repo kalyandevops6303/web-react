@@ -24,6 +24,8 @@ const ProjectDetails = () => {
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
 
+  const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
+
   const changeStep = (step) => {
     setCurrentStep(step);
   };
@@ -49,7 +51,7 @@ const ProjectDetails = () => {
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
           <LeftSidebarProjectDetails />
-          <MilestonePaymentBox />
+          {isMilestoneTab ? <MilestonePaymentBox /> : null}
         </Col>
         <Col lg="9">
           <CustomStep steps={isInviteView ? InviteView : steps} currentStep={currentStep} onChangeStep={changeStep} />
