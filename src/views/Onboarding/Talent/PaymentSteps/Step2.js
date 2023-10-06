@@ -313,15 +313,6 @@ const Step2 = ({ setStep }) => {
                 </ul>
               </div>
               <div className="d-flex flex-column">
-                <Button
-                  color="primary"
-                  onClick={() => setIsDocumentConfirmed(true)}
-                  className="mt-1 mb-1"
-                  style={{ width: '120px' }}
-                  disabled={isDocumentConfirmed}
-                >
-                  {isDocumentConfirmed ? 'Confirmed' : 'I Confirm'}
-                </Button>
                 <Label className="fs-5">Sign On :-</Label>
                 <Col className="d-flex gap-50 mt-1 mb-1">
                   <Input type="checkbox" name="checkbox1" checked={confirmSign.checkbox1} onChange={handleSignCheck} />
@@ -333,6 +324,15 @@ const Step2 = ({ setStep }) => {
                   <Input type="checkbox" name="checkbox2" checked={confirmSign.checkbox2} onChange={handleSignCheck} />
                   <Label className="fs-6">I consent to receive tax documents digitaly.</Label>
                 </Col>
+                <Button
+                  color="primary"
+                  onClick={() => setIsDocumentConfirmed(true)}
+                  className="mt-1 mb-1"
+                  style={{ width: '120px' }}
+                  disabled={isDocumentConfirmed}
+                >
+                  {isDocumentConfirmed ? 'Confirmed' : 'I Confirm'}
+                </Button>
               </div>
             </CardBody>
           </Card>
