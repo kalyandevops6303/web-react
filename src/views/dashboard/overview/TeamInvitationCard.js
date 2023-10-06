@@ -74,7 +74,7 @@ const TeamInvitaionCard = ({ data, className }) => {
             name={data?.name}
             users={users}
           />
-          <div className="design-planning-wrapper pt-5">
+          <div className="design-planning-wrapper pt-5 d-none">
             <div className="design-planning">
               <CardText className="mb-25">Earned</CardText>
               <h6 className="mb-0">{`$ ${data?.project?.earned ?? 0}`}</h6>

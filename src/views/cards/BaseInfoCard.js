@@ -94,6 +94,7 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
           alt="avatar"
           width={40}
           height={50}
+          style={{ objectFit: 'cover' }}
         />
         <div className="d-flex w-100 align-items-center">
           <div className="flex-grow-1">
