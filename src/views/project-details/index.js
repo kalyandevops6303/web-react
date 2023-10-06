@@ -15,6 +15,7 @@ import InviteMemberCard from './overview/InviteMemberCard';
 import InvitationView from './overview/InvitationView';
 import Milestone from './milestones/Milestone';
 import RatingView from './overview/RatingView';
+import { getItem } from '../../utility/localStorageControl';
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -30,17 +31,25 @@ const ProjectDetails = () => {
   }, []);
 
   const isInviteView = location?.pathname?.includes('project-invitation');
-
+  const fromLocationPrimary = () => {
+    if (getItem('baseRoute') === 'marketplace')
+      return {
+        title: 'Marketplace',
+        link: `/marketplace/${getItem('selectedMarketplaceTab') ? getItem('selectedMarketplaceTab') : 'all_listings'}`,
+      };
+    if (getItem('baseRoute') === 'projects') return { title: 'Project', link: '/projects' };
+    if (getItem('baseRoute') === 'notification') return { title: 'Notifications', link: '/notifications' };
+    if (getItem('baseRoute') === 'dashboard') return { title: 'Dashboard', link: '/dashboard' };
+    if (getItem('baseRoute') === 'my-teams') return { title: 'My teams', link: '/my-teams' };
+    return '';
+  };
   return (
     <div>
       <BreadCrumbs
         data={
           isInviteView
             ? [{ title: projectDetailsData?.details?.name }]
-            : [
-                { title: 'Marketplace', link: '/marketplace/all_listings' },
-                { title: projectDetailsData?.details?.name },
-              ]
+            : [fromLocationPrimary(), { title: projectDetailsData?.details?.name }]
         }
       />
       <Row>

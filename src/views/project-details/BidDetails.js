@@ -17,6 +17,7 @@ import AcceptBidModal from '../modals/AccpetBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { getItem } from '../../utility/localStorageControl';
 
 const BidDetails = () => {
   const dispatch = useDispatch();
@@ -65,13 +66,25 @@ const BidDetails = () => {
 
   if (isLoading) return <ComponentSpinner />;
 
+  const fromLocationPrimary = () => {
+    if (getItem('baseRoute') === 'marketplace')
+      return {
+        title: 'Marketplace',
+        link: `/marketplace/${getItem('selectedMarketplaceTab') ? getItem('selectedMarketplaceTab') : 'all_listings'}`,
+      };
+    if (getItem('baseRoute') === 'projects') return { title: 'Project', link: '/projects' };
+    if (getItem('baseRoute') === 'notification') return { title: 'Notifications', link: '/notifications' };
+    if (getItem('baseRoute') === 'dashboard') return { title: 'Dashboard', link: '/dashboard' };
+    if (getItem('baseRoute') === 'my-teams') return { title: 'My teams', link: '/my-teams' };
+    return '';
+  };
   return (
     <BidDetailsWrap>
       <div className="d-flex justify-content-between mb-5 pb-2 rounded" style={{ position: 'relative' }}>
         <div className="d-flex justify-content-between fixed-header">
           <BreadCrumbs
             data={[
-              { title: 'Marketplace', link: '/marketplace/all_listings' },
+              fromLocationPrimary(),
               { title: location?.state?.projectName, link: location?.state?.link },
               { title: 'Bid Details' },
             ]}

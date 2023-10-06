@@ -9,6 +9,7 @@ import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
+import { getItem, setItem } from '../../utility/localStorageControl';
 
 const ProjectContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -27,12 +28,13 @@ const Projects = () => {
   // Adjust the number of lines based on the desired limit
 
   // eslint-disable-next-line no-undef
-  const [primaryFilter, setPrimaryFilter] = useState(localStorage?.getItem('selectedProjectTab') ?? 'ONGOING');
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') ?? 'ONGOING');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
     dispatch(clearProjectData());
+    setItem('baseRoute', 'projects');
   }, []);
 
   // Secondary filters
@@ -40,7 +42,7 @@ const Projects = () => {
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
     // eslint-disable-next-line no-undef
-    localStorage.setItem('selectedProjectTab', props);
+    setItem('selectedProjectTab', props);
   };
 
   const primaryEnum = {

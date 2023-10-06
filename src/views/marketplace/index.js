@@ -11,6 +11,8 @@ import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 import CreateProjectButton from './overview/CreateProjectButton';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
+import { getItem, setItem } from '../../utility/localStorageControl';
+import { userTypes } from '../../utility/constants/Constant';
 
 const MarketPlaceContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -35,6 +37,7 @@ const MarketPlace = () => {
   const isTab = useIsTab();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userData = useSelector(selectAuthUserData);
 
   const routesMatch =
     useMatch('/marketplace/clients') ||
@@ -44,18 +47,24 @@ const MarketPlace = () => {
     useMatch('/marketplace/teams') ||
     useMatch('/marketplace/my_bids');
 
-  const [primaryFilter, setPrimaryFilter] = useState(routesMatch?.pathname?.split('/')?.[2]);
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMarketplaceTab') ?? 'all_listings');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+
+    if (routesMatch?.pathname?.split('/')?.[2] !== primaryFilter) {
+      setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
+    }
     dispatch(getProfilePercentage());
     dispatch(clearProjectData());
+    setItem('baseRoute', 'marketplace');
   }, []);
 
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
     navigate(`/marketplace/${props}`);
+    setItem('selectedMarketplaceTab', props);
   };
 
   const primaryEnum = {
@@ -70,7 +79,15 @@ const MarketPlace = () => {
   return (
     <MarketPlaceContainer>
       <BreadCrumbs
-        data={[{ title: 'Marketplace', link: '/marketplace/all_listings' }, { title: primaryEnum[primaryFilter] }]}
+        data={[
+          { title: 'Marketplace', link: '/marketplace/all_listings' },
+          {
+            title:
+              userData?.user_type === userTypes.client && primaryEnum[primaryFilter] === 'My bids'
+                ? 'Bid Received'
+                : primaryEnum[primaryFilter],
+          },
+        ]}
       />
       <CreateProjectButton />
       <PrimaryFilter selected={primaryFilter} handlePrimaryChangeFilter={handlePrimaryChangeFilter} isTab={isTab} />

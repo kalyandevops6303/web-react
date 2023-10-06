@@ -612,6 +612,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   data={item}
                   isPopoverOpen={popoverOpen}
                   isExpanded={isExpanded}
+                  primaryFilter={primaryFilter}
                   userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
                 />
               );
