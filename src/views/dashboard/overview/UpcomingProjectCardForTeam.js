@@ -89,12 +89,12 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
             </div>
           </div>
           <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
+            <div className="design-planning-wrapper justify-content-between w-100">
               <div className="design-planning">
                 <CardText className="mb-25">Start Date</CardText>
                 <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
               </div>
-              <div className="design-planning ms-3">
+              <div className="design-planning">
                 <CardText className="mb-25">Amount</CardText>
                 <h6 className="mb-0">${data?.amount}</h6>
               </div>
