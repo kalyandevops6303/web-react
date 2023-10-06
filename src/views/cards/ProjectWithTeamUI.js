@@ -78,7 +78,7 @@ const ProjectWithTeamUI = ({ data }) => {
                   {data?.client?.first_name} {data?.client?.last_name}
                 </CardTitle>
                 <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                  very long text on still not enough need more text
+                  {data?.client?.title}
                 </CardText>
               </div>
               <div className="d-flex flex-grow-1 mt-25">

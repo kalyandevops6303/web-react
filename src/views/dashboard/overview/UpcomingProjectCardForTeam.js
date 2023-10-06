@@ -19,13 +19,15 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
-          <p className="active-project-name">{data?.name}</p>
-          <div className="d-flex">
-            <div className="me-3">
+          <p className="active-project-name truncate-2" style={{ height: '40px' }}>
+            {data?.name}
+          </p>
+          <div className="d-flex justify-content-between">
+            <div className="">
               <div className="client-badge px-1 mb-75">
                 <p className="mb-0">Client</p>
               </div>
-              <p className="active-project-team-name mb-50">{`${data?.client_info?.first_name} ${data?.client_info?.last_name}`}</p>
+              <p className="active-project-team-name mb-50 truncate-1">{`${data?.client_info?.first_name} ${data?.client_info?.last_name}`}</p>
               <div className="mb-1">
                 <span className="d-flex avatars">
                   <AvatarGroup
@@ -48,7 +50,7 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
               <div className="team-badge px-1 mb-75">
                 <p className="mb-0">Team</p>
               </div>
-              <p className="active-project-team-name mb-50">
+              <p className="active-project-team-name mb-50 truncate-1">
                 {'name' in data?.bid_by ? data?.bid_by?.name : `${data?.bid_by?.first_name} ${data?.bid_by?.last_name}`}
               </p>
               <div className="mb-1">
@@ -87,12 +89,12 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
             </div>
           </div>
           <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
+            <div className="design-planning-wrapper justify-content-between w-100">
               <div className="design-planning">
                 <CardText className="mb-25">Start Date</CardText>
                 <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
               </div>
-              <div className="design-planning ms-3">
+              <div className="design-planning">
                 <CardText className="mb-25">Amount</CardText>
                 <h6 className="mb-0">${data?.amount}</h6>
               </div>
