@@ -110,35 +110,60 @@ class CometChatConversationList extends React.Component {
     //clearing unreadcount whenever scrolled to the bottom.
     CometChatEvent.on(enums.EVENTS['CLEAR_UNREAD_MESSAGES'], (args) => this.clearUnreadCount(args));
 
-    if (this.props.targetId && this.props.targetType === CometChat.RECEIVER_TYPE.USER) {
-      CometChat.getConversation(this.props.targetId, this.props.targetType)
-        .then((targetItem) => {
-          // If the conversation exists, load it.
-          if (targetItem) {
-            this.props.onItemClick(targetItem.conversationWith, targetItem.conversationType);
-          } else {
-            // If the conversation does not exist, fetch the user details using targetId and open a blank conversation.
+    if (this.props.targetId) {
+      if (this.props.targetType === CometChat.RECEIVER_TYPE.USER) {
+        CometChat.getConversation(this.props.targetId, this.props.targetType)
+          .then((targetItem) => {
+            if (targetItem) {
+              this.props.onItemClick(targetItem.conversationWith, targetItem.conversationType);
+            } else {
+              CometChat.getUser(this.props.targetId)
+                .then((user) => {
+                  this.props.onItemClick(user, this.props.targetType);
+                })
+                .catch((error) => {
+                  console.error('Error fetching user details:', error);
+                });
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching conversation:', error);
+
             CometChat.getUser(this.props.targetId)
               .then((user) => {
                 this.props.onItemClick(user, this.props.targetType);
               })
-              .catch((error) => {
-                console.error('Error fetching user details:', error);
+              .catch((err) => {
+                console.error('Error fetching user details:', err);
               });
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching conversation:', error);
+          });
+      } else if (this.props.targetType === CometChat.RECEIVER_TYPE.GROUP) {
+        CometChat.getConversation(this.props.targetId, this.props.targetType)
+          .then((targetItem) => {
+            if (targetItem) {
+              this.props.onItemClick(targetItem.conversationWith, targetItem.conversationType);
+            } else {
+              CometChat.getGroup(this.props.targetId)
+                .then((group) => {
+                  this.props.onItemClick(group, this.props.targetType);
+                })
+                .catch((error) => {
+                  console.error('Error fetching group details:', error);
+                });
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching conversation:', error);
 
-          // In case of an error (which might also mean the conversation doesn't exist), fetch the user details.
-          CometChat.getUser(this.props.targetId)
-            .then((user) => {
-              this.props.onItemClick(user, this.props.targetType);
-            })
-            .catch((err) => {
-              console.error('Error fetching user details:', err);
-            });
-        });
+            CometChat.getGroup(this.props.targetId)
+              .then((group) => {
+                this.props.onItemClick(group, this.props.targetType);
+              })
+              .catch((err) => {
+                console.error('Error fetching group details:', err);
+              });
+          });
+      }
     }
   }
 
