@@ -4,8 +4,8 @@ import { Button, Card, CardBody, CardText, CardTitle, Col, FormFeedback, Input, 
 import ReactHtmlParser from 'react-html-parser';
 import html2pdf from 'html2pdf.js';
 import { ArrowLeft } from 'react-feather';
-import DownloadImg from '@src/assets/images/download.png';
-import EditImg from '@src/assets/images/edit.png';
+import DownloadImg from '@src/assets/images/Download.svg';
+import EditImg from '@src/assets/images/Edit.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import { BackButtonContainer, BackIconContainer } from '../CreateProject/style';

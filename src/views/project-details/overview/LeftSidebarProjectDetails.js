@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
-import MoneyIcon from '@src/assets/images/money.png';
+import MoneyIcon from '@src/assets/images/money.svg';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import BadgeGroup from '../../../@core/components/badge-group-dynamic-count';
