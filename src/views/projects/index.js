@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
+import { clearProjectData } from '../../redux/reducers/projectDetails';
+import { getItem, setItem } from '../../utility/localStorageControl';
 
 const ProjectContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -19,17 +21,20 @@ const ProjectContainer = styled.div`
 
 const Projects = () => {
   // Primary filters
+  const dispatch = useDispatch();
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
 
   // Adjust the number of lines based on the desired limit
 
   // eslint-disable-next-line no-undef
-  const [primaryFilter, setPrimaryFilter] = useState(localStorage?.getItem('selectedProjectTab') ?? 'ONGOING');
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') ?? 'ONGOING');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    dispatch(clearProjectData());
+    setItem('baseRoute', 'projects');
   }, []);
 
   // Secondary filters
@@ -37,15 +42,15 @@ const Projects = () => {
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
     // eslint-disable-next-line no-undef
-    localStorage.setItem('selectedProjectTab', props);
+    setItem('selectedProjectTab', props);
   };
 
   const primaryEnum = {
-    CLOSED: 'Ongoing',
-    IN_REVIEW: 'Upcoming',
+    ONGOING: 'Ongoing',
+    UPCOMING: 'Upcoming',
     COMPLETED: 'Completed',
     TERMINATED: 'Terminated',
-    DISPUTED: 'Disputed',
+    DISPUTE: 'Disputed',
   };
 
   return (

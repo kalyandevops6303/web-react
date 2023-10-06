@@ -12,8 +12,7 @@ import DateTime from '../../lib/date-time';
 import { GrayBorderContainer, GrayCardWrapper } from '../styled';
 import InfoIcon from '../../assets/images/timeline-info-icon.png';
 import { getProfilePercentage, updateInvitation } from '../../redux/actions/dashboardActions';
-import { setItem } from '../../utility/localStorageControl';
-import { getWhoInvited } from '../../redux/actions/teamsActions';
+import { getTeams, getWhoInvited } from '../../redux/actions/teamsActions';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import theme from '../../configs/themeVariables';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
@@ -33,10 +32,6 @@ const TeamInvitation = () => {
 
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
   const breadCrumb = [{ title: 'Dashboard' }, { title: invitedByData?.request_type }];
-
-  useEffect(() => {
-    setItem('isInviteRead', true);
-  }, []);
 
   const onSuccess = (res) => {
     setInvitedByData(res);
@@ -83,6 +78,7 @@ const TeamInvitation = () => {
           setStatus('ACCEPTED');
           setIsStatusUpdating(false);
           setAccpetModal(false);
+          dispatch(getTeams({ onSuccess: () => {} }));
         },
         onError: () => {
           setIsStatusUpdating(false);
@@ -127,7 +123,7 @@ const TeamInvitation = () => {
     setRejectModal(true);
   };
   if (isGetWhoInvitedLoading) {
-    <ComponentSpinner />;
+    return <ComponentSpinner />;
   }
 
   return (
@@ -213,7 +209,13 @@ const TeamInvitation = () => {
                         </div>
                         {invitedByData?.request_type === 'Team Join Request' && <p className="mt-auto">to join</p>}
                         <div>
-                          <Link to={`/profile/team/${invitedByData?.request_from?.team_id}`}>
+                          <Link
+                            to={`/profile/team/${
+                              invitedByData?.request_type === 'Team Join Request'
+                                ? invitedByData?.request_for?.team_id
+                                : invitedByData?.request_from?.team_id
+                            }`}
+                          >
                             <p className="fw-bold m-0" style={{ color: theme.activeNavPillText }}>
                               {invitedByData?.request_for?.team_name || invitedByData?.request_from?.team_name}
                             </p>

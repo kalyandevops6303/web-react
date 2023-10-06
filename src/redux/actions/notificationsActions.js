@@ -3,7 +3,9 @@ import { notificationsFailure, notificationsRequest, notificationsSuccess } from
 import getNotificationsService from '../../services/notificationsServices';
 
 const getNotifications = (priority, page, pageSize, oldData) => async (dispatch) => {
-  dispatch(notificationsRequest());
+  if (page === 1) {
+    dispatch(notificationsRequest());
+  }
   try {
     const res = await getNotificationsService(priority, page, pageSize);
     dispatch(notificationsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));

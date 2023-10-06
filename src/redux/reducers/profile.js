@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   userProfile: {},
+  userRecentProject: [],
+  userReview: [],
   isLoading: false,
   error: null,
 };
@@ -39,6 +41,48 @@ const profileSlice = createSlice({
       userProfile: { ...state.userProfile, is_favourite: false },
     }),
 
+    getRecentProjectRequest: (state) => ({
+      ...state,
+      isRecentProjectLoading: true,
+      error: null,
+    }),
+    getRecentProjectSuccess: (state, action) => ({
+      ...state,
+      isRecentProjectLoading: false,
+      userRecentProjectCurrentPreview: action.payload.data,
+      userRecentProject:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.userRecentProject, ...action.payload.data],
+      userRecentProjectMetaData: action.payload.metadata,
+    }),
+    getRecentProjectFailure: (state, action) => ({
+      ...state,
+      isRecentProjectLoading: false,
+      error: action.payload,
+    }),
+
+    getReviewRequest: (state) => ({
+      ...state,
+      isReviewLoading: true,
+      error: null,
+    }),
+    getReviewSuccess: (state, action) => ({
+      ...state,
+      isReviewLoading: false,
+      userReviewCurrentPreview: action.payload.data,
+      userReview:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.userReview, ...action.payload.data],
+      userReviewMetaData: action.payload.metadata,
+    }),
+    getReviewFailure: (state, action) => ({
+      ...state,
+      isReviewLoading: false,
+      error: action.payload,
+    }),
+
     clearData: (state) => ({
       ...state,
       userProfile: {},
@@ -55,6 +99,12 @@ export const {
   makeFavSuccess,
   clearData,
   removeFavSuccess,
+  getRecentProjectFailure,
+  getRecentProjectRequest,
+  getRecentProjectSuccess,
+  getReviewRequest,
+  getReviewSuccess,
+  getReviewFailure,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

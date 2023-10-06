@@ -121,7 +121,10 @@ const getUnassignedRoles =
 const getReceivedBids =
   ({ project_id, metadata, search_text, bid_status }) =>
   async (dispatch) => {
-    dispatch(getReceivedBidsRequest());
+    if (metadata?.page === 1) {
+      dispatch(getReceivedBidsRequest());
+    }
+
     try {
       const res = await getReceivedBidsService({ project_id, metadata, search_text, bid_status });
       dispatch(getReceivedBidsSuccess(res.data.data));
@@ -182,7 +185,7 @@ const updateInvitation =
       if (status === 'ACCEPTED') {
         await acceptInvitation({ id });
       }
-      if (status === 'DECLINED') {
+      if (status === 'REJECTED') {
         await rejectInvitation({ id });
       }
       onSuccess();

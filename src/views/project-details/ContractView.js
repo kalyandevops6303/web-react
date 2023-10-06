@@ -4,8 +4,8 @@ import { Button, Card, CardBody, CardText, CardTitle, Col, FormFeedback, Input, 
 import ReactHtmlParser from 'react-html-parser';
 import html2pdf from 'html2pdf.js';
 import { ArrowLeft } from 'react-feather';
-import DownloadImg from '@src/assets/images/download.png';
-import EditImg from '@src/assets/images/edit.png';
+import DownloadImg from '@src/assets/images/Download.svg';
+import EditImg from '@src/assets/images/Edit.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import { BackButtonContainer, BackIconContainer } from '../CreateProject/style';
@@ -21,6 +21,7 @@ import { getDocument, sendDocument, signContractByTalent } from '../../redux/act
 import { selectSavedUserData, selectUserType } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ConfirmContractModal from '../modals/ConfirmContractModal';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const ContractView = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const ContractView = () => {
   const projectInfo = useSelector(projectDetails);
   const userType = useSelector(selectUserType);
   const userData = useSelector(selectSavedUserData);
+  const isLoading = useSelector((state) => state.projectDetails?.getDocumentLoading);
   const param = useParams();
   const dispatch = useDispatch();
   const document = useSelector(selectDocument);
@@ -150,6 +152,10 @@ const ContractView = () => {
     return false;
   };
 
+  if (isLoading) {
+    return <ComponentSpinner />;
+  }
+
   return (
     <ContractDetailsWrap>
       <BackButtonContainer className="p-0 mb-1">
@@ -175,7 +181,7 @@ const ContractView = () => {
                   <div className="d-flex justify-content-between ">
                     <CardTitle className="mb-1"> {CapitalizeDocType()}</CardTitle>
                     <div className="d-flex gap-1 align-items-center mb-75">
-                      {isContractView && isFreshDoc && userType === userTypes.client && (
+                      {document?.is_contract_sent && isContractView && isFreshDoc && userType === userTypes.client && (
                         <div>
                           {document?.is_terminated ? (
                             <CardText className="terminate me-1">Terminated</CardText>

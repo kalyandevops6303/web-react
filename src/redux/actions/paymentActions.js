@@ -1,6 +1,22 @@
 import errorHandler from '../../utility/errorHandler';
-import { paymentDetailsSuccess, paymentDetailsFailure, paymentDetailsRequest } from '../reducers/paymentData';
-import { createUserService, updateUserService, setupStripeAccountService } from '../../services/paymentDetailService';
+import { paymentDetailsSuccess, paymentDetailsFailure, paymentDetailsRequest } from '../reducers/paymentDetails';
+import {
+  createUserService,
+  updateUserService,
+  setupStripeAccountService,
+  getPaymentDetailService,
+} from '../../services/paymentDetailService';
+
+const getPaymentDetails = (onGetPaymentDetailsSuccess) => async (dispatch) => {
+  dispatch(paymentDetailsRequest());
+  try {
+    const res = await getPaymentDetailService();
+    onGetPaymentDetailsSuccess(res.data.data);
+    dispatch(paymentDetailsSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, paymentDetailsFailure);
+  }
+};
 
 const savePaymentDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(paymentDetailsRequest());
@@ -34,4 +50,4 @@ const setupStripeAccount = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-export { savePaymentDetails, updatePaymentDetails, setupStripeAccount };
+export { savePaymentDetails, updatePaymentDetails, setupStripeAccount, getPaymentDetails };

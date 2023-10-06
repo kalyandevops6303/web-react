@@ -15,7 +15,7 @@ const initialState = {
   error: null,
 };
 
-const paymentDataSlice = createSlice({
+const paymentDetailsSlice = createSlice({
   name: 'paymentData',
   initialState,
   reducers: {
@@ -37,6 +37,6 @@ const paymentDataSlice = createSlice({
   },
 });
 
-export const { paymentDetailsFailure, paymentDetailsRequest, paymentDetailsSuccess } = paymentDataSlice.actions;
+export const { paymentDetailsFailure, paymentDetailsRequest, paymentDetailsSuccess } = paymentDetailsSlice.actions;
 
-export default paymentDataSlice.reducer;
+export default paymentDetailsSlice.reducer;

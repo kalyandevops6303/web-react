@@ -8,6 +8,7 @@ import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
+import { setItem } from '../../utility/localStorageControl';
 
 const TeamsContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -41,6 +42,7 @@ const MyTeams = () => {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    setItem('baseRoute', 'my-teams');
   }, []);
 
   // Secondary filters
@@ -57,7 +59,7 @@ const MyTeams = () => {
     'my-teams': 'All Teams',
     invitations: 'Invited',
     'join-requests': 'Join Request',
-    favourites: 'Favorite',
+    favourites: 'Favourite',
   };
 
   return (

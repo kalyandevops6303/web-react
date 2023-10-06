@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
-import MoneyIcon from '@src/assets/images/money.png';
+import MoneyIcon from '@src/assets/images/money.svg';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import BadgeGroup from '../../../@core/components/badge-group-dynamic-count';
@@ -17,6 +17,7 @@ import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
 import { returnFormattedRating } from '../../../utility/Utils';
+import { clearModalData } from '../../../redux/reducers/createProject';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const LeftSidebarProjectDetails = () => {
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const toggleModal = () => {
     setInviteModal(!inviteModal);
+    dispatch(clearModalData());
   };
 
   const projectDetailsData = useSelector(projectDetails);
@@ -64,8 +66,9 @@ const LeftSidebarProjectDetails = () => {
       );
     }
   }, [projectDetailsData]);
+
   if (isLoading) {
-    return <>Loading</>;
+    return <div className="d-none">Loading</div>;
   }
 
   const handleInvite = () => {
@@ -170,9 +173,11 @@ const LeftSidebarProjectDetails = () => {
                 <Button className="w-50 d-none" outline color="danger">
                   Delete
                 </Button>
-                <Button className="w-50" color="primary" onClick={handleInvite}>
-                  Invite
-                </Button>
+                {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') && (
+                  <Button className="w-50" color="primary" onClick={handleInvite}>
+                    Invite
+                  </Button>
+                )}
                 {projectDetailsData?.status === 'ON_GOING' && (
                   <Button className="w-50" outline color="primary" onClick={onMessageClick}>
                     Message

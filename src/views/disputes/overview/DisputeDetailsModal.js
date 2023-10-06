@@ -312,7 +312,9 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
               </div>
             </div>
             <p className="fw-bold mt-1 mb-75">{dispute_type?.name}</p>
-            <p className="font-medium-1">{description || ''}</p>
+            <p className="font-medium-1" style={{ wordWrap: 'break-word' }}>
+              {description || ''}
+            </p>
           </div>
         ),
       };

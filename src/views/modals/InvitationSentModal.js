@@ -117,9 +117,13 @@ const InvitationSentModal = ({
     toggleSendInvitationModal();
   };
 
+  const handleClose = () => {
+    closeModal();
+  };
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={inviteTalentsIsLoading ? null : closeModal} />
+      <ModalHeader toggle={inviteTalentsIsLoading || isTeaminviteLoading ? null : closeModal} />
       <ModalBody className="px-3 py-0">
         <div className="d-flex align-items-center">
           <img src={GreatJobTick} alt="great-job" width={120} height={120} className="me-4" />
@@ -166,7 +170,7 @@ const InvitationSentModal = ({
           >
             Recall ({timer}s)
           </Button>
-          <Button color="primary" onClick={closeModal} disabled={inviteTalentsIsLoading || isTeaminviteLoading}>
+          <Button color="primary" onClick={handleClose} disabled={inviteTalentsIsLoading || isTeaminviteLoading}>
             {inviteTalentsIsLoading || isTeaminviteLoading ? <Spinner size="sm" /> : <>Close</>}
           </Button>
         </div>

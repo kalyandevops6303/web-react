@@ -81,7 +81,7 @@ const EditContractModal = ({ docType, project_id, setDocumentData, modal, toggle
                 Cancel
               </Button>
               <Button disabled={isLoading} color="primary" type="submit">
-                {isLoading ? <Spinner /> : 'Sign & Send'}
+                {isLoading ? <Spinner size="sm" /> : 'Sign & Send'}
               </Button>
             </div>
           </Form>

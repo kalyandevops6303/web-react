@@ -159,6 +159,7 @@ const Personal = () => {
 
     if (watch('country')) {
       dispatch(getStates(watch('country').value));
+      setCitiesOptions([]);
     }
   }, [watch('country')]);
 
@@ -449,7 +450,7 @@ const Personal = () => {
   return (
     <ProfileFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
+        <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">About</h4>
           </CardHeader>
@@ -770,9 +771,10 @@ const Personal = () => {
                   value={watch('state')}
                   render={({ field }) => (
                     <Select
+                      isDisabled={!watch('country')}
                       isLoading={statesIsLoading}
                       options={statesOptions}
-                      menuPosition='fixed'
+                      menuPosition="fixed"
                       classNamePrefix="select"
                       placeholder="Select your state"
                       theme={selectThemeColors}
@@ -799,8 +801,9 @@ const Personal = () => {
                   value={watch('city')}
                   render={({ field }) => (
                     <Select
+                      isDisabled={!watch('country') || !watch('state')}
                       isLoading={citiesIsLoading}
-                      menuPosition='fixed'
+                      menuPosition="fixed"
                       minMenuHeight={200}
                       options={citiesOptions}
                       classNamePrefix="select"
@@ -818,7 +821,7 @@ const Personal = () => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
+        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
           <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />

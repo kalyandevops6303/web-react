@@ -113,11 +113,9 @@ const App = () => {
     }
   });
   return (
-    // <React.StrictMode>
     <Suspense fallback={null}>
       <Router />
     </Suspense>
-    // </React.StrictMode>
   );
 };
 

@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import styled from 'styled-components';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Accordion, Card, CardBody, CardText } from 'reactstrap';
+import { Card, CardBody, CardText, UncontrolledAccordion } from 'reactstrap';
 import { ChevronRight } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
 import theme from '../../../configs/themeVariables';
@@ -12,9 +12,15 @@ import { userTypes } from '../../../utility/constants/Constant';
 import ReceivedBids from './ReceivedBids';
 import BidSubmitted from './BidSubmitted';
 import { checkDocumentActivated, getBidDetails } from '../../../redux/actions/projectDetailsAction';
-import { projectDetails, selectIsContract, selectIsNDA } from '../../../redux/selectors/projectDetailsSelectors';
+import {
+  projectDetails,
+  projectDetailsLoading,
+  selectIsContract,
+  selectIsNDA,
+} from '../../../redux/selectors/projectDetailsSelectors';
 import ContractTimeline from './ContractTimeline';
 import NDATimeline from './NDATimeline';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const BidTimelineWrapper = styled.div`
   .indicator {
@@ -36,6 +42,8 @@ const BidTimeline = () => {
   const projectDetailsData = useSelector(projectDetails);
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
   const bidInfoError = useSelector((state) => state.projectDetails.errorBidInfo);
+  const isDocLoading = useSelector((state) => state.projectDetails.checkDocumentActivatedLoading);
+  const isLoading = useSelector(projectDetailsLoading);
 
   const userType = useSelector(selectUserType);
 
@@ -53,10 +61,6 @@ const BidTimeline = () => {
       dispatch(getBidDetails({ project_id: param?.projectId }));
     }
   }, []);
-
-  const [open, setOpen] = useState('1');
-
-  const toggle = (id) => (open === id ? setOpen() : setOpen(id));
   const handleDoc = ({ type }) => {
     navigate(`doc/${type}`);
   };
@@ -87,9 +91,9 @@ const BidTimeline = () => {
               </CardBody>
             </Card>
           ) : isNDA?.show_document ? (
-            <Accordion className="accordion-timeline" open={open} toggle={toggle}>
+            <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
               <NDATimeline />
-            </Accordion>
+            </UncontrolledAccordion>
           ) : (
             <Card>
               <CardBody className="basic-title">
@@ -138,9 +142,9 @@ const BidTimeline = () => {
               </CardBody>
             </Card>
           ) : isContract?.show_document ? (
-            <Accordion className="accordion-timeline" open={open} toggle={toggle}>
+            <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
               <ContractTimeline />
-            </Accordion>
+            </UncontrolledAccordion>
           ) : (
             <Card>
               <CardBody className="basic-title">
@@ -169,9 +173,9 @@ const BidTimeline = () => {
       isDisabled: false,
       color: theme.timelineSuccessColor,
       customContent: (
-        <Accordion className="accordion-timeline" open={open} toggle={toggle}>
+        <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
           {userType !== userTypes.client && <BidSubmitted />}
-        </Accordion>
+        </UncontrolledAccordion>
       ),
     },
     {
@@ -179,12 +183,16 @@ const BidTimeline = () => {
       color: theme.timelineSuccessColor,
       isDisabled: false,
       customContent: (
-        <Accordion className="accordion-timeline" open={open} toggle={toggle}>
+        <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
           {userType === userTypes.client && <ReceivedBids projectName={projectDetailsData?.details?.name} />}
-        </Accordion>
+        </UncontrolledAccordion>
       ),
     },
   ].filter((item) => item.isVisible);
+
+  if (isDocLoading || isLoading) {
+    return <ComponentSpinner />;
+  }
 
   return (
     <BidTimelineWrapper>

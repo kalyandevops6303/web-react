@@ -34,7 +34,9 @@ const ActiveProjectCardForTeam = ({ data, className }) => {
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="active-project-name mt-1">{data?.name}</p>
+          <p className="active-project-name mt-1 truncate-2" style={{ height: '40px' }}>
+            {data?.name}
+          </p>
           <div className="d-flex">
             <div className="me-3">
               <div className="client-badge px-1 mb-75">
@@ -70,6 +72,7 @@ const ActiveProjectCardForTeam = ({ data, className }) => {
                 {data?.worker_details.length > 3 ? (
                   <span className="d-flex avatars">
                     <AvatarGroup
+                      totalCount={data?.team_members_count || data?.workers_count}
                       size="sm"
                       className="mr-4"
                       data={[
@@ -102,12 +105,12 @@ const ActiveProjectCardForTeam = ({ data, className }) => {
           </div>
           <p className="active-project-simple-heading">Milestone {data?.completed_milestones + 1}</p>
           <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
+            <div className="design-planning-wrapper justify-content-between w-100">
               <div className="design-planning">
                 <CardText className="mb-25">Due Date</CardText>
                 <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
               </div>
-              <p className="active-project-milestone-name ms-3">{data?.current_milestone?.name}</p>
+              <p className="active-project-milestone-name">{data?.current_milestone?.name}</p>
             </div>
           </div>
           <div

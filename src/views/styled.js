@@ -31,26 +31,29 @@ const Header = styled.div`
 `;
 
 const CustomBadge = styled.span`
-  .light-blue {
+  .light-blue,
+  .NEW {
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
   }
   .OPEN {
-    background: ${theme.lightBlueBgColor} !important;
-    color: ${theme.lightBlueColor};
-    border: 1px solid ${theme.blueColor};
+    background: ${theme.lightGreenBg} !important;
+    color: ${theme.lighGreenColor};
   }
-  .COMPLETED {
+  .COMPLETED,
+  .ACCEPTED {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
     border: 1px solid ${theme.lighGreenColor};
   }
   .IN_REVIEW,
-  .ON_GOING {
+  .ON_GOING,
+  .REVIEWED {
     background: ${theme.orange}1f;
     color: ${theme.orange};
   }
-  .TERMINATED {
+  .TERMINATED,
+  .REJECTED {
     background: ${theme.darkRedColor}1f;
     color: ${theme.darkRedColor};
   }
@@ -60,9 +63,8 @@ const CustomBadge = styled.span`
     color: ${theme.disabledGrayColor};
   }
   .OPEN_PROJECT {
-    background: ${theme.blueColor}1f !important;
-    color: ${theme.blueColor};
-    border: ${(props) => props.bordered && '1px solid'};
+    background: ${theme.lightGreenBg}1f !important;
+    color: ${theme.lighGreenColor};
   }
   .INVITED {
     color: ${theme.purpleColor};

@@ -62,7 +62,7 @@ const ProjectWithTeamUI = ({ data }) => {
         </div>
       </div>
       <div className="d-flex">
-        <section className="w-50">
+        <section className="w-50 me-2 ">
           <div className="d-flex">
             <img
               className="market-place-card-photo me-75"
@@ -73,11 +73,13 @@ const ProjectWithTeamUI = ({ data }) => {
               style={{ objectFit: 'cover' }}
             />
             <div>
-              <div className="flex-grow-1">
+              <div className="flex-grow-1 w-50">
                 <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
                   {data?.client?.first_name} {data?.client?.last_name}
                 </CardTitle>
-                <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
+                <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
+                  {data?.client?.title}
+                </CardText>
               </div>
               <div className="d-flex flex-grow-1 mt-25">
                 <RatingBadge number={Math.round(data?.client?.rating)} />
@@ -101,16 +103,20 @@ const ProjectWithTeamUI = ({ data }) => {
               {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
             </CardTitle>
           </div>
-          {avatarGroup?.length > 0 ? (
-            <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup?.slice(0, 3)} />
+          {avatarGroup?.length > 3 ? (
+            <AvatarGroup
+              totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
+              size="sm"
+              className="ms-25 mb-50"
+              data={avatarGroup?.slice(0, 3)}
+            />
           ) : (
-            <div className="mt-2" />
+            <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
           )}
 
           <div className="d-flex flex-grow-1 mt-25">
             <RatingBadge number="0" />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">
-              {' '}
               {data?.client?.project_count} Projects
             </CardText>
           </div>

@@ -64,11 +64,12 @@ import {
 import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
-import { checkPoints } from '../../utility/constants/Constant';
+import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
 import { getTeamById } from '../../services/teamServices';
 import { clearTeams } from '../reducers/team';
 import { clearNotificationsData } from '../reducers/notifications';
+import { getTeams } from './teamsActions';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -280,6 +281,9 @@ const getUserData = () => async (dispatch) => {
       res = await getTeamById(team_id);
     } else {
       res = await userDataService();
+    }
+    if (res.data.data?.user_type === userTypes.talent || res.data.data?.user_type === userTypes.team) {
+      dispatch(getTeams({ onSuccess: () => {} }));
     }
     dispatch(userDataSuccess(res.data.data));
     dispatch(getUserDataSuccess(res.data.data?.user_type));

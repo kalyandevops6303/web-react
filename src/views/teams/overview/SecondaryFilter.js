@@ -105,7 +105,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   ];
   const filterTypeOptions = [
     { label: 'Favorites', value: 'FAVOURITE' },
-    { label: 'Alma mater', value: 'ALMA_MATER' },
+    { label: 'Alma mater', value: 'ALMA_MATTER' },
   ];
 
   const onSuccess = () => {};

@@ -17,8 +17,20 @@ const removeFavService = (data) => DataService.post(API.profile.removeFav, data)
 
 const makeProjectFavService = (id) => DataService.post(API.profile.addToFavProject, { project_id: id });
 
+const getRecentProjectService = ({ user_id, entity, metadata }) =>
+  DataService.get(
+    `${API.profile.recentProjects}/${user_id}?entity=${entity}&page=${metadata?.page}&page_size=${metadata?.page_size}`,
+  );
+
+const getReviewService = ({ user_id, entity, metadata }) =>
+  DataService.get(
+    `${API.profile.reviews}/${user_id}?entity=${entity}&page=${metadata?.page}&page_size=${metadata?.page_size}`,
+  );
+
 export {
   makeFavTeamService,
+  getRecentProjectService,
+  getReviewService,
   getTalentService,
   getTalentProjectService,
   getClientService,

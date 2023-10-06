@@ -3,21 +3,25 @@ import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap
 import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
-// import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import DateTime from '../../lib/date-time';
-// import theme from '../../configs/themeVariables';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import ProjectWithTeamUI from './ProjectWithTeamUI';
 import BaseInfoUI from './BaseInfoCardUI';
+import { getItem } from '../../utility/localStorageControl';
+import ShowToastMessage from '../../@core/components/toast';
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
+import { ERROR } from '../../utility/constants/ToastTypes';
 
 const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpen }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
-
+  const userData = useSelector(selectUserData);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,8 +54,14 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
     }
   }, []);
 
+  const isTeamData = data?.worker_details && 'team_logo' in data.worker_details;
+  const teamId = getItem('team_id');
   const handleShowProject = () => {
-    navigate(`/project-details/${data?._id}/bid`, { state: { team_id: data?.worker_details?._id } });
+    if (isTeamData && !teamId && userData?.user_type === userTypes.talent) {
+      ShowToastMessage(ERROR, 'Please switch to your team first');
+    } else {
+      navigate(`/project-details/${data?._id}/bid`, { state: { team_id: data?.worker_details?._id } });
+    }
   };
 
   return (
@@ -69,7 +79,7 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
               </div>
               <CardTitle className="d-flex align-items-center">
                 <span className="cursor-pointer" onClick={handleShowProject}>
-                  {data?.name}{' '}
+                  {data?.name}
                 </span>
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">

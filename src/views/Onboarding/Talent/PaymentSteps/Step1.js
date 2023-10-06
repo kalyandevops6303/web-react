@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input } from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Col, Form, Card, CardBody, CardHeader, Input, Spinner } from 'reactstrap';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,9 +8,9 @@ import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
 import { userOnboarding } from '../../../../utility/constants/Constant';
 
-import { paymentDetailsSuccess } from '../../../../redux/reducers/PaymentDetails';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
+import { getPaymentDetails, savePaymentDetails, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep }) => {
@@ -18,8 +18,27 @@ const Step1 = ({ setStep }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
+  const [isWorkingInUS, setIsWorkingInUS] = useState(false);
+  const [taxUserType, setTaxUserType] = useState('US');
+  const [isUserExists, setIsUserExists] = useState(false);
 
-  const { userType, working } = useSelector((state) => state.PaymentDetails);
+  const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
+
+  const onGetPaymentDetailsSuccess = (res) => {
+    if (res) {
+      if (res?.created_at) setIsUserExists(true);
+      if (res?.is_working_in_us) {
+        setIsWorkingInUS(true);
+      }
+      if (res?.tax_user_type) {
+        setTaxUserType(res?.tax_user_type);
+      }
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getPaymentDetails(onGetPaymentDetailsSuccess));
+  }, []);
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
@@ -32,35 +51,48 @@ const Step1 = ({ setStep }) => {
   };
 
   const handlePrePaymentChange = (e) => {
-    dispatch(
-      paymentDetailsSuccess({
-        value: e.target.name,
-        key: 'userType',
-      }),
-    );
+    setTaxUserType(e.target.name);
   };
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const handleWorkOptionChange = (e) => {
-    dispatch(
-      paymentDetailsSuccess({
-        value: e.target.name,
-        key: 'working',
-      }),
-    );
+    if (e.target.name === 'in_us') setIsWorkingInUS(true);
+    else setIsWorkingInUS(false);
+  };
+
+  const onSuccess = () => {
+    setStep(2);
   };
 
   const handleNextClick = (e) => {
-    if (userType === 'student') {
+    if (taxUserType === 'STUDENT') {
       // email support
       e.preventDefault();
       return;
     }
-    setStep(2);
+
+    if (location?.state?.isEditing || isUserExists) {
+      const newData = {
+        talent_info: {
+          tax_user_type: taxUserType,
+          is_working_in_us: isWorkingInUS,
+        },
+      };
+
+      dispatch(updatePaymentDetails(newData, onSuccess));
+    } else {
+      const newData = {
+        talent_info: {
+          tax_user_type: taxUserType,
+          is_working_in_us: isWorkingInUS,
+        },
+      };
+      dispatch(savePaymentDetails(newData, onSuccess));
+    }
   };
 
-  const onSuccess = () => {
+  const onSkipSuccess = () => {
     if (location?.state?.isEditing) {
       navigate('/dashboard');
     } else {
@@ -72,9 +104,10 @@ const Step1 = ({ setStep }) => {
     if (location?.state?.isEditing) {
       navigate('/dashboard');
     } else {
-      dispatch(saveCheckpointComplete(onSuccess));
+      dispatch(saveCheckpointComplete(onSkipSuccess));
     }
   };
+
   return (
     <ProfileFormContainer>
       {accountCreatedModal && (
@@ -91,19 +124,14 @@ const Step1 = ({ setStep }) => {
             <h5 className="m-0 mt-1 mb-1 fs-5">Select from below</h5>
             <div className="d-flex">
               <Col className="d-flex gap-50">
-                <Input
-                  type="radio"
-                  checked={userType === 'us_person'}
-                  name="us_person"
-                  onChange={handlePrePaymentChange}
-                />
+                <Input type="radio" checked={taxUserType === 'US'} name="US" onChange={handlePrePaymentChange} />
                 <div className="w-75">US Person - Residents or Citizens with US Tax Identification</div>
               </Col>
               <Col className="d-flex gap-50">
                 <Input
                   type="radio"
-                  name="non_us_person"
-                  checked={userType === 'non_us_person'}
+                  name="NON_US"
+                  checked={taxUserType === 'NON_US'}
                   onChange={handlePrePaymentChange}
                 />
                 <div className="w-75">
@@ -111,13 +139,18 @@ const Step1 = ({ setStep }) => {
                 </div>
               </Col>
               <Col className="d-flex gap-50">
-                <Input type="radio" name="student" checked={userType === 'student'} onChange={handlePrePaymentChange} />
+                <Input
+                  type="radio"
+                  name="student"
+                  checked={taxUserType === 'STUDENT'}
+                  onChange={handlePrePaymentChange}
+                />
                 <div className="w-75">Student applying as a US or Non-US Entity</div>
               </Col>
             </div>
           </CardBody>
         </Card>
-        {userType === 'student' ? null : (
+        {taxUserType === 'STUDENT' ? null : (
           <Card className="w-75">
             <CardHeader>
               <h4 className="m-0 mt-1">Working</h4>
@@ -126,16 +159,11 @@ const Step1 = ({ setStep }) => {
             <CardBody className="d-flex">
               <div className="d-flex" style={{ width: '65%' }}>
                 <Col className="d-flex align-items-center gap-50">
-                  <Input type="radio" name="in_us" checked={working === 'in_us'} onChange={handleWorkOptionChange} />
+                  <Input type="radio" name="in_us" checked={isWorkingInUS} onChange={handleWorkOptionChange} />
                   <div>Working in the US</div>
                 </Col>
                 <Col className="d-flex align-items-center gap-50">
-                  <Input
-                    type="radio"
-                    name="outside_us"
-                    checked={working === 'outside_us'}
-                    onChange={handleWorkOptionChange}
-                  />
+                  <Input type="radio" name="outside_us" checked={!isWorkingInUS} onChange={handleWorkOptionChange} />
                   <div>Working outside the US</div>
                 </Col>
               </div>
@@ -154,13 +182,17 @@ const Step1 = ({ setStep }) => {
               <span className="me-50">Skip</span>
               <ChevronRight size={14} />
             </Button>
-            <Button color="primary" type="submit" onClick={handleNextClick}>
-              <>
-                <span className="me-50">
-                  {userType === 'student' ? 'Email Support Team' : 'STEP 2 - Taxpayer Identification'}
-                </span>
-                <ChevronRight size={14} />
-              </>
+            <Button color="primary" onClick={handleNextClick}>
+              {paymentDetailsLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span className="me-50">
+                    {taxUserType === 'STUDENT' ? 'Email Support Team' : 'STEP 2 - Taxpayer Identification'}
+                  </span>
+                  <ChevronRight size={14} />
+                </>
+              )}
             </Button>
           </div>
         </div>

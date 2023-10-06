@@ -18,7 +18,6 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
-import { getTeams } from '../../../../redux/actions/teamsActions';
 import { selectSavedUserData, selectUserData } from '../../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../../utility/constants/Constant';
 
@@ -81,13 +80,6 @@ const ThemeNavbar = (props) => {
     }
   }, []);
 
-  const onSuccess = () => {};
-  useEffect(() => {
-    if (userData?.user_type === userTypes.talent || userData?.user_type === userTypes.team) {
-      dispatch(getTeams({ onSuccess }));
-    }
-  }, [userData]);
-
   return (
     <HeadWrapper className={className}>
       <div className="bookmark-wrapper d-flex align-items-center">
@@ -103,7 +95,7 @@ const ThemeNavbar = (props) => {
       <Link to={userData ? '/dashboard' : '/auth'} className="navbar-brand">
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
-          <span className="ms-25 mt-25">v0.0.5</span>
+          <span className="ms-25 mt-25">v0.0.6</span>
         </span>
       </Link>
 
@@ -134,7 +126,7 @@ const ThemeNavbar = (props) => {
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
             to="/projects"
-            onClick={()=>localStorage.removeItem("selectedProjectTab")}
+            onClick={() => localStorage.removeItem('selectedProjectTab')}
           >
             Project
           </NavLink>

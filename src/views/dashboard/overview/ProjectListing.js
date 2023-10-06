@@ -186,12 +186,6 @@ const ProjectListing = () => {
   const upcomingProjectsForTeamData = useSelector(upcomingProjectsForTeam);
   const upcomingProjectsForTeamIsLoading = useSelector(upcomingProjectsForTeamLoading);
 
-  useEffect(() => {
-    if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
-      dispatch(getRecommendedProjects());
-    }
-  }, [userDetailsData]);
-
   const handleViewAll = (e) => {
     e.stopPropagation();
     navigate('/marketplace/all_listings', { state: { isRecommended: true } });
@@ -223,6 +217,11 @@ const ProjectListing = () => {
         dispatch(getUpcomingProjectsForTeam());
       }
     }
+    if (open === '3') {
+      if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
+        dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
+      }
+    }
   }, [open]);
 
   const onViewAllClick = (e, path) => {
@@ -239,7 +238,7 @@ const ProjectListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Active Projects</span>
                 {activeProjectsForClientData?.data?.length > 0 && (
-                  <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_listings')} className="view-all-cta">
+                  <CardText onClick={(e) => onViewAllClick(e, '/projects')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -294,7 +293,7 @@ const ProjectListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Upcoming Projects</span>
                 {activeProjectsForClientData?.data?.length > 0 && (
-                  <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_listings')} className="view-all-cta">
+                  <CardText onClick={(e) => onViewAllClick(e, '/projects')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -353,7 +352,7 @@ const ProjectListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Active Projects</span>
                 {activeProjectsForTalentData?.data?.length > 0 && (
-                  <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_bids')} className="view-all-cta">
+                  <CardText onClick={(e) => onViewAllClick(e, '/projects')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -361,10 +360,10 @@ const ProjectListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="1">
               {isSliderLoading || activeProjectsForTalentIsLoading ? (
-                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                <div style={{ height: '340px' }} className="d-flex justify-content-center gap-1">
+                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
                 </div>
               ) : (
                 <ProjectsListingWrap>
@@ -412,7 +411,7 @@ const ProjectListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Upcoming Projects</span>
                 {upcomingProjectsForTalentData?.data?.length > 0 && (
-                  <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_bids')} className="view-all-cta">
+                  <CardText onClick={(e) => onViewAllClick(e, '/projects')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -479,7 +478,7 @@ const ProjectListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Active Projects</span>
                 {activeProjectsForTeamData?.data?.length > 0 && (
-                  <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_bids')} className="view-all-cta">
+                  <CardText onClick={(e) => onViewAllClick(e, '/projects')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -538,7 +537,7 @@ const ProjectListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Upcoming Projects</span>
                 {activeProjectsForTeamData?.data?.length > 0 && (
-                  <CardText onClick={(e) => onViewAllClick(e, '/marketplace/my_bids')} className="view-all-cta">
+                  <CardText onClick={(e) => onViewAllClick(e, '/projects')} className="view-all-cta">
                     View All
                   </CardText>
                 )}
@@ -609,7 +608,7 @@ const ProjectListing = () => {
             </AccordionHeader>
             <AccordionBody accordionId="3">
               {isSliderLoading || isRecommendedLoading ? (
-                <div style={{ height: '430px' }} className="d-flex justify-content-center gap-1">
+                <div style={{ height: '400px' }} className="d-flex justify-content-center gap-1">
                   <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
                   <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
                   <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />

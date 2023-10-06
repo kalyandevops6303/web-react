@@ -5,23 +5,22 @@ import PropTypes from 'prop-types';
 import AvatarGroup from '@components/avatar-group';
 
 // ** Reactstrap Imports
+import { useNavigate } from 'react-router';
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
-import { useState } from 'react';
 import { ProjectWrapper } from './style';
-import ProjectModal from '../../modals/ProjectModal';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 
-const UserSection = ({ users, name }) => (
+const UserSection = ({ totalCount, users, name }) => (
   <div className="user-section">
     <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
-          <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
+          <AvatarGroup totalCount={totalCount} size="sm" className="mr-4" data={users.slice(0, 3)} />
         </span>
       ) : (
         <AvatarGroup size="sm" data={users} />
@@ -33,13 +32,18 @@ const UserSection = ({ users, name }) => (
 UserSection.propTypes = {
   users: PropTypes.array,
   name: PropTypes.string,
+  totalCount: PropTypes.number,
 };
 
 const TeamInvitaionCard = ({ data, className }) => {
-  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
-  const handleToggle = () => {
-    setShowModal(!showModal);
+  const handleRedirect = () => {
+    if (data?.project?._id) {
+      navigate(`/project-details/${data?.project?._id}/project/project-invitation/${data?.request_id}`);
+    } else {
+      navigate(`/team-invitation/${data?.request_id}`);
+    }
   };
 
   const users = [];
@@ -58,40 +62,36 @@ const TeamInvitaionCard = ({ data, className }) => {
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
-          <CardTitle className="mt-50 active-project-title truncate-2 mb-1.5">{data?.project?.name}</CardTitle>
-
+          <CardTitle className="mt-50 active-project-title truncate-2 mb-50">{data?.project?.name}</CardTitle>
           <div className="d-flex">
             <RatingBadge number="0" />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
           </div>
 
-          <UserSection tagName="Team" name={data?.name} users={users} />
-          {/* <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
-              <div className="design-planning">
-                <CardText className="mb-25">Start date</CardText>
-                <h6 className="mb-0">{`${
-                  DateTime.fromMillis(data?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
-                }`}</h6>
-              </div>
-              <div className="design-planning">
-                <CardText className="mb-25">Start date</CardText>
-                <h6 className="mb-0">{`${
-                  DateTime.fromMillis(data?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
-                }`}</h6>
-              </div>
+          <UserSection
+            totalCount={data?.team_members_count || data?.workers_count}
+            tagName="Team"
+            name={data?.name}
+            users={users}
+          />
+          <div className="design-planning-wrapper pt-5 d-none">
+            <div className="design-planning">
+              <CardText className="mb-25">Earned</CardText>
+              <h6 className="mb-0">{`$ ${data?.project?.earned ?? 0}`}</h6>
             </div>
-          </div> */}
-
+            <div className="design-planning">
+              <CardText className="mb-25">New Amt</CardText>
+              <h6 className="mb-0">{`$ ${data?.project?.newAmt ?? 0}`}</h6>
+            </div>
+          </div>
           <div
-            // onClick={() => setShowModal(true)}
+            onClick={handleRedirect}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
           >
-            View Details
+            View Invites
           </div>
         </CardBody>
       </Card>
-      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
     </ProjectWrapper>
   );
 };

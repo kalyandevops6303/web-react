@@ -34,7 +34,9 @@ const ActiveProjectCard = ({ data, className }) => {
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="active-project-name mt-1">{data?.name}</p>
+          <p className="active-project-name mt-1 truncate-2" style={{ height: '40px' }}>
+            {data?.name}
+          </p>
           <div className="team-badge px-1 mb-75">
             <p className="mb-0">Team</p>
           </div>
@@ -45,6 +47,7 @@ const ActiveProjectCard = ({ data, className }) => {
             {data?.worker_details.length > 3 ? (
               <span className="d-flex avatars">
                 <AvatarGroup
+                  totalCount={data?.team_members_count || data?.workers_count}
                   size="sm"
                   className="mr-4"
                   data={[

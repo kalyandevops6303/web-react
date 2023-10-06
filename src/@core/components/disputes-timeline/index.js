@@ -47,7 +47,7 @@ const DisputesTimeline = (props) => {
               >
                 {item.icon ? item.icon : null}
               </span>
-              <div className="timeline-event">{item.customContent ? item.customContent : null}</div>
+              <div className="timeline-event pe-1">{item.customContent ? item.customContent : null}</div>
             </TimelineWrap>
           </ItemTag>
         );
