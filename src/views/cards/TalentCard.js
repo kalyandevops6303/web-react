@@ -96,13 +96,16 @@ function TalentCard({ data, isSearchPage }) {
                         <div className="d-flex align-items-center">
                           <MapPin size={20} className="me-50" />
                           {locationDetails?.city?.name ? (
-                            <TextToolTip text={locationDetails?.city?.name} id={data?.user_id} />
+                            <TextToolTip text={locationDetails?.city?.name} id={`tooltip-city-${data?.user_id}`} />
                           ) : (
                             ''
                           )}
                           ,&nbsp;
                           {locationDetails?.country?.name ? (
-                            <TextToolTip text={locationDetails?.country?.name} id={data?.user_id} />
+                            <TextToolTip
+                              text={locationDetails?.country?.name}
+                              id={`tooltip-country-${data?.user_id}`}
+                            />
                           ) : (
                             ''
                           )}
