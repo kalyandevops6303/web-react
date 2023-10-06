@@ -221,7 +221,6 @@ const ProjectWrapper = styled.div`
       margin-top: -2px;
       margin-left: 4px;
     }
-    width: 50%;
     color: ${theme.headingTextColor};
     .avatar-wrap {
       .avatars {
@@ -308,8 +307,9 @@ const ProjectWrapper = styled.div`
 
   .active-project-name {
     color: #5e5873;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
+    height: 40px;
   }
 
   .team-badge {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
@@ -19,14 +19,12 @@ const MarketPlaceProjectCard = ({ isSearchPage, isExpanded, data, isPopoverOpen,
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
   const userData = useSelector(selectUserData);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const isViewable =
-    // eslint-disable-next-line no-undef
-    window.location.pathname.split('/').includes('my_bids') ||
-    // eslint-disable-next-line no-undef
-    window.location.pathname.split('/').includes('my_listings');
+    location.pathname.split('/').includes('my_bids') || location.pathname.split('/').includes('my_listings');
 
   useEffect(() => {
     setShowFullText(isExpanded);

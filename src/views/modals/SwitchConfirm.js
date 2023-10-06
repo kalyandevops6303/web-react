@@ -67,7 +67,7 @@ const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection }) =
             <p className="fw-normal font-medium-3 mt-1">To perform this action you need to switch to team profile</p>
           </div>
         </div>
-        <div className="d-flex gap-1 mb-1 justify-content-end">
+        <div className="d-flex gap-1 mb-2 justify-content-end">
           <Button onClick={toggleModal} outline color="primary">
             Cancel
           </Button>
