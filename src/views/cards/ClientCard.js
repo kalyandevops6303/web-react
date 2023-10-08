@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+import { useEffect, useState } from 'react';
 import { Badge, Card, CardBody, CardText, CardTitle, Col, UncontrolledTooltip } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
@@ -27,6 +29,9 @@ const giveStrokeColor = (percentage) => {
 const ClientCard = ({ isSearchPage, data, userType }) => {
   const dispatch = useDispatch();
   const location = useLocation();
+
+  const [zoom, setZoom] = useState(window.devicePixelRatio);
+
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
       return { title: 'Marketplace', link: '/marketplace/all_listings' };
@@ -53,20 +58,29 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
     dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
   };
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
-  // const areaOfInterest = data?.project_area_of_interest?.area ?? [];
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      setZoom(window.devicePixelRatio);
+    });
+    return () => {
+      window.removeEventListener('resize', () => {});
+    };
+  }, []);
+
   return (
     <UserCardWrap userType={userType} clientCard>
-      <Card style={{ minHeight: '240px' }}>
+      <Card style={{ height: '270px', width: zoom === 1 ? '95%' : '380px' }}>
         <CardBody>
           <Col className="d-flex justify-content-between">
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center w-100">
               <Avatar
                 img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
                 imgHeight="40"
                 imgWidth="40"
                 className={`client-card-photo me-1 mb-1 `}
               />
-              <div className="d-flex flex-column">
+              <div className="d-flex flex-column w-100">
                 <CardTitle className="d-flex truncate-2 text-decoration-none marketplace-card-title mb-0">
                   <Link
                     state={{
@@ -81,35 +95,29 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                     {data?.last_name}
                   </Link>
                 </CardTitle>
-                <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
+                <p
+                  className="font-small-3 fw-300 mb-25 marketplace-card-role"
+                  style={{ width: '90%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                >
                   {data?.user_type === userTypes.client
                     ? data?.company_name || 'Company Name'
                     : data?.role?.name || 'Role'}
-                </CardText>
-                <div className="d-flex" style={{ marginLeft: '-2px' }}>
+                </p>
+
+                <div className="d-flex w-100" style={{ marginLeft: '-2px' }}>
                   {locationDetails ? (
-                    <div className="d-flex align-items-center">
-                      <MapPin size={20} className="me-50" />
-                      {locationDetails?.city?.name ? (
-                        <TextToolTip text={`${locationDetails?.city?.name} `} id={`tooltip-city-${data?.user_id}`} />
-                      ) : (
-                        ''
-                      )}
-                      ,&nbsp;
-                      {locationDetails?.country?.name ? (
-                        <TextToolTip
-                          text={` ${locationDetails?.country?.name}`}
-                          id={`tooltip-country-${data?.user_id}`}
-                        />
-                      ) : (
-                        ''
-                      )}
+                    <div className="d-flex align-items-center" style={{ width: zoom === 1.5 ? '160px' : '' }}>
+                      <MapPin size={18} className="me-50" />
+                      <TextToolTip
+                        text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
+                        id={`tooltip-location-${data?.user_id}`}
+                      />
                     </div>
                   ) : null}
                 </div>
               </div>
             </div>
-            <div className="d-flex flex-column align-items-start">
+            <div className="d-flex flex-column align-items-start" style={{ width: '50%' }}>
               <div className="d-flex w-100 gap-50 justify-content-end">
                 {data?.is_alma_mater && (
                   <Badge className="bg-white" style={{ marginTop: '-5px' }}>
@@ -132,9 +140,9 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                   </div>
                 )}
               </div>
-              <div className="d-flex mt-1">
+              <div className="d-flex mt-1 justify-content-end w-100">
                 <RatingBadge number={Math.round(data?.rating ?? 0)} />
-                <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                <CardText className="ps-50 font-small-3 fw-300 rating-label">
                   {data?.project_listed_count ?? 0} Projects
                 </CardText>
               </div>
@@ -188,13 +196,24 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                     <div className="badge-box mt-25" key={skill?._id}>
                       <Badge
                         id={`tooltip-${skill?._id}-${data?.user_id}`}
-                        className={`${skill?.name?.length > 12 ? 'truncate-1' : ''}`}
+                        className={
+                          // eslint-disable-next-line no-nested-ternary
+                          skill?.name?.length > 8 && zoom === 1.5
+                            ? 'truncate-1'
+                            : skill?.name?.length > 8 && zoom === 1
+                            ? 'truncate-2'
+                            : ''
+                        }
                         color=""
-                        style={{ color: theme.lightBlueColor, backgroundColor: theme.lightBlueBgColor }}
+                        style={{
+                          color: theme.lightBlueColor,
+                          backgroundColor: theme.lightBlueBgColor,
+                          width: zoom === 1.5 ? '80px' : '',
+                        }}
                       >
                         {skill?.name}
                       </Badge>
-                      {skill?.name?.length > 12 ? (
+                      {skill?.name?.length > 8 ? (
                         <UncontrolledTooltip target={`tooltip-${skill?._id}-${data?.user_id}`}>
                           {skill?.name}
                         </UncontrolledTooltip>

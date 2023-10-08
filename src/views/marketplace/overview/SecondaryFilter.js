@@ -591,7 +591,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             className="justify-content-between grid-layout"
             style={
               primaryFilter === 'clients'
-                ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                ? {
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3,1fr)',
+                    placeItems: 'center',
+                  }
                 : {}
             }
           >

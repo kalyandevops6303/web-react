@@ -114,8 +114,18 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
         </div>
       </div>
       <div>
-        <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-        <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+        <BadgeGroup
+          title="Skills"
+          data={data?.proficiency?.skills}
+          color="light-blue"
+          id={`tooltip-skills-project-${data?._id}`}
+        />
+        <BadgeGroup
+          title="Tools"
+          data={data?.proficiency?.tools}
+          color="light-blue"
+          id={`tooltip-tools-project-${data?._id}`}
+        />
       </div>
     </div>
   );
