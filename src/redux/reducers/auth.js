@@ -16,6 +16,7 @@ const initialState = {
   error: null,
   userType: null,
   fcmToken: '',
+  cometChatToken: '',
 };
 
 const authSlice = createSlice({
@@ -224,6 +225,12 @@ const authSlice = createSlice({
       fcmToken: action.payload,
     }),
 
+    // CometChat
+    cometChatLogin: (state, action) => ({
+      ...state,
+      cometChatToken: action.payload,
+    }),
+
     setLoggedInStatus: (state) => ({
       ...state,
       isLoggedIn: true,
@@ -316,6 +323,7 @@ export const {
   loginSuccess,
   loginFailure,
   FCMSubscribe,
+  cometChatLogin,
   logOut,
   setLoggedInStatus,
   resetPasswordRequest,
