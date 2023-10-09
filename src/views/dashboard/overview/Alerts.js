@@ -200,7 +200,10 @@ const Alerts = () => {
               </Card>
             ))}
           {alerts?.alerts?.metadata?.total_records > 4 && (
-            <span className="mb-1 additional-text text-center d-block">
+            <span
+              onClick={() => navigate('/notifications')}
+              className="mb-1 additional-text text-center d-block cursor-pointer"
+            >
               +{alerts.alerts.metadata.total_records - 4} more
             </span>
           )}
