@@ -628,9 +628,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             style={
               primaryFilter === 'clients'
                 ? {
+                    // display: 'grid',
+                    // gridTemplateColumns: 'repeat(3,1fr)',
+                    // placeItems: 'center',
+
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(3,1fr)',
-                    placeItems: 'center',
+                    gridTemplateColumns: 'repeat(auto-fill,minmax(26%,auto))',
+                    RowGap: '35px',
                   }
                 : {}
             }
