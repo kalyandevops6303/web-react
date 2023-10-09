@@ -30,6 +30,12 @@ const ProjectDetails = () => {
     window?.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    if (projectDetailsData && projectDetailsData.status === 'COMPLETED') {
+      steps[steps.length - 1].isDisabled = false;
+    }
+  }, [projectDetailsData?.status]);
+
   const isInviteView = location?.pathname?.includes('project-invitation');
   const fromLocationPrimary = () => {
     if (getItem('baseRoute') === 'marketplace')

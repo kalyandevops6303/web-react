@@ -617,6 +617,14 @@ const Profile = () => {
     setTeamCreatedModal(false);
   };
 
+  const handleClick = () => {
+    if (Object.keys(errors).length === 0) {
+      handleSubmit(onSubmit)();
+    } else {
+      ShowToastMessage('error', 'Please fill the mandatory fields');
+    }
+  };
+
   return (
     <ProfileFormContainer>
       {teamCreatedModal && (
@@ -1313,6 +1321,7 @@ const Profile = () => {
               color="primary"
               outline={location?.state?.isEditing}
               disabled={isImageUploading || updateTeamIsLoading}
+              onClick={handleClick}
             >
               {updateTeamIsLoading ? (
                 <Spinner size="sm" />
