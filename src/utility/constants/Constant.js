@@ -35,6 +35,14 @@ const bidTypes = {
   advanced: 'ADVANCED',
 };
 const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+const bidStatusesOptions = [
+  { label: 'New', value: 'NEW' },
+  { label: 'Reviewed', value: 'REVIEWED' },
+  { label: 'Accepted', value: 'ACCEPTED' },
+  { label: 'Closed', value: 'REJECTED' },
+];
+
 const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
   { label: 'In-review', value: 'IN_REVIEW' },
@@ -83,4 +91,5 @@ export {
   USD,
   disputeStatuses,
   disputeStatusEnum,
+  bidStatusesOptions,
 };

@@ -45,7 +45,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
     DRAFT: 'Draft',
     NEW: 'New',
     ACCEPTED: 'Accepted',
-    REJECTED: 'Rejected',
+    REJECTED: 'Closed',
     REVIEWED: 'Reviewed',
   };
 
@@ -84,13 +84,13 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
                 <CustomBadge>
                   <Badge
                     className={`${
-                      primaryFilter === 'my_bids' && userData?.user_type === userTypes.talent
+                      primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
                         ? data?.bid_status
                         : data?.status
                     } truncate-1`}
                     color="badge"
                   >
-                    {primaryFilter === 'my_bids' && userData?.user_type === userTypes.talent
+                    {primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
                       ? statusEnum[data?.bid_status]
                       : statusEnum[data?.status]}
                   </Badge>
