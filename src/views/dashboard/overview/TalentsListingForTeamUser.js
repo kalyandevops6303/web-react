@@ -123,7 +123,11 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
             <TagsSection fullWidth open={open} tags={data?.expertise?.skills} />
           )}
           <div className="d-flex flex-column">
-            <TagsSection fullWidth open={open} tags={data?.talent_info?.expertise?.skills} />
+            <TagsSection
+              fullWidth
+              open={open}
+              tags={[...(data?.talent_info?.expertise?.skills ?? [])].sort((a, b) => a.name.length - b.name.length)}
+            />
             <div className="d-flex">
               <RatingBadge number={returnFormattedRating(data?.talent_info?.rating)} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">

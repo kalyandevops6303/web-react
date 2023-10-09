@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
 import { useEffect, useState } from 'react';
 import { Badge, Card, CardBody, CardText, CardTitle, Col, UncontrolledTooltip } from 'reactstrap';
@@ -70,18 +71,18 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
   return (
     <UserCardWrap userType={userType} clientCard>
-      <Card style={{ height: '270px', width: zoom === 1 ? '95%' : '380px' }}>
+      <Card style={{ height: '270px', width: zoom === 1.5 ? '380px' : '590px' }}>
         <CardBody>
           <Col className="d-flex justify-content-between">
-            <div className="d-flex align-items-center w-100">
+            <div className="d-flex align-items-center" style={{ width: '60%' }}>
               <Avatar
                 img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
                 imgHeight="40"
                 imgWidth="40"
                 className={`client-card-photo me-1 mb-1 `}
               />
-              <div className="d-flex flex-column w-100">
-                <CardTitle className="d-flex truncate-2 text-decoration-none marketplace-card-title mb-0">
+              <div className="d-flex flex-column" style={{ width: '70%' }}>
+                <CardTitle className="d-flex truncate-1 text-decoration-none marketplace-card-title mb-0">
                   <Link
                     state={{
                       from: {
@@ -97,7 +98,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                 </CardTitle>
                 <p
                   className="font-small-3 fw-300 mb-25 marketplace-card-role"
-                  style={{ width: '90%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                  style={{ width: '80%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
                 >
                   {data?.user_type === userTypes.client
                     ? data?.company_name || 'Company Name'
@@ -117,7 +118,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                 </div>
               </div>
             </div>
-            <div className="d-flex flex-column align-items-start" style={{ width: '50%' }}>
+            <div className="d-flex flex-column align-items-start" style={{ width: '100%' }}>
               <div className="d-flex w-100 gap-50 justify-content-end">
                 {data?.is_alma_mater && (
                   <Badge className="bg-white" style={{ marginTop: '-5px' }}>
@@ -197,11 +198,10 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                       <Badge
                         id={`tooltip-${skill?._id}-${data?.user_id}`}
                         className={
-                          // eslint-disable-next-line no-nested-ternary
                           skill?.name?.length > 8 && zoom === 1.5
                             ? 'truncate-1'
-                            : skill?.name?.length > 8 && zoom === 1
-                            ? 'truncate-2'
+                            : skill?.name?.length > 15 && zoom === 1
+                            ? 'truncate-1'
                             : ''
                         }
                         color=""
@@ -213,7 +213,11 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                       >
                         {skill?.name}
                       </Badge>
-                      {skill?.name?.length > 8 ? (
+                      {skill?.name?.length > 8 && zoom === 1.5 ? (
+                        <UncontrolledTooltip target={`tooltip-${skill?._id}-${data?.user_id}`}>
+                          {skill?.name}
+                        </UncontrolledTooltip>
+                      ) : skill?.name?.length > 15 && zoom === 1 ? (
                         <UncontrolledTooltip target={`tooltip-${skill?._id}-${data?.user_id}`}>
                           {skill?.name}
                         </UncontrolledTooltip>
