@@ -57,7 +57,7 @@ function TalentCard({ data, isSearchPage }) {
     <TeamCardWrap>
       <Card>
         <CardBody>
-          <div className="d-flex">
+          <div className="d-flex teamcard-flex-cloumn">
             <div className="w-75">
               <div className="d-flex">
                 <Avatar
@@ -84,31 +84,21 @@ function TalentCard({ data, isSearchPage }) {
                   <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
                     {data?.role?.name || 'Role'}
                   </CardText>
-                  <div className="d-flex">
+                  <div className="d-flex teamcard-flex-cloumn">
                     <div className="d-flex mr-2">
                       <RatingBadge number={Math.round(data?.rating)} />
                       <CardText className="ps-1 font-small-3 fw-300 rating-label">
                         {data?.user_type === userTypes.talent ? data?.projects_worked_on_count : 0} Projects
                       </CardText>
                     </div>
-                    <div className="d-flex" style={{ marginLeft: '20px' }}>
+                    <div className="d-flex margin-none" style={{ marginLeft: '20px' }}>
                       {locationDetails ? (
                         <div className="d-flex align-items-center">
                           <MapPin size={20} className="me-50" />
-                          {locationDetails?.city?.name ? (
-                            <TextToolTip text={locationDetails?.city?.name} id={`tooltip-city-${data?.user_id}`} />
-                          ) : (
-                            ''
-                          )}
-                          ,&nbsp;
-                          {locationDetails?.country?.name ? (
-                            <TextToolTip
-                              text={locationDetails?.country?.name}
-                              id={`tooltip-country-${data?.user_id}`}
-                            />
-                          ) : (
-                            ''
-                          )}
+                          <TextToolTip
+                            text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
+                            id={`tooltip-location-${data?.user_id}`}
+                          />
                         </div>
                       ) : null}
                     </div>
@@ -117,7 +107,7 @@ function TalentCard({ data, isSearchPage }) {
               </div>
               <div className="mt-2">{data?.professional_intro}</div>
             </div>
-            <div className="w-25">
+            <div className="w-25 teamcard-width">
               <div className="d-flex flex-column align-items-start">
                 <div className="d-flex w-100 justify-content-end gap-50">
                   {data?.is_alma_mater && (

@@ -9,7 +9,7 @@ import Avatar from '@components/avatar';
 import hat from '@src/assets/images/hat.svg';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import { UserCardWrap } from './style';
+import { ClientCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
 import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
@@ -58,7 +58,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
 
   return (
-    <UserCardWrap userType={userType} clientCard>
+    <ClientCardWrap userType={userType} clientCard>
       {/* <Card style={{ height: '270px', width: zoom === 1.5 ? '380px' : '590px' }}> */}
       <Card style={{ height: '94%', width: '90%' }}>
         <CardBody>
@@ -96,7 +96,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
                 <div className="d-flex w-100" style={{ marginLeft: '-2px' }}>
                   {locationDetails ? (
-                    <div className="d-flex align-items-center" style={{ width: '160px' }}>
+                    <div className="d-flex align-items-center overflow-hidden">
                       <MapPin size={18} className="me-50" />
                       <TextToolTip
                         text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
@@ -107,7 +107,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                 </div>
               </div>
             </div>
-            <div className="d-flex flex-column align-items-start" style={{ width: '100%' }}>
+            <div className="d-flex flex-column align-items-start" style={{ width: '40%' }}>
               <div className="d-flex w-100 gap-50 justify-content-end">
                 {data?.is_alma_mater && (
                   <Badge className="bg-white" style={{ marginTop: '-5px' }}>
@@ -208,7 +208,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
           </div>
         </CardBody>
       </Card>
-    </UserCardWrap>
+    </ClientCardWrap>
   );
 };
 ClientCard.propTypes = {

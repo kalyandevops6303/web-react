@@ -94,6 +94,7 @@ const ProjectWithTeamUI = ({ data }) => {
               title="Tools"
               data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
               color="light-blue"
+              id={`tooltip-tools-${data?._id}`}
             />
           </div>
         </section>
@@ -125,6 +126,7 @@ const ProjectWithTeamUI = ({ data }) => {
               title="Skills"
               data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
               color="light-blue"
+              id={`tooltip-skills-${data?._id}`}
             />
           </div>
         </div>

@@ -99,8 +99,18 @@ const BaseInfoUI = ({ data }) => {
         </div>
       </div>
       <div>
-        <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-        <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+        <BadgeGroup
+          title="Skills"
+          data={data?.proficiency?.skills}
+          color="light-blue"
+          id={`tooltip-skills-${data?._id}`}
+        />
+        <BadgeGroup
+          title="Tools"
+          data={data?.proficiency?.tools}
+          color="light-blue"
+          id={`tooltip-tools-${data?._id}`}
+        />
       </div>
     </div>
   );

@@ -156,6 +156,7 @@ const LeftSidebarProjectDetails = () => {
                   ...(projectDetailsData?.proficiency?.tools || []),
                 ]}
                 color="light-blue"
+                id={`tooltip-${projectDetailsData?._id}`}
               />
             )}
           </div>

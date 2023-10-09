@@ -40,6 +40,7 @@ import NoDataFoundComponent from './NoDataFoundComp';
 import TeamCard from '../../cards/TeamCard';
 import ClientCard from '../../cards/ClientCard';
 import TalentCard from '../../cards/TalentCard';
+import { ResponsiveGrid } from '../../cards/style';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -604,57 +605,60 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       {isLoading ? (
         <ComponentSpinner />
       ) : (
-        <InfiniteScroll
-          dataLength={selectMarketPlaceData?.length}
-          next={fetchMore}
-          hasMore={hasMore}
-          endMessage={
-            <div className="d-flex justify-content-center ">
-              {selectMarketPlaceData?.length === 0 ? (
-                <NoDataFoundComponent
-                  isMyListing={primaryFilter === 'my_listings'}
-                  isRecommanded={isRecommanded}
-                  data={selectMarketPlaceData}
+        <ResponsiveGrid>
+          <InfiniteScroll
+            dataLength={selectMarketPlaceData?.length}
+            next={fetchMore}
+            hasMore={hasMore}
+            endMessage={
+              <div className="d-flex justify-content-center ">
+                {selectMarketPlaceData?.length === 0 ? (
+                  <NoDataFoundComponent
+                    isMyListing={primaryFilter === 'my_listings'}
+                    isRecommanded={isRecommanded}
+                    data={selectMarketPlaceData}
+                  />
+                ) : (
+                  ''
+                )}
+              </div>
+            }
+            loader={<div className="d-flex justify-content-center">Loading...</div>}
+            className="responsive-grid"
+            style={
+              primaryFilter === 'clients'
+                ? {
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill,minmax(26%,auto))',
+                    RowGap: '35px',
+                  }
+                : {}
+            }
+          >
+            {selectMarketPlaceData?.map((item) => {
+              const CardComponent =
+                // eslint-disable-next-line no-nested-ternary
+                primaryFilter === 'talents'
+                  ? TalentCard
+                  : // eslint-disable-next-line no-nested-ternary
+                  primaryFilter === 'clients'
+                  ? ClientCard
+                  : primaryFilter === 'teams'
+                  ? TeamCard
+                  : ProjectCard;
+              return (
+                <CardComponent
+                  key={item?._id || item?.id}
+                  data={item}
+                  isPopoverOpen={popoverOpen}
+                  isExpanded={isExpanded}
+                  primaryFilter={primaryFilter}
+                  userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
                 />
-              ) : (
-                ''
-              )}
-            </div>
-          }
-          loader={<div className="d-flex justify-content-center">Loading...</div>}
-          style={
-            primaryFilter === 'clients'
-              ? {
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill,minmax(26%,auto))',
-                  RowGap: '35px',
-                }
-              : {}
-          }
-        >
-          {selectMarketPlaceData?.map((item) => {
-            const CardComponent =
-              // eslint-disable-next-line no-nested-ternary
-              primaryFilter === 'talents'
-                ? TalentCard
-                : // eslint-disable-next-line no-nested-ternary
-                primaryFilter === 'clients'
-                ? ClientCard
-                : primaryFilter === 'teams'
-                ? TeamCard
-                : ProjectCard;
-            return (
-              <CardComponent
-                key={item?._id || item?.id}
-                data={item}
-                isPopoverOpen={popoverOpen}
-                isExpanded={isExpanded}
-                primaryFilter={primaryFilter}
-                userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
-              />
-            );
-          })}
-        </InfiniteScroll>
+              );
+            })}
+          </InfiniteScroll>
+        </ResponsiveGrid>
       )}
     </>
   );

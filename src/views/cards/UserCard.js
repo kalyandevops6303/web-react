@@ -171,7 +171,7 @@ const UserCard = ({ data, userType }) => {
                     : [...talentSkills].sort((a, b) => b.name.length - a.name.length)
                 }
                 color="light-blue"
-                user_id={data?.user_id}
+                id={`tooltip-${data?.user_id}`}
               />
             </div>
           </Col>
