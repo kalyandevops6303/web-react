@@ -48,7 +48,7 @@ const projectTypesOptions = [
 ];
 const sortingOptions = [
   { label: 'New', value: 'NEW' },
-  { label: 'Recommended', value: 'RECOMMADED' },
+  { label: 'Recommended', value: 'RECOMMENDED' },
   { label: 'Favorite', value: 'FAVOURITE' },
 ];
 const USD = {
