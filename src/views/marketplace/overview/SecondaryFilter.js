@@ -56,7 +56,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     project_types: [],
     skills: [],
     tools: [],
-    sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMADED' }] : [],
+    sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMENDED' }] : [],
     industries: [],
     project_areas: [],
   });
@@ -68,7 +68,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const isRecommanded = sort_by[0]?.value === 'RECOMMADED';
+  const isRecommanded = sort_by[0]?.value === 'RECOMMENDED';
   const isFavorite = sort_by[0]?.value === 'FAVOURITE';
 
   useEffect(() => {
@@ -152,7 +152,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (location?.state?.isRecommended) {
       setSecondFilterState({
         ...secondFilterState,
-        sort_by: [{ label: 'Recommended', value: 'RECOMMADED' }],
+        sort_by: [{ label: 'Recommended', value: 'RECOMMENDED' }],
       });
     }
   }, [location]);
