@@ -622,46 +622,38 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </div>
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
+          style={
+            primaryFilter === 'clients'
+              ? {
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill,minmax(26%,auto))',
+                  RowGap: '35px',
+                }
+              : {}
+          }
         >
-          <div
-            className="justify-content-between grid-layout"
-            style={
-              primaryFilter === 'clients'
-                ? {
-                    // display: 'grid',
-                    // gridTemplateColumns: 'repeat(3,1fr)',
-                    // placeItems: 'center',
-
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill,minmax(26%,auto))',
-                    RowGap: '35px',
-                  }
-                : {}
-            }
-          >
-            {selectMarketPlaceData?.map((item) => {
-              const CardComponent =
-                // eslint-disable-next-line no-nested-ternary
-                primaryFilter === 'talents'
-                  ? TalentCard
-                  : // eslint-disable-next-line no-nested-ternary
-                  primaryFilter === 'clients'
-                  ? ClientCard
-                  : primaryFilter === 'teams'
-                  ? TeamCard
-                  : ProjectCard;
-              return (
-                <CardComponent
-                  key={item?._id || item?.id}
-                  data={item}
-                  isPopoverOpen={popoverOpen}
-                  isExpanded={isExpanded}
-                  primaryFilter={primaryFilter}
-                  userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
-                />
-              );
-            })}
-          </div>
+          {selectMarketPlaceData?.map((item) => {
+            const CardComponent =
+              // eslint-disable-next-line no-nested-ternary
+              primaryFilter === 'talents'
+                ? TalentCard
+                : // eslint-disable-next-line no-nested-ternary
+                primaryFilter === 'clients'
+                ? ClientCard
+                : primaryFilter === 'teams'
+                ? TeamCard
+                : ProjectCard;
+            return (
+              <CardComponent
+                key={item?._id || item?.id}
+                data={item}
+                isPopoverOpen={popoverOpen}
+                isExpanded={isExpanded}
+                primaryFilter={primaryFilter}
+                userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
+              />
+            );
+          })}
         </InfiniteScroll>
       )}
     </>

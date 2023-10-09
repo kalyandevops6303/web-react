@@ -1,6 +1,4 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable no-undef */
-import { useEffect, useState } from 'react';
 import { Badge, Card, CardBody, CardText, CardTitle, Col, UncontrolledTooltip } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
@@ -31,8 +29,6 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const [zoom, setZoom] = useState(window.devicePixelRatio);
-
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
       return { title: 'Marketplace', link: '/marketplace/all_listings' };
@@ -58,21 +54,13 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   const handleUnLike = () => {
     dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
   };
-  const clientSkills = data?.project_area_of_interest?.skills ?? [];
 
-  useEffect(() => {
-    window.addEventListener('resize', () => {
-      setZoom(window.devicePixelRatio);
-    });
-    return () => {
-      window.removeEventListener('resize', () => {});
-    };
-  }, []);
+  const clientSkills = data?.project_area_of_interest?.skills ?? [];
 
   return (
     <UserCardWrap userType={userType} clientCard>
       {/* <Card style={{ height: '270px', width: zoom === 1.5 ? '380px' : '590px' }}> */}
-      <Card style={{ height: '94%' }}>
+      <Card style={{ height: '94%', width: '90%' }}>
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center" style={{ width: '60%' }}>
@@ -108,7 +96,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
                 <div className="d-flex w-100" style={{ marginLeft: '-2px' }}>
                   {locationDetails ? (
-                    <div className="d-flex align-items-center" style={{ width: zoom === 1.5 ? '160px' : '' }}>
+                    <div className="d-flex align-items-center" style={{ width: '160px' }}>
                       <MapPin size={18} className="me-50" />
                       <TextToolTip
                         text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
@@ -198,27 +186,16 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                     <div className="badge-box mt-25" key={skill?._id}>
                       <Badge
                         id={`tooltip-${skill?._id}-${data?.user_id}`}
-                        className={
-                          skill?.name?.length > 8 && zoom === 1.5
-                            ? 'truncate-1'
-                            : skill?.name?.length > 15 && zoom === 1
-                            ? 'truncate-1'
-                            : ''
-                        }
+                        className={skill?.name?.length > 12 ? 'truncate-1' : ''}
                         color=""
                         style={{
                           color: theme.lightBlueColor,
                           backgroundColor: theme.lightBlueBgColor,
-                          width: zoom === 1.5 ? '80px' : '',
                         }}
                       >
                         {skill?.name}
                       </Badge>
-                      {skill?.name?.length > 8 && zoom === 1.5 ? (
-                        <UncontrolledTooltip target={`tooltip-${skill?._id}-${data?.user_id}`}>
-                          {skill?.name}
-                        </UncontrolledTooltip>
-                      ) : skill?.name?.length > 15 && zoom === 1 ? (
+                      {skill?.name?.length > 12 ? (
                         <UncontrolledTooltip target={`tooltip-${skill?._id}-${data?.user_id}`}>
                           {skill?.name}
                         </UncontrolledTooltip>

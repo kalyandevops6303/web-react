@@ -135,8 +135,8 @@ const Team = ({ data, isSearchPage }) => {
                 </div>
               </div>
               <div className="">
-                <BadgeGroup title="Skills" data={data?.skills} color="light-blue" user_id={data?.user_id} />
-                <BadgeGroup title="Tools" data={data?.tools} color="light-blue" user_id={data?.user_id} />
+                <BadgeGroup title="Skills" data={data?.skills} color="light-blue" id={`tooltip-skills-${data?._id}`} />
+                <BadgeGroup title="Tools" data={data?.tools} color="light-blue" id={`tooltip-tools-${data?._id}`} />
               </div>
             </div>
           </div>
