@@ -1,8 +1,11 @@
 import {
   getCardService,
+  getClientListingService,
   getFavoriteService,
   getInvitationsService,
   getJoinReqService,
+  getRecommendationListingService,
+  getTalentListingService,
   getTeamsService,
 } from '../../services/myTeamServices';
 
@@ -78,7 +81,6 @@ const getFavListing =
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
-
     try {
       const res = await getFavoriteService({ searchText, metaData, filterData, userType });
       dispatch(storeSuccessData(res?.data?.data));
@@ -89,4 +91,61 @@ const getFavListing =
     }
   };
 
-export { getCardInfo, getTeamListing, getFavListing, getInvitationListing, getReqListing };
+const getTalentListing =
+  ({ metaData, onSuccess, onError }) =>
+  async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
+    try {
+      const res = await getTalentListingService();
+      dispatch(storeSuccessData(res?.data?.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+
+const getClientListing =
+  ({ metaData, onSuccess, onError }) =>
+  async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
+    try {
+      const res = await getClientListingService();
+      dispatch(storeSuccessData(res?.data?.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+
+const getRecommendationListings =
+  ({ metaData, onSuccess, onError }) =>
+  async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(getListReq());
+    }
+    try {
+      const res = await getRecommendationListingService();
+      dispatch(storeSuccessData(res?.data?.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+
+export {
+  getCardInfo,
+  getTeamListing,
+  getFavListing,
+  getInvitationListing,
+  getReqListing,
+  getRecommendationListings,
+  getTalentListing,
+  getClientListing,
+};

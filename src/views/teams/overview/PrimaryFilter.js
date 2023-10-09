@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect } from 'react';
-import { Users, UserPlus, UserCheck, Heart } from 'react-feather';
+import { Users, UserCheck, Heart } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
@@ -12,31 +12,31 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state?.myTeams?.cardData);
 
-  // const userData = useSelector(selectAuthUserData);
-
   useEffect(() => {
     dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
   }, []);
 
   const TAB_NAMES = {
-    ALL_TEAMS: 'Teams',
-    CLIENT: 'Team/Talent',
-    INVITED: 'Invited',
+    TEAMS: 'Teams',
+    CLIENTS: 'Clients',
+    TALENTS: 'Talents',
     JOIN_REQ: 'Join Request',
     FAV: 'Favourite',
-    TEAM: 'Projects',
+    RECOMMENDATION: 'Recommendation',
   };
 
   const PATH_NAMES = {
-    ALL_TEAMS: 'my-teams',
-    INVITED: 'my-teams/invitations',
-    JOIN_REQ: 'my-teams/join-requests',
-    FAV: 'my-teams/favourites',
+    TEAMS: 'teams',
+    CLIENTS: 'clients',
+    TALENTS: 'talents',
+    JOIN_REQ: 'join_requests',
+    FAV: 'favourites',
+    RECOMMENDATION: 'recommendation',
   };
 
   return (
     <Row className="primary-row">
-      <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.ALL_TEAMS)}>
+      {/* <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.ALL_TEAMS)}>
         <Statbox
           isActive={selected === PATH_NAMES.ALL_TEAMS}
           isMarketPlaceTab
@@ -58,22 +58,64 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           color="light-turquoise"
           className="stat-box cursor-pointer"
         />
-      </Col>
-      <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.INVITED)}>
+      </Col> */}
+      {userType !== userTypes.team && (
+        <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.TEAMS)}>
+          <Statbox
+            isActive={selected === PATH_NAMES.TEAMS}
+            isMarketPlaceTab
+            title={selectCardData?.teams}
+            desc={TAB_NAMES.TEAMS}
+            icon={<Users height={20} />}
+            color="light-turquoise"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
+      )}
+      {userType !== userTypes.talent && (
+        <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.TALENTS)}>
+          <Statbox
+            isActive={selected === PATH_NAMES.TALENTS}
+            isMarketPlaceTab
+            title={selectCardData?.TALENTS}
+            desc={TAB_NAMES.TALENTS}
+            icon={<Users height={20} />}
+            color="light-turquoise"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
+      )}
+
+      {userType !== userTypes.client && (
+        <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.CLIENTS)}>
+          <Statbox
+            isActive={selected === PATH_NAMES.CLIENTS}
+            isMarketPlaceTab
+            title={selectCardData?.CLIENTS}
+            desc={TAB_NAMES.CLIENTS}
+            icon={<Users height={20} />}
+            color="light-turquoise"
+            className="stat-box cursor-pointer"
+          />
+        </Col>
+      )}
+
+      <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.RECOMMENDATION)}>
         <Statbox
-          isActive={selected === PATH_NAMES.INVITED.split('/')[1]}
-          className="stat-box cursor-pointer"
+          isActive={selected === PATH_NAMES.RECOMMENDATION}
           isMarketPlaceTab
-          title={selectCardData?.invited ?? 0}
-          desc={TAB_NAMES.INVITED}
-          icon={<UserPlus height={20} />}
-          color="light-dark-red"
+          title={selectCardData?.RECOMMENDATION}
+          desc={TAB_NAMES.RECOMMENDATION}
+          icon={<Users height={20} />}
+          color="light-turquoise"
+          className="stat-box cursor-pointer"
         />
       </Col>
+
       {userType !== userTypes.client ? (
         <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.JOIN_REQ)}>
           <Statbox
-            isActive={selected === PATH_NAMES.JOIN_REQ.split('/')[1]}
+            isActive={selected === PATH_NAMES.JOIN_REQ}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
             title={selectCardData?.join_request ? selectCardData?.join_request : selectCardData?.join_requests ?? 0}
@@ -85,7 +127,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
       ) : null}
       <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.FAV)}>
         <Statbox
-          isActive={selected === PATH_NAMES.FAV.split('/')[1]}
+          isActive={selected === PATH_NAMES.FAV}
           className="stat-box cursor-pointer"
           isMarketPlaceTab
           title={selectCardData?.favourites ?? 0}

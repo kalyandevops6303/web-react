@@ -18,12 +18,12 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
       <span key={index}>
         {isLongName ? (
           <>
-            <CustomBadge>
+            {/* <CustomBadge>
               <Badge className={badgeClassName} color={badgeColor} id={`tooltip-${index}`}>
                 {name}
               </Badge>
             </CustomBadge>
-            <UncontrolledTooltip target={`tooltip-${index}`}>{name}</UncontrolledTooltip>
+            <UncontrolledTooltip target={`tooltip-${index}`}>{name}</UncontrolledTooltip> */}
           </>
         ) : (
           <CustomBadge>

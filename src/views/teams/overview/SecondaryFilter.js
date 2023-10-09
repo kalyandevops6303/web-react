@@ -22,14 +22,15 @@ import '../../custom-styles.scss';
 import { userTypes } from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
 import {
+  getClientListing,
   getFavListing,
-  getInvitationListing,
+  getRecommendationListings,
   getReqListing,
+  getTalentListing,
   getTeamListing,
 } from '../../../redux/actions/myTeamActions';
 
 import TeamCard from '../../cards/TeamCard';
-import MarketPlaceProjectCard from '../../cards/MarketPlaceProjectCard';
 import MyTeamProjectCard from '../../cards/MyTeamProjectCard';
 import TalentCard from '../../cards/TalentCard';
 import ClientCard from '../../cards/ClientCard';
@@ -155,12 +156,16 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       filterData[key] = secondFilterState[key].map((item) => item.value);
     });
 
-    if (primaryFilter === 'my-teams') {
+    if (primaryFilter === 'teams') {
       dispatch(getTeamListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
-    } else if (primaryFilter === 'invitations') {
-      dispatch(getInvitationListing({ metaData, onSuccess, onError, filterData, userType }));
-    } else if (primaryFilter === 'join-requests') {
+    } else if (primaryFilter === 'join_requests') {
       dispatch(getReqListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
+    } else if (primaryFilter === 'recommendation') {
+      dispatch(getRecommendationListings({ searchText, metaData, onSuccess, onError, filterData, userType }));
+    } else if (primaryFilter === 'talents') {
+      dispatch(getTalentListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
+    } else if (primaryFilter === 'clients') {
+      dispatch(getClientListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
     } else if (primaryFilter === 'favourites') {
       dispatch(getFavListing({ searchText, metaData, onSuccess, onError, filterData, userType }));
     }
@@ -198,6 +203,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const getCardComp = () => {
+    if (primaryFilter === 'teams') return TeamCard;
+
+    if (primaryFilter === 'talents') return TalentCard;
+
+    if (primaryFilter === 'clients') return ClientCard;
+
     if (primaryFilter === 'favourites') {
       if (secondFilterState?.user_type[0]?.value === 'TALENT') {
         return TalentCard;
@@ -205,12 +216,25 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       if (secondFilterState?.user_type[0]?.value === 'TEAM') {
         return TeamCard;
       }
-
-      return ClientCard;
+      if (secondFilterState?.user_type[0]?.value === 'CLIENT') {
+        return ClientCard;
+      }
     }
-    if (primaryFilter === 'join-requests' && userType === 'TEAM') return TalentCard;
-    if (primaryFilter === 'join-requests') return TeamCard;
-    if (primaryFilter === 'invitations') return MarketPlaceProjectCard;
+
+    if (primaryFilter === 'recommendation') {
+      if (secondFilterState?.user_type[0]?.value === 'TALENT') {
+        return TalentCard;
+      }
+      if (secondFilterState?.user_type[0]?.value === 'TEAM') {
+        return TeamCard;
+      }
+      if (secondFilterState?.user_type[0]?.value === 'CLIENT') {
+        return ClientCard;
+      }
+    }
+
+    if (primaryFilter === 'join_requests' && userType === 'TEAM') return TalentCard;
+    if (primaryFilter === 'join_requests') return TeamCard;
     return MyTeamProjectCard;
   };
 
@@ -225,10 +249,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       filterData[key] = secondFilterState[key].map((item) => item.value);
     });
-    if (primaryFilter === 'my-teams') {
+    if (primaryFilter === 'teams') {
       dispatch(getTeamListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData }));
-    } else if (primaryFilter === 'invitations') {
-      dispatch(getInvitationListing({ metaData: newMeteData, onSuccess, onError, filterData, userType }));
     } else if (primaryFilter === 'join-requests') {
       dispatch(getReqListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData, userType }));
     } else if (primaryFilter === 'favourites') {
