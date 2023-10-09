@@ -3,10 +3,7 @@ import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap
 import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
-// import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import DateTime from '../../lib/date-time';
-// import theme from '../../configs/themeVariables';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
@@ -20,7 +17,6 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
-  const navigate = useNavigate();
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);
@@ -83,17 +79,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
   };
 
   const handleRedirection = () => {
-    const isMyProjectMyTeam =
-      // eslint-disable-next-line no-undef
-      window.location.pathname.split('/').includes('projects') ||
-      // eslint-disable-next-line no-undef
-      window.location.pathname.split('/').includes('my-teams');
-
-    if (isMyProjectMyTeam) {
-      navigate(`/project-details/${data?._id}/bid`);
-    } else {
-      setShowModal(true);
-    }
+    setShowModal(true);
   };
 
   return (

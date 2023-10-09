@@ -27,7 +27,7 @@ const BidSubmitted = () => {
 
   const bidUpdates = [
     {
-      status: 'Bid Rejected',
+      status: 'Bid Closed',
       color: theme.red,
       isVisible: bidInfo?.status === 'REJECTED',
       time: timelineEntries?.['Bid Rejected']?.time || '',

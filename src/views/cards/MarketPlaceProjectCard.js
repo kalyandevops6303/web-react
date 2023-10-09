@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router';
 
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
@@ -14,17 +13,14 @@ import BaseInfoUI from './BaseInfoCard';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import { selectUserData } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
-const MarketPlaceProjectCard = ({ isSearchPage, isExpanded, data, isPopoverOpen, isTeam }) => {
+const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data, isPopoverOpen, isTeam }) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
   const userData = useSelector(selectUserData);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
-  const isViewable =
-    location.pathname.split('/').includes('my_bids') || location.pathname.split('/').includes('my_listings');
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -46,6 +42,11 @@ const MarketPlaceProjectCard = ({ isSearchPage, isExpanded, data, isPopoverOpen,
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
     COMPLETED: 'Completed',
+    DRAFT: 'Draft',
+    NEW: 'New',
+    ACCEPTED: 'Accepted',
+    REJECTED: 'Closed',
+    REVIEWED: 'Reviewed',
   };
 
   const divRef = useRef(null);
@@ -70,13 +71,7 @@ const MarketPlaceProjectCard = ({ isSearchPage, isExpanded, data, isPopoverOpen,
   };
 
   const handleShowProject = () => {
-    if (userData?._id === data?.client_details?.user_id) {
-      navigate(`/project-details/${data?._id}/bid`);
-    } else if ((data?.has_bid || isViewable) && data?.bid_status !== 'DRAFT') {
-      navigate(`/project-details/${data?._id}/bid`);
-    } else {
-      setShowModal(true);
-    }
+    setShowModal(true);
   };
 
   return (
@@ -87,8 +82,17 @@ const MarketPlaceProjectCard = ({ isSearchPage, isExpanded, data, isPopoverOpen,
             <Col lg="8">
               <div className="d-flex mb-1 status-row">
                 <CustomBadge>
-                  <Badge className={`${data?.status} truncate-1`} color="badge">
-                    {statusEnum[data?.status]}
+                  <Badge
+                    className={`${
+                      primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
+                        ? data?.bid_status
+                        : data?.status
+                    } truncate-1`}
+                    color="badge"
+                  >
+                    {primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
+                      ? statusEnum[data?.bid_status]
+                      : statusEnum[data?.status]}
                   </Badge>
                 </CustomBadge>
               </div>
@@ -174,6 +178,7 @@ MarketPlaceProjectCard.propTypes = {
   isPopoverOpen: PropTypes.bool,
   isTeam: PropTypes.bool,
   isSearchPage: PropTypes.bool,
+  primaryFilter: PropTypes.string,
 };
 
 MarketPlaceProjectCard.defaultProps = {
@@ -182,6 +187,7 @@ MarketPlaceProjectCard.defaultProps = {
   isPopoverOpen: false,
   isTeam: false,
   isSearchPage: false,
+  primaryFilter: '',
 };
 
 export default MarketPlaceProjectCard;

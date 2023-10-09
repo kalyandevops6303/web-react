@@ -29,7 +29,13 @@ import ProjectCard from '../../cards/MarketPlaceProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
-import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from '../../../utility/constants/Constant';
+import {
+  bidStatusesOptions,
+  projectTypesOptions,
+  sortingOptions,
+  statusesOptions,
+  userTypes,
+} from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
 import TeamCard from '../../cards/TeamCard';
 import ClientCard from '../../cards/ClientCard';
@@ -53,6 +59,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const metaData = { page: 1, page_size: 10 };
   const [secondFilterState, setSecondFilterState] = useState({
     statuses: [],
+    bid_statuses: [],
     project_types: [],
     skills: [],
     tools: [],
@@ -178,6 +185,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const handleReset = () => {
     setSecondFilterState({
       statuses: [],
+      bid_statuses: [],
       project_types: [],
       skills: [],
       tools: [],
@@ -426,24 +434,52 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   />
                 </Col>
               )}
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
+            {primaryFilter === 'my_bids' && userType !== userTypes.client ? (
               <Col>
-                <Label className="form-label">Status</Label>
+                <Label className="form-label">Bid status</Label>
                 <Select
                   isClearable
-                  options={statusesOptions}
+                  options={bidStatusesOptions}
                   classNamePrefix="select"
                   placeholder="Select status"
                   theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('statuses', value)}
+                  onChange={(value) => onChangeFilter('bid_statuses', value)}
                   value={
-                    secondFilterState.statuses.length > 0
-                      ? { value: secondFilterState.statuses[0].value, label: secondFilterState.statuses[0].label }
+                    secondFilterState.bid_statuses.length > 0
+                      ? {
+                          value: secondFilterState.bid_statuses[0].value,
+                          label: secondFilterState.bid_statuses[0].label,
+                        }
                       : null
                   }
                 />
               </Col>
+            ) : (
+              <span className="w-auto">
+                {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
+                  <Col>
+                    <Label className="form-label">Status</Label>
+                    <Select
+                      isClearable
+                      options={statusesOptions}
+                      classNamePrefix="select"
+                      placeholder="Select status"
+                      theme={selectThemeColors}
+                      onChange={(value) => onChangeFilter('statuses', value)}
+                      value={
+                        secondFilterState.statuses.length > 0
+                          ? {
+                              value: secondFilterState.statuses[0].value,
+                              label: secondFilterState.statuses[0].label,
+                            }
+                          : null
+                      }
+                    />
+                  </Col>
+                )}
+              </span>
             )}
+
             {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
               <Col>
                 <Label className="form-label">Payment type</Label>

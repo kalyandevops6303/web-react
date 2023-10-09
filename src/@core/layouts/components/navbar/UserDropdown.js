@@ -27,6 +27,8 @@ import { selectSavedUserData, selectIsTeamLoggedIn, selectUserData } from '../..
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
 import { useState } from 'react';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
+import { CometChat } from '@cometchat-pro/chat';
+import { messaging } from '../../../../configs/api/firebase';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(selectUserData);
@@ -45,7 +47,7 @@ const UserDropdown = () => {
     navigate(`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     const onSuccess = () => {
       navigate('/auth/login');
       const keyToPreserve = 'isUserVisited';
@@ -58,6 +60,10 @@ const UserDropdown = () => {
     };
 
     dispatch(logoutAction({ fcmToken, onSuccess }));
+
+    // CometChat logout
+    await messaging.deleteToken();
+    await CometChat.logout();
   };
   const LineWrapper = styled.div`
     position: relative;

@@ -77,7 +77,6 @@ const ProjectModal = ({
   setCreateBidModal,
   setSelectedProject,
   toggleCompleteProfileModal,
-  isMyTeam,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -126,9 +125,6 @@ const ProjectModal = ({
   const isViewable =
     window.location.pathname.split('/').includes('my_bids') ||
     window.location.pathname.split('/').includes('my_listings');
-  const handleRedirectTodetailsView = () => {
-    navigate(`/project-details/${data?._id}/bid`);
-  };
 
   const handleCreateBid = () => {
     if (
@@ -150,6 +146,16 @@ const ProjectModal = ({
     } else {
       return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
     }
+  };
+
+  const isMyProjectMyTeam =
+    // eslint-disable-next-line no-undef
+    window.location.pathname.split('/').includes('projects') ||
+    // eslint-disable-next-line no-undef
+    window.location.pathname.split('/').includes('my-teams');
+
+  const handleViewProject = () => {
+    navigate(`/project-details/${data?._id}/bid`);
   };
 
   return (
@@ -295,11 +301,20 @@ const ProjectModal = ({
             </CardBody>
           </Card>
 
-          {isMyTeam ? null : isViewable && data?.bid_status !== 'DRAFT' ? (
-            <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-              <Button onClick={handleRedirectTodetailsView} color="primary">
-                <span className="me-50">View</span>
-                <ChevronRight size={14} />
+          {selectUserDetailsData?._id === data?.client_details?.user_id ||
+          data?.has_bid ||
+          isViewable ||
+          isMyProjectMyTeam ? (
+            <div className="d-flex justify-content-end mb-2">
+              <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
+                {checkBidLoadingIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">View project</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
               </Button>
             </div>
           ) : (
@@ -310,7 +325,6 @@ const ProjectModal = ({
                   <Button color="flat-danger" className=" d-none me-1">
                     Report
                   </Button>
-
                   {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') && (
                     <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
                       {checkBidLoadingIsLoading ? (
@@ -337,7 +351,6 @@ export default ProjectModal;
 
 ProjectModal.propTypes = {
   modal: Proptypes.bool,
-  isMyTeam: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
   setCreateBidModal: Proptypes.func,
@@ -347,7 +360,6 @@ ProjectModal.propTypes = {
 
 ProjectModal.defaultProps = {
   modal: false,
-  isMyTeam: false,
   toggleModal: () => {},
   data: {},
   setCreateBidModal: () => {},

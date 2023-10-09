@@ -44,11 +44,11 @@ const CustomBadge = styled.span`
   .ACCEPTED {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
-    border: 1px solid ${theme.lighGreenColor};
   }
   .IN_REVIEW,
   .ON_GOING,
-  .REVIEWED {
+  .REVIEWED,
+  .DRAFT {
     background: ${theme.orange}1f;
     color: ${theme.orange};
   }
