@@ -3,7 +3,6 @@ import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap
 import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
@@ -22,7 +21,6 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
   const userData = useSelector(selectUserData);
-  const navigate = useNavigate();
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -60,7 +58,7 @@ const MyTeamProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopo
     if (isTeamData && !teamId && userData?.user_type === userTypes.talent) {
       ShowToastMessage(ERROR, 'Please switch to your team first');
     } else {
-      navigate(`/project-details/${data?._id}/bid`, { state: { team_id: data?.worker_details?._id } });
+      setShowModal(true);
     }
   };
 
