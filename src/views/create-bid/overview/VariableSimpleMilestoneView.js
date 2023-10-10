@@ -503,7 +503,7 @@ const VariableSimpleMilestoneView = () => {
                           <div className="d-flex justify-content-between align-items-center w-100">
                             <p className="fw-bold font-medium-1 m-0 ms-25">Milestone {milestoneIndex + 1}</p>
                             <Row className="d-flex justify-content-end">
-                              <Col sm="12" md="12" lg="3">
+                              <Col sm="12" md="12" lg="4">
                                 <div className="me-2">
                                   <Label className="fw-normal form-label" for="duration">
                                     Duration
