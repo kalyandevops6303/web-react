@@ -14,11 +14,8 @@ import {
   getListProjectsSuccess,
   getListReq,
   getUsersSuccess,
-  makeFavFromMarketplaceSuccess,
-  removeFavFromMarketplaceSuccess,
 } from '../reducers/marketPlace';
 import { makeFavService, makeProjectFavService, removeFavService } from '../../services/profileServices';
-import { userTypes } from '../../utility/constants/Constant';
 
 const getCardInfo =
   ({ onSuccess, onError }) =>
@@ -103,27 +100,25 @@ const getUsers =
     }
   };
 
-const makeFavFromMarketplace =
-  ({ user_id, user_type, project_id }) =>
-  async (dispatch) => {
+const makeFav =
+  ({ user_id, user_type, project_id, onSuccess, onError }) =>
+  async () => {
     try {
       if (project_id) {
         await makeProjectFavService(project_id);
       } else {
         await makeFavService(user_id, user_type);
       }
-      if (user_type === userTypes.team) {
-        dispatch(makeFavFromMarketplaceSuccess({ _id: user_id }));
-      } else {
-        dispatch(makeFavFromMarketplaceSuccess({ user_id, user_type, _id: project_id }));
-      }
+      onSuccess();
     } catch (error) {
+      onError();
       errorHandler(error);
     }
   };
-const removeFavFromMarketplace =
-  ({ user_id, project_id, team_id }) =>
-  async (dispatch) => {
+
+const removeFav =
+  ({ user_id, project_id, team_id, onSuccess, onError }) =>
+  async () => {
     try {
       let data;
       if (project_id) {
@@ -134,15 +129,11 @@ const removeFavFromMarketplace =
         data = { user_id };
       }
       await removeFavService(data);
-
-      if (team_id) {
-        dispatch(removeFavFromMarketplaceSuccess({ _id: team_id }));
-      } else {
-        dispatch(removeFavFromMarketplaceSuccess({ _id: project_id, user_id }));
-      }
+      onSuccess();
     } catch (error) {
+      onError();
       errorHandler(error);
     }
   };
 
-export { getCardInfo, getUsers, getListProjects, makeFavFromMarketplace, removeFavFromMarketplace };
+export { getCardInfo, getUsers, getListProjects, removeFav, makeFav };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@components/avatar';
 import { PropTypes } from 'prop-types';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -12,13 +12,15 @@ import { TeamCardWrap } from './style';
 import { userTypes } from '../../utility/constants/Constant';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import theme from '../../configs/themeVariables';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import TextToolTip from './TextToolTip';
 
 function TalentCard({ data, isSearchPage }) {
   const dispatch = useDispatch();
   const location = useLocation();
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
       return { title: 'Marketplace', link: '/marketplace/all_listings' };
@@ -36,11 +38,22 @@ function TalentCard({ data, isSearchPage }) {
     if (data?.user_type === userTypes.client) return { title: 'Clients', link: '' };
     return { title: 'Talent', link: '' };
   };
+
+  const onFavSuccess = () => {
+    setIsFavorite(true);
+  };
+
+  const onUnFavSuccess = () => {
+    setIsFavorite(false);
+  };
+
   const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
+    dispatch(
+      makeFav({ user_id: data?.user_id, user_type: data?.user_type, onSuccess: onFavSuccess, onError: () => {} }),
+    );
   };
   const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
+    dispatch(removeFav({ user_id: data?.user_id, onSuccess: onUnFavSuccess, onError: () => {} }));
   };
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
@@ -127,7 +140,7 @@ function TalentCard({ data, isSearchPage }) {
                   )}
                   {!isSearchPage && (
                     <div className="mb-25">
-                      {data?.is_favorite ? (
+                      {isFavorite ? (
                         <Heart
                           className="cursor-pointer d-flex heart"
                           fill={theme.red}

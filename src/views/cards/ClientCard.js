@@ -4,6 +4,7 @@ import { PropTypes } from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import { Heart, MapPin } from 'react-feather';
 import { useDispatch } from 'react-redux';
+import { useState } from 'react';
 import Avatar from '@components/avatar';
 import hat from '@src/assets/images/hat.svg';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -11,7 +12,7 @@ import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { UserCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import TextToolTip from './TextToolTip';
 
 const giveStrokeColor = (percentage) => {
@@ -27,6 +28,8 @@ const giveStrokeColor = (percentage) => {
 const ClientCard = ({ isSearchPage, data, userType }) => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
       return { title: 'Marketplace', link: '/marketplace/all_listings' };
@@ -46,11 +49,22 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   };
   // const description = data?.company_tagline || data?.professional_intro;
   const locationDetails = data?.user_type === userTypes.client ? data?.office_address : data?.current_residency;
+
+  const onFavSuccess = () => {
+    setIsFavorite(true);
+  };
+
+  const onUnFavSuccess = () => {
+    setIsFavorite(false);
+  };
+
   const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
+    dispatch(
+      makeFav({ user_id: data?.user_id, user_type: data?.user_type, onSuccess: onFavSuccess, onError: () => {} }),
+    );
   };
   const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
+    dispatch(removeFav({ user_id: data?.user_id, onSuccess: onUnFavSuccess, onError: () => {} }));
   };
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
   // const areaOfInterest = data?.project_area_of_interest?.area ?? [];
@@ -118,7 +132,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                 )}
                 {!isSearchPage && (
                   <div className="mb-25">
-                    {data?.is_favorite ? (
+                    {isFavorite ? (
                       <Heart
                         className="cursor-pointer d-flex heart"
                         fill={theme.red}

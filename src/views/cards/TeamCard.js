@@ -6,16 +6,18 @@ import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import hat from '@src/assets/images/hat.svg';
 import { Heart } from 'react-feather';
+import { useState } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { TeamCardWrap } from './style';
 import theme from '../../configs/themeVariables';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 
 const Team = ({ data, isSearchPage }) => {
   const dispatch = useDispatch();
   const users = [];
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   data?.team_members?.map((user) =>
     users.push({
       title: `${user?.full_name ?? user?.first_name}` || 'user',
@@ -26,11 +28,19 @@ const Team = ({ data, isSearchPage }) => {
     }),
   );
 
+  const onFavSuccess = () => {
+    setIsFavorite(true);
+  };
+
+  const onUnFavSuccess = () => {
+    setIsFavorite(false);
+  };
+
   const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ user_id: data?._id, user_type: data?.user_type }));
+    dispatch(makeFav({ user_id: data?._id, user_type: data?.user_type, onSuccess: onFavSuccess, onError: () => {} }));
   };
   const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ team_id: data?._id }));
+    dispatch(removeFav({ team_id: data?._id, onSuccess: onUnFavSuccess, onError: () => {} }));
   };
 
   const giveStrokeColor = (percentage) => {
@@ -91,7 +101,7 @@ const Team = ({ data, isSearchPage }) => {
                   )}
                   {!isSearchPage && (
                     <div className="mb-25">
-                      {data?.is_favorite ? (
+                      {isFavorite ? (
                         <Heart
                           className="cursor-pointer d-flex heart"
                           fill={theme.red}

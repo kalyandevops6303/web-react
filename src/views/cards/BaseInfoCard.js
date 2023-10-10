@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CardText, CardTitle, Badge } from 'reactstrap';
 import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
@@ -8,19 +8,27 @@ import { useDispatch } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 
 const BaseInfoCard = ({ isSearchPage, data }) => {
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   const dispatch = useDispatch();
-
   const clientDetails = data?.client ?? data?.client_details;
 
+  const onFavSuccess = () => {
+    setIsFavorite(true);
+  };
+
+  const onUnFavSuccess = () => {
+    setIsFavorite(false);
+  };
+
   const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ project_id: data?._id }));
+    dispatch(makeFav({ project_id: data?._id, onSuccess: onFavSuccess, onError: () => {} }));
   };
   const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ project_id: data?._id }));
+    dispatch(removeFav({ project_id: data?._id, onSuccess: onUnFavSuccess, onError: () => {} }));
   };
 
   const giveStrokeColor = (percentage) => {
@@ -45,7 +53,7 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
           )}
           {!isSearchPage && (
             <div className="mb-25">
-              {data?.is_favorite ? (
+              {isFavorite ? (
                 <Heart
                   className="cursor-pointer d-flex heart"
                   fill={theme.red}
