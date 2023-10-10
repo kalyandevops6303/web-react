@@ -59,8 +59,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
   return (
     <ClientCardWrap userType={userType} clientCard>
-      {/* <Card style={{ height: '270px', width: zoom === 1.5 ? '380px' : '590px' }}> */}
-      <Card style={{ height: '94%', width: '90%' }}>
+      <Card style={{ height: '94%' }}>
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center" style={{ width: '60%' }}>

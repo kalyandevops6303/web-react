@@ -630,7 +630,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 ? {
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fill,minmax(26%,auto))',
-                    RowGap: '35px',
                   }
                 : {}
             }
