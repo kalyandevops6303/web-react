@@ -27,7 +27,7 @@ const myTeamsSlice = createSlice({
       cardInfoLoading: false,
       cardData: action.payload,
     }),
-    clearCardData: (state) => ({
+    clearTeamCardData: (state) => ({
       ...state,
       cardData: null,
     }),
@@ -69,7 +69,7 @@ export const {
   getCardInfoSuccess,
   storeSuccessData,
   clearData,
-  clearCardData,
+  clearTeamCardData,
   getListReq,
   getListErr,
 } = myTeamsSlice.actions;

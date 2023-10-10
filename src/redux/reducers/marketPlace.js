@@ -7,15 +7,29 @@ const initialState = {
   listData: [],
   users: [],
   loading: false,
+  cardInfoLoading: false,
 };
 
 const marketPlaceSlice = createSlice({
   name: 'marketPlace',
   initialState,
   reducers: {
+    getCardInfoRequest: (state) => ({
+      ...state,
+      cardInfoLoading: true,
+    }),
+    getCardInfoError: (state) => ({
+      ...state,
+      cardInfoLoading: false,
+    }),
     getCardInfoSuccess: (state, action) => ({
       ...state,
+      cardInfoLoading: false,
       cardData: action.payload,
+    }),
+    clearMarketplaceCardData: (state) => ({
+      ...state,
+      cardData: null,
     }),
     getListReq: (state) => ({
       ...state,
@@ -52,7 +66,16 @@ const marketPlaceSlice = createSlice({
   },
 });
 
-export const { getCardInfoSuccess, getListProjectsSuccess, getUsersSuccess, clearData, getListReq, getListErr } =
-  marketPlaceSlice.actions;
+export const {
+  getCardInfoSuccess,
+  getCardInfoRequest,
+  getCardInfoError,
+  clearMarketplaceCardData,
+  getListProjectsSuccess,
+  getUsersSuccess,
+  clearData,
+  getListReq,
+  getListErr,
+} = marketPlaceSlice.actions;
 
 export default marketPlaceSlice.reducer;

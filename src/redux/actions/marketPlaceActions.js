@@ -9,6 +9,8 @@ import {
 } from '../../services/marketPlaceServices';
 
 import {
+  getCardInfoError,
+  getCardInfoRequest,
   getCardInfoSuccess,
   getListErr,
   getListProjectsSuccess,
@@ -20,13 +22,14 @@ import { makeFavService, makeProjectFavService, removeFavService } from '../../s
 const getCardInfo =
   ({ onSuccess, onError }) =>
   async (dispatch) => {
+    dispatch(getCardInfoRequest());
     try {
       const res = await getCardService();
       dispatch(getCardInfoSuccess(res.data.data));
       onSuccess();
     } catch (error) {
       onError();
-      errorHandler(error);
+      errorHandler(error, getCardInfoError);
     }
   };
 

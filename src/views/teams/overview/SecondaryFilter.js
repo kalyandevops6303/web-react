@@ -355,7 +355,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   if (isCardLoading && !selectCardData) {
-    return '';
+    return <div />;
   }
 
   return (

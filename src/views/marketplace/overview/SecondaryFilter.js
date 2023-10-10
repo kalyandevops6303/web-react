@@ -55,6 +55,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const selectMarkeMetaData = useSelector((state) => state.marketPlace.metaData);
   const currentPreview = useSelector((state) => state.marketPlace.currentPreview);
   const isLoading = useSelector((state) => state.marketPlace.loading);
+  const isCardLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
+  const selectCardData = useSelector((state) => state?.marketPlace?.cardData);
 
   const metaData = { page: 1, page_size: 10 };
   const [secondFilterState, setSecondFilterState] = useState({
@@ -382,6 +384,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       </Popover>
     </>
   );
+  if (isCardLoading && !selectCardData) {
+    return <div />;
+  }
 
   return (
     <>

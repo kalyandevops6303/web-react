@@ -8,16 +8,22 @@ import Statbox from '../../user-details/overview/Statbox';
 import { getCardInfo } from '../../../redux/actions/marketPlaceActions';
 import { userTypes } from '../../../utility/constants/Constant';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state.marketPlace.cardData);
+  const isLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
 
   const userData = useSelector(selectAuthUserData);
   const userType = userData?.user_type;
   useEffect(() => {
     dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {} }));
   }, []);
+
+  if (isLoading && !selectCardData) {
+    return <ComponentSpinner />;
+  }
 
   return (
     <Row className="primary-row">
