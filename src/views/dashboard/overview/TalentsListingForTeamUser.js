@@ -125,7 +125,7 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
           <div className="d-flex flex-column">
             <TagsSection fullWidth open={open} tags={data?.talent_info?.expertise?.skills} />
             <div className="d-flex">
-              <RatingBadge number={returnFormattedRating(data?.talent_info?.rating)} />
+              <RatingBadge number={returnFormattedRating(data?.talent_info?.rating ?? 0)} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {data?.talent_info?.projects_worked_on_count} Projects
               </CardText>
