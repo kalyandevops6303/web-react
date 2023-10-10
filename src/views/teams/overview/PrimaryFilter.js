@@ -7,22 +7,24 @@ import { PropTypes } from 'prop-types';
 import Statbox from '../../user-details/overview/Statbox';
 import { getCardInfo } from '../../../redux/actions/myTeamActions';
 import { userTypes } from '../../../utility/constants/Constant';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state?.myTeams?.cardData);
+  const isLoading = useSelector((state) => state?.myTeams?.cardInfoLoading);
+  const selectMyTeamMetaData = useSelector((state) => state?.myTeams?.metaData);
 
   useEffect(() => {
     dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
   }, []);
-
   const TAB_NAMES = {
     TEAMS: 'Teams',
     CLIENTS: 'Clients',
     TALENTS: 'Talents',
     JOIN_REQ: 'Join Request',
     FAV: 'Favourite',
-    RECOMMENDATION: 'Recommendation',
+    RECOMMENDATION: 'Recommended',
   };
 
   const PATH_NAMES = {
@@ -34,31 +36,12 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
     RECOMMENDATION: 'recommendation',
   };
 
+  if (isLoading && !selectCardData) {
+    return <ComponentSpinner />;
+  }
+
   return (
     <Row className="primary-row">
-      {/* <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.ALL_TEAMS)}>
-        <Statbox
-          isActive={selected === PATH_NAMES.ALL_TEAMS}
-          isMarketPlaceTab
-          title={
-            selectCardData?.project_team
-              ? selectCardData?.project_team
-              : selectCardData?.teams_and_talents
-              ? selectCardData?.teams_and_talents
-              : selectCardData?.projects
-          }
-          desc={
-            userType === userTypes.client
-              ? TAB_NAMES.CLIENT
-              : userType === userTypes.talent
-              ? TAB_NAMES.ALL_TEAMS
-              : TAB_NAMES.TEAM
-          }
-          icon={<Users height={20} />}
-          color="light-turquoise"
-          className="stat-box cursor-pointer"
-        />
-      </Col> */}
       {userType !== userTypes.team && (
         <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.TEAMS)}>
           <Statbox
@@ -77,7 +60,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           <Statbox
             isActive={selected === PATH_NAMES.TALENTS}
             isMarketPlaceTab
-            title={selectCardData?.TALENTS}
+            title={selectCardData?.talent}
             desc={TAB_NAMES.TALENTS}
             icon={<Users height={20} />}
             color="light-turquoise"
@@ -91,7 +74,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           <Statbox
             isActive={selected === PATH_NAMES.CLIENTS}
             isMarketPlaceTab
-            title={selectCardData?.CLIENTS}
+            title={selectCardData?.clients}
             desc={TAB_NAMES.CLIENTS}
             icon={<Users height={20} />}
             color="light-turquoise"
@@ -104,7 +87,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
         <Statbox
           isActive={selected === PATH_NAMES.RECOMMENDATION}
           isMarketPlaceTab
-          title={selectCardData?.RECOMMENDATION}
+          title={
+            selected === PATH_NAMES.RECOMMENDATION
+              ? selectMyTeamMetaData?.total_records || '-'
+              : selectCardData?.recommended
+          }
           desc={TAB_NAMES.RECOMMENDATION}
           icon={<Users height={20} />}
           color="light-turquoise"
@@ -118,7 +105,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             isActive={selected === PATH_NAMES.JOIN_REQ}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
-            title={selectCardData?.join_request ? selectCardData?.join_request : selectCardData?.join_requests ?? 0}
+            title={selectCardData?.join_request || selectCardData?.join_requests}
             desc={TAB_NAMES.JOIN_REQ}
             icon={<UserCheck height={20} />}
             color="light-success"
@@ -130,15 +117,17 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           isActive={selected === PATH_NAMES.FAV}
           className="stat-box cursor-pointer"
           isMarketPlaceTab
-          title={selectCardData?.favourites ?? 0}
+          title={selected === PATH_NAMES.FAV ? selectMyTeamMetaData?.total_records || '-' : selectCardData?.favorite}
           desc={TAB_NAMES.FAV}
           icon={<Heart height={20} />}
           color="light-dark-red"
         />
       </Col>
-      <Col>
-        <div />
-      </Col>
+      {userType === userTypes.client && (
+        <Col>
+          <div />
+        </Col>
+      )}
     </Row>
   );
 };

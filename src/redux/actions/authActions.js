@@ -70,6 +70,7 @@ import { getTeamById } from '../../services/teamServices';
 import { clearTeams } from '../reducers/team';
 import { clearNotificationsData } from '../reducers/notifications';
 import { getTeams } from './teamsActions';
+import { clearCardData } from '../reducers/myTeams';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -252,6 +253,7 @@ const logoutAction =
     }
     dispatch(logOut());
     dispatch(clearTeams());
+    dispatch(clearCardData());
     dispatch(clearNotificationsData());
     onSuccess();
   };
@@ -304,7 +306,8 @@ const switchProfile =
         removeItem('team_id');
       }
       onSuccess(selected);
-      // dispatch(clearPostState());
+      // clearing my team data
+      dispatch(clearCardData());
     } catch (err) {
       errorHandler(err);
     }

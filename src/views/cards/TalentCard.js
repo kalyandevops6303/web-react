@@ -171,8 +171,17 @@ function TalentCard({ data, isSearchPage }) {
                 </div>
               </div>
               <div className="">
-                <BadgeGroup title="Skills" data={data?.expertise?.skills} color="light-blue" user_id={data?.user_id} />
-                <BadgeGroup title="Tools" data={data?.expertise?.tools} color="light-blue" user_id={data?.user_id} />
+                {data?.expertise?.skills && (
+                  <BadgeGroup
+                    title="Skills"
+                    data={data?.expertise?.skills}
+                    color="light-blue"
+                    user_id={data?.user_id}
+                  />
+                )}
+                {data?.expertise?.tools && (
+                  <BadgeGroup title="Tools" data={data?.expertise?.tools} color="light-blue" user_id={data?.user_id} />
+                )}
               </div>
             </div>
           </div>

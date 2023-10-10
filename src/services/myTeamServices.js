@@ -3,19 +3,19 @@ import DataService from '../configs/dataService/dataService';
 
 const getCardService = () => DataService.get(`${API.myTeams.cardInfo}`);
 
-const getTeamsService = () => DataService.post(`${API.myTeams.listTeams}`);
+const getTeamsService = ({ filterData }) => DataService.post(`${API.myTeams.listTeams}`, filterData);
 
-const getInvitationsService = () => DataService.get(`${API.myTeams.listInvites}`);
+const getInvitationsService = ({ filterData }) => DataService.get(`${API.myTeams.listInvites}`, filterData);
 
-const getJoinReqService = () => DataService.post(`${API.myTeams.listJoinReq}`);
+const getJoinReqService = ({ filterData }) => DataService.post(`${API.myTeams.listJoinReq}`, filterData);
 
-const getFavoriteService = () => DataService.post(`${API.myTeams.listFav}`);
+const getFavoriteService = ({ filterData }) => DataService.post(`${API.myTeams.listFav}`, filterData);
 
-const getTalentListingService = () => DataService.post(`${API.myTeams.listTalents}`);
+const getTalentListingService = ({ filterData }) => DataService.post(`${API.myTeams.listTalents}`, filterData);
 
-const getClientListingService = () => DataService.post(`${API.myTeams.listClients}`);
+const getClientListingService = ({ filterData }) => DataService.post(`${API.myTeams.listClients}`, filterData);
 
-const getRecommendationListingService = () => DataService.post(`${API.myTeams.listRecomm}`);
+const getRecommendationListingService = ({ filterData }) => DataService.post(`${API.myTeams.listRecomm}`, filterData);
 
 export {
   getTalentListingService,

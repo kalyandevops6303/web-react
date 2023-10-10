@@ -22,23 +22,6 @@ const MyTeams = () => {
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
   const navigate = useNavigate();
-  // Primary filters
-
-  // Adjust the number of lines based on the desired limit
-
-  // const routesMatch =
-  //   useMatch('/my-teams/teams') ||
-  //   useMatch('/my-teams/talents') ||
-  //   useMatch('/my-teams/clients') ||
-  //   useMatch('/my-teams/recommendations') ||
-  //   useMatch('/my-teams/join-requests') ||
-  //   useMatch('/my-teams/favourites');
-
-  // const initialState =
-  //   routesMatch?.pathname === '/my-teams'
-  //     ? routesMatch?.pathname?.split('/')?.[1]
-  //     : routesMatch?.pathname?.split('/')?.[2];
-
   const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMyTeamsTab') ?? 'teams');
 
   useEffect(() => {
