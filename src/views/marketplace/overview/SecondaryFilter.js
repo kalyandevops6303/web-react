@@ -634,7 +634,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               primaryFilter === 'clients'
                 ? {
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill,minmax(26%,auto))',
+                    gridTemplateColumns: 'repeat(auto-fill,minmax(33%,auto))',
                   }
                 : {}
             }

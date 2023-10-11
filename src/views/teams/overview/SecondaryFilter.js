@@ -565,7 +565,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 (primaryFilter === 'recommendation' && secondFilterState.user_type[0]?.value === 'CLIENT') ||
                 (primaryFilter === 'favourites' && secondFilterState.user_type[0]?.value === 'CLIENT') ||
                 primaryFilter === 'clients'
-                  ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                  ? {
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fill,minmax(33%,auto))',
+                    }
                   : {}
               }
             >
