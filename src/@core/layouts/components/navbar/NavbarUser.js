@@ -12,14 +12,17 @@ import { notificationCount } from '../../../../redux/reducers/notifications';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
+import { clearUnreadMsgCountData } from '../../../../redux/reducers/chat';
 
-const NavbarUser = ({ userUnreadMsgCount }) => {
+const NavbarUser = () => {
   const isTab = useIsTab();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isNotificationCount = useSelector((state) => state.notifications.notificationCount);
   const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
+
+  const unreadMsgCount = useSelector((state) => state.chat.unreadMsgCount);
 
   const userData = useSelector(selectUserData);
   const handleNotificaionClick = () => {
@@ -28,6 +31,7 @@ const NavbarUser = ({ userUnreadMsgCount }) => {
 
   const handleChatNavigate = () => {
     if (cometAuthToken) {
+      dispatch(clearUnreadMsgCountData());
       navigate(`/chat`, {
         state: { targetId: undefined },
       });
@@ -51,7 +55,7 @@ const NavbarUser = ({ userUnreadMsgCount }) => {
           </NotificationIconContainer>
           <MessageIconContainer>
             <div onClick={handleChatNavigate}>
-              {userUnreadMsgCount !== 0 && <span className="msg-notification-dot">{userUnreadMsgCount}</span>}
+              {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
               <MessageSquare size={20} color={theme.bodyColor} />
             </div>
           </MessageIconContainer>
