@@ -129,7 +129,7 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
               tags={[...(data?.talent_info?.expertise?.skills ?? [])].sort((a, b) => a.name.length - b.name.length)}
             />
             <div className="d-flex">
-              <RatingBadge number={returnFormattedRating(data?.talent_info?.rating)} />
+              <RatingBadge number={returnFormattedRating(data?.talent_info?.rating ?? 0)} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {data?.talent_info?.projects_worked_on_count} Projects
               </CardText>

@@ -137,7 +137,13 @@ const RegisterEmail = () => {
             </div>
             {!agreeTerms && <FormFeedback>{errors.agreeTerms && errors.agreeTerms.message}</FormFeedback>}
           </div>
-          <Button color="primary" block className="auth-btn" type="submit" disabled={!emailValue || isLoading}>
+          <Button
+            color="primary"
+            block
+            className="auth-btn"
+            type="submit"
+            disabled={!emailValue || isLoading || !agreeTerms}
+          >
             {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>
         </Form>
