@@ -64,9 +64,12 @@ const App = () => {
 
   useEffect(() => {
     const channel = new BroadcastChannel('data-channel');
+    console.log('CHANNEL', channel);
     if (channel) {
-      channel?.addEventListener('message', () => {
+      channel?.addEventListener('message', (event) => {
         // Handle the received data from the service worker
+        const { data } = event;
+        console.log(data, event, 'COMET');
         dispatch(notificationCount(true));
       });
     }
@@ -79,6 +82,7 @@ const App = () => {
       }
     };
   }, []);
+
   messaging?.onMessage((payload) => {
     const notificationTitle = payload.data.message;
     console.log('PAYLOAD COMET', JSON.parse(notificationTitle));

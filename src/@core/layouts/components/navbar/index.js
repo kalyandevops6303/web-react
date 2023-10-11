@@ -14,14 +14,17 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { CometChat } from '@cometchat-pro/chat';
 import { getItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { selectSavedUserData, selectUserData } from '../../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../../utility/constants/Constant';
 
 const ThemeNavbar = (props) => {
+  const [userUnreadMsgCount, setUserUnreadMsgCount] = useState(0);
+
   const userData = useSelector(selectUserData);
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
@@ -78,6 +81,11 @@ const ThemeNavbar = (props) => {
     if (token) {
       dispatch(getUserData());
     }
+    CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
+      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
+      console.log('UNREAD COUNT INDEX', totalCount);
+      setUserUnreadMsgCount(totalCount);
+    });
   }, []);
 
   return (
@@ -143,7 +151,7 @@ const ThemeNavbar = (props) => {
         </>
       )}
 
-      <NavbarUser skin={skin} setSkin={setSkin} />
+      <NavbarUser skin={skin} setSkin={setSkin} userUnreadMsgCount={userUnreadMsgCount} />
     </HeadWrapper>
   );
 };

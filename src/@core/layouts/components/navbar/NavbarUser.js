@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, MessageSquare } from 'react-feather';
@@ -10,31 +10,31 @@ import { MessageIconContainer, NotificationIconContainer } from './style';
 import { useIsTab } from '../../../../utility/Utils';
 import { notificationCount } from '../../../../redux/reducers/notifications';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
+import ShowToastMessage from '../../../components/toast';
+import { ERROR } from '../../../../utility/constants/ToastTypes';
 
-const NavbarUser = () => {
+const NavbarUser = ({ userUnreadMsgCount }) => {
   const isTab = useIsTab();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isNotificationCount = useSelector((state) => state.notifications.notificationCount);
-
-  const [userUnreadMsgCount, setUserUnreadMsgCount] = useState(0);
+  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
 
   const userData = useSelector(selectUserData);
-  const userId = userData?._id;
   const handleNotificaionClick = () => {
     isNotificationCount && dispatch(notificationCount(false));
   };
 
   const handleChatNavigate = () => {
-    navigate(`/chat`, {
-      state: { targetId: undefined },
-    });
+    if (cometAuthToken) {
+      navigate(`/chat`, {
+        state: { targetId: undefined },
+      });
+    } else {
+      ShowToastMessage(ERROR, 'Something went wrong.');
+    }
   };
-
-  CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
-    setUserUnreadMsgCount(Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0));
-  });
 
   return (
     <ul className="nav navbar-nav align-items-center ms-auto">
