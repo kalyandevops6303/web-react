@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, MessageSquare } from 'react-feather';
@@ -10,6 +10,9 @@ import { MessageIconContainer, NotificationIconContainer } from './style';
 import { useIsTab } from '../../../../utility/Utils';
 import { notificationCount } from '../../../../redux/reducers/notifications';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
+import ShowToastMessage from '../../../components/toast';
+import { ERROR } from '../../../../utility/constants/ToastTypes';
+import { clearUnreadMsgCountData } from '../../../../redux/reducers/chat';
 
 const NavbarUser = () => {
   const isTab = useIsTab();
@@ -17,24 +20,25 @@ const NavbarUser = () => {
   const navigate = useNavigate();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isNotificationCount = useSelector((state) => state.notifications.notificationCount);
+  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
 
-  const [userUnreadMsgCount, setUserUnreadMsgCount] = useState(0);
+  const unreadMsgCount = useSelector((state) => state.chat.unreadMsgCount);
 
   const userData = useSelector(selectUserData);
-  const userId = userData?._id;
   const handleNotificaionClick = () => {
     isNotificationCount && dispatch(notificationCount(false));
   };
 
   const handleChatNavigate = () => {
-    navigate(`/chat`, {
-      state: { targetId: undefined },
-    });
+    if (cometAuthToken) {
+      dispatch(clearUnreadMsgCountData());
+      navigate(`/chat`, {
+        state: { targetId: undefined },
+      });
+    } else {
+      ShowToastMessage(ERROR, 'Something went wrong.');
+    }
   };
-
-  CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
-    setUserUnreadMsgCount(Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0));
-  });
 
   return (
     <ul className="nav navbar-nav align-items-center ms-auto">
@@ -51,7 +55,7 @@ const NavbarUser = () => {
           </NotificationIconContainer>
           <MessageIconContainer>
             <div onClick={handleChatNavigate}>
-              {userUnreadMsgCount !== 0 && <span className="msg-notification-dot">{userUnreadMsgCount}</span>}
+              {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
               <MessageSquare size={20} color={theme.bodyColor} />
             </div>
           </MessageIconContainer>

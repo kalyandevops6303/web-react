@@ -6,7 +6,7 @@ import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
 import { COMETCHAT_CONSTANTS } from './constants';
-import { getToken, messaging, requestPermission } from './configs/api/firebase';
+import { getToken, messaging } from './configs/api/firebase';
 
 // ** Router Import
 import Router from './router/Router';
@@ -14,6 +14,7 @@ import { setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
 import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
+import { unreadMsgCountSuccess } from './redux/reducers/chat';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -35,11 +36,9 @@ const App = () => {
     },
   );
 
-  const loginUser = async (authToken) => {
+  const loginUser = async (authToken, fcmCometToken) => {
     await CometChat.login(authToken);
     console.log('LOGGED IN COMETCHAT');
-    const fcmCometToken = await requestPermission();
-    console.log('FCM TOKEN', fcmCometToken);
     await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
       fcmToken: fcmCometToken,
     });
@@ -47,12 +46,13 @@ const App = () => {
 
   useEffect(() => {
     if (isLoggedIn && !fcmToken) {
-      loginUser(cometAuthToken);
       let data;
       const tokenFunc = async () => {
         data = await getToken();
+
         if (data) {
           dispatch(fcmSubscribeNotification(data));
+          loginUser(cometAuthToken, data);
           // await fcmSubscribeService(data);
           setItem('fcmToken', data);
         }
@@ -64,10 +64,16 @@ const App = () => {
 
   useEffect(() => {
     const channel = new BroadcastChannel('data-channel');
+    console.log('CHANNEL', channel);
     if (channel) {
-      channel?.addEventListener('message', () => {
+      channel?.addEventListener('message', (event) => {
         // Handle the received data from the service worker
+        const { data } = event;
+        console.log(data, event, 'COMET');
         dispatch(notificationCount(true));
+        if (data.alert) {
+          dispatch(unreadMsgCountSuccess());
+        }
       });
     }
 
@@ -79,12 +85,15 @@ const App = () => {
       }
     };
   }, []);
+
   messaging?.onMessage((payload) => {
-    const notificationTitle = payload.data.message;
-    console.log('PAYLOAD COMET', JSON.parse(notificationTitle));
+    console.log('PAYLOAD COMET', payload);
     if (!('Notification' in window)) {
       console.warn('This browser does not support system notifications.');
     } else if (Notification.permission === 'granted') {
+      if (payload.data.alert) {
+        dispatch(unreadMsgCountSuccess());
+      }
       // only when type single
       dispatch(notificationCount(true));
 
@@ -110,6 +119,8 @@ const App = () => {
           },
         },
       );
+    } else {
+      console.log('INSIDE ELSE');
     }
   });
   return (
