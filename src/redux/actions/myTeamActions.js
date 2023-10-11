@@ -106,7 +106,7 @@ const getTalentListing =
       dispatch(getListReq());
     }
     try {
-      const res = await getTalentListingService({ filterData });
+      const res = await getTalentListingService({ filterData, metaData });
       dispatch(storeSuccessData(res?.data?.data));
       onSuccess();
     } catch (error) {
@@ -122,7 +122,7 @@ const getClientListing =
       dispatch(getListReq());
     }
     try {
-      const res = await getClientListingService({ filterData });
+      const res = await getClientListingService({ filterData, metaData });
       dispatch(storeSuccessData(res?.data?.data));
       onSuccess();
     } catch (error) {
@@ -138,7 +138,7 @@ const getRecommendationListings =
       dispatch(getListReq());
     }
     try {
-      const res = await getRecommendationListingService({ filterData });
+      const res = await getRecommendationListingService({ filterData, metaData });
       dispatch(storeSuccessData(res?.data?.data));
       onSuccess();
     } catch (error) {

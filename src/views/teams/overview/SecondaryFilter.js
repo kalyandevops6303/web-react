@@ -269,22 +269,84 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const fetchMore = () => {
-    const newMeteData = {
+    const newMetaData = {
       ...metaData,
       // eslint-disable-next-line no-unsafe-optional-chaining
       page: selectMyTeamMetaData?.current_page + 1 || 1,
     };
 
     const filterData = {};
+
     Object.keys(secondFilterState).forEach((key) => {
-      filterData[key] = secondFilterState[key].map((item) => item.value);
+      if (Array.isArray(secondFilterState[key])) {
+        if (key === 'invite_type' || key === 'user_type') {
+          filterData[key] = secondFilterState[key][0]?.value;
+        } else {
+          filterData[key] = secondFilterState[key].map((item) => item.value);
+        }
+      }
     });
+
     if (primaryFilter === 'teams') {
-      dispatch(getTeamListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData }));
-    } else if (primaryFilter === 'join-requests') {
-      dispatch(getReqListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData, userType }));
+      dispatch(
+        getTeamListing({
+          metaData: newMetaData,
+          onSuccess,
+          onError,
+          filterData: { ...filterData, search_query: searchText || '' },
+          userType,
+        }),
+      );
+    } else if (primaryFilter === 'join_requests') {
+      dispatch(
+        getReqListing({
+          metaData: newMetaData,
+          onSuccess,
+          onError,
+          filterData: { ...filterData, search_query: searchText || '' },
+          userType,
+        }),
+      );
+    } else if (primaryFilter === 'recommendation') {
+      dispatch(
+        getRecommendationListings({
+          metaData: newMetaData,
+          onSuccess,
+          onError,
+          filterData: { ...filterData, search_query: searchText || '' },
+          userType,
+        }),
+      );
+    } else if (primaryFilter === 'talents') {
+      dispatch(
+        getTalentListing({
+          metaData: newMetaData,
+          onSuccess,
+          onError,
+          filterData: { ...filterData, search_query: searchText || '' },
+          userType,
+        }),
+      );
+    } else if (primaryFilter === 'clients') {
+      dispatch(
+        getClientListing({
+          metaData: newMetaData,
+          onSuccess,
+          onError,
+          filterData: { ...filterData, search_query: searchText || '' },
+          userType,
+        }),
+      );
     } else if (primaryFilter === 'favourites') {
-      dispatch(getFavListing({ searchText, metaData: newMeteData, onSuccess, onError, filterData, userType }));
+      dispatch(
+        getFavListing({
+          metaData: newMetaData,
+          onSuccess,
+          onError,
+          filterData: { ...filterData, search_query: searchText || '' },
+          userType,
+        }),
+      );
     }
   };
 
