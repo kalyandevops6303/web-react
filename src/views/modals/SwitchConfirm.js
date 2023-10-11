@@ -9,7 +9,7 @@ import { switchProfile } from '../../redux/actions/authActions';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 
-const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection }) => {
+const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection, disputesAlertRedirection }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -34,6 +34,8 @@ const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection }) =
 
     if (data?.isDisputesNotification) {
       disputesRedirection(data?.notification_type);
+    } else if (data?.isDisputeAlert) {
+      disputesAlertRedirection(data?.title);
     } else {
       redirectionFunction({
         status: data?.title,
@@ -87,6 +89,7 @@ SwitchConfirmModal.propTypes = {
   toggleModal: Proptypes.func,
   data: Proptypes.object,
   disputesRedirection: Proptypes.func,
+  disputesAlertRedirection: Proptypes.func,
 };
 
 SwitchConfirmModal.defaultProps = {
@@ -94,4 +97,5 @@ SwitchConfirmModal.defaultProps = {
   toggleModal: () => {},
   data: {},
   disputesRedirection: () => {},
+  disputesAlertRedirection: () => {},
 };

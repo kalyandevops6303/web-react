@@ -151,7 +151,7 @@ const Login = () => {
                   value={field.value || ''} // Set a default value for the input
                   className="input-group-merge"
                   id="password"
-                  placeholder="Confirm your new password"
+                  placeholder="Confirm your password"
                 />
               )}
             />

@@ -58,7 +58,7 @@ const Team = ({ data, isSearchPage }) => {
     <TeamCardWrap>
       <Card>
         <CardBody>
-          <div className="d-flex">
+          <div className="d-flex teamcard-flex-cloumn">
             <div className="w-75">
               <div className="d-flex justify-content-between">
                 <CardTitle className="card-title mb-1 d-flex justify-space-between">
@@ -91,7 +91,7 @@ const Team = ({ data, isSearchPage }) => {
                 <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
               </div>
             </div>
-            <div className="w-25">
+            <div className="w-25 teamcard-width">
               <div className="d-flex flex-column align-items-start">
                 <div className="d-flex w-100 justify-content-end gap-1">
                   {data?.is_alma_mater && (
@@ -145,8 +145,8 @@ const Team = ({ data, isSearchPage }) => {
                 </div>
               </div>
               <div className="">
-                <BadgeGroup title="Skills" data={data?.skills} color="light-blue" user_id={data?.user_id} />
-                <BadgeGroup title="Tools" data={data?.tools} color="light-blue" user_id={data?.user_id} />
+                <BadgeGroup title="Skills" data={data?.skills} color="light-blue" id={`tooltip-skills-${data?._id}`} />
+                <BadgeGroup title="Tools" data={data?.tools} color="light-blue" id={`tooltip-tools-${data?._id}`} />
               </div>
             </div>
           </div>

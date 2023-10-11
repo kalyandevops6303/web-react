@@ -40,6 +40,7 @@ import NoDataFoundComponent from './NoDataFoundComp';
 import TeamCard from '../../cards/TeamCard';
 import ClientCard from '../../cards/ClientCard';
 import TalentCard from '../../cards/TalentCard';
+import { ResponsiveGrid } from '../../cards/style';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -609,30 +610,32 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       {isLoading ? (
         <ComponentSpinner />
       ) : (
-        <InfiniteScroll
-          dataLength={selectMarketPlaceData?.length}
-          next={fetchMore}
-          hasMore={hasMore}
-          endMessage={
-            <div className="d-flex justify-content-center ">
-              {selectMarketPlaceData?.length === 0 ? (
-                <NoDataFoundComponent
-                  isMyListing={primaryFilter === 'my_listings'}
-                  isRecommanded={isRecommanded}
-                  data={selectMarketPlaceData}
-                />
-              ) : (
-                ''
-              )}
-            </div>
-          }
-          loader={<div className="d-flex justify-content-center">Loading...</div>}
-        >
-          <div
-            className="justify-content-between grid-layout"
+        <ResponsiveGrid>
+          <InfiniteScroll
+            dataLength={selectMarketPlaceData?.length}
+            next={fetchMore}
+            hasMore={hasMore}
+            endMessage={
+              <div className="d-flex justify-content-center ">
+                {selectMarketPlaceData?.length === 0 ? (
+                  <NoDataFoundComponent
+                    isMyListing={primaryFilter === 'my_listings'}
+                    isRecommanded={isRecommanded}
+                    data={selectMarketPlaceData}
+                  />
+                ) : (
+                  ''
+                )}
+              </div>
+            }
+            loader={<div className="d-flex justify-content-center">Loading...</div>}
+            className="responsive-grid"
             style={
               primaryFilter === 'clients'
-                ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                ? {
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill,minmax(26%,auto))',
+                  }
                 : {}
             }
           >
@@ -658,8 +661,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               );
             })}
-          </div>
-        </InfiniteScroll>
+          </InfiniteScroll>
+        </ResponsiveGrid>
       )}
     </>
   );

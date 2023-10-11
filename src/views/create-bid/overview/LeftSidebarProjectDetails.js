@@ -136,12 +136,13 @@ const LeftSidebarProjectDetails = () => {
           <div className="d-flex">
             {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
               <BadgeGroup
-                title="Tags"
+                title="Tags:"
                 data={[
                   ...(projectDetailsData?.proficiency?.skills || []),
                   ...(projectDetailsData?.proficiency?.tools || []),
                 ]}
                 color="light-blue"
+                id={`tooltip-${projectDetailsData?._id}`}
               />
             )}
           </div>

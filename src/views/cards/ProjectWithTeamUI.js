@@ -71,7 +71,7 @@ const ProjectWithTeamUI = ({ data }) => {
       </div>
       <div className="d-flex">
         <section className="w-50 me-2 ">
-          <div className="d-flex">
+          <div className="d-flex w-100">
             <img
               className="market-place-card-photo me-75"
               src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
@@ -81,7 +81,7 @@ const ProjectWithTeamUI = ({ data }) => {
               style={{ objectFit: 'cover' }}
             />
             <div>
-              <div className="flex-grow-1 w-50">
+              <div className="flex-grow-1">
                 <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
                   {data?.client?.first_name} {data?.client?.last_name}
                 </CardTitle>
@@ -90,7 +90,7 @@ const ProjectWithTeamUI = ({ data }) => {
                 </CardText>
               </div>
               <div className="d-flex flex-grow-1 mt-25">
-                <RatingBadge number={Math.round(data?.client?.rating)} />
+                <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
                 <CardText className="ps-1 font-small-3 fw-300 rating-label">
                   {data?.client?.project_count} Projects
                 </CardText>
@@ -102,6 +102,7 @@ const ProjectWithTeamUI = ({ data }) => {
               title="Tools"
               data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
               color="light-blue"
+              id={`tooltip-tools-${data?._id}`}
             />
           </div>
         </section>
@@ -123,7 +124,7 @@ const ProjectWithTeamUI = ({ data }) => {
           )}
 
           <div className="d-flex flex-grow-1 mt-25">
-            <RatingBadge number="0" />
+            <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">
               {data?.client?.project_count} Projects
             </CardText>
@@ -133,6 +134,7 @@ const ProjectWithTeamUI = ({ data }) => {
               title="Skills"
               data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
               color="light-blue"
+              id={`tooltip-skills-${data?._id}`}
             />
           </div>
         </div>
