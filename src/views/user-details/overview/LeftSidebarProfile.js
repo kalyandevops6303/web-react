@@ -39,6 +39,8 @@ import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { makeTeamMemberSuccess } from '../../../redux/reducers/profile';
 import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
 import InvitationSentModal from '../../modals/InvitationSentModal';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -52,6 +54,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
   const requestStatusData = useSelector((state) => state.inviteTalent.getRequestStatus);
+  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const [selectedTalent, setSelectedTalent] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [sendInviteModal, setSendInviteModal] = useState(null);
@@ -123,9 +126,13 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   };
 
   const onMessageClick = () => {
-    navigate(`/chat`, {
-      state: { targetId: param?.userId },
-    });
+    if (cometAuthToken) {
+      navigate(`/chat`, {
+        state: { targetId: param?.userId },
+      });
+    } else {
+      ShowToastMessage(ERROR, 'Something went wrong.');
+    }
   };
 
   useEffect(() => {

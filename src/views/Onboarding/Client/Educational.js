@@ -62,7 +62,7 @@ const Educational = () => {
         }),
       )
       .max(5, 'Maximum of five skills can be added')
-      .min(1, 'At least one skill is required')
+      .min(5, 'Five skills has to be added')
       .required('Skill is required'),
     tools: yup
       .array()
@@ -72,7 +72,9 @@ const Educational = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Maximum of five tools can be added'),
+      .max(5, 'Maximum of five tools can be added')
+      .min(5, 'Five tools has to be added')
+      .transform((value) => (value.length === 0 ? undefined : value)),
   });
 
   const {

@@ -17,6 +17,9 @@ import {
   favoriteTalentsFailure,
   favoriteTalentsRequest,
   favoriteTalentsSuccess,
+  favoriteTeamsFailure,
+  favoriteTeamsRequest,
+  favoriteTeamsSuccess,
   inviteTalentsFailure,
   inviteTalentsRequest,
   inviteTalentsSuccess,
@@ -27,6 +30,7 @@ import {
   createProjectAIService,
   createProjectService,
   favoriteTalentsService,
+  favoriteTeamsService,
   inviteTalentsService,
 } from '../../services/createProjectServices';
 import { skillsAIService, toolsAIService } from '../../services/staticServices';
@@ -63,6 +67,18 @@ const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => a
   }
 };
 
+const getFavoriteTeams = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
+  if (page === 1) {
+    dispatch(favoriteTeamsRequest());
+  }
+  try {
+    const res = await favoriteTeamsService(projectId, searchText, page, pageSize);
+    dispatch(favoriteTeamsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
+  } catch (error) {
+    errorHandler(error, favoriteTeamsFailure);
+  }
+};
+
 const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   if (page === 1) {
     dispatch(almaMaterTalentsRequest());
@@ -81,7 +97,7 @@ const createNewProject = (data, onSuccess) => async (dispatch) => {
     const res = await createProjectService(data);
     dispatch(createProjectSuccess(res.data.data));
     dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
-    dispatch(getFavoriteTalents(res.data.data.project_id, '', 1, 10, []));
+    dispatch(getFavoriteTeams(res.data.data.project_id, '', 1, 10, []));
     dispatch(getAlmaMaterTalents(res.data.data.project_id, '', 1, 10, []));
     ShowToastMessage(SUCCESS, res.data.data.message);
     onSuccess();
@@ -138,6 +154,7 @@ export {
   createNewProject,
   getBestTalents,
   getFavoriteTalents,
+  getFavoriteTeams,
   getAlmaMaterTalents,
   inviteTalents,
   createProjectDetailsFromAI,

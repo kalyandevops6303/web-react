@@ -113,7 +113,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
         }),
       )
       .max(5, 'Five tools has to be added')
-      .min(5, 'Five tools has to be added'),
+      .min(5, 'Five tools has to be added')
+      .transform((value) => (value.length === 0 ? undefined : value)),
     preferredWorkingTimeZone: yup
       .object()
       .shape({
