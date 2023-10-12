@@ -56,9 +56,7 @@ const Educational = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Maximum of five tools can be added')
-      .min(5, 'Five tools has to be added')
-      .transform((value) => (value.length === 0 ? undefined : value)),
+      .max(5, 'Maximum of five tools can be added'),
     certificates: yup.array().of(
       yup.object().shape({
         label: yup.string(),
@@ -74,7 +72,7 @@ const Educational = () => {
         }),
       )
       .max(5, 'Maximum of five skills can be added')
-      .min(5, 'Five skills has to be added')
+      .min(1, 'At least one skill is required')
       .required('Skill is required'),
   });
 

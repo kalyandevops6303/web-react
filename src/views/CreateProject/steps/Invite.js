@@ -38,10 +38,10 @@ import {
   bestTalents,
   bestTalentsLoading,
   createProjectData,
-  favoriteTeams,
-  favoriteTeamsLoading,
+  favoriteTalents,
+  favoriteTalentsLoading,
 } from '../../../redux/selectors/createProjectSelectors';
-import { getAlmaMaterTalents, getBestTalents, getFavoriteTeams } from '../../../redux/actions/createProjectActions';
+import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../../redux/actions/createProjectActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const Invite = ({ stepper }) => {
@@ -54,12 +54,12 @@ const Invite = ({ stepper }) => {
   const dispatch = useDispatch();
 
   const bestTalentsData = useSelector(bestTalents);
-  const favoriteTeamsData = useSelector(favoriteTeams);
+  const favoriteTalentsData = useSelector(favoriteTalents);
   const almaMaterTalentsData = useSelector(almaMaterTalents);
   const createProjectDetails = useSelector(createProjectData);
 
   const isBestTalentsLoading = useSelector(bestTalentsLoading);
-  const isFavoriteTeamsLoading = useSelector(favoriteTeamsLoading);
+  const isFavoriteTalentsLoading = useSelector(favoriteTalentsLoading);
   const isAlmaMaterTalentsLoading = useSelector(almaMaterTalentsLoading);
 
   const [activeTab, setTabActive] = useState(tabNames.best);
@@ -96,16 +96,12 @@ const Invite = ({ stepper }) => {
 
   const onSendInvitationModalOpen = () => {
     const reformattedData = selectedTalents.map((talent) => {
-      if ('name' in talent) {
+      if ('talent_details' in talent) {
         return {
-          ...talent,
-          first_name: talent.name,
-          last_name: '',
-          image_uri: talent.team_logo,
-          total_matches: talent.total_matches || 0,
+          ...talent.talent_details,
+          user_details: talent.user_details,
+          total_matches: talent.total_matches,
           match_percentage: talent.match_percentage,
-          rating: talent.rating || 0,
-          projects_worked_on_count: talent.projects_worked_on_count || 0,
         };
         // eslint-disable-next-line no-else-return
       } else {
@@ -133,16 +129,16 @@ const Invite = ({ stepper }) => {
     }
   };
 
-  const loadNewFavoriteTeams = () => {
+  const loadNewFavoriteTalents = () => {
     if (stepper?._currentIndex === 3) {
       dispatch(
-        getFavoriteTeams(
+        getFavoriteTalents(
           createProjectDetails?.project_id,
           searchValue,
           // eslint-disable-next-line no-unsafe-optional-chaining
-          favoriteTeamsData?.metadata?.current_page + 1,
+          favoriteTalentsData?.metadata?.current_page + 1,
           10,
-          favoriteTeamsData?.data,
+          favoriteTalentsData?.data,
         ),
       );
     }
@@ -169,8 +165,7 @@ const Invite = ({ stepper }) => {
     if (createProjectDetails && stepper?._currentIndex === 3) {
       delayDebounceFn = setTimeout(() => {
         dispatch(getBestTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
-        // dispatch(getFavoriteTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
-        dispatch(getFavoriteTeams(createProjectDetails?.project_id, searchValue, 1, 10, []));
+        dispatch(getFavoriteTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
         dispatch(getAlmaMaterTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
       }, 500);
     }
@@ -186,14 +181,11 @@ const Invite = ({ stepper }) => {
 
   const renderActionButton = (user, type) => {
     let userId;
-    let clickedUser;
 
     if (type === 'fav') {
-      userId = user?._id;
-      clickedUser = { ...user, user_id: user?._id };
+      userId = user.talent_details.user_id;
     } else {
       userId = user.user_id;
-      clickedUser = user;
     }
 
     if (invitedIds.includes(userId)) {
@@ -221,7 +213,7 @@ const Invite = ({ stepper }) => {
           className="upload-btn cursor-pointer ms-3"
           onClick={() => {
             setSelectedIds([...selectedIds, userId]);
-            setSelectedTalents([...selectedTalents, clickedUser]);
+            setSelectedTalents([...selectedTalents, user]);
           }}
         >
           <h5 className="m-0 fw-light font-medium-1">Invite</h5>
@@ -308,7 +300,7 @@ const Invite = ({ stepper }) => {
                       toggleTabs(tabNames.favourite);
                     }}
                   >
-                    Favorite Teams
+                    Favorite Talent
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -328,7 +320,7 @@ const Invite = ({ stepper }) => {
 
           {invitedIds.length > 0 && <p className="font-small-3">{`${invitedIds?.length} invited`}</p>}
 
-          {isBestTalentsLoading || isAlmaMaterTalentsLoading || isFavoriteTeamsLoading ? (
+          {isBestTalentsLoading || isAlmaMaterTalentsLoading || isFavoriteTalentsLoading ? (
             <ComponentSpinner />
           ) : (
             <TabContent activeTab={activeTab} className="mb-2">
@@ -427,25 +419,29 @@ const Invite = ({ stepper }) => {
                 {activeTab === tabNames.favourite && (
                   <TableContainer id="scrollableDiv" style={{ maxHeight: '18rem', overflowY: 'auto' }}>
                     <InfiniteScroll
-                      dataLength={favoriteTeamsData?.data?.length || 0}
-                      next={loadNewFavoriteTeams}
-                      hasMore={favoriteTeamsData?.metadata?.has_next_page}
+                      dataLength={favoriteTalentsData?.data?.length || 0}
+                      next={loadNewFavoriteTalents}
+                      hasMore={favoriteTalentsData?.metadata?.has_next_page}
                       scrollableTarget="scrollableDiv"
                       loader={<div className="d-flex justify-content-center">Loading...</div>}
                     >
-                      {favoriteTeamsData?.data?.length > 0 ? (
-                        favoriteTeamsData?.data?.map((item) => (
+                      {favoriteTalentsData?.data?.length > 0 ? (
+                        favoriteTalentsData?.data?.map((item) => (
                           <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                             <Col sm="2" md="3" lg="4">
                               <div className="d-flex align-items-center">
                                 <Avatar
-                                  img={item?.team_logo?.length > 0 ? item?.team_logo : defaultAvatar}
+                                  img={
+                                    item?.talent_details?.image_uri?.length > 0
+                                      ? item?.talent_details?.image_uri
+                                      : defaultAvatar
+                                  }
                                   imgHeight="38"
                                   imgWidth="38"
                                   className="me-2 user-pic"
                                 />
-                                <Link to={`/profile/team/${item?._id}`} target="_blank">
-                                  <p className="font-medium-1 fw-bold m-0">{`${item?.name}`}</p>
+                                <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
+                                  <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
                                 </Link>
                               </div>
                             </Col>
@@ -459,23 +455,21 @@ const Invite = ({ stepper }) => {
                                       fill={theme.starRatingBg}
                                       className="me-50"
                                     />
-                                    <p className="m-0 fw-bolder rating-text">
-                                      {returnFormattedRating(item?.rating || 0)}
-                                    </p>
+                                    {returnFormattedRating(item.talent_details.rating)}
                                   </div>
                                 </Badge>
                                 <p className="m-0 font-small-3 fw-bold ms-1">
-                                  {item?.projects_worked_on_count || 0} Projects
+                                  {item.talent_details.projects_worked_on_count} Projects
                                 </p>
                               </div>
                             </Col>
                             <Col sm="2" md="3" lg="2">
                               <div className="circular-progressbar-container">
                                 <CircularProgressbarWithChildren
-                                  value={item?.match_percentage}
+                                  value={item.match_percentage}
                                   styles={{
                                     path: {
-                                      stroke: giveStrokeColor(item?.match_percentage),
+                                      stroke: giveStrokeColor(item.match_percentage),
                                       strokeLinecap: 'round',
                                       transition: 'stroke-dashoffset 0.5s ease 0s',
                                       transform: 'rotate(0turn)',
@@ -490,7 +484,7 @@ const Invite = ({ stepper }) => {
                                   }}
                                 >
                                   <div className="d-flex justify-content-center align-items-center">
-                                    <p className="percentage-text m-0">{item?.match_percentage}%</p>
+                                    <p className="percentage-text m-0">{item.match_percentage}%</p>
                                   </div>
                                 </CircularProgressbarWithChildren>
                               </div>

@@ -29,7 +29,6 @@ import { useState } from 'react';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
-import { logOutCometChat } from '../../../../redux/reducers/chat';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(selectUserData);
@@ -65,7 +64,6 @@ const UserDropdown = () => {
     // CometChat logout
     await messaging.deleteToken();
     await CometChat.logout();
-    dispatch(logOutCometChat());
   };
   const LineWrapper = styled.div`
     position: relative;

@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './reducers/auth';
-import chat from './reducers/chat';
 import staticReducer from './reducers/static';
 import talentOnboardingReducer from './reducers/talentOnboarding';
 import clientOnboardingReducer from './reducers/clientOnboarding';
@@ -35,7 +34,6 @@ const rootReducer = combineReducers({
   createProject,
   marketPlace,
   notifications,
-  chat,
   projectDetails,
   layout,
   navbar,

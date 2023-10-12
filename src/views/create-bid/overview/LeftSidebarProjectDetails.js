@@ -15,14 +15,11 @@ import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { returnFormattedRating } from '../../../utility/Utils';
-import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
-  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
 
   const projectDetailsData = useSelector(projectDetails);
 
@@ -57,13 +54,9 @@ const LeftSidebarProjectDetails = () => {
   }, [projectDetailsData]);
 
   const onMessageClick = () => {
-    if (cometAuthToken) {
-      navigate(`/chat`, {
-        state: { targetId: projectDetailsData?.client_details?.user_id },
-      });
-    } else {
-      ShowToastMessage(ERROR, 'Something went wrong.');
-    }
+    navigate(`/chat`, {
+      state: { targetId: projectDetailsData?.client_details?.user_id },
+    });
   };
 
   return (

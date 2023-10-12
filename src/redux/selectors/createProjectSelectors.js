@@ -33,13 +33,6 @@ export const favoriteTalentsLoading = createSelector(
   (createProject) => createProject.favoriteTalentsLoading,
 );
 
-export const favoriteTeams = createSelector(createProjectSelector, (createProject) => createProject.favoriteTeams);
-
-export const favoriteTeamsLoading = createSelector(
-  createProjectSelector,
-  (createProject) => createProject.favoriteTeamsLoading,
-);
-
 export const almaMaterTalents = createSelector(
   createProjectSelector,
   (createProject) => createProject.almaMaterTalents,

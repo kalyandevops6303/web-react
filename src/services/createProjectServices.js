@@ -15,11 +15,6 @@ const favoriteTalentsService = (projectId, searchText, page, pageSize) =>
     `${API.createProject.favoriteTalents}?project_id=${projectId}&search_text=${searchText}&page=${page}&page_size=${pageSize}`,
   );
 
-const favoriteTeamsService = (projectId, searchText, page, pageSize) =>
-  DataService.get(
-    `${API.createProject.favoriteTeams}?project_id=${projectId}&search_text=${searchText}&page=${page}&page_size=${pageSize}`,
-  );
-
 const almaMaterTalentsService = (projectId, searchText, page, pageSize) =>
   DataService.get(
     `${API.createProject.almaMaterTalents}?project_id=${projectId}&search_text=${searchText}&page=${page}&page_size=${pageSize}`,
@@ -38,7 +33,6 @@ export {
   createProjectAIService,
   bestTalentsService,
   favoriteTalentsService,
-  favoriteTeamsService,
   almaMaterTalentsService,
   inviteTalentsService,
   projectFileUploadService,

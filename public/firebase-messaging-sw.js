@@ -77,7 +77,7 @@ messaging.onBackgroundMessage((payload) => {
     icon: '/firebase-logo.png',
   };
 
-  channel.postMessage(data);
+  channel.postMessage('data-channel', payload);
 
   self.registration.showNotification(notificationTitle, notificationOptions).catch((error) => {
     console.error('Error displaying notification:', error);

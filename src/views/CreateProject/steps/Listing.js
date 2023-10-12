@@ -171,7 +171,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                         minDate: watch('startDate') ? watch('startDate')[0] : 'today',
                         maxDate: watch('startDate')
                           ? // eslint-disable-next-line no-unsafe-optional-chaining
-                            new Date(watch('startDate')[0]).setDate(watch('startDate')[0].getDate() + 89)
+                            new Date(watch('startDate')[0]).setMonth(watch('startDate')[0]?.getMonth() + 3)
                           : 'today',
                         dateFormat: 'd-m-Y',
                       }}

@@ -18,8 +18,6 @@ import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
 import { returnFormattedRating } from '../../../utility/Utils';
 import { clearModalData } from '../../../redux/reducers/createProject';
-import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -34,7 +32,6 @@ const LeftSidebarProjectDetails = () => {
   };
 
   const projectDetailsData = useSelector(projectDetails);
-  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
 
   const statusEnum = {
     OPEN: 'Open',
@@ -80,13 +77,9 @@ const LeftSidebarProjectDetails = () => {
   };
 
   const onMessageClick = () => {
-    if (cometAuthToken) {
-      navigate(`/chat`, {
-        state: { targetId: params?.projectId, targetType: 'group' },
-      });
-    } else {
-      ShowToastMessage(ERROR, 'Something went wrong.');
-    }
+    navigate(`/chat`, {
+      state: { targetId: params?.projectId, targetType: 'group' },
+    });
   };
 
   return (
