@@ -227,6 +227,8 @@ const API = {
   project: {
     cardInfo: `${apiOnboardingEndpoint}/api/v1/projects/card-info`,
     projects: `${apiOnboardingEndpoint}/api/v1/projects`,
+    clientName: `${apiOnboardingEndpoint}/api/v1/projects/client-names`,
+    teamName: `${apiOnboardingEndpoint}/api/v1/projects/team-names`,
   },
   payment: {
     taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,

@@ -1,7 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import CompleteProfileGif from '../../assets/images/completeYourProfileGif.gif';
@@ -12,6 +12,7 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection, disputesAlertRedirection }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const teams = useSelector((state) => state.team?.teams);
 
@@ -24,6 +25,8 @@ const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection, dis
       navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
+    } else if (location.pathname.split('/').includes('projects')) {
+      navigate(`/project-details/${projectId}/milestone`);
     } else {
       navigate(`/project-details/${projectId}/bid`);
     }
@@ -39,14 +42,16 @@ const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection, dis
     } else {
       redirectionFunction({
         status: data?.title,
-        projectId: data?.custom_payload?.request_to?.project_id || data?.custom_payload?.project_id,
+        projectId: data?.custom_payload?.request_to?.project_id || data?.custom_payload?.project_id || data?.project_id,
         inviteId: data?.custom_payload?.request_id,
       });
     }
   };
 
   const handleSwitch = () => {
-    const teamData = teams?.filter((team) => team._id === data?.custom_payload?.switch_team_id);
+    const teamData = teams?.filter(
+      (team) => team._id === data?.custom_payload?.switch_team_id || team._id === data?.team_switch_id,
+    );
     if (teamData?.length > 0) {
       dispatch(switchProfile({ data: teamData[0], onSuccess, selected: false }));
     } else {

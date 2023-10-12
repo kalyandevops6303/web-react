@@ -13,9 +13,22 @@ const projectSlice = createSlice({
   name: 'project',
   initialState,
   reducers: {
+    getCardInfoReq: (state) => ({
+      ...state,
+      cardInfoLoading: true,
+    }),
     getCardInfoSuccess: (state, action) => ({
       ...state,
       cardData: action.payload,
+      cardInfoLoading: false,
+    }),
+    getCardInfoErr: (state) => ({
+      ...state,
+      cardInfoLoading: false,
+    }),
+    clearProjectCardData: (state) => ({
+      ...state,
+      cardData: null,
     }),
     getListReq: (state) => ({
       ...state,
@@ -35,9 +48,27 @@ const projectSlice = createSlice({
       metaData: action.payload?.metadata,
       loading: false,
     }),
+
+    clearData: (state) => ({
+      ...state,
+      currentPreview: [],
+      metaData: null,
+      listData: [],
+      users: [],
+      loading: false,
+    }),
   },
 });
 
-export const { getCardInfoSuccess, storeSuccessData, getListErr, getListReq } = projectSlice.actions;
+export const {
+  getCardInfoReq,
+  getCardInfoErr,
+  getCardInfoSuccess,
+  storeSuccessData,
+  getListErr,
+  getListReq,
+  clearData,
+  clearProjectCardData,
+} = projectSlice.actions;
 
 export default projectSlice.reducer;

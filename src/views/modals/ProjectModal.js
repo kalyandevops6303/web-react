@@ -18,7 +18,7 @@ import {
   Spinner,
 } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import styled from 'styled-components';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
@@ -77,9 +77,11 @@ const ProjectModal = ({
   setCreateBidModal,
   setSelectedProject,
   toggleCompleteProfileModal,
+  setSwitchProfileModal,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
@@ -123,8 +125,7 @@ const ProjectModal = ({
   };
 
   const isViewable =
-    window.location.pathname.split('/').includes('my_bids') ||
-    window.location.pathname.split('/').includes('my_listings');
+    location.pathname.split('/').includes('my_bids') || location.pathname.split('/').includes('my_listings');
 
   const handleCreateBid = () => {
     if (
@@ -149,13 +150,19 @@ const ProjectModal = ({
   };
 
   const isMyProjectMyTeam =
-    // eslint-disable-next-line no-undef
-    window.location.pathname.split('/').includes('projects') ||
-    // eslint-disable-next-line no-undef
-    window.location.pathname.split('/').includes('my-teams');
+    location.pathname.split('/').includes('projects') || location.pathname.split('/').includes('my-teams');
 
   const handleViewProject = () => {
-    navigate(`/project-details/${data?._id}/bid`);
+    if (location.pathname.split('/').includes('projects')) {
+      if (selectUserDetailsData?.user_type === userTypes.talent && data?.team_switch_id) {
+        toggleModal();
+        setSwitchProfileModal(true);
+      } else {
+        navigate(`/project-details/${data?._id}/milestone`);
+      }
+    } else {
+      navigate(`/project-details/${data?._id}/bid`);
+    }
   };
 
   return (
@@ -356,6 +363,7 @@ ProjectModal.propTypes = {
   setCreateBidModal: Proptypes.func,
   setSelectedProject: Proptypes.func,
   toggleCompleteProfileModal: Proptypes.func,
+  setSwitchProfileModal: Proptypes.func,
 };
 
 ProjectModal.defaultProps = {
@@ -365,4 +373,5 @@ ProjectModal.defaultProps = {
   setCreateBidModal: () => {},
   setSelectedProject: () => {},
   toggleCompleteProfileModal: () => {},
+  setSwitchProfileModal: () => {},
 };

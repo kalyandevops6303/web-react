@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Route, Routes, useNavigate } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
@@ -54,14 +53,6 @@ const MyTeams = () => {
     <TeamsContainer>
       <div className="d-flex justify-content-between">
         <BreadCrumbs data={[{ title: 'My Teams', link: '/my-teams' }, { title: primaryEnum[primaryFilter] }]} />
-
-        {userDetailsData?.user_type === 'CLIENT' && (
-          <Link to="/create-project">
-            <Button as="link" color="primary">
-              Create Project
-            </Button>
-          </Link>
-        )}
       </div>
       <PrimaryFilter
         selected={primaryFilter}
