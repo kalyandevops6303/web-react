@@ -16,7 +16,6 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { getUserDetails, saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
-import { checkpointCompleteLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Social = () => {
@@ -70,7 +69,6 @@ const Social = () => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
-  const checkpointCompleteIsLoading = useSelector(checkpointCompleteLoading);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
@@ -83,20 +81,19 @@ const Social = () => {
       navigate(`/${userOnboarding.client}/availability-details`);
     }
   };
-
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate('/dashboard');
+      navigate(`/${userOnboarding.client}/payment-details`, { state: { isEditing: true } });
     } else {
-      setAccountCreatedModal(true);
+      navigate(`/${userOnboarding.client}/payment-details`);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate('/dashboard');
+      navigate(`/${userOnboarding.client}/payment-details`, { state: { isEditing: true } });
     } else {
-      dispatch(saveCheckpointComplete(onSuccess));
+      navigate(`/${userOnboarding.client}/payment-details`);
     }
   };
 
@@ -390,22 +387,12 @@ const Social = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button
-              color="primary"
-              outline
-              className="me-2"
-              onClick={onSkipClick}
-              disabled={checkpointCompleteIsLoading}
-            >
+            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
               <span className="me-50">Skip</span>
               <ChevronRight size={14} />
             </Button>
 
-            <Button
-              color="primary"
-              type="submit"
-              disabled={!isValid || profileDetailsIsLoading || checkpointCompleteIsLoading}
-            >
+            <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
               {profileDetailsIsLoading ? (
                 <Spinner size="sm" />
               ) : (

@@ -12,7 +12,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { selectThemeColors } from '@utils';
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AsyncPaginate } from 'react-select-async-paginate';
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
 import { getPaymentDetails, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
@@ -28,9 +27,7 @@ const Step2 = ({ setStep }) => {
   const [isDocumentConfirmed, setIsDocumentConfirmed] = useState(false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [taxUserType, setTaxUserType] = useState('US');
-  // eslint-disable-next-line no-unused-vars
   const [selectedTaxId, setSelectedTaxId] = useState('taxOption1');
-  const [residenceAddress, setResidenceAddress] = useState(false);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
@@ -83,11 +80,8 @@ const Step2 = ({ setStep }) => {
           value: res.tax_identification?.federal_tax_classification,
         });
       }
-      if (res.tax_identification?.social_security_number?.length > 0 && taxUserType === 'US') {
+      if (res.tax_identification?.social_security_number?.length > 0) {
         setValue('taxId', res.tax_identification?.social_security_number);
-      }
-      if (res.tax_identification?.national_taxpayer_number?.length > 0 && taxUserType === 'NON_US') {
-        setValue('taxId', res.tax_identification?.national_taxpayer_number);
       }
     }
   };
@@ -109,9 +103,11 @@ const Step2 = ({ setStep }) => {
     setStep((prev) => prev - 1);
   };
 
-  // const handleTaxIdSelect = (e) => {
-  //   setSelectedTaxId(e.target.name);
-  // };
+  const handleTaxPayerSelect = () => {};
+
+  const handleTaxIdSelect = (e) => {
+    setSelectedTaxId(e.target.name);
+  };
 
   const onComplete = () => {
     if (location?.state?.isEditing) {
@@ -155,10 +151,6 @@ const Step2 = ({ setStep }) => {
     dispatch(updatePaymentDetails(updatedData, onSuccess));
   };
 
-  const handleProfileAddress = () => {
-    setResidenceAddress((prev) => !prev);
-  };
-
   return (
     <ProfileFormContainer>
       {accountCreatedModal && (
@@ -167,187 +159,6 @@ const Step2 = ({ setStep }) => {
 
       <h4>STEP 2 - Taxpayer Identification</h4>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="w-75">
-          <CardHeader>
-            <h4 className="m-0 mt-1">Tax information</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <h5 className="mb-1 w-75">
-              Your Taxpayer information will be included in a Trumio W-8 substitute form. Complete this form if you are
-              a non US person resident outside the US.
-            </h5>
-          </CardBody>
-        </Card>
-        <Card className="w-75">
-          <CardHeader>
-            <h4 className="m-0 mt-1">
-              Tax Residence Address<span className="label-asterisk me-50">*</span>
-            </h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <h5 className="w-75">
-              Your tax residence information is part of the Trumio W-9 or W-8 form process. This address will be
-              displayed on invoices
-            </h5>
-            <div className="d-flex w-75 mt-2">
-              <div className="w-75">
-                <Col className="d-flex gap-50">
-                  <Input type="checkbox" checked={residenceAddress} onChange={handleProfileAddress} />
-                  <Label className="fs-5">Same as Profile residence address</Label>
-                </Col>
-
-                <Row className="mb-1 mt-1">
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mAddress">
-                      Street Address
-                    </Label>
-                    <Controller
-                      id="mAddress"
-                      name="mAddress"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          disabled={residenceAddress}
-                          placeholder="Enter street address"
-                          invalid={!residenceAddress && errors.mAddress && true}
-                        />
-                      )}
-                    />
-                    {!residenceAddress && errors.mAddress && <FormFeedback>{errors.mAddress?.message}</FormFeedback>}
-                  </Col>
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mHouseNo">
-                      House Number
-                    </Label>
-                    <Controller
-                      id="mHouseNo"
-                      name="mHouseNo"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter house number"
-                          disabled={residenceAddress}
-                          invalid={errors.mHouseNo && true}
-                        />
-                      )}
-                    />
-                    {errors.mHouseNo && <FormFeedback>{errors.mHouseNo?.message}</FormFeedback>}
-                  </Col>
-                </Row>
-
-                <Row className="mb-1 mt-1">
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mCountry">
-                      Country<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="mCountry"
-                      name="mCountry"
-                      control={control}
-                      invalid={errors.mCountry && true}
-                      render={({ field }) => (
-                        <AsyncPaginate
-                          loadOptions={[]}
-                          classNamePrefix="select"
-                          placeholder="Select your country"
-                          isDisabled={residenceAddress}
-                          theme={selectThemeColors}
-                          className={classNames('react-select', {
-                            'is-invalid': errors && errors.mCountry,
-                          })}
-                          {...field}
-                        />
-                      )}
-                    />
-                    {errors.mCountry && <FormFeedback>{errors.mCountry.label?.message}</FormFeedback>}
-                  </Col>
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mState">
-                      State<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="mState"
-                      name="mState"
-                      control={control}
-                      invalid={errors.mState && true}
-                      render={({ field }) => (
-                        <Select
-                          isLoading={false}
-                          isDisabled={residenceAddress}
-                          options={[]}
-                          menuPosition="fixed"
-                          classNamePrefix="select"
-                          placeholder="Select your state"
-                          theme={selectThemeColors}
-                          className={classNames('react-select', {
-                            'is-invalid': errors && errors.mState,
-                          })}
-                          {...field}
-                        />
-                      )}
-                    />
-                    {errors.mState && <FormFeedback>{errors.mState.label?.message}</FormFeedback>}
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mCity">
-                      City<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="mCity"
-                      name="mCity"
-                      control={control}
-                      invalid={errors.mCity && true}
-                      render={({ field }) => (
-                        <Select
-                          isLoading={false}
-                          menuPosition="fixed"
-                          minMenuHeight={200}
-                          isDisabled={residenceAddress}
-                          options={[]}
-                          classNamePrefix="select"
-                          placeholder="Select your city"
-                          theme={selectThemeColors}
-                          className={classNames('react-select', {
-                            'is-invalid': errors && errors.mCity,
-                          })}
-                          {...field}
-                        />
-                      )}
-                    />
-                    {errors.mCity && <FormFeedback>{errors.mCity.label?.message}</FormFeedback>}
-                  </Col>
-                  <Col sm="6" md="6" lg="6">
-                    <Label className="form-label" for="mZipCode">
-                      Postal Code<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="mZipCode"
-                      name="mZipCode"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter zip code"
-                          invalid={errors.mZipCode && true}
-                          disabled={residenceAddress}
-                          autoComplete="none"
-                        />
-                      )}
-                    />
-                    {errors.mZipCode && <FormFeedback>{errors.mZipCode?.message}</FormFeedback>}
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
         <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">
@@ -364,22 +175,19 @@ const Step2 = ({ setStep }) => {
                 <Input
                   type="radio"
                   checked={taxUserType === 'NON_US'}
-                  disabled={taxUserType === 'US'}
                   name="non_us_person"
+                  onChange={handleTaxPayerSelect}
                 />
                 <div>I am not a US person</div>
               </Col>
               <Col className="d-flex gap-50">
-                <Input
-                  type="radio"
-                  checked={taxUserType === 'US'}
-                  disabled={taxUserType === 'NON_US'}
-                  name="us_person"
-                />
+                <Input type="radio" checked={taxUserType === 'US'} name="us_person" onChange={handleTaxPayerSelect} />
                 <div>I am a US person</div>
               </Col>
             </div>
-
+            <h5 className="mt-1">
+              Before withdrawing funds, all non-U.S. persons must provide their W-8BEN tax information
+            </h5>
             <Row className="mb-1 mt-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="taxName">
@@ -427,35 +235,33 @@ const Step2 = ({ setStep }) => {
                 {errors.taxClass && <FormFeedback>{errors.taxClass?.label?.message}</FormFeedback>}
               </Col>
             </Row>
-            {/* {taxUserType === 'NON_US' ? (
-              <div className="d-flex w-75">
-                <Col className="d-flex gap-50">
-                  <Input
-                    type="radio"
-                    checked={selectedTaxId === 'taxOption1'}
-                    name="taxOption1"
-                    onChange={handleTaxIdSelect}
-                  />
-                  <div className="w-75">
-                    {taxUserType === 'NON_US' ? 'National Taxpayer number (NSN)' : 'Social Security number (SSN)'}
-                  </div>
-                </Col>
-                <Col className="d-flex gap-50">
-                  <Input
-                    type="radio"
-                    checked={selectedTaxId === 'taxOption2'}
-                    name="taxOption2"
-                    onChange={handleTaxIdSelect}
-                  />
-                  <div>Employee identification number (EIN)</div>
-                </Col>
-              </div>
-            ) : null} */}
+            <h5 className="mb-1 mt-2 w-50">Taxpayer identification number type</h5>
+            <div className="d-flex w-75">
+              <Col className="d-flex gap-50">
+                <Input
+                  type="radio"
+                  checked={selectedTaxId === 'taxOption1'}
+                  name="taxOption1"
+                  onChange={handleTaxIdSelect}
+                />
+                <div className="w-75">
+                  {taxUserType === 'NON_US' ? 'National Taxpayer number (NSN)' : 'Social Security number (SSN)'}
+                </div>
+              </Col>
+              <Col className="d-flex gap-50">
+                <Input
+                  type="radio"
+                  checked={selectedTaxId === 'taxOption2'}
+                  name="taxOption2"
+                  onChange={handleTaxIdSelect}
+                />
+                <div>Employee identification number (EIN)</div>
+              </Col>
+            </div>
             <Row className="mt-1 mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="taxId">
-                  {taxUserType === 'NON_US' ? 'NSN #' : 'SSN #'}
-                  <span className="label-asterisk me-50">*</span>
+                  {taxUserType === 'NON_US' ? 'NSN/EIN #' : 'SSN/EIN #'}
                 </Label>
                 <Controller
                   id="taxId"
@@ -464,7 +270,7 @@ const Step2 = ({ setStep }) => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder={taxUserType === 'NON_US' ? 'Enter NSN #' : 'Enter SSN #'}
+                      placeholder={taxUserType === 'NON_US' ? 'Enter NSN/EIN #' : 'Enter SSN/EIN #'}
                       invalid={errors.taxId && true}
                     />
                   )}
@@ -487,9 +293,9 @@ const Step2 = ({ setStep }) => {
                 delivery of the document.
               </h5>
 
-              <div className="w-50 shadow p-2 rounded mt-2 mb-50 w-100">
+              <div className="w-50 shadow-sm p-2 rounded mt-2 w-100">
                 <h4 className="mb-2">Electronic Consent</h4>
-                <ol className="order-list">
+                <ul>
                   <li>
                     I am not subject to backup withholding because:
                     <br />
@@ -504,9 +310,9 @@ const Step2 = ({ setStep }) => {
                     The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is
                     correct.
                   </li>
-                </ol>
+                </ul>
               </div>
-              <div className="d-flex flex-column mt-2">
+              <div className="d-flex flex-column">
                 <Label className="fs-5">Sign On :-</Label>
                 <Col className="d-flex gap-50 mt-1 mb-1">
                   <Input type="checkbox" name="checkbox1" checked={confirmSign.checkbox1} onChange={handleSignCheck} />

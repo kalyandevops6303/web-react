@@ -240,12 +240,6 @@ export const ProfileFormContainer = styled.div`
   .card-header-border {
     border: 1px solid ${theme.cardHeaderBorderColor};
   }
-
-  .order-list {
-    li {
-      margin-top: 15px;
-    }
-  }
 `;
 
 export const UploadIconContainer = styled.div`
