@@ -148,9 +148,21 @@ const TeamCardWrap = styled(CardWrap)`
       align-items: center;
     }
   }
+
+  @media only screen and (max-device-width: 600px) {
+    .teamcard-flex-cloumn {
+      flex-direction: column;
+    }
+    .teamcard-width {
+      width: 100%;
+    }
+    .margin-none {
+      margin: 5px 0px !important;
+    }
+  }
 `;
 const UserCardWrap = styled(CardWrap)`
-  width: ${(props) => (props.clientCard ? '100%' : '50%')};
+  // width: ${(props) => (props.clientCard ? '100%' : '50%')};
   @media only screen and (max-device-width: 600px) {
     width: 100%;
   }
@@ -273,4 +285,135 @@ const UserCardWrap = styled(CardWrap)`
     }
   }
 `;
-export { CardWrap, ProjectCardWrap, TeamCardWrap, UserCardWrap };
+
+const ClientCardWrap = styled(CardWrap)`
+  @media only screen and (max-device-width: 600px) {
+    width: 100%;
+  }
+  .card {
+    margin: 0.8rem 0.7rem !important;
+  }
+  .alma-mater {
+    padding: 3px 4px 0px 4px;
+    background-color: ${theme.yellowColor} !important;
+    border-radius: 50%;
+    margin-bottom: -1px;
+  }
+  .truncate-1 {
+    max-width: 7rem;
+    display: inline-block;
+    display: block;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .truncate-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+  }
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-body {
+    padding: 1.2rem 1.2rem 0.8rem 1.2rem !important;
+  }
+  .marketplace-card-title {
+    font-size: 0.9rem;
+    line-height: 1.125rem;
+    a {
+      color: inherit;
+    }
+  }
+  .marketplace-card-role {
+    line-height: 1.125rem;
+    font-size: 0.75rem !important;
+    color: ${theme.gray};
+    font-weight: 300;
+  }
+
+  .market-place-card-photo {
+    height: 2rem;
+    border-radius: 50%;
+    cursor: auto !important;
+  }
+
+  .client-card-photo {
+    // height: 2rem;
+    border: 3px solid white;
+    fill: #fff;
+    filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.14));
+    border-radius: 50%;
+    cursor: auto !important;
+  }
+  .rating-label {
+    color: ${theme.bodyColor};
+    font-weight: 300;
+  }
+
+  //exp
+
+  .circular-progressbar-container {
+    width: 35px;
+    height: 35px;
+    // margin-left: 1rem;
+
+    .percentage-text {
+      font-weight: 400;
+      font-size: 10px;
+      color: ${theme.headingTextColor};
+    }
+  }
+
+  .truncate {
+    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .show-more {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .show-less {
+    display: none;
+  }
+
+  .collapsed .show-less {
+    display: inline;
+  }
+
+  .collapsed .show-more {
+    display: none;
+  }
+
+  @media only screen and (max-device-width: 600px) {
+    .card-body {
+      padding: 1rem;
+    }
+    .desc {
+      margin-bottom: 1rem !important;
+    }
+  }
+`;
+
+const ResponsiveGrid = styled.div`
+  @media only screen and (max-device-width: 800px) {
+    .responsive-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+`;
+export { CardWrap, ProjectCardWrap, TeamCardWrap, UserCardWrap, ClientCardWrap, ResponsiveGrid };

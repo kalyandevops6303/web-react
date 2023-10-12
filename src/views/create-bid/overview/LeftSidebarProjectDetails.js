@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.svg';
 import Avatar from '@components/avatar';
@@ -15,10 +15,14 @@ import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { returnFormattedRating } from '../../../utility/Utils';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
+  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
 
   const projectDetailsData = useSelector(projectDetails);
 
@@ -51,6 +55,16 @@ const LeftSidebarProjectDetails = () => {
       );
     }
   }, [projectDetailsData]);
+
+  const onMessageClick = () => {
+    if (cometAuthToken) {
+      navigate(`/chat`, {
+        state: { targetId: projectDetailsData?.client_details?.user_id },
+      });
+    } else {
+      ShowToastMessage(ERROR, 'Something went wrong.');
+    }
+  };
 
   return (
     <LeftSidebarProjectDetailsWrapper>
@@ -129,12 +143,13 @@ const LeftSidebarProjectDetails = () => {
           <div className="d-flex">
             {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
               <BadgeGroup
-                title="Tags"
+                title="Tags:"
                 data={[
                   ...(projectDetailsData?.proficiency?.skills || []),
                   ...(projectDetailsData?.proficiency?.tools || []),
                 ]}
                 color="light-blue"
+                id={`tooltip-${projectDetailsData?._id}`}
               />
             )}
           </div>
@@ -147,7 +162,7 @@ const LeftSidebarProjectDetails = () => {
           </div>
 
           <div className="d-flex gap-1 mt-3 justify-content-center">
-            <Button className="w-50" color="primary">
+            <Button className="w-50" color="primary" onClick={onMessageClick}>
               Message
             </Button>
           </div>

@@ -1,8 +1,11 @@
+/* eslint-disable no-console */
 /* eslint-disable no-undef */
 import React, { Suspense, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
+import { COMETCHAT_CONSTANTS } from './constants';
 import { getToken, messaging } from './configs/api/firebase';
 
 // ** Router Import
@@ -11,20 +14,47 @@ import { setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
 import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
+import { loggedInCometChat, unreadMsgCountSuccess } from './redux/reducers/chat';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const fcmToken = useSelector((state) => state.auth.fcmToken);
+  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const dispatch = useDispatch();
   // const fcmSubscribeService = (token) => DataService.post(`${API.notification.subscribe}`, { token });
+
+  const appId = COMETCHAT_CONSTANTS.APP_ID;
+  const region = COMETCHAT_CONSTANTS.REGION;
+  const appSetting = new CometChat.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
+
+  CometChat.init(appId, appSetting).then(
+    () => {
+      console.log('Initialisation successfully completed!');
+    },
+    (error) => {
+      console.log('Initialisation failed with error:', error);
+    },
+  );
+
+  const loginUser = async (authToken, fcmCometToken) => {
+    await CometChat.login(authToken);
+    console.log('LOGGED IN COMETCHAT');
+    dispatch(loggedInCometChat());
+    await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
+      fcmToken: fcmCometToken,
+    });
+  };
 
   useEffect(() => {
     if (isLoggedIn && !fcmToken) {
       let data;
       const tokenFunc = async () => {
         data = await getToken();
+
         if (data) {
           dispatch(fcmSubscribeNotification(data));
+          console.log('DATA', data);
+          loginUser(cometAuthToken, data);
           // await fcmSubscribeService(data);
           setItem('fcmToken', data);
         }
@@ -36,10 +66,16 @@ const App = () => {
 
   useEffect(() => {
     const channel = new BroadcastChannel('data-channel');
+    console.log('CHANNEL', channel);
     if (channel) {
-      channel?.addEventListener('message', () => {
+      channel?.addEventListener('message', (event) => {
         // Handle the received data from the service worker
+        const { data } = event;
+        console.log(data, event, 'COMET');
         dispatch(notificationCount(true));
+        if (data.alert) {
+          dispatch(unreadMsgCountSuccess());
+        }
       });
     }
 
@@ -51,10 +87,15 @@ const App = () => {
       }
     };
   }, []);
+
   messaging?.onMessage((payload) => {
+    console.log('PAYLOAD', payload);
     if (!('Notification' in window)) {
       console.warn('This browser does not support system notifications.');
     } else if (Notification.permission === 'granted') {
+      if (payload.data.alert) {
+        dispatch(unreadMsgCountSuccess());
+      }
       // only when type single
       dispatch(notificationCount(true));
 

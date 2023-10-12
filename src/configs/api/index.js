@@ -216,10 +216,13 @@ const API = {
   },
   myTeams: {
     cardInfo: `${apiOnboardingEndpoint}/api/v1/my-teams/cards-info`,
-    listTeams: `${apiOnboardingEndpoint}/api/v1/my-teams`,
+    listTeams: `${apiOnboardingEndpoint}/api/v1/my-teams/teams`,
     listInvites: `${apiOnboardingEndpoint}/api/v1/my-teams/invitations`,
     listJoinReq: `${apiOnboardingEndpoint}/api/v1/my-teams/join-requests`,
     listFav: `${apiOnboardingEndpoint}/api/v1/my-teams/favourites`,
+    listTalents: `${apiOnboardingEndpoint}/api/v1/my-teams/my-talents`,
+    listClients: `${apiOnboardingEndpoint}/api/v1/my-teams/my-clients`,
+    listRecomm: `${apiOnboardingEndpoint}/api/v1/my-teams/recommended`,
   },
   project: {
     cardInfo: `${apiOnboardingEndpoint}/api/v1/projects/card-info`,

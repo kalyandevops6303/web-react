@@ -4,7 +4,7 @@ import { CustomBadge } from '../../../views/styled';
 import { BadgeGroupWrap } from './style';
 import uuidv4 from '../../../lib/uuidv4';
 
-const BadgeGroup = ({ user_id, data, title, color }) => {
+const BadgeGroup = ({ id, data, title, color }) => {
   const [visibleTags, setVisibleTags] = useState([]);
   const [hiddenTagsCount, setHiddenTagsCount] = useState(0);
   if (!data || data.length === 0) {
@@ -18,12 +18,12 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
       <span key={index}>
         {isLongName ? (
           <>
-            <CustomBadge>
+            {/* <CustomBadge>
               <Badge className={badgeClassName} color={badgeColor} id={`tooltip-${index}`}>
                 {name}
               </Badge>
             </CustomBadge>
-            <UncontrolledTooltip target={`tooltip-${index}`}>{name}</UncontrolledTooltip>
+            <UncontrolledTooltip target={`tooltip-${index}`}>{name}</UncontrolledTooltip> */}
           </>
         ) : (
           <CustomBadge>
@@ -105,7 +105,7 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     return tagWidth;
   };
 
-  const customBadgeId = `tooltip-${uuidv4()}`; // Generate a unique ID using uuidv4()
+  const customBadgeId = id ?? `tooltip-${uuidv4()}`; // Generate a unique ID using uuidv4()
   return (
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.svg';
 import Avatar from '@components/avatar';
@@ -18,9 +18,12 @@ import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
 import { returnFormattedRating } from '../../../utility/Utils';
 import { clearModalData } from '../../../redux/reducers/createProject';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
   const userData = useSelector(selectUserData);
   const [inviteModal, setInviteModal] = useState(false);
@@ -31,6 +34,7 @@ const LeftSidebarProjectDetails = () => {
   };
 
   const projectDetailsData = useSelector(projectDetails);
+  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
 
   const statusEnum = {
     OPEN: 'Open',
@@ -73,6 +77,16 @@ const LeftSidebarProjectDetails = () => {
   const handleInvite = () => {
     setInviteModal(true);
     setInviteTalentToTeamModal(true);
+  };
+
+  const onMessageClick = () => {
+    if (cometAuthToken) {
+      navigate(`/chat`, {
+        state: { targetId: params?.projectId, targetType: 'group' },
+      });
+    } else {
+      ShowToastMessage(ERROR, 'Something went wrong.');
+    }
   };
 
   return (
@@ -149,6 +163,7 @@ const LeftSidebarProjectDetails = () => {
                   ...(projectDetailsData?.proficiency?.tools || []),
                 ]}
                 color="light-blue"
+                id={`tooltip-${projectDetailsData?._id}`}
               />
             )}
           </div>
@@ -160,7 +175,7 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          {userData?.user_type === userTypes.client ? (
+          {userData?.user_type === userTypes.client && (
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50 d-none" outline color="danger">
@@ -171,15 +186,23 @@ const LeftSidebarProjectDetails = () => {
                     Invite
                   </Button>
                 )}
+                {projectDetailsData?.status === 'ON_GOING' && (
+                  <Button className="w-50" outline color="primary" onClick={onMessageClick}>
+                    Message
+                  </Button>
+                )}
               </div>
             </div>
-          ) : (
-            <div className="d-flex gap-1 mt-3 justify-content-center">
-              <Button className="w-50" color="primary">
-                Message
-              </Button>
-            </div>
           )}
+
+          {projectDetailsData?.status === 'ON_GOING' &&
+            projectDetailsData?.worker_details?.entity_id === userData._id && (
+              <div className="d-flex gap-1 mt-3 justify-content-center">
+                <Button className="w-50" color="primary" onClick={onMessageClick}>
+                  Message
+                </Button>
+              </div>
+            )}
         </CardBody>
       </Card>
       {inviteTalentToTeamModal && (

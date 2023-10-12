@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CardText, CardTitle, Badge } from 'reactstrap';
 import hat from '@src/assets/images/hat.svg';
 import PropTypes from 'prop-types';
@@ -8,17 +8,25 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 
 const ProjectWithTeamUI = ({ data }) => {
   const dispatch = useDispatch();
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
+  const onFavSuccess = () => {
+    setIsFavorite(true);
+  };
+
+  const onUnFavSuccess = () => {
+    setIsFavorite(false);
+  };
   const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ project_id: data?._id }));
+    dispatch(makeFav({ project_id: data?._id, onSuccess: onFavSuccess, onError: () => {} }));
   };
   const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ project_id: data?._id }));
+    dispatch(removeFav({ project_id: data?._id, onSuccess: onUnFavSuccess, onError: () => {} }));
   };
 
   const avatarGroup = data?.worker_details?.workers?.length
@@ -46,7 +54,7 @@ const ProjectWithTeamUI = ({ data }) => {
             </Badge>
           )}
           <div style={{ display: 'none' }}>
-            {data?.is_favorite ? (
+            {isFavorite ? (
               <Heart
                 className="cursor-pointer d-flex heart"
                 fill={theme.red}
@@ -63,7 +71,7 @@ const ProjectWithTeamUI = ({ data }) => {
       </div>
       <div className="d-flex">
         <section className="w-50 me-2 ">
-          <div className="d-flex">
+          <div className="d-flex w-100">
             <img
               className="market-place-card-photo me-75"
               src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
@@ -73,7 +81,7 @@ const ProjectWithTeamUI = ({ data }) => {
               style={{ objectFit: 'cover' }}
             />
             <div>
-              <div className="flex-grow-1 w-50">
+              <div className="flex-grow-1">
                 <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
                   {data?.client?.first_name} {data?.client?.last_name}
                 </CardTitle>
@@ -82,7 +90,7 @@ const ProjectWithTeamUI = ({ data }) => {
                 </CardText>
               </div>
               <div className="d-flex flex-grow-1 mt-25">
-                <RatingBadge number={Math.round(data?.client?.rating)} />
+                <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
                 <CardText className="ps-1 font-small-3 fw-300 rating-label">
                   {data?.client?.project_count} Projects
                 </CardText>
@@ -94,6 +102,7 @@ const ProjectWithTeamUI = ({ data }) => {
               title="Tools"
               data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
               color="light-blue"
+              id={`tooltip-tools-${data?._id}`}
             />
           </div>
         </section>
@@ -115,7 +124,7 @@ const ProjectWithTeamUI = ({ data }) => {
           )}
 
           <div className="d-flex flex-grow-1 mt-25">
-            <RatingBadge number="0" />
+            <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">
               {data?.client?.project_count} Projects
             </CardText>
@@ -125,6 +134,7 @@ const ProjectWithTeamUI = ({ data }) => {
               title="Skills"
               data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
               color="light-blue"
+              id={`tooltip-skills-${data?._id}`}
             />
           </div>
         </div>

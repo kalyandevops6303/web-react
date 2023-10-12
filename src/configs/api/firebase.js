@@ -1,10 +1,9 @@
+/* eslint-disable no-else-return */
 /* eslint-disable no-undef */
 /* eslint-disable no-console */
 import firebase from 'firebase/app';
 import 'firebase/messaging';
-// Initialize the Firebase app in the service worker by passing in
-// your app's Firebase config object.
-// https://firebase.google.com/docs/web/setup#config-object
+
 firebase.initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -35,6 +34,31 @@ export const getToken = async () => {
 
   return currentToken;
 };
+
+export const requestPermission = () =>
+  new Promise((resolve) => {
+    console.log('Requesting User Permission......');
+    // eslint-disable-next-line consistent-return
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('Notification User Permission Granted.');
+        return getToken(messaging, { vapidKey: publicKey })
+          .then((currentToken) => {
+            if (currentToken) {
+              console.log('Client Token: ', currentToken);
+              resolve(currentToken);
+            } else {
+              console.log('Failed to generate the app registration token.');
+            }
+          })
+          .catch((err) => {
+            console.log('An error occurred when requesting to receive the token.', err);
+          });
+      } else {
+        console.log('User Permission Denied.');
+      }
+    });
+  });
 
 export const onMessageListner = async () => {
   const payloadData = await messaging?.onMessage((payload) => {

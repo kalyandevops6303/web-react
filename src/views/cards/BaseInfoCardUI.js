@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CardText, CardTitle, Badge } from 'reactstrap';
 import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
@@ -9,16 +9,25 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import BadgeGroup from '../../@core/components/badge-group';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 
 const BaseInfoUI = ({ data }) => {
   const dispatch = useDispatch();
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
+  const onFavSuccess = () => {
+    setIsFavorite(true);
+  };
+
+  const onUnFavSuccess = () => {
+    setIsFavorite(false);
+  };
 
   const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ project_id: data?._id }));
+    dispatch(makeFav({ project_id: data?._id, onSuccess: onFavSuccess, onError: () => {} }));
   };
   const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ project_id: data?._id }));
+    dispatch(removeFav({ project_id: data?._id, onSuccess: onUnFavSuccess, onError: () => {} }));
   };
 
   const giveStrokeColor = (percentage) => {
@@ -41,7 +50,7 @@ const BaseInfoUI = ({ data }) => {
               <img src={hat} alt="client-badge" className="bg-white" width={20} height={20} />
             </Badge>
           )}
-          {data?.is_favorite ? (
+          {isFavorite ? (
             <Heart
               className="cursor-pointer d-flex heart"
               fill={theme.red}
@@ -93,14 +102,24 @@ const BaseInfoUI = ({ data }) => {
             <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
           </div>
           <div className="d-flex flex-grow-1">
-            <RatingBadge number="0" />
+            <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
           </div>
         </div>
       </div>
       <div>
-        <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-        <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+        <BadgeGroup
+          title="Skills"
+          data={data?.proficiency?.skills}
+          color="light-blue"
+          id={`tooltip-skills-${data?._id}`}
+        />
+        <BadgeGroup
+          title="Tools"
+          data={data?.proficiency?.tools}
+          color="light-blue"
+          id={`tooltip-tools-${data?._id}`}
+        />
       </div>
     </div>
   );

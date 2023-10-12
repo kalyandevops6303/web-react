@@ -31,6 +31,8 @@ import {
   replyOnDisputeService,
   resolveDisputeService,
 } from '../../services/disputeServices';
+import ShowToastMessage from '../../@core/components/toast';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 
 const raiseNewDispute = (data, onSuccess) => async (dispatch) => {
   dispatch(raiseDisputeRequest());
@@ -38,6 +40,7 @@ const raiseNewDispute = (data, onSuccess) => async (dispatch) => {
     const res = await raiseDisputeService(data);
     dispatch(raiseDisputeSuccess(res.data.data));
     onSuccess();
+    ShowToastMessage(SUCCESS, 'Dispute raised successfully');
   } catch (error) {
     errorHandler(error, raiseDisputeFailure);
   }
