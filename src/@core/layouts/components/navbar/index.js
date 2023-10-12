@@ -27,6 +27,7 @@ const ThemeNavbar = (props) => {
   const userData = useSelector(selectUserData);
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
+  const isUserLoggedInComet = useSelector((state) => state.chat.isLoggedInComet);
   const savedUser = useSelector(selectSavedUserData);
   // ** Props
   const { skin, setSkin, setMenuVisibility, className } = props;
@@ -85,7 +86,7 @@ const ThemeNavbar = (props) => {
       console.log('UNREAD COUNT INDEX', totalCount);
       dispatch(setUnreadMsgCount(totalCount));
     });
-  }, []);
+  }, [isUserLoggedInComet]);
 
   return (
     <HeadWrapper className={className}>

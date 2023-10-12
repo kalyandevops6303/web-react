@@ -4,12 +4,23 @@ const initialState = {
   unreadMsgCount: 0,
   unreadMsgCountLoading: false,
   error: null,
+  isLoggedInComet: false,
 };
 
 const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
+    loggedInCometChat: (state) => ({
+      ...state,
+      isLoggedInComet: true,
+      error: null,
+    }),
+    logOutCometChat: (state) => ({
+      ...state,
+      isLoggedInComet: false,
+      error: null,
+    }),
     unreadMsgCountRequest: (state) => ({
       ...state,
       unreadMsgCountLoading: true,
@@ -40,6 +51,8 @@ const chatSlice = createSlice({
 });
 
 export const {
+  loggedInCometChat,
+  logOutCometChat,
   unreadMsgCountRequest,
   setUnreadMsgCount,
   unreadMsgCountSuccess,

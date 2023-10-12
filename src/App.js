@@ -14,7 +14,7 @@ import { setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
 import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
-import { unreadMsgCountSuccess } from './redux/reducers/chat';
+import { loggedInCometChat, unreadMsgCountSuccess } from './redux/reducers/chat';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -39,6 +39,7 @@ const App = () => {
   const loginUser = async (authToken, fcmCometToken) => {
     await CometChat.login(authToken);
     console.log('LOGGED IN COMETCHAT');
+    dispatch(loggedInCometChat());
     await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
       fcmToken: fcmCometToken,
     });
@@ -52,6 +53,7 @@ const App = () => {
 
         if (data) {
           dispatch(fcmSubscribeNotification(data));
+          console.log('DATA', data);
           loginUser(cometAuthToken, data);
           // await fcmSubscribeService(data);
           setItem('fcmToken', data);
@@ -87,7 +89,7 @@ const App = () => {
   }, []);
 
   messaging?.onMessage((payload) => {
-    console.log('PAYLOAD COMET', payload);
+    console.log('PAYLOAD', payload);
     if (!('Notification' in window)) {
       console.warn('This browser does not support system notifications.');
     } else if (Notification.permission === 'granted') {
@@ -119,8 +121,6 @@ const App = () => {
           },
         },
       );
-    } else {
-      console.log('INSIDE ELSE');
     }
   });
   return (
