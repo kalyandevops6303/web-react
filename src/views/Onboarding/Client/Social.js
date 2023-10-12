@@ -16,6 +16,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { getUserDetails, saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
+import { checkpointCompleteLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Social = () => {
@@ -69,6 +70,7 @@ const Social = () => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const checkpointCompleteIsLoading = useSelector(checkpointCompleteLoading);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
@@ -81,19 +83,20 @@ const Social = () => {
       navigate(`/${userOnboarding.client}/availability-details`);
     }
   };
+
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/payment-details`, { state: { isEditing: true } });
+      navigate('/dashboard');
     } else {
-      navigate(`/${userOnboarding.client}/payment-details`);
+      setAccountCreatedModal(true);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/payment-details`, { state: { isEditing: true } });
+      navigate('/dashboard');
     } else {
-      navigate(`/${userOnboarding.client}/payment-details`);
+      dispatch(saveCheckpointComplete(onSuccess));
     }
   };
 
@@ -387,12 +390,22 @@ const Social = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+            <Button
+              color="primary"
+              outline
+              className="me-2"
+              onClick={onSkipClick}
+              disabled={checkpointCompleteIsLoading}
+            >
               <span className="me-50">Skip</span>
               <ChevronRight size={14} />
             </Button>
 
-            <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+            <Button
+              color="primary"
+              type="submit"
+              disabled={!isValid || profileDetailsIsLoading || checkpointCompleteIsLoading}
+            >
               {profileDetailsIsLoading ? (
                 <Spinner size="sm" />
               ) : (

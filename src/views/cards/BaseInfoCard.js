@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CardText, CardTitle, Badge } from 'reactstrap';
+import { Link, useLocation } from 'react-router-dom';
 import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
@@ -15,6 +16,8 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   const dispatch = useDispatch();
   const clientDetails = data?.client ?? data?.client_details;
+
+  const location = useLocation();
 
   const onFavSuccess = () => {
     setIsFavorite(true);
@@ -41,6 +44,21 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
       return theme.green;
     }
   };
+
+  const fromLocationPrimary = () => {
+    if (location.pathname.split('/').includes('marketplace'))
+      return { title: 'Marketplace', link: '/marketplace/all_listings' };
+    if (location.pathname.split('/').includes('search')) return { title: 'Search', link: '/search' };
+    return '';
+  };
+  const fromLocationSecondary = () => {
+    if (location.pathname.split('/').includes('all_listings')) return { title: 'Marketplace', link: location.pathname };
+    if (location.pathname.split('/').includes('my_listings')) return { title: 'My listings', link: location.pathname };
+    if (location.pathname.split('/').includes('talents')) return { title: 'Talent', link: location.pathname };
+    if (location.pathname.split('/').includes('clients')) return { title: 'Clients', link: location.pathname };
+    return '';
+  };
+  const fromLocationSearch = () => ({ title: 'Clients', link: '' });
 
   return (
     <div>
@@ -107,7 +125,18 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
         <div className="d-flex w-100 align-items-center">
           <div className="flex-grow-1">
             <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-              {clientDetails?.first_name} {clientDetails?.last_name}
+              <Link
+                state={{
+                  from: {
+                    primary: fromLocationPrimary(),
+                    secondary: fromLocationSecondary() || fromLocationSearch(),
+                  },
+                }}
+                to={`/profile/client/${data?.client_details?.user_id}`}
+              >
+                {data?.client_details?.first_name}&nbsp;
+                {data?.client_details?.last_name}
+              </Link>
             </CardTitle>
             <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
               {clientDetails?.title ?? clientDetails?.company_name}

@@ -19,7 +19,7 @@ const Step1 = ({ setStep }) => {
   const dispatch = useDispatch();
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [isWorkingInUS, setIsWorkingInUS] = useState(false);
-  const [taxUserType, setTaxUserType] = useState('US');
+  const [taxUserType, setTaxUserType] = useState('NON_US');
   const [isUserExists, setIsUserExists] = useState(false);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
@@ -66,7 +66,7 @@ const Step1 = ({ setStep }) => {
   };
 
   const handleNextClick = (e) => {
-    if (taxUserType === 'STUDENT') {
+    if (taxUserType === 'STUDENT' || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
       e.preventDefault();
       return;
@@ -125,7 +125,7 @@ const Step1 = ({ setStep }) => {
             <div className="d-flex">
               <Col className="d-flex gap-50">
                 <Input type="radio" checked={taxUserType === 'US'} name="US" onChange={handlePrePaymentChange} />
-                <div className="w-75">US Person - Residents or Citizens with US Tax Identification</div>
+                <div className="w-75">US Person - Permeant residents or Citizens with US Tax Identification</div>
               </Col>
               <Col className="d-flex gap-50">
                 <Input
@@ -141,16 +141,16 @@ const Step1 = ({ setStep }) => {
               <Col className="d-flex gap-50">
                 <Input
                   type="radio"
-                  name="student"
+                  name="STUDENT"
                   checked={taxUserType === 'STUDENT'}
                   onChange={handlePrePaymentChange}
                 />
-                <div className="w-75">Student applying as a US or Non-US Entity</div>
+                <div className="w-75">All other tax situations</div>
               </Col>
             </div>
           </CardBody>
         </Card>
-        {taxUserType === 'STUDENT' ? null : (
+        {taxUserType === 'STUDENT' || taxUserType === 'US' ? null : (
           <Card className="w-75">
             <CardHeader>
               <h4 className="m-0 mt-1">Working</h4>
@@ -188,7 +188,9 @@ const Step1 = ({ setStep }) => {
               ) : (
                 <>
                   <span className="me-50">
-                    {taxUserType === 'STUDENT' ? 'Email Support Team' : 'STEP 2 - Taxpayer Identification'}
+                    {taxUserType === 'STUDENT' || (taxUserType === 'NON_US' && isWorkingInUS)
+                      ? 'Email Support Team'
+                      : 'STEP 2 - Taxpayer Identification'}
                   </span>
                   <ChevronRight size={14} />
                 </>

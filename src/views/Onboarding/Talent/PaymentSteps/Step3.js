@@ -7,7 +7,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import classNames from 'classnames';
 import Select from 'react-select';
-import Flatpickr from 'react-flatpickr';
 import { PropTypes } from 'prop-types';
 
 import { selectThemeColors } from '@utils';
@@ -38,7 +37,7 @@ const Step3 = ({ setStep }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [paymentDetailsRes, setPaymentDetailsRes] = useState(null);
-  const [taxPayer, setTaxPayer] = useState('option2');
+  const [taxPayer, setTaxPayer] = useState('option1');
 
   const isUsPerson = paymentDetailsRes?.tax_user_type === 'US';
   const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
@@ -695,24 +694,41 @@ const Step3 = ({ setStep }) => {
                 <div className="d-flex gap-50">
                   <Input
                     type="radio"
+                    name="option2"
+                    checked={taxPayer === 'option2'}
+                    disabled={isUsPerson}
+                    onChange={handleTaxPayerNoOption}
+                  />
+                  <Label className="fs-6">No</Label>
+                </div>
+                <div className="d-flex gap-50">
+                  <Input
+                    type="radio"
                     name="option1"
+                    disabled={!isUsPerson}
                     checked={taxPayer === 'option1'}
                     onChange={handleTaxPayerNoOption}
                   />
                   <Label className="fs-6">Yes</Label>
                 </div>
-                <div className="d-flex gap-50">
-                  <Input
-                    type="radio"
-                    name="option2"
-                    checked={taxPayer === 'option2'}
-                    onChange={handleTaxPayerNoOption}
-                  />
-                  <Label className="fs-6">No</Label>
-                </div>
               </div>
+              <Row className="mb-1 mt-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="taxId">
+                    {!isUsPerson ? 'NSN #' : 'SSN #'}
+                    <span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Input
+                    placeholder="Enter SSN #"
+                    id="taxId"
+                    name="taxId"
+                    value={paymentDetailsRes?.tax_identification?.social_security_number ?? ''}
+                    disabled
+                  />
+                </Col>
+              </Row>
 
-              {taxPayer === 'option1' ? (
+              {/* {taxPayer === 'option1' ? (
                 <Row className="mb-1 mt-1">
                   <Col sm="6" md="6" lg="6">
                     <Label className="form-label" for="refNo">
@@ -758,7 +774,7 @@ const Step3 = ({ setStep }) => {
                     {errors.dob && <FormFeedback>{errors.dob?.message}</FormFeedback>}
                   </Col>
                 </Row>
-              ) : null}
+              ) : null} */}
             </div>
           </CardBody>
         </Card>
@@ -785,7 +801,7 @@ const Step3 = ({ setStep }) => {
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">Set Up Stripe</span>
+                  <span className="me-50">Stripe Setup Account</span>
                   <ChevronRight size={14} />
                 </>
               )}
