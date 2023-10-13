@@ -438,11 +438,7 @@ const Invite = ({ stepper }) => {
                             <Col sm="2" md="3" lg="4">
                               <div className="d-flex align-items-center">
                                 <Avatar
-                                  img={
-                                    item?.talent_details?.image_uri?.length > 0
-                                      ? item?.talent_details?.image_uri
-                                      : defaultAvatar
-                                  }
+                                  img={item?.team_logo?.length > 0 ? item?.team_logo : defaultAvatar}
                                   imgHeight="38"
                                   imgWidth="38"
                                   className="me-2 user-pic"
