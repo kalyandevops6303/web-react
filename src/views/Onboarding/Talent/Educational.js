@@ -12,7 +12,7 @@ import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
-import { profileDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
+import { profileDetailsLoading, userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import {
   certificatesService,
   educationsService,
@@ -24,6 +24,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { userOnboarding } from '../../../utility/constants/Constant';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -105,6 +106,7 @@ const Educational = () => {
   const [certificatesOptions, setCertificatesOptions] = useState(null);
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const userDetailsIsLoading = useSelector(userDetailsLoading);
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
@@ -319,248 +321,254 @@ const Educational = () => {
 
   return (
     <ProfileFormContainer>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="w-75">
-          <CardHeader>
-            <h4 className="m-0 mt-1">Education</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            {fields.map((item, index) => (
-              <Row key={item.id} className="mt-1 d-flex align-items-center">
-                <Col sm="12" md="12" lg="5">
-                  <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
-                    Name of College or University<span className="label-asterisk me-50">*</span>
-                  </Label>
-                  <Controller
-                    id={`educationDetails.${index}.educationInstitution`}
-                    name={`educationDetails.${index}.educationInstitution`}
-                    control={control}
-                    invalid={
-                      errors &&
+      {userDetailsIsLoading ? (
+        <div className="w-75">
+          <ComponentSpinner className="mt-5" />
+        </div>
+      ) : (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Card className="w-75">
+            <CardHeader>
+              <h4 className="m-0 mt-1">Education</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              {fields.map((item, index) => (
+                <Row key={item.id} className="mt-1 d-flex align-items-center">
+                  <Col sm="12" md="12" lg="5">
+                    <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
+                      Name of College or University<span className="label-asterisk me-50">*</span>
+                    </Label>
+                    <Controller
+                      id={`educationDetails.${index}.educationInstitution`}
+                      name={`educationDetails.${index}.educationInstitution`}
+                      control={control}
+                      invalid={
+                        errors &&
+                        errors.educationDetails &&
+                        errors.educationDetails.length > 0 &&
+                        errors.educationDetails[index] &&
+                        errors.educationDetails[index].educationInstitution &&
+                        true
+                      }
+                      render={({ field }) => (
+                        <AsyncPaginate
+                          debounceTimeout={1000}
+                          additional={{ page: 1 }}
+                          loadOptions={loadInstitutesOptions}
+                          classNamePrefix="select"
+                          placeholder="Select your college or university"
+                          theme={selectThemeColors}
+                          className={classNames('react-select', {
+                            'is-invalid':
+                              errors &&
+                              errors.educationDetails &&
+                              errors.educationDetails.length > 0 &&
+                              errors.educationDetails[index] &&
+                              errors.educationDetails[index].educationInstitution,
+                          })}
+                          {...field}
+                        />
+                      )}
+                    />
+                    {errors &&
                       errors.educationDetails &&
                       errors.educationDetails.length > 0 &&
-                      errors.educationDetails[index] &&
-                      errors.educationDetails[index].educationInstitution &&
-                      true
-                    }
+                      errors.educationDetails[index] && (
+                        <FormFeedback>
+                          {errors.educationDetails[index].educationInstitution &&
+                            errors.educationDetails[index].educationInstitution.label.message}
+                        </FormFeedback>
+                      )}
+                  </Col>
+                  <Col sm="12" md="12" lg="5">
+                    <Label className="form-label" for={`educationDetails.${index}.education`}>
+                      Degree<span className="label-asterisk me-50">*</span>
+                    </Label>
+                    <Controller
+                      id={`educationDetails.${index}.education`}
+                      name={`educationDetails.${index}.education`}
+                      control={control}
+                      invalid={
+                        errors &&
+                        errors.educationDetails &&
+                        errors.educationDetails.length > 0 &&
+                        errors.educationDetails[index] &&
+                        errors.educationDetails[index].education &&
+                        true
+                      }
+                      render={({ field }) => (
+                        <AsyncPaginate
+                          loadOptions={loadEducationsOptions}
+                          classNamePrefix="select"
+                          placeholder="Select your degree"
+                          theme={selectThemeColors}
+                          className={classNames('react-select', {
+                            'is-invalid':
+                              errors &&
+                              errors.educationDetails &&
+                              errors.educationDetails.length > 0 &&
+                              errors.educationDetails[index] &&
+                              errors.educationDetails[index].education,
+                          })}
+                          {...field}
+                        />
+                      )}
+                    />
+                    {errors &&
+                      errors.educationDetails &&
+                      errors.educationDetails.length > 0 &&
+                      errors.educationDetails[index] && (
+                        <FormFeedback>
+                          {errors.educationDetails[index].education &&
+                            errors.educationDetails[index].education.label.message}
+                        </FormFeedback>
+                      )}
+                  </Col>
+                  <Col sm="12" md="12" lg="2">
+                    {index !== 0 && (
+                      <Button
+                        type="button"
+                        color="flat-danger"
+                        className="mt-2"
+                        onClick={() => handleRemoveEducation(index)}
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </Col>
+                </Row>
+              ))}
+              <Row className="mt-2 mb-3">
+                <div className="d-flex align-items-center upload-button cursor-pointer" onClick={handleAddEducation}>
+                  <UploadIconContainer>
+                    <Plus size={18} color={theme.activeNavPillText} />
+                  </UploadIconContainer>
+                  <h5 className="fw-bold">Add New</h5>
+                </div>
+              </Row>
+            </CardBody>
+          </Card>
+          <Card className="w-75">
+            <CardHeader>
+              <h4 className="m-0 mt-1">Expertise</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="tools">
+                    Tools <i>(Top 5)</i>
+                  </Label>
+                  <Controller
+                    id="tools"
+                    name="tools"
+                    control={control}
+                    invalid={errors.tools && true}
                     render={({ field }) => (
                       <AsyncPaginate
-                        debounceTimeout={1000}
-                        additional={{ page: 1 }}
-                        loadOptions={loadInstitutesOptions}
+                        isMulti
+                        loadOptions={loadToolsOptions}
+                        menuPosition="fixed"
+                        minMenuHeight={200}
                         classNamePrefix="select"
-                        placeholder="Select your college or university"
+                        placeholder="Select up to 5 tools"
                         theme={selectThemeColors}
                         className={classNames('react-select', {
-                          'is-invalid':
-                            errors &&
-                            errors.educationDetails &&
-                            errors.educationDetails.length > 0 &&
-                            errors.educationDetails[index] &&
-                            errors.educationDetails[index].educationInstitution,
+                          'is-invalid': errors && errors.tools,
                         })}
                         {...field}
                       />
                     )}
                   />
-                  {errors &&
-                    errors.educationDetails &&
-                    errors.educationDetails.length > 0 &&
-                    errors.educationDetails[index] && (
-                      <FormFeedback>
-                        {errors.educationDetails[index].educationInstitution &&
-                          errors.educationDetails[index].educationInstitution.label.message}
-                      </FormFeedback>
-                    )}
+                  {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
                 </Col>
-                <Col sm="12" md="12" lg="5">
-                  <Label className="form-label" for={`educationDetails.${index}.education`}>
-                    Degree<span className="label-asterisk me-50">*</span>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="certificates">
+                    Certificates
                   </Label>
                   <Controller
-                    id={`educationDetails.${index}.education`}
-                    name={`educationDetails.${index}.education`}
+                    id="certificates"
+                    name="certificates"
                     control={control}
-                    invalid={
-                      errors &&
-                      errors.educationDetails &&
-                      errors.educationDetails.length > 0 &&
-                      errors.educationDetails[index] &&
-                      errors.educationDetails[index].education &&
-                      true
-                    }
+                    invalid={errors.certificates && true}
                     render={({ field }) => (
                       <AsyncPaginate
-                        loadOptions={loadEducationsOptions}
+                        isMulti
+                        loadOptions={loadCertificatesOptions}
+                        menuPosition="fixed"
+                        minMenuHeight={200}
                         classNamePrefix="select"
-                        placeholder="Select your degree"
+                        placeholder="Select certificates"
                         theme={selectThemeColors}
                         className={classNames('react-select', {
-                          'is-invalid':
-                            errors &&
-                            errors.educationDetails &&
-                            errors.educationDetails.length > 0 &&
-                            errors.educationDetails[index] &&
-                            errors.educationDetails[index].education,
+                          'is-invalid': errors && errors.certificates,
                         })}
                         {...field}
                       />
                     )}
                   />
-                  {errors &&
-                    errors.educationDetails &&
-                    errors.educationDetails.length > 0 &&
-                    errors.educationDetails[index] && (
-                      <FormFeedback>
-                        {errors.educationDetails[index].education &&
-                          errors.educationDetails[index].education.label.message}
-                      </FormFeedback>
-                    )}
-                </Col>
-                <Col sm="12" md="12" lg="2">
-                  {index !== 0 && (
-                    <Button
-                      type="button"
-                      color="flat-danger"
-                      className="mt-2"
-                      onClick={() => handleRemoveEducation(index)}
-                    >
-                      Remove
-                    </Button>
-                  )}
+                  {errors.certificates && <FormFeedback>{errors.certificates.message}</FormFeedback>}
                 </Col>
               </Row>
-            ))}
-            <Row className="mt-2 mb-3">
-              <div className="d-flex align-items-center upload-button cursor-pointer" onClick={handleAddEducation}>
-                <UploadIconContainer>
-                  <Plus size={18} color={theme.activeNavPillText} />
-                </UploadIconContainer>
-                <h5 className="fw-bold">Add New</h5>
-              </div>
-            </Row>
-          </CardBody>
-        </Card>
-        <Card className="w-75">
-          <CardHeader>
-            <h4 className="m-0 mt-1">Expertise</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="tools">
-                  Tools <i>(Top 5)</i>
-                </Label>
-                <Controller
-                  id="tools"
-                  name="tools"
-                  control={control}
-                  invalid={errors.tools && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      isMulti
-                      loadOptions={loadToolsOptions}
-                      menuPosition="fixed"
-                      minMenuHeight={200}
-                      classNamePrefix="select"
-                      placeholder="Select up to 5 tools"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.tools,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="certificates">
-                  Certificates
-                </Label>
-                <Controller
-                  id="certificates"
-                  name="certificates"
-                  control={control}
-                  invalid={errors.certificates && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      isMulti
-                      loadOptions={loadCertificatesOptions}
-                      menuPosition="fixed"
-                      minMenuHeight={200}
-                      classNamePrefix="select"
-                      placeholder="Select certificates"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.certificates,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.certificates && <FormFeedback>{errors.certificates.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="skills">
-                  Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
-                </Label>
-                <Controller
-                  id="skills"
-                  name="skills"
-                  control={control}
-                  invalid={errors.skills && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      isMulti
-                      loadOptions={loadSkillsOptions}
-                      menuPosition="fixed"
-                      minMenuHeight={200}
-                      menuPlacement="top"
-                      classNamePrefix="select"
-                      placeholder="Select up to 5 skills"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.skills,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.skills && <FormFeedback>{errors.skills.message}</FormFeedback>}
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
-          <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
-            <UploadIconContainer>
-              <ChevronLeft size={18} color={theme.activeNavPillText} />
-            </UploadIconContainer>
-            <h5 className="fw-bold">Back</h5>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="skills">
+                    Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
+                  </Label>
+                  <Controller
+                    id="skills"
+                    name="skills"
+                    control={control}
+                    invalid={errors.skills && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        isMulti
+                        loadOptions={loadSkillsOptions}
+                        menuPosition="fixed"
+                        minMenuHeight={200}
+                        menuPlacement="top"
+                        classNamePrefix="select"
+                        placeholder="Select up to 5 skills"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.skills,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.skills && <FormFeedback>{errors.skills.message}</FormFeedback>}
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+          <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
+            <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
+              <UploadIconContainer>
+                <ChevronLeft size={18} color={theme.activeNavPillText} />
+              </UploadIconContainer>
+              <h5 className="fw-bold">Back</h5>
+            </div>
+            <div>
+              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <span className="me-50">Skip</span>
+                <ChevronRight size={14} />
+              </Button>
+              <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                {profileDetailsIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Save & Continue</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-          <div>
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
-              <span className="me-50">Skip</span>
-              <ChevronRight size={14} />
-            </Button>
-            <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
-              {profileDetailsIsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      </Form>
+        </Form>
+      )}
     </ProfileFormContainer>
   );
 };
