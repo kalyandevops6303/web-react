@@ -1,19 +1,15 @@
 import API from '../configs/api';
 import DataService from '../configs/dataService/dataService';
 
-const getCardService = ({ userType }) => {
-  const QUERY = `is_team=${userType === 'TEAM'}`;
-  return DataService.get(`${API.project.cardInfo}?${QUERY}`);
-};
+const getCardService = () => DataService.get(`${API.project.cardInfo}`);
 
-const getProjectListingService = ({ metaData, primaryFilter, userType, searchText }) => {
-  let QUERY = `is_team=${userType === 'TEAM'}&page=${metaData?.page}&page_size=${
-    metaData?.page_size
-  }&project_filter=${primaryFilter}`;
+const getProjectListingService = ({ metaData, data }) =>
+  DataService.post(`${API.project.projects}?page=${metaData?.page}&page_size=${metaData?.page_size}`, data);
 
-  if (searchText?.length) QUERY += `&search_query=${searchText}`;
+const getTeamNameSerive = (page, search) =>
+  DataService.get(`${API.project.teamName}?page=${page}&page_size=50&search_query=${search}`);
 
-  return DataService.get(`${API.project.projects}?${QUERY}`);
-};
+const getClientNameService = (page, search) =>
+  DataService.get(`${API.project.clientName}?page=${page}&page_size=50&search_query=${search}`);
 
-export { getCardService, getProjectListingService };
+export { getCardService, getProjectListingService, getTeamNameSerive, getClientNameService };

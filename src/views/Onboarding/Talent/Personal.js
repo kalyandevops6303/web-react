@@ -30,10 +30,15 @@ import theme from '../../../configs/themeVariables';
 import { getStates, getCities } from '../../../redux/actions/staticActions';
 import { states, statesLoading, cities, citiesLoading } from '../../../redux/selectors/staticSelectors';
 import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
-import { profileDetailsLoading, userDetails } from '../../../redux/selectors/talentOnboardingSelectors';
+import {
+  profileDetailsLoading,
+  userDetails,
+  userDetailsLoading,
+} from '../../../redux/selectors/talentOnboardingSelectors';
 import { countriesService, languagesService, talentRolesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { userOnboarding } from '../../../utility/constants/Constant';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -149,6 +154,7 @@ const Personal = () => {
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const userDetailsIsLoading = useSelector(userDetailsLoading);
   const userDetailsData = useSelector(userDetails);
 
   useEffect(() => {
@@ -449,403 +455,409 @@ const Personal = () => {
 
   return (
     <ProfileFormContainer>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="w-75">
-          <CardHeader>
-            <h4 className="m-0 mt-1">About</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="tagline">
-                  Tagline<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="tagline"
-                  name="tagline"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      placeholder="Enter your tagline in 60 characters or less"
-                      invalid={errors.tagline && true}
-                    />
-                  )}
-                />
-                {errors.tagline && <FormFeedback>{errors.tagline.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Row>
-                  <Col sm="12" md="6" lg="6">
-                    <Label className="form-label" for="workExperienceYear">
-                      Work Experience - Years
-                    </Label>
-                    <Controller
-                      id="workExperienceYear"
-                      name="workExperienceYear"
-                      control={control}
-                      render={({ field }) => (
-                        <InputGroup className="input-group-merge">
-                          <Input
-                            {...field}
-                            type="number"
-                            min={0}
-                            onWheel={(e) => e.target.blur()}
-                            placeholder="Enter"
-                            invalid={errors.workExperienceYear && true}
-                          />
-                          <InputGroupText>Year(s)</InputGroupText>
-                        </InputGroup>
-                      )}
-                    />
-                    {errors.workExperienceYear && <FormFeedback>{errors.workExperienceYear.message}</FormFeedback>}
-                  </Col>
-                  <Col sm="12" md="6" lg="6">
-                    <Label className="form-label" for="workExperienceMonth">
-                      Months
-                    </Label>
-                    <Controller
-                      id="workExperienceMonth"
-                      name="workExperienceMonth"
-                      control={control}
-                      render={({ field }) => (
-                        <InputGroup className="input-group-merge">
-                          <Input
-                            {...field}
-                            type="number"
-                            min={0}
-                            onWheel={(e) => e.target.blur()}
-                            placeholder="Enter"
-                            invalid={errors.workExperienceMonth && true}
-                          />
-                          <InputGroupText>Month(s)</InputGroupText>
-                        </InputGroup>
-                      )}
-                    />
-                    {errors.workExperienceMonth && <FormFeedback>{errors.workExperienceMonth.message}</FormFeedback>}
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="professionalIntroduction">
-                  Professional Introduction<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="professionalIntroduction"
-                  name="professionalIntroduction"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="textarea"
-                      placeholder="Describe in 150 characters"
-                      rows="5"
-                      invalid={errors.professionalIntroduction && true}
-                    />
-                  )}
-                />
-                {errors.professionalIntroduction && (
-                  <FormFeedback>{errors.professionalIntroduction.message}</FormFeedback>
-                )}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="role">
-                  Role<span className="label-asterisk">*</span>
-                </Label>
-                <Controller
-                  id="role"
-                  name="role"
-                  control={control}
-                  invalid={errors.role && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      loadOptions={loadTalentRolesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select your role"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.role,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.role && <FormFeedback>{errors.role.label.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mt-3 mb-3 d-none">
-              <div className="d-flex align-items-center upload-button cursor-pointer">
-                <UploadIconContainer>
-                  <Upload size={18} color={theme.activeNavPillText} />
-                </UploadIconContainer>
-                <h5 className="fw-bold">Upload your resume</h5>
-              </div>
-            </Row>
-            <Row className="mb-1 mt-3">
-              <h5 className="m-0">Languages</h5>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="speakLanguages">
-                  I can speak well (Top 5)
-                </Label>
-                <Controller
-                  id="speakLanguages"
-                  name="speakLanguages"
-                  control={control}
-                  invalid={errors.speakLanguages && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      isMulti
-                      loadOptions={loadLanguagesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select top 5 language you can speak"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.speakLanguages,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.speakLanguages && <FormFeedback>{errors.speakLanguages.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="readLanguages">
-                  I can read well (Top 5)
-                </Label>
-                <Controller
-                  id="readLanguages"
-                  name="readLanguages"
-                  control={control}
-                  invalid={errors.readLanguages && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      isMulti
-                      loadOptions={loadLanguagesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select top 5 language you can read"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.readLanguages,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.readLanguages && <FormFeedback>{errors.readLanguages.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="writeLanguages">
-                  I can write well (Top 5)
-                </Label>
-                <Controller
-                  id="writeLanguages"
-                  name="writeLanguages"
-                  control={control}
-                  invalid={errors.writeLanguages && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      isMulti
-                      loadOptions={loadLanguagesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select top 5 language you can write"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.writeLanguages,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.writeLanguages && <FormFeedback>{errors.writeLanguages.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mb-1 mt-3">
-              <h5 className="m-0">
-                Current Address<span className="label-asterisk">*</span>
-              </h5>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="streetAddress">
-                  Street Address
-                </Label>
-                <Controller
-                  id="streetAddress"
-                  name="streetAddress"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      placeholder="Enter street address"
-                      invalid={errors.streetAddress && true}
-                      autoComplete="none"
-                    />
-                  )}
-                />
-                {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Row>
-                  <Col sm="6" md="6" lg="6">
-                    <Label className="form-label" for="houseNumber">
-                      House Number
-                    </Label>
-                    <Controller
-                      id="houseNumber"
-                      name="houseNumber"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter house number"
-                          invalid={errors.houseNumber && true}
-                          autoComplete="none"
-                        />
-                      )}
-                    />
-                    {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
-                  </Col>
-                  <Col sm="6" md="6" lg="6">
-                    <Label className="form-label" for="zipCode">
-                      Zip Code
-                    </Label>
-                    <Controller
-                      id="zipCode"
-                      name="zipCode"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter zip code"
-                          invalid={errors.zipCode && true}
-                          autoComplete="none"
-                        />
-                      )}
-                    />
-                    {errors.zipCode && <FormFeedback>{errors.zipCode.message}</FormFeedback>}
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="country">
-                  Country<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="country"
-                  name="country"
-                  control={control}
-                  invalid={errors.country && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      loadOptions={loadCountriesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select your country"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.country,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="state">
-                  State<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="state"
-                  name="state"
-                  control={control}
-                  invalid={errors.state && true}
-                  value={watch('state')}
-                  render={({ field }) => (
-                    <Select
-                      isDisabled={!watch('country')}
-                      isLoading={statesIsLoading}
-                      options={statesOptions}
-                      menuPosition="fixed"
-                      classNamePrefix="select"
-                      placeholder="Select your state"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.state,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="city">
-                  City<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="city"
-                  name="city"
-                  control={control}
-                  invalid={errors.city && true}
-                  value={watch('city')}
-                  render={({ field }) => (
-                    <Select
-                      isDisabled={!watch('country') || !watch('state')}
-                      isLoading={citiesIsLoading}
-                      menuPosition="fixed"
-                      minMenuHeight={200}
-                      options={citiesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select your city"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.city,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
-          <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
-            <UploadIconContainer>
-              <ChevronLeft size={18} color={theme.activeNavPillText} />
-            </UploadIconContainer>
-            <h5 className="fw-bold">Back</h5>
-          </div>
-          <div>
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
-              <span className="me-50">Skip</span>
-              <ChevronRight size={14} />
-            </Button>
-            <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
-              {profileDetailsIsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
-          </div>
+      {userDetailsIsLoading ? (
+        <div className="w-75">
+          <ComponentSpinner className="mt-5" />
         </div>
-      </Form>
+      ) : (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Card className="w-75">
+            <CardHeader>
+              <h4 className="m-0 mt-1">About</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="tagline">
+                    Tagline<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="tagline"
+                    name="tagline"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Enter your tagline in 60 characters or less"
+                        invalid={errors.tagline && true}
+                      />
+                    )}
+                  />
+                  {errors.tagline && <FormFeedback>{errors.tagline.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Row>
+                    <Col sm="12" md="6" lg="6">
+                      <Label className="form-label" for="workExperienceYear">
+                        Work Experience - Years
+                      </Label>
+                      <Controller
+                        id="workExperienceYear"
+                        name="workExperienceYear"
+                        control={control}
+                        render={({ field }) => (
+                          <InputGroup className="input-group-merge">
+                            <Input
+                              {...field}
+                              type="number"
+                              min={0}
+                              onWheel={(e) => e.target.blur()}
+                              placeholder="Enter"
+                              invalid={errors.workExperienceYear && true}
+                            />
+                            <InputGroupText>Year(s)</InputGroupText>
+                          </InputGroup>
+                        )}
+                      />
+                      {errors.workExperienceYear && <FormFeedback>{errors.workExperienceYear.message}</FormFeedback>}
+                    </Col>
+                    <Col sm="12" md="6" lg="6">
+                      <Label className="form-label" for="workExperienceMonth">
+                        Months
+                      </Label>
+                      <Controller
+                        id="workExperienceMonth"
+                        name="workExperienceMonth"
+                        control={control}
+                        render={({ field }) => (
+                          <InputGroup className="input-group-merge">
+                            <Input
+                              {...field}
+                              type="number"
+                              min={0}
+                              onWheel={(e) => e.target.blur()}
+                              placeholder="Enter"
+                              invalid={errors.workExperienceMonth && true}
+                            />
+                            <InputGroupText>Month(s)</InputGroupText>
+                          </InputGroup>
+                        )}
+                      />
+                      {errors.workExperienceMonth && <FormFeedback>{errors.workExperienceMonth.message}</FormFeedback>}
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="professionalIntroduction">
+                    Professional Introduction<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="professionalIntroduction"
+                    name="professionalIntroduction"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="textarea"
+                        placeholder="Describe in 150 characters"
+                        rows="5"
+                        invalid={errors.professionalIntroduction && true}
+                      />
+                    )}
+                  />
+                  {errors.professionalIntroduction && (
+                    <FormFeedback>{errors.professionalIntroduction.message}</FormFeedback>
+                  )}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="role">
+                    Role<span className="label-asterisk">*</span>
+                  </Label>
+                  <Controller
+                    id="role"
+                    name="role"
+                    control={control}
+                    invalid={errors.role && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        loadOptions={loadTalentRolesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select your role"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.role,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.role && <FormFeedback>{errors.role.label.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mt-3 mb-3">
+                <div className="d-flex align-items-center upload-button cursor-pointer">
+                  <UploadIconContainer>
+                    <Upload size={18} color={theme.activeNavPillText} />
+                  </UploadIconContainer>
+                  <h5 className="fw-bold">Upload your resume</h5>
+                </div>
+              </Row>
+              <Row className="mb-1">
+                <h5 className="m-0">Languages</h5>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="speakLanguages">
+                    I can speak well (Top 5)
+                  </Label>
+                  <Controller
+                    id="speakLanguages"
+                    name="speakLanguages"
+                    control={control}
+                    invalid={errors.speakLanguages && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        isMulti
+                        loadOptions={loadLanguagesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select top 5 language you can speak"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.speakLanguages,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.speakLanguages && <FormFeedback>{errors.speakLanguages.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="readLanguages">
+                    I can read well (Top 5)
+                  </Label>
+                  <Controller
+                    id="readLanguages"
+                    name="readLanguages"
+                    control={control}
+                    invalid={errors.readLanguages && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        isMulti
+                        loadOptions={loadLanguagesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select top 5 language you can read"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.readLanguages,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.readLanguages && <FormFeedback>{errors.readLanguages.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="writeLanguages">
+                    I can write well (Top 5)
+                  </Label>
+                  <Controller
+                    id="writeLanguages"
+                    name="writeLanguages"
+                    control={control}
+                    invalid={errors.writeLanguages && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        isMulti
+                        loadOptions={loadLanguagesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select top 5 language you can write"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.writeLanguages,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.writeLanguages && <FormFeedback>{errors.writeLanguages.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mb-1 mt-3">
+                <h5 className="m-0">
+                  Current Address<span className="label-asterisk">*</span>
+                </h5>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="streetAddress">
+                    Street Address
+                  </Label>
+                  <Controller
+                    id="streetAddress"
+                    name="streetAddress"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Enter street address"
+                        invalid={errors.streetAddress && true}
+                        autoComplete="none"
+                      />
+                    )}
+                  />
+                  {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Row>
+                    <Col sm="6" md="6" lg="6">
+                      <Label className="form-label" for="houseNumber">
+                        House Number
+                      </Label>
+                      <Controller
+                        id="houseNumber"
+                        name="houseNumber"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            placeholder="Enter house number"
+                            invalid={errors.houseNumber && true}
+                            autoComplete="none"
+                          />
+                        )}
+                      />
+                      {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
+                    </Col>
+                    <Col sm="6" md="6" lg="6">
+                      <Label className="form-label" for="zipCode">
+                        Zip Code
+                      </Label>
+                      <Controller
+                        id="zipCode"
+                        name="zipCode"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            placeholder="Enter zip code"
+                            invalid={errors.zipCode && true}
+                            autoComplete="none"
+                          />
+                        )}
+                      />
+                      {errors.zipCode && <FormFeedback>{errors.zipCode.message}</FormFeedback>}
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="country">
+                    Country<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="country"
+                    name="country"
+                    control={control}
+                    invalid={errors.country && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        loadOptions={loadCountriesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select your country"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.country,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="state">
+                    State<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="state"
+                    name="state"
+                    control={control}
+                    invalid={errors.state && true}
+                    value={watch('state')}
+                    render={({ field }) => (
+                      <Select
+                        isDisabled={!watch('country')}
+                        isLoading={statesIsLoading}
+                        options={statesOptions}
+                        menuPosition="fixed"
+                        classNamePrefix="select"
+                        placeholder="Select your state"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.state,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="city">
+                    City<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="city"
+                    name="city"
+                    control={control}
+                    invalid={errors.city && true}
+                    value={watch('city')}
+                    render={({ field }) => (
+                      <Select
+                        isDisabled={!watch('country') || !watch('state')}
+                        isLoading={citiesIsLoading}
+                        menuPosition="fixed"
+                        minMenuHeight={200}
+                        options={citiesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select your city"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.city,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+          <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
+            <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
+              <UploadIconContainer>
+                <ChevronLeft size={18} color={theme.activeNavPillText} />
+              </UploadIconContainer>
+              <h5 className="fw-bold">Back</h5>
+            </div>
+            <div>
+              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <span className="me-50">Skip</span>
+                <ChevronRight size={14} />
+              </Button>
+              <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                {profileDetailsIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Save & Continue</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </Form>
+      )}
     </ProfileFormContainer>
   );
 };

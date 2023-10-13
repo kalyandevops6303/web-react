@@ -615,7 +615,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           hasMore={hasMore}
           endMessage={
             <div className="d-flex justify-content-center ">
-              {selectMyTeamData?.length === 0 ? <NoDataFoundComponent data={selectMyTeamData} /> : ''}
+              {selectMyTeamData?.length === 0 ? (
+                <NoDataFoundComponent isRecommanded={primaryFilter === 'recommendation'} data={selectMyTeamData} />
+              ) : (
+                ''
+              )}
             </div>
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}

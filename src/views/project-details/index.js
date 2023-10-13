@@ -43,7 +43,12 @@ const ProjectDetails = () => {
         title: 'Marketplace',
         link: `/marketplace/${getItem('selectedMarketplaceTab') ? getItem('selectedMarketplaceTab') : 'all_listings'}`,
       };
-    if (getItem('baseRoute') === 'projects') return { title: 'Project', link: '/projects' };
+
+    if (getItem('baseRoute') === 'projects')
+      return {
+        title: 'Project',
+        link: `/projects/${getItem('selectedProjectTab') ? getItem('selectedProjectTab') : 'all_listings'}`,
+      };
     if (getItem('baseRoute') === 'notification') return { title: 'Notifications', link: '/notifications' };
     if (getItem('baseRoute') === 'dashboard') return { title: 'Dashboard', link: '/dashboard' };
     if (getItem('baseRoute') === 'my-teams') return { title: 'My teams', link: '/my-teams' };

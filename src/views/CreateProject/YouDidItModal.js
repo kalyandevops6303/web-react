@@ -60,14 +60,14 @@ const YouDidItModal = ({ modal, toggleModal, onNewProjectCreation }) => {
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={createProjectIsLoading ? null : closeModal} />
       <ModalBody>
-        <div className="d-flex justify-content-between pr-1">
-          <YouDidItGifContainer>
+        <div className="d-flex pr-1">
+          <YouDidItGifContainer className="me-3">
             <img src={Notepad} alt="you-did-it" width={244} height={244} />
           </YouDidItGifContainer>
           <div>
-            <h2 className="fw-bold font-large-1 text-left mb-2">You did it!</h2>
+            <h2 className="fw-bold font-large-1 text-center mb-2">You did it!</h2>
             <h4 className="fw-bold font-small-5">Your project has been created. </h4>
-            <p className="fw-light w-75 mt-50">It will be posted on the start date</p>
+            <p className="fw-light mt-50">It will be posted on the start date</p>
           </div>
         </div>
         <div className="d-flex justify-content-end align-items-center mt-3 mb-2 me-2">

@@ -424,7 +424,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               primaryFilter === 'teams') &&
               !inMyBids && (
                 <Col>
-                  <Label className="form-label">Sort by</Label>
+                  <Label className="form-label">{primaryFilter === 'all_listings' ? 'Project' : 'Type'}</Label>
                   <Select
                     isClearable
                     options={sortingOptions}
