@@ -451,7 +451,8 @@ const Educational = () => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="tools">
-                  Tools <i>(Top 5)</i>
+                  Tools<span className="label-asterisk me-50">*</span>
+                  <i>(Top 5)</i>
                 </Label>
                 <Controller
                   id="tools"

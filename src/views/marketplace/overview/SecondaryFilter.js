@@ -116,6 +116,19 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [currentPreview]);
 
+  const getCardComp = () => {
+    if (primaryFilter === 'talents') {
+      return TalentCard;
+    }
+    if (primaryFilter === 'clients') {
+      return ClientCard;
+    }
+    if (primaryFilter === 'teams') {
+      return TeamCard;
+    }
+    return ProjectCard;
+  };
+
   const onSuccess = () => {};
   const onError = () => {
     setHasMore(false);
@@ -126,6 +139,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       valuesOnly[key] = secondFilterState[key].map((item) => item.value);
     });
+
     if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
       dispatch(
         getUsers({
@@ -640,16 +654,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             }
           >
             {selectMarketPlaceData?.map((item) => {
-              const CardComponent =
-                // eslint-disable-next-line no-nested-ternary
-                primaryFilter === 'talents'
-                  ? TalentCard
-                  : // eslint-disable-next-line no-nested-ternary
-                  primaryFilter === 'clients'
-                  ? ClientCard
-                  : primaryFilter === 'teams'
-                  ? TeamCard
-                  : ProjectCard;
+              const CardComponent = getCardComp();
+
               return (
                 <CardComponent
                   key={item?._id || item?.id}

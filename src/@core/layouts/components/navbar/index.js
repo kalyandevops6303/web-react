@@ -115,7 +115,7 @@ const ThemeNavbar = (props) => {
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'} `}
+        to={`/marketplace/${getItem('selectedMarketplaceTab') ?getItem('selectedMarketplaceTab'): userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'} `}
           >
             Marketplace
           </NavLink>
