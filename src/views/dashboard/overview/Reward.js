@@ -13,6 +13,7 @@ import { Card, CardHeader, CardTitle, CardBody, CardText, Row, Col } from 'react
 import { RewardCardWrapper } from './style';
 import { getTotalReferralAmount } from '../../../redux/actions/dashboardActions';
 import { totalReferralAmount } from '../../../redux/selectors/dashboardSelectors';
+import ReferNowModal from '../../ReferralAndReward/overview/ReferNowModal';
 
 const RewardsCard = ({ cols }) => {
   const dispatch = useDispatch();
@@ -27,6 +28,12 @@ const RewardsCard = ({ cols }) => {
       icon: <User size={24} />,
     },
   ]);
+
+  const [earnMoreModal, setEarnMoreModal] = useState(null);
+
+  const toggleEarnMoreModal = () => {
+    setEarnMoreModal(!earnMoreModal);
+  };
 
   useEffect(() => {
     dispatch(getTotalReferralAmount());
@@ -55,6 +62,7 @@ const RewardsCard = ({ cols }) => {
 
   return (
     <RewardCardWrapper>
+      {earnMoreModal && <ReferNowModal modal={earnMoreModal} toggleModal={toggleEarnMoreModal} />}
       <Card className="card-reward">
         <CardHeader>
           <CardTitle tag="h4">Rewards</CardTitle>
@@ -66,7 +74,12 @@ const RewardsCard = ({ cols }) => {
         </CardHeader>
         <CardBody className="reward-body">
           <Row className="reward-comp">{renderData()}</Row>
-          <CardText className="text-center card-text font-small-4 mt-20 text-primary earn-more">Earn More</CardText>
+          <CardText
+            className="text-center card-text font-small-4 mt-20 text-primary earn-more cursor-pointer"
+            onClick={() => setEarnMoreModal(true)}
+          >
+            Earn More
+          </CardText>
         </CardBody>
       </Card>
     </RewardCardWrapper>
