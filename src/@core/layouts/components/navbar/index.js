@@ -14,12 +14,14 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { CometChat } from '@cometchat-pro/chat';
 import { getItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { selectSavedUserData, selectUserData } from '../../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../../utility/constants/Constant';
+import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 
 const ThemeNavbar = (props) => {
   const userData = useSelector(selectUserData);
@@ -78,6 +80,11 @@ const ThemeNavbar = (props) => {
     if (token) {
       dispatch(getUserData());
     }
+    CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
+      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
+      console.log('UNREAD COUNT INDEX', totalCount);
+      dispatch(setUnreadMsgCount(totalCount));
+    });
   }, []);
 
   return (
@@ -125,7 +132,7 @@ const ThemeNavbar = (props) => {
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/projects/ongoing"
+            to="/projects"
             onClick={() => localStorage.removeItem('selectedProjectTab')}
           >
             Project
@@ -136,7 +143,7 @@ const ThemeNavbar = (props) => {
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/my-teams/teams"
+            to="/my-teams"
           >
             My Team
           </NavLink>

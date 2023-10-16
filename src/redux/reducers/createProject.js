@@ -9,6 +9,8 @@ const initialState = {
   bestTalentsLoading: false,
   favoriteTalents: null,
   favoriteTalentsLoading: false,
+  favoriteTeams: null,
+  favoriteTeamsLoading: false,
   almaMaterTalents: null,
   almaMaterTalentsLoading: false,
   inviteTalentsLoading: false,
@@ -59,6 +61,8 @@ const createProjectSlice = createSlice({
       bestTalentsLoading: false,
       favoriteTalents: null,
       favoriteTalentsLoading: false,
+      favoriteTeams: null,
+      favoriteTeamsLoading: false,
       almaMaterTalents: null,
       almaMaterTalentsLoading: false,
     }),
@@ -92,6 +96,22 @@ const createProjectSlice = createSlice({
     favoriteTalentsFailure: (state, action) => ({
       ...state,
       favoriteTalentsLoading: false,
+      error: action.payload,
+    }),
+
+    favoriteTeamsRequest: (state) => ({
+      ...state,
+      favoriteTeamsLoading: true,
+      error: null,
+    }),
+    favoriteTeamsSuccess: (state, action) => ({
+      ...state,
+      favoriteTeamsLoading: false,
+      favoriteTeams: action.payload,
+    }),
+    favoriteTeamsFailure: (state, action) => ({
+      ...state,
+      favoriteTeamsLoading: false,
       error: action.payload,
     }),
 
@@ -151,6 +171,9 @@ export const {
   favoriteTalentsRequest,
   favoriteTalentsSuccess,
   favoriteTalentsFailure,
+  favoriteTeamsRequest,
+  favoriteTeamsSuccess,
+  favoriteTeamsFailure,
   almaMaterTalentsRequest,
   almaMaterTalentsSuccess,
   almaMaterTalentsFailure,
