@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 // ** Third Party Components
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Briefcase } from 'react-feather';
+import { User } from 'react-feather';
+import { useDispatch, useSelector } from 'react-redux';
 
 // ** Custom Components
 import Avatar from '@components/avatar';
@@ -9,23 +11,33 @@ import Avatar from '@components/avatar';
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText, Row, Col } from 'reactstrap';
 import { RewardCardWrapper } from './style';
+import { getTotalReferralAmount } from '../../../redux/actions/dashboardActions';
+import { totalReferralAmount } from '../../../redux/selectors/dashboardSelectors';
 
 const RewardsCard = ({ cols }) => {
-  const data = [
+  const dispatch = useDispatch();
+
+  const totalReferralAmountData = useSelector(totalReferralAmount);
+
+  const [data, setData] = useState([
     {
       title: '$0',
-      subtitle: 'Rewards',
+      subtitle: 'Referral Rewards',
       color: 'light-info',
       icon: <User size={24} />,
     },
+  ]);
 
-    {
-      title: '0',
-      subtitle: 'Referrals',
-      color: 'light-warning',
-      icon: <Briefcase size={24} />,
-    },
-  ];
+  useEffect(() => {
+    dispatch(getTotalReferralAmount());
+  }, []);
+
+  useEffect(() => {
+    if (totalReferralAmountData) {
+      const reqData = { ...data[0], title: `$${totalReferralAmountData?.total_referral_amount}` };
+      setData([reqData]);
+    }
+  }, [totalReferralAmountData]);
 
   const renderData = () =>
     data.map((item, index) => (
