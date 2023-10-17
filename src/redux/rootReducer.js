@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './reducers/auth';
+import chat from './reducers/chat';
 import staticReducer from './reducers/static';
 import talentOnboardingReducer from './reducers/talentOnboarding';
 import clientOnboardingReducer from './reducers/clientOnboarding';
@@ -26,6 +27,7 @@ import referralAndReward from './reducers/referralAndReward';
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  chat,
   staticData: staticReducer,
   talentOnboarding: talentOnboardingReducer,
   clientOnboarding: clientOnboardingReducer,

@@ -92,18 +92,6 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Social</span>
           </NavLink>
         </NavItem>
-        {/* <NavItem
-          onClick={() => {
-            if (location?.state?.isEditing) {
-              onTabClick(`/${userOnboarding.client}/payment-details`);
-            }
-          }}
-        >
-          <NavLink active={location.pathname.includes('payment-details')}>
-            <Shield className="font-medium-3 me-50" />
-            <span className="fw-bold">Payment</span>
-          </NavLink>
-        </NavItem> */}
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
@@ -121,10 +109,6 @@ const Tabs = ({ tabNames, active }) => {
         <TabPane tabId={tabNames.Social}>
           {location.pathname === `/${userOnboarding.client}/social-details` && <Social />}
         </TabPane>
-        {/* <TabPane tabId={tabNames.Payment}>
-          {location.pathname === `/${userOnboarding.client}/payment-details` ? <Payment /> : null}
-        </TabPane> */}
-        <TabPane tabId={tabNames.Payment}>Payment</TabPane>
       </TabContent>
     </TabsContainer>
   );

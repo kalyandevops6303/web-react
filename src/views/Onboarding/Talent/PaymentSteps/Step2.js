@@ -12,7 +12,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { selectThemeColors } from '@utils';
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AsyncPaginate } from 'react-select-async-paginate';
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
 import { getPaymentDetails, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
@@ -30,7 +29,6 @@ const Step2 = ({ setStep }) => {
   const [taxUserType, setTaxUserType] = useState('US');
   // eslint-disable-next-line no-unused-vars
   const [selectedTaxId, setSelectedTaxId] = useState('taxOption1');
-  const [residenceAddress, setResidenceAddress] = useState(false);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
@@ -109,10 +107,6 @@ const Step2 = ({ setStep }) => {
     setStep((prev) => prev - 1);
   };
 
-  // const handleTaxIdSelect = (e) => {
-  //   setSelectedTaxId(e.target.name);
-  // };
-
   const onComplete = () => {
     if (location?.state?.isEditing) {
       navigate('/dashboard');
@@ -155,10 +149,6 @@ const Step2 = ({ setStep }) => {
     dispatch(updatePaymentDetails(updatedData, onSuccess));
   };
 
-  const handleProfileAddress = () => {
-    setResidenceAddress((prev) => !prev);
-  };
-
   return (
     <ProfileFormContainer>
       {accountCreatedModal && (
@@ -167,187 +157,6 @@ const Step2 = ({ setStep }) => {
 
       <h4>STEP 2 - Taxpayer Identification</h4>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="w-75">
-          <CardHeader>
-            <h4 className="m-0 mt-1">Tax information</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <h5 className="mb-1 w-75">
-              Your Taxpayer information will be included in a Trumio W-8 substitute form. Complete this form if you are
-              a non US person resident outside the US.
-            </h5>
-          </CardBody>
-        </Card>
-        <Card className="w-75">
-          <CardHeader>
-            <h4 className="m-0 mt-1">
-              Tax Residence Address<span className="label-asterisk me-50">*</span>
-            </h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <h5 className="w-75">
-              Your tax residence information is part of the Trumio W-9 or W-8 form process. This address will be
-              displayed on invoices
-            </h5>
-            <div className="d-flex w-75 mt-2">
-              <div className="w-75">
-                <Col className="d-flex gap-50">
-                  <Input type="checkbox" checked={residenceAddress} onChange={handleProfileAddress} />
-                  <Label className="fs-5">Same as Profile residence address</Label>
-                </Col>
-
-                <Row className="mb-1 mt-1">
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mAddress">
-                      Street Address
-                    </Label>
-                    <Controller
-                      id="mAddress"
-                      name="mAddress"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          disabled={residenceAddress}
-                          placeholder="Enter street address"
-                          invalid={!residenceAddress && errors.mAddress && true}
-                        />
-                      )}
-                    />
-                    {!residenceAddress && errors.mAddress && <FormFeedback>{errors.mAddress?.message}</FormFeedback>}
-                  </Col>
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mHouseNo">
-                      House Number
-                    </Label>
-                    <Controller
-                      id="mHouseNo"
-                      name="mHouseNo"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter house number"
-                          disabled={residenceAddress}
-                          invalid={errors.mHouseNo && true}
-                        />
-                      )}
-                    />
-                    {errors.mHouseNo && <FormFeedback>{errors.mHouseNo?.message}</FormFeedback>}
-                  </Col>
-                </Row>
-
-                <Row className="mb-1 mt-1">
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mCountry">
-                      Country<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="mCountry"
-                      name="mCountry"
-                      control={control}
-                      invalid={errors.mCountry && true}
-                      render={({ field }) => (
-                        <AsyncPaginate
-                          loadOptions={[]}
-                          classNamePrefix="select"
-                          placeholder="Select your country"
-                          isDisabled={residenceAddress}
-                          theme={selectThemeColors}
-                          className={classNames('react-select', {
-                            'is-invalid': errors && errors.mCountry,
-                          })}
-                          {...field}
-                        />
-                      )}
-                    />
-                    {errors.mCountry && <FormFeedback>{errors.mCountry.label?.message}</FormFeedback>}
-                  </Col>
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mState">
-                      State<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="mState"
-                      name="mState"
-                      control={control}
-                      invalid={errors.mState && true}
-                      render={({ field }) => (
-                        <Select
-                          isLoading={false}
-                          isDisabled={residenceAddress}
-                          options={[]}
-                          menuPosition="fixed"
-                          classNamePrefix="select"
-                          placeholder="Select your state"
-                          theme={selectThemeColors}
-                          className={classNames('react-select', {
-                            'is-invalid': errors && errors.mState,
-                          })}
-                          {...field}
-                        />
-                      )}
-                    />
-                    {errors.mState && <FormFeedback>{errors.mState.label?.message}</FormFeedback>}
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col sm="12" md="12" lg="6">
-                    <Label className="form-label" for="mCity">
-                      City<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="mCity"
-                      name="mCity"
-                      control={control}
-                      invalid={errors.mCity && true}
-                      render={({ field }) => (
-                        <Select
-                          isLoading={false}
-                          menuPosition="fixed"
-                          minMenuHeight={200}
-                          isDisabled={residenceAddress}
-                          options={[]}
-                          classNamePrefix="select"
-                          placeholder="Select your city"
-                          theme={selectThemeColors}
-                          className={classNames('react-select', {
-                            'is-invalid': errors && errors.mCity,
-                          })}
-                          {...field}
-                        />
-                      )}
-                    />
-                    {errors.mCity && <FormFeedback>{errors.mCity.label?.message}</FormFeedback>}
-                  </Col>
-                  <Col sm="6" md="6" lg="6">
-                    <Label className="form-label" for="mZipCode">
-                      Postal Code<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="mZipCode"
-                      name="mZipCode"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter zip code"
-                          invalid={errors.mZipCode && true}
-                          disabled={residenceAddress}
-                          autoComplete="none"
-                        />
-                      )}
-                    />
-                    {errors.mZipCode && <FormFeedback>{errors.mZipCode?.message}</FormFeedback>}
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
         <Card className="w-75">
           <CardHeader>
             <h4 className="m-0 mt-1">

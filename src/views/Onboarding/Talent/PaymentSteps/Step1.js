@@ -19,7 +19,7 @@ const Step1 = ({ setStep }) => {
   const dispatch = useDispatch();
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [isWorkingInUS, setIsWorkingInUS] = useState(false);
-  const [taxUserType, setTaxUserType] = useState('NON_US');
+  const [taxUserType, setTaxUserType] = useState('US');
   const [isUserExists, setIsUserExists] = useState(false);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
@@ -27,11 +27,11 @@ const Step1 = ({ setStep }) => {
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       if (res?.created_at) setIsUserExists(true);
-      if (res?.is_working_in_us) {
-        setIsWorkingInUS(true);
-      }
       if (res?.tax_user_type) {
         setTaxUserType(res?.tax_user_type);
+        if (res?.tax_user_type === 'NON_US') {
+          setIsWorkingInUS(false);
+        }
       }
     }
   };
@@ -66,7 +66,7 @@ const Step1 = ({ setStep }) => {
   };
 
   const handleNextClick = (e) => {
-    if (taxUserType === 'STUDENT' || (taxUserType === 'NON_US' && isWorkingInUS)) {
+    if (taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
       e.preventDefault();
       return;
@@ -74,19 +74,12 @@ const Step1 = ({ setStep }) => {
 
     if (location?.state?.isEditing || isUserExists) {
       const newData = {
-        talent_info: {
-          tax_user_type: taxUserType,
-          is_working_in_us: isWorkingInUS,
-        },
+        tax_user_type: taxUserType,
       };
-
       dispatch(updatePaymentDetails(newData, onSuccess));
     } else {
       const newData = {
-        talent_info: {
-          tax_user_type: taxUserType,
-          is_working_in_us: isWorkingInUS,
-        },
+        tax_user_type: taxUserType,
       };
       dispatch(savePaymentDetails(newData, onSuccess));
     }
@@ -139,18 +132,13 @@ const Step1 = ({ setStep }) => {
                 </div>
               </Col>
               <Col className="d-flex gap-50">
-                <Input
-                  type="radio"
-                  name="STUDENT"
-                  checked={taxUserType === 'STUDENT'}
-                  onChange={handlePrePaymentChange}
-                />
+                <Input type="radio" name="OTHER" checked={taxUserType === 'OTHER'} onChange={handlePrePaymentChange} />
                 <div className="w-75">All other tax situations</div>
               </Col>
             </div>
           </CardBody>
         </Card>
-        {taxUserType === 'STUDENT' || taxUserType === 'US' ? null : (
+        {taxUserType === 'OTHER' || taxUserType === 'US' ? null : (
           <Card className="w-75">
             <CardHeader>
               <h4 className="m-0 mt-1">Working</h4>
@@ -188,7 +176,7 @@ const Step1 = ({ setStep }) => {
               ) : (
                 <>
                   <span className="me-50">
-                    {taxUserType === 'STUDENT' || (taxUserType === 'NON_US' && isWorkingInUS)
+                    {taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)
                       ? 'Email Support Team'
                       : 'STEP 2 - Taxpayer Identification'}
                   </span>
