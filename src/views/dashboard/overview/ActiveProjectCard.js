@@ -22,7 +22,7 @@ const ActiveProjectCard = ({ data, className }) => {
   };
 
   const viewProject = () => {
-    navigate(`/project-details/${data._id}/bid`);
+    navigate(`/project-details/${data._id}/milestone`);
   };
 
   return (

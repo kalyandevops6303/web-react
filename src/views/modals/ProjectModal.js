@@ -157,8 +157,12 @@ const ProjectModal = ({
       if (selectUserDetailsData?.user_type === userTypes.talent && data?.team_switch_id) {
         toggleModal();
         setSwitchProfileModal(true);
-      } else {
+      } else if (location.pathname.split('/').includes('ongoing')) {
         navigate(`/project-details/${data?._id}/milestone`);
+      } else if (location.pathname.split('/').includes('completed')) {
+        navigate(`/project-details/${data?._id}/rating`);
+      } else {
+        navigate(`/project-details/${data?._id}/bid`);
       }
     } else {
       navigate(`/project-details/${data?._id}/bid`);

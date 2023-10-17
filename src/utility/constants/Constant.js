@@ -50,6 +50,10 @@ const statusesOptions = [
   { label: 'Closed', value: 'CLOSED' },
   { label: 'On Going', value: 'ON_GOING' },
 ];
+const statusForAllListing = [
+  { label: 'Open', value: 'OPEN' },
+  { label: 'In-review', value: 'IN_REVIEW' },
+];
 const projectTypesOptions = [
   { label: 'Fixed', value: 'FIXED' },
   { label: 'Variable', value: 'VARIABLE' },
@@ -92,4 +96,5 @@ export {
   disputeStatuses,
   disputeStatusEnum,
   bidStatusesOptions,
+  statusForAllListing,
 };

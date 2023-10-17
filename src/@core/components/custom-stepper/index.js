@@ -65,17 +65,17 @@ const CustomStep = ({ onChangeStep, steps, currentStep }) => {
   console.log(param);
 
   const handleChangeStep = (step) => {
-    console.log(step);
     onChangeStep(step);
-    if (step === 'milestone' && invitedByData) {
-      navigate(`milestone/project-invitation/milestone`);
-    } else if (step === 'project') {
-      navigate(-1);
-    } else {
-      navigate(step);
+    if (currentStep !== step) {
+      if (step === 'milestone' && invitedByData) {
+        navigate(`milestone/project-invitation/milestone`);
+      } else if (step === 'project') {
+        navigate(-1);
+      } else {
+        navigate(step);
+      }
     }
   };
-  console.log(steps);
 
   return (
     <CustomStepWrap>

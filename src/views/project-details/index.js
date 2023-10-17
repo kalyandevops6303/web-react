@@ -22,7 +22,6 @@ const ProjectDetails = () => {
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
-
   const changeStep = (step) => {
     setCurrentStep(step);
   };
@@ -30,13 +29,24 @@ const ProjectDetails = () => {
     window?.scrollTo(0, 0);
   }, []);
 
+  const isInviteView = location?.pathname?.includes('project-invitation');
+
   useEffect(() => {
-    if (projectDetailsData && projectDetailsData.status === 'COMPLETED') {
-      steps[steps.length - 1].isDisabled = false;
+    let updatedSteps = [];
+    if (projectDetailsData) {
+      updatedSteps = [...steps]; // Create a copy of the original steps array
+      if (projectDetailsData.status === 'COMPLETED') {
+        const ratingIndex = 4; // Index of the 'Rating' step
+        updatedSteps[ratingIndex] = { ...updatedSteps[ratingIndex], isDisabled: false };
+      }
+      if (projectDetailsData.status === 'ON_GOING') {
+        const milestoneIndex = 2; // Index of the 'Milestone' step
+        updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
+      }
+      setStepsArray(updatedSteps);
     }
   }, [projectDetailsData?.status]);
 
-  const isInviteView = location?.pathname?.includes('project-invitation');
   const fromLocationPrimary = () => {
     if (getItem('baseRoute') === 'marketplace')
       return {

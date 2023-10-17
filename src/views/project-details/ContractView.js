@@ -152,7 +152,7 @@ const ContractView = () => {
     return false;
   };
 
-  if (isLoading) {
+  if (isLoading && !document) {
     return <ComponentSpinner />;
   }
 

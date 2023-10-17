@@ -124,6 +124,10 @@ const Alerts = () => {
       redirectionFunction({ projectId: data?.custom_payload?.project_id });
     }
   };
+
+  const handleRedirection = () => {
+    navigate('/notifications');
+  };
   return (
     <AlertCardWrapper>
       <Card>
@@ -225,7 +229,7 @@ const Alerts = () => {
               </Card>
             ))}
           {alerts?.alerts?.metadata?.total_records > 4 && (
-            <span className="mb-1 additional-text text-center d-block">
+            <span onClick={handleRedirection} className="cursor-pointer mb-1 additional-text text-center d-block">
               +{alerts.alerts.metadata.total_records - 4} more
             </span>
           )}
