@@ -14,7 +14,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
@@ -70,6 +70,8 @@ const ThemeNavbar = (props) => {
     }
   `;
 
+  const [activeTab, setActiveTab] = useState(false)
+
   const dispatch = useDispatch();
 
   const token = getItem('access_token');
@@ -103,36 +105,43 @@ const ThemeNavbar = (props) => {
         <>
           <NavLink
             className={({ isActive }) =>
-              (isActive ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+              (isActive || activeTab==="dashboard" ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
             to="/dashboard"
+            onClick={() => setActiveTab('dashboard')}
           >
             Dashboard
           </NavLink>
           <NavLink
+          onClick={(() => setActiveTab('marketplace'))}
             className={
-              (location?.pathname?.split('/')?.[1] === 'marketplace' || location?.state?.from?.primary === 'Marketplace'
+              (location?.pathname?.split('/')?.[1] === 'marketplace' || location?.state?.from?.primary === 'Marketplace' || activeTab === 'marketplace'
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-        to={`/marketplace/${getItem('selectedMarketplaceTab') ?getItem('selectedMarketplaceTab'): userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'} `}
+        to={`/marketplace/${getItem('selectedMarketplaceTab') ? getItem('selectedMarketplaceTab'): userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'} `}
           >
             Marketplace
           </NavLink>
           <NavLink
             className={
-              (location?.pathname?.split('/')?.[1] === 'projects' || location?.state?.from?.primary === 'projects'
+              (location?.pathname?.split('/')?.[1] === 'projects' || location?.state?.from?.primary === 'projects' || activeTab === 'projects'
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
             to="/projects"
-            onClick={() => localStorage.removeItem('selectedProjectTab')}
+            onClick={() => {
+              localStorage.removeItem('selectedProjectTab')
+              setActiveTab('projects')
+            }}
+            
           >
             Project
           </NavLink>
           <NavLink
+          onClick={(() => setActiveTab('my-teams'))}
             className={
-              (location?.pathname?.split('/')?.[1] === 'my-teams' || location?.state?.from?.primary === 'my-teams'
+              (location?.pathname?.split('/')?.[1] === 'my-teams' || location?.state?.from?.primary === 'my-teams' ||activeTab === 'my-teams'
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
