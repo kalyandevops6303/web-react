@@ -16,18 +16,20 @@ import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CometChat } from '@cometchat-pro/chat';
 import { getItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { selectSavedUserData, selectUserData } from '../../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../../utility/constants/Constant';
+import { CometChat } from '@cometchat-pro/chat';
 import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 
 const ThemeNavbar = (props) => {
   const userData = useSelector(selectUserData);
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
-  const savedUser = useSelector(selectSavedUserData);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
+  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   // ** Props
   const { skin, setSkin, setMenuVisibility, className } = props;
   // ** Function to toggle Theme (Light/Dark)
@@ -80,12 +82,15 @@ const ThemeNavbar = (props) => {
     if (token) {
       dispatch(getUserData());
     }
+  }, []);
+
+  if (isCometChatLoggedIn) {
     CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
       const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
-      console.log('UNREAD COUNT INDEX', totalCount);
+      console.log('UNREAD COUNT INDEX NAV', totalCount);
       dispatch(setUnreadMsgCount(totalCount));
     });
-  }, []);
+  }
 
   return (
     <HeadWrapper className={className}>
