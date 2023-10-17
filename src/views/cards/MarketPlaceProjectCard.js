@@ -30,7 +30,8 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
     setShowModal(!showModal);
   };
 
-  const handleToggleView = () => {
+  const handleToggleView = (e) => {
+    e.stopPropagation();
     setShowFullText(!showFullText);
   };
 
@@ -134,7 +135,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
               )}
 
               {isContentOverflowing && (
-                <CardText className="cursor-pointer show-more" onClick={handleToggleView}>
+                <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
                   {showFullText ? 'Show less' : 'Show more'}
                 </CardText>
               )}
