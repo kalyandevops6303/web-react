@@ -36,11 +36,11 @@ const App = () => {
     },
   );
 
-  const loginUser = async (authToken, fcmCometToken) => {
+  const loginUser = async (authToken, token) => {
     await CometChat.login(authToken);
     console.log('LOGGED IN COMETCHAT');
     await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
-      fcmToken: fcmCometToken,
+      fcmToken: token,
     });
   };
 
@@ -49,10 +49,10 @@ const App = () => {
       let data;
       const tokenFunc = async () => {
         data = await getToken();
-
+        console.log('FCM TOKEN 52', data);
         if (data) {
-          await dispatch(fcmSubscribeNotification(data));
-          loginUser(cometAuthToken, data);
+          dispatch(fcmSubscribeNotification(data));
+          // loginUser(cometAuthToken, data);
           // await fcmSubscribeService(data);
           setItem('fcmToken', data);
         }
