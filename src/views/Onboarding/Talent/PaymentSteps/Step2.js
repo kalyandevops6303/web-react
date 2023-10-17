@@ -81,10 +81,10 @@ const Step2 = ({ setStep }) => {
           value: res.tax_identification?.federal_tax_classification,
         });
       }
-      if (res.tax_identification?.social_security_number?.length > 0 && taxUserType === 'US') {
+      if (res.tax_identification?.social_security_number?.length > 0 && res?.tax_user_type === 'US') {
         setValue('taxId', res.tax_identification?.social_security_number);
       }
-      if (res.tax_identification?.national_taxpayer_number?.length > 0 && taxUserType === 'NON_US') {
+      if (res.tax_identification?.national_taxpayer_number?.length > 0 && res?.tax_user_type === 'NON_US') {
         setValue('taxId', res.tax_identification?.national_taxpayer_number);
       }
     }
@@ -131,19 +131,17 @@ const Step2 = ({ setStep }) => {
   const onSubmit = (data) => {
     const taxDetails = {
       tax_identification: {
-        is_us_person: taxUserType === 'US',
         legal_name: data?.taxName,
         federal_tax_classification: data?.taxClass?.value,
         social_security_number: selectedTaxId === 'taxOption1' ? data?.taxId : '',
-        employee_identification_number: selectedTaxId === 'taxOption2' ? data?.taxId : '',
+        employee_identification_number: '',
         national_taxpayer_number: taxUserType === 'NON_US' ? data?.taxId : '',
+        tax_payer_identification_type: taxUserType === 'US' ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
       },
     };
 
     const updatedData = {
-      talent_info: {
-        ...taxDetails,
-      },
+      ...taxDetails,
     };
 
     dispatch(updatePaymentDetails(updatedData, onSuccess));
@@ -236,30 +234,6 @@ const Step2 = ({ setStep }) => {
                 {errors.taxClass && <FormFeedback>{errors.taxClass?.label?.message}</FormFeedback>}
               </Col>
             </Row>
-            {/* {taxUserType === 'NON_US' ? (
-              <div className="d-flex w-75">
-                <Col className="d-flex gap-50">
-                  <Input
-                    type="radio"
-                    checked={selectedTaxId === 'taxOption1'}
-                    name="taxOption1"
-                    onChange={handleTaxIdSelect}
-                  />
-                  <div className="w-75">
-                    {taxUserType === 'NON_US' ? 'National Taxpayer number (NSN)' : 'Social Security number (SSN)'}
-                  </div>
-                </Col>
-                <Col className="d-flex gap-50">
-                  <Input
-                    type="radio"
-                    checked={selectedTaxId === 'taxOption2'}
-                    name="taxOption2"
-                    onChange={handleTaxIdSelect}
-                  />
-                  <div>Employee identification number (EIN)</div>
-                </Col>
-              </div>
-            ) : null} */}
             <Row className="mt-1 mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="taxId">

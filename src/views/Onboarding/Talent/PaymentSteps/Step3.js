@@ -125,7 +125,7 @@ const Step3 = ({ setStep }) => {
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       setPaymentDetailsRes(res);
-      if (res?.w8bendetails) {
+      if (Object.keys(res?.w8bendetails)?.length > 0) {
         setValue('citizen', {
           label: res?.w8bendetails?.country_of_citizenship,
           value: res?.w8bendetails?.country_of_citizenship?.toUpperCase(),
@@ -135,7 +135,7 @@ const Step3 = ({ setStep }) => {
         setValue('dob', res?.w8bendetails?.dob);
         setTaxPayer(res?.w8bendetails?.has_us_tax_id ? 'option1' : 'option2');
       }
-      if (res?.w9details) {
+      if (Object.keys(res?.w9details)?.length > 0) {
         setValue('citizen', {
           label: res?.w9details?.country_of_citizenship,
           value: res?.w9details?.country_of_citizenship?.toUpperCase(),
@@ -382,6 +382,7 @@ const Step3 = ({ setStep }) => {
                     invalid={errors.citizen && true}
                     render={({ field }) => (
                       <AsyncPaginate
+                        {...field}
                         loadOptions={loadCountriesOptions}
                         classNamePrefix="select"
                         placeholder="Select your country"
@@ -389,7 +390,6 @@ const Step3 = ({ setStep }) => {
                         className={classNames('react-select', {
                           'is-invalid': errors && errors.citizen,
                         })}
-                        {...field}
                       />
                     )}
                   />
@@ -695,7 +695,7 @@ const Step3 = ({ setStep }) => {
                   <Input
                     type="radio"
                     name="option2"
-                    checked={taxPayer === 'option2'}
+                    checked={!isUsPerson}
                     disabled={isUsPerson}
                     onChange={handleTaxPayerNoOption}
                   />
@@ -706,7 +706,7 @@ const Step3 = ({ setStep }) => {
                     type="radio"
                     name="option1"
                     disabled={!isUsPerson}
-                    checked={taxPayer === 'option1'}
+                    checked={isUsPerson}
                     onChange={handleTaxPayerNoOption}
                   />
                   <Label className="fs-6">Yes</Label>
