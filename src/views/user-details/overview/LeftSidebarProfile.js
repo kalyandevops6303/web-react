@@ -46,6 +46,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
+  const [modalInformationText, setModalInformationText] = useState('');
   const teamId = getItem('team_id');
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
@@ -91,6 +92,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
       profilePercentageData?.values_missing?.includes('availability')
     ) {
       setCompleteProfileModal(true);
+      setModalInformationText('accept request');
     } else {
       setAccpetModal(true);
     }
@@ -174,6 +176,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
       profilePercentageData?.values_missing?.includes('availability')
     ) {
       setCompleteProfileModal(true);
+      setModalInformationText('join team');
     } else {
       setOpenJoinTeamModal(true);
     }
@@ -191,7 +194,11 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   return (
     <LeftSidebarProfileWrapper>
       {completeProfileModal && (
-        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+        <CompleteProfileModal
+          modalInfoText={modalInformationText}
+          modal={completeProfileModal}
+          toggleModal={toggleCompleteProfileModal}
+        />
       )}
       {accpetModal && (
         <AcceptRequestModal
