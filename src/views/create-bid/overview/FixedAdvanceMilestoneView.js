@@ -907,7 +907,7 @@ const FixedAdvanceMilestoneView = () => {
                                                       </div>
                                                       <Label
                                                         for={`milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`}
-                                                        className="form-check-label"
+                                                        className="form-check-label overflow-wrap-anywhere"
                                                       >
                                                         {worker.role}
                                                       </Label>
