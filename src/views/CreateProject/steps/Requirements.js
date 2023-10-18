@@ -241,6 +241,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       weekdays: [],
       weekends: [],
       currencyType: { label: 'US Dollar', value: USD },
+      includeOrExcludeCountries: 'no-selection',
     },
   });
 
@@ -1526,6 +1527,40 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   ))}
                 </Row>
               )}
+              <hr className="card-header-border mb-2" />
+              <Row className="mb-1">
+                <Controller
+                  control={control}
+                  name="includeOrExcludeCountries"
+                  render={({ field }) => (
+                    <div className="demo-inline-spacing mx-25">
+                      <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
+                        <Input
+                          type="radio"
+                          {...field}
+                          id="no-selection"
+                          checked={field.value === 'no-selection'}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const value = 'no-selection';
+
+                            if (isChecked) {
+                              field.onChange(value);
+                              setValue('includedCountriesSelection', []);
+                              setValue('excludedCountriesSelection', []);
+                            } else {
+                              field.onChange('');
+                            }
+                          }}
+                        />
+                        <Label for="no-selection" className="form-check-label">
+                          No inclusions or exclusions
+                        </Label>
+                      </div>
+                    </div>
+                  )}
+                />
+              </Row>
             </CardBody>
           </Card>
           <Card>
