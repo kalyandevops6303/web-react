@@ -80,7 +80,7 @@ const BidDetails = () => {
   };
   return (
     <BidDetailsWrap>
-      <div className="d-flex justify-content-between mb-5 pb-2 rounded" style={{ position: 'relative' }}>
+      <div className="d-flex justify-content-between mb-2 pb-2 rounded" style={{ position: 'relative' }}>
         <div className="d-flex justify-content-between fixed-header">
           <BreadCrumbs
             data={[
@@ -89,24 +89,27 @@ const BidDetails = () => {
               { title: 'Bid Details' },
             ]}
           />
-
-          {isBidStatusUpating ? (
-            'Updating...'
-          ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
-            <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
-          ) : (
-            <div className="d-flex gap-2 align-items-center pe-1">
-              <CardText
-                onClick={() => setRejectBidModal(true)}
-                className="cursor-pointer report-text m-0 text-center fw-bold"
-              >
-                Reject
-              </CardText>
-              <span>
-                <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
-                  Accept
-                </Button>
-              </span>
+          {bidInfo?.is_acceptable && (
+            <div>
+              {isBidStatusUpating ? (
+                'Updating...'
+              ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
+                <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
+              ) : (
+                <div style={{ marginTop: '-0.2rem' }} className="d-flex gap-2 align-items-center pe-1">
+                  <CardText
+                    onClick={() => setRejectBidModal(true)}
+                    className="cursor-pointer report-text m-0 text-center fw-bold"
+                  >
+                    Reject
+                  </CardText>
+                  <span>
+                    <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
+                      Accept
+                    </Button>
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -146,7 +149,7 @@ const BidDetails = () => {
         />
       )}
 
-      <Row>
+      <Row className="pt-1">
         <Col lg="3">
           <LeftSidebarProfile
             isProjectDetailsView

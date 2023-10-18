@@ -72,6 +72,7 @@ import { clearNotificationsData } from '../reducers/notifications';
 import { getTeams } from './teamsActions';
 import { clearTeamCardData } from '../reducers/myTeams';
 import { clearMarketplaceCardData } from '../reducers/marketPlace';
+import { clearProjectCardData } from '../reducers/project';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -255,6 +256,7 @@ const logoutAction =
     dispatch(logOut());
     dispatch(clearTeams());
     dispatch(clearTeamCardData());
+    dispatch(clearProjectCardData());
     dispatch(clearMarketplaceCardData());
     dispatch(clearNotificationsData());
     onSuccess();
@@ -312,6 +314,8 @@ const switchProfile =
       dispatch(clearTeamCardData());
       // clearing marketplace card data
       dispatch(clearMarketplaceCardData());
+      // clearing project card data
+      dispatch(clearProjectCardData());
     } catch (err) {
       errorHandler(err);
     }

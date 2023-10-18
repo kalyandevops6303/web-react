@@ -33,6 +33,7 @@ import {
   bidStatusesOptions,
   projectTypesOptions,
   sortingOptions,
+  statusForAllListing,
   statusesOptions,
   userTypes,
 } from '../../../utility/constants/Constant';
@@ -438,7 +439,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               primaryFilter === 'teams') &&
               !inMyBids && (
                 <Col>
-                  <Label className="form-label">Sort by</Label>
+                  <Label className="form-label">{primaryFilter === 'all_listings' ? 'Project' : 'Type'}</Label>
                   <Select
                     isClearable
                     options={sortingOptions}
@@ -481,7 +482,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     <Label className="form-label">Status</Label>
                     <Select
                       isClearable
-                      options={statusesOptions}
+                      options={primaryFilter === 'all_listings' ? statusForAllListing : statusesOptions}
                       classNamePrefix="select"
                       placeholder="Select status"
                       theme={selectThemeColors}

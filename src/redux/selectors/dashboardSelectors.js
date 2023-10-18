@@ -99,6 +99,12 @@ const upcomingProjectsForTeamLoading = createSelector(
   (dashboard) => dashboard.upcomingProjectsForTeamLoading,
 );
 
+const totalReferralAmount = createSelector(dashboardSelector, (dashboard) => dashboard.totalReferralAmount);
+const totalReferralAmountLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.totalReferralAmountLoading,
+);
+
 export {
   userData,
   userDataLoading,
@@ -138,4 +144,6 @@ export {
   activeProjectsForTeamLoading,
   upcomingProjectsForTeam,
   upcomingProjectsForTeamLoading,
+  totalReferralAmount,
+  totalReferralAmountLoading,
 };

@@ -93,7 +93,7 @@ const Routes = [
     element: <ContractView />,
   },
   {
-    path: '/projects',
+    path: '/projects/*',
     element: <Projects />,
   },
   {

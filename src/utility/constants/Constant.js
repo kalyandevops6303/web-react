@@ -24,7 +24,11 @@ const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
 };
-const createBidSteps = [
+const createBidTalentSteps = [
+  { title: 'Milestone', subtitle: 'Add milestone', icon: <Watch size={18} /> },
+  { title: 'Preview', subtitle: 'Review before posting', icon: <Check size={18} /> },
+];
+const createBidTeamSteps = [
   { title: 'Team', subtitle: 'Add role & hourly rates', icon: <Box size={18} /> },
   { title: 'Milestone', subtitle: 'Add milestone & role', icon: <Watch size={18} /> },
   { title: 'Preview', subtitle: 'Review before posting', icon: <Check size={18} /> },
@@ -49,6 +53,10 @@ const statusesOptions = [
   { label: 'Terminated', value: 'TERMINATED' },
   { label: 'Closed', value: 'CLOSED' },
   { label: 'On Going', value: 'ON_GOING' },
+];
+const statusForAllListing = [
+  { label: 'Open', value: 'OPEN' },
+  { label: 'In-review', value: 'IN_REVIEW' },
 ];
 const projectTypesOptions = [
   { label: 'Fixed', value: 'FIXED' },
@@ -86,10 +94,12 @@ export {
   projectTypesOptions,
   validEmailRegex,
   maxFileSize,
-  createBidSteps,
+  createBidTalentSteps,
+  createBidTeamSteps,
   bidTypes,
   USD,
   disputeStatuses,
   disputeStatusEnum,
   bidStatusesOptions,
+  statusForAllListing,
 };

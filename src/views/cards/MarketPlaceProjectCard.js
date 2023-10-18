@@ -30,7 +30,8 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
     setShowModal(!showModal);
   };
 
-  const handleToggleView = () => {
+  const handleToggleView = (e) => {
+    e.stopPropagation();
     setShowFullText(!showFullText);
   };
 
@@ -76,7 +77,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
 
   return (
     <ProjectCardWrap>
-      <Card>
+      <Card onClick={handleShowProject} className="cursor-pointer">
         <CardBody>
           <Row>
             <Col lg="8">
@@ -97,9 +98,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
                 </CustomBadge>
               </div>
               <CardTitle className="d-flex align-items-center">
-                <span className="cursor-pointer" onClick={handleShowProject}>
-                  {data?.details?.name ?? data?.name}
-                </span>
+                <span className="cursor-pointer">{data?.details?.name ?? data?.name}</span>
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">
                 <CardText className="project">
@@ -136,7 +135,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
               )}
 
               {isContentOverflowing && (
-                <CardText className="cursor-pointer show-more" onClick={handleToggleView}>
+                <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
                   {showFullText ? 'Show less' : 'Show more'}
                 </CardText>
               )}

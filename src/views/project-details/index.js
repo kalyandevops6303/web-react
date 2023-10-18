@@ -22,7 +22,6 @@ const ProjectDetails = () => {
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
-
   const changeStep = (step) => {
     setCurrentStep(step);
   };
@@ -30,20 +29,34 @@ const ProjectDetails = () => {
     window?.scrollTo(0, 0);
   }, []);
 
+  const isInviteView = location?.pathname?.includes('project-invitation');
+
   useEffect(() => {
-    if (projectDetailsData && projectDetailsData.status === 'COMPLETED') {
-      steps[steps.length - 1].isDisabled = false;
+    if (projectDetailsData) {
+      const updatedSteps = [...steps]; // Create a copy of the original steps array
+      if (projectDetailsData.status === 'COMPLETED') {
+        const ratingIndex = 4; // Index of the 'Rating' step
+        updatedSteps[ratingIndex] = { ...updatedSteps[ratingIndex], isDisabled: false };
+      }
+      if (projectDetailsData.status === 'ON_GOING') {
+        const milestoneIndex = 2; // Index of the 'Milestone' step
+        updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
+      }
     }
   }, [projectDetailsData?.status]);
 
-  const isInviteView = location?.pathname?.includes('project-invitation');
   const fromLocationPrimary = () => {
     if (getItem('baseRoute') === 'marketplace')
       return {
         title: 'Marketplace',
         link: `/marketplace/${getItem('selectedMarketplaceTab') ? getItem('selectedMarketplaceTab') : 'all_listings'}`,
       };
-    if (getItem('baseRoute') === 'projects') return { title: 'Project', link: '/projects' };
+
+    if (getItem('baseRoute') === 'projects')
+      return {
+        title: 'Project',
+        link: `/projects/${getItem('selectedProjectTab') ? getItem('selectedProjectTab') : 'all_listings'}`,
+      };
     if (getItem('baseRoute') === 'notification') return { title: 'Notifications', link: '/notifications' };
     if (getItem('baseRoute') === 'dashboard') return { title: 'Dashboard', link: '/dashboard' };
     if (getItem('baseRoute') === 'my-teams') return { title: 'My teams', link: '/my-teams' };

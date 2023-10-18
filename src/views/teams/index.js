@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Route, Routes, useNavigate } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
@@ -9,6 +8,7 @@ import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getItem, setItem } from '../../utility/localStorageControl';
+import { userTypes } from '../../utility/constants/Constant';
 
 const TeamsContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -22,11 +22,25 @@ const MyTeams = () => {
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
   const navigate = useNavigate();
-  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMyTeamsTab') ?? 'teams');
+  const [primaryFilter, setPrimaryFilter] = useState(
+    getItem('selectedMyTeamsTab') ?? userDetailsData?.user_type === userTypes.talent ? 'teams' : 'talents',
+  );
+
+  const routesMatch =
+    useMatch('/my-teams/teams') ||
+    useMatch('/my-teams/clients') ||
+    useMatch('/my-teams/talents') ||
+    useMatch('/my-teams/join_requests') ||
+    useMatch('/my-teams/favourites') ||
+    useMatch('/my-teams/recommendation');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    if (routesMatch?.pathname?.split('/')?.[2] !== primaryFilter) {
+      setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
+      setItem('selectedMyTeamsTab', routesMatch?.pathname?.split('/')?.[2]);
+    }
     setItem('baseRoute', 'my-teams');
   }, []);
 
@@ -54,14 +68,6 @@ const MyTeams = () => {
     <TeamsContainer>
       <div className="d-flex justify-content-between">
         <BreadCrumbs data={[{ title: 'My Teams', link: '/my-teams' }, { title: primaryEnum[primaryFilter] }]} />
-
-        {userDetailsData?.user_type === 'CLIENT' && (
-          <Link to="/create-project">
-            <Button as="link" color="primary">
-              Create Project
-            </Button>
-          </Link>
-        )}
       </div>
       <PrimaryFilter
         selected={primaryFilter}

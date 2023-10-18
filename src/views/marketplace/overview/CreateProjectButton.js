@@ -34,6 +34,7 @@ const CreateProjectButton = () => {
       {completeProfileModal && (
         <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
       )}
+
       {userDetailsData?.user_type === 'CLIENT' && (
         <DashboardHeaderWrapper>
           <Button color="primary" onClick={onCreateProjectClick}>

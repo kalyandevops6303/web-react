@@ -27,10 +27,12 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
     setIsFavorite(false);
   };
 
-  const handleLike = () => {
+  const handleLike = (e) => {
+    e.stopPropagation();
     dispatch(makeFav({ project_id: data?._id, onSuccess: onFavSuccess, onError: () => {} }));
   };
-  const handleUnLike = () => {
+  const handleUnLike = (e) => {
+    e.stopPropagation();
     dispatch(removeFav({ project_id: data?._id, onSuccess: onUnFavSuccess, onError: () => {} }));
   };
 
@@ -76,11 +78,11 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
                   className="cursor-pointer d-flex heart"
                   fill={theme.red}
                   stroke={theme.red}
-                  onClick={handleUnLike}
+                  onClick={(e) => handleUnLike(e)}
                   size={20}
                 />
               ) : (
-                <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
               )}
             </div>
           )}

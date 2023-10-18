@@ -621,7 +621,7 @@ const Profile = () => {
     if (Object.keys(errors).length === 0) {
       handleSubmit(onSubmit)();
     } else {
-      ShowToastMessage('error', 'Please fill the mandatory fields');
+      ShowToastMessage(ERROR, 'Please fill the mandatory fields');
     }
   };
 

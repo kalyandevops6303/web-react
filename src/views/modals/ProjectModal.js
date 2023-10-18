@@ -18,7 +18,7 @@ import {
   Spinner,
 } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import styled from 'styled-components';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
@@ -71,15 +71,19 @@ const ViewProjectDetailModalWrap = styled.div`
 `;
 
 const ProjectModal = ({
+  isUpcomingProject,
+  isActiveProject,
   modal,
   toggleModal,
   data,
   setCreateBidModal,
   setSelectedProject,
   toggleCompleteProfileModal,
+  setSwitchProfileModal,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
@@ -123,8 +127,8 @@ const ProjectModal = ({
   };
 
   const isViewable =
-    window.location.pathname.split('/').includes('my_bids') ||
-    window.location.pathname.split('/').includes('my_listings');
+    location.pathname.split('/').includes('my_bids') || location.pathname.split('/').includes('my_listings');
+  const isDashboard = location.pathname.split('/').includes('dashboard');
 
   const handleCreateBid = () => {
     if (
@@ -149,13 +153,32 @@ const ProjectModal = ({
   };
 
   const isMyProjectMyTeam =
-    // eslint-disable-next-line no-undef
-    window.location.pathname.split('/').includes('projects') ||
-    // eslint-disable-next-line no-undef
-    window.location.pathname.split('/').includes('my-teams');
+    location.pathname.split('/').includes('projects') || location.pathname.split('/').includes('my-teams');
 
   const handleViewProject = () => {
-    navigate(`/project-details/${data?._id}/bid`);
+    if (location.pathname.split('/').includes('projects')) {
+      if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
+        toggleModal();
+        setSwitchProfileModal(true);
+      } else if (location.pathname.split('/').includes('ongoing')) {
+        navigate(`/project-details/${data?._id}/milestone`);
+      } else if (location.pathname.split('/').includes('completed')) {
+        navigate(`/project-details/${data?._id}/rating`);
+      } else {
+        navigate(`/project-details/${data?._id}/bid`);
+      }
+    } else if (isDashboard) {
+      if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
+        toggleModal();
+        setSwitchProfileModal(true);
+      } else if (isActiveProject) {
+        navigate(`/project-details/${data?._id}/milestone`);
+      } else {
+        navigate(`/project-details/${data?._id}/bid`);
+      }
+    } else {
+      navigate(`/project-details/${data?._id}/bid`);
+    }
   };
 
   return (
@@ -304,7 +327,9 @@ const ProjectModal = ({
           {selectUserDetailsData?._id === data?.client_details?.user_id ||
           data?.has_bid ||
           isViewable ||
-          isMyProjectMyTeam ? (
+          isMyProjectMyTeam ||
+          isActiveProject ||
+          isUpcomingProject ? (
             <div className="d-flex justify-content-end mb-2">
               <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
                 {checkBidLoadingIsLoading ? (
@@ -322,7 +347,7 @@ const ProjectModal = ({
               {(selectUserDetailsData?.user_type === userTypes.talent ||
                 selectUserDetailsData?.user_type === userTypes.team) && (
                 <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-                  <Button color="flat-danger" className=" d-none me-1">
+                  <Button color="flat-danger" className="d-none me-1">
                     Report
                   </Button>
                   {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') && (
@@ -356,6 +381,9 @@ ProjectModal.propTypes = {
   setCreateBidModal: Proptypes.func,
   setSelectedProject: Proptypes.func,
   toggleCompleteProfileModal: Proptypes.func,
+  setSwitchProfileModal: Proptypes.func,
+  isActiveProject: Proptypes.bool,
+  isUpcomingProject: Proptypes.bool,
 };
 
 ProjectModal.defaultProps = {
@@ -365,4 +393,7 @@ ProjectModal.defaultProps = {
   setCreateBidModal: () => {},
   setSelectedProject: () => {},
   toggleCompleteProfileModal: () => {},
+  setSwitchProfileModal: () => {},
+  isActiveProject: false,
+  isUpcomingProject: false,
 };
