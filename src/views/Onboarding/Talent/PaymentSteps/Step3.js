@@ -23,7 +23,7 @@ import CertificationNonUs from './CertificationNonUs';
 import AccountCreatedModal from '../../AccountCreatedModal';
 import { getUserDetails, saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 
-import { formSchema, usWFormsSchema } from '../Schema';
+import { usWFormsSchema } from '../Schema';
 
 const Step3 = ({ setStep }) => {
   const dispatch = useDispatch();
@@ -58,7 +58,7 @@ const Step3 = ({ setStep }) => {
     setValue,
   } = useForm({
     mode: 'onChange',
-    resolver: yupResolver(taxPayer === 'option1' ? formSchema : usWFormsSchema),
+    resolver: yupResolver(usWFormsSchema),
     defaultValues: {
       fullName: '',
       citizen: '',
@@ -74,8 +74,6 @@ const Step3 = ({ setStep }) => {
       mCountry: '',
       mCity: '',
       mZipCode: '',
-      dob: '',
-      refNo: '',
     },
   });
 
@@ -240,34 +238,35 @@ const Step3 = ({ setStep }) => {
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onAccountCreationSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate('/dashboard');
-    } else {
-      setAccountCreatedModal(true);
-    }
+    // if (location?.state?.isEditing) {
+    //   navigate('/dashboard');
+    // } else {
+    //   setAccountCreatedModal(true);
+    // }
   };
 
   const onSuccess = () => {
-    if (location.state?.isEditing) {
-      navigate('/dashboard');
-    } else {
-      const stripeData = {
-        country:
-          // eslint-disable-next-line no-nested-ternary
-          userDetails?.phone_country?.code,
-        email: userDetails?.email,
-        individual: {
-          first_name: userDetails?.talent_info?.first_name,
-          last_name: userDetails?.talent_info?.last_name,
-        },
-        user_id: userDetails?._id,
-        // eslint-disable-next-line no-undef
-        refresh_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
-        // eslint-disable-next-line no-undef
-        return_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
-      };
-      dispatch(setupStripeAccount(stripeData, onAccountCreationSuccess));
-    }
+    // if (location.state?.isEditing) {
+    //   navigate('/dashboard');
+    // } else {
+
+    // }
+    const stripeData = {
+      country:
+        // eslint-disable-next-line no-nested-ternary
+        userDetails?.phone_country?.code,
+      email: userDetails?.email,
+      individual: {
+        first_name: userDetails?.talent_info?.first_name,
+        last_name: userDetails?.talent_info?.last_name,
+      },
+      user_id: userDetails?._id,
+      // eslint-disable-next-line no-undef
+      refresh_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
+      // eslint-disable-next-line no-undef
+      return_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
+    };
+    dispatch(setupStripeAccount(stripeData, onAccountCreationSuccess));
   };
 
   useEffect(() => {
@@ -329,7 +328,6 @@ const Step3 = ({ setStep }) => {
         ...wDetails,
       },
     };
-
     dispatch(updatePaymentDetails(newData, onSuccess));
   };
 
@@ -727,54 +725,6 @@ const Step3 = ({ setStep }) => {
                   />
                 </Col>
               </Row>
-
-              {/* {taxPayer === 'option1' ? (
-                <Row className="mb-1 mt-1">
-                  <Col sm="6" md="6" lg="6">
-                    <Label className="form-label" for="refNo">
-                      Reference number(s) (see instructions)<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="refNo"
-                      name="refNo"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter you Reference number(s)"
-                          invalid={errors.refNo && true}
-                          autoComplete="none"
-                        />
-                      )}
-                    />
-                    {errors.refNo && <FormFeedback>{errors.refNo?.message}</FormFeedback>}
-                  </Col>
-                  <Col>
-                    <Label className="form-label" for="startDate">
-                      Date of birth (see instructions)<span className="label-asterisk">*</span>
-                    </Label>
-                    <Controller
-                      control={control}
-                      id="dob"
-                      name="dob"
-                      render={({ field }) => (
-                        <Flatpickr
-                          {...field}
-                          placeholder="Enter MM-DD-YYYY"
-                          options={{
-                            minDate: '01-01-1923',
-                            dateFormat: 'm-d-Y',
-                          }}
-                          className={classNames('form-control', {
-                            'is-invalid': errors && errors.dob,
-                          })}
-                        />
-                      )}
-                    />
-                    {errors.dob && <FormFeedback>{errors.dob?.message}</FormFeedback>}
-                  </Col>
-                </Row>
-              ) : null} */}
             </div>
           </CardBody>
         </Card>
