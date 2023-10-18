@@ -127,7 +127,6 @@ export const chatCategoryContainer = () => {
   return {
     display: 'flex',
     justifyContent: 'space-between',
-    position: '-webkit-sticky',
     position: 'sticky',
     top: 0,
     zIndex: 2,
