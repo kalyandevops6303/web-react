@@ -132,16 +132,17 @@ const ThemeNavbar = (props) => {
           </NavLink>
           <NavLink
             className={
-              (location?.pathname?.split('/')?.[1] === 'projects' || location?.state?.from?.primary === 'projects' || activeTab === 'projects'
+              (location?.pathname?.split('/')?.[1] === 'projects' ||
+              location?.state?.from?.primary === 'projects' ||
+              activeTab === 'projects'
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/projects"
+            to="/projects/ongoing"
             onClick={() => {
-              localStorage.removeItem('selectedProjectTab')
-              setActiveTab('projects')
+              localStorage.removeItem('selectedProjectTab');
+              setActiveTab('projects');
             }}
-            
           >
             Project
           </NavLink>
