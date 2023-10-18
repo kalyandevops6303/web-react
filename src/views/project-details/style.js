@@ -77,6 +77,9 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
 `;
 
 const BidDetailsWrap = styled.div`
+  .content-header-left {
+    margin-bottom: 0 !important;
+  }
   .report-text {
     color: ${theme.red};
   }

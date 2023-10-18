@@ -23,6 +23,7 @@ import {
   activeProjectsForTeamService,
   upcomingProjectsForTeamService,
   recommendedProjectsTeamService,
+  getModalDataService,
   totalReferralAmountService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
@@ -88,6 +89,9 @@ import {
   upcomingProjectsForTeamRequest,
   upcomingProjectsForTeamSuccess,
   upcomingProjectsForTeamFailure,
+  projectModalDataRequest,
+  projectModalDataSucess,
+  projectModalDataFailure,
   totalReferralAmountRequest,
   totalReferralAmountSuccess,
   totalReferralAmountFailure,
@@ -359,6 +363,19 @@ const getUpcomingProjectsForTeam = () => async (dispatch) => {
   }
 };
 
+const getModalData =
+  ({ project_id, onSuccess, onError }) =>
+  async (dispatch) => {
+    dispatch(projectModalDataRequest(project_id));
+    try {
+      const res = await getModalDataService({ project_id });
+      dispatch(projectModalDataSucess(res.data.data));
+      onSuccess(res.data.data);
+    } catch (error) {
+      onError();
+      errorHandler(error, projectModalDataFailure);
+    }
+  };
 const getTotalReferralAmount = () => async (dispatch) => {
   dispatch(totalReferralAmountRequest());
   try {
@@ -370,6 +387,7 @@ const getTotalReferralAmount = () => async (dispatch) => {
 };
 
 export {
+  getModalData,
   getAlerts,
   validateUrl,
   removeTeamMember,

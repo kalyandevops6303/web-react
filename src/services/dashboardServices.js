@@ -60,8 +60,12 @@ const activeProjectsForTeamService = () => DataService.get(API.dashboard.activeP
 
 const upcomingProjectsForTeamService = () => DataService.get(API.dashboard.upcomingProjectsForTeam);
 
+const getModalDataService = ({ project_id }) =>
+  DataService.get(`${API.dashboard.getProjectDetails}?project_id=${project_id}`);
+
 export {
   alertService,
+  getModalDataService,
   recommendedProjectsTeamService,
   userDataService,
   removeMemberService,

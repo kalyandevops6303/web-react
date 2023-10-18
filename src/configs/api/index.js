@@ -69,6 +69,8 @@ const API = {
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
     checkBidsAccepted: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
+    getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
+
     // team
     getTeamMember: `${apiOnboardingEndpoint}/api/v1/teams/get-members`,
     getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members-new`,

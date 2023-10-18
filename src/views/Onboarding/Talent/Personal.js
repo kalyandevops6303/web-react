@@ -46,6 +46,7 @@ const Personal = () => {
     workExperienceYear: yup
       .number()
       .min(0, 'Year cannot be negative')
+      .max(99, 'Year must be 99 or less')
       .integer('Year must be a number')
       .typeError('Year must be a number')
       .transform((value) => (Number.isNaN(value) ? undefined : value)),

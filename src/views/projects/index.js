@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
@@ -25,11 +25,23 @@ const Projects = () => {
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
 
+  const routesMatch =
+    useMatch('/projects/ongoing') ||
+    useMatch('/projects/upcoming') ||
+    useMatch('/projects/completed') ||
+    useMatch('/projects/terminated') ||
+    useMatch('/projects/dispute') ||
+    useMatch('/marketplace/invited');
+
   const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') || 'ongoing');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    if (routesMatch?.pathname?.split('/')?.[2] !== primaryFilter) {
+      setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
+      setItem('selectedProjectTab', routesMatch?.pathname?.split('/')?.[2]);
+    }
     dispatch(clearProjectData());
     setItem('baseRoute', 'projects');
   }, []);
