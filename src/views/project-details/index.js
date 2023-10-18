@@ -32,9 +32,8 @@ const ProjectDetails = () => {
   const isInviteView = location?.pathname?.includes('project-invitation');
 
   useEffect(() => {
-    let updatedSteps = [];
     if (projectDetailsData) {
-      updatedSteps = [...steps]; // Create a copy of the original steps array
+      const updatedSteps = [...steps]; // Create a copy of the original steps array
       if (projectDetailsData.status === 'COMPLETED') {
         const ratingIndex = 4; // Index of the 'Rating' step
         updatedSteps[ratingIndex] = { ...updatedSteps[ratingIndex], isDisabled: false };
@@ -43,7 +42,6 @@ const ProjectDetails = () => {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
       }
-      setStepsArray(updatedSteps);
     }
   }, [projectDetailsData?.status]);
 

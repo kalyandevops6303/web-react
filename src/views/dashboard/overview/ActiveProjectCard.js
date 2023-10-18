@@ -1,16 +1,20 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import React from 'react';
+import React, { useState } from 'react';
 import Proptypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { Badge, Card, CardBody, CardText } from 'reactstrap';
+import { useSelector } from 'react-redux';
+import { Badge, Card, CardBody, CardText, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 import DateTime from '../../../lib/date-time';
+import ProjectModalViews from './ProjectModalViews';
 
 const ActiveProjectCard = ({ data, className }) => {
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [switchModal, setSwitchModal] = useState(false);
+  const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
+  const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
   const statusEnum = {
     OPEN: 'Open Listing',
@@ -22,7 +26,8 @@ const ActiveProjectCard = ({ data, className }) => {
   };
 
   const viewProject = () => {
-    navigate(`/project-details/${data._id}/milestone`);
+    // navigate(`/project-details/${data._id}/milestone`);
+    setShowModal(true);
   };
 
   return (
@@ -99,10 +104,20 @@ const ActiveProjectCard = ({ data, className }) => {
             onClick={viewProject}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
           >
-            View Project
+            {isModalLoading && projectModalId === data?._id ? <Spinner size="sm" /> : 'View Project'}
           </div>
         </CardBody>
       </Card>
+      {(showModal || switchModal) && (
+        <ProjectModalViews
+          isActiveProject
+          project_id={data?._id}
+          showModal={showModal}
+          toggleModal={() => setShowModal(!showModal)}
+          switchModal={switchModal}
+          setSwitchModal={setSwitchModal}
+        />
+      )}
     </ProjectWrapper>
   );
 };

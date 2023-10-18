@@ -40,6 +40,8 @@ const initialState = {
   upcomingProjectsForTeam: null,
   upcomingProjectsForTeamLoading: false,
   alerts: [],
+  projectModalData: null,
+  projectModalDataLoading: false,
   error: null,
 };
 
@@ -396,6 +398,25 @@ const dashboardSlice = createSlice({
       upcomingProjectsForTeamLoading: false,
       error: action.payload,
     }),
+    projectModalDataRequest: (state, action) => ({
+      ...state,
+      projectModalDataLoading: true,
+      projectModalId: action.payload,
+      error: null,
+    }),
+    projectModalDataFailure: (state, action) => ({
+      ...state,
+      projectModalDataLoading: false,
+      error: action.payload,
+      projectModalData: null,
+      projectModalId: null,
+    }),
+    projectModalDataSucess: (state, action) => ({
+      ...state,
+      projectModalDataLoading: false,
+      projectModalData: action.payload,
+      projectModalId: null,
+    }),
   },
 });
 
@@ -462,6 +483,9 @@ export const {
   upcomingProjectsForTeamRequest,
   upcomingProjectsForTeamSuccess,
   upcomingProjectsForTeamFailure,
+  projectModalDataRequest,
+  projectModalDataFailure,
+  projectModalDataSucess,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

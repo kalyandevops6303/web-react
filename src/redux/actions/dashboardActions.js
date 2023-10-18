@@ -23,6 +23,7 @@ import {
   activeProjectsForTeamService,
   upcomingProjectsForTeamService,
   recommendedProjectsTeamService,
+  getModalDataService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -87,6 +88,9 @@ import {
   upcomingProjectsForTeamRequest,
   upcomingProjectsForTeamSuccess,
   upcomingProjectsForTeamFailure,
+  projectModalDataRequest,
+  projectModalDataSucess,
+  projectModalDataFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -355,7 +359,22 @@ const getUpcomingProjectsForTeam = () => async (dispatch) => {
   }
 };
 
+const getModalData =
+  ({ project_id, onSuccess, onError }) =>
+  async (dispatch) => {
+    dispatch(projectModalDataRequest(project_id));
+    try {
+      const res = await getModalDataService({ project_id });
+      dispatch(projectModalDataSucess(res.data.data));
+      onSuccess(res.data.data);
+    } catch (error) {
+      onError();
+      errorHandler(error, projectModalDataFailure);
+    }
+  };
+
 export {
+  getModalData,
   getAlerts,
   validateUrl,
   removeTeamMember,

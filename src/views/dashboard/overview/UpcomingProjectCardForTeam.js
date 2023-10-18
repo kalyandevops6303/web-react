@@ -1,18 +1,24 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import React from 'react';
+import React, { useState } from 'react';
 import Proptypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { Card, CardBody, CardText } from 'reactstrap';
+import { useSelector } from 'react-redux';
+import { Card, CardBody, CardText, Spinner } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
+import ProjectModalViews from './ProjectModalViews';
 
 const UpcomingProjectCardForTeam = ({ data, className }) => {
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [switchModal, setSwitchModal] = useState(false);
+
+  const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
+  const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
   const viewProject = () => {
-    navigate(`/project-details/${data._id}/bid`);
+    // navigate(`/project-details/${data._id}/bid`);
+    setShowModal(true);
   };
 
   return (
@@ -104,10 +110,20 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
             onClick={viewProject}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
           >
-            View Project
+            {isModalLoading && projectModalId === data?._id ? <Spinner size="sm" /> : 'View Project'}
           </div>
         </CardBody>
       </Card>
+      {(showModal || switchModal) && (
+        <ProjectModalViews
+          isUpcomingProject
+          project_id={data?._id}
+          showModal={showModal}
+          toggleModal={() => setShowModal(!showModal)}
+          switchModal={switchModal}
+          setSwitchModal={setSwitchModal}
+        />
+      )}
     </ProjectWrapper>
   );
 };
