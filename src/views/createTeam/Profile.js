@@ -51,7 +51,7 @@ const Profile = () => {
     teamTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
     teamIntroduction: yup
       .string()
-      .max(150, 'Introduction must be 150 characters or less')
+      .max(500, 'Introduction must be 500 characters or less')
       .required('Introduction is required'),
     services: yup
       .array()
@@ -734,7 +734,7 @@ const Profile = () => {
                     <Input
                       {...field}
                       type="textarea"
-                      placeholder="Write your team introduction in 150 character"
+                      placeholder="Write your team introduction in 500 character"
                       rows="5"
                       invalid={errors.teamIntroduction && true}
                     />
