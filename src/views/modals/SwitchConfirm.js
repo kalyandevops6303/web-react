@@ -10,7 +10,14 @@ import { switchProfile } from '../../redux/actions/authActions';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 
-const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection, disputesAlertRedirection }) => {
+const SwitchConfirmModal = ({
+  data,
+  dashboardRedrection,
+  modal,
+  toggleModal,
+  disputesRedirection,
+  disputesAlertRedirection,
+}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -40,6 +47,8 @@ const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection, dis
       disputesRedirection(data?.notification_type);
     } else if (data?.isDisputeAlert) {
       disputesAlertRedirection(data?.title);
+    } else if (dashboardRedrection) {
+      dashboardRedrection();
     } else {
       redirectionFunction({
         status: data?.title,
@@ -51,7 +60,7 @@ const SwitchConfirmModal = ({ data, modal, toggleModal, disputesRedirection, dis
 
   const handleSwitch = () => {
     const teamData = teams?.filter(
-      (team) => team._id === data?.custom_payload?.switch_team_id || team._id === data?.team_switch_id,
+      (team) => team._id === data?.custom_payload?.switch_team_id || team._id === data?.switch_team_id,
     );
     if (teamData?.length > 0) {
       dispatch(switchProfile({ data: teamData[0], onSuccess, selected: false }));
@@ -106,6 +115,7 @@ SwitchConfirmModal.propTypes = {
   data: Proptypes.object,
   disputesRedirection: Proptypes.func,
   disputesAlertRedirection: Proptypes.func,
+  dashboardRedrection: Proptypes.func,
 };
 
 SwitchConfirmModal.defaultProps = {
@@ -114,4 +124,5 @@ SwitchConfirmModal.defaultProps = {
   data: {},
   disputesRedirection: () => {},
   disputesAlertRedirection: () => {},
+  dashboardRedrection: () => {},
 };

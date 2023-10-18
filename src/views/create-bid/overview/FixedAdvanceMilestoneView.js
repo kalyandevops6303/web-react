@@ -60,7 +60,7 @@ const FixedAdvanceMilestoneView = () => {
         description: yup
           .string()
           .min(4, 'Description must be at least 4 characters')
-          .max(250, 'Description must be 250 characters or less')
+          .max(500, 'Description must be 500 characters or less')
           .transform((value) => (value === '' ? undefined : value))
           .optional(),
         deliverables: yup.array().of(
@@ -778,7 +778,7 @@ const FixedAdvanceMilestoneView = () => {
                                       <Info size={18} color={theme.infoIcon} id="logo-info" className="ms-50" />
                                     </div>
                                     <UncontrolledTooltip placement="right" target="logo-info">
-                                      <p className="m-0">Give description in 250 characters or less</p>
+                                      <p className="m-0">Give description in 500 characters or less</p>
                                     </UncontrolledTooltip>
                                     <Controller
                                       id={`milestones[${milestoneIndex}].description`}
@@ -797,7 +797,7 @@ const FixedAdvanceMilestoneView = () => {
                                           {...field}
                                           type="textarea"
                                           rows="4"
-                                          placeholder="Enter description in 250 characters"
+                                          placeholder="Enter description in 500 characters"
                                           invalid={
                                             errors &&
                                             errors.milestones &&

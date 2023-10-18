@@ -143,7 +143,7 @@ const ThemeNavbar = (props) => {
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/my-teams"
+            to={`/my-teams/${userData?.user_type === userTypes.talent ? 'teams' : 'talents'}`}
           >
             My Team
           </NavLink>
