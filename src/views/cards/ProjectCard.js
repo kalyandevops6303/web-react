@@ -178,7 +178,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
         <CompleteProfileModal
           modal={completeProfileModal}
           toggleModal={toggleCompleteProfileModal}
-          modalInfoText="team"
+          modalInfoText="create bid"
         />
       )}
     </ProjectCardWrap>
