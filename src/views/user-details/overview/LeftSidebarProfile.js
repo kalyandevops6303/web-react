@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
-import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
@@ -39,6 +39,7 @@ import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { makeTeamMemberSuccess } from '../../../redux/reducers/profile';
 import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
 import InvitationSentModal from '../../modals/InvitationSentModal';
+import JoinTeamModal from '../../modals/JoinTeamModal';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -59,6 +60,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [accpetModal, setAccpetModal] = useState(false);
   const [invitationSentModal, setInvitationSentModal] = useState(null);
+  const [openJoinTeamModal, setOpenJoinTeamModal] = useState(false);
   const toggleInvitationSentModal = () => setInvitationSentModal(!invitationSentModal);
 
   const onAccept = () => {
@@ -103,6 +105,11 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     setAccpetModal(false);
   };
 
+  const handleJoinModalCancel = () => {
+    setCompleteProfileModal(false);
+    setOpenJoinTeamModal(false);
+  };
+
   const handleLike = () => {
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
@@ -139,7 +146,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     }
   }, []);
 
-  const handleJoinTeam = () => {
+  const sendJoinTeamRequest = () => {
     const newPostData = {
       message: '',
       redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
@@ -154,8 +161,13 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
         role: '',
       },
     };
-    const onSuccess = () => {};
+    const onSuccess = () => {
+      setOpenJoinTeamModal(false);
+    };
+    dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
+  };
 
+  const handleJoinTeam = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
@@ -163,7 +175,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     ) {
       setCompleteProfileModal(true);
     } else {
-      dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
+      setOpenJoinTeamModal(true);
     }
   };
 
@@ -189,6 +201,16 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           onAccept={onAccept}
           modal={accpetModal}
           toggleModal={handleCancel}
+        />
+      )}
+      {openJoinTeamModal && (
+        <JoinTeamModal
+          isLoading={inJoinTeamLoading}
+          data={data}
+          title="Join Team"
+          toggleModal={handleJoinModalCancel}
+          modal={openJoinTeamModal}
+          onAccept={sendJoinTeamRequest}
         />
       )}
       <Card>
@@ -539,7 +561,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                         outline
                         onClick={handleJoinTeam}
                       >
-                        {inJoinTeamLoading ? <Spinner size="sm" /> : 'Join Team'}
+                        Join Team
                       </Button>
                     </div>
                   )}
