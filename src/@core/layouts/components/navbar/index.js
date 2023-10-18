@@ -132,7 +132,7 @@ const ThemeNavbar = (props) => {
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/projects"
+            to="/projects/ongoing"
             onClick={() => localStorage.removeItem('selectedProjectTab')}
           >
             Project
