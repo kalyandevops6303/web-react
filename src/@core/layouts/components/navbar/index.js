@@ -92,6 +92,14 @@ const ThemeNavbar = (props) => {
     });
   }
 
+  // useEffect(() => {
+  //   CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
+  //     const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
+  //     console.log('UNREAD COUNT INDEX NAV', totalCount);
+  //     dispatch(setUnreadMsgCount(totalCount));
+  //   });
+  // }, [isCometChatLoggedIn]);
+
   return (
     <HeadWrapper className={className}>
       <div className="bookmark-wrapper d-flex align-items-center">

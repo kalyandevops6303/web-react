@@ -58,8 +58,9 @@ const App = () => {
       let data;
       const tokenFunc = async () => {
         data = await getToken();
-        console.log('FCM TOKEN 52', data);
+        console.log('FCM TOKEN 61', data);
         if (data) {
+          console.log('FCM TOKEN 63', data);
           dispatch(fcmSubscribeNotification(data));
           loginUser({ cometToken: cometAuthToken, fcm: data });
           setItem('fcmToken', data);
