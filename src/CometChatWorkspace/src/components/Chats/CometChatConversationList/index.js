@@ -1256,7 +1256,7 @@ class CometChatConversationList extends React.Component {
                     <p css={chatCategory()}>Direct Chat</p>
                   </div>
                   <div css={unReadMessageCountAddImageDiv()}>
-                    <CometChatBadgeCount mt={'15px'} count={this.state.dmMessageCount} />
+                    <CometChatBadgeCount count={this.state.dmMessageCount} />
                     <img
                       onClick={() => this.setState({ showDirectMessageModal: !this.state.showDirectMessageModal })}
                       css={createIconCss()}

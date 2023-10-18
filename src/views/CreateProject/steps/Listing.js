@@ -144,7 +144,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                       placeholder="Select start date"
                       options={{
                         minDate: 'today',
-                        dateFormat: 'd-m-Y',
+                        dateFormat: 'M d, Y',
                       }}
                       className={classNames('form-control', {
                         'is-invalid': errors && errors.startDate,
@@ -173,7 +173,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                           ? // eslint-disable-next-line no-unsafe-optional-chaining
                             new Date(watch('startDate')[0]).setMonth(watch('startDate')[0]?.getMonth() + 3)
                           : 'today',
-                        dateFormat: 'd-m-Y',
+                        dateFormat: 'M d, Y',
                       }}
                       className={classNames('form-control', {
                         'is-invalid': errors && errors.endDate,

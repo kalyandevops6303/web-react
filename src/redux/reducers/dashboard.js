@@ -39,6 +39,8 @@ const initialState = {
   activeProjectsForTeamLoading: false,
   upcomingProjectsForTeam: null,
   upcomingProjectsForTeamLoading: false,
+  totalReferralAmount: 0,
+  totalReferralAmountLoading: false,
   alerts: [],
   projectModalData: null,
   projectModalDataLoading: false,
@@ -398,6 +400,22 @@ const dashboardSlice = createSlice({
       upcomingProjectsForTeamLoading: false,
       error: action.payload,
     }),
+
+    totalReferralAmountRequest: (state) => ({
+      ...state,
+      totalReferralAmountLoading: true,
+      error: null,
+    }),
+    totalReferralAmountSuccess: (state, action) => ({
+      ...state,
+      totalReferralAmount: action.payload,
+      totalReferralAmountLoading: false,
+    }),
+    totalReferralAmountFailure: (state, action) => ({
+      ...state,
+      totalReferralAmountLoading: false,
+      error: action.payload,
+    }),
     projectModalDataRequest: (state, action) => ({
       ...state,
       projectModalDataLoading: true,
@@ -486,6 +504,9 @@ export const {
   projectModalDataRequest,
   projectModalDataFailure,
   projectModalDataSucess,
+  totalReferralAmountRequest,
+  totalReferralAmountSuccess,
+  totalReferralAmountFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

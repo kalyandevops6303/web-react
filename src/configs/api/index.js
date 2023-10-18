@@ -65,6 +65,7 @@ const API = {
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
+    totalReferralAmount: `${apiAuthEndpoint}/api/v1/referrals/amount`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
     checkBidsAccepted: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
@@ -103,6 +104,7 @@ const API = {
     createProjectAI: `${apiCreateProjectAIEndpoint}/api/v1/short_product_requirements`,
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project/best-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
+    favoriteTeams: `${apiAuthEndpoint}/api/v1/client/favourites`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
