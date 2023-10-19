@@ -2,7 +2,7 @@
 import { Badge, Card, CardBody, CardText, CardTitle, Col, UncontrolledTooltip } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Heart, MapPin } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
@@ -27,9 +27,11 @@ const giveStrokeColor = (percentage) => {
   }
 };
 const ClientCard = ({ isSearchPage, data, userType }) => {
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
   const dispatch = useDispatch();
   const location = useLocation();
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const navigate = useNavigate();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -70,9 +72,13 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
 
+  const handleCardClick = () => {
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`);
+  };
+
   return (
     <ClientCardWrap userType={userType} clientCard>
-      <Card style={{ height: '93%' }}>
+      <Card style={{ height: '93%' }} onClick={handleCardClick} className="cursor-pointer">
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center" style={{ width: '60%' }}>

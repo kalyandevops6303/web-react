@@ -10,6 +10,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { RequirementsFormContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const Listing = ({ stepper, setListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
@@ -86,6 +88,14 @@ const Listing = ({ stepper, setListingDetails }) => {
     }
   };
 
+  const handleSave = () => {
+    if (Object.keys(errors).length === 0) {
+      handleSubmit(onSubmit)();
+    } else {
+      ShowToastMessage(ERROR, 'Please fill the mandatory fields');
+    }
+  };
+
   return (
     <RequirementsFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -144,7 +154,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                       placeholder="Select start date"
                       options={{
                         minDate: 'today',
-                        dateFormat: 'd-m-Y',
+                        dateFormat: 'M d, Y',
                       }}
                       className={classNames('form-control', {
                         'is-invalid': errors && errors.startDate,
@@ -173,7 +183,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                           ? // eslint-disable-next-line no-unsafe-optional-chaining
                             new Date(watch('startDate')[0]).setMonth(watch('startDate')[0]?.getMonth() + 3)
                           : 'today',
-                        dateFormat: 'd-m-Y',
+                        dateFormat: 'M d, Y',
                       }}
                       className={classNames('form-control', {
                         'is-invalid': errors && errors.endDate,
@@ -253,7 +263,7 @@ const Listing = ({ stepper, setListingDetails }) => {
             </UploadIconContainer>
             <h5 className="fw-light mb-0 mx-75">Back</h5>
           </div>
-          <Button color="primary" onClick={() => onSubmit()}>
+          <Button color="primary" onClick={handleSave}>
             <span className="me-50">Save & Continue</span>
             <ChevronRight size={14} />
           </Button>

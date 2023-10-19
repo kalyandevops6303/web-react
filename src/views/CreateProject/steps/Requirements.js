@@ -589,6 +589,14 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     setTryAIModal(true);
   };
 
+  const handleSave = () => {
+    if (Object.keys(errors).length === 0) {
+      handleSubmit(onSubmit)();
+    } else {
+      ShowToastMessage(ERROR, 'Please fill the mandatory fields');
+    }
+  };
+
   const userDetailsData = useSelector(userData);
 
   useEffect(() => {
@@ -834,7 +842,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="tools">
-                    Tools <i>(Top 5)</i>
+                    Tools<span className="label-asterisk me-50">*</span> <i>(Top 5)</i>
                   </Label>
                   <Controller
                     id="tools"
@@ -1714,7 +1722,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             </CardBody>
           </Card>
           <div className="d-flex justify-content-end">
-            <Button color="primary" disabled={uploadingFiles.length > 0}>
+            <Button onClick={handleSave} color="primary" disabled={uploadingFiles.length > 0}>
               <span className="me-50">Save & Continue</span>
               <ChevronRight size={14} />
             </Button>

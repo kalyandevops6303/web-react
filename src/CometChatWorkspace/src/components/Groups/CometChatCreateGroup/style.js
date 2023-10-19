@@ -13,8 +13,8 @@ export const closeBtn = (img, context) => {
   return {
     height: '20px',
     width: '20px',
-    margin: '5px 5px 0px 0px',
     cursor: 'pointer',
+    margin: '5px 5px 0px 0px',
   };
 };
 export const closeImgDiv = () => {
