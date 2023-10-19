@@ -32,7 +32,6 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const navigate = useNavigate();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))

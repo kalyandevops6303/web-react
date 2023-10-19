@@ -22,7 +22,6 @@ function TalentCard({ data, isSearchPage }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const navigate = useNavigate();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -82,9 +81,6 @@ function TalentCard({ data, isSearchPage }) {
   };
 
   const locationDetails = data?.current_residency;
-  const handleCardClick = () => {
-    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`);
-  };
 
   return (
     <TeamCardWrap>

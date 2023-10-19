@@ -10,8 +10,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { RequirementsFormContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
-import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const Listing = ({ stepper, setListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
@@ -85,14 +83,6 @@ const Listing = ({ stepper, setListingDetails }) => {
 
       setListingDetails(newData);
       stepper.next();
-    }
-  };
-
-  const handleSave = () => {
-    if (Object.keys(errors).length === 0) {
-      handleSubmit(onSubmit)();
-    } else {
-      ShowToastMessage(ERROR, 'Please fill the mandatory fields');
     }
   };
 
@@ -263,7 +253,7 @@ const Listing = ({ stepper, setListingDetails }) => {
             </UploadIconContainer>
             <h5 className="fw-light mb-0 mx-75">Back</h5>
           </div>
-          <Button color="primary" onClick={handleSave}>
+          <Button color="primary">
             <span className="me-50">Save & Continue</span>
             <ChevronRight size={14} />
           </Button>
