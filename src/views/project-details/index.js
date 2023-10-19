@@ -16,6 +16,7 @@ import InvitationView from './overview/InvitationView';
 import Milestone from './milestones/Milestone';
 import RatingView from './overview/RatingView';
 import { getItem } from '../../utility/localStorageControl';
+import BidMilestone from './overview/BidMilestone';
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -84,7 +85,7 @@ const ProjectDetails = () => {
             <Route path="team" element={<TeamView />} />
             <Route path="rating" element={<RatingView />} />
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
-            <Route path="milestone/project-invitation/milestone" element={<Milestone />} />
+            <Route path="milestone/project-invitation/:inviteId" element={<BidMilestone />} />
             <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />
           </Routes>
         </Col>
