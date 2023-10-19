@@ -20,8 +20,8 @@ function TalentCard({ data, isSearchPage }) {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -41,7 +41,8 @@ function TalentCard({ data, isSearchPage }) {
     return { title: 'Talent', link: '' };
   };
 
-  const handleLike = () => {
+  const handleLike = (e) => {
+    e.stopPropagation();
     setIsFavorite(true);
     dispatch(
       makeFav({
@@ -52,7 +53,8 @@ function TalentCard({ data, isSearchPage }) {
       }),
     );
   };
-  const handleUnLike = () => {
+  const handleUnLike = (e) => {
+    e.stopPropagation();
     setIsFavorite(false);
     dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
@@ -66,14 +68,22 @@ function TalentCard({ data, isSearchPage }) {
       return theme.green;
     }
   };
-  const locationDetails = data?.current_residency;
-  const handleCardClick = () => {
-    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`);
+
+  const handleCard = () => {
+    const state = {
+      from: {
+        primary: fromLocationPrimary(),
+        secondary: fromLocationSecondary() || fromLocationSearch(),
+      },
+    };
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`, { state });
   };
+
+  const locationDetails = data?.current_residency;
 
   return (
     <TeamCardWrap>
-      <Card onClick={handleCardClick} className="cursor-pointer">
+      <Card onClick={handleCard} className="cursor-pointer">
         <CardBody>
           <div className="d-flex teamcard-flex-cloumn">
             <div className="w-75">
@@ -140,11 +150,11 @@ function TalentCard({ data, isSearchPage }) {
                           className="cursor-pointer d-flex heart"
                           fill={theme.red}
                           stroke={theme.red}
-                          onClick={handleUnLike}
+                          onClick={(e) => handleUnLike(e)}
                           size={20}
                         />
                       ) : (
-                        <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                        <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
                       )}
                     </div>
                   )}

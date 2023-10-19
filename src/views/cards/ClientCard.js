@@ -30,8 +30,8 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -53,7 +53,8 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   // const description = data?.company_tagline || data?.professional_intro;
   const locationDetails = data?.user_type === userTypes.client ? data?.office_address : data?.current_residency;
 
-  const handleLike = () => {
+  const handleLike = (e) => {
+    e.stopPropagation();
     setIsFavorite(true);
     dispatch(
       makeFav({
@@ -64,20 +65,27 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
       }),
     );
   };
-  const handleUnLike = () => {
+  const handleUnLike = (e) => {
+    e.stopPropagation();
     setIsFavorite(false);
     dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
-  const clientSkills = data?.project_area_of_interest?.skills ?? [];
-
-  const handleCardClick = () => {
-    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`);
+  const handleCard = () => {
+    const state = {
+      from: {
+        primary: fromLocationPrimary(),
+        secondary: fromLocationSecondary() || fromLocationSearch(),
+      },
+    };
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`, { state });
   };
+
+  const clientSkills = data?.project_area_of_interest?.skills ?? [];
 
   return (
     <ClientCardWrap userType={userType} clientCard>
-      <Card style={{ height: '93%' }} onClick={handleCardClick} className="cursor-pointer">
+      <Card style={{ height: '93%' }} onClick={handleCard} className="cursor-pointer">
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center" style={{ width: '60%' }}>
@@ -138,11 +146,11 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                         className="cursor-pointer d-flex heart"
                         fill={theme.red}
                         stroke={theme.red}
-                        onClick={handleUnLike}
+                        onClick={(e) => handleUnLike(e)}
                         size={20}
                       />
                     ) : (
-                      <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                      <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
                     )}
                   </div>
                 )}

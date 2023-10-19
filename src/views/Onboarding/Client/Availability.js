@@ -32,9 +32,11 @@ import { profileDetailsLoading } from '../../../redux/selectors/clientOnboarding
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
-import { USD, userOnboarding } from '../../../utility/constants/Constant';
+import { userOnboarding } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
+import { getCurrencies } from '../../../redux/actions/staticActions';
+import { currencies, currenciesLoading } from '../../../redux/selectors/staticSelectors';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -126,7 +128,6 @@ const Availability = () => {
       availabilityDays: [],
       weekdays: [],
       weekends: [],
-      currencyPreference: { label: 'USD', value: USD._id },
     },
   });
 
@@ -139,6 +140,8 @@ const Availability = () => {
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
+  const currenciesData = useSelector(currencies);
+  const currenciesIsLoading = useSelector(currenciesLoading);
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
@@ -313,12 +316,23 @@ const Availability = () => {
   };
 
   useEffect(() => {
+    if (currenciesData?.length > 0) {
+      setValue(
+        'currencyPreference',
+        { label: currenciesData[0]?.name, value: currenciesData[0]?._id },
+        { shouldValidate: true },
+      );
+    }
+  }, [currenciesData]);
+
+  useEffect(() => {
     dispatch(getUserDetails(onGetUserDetailsSuccess));
+    dispatch(getCurrencies());
   }, []);
 
   return (
     <ProfileFormContainer>
-      {userDetailsIsLoading ? (
+      {userDetailsIsLoading || currenciesIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>

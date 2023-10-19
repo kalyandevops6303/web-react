@@ -14,6 +14,7 @@ import theme from '../../configs/themeVariables';
 import ProjectCard from '../cards/MarketPlaceProjectCard';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { userTypes } from '../../utility/constants/Constant';
+import { setItem } from '../../utility/localStorageControl';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const Search = () => {
     if (!query) {
       navigate('/dashboard');
     }
+    setItem('baseRoute', 'search');
   }, []);
 
   useEffect(() => {

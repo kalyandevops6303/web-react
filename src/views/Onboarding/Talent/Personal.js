@@ -59,7 +59,7 @@ const Personal = () => {
       .transform((value) => (Number.isNaN(value) ? undefined : value)),
     professionalIntroduction: yup
       .string()
-      .max(150, 'Professional introduction must be 150 characters or less')
+      .max(500, 'Professional introduction must be 500 characters or less')
       .required('Professional introduction is required'),
     role: yup
       .object()
@@ -553,7 +553,7 @@ const Personal = () => {
                       <Input
                         {...field}
                         type="textarea"
-                        placeholder="Describe in 150 characters"
+                        placeholder="Describe in 500 characters"
                         rows="5"
                         invalid={errors.professionalIntroduction && true}
                       />
