@@ -69,7 +69,7 @@ jobs:
 
     #build and push to ACR (method1)  for AKS runner  
     - run: |
-           docker build -f --no-cache ./Dockerfile -t ${{ secrets.UAT_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} .
+           docker build --no-cache -f ./Dockerfile -t ${{ secrets.UAT_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} .
            docker push ${{ secrets.UAT_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
 
     # to update deployment yaml file with proper tag
