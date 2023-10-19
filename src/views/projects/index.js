@@ -31,7 +31,7 @@ const Projects = () => {
     useMatch('/projects/completed') ||
     useMatch('/projects/terminated') ||
     useMatch('/projects/dispute') ||
-    useMatch('/marketplace/invited');
+    useMatch('/projects/invited');
 
   const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') || 'ongoing');
 
@@ -94,6 +94,10 @@ const Projects = () => {
         />
         <Route
           path="dispute"
+          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
+        />
+        <Route
+          path="invited"
           element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
         />
       </Routes>

@@ -11,6 +11,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state.project.cardData);
   const isLoading = useSelector((state) => state?.project?.cardInfoLoading);
+  const selectProjectMetaData = useSelector((state) => state?.project?.metaData);
 
   useEffect(() => {
     dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
@@ -82,13 +83,13 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           </Col>
         </>
       </Row>
-      <Row className="d-none">
+      <Row>
         <Col onClick={() => handlePrimaryChangeFilter('invited')}>
           <Statbox
             isActive={selected === 'invited'}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
-            title={selectCardData?.dispute || 0}
+            title={selected === 'invited' ? selectProjectMetaData?.total_records || '-' : selectCardData?.invited}
             desc="Invited"
             icon={<UserX height={20} />}
             color="light-red"

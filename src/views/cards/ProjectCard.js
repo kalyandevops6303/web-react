@@ -13,7 +13,15 @@ import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SwitchConfirmModal from '../modals/SwitchConfirm';
 
-const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpen }) => {
+const ProjectCard = ({
+  secondaryFilterForInvitedType,
+  primaryFilter,
+  isProjectWithTeam,
+  isTeam,
+  isExpanded,
+  data,
+  isPopoverOpen,
+}) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
@@ -151,7 +159,13 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
               )}
             </Col>
             <Col lg="4">
-              {isProjectWithTeam ? <ProjectWithTeamUI data={data} /> : null}
+              {isProjectWithTeam ? (
+                <ProjectWithTeamUI
+                  secondaryFilterForInvitedType={secondaryFilterForInvitedType}
+                  primaryFilter={primaryFilter}
+                  data={data}
+                />
+              ) : null}
               {!isTeam && !isProjectWithTeam && <BaseInfoUI data={data} />}
             </Col>
           </Row>
@@ -196,6 +210,8 @@ ProjectCard.propTypes = {
   isPopoverOpen: PropTypes.bool,
   isProjectWithTeam: PropTypes.bool,
   isTeam: PropTypes.bool,
+  primaryFilter: PropTypes.string,
+  secondaryFilterForInvitedType: PropTypes.string,
 };
 
 ProjectCard.defaultProps = {
@@ -204,6 +220,8 @@ ProjectCard.defaultProps = {
   isPopoverOpen: false,
   isProjectWithTeam: false,
   isTeam: false,
+  primaryFilter: '',
+  secondaryFilterForInvitedType: '',
 };
 
 export default ProjectCard;
