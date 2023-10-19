@@ -1,6 +1,6 @@
 import { Card, CardBody, CardText, CardTitle, Badge } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
@@ -16,6 +16,7 @@ import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 
 const Team = ({ data, isSearchPage }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const users = [];
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   data?.team_members?.map((user) =>
@@ -36,10 +37,12 @@ const Team = ({ data, isSearchPage }) => {
     setIsFavorite(false);
   };
 
-  const handleLike = () => {
+  const handleLike = (e) => {
+    e.stopPropagation();
     dispatch(makeFav({ user_id: data?._id, user_type: data?.user_type, onSuccess: onFavSuccess, onError: () => {} }));
   };
-  const handleUnLike = () => {
+  const handleUnLike = (e) => {
+    e.stopPropagation();
     dispatch(removeFav({ team_id: data?._id, onSuccess: onUnFavSuccess, onError: () => {} }));
   };
 
@@ -54,17 +57,19 @@ const Team = ({ data, isSearchPage }) => {
     }
   };
 
+  const handleCard = () => {
+    navigate(`/profile/team/${data?._id}`);
+  };
+
   return (
     <TeamCardWrap>
-      <Card>
+      <Card onClick={handleCard} className="cursor-pointer">
         <CardBody>
           <div className="d-flex teamcard-flex-cloumn">
             <div className="w-75">
               <div className="d-flex justify-content-between">
                 <CardTitle className="card-title mb-1 d-flex justify-space-between">
-                  <Link to={`/profile/team/${data?._id}`}>
-                    <span>{data?.name}</span>
-                  </Link>
+                  <span>{data?.name}</span>
                 </CardTitle>
                 {/* <span className="me-3">
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
@@ -106,11 +111,11 @@ const Team = ({ data, isSearchPage }) => {
                           className="cursor-pointer d-flex heart"
                           fill={theme.red}
                           stroke={theme.red}
-                          onClick={handleUnLike}
+                          onClick={(e) => handleUnLike(e)}
                           size={20}
                         />
                       ) : (
-                        <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                        <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
                       )}
                     </div>
                   )}

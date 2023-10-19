@@ -30,8 +30,8 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -61,13 +61,25 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
     setIsFavorite(false);
   };
 
-  const handleLike = () => {
+  const handleLike = (e) => {
+    e.stopPropagation();
     dispatch(
       makeFav({ user_id: data?.user_id, user_type: data?.user_type, onSuccess: onFavSuccess, onError: () => {} }),
     );
   };
-  const handleUnLike = () => {
+  const handleUnLike = (e) => {
+    e.stopPropagation();
     dispatch(removeFav({ user_id: data?.user_id, onSuccess: onUnFavSuccess, onError: () => {} }));
+  };
+
+  const handleCard = () => {
+    const state = {
+      from: {
+        primary: fromLocationPrimary(),
+        secondary: fromLocationSecondary() || fromLocationSearch(),
+      },
+    };
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`, { state });
   };
 
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
@@ -78,7 +90,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
   return (
     <ClientCardWrap userType={userType} clientCard>
-      <Card style={{ height: '93%' }} onClick={handleCardClick} className="cursor-pointer">
+      <Card style={{ height: '93%' }} onClick={handleCard} className="cursor-pointer">
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center" style={{ width: '60%' }}>
@@ -139,11 +151,11 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                         className="cursor-pointer d-flex heart"
                         fill={theme.red}
                         stroke={theme.red}
-                        onClick={handleUnLike}
+                        onClick={(e) => handleUnLike(e)}
                         size={20}
                       />
                     ) : (
-                      <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                      <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
                     )}
                   </div>
                 )}
