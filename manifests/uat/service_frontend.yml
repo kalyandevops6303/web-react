@@ -1,0 +1,16 @@
+###################### SERVICE FOR BE_APP_COMPONENT ################
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-end-svc
+  # annotations:
+  #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  namespace: uat
+spec:
+  # type: LoadBalancer
+  selector:
+    app: front-end
+    type: frontend
+  ports:
+  - port: 5000
+    targetPort: 5000
