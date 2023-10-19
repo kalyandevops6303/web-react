@@ -47,7 +47,9 @@ const MarketPlace = () => {
     useMatch('/marketplace/teams') ||
     useMatch('/marketplace/my_bids');
 
-  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMarketplaceTab') ?? 'all_listings');
+  const [primaryFilter, setPrimaryFilter] = useState(
+    getItem('selectedMarketplaceTab') ?? routesMatch?.pathname?.split('/')?.[2],
+  );
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
