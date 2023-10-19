@@ -40,7 +40,7 @@ const InviteView = [
     title: 'Milestone',
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
-    isDisabled: true,
+    isDisabled: false,
   },
   {
     title: 'Payment',

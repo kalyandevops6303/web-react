@@ -3,7 +3,7 @@ import Avatar from '@components/avatar';
 import { PropTypes } from 'prop-types';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Badge, Card, CardBody, CardText, CardTitle, Col } from 'reactstrap';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { Heart, MapPin } from 'react-feather';
@@ -17,9 +17,11 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import TextToolTip from './TextToolTip';
 
 function TalentCard({ data, isSearchPage }) {
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
   const dispatch = useDispatch();
   const location = useLocation();
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const navigate = useNavigate();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -66,9 +68,13 @@ function TalentCard({ data, isSearchPage }) {
     }
   };
   const locationDetails = data?.current_residency;
+  const handleCardClick = () => {
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`);
+  };
+
   return (
     <TeamCardWrap>
-      <Card>
+      <Card onClick={handleCardClick} className="cursor-pointer">
         <CardBody>
           <div className="d-flex teamcard-flex-cloumn">
             <div className="w-75">
