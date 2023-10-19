@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { CardText, CardTitle, Badge } from 'reactstrap';
 import hat from '@src/assets/images/hat.svg';
 import PropTypes from 'prop-types';
@@ -82,9 +83,12 @@ const ProjectWithTeamUI = ({ data }) => {
             />
             <div>
               <div className="flex-grow-1">
-                <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
+                <Link
+                  className="marketplace-card-title mb-25 ms-25 fw-bolder"
+                  to={`/profile/client/${data?.client?._id}`}
+                >
                   {data?.client?.first_name} {data?.client?.last_name}
-                </CardTitle>
+                </Link>
                 <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
                   {data?.client?.title}
                 </CardText>

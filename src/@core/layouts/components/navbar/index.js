@@ -72,7 +72,7 @@ const ThemeNavbar = (props) => {
     }
   `;
 
-  const [activeTab, setActiveTab] = useState(false)
+  const [activeTab, setActiveTab] = useState('dashboard')
 
   const dispatch = useDispatch();
 
@@ -84,10 +84,13 @@ const ThemeNavbar = (props) => {
     }
     CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
       const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
-      console.log('UNREAD COUNT INDEX', totalCount);
       dispatch(setUnreadMsgCount(totalCount));
     });
   }, []);
+
+  useEffect(() => {
+    setActiveTab("dashboard")
+  },[userData])
 
   return (
     <HeadWrapper className={className}>

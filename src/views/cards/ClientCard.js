@@ -73,7 +73,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
 
   const handleCardClick = () => {
-    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`);
+    navigate(`/profile/client}/${data?.user_id}`);
   };
 
   return (
@@ -97,7 +97,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                         secondary: fromLocationSecondary() || fromLocationSearch(),
                       },
                     }}
-                    to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
+                    to={`/profile/client/${data?.user_id}`}
                   >
                     {data?.first_name}&nbsp;
                     {data?.last_name}
