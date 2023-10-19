@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect } from 'react';
-import { Users, UserCheck, Heart } from 'react-feather';
+import { Users, UserCheck, Heart, ThumbsUp } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
@@ -93,8 +93,8 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
               : selectCardData?.recommended
           }
           desc={TAB_NAMES.RECOMMENDATION}
-          icon={<Users height={20} />}
-          color="light-turquoise"
+          icon={<ThumbsUp height={20} />}
+          color="light-warning"
           className="stat-box cursor-pointer"
         />
       </Col>

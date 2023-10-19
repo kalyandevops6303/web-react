@@ -27,10 +27,12 @@ const giveStrokeColor = (percentage) => {
   }
 };
 const ClientCard = ({ isSearchPage, data, userType }) => {
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const navigate = useNavigate();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -82,6 +84,10 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   };
 
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
+
+  const handleCardClick = () => {
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`);
+  };
 
   return (
     <ClientCardWrap userType={userType} clientCard>

@@ -32,7 +32,11 @@ const CreateProjectButton = () => {
   return (
     <div>
       {completeProfileModal && (
-        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+        <CompleteProfileModal
+          modalInfoText="create project"
+          modal={completeProfileModal}
+          toggleModal={toggleCompleteProfileModal}
+        />
       )}
 
       {userDetailsData?.user_type === 'CLIENT' && (

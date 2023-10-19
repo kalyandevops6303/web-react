@@ -17,10 +17,12 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import TextToolTip from './TextToolTip';
 
 function TalentCard({ data, isSearchPage }) {
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const navigate = useNavigate();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -80,6 +82,10 @@ function TalentCard({ data, isSearchPage }) {
   };
 
   const locationDetails = data?.current_residency;
+  const handleCardClick = () => {
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`);
+  };
+
   return (
     <TeamCardWrap>
       <Card onClick={handleCard} className="cursor-pointer">
