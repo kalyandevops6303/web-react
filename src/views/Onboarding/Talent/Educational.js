@@ -82,6 +82,7 @@ const Educational = () => {
     handleSubmit,
     watch,
     setValue,
+    getValues,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -426,7 +427,7 @@ const Educational = () => {
                       )}
                   </Col>
                   <Col sm="12" md="12" lg="2">
-                    {index !== 0 && (
+                    {getValues('educationDetails').length > 1 && (
                       <Button
                         type="button"
                         color="flat-danger"
