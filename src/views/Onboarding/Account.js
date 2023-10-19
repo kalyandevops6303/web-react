@@ -72,6 +72,7 @@ const Account = () => {
     control,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -126,9 +127,8 @@ const Account = () => {
       const referralData = getItem('referral_data');
       if (referralData) {
         const referralId = referralData?._id;
-        const userId = userDetailsData?._id;
-        const userType = userDetailsData?.user_type;
-        dispatch(convertReferral(referralId, userId, userType, onReferralConversionSuccess));
+        const email = watch('email');
+        dispatch(convertReferral(referralId, email, onReferralConversionSuccess));
       } else {
         userDetailsData?.user_type === 'TALENT'
           ? navigate(`/${userOnboarding.talent}/personal-details`)
