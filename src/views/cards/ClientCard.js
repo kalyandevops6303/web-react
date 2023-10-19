@@ -2,7 +2,7 @@
 import { Badge, Card, CardBody, CardText, CardTitle, Col, UncontrolledTooltip } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Heart, MapPin } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
@@ -84,10 +84,6 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
 
-  const handleCardClick = () => {
-    navigate(`/profile/client}/${data?.user_id}`);
-  };
-
   return (
     <ClientCardWrap userType={userType} clientCard>
       <Card style={{ height: '93%' }} onClick={handleCard} className="cursor-pointer">
@@ -101,19 +97,9 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                 className={`client-card-photo me-1 mb-1 `}
               />
               <div className="d-flex flex-column" style={{ width: '70%' }}>
-                <CardTitle className="d-flex truncate-1 text-decoration-none marketplace-card-title mb-0">
-                  <Link
-                    state={{
-                      from: {
-                        primary: fromLocationPrimary(),
-                        secondary: fromLocationSecondary() || fromLocationSearch(),
-                      },
-                    }}
-                    to={`/profile/client/${data?.user_id}`}
-                  >
-                    {data?.first_name}&nbsp;
-                    {data?.last_name}
-                  </Link>
+                <CardTitle className="text-decoration-none marketplace-card-title mb-0 text-truncate">
+                  {data?.first_name}&nbsp;
+                  {data?.last_name}
                 </CardTitle>
                 <p
                   className="font-small-3 fw-300 mb-25 marketplace-card-role"
