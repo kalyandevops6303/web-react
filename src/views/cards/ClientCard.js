@@ -55,11 +55,18 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
   const handleLike = () => {
     setIsFavorite(true);
-    dispatch(makeFav({ user_id: data?.user_id, user_type: data?.user_type, onSuccess: () => {}, onError: () => {} }));
+    dispatch(
+      makeFav({
+        user_id: data?.user_id,
+        user_type: data?.user_type,
+        onSuccess: () => {},
+        onError: () => setIsFavorite(false),
+      }),
+    );
   };
   const handleUnLike = () => {
     setIsFavorite(false);
-    dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => {} }));
+    dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
   const clientSkills = data?.project_area_of_interest?.skills ?? [];

@@ -22,12 +22,12 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
   const handleLike = (e) => {
     e.stopPropagation();
     setIsFavorite(true);
-    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => {} }));
+    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
     setIsFavorite(false);
-    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => {} }));
+    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
   const giveStrokeColor = (percentage) => {
