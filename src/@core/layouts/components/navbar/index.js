@@ -10,7 +10,7 @@ import { NavItem, NavLink as RsNavLink } from 'reactstrap';
 import themeConfig from '@configs/themeConfig';
 
 // ** Custom Components
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
@@ -72,9 +72,10 @@ const ThemeNavbar = (props) => {
     }
   `;
 
-  const [activeTab, setActiveTab] = useState('dashboard')
+  const [activeTab, setActiveTab] = useState('')
 
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const token = getItem('access_token');
 
@@ -89,9 +90,12 @@ const ThemeNavbar = (props) => {
   }, []);
 
   useEffect(() => {
-    setActiveTab("dashboard")
+    if (location?.pathname?.split('/')?.[1] === 'dashboard')  setActiveTab("dashboard")
   },[userData])
 
+  useEffect(() => {
+    console.log(activeTab)
+  },[])
   return (
     <HeadWrapper className={className}>
       <div className="bookmark-wrapper d-flex align-items-center">
@@ -104,12 +108,19 @@ const ThemeNavbar = (props) => {
         </ul>
       </div>
 
-      <Link to={userData ? '/dashboard' : '/auth'} className="navbar-brand">
+      <div className="navbar-brand cursor-pointer" onClick={() => {
+        if (userData) {
+          navigate('/dashboard')
+        } else {
+          navigate('/auth')
+        }
+        setActiveTab("dashboard")
+      }}>
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
           <span className="ms-25 mt-25">v0.0.6</span>
         </span>
-      </Link>
+      </div>
 
       {!isNavbarSearchBarOpen && (
         <>

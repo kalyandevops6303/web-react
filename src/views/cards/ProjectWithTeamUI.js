@@ -85,7 +85,7 @@ const ProjectWithTeamUI = ({ data }) => {
               <div className="flex-grow-1">
                 <Link
                   className="marketplace-card-title mb-25 ms-25 fw-bolder"
-                  to={`/profile/client/${data?.client?._id}`}
+                  to={`/profile/client/${data?.client?.user_id}`}
                 >
                   {data?.client?.first_name} {data?.client?.last_name}
                 </Link>
