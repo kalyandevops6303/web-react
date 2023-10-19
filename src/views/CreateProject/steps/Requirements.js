@@ -103,8 +103,8 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Five skills has to be added')
-      .min(5, 'Five skills has to be added')
+      .max(5, 'Maximum of five skills can be added')
+      .min(1, 'At least one skill is required')
       .required('Skill is required'),
     tools: yup
       .array()
@@ -114,8 +114,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Five tools has to be added')
-      .min(5, 'Five tools has to be added'),
+      .max(5, 'Maximum of five tools can be added'),
     preferredWorkingTimeZone: yup
       .object()
       .shape({
@@ -857,7 +856,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   </Col>
                   <Col sm="12" md="12" lg="6">
                     <Label className="form-label" for="tools">
-                      Tools<span className="label-asterisk me-50">*</span> <i>(Top 5)</i>
+                      Tools <i>(Top 5)</i>
                     </Label>
                     <Controller
                       id="tools"
