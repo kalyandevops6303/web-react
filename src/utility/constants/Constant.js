@@ -67,11 +67,6 @@ const sortingOptions = [
   { label: 'Recommended', value: 'RECOMMENDED' },
   { label: 'Favorite', value: 'FAVOURITE' },
 ];
-const USD = {
-  _id: '6478b0d1679b91d695ad534a',
-  name: 'US Dollar',
-  code: 'USD',
-};
 const disputeStatuses = {
   open: 'OPEN',
   underReview: 'UNDER_REVIEW',
@@ -97,7 +92,6 @@ export {
   createBidTalentSteps,
   createBidTeamSteps,
   bidTypes,
-  USD,
   disputeStatuses,
   disputeStatusEnum,
   bidStatusesOptions,
