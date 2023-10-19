@@ -15,18 +15,13 @@ const ProjectWithTeamUI = ({ data }) => {
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
-  const onFavSuccess = () => {
-    setIsFavorite(true);
-  };
-
-  const onUnFavSuccess = () => {
-    setIsFavorite(false);
-  };
   const handleLike = () => {
-    dispatch(makeFav({ project_id: data?._id, onSuccess: onFavSuccess, onError: () => {} }));
+    setIsFavorite(true);
+    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => {} }));
   };
   const handleUnLike = () => {
-    dispatch(removeFav({ project_id: data?._id, onSuccess: onUnFavSuccess, onError: () => {} }));
+    setIsFavorite(false);
+    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => {} }));
   };
 
   const avatarGroup = data?.worker_details?.workers?.length
