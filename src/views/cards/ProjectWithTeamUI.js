@@ -113,7 +113,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
       {primaryFilter === 'invited' ? (
         <section>
           {profileToShowInRightSideOfCard?.user_type === userTypes.team ? (
-            <div className="w-50">
+            <div className="w-100">
               <div className="flex-grow-1" onClick={handleTeamNavigate}>
                 <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
                   {profileToShowInRightSideOfCard?.name ??
@@ -137,7 +137,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   {profileToShowInRightSideOfCard?.project_count ?? 0} Projects
                 </CardText>
               </div>
-              <div className="d-flex w-100" style={{ gap: '120px' }}>
+              <div className="d-flex w-75 gap-2 justify-content-between">
                 <div className="mt-2">
                   <BadgeGroup
                     title="Skills"
