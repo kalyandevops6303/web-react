@@ -4,8 +4,20 @@ import { AsyncPaginate } from 'react-select-async-paginate';
 import * as yup from 'yup';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Label, Row, Spinner } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Plus } from 'react-feather';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Form,
+  FormFeedback,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledTooltip,
+} from 'reactstrap';
+import { ChevronLeft, ChevronRight, Info, Plus } from 'react-feather';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
@@ -41,13 +53,6 @@ const Educational = () => {
               value: yup.string().required('College or university is required'),
             })
             .required('College or university is required'),
-          education: yup
-            .object()
-            .shape({
-              label: yup.string().required('Degree is required'),
-              value: yup.string().required('Degree is required'),
-            })
-            .required('Degree is required'),
         }),
       )
       .min(1, 'At least one degree should be added'),
@@ -82,6 +87,7 @@ const Educational = () => {
     handleSubmit,
     watch,
     setValue,
+    getValues,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -143,7 +149,6 @@ const Educational = () => {
 
     const educational_institute = educationDetails.map((educationDetail) => ({
       institution: educationDetail.educationInstitution.value,
-      education: educationDetail.education.value,
     }));
     const project_area_of_interest = {
       skills: skills.map((skill) => skill.value),
@@ -261,8 +266,8 @@ const Educational = () => {
 
   const handleAddEducation = () => {
     const isFilled = watch('educationDetails').every((item) => {
-      const { educationInstitution, education } = item;
-      return educationInstitution?.value && educationInstitution?.label && education?.value && education?.label;
+      const { educationInstitution } = item;
+      return educationInstitution?.value && educationInstitution?.label;
     });
 
     if (isFilled) {
@@ -283,7 +288,6 @@ const Educational = () => {
           'educationDetails',
           res?.client_info?.educational_institute.map((detail) => ({
             educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-            education: { label: detail.education.name, value: detail.education._id },
           })),
           { shouldValidate: true },
         );
@@ -340,6 +344,12 @@ const Educational = () => {
                     <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
                       Name of College or University<span className="label-asterisk me-50">*</span>
                     </Label>
+                    <Info size={18} color={theme.infoIcon} id="college" />
+                    <UncontrolledTooltip placement="right" target="college">
+                      <div className="d-flex flex-column align-items-start">
+                        Used to match to talent from your Alma Mater
+                      </div>
+                    </UncontrolledTooltip>
                     <Controller
                       id={`educationDetails.${index}.educationInstitution`}
                       name={`educationDetails.${index}.educationInstitution`}
@@ -382,7 +392,7 @@ const Educational = () => {
                         </FormFeedback>
                       )}
                   </Col>
-                  <Col sm="12" md="12" lg="5">
+                  <Col sm="12" md="12" lg="5" className="d-none">
                     <Label className="form-label" for={`educationDetails.${index}.education`}>
                       Degree<span className="label-asterisk me-50">*</span>
                     </Label>
@@ -427,7 +437,7 @@ const Educational = () => {
                       )}
                   </Col>
                   <Col sm="12" md="12" lg="2">
-                    {index !== 0 && (
+                    {getValues('educationDetails').length > 1 && (
                       <Button
                         type="button"
                         color="flat-danger"

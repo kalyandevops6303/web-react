@@ -29,6 +29,9 @@ import {
   getBidInfoFailure,
   getBidInfoRequest,
   getBidInfoSuccess,
+  getBidMilestoneFailure,
+  getBidMilestoneRequest,
+  getBidMilestoneSuccess,
   getDocumentFailure,
   getDocumentRequest,
   getDocumentSuccess,
@@ -336,6 +339,20 @@ const removeFavourite = (id) => async (dispatch) => {
   }
 };
 
+const getBidMilestone =
+  ({ project_id, entity_id, onSuccess, onError }) =>
+  async (dispatch) => {
+    dispatch(getBidMilestoneRequest());
+    try {
+      const res = await getCommonBidDetailsService({ project_id, entity_id });
+      dispatch(getBidMilestoneSuccess(res.data.data));
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error, getBidMilestoneFailure);
+    }
+  };
+
 export {
   makeFavourite,
   removeFavourite,
@@ -356,4 +373,5 @@ export {
   getBidDetails,
   getDocument,
   removeWorkerFromProjectTeam,
+  getBidMilestone,
 };

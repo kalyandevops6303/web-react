@@ -48,6 +48,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const userData = useSelector(selectAuthUserData);
   const [modalInformationText, setModalInformationText] = useState('');
   const teamId = getItem('team_id');
+  const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
@@ -113,9 +114,11 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   };
 
   const handleLike = () => {
+    setIsFavourite(true);
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
   const handleUnLike = () => {
+    setIsFavourite(false);
     dispatch(removeFavourite(param?.userId));
   };
 
@@ -234,7 +237,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             {!(isClient && userData?.user_type === userTypes.client) &&
               !isProjectDetailsView &&
               !isEditable &&
-              (data?.is_favourite ? (
+              (isFavourite ? (
                 <Heart
                   className="cursor-pointer d-flex ms-auto heart"
                   fill={theme.red}

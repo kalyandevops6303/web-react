@@ -53,23 +53,22 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   // const description = data?.company_tagline || data?.professional_intro;
   const locationDetails = data?.user_type === userTypes.client ? data?.office_address : data?.current_residency;
 
-  const onFavSuccess = () => {
-    setIsFavorite(true);
-  };
-
-  const onUnFavSuccess = () => {
-    setIsFavorite(false);
-  };
-
   const handleLike = (e) => {
     e.stopPropagation();
+    setIsFavorite(true);
     dispatch(
-      makeFav({ user_id: data?.user_id, user_type: data?.user_type, onSuccess: onFavSuccess, onError: () => {} }),
+      makeFav({
+        user_id: data?.user_id,
+        user_type: data?.user_type,
+        onSuccess: () => {},
+        onError: () => setIsFavorite(false),
+      }),
     );
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    dispatch(removeFav({ user_id: data?.user_id, onSuccess: onUnFavSuccess, onError: () => {} }));
+    setIsFavorite(false);
+    dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
   const handleCard = () => {
@@ -83,10 +82,6 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   };
 
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
-
-  const handleCardClick = () => {
-    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`);
-  };
 
   return (
     <ClientCardWrap userType={userType} clientCard>

@@ -29,21 +29,22 @@ const Team = ({ data, isSearchPage }) => {
     }),
   );
 
-  const onFavSuccess = () => {
-    setIsFavorite(true);
-  };
-
-  const onUnFavSuccess = () => {
-    setIsFavorite(false);
-  };
-
   const handleLike = (e) => {
     e.stopPropagation();
-    dispatch(makeFav({ user_id: data?._id, user_type: data?.user_type, onSuccess: onFavSuccess, onError: () => {} }));
+    setIsFavorite(true);
+    dispatch(
+      makeFav({
+        user_id: data?._id,
+        user_type: data?.user_type,
+        onSuccess: () => {},
+        onError: () => setIsFavorite(false),
+      }),
+    );
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    dispatch(removeFav({ team_id: data?._id, onSuccess: onUnFavSuccess, onError: () => {} }));
+    setIsFavorite(false);
+    dispatch(removeFav({ team_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
   const giveStrokeColor = (percentage) => {
