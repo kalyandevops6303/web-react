@@ -98,9 +98,7 @@ const ThemeNavbar = (props) => {
     if (location?.pathname?.split('/')?.[1] === 'dashboard')  setActiveTab("dashboard")
   },[userData])
 
-  useEffect(() => {
-    console.log(activeTab)
-  },[])
+
   return (
     <HeadWrapper className={className}>
       <div className="bookmark-wrapper d-flex align-items-center">
