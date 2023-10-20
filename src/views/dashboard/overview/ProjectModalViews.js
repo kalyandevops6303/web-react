@@ -36,7 +36,7 @@ const ProjectModalViews = ({
     setCompleteProfileModal(!completeProfileModal);
   };
 
-  const dashboardRedrection = () => {
+  const dashboardRedirection = () => {
     if (isActiveProject) {
       navigate(`/project-details/${project_id}/milestone`);
     } else if (isUpcomingProject) {
@@ -62,8 +62,8 @@ const ProjectModalViews = ({
 
       {switchModal && (
         <SwitchConfirmModal
-          dashboardRedrection={dashboardRedrection}
-          data={{ ...modalData, project_id: modalData?._id }}
+          dashboardRedirection={dashboardRedirection}
+          data={{ ...modalData, project_id: modalData?._id, isDashboardRedirection: true }}
           modal={switchModal}
           toggleModal={() => setSwitchModal(!switchModal)}
         />
