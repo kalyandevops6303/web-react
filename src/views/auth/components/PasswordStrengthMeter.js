@@ -3,11 +3,43 @@ import zxcvbn from 'zxcvbn';
 import { PasswordStrengthBarContainer } from '../style';
 
 const PasswordStrengthMeter = ({ password }) => {
-  const testResult = zxcvbn(password);
-  const num = (testResult.score * 100) / 4;
+  const getPasswordStrength = (password) => {
+    const passwordLength = password.length;
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSymbols = /[^a-zA-Z0-9]/.test(password);
+
+    let strength = 0;
+
+    // Define your custom password strength criteria here
+    if (passwordLength >= 8) {
+      strength += 1;
+    }
+
+    if (passwordLength >= 12) {
+      strength += 1;
+    }
+
+    if (hasLowerCase && hasUpperCase) {
+      strength += 1;
+    }
+
+    if (hasNumbers) {
+      strength += 1;
+    }
+
+    if (hasSymbols) {
+      strength += 1;
+    }
+
+    return Math.min(strength, 4); // Ensure strength is capped at 4
+  };
+  const testResult = getPasswordStrength(password);
+  const num = (testResult * 100) / 4;
 
   const createPassLabel = () => {
-    switch (testResult.score) {
+    switch (testResult) {
       case 0:
         return 'Password strength: Weak';
       case 1:
@@ -24,7 +56,7 @@ const PasswordStrengthMeter = ({ password }) => {
   };
 
   const funcProgressColor = () => {
-    switch (testResult.score) {
+    switch (testResult) {
       case 0:
         return '#ea5455';
       case 1:
