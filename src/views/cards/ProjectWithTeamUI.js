@@ -39,8 +39,11 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
 
   const handleTeamNavigate = (e) => {
     e.stopPropagation();
-    if (data?.worker_details?.team_id) {
+    if (data?.worker_details?.user_type === 'TEAM') {
       navigate(`/profile/team/${data?.worker_details?.team_id}`);
+    }
+    if (data?.worker_details?.user_type === 'TALENT') {
+      navigate(`/profile/talent/${data?.worker_details?.user_id}`);
     }
   };
 
@@ -111,7 +114,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
         <section>
           {profileToShowInRightSideOfCard?.user_type === userTypes.team ? (
             <div className="w-50">
-              <div className="flex-grow-1">
+              <div className="flex-grow-1" onClick={handleTeamNavigate}>
                 <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
                   {profileToShowInRightSideOfCard?.name ??
                     `${profileToShowInRightSideOfCard?.team_members?.first_name} ${data?.team_members?.last_name}`}
@@ -134,13 +137,23 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   {profileToShowInRightSideOfCard?.project_count ?? 0} Projects
                 </CardText>
               </div>
-              <div className="mt-2">
-                <BadgeGroup
-                  title="Skills"
-                  data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
-                  color="light-blue"
-                  id={`tooltip-skills-${data?._id}`}
-                />
+              <div className="d-flex w-100" style={{ gap: '120px' }}>
+                <div className="mt-2">
+                  <BadgeGroup
+                    title="Skills"
+                    data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
+                    color="light-blue"
+                    id={`tooltip-skills-${data?._id}`}
+                  />
+                </div>
+                <div className="mt-2">
+                  <BadgeGroup
+                    title="Tools"
+                    data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
+                    color="light-blue"
+                    id={`tooltip-tools-${data?._id}`}
+                  />
+                </div>
               </div>
             </div>
           ) : (
