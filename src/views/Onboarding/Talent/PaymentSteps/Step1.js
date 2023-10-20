@@ -10,7 +10,12 @@ import { userOnboarding } from '../../../../utility/constants/Constant';
 
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
-import { getPaymentDetails, savePaymentDetails, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
+import {
+  getPaymentDetails,
+  linkStripeAccount,
+  savePaymentDetails,
+  updatePaymentDetails,
+} from '../../../../redux/actions/paymentActions';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep }) => {
@@ -22,8 +27,10 @@ const Step1 = ({ setStep }) => {
   const [taxUserType, setTaxUserType] = useState('US');
   const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
   const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
+  const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
+  const stripeData = useSelector((state) => state?.stripeDetails?.stripeData);
 
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
@@ -67,6 +74,12 @@ const Step1 = ({ setStep }) => {
     setStep(2);
   };
 
+  const onAccountLinkSuccess = () => {
+    if (stripeData?.url) {
+      // eslint-disable-next-line no-undef
+      window.open(stripeData.url, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+    }
+  };
   const handleNextClick = (e) => {
     if (taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
@@ -76,7 +89,7 @@ const Step1 = ({ setStep }) => {
 
     if (isTaxinfoExists) {
       if (isPaymentOnboardingDone) {
-        setStep(2);
+        dispatch(linkStripeAccount(onAccountLinkSuccess));
       } else {
         const newData = {
           tax_user_type: taxUserType,
@@ -105,6 +118,16 @@ const Step1 = ({ setStep }) => {
     } else {
       dispatch(saveCheckpointComplete(onSkipSuccess));
     }
+  };
+
+  const getCTAText = () => {
+    if (isPaymentOnboardingDone) {
+      return 'Stripe Linked Account';
+    }
+    if (taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)) {
+      return 'Email Support Team';
+    }
+    return 'STEP 2 - Taxpayer Identification';
   };
 
   return (
@@ -202,15 +225,11 @@ const Step1 = ({ setStep }) => {
               <ChevronRight size={14} />
             </Button>
             <Button color="primary" onClick={handleNextClick}>
-              {paymentDetailsLoading ? (
+              {paymentDetailsLoading || stripeDetailsLoading ? (
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">
-                    {taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)
-                      ? 'Email Support Team'
-                      : 'STEP 2 - Taxpayer Identification'}
-                  </span>
+                  <span className="me-50">{getCTAText()}</span>
                   <ChevronRight size={14} />
                 </>
               )}

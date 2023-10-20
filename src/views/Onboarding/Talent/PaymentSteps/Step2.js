@@ -206,6 +206,7 @@ const Step2 = ({ setStep }) => {
                       disabled={isPaymentOnboardingDone}
                       placeholder="Provide same name as shown on your tax return"
                       invalid={errors.taxName && true}
+                      className="payment-form-control"
                     />
                   )}
                 />
@@ -256,6 +257,7 @@ const Step2 = ({ setStep }) => {
                       disabled={isPaymentOnboardingDone}
                       placeholder={taxUserType === 'NON_US' ? 'Enter NSN #' : 'Enter SSN #'}
                       invalid={errors.taxId && true}
+                      className="payment-form-control"
                     />
                   )}
                 />
@@ -299,13 +301,25 @@ const Step2 = ({ setStep }) => {
               <div className="d-flex flex-column mt-2">
                 <Label className="fs-5">Sign On :-</Label>
                 <Col className="d-flex gap-50 mt-1 mb-1">
-                  <Input type="checkbox" name="checkbox1" checked={confirmSign.checkbox1} onChange={handleSignCheck} />
+                  <Input
+                    type="checkbox"
+                    name="checkbox1"
+                    checked={confirmSign.checkbox1 || isPaymentOnboardingDone}
+                    disabled={isPaymentOnboardingDone}
+                    onChange={handleSignCheck}
+                  />
                   <Label className="fs-6">
                     I consent to provide an electronic signature by clicking on the above ‘I confirm’ button.
                   </Label>
                 </Col>
                 <Col className="d-flex gap-50 mt-1 mb-1">
-                  <Input type="checkbox" name="checkbox2" checked={confirmSign.checkbox2} onChange={handleSignCheck} />
+                  <Input
+                    type="checkbox"
+                    name="checkbox2"
+                    checked={confirmSign.checkbox2 || isPaymentOnboardingDone}
+                    disabled={isPaymentOnboardingDone}
+                    onChange={handleSignCheck}
+                  />
                   <Label className="fs-6">I consent to receive tax documents digitaly.</Label>
                 </Col>
                 <Button
@@ -313,9 +327,9 @@ const Step2 = ({ setStep }) => {
                   onClick={() => setIsDocumentConfirmed(true)}
                   className="mt-1 mb-1"
                   style={{ width: '120px' }}
-                  disabled={isDocumentConfirmed}
+                  disabled={isDocumentConfirmed || isPaymentOnboardingDone}
                 >
-                  {isDocumentConfirmed ? 'Confirmed' : 'I Confirm'}
+                  {isDocumentConfirmed || isPaymentOnboardingDone ? 'Confirmed' : 'I Confirm'}
                 </Button>
               </div>
             </CardBody>
@@ -338,7 +352,7 @@ const Step2 = ({ setStep }) => {
               color="primary"
               type="submit"
               disabled={
-                taxUserType === 'NON_US'
+                taxUserType === 'NON_US' || isPaymentOnboardingDone
                   ? false
                   : !confirmSign.checkbox1 || !confirmSign.checkbox2 || !isDocumentConfirmed
               }

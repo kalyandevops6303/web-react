@@ -5,7 +5,9 @@ import {
   updateUserService,
   setupStripeAccountService,
   getPaymentDetailService,
+  linkStripeAccountService,
 } from '../../services/paymentDetailService';
+import { stripeDetailsFailure, stripeDetailsRequest, stripeDetailsSuccess } from '../reducers/stripeDetails';
 
 const getPaymentDetails = (onGetPaymentDetailsSuccess) => async (dispatch) => {
   dispatch(paymentDetailsRequest());
@@ -41,13 +43,25 @@ const updatePaymentDetails = (data, onSuccess) => async (dispatch) => {
 };
 
 const setupStripeAccount = (data, onSuccess) => async (dispatch) => {
+  dispatch(stripeDetailsRequest());
   try {
     const res = await setupStripeAccountService(data);
-    dispatch(paymentDetailsSuccess(res.data.data));
+    dispatch(stripeDetailsSuccess(res.data));
     onSuccess();
   } catch (error) {
-    errorHandler(error, paymentDetailsFailure);
+    errorHandler(error, stripeDetailsFailure);
   }
 };
 
-export { savePaymentDetails, updatePaymentDetails, setupStripeAccount, getPaymentDetails };
+const linkStripeAccount = (onSuccess) => async (dispatch) => {
+  dispatch(stripeDetailsRequest());
+  try {
+    const res = await linkStripeAccountService();
+    dispatch(stripeDetailsSuccess(res.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, stripeDetailsFailure);
+  }
+};
+
+export { savePaymentDetails, updatePaymentDetails, setupStripeAccount, getPaymentDetails, linkStripeAccount };

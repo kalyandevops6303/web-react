@@ -41,13 +41,15 @@ const Step3 = ({ setStep }) => {
 
   const isUsPerson = paymentDetailsRes?.tax_user_type === 'US';
   const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
-  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
+  const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
+  const stripeData = useSelector((state) => state?.stripeDetails?.stripeData);
 
   const {
     control,
@@ -233,14 +235,19 @@ const Step3 = ({ setStep }) => {
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
-  const onAccountCreationSuccess = () => {};
+  const onAccountCreationSuccess = () => {
+    if (stripeData?.url) {
+      // eslint-disable-next-line no-undef
+      window.open(stripeData.url, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+    }
+  };
 
   const onSuccess = () => {
-    const stripeData = {
+    const stripeAccountData = {
       refresh_url: 'https://stripe.com/en-in',
       return_url: 'https://stripe.com/en-in',
     };
-    dispatch(setupStripeAccount(stripeData, onAccountCreationSuccess));
+    dispatch(setupStripeAccount(stripeAccountData, onAccountCreationSuccess));
   };
 
   useEffect(() => {
@@ -272,39 +279,35 @@ const Step3 = ({ setStep }) => {
   };
 
   const onSubmit = (data) => {
-    if (isPaymentOnboardingDone) {
-      //
-    } else {
-      const wDetails = {
-        [isUsPerson ? 'w9details' : 'w8bendetails']: {
-          full_name: data?.fullName,
-          country_of_citizenship: data?.citizen?.label,
-          permanent_residence: {
-            country: data?.pCountry?.label,
-            state: data?.pState?.label,
-            city: data?.pCity?.label,
-            street_address: data?.pAddress,
-            house_number: data?.pHouseNo,
-            zip_code: data?.pZipCode,
-          },
-          mailing_address: {
-            country: data?.mCountry?.label,
-            state: data?.mState?.label,
-            city: data?.mCity?.label,
-            street_address: data?.mAddress,
-            house_number: data?.mHouseNo,
-            zip_code: data?.mZipCode,
-          },
-          has_us_tax_id: taxPayer === 'option1',
-          us_tax_id_reference_number: data?.refNo ?? '',
-          dob: data?.dob ?? '',
+    const wDetails = {
+      [isUsPerson ? 'w9details' : 'w8bendetails']: {
+        full_name: data?.fullName,
+        country_of_citizenship: data?.citizen?.label,
+        permanent_residence: {
+          country: data?.pCountry?.label,
+          state: data?.pState?.label,
+          city: data?.pCity?.label,
+          street_address: data?.pAddress,
+          house_number: data?.pHouseNo,
+          zip_code: data?.pZipCode,
         },
-      };
-      const newData = {
-        ...wDetails,
-      };
-      dispatch(updatePaymentDetails(newData, onSuccess));
-    }
+        mailing_address: {
+          country: data?.mCountry?.label,
+          state: data?.mState?.label,
+          city: data?.mCity?.label,
+          street_address: data?.mAddress,
+          house_number: data?.mHouseNo,
+          zip_code: data?.mZipCode,
+        },
+        has_us_tax_id: taxPayer === 'option1',
+        us_tax_id_reference_number: data?.refNo ?? '',
+        dob: data?.dob ?? '',
+      },
+    };
+    const newData = {
+      ...wDetails,
+    };
+    dispatch(updatePaymentDetails(newData, onSuccess));
   };
 
   return (
@@ -726,11 +729,13 @@ const Step3 = ({ setStep }) => {
               <ChevronRight size={14} />
             </Button>
             <Button color="primary" type="submit" disabled={isUsPerson ? !isConfirmed : !isAgreed}>
-              {paymentDetailsLoading ? (
+              {paymentDetailsLoading || stripeDetailsLoading ? (
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">Stripe Setup Account</span>
+                  <span className="me-50">
+                    {isPaymentOnboardingDone ? 'Stripe Link Account' : '"Stripe Setup Account"'}
+                  </span>
                   <ChevronRight size={14} />
                 </>
               )}

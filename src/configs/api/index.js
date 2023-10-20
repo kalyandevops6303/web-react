@@ -236,7 +236,8 @@ const API = {
   },
   payment: {
     taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,
-    paymentAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
+    createStripeAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
+    linkStripeAccount: `${apiPaymentEndPoint}/api/v1/payment-account-link`,
   },
   referralAndReward: {
     createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
