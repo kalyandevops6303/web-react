@@ -21,7 +21,6 @@ import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../../utility/constants/Constant';
-import { CometChat } from '@cometchat-pro/chat';
 import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 
 const ThemeNavbar = (props) => {
@@ -74,10 +73,10 @@ const ThemeNavbar = (props) => {
     }
   `;
 
-  const [activeTab, setActiveTab] = useState('')
+  const [activeTab, setActiveTab] = useState('');
 
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const token = getItem('access_token');
 
@@ -95,9 +94,8 @@ const ThemeNavbar = (props) => {
   }
 
   useEffect(() => {
-    if (location?.pathname?.split('/')?.[1] === 'dashboard')  setActiveTab("dashboard")
-  },[userData])
-
+    if (location?.pathname?.split('/')?.[1] === 'dashboard') setActiveTab('dashboard');
+  }, [userData]);
 
   return (
     <HeadWrapper className={className}>
@@ -111,14 +109,17 @@ const ThemeNavbar = (props) => {
         </ul>
       </div>
 
-      <div className="navbar-brand cursor-pointer" onClick={() => {
-        if (userData) {
-          navigate('/dashboard')
-        } else {
-          navigate('/auth')
-        }
-        setActiveTab("dashboard")
-      }}>
+      <div
+        className="navbar-brand cursor-pointer"
+        onClick={() => {
+          if (userData) {
+            navigate('/dashboard');
+          } else {
+            navigate('/auth');
+          }
+          setActiveTab('dashboard');
+        }}
+      >
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
           <span className="ms-25 mt-25">v0.0.6</span>
