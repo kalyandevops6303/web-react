@@ -300,6 +300,22 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
+    getBidMilestoneRequest: (state) => ({
+      ...state,
+      getBidMilestoneLoading: true,
+      error: null,
+    }),
+    getBidMilestoneSuccess: (state, action) => ({
+      ...state,
+      getBidMilestoneLoading: false,
+      bidMilestone: action.payload,
+    }),
+    getBidMilestoneFailure: (state, action) => ({
+      ...state,
+      getBidMilestoneLoading: false,
+      error: action.payload,
+    }),
+
     makeFavSuccess: (state) => ({
       ...state,
       bidInfo: {
@@ -373,6 +389,9 @@ export const {
   removeWorkerRequest,
   removeWorkerSuccess,
   removeWorkerFailure,
+  getBidMilestoneRequest,
+  getBidMilestoneSuccess,
+  getBidMilestoneFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

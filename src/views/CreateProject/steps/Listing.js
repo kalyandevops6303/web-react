@@ -10,8 +10,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { RequirementsFormContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
-import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const Listing = ({ stepper, setListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
@@ -42,6 +40,8 @@ const Listing = ({ stepper, setListingDetails }) => {
     handleSubmit,
     trigger,
     clearErrors,
+    resetField,
+    setValue,
     watch,
     formState: { errors },
   } = useForm({
@@ -88,14 +88,6 @@ const Listing = ({ stepper, setListingDetails }) => {
     }
   };
 
-  const handleSave = () => {
-    if (Object.keys(errors).length === 0) {
-      handleSubmit(onSubmit)();
-    } else {
-      ShowToastMessage(ERROR, 'Please fill the mandatory fields');
-    }
-  };
-
   return (
     <RequirementsFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -119,6 +111,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                         checked={field.value === 'select-duration'}
                         onChange={async (e) => {
                           clearErrors('duration');
+                          setValue('duration', '');
 
                           const isChecked = e.target.checked;
                           const value = 'select-duration';
@@ -209,6 +202,8 @@ const Listing = ({ stepper, setListingDetails }) => {
                         onChange={async (e) => {
                           clearErrors('startDate');
                           clearErrors('endDate');
+                          resetField('startDate');
+                          resetField('endDate');
 
                           const isChecked = e.target.checked;
                           const value = 'enter-duration';
@@ -263,7 +258,7 @@ const Listing = ({ stepper, setListingDetails }) => {
             </UploadIconContainer>
             <h5 className="fw-light mb-0 mx-75">Back</h5>
           </div>
-          <Button color="primary" onClick={handleSave}>
+          <Button color="primary" onClick={() => onSubmit()}>
             <span className="me-50">Save & Continue</span>
             <ChevronRight size={14} />
           </Button>

@@ -19,21 +19,15 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
 
   const location = useLocation();
 
-  const onFavSuccess = () => {
-    setIsFavorite(true);
-  };
-
-  const onUnFavSuccess = () => {
-    setIsFavorite(false);
-  };
-
   const handleLike = (e) => {
     e.stopPropagation();
-    dispatch(makeFav({ project_id: data?._id, onSuccess: onFavSuccess, onError: () => {} }));
+    setIsFavorite(true);
+    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    dispatch(removeFav({ project_id: data?._id, onSuccess: onUnFavSuccess, onError: () => {} }));
+    setIsFavorite(false);
+    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
   const giveStrokeColor = (percentage) => {

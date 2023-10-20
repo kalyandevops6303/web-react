@@ -16,9 +16,10 @@ import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getItem } from '../../../../utility/localStorageControl';
+import { CometChat } from '@cometchat-pro/chat';
+import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
-import { selectSavedUserData, selectUserData } from '../../../../redux/selectors/authSelectors';
+import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../../utility/constants/Constant';
 import { CometChat } from '@cometchat-pro/chat';
 import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
@@ -27,9 +28,8 @@ const ThemeNavbar = (props) => {
   const userData = useSelector(selectUserData);
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
-  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
+
   // ** Props
   const { skin, setSkin, setMenuVisibility, className } = props;
   // ** Function to toggle Theme (Light/Dark)
@@ -74,7 +74,7 @@ const ThemeNavbar = (props) => {
     }
   `;
 
-  const [activeTab, setActiveTab] = useState(false)
+  const [activeTab, setActiveTab] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -93,14 +93,6 @@ const ThemeNavbar = (props) => {
       dispatch(setUnreadMsgCount(totalCount));
     });
   }
-
-  // useEffect(() => {
-  //   CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
-  //     const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
-  //     console.log('UNREAD COUNT INDEX NAV', totalCount);
-  //     dispatch(setUnreadMsgCount(totalCount));
-  //   });
-  // }, [isCometChatLoggedIn]);
 
   return (
     <HeadWrapper className={className}>
@@ -125,7 +117,8 @@ const ThemeNavbar = (props) => {
         <>
           <NavLink
             className={({ isActive }) =>
-              (isActive || activeTab==="dashboard" ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+              (isActive || activeTab === 'dashboard' ? 'is-active' : '') +
+              ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
             to="/dashboard"
             onClick={() => setActiveTab('dashboard')}
@@ -133,13 +126,21 @@ const ThemeNavbar = (props) => {
             Dashboard
           </NavLink>
           <NavLink
-          onClick={(() => setActiveTab('marketplace'))}
+            onClick={() => {
+              setActiveTab('marketplace');
+              setItem(
+                'selectedMarketplaceTab',
+                userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
+              );
+            }}
             className={
-              (location?.pathname?.split('/')?.[1] === 'marketplace' || location?.state?.from?.primary === 'Marketplace' || activeTab === 'marketplace'
+              (location?.pathname?.split('/')?.[1] === 'marketplace' ||
+              location?.state?.from?.primary === 'Marketplace' ||
+              activeTab === 'marketplace'
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-        to={`/marketplace/${getItem('selectedMarketplaceTab') ? getItem('selectedMarketplaceTab'): userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'} `}
+            to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`}
           >
             Marketplace
           </NavLink>
@@ -160,9 +161,11 @@ const ThemeNavbar = (props) => {
             Project
           </NavLink>
           <NavLink
-          onClick={(() => setActiveTab('my-teams'))}
+            onClick={() => setActiveTab('my-teams')}
             className={
-              (location?.pathname?.split('/')?.[1] === 'my-teams' || location?.state?.from?.primary === 'my-teams' ||activeTab === 'my-teams'
+              (location?.pathname?.split('/')?.[1] === 'my-teams' ||
+              location?.state?.from?.primary === 'my-teams' ||
+              activeTab === 'my-teams'
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }

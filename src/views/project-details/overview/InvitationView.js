@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import { DateTime } from 'luxon';
 import Avatar from '@components/avatar';
@@ -29,6 +29,8 @@ const InvitationView = () => {
   // const userData = useSelector(selectUserData);
   // const inviteToken = getItem('inviteToken');
   const params = useParams();
+  const navigate = useNavigate();
+
   const [invitedByData, setInvitedByData] = useState('');
   const [createBidModal, setCreateBidModal] = useState(null);
 
@@ -90,6 +92,7 @@ const InvitationView = () => {
           setAccpetModal(false);
           setIsStatusUpdating(false);
           dispatch(getTeams({ onSuccess: () => {} }));
+          navigate(`/project-details/${params?.projectId}/bid`);
         },
         onError: () => {
           setIsStatusUpdating(false);
