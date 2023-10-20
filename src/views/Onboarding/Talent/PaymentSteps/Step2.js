@@ -27,8 +27,8 @@ const Step2 = ({ setStep }) => {
   const [isDocumentConfirmed, setIsDocumentConfirmed] = useState(false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [taxUserType, setTaxUserType] = useState('US');
-  // eslint-disable-next-line no-unused-vars
-  const [selectedTaxId, setSelectedTaxId] = useState('taxOption1');
+  const [selectedTaxId] = useState('taxOption1');
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
@@ -69,6 +69,7 @@ const Step2 = ({ setStep }) => {
 
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
+      if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.tax_user_type?.length > 0) {
         setTaxUserType(res?.tax_user_type);
       }
@@ -129,22 +130,25 @@ const Step2 = ({ setStep }) => {
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onSubmit = (data) => {
-    const taxDetails = {
-      tax_identification: {
-        legal_name: data?.taxName,
-        federal_tax_classification: data?.taxClass?.value,
-        social_security_number: selectedTaxId === 'taxOption1' ? data?.taxId : '',
-        employee_identification_number: '',
-        national_taxpayer_number: taxUserType === 'NON_US' ? data?.taxId : '',
-        tax_payer_identification_type: taxUserType === 'US' ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
-      },
-    };
+    if (isPaymentOnboardingDone) {
+      setStep(3);
+    } else {
+      const taxDetails = {
+        tax_identification: {
+          legal_name: data?.taxName,
+          federal_tax_classification: data?.taxClass?.value,
+          social_security_number: taxUserType === 'US' ? data?.taxId : '',
+          national_taxpayer_number: taxUserType === 'NON_US' ? data?.taxId : '',
+          tax_payer_identification_type: taxUserType === 'US' ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
+        },
+      };
 
-    const updatedData = {
-      ...taxDetails,
-    };
+      const updatedData = {
+        ...taxDetails,
+      };
 
-    dispatch(updatePaymentDetails(updatedData, onSuccess));
+      dispatch(updatePaymentDetails(updatedData, onSuccess));
+    }
   };
 
   return (
@@ -199,6 +203,7 @@ const Step2 = ({ setStep }) => {
                   render={({ field }) => (
                     <Input
                       {...field}
+                      disabled={isPaymentOnboardingDone}
                       placeholder="Provide same name as shown on your tax return"
                       invalid={errors.taxName && true}
                     />
@@ -219,6 +224,7 @@ const Step2 = ({ setStep }) => {
                     <Select
                       isLoading={false}
                       options={taxClassificationOptions}
+                      isDisabled={isPaymentOnboardingDone}
                       menuPosition="fixed"
                       minMenuHeight={200}
                       classNamePrefix="select"
@@ -247,6 +253,7 @@ const Step2 = ({ setStep }) => {
                   render={({ field }) => (
                     <Input
                       {...field}
+                      disabled={isPaymentOnboardingDone}
                       placeholder={taxUserType === 'NON_US' ? 'Enter NSN #' : 'Enter SSN #'}
                       invalid={errors.taxId && true}
                     />

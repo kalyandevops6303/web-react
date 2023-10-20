@@ -21,7 +21,7 @@ import { states, statesLoading, cities, citiesLoading } from '../../../../redux/
 import CertificationUS from './CertificationUs';
 import CertificationNonUs from './CertificationNonUs';
 import AccountCreatedModal from '../../AccountCreatedModal';
-import { getUserDetails, saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
+import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 
 import { usWFormsSchema } from '../Schema';
 
@@ -41,13 +41,13 @@ const Step3 = ({ setStep }) => {
 
   const isUsPerson = paymentDetailsRes?.tax_user_type === 'US';
   const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
-  const [userDetails, setUserDetails] = useState({});
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
 
   const {
     control,
@@ -123,6 +123,7 @@ const Step3 = ({ setStep }) => {
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       setPaymentDetailsRes(res);
+      if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (Object.keys(res?.w8bendetails)?.length > 0) {
         setValue('citizen', {
           label: res?.w8bendetails?.country_of_citizenship,
@@ -214,13 +215,8 @@ const Step3 = ({ setStep }) => {
     }
   };
 
-  const onGetUserDetailsSuccess = (res) => {
-    if (res) setUserDetails(res);
-  };
-
   useEffect(() => {
     dispatch(getPaymentDetails(onGetPaymentDetailsSuccess));
-    dispatch(getUserDetails(onGetUserDetailsSuccess));
   }, []);
 
   const handleTaxPayerNoOption = (e) => {
@@ -237,34 +233,12 @@ const Step3 = ({ setStep }) => {
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
-  const onAccountCreationSuccess = () => {
-    // if (location?.state?.isEditing) {
-    //   navigate('/dashboard');
-    // } else {
-    //   setAccountCreatedModal(true);
-    // }
-  };
+  const onAccountCreationSuccess = () => {};
 
   const onSuccess = () => {
-    // if (location.state?.isEditing) {
-    //   navigate('/dashboard');
-    // } else {
-
-    // }
     const stripeData = {
-      country:
-        // eslint-disable-next-line no-nested-ternary
-        userDetails?.phone_country?.code,
-      email: userDetails?.email,
-      individual: {
-        first_name: userDetails?.talent_info?.first_name,
-        last_name: userDetails?.talent_info?.last_name,
-      },
-      user_id: userDetails?._id,
-      // eslint-disable-next-line no-undef
-      refresh_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
-      // eslint-disable-next-line no-undef
-      return_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
+      refresh_url: 'https://stripe.com/en-in',
+      return_url: 'https://stripe.com/en-in',
     };
     dispatch(setupStripeAccount(stripeData, onAccountCreationSuccess));
   };
@@ -298,37 +272,39 @@ const Step3 = ({ setStep }) => {
   };
 
   const onSubmit = (data) => {
-    const wDetails = {
-      [isUsPerson ? 'w9details' : 'w8bendetails']: {
-        full_name: data?.fullName,
-        country_of_citizenship: data?.citizen?.label,
-        permanent_residence: {
-          country: data?.pCountry?.label,
-          state: data?.pState?.label,
-          city: data?.pCity?.label,
-          street_address: data?.pAddress,
-          house_number: data?.pHouseNo,
-          zip_code: data?.pZipCode,
+    if (isPaymentOnboardingDone) {
+      //
+    } else {
+      const wDetails = {
+        [isUsPerson ? 'w9details' : 'w8bendetails']: {
+          full_name: data?.fullName,
+          country_of_citizenship: data?.citizen?.label,
+          permanent_residence: {
+            country: data?.pCountry?.label,
+            state: data?.pState?.label,
+            city: data?.pCity?.label,
+            street_address: data?.pAddress,
+            house_number: data?.pHouseNo,
+            zip_code: data?.pZipCode,
+          },
+          mailing_address: {
+            country: data?.mCountry?.label,
+            state: data?.mState?.label,
+            city: data?.mCity?.label,
+            street_address: data?.mAddress,
+            house_number: data?.mHouseNo,
+            zip_code: data?.mZipCode,
+          },
+          has_us_tax_id: taxPayer === 'option1',
+          us_tax_id_reference_number: data?.refNo ?? '',
+          dob: data?.dob ?? '',
         },
-        mailing_address: {
-          country: data?.mCountry?.label,
-          state: data?.mState?.label,
-          city: data?.mCity?.label,
-          street_address: data?.mAddress,
-          house_number: data?.mHouseNo,
-          zip_code: data?.mZipCode,
-        },
-        has_us_tax_id: taxPayer === 'option1',
-        us_tax_id_reference_number: data?.refNo ?? '',
-        dob: data?.dob ?? '',
-      },
-    };
-    const newData = {
-      talent_info: {
+      };
+      const newData = {
         ...wDetails,
-      },
-    };
-    dispatch(updatePaymentDetails(newData, onSuccess));
+      };
+      dispatch(updatePaymentDetails(newData, onSuccess));
+    }
   };
 
   return (

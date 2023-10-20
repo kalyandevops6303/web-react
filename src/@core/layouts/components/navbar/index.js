@@ -21,7 +21,6 @@ import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../../utility/constants/Constant';
-import { CometChat } from '@cometchat-pro/chat';
 import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 
 const ThemeNavbar = (props) => {

@@ -21,12 +21,14 @@ const Step1 = ({ setStep }) => {
   const [isWorkingInUS, setIsWorkingInUS] = useState(false);
   const [taxUserType, setTaxUserType] = useState('US');
   const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       if (res?.created_at) setIsTaxInfoExists(true);
+      if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.tax_user_type) {
         setTaxUserType(res?.tax_user_type);
         if (res?.tax_user_type === 'NON_US') {
@@ -72,11 +74,15 @@ const Step1 = ({ setStep }) => {
       return;
     }
 
-    if (location?.state?.isEditing && isTaxinfoExists) {
-      const newData = {
-        tax_user_type: taxUserType,
-      };
-      dispatch(updatePaymentDetails(newData, onSuccess));
+    if (isTaxinfoExists) {
+      if (isPaymentOnboardingDone) {
+        setStep(2);
+      } else {
+        const newData = {
+          tax_user_type: taxUserType,
+        };
+        dispatch(updatePaymentDetails(newData, onSuccess));
+      }
     } else {
       const newData = {
         tax_user_type: taxUserType,
@@ -117,13 +123,20 @@ const Step1 = ({ setStep }) => {
             <h5 className="m-0 mt-1 mb-1 fs-5">Select from below</h5>
             <div className="d-flex">
               <Col className="d-flex gap-50">
-                <Input type="radio" checked={taxUserType === 'US'} name="US" onChange={handlePrePaymentChange} />
+                <Input
+                  type="radio"
+                  checked={taxUserType === 'US'}
+                  name="US"
+                  disabled={isPaymentOnboardingDone}
+                  onChange={handlePrePaymentChange}
+                />
                 <div className="w-75">US Person - Permeant residents or Citizens with US Tax Identification</div>
               </Col>
               <Col className="d-flex gap-50">
                 <Input
                   type="radio"
                   name="NON_US"
+                  disabled={isPaymentOnboardingDone}
                   checked={taxUserType === 'NON_US'}
                   onChange={handlePrePaymentChange}
                 />
@@ -132,7 +145,13 @@ const Step1 = ({ setStep }) => {
                 </div>
               </Col>
               <Col className="d-flex gap-50">
-                <Input type="radio" name="OTHER" checked={taxUserType === 'OTHER'} onChange={handlePrePaymentChange} />
+                <Input
+                  type="radio"
+                  name="OTHER"
+                  disabled={isPaymentOnboardingDone}
+                  checked={taxUserType === 'OTHER'}
+                  onChange={handlePrePaymentChange}
+                />
                 <div className="w-75">All other tax situations</div>
               </Col>
             </div>
@@ -147,11 +166,23 @@ const Step1 = ({ setStep }) => {
             <CardBody className="d-flex">
               <div className="d-flex" style={{ width: '65%' }}>
                 <Col className="d-flex align-items-center gap-50">
-                  <Input type="radio" name="in_us" checked={isWorkingInUS} onChange={handleWorkOptionChange} />
+                  <Input
+                    type="radio"
+                    name="in_us"
+                    checked={isWorkingInUS}
+                    disabled={isPaymentOnboardingDone}
+                    onChange={handleWorkOptionChange}
+                  />
                   <div>Working in the US</div>
                 </Col>
                 <Col className="d-flex align-items-center gap-50">
-                  <Input type="radio" name="outside_us" checked={!isWorkingInUS} onChange={handleWorkOptionChange} />
+                  <Input
+                    type="radio"
+                    name="outside_us"
+                    checked={!isWorkingInUS}
+                    disabled={isPaymentOnboardingDone}
+                    onChange={handleWorkOptionChange}
+                  />
                   <div>Working outside the US</div>
                 </Col>
               </div>
