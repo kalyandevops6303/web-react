@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CardText, CardTitle, Badge } from 'reactstrap';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
@@ -15,6 +15,7 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 const BaseInfoCard = ({ isSearchPage, data }) => {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
 
   const location = useLocation();
@@ -55,6 +56,17 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
     return '';
   };
   const fromLocationSearch = () => ({ title: 'Clients', link: '' });
+
+  const handleNavigate = (e) => {
+    e.stopPropagation();
+    const state = {
+      from: {
+        primary: fromLocationPrimary(),
+        secondary: fromLocationSecondary() || fromLocationSearch(),
+      },
+    };
+    navigate(`/profile/client/${data?.client_details?.user_id}`, { state });
+  };
 
   return (
     <div>
@@ -119,20 +131,12 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
           style={{ objectFit: 'cover' }}
         />
         <div className="d-flex w-100 align-items-center">
-          <div className="flex-grow-1">
+          <div onClick={(e) => handleNavigate(e)} className="flex-grow-1">
             <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-              <Link
-                state={{
-                  from: {
-                    primary: fromLocationPrimary(),
-                    secondary: fromLocationSecondary() || fromLocationSearch(),
-                  },
-                }}
-                to={`/profile/client/${data?.client_details?.user_id}`}
-              >
+              <span>
                 {data?.client_details?.first_name}&nbsp;
                 {data?.client_details?.last_name}
-              </Link>
+              </span>
             </CardTitle>
             <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
               {clientDetails?.title ?? clientDetails?.company_name}
