@@ -39,6 +39,21 @@ export const PasswordStrengthBarContainer = styled.div`
       height: 2.5px;
     }
   }
+
+  .progress {
+    position: relative;
+    .bg {
+      width: 100%;
+      display: flex;
+      position: absolute;
+      .vertical-line {
+        display: block;
+        height: 2.5px;
+        width: 25%;
+        border-right: 5px solid #f1faff;
+      }
+    }
+  }
   p {
     text-align: left !important;
     font-size: 12px !important;

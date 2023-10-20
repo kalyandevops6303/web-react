@@ -48,6 +48,12 @@ const PasswordStrengthMeter = ({ password }) => {
   return (
     <PasswordStrengthBarContainer>
       <div className="progress">
+        <div className="bg">
+          <span className="vertical-line" />
+          <span className="vertical-line" />
+          <span className="vertical-line" />
+        </div>
+
         <div className="progress-bar" style={changePasswordColor()}></div>
       </div>
 

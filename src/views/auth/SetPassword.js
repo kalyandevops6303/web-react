@@ -93,7 +93,7 @@ const SetPassword = () => {
                 <InputPasswordToggle
                   {...field}
                   value={field.value || ''} // Set a default value for the input
-                  className="input-group-merge create-password mb-1"
+                  className="input-group-merge create-password mb-75"
                   id="newPassword"
                   placeholder="Enter your password"
                 />
@@ -101,23 +101,6 @@ const SetPassword = () => {
             />
             {newPassword && <PasswordStrengthMeter password={newPassword} />}
 
-            {/* {newPassword && (
-              <PasswordStrengthBarWrap>
-                <PasswordStrengthBar
-                  className={`password-meter ${getColorName(score)}`}
-                  scoreWords={[
-                    'Password strength: Weak',
-                    'Password strength: Weak',
-                    'Password strength: Fair',
-                    'Password strength: Good',
-                    'Password strength: Strong',
-                  ]}
-                  shortScoreWord="Too short"
-                  password={newPassword}
-                  onChangeScore={onChangeScore}
-                />
-              </PasswordStrengthBarWrap>
-            )} */}
             {errors.newPassword && <FormFeedback>{errors.newPassword.message}</FormFeedback>}
           </div>
           <div className="mb-3">
