@@ -59,7 +59,7 @@ const Personal = () => {
       .transform((value) => (Number.isNaN(value) ? undefined : value)),
     professionalIntroduction: yup
       .string()
-      .max(150, 'Professional introduction must be 150 characters or less')
+      .max(500, 'Professional introduction must be 500 characters or less')
       .required('Professional introduction is required'),
     role: yup
       .object()
@@ -553,7 +553,7 @@ const Personal = () => {
                       <Input
                         {...field}
                         type="textarea"
-                        placeholder="Describe in 150 characters"
+                        placeholder="Describe in 500 characters"
                         rows="5"
                         invalid={errors.professionalIntroduction && true}
                       />
@@ -588,7 +588,7 @@ const Personal = () => {
                   {errors.role && <FormFeedback>{errors.role.label.message}</FormFeedback>}
                 </Col>
               </Row>
-              <Row className="mt-3 mb-3">
+              <Row className="mt-3 mb-3 d-none">
                 <div className="d-flex align-items-center upload-button cursor-pointer">
                   <UploadIconContainer>
                     <Upload size={18} color={theme.activeNavPillText} />
@@ -596,7 +596,7 @@ const Personal = () => {
                   <h5 className="fw-bold">Upload your resume</h5>
                 </div>
               </Row>
-              <Row className="mb-1">
+              <Row className="mb-1 mt-3">
                 <h5 className="m-0">Languages</h5>
               </Row>
               <Row className="mb-1">

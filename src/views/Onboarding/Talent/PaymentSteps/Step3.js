@@ -554,6 +554,7 @@ const Step3 = ({ setStep }) => {
                         disabled={copyAddress}
                         placeholder="Enter street address"
                         invalid={!copyAddress && errors.mAddress && true}
+                        className="payment-form-control"
                       />
                     )}
                   />
@@ -573,6 +574,7 @@ const Step3 = ({ setStep }) => {
                         placeholder="Enter house number"
                         disabled={copyAddress}
                         invalid={errors.mHouseNo && true}
+                        className="payment-form-control"
                       />
                     )}
                   />
@@ -680,6 +682,7 @@ const Step3 = ({ setStep }) => {
                         invalid={errors.mZipCode && true}
                         disabled={copyAddress}
                         autoComplete="none"
+                        className="payment-form-control"
                       />
                     )}
                   />

@@ -8,14 +8,17 @@ const Header = () => {
   const navigate = useNavigate();
 
   const onLogoClick = () => {
-    if (location?.state?.isEditing) {
+    if (location?.state?.isEditing || location.pathname === '/create-team/profile-details') {
       navigate('/dashboard');
     }
   };
 
   return (
     <HeaderContainer>
-      <div className={`${location?.state?.isEditing ? `logo-wrap cursor-pointer` : `logo-wrap`}`} onClick={onLogoClick}>
+      <div
+        className={`${location?.state?.isEditing || location.pathname ? `logo-wrap cursor-pointer` : `logo-wrap`}`}
+        onClick={onLogoClick}
+      >
         <img alt="logo" src={Logo} className="card-logo onboarding-header-logo" />
         <span className="ms-25 version">v0.0.6</span>
       </div>

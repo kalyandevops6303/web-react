@@ -1,5 +1,5 @@
 import { Briefcase, Calendar, Check } from 'react-feather';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -19,11 +19,11 @@ import { clearData } from '../../redux/reducers/profile';
 import Error from '../Error';
 import { userTypes } from '../../utility/constants/Constant';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { getItem } from '../../utility/localStorageControl';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
   const param = useParams();
-  const location = useLocation();
   const userData = useSelector(selectAuthUserData);
 
   const isEditable = userData?._id === param?.userId;
@@ -37,6 +37,7 @@ const UserDetails = () => {
   const isClient = param?.userType.toUpperCase() === userTypes.client;
   const isTalentView = param?.userType.toUpperCase() === userTypes.talent;
   const isTeamView = param?.userType.toUpperCase() === userTypes.team;
+  const isOwnProfile = param?.userId === userData?._id;
 
   const currentProfile = useSelector(selectCurrentProfile);
   const loading = useSelector(selectLoading);
@@ -76,6 +77,22 @@ const UserDetails = () => {
     return combined;
   };
 
+  const baseRoute = getItem('baseRoute');
+
+  let secondaryRoute;
+
+  if (baseRoute === 'marketplace') {
+    secondaryRoute = getItem('selectedMarketplaceTab');
+  } else if (baseRoute === 'projects') {
+    secondaryRoute = getItem('selectedProjectTab');
+  } else if (baseRoute === 'my-teams') {
+    secondaryRoute = getItem('selectedMyTeamsTab');
+  } else {
+    secondaryRoute = null;
+  }
+
+  const baseRouteWithoutDash = baseRoute.replace(/-/g, ' ');
+
   const defaultBreadCrumb = [
     { title: 'Profile', link: '#' },
     {
@@ -83,8 +100,8 @@ const UserDetails = () => {
     },
   ];
   const dynamicBreadCrumb = [
-    { title: capitalize(location?.state?.from?.primary?.title), link: location?.state?.from?.primary?.link },
-    { title: capitalize(location?.state?.from?.secondary?.title), link: location?.state?.from?.secondary?.link },
+    { title: capitalize(baseRouteWithoutDash), link: `/${baseRoute}` },
+    ...(secondaryRoute ? [{ title: capitalize(secondaryRoute), link: `/${baseRoute}/${secondaryRoute}` }] : []),
     { title: `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User' },
   ];
 
@@ -97,7 +114,8 @@ const UserDetails = () => {
 
   return (
     <>
-      <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} />
+      {/* <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} /> */}
+      <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} />
       <Row>
         <Col lg="3">
           <LeftSidebarProfile

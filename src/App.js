@@ -14,7 +14,8 @@ import { setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
 import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
-import { unreadMsgCountSuccess } from './redux/reducers/chat';
+import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
+import { cometloginSuccess } from './redux/reducers/auth';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -36,11 +37,19 @@ const App = () => {
     },
   );
 
-  const loginUser = async (authToken, fcmCometToken) => {
-    await CometChat.login(authToken);
+  const loginUser = async ({ cometToken, fcm }) => {
+    await CometChat.login(cometToken);
+    dispatch(cometloginSuccess());
     console.log('LOGGED IN COMETCHAT');
-    await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
-      fcmToken: fcmCometToken,
+    if (fcm) {
+      await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
+        fcmToken: fcm,
+      });
+    }
+    CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
+      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
+      console.log('UNREAD COUNT INDEX', totalCount);
+      dispatch(setUnreadMsgCount(totalCount));
     });
   };
 
@@ -49,12 +58,14 @@ const App = () => {
       let data;
       const tokenFunc = async () => {
         data = await getToken();
-
+        console.log('FCM TOKEN 61', data);
         if (data) {
-          await dispatch(fcmSubscribeNotification(data));
-          loginUser(cometAuthToken, data);
-          // await fcmSubscribeService(data);
+          console.log('FCM TOKEN 63', data);
+          dispatch(fcmSubscribeNotification(data));
+          loginUser({ cometToken: cometAuthToken, fcm: data });
           setItem('fcmToken', data);
+        } else {
+          loginUser({ cometToken: cometAuthToken });
         }
         return data;
       };
@@ -64,15 +75,16 @@ const App = () => {
 
   useEffect(() => {
     const channel = new BroadcastChannel('data-channel');
-    console.log('CHANNEL', channel);
     if (channel) {
       channel?.addEventListener('message', (event) => {
         // Handle the received data from the service worker
         const { data } = event;
-        console.log(data, event, 'COMET');
-        dispatch(notificationCount(true));
-        if (data.alert) {
+        console.log(data, 'COMET');
+
+        if (data?.data?.alert) {
           dispatch(unreadMsgCountSuccess());
+        } else {
+          dispatch(notificationCount(true));
         }
       });
     }
@@ -93,9 +105,10 @@ const App = () => {
     } else if (Notification.permission === 'granted') {
       if (payload.data.alert) {
         dispatch(unreadMsgCountSuccess());
+      } else {
+        // only when type single
+        dispatch(notificationCount(true));
       }
-      // only when type single
-      dispatch(notificationCount(true));
 
       toast(
         (t) => (

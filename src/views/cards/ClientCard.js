@@ -2,7 +2,7 @@
 import { Badge, Card, CardBody, CardText, CardTitle, Col, UncontrolledTooltip } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Heart, MapPin } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
@@ -27,9 +27,11 @@ const giveStrokeColor = (percentage) => {
   }
 };
 const ClientCard = ({ isSearchPage, data, userType }) => {
-  const dispatch = useDispatch();
-  const location = useLocation();
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
@@ -51,28 +53,39 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   // const description = data?.company_tagline || data?.professional_intro;
   const locationDetails = data?.user_type === userTypes.client ? data?.office_address : data?.current_residency;
 
-  const onFavSuccess = () => {
+  const handleLike = (e) => {
+    e.stopPropagation();
     setIsFavorite(true);
-  };
-
-  const onUnFavSuccess = () => {
-    setIsFavorite(false);
-  };
-
-  const handleLike = () => {
     dispatch(
-      makeFav({ user_id: data?.user_id, user_type: data?.user_type, onSuccess: onFavSuccess, onError: () => {} }),
+      makeFav({
+        user_id: data?.user_id,
+        user_type: data?.user_type,
+        onSuccess: () => {},
+        onError: () => setIsFavorite(false),
+      }),
     );
   };
-  const handleUnLike = () => {
-    dispatch(removeFav({ user_id: data?.user_id, onSuccess: onUnFavSuccess, onError: () => {} }));
+  const handleUnLike = (e) => {
+    e.stopPropagation();
+    setIsFavorite(false);
+    dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+  };
+
+  const handleCard = () => {
+    const state = {
+      from: {
+        primary: fromLocationPrimary(),
+        secondary: fromLocationSecondary() || fromLocationSearch(),
+      },
+    };
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`, { state });
   };
 
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
 
   return (
     <ClientCardWrap userType={userType} clientCard>
-      <Card style={{ height: '93%' }}>
+      <Card style={{ height: '93%' }} onClick={handleCard} className="cursor-pointer">
         <CardBody>
           <Col className="d-flex justify-content-between">
             <div className="d-flex align-items-center" style={{ width: '60%' }}>
@@ -83,19 +96,9 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                 className={`client-card-photo me-1 mb-1 `}
               />
               <div className="d-flex flex-column" style={{ width: '70%' }}>
-                <CardTitle className="d-flex truncate-1 text-decoration-none marketplace-card-title mb-0">
-                  <Link
-                    state={{
-                      from: {
-                        primary: fromLocationPrimary(),
-                        secondary: fromLocationSecondary() || fromLocationSearch(),
-                      },
-                    }}
-                    to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
-                  >
-                    {data?.first_name}&nbsp;
-                    {data?.last_name}
-                  </Link>
+                <CardTitle className="text-decoration-none marketplace-card-title mb-0 text-truncate">
+                  {data?.first_name}&nbsp;
+                  {data?.last_name}
                 </CardTitle>
                 <p
                   className="font-small-3 fw-300 mb-25 marketplace-card-role"
@@ -133,11 +136,11 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                         className="cursor-pointer d-flex heart"
                         fill={theme.red}
                         stroke={theme.red}
-                        onClick={handleUnLike}
+                        onClick={(e) => handleUnLike(e)}
                         size={20}
                       />
                     ) : (
-                      <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                      <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
                     )}
                   </div>
                 )}

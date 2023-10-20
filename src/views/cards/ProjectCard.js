@@ -28,7 +28,8 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
     setShowModal(!showModal);
   };
 
-  const handleToggleView = () => {
+  const handleToggleView = (e) => {
+    e.stopPropagation();
     setShowFullText(!showFullText);
   };
 
@@ -85,9 +86,13 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
     setShowModal(true);
   };
 
+  const handleShowProject = () => {
+    setShowModal(true);
+  };
+
   return (
     <ProjectCardWrap>
-      <Card>
+      <Card onClick={handleShowProject} className="cursor-pointer">
         <CardBody>
           <Row>
             <Col lg="8">
@@ -140,7 +145,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
               )}
 
               {isContentOverflowing && (
-                <CardText className="cursor-pointer show-more" onClick={handleToggleView}>
+                <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
                   {showFullText ? 'Show less' : 'Show more'}
                 </CardText>
               )}
@@ -178,7 +183,7 @@ const ProjectCard = ({ isProjectWithTeam, isTeam, isExpanded, data, isPopoverOpe
         <CompleteProfileModal
           modal={completeProfileModal}
           toggleModal={toggleCompleteProfileModal}
-          modalInfoText="team"
+          modalInfoText="create bid"
         />
       )}
     </ProjectCardWrap>

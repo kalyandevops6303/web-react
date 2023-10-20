@@ -164,7 +164,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
         <CompleteProfileModal
           modal={completeProfileModal}
           toggleModal={toggleCompleteProfileModal}
-          modalInfoText="team"
+          modalInfoText="create bid"
         />
       )}
     </ProjectCardWrap>

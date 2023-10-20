@@ -190,7 +190,7 @@ const Project = ({ open, data, className }) => {
         <CompleteProfileModal
           modal={completeProfileModal}
           toggleModal={toggleCompleteProfileModal}
-          modalInfoText="team"
+          modalInfoText="create bid"
         />
       )}
     </ProjectWrapper>
