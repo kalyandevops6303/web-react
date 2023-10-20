@@ -86,7 +86,8 @@
     "swiper": "8.1.5",
     "uuid": "9.0.0",
     "wnumb": "1.2.0",
-    "yup": "0.32.11"
+    "yup": "0.32.11",
+    "zxcvbn": "^4.4.2"
   },
   "scripts": {
     "start": "vite",

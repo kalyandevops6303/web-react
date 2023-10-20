@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
@@ -15,18 +15,17 @@ import InputPasswordToggle from '@components/input-password-toggle';
 import { validations } from '../../utility/Utils';
 
 // ** Styles
-import { OnBoardWrap, PasswordStrengthBarWrap } from './style';
+import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { setPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
-import PasswordStrengthBar from '../../lib/password-strength-bar';
+import PasswordStrengthMeter from './components/PasswordStrengthMeter';
 
 const SetPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [score, setScore] = useState(0);
 
   const isLoading = useSelector(selectAuthLoading);
   const isPasswordSet = useSelector(selectIsPasswordSet);
@@ -58,19 +57,6 @@ const SetPassword = () => {
   const onSubmit = (values) => {
     const { newPassword } = values;
     dispatch(setPassword(newPassword));
-  };
-
-  const scoreColors = {
-    0: 'red',
-    1: 'red',
-    2: 'orange',
-    3: 'blue',
-    4: 'green',
-  };
-
-  const getColorName = (s) => scoreColors[s] || '';
-  const onChangeScore = (s) => {
-    setScore(s);
   };
 
   const newPassword = watch('newPassword');
@@ -107,13 +93,15 @@ const SetPassword = () => {
                 <InputPasswordToggle
                   {...field}
                   value={field.value || ''} // Set a default value for the input
-                  className="input-group-merge create-password"
+                  className="input-group-merge create-password mb-1"
                   id="newPassword"
                   placeholder="Enter your password"
                 />
               )}
             />
-            {newPassword && (
+            {newPassword && <PasswordStrengthMeter password={newPassword} />}
+
+            {/* {newPassword && (
               <PasswordStrengthBarWrap>
                 <PasswordStrengthBar
                   className={`password-meter ${getColorName(score)}`}
@@ -129,7 +117,7 @@ const SetPassword = () => {
                   onChangeScore={onChangeScore}
                 />
               </PasswordStrengthBarWrap>
-            )}
+            )} */}
             {errors.newPassword && <FormFeedback>{errors.newPassword.message}</FormFeedback>}
           </div>
           <div className="mb-3">
