@@ -40,6 +40,7 @@ import { makeTeamMemberSuccess } from '../../../redux/reducers/profile';
 import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
 import InvitationSentModal from '../../modals/InvitationSentModal';
 import JoinTeamModal from '../../modals/JoinTeamModal';
+import ReportUserModal from './ReportUserModal';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -63,7 +64,9 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const [accpetModal, setAccpetModal] = useState(false);
   const [invitationSentModal, setInvitationSentModal] = useState(null);
   const [openJoinTeamModal, setOpenJoinTeamModal] = useState(false);
+  const [reportModal, setReportModal] = useState(false);
   const toggleInvitationSentModal = () => setInvitationSentModal(!invitationSentModal);
+  const toggleReportModal = () => setReportModal(!reportModal);
 
   const onAccept = () => {
     const postData = {
@@ -581,7 +584,14 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   </Button>
                 )}
               </div>
-              <CardText className="d-none report-text m-0 text-center mt-1 fw-bold">Report</CardText>
+              {(userDataSelector?.user_type === userTypes.client || userDataSelector?.user_type === userTypes.team) &&
+                param?.userType.toUpperCase() === userTypes.talent && (
+                  <div className="d-flex justify-content-center">
+                    <Button color="flat-danger" className="mt-1" onClick={() => setReportModal(true)}>
+                      Report
+                    </Button>
+                  </div>
+                )}
             </div>
           </section>
         </CardBody>
@@ -608,6 +618,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           description="You’ve sent a team member invitation"
         />
       )}
+      {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}
     </LeftSidebarProfileWrapper>
   );
 };
