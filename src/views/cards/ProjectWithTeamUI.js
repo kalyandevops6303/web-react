@@ -188,13 +188,25 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   </div>
                 </div>
               </div>
-              <div className="d-flex" style={{ marginTop: '35px' }}>
-                <BadgeGroup
-                  title="Tools"
-                  data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
-                  color="light-blue"
-                  id={`tooltip-tools-${data?._id}`}
-                />
+              <div className="d-flex w-75 gap-2 justify-content-between">
+                <div className="mt-2">
+                  <BadgeGroup
+                    title="Skills"
+                    data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
+                    color="light-blue"
+                    id={`tooltip-skills-${data?._id}`}
+                  />
+                </div>
+                {clientTools?.length > 0 && (
+                  <div className="mt-2">
+                    <BadgeGroup
+                      title="Tools"
+                      data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
+                      color="light-blue"
+                      id={`tooltip-tools-${data?._id}`}
+                    />
+                  </div>
+                )}
               </div>
             </section>
           )}
