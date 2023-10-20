@@ -17,7 +17,6 @@ import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors
 
 import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
 import { getItem } from '../../utility/localStorageControl';
-import { userTypes } from '../../utility/constants/Constant';
 import { returnFormattedRating } from '../../utility/Utils';
 
 const InvitationSentModal = ({
@@ -55,12 +54,11 @@ const InvitationSentModal = ({
   };
 
   const onInviteTalents = () => {
-    const userIds = selectedTalents.map((talent) => talent.user_id);
+    const userIds = selectedTalents.filter((user) => user?.user_id).map((talent) => talent.user_id);
     const teamIds = selectedTalents
-      .filter((user) => user?.user_type === userTypes.team) // Filter out non-team users
-      .map((user) => user?.team_id); // Map to an array of team_ids
+      .filter((user) => user?._id) // Filter out non-team users
+      .map((user) => user?._id); // Map to an array of team_ids
 
-    // const userEmails = selectedTalents.map((talent) => talent?.user_details?.email);
     const teamId = getItem('team_id');
     const newPostData = {
       message,
@@ -133,7 +131,7 @@ const InvitationSentModal = ({
             <p className="fw-light font-medium-3 mt-75">{description}</p>
             <InviteUsersListContainer>
               {selectedTalents.map((talent) => (
-                <Row key={talent.id} className="d-flex align-items-center mb-2 mx-0">
+                <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center mb-2 mx-0">
                   <Col sm="12" md="12" lg="12">
                     <div className="d-flex align-items-center">
                       <Avatar

@@ -52,7 +52,11 @@ const SwitchConfirmModal = ({
     } else {
       redirectionFunction({
         status: data?.title,
-        projectId: data?.custom_payload?.request_to?.project_id || data?.custom_payload?.project_id || data?.project_id,
+        projectId:
+          data?.custom_payload?.request_to?.project_id ||
+          data?.custom_payload?.project_id ||
+          data?.project_id ||
+          data?.custom_payload?.request_for?.project_id,
         inviteId: data?.custom_payload?.request_id,
       });
     }
