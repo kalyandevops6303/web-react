@@ -91,7 +91,8 @@ const UserDetails = () => {
     secondaryRoute = null;
   }
 
-  const baseRouteWithoutDash = baseRoute.replace(/-/g, ' ');
+  const baseRouteWithoutDash = baseRoute?.replace(/[-_]/g, ' ');
+  const secondaryRouteWithoutDash = secondaryRoute?.replace(/[-_]/g, ' ');
 
   const defaultBreadCrumb = [
     { title: 'Profile', link: '#' },
@@ -101,8 +102,12 @@ const UserDetails = () => {
   ];
   const dynamicBreadCrumb = [
     { title: capitalize(baseRouteWithoutDash), link: `/${baseRoute}` },
-    ...(secondaryRoute ? [{ title: capitalize(secondaryRoute), link: `/${baseRoute}/${secondaryRoute}` }] : []),
-    { title: `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User' },
+    ...(secondaryRoute
+      ? [{ title: capitalize(secondaryRouteWithoutDash), link: `/${baseRoute}/${secondaryRoute}` }]
+      : []),
+    {
+      title: isTeamView ? currentProfile?.name : `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User',
+    },
   ];
 
   if (loading) {
