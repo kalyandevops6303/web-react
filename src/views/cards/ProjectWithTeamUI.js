@@ -3,12 +3,11 @@ import { CardText, CardTitle, Badge } from 'reactstrap';
 import hat from '@src/assets/images/hat.svg';
 import PropTypes from 'prop-types';
 import { Heart } from 'react-feather';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import theme from '../../configs/themeVariables';
-import { selectUserData } from '../../redux/selectors/authSelectors';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
@@ -18,7 +17,6 @@ const ProjectWithTeamUI = ({ data }) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userData = useSelector(selectUserData);
 
   const handleLike = (e) => {
     e.stopPropagation();
@@ -38,7 +36,9 @@ const ProjectWithTeamUI = ({ data }) => {
 
   const handleTeamNavigate = (e) => {
     e.stopPropagation();
-    navigate(`/profile/team/${userData?._id}`);
+    if (data?.worker_details?.team_id) {
+      navigate(`/profile/team/${data?.worker_details?.team_id}`);
+    }
   };
 
   const avatarGroup = data?.worker_details?.workers?.length
