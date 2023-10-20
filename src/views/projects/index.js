@@ -38,10 +38,8 @@ const Projects = () => {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
-    if (routesMatch?.pathname?.split('/')?.[2] !== primaryFilter) {
-      setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
-      setItem('selectedProjectTab', routesMatch?.pathname?.split('/')?.[2]);
-    }
+    setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
+    setItem('selectedProjectTab', routesMatch?.pathname?.split('/')?.[2]);
     dispatch(clearProjectData());
     setItem('baseRoute', 'projects');
   }, []);
