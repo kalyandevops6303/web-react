@@ -23,6 +23,7 @@ const BreadCrumbs = (props) => {
           tag="li"
           key={index}
           active={!isLastItem}
+          className="text-capitalize"
           // className={isLastItem ? 'text-primary' : 'body-color'}
         >
           <Wrapper {...(item.link?.length > 0 ? { to: item.link } : {})}>{item.title}</Wrapper>

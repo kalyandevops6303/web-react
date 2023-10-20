@@ -3,19 +3,22 @@ import { CardText, CardTitle, Badge } from 'reactstrap';
 import hat from '@src/assets/images/hat.svg';
 import PropTypes from 'prop-types';
 import { Heart } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import theme from '../../configs/themeVariables';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 
 const ProjectWithTeamUI = ({ data }) => {
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const userData = useSelector(selectUserData);
 
   const handleLike = (e) => {
     e.stopPropagation();
@@ -28,9 +31,14 @@ const ProjectWithTeamUI = ({ data }) => {
     dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
-  const handleNavigate = (e) => {
+  const handleClientNavigate = (e) => {
     e.stopPropagation();
     navigate(`/profile/client/${data?.client?.user_id}`);
+  };
+
+  const handleTeamNavigate = (e) => {
+    e.stopPropagation();
+    navigate(`/profile/team/${userData?._id}`);
   };
 
   const avatarGroup = data?.worker_details?.workers?.length
@@ -83,10 +91,10 @@ const ProjectWithTeamUI = ({ data }) => {
               width={40}
               height={50}
               style={{ objectFit: 'cover' }}
-              onClick={(e) => handleNavigate(e)}
+              onClick={(e) => handleClientNavigate(e)}
             />
             <div>
-              <div onClick={(e) => handleNavigate(e)} className="flex-grow-1">
+              <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
                 <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
                   {data?.client?.first_name} {data?.client?.last_name}
                 </CardTitle>
@@ -112,7 +120,7 @@ const ProjectWithTeamUI = ({ data }) => {
           </div>
         </section>
         <div className="w-50">
-          <div className="flex-grow-1">
+          <div className="flex-grow-1" onClick={(e) => handleTeamNavigate(e)}>
             <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
               {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
             </CardTitle>
