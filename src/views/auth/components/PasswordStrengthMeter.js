@@ -1,5 +1,4 @@
 import React from 'react';
-import zxcvbn from 'zxcvbn';
 import { PasswordStrengthBarContainer } from '../style';
 
 const PasswordStrengthMeter = ({ password }) => {
