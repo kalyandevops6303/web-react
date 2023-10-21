@@ -137,8 +137,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   {profileToShowInRightSideOfCard?.project_count ?? 0} Projects
                 </CardText>
               </div>
-              <div className="d-flex w-75 gap-2 justify-content-between">
-                <div className="mt-2">
+              <div className="d-flex gap-1 mt-2">
+                <div className="w-50">
                   <BadgeGroup
                     title="Skills"
                     data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
@@ -146,7 +146,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                     id={`tooltip-skills-${data?._id}`}
                   />
                 </div>
-                <div className="mt-2">
+                <div className="w-50">
                   <BadgeGroup
                     title="Tools"
                     data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
@@ -157,7 +157,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
               </div>
             </div>
           ) : (
-            <section className="w-50 me-2 ">
+            <section className="w-100 me-2">
               <div className="d-flex w-100">
                 <img
                   className="market-place-card-photo me-75"
@@ -188,8 +188,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   </div>
                 </div>
               </div>
-              <div className="d-flex w-75 gap-2 justify-content-between">
-                <div className="mt-2">
+              <div className="d-flex gap-1 mt-2">
+                <div className="w-50">
                   <BadgeGroup
                     title="Skills"
                     data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
@@ -197,16 +197,14 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                     id={`tooltip-skills-${data?._id}`}
                   />
                 </div>
-                {clientTools?.length > 0 && (
-                  <div className="mt-2">
-                    <BadgeGroup
-                      title="Tools"
-                      data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
-                      color="light-blue"
-                      id={`tooltip-tools-${data?._id}`}
-                    />
-                  </div>
-                )}
+                <div className="w-50">
+                  <BadgeGroup
+                    title="Tools"
+                    data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
+                    color="light-blue"
+                    id={`tooltip-tools-${data?._id}`}
+                  />
+                </div>
               </div>
             </section>
           )}
