@@ -169,9 +169,6 @@ const Routes = [
   {
     path: '/chat',
     element: <Chat />,
-    meta: {
-      layout: 'blank',
-    },
   },
 ];
 

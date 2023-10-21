@@ -30,7 +30,7 @@ const NavbarUser = () => {
 
   const handleChatNavigate = () => {
     if (cometAuthToken) {
-      dispatch(clearUnreadMsgCountData());
+      // dispatch(clearUnreadMsgCountData());
       navigate(`/chat`, {
         state: { targetId: undefined },
       });

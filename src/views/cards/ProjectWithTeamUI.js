@@ -4,6 +4,7 @@ import hat from '@src/assets/images/hat.svg';
 import PropTypes from 'prop-types';
 import { Heart } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import theme from '../../configs/themeVariables';
@@ -18,13 +19,55 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
-  const handleLike = () => {
+  const navigate = useNavigate();
+
+  const handleLike = (e) => {
+    e.stopPropagation();
     setIsFavorite(true);
     dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
   };
-  const handleUnLike = () => {
+  const handleUnLike = (e) => {
+    e.stopPropagation();
     setIsFavorite(false);
     dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+  };
+
+  const handleClientNavigate = (e) => {
+    e.stopPropagation();
+    navigate(`/profile/client/${data?.client?.user_id}`);
+  };
+
+  const handleTeamTalentNavigate = (e) => {
+    e.stopPropagation();
+    if (data?.worker_details?.user_type === userTypes.team) {
+      navigate(`/profile/team/${data?.worker_details?.team_id}`);
+    } else if (data?.worker_details?.user_type === userTypes.talent) {
+      navigate(`/profile/talent/${data?.worker_details?.user_id}`);
+    }
+  };
+
+  let profileToShowInRightSideOfCard;
+  if (userData.user_type === userTypes.talent) {
+    profileToShowInRightSideOfCard = data?.invited_by;
+  } else if (userData.user_type === userTypes.team) {
+    if (secondaryFilterForInvitedType === 'SENT') {
+      profileToShowInRightSideOfCard = data?.invitation_to;
+    } else {
+      profileToShowInRightSideOfCard = data?.invited_type;
+    }
+  } else {
+    profileToShowInRightSideOfCard = data?.invitation_to;
+  }
+
+  const handleTalentTeamClientNavigate = (e) => {
+    e.stopPropagation();
+    if (profileToShowInRightSideOfCard?.user_type === userTypes.team) {
+      navigate(`/profile/team/${profileToShowInRightSideOfCard?.team_id}`);
+    } else if (profileToShowInRightSideOfCard?.user_type === userTypes.talent) {
+      navigate(`/profile/talent/${profileToShowInRightSideOfCard?.user_id}`);
+    } else if (profileToShowInRightSideOfCard?.user_type === userTypes.client) {
+      navigate(`/profile/client/${profileToShowInRightSideOfCard?.user_id}`);
+    }
   };
 
   const avatarGroup = data?.worker_details?.workers?.length
@@ -42,19 +85,6 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   const clientSkills = data?.proficiency?.skills ?? [];
   const clientTools = data?.proficiency?.tools ?? [];
 
-  let profileToShowInRightSideOfCard;
-  if (userData.user_type === userTypes.talent) {
-    profileToShowInRightSideOfCard = data?.invited_by;
-  } else if (userData.user_type === userTypes.team) {
-    if (secondaryFilterForInvitedType === 'SENT') {
-      profileToShowInRightSideOfCard = data?.invitation_to;
-    } else {
-      profileToShowInRightSideOfCard = data?.invited_type;
-    }
-  } else {
-    profileToShowInRightSideOfCard = data?.invitation_to;
-  }
-
   const teamAvatar = profileToShowInRightSideOfCard?.team_members?.length
     ? profileToShowInRightSideOfCard?.team_members?.map((user) => ({
         title: `${user?.first_name} ${user?.last_name}`,
@@ -66,7 +96,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
     : [];
 
   return (
-    <div className="d-flex flex-column  gap-1 mb-2">
+    <div className="d-flex flex-column gap-1 mb-2">
       <div className="d-flex align-items-center justify-content-end">
         <div className="d-flex align-items-center gap-1">
           {profileToShowInRightSideOfCard?.is_alma_mater && (
@@ -80,12 +110,12 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 className="cursor-pointer d-flex heart"
                 fill={theme.red}
                 stroke={theme.red}
-                onClick={handleUnLike}
+                onClick={(e) => handleUnLike(e)}
                 size={20}
                 display="none"
               />
             ) : (
-              <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+              <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
             )}
           </div>
         </div>
@@ -95,7 +125,10 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
           {profileToShowInRightSideOfCard?.user_type === userTypes.team ? (
             <div className="w-50">
               <div className="flex-grow-1">
-                <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
+                <CardTitle
+                  onClick={(e) => handleTalentTeamClientNavigate(e)}
+                  className="marketplace-card-title mb-50 ms-25 fw-bolder"
+                >
                   {profileToShowInRightSideOfCard?.name ??
                     `${profileToShowInRightSideOfCard?.team_members?.first_name} ${data?.team_members?.last_name}`}
                 </CardTitle>
@@ -140,14 +173,15 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   width={40}
                   height={50}
                   style={{ objectFit: 'cover' }}
+                  onClick={(e) => handleTalentTeamClientNavigate(e)}
                 />
                 <div>
-                  <div className="flex-grow-1">
+                  <div onClick={(e) => handleTalentTeamClientNavigate(e)} className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
                       {profileToShowInRightSideOfCard?.first_name} {profileToShowInRightSideOfCard?.last_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                      {profileToShowInRightSideOfCard?.title}
+                      {profileToShowInRightSideOfCard?.user_type === userTypes.client ? 'Client' : ''}
                     </CardText>
                   </div>
                   <div className="d-flex flex-grow-1 mt-25">
@@ -174,15 +208,16 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
           <section className="w-50 me-2 ">
             <div className="d-flex w-100">
               <img
-                className="market-place-card-photo me-75"
+                className="market-place-card-photo cursor-pointer me-75"
                 src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
                 alt="avatar"
                 width={40}
                 height={50}
                 style={{ objectFit: 'cover' }}
+                onClick={(e) => handleClientNavigate(e)}
               />
               <div>
-                <div className="flex-grow-1">
+                <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
                   <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
                     {data?.client?.first_name} {data?.client?.last_name}
                   </CardTitle>
@@ -208,7 +243,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
             </div>
           </section>
           <div className="w-50">
-            <div className="flex-grow-1">
+            <div className="flex-grow-1" onClick={(e) => handleTeamTalentNavigate(e)}>
               <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
                 {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
               </CardTitle>

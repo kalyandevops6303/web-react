@@ -41,7 +41,7 @@ const SendInvitationModal = ({
           <p className="mb-2">{description}</p>
           <InviteUsersListContainer>
             {selectedTalents.map((talent) => (
-              <Row key={talent.user_id} className="d-flex align-items-center mb-2 w-100 mx-0">
+              <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center mb-2 w-100 mx-0">
                 <Col sm="12" md="8" lg="6">
                   <div className="d-flex align-items-center">
                     <Avatar

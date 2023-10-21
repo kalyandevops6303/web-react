@@ -62,6 +62,7 @@ const API = {
     addToFavTeam: `${apiOnboardingEndpoint}/api/v1/favourite/set-team`,
     recentProjects: `${apiOnboardingEndpoint}/api/v1/users/completed-projects`,
     reviews: `${apiOnboardingEndpoint}/api/v1/users/reviews`,
+    report: `${apiAuthEndpoint}/api/v1/user/report`,
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,

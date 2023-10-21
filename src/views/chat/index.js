@@ -12,7 +12,7 @@ const Chat = () => {
     <TrumioChat
       style={{
         width: '100vw',
-        height: '100vh',
+        height: 'calc(100vh - 128px)',
         backgroundColor: 'white',
       }}
       authToken={authToken}

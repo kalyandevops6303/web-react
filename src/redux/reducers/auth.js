@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   email: null,
   isLoggedIn: false,
+  isCometChatLoggedIn: false,
   userData: null,
   savedUserData: null,
   userDataLoading: false,
@@ -219,6 +220,13 @@ const authSlice = createSlice({
       error: action.payload,
     }),
 
+    // CometChat Login
+    cometloginSuccess: (state) => ({
+      ...state,
+      loading: false,
+      isCometChatLoggedIn: true,
+    }),
+
     // FCM
     FCMSubscribe: (state, action) => ({
       ...state,
@@ -322,6 +330,7 @@ export const {
   loginRequest,
   loginSuccess,
   loginFailure,
+  cometloginSuccess,
   FCMSubscribe,
   cometChatLogin,
   logOut,

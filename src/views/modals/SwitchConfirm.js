@@ -12,7 +12,7 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 
 const SwitchConfirmModal = ({
   data,
-  dashboardRedrection,
+  dashboardRedirection,
   modal,
   toggleModal,
   disputesRedirection,
@@ -47,12 +47,16 @@ const SwitchConfirmModal = ({
       disputesRedirection(data?.notification_type);
     } else if (data?.isDisputeAlert) {
       disputesAlertRedirection(data?.title);
-    } else if (dashboardRedrection) {
-      dashboardRedrection();
+    } else if (data?.isDashboardRedirection) {
+      dashboardRedirection();
     } else {
       redirectionFunction({
         status: data?.title,
-        projectId: data?.custom_payload?.request_to?.project_id || data?.custom_payload?.project_id || data?.project_id,
+        projectId:
+          data?.custom_payload?.request_to?.project_id ||
+          data?.custom_payload?.project_id ||
+          data?.project_id ||
+          data?.custom_payload?.request_for?.project_id,
         inviteId: data?.custom_payload?.request_id,
       });
     }
@@ -115,7 +119,7 @@ SwitchConfirmModal.propTypes = {
   data: Proptypes.object,
   disputesRedirection: Proptypes.func,
   disputesAlertRedirection: Proptypes.func,
-  dashboardRedrection: Proptypes.func,
+  dashboardRedirection: Proptypes.func,
 };
 
 SwitchConfirmModal.defaultProps = {
@@ -124,5 +128,5 @@ SwitchConfirmModal.defaultProps = {
   data: {},
   disputesRedirection: () => {},
   disputesAlertRedirection: () => {},
-  dashboardRedrection: () => {},
+  dashboardRedirection: () => {},
 };
