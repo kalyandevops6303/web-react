@@ -216,7 +216,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       status: [],
       skills: [],
       tools: [],
-      invite_type: [],
+      invite_type: [inviteTypeOptions[0]],
       user_type: [userTypeOptions[0]],
       filter_type: [{ label: 'All', value: 'ALL' }],
     });
@@ -482,7 +482,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 <Col>
                   <Label className="form-label">Invite Type</Label>
                   <Select
-                    isClearable
                     options={inviteTypeOptions}
                     classNamePrefix="select"
                     placeholder="Select user"
@@ -501,10 +500,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 <Col>
                   <Label className="form-label">Type</Label>
                   <Select
-                    isClearable
                     options={filterTypeOptions}
                     classNamePrefix="select"
-                    placeholder="Select user"
+                    placeholder="Select type"
                     theme={selectThemeColors}
                     onChange={(value) => onChangeFilter('filter_type', value)}
                     value={
