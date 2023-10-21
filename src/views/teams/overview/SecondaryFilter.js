@@ -36,12 +36,11 @@ import capitalize from '../../../lib/capitalize';
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const statusOptions = [
     { label: 'Accepted', value: 'ACCEPTED' },
-    { label: 'Rejected', value: 'REJECTED' },
     { label: 'Pending', value: 'PENDING' },
   ];
   const inviteTypeOptions = [
-    { label: 'Sent', value: 'SENT' },
     { label: 'Received', value: 'RECEIVED' },
+    { label: 'Sent', value: 'SENT' },
   ];
 
   const userTypeOptions = [
@@ -70,7 +69,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     status: [],
     skills: [],
     tools: [],
-    invite_type: [],
+    invite_type: [inviteTypeOptions[0]],
     user_type: [userTypeOptions[0]],
     filter_type: [{ label: 'All', value: 'ALL' }],
   });

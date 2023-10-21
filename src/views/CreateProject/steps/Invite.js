@@ -113,7 +113,10 @@ const Invite = ({ stepper }) => {
       }
     });
 
-    setSelectedTalents(removeDuplicates(reformattedData, 'user_id'));
+    const allTalents = reformattedData.filter((talent) => talent.user_id);
+    const allTeams = reformattedData.filter((team) => team._id);
+
+    setSelectedTalents([...removeDuplicates(allTalents, 'user_id'), ...allTeams]);
 
     setSendInvitationModal(true);
   };
@@ -185,14 +188,11 @@ const Invite = ({ stepper }) => {
 
   const renderActionButton = (user, type) => {
     let userId;
-    let clickedUser;
 
     if (type === 'fav') {
       userId = user?._id;
-      clickedUser = { ...user, user_id: user?._id };
     } else {
       userId = user.user_id;
-      clickedUser = user;
     }
 
     if (invitedIds.includes(userId)) {
@@ -208,7 +208,7 @@ const Invite = ({ stepper }) => {
           className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
           onClick={() => {
             setSelectedIds(selectedIds.filter((data) => data !== userId));
-            setSelectedTalents(selectedTalents.filter((data) => data.user_id !== userId));
+            setSelectedTalents(selectedTalents.filter((data) => data?.user_id !== userId && data?._id !== userId));
           }}
         >
           <Check size={18} color={theme.green} />
@@ -220,7 +220,7 @@ const Invite = ({ stepper }) => {
           className="upload-btn cursor-pointer ms-3"
           onClick={() => {
             setSelectedIds([...selectedIds, userId]);
-            setSelectedTalents([...selectedTalents, clickedUser]);
+            setSelectedTalents([...selectedTalents, user]);
           }}
         >
           <h5 className="m-0 fw-light font-medium-1">Invite</h5>

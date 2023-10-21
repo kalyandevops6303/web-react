@@ -4,8 +4,8 @@ import hat from '@src/assets/images/hat.svg';
 import PropTypes from 'prop-types';
 import { Heart } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { useNavigate } from 'react-router-dom';
 import AvatarGroup from '@components/avatar-group';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
@@ -37,13 +37,36 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
     navigate(`/profile/client/${data?.client?.user_id}`);
   };
 
-  const handleTeamNavigate = (e) => {
+  const handleTeamTalentNavigate = (e) => {
     e.stopPropagation();
-    if (data?.worker_details?.user_type === 'TEAM') {
+    if (data?.worker_details?.user_type === userTypes.team) {
       navigate(`/profile/team/${data?.worker_details?.team_id}`);
-    }
-    if (data?.worker_details?.user_type === 'TALENT') {
+    } else if (data?.worker_details?.user_type === userTypes.talent) {
       navigate(`/profile/talent/${data?.worker_details?.user_id}`);
+    }
+  };
+
+  let profileToShowInRightSideOfCard;
+  if (userData.user_type === userTypes.talent) {
+    profileToShowInRightSideOfCard = data?.invited_by;
+  } else if (userData.user_type === userTypes.team) {
+    if (secondaryFilterForInvitedType === 'SENT') {
+      profileToShowInRightSideOfCard = data?.invitation_to;
+    } else {
+      profileToShowInRightSideOfCard = data?.invited_type;
+    }
+  } else {
+    profileToShowInRightSideOfCard = data?.invitation_to;
+  }
+
+  const handleTalentTeamClientNavigate = (e) => {
+    e.stopPropagation();
+    if (profileToShowInRightSideOfCard?.user_type === userTypes.team) {
+      navigate(`/profile/team/${profileToShowInRightSideOfCard?.team_id}`);
+    } else if (profileToShowInRightSideOfCard?.user_type === userTypes.talent) {
+      navigate(`/profile/talent/${profileToShowInRightSideOfCard?.user_id}`);
+    } else if (profileToShowInRightSideOfCard?.user_type === userTypes.client) {
+      navigate(`/profile/client/${profileToShowInRightSideOfCard?.user_id}`);
     }
   };
 
@@ -61,19 +84,6 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   // eslint-disable-next-line no-unsafe-optional-chaining
   const clientSkills = data?.proficiency?.skills ?? [];
   const clientTools = data?.proficiency?.tools ?? [];
-
-  let profileToShowInRightSideOfCard;
-  if (userData.user_type === userTypes.talent) {
-    profileToShowInRightSideOfCard = data?.invited_by;
-  } else if (userData.user_type === userTypes.team) {
-    if (secondaryFilterForInvitedType === 'SENT') {
-      profileToShowInRightSideOfCard = data?.invitation_to;
-    } else {
-      profileToShowInRightSideOfCard = data?.invited_type;
-    }
-  } else {
-    profileToShowInRightSideOfCard = data?.invitation_to;
-  }
 
   const teamAvatar = profileToShowInRightSideOfCard?.team_members?.length
     ? profileToShowInRightSideOfCard?.team_members?.map((user) => ({
@@ -114,8 +124,11 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
         <section>
           {profileToShowInRightSideOfCard?.user_type === userTypes.team ? (
             <div className="w-100">
-              <div className="flex-grow-1" onClick={handleTeamNavigate}>
-                <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
+              <div className="flex-grow-1">
+                <CardTitle
+                  onClick={(e) => handleTalentTeamClientNavigate(e)}
+                  className="marketplace-card-title mb-50 ms-25 fw-bolder"
+                >
                   {profileToShowInRightSideOfCard?.name ??
                     `${profileToShowInRightSideOfCard?.team_members?.first_name} ${data?.team_members?.last_name}`}
                 </CardTitle>
@@ -170,14 +183,15 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   width={40}
                   height={50}
                   style={{ objectFit: 'cover' }}
+                  onClick={(e) => handleTalentTeamClientNavigate(e)}
                 />
                 <div>
-                  <div className="flex-grow-1">
+                  <div onClick={(e) => handleTalentTeamClientNavigate(e)} className="flex-grow-1">
                     <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
                       {profileToShowInRightSideOfCard?.first_name} {profileToShowInRightSideOfCard?.last_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                      {profileToShowInRightSideOfCard?.title}
+                      {profileToShowInRightSideOfCard?.user_type === userTypes.client ? 'Client' : ''}
                     </CardText>
                   </div>
                   <div className="d-flex flex-grow-1 mt-25">
@@ -214,15 +228,16 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
           <section className="w-50 me-2 ">
             <div className="d-flex w-100">
               <img
-                className="market-place-card-photo me-75"
+                className="market-place-card-photo cursor-pointer me-75"
                 src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
                 alt="avatar"
                 width={40}
                 height={50}
                 style={{ objectFit: 'cover' }}
+                onClick={(e) => handleClientNavigate(e)}
               />
               <div>
-                <div className="flex-grow-1" onClick={handleClientNavigate}>
+                <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
                   <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
                     {data?.client?.first_name} {data?.client?.last_name}
                   </CardTitle>
@@ -248,7 +263,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
             </div>
           </section>
           <div className="w-50">
-            <div className="flex-grow-1" onClick={handleTeamNavigate}>
+            <div className="flex-grow-1" onClick={(e) => handleTeamTalentNavigate(e)}>
               <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
                 {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
               </CardTitle>

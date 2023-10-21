@@ -62,6 +62,7 @@ const API = {
     addToFavTeam: `${apiOnboardingEndpoint}/api/v1/favourite/set-team`,
     recentProjects: `${apiOnboardingEndpoint}/api/v1/users/completed-projects`,
     reviews: `${apiOnboardingEndpoint}/api/v1/users/reviews`,
+    report: `${apiAuthEndpoint}/api/v1/user/report`,
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -115,7 +116,8 @@ const API = {
     getReceivedBids: `${apiCreateProjectEndpoint}/api/v1/bid/selection/list-bids`,
     getBidReview: `${apiCreateProjectEndpoint}/api/v1/bid/selection/review-bid`,
     assignBid: `${apiCreateProjectEndpoint}/api/v1/bid/selection/assign-bid`,
-    commonBidInfo: `${apiCreateProjectEndpoint}/api/v1/common/bid/info/public`,
+    commonBidInfo: `${apiCreateProjectEndpoint}/api/v1/common/bid/info`,
+    commonBidInfoPublic: `${apiCreateProjectEndpoint}/api/v1/common/bid/info/public`,
     unassignRole: `${apiCreateProjectEndpoint}/api/v1/project-course/unassigned-roles`,
     accept: `${apiAuthEndpoint}/api/v1/invitation/accept`, // put invite id
     reject: `${apiAuthEndpoint}/api/v1/invitation/reject`, // put invite id
