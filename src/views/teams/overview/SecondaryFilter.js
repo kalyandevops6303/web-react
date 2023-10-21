@@ -69,7 +69,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     status: [],
     skills: [],
     tools: [],
-    invite_type: [inviteTypeOptions[0]],
+    invite_type: [],
     user_type: [userTypeOptions[0]],
     filter_type: [{ label: 'All', value: 'ALL' }],
   });
