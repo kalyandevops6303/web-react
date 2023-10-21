@@ -105,7 +105,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             isActive={selected === PATH_NAMES.JOIN_REQ}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
-            title={selectCardData?.join_request || selectCardData?.join_requests}
+            title={
+              selected === PATH_NAMES.JOIN_REQ
+                ? selectMyTeamMetaData?.total_records || '-'
+                : selectCardData?.join_request || selectCardData?.join_requests
+            }
             desc={TAB_NAMES.JOIN_REQ}
             icon={<UserCheck height={20} />}
             color="light-success"

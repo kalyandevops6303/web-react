@@ -7,14 +7,18 @@ import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
 import { Card, CardBody, CardText } from 'reactstrap';
 import { Mail, Trash2 } from 'react-feather';
+import { useSelector } from 'react-redux';
 import { MemberRowWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import DateTime from '../../../lib/date-time';
 import RemoveProjectTeamMemberModal from '../../modals/RemoveProjectTeamMemberModal';
 import { getItem } from '../../../utility/localStorageControl';
+import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
 const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
   const [removeProjectTeamMemberModal, setRemoveProjectTeamMemberModal] = useState(null);
+  const projectDetailsData = useSelector(projectDetails);
+
   const teamId = getItem('team_id');
   const toggleRemoveProjectTeamMemberModal = () => {
     setRemoveProjectTeamMemberModal(!removeProjectTeamMemberModal);
@@ -71,13 +75,15 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
               </span>
             )}
 
-            {hasDeleleteAccess && teamId && (
-              <Trash2
-                className="delete-icon cursor-pointer"
-                color={theme.red}
-                onClick={() => setRemoveProjectTeamMemberModal(true)}
-              />
-            )}
+            {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') &&
+              hasDeleleteAccess &&
+              teamId && (
+                <Trash2
+                  className="delete-icon cursor-pointer"
+                  color={theme.red}
+                  onClick={() => setRemoveProjectTeamMemberModal(true)}
+                />
+              )}
           </section>
         </CardBody>
       </Card>

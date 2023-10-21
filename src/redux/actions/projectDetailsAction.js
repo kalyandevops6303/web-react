@@ -5,6 +5,7 @@ import {
   checkDocumentActivatedService,
   getBidDetailsService,
   getCommonBidDetailsService,
+  getCommonBidPublicDetailsService,
   getDocumentService,
   getDocumentTimelineService,
   getInvitatedByService,
@@ -344,7 +345,7 @@ const getBidMilestone =
   async (dispatch) => {
     dispatch(getBidMilestoneRequest());
     try {
-      const res = await getCommonBidDetailsService({ project_id, entity_id });
+      const res = await getCommonBidPublicDetailsService({ project_id, entity_id });
       dispatch(getBidMilestoneSuccess(res.data.data));
       onSuccess();
     } catch (error) {

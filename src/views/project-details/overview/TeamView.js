@@ -181,6 +181,7 @@ const TeamView = () => {
   const unassigned = useSelector((state) => state.projectDetails.unassignedRole);
   const isTeamLoading = useSelector((state) => state.projectDetails.getTeamMemberLoading);
   const isUnassignLoading = useSelector((state) => state.projectDetails.getUnassignedRoleLoading);
+
   useEffect(() => {
     dispatch(getTeamMembers({ project_id: params.projectId }));
     if (userData?.user_type === userTypes.team) {
