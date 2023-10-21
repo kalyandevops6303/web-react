@@ -138,7 +138,7 @@ class CometChatUI extends React.Component {
         >
           <div css={unifiedSidebarStyle(this.state, this.props)} className="unified__sidebar">
             {this.state.showProfileSideBar ? (
-              <div>
+              <div style={{ overflow: 'auto' }}>
                 {this.state.avatar.props.group.guid === undefined ? (
                   <CustomProfileSidebar
                     lang={this.props.lang}

@@ -31,17 +31,15 @@ const Projects = () => {
     useMatch('/projects/completed') ||
     useMatch('/projects/terminated') ||
     useMatch('/projects/dispute') ||
-    useMatch('/marketplace/invited');
+    useMatch('/projects/invited');
 
   const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') || 'ongoing');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
-    if (routesMatch?.pathname?.split('/')?.[2] !== primaryFilter) {
-      setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
-      setItem('selectedProjectTab', routesMatch?.pathname?.split('/')?.[2]);
-    }
+    setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
+    setItem('selectedProjectTab', routesMatch?.pathname?.split('/')?.[2]);
     dispatch(clearProjectData());
     setItem('baseRoute', 'projects');
   }, []);
@@ -94,6 +92,10 @@ const Projects = () => {
         />
         <Route
           path="dispute"
+          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
+        />
+        <Route
+          path="invited"
           element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
         />
       </Routes>

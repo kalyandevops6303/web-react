@@ -26,6 +26,9 @@ const getBidDetailsService = ({ bid_id }) => DataService.put(`${API.projectDetai
 const getCommonBidDetailsService = ({ project_id, entity_id }) =>
   DataService.get(`${API.projectDetails.commonBidInfo}?project_id=${project_id}&entity_id=${entity_id}`);
 
+const getCommonBidPublicDetailsService = ({ project_id, entity_id }) =>
+  DataService.get(`${API.projectDetails.commonBidInfoPublic}?project_id=${project_id}&entity_id=${entity_id}`);
+
 const updateBidStatusService = ({ bid_id, assign }) =>
   DataService.put(`${API.projectDetails.assignBid}?bid_id=${bid_id}&assign=${assign}`);
 
@@ -93,6 +96,7 @@ const almaMaterTalentsProjectService = (projectId, searchText, page, pageSize) =
   );
 
 export {
+  getCommonBidPublicDetailsService,
   bestTalentsForProjectService,
   favoriteTalentsForProjectService,
   almaMaterTalentsProjectService,

@@ -27,6 +27,8 @@ const getReviewService = ({ user_id, entity, metadata }) =>
     `${API.profile.reviews}/${user_id}?entity=${entity}&page=${metadata?.page}&page_size=${metadata?.page_size}`,
   );
 
+const reportService = (data) => DataService.post(`${API.profile.report}`, data);
+
 export {
   makeFavTeamService,
   getRecentProjectService,
@@ -38,4 +40,5 @@ export {
   makeFavService,
   removeFavService,
   makeProjectFavService,
+  reportService,
 };
