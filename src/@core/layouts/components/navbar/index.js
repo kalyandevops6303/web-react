@@ -99,6 +99,8 @@ const ThemeNavbar = (props) => {
 
   useEffect(() => {
     if(location?.pathname?.split?.('/')?.[3] === userData?._id ) setActiveTab('');
+    if(location?.pathname?.split?.('/')?.[1]==="notifications") setActiveTab('')
+    if(location?.pathname?.split?.('/')?.[1]==="search") setActiveTab('')
   },[location])
 
 
