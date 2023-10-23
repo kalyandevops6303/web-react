@@ -27,7 +27,8 @@ const Step2 = ({ setStep }) => {
   const [isDocumentConfirmed, setIsDocumentConfirmed] = useState(false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [taxUserType, setTaxUserType] = useState('US');
-  const [selectedTaxId, setSelectedTaxId] = useState('taxOption1');
+  const [selectedTaxId] = useState('taxOption1');
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
@@ -68,6 +69,7 @@ const Step2 = ({ setStep }) => {
 
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
+      if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.tax_user_type?.length > 0) {
         setTaxUserType(res?.tax_user_type);
       }
@@ -80,8 +82,11 @@ const Step2 = ({ setStep }) => {
           value: res.tax_identification?.federal_tax_classification,
         });
       }
-      if (res.tax_identification?.social_security_number?.length > 0) {
+      if (res.tax_identification?.social_security_number?.length > 0 && res?.tax_user_type === 'US') {
         setValue('taxId', res.tax_identification?.social_security_number);
+      }
+      if (res.tax_identification?.national_taxpayer_number?.length > 0 && res?.tax_user_type === 'NON_US') {
+        setValue('taxId', res.tax_identification?.national_taxpayer_number);
       }
     }
   };
@@ -101,12 +106,6 @@ const Step2 = ({ setStep }) => {
 
   const onBackClick = () => {
     setStep((prev) => prev - 1);
-  };
-
-  const handleTaxPayerSelect = () => {};
-
-  const handleTaxIdSelect = (e) => {
-    setSelectedTaxId(e.target.name);
   };
 
   const onComplete = () => {
@@ -131,24 +130,25 @@ const Step2 = ({ setStep }) => {
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onSubmit = (data) => {
-    const taxDetails = {
-      tax_identification: {
-        is_us_person: taxUserType === 'US',
-        legal_name: data?.taxName,
-        federal_tax_classification: data?.taxClass?.value,
-        social_security_number: selectedTaxId === 'taxOption1' ? data?.taxId : '',
-        employee_identification_number: selectedTaxId === 'taxOption2' ? data?.taxId : '',
-        national_taxpayer_number: taxUserType === 'NON_US' ? data?.taxId : '',
-      },
-    };
+    if (isPaymentOnboardingDone) {
+      setStep(3);
+    } else {
+      const taxDetails = {
+        tax_identification: {
+          legal_name: data?.taxName,
+          federal_tax_classification: data?.taxClass?.value,
+          social_security_number: taxUserType === 'US' ? data?.taxId : '',
+          national_taxpayer_number: taxUserType === 'NON_US' ? data?.taxId : '',
+          tax_payer_identification_type: taxUserType === 'US' ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
+        },
+      };
 
-    const updatedData = {
-      talent_info: {
+      const updatedData = {
         ...taxDetails,
-      },
-    };
+      };
 
-    dispatch(updatePaymentDetails(updatedData, onSuccess));
+      dispatch(updatePaymentDetails(updatedData, onSuccess));
+    }
   };
 
   return (
@@ -175,19 +175,22 @@ const Step2 = ({ setStep }) => {
                 <Input
                   type="radio"
                   checked={taxUserType === 'NON_US'}
+                  disabled={taxUserType === 'US'}
                   name="non_us_person"
-                  onChange={handleTaxPayerSelect}
                 />
                 <div>I am not a US person</div>
               </Col>
               <Col className="d-flex gap-50">
-                <Input type="radio" checked={taxUserType === 'US'} name="us_person" onChange={handleTaxPayerSelect} />
+                <Input
+                  type="radio"
+                  checked={taxUserType === 'US'}
+                  disabled={taxUserType === 'NON_US'}
+                  name="us_person"
+                />
                 <div>I am a US person</div>
               </Col>
             </div>
-            <h5 className="mt-1">
-              Before withdrawing funds, all non-U.S. persons must provide their W-8BEN tax information
-            </h5>
+
             <Row className="mb-1 mt-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="taxName">
@@ -200,8 +203,10 @@ const Step2 = ({ setStep }) => {
                   render={({ field }) => (
                     <Input
                       {...field}
+                      disabled={isPaymentOnboardingDone}
                       placeholder="Provide same name as shown on your tax return"
                       invalid={errors.taxName && true}
+                      className="payment-form-control"
                     />
                   )}
                 />
@@ -220,6 +225,7 @@ const Step2 = ({ setStep }) => {
                     <Select
                       isLoading={false}
                       options={taxClassificationOptions}
+                      isDisabled={isPaymentOnboardingDone}
                       menuPosition="fixed"
                       minMenuHeight={200}
                       classNamePrefix="select"
@@ -235,33 +241,11 @@ const Step2 = ({ setStep }) => {
                 {errors.taxClass && <FormFeedback>{errors.taxClass?.label?.message}</FormFeedback>}
               </Col>
             </Row>
-            <h5 className="mb-1 mt-2 w-50">Taxpayer identification number type</h5>
-            <div className="d-flex w-75">
-              <Col className="d-flex gap-50">
-                <Input
-                  type="radio"
-                  checked={selectedTaxId === 'taxOption1'}
-                  name="taxOption1"
-                  onChange={handleTaxIdSelect}
-                />
-                <div className="w-75">
-                  {taxUserType === 'NON_US' ? 'National Taxpayer number (NSN)' : 'Social Security number (SSN)'}
-                </div>
-              </Col>
-              <Col className="d-flex gap-50">
-                <Input
-                  type="radio"
-                  checked={selectedTaxId === 'taxOption2'}
-                  name="taxOption2"
-                  onChange={handleTaxIdSelect}
-                />
-                <div>Employee identification number (EIN)</div>
-              </Col>
-            </div>
             <Row className="mt-1 mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="taxId">
-                  {taxUserType === 'NON_US' ? 'NSN/EIN #' : 'SSN/EIN #'}
+                  {taxUserType === 'NON_US' ? 'NSN #' : 'SSN #'}
+                  <span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="taxId"
@@ -270,8 +254,10 @@ const Step2 = ({ setStep }) => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder={taxUserType === 'NON_US' ? 'Enter NSN/EIN #' : 'Enter SSN/EIN #'}
+                      disabled={isPaymentOnboardingDone}
+                      placeholder={taxUserType === 'NON_US' ? 'Enter NSN #' : 'Enter SSN #'}
                       invalid={errors.taxId && true}
+                      className="payment-form-control"
                     />
                   )}
                 />
@@ -293,9 +279,9 @@ const Step2 = ({ setStep }) => {
                 delivery of the document.
               </h5>
 
-              <div className="w-50 shadow-sm p-2 rounded mt-2 w-100">
+              <div className="w-50 shadow p-2 rounded mt-2 mb-50 w-100">
                 <h4 className="mb-2">Electronic Consent</h4>
-                <ul>
+                <ol className="order-list">
                   <li>
                     I am not subject to backup withholding because:
                     <br />
@@ -310,18 +296,30 @@ const Step2 = ({ setStep }) => {
                     The FATCA code(s) entered on this form (if any) indicating that I am exempt from FATCA reporting is
                     correct.
                   </li>
-                </ul>
+                </ol>
               </div>
-              <div className="d-flex flex-column">
+              <div className="d-flex flex-column mt-2">
                 <Label className="fs-5">Sign On :-</Label>
                 <Col className="d-flex gap-50 mt-1 mb-1">
-                  <Input type="checkbox" name="checkbox1" checked={confirmSign.checkbox1} onChange={handleSignCheck} />
+                  <Input
+                    type="checkbox"
+                    name="checkbox1"
+                    checked={confirmSign.checkbox1 || isPaymentOnboardingDone}
+                    disabled={isPaymentOnboardingDone}
+                    onChange={handleSignCheck}
+                  />
                   <Label className="fs-6">
                     I consent to provide an electronic signature by clicking on the above ‘I confirm’ button.
                   </Label>
                 </Col>
                 <Col className="d-flex gap-50 mt-1 mb-1">
-                  <Input type="checkbox" name="checkbox2" checked={confirmSign.checkbox2} onChange={handleSignCheck} />
+                  <Input
+                    type="checkbox"
+                    name="checkbox2"
+                    checked={confirmSign.checkbox2 || isPaymentOnboardingDone}
+                    disabled={isPaymentOnboardingDone}
+                    onChange={handleSignCheck}
+                  />
                   <Label className="fs-6">I consent to receive tax documents digitaly.</Label>
                 </Col>
                 <Button
@@ -329,9 +327,9 @@ const Step2 = ({ setStep }) => {
                   onClick={() => setIsDocumentConfirmed(true)}
                   className="mt-1 mb-1"
                   style={{ width: '120px' }}
-                  disabled={isDocumentConfirmed}
+                  disabled={isDocumentConfirmed || isPaymentOnboardingDone}
                 >
-                  {isDocumentConfirmed ? 'Confirmed' : 'I Confirm'}
+                  {isDocumentConfirmed || isPaymentOnboardingDone ? 'Confirmed' : 'I Confirm'}
                 </Button>
               </div>
             </CardBody>
@@ -354,7 +352,7 @@ const Step2 = ({ setStep }) => {
               color="primary"
               type="submit"
               disabled={
-                taxUserType === 'NON_US'
+                taxUserType === 'NON_US' || isPaymentOnboardingDone
                   ? false
                   : !confirmSign.checkbox1 || !confirmSign.checkbox2 || !isDocumentConfirmed
               }

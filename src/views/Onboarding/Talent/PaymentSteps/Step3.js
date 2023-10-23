@@ -7,7 +7,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import classNames from 'classnames';
 import Select from 'react-select';
-import Flatpickr from 'react-flatpickr';
 import { PropTypes } from 'prop-types';
 
 import { selectThemeColors } from '@utils';
@@ -22,9 +21,9 @@ import { states, statesLoading, cities, citiesLoading } from '../../../../redux/
 import CertificationUS from './CertificationUs';
 import CertificationNonUs from './CertificationNonUs';
 import AccountCreatedModal from '../../AccountCreatedModal';
-import { getUserDetails, saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
+import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 
-import { formSchema, usWFormsSchema } from '../Schema';
+import { usWFormsSchema } from '../Schema';
 
 const Step3 = ({ setStep }) => {
   const dispatch = useDispatch();
@@ -38,17 +37,20 @@ const Step3 = ({ setStep }) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [paymentDetailsRes, setPaymentDetailsRes] = useState(null);
-  const [taxPayer, setTaxPayer] = useState('option2');
+  const [taxPayer, setTaxPayer] = useState('option1');
 
   const isUsPerson = paymentDetailsRes?.tax_user_type === 'US';
   const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
-  const [userDetails, setUserDetails] = useState({});
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
+  const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
+
+  const TEST_ENV_URL = import.meta.env.VITE_APP_TEST_REFRESH_URL;
 
   const {
     control,
@@ -59,7 +61,7 @@ const Step3 = ({ setStep }) => {
     setValue,
   } = useForm({
     mode: 'onChange',
-    resolver: yupResolver(taxPayer === 'option1' ? formSchema : usWFormsSchema),
+    resolver: yupResolver(usWFormsSchema),
     defaultValues: {
       fullName: '',
       citizen: '',
@@ -75,8 +77,6 @@ const Step3 = ({ setStep }) => {
       mCountry: '',
       mCity: '',
       mZipCode: '',
-      dob: '',
-      refNo: '',
     },
   });
 
@@ -126,7 +126,8 @@ const Step3 = ({ setStep }) => {
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       setPaymentDetailsRes(res);
-      if (res?.w8bendetails) {
+      if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
+      if (res?.w8bendetails && Object.keys(res?.w8bendetails)?.length > 0) {
         setValue('citizen', {
           label: res?.w8bendetails?.country_of_citizenship,
           value: res?.w8bendetails?.country_of_citizenship?.toUpperCase(),
@@ -136,7 +137,7 @@ const Step3 = ({ setStep }) => {
         setValue('dob', res?.w8bendetails?.dob);
         setTaxPayer(res?.w8bendetails?.has_us_tax_id ? 'option1' : 'option2');
       }
-      if (res?.w9details) {
+      if (res?.w9details && Object.keys(res?.w9details)?.length > 0) {
         setValue('citizen', {
           label: res?.w9details?.country_of_citizenship,
           value: res?.w9details?.country_of_citizenship?.toUpperCase(),
@@ -217,13 +218,8 @@ const Step3 = ({ setStep }) => {
     }
   };
 
-  const onGetUserDetailsSuccess = (res) => {
-    if (res) setUserDetails(res);
-  };
-
   useEffect(() => {
     dispatch(getPaymentDetails(onGetPaymentDetailsSuccess));
-    dispatch(getUserDetails(onGetUserDetailsSuccess));
   }, []);
 
   const handleTaxPayerNoOption = (e) => {
@@ -240,35 +236,20 @@ const Step3 = ({ setStep }) => {
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
-  const onAccountCreationSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate('/dashboard');
-    } else {
-      setAccountCreatedModal(true);
+  const onAccountCreationSuccess = (res) => {
+    if (res?.url?.length > 0) {
+      // eslint-disable-next-line no-undef
+      window.open(res.url, '_self', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
     }
   };
 
   const onSuccess = () => {
-    if (location.state?.isEditing) {
-      navigate('/dashboard');
-    } else {
-      const stripeData = {
-        country:
-          // eslint-disable-next-line no-nested-ternary
-          userDetails?.phone_country?.code,
-        email: userDetails?.email,
-        individual: {
-          first_name: userDetails?.talent_info?.first_name,
-          last_name: userDetails?.talent_info?.last_name,
-        },
-        user_id: userDetails?._id,
-        // eslint-disable-next-line no-undef
-        refresh_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
-        // eslint-disable-next-line no-undef
-        return_url: 'https://www.localhost:3000/talent-onboarding/payment-details',
-      };
-      dispatch(setupStripeAccount(stripeData, onAccountCreationSuccess));
-    }
+    const stripeAccountData = {
+      refresh_url: TEST_ENV_URL,
+      return_url: TEST_ENV_URL,
+    };
+
+    dispatch(setupStripeAccount(stripeAccountData, onAccountCreationSuccess));
   };
 
   useEffect(() => {
@@ -326,11 +307,8 @@ const Step3 = ({ setStep }) => {
       },
     };
     const newData = {
-      talent_info: {
-        ...wDetails,
-      },
+      ...wDetails,
     };
-
     dispatch(updatePaymentDetails(newData, onSuccess));
   };
 
@@ -383,6 +361,7 @@ const Step3 = ({ setStep }) => {
                     invalid={errors.citizen && true}
                     render={({ field }) => (
                       <AsyncPaginate
+                        {...field}
                         loadOptions={loadCountriesOptions}
                         classNamePrefix="select"
                         placeholder="Select your country"
@@ -390,7 +369,6 @@ const Step3 = ({ setStep }) => {
                         className={classNames('react-select', {
                           'is-invalid': errors && errors.citizen,
                         })}
-                        {...field}
                       />
                     )}
                   />
@@ -698,70 +676,39 @@ const Step3 = ({ setStep }) => {
                 <div className="d-flex gap-50">
                   <Input
                     type="radio"
-                    name="option1"
-                    checked={taxPayer === 'option1'}
-                    onChange={handleTaxPayerNoOption}
-                  />
-                  <Label className="fs-6">Yes</Label>
-                </div>
-                <div className="d-flex gap-50">
-                  <Input
-                    type="radio"
                     name="option2"
-                    checked={taxPayer === 'option2'}
+                    checked={!isUsPerson}
+                    disabled={isUsPerson}
                     onChange={handleTaxPayerNoOption}
                   />
                   <Label className="fs-6">No</Label>
                 </div>
+                <div className="d-flex gap-50">
+                  <Input
+                    type="radio"
+                    name="option1"
+                    disabled={!isUsPerson}
+                    checked={isUsPerson}
+                    onChange={handleTaxPayerNoOption}
+                  />
+                  <Label className="fs-6">Yes</Label>
+                </div>
               </div>
-
-              {taxPayer === 'option1' ? (
-                <Row className="mb-1 mt-1">
-                  <Col sm="6" md="6" lg="6">
-                    <Label className="form-label" for="refNo">
-                      Reference number(s) (see instructions)<span className="label-asterisk me-50">*</span>
-                    </Label>
-                    <Controller
-                      id="refNo"
-                      name="refNo"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter you Reference number(s)"
-                          invalid={errors.refNo && true}
-                          autoComplete="none"
-                        />
-                      )}
-                    />
-                    {errors.refNo && <FormFeedback>{errors.refNo?.message}</FormFeedback>}
-                  </Col>
-                  <Col>
-                    <Label className="form-label" for="startDate">
-                      Date of birth (see instructions)<span className="label-asterisk">*</span>
-                    </Label>
-                    <Controller
-                      control={control}
-                      id="dob"
-                      name="dob"
-                      render={({ field }) => (
-                        <Flatpickr
-                          {...field}
-                          placeholder="Enter MM-DD-YYYY"
-                          options={{
-                            minDate: '01-01-1923',
-                            dateFormat: 'm-d-Y',
-                          }}
-                          className={classNames('form-control', {
-                            'is-invalid': errors && errors.dob,
-                          })}
-                        />
-                      )}
-                    />
-                    {errors.dob && <FormFeedback>{errors.dob?.message}</FormFeedback>}
-                  </Col>
-                </Row>
-              ) : null}
+              <Row className="mb-1 mt-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="taxId">
+                    {!isUsPerson ? 'NSN #' : 'SSN #'}
+                    <span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Input
+                    placeholder="Enter SSN #"
+                    id="taxId"
+                    name="taxId"
+                    value={paymentDetailsRes?.tax_identification?.social_security_number ?? ''}
+                    disabled
+                  />
+                </Col>
+              </Row>
             </div>
           </CardBody>
         </Card>
@@ -784,11 +731,13 @@ const Step3 = ({ setStep }) => {
               <ChevronRight size={14} />
             </Button>
             <Button color="primary" type="submit" disabled={isUsPerson ? !isConfirmed : !isAgreed}>
-              {paymentDetailsLoading ? (
+              {paymentDetailsLoading || stripeDetailsLoading ? (
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">Set Up Stripe</span>
+                  <span className="me-50">
+                    {isPaymentOnboardingDone ? 'Stripe Link Account' : 'Stripe Setup Account'}
+                  </span>
                   <ChevronRight size={14} />
                 </>
               )}

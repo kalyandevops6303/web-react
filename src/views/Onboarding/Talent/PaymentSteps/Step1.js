@@ -10,7 +10,12 @@ import { userOnboarding } from '../../../../utility/constants/Constant';
 
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
-import { getPaymentDetails, savePaymentDetails, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
+import {
+  getPaymentDetails,
+  linkStripeAccount,
+  savePaymentDetails,
+  updatePaymentDetails,
+} from '../../../../redux/actions/paymentActions';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep }) => {
@@ -20,18 +25,21 @@ const Step1 = ({ setStep }) => {
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [isWorkingInUS, setIsWorkingInUS] = useState(false);
   const [taxUserType, setTaxUserType] = useState('US');
-  const [isUserExists, setIsUserExists] = useState(false);
+  const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
+  const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
-      if (res?.created_at) setIsUserExists(true);
-      if (res?.is_working_in_us) {
-        setIsWorkingInUS(true);
-      }
+      if (res?.created_at) setIsTaxInfoExists(true);
+      if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.tax_user_type) {
         setTaxUserType(res?.tax_user_type);
+        if (res?.tax_user_type === 'NON_US') {
+          setIsWorkingInUS(false);
+        }
       }
     }
   };
@@ -65,28 +73,31 @@ const Step1 = ({ setStep }) => {
     setStep(2);
   };
 
+  const onAccountLinkSuccess = (res) => {
+    if (res?.url?.length > 0) {
+      // eslint-disable-next-line no-undef
+      window.open(res.url, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+    }
+  };
   const handleNextClick = (e) => {
-    if (taxUserType === 'STUDENT') {
+    if (taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
       e.preventDefault();
       return;
     }
 
-    if (location?.state?.isEditing || isUserExists) {
-      const newData = {
-        talent_info: {
+    if (isTaxinfoExists) {
+      if (isPaymentOnboardingDone) {
+        dispatch(linkStripeAccount(onAccountLinkSuccess));
+      } else {
+        const newData = {
           tax_user_type: taxUserType,
-          is_working_in_us: isWorkingInUS,
-        },
-      };
-
-      dispatch(updatePaymentDetails(newData, onSuccess));
+        };
+        dispatch(updatePaymentDetails(newData, onSuccess));
+      }
     } else {
       const newData = {
-        talent_info: {
-          tax_user_type: taxUserType,
-          is_working_in_us: isWorkingInUS,
-        },
+        tax_user_type: taxUserType,
       };
       dispatch(savePaymentDetails(newData, onSuccess));
     }
@@ -108,6 +119,16 @@ const Step1 = ({ setStep }) => {
     }
   };
 
+  const getCTAText = () => {
+    if (isPaymentOnboardingDone) {
+      return 'Stripe Linked Account';
+    }
+    if (taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)) {
+      return 'Email Support Team';
+    }
+    return 'STEP 2 - Taxpayer Identification';
+  };
+
   return (
     <ProfileFormContainer>
       {accountCreatedModal && (
@@ -124,13 +145,20 @@ const Step1 = ({ setStep }) => {
             <h5 className="m-0 mt-1 mb-1 fs-5">Select from below</h5>
             <div className="d-flex">
               <Col className="d-flex gap-50">
-                <Input type="radio" checked={taxUserType === 'US'} name="US" onChange={handlePrePaymentChange} />
-                <div className="w-75">US Person - Residents or Citizens with US Tax Identification</div>
+                <Input
+                  type="radio"
+                  checked={taxUserType === 'US'}
+                  name="US"
+                  disabled={isPaymentOnboardingDone}
+                  onChange={handlePrePaymentChange}
+                />
+                <div className="w-75">US Person - Permeant residents or Citizens with US Tax Identification</div>
               </Col>
               <Col className="d-flex gap-50">
                 <Input
                   type="radio"
                   name="NON_US"
+                  disabled={isPaymentOnboardingDone}
                   checked={taxUserType === 'NON_US'}
                   onChange={handlePrePaymentChange}
                 />
@@ -141,16 +169,17 @@ const Step1 = ({ setStep }) => {
               <Col className="d-flex gap-50">
                 <Input
                   type="radio"
-                  name="student"
-                  checked={taxUserType === 'STUDENT'}
+                  name="OTHER"
+                  disabled={isPaymentOnboardingDone}
+                  checked={taxUserType === 'OTHER'}
                   onChange={handlePrePaymentChange}
                 />
-                <div className="w-75">Student applying as a US or Non-US Entity</div>
+                <div className="w-75">All other tax situations</div>
               </Col>
             </div>
           </CardBody>
         </Card>
-        {taxUserType === 'STUDENT' ? null : (
+        {taxUserType === 'OTHER' || taxUserType === 'US' ? null : (
           <Card className="w-75">
             <CardHeader>
               <h4 className="m-0 mt-1">Working</h4>
@@ -159,11 +188,23 @@ const Step1 = ({ setStep }) => {
             <CardBody className="d-flex">
               <div className="d-flex" style={{ width: '65%' }}>
                 <Col className="d-flex align-items-center gap-50">
-                  <Input type="radio" name="in_us" checked={isWorkingInUS} onChange={handleWorkOptionChange} />
+                  <Input
+                    type="radio"
+                    name="in_us"
+                    checked={isWorkingInUS}
+                    disabled={isPaymentOnboardingDone}
+                    onChange={handleWorkOptionChange}
+                  />
                   <div>Working in the US</div>
                 </Col>
                 <Col className="d-flex align-items-center gap-50">
-                  <Input type="radio" name="outside_us" checked={!isWorkingInUS} onChange={handleWorkOptionChange} />
+                  <Input
+                    type="radio"
+                    name="outside_us"
+                    checked={!isWorkingInUS}
+                    disabled={isPaymentOnboardingDone}
+                    onChange={handleWorkOptionChange}
+                  />
                   <div>Working outside the US</div>
                 </Col>
               </div>
@@ -183,13 +224,11 @@ const Step1 = ({ setStep }) => {
               <ChevronRight size={14} />
             </Button>
             <Button color="primary" onClick={handleNextClick}>
-              {paymentDetailsLoading ? (
+              {paymentDetailsLoading || stripeDetailsLoading ? (
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">
-                    {taxUserType === 'STUDENT' ? 'Email Support Team' : 'STEP 2 - Taxpayer Identification'}
-                  </span>
+                  <span className="me-50">{getCTAText()}</span>
                   <ChevronRight size={14} />
                 </>
               )}

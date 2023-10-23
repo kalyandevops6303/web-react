@@ -84,19 +84,20 @@ const Social = () => {
       navigate(`/${userOnboarding.client}/availability-details`);
     }
   };
+
   const onSuccess = () => {
     if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/payment-details`, { state: { isEditing: true } });
+      navigate('/dashboard');
     } else {
-      navigate(`/${userOnboarding.client}/payment-details`);
+      setAccountCreatedModal(true);
     }
   };
 
   const onSkipClick = () => {
     if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/payment-details`, { state: { isEditing: true } });
+      navigate('/dashboard');
     } else {
-      navigate(`/${userOnboarding.client}/payment-details`);
+      dispatch(saveCheckpointComplete(onSuccess));
     }
   };
 
