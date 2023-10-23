@@ -49,7 +49,8 @@ const Step3 = ({ setStep }) => {
   const citiesIsLoading = useSelector(citiesLoading);
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
-  const stripeData = useSelector((state) => state?.stripeDetails?.stripeData);
+
+  const TEST_ENV_URL = import.meta.env.VITE_APP_TEST_REFRESH_URL;
 
   const {
     control,
@@ -126,7 +127,7 @@ const Step3 = ({ setStep }) => {
     if (res) {
       setPaymentDetailsRes(res);
       if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
-      if (Object.keys(res?.w8bendetails)?.length > 0) {
+      if (res?.w8bendetails && Object.keys(res?.w8bendetails)?.length > 0) {
         setValue('citizen', {
           label: res?.w8bendetails?.country_of_citizenship,
           value: res?.w8bendetails?.country_of_citizenship?.toUpperCase(),
@@ -136,7 +137,7 @@ const Step3 = ({ setStep }) => {
         setValue('dob', res?.w8bendetails?.dob);
         setTaxPayer(res?.w8bendetails?.has_us_tax_id ? 'option1' : 'option2');
       }
-      if (Object.keys(res?.w9details)?.length > 0) {
+      if (res?.w9details && Object.keys(res?.w9details)?.length > 0) {
         setValue('citizen', {
           label: res?.w9details?.country_of_citizenship,
           value: res?.w9details?.country_of_citizenship?.toUpperCase(),
@@ -235,18 +236,19 @@ const Step3 = ({ setStep }) => {
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
-  const onAccountCreationSuccess = () => {
-    if (stripeData?.url) {
+  const onAccountCreationSuccess = (res) => {
+    if (res?.url?.length > 0) {
       // eslint-disable-next-line no-undef
-      window.open(stripeData.url, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+      window.open(res.url, '_self', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
     }
   };
 
   const onSuccess = () => {
     const stripeAccountData = {
-      refresh_url: 'https://stripe.com/en-in',
-      return_url: 'https://stripe.com/en-in',
+      refresh_url: TEST_ENV_URL,
+      return_url: TEST_ENV_URL,
     };
+
     dispatch(setupStripeAccount(stripeAccountData, onAccountCreationSuccess));
   };
 
@@ -734,7 +736,7 @@ const Step3 = ({ setStep }) => {
               ) : (
                 <>
                   <span className="me-50">
-                    {isPaymentOnboardingDone ? 'Stripe Link Account' : '"Stripe Setup Account"'}
+                    {isPaymentOnboardingDone ? 'Stripe Link Account' : 'Stripe Setup Account'}
                   </span>
                   <ChevronRight size={14} />
                 </>

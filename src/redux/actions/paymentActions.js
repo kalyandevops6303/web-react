@@ -47,7 +47,7 @@ const setupStripeAccount = (data, onSuccess) => async (dispatch) => {
   try {
     const res = await setupStripeAccountService(data);
     dispatch(stripeDetailsSuccess(res.data));
-    onSuccess();
+    onSuccess(res.data);
   } catch (error) {
     errorHandler(error, stripeDetailsFailure);
   }
@@ -58,7 +58,7 @@ const linkStripeAccount = (onSuccess) => async (dispatch) => {
   try {
     const res = await linkStripeAccountService();
     dispatch(stripeDetailsSuccess(res.data));
-    onSuccess();
+    onSuccess(res.data);
   } catch (error) {
     errorHandler(error, stripeDetailsFailure);
   }

@@ -30,7 +30,6 @@ const Step1 = ({ setStep }) => {
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
-  const stripeData = useSelector((state) => state?.stripeDetails?.stripeData);
 
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
@@ -74,10 +73,10 @@ const Step1 = ({ setStep }) => {
     setStep(2);
   };
 
-  const onAccountLinkSuccess = () => {
-    if (stripeData?.url) {
+  const onAccountLinkSuccess = (res) => {
+    if (res?.url?.length > 0) {
       // eslint-disable-next-line no-undef
-      window.open(stripeData.url, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+      window.open(res.url, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
     }
   };
   const handleNextClick = (e) => {
