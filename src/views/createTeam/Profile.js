@@ -44,6 +44,8 @@ import { getTeamById } from '../../services/teamServices';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
+import { getLanguages } from '../../redux/actions/staticActions';
+import { languages } from '../../redux/selectors/staticSelectors';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -198,6 +200,7 @@ const Profile = () => {
 
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
+  const languagesData = useSelector(languages);
 
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
@@ -495,6 +498,7 @@ const Profile = () => {
 
   useEffect(() => {
     getTeamDetails();
+    dispatch(getLanguages());
   }, []);
 
   useEffect(() => {
@@ -519,16 +523,6 @@ const Profile = () => {
             teamDetails?.services.map((service) => ({
               label: service.name,
               value: service._id,
-            })),
-            { shouldValidate: true },
-          );
-        }
-        if (teamDetails?.languages_supported?.length > 0) {
-          setValue(
-            'languagesSupported',
-            teamDetails?.languages_supported.map((language) => ({
-              label: language.name,
-              value: language._id,
             })),
             { shouldValidate: true },
           );
@@ -606,6 +600,19 @@ const Profile = () => {
       }
     }
   }, [teamDetails]);
+
+  useEffect(() => {
+    if (languagesData?.length > 0) {
+      setValue(
+        'languagesSupported',
+        languagesData?.map((language) => ({
+          label: language.name,
+          value: language._id,
+        })),
+        { shouldValidate: true },
+      );
+    }
+  }, [languagesData]);
 
   const toggleInviteTeamMemberModal = () => {
     setInviteTeamMemberModal(!inviteTeamMemberModal);
@@ -789,6 +796,7 @@ const Profile = () => {
                   render={({ field }) => (
                     <AsyncPaginate
                       isMulti
+                      isDisabled
                       loadOptions={loadLanguagesOptions}
                       classNamePrefix="select"
                       placeholder="Select up to 5 languages"

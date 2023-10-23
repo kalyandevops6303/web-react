@@ -27,8 +27,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectThemeColors } from '@utils';
 import { ProfileFormContainer, UploadIconContainer } from '../style';
 import theme from '../../../configs/themeVariables';
-import { getStates, getCities } from '../../../redux/actions/staticActions';
-import { states, statesLoading, cities, citiesLoading } from '../../../redux/selectors/staticSelectors';
+import { getStates, getCities, getLanguages } from '../../../redux/actions/staticActions';
+import {
+  states,
+  statesLoading,
+  cities,
+  citiesLoading,
+  languages,
+  languagesLoading,
+} from '../../../redux/selectors/staticSelectors';
 import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import {
   profileDetailsLoading,
@@ -157,6 +164,8 @@ const Personal = () => {
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const userDetailsData = useSelector(userDetails);
+  const languagesData = useSelector(languages);
+  const languagesIsLoading = useSelector(languagesLoading);
 
   useEffect(() => {
     if (watch('country')?.value !== userDetailsData?.talent_info?.current_residency?.country?._id) {
@@ -369,36 +378,6 @@ const Personal = () => {
           { shouldValidate: true },
         );
       }
-      if (res?.talent_info?.languages_speak.length > 0) {
-        setValue(
-          'speakLanguages',
-          res?.talent_info?.languages_speak.map((language) => ({
-            label: language.name,
-            value: language._id,
-          })),
-          { shouldValidate: true },
-        );
-      }
-      if (res?.talent_info?.languages_read.length > 0) {
-        setValue(
-          'readLanguages',
-          res?.talent_info?.languages_read.map((language) => ({
-            label: language.name,
-            value: language._id,
-          })),
-          { shouldValidate: true },
-        );
-      }
-      if (res?.talent_info?.languages_write.length > 0) {
-        setValue(
-          'writeLanguages',
-          res?.talent_info?.languages_write.map((language) => ({
-            label: language.name,
-            value: language._id,
-          })),
-          { shouldValidate: true },
-        );
-      }
       if (
         'streetAddress' in res?.talent_info?.current_residency ||
         'houseNumber' in res?.talent_info?.current_residency ||
@@ -451,12 +430,42 @@ const Personal = () => {
   };
 
   useEffect(() => {
+    if (languagesData?.length > 0) {
+      setValue(
+        'speakLanguages',
+        languagesData?.map((language) => ({
+          label: language.name,
+          value: language._id,
+        })),
+        { shouldValidate: true },
+      );
+      setValue(
+        'readLanguages',
+        languagesData?.map((language) => ({
+          label: language.name,
+          value: language._id,
+        })),
+        { shouldValidate: true },
+      );
+      setValue(
+        'writeLanguages',
+        languagesData?.map((language) => ({
+          label: language.name,
+          value: language._id,
+        })),
+        { shouldValidate: true },
+      );
+    }
+  }, [languagesData]);
+
+  useEffect(() => {
     dispatch(getUserDetails(onGetUserDetailsSuccess));
+    dispatch(getLanguages());
   }, []);
 
   return (
     <ProfileFormContainer>
-      {userDetailsIsLoading ? (
+      {userDetailsIsLoading || languagesIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
@@ -611,6 +620,7 @@ const Personal = () => {
                     invalid={errors.speakLanguages && true}
                     render={({ field }) => (
                       <AsyncPaginate
+                        isDisabled
                         isMulti
                         loadOptions={loadLanguagesOptions}
                         classNamePrefix="select"
@@ -636,6 +646,7 @@ const Personal = () => {
                     invalid={errors.readLanguages && true}
                     render={({ field }) => (
                       <AsyncPaginate
+                        isDisabled
                         isMulti
                         loadOptions={loadLanguagesOptions}
                         classNamePrefix="select"
@@ -663,6 +674,7 @@ const Personal = () => {
                     invalid={errors.writeLanguages && true}
                     render={({ field }) => (
                       <AsyncPaginate
+                        isDisabled
                         isMulti
                         loadOptions={loadLanguagesOptions}
                         classNamePrefix="select"
