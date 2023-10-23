@@ -38,6 +38,23 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const isCardLoading = useSelector((state) => state?.project?.cardInfoLoading);
   const selectCardData = useSelector((state) => state?.project?.cardData);
 
+  const filterTypeOptions = [
+    { label: 'Fixed', value: 'FIXED' },
+    { label: 'Variable', value: 'VARIABLE' },
+  ];
+
+  const invitedOptions = [
+    { label: 'Talent', value: 'TALENT' },
+    { label: 'Team', value: 'TEAM' },
+  ];
+  const typeOptions = [
+    { label: 'Received', value: 'RECEIVED' },
+    { label: 'Sent', value: 'SENT' },
+  ];
+  const invitedByOptions = [
+    { label: 'Team', value: 'TEAM' },
+    { label: 'Client', value: 'CLIENT' },
+  ];
   const metaData = { page: 1, page_size: 10 };
 
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -47,6 +64,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     client_name: [],
     filter_type: [],
     user_type: [],
+    invited_by: [invitedByOptions[0]],
+    invited_type: [typeOptions[0]],
+    invitation_to: [invitedOptions[0]],
   });
 
   const onSuccess = () => {};
@@ -96,11 +116,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   useEffect(() => {
     dispatch(clearData());
     const filterData = {};
-
     Object.keys(secondFilterState).forEach((key) => {
       if (Array.isArray(secondFilterState[key])) {
         if (key === 'team_name' || key === 'client_name') {
           filterData[key] = secondFilterState[key][0]?.label;
+        } else if (key === 'invited_by' || key === 'invited_type' || key === 'invitation_to') {
+          filterData[key] = secondFilterState[key][0]?.value;
         } else {
           filterData[key] = secondFilterState[key][0]?.value;
         }
@@ -193,21 +214,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     });
   };
 
-  const filterTypeOptions = [
-    { label: 'Fixed', value: 'FIXED' },
-    { label: 'Variable', value: 'VARIABLE' },
-  ];
-  const userTypeOptions = [
-    { label: 'Team', value: 'TEAM' },
-    { label: 'Client', value: 'CLIENT' },
-  ];
-
   const handleReset = () => {
     setSecondFilterState({
       team_name: [],
       client_name: [],
       filter_type: [],
       user_type: [],
+      invited_by: [invitedByOptions[0]],
+      invited_type: [typeOptions[0]],
+      invitation_to: [invitedOptions[0]],
     });
     setSearchText('');
     if (inputRef.current) {
@@ -236,29 +251,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             </InputGroup>
           </div>
           <Row>
-            {userType === userTypes.talent && primaryFilter === 'invited' && (
-              <Col className="d-none">
-                <Label className="form-label">Invited by</Label>
-                <Select
-                  isClearable
-                  options={userTypeOptions}
-                  classNamePrefix="select"
-                  placeholder="Select user"
-                  theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('user_type', value)}
-                  value={
-                    secondFilterState.user_type.length > 0
-                      ? {
-                          value: secondFilterState.user_type[0].value,
-                          label: secondFilterState.user_type[0].label,
-                        }
-                      : null
-                  }
-                />
-              </Col>
-            )}
             <Col>
-              <Label className="form-label">Type</Label>
+              <Label className="form-label">Project type</Label>
               <Select
                 isClearable
                 options={filterTypeOptions}
@@ -276,6 +270,66 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 }
               />
             </Col>
+            {userType === userTypes.talent && primaryFilter === 'invited' && (
+              <Col>
+                <Label className="form-label">Invited by</Label>
+                <Select
+                  options={invitedByOptions}
+                  classNamePrefix="select"
+                  placeholder="Select type"
+                  theme={selectThemeColors}
+                  onChange={(value) => onChangeFilter('invited_by', value)}
+                  value={
+                    secondFilterState.invited_by.length > 0
+                      ? {
+                          value: secondFilterState.invited_by[0].value,
+                          label: secondFilterState.invited_by[0].label,
+                        }
+                      : null
+                  }
+                />
+              </Col>
+            )}
+            {userType === userTypes.team && primaryFilter === 'invited' && (
+              <Col>
+                <Label className="form-label">Type</Label>
+                <Select
+                  options={typeOptions}
+                  classNamePrefix="select"
+                  placeholder="Select type"
+                  theme={selectThemeColors}
+                  onChange={(value) => onChangeFilter('invited_type', value)}
+                  value={
+                    secondFilterState.invited_type.length > 0
+                      ? {
+                          value: secondFilterState.invited_type[0].value,
+                          label: secondFilterState.invited_type[0].label,
+                        }
+                      : null
+                  }
+                />
+              </Col>
+            )}
+            {userType === userTypes.client && primaryFilter === 'invited' && (
+              <Col>
+                <Label className="form-label">Invited</Label>
+                <Select
+                  options={invitedOptions}
+                  classNamePrefix="select"
+                  placeholder="Select type"
+                  theme={selectThemeColors}
+                  onChange={(value) => onChangeFilter('invitation_to', value)}
+                  value={
+                    secondFilterState.invitation_to.length > 0
+                      ? {
+                          value: secondFilterState.invitation_to[0].value,
+                          label: secondFilterState.invitation_to[0].label,
+                        }
+                      : null
+                  }
+                />
+              </Col>
+            )}
             {userType !== userTypes.team && primaryFilter !== 'invited' && (
               <Col>
                 <Label className="form-label">Team name</Label>
@@ -370,6 +424,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 data={item}
                 isPopoverOpen={popoverOpen}
                 isExpanded={false}
+                primaryFilter={primaryFilter}
+                secondaryFilterForInvitedType={secondFilterState.invited_type[0].value}
                 isProjectWithTeam
               />
             );

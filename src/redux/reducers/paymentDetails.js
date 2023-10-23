@@ -1,16 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  talentInfo: null,
   w9details: null,
   w8bendetails: null,
-  client_info: {
-    is_us_person: true,
-  },
-  talent_info: {
-    tax_user_type: 'US',
-    is_working_in_us: true,
-  },
+  tax_identification: null,
   loading: false,
   error: null,
 };

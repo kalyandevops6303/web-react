@@ -31,6 +31,36 @@ export const PasswordStrengthBarWrap = styled.div`
     }
   }
 `;
+
+export const PasswordStrengthBarContainer = styled.div`
+  div {
+    height: 2.5px;
+    div {
+      height: 2.5px;
+    }
+  }
+
+  .progress {
+    position: relative;
+    .bg {
+      width: 100%;
+      display: flex;
+      position: absolute;
+      .vertical-line {
+        display: block;
+        height: 2.5px;
+        width: 25%;
+        border-right: 5px solid #f1faff;
+      }
+    }
+  }
+  p {
+    text-align: left !important;
+    font-size: 12px !important;
+    margin: 2px 2px !important;
+  }
+`;
+
 export const OnBoardWrap = styled.div`
   display: flex;
   justify-content: center;

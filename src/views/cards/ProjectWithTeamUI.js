@@ -8,17 +8,18 @@ import { useNavigate } from 'react-router';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import theme from '../../configs/themeVariables';
-import { selectUserData } from '../../redux/selectors/authSelectors';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
-const ProjectWithTeamUI = ({ data }) => {
+const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data }) => {
+  const userData = useSelector(selectAuthUserData);
+  const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userData = useSelector(selectUserData);
 
   const handleLike = (e) => {
     e.stopPropagation();
@@ -36,9 +37,37 @@ const ProjectWithTeamUI = ({ data }) => {
     navigate(`/profile/client/${data?.client?.user_id}`);
   };
 
-  const handleTeamNavigate = (e) => {
+  const handleTeamTalentNavigate = (e) => {
     e.stopPropagation();
-    navigate(`/profile/team/${userData?._id}`);
+    if (data?.worker_details?.user_type === userTypes.team) {
+      navigate(`/profile/team/${data?.worker_details?.team_id}`);
+    } else if (data?.worker_details?.user_type === userTypes.talent) {
+      navigate(`/profile/talent/${data?.worker_details?.user_id}`);
+    }
+  };
+
+  let profileToShowInRightSideOfCard;
+  if (userData.user_type === userTypes.talent) {
+    profileToShowInRightSideOfCard = data?.invited_by;
+  } else if (userData.user_type === userTypes.team) {
+    if (secondaryFilterForInvitedType === 'SENT') {
+      profileToShowInRightSideOfCard = data?.invitation_to;
+    } else {
+      profileToShowInRightSideOfCard = data?.invited_type;
+    }
+  } else {
+    profileToShowInRightSideOfCard = data?.invitation_to;
+  }
+
+  const handleTalentTeamClientNavigate = (e) => {
+    e.stopPropagation();
+    if (profileToShowInRightSideOfCard?.user_type === userTypes.team) {
+      navigate(`/profile/team/${profileToShowInRightSideOfCard?.team_id}`);
+    } else if (profileToShowInRightSideOfCard?.user_type === userTypes.talent) {
+      navigate(`/profile/talent/${profileToShowInRightSideOfCard?.user_id}`);
+    } else if (profileToShowInRightSideOfCard?.user_type === userTypes.client) {
+      navigate(`/profile/client/${profileToShowInRightSideOfCard?.user_id}`);
+    }
   };
 
   const avatarGroup = data?.worker_details?.workers?.length
@@ -56,16 +85,26 @@ const ProjectWithTeamUI = ({ data }) => {
   const clientSkills = data?.proficiency?.skills ?? [];
   const clientTools = data?.proficiency?.tools ?? [];
 
+  const teamAvatar = profileToShowInRightSideOfCard?.team_members?.length
+    ? profileToShowInRightSideOfCard?.team_members?.map((user) => ({
+        title: `${user?.first_name} ${user?.last_name}`,
+        img: user?.image_uri?.length ? user?.image_uri : defaultAvatar,
+        placement: 'bottom',
+        imgHeight: 33,
+        imgWidth: 33,
+      }))
+    : [];
+
   return (
     <div className="d-flex flex-column gap-1 mb-2">
       <div className="d-flex align-items-center justify-content-end">
         <div className="d-flex align-items-center gap-1">
-          {data?.is_alma_mater && (
+          {profileToShowInRightSideOfCard?.is_alma_mater && (
             <Badge className="alma-mater ms-50 bg-white">
               <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
           )}
-          <div style={{ display: 'none' }}>
+          <div>
             {isFavorite ? (
               <Heart
                 className="cursor-pointer d-flex heart"
@@ -81,87 +120,196 @@ const ProjectWithTeamUI = ({ data }) => {
           </div>
         </div>
       </div>
-      <div className="d-flex">
-        <section className="w-50 me-2 ">
-          <div className="d-flex w-100">
-            <img
-              className="market-place-card-photo cursor-pointer me-75"
-              src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
-              alt="avatar"
-              width={40}
-              height={50}
-              style={{ objectFit: 'cover' }}
-              onClick={(e) => handleClientNavigate(e)}
-            />
-            <div>
-              <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
-                <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                  {data?.client?.first_name} {data?.client?.last_name}
+      {primaryFilter === 'invited' ? (
+        <section>
+          {profileToShowInRightSideOfCard?.user_type === userTypes.team ? (
+            <div className="w-100">
+              <div className="flex-grow-1">
+                <CardTitle
+                  onClick={(e) => handleTalentTeamClientNavigate(e)}
+                  className="marketplace-card-title mb-50 ms-25 fw-bolder"
+                >
+                  {profileToShowInRightSideOfCard?.name ??
+                    `${profileToShowInRightSideOfCard?.team_members?.first_name} ${data?.team_members?.last_name}`}
                 </CardTitle>
-                <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                  {data?.client?.title}
+              </div>
+              {teamAvatar?.length > 3 ? (
+                <AvatarGroup
+                  totalCount={profileToShowInRightSideOfCard?.team_members_count}
+                  size="sm"
+                  className="ms-25 mb-50"
+                  data={teamAvatar?.slice(0, 3)}
+                />
+              ) : (
+                <AvatarGroup size="sm" className="ms-25 mb-50" data={teamAvatar} />
+              )}
+
+              <div className="d-flex flex-grow-1 mt-25">
+                <RatingBadge number={Math.round(profileToShowInRightSideOfCard?.rating ?? 0)} />
+                <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                  {profileToShowInRightSideOfCard?.project_count ?? 0} Projects
                 </CardText>
               </div>
-              <div className="d-flex flex-grow-1 mt-25">
-                <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
-                <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                  {data?.client?.project_count} Projects
-                </CardText>
+              <div className="d-flex gap-1 mt-2">
+                <div className="w-50">
+                  <BadgeGroup
+                    title="Skills"
+                    data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
+                    color="light-blue"
+                    id={`tooltip-skills-${data?._id}`}
+                  />
+                </div>
+                <div className="w-50">
+                  <BadgeGroup
+                    title="Tools"
+                    data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
+                    color="light-blue"
+                    id={`tooltip-tools-${data?._id}`}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div className="d-flex" style={{ marginTop: '35px' }}>
-            <BadgeGroup
-              title="Tools"
-              data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
-              color="light-blue"
-              id={`tooltip-tools-${data?._id}`}
-            />
-          </div>
-        </section>
-        <div className="w-50">
-          <div className="flex-grow-1" onClick={(e) => handleTeamNavigate(e)}>
-            <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
-              {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
-            </CardTitle>
-          </div>
-          {avatarGroup?.length > 3 ? (
-            <AvatarGroup
-              totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
-              size="sm"
-              className="ms-25 mb-50"
-              data={avatarGroup?.slice(0, 3)}
-            />
           ) : (
-            <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
+            <section className="w-100 me-2">
+              <div className="d-flex w-100">
+                <img
+                  className="market-place-card-photo me-75"
+                  src={
+                    profileToShowInRightSideOfCard?.image_uri?.length
+                      ? profileToShowInRightSideOfCard?.image_uri
+                      : defaultAvatar
+                  }
+                  alt="avatar"
+                  width={40}
+                  height={50}
+                  style={{ objectFit: 'cover' }}
+                  onClick={(e) => handleTalentTeamClientNavigate(e)}
+                />
+                <div>
+                  <div onClick={(e) => handleTalentTeamClientNavigate(e)} className="flex-grow-1">
+                    <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
+                      {profileToShowInRightSideOfCard?.first_name} {profileToShowInRightSideOfCard?.last_name}
+                    </CardTitle>
+                    <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
+                      {profileToShowInRightSideOfCard?.user_type === userTypes.client ? 'Client' : ''}
+                    </CardText>
+                  </div>
+                  <div className="d-flex flex-grow-1 mt-25">
+                    <RatingBadge number={Math.round(profileToShowInRightSideOfCard?.rating ?? 0)} />
+                    <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                      {profileToShowInRightSideOfCard?.project_count} Projects
+                    </CardText>
+                  </div>
+                </div>
+              </div>
+              <div className="d-flex gap-1 mt-2">
+                <div className="w-50">
+                  <BadgeGroup
+                    title="Skills"
+                    data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
+                    color="light-blue"
+                    id={`tooltip-skills-${data?._id}`}
+                  />
+                </div>
+                <div className="w-50">
+                  <BadgeGroup
+                    title="Tools"
+                    data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
+                    color="light-blue"
+                    id={`tooltip-tools-${data?._id}`}
+                  />
+                </div>
+              </div>
+            </section>
           )}
+        </section>
+      ) : (
+        <div className="d-flex">
+          <section className="w-50 me-2 ">
+            <div className="d-flex w-100">
+              <img
+                className="market-place-card-photo cursor-pointer me-75"
+                src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
+                alt="avatar"
+                width={40}
+                height={50}
+                style={{ objectFit: 'cover' }}
+                onClick={(e) => handleClientNavigate(e)}
+              />
+              <div>
+                <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
+                  <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
+                    {data?.client?.first_name} {data?.client?.last_name}
+                  </CardTitle>
+                  <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
+                    {data?.client?.title}
+                  </CardText>
+                </div>
+                <div className="d-flex flex-grow-1 mt-25">
+                  <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
+                  <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                    {data?.client?.project_count} Projects
+                  </CardText>
+                </div>
+              </div>
+            </div>
+            <div className="d-flex" style={{ marginTop: '35px' }}>
+              <BadgeGroup
+                title="Tools"
+                data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
+                color="light-blue"
+                id={`tooltip-tools-${data?._id}`}
+              />
+            </div>
+          </section>
+          <div className="w-50">
+            <div className="flex-grow-1" onClick={(e) => handleTeamTalentNavigate(e)}>
+              <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
+                {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
+              </CardTitle>
+            </div>
+            {avatarGroup?.length > 3 ? (
+              <AvatarGroup
+                totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
+                size="sm"
+                className="ms-25 mb-50"
+                data={avatarGroup?.slice(0, 3)}
+              />
+            ) : (
+              <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
+            )}
 
-          <div className="d-flex flex-grow-1 mt-25">
-            <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
-            <CardText className="ps-1 font-small-3 fw-300 rating-label">
-              {data?.client?.project_count} Projects
-            </CardText>
-          </div>
-          <div className="mt-2">
-            <BadgeGroup
-              title="Skills"
-              data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
-              color="light-blue"
-              id={`tooltip-skills-${data?._id}`}
-            />
+            <div className="d-flex flex-grow-1 mt-25">
+              <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
+              <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                {data?.client?.project_count} Projects
+              </CardText>
+            </div>
+            <div className="mt-2">
+              <BadgeGroup
+                title="Skills"
+                data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
+                color="light-blue"
+                id={`tooltip-skills-${data?._id}`}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
 
 ProjectWithTeamUI.propTypes = {
   data: PropTypes.object,
+  primaryFilter: PropTypes.string,
+  secondaryFilterForInvitedType: PropTypes.string,
 };
 
 ProjectWithTeamUI.defaultProps = {
   data: {},
+  primaryFilter: '',
+  secondaryFilterForInvitedType: '',
 };
 
 export default ProjectWithTeamUI;

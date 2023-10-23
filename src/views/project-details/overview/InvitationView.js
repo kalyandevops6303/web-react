@@ -92,7 +92,7 @@ const InvitationView = () => {
           setAccpetModal(false);
           setIsStatusUpdating(false);
           dispatch(getTeams({ onSuccess: () => {} }));
-          navigate(`/project-details/${params?.projectId}/bid`);
+          navigate(`/projects/ongoing`);
         },
         onError: () => {
           setIsStatusUpdating(false);

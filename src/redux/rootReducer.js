@@ -24,6 +24,7 @@ import project from './reducers/project';
 import dispute from './reducers/dispute';
 import rating from './reducers/rating';
 import referralAndReward from './reducers/referralAndReward';
+import stripeDetails from './reducers/stripeDetails';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   dispute,
   rating,
   referralAndReward,
+  stripeDetails,
 
   // Add more reducers if needed
 });
