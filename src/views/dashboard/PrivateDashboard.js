@@ -29,6 +29,7 @@ import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
 import { setItem } from '../../utility/localStorageControl';
+import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -44,6 +45,9 @@ const PrivateDashboard = () => {
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
+
+  const [optionsModal, setOptionsModal] = useState(null);
+
   const query = useSelector((state) => state.search.query);
 
   const toggleListingTeamMembersModal = () => {
@@ -104,7 +108,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModalInfoText('create club');
       setCompleteProfileModal(true);
     } else {
-      navigate('/create-club/account-details');
+      setOptionsModal(true);
     }
   };
 
@@ -166,6 +170,10 @@ const PrivateDashboard = () => {
 
       {raisedDisputeModal && (
         <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
+      )}
+
+      {optionsModal && (
+        <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} />
       )}
 
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />

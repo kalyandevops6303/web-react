@@ -35,6 +35,7 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
 import { getLanguages } from '../../redux/actions/staticActions';
 import { InfoContainer } from '../create-bid/style';
+import ClubCreatedModal from './ClubCreatedModal';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -101,6 +102,8 @@ const Profile = () => {
   const [imageUrlRes, setImageUrlRes] = useState(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [teamDetails, setTeamDetails] = useState(null);
+  const [clubCreatedModal, setClubCreatedModal] = useState(null);
+
   const fileInputRef = useRef(null);
 
   const userDetailsData = useSelector(userData);
@@ -303,6 +306,10 @@ const Profile = () => {
     navigate('/dashboard');
   };
 
+  const toggleClubCreatedModal = () => {
+    setClubCreatedModal(!clubCreatedModal);
+  };
+
   useEffect(() => {
     dispatch(getLanguages());
   }, []);
@@ -353,7 +360,7 @@ const Profile = () => {
 
   const handleClick = () => {
     if (Object.keys(errors).length === 0) {
-      navigate('/create-club/profile-details');
+      setClubCreatedModal(true);
     } else {
       ShowToastMessage(ERROR, 'Please fill the mandatory fields');
     }
@@ -361,6 +368,8 @@ const Profile = () => {
 
   return (
     <ProfileFormContainer>
+      {clubCreatedModal && <ClubCreatedModal modal={clubCreatedModal} toggleModal={toggleClubCreatedModal} />}
+
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
