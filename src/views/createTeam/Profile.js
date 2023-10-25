@@ -44,6 +44,8 @@ import { getTeamById } from '../../services/teamServices';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
+import { getLanguages } from '../../redux/actions/staticActions';
+import { languages } from '../../redux/selectors/staticSelectors';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -51,7 +53,7 @@ const Profile = () => {
     teamTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
     teamIntroduction: yup
       .string()
-      .max(150, 'Introduction must be 150 characters or less')
+      .max(500, 'Introduction must be 500 characters or less')
       .required('Introduction is required'),
     services: yup
       .array()
@@ -198,6 +200,7 @@ const Profile = () => {
 
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
+  const languagesData = useSelector(languages);
 
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
@@ -495,6 +498,7 @@ const Profile = () => {
 
   useEffect(() => {
     getTeamDetails();
+    dispatch(getLanguages());
   }, []);
 
   useEffect(() => {
@@ -519,16 +523,6 @@ const Profile = () => {
             teamDetails?.services.map((service) => ({
               label: service.name,
               value: service._id,
-            })),
-            { shouldValidate: true },
-          );
-        }
-        if (teamDetails?.languages_supported?.length > 0) {
-          setValue(
-            'languagesSupported',
-            teamDetails?.languages_supported.map((language) => ({
-              label: language.name,
-              value: language._id,
             })),
             { shouldValidate: true },
           );
@@ -607,6 +601,19 @@ const Profile = () => {
     }
   }, [teamDetails]);
 
+  useEffect(() => {
+    if (languagesData?.length > 0) {
+      setValue(
+        'languagesSupported',
+        languagesData?.map((language) => ({
+          label: language.name,
+          value: language._id,
+        })),
+        { shouldValidate: true },
+      );
+    }
+  }, [languagesData]);
+
   const toggleInviteTeamMemberModal = () => {
     setInviteTeamMemberModal(!inviteTeamMemberModal);
     dispatch(clearModalData());
@@ -615,6 +622,14 @@ const Profile = () => {
     setInviteTeamMemberModal(true);
     setInviteTalentToTeamModal(true);
     setTeamCreatedModal(false);
+  };
+
+  const handleClick = () => {
+    if (Object.keys(errors).length === 0) {
+      handleSubmit(onSubmit)();
+    } else {
+      ShowToastMessage(ERROR, 'Please fill the mandatory fields');
+    }
   };
 
   return (
@@ -726,7 +741,7 @@ const Profile = () => {
                     <Input
                       {...field}
                       type="textarea"
-                      placeholder="Write your team introduction in 150 character"
+                      placeholder="Write your team introduction in 500 character"
                       rows="5"
                       invalid={errors.teamIntroduction && true}
                     />
@@ -781,6 +796,7 @@ const Profile = () => {
                   render={({ field }) => (
                     <AsyncPaginate
                       isMulti
+                      isDisabled
                       loadOptions={loadLanguagesOptions}
                       classNamePrefix="select"
                       placeholder="Select up to 5 languages"
@@ -1313,6 +1329,7 @@ const Profile = () => {
               color="primary"
               outline={location?.state?.isEditing}
               disabled={isImageUploading || updateTeamIsLoading}
+              onClick={handleClick}
             >
               {updateTeamIsLoading ? (
                 <Spinner size="sm" />

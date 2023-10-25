@@ -62,12 +62,16 @@ const API = {
     addToFavTeam: `${apiOnboardingEndpoint}/api/v1/favourite/set-team`,
     recentProjects: `${apiOnboardingEndpoint}/api/v1/users/completed-projects`,
     reviews: `${apiOnboardingEndpoint}/api/v1/users/reviews`,
+    report: `${apiAuthEndpoint}/api/v1/user/report`,
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
+    totalReferralAmount: `${apiAuthEndpoint}/api/v1/referrals/amount`,
     recommendedProjects: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-projects`,
     profilePercentage: `${apiAuthEndpoint}/api/v1/user/profile-percentage`,
     checkBidsAccepted: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
+    getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
+
     // team
     getTeamMember: `${apiOnboardingEndpoint}/api/v1/teams/get-members`,
     getInvitedMember: `${apiOnboardingEndpoint}/api/v1/teams/invited-members-new`,
@@ -101,6 +105,7 @@ const API = {
     createProjectAI: `${apiCreateProjectAIEndpoint}/api/v1/short_product_requirements`,
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project/best-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project/favorite-talents`,
+    favoriteTeams: `${apiAuthEndpoint}/api/v1/client/favourites`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
@@ -112,6 +117,7 @@ const API = {
     getBidReview: `${apiCreateProjectEndpoint}/api/v1/bid/selection/review-bid`,
     assignBid: `${apiCreateProjectEndpoint}/api/v1/bid/selection/assign-bid`,
     commonBidInfo: `${apiCreateProjectEndpoint}/api/v1/common/bid/info`,
+    commonBidInfoPublic: `${apiCreateProjectEndpoint}/api/v1/common/bid/info/public`,
     unassignRole: `${apiCreateProjectEndpoint}/api/v1/project-course/unassigned-roles`,
     accept: `${apiAuthEndpoint}/api/v1/invitation/accept`, // put invite id
     reject: `${apiAuthEndpoint}/api/v1/invitation/reject`, // put invite id
@@ -216,18 +222,24 @@ const API = {
   },
   myTeams: {
     cardInfo: `${apiOnboardingEndpoint}/api/v1/my-teams/cards-info`,
-    listTeams: `${apiOnboardingEndpoint}/api/v1/my-teams`,
+    listTeams: `${apiOnboardingEndpoint}/api/v1/my-teams/teams`,
     listInvites: `${apiOnboardingEndpoint}/api/v1/my-teams/invitations`,
     listJoinReq: `${apiOnboardingEndpoint}/api/v1/my-teams/join-requests`,
     listFav: `${apiOnboardingEndpoint}/api/v1/my-teams/favourites`,
+    listTalents: `${apiOnboardingEndpoint}/api/v1/my-teams/my-talents`,
+    listClients: `${apiOnboardingEndpoint}/api/v1/my-teams/my-clients`,
+    listRecomm: `${apiOnboardingEndpoint}/api/v1/my-teams/recommended`,
   },
   project: {
     cardInfo: `${apiOnboardingEndpoint}/api/v1/projects/card-info`,
     projects: `${apiOnboardingEndpoint}/api/v1/projects`,
+    clientName: `${apiOnboardingEndpoint}/api/v1/projects/client-names`,
+    teamName: `${apiOnboardingEndpoint}/api/v1/projects/team-names`,
   },
   payment: {
     taxInfo: `${apiPaymentEndPoint}/api/v1/tax-info`,
-    paymentAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
+    createStripeAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
+    linkStripeAccount: `${apiPaymentEndPoint}/api/v1/payment-account-link`,
   },
   referralAndReward: {
     createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CardText, CardTitle, Badge } from 'reactstrap';
+import { useLocation, useNavigate } from 'react-router-dom';
 import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
@@ -8,19 +9,26 @@ import { useDispatch } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 
 const BaseInfoCard = ({ isSearchPage, data }) => {
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
 
-  const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ project_id: data?._id }));
+  const location = useLocation();
+
+  const handleLike = (e) => {
+    e.stopPropagation();
+    setIsFavorite(true);
+    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
   };
-  const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ project_id: data?._id }));
+  const handleUnLike = (e) => {
+    e.stopPropagation();
+    setIsFavorite(false);
+    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
   const giveStrokeColor = (percentage) => {
@@ -34,6 +42,32 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
     }
   };
 
+  const fromLocationPrimary = () => {
+    if (location.pathname.split('/').includes('marketplace'))
+      return { title: 'Marketplace', link: '/marketplace/all_listings' };
+    if (location.pathname.split('/').includes('search')) return { title: 'Search', link: '/search' };
+    return '';
+  };
+  const fromLocationSecondary = () => {
+    if (location.pathname.split('/').includes('all_listings')) return { title: 'Marketplace', link: location.pathname };
+    if (location.pathname.split('/').includes('my_listings')) return { title: 'My listings', link: location.pathname };
+    if (location.pathname.split('/').includes('talents')) return { title: 'Talent', link: location.pathname };
+    if (location.pathname.split('/').includes('clients')) return { title: 'Clients', link: location.pathname };
+    return '';
+  };
+  const fromLocationSearch = () => ({ title: 'Clients', link: '' });
+
+  const handleNavigate = (e) => {
+    e.stopPropagation();
+    const state = {
+      from: {
+        primary: fromLocationPrimary(),
+        secondary: fromLocationSecondary() || fromLocationSearch(),
+      },
+    };
+    navigate(`/profile/client/${data?.client_details?.user_id}`, { state });
+  };
+
   return (
     <div>
       <div className="d-flex justify-content-end">
@@ -45,16 +79,16 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
           )}
           {!isSearchPage && (
             <div className="mb-25">
-              {data?.is_favorite ? (
+              {isFavorite ? (
                 <Heart
                   className="cursor-pointer d-flex heart"
                   fill={theme.red}
                   stroke={theme.red}
-                  onClick={handleUnLike}
+                  onClick={(e) => handleUnLike(e)}
                   size={20}
                 />
               ) : (
-                <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
               )}
             </div>
           )}
@@ -97,9 +131,12 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
           style={{ objectFit: 'cover' }}
         />
         <div className="d-flex w-100 align-items-center">
-          <div className="flex-grow-1">
+          <div onClick={(e) => handleNavigate(e)} className="flex-grow-1">
             <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-              {clientDetails?.first_name} {clientDetails?.last_name}
+              <span>
+                {data?.client_details?.first_name}&nbsp;
+                {data?.client_details?.last_name}
+              </span>
             </CardTitle>
             <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
               {clientDetails?.title ?? clientDetails?.company_name}
@@ -114,8 +151,18 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
         </div>
       </div>
       <div>
-        <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-        <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+        <BadgeGroup
+          title="Skills"
+          data={data?.proficiency?.skills}
+          color="light-blue"
+          id={`tooltip-skills-project-${data?._id}`}
+        />
+        <BadgeGroup
+          title="Tools"
+          data={data?.proficiency?.tools}
+          color="light-blue"
+          id={`tooltip-tools-project-${data?._id}`}
+        />
       </div>
     </div>
   );

@@ -83,7 +83,7 @@ const PrivateDashboard = () => {
       profilePercentageData?.values_missing?.includes('educational_institute') ||
       profilePercentageData?.values_missing?.includes('availability')
     ) {
-      setCompleteProfileModalInfoText('project');
+      setCompleteProfileModalInfoText('create project');
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');
@@ -101,7 +101,7 @@ const PrivateDashboard = () => {
       profilePercentageData?.values_missing?.includes('educational_institute') ||
       profilePercentageData?.values_missing?.includes('availability')
     ) {
-      setCompleteProfileModalInfoText('team');
+      setCompleteProfileModalInfoText('create team');
       setCompleteProfileModal(true);
     } else {
       navigate('/create-team/profile-details');
@@ -113,7 +113,16 @@ const PrivateDashboard = () => {
     setDeleteModalData(data);
   };
   const handleJoinTeam = () => {
-    navigate('/marketplace/teams');
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModalInfoText('join team');
+      setCompleteProfileModal(true);
+    } else {
+      navigate('/marketplace/teams');
+    }
   };
 
   const handleRaiseDispute = () => {

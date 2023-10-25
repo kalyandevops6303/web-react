@@ -47,15 +47,14 @@ const MarketPlace = () => {
     useMatch('/marketplace/teams') ||
     useMatch('/marketplace/my_bids');
 
-  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMarketplaceTab') ?? 'all_listings');
+  const [primaryFilter, setPrimaryFilter] = useState(
+    getItem('selectedMarketplaceTab') ?? routesMatch?.pathname?.split('/')?.[2],
+  );
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
-
-    if (routesMatch?.pathname?.split('/')?.[2] !== primaryFilter) {
-      setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
-    }
+    setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
     dispatch(getProfilePercentage());
     dispatch(clearProjectData());
     setItem('baseRoute', 'marketplace');

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
@@ -20,17 +20,15 @@ import {
 } from 'reactstrap';
 import { Info } from 'react-feather';
 import InputPasswordToggle from '@components/input-password-toggle';
-import PasswordStrengthBar from 'react-password-strength-bar';
 import { validations } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
-import { PasswordStrengthBarWrap } from '../auth/style';
 import { resetPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading } from '../../redux/selectors/authSelectors';
+import PasswordStrengthMeter from '../auth/components/PasswordStrengthMeter';
 
 const ResetPasswordModal = ({ modal, toggleModal }) => {
   const dispatch = useDispatch();
 
-  const [score, setScore] = useState(0);
   const isLoading = useSelector(selectAuthLoading);
 
   const schema = yup.object().shape({
@@ -66,19 +64,6 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
   const oldPassword = watch('oldPassword');
   const newPassword = watch('newPassword');
   const cnfPassword = watch('cnfPassword');
-
-  const onChangeScore = (s) => {
-    setScore(s);
-  };
-  const scoreColors = {
-    0: 'red',
-    1: 'red',
-    2: 'orange',
-    3: 'blue',
-    4: 'green',
-  };
-
-  const getColorName = (s) => scoreColors[s] || '';
 
   return (
     <Modal isOpen={modal} contentClassName="custom-reset-password-modal-style" className="modal-dialog-centered ">
@@ -136,29 +121,14 @@ const ResetPasswordModal = ({ modal, toggleModal }) => {
                     <InputPasswordToggle
                       {...field}
                       value={field.value || ''}
-                      className="input-group-merge"
+                      className="input-group-merge mb-50"
                       id="newPassword"
                       placeholder="Enter your new password"
                     />
                   )}
                 />
-                {newPassword && (
-                  <PasswordStrengthBarWrap>
-                    <PasswordStrengthBar
-                      className={`password-meter ${getColorName(score)}`}
-                      scoreWords={[
-                        'Password strength: Weak',
-                        'Password strength: Weak',
-                        'Password strength: Fair',
-                        'Password strength: Good',
-                        'Password strength: Strong',
-                      ]}
-                      shortScoreWord="Too short"
-                      password={newPassword}
-                      onChangeScore={onChangeScore}
-                    />
-                  </PasswordStrengthBarWrap>
-                )}
+                {newPassword && <PasswordStrengthMeter password={newPassword} />}
+
                 {errors.newPassword && <FormFeedback>{errors.newPassword.message}</FormFeedback>}
               </Col>
             </Row>

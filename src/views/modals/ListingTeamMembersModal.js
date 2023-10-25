@@ -100,7 +100,7 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
                     <p className="fw-bold m-0">Team Member</p>
                   </Col>
                   <Col sm="12" md="3" lg="5">
-                    <p className="m-0">Accepted on</p>
+                    <p className="m-0">{item?.is_creator ? 'Created on' : 'Accepted on'}</p>
                     <p className="fw-bold font-medium-2 m-0">
                       {DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') || '-'}
                     </p>

@@ -308,6 +308,10 @@ const MilestoneSectionWrapper = styled.div`
   .checkbox-custom-margin {
     margin-right: 5px;
   }
+
+  .overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
+  }
 `;
 
 const PreviewSectionWrapper = styled.div`

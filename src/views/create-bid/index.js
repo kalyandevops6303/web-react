@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Progress, Row } from 'reactstrap';
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
-import { createBidSteps, userTypes } from '../../utility/constants/Constant';
+import { createBidTalentSteps, createBidTeamSteps, userTypes } from '../../utility/constants/Constant';
 import { ProgressBarWrapper } from './style';
 import VariableSimpleMilestoneView from './overview/VariableSimpleMilestoneView';
 import Preview from './overview/Preview';
@@ -61,11 +61,7 @@ const CreateBid = () => {
         <Col lg="9">
           <Row className="w-75">
             <FormStepper
-              steps={
-                selectUserDetailsData?.user_type === userTypes.team
-                  ? createBidSteps
-                  : createBidSteps.filter((step) => step.title !== 'Team')
-              }
+              steps={selectUserDetailsData?.user_type === userTypes.team ? createBidTeamSteps : createBidTalentSteps}
               currentStep={currentStep}
               onChangeStep={changeStep}
             />

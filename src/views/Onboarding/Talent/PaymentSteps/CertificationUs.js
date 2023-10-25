@@ -29,21 +29,22 @@ const CertificationUS = ({ onConfirm, isConfirmed }) => (
         </ul>
       </p>
       <p>
-        <h5>Certification instruction:</h5>You must deselect item 2 above if you have been notified by IRS that you are
-        currently subject to backup withholding because you have failed to report all interest and dividends on your tax
-        return. For real estate transactions, item 2 does not apply. For mortgage interest paid, acquisition or
-        abandonment of secured property, cancellation of debt, contributions to an individual retirement arrangement
-        (IRA), and generally, payments other than intrest and dividends you are not required to sign the certification,
-        but you must provide the correct TIN. See part II, Later
+        <b>Certification instruction: </b>
+        You must deselect item 2 above if you have been notified by IRS that you are currently subject to backup
+        withholding because you have failed to report all interest and dividends on your tax return. For real estate
+        transactions, item 2 does not apply. For mortgage interest paid, acquisition or abandonment of secured property,
+        cancellation of debt, contributions to an individual retirement arrangement (IRA), and generally, payments other
+        than intrest and dividends you are not required to sign the certification, but you must provide the correct TIN.
+        See part II, Later
       </p>
 
-      <Row>
+      <Row className="mt-3">
         <Label>Confirmation of U.S person</Label>
         <Button
-          color="primary"
+          color="primary ms-50"
           disabled={isConfirmed}
           onClick={onConfirm}
-          className="mt-1 mb-1"
+          className="mb-1"
           style={{ width: '120px' }}
         >
           I Confirm

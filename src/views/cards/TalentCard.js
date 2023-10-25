@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@components/avatar';
 import { PropTypes } from 'prop-types';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Badge, Card, CardBody, CardText, CardTitle, Col } from 'reactstrap';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { Heart, MapPin } from 'react-feather';
@@ -12,13 +12,17 @@ import { TeamCardWrap } from './style';
 import { userTypes } from '../../utility/constants/Constant';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import theme from '../../configs/themeVariables';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import TextToolTip from './TextToolTip';
 
 function TalentCard({ data, isSearchPage }) {
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
+
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
       return { title: 'Marketplace', link: '/marketplace/all_listings' };
@@ -36,11 +40,23 @@ function TalentCard({ data, isSearchPage }) {
     if (data?.user_type === userTypes.client) return { title: 'Clients', link: '' };
     return { title: 'Talent', link: '' };
   };
-  const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
+
+  const handleLike = (e) => {
+    e.stopPropagation();
+    setIsFavorite(true);
+    dispatch(
+      makeFav({
+        user_id: data?.user_id,
+        user_type: data?.user_type,
+        onSuccess: () => {},
+        onError: () => setIsFavorite(false),
+      }),
+    );
   };
-  const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
+  const handleUnLike = (e) => {
+    e.stopPropagation();
+    setIsFavorite(false);
+    dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
@@ -52,12 +68,24 @@ function TalentCard({ data, isSearchPage }) {
       return theme.green;
     }
   };
+
+  const handleCard = () => {
+    const state = {
+      from: {
+        primary: fromLocationPrimary(),
+        secondary: fromLocationSecondary() || fromLocationSearch(),
+      },
+    };
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`, { state });
+  };
+
   const locationDetails = data?.current_residency;
+
   return (
     <TeamCardWrap>
-      <Card>
+      <Card onClick={handleCard} className="cursor-pointer">
         <CardBody>
-          <div className="d-flex">
+          <div className="d-flex teamcard-flex-cloumn">
             <div className="w-75">
               <div className="d-flex">
                 <Avatar
@@ -84,31 +112,21 @@ function TalentCard({ data, isSearchPage }) {
                   <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
                     {data?.role?.name || 'Role'}
                   </CardText>
-                  <div className="d-flex">
+                  <div className="d-flex teamcard-flex-cloumn">
                     <div className="d-flex mr-2">
-                      <RatingBadge number={Math.round(data?.rating)} />
+                      <RatingBadge number={Math.round(data?.rating ?? 0)} />
                       <CardText className="ps-1 font-small-3 fw-300 rating-label">
                         {data?.user_type === userTypes.talent ? data?.projects_worked_on_count : 0} Projects
                       </CardText>
                     </div>
-                    <div className="d-flex" style={{ marginLeft: '20px' }}>
+                    <div className="d-flex margin-none" style={{ marginLeft: '20px' }}>
                       {locationDetails ? (
                         <div className="d-flex align-items-center">
                           <MapPin size={20} className="me-50" />
-                          {locationDetails?.city?.name ? (
-                            <TextToolTip text={locationDetails?.city?.name} id={`tooltip-city-${data?.user_id}`} />
-                          ) : (
-                            ''
-                          )}
-                          ,&nbsp;
-                          {locationDetails?.country?.name ? (
-                            <TextToolTip
-                              text={locationDetails?.country?.name}
-                              id={`tooltip-country-${data?.user_id}`}
-                            />
-                          ) : (
-                            ''
-                          )}
+                          <TextToolTip
+                            text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
+                            id={`tooltip-location-${data?.user_id}`}
+                          />
                         </div>
                       ) : null}
                     </div>
@@ -117,7 +135,7 @@ function TalentCard({ data, isSearchPage }) {
               </div>
               <div className="mt-2">{data?.professional_intro}</div>
             </div>
-            <div className="w-25">
+            <div className="w-25 teamcard-width">
               <div className="d-flex flex-column align-items-start">
                 <div className="d-flex w-100 justify-content-end gap-50">
                   {data?.is_alma_mater && (
@@ -127,16 +145,16 @@ function TalentCard({ data, isSearchPage }) {
                   )}
                   {!isSearchPage && (
                     <div className="mb-25">
-                      {data?.is_favorite ? (
+                      {isFavorite ? (
                         <Heart
                           className="cursor-pointer d-flex heart"
                           fill={theme.red}
                           stroke={theme.red}
-                          onClick={handleUnLike}
+                          onClick={(e) => handleUnLike(e)}
                           size={20}
                         />
                       ) : (
-                        <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                        <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
                       )}
                     </div>
                   )}
@@ -171,8 +189,17 @@ function TalentCard({ data, isSearchPage }) {
                 </div>
               </div>
               <div className="">
-                <BadgeGroup title="Skills" data={data?.expertise?.skills} color="light-blue" user_id={data?.user_id} />
-                <BadgeGroup title="Tools" data={data?.expertise?.tools} color="light-blue" user_id={data?.user_id} />
+                {data?.expertise?.skills && (
+                  <BadgeGroup
+                    title="Skills"
+                    data={data?.expertise?.skills}
+                    color="light-blue"
+                    user_id={data?.user_id}
+                  />
+                )}
+                {data?.expertise?.tools && (
+                  <BadgeGroup title="Tools" data={data?.expertise?.tools} color="light-blue" user_id={data?.user_id} />
+                )}
               </div>
             </div>
           </div>

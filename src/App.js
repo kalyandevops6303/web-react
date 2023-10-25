@@ -1,8 +1,11 @@
+/* eslint-disable no-console */
 /* eslint-disable no-undef */
 import React, { Suspense, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
+import { COMETCHAT_CONSTANTS } from './constants';
 import { getToken, messaging } from './configs/api/firebase';
 
 // ** Router Import
@@ -11,22 +14,58 @@ import { setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
 import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
+import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
+import { cometloginSuccess } from './redux/reducers/auth';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const fcmToken = useSelector((state) => state.auth.fcmToken);
+  const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const dispatch = useDispatch();
   // const fcmSubscribeService = (token) => DataService.post(`${API.notification.subscribe}`, { token });
+
+  const appId = COMETCHAT_CONSTANTS.APP_ID;
+  const region = COMETCHAT_CONSTANTS.REGION;
+  const appSetting = new CometChat.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
+
+  CometChat.init(appId, appSetting).then(
+    () => {
+      console.log('Initialisation successfully completed!');
+    },
+    (error) => {
+      console.log('Initialisation failed with error:', error);
+    },
+  );
+
+  const loginUser = async ({ cometToken, fcm }) => {
+    await CometChat.login(cometToken);
+    dispatch(cometloginSuccess());
+    console.log('LOGGED IN COMETCHAT');
+    if (fcm) {
+      await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {
+        fcmToken: fcm,
+      });
+    }
+    CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
+      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
+      console.log('UNREAD COUNT INDEX', totalCount);
+      dispatch(setUnreadMsgCount(totalCount));
+    });
+  };
 
   useEffect(() => {
     if (isLoggedIn && !fcmToken) {
       let data;
       const tokenFunc = async () => {
         data = await getToken();
+        console.log('FCM TOKEN 61', data);
         if (data) {
+          console.log('FCM TOKEN 63', data);
           dispatch(fcmSubscribeNotification(data));
-          // await fcmSubscribeService(data);
+          loginUser({ cometToken: cometAuthToken, fcm: data });
           setItem('fcmToken', data);
+        } else {
+          loginUser({ cometToken: cometAuthToken });
         }
         return data;
       };
@@ -37,9 +76,16 @@ const App = () => {
   useEffect(() => {
     const channel = new BroadcastChannel('data-channel');
     if (channel) {
-      channel?.addEventListener('message', () => {
+      channel?.addEventListener('message', (event) => {
         // Handle the received data from the service worker
-        dispatch(notificationCount(true));
+        const { data } = event;
+        console.log(data, 'COMET');
+
+        if (data?.data?.alert) {
+          dispatch(unreadMsgCountSuccess());
+        } else {
+          dispatch(notificationCount(true));
+        }
       });
     }
 
@@ -51,12 +97,18 @@ const App = () => {
       }
     };
   }, []);
+
   messaging?.onMessage((payload) => {
+    console.log('PAYLOAD COMET', payload);
     if (!('Notification' in window)) {
       console.warn('This browser does not support system notifications.');
     } else if (Notification.permission === 'granted') {
-      // only when type single
-      dispatch(notificationCount(true));
+      if (payload.data.alert) {
+        dispatch(unreadMsgCountSuccess());
+      } else {
+        // only when type single
+        dispatch(notificationCount(true));
+      }
 
       toast(
         (t) => (
@@ -80,6 +132,8 @@ const App = () => {
           },
         },
       );
+    } else {
+      console.log('INSIDE ELSE');
     }
   });
   return (

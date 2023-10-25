@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
-import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
@@ -39,13 +39,17 @@ import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { makeTeamMemberSuccess } from '../../../redux/reducers/profile';
 import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
 import InvitationSentModal from '../../modals/InvitationSentModal';
+import JoinTeamModal from '../../modals/JoinTeamModal';
+import ReportUserModal from './ReportUserModal';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
+  const [modalInformationText, setModalInformationText] = useState('');
   const teamId = getItem('team_id');
+  const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
@@ -59,7 +63,10 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [accpetModal, setAccpetModal] = useState(false);
   const [invitationSentModal, setInvitationSentModal] = useState(null);
+  const [openJoinTeamModal, setOpenJoinTeamModal] = useState(false);
+  const [reportModal, setReportModal] = useState(false);
   const toggleInvitationSentModal = () => setInvitationSentModal(!invitationSentModal);
+  const toggleReportModal = () => setReportModal(!reportModal);
 
   const onAccept = () => {
     const postData = {
@@ -89,6 +96,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
       profilePercentageData?.values_missing?.includes('availability')
     ) {
       setCompleteProfileModal(true);
+      setModalInformationText('accept request');
     } else {
       setAccpetModal(true);
     }
@@ -103,10 +111,17 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     setAccpetModal(false);
   };
 
+  const handleJoinModalCancel = () => {
+    setCompleteProfileModal(false);
+    setOpenJoinTeamModal(false);
+  };
+
   const handleLike = () => {
+    setIsFavourite(true);
     dispatch(makeFavourite(param?.userId, param?.userType.toUpperCase()));
   };
   const handleUnLike = () => {
+    setIsFavourite(false);
     dispatch(removeFavourite(param?.userId));
   };
 
@@ -122,6 +137,12 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     }
   };
 
+  const onMessageClick = () => {
+    navigate(`/chat`, {
+      state: { targetId: param?.userId },
+    });
+  };
+
   useEffect(() => {
     if (showProfilePercent) {
       if (isTalentView || isClient) {
@@ -133,7 +154,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     }
   }, []);
 
-  const handleJoinTeam = () => {
+  const sendJoinTeamRequest = () => {
     const newPostData = {
       message: '',
       redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
@@ -148,16 +169,22 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
         role: '',
       },
     };
-    const onSuccess = () => {};
+    const onSuccess = () => {
+      setOpenJoinTeamModal(false);
+    };
+    dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
+  };
 
+  const handleJoinTeam = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
       profilePercentageData?.values_missing?.includes('availability')
     ) {
       setCompleteProfileModal(true);
+      setModalInformationText('join team');
     } else {
-      dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
+      setOpenJoinTeamModal(true);
     }
   };
 
@@ -173,7 +200,11 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   return (
     <LeftSidebarProfileWrapper>
       {completeProfileModal && (
-        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+        <CompleteProfileModal
+          modalInfoText={modalInformationText}
+          modal={completeProfileModal}
+          toggleModal={toggleCompleteProfileModal}
+        />
       )}
       {accpetModal && (
         <AcceptRequestModal
@@ -183,6 +214,16 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           onAccept={onAccept}
           modal={accpetModal}
           toggleModal={handleCancel}
+        />
+      )}
+      {openJoinTeamModal && (
+        <JoinTeamModal
+          isLoading={inJoinTeamLoading}
+          data={data}
+          title="Join Team"
+          toggleModal={handleJoinModalCancel}
+          modal={openJoinTeamModal}
+          onAccept={sendJoinTeamRequest}
         />
       )}
       <Card>
@@ -199,7 +240,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             {!(isClient && userData?.user_type === userTypes.client) &&
               !isProjectDetailsView &&
               !isEditable &&
-              (data?.is_favourite ? (
+              (isFavourite ? (
                 <Heart
                   className="cursor-pointer d-flex ms-auto heart"
                   fill={theme.red}
@@ -533,17 +574,24 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                         outline
                         onClick={handleJoinTeam}
                       >
-                        {inJoinTeamLoading ? <Spinner size="sm" /> : 'Join Team'}
+                        Join Team
                       </Button>
                     </div>
                   )}
                 {!isEditable && (
-                  <Button className="w-50" color="primary">
+                  <Button className="w-50" color="primary" onClick={onMessageClick}>
                     Message
                   </Button>
                 )}
               </div>
-              <CardText className="d-none report-text m-0 text-center mt-1 fw-bold">Report</CardText>
+              {(userDataSelector?.user_type === userTypes.client || userDataSelector?.user_type === userTypes.team) &&
+                param?.userType.toUpperCase() === userTypes.talent && (
+                  <div className="d-flex justify-content-center">
+                    <Button color="flat-danger" className="mt-1" onClick={() => setReportModal(true)}>
+                      Report
+                    </Button>
+                  </div>
+                )}
             </div>
           </section>
         </CardBody>
@@ -570,6 +618,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           description="You’ve sent a team member invitation"
         />
       )}
+      {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}
     </LeftSidebarProfileWrapper>
   );
 };

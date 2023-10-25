@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
 
 const CustomStep = ({ onChangeStep, steps, currentStep }) => {
   const navigate = useNavigate();
   const param = useParams();
+  const location = useLocation();
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
 
   const CustomStepWrap = styled.div`
@@ -62,20 +63,19 @@ const CustomStep = ({ onChangeStep, steps, currentStep }) => {
       }
     }
   `;
-  console.log(param);
 
   const handleChangeStep = (step) => {
-    console.log(step);
     onChangeStep(step);
-    if (step === 'milestone' && invitedByData) {
-      navigate(`milestone/project-invitation/milestone`);
-    } else if (step === 'project') {
-      navigate(-1);
-    } else {
-      navigate(step);
+    if (currentStep !== step) {
+      if (step === 'milestone' && invitedByData ? true : false) {
+        navigate(`milestone/project-invitation/${invitedByData?.request_id}`);
+      } else if (step === 'project') {
+        navigate(`/project-details/${param?.projectId}/project/project-invitation/${invitedByData?.request_id}`);
+      } else {
+        navigate(step);
+      }
     }
   };
-  console.log(steps);
 
   return (
     <CustomStepWrap>
@@ -85,7 +85,6 @@ const CustomStep = ({ onChangeStep, steps, currentStep }) => {
           key={item.title}
           className={`stepper ${currentStep === item.title.toLowerCase() ? 'active' : 'cursor-pointer'}`}
         >
-          {console.log(currentStep, item.title.toLowerCase())}
           <span className="stepper-box">{item.icon}</span>
           <span className="stepper-label">
             <span className="stepper-title">{item.title}</span>

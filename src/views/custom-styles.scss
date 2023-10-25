@@ -83,3 +83,11 @@
     }
   }
 }
+
+.form-control:disabled {
+  background-color: #fff;
+}
+
+.payment-form-control:disabled {
+background-color: #efefef !important;
+}

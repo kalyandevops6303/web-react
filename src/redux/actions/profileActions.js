@@ -1,3 +1,4 @@
+import ShowToastMessage from '../../@core/components/toast';
 import {
   getClientService,
   getRecentProjectService,
@@ -5,9 +6,11 @@ import {
   getTalentService,
   makeFavService,
   removeFavService,
+  reportService,
 } from '../../services/profileServices';
 import { getTeamById } from '../../services/teamServices';
 import { userTypes } from '../../utility/constants/Constant';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
   getProfileFailure,
@@ -21,6 +24,9 @@ import {
   getReviewSuccess,
   makeFavSuccess,
   removeFavSuccess,
+  reportFailure,
+  reportRequest,
+  reportSuccess,
 } from '../reducers/profile';
 import { getRequestStatus } from './inviteTalent';
 
@@ -97,4 +103,16 @@ const getReview =
     }
   };
 
-export { getProfile, makeFavourite, removeFavourite, getRecentProjects, getReview };
+const reportProfile = (data, onSuccess) => async (dispatch) => {
+  dispatch(reportRequest());
+  try {
+    const res = await reportService(data);
+    dispatch(reportSuccess(res.data.data));
+    onSuccess();
+    ShowToastMessage(SUCCESS, res.data.data.message);
+  } catch (error) {
+    errorHandler(error, reportFailure);
+  }
+};
+
+export { getProfile, makeFavourite, removeFavourite, getRecentProjects, getReview, reportProfile };

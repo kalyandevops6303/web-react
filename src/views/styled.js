@@ -44,11 +44,11 @@ const CustomBadge = styled.span`
   .ACCEPTED {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
-    border: 1px solid ${theme.lighGreenColor};
   }
   .IN_REVIEW,
   .ON_GOING,
-  .REVIEWED {
+  .REVIEWED,
+  .DRAFT {
     background: ${theme.orange}1f;
     color: ${theme.orange};
   }
@@ -74,12 +74,14 @@ const CustomBadge = styled.span`
 
 const FormWrapper = styled.div`
   .select__placeholder,
-  .wide__placeholder {
+  .wide__placeholder,
+  .name__placeholder {
     font-size: 12px;
     color: ${theme.textMuted};
   }
   .select__indicator,
-  .wide__indicator {
+  .wide__indicator,
+  .name__indicator {
     svg {
       color: ${theme.textMuted};
     }
@@ -104,6 +106,11 @@ const SecondaryFiltersWrap = styled.div`
     min-width: 12rem;
     width: 12rem;
   }
+  .name__control {
+    min-width: 14rem;
+    width: 14rem;
+  }
+
   .wide__menu {
     width: 250px;
   }
@@ -150,11 +157,13 @@ const SecondaryFiltersWrap = styled.div`
       width: 100%;
       margin-bottom: 1rem;
     }
-    .wide__control {
+    .wide__control,
+    .name__control {
       width: 100%;
       margin-bottom: 1rem;
     }
-    .wide__menu {
+    .wide__menu,
+    .name__menu {
       width: 100%;
     }
     .reset-btn {

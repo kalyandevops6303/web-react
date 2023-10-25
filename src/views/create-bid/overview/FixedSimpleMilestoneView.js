@@ -70,7 +70,7 @@ const FixedSimpleMilestoneView = () => {
         description: yup
           .string()
           .min(4, 'Description must be at least 4 characters')
-          .max(250, 'Description must be 250 characters or less')
+          .max(500, 'Description must be 500 characters or less')
           .transform((value) => (value === '' ? undefined : value))
           .optional(),
         deliverables: yup.array().of(
@@ -536,7 +536,7 @@ const FixedSimpleMilestoneView = () => {
                           <div className="d-flex justify-content-between align-items-center w-100">
                             <p className="fw-bold font-medium-1 m-0 ms-25">Milestone {milestoneIndex + 1}</p>
                             <Row className="d-flex justify-content-end">
-                              <Col sm="12" md="12" lg="3">
+                              <Col sm="12" md="12" lg="4">
                                 <div className="me-2">
                                   <Label className="fw-normal form-label" for="duration">
                                     Duration<span className="label-asterisk me-50">*</span>
@@ -703,7 +703,7 @@ const FixedSimpleMilestoneView = () => {
                                     <Info size={18} color={theme.infoIcon} id="logo-info" className="ms-50" />
                                   </div>
                                   <UncontrolledTooltip placement="right" target="logo-info">
-                                    <p className="m-0">Give description in 250 characters or less</p>
+                                    <p className="m-0">Give description in 500 characters or less</p>
                                   </UncontrolledTooltip>
                                   <Controller
                                     id={`milestones[${milestoneIndex}].description`}
@@ -722,7 +722,7 @@ const FixedSimpleMilestoneView = () => {
                                         {...field}
                                         type="textarea"
                                         rows="4"
-                                        placeholder="Enter description in 250 characters"
+                                        placeholder="Enter description in 500 characters"
                                         invalid={
                                           errors &&
                                           errors.milestones &&

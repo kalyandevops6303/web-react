@@ -15,6 +15,7 @@ const steps = [
     title: 'Milestone',
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
+    isDisabled: true,
   },
   {
     title: 'Payment',
@@ -26,6 +27,7 @@ const steps = [
     title: 'Rating',
     subtitle: 'Give and get ratings',
     icon: <Star size={18} />,
+    isDisabled: true,
   },
 ];
 const InviteView = [
@@ -38,8 +40,7 @@ const InviteView = [
     title: 'Milestone',
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
-    // eslint-disable-next-line no-undef
-    isDisabled: window.location.pathname.split('/').includes('project-invitation-by-client'),
+    isDisabled: false,
   },
   {
     title: 'Payment',

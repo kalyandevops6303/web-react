@@ -46,10 +46,10 @@ const validateReferral = (token) => async (dispatch) => {
   }
 };
 
-const convertReferral = (referralId, userId, userType, onSuccess) => async (dispatch) => {
+const convertReferral = (referralId, email, onSuccess) => async (dispatch) => {
   dispatch(convertReferralRequest());
   try {
-    const res = await convertReferralService(referralId, userId, userType);
+    const res = await convertReferralService(referralId, email);
     dispatch(convertReferralSuccess(res.data.data));
     onSuccess();
   } catch (error) {

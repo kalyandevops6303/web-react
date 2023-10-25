@@ -1,21 +1,24 @@
 import { Card, CardBody, CardText, CardTitle, Badge } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import hat from '@src/assets/images/hat.svg';
 import { Heart } from 'react-feather';
+import { useState } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { TeamCardWrap } from './style';
 import theme from '../../configs/themeVariables';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 
 const Team = ({ data, isSearchPage }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const users = [];
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   data?.team_members?.map((user) =>
     users.push({
       title: `${user?.full_name ?? user?.first_name}` || 'user',
@@ -26,11 +29,22 @@ const Team = ({ data, isSearchPage }) => {
     }),
   );
 
-  const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ user_id: data?._id, user_type: data?.user_type }));
+  const handleLike = (e) => {
+    e.stopPropagation();
+    setIsFavorite(true);
+    dispatch(
+      makeFav({
+        user_id: data?._id,
+        user_type: data?.user_type,
+        onSuccess: () => {},
+        onError: () => setIsFavorite(false),
+      }),
+    );
   };
-  const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ team_id: data?._id }));
+  const handleUnLike = (e) => {
+    e.stopPropagation();
+    setIsFavorite(false);
+    dispatch(removeFav({ team_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
   const giveStrokeColor = (percentage) => {
@@ -44,17 +58,19 @@ const Team = ({ data, isSearchPage }) => {
     }
   };
 
+  const handleCard = () => {
+    navigate(`/profile/team/${data?._id}`);
+  };
+
   return (
     <TeamCardWrap>
-      <Card>
+      <Card onClick={handleCard} className="cursor-pointer">
         <CardBody>
-          <div className="d-flex">
+          <div className="d-flex teamcard-flex-cloumn">
             <div className="w-75">
               <div className="d-flex justify-content-between">
                 <CardTitle className="card-title mb-1 d-flex justify-space-between">
-                  <Link to={`/profile/team/${data?._id}`}>
-                    <span>{data?.name}</span>
-                  </Link>
+                  <span>{data?.name}</span>
                 </CardTitle>
                 {/* <span className="me-3">
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
@@ -81,7 +97,7 @@ const Team = ({ data, isSearchPage }) => {
                 <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
               </div>
             </div>
-            <div className="w-25">
+            <div className="w-25 teamcard-width">
               <div className="d-flex flex-column align-items-start">
                 <div className="d-flex w-100 justify-content-end gap-1">
                   {data?.is_alma_mater && (
@@ -91,16 +107,16 @@ const Team = ({ data, isSearchPage }) => {
                   )}
                   {!isSearchPage && (
                     <div className="mb-25">
-                      {data?.is_favorite ? (
+                      {isFavorite ? (
                         <Heart
                           className="cursor-pointer d-flex heart"
                           fill={theme.red}
                           stroke={theme.red}
-                          onClick={handleUnLike}
+                          onClick={(e) => handleUnLike(e)}
                           size={20}
                         />
                       ) : (
-                        <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                        <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
                       )}
                     </div>
                   )}
@@ -135,8 +151,8 @@ const Team = ({ data, isSearchPage }) => {
                 </div>
               </div>
               <div className="">
-                <BadgeGroup title="Skills" data={data?.skills} color="light-blue" user_id={data?.user_id} />
-                <BadgeGroup title="Tools" data={data?.tools} color="light-blue" user_id={data?.user_id} />
+                <BadgeGroup title="Skills" data={data?.skills} color="light-blue" id={`tooltip-skills-${data?._id}`} />
+                <BadgeGroup title="Tools" data={data?.tools} color="light-blue" id={`tooltip-tools-${data?._id}`} />
               </div>
             </div>
           </div>

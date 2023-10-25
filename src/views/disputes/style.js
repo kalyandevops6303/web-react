@@ -61,6 +61,14 @@ export const DisputeClosedModalContainer = styled.div`
   .text-blue {
     color: ${theme.lightBlueColor};
   }
+
+  .description-container {
+    width: 28rem;
+
+    .description {
+      word-wrap: break-word;
+    }
+  }
 `;
 
 export const RepliesContainer = styled.div`
