@@ -4,26 +4,26 @@ import Proptypes from 'prop-types';
 import { formatDate } from '../../../utility/Utils';
 
 const PaymentTable = ({ transactions = [] }) => {
-  const [selectedPayment, setSelectedPayment] = useState([]);
+  const [selectedPaymentId, setSelectedPaymentId] = useState([]);
+  const [selectedPaymentData, setSelectedPaymentData] = useState([]);
 
   const handlePaymentSelect = (e) => {
     const id = e.target.name;
-    const isExisting = selectedPayment.find((item) => item === id);
+    const isExisting = selectedPaymentData.find((item) => item._id === id);
     if (isExisting) {
-      const newArray = selectedPayment.filter((item) => item !== id);
-      setSelectedPayment(newArray);
+      const newArray = selectedPaymentData.filter((item) => item._id !== id);
+      const newData = selectedPaymentId.filter((item) => item !== id);
+      setSelectedPaymentData(newArray);
+      setSelectedPaymentId(newData);
     }
     if (!isExisting) {
-      setSelectedPayment((prev) => [...prev, id]);
+      const selectedTransaction = transactions.find((item) => item._id === id);
+      setSelectedPaymentData((prev) => [...prev, selectedTransaction]);
+      setSelectedPaymentId((prev) => [...prev, id]);
     }
   };
 
-  const totalAmount = transactions.reduce((acc, curr) => {
-    if (selectedPayment.includes(curr?._id)) {
-      return acc + curr.amount;
-    }
-    return 0;
-  }, 0);
+  const totalAmount = selectedPaymentData.reduce((acc, curr) => acc + curr.amount, 0);
 
   const trumioFee = (totalAmount * 20) / 100;
   const totalPending = totalAmount + trumioFee;
@@ -53,7 +53,7 @@ const PaymentTable = ({ transactions = [] }) => {
                   <td>
                     <Input
                       type="checkbox"
-                      checked={selectedPayment.includes(item._id)}
+                      checked={selectedPaymentId.includes(item?._id)}
                       name={item?._id}
                       onChange={(e) => handlePaymentSelect(e)}
                       className="p-50"
@@ -72,13 +72,13 @@ const PaymentTable = ({ transactions = [] }) => {
           </Table>
         </div>
         <div className="d-flex w-100 mt-2 justify-content-between">
-          <CardText>Trumio fee 20%</CardText>
+          <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Trumio fee 20%</CardText>
           <CardText>{`$${trumioFee}`}</CardText>
         </div>
         <hr />
         <div className="d-flex w-100 mt-2 justify-content-between">
-          <CardText>Inclusive of Trumio fee 20%</CardText>
-          <b>{`$${totalPending}`}</b>
+          <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Inclusive of Trumio fee 20%</CardText>
+          <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${totalPending}`}</CardText>
         </div>
 
         <div className="d-flex justify-content-end w-100 mt-5">

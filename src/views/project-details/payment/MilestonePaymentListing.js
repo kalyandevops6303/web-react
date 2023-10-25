@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import MilestonePaymentBox from './MilestonePaymentBox';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
+import MakePaymentModal from '../../modals/MakePaymentModal';
 
 function MilestonePaymentListing() {
   const [selectedMilestone, setSelectedMilestone] = useState([]);
+  const [makePaymentModal, setMakePaymentModal] = useState(false);
 
   const projectDetailsData = useSelector(projectDetails);
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneDetails);
@@ -28,11 +30,25 @@ function MilestonePaymentListing() {
     }
   };
 
-  const handleSelectedMilestonePayment = () => {};
+  const handleSelectedMilestonePayment = () => {
+    setMakePaymentModal(true);
+  };
+
+  const handleCancel = () => {
+    setMakePaymentModal(false);
+  };
   return (
     <div className="mt-2">
+      {makePaymentModal && (
+        <MakePaymentModal
+          isLoading={false}
+          modal={makePaymentModal}
+          toggleModal={handleCancel}
+          selectedMilestone={selectedMilestone}
+        />
+      )}
       {milestoneDataLoading ? (
-        <div>
+        <div className="d-flex justify-content-center">
           <Spinner size="sm" color="light-success" className="d-flex align-items-center" />
         </div>
       ) : (
@@ -51,7 +67,7 @@ function MilestonePaymentListing() {
               />
             ))}
           <div className="d-flex justify-content-end">
-            <Button color="primary" onClick={handleSelectedMilestonePayment}>
+            <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={selectedMilestone.length === 0}>
               Make Payment
             </Button>
           </div>

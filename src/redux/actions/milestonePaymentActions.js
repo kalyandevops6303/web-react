@@ -1,4 +1,5 @@
 import { projectMilestonesService } from '../../services/projectMilestoneService';
+import { makeMilestonePaymentService } from '../../services/paymentDetailService';
 import errorHandler from '../../utility/errorHandler';
 import {
   milestonePaymentFailure,
@@ -17,6 +18,15 @@ const getMilestonePaymentListing = (project_id, onSuccess) => async (dispatch) =
   }
 };
 
-const paymentDetails = () => {};
+const makeMilestonePayment = (data, onSuccess) => async (dispatch) => {
+  dispatch(milestonePaymentRequest());
+  try {
+    const res = await makeMilestonePaymentService(data);
+    dispatch(milestonePaymentSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, milestonePaymentFailure);
+  }
+};
 
-export { getMilestonePaymentListing, paymentDetails };
+export { getMilestonePaymentListing, makeMilestonePayment };
