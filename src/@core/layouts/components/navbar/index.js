@@ -98,11 +98,10 @@ const ThemeNavbar = (props) => {
   }, [userData]);
 
   useEffect(() => {
-    if(location?.pathname?.split?.('/')?.[3] === userData?._id ) setActiveTab('');
-    if(location?.pathname?.split?.('/')?.[1]==="notifications") setActiveTab('')
-    if(location?.pathname?.split?.('/')?.[1]==="search") setActiveTab('')
-  },[location])
-
+    if (location?.pathname?.split?.('/')?.[3] === userData?._id) setActiveTab('');
+    if (location?.pathname?.split?.('/')?.[1] === 'notifications') setActiveTab('');
+    if (location?.pathname?.split?.('/')?.[1] === 'search') setActiveTab('');
+  }, [location]);
 
   return (
     <HeadWrapper className={className}>
@@ -129,7 +128,7 @@ const ThemeNavbar = (props) => {
       >
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
-          <span className="ms-25 mt-25">v0.0.6</span>
+          <span className="ms-25 mt-25">v0.0.7</span>
         </span>
       </div>
 
