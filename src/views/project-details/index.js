@@ -17,8 +17,8 @@ import Milestone from './milestones/Milestone';
 import RatingView from './overview/RatingView';
 import { getItem } from '../../utility/localStorageControl';
 import BidMilestone from './overview/BidMilestone';
-import MilestonePaymentBox from './payment/MilestonePaymentBox';
 import PaymentTab from './payment/PaymentTab';
+import MilestonePaymentListing from './payment/MilestonePaymentListing';
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -81,7 +81,7 @@ const ProjectDetails = () => {
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
           <LeftSidebarProjectDetails />
-          {isMilestoneTab ? <MilestonePaymentBox /> : null}
+          {isMilestoneTab ? <MilestonePaymentListing /> : null}
         </Col>
         <Col lg="9">
           <CustomStep steps={isInviteView ? InviteView : steps} currentStep={currentStep} onChangeStep={changeStep} />

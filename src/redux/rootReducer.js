@@ -25,6 +25,7 @@ import dispute from './reducers/dispute';
 import rating from './reducers/rating';
 import referralAndReward from './reducers/referralAndReward';
 import stripeDetails from './reducers/stripeDetails';
+import milestonePayment from './reducers/milestonePayment';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -51,6 +52,7 @@ const rootReducer = combineReducers({
   rating,
   referralAndReward,
   stripeDetails,
+  milestonePayment,
 
   // Add more reducers if needed
 });
