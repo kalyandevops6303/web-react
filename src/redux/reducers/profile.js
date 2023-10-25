@@ -5,6 +5,7 @@ const initialState = {
   userRecentProject: [],
   userReview: [],
   isLoading: false,
+  reportLoading: false,
   error: null,
 };
 
@@ -83,6 +84,20 @@ const profileSlice = createSlice({
       error: action.payload,
     }),
 
+    reportRequest: (state) => ({
+      ...state,
+      reportLoading: true,
+      error: null,
+    }),
+    reportSuccess: (state) => ({
+      ...state,
+      reportLoading: false,
+    }),
+    reportFailure: (state) => ({
+      ...state,
+      reportLoading: false,
+    }),
+
     clearData: (state) => ({
       ...state,
       userProfile: {},
@@ -105,6 +120,9 @@ export const {
   getReviewRequest,
   getReviewSuccess,
   getReviewFailure,
+  reportRequest,
+  reportSuccess,
+  reportFailure,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

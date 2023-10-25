@@ -37,6 +37,19 @@ const Alerts = () => {
     });
   };
 
+  const isDisputesNotification = (type) => {
+    switch (type) {
+      case 'Dispute Created':
+        return true;
+      case 'Dispute Replied!':
+        return true;
+      case 'Dispute Resolved!':
+        return true;
+      default:
+        return false;
+    }
+  };
+
   const isReqeustFlowStatus = (status) => {
     switch (status) {
       case 'Project Invitation Request':
@@ -83,9 +96,19 @@ const Alerts = () => {
     }
   };
 
+  const disputesAlertRedirection = (type) => {
+    if (type === 'Dispute Created' || type === 'Dispute Replied!') {
+      navigate(`/disputes/open`);
+    } else if (type === 'Dispute Resolved!') {
+      navigate(`/disputes/resolved`);
+    } else {
+      navigate(`/disputes/open`);
+    }
+  };
+
   const handleView = (data) => {
     // setSwitchProfileModal(true);
-    setSwitchData(data);
+    setSwitchData({ ...data, isDisputeAlert: isDisputesNotification(data?.title) });
 
     if (userDetailsData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
       setSwitchProfileModal(true);
@@ -95,9 +118,15 @@ const Alerts = () => {
         projectId: data?.custom_payload?.request_for?.project_id,
         inviteId: data?.custom_payload?.request_id,
       });
+    } else if (isDisputesNotification(data?.title)) {
+      disputesAlertRedirection(data?.title);
     } else {
       redirectionFunction({ projectId: data?.custom_payload?.project_id });
     }
+  };
+
+  const handleRedirection = () => {
+    navigate('/notifications');
   };
   return (
     <AlertCardWrapper>
@@ -200,7 +229,7 @@ const Alerts = () => {
               </Card>
             ))}
           {alerts?.alerts?.metadata?.total_records > 4 && (
-            <span className="mb-1 additional-text text-center d-block">
+            <span onClick={handleRedirection} className="cursor-pointer mb-1 additional-text text-center d-block">
               +{alerts.alerts.metadata.total_records - 4} more
             </span>
           )}
@@ -211,6 +240,7 @@ const Alerts = () => {
           data={switchData}
           modal={switchProfileModal}
           toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
+          disputesAlertRedirection={disputesAlertRedirection}
         />
       )}
     </AlertCardWrapper>

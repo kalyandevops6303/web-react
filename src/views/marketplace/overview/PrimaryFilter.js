@@ -5,19 +5,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from '../../user-details/overview/Statbox';
-import { getItem } from '../../../utility/localStorageControl';
 import { getCardInfo } from '../../../redux/actions/marketPlaceActions';
 import { userTypes } from '../../../utility/constants/Constant';
+import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
-const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType }) => {
+const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state.marketPlace.cardData);
+  const isLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
 
-  const userData = getItem('userData');
-
+  const userData = useSelector(selectAuthUserData);
+  const userType = userData?.user_type;
   useEffect(() => {
     dispatch(getCardInfo({ userType: userData?.user_type, onSuccess: () => {}, onError: () => {} }));
   }, []);
+
+  if (isLoading && !selectCardData) {
+    return <ComponentSpinner />;
+  }
 
   return (
     <Row className="primary-row">
@@ -129,13 +135,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab, userType })
 
 PrimaryFilter.propTypes = {
   isTab: PropTypes.bool,
-  userType: PropTypes.string,
   selected: PropTypes.string,
   handlePrimaryChangeFilter: PropTypes.func,
 };
 PrimaryFilter.defaultProps = {
   isTab: false,
-  userType: '',
   selected: 'all-listings',
   handlePrimaryChangeFilter: () => {},
 };

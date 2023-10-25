@@ -1,16 +1,21 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import React from 'react';
+import React, { useState } from 'react';
 import Proptypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { Badge, Card, CardBody, CardText } from 'reactstrap';
+import { Badge, Card, CardBody, CardText, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 import DateTime from '../../../lib/date-time';
+import ProjectModalViews from './ProjectModalViews';
 
 const ActiveProjectCardForTeam = ({ data, className }) => {
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [switchModal, setSwitchModal] = useState(false);
+
+  const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
+  const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
   const statusEnum = {
     OPEN: 'Open Listing',
@@ -22,7 +27,8 @@ const ActiveProjectCardForTeam = ({ data, className }) => {
   };
 
   const viewProject = () => {
-    navigate(`/project-details/${data._id}/bid`);
+    // navigate(`/project-details/${data._id}/milestone`);
+    setShowModal(true);
   };
 
   return (
@@ -34,7 +40,9 @@ const ActiveProjectCardForTeam = ({ data, className }) => {
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <p className="active-project-name mt-1">{data?.name}</p>
+          <p className="active-project-name mt-1 truncate-2" style={{ height: '40px' }}>
+            {data?.name}
+          </p>
           <div className="d-flex">
             <div className="me-3">
               <div className="client-badge px-1 mb-75">
@@ -103,22 +111,32 @@ const ActiveProjectCardForTeam = ({ data, className }) => {
           </div>
           <p className="active-project-simple-heading">Milestone {data?.completed_milestones + 1}</p>
           <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
+            <div className="design-planning-wrapper justify-content-between w-100">
               <div className="design-planning">
                 <CardText className="mb-25">Due Date</CardText>
                 <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
               </div>
-              <p className="active-project-milestone-name ms-3">{data?.current_milestone?.name}</p>
+              <p className="active-project-milestone-name">{data?.current_milestone?.name}</p>
             </div>
           </div>
           <div
             onClick={viewProject}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
           >
-            View Project
+            {isModalLoading && projectModalId === data?._id ? <Spinner size="sm" /> : 'View Project'}
           </div>
         </CardBody>
       </Card>
+      {(showModal || switchModal) && (
+        <ProjectModalViews
+          isActiveProject
+          project_id={data?._id}
+          showModal={showModal}
+          toggleModal={() => setShowModal(!showModal)}
+          switchModal={switchModal}
+          setSwitchModal={setSwitchModal}
+        />
+      )}
     </ProjectWrapper>
   );
 };

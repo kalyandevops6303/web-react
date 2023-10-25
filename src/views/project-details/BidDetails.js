@@ -17,6 +17,7 @@ import AcceptBidModal from '../modals/AccpetBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { getItem } from '../../utility/localStorageControl';
 
 const BidDetails = () => {
   const dispatch = useDispatch();
@@ -65,34 +66,50 @@ const BidDetails = () => {
 
   if (isLoading) return <ComponentSpinner />;
 
+  const fromLocationPrimary = () => {
+    if (getItem('baseRoute') === 'marketplace')
+      return {
+        title: 'Marketplace',
+        link: `/marketplace/${getItem('selectedMarketplaceTab') ? getItem('selectedMarketplaceTab') : 'all_listings'}`,
+      };
+    if (getItem('baseRoute') === 'projects') return { title: 'Project', link: '/projects' };
+    if (getItem('baseRoute') === 'notification') return { title: 'Notifications', link: '/notifications' };
+    if (getItem('baseRoute') === 'dashboard') return { title: 'Dashboard', link: '/dashboard' };
+    if (getItem('baseRoute') === 'my-teams') return { title: 'My teams', link: '/my-teams' };
+    return '';
+  };
   return (
     <BidDetailsWrap>
-      <div className="d-flex justify-content-between mb-1" style={{ position: 'relative' }}>
-        <BreadCrumbs
-          data={[
-            { title: 'Marketplace', link: '/marketplace/all_listings' },
-            { title: location?.state?.projectName, link: location?.state?.link },
-            { title: 'Bid Details' },
-          ]}
-        />
-        <div style={{ position: 'fixed', zIndex: 1, right: '20px' }}>
-          {isBidStatusUpating ? (
-            'Updating...'
-          ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
-            <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
-          ) : (
-            <div className="d-flex gap-2 align-items-center">
-              <CardText
-                onClick={() => setRejectBidModal(true)}
-                className="cursor-pointer report-text m-0 text-center fw-bold"
-              >
-                Reject
-              </CardText>
-              <span>
-                <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
-                  Accept
-                </Button>
-              </span>
+      <div className="d-flex justify-content-between mb-2 pb-2 rounded" style={{ position: 'relative' }}>
+        <div className="d-flex justify-content-between fixed-header">
+          <BreadCrumbs
+            data={[
+              fromLocationPrimary(),
+              { title: location?.state?.projectName, link: location?.state?.link },
+              { title: 'Bid Details' },
+            ]}
+          />
+          {bidInfo?.is_acceptable && (
+            <div>
+              {isBidStatusUpating ? (
+                'Updating...'
+              ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
+                <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
+              ) : (
+                <div style={{ marginTop: '-0.2rem' }} className="d-flex gap-2 align-items-center pe-1">
+                  <CardText
+                    onClick={() => setRejectBidModal(true)}
+                    className="cursor-pointer report-text m-0 text-center fw-bold"
+                  >
+                    Reject
+                  </CardText>
+                  <span>
+                    <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
+                      Accept
+                    </Button>
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -132,7 +149,7 @@ const BidDetails = () => {
         />
       )}
 
-      <Row>
+      <Row className="pt-1">
         <Col lg="3">
           <LeftSidebarProfile
             isProjectDetailsView

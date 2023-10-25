@@ -29,11 +29,19 @@ import ProjectCard from '../../cards/MarketPlaceProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
-import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from '../../../utility/constants/Constant';
+import {
+  bidStatusesOptions,
+  projectTypesOptions,
+  sortingOptions,
+  statusForAllListing,
+  statusesOptions,
+  userTypes,
+} from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
 import TeamCard from '../../cards/TeamCard';
 import ClientCard from '../../cards/ClientCard';
 import TalentCard from '../../cards/TalentCard';
+import { ResponsiveGrid } from '../../cards/style';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -49,14 +57,17 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const selectMarkeMetaData = useSelector((state) => state.marketPlace.metaData);
   const currentPreview = useSelector((state) => state.marketPlace.currentPreview);
   const isLoading = useSelector((state) => state.marketPlace.loading);
+  const isCardLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
+  const selectCardData = useSelector((state) => state?.marketPlace?.cardData);
 
   const metaData = { page: 1, page_size: 10 };
   const [secondFilterState, setSecondFilterState] = useState({
     statuses: [],
+    bid_statuses: [],
     project_types: [],
     skills: [],
     tools: [],
-    sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMADED' }] : [],
+    sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMENDED' }] : [],
     industries: [],
     project_areas: [],
   });
@@ -68,7 +79,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const isRecommanded = sort_by[0]?.value === 'RECOMMADED';
+  const isRecommanded = sort_by[0]?.value === 'RECOMMENDED';
   const isFavorite = sort_by[0]?.value === 'FAVOURITE';
 
   useEffect(() => {
@@ -106,6 +117,19 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [currentPreview]);
 
+  const getCardComp = () => {
+    if (primaryFilter === 'talents') {
+      return TalentCard;
+    }
+    if (primaryFilter === 'clients') {
+      return ClientCard;
+    }
+    if (primaryFilter === 'teams') {
+      return TeamCard;
+    }
+    return ProjectCard;
+  };
+
   const onSuccess = () => {};
   const onError = () => {
     setHasMore(false);
@@ -116,6 +140,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       valuesOnly[key] = secondFilterState[key].map((item) => item.value);
     });
+
     if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
       dispatch(
         getUsers({
@@ -152,7 +177,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     if (location?.state?.isRecommended) {
       setSecondFilterState({
         ...secondFilterState,
-        sort_by: [{ label: 'Recommended', value: 'RECOMMADED' }],
+        sort_by: [{ label: 'Recommended', value: 'RECOMMENDED' }],
       });
     }
   }, [location]);
@@ -178,6 +203,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const handleReset = () => {
     setSecondFilterState({
       statuses: [],
+      bid_statuses: [],
       project_types: [],
       skills: [],
       tools: [],
@@ -374,6 +400,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       </Popover>
     </>
   );
+  if (isCardLoading && !selectCardData) {
+    return <div />;
+  }
 
   return (
     <>
@@ -410,7 +439,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               primaryFilter === 'teams') &&
               !inMyBids && (
                 <Col>
-                  <Label className="form-label">Sort by</Label>
+                  <Label className="form-label">{primaryFilter === 'all_listings' ? 'Project' : 'Type'}</Label>
                   <Select
                     isClearable
                     options={sortingOptions}
@@ -426,24 +455,52 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   />
                 </Col>
               )}
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
+            {primaryFilter === 'my_bids' && userType !== userTypes.client ? (
               <Col>
-                <Label className="form-label">Status</Label>
+                <Label className="form-label">Bid status</Label>
                 <Select
                   isClearable
-                  options={statusesOptions}
+                  options={bidStatusesOptions}
                   classNamePrefix="select"
                   placeholder="Select status"
                   theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('statuses', value)}
+                  onChange={(value) => onChangeFilter('bid_statuses', value)}
                   value={
-                    secondFilterState.statuses.length > 0
-                      ? { value: secondFilterState.statuses[0].value, label: secondFilterState.statuses[0].label }
+                    secondFilterState.bid_statuses.length > 0
+                      ? {
+                          value: secondFilterState.bid_statuses[0].value,
+                          label: secondFilterState.bid_statuses[0].label,
+                        }
                       : null
                   }
                 />
               </Col>
+            ) : (
+              <span className="w-auto">
+                {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
+                  <Col>
+                    <Label className="form-label">Status</Label>
+                    <Select
+                      isClearable
+                      options={primaryFilter === 'all_listings' ? statusForAllListing : statusesOptions}
+                      classNamePrefix="select"
+                      placeholder="Select status"
+                      theme={selectThemeColors}
+                      onChange={(value) => onChangeFilter('statuses', value)}
+                      value={
+                        secondFilterState.statuses.length > 0
+                          ? {
+                              value: secondFilterState.statuses[0].value,
+                              label: secondFilterState.statuses[0].label,
+                            }
+                          : null
+                      }
+                    />
+                  </Col>
+                )}
+              </span>
             )}
+
             {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
               <Col>
                 <Label className="form-label">Payment type</Label>
@@ -568,56 +625,51 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       {isLoading ? (
         <ComponentSpinner />
       ) : (
-        <InfiniteScroll
-          dataLength={selectMarketPlaceData?.length}
-          next={fetchMore}
-          hasMore={hasMore}
-          endMessage={
-            <div className="d-flex justify-content-center ">
-              {selectMarketPlaceData?.length === 0 ? (
-                <NoDataFoundComponent
-                  isMyListing={primaryFilter === 'my_listings'}
-                  isRecommanded={isRecommanded}
-                  data={selectMarketPlaceData}
-                />
-              ) : (
-                ''
-              )}
-            </div>
-          }
-          loader={<div className="d-flex justify-content-center">Loading...</div>}
-        >
-          <div
-            className="justify-content-between grid-layout"
+        <ResponsiveGrid>
+          <InfiniteScroll
+            dataLength={selectMarketPlaceData?.length}
+            next={fetchMore}
+            hasMore={hasMore}
+            endMessage={
+              <div className="d-flex justify-content-center ">
+                {selectMarketPlaceData?.length === 0 ? (
+                  <NoDataFoundComponent
+                    isMyListing={primaryFilter === 'my_listings'}
+                    isRecommanded={isRecommanded}
+                    data={selectMarketPlaceData}
+                  />
+                ) : (
+                  ''
+                )}
+              </div>
+            }
+            loader={<div className="d-flex justify-content-center">Loading...</div>}
+            className="responsive-grid"
             style={
               primaryFilter === 'clients'
-                ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                ? {
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill,minmax(33%,auto))',
+                  }
                 : {}
             }
           >
             {selectMarketPlaceData?.map((item) => {
-              const CardComponent =
-                // eslint-disable-next-line no-nested-ternary
-                primaryFilter === 'talents'
-                  ? TalentCard
-                  : // eslint-disable-next-line no-nested-ternary
-                  primaryFilter === 'clients'
-                  ? ClientCard
-                  : primaryFilter === 'teams'
-                  ? TeamCard
-                  : ProjectCard;
+              const CardComponent = getCardComp();
+
               return (
                 <CardComponent
                   key={item?._id || item?.id}
                   data={item}
                   isPopoverOpen={popoverOpen}
                   isExpanded={isExpanded}
+                  primaryFilter={primaryFilter}
                   userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
                 />
               );
             })}
-          </div>
-        </InfiniteScroll>
+          </InfiniteScroll>
+        </ResponsiveGrid>
       )}
     </>
   );

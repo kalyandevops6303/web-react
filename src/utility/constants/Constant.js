@@ -24,7 +24,11 @@ const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
 };
-const createBidSteps = [
+const createBidTalentSteps = [
+  { title: 'Milestone', subtitle: 'Add milestone', icon: <Watch size={18} /> },
+  { title: 'Preview', subtitle: 'Review before posting', icon: <Check size={18} /> },
+];
+const createBidTeamSteps = [
   { title: 'Team', subtitle: 'Add role & hourly rates', icon: <Box size={18} /> },
   { title: 'Milestone', subtitle: 'Add milestone & role', icon: <Watch size={18} /> },
   { title: 'Preview', subtitle: 'Review before posting', icon: <Check size={18} /> },
@@ -35,6 +39,14 @@ const bidTypes = {
   advanced: 'ADVANCED',
 };
 const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+const bidStatusesOptions = [
+  { label: 'New', value: 'NEW' },
+  { label: 'Reviewed', value: 'REVIEWED' },
+  { label: 'Accepted', value: 'ACCEPTED' },
+  { label: 'Closed', value: 'REJECTED' },
+];
+
 const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
   { label: 'In-review', value: 'IN_REVIEW' },
@@ -42,20 +54,19 @@ const statusesOptions = [
   { label: 'Closed', value: 'CLOSED' },
   { label: 'On Going', value: 'ON_GOING' },
 ];
+const statusForAllListing = [
+  { label: 'Open', value: 'OPEN' },
+  { label: 'In-review', value: 'IN_REVIEW' },
+];
 const projectTypesOptions = [
   { label: 'Fixed', value: 'FIXED' },
   { label: 'Variable', value: 'VARIABLE' },
 ];
 const sortingOptions = [
   { label: 'New', value: 'NEW' },
-  { label: 'Recommended', value: 'RECOMMADED' },
+  { label: 'Recommended', value: 'RECOMMENDED' },
   { label: 'Favorite', value: 'FAVOURITE' },
 ];
-const USD = {
-  _id: '6478b0d1679b91d695ad534a',
-  name: 'US Dollar',
-  code: 'USD',
-};
 const disputeStatuses = {
   open: 'OPEN',
   underReview: 'UNDER_REVIEW',
@@ -78,9 +89,11 @@ export {
   projectTypesOptions,
   validEmailRegex,
   maxFileSize,
-  createBidSteps,
+  createBidTalentSteps,
+  createBidTeamSteps,
   bidTypes,
-  USD,
   disputeStatuses,
   disputeStatusEnum,
+  bidStatusesOptions,
+  statusForAllListing,
 };

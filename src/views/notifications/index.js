@@ -17,6 +17,7 @@ import SwitchConfirmModal from '../modals/SwitchConfirm';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { setItem } from '../../utility/localStorageControl';
 
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
@@ -38,7 +39,7 @@ const Notifications = () => {
   const isLoading = useSelector(notificationsLoading);
   useEffect(() => {
     dispatch(getNotifications('', 1, 10, []));
-
+    setItem('baseRoute', 'notification');
     return () => dispatch(clearNotificationsData());
   }, []);
 

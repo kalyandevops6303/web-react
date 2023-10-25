@@ -3,6 +3,8 @@ import DataService from '../configs/dataService/dataService';
 
 const userDataService = () => DataService.get(API.dashboard.userData);
 
+const totalReferralAmountService = () => DataService.get(API.dashboard.totalReferralAmount);
+
 const recommendedProjectsService = () => DataService.get(API.dashboard.recommendedProjects);
 
 const profilePercentageService = () => DataService.get(API.dashboard.profilePercentage);
@@ -58,8 +60,12 @@ const activeProjectsForTeamService = () => DataService.get(API.dashboard.activeP
 
 const upcomingProjectsForTeamService = () => DataService.get(API.dashboard.upcomingProjectsForTeam);
 
+const getModalDataService = ({ project_id }) =>
+  DataService.get(`${API.dashboard.getProjectDetails}?project_id=${project_id}`);
+
 export {
   alertService,
+  getModalDataService,
   recommendedProjectsTeamService,
   userDataService,
   removeMemberService,
@@ -85,4 +91,5 @@ export {
   upcomingProjectsForTalentService,
   activeProjectsForTeamService,
   upcomingProjectsForTeamService,
+  totalReferralAmountService,
 };

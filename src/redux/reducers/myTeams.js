@@ -7,15 +7,29 @@ const initialState = {
   listData: [],
   users: [],
   loading: false,
+  cardInfoLoading: false,
 };
 
 const myTeamsSlice = createSlice({
   name: 'myTeams',
   initialState,
   reducers: {
+    getCardInfoReq: (state) => ({
+      ...state,
+      cardInfoLoading: true,
+    }),
+    getCardInfoErr: (state) => ({
+      ...state,
+      cardInfoLoading: false,
+    }),
     getCardInfoSuccess: (state, action) => ({
       ...state,
+      cardInfoLoading: false,
       cardData: action.payload,
+    }),
+    clearTeamCardData: (state) => ({
+      ...state,
+      cardData: null,
     }),
     getListReq: (state) => ({
       ...state,
@@ -49,6 +63,15 @@ const myTeamsSlice = createSlice({
   },
 });
 
-export const { getCardInfoSuccess, storeSuccessData, clearData, getListReq, getListErr } = myTeamsSlice.actions;
+export const {
+  getCardInfoReq,
+  getCardInfoErr,
+  getCardInfoSuccess,
+  storeSuccessData,
+  clearData,
+  clearTeamCardData,
+  getListReq,
+  getListErr,
+} = myTeamsSlice.actions;
 
 export default myTeamsSlice.reducer;

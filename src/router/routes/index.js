@@ -32,6 +32,7 @@ import ProjectDetails from '../../views/project-details';
 import BidDetails from '../../views/project-details/BidDetails';
 import ContractView from '../../views/project-details/ContractView';
 import { userOnboarding } from '../../utility/constants/Constant';
+import Chat from '../../views/chat';
 import Projects from '../../views/projects';
 import MyTeams from '../../views/teams';
 import ReferralAndReward from '../../views/ReferralAndReward';
@@ -92,7 +93,7 @@ const Routes = [
     element: <ContractView />,
   },
   {
-    path: '/projects',
+    path: '/projects/*',
     element: <Projects />,
   },
   {
@@ -164,6 +165,10 @@ const Routes = [
   {
     path: '/referral-reward/*',
     element: <ReferralAndReward />,
+  },
+  {
+    path: '/chat',
+    element: <Chat />,
   },
 ];
 

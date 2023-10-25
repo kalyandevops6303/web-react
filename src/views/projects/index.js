@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
@@ -9,6 +8,8 @@ import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
+import { getItem, setItem } from '../../utility/localStorageControl';
+import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
 
 const ProjectContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -19,58 +20,85 @@ const ProjectContainer = styled.div`
 `;
 
 const Projects = () => {
-  // Primary filters
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
 
-  // Adjust the number of lines based on the desired limit
+  const routesMatch =
+    useMatch('/projects/ongoing') ||
+    useMatch('/projects/upcoming') ||
+    useMatch('/projects/completed') ||
+    useMatch('/projects/terminated') ||
+    useMatch('/projects/dispute') ||
+    useMatch('/projects/invited');
 
-  // eslint-disable-next-line no-undef
-  const [primaryFilter, setPrimaryFilter] = useState(localStorage?.getItem('selectedProjectTab') ?? 'ONGOING');
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') || 'ongoing');
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
+    setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
+    setItem('selectedProjectTab', routesMatch?.pathname?.split('/')?.[2]);
     dispatch(clearProjectData());
+    setItem('baseRoute', 'projects');
   }, []);
-
-  // Secondary filters
 
   const handlePrimaryChangeFilter = (props) => {
     setPrimaryFilter(props);
-    // eslint-disable-next-line no-undef
-    localStorage.setItem('selectedProjectTab', props);
+    navigate(`/projects/${props}`);
+    setItem('selectedProjectTab', props);
   };
 
   const primaryEnum = {
-    ONGOING: 'Ongoing',
-    UPCOMING: 'Upcoming',
-    COMPLETED: 'Completed',
-    TERMINATED: 'Terminated',
-    DISPUTE: 'Disputed',
+    ongoing: 'Ongoing',
+    upcoming: 'Upcoming',
+    completed: 'Completed',
+    terminated: 'Terminated',
+    dispute: 'Dispute',
+    invited: 'Invited',
   };
+  // eslint-disable-next-line react/no-unstable-nested-components
+  const SecondComp = () => <SecondaryFilters userType={userDetailsData?.user_type} primaryFilter={primaryFilter} />;
 
   return (
     <ProjectContainer>
-      <div className="d-flex justify-content-between">
-        <BreadCrumbs data={[{ title: 'Project', link: '/projects' }, { title: primaryEnum[primaryFilter] }]} />
+      <BreadCrumbs data={[{ title: 'Project', link: '/projects' }, { title: primaryEnum[primaryFilter] }]} />
 
-        {userDetailsData?.user_type === 'CLIENT' && (
-          <Link to="/create-project">
-            <Button as="link" color="primary">
-              Create Project
-            </Button>
-          </Link>
-        )}
-      </div>
+      <CreateProjectButton />
       <PrimaryFilter
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}
         isTab={isTab}
         userType={userDetailsData?.user_type}
       />
-      <SecondaryFilters primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />
+
+      <Routes>
+        <Route
+          path="ongoing"
+          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
+        />
+        <Route
+          path="upcoming"
+          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
+        />
+        <Route
+          path="completed"
+          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
+        />
+        <Route
+          path="terminated"
+          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
+        />
+        <Route
+          path="dispute"
+          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
+        />
+        <Route
+          path="invited"
+          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
+        />
+      </Routes>
     </ProjectContainer>
   );
 };

@@ -70,7 +70,7 @@ const FixedSimpleMilestoneView = () => {
         description: yup
           .string()
           .min(4, 'Description must be at least 4 characters')
-          .max(250, 'Description must be 250 characters or less')
+          .max(500, 'Description must be 500 characters or less')
           .transform((value) => (value === '' ? undefined : value))
           .optional(),
         deliverables: yup.array().of(
@@ -497,8 +497,8 @@ const FixedSimpleMilestoneView = () => {
                         {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
                       </div>
                     </Col>
-                    <Col sm="12" md="12" lg="4" className="d-flex justify-content-between me-1">
-                      <div>
+                    <Col sm="12" md="12" lg="4" className="d-flex justify-content-end me-1">
+                      <div className="me-5">
                         <Label className="form-label">Estimated Duration</Label>
                         <p className="fw-bold font-medium-1 text-end mt-50">{totalDuration}w</p>
                       </div>
@@ -527,7 +527,7 @@ const FixedSimpleMilestoneView = () => {
                   </Row>
                 </CardBody>
               </Card>
-              <Accordion className="mb-2" open={open} toggle={toggle}>
+              <Accordion className="mb-2 accordion-arrow" open={open} toggle={toggle}>
                 {milestonesFields.map((milestone, milestoneIndex) => (
                   <Card className="white-card-bg" key={milestone.id}>
                     <CardBody className="p-0">
@@ -536,10 +536,10 @@ const FixedSimpleMilestoneView = () => {
                           <div className="d-flex justify-content-between align-items-center w-100">
                             <p className="fw-bold font-medium-1 m-0 ms-25">Milestone {milestoneIndex + 1}</p>
                             <Row className="d-flex justify-content-end">
-                              <Col sm="12" md="12" lg="3">
+                              <Col sm="12" md="12" lg="4">
                                 <div className="me-2">
                                   <Label className="fw-normal form-label" for="duration">
-                                    Duration
+                                    Duration<span className="label-asterisk me-50">*</span>
                                   </Label>
                                   <Controller
                                     id={`milestones[${milestoneIndex}].duration`}
@@ -597,7 +597,7 @@ const FixedSimpleMilestoneView = () => {
                               <Col sm="12" md="12" lg="4">
                                 <div>
                                   <Label className="fw-normal form-label me-2" for="talentCost">
-                                    Talent Cost
+                                    Talent Cost<span className="label-asterisk me-50">*</span>
                                   </Label>
                                   <Controller
                                     id={`milestones[${milestoneIndex}].talentCost`}
@@ -703,7 +703,7 @@ const FixedSimpleMilestoneView = () => {
                                     <Info size={18} color={theme.infoIcon} id="logo-info" className="ms-50" />
                                   </div>
                                   <UncontrolledTooltip placement="right" target="logo-info">
-                                    <p className="m-0">Give description in 250 characters or less</p>
+                                    <p className="m-0">Give description in 500 characters or less</p>
                                   </UncontrolledTooltip>
                                   <Controller
                                     id={`milestones[${milestoneIndex}].description`}
@@ -722,7 +722,7 @@ const FixedSimpleMilestoneView = () => {
                                         {...field}
                                         type="textarea"
                                         rows="4"
-                                        placeholder="Enter description in 250 characters"
+                                        placeholder="Enter description in 500 characters"
                                         invalid={
                                           errors &&
                                           errors.milestones &&
@@ -901,7 +901,7 @@ const FixedSimpleMilestoneView = () => {
               </Row>
             </CardBody>
           </Card>
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center" style={{ paddingBottom: '60px' }}>
             <div
               className="d-flex align-items-center upload-button cursor-pointer"
               onClick={() => {

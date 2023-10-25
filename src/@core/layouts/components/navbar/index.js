@@ -10,23 +10,25 @@ import { NavItem, NavLink as RsNavLink } from 'reactstrap';
 import themeConfig from '@configs/themeConfig';
 
 // ** Custom Components
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getItem } from '../../../../utility/localStorageControl';
+import { CometChat } from '@cometchat-pro/chat';
+import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
-import { getTeams } from '../../../../redux/actions/teamsActions';
-import { selectSavedUserData, selectUserData } from '../../../../redux/selectors/authSelectors';
+import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../../utility/constants/Constant';
+import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 
 const ThemeNavbar = (props) => {
   const userData = useSelector(selectUserData);
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
-  const savedUser = useSelector(selectSavedUserData);
+  const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
+
   // ** Props
   const { skin, setSkin, setMenuVisibility, className } = props;
   // ** Function to toggle Theme (Light/Dark)
@@ -71,7 +73,10 @@ const ThemeNavbar = (props) => {
     }
   `;
 
+  const [activeTab, setActiveTab] = useState('');
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const token = getItem('access_token');
 
@@ -81,12 +86,24 @@ const ThemeNavbar = (props) => {
     }
   }, []);
 
-  const onSuccess = () => {};
+  if (isCometChatLoggedIn) {
+    CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
+      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
+      dispatch(setUnreadMsgCount(totalCount));
+    });
+  }
+
   useEffect(() => {
-    if (userData?.user_type === userTypes.talent || userData?.user_type === userTypes.team) {
-      dispatch(getTeams({ onSuccess }));
-    }
+    if (location?.pathname?.split('/')?.[1] === 'dashboard') setActiveTab('dashboard');
   }, [userData]);
+
+  useEffect(() => {
+    if(location?.pathname?.split?.('/')?.[3] === userData?._id ) setActiveTab('');
+    if(location?.pathname?.split?.('/')?.[1]==="notifications") setActiveTab('')
+    if(location?.pathname?.split?.('/')?.[1]==="search") setActiveTab('')
+  },[location])
+
+
   return (
     <HeadWrapper className={className}>
       <div className="bookmark-wrapper d-flex align-items-center">
@@ -99,51 +116,80 @@ const ThemeNavbar = (props) => {
         </ul>
       </div>
 
-      <Link to={userData ? '/dashboard' : '/auth'} className="navbar-brand">
+      <div
+        className="navbar-brand cursor-pointer"
+        onClick={() => {
+          if (userData) {
+            navigate('/dashboard');
+          } else {
+            navigate('/auth');
+          }
+          setActiveTab('dashboard');
+        }}
+      >
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
-          <span className="ms-25 mt-25">v0.0.5</span>
+          <span className="ms-25 mt-25">v0.0.6</span>
         </span>
-      </Link>
+      </div>
 
       {!isNavbarSearchBarOpen && (
         <>
           <NavLink
             className={({ isActive }) =>
-              (isActive ? 'is-active' : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+              (isActive || activeTab === 'dashboard' ? 'is-active' : '') +
+              ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
             to="/dashboard"
+            onClick={() => setActiveTab('dashboard')}
           >
             Dashboard
           </NavLink>
           <NavLink
+            onClick={() => {
+              setActiveTab('marketplace');
+              setItem(
+                'selectedMarketplaceTab',
+                userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
+              );
+            }}
             className={
-              (location?.pathname?.split('/')?.[1] === 'marketplace' || location?.state?.from?.primary === 'Marketplace'
+              (location?.pathname?.split('/')?.[1] === 'marketplace' ||
+              location?.state?.from?.primary === 'Marketplace' ||
+              activeTab === 'marketplace'
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'} `}
+            to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`}
           >
             Marketplace
           </NavLink>
           <NavLink
             className={
-              (location?.pathname?.split('/')?.[1] === 'projects' || location?.state?.from?.primary === 'projects'
+              (location?.pathname?.split('/')?.[1] === 'projects' ||
+              location?.state?.from?.primary === 'projects' ||
+              activeTab === 'projects'
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/projects"
-            onClick={()=>localStorage.removeItem("selectedProjectTab")}
+            to="/projects/ongoing"
+            onClick={() => {
+              localStorage.removeItem('selectedProjectTab');
+              setActiveTab('projects');
+            }}
           >
             Project
           </NavLink>
           <NavLink
+            onClick={() => setActiveTab('my-teams')}
             className={
-              (location?.pathname?.split('/')?.[1] === 'my-teams' || location?.state?.from?.primary === 'my-teams'
+              (location?.pathname?.split('/')?.[1] === 'my-teams' ||
+              location?.state?.from?.primary === 'my-teams' ||
+              activeTab === 'my-teams'
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to="/my-teams"
+            to={`/my-teams/${userData?.user_type === userTypes.talent ? 'teams' : 'talents'}`}
           >
             My Team
           </NavLink>

@@ -64,6 +64,12 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
     dispatch(inviteTalents({ data: newPostData, onSuccess }));
   };
 
+  const handleInputChange = (newValue, actionMeta) => {
+    if (actionMeta.action !== 'input-blur' && actionMeta.action !== 'menu-close') {
+      setInputValue(newValue);
+    }
+  };
+
   const handleKeyDown = (event) => {
     if (!inputValue) return;
     switch (event.key) {
@@ -120,7 +126,7 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
                   isMulti
                   menuIsOpen={false}
                   onChange={(newValue) => setCustomEmailsValue(newValue)}
-                  onInputChange={(newValue) => setInputValue(newValue)}
+                  onInputChange={handleInputChange}
                   onKeyDown={(e) => handleKeyDown(e)}
                   placeholder="Enter email IDs"
                   value={customEmailsValue}

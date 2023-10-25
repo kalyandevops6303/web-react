@@ -18,7 +18,7 @@ import {
   Spinner,
 } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import styled from 'styled-components';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
@@ -71,16 +71,19 @@ const ViewProjectDetailModalWrap = styled.div`
 `;
 
 const ProjectModal = ({
+  isUpcomingProject,
+  isActiveProject,
   modal,
   toggleModal,
   data,
   setCreateBidModal,
   setSelectedProject,
   toggleCompleteProfileModal,
-  isMyTeam,
+  setSwitchProfileModal,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
@@ -124,11 +127,8 @@ const ProjectModal = ({
   };
 
   const isViewable =
-    window.location.pathname.split('/').includes('my_bids') ||
-    window.location.pathname.split('/').includes('my_listings');
-  const handleRedirectTodetailsView = () => {
-    navigate(`/project-details/${data?._id}/bid`);
-  };
+    location.pathname.split('/').includes('my_bids') || location.pathname.split('/').includes('my_listings');
+  const isDashboard = location.pathname.split('/').includes('dashboard');
 
   const handleCreateBid = () => {
     if (
@@ -149,6 +149,35 @@ const ProjectModal = ({
       // eslint-disable-next-line
     } else {
       return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
+    }
+  };
+
+  const isMyProjectMyTeam =
+    location.pathname.split('/').includes('projects') || location.pathname.split('/').includes('my-teams');
+
+  const handleViewProject = () => {
+    if (location.pathname.split('/').includes('projects')) {
+      if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
+        toggleModal();
+        setSwitchProfileModal(true);
+      } else if (location.pathname.split('/').includes('ongoing')) {
+        navigate(`/project-details/${data?._id}/milestone`);
+      } else if (location.pathname.split('/').includes('completed')) {
+        navigate(`/project-details/${data?._id}/rating`);
+      } else {
+        navigate(`/project-details/${data?._id}/bid`);
+      }
+    } else if (isDashboard) {
+      if (selectUserDetailsData?.user_type === userTypes.talent && data?.switch_team_id) {
+        toggleModal();
+        setSwitchProfileModal(true);
+      } else if (isActiveProject) {
+        navigate(`/project-details/${data?._id}/milestone`);
+      } else {
+        navigate(`/project-details/${data?._id}/bid`);
+      }
+    } else {
+      navigate(`/project-details/${data?._id}/bid`);
     }
   };
 
@@ -295,11 +324,22 @@ const ProjectModal = ({
             </CardBody>
           </Card>
 
-          {isMyTeam ? null : isViewable && data?.bid_status !== 'DRAFT' ? (
-            <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-              <Button onClick={handleRedirectTodetailsView} color="primary">
-                <span className="me-50">View</span>
-                <ChevronRight size={14} />
+          {selectUserDetailsData?._id === data?.client_details?.user_id ||
+          data?.has_bid ||
+          isViewable ||
+          isMyProjectMyTeam ||
+          isActiveProject ||
+          isUpcomingProject ? (
+            <div className="d-flex justify-content-end mb-2">
+              <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
+                {checkBidLoadingIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">View project</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
               </Button>
             </div>
           ) : (
@@ -307,10 +347,9 @@ const ProjectModal = ({
               {(selectUserDetailsData?.user_type === userTypes.talent ||
                 selectUserDetailsData?.user_type === userTypes.team) && (
                 <div className="d-flex justify-content-end align-items-center mt-2 mb-2">
-                  <Button color="flat-danger" className=" d-none me-1">
+                  <Button color="flat-danger" className="d-none me-1">
                     Report
                   </Button>
-
                   {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') && (
                     <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
                       {checkBidLoadingIsLoading ? (
@@ -337,20 +376,24 @@ export default ProjectModal;
 
 ProjectModal.propTypes = {
   modal: Proptypes.bool,
-  isMyTeam: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
   setCreateBidModal: Proptypes.func,
   setSelectedProject: Proptypes.func,
   toggleCompleteProfileModal: Proptypes.func,
+  setSwitchProfileModal: Proptypes.func,
+  isActiveProject: Proptypes.bool,
+  isUpcomingProject: Proptypes.bool,
 };
 
 ProjectModal.defaultProps = {
   modal: false,
-  isMyTeam: false,
   toggleModal: () => {},
   data: {},
   setCreateBidModal: () => {},
   setSelectedProject: () => {},
   toggleCompleteProfileModal: () => {},
+  setSwitchProfileModal: () => {},
+  isActiveProject: false,
+  isUpcomingProject: false,
 };

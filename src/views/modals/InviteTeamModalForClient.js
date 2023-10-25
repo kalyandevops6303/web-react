@@ -30,16 +30,16 @@ import { BlueBgIconContainer, TableContainer } from '../CreateProject/style';
 import AlmaMaterImg from '../../assets/images/almaMater.png';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import InfiniteScroll from '../../lib/infinite-scroll';
-import { giveStrokeColor } from '../../utility/Utils';
-import { getAlmaMaterTalents, getBestTalents, getFavoriteTalents } from '../../redux/actions/createProjectActions';
+import { giveStrokeColor, returnFormattedRating } from '../../utility/Utils';
+import { getAlmaMaterTalents, getBestTalents, getFavoriteTeams } from '../../redux/actions/createProjectActions';
 
 import {
   almaMaterTalents,
   almaMaterTalentsLoading,
   bestTalents,
   bestTalentsLoading,
-  favoriteTalents,
-  favoriteTalentsLoading,
+  favoriteTeams,
+  favoriteTeamsLoading,
 } from '../../redux/selectors/createProjectSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
@@ -67,12 +67,12 @@ const InviteTeamModalForClient = ({
   const dispatch = useDispatch();
 
   const bestTalentsData = useSelector(bestTalents);
-  const favoriteTalentsData = useSelector(favoriteTalents);
   const almaMaterTalentsData = useSelector(almaMaterTalents);
+  const favoriteTeamsData = useSelector(favoriteTeams);
 
   const isBestTalentsLoading = useSelector(bestTalentsLoading);
-  const isFavoriteTalentsLoading = useSelector(favoriteTalentsLoading);
   const isAlmaMaterTalentsLoading = useSelector(almaMaterTalentsLoading);
+  const isFavoriteTeamsLoading = useSelector(favoriteTeamsLoading);
 
   const [activeTab, setTabActive] = useState(tabNames.favourite);
   const [searchValue, setSearchValue] = useState('');
@@ -96,15 +96,15 @@ const InviteTeamModalForClient = ({
     );
   };
 
-  const loadNewFavoriteTalents = () => {
+  const loadNewFavoriteTeams = () => {
     dispatch(
-      getFavoriteTalents(
+      getFavoriteTeams(
         param?.projectId,
         searchValue,
         // eslint-disable-next-line no-unsafe-optional-chaining
-        favoriteTalentsData?.metadata?.current_page + 1,
+        favoriteTeamsData?.metadata?.current_page + 1,
         10,
-        favoriteTalentsData?.data,
+        favoriteTeamsData?.data,
       ),
     );
   };
@@ -127,7 +127,7 @@ const InviteTeamModalForClient = ({
 
     delayDebounceFn = setTimeout(() => {
       dispatch(getBestTalents(param?.projectId, searchValue, 1, 10, []));
-      dispatch(getFavoriteTalents(param?.projectId, searchValue, 1, 10, []));
+      dispatch(getFavoriteTeams(param?.projectId, searchValue, 1, 10, []));
       dispatch(getAlmaMaterTalents(param?.projectId, searchValue, 1, 10, []));
     }, 500);
 
@@ -143,7 +143,7 @@ const InviteTeamModalForClient = ({
     let userId;
 
     if (type === 'fav') {
-      userId = user.talent_details.user_id;
+      userId = user?._id;
     } else {
       userId = user.user_id;
     }
@@ -161,7 +161,7 @@ const InviteTeamModalForClient = ({
           className="d-flex justify-content-center align-items-center invited-icon-container cursor-pointer ms-5"
           onClick={() => {
             setSelectedIds(selectedIds?.filter((data) => data !== userId));
-            setSelectedTalents(selectedTalents?.filter((data) => data.user_id !== userId));
+            setSelectedTalents(selectedTalents?.filter((data) => data?.user_id !== userId && data?._id !== userId));
           }}
         >
           <Check size={18} color={theme.green} />
@@ -195,12 +195,16 @@ const InviteTeamModalForClient = ({
   };
   const onSendInvitationModalOpen = () => {
     const reformattedData = selectedTalents.map((talent) => {
-      if ('talent_details' in talent) {
+      if ('name' in talent) {
         return {
-          ...talent.talent_details,
-          user_details: talent.user_details,
-          total_matches: talent.total_matches,
+          ...talent,
+          first_name: talent.name,
+          last_name: '',
+          image_uri: talent.team_logo,
+          total_matches: talent.total_matches || 0,
           match_percentage: talent.match_percentage,
+          rating: talent.rating || 0,
+          projects_worked_on_count: talent.projects_worked_on_count || 0,
         };
         // eslint-disable-next-line no-else-return
       } else {
@@ -208,7 +212,10 @@ const InviteTeamModalForClient = ({
       }
     });
 
-    setSelectedTalents(removeDuplicates(reformattedData, 'user_id'));
+    const allTalents = reformattedData.filter((talent) => talent.user_id);
+    const allTeams = reformattedData.filter((team) => team._id);
+
+    setSelectedTalents([...removeDuplicates(allTalents, 'user_id'), ...allTeams]);
     toggleModal();
     setSendInvitationModal(true);
   };
@@ -263,7 +270,7 @@ const InviteTeamModalForClient = ({
                       toggleTabs(tabNames.favourite);
                     }}
                   >
-                    Favorite Talent
+                    Favorite Teams
                   </NavLink>
                 </NavItem>
                 <NavItem className="me-1">
@@ -291,7 +298,7 @@ const InviteTeamModalForClient = ({
             </BlueNavsContainer>
           </Row>
 
-          {isBestTalentsLoading || isAlmaMaterTalentsLoading || isFavoriteTalentsLoading ? (
+          {isBestTalentsLoading || isAlmaMaterTalentsLoading || isFavoriteTeamsLoading ? (
             <ComponentSpinner />
           ) : (
             <TabContent activeTab={activeTab} className="mb-2">
@@ -299,29 +306,25 @@ const InviteTeamModalForClient = ({
                 {activeTab === tabNames.favourite && (
                   <TableContainer style={{ maxHeight: '18rem', overflowY: 'auto' }} id="scrollableDiv">
                     <InfiniteScroll
-                      dataLength={favoriteTalentsData?.data?.length || 0}
-                      next={loadNewFavoriteTalents}
-                      hasMore={favoriteTalentsData?.metadata?.has_next_page}
+                      dataLength={favoriteTeamsData?.data?.length || 0}
+                      next={loadNewFavoriteTeams}
+                      hasMore={favoriteTeamsData?.metadata?.has_next_page}
                       scrollableTarget="scrollableDiv"
                       loader={<div className="d-flex justify-content-center">Loading...</div>}
                     >
-                      {favoriteTalentsData?.data?.length > 0 ? (
-                        favoriteTalentsData?.data?.map((item) => (
+                      {favoriteTeamsData?.data?.length > 0 ? (
+                        favoriteTeamsData?.data?.map((item) => (
                           <Row key={item.id} className="d-flex align-items-center mb-2 mx-0">
                             <Col sm="2" md="3" lg="4">
                               <div className="d-flex align-items-center">
                                 <Avatar
-                                  img={
-                                    item?.talent_details?.image_uri?.length > 0
-                                      ? item?.talent_details?.image_uri
-                                      : defaultAvatar
-                                  }
+                                  img={item?.team_logo?.length > 0 ? item?.team_logo : defaultAvatar}
                                   imgHeight="38"
                                   imgWidth="38"
                                   className="me-2 user-pic"
                                 />
-                                <Link to={`/profile/talent/${item.talent_details.user_id}`} target="_blank">
-                                  <p className="font-medium-1 fw-bold m-0">{`${item.talent_details.first_name} ${item.talent_details.last_name}`}</p>
+                                <Link to={`/profile/team/${item?._id}`} target="_blank">
+                                  <p className="font-medium-1 fw-bold m-0">{`${item?.name}`}</p>
                                 </Link>
                               </div>
                             </Col>
@@ -335,21 +338,23 @@ const InviteTeamModalForClient = ({
                                       fill={theme.starRatingBg}
                                       className="me-50"
                                     />
-                                    <p className="m-0 fw-bolder rating-text">{item.talent_details.rating}</p>
+                                    <p className="m-0 fw-bolder rating-text">
+                                      {returnFormattedRating(item?.rating || 0)}
+                                    </p>
                                   </div>
                                 </Badge>
                                 <p className="m-0 font-small-3 fw-bold ms-1">
-                                  {item.talent_details.projects_worked_on_count} Projects
+                                  {item?.projects_worked_on_count || 0} Projects
                                 </p>
                               </div>
                             </Col>
                             <Col sm="2" md="3" lg="2">
                               <div className="circular-progressbar-container">
                                 <CircularProgressbarWithChildren
-                                  value={item.match_percentage}
+                                  value={item?.match_percentage}
                                   styles={{
                                     path: {
-                                      stroke: giveStrokeColor(item.match_percentage),
+                                      stroke: giveStrokeColor(item?.match_percentage),
                                       strokeLinecap: 'round',
                                       transition: 'stroke-dashoffset 0.5s ease 0s',
                                       transform: 'rotate(0turn)',
@@ -364,7 +369,7 @@ const InviteTeamModalForClient = ({
                                   }}
                                 >
                                   <div className="d-flex justify-content-center align-items-center">
-                                    <p className="percentage-text m-0">{item.match_percentage}%</p>
+                                    <p className="percentage-text m-0">{item?.match_percentage}%</p>
                                   </div>
                                 </CircularProgressbarWithChildren>
                               </div>

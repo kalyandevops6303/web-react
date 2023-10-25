@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Info } from 'react-feather';
 
 // ** Custom Components
@@ -17,18 +17,17 @@ import { CardTitle, Label, Form, Button, FormFeedback, Spinner, UncontrolledTool
 import { validations } from '../../utility/Utils';
 
 // ** Styles
-import { OnBoardWrap, PasswordStrengthBarWrap } from './style';
+import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { setNewPassword } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectIsPasswordSet } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
-import PasswordStrengthBar from '../../lib/password-strength-bar';
+import PasswordStrengthMeter from './components/PasswordStrengthMeter';
 
 const SetNewPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [score, setScore] = useState(0);
 
   const isLoading = useSelector(selectAuthLoading);
   const isPasswordSet = useSelector(selectIsPasswordSet);
@@ -63,19 +62,6 @@ const SetNewPassword = () => {
   const newPassword = watch('newPassword');
   const cnfPassword = watch('cnfPassword');
 
-  const onChangeScore = (s) => {
-    setScore(s);
-  };
-  const scoreColors = {
-    0: 'red',
-    1: 'red',
-    2: 'orange',
-    3: 'blue',
-    4: 'green',
-  };
-
-  const getColorName = (s) => scoreColors[s] || '';
-
   return (
     <OnBoardWrap>
       <div className="card-onboard">
@@ -108,29 +94,14 @@ const SetNewPassword = () => {
                 <InputPasswordToggle
                   {...field}
                   value={field.value || ''} // Set a default value for the input
-                  className="input-group-merge create-password"
+                  className="input-group-merge create-password mb-75"
                   id="newPassword"
                   placeholder="Enter your new password"
                 />
               )}
             />
-            {newPassword && (
-              <PasswordStrengthBarWrap>
-                <PasswordStrengthBar
-                  className={`password-meter ${getColorName(score)}`}
-                  scoreWords={[
-                    'Password strength: Weak',
-                    'Password strength: Weak',
-                    'Password strength: Fair',
-                    'Password strength: Good',
-                    'Password strength: Strong',
-                  ]}
-                  shortScoreWord="Too short"
-                  password={newPassword}
-                  onChangeScore={onChangeScore}
-                />
-              </PasswordStrengthBarWrap>
-            )}
+            {newPassword && <PasswordStrengthMeter password={newPassword} />}
+
             {errors.newPassword && <FormFeedback>{errors.newPassword.message}</FormFeedback>}
           </div>
           <div className="mb-3">

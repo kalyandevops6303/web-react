@@ -220,7 +220,7 @@ const ReceivedBids = ({ projectName }) => {
   );
 
   const statusOption = [
-    { label: 'New', value: 'ACTIVE' },
+    { label: 'New', value: 'NEW' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
     { label: 'Rejected', value: 'REJECTED' },

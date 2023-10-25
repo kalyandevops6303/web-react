@@ -62,8 +62,7 @@ const TeamInvitaionCard = ({ data, className }) => {
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
-          <CardTitle className="mt-50 active-project-title truncate-2 mb-1.5">{data?.project?.name}</CardTitle>
-
+          <CardTitle className="mt-50 active-project-title truncate-2 mb-50">{data?.project?.name}</CardTitle>
           <div className="d-flex">
             <RatingBadge number="0" />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
@@ -75,7 +74,16 @@ const TeamInvitaionCard = ({ data, className }) => {
             name={data?.name}
             users={users}
           />
-
+          <div className="design-planning-wrapper pt-5 d-none">
+            <div className="design-planning">
+              <CardText className="mb-25">Earned</CardText>
+              <h6 className="mb-0">{`$ ${data?.project?.earned ?? 0}`}</h6>
+            </div>
+            <div className="design-planning">
+              <CardText className="mb-25">New Amt</CardText>
+              <h6 className="mb-0">{`$ ${data?.project?.newAmt ?? 0}`}</h6>
+            </div>
+          </div>
           <div
             onClick={handleRedirect}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"

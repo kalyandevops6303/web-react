@@ -1,19 +1,20 @@
+/* eslint-disable no-nested-ternary */
 import { Badge, Card, CardBody, CardText, CardTitle, Col, UncontrolledTooltip } from 'reactstrap';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Heart, MapPin } from 'react-feather';
 import { useDispatch } from 'react-redux';
+import { useState } from 'react';
 import Avatar from '@components/avatar';
 import hat from '@src/assets/images/hat.svg';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import { UserCardWrap } from './style';
+import { ClientCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import TextToolTip from './TextToolTip';
-import uuidv4 from '../../lib/uuidv4';
 
 const giveStrokeColor = (percentage) => {
   if (percentage <= 40) {
@@ -26,8 +27,12 @@ const giveStrokeColor = (percentage) => {
   }
 };
 const ClientCard = ({ isSearchPage, data, userType }) => {
+  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
+
   const fromLocationPrimary = () => {
     if (location.pathname.split('/').includes('marketplace'))
       return { title: 'Marketplace', link: '/marketplace/all_listings' };
@@ -47,66 +52,77 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   };
   // const description = data?.company_tagline || data?.professional_intro;
   const locationDetails = data?.user_type === userTypes.client ? data?.office_address : data?.current_residency;
-  const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ user_id: data?.user_id, user_type: data?.user_type }));
+
+  const handleLike = (e) => {
+    e.stopPropagation();
+    setIsFavorite(true);
+    dispatch(
+      makeFav({
+        user_id: data?.user_id,
+        user_type: data?.user_type,
+        onSuccess: () => {},
+        onError: () => setIsFavorite(false),
+      }),
+    );
   };
-  const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ user_id: data?.user_id }));
+  const handleUnLike = (e) => {
+    e.stopPropagation();
+    setIsFavorite(false);
+    dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
+
+  const handleCard = () => {
+    const state = {
+      from: {
+        primary: fromLocationPrimary(),
+        secondary: fromLocationSecondary() || fromLocationSearch(),
+      },
+    };
+    navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`, { state });
+  };
+
   const clientSkills = data?.project_area_of_interest?.skills ?? [];
-  // const areaOfInterest = data?.project_area_of_interest?.area ?? [];
+
   return (
-    <UserCardWrap userType={userType} clientCard>
-      <Card style={{ minHeight: '240px' }}>
+    <ClientCardWrap userType={userType} clientCard>
+      <Card style={{ height: '93%' }} onClick={handleCard} className="cursor-pointer">
         <CardBody>
           <Col className="d-flex justify-content-between">
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center" style={{ width: '60%' }}>
               <Avatar
                 img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
                 imgHeight="40"
                 imgWidth="40"
                 className={`client-card-photo me-1 mb-1 `}
               />
-              <div className="d-flex flex-column">
-                <CardTitle className="d-flex truncate-2 text-decoration-none marketplace-card-title mb-0">
-                  <Link
-                    state={{
-                      from: {
-                        primary: fromLocationPrimary(),
-                        secondary: fromLocationSecondary() || fromLocationSearch(),
-                      },
-                    }}
-                    to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
-                  >
-                    {data?.first_name}&nbsp;
-                    {data?.last_name}
-                  </Link>
+              <div className="d-flex flex-column" style={{ width: '70%' }}>
+                <CardTitle className="text-decoration-none marketplace-card-title mb-0 text-truncate">
+                  {data?.first_name}&nbsp;
+                  {data?.last_name}
                 </CardTitle>
-                <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
+                <p
+                  className="font-small-3 fw-300 mb-25 marketplace-card-role"
+                  style={{ width: '80%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                >
                   {data?.user_type === userTypes.client
                     ? data?.company_name || 'Company Name'
                     : data?.role?.name || 'Role'}
-                </CardText>
-                <div className="d-flex" style={{ marginLeft: '-2px' }}>
+                </p>
+
+                <div className="d-flex w-100" style={{ marginLeft: '-2px' }}>
                   {locationDetails ? (
-                    <div className="d-flex align-items-center">
-                      <MapPin size={20} className="me-50" />
-                      {locationDetails?.city?.name ? (
-                        <TextToolTip text={`${locationDetails?.city?.name} `} id={uuidv4()} />
-                      ) : (
-                        ''
-                      )}
-                      {locationDetails?.country?.name ? (
-                        <TextToolTip text={` , ${locationDetails?.country?.name}`} id={uuidv4()} />
-                      ) : (
-                        ''
-                      )}
+                    <div className="d-flex align-items-center overflow-hidden">
+                      <MapPin size={18} className="me-50" />
+                      <TextToolTip
+                        text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
+                        id={`tooltip-location-${data?.user_id}`}
+                      />
                     </div>
                   ) : null}
                 </div>
               </div>
             </div>
-            <div className="d-flex flex-column align-items-start">
+            <div className="d-flex flex-column align-items-start" style={{ width: '40%' }}>
               <div className="d-flex w-100 gap-50 justify-content-end">
                 {data?.is_alma_mater && (
                   <Badge className="bg-white" style={{ marginTop: '-5px' }}>
@@ -115,23 +131,23 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                 )}
                 {!isSearchPage && (
                   <div className="mb-25">
-                    {data?.is_favorite ? (
+                    {isFavorite ? (
                       <Heart
                         className="cursor-pointer d-flex heart"
                         fill={theme.red}
                         stroke={theme.red}
-                        onClick={handleUnLike}
+                        onClick={(e) => handleUnLike(e)}
                         size={20}
                       />
                     ) : (
-                      <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+                      <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
                     )}
                   </div>
                 )}
               </div>
-              <div className="d-flex mt-1">
+              <div className="d-flex mt-1 justify-content-end w-100">
                 <RatingBadge number={Math.round(data?.rating ?? 0)} />
-                <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                <CardText className="ps-50 font-small-3 fw-300 rating-label">
                   {data?.project_listed_count ?? 0} Projects
                 </CardText>
               </div>
@@ -185,9 +201,12 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                     <div className="badge-box mt-25" key={skill?._id}>
                       <Badge
                         id={`tooltip-${skill?._id}-${data?.user_id}`}
-                        className={`${skill?.name?.length > 12 ? 'truncate-1' : ''}`}
+                        className={skill?.name?.length > 12 ? 'truncate-1' : ''}
                         color=""
-                        style={{ color: theme.lightBlueColor, backgroundColor: theme.lightBlueBgColor }}
+                        style={{
+                          color: theme.lightBlueColor,
+                          backgroundColor: theme.lightBlueBgColor,
+                        }}
                       >
                         {skill?.name}
                       </Badge>
@@ -204,7 +223,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
           </div>
         </CardBody>
       </Card>
-    </UserCardWrap>
+    </ClientCardWrap>
   );
 };
 ClientCard.propTypes = {
