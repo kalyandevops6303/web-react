@@ -95,6 +95,19 @@ const PrivateDashboard = () => {
     setInviteTalentToTeamModal(true);
   };
 
+  const onCreateClub = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModalInfoText('create club');
+      setCompleteProfileModal(true);
+    } else {
+      navigate('/create-club/account-details');
+    }
+  };
+
   const onCreateTeam = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
@@ -179,6 +192,9 @@ const PrivateDashboard = () => {
       )}
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
+          <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateClub}>
+            Create Club
+          </span>
           <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateTeam}>
             Create Team
           </span>
