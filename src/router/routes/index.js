@@ -35,6 +35,8 @@ import { userOnboarding } from '../../utility/constants/Constant';
 import Chat from '../../views/chat';
 import Projects from '../../views/projects';
 import MyTeams from '../../views/teams';
+import Clubs from '../../views/clubs';
+
 import ReferralAndReward from '../../views/ReferralAndReward';
 import CreateClub from '../../views/createClub';
 
@@ -100,6 +102,11 @@ const Routes = [
   {
     path: '/my-teams/*',
     element: <MyTeams />,
+  },
+
+  {
+    path: '/clubs/*',
+    element: <Clubs />,
   },
 
   {
