@@ -19,14 +19,18 @@ import { getItem } from '../../utility/localStorageControl';
 import BidMilestone from './overview/BidMilestone';
 import PaymentTab from './payment/PaymentTab';
 import MilestonePaymentListing from './payment/MilestonePaymentListing';
+import { userData } from '../../redux/selectors/dashboardSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
 const ProjectDetails = () => {
   const location = useLocation();
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
+  const user = useSelector(userData);
 
   const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
+  const isClient = user.user_type === userTypes.client;
 
   const changeStep = (step) => {
     setCurrentStep(step);
@@ -81,7 +85,7 @@ const ProjectDetails = () => {
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
           <LeftSidebarProjectDetails />
-          {isMilestoneTab ? <MilestonePaymentListing /> : null}
+          {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>
         <Col lg="9">
           <CustomStep steps={isInviteView ? InviteView : steps} currentStep={currentStep} onChangeStep={changeStep} />

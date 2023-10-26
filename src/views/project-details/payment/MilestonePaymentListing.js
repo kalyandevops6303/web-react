@@ -11,13 +11,15 @@ function MilestonePaymentListing() {
   const [makePaymentModal, setMakePaymentModal] = useState(false);
 
   const projectDetailsData = useSelector(projectDetails);
-  const milestoneData = useSelector((state) => state.milestonePayment?.milestoneDetails);
-  const milestoneDataLoading = useSelector((state) => state.milestonePayment?.loading);
+  const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
+  const milestoneDataLoading = useSelector((state) => state.milestonePayment?.listLoading);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getMilestonePaymentListing(projectDetailsData?._id, () => {}));
+    if (projectDetailsData?._id) {
+      dispatch(getMilestonePaymentListing(projectDetailsData?._id, () => {}));
+    }
   }, [projectDetailsData?._id]);
 
   const handleMilestoneSelect = (evt, id) => {
@@ -41,15 +43,14 @@ function MilestonePaymentListing() {
     <div className="mt-2">
       {makePaymentModal && (
         <MakePaymentModal
-          isLoading={false}
           modal={makePaymentModal}
           toggleModal={handleCancel}
-          selectedMilestone={selectedMilestone}
+          selectedMilestoneIds={selectedMilestone}
         />
       )}
       {milestoneDataLoading ? (
         <div className="d-flex justify-content-center">
-          <Spinner size="sm" color="light-success" className="d-flex align-items-center" />
+          <Spinner size="lg" />
         </div>
       ) : (
         <>

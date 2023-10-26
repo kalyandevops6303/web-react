@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  milestoneDetails: null,
-  loading: false,
+  milestoneListDetails: null,
+  checkoutDetails: null,
+  listLoading: false,
+  checkoutLoading: false,
   error: null,
 };
 
@@ -12,22 +14,43 @@ const milestonePaymentSlice = createSlice({
   reducers: {
     milestonePaymentRequest: (state) => ({
       ...state,
-      loading: true,
+      checkoutLoading: true,
       error: null,
     }),
     milestonePaymentSuccess: (state, action) => ({
       ...state,
-      loading: false,
-      milestoneDetails: action.payload,
+      checkoutLoading: false,
+      checkoutDetails: action.payload,
     }),
     milestonePaymentFailure: (state, action) => ({
       ...state,
-      loading: false,
+      checkoutLoading: false,
+      error: action.payload,
+    }),
+    milestoneListRequest: (state) => ({
+      ...state,
+      listLoading: true,
+      error: null,
+    }),
+    milestoneListSuccess: (state, action) => ({
+      ...state,
+      listLoading: false,
+      milestoneListDetails: action.payload,
+    }),
+    milestoneListFailure: (state, action) => ({
+      ...state,
+      listLoading: false,
       error: action.payload,
     }),
   },
 });
 
-export const { milestonePaymentFailure, milestonePaymentRequest, milestonePaymentSuccess } =
-  milestonePaymentSlice.actions;
+export const {
+  milestonePaymentFailure,
+  milestonePaymentRequest,
+  milestonePaymentSuccess,
+  milestoneListFailure,
+  milestoneListRequest,
+  milestoneListSuccess,
+} = milestonePaymentSlice.actions;
 export default milestonePaymentSlice.reducer;
