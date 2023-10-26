@@ -32,12 +32,8 @@ import {
   getTeamListing,
 } from '../../../redux/actions/myTeamActions';
 
-import TeamCard from '../../cards/TeamCard';
-import TalentCard from '../../cards/TalentCard';
-import ClientCard from '../../cards/ClientCard';
 import ClubCard from '../../cards/ClubCard';
 import { skillsService, toolsService } from '../../../services/staticServices';
-import capitalize from '../../../lib/capitalize';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const statusOptions = [
@@ -91,6 +87,150 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const selectCardData = useSelector((state) => state?.myTeams?.cardData);
 
   const metaData = { page: 1, page_size: 10 };
+
+  const data = [
+    {
+      _id: '650159af54f2ae9b1cabd31f',
+      team_logo: '',
+      introduction:
+        'Hello I am trumio Hello I am trumio Hello I am trumio Hello I am trumio Hello I am trumio Hello I am trumio',
+      tools: [
+        {
+          _id: '6486a6c33cf46b7a02d8bde3',
+          name: 'Amazon AI Services',
+        },
+        {
+          _id: '6486a6c33cf46b7a02d8bde4',
+          name: 'Amazon ECS',
+        },
+        {
+          _id: '6486a6c33cf46b7a02d8bdf2',
+          name: 'AWS CloudFormation',
+        },
+        {
+          _id: '6486a6c33cf46b7a02d8bdf3',
+          name: 'AWS CodeDeploy',
+        },
+        {
+          _id: '6486a6c33cf46b7a02d8bdf4',
+          name: 'AWS Lambda',
+        },
+      ],
+      languages_supported: [
+        {
+          _id: '64831445a51384fb6948e6a7',
+          name: 'Algerian Spoken Arabic',
+        },
+      ],
+      created_by: {
+        first_name: 'Jack',
+        hourly_rate: 3,
+        image_uri:
+          'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64d60539e127974f873d31d8/38d800ea-b3e5-41ba-b5d6-0360a37f5ac2.jpeg',
+        last_name: 'jones',
+        professional_intro: '2',
+        projects_worked_on_count: 0,
+        rating: 0,
+        tagline: 'Hi',
+        work_experience: 24,
+      },
+      skills: [
+        {
+          _id: '6486a65e34730cac6a48042a',
+          name: '.NET Core',
+        },
+        {
+          _id: '6486a65e34730cac6a48042c',
+          name: 'Accessibility',
+        },
+        {
+          _id: '6486a65e34730cac6a48042e',
+          name: 'Angular',
+        },
+        {
+          _id: '6486a65e34730cac6a48042f',
+          name: 'AngularJS',
+        },
+        {
+          _id: '6486a65e34730cac6a480436',
+          name: 'AWS (Amazon Web Services)',
+        },
+      ],
+      availability: {
+        timezone: {
+          _id: '6479f0fafe992bcffe2ab6f5',
+          offset: 10800,
+          offset_name: 'UTC+03:00',
+          name: 'Africa/Addis_Ababa',
+          abbreviation: 'EAT',
+        },
+        weekdays_avl: {
+          start_time: 3,
+          end_time: 8,
+          days: ['TUESDAY'],
+        },
+      },
+      services: [
+        {
+          _id: '64cce2b52fae55f2dfd21af2',
+          created_at: 1691148981229,
+          updated_at: 1691148981229,
+          is_deleted: false,
+          name: 'Hardware',
+        },
+        {
+          _id: '64cce2c42fae55f2dfd21af6',
+          created_at: 1691148996230,
+          updated_at: 1691148996230,
+          is_deleted: false,
+          name: 'Engineering',
+        },
+        {
+          _id: '64cce2ef2fae55f2dfd21af8',
+          name: 'Law',
+          created_at: 1691149039495,
+          is_deleted: false,
+          updated_at: 1691149039495,
+        },
+        {
+          _id: '64cce2ef2fae55f2dfd21af9',
+          name: 'Medical',
+          created_at: 1691149039495,
+          is_deleted: false,
+          updated_at: 1691149039495,
+        },
+        {
+          _id: '64cce2ef2fae55f2dfd21afb',
+          name: 'Other',
+          created_at: 1691149039495,
+          is_deleted: false,
+          updated_at: 1691149039495,
+        },
+      ],
+      name: 'Test team 3',
+      tagline: 'Hello I am trumio',
+      team_members: [
+        {
+          first_name: 'Jack',
+          hourly_rate: 3,
+          image_uri:
+            'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64d60539e127974f873d31d8/38d800ea-b3e5-41ba-b5d6-0360a37f5ac2.jpeg',
+          last_name: 'jones',
+          professional_intro: '2',
+          projects_worked_on_count: 0,
+          rating: 0,
+          tagline: 'Hi',
+          work_experience: 24,
+        },
+      ],
+      match_percentage: 80,
+      team_members_count: 1,
+      is_favourite: false,
+      user_type: 'TEAM',
+      project: {},
+      is_favorite: false,
+    },
+  ];
 
   const onSuccess = () => {};
   const onError = () => {
@@ -239,30 +379,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   };
 
   const getCardComp = () => {
-    if (primaryFilter === 'teams') return TeamCard;
+    if (primaryFilter === 'my_clubs') return ClubCard;
 
-    if (primaryFilter === 'talents') return TalentCard;
+    if (primaryFilter === 'all_clubs') return ClubCard;
 
-    if (primaryFilter === 'clients') return ClientCard;
+    if (primaryFilter === 'favourites') return ClubCard;
 
-    if (primaryFilter === 'favourites') {
-      return ClubCard;
-    }
-
-    if (primaryFilter === 'recommendation') {
-      if (secondFilterState?.user_type[0]?.value === 'TALENT') {
-        return TalentCard;
-      }
-      if (secondFilterState?.user_type[0]?.value === 'TEAM') {
-        return TeamCard;
-      }
-      if (secondFilterState?.user_type[0]?.value === 'CLIENT') {
-        return ClientCard;
-      }
-    }
-
-    if (primaryFilter === 'join_requests' && userType === 'TEAM') return TalentCard;
-    if (primaryFilter === 'join_requests') return TeamCard;
     return '';
   };
 
@@ -651,13 +773,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         <ComponentSpinner />
       ) : (
         <InfiniteScroll
-          dataLength={selectMyTeamData?.length ?? 0}
+          dataLength={data?.length ?? 0}
           next={fetchMore}
           hasMore={hasMore}
           endMessage={
             <div className="d-flex justify-content-center ">
-              {selectMyTeamData?.length === 0 ? (
-                <NoDataFoundComponent isRecommanded={primaryFilter === 'recommendation'} data={selectMyTeamData} />
+              {data?.length === 0 ? (
+                <NoDataFoundComponent isRecommanded={primaryFilter === 'recommendation'} data={data} />
               ) : (
                 ''
               )}
@@ -665,7 +787,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          {selectMyTeamData?.length ? (
+          {data?.length ? (
             <div
               className="justify-content-between grid-layout"
               style={
@@ -679,7 +801,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   : {}
               }
             >
-              {selectMyTeamData?.map((item) => {
+              {data?.map((item) => {
                 const CardComponent = getCardComp();
 
                 return (

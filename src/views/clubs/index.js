@@ -8,7 +8,6 @@ import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getItem, setItem } from '../../utility/localStorageControl';
-import { userTypes } from '../../utility/constants/Constant';
 
 const TeamsContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -23,8 +22,6 @@ const Clubs = () => {
   const isTab = useIsTab();
   const navigate = useNavigate();
   const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedClubsTab') && 'my_clubs');
-
-  console.log(getItem('selectedClubsTab'));
 
   const routesMatch = useMatch('/clubs/all_clubs') || useMatch('/clubs/my_clubs') || useMatch('/clubs/favourites');
 
