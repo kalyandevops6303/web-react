@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: front-end
-          image: azusctruatacr.azurecr.io/frontend:uat19_v0.0.21
+          image: azusctruatacr.azurecr.io/frontend:uat19_v0.0.22
           envFrom:
             - configMapRef:
                 name: uat-fe-env-config
