@@ -1,4 +1,3 @@
-###################### DEPLOYMENT FOR BE_APP_COMPONENT ################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,43 +14,22 @@ spec:
       labels:
         app: front-end
         type: frontend
-      # annotations:
-      #   sidecar.istio.io/inject: "true"
     spec:
-      # automountServiceAccountToken: false
       containers:
-      - name: front-end
-        image: azusctracr.azurecr.io/front-end:uat_v1.0.2
-        envFrom:
-        - configMapRef:
-            name: uat-fe-env-config
-        ports:
-          - containerPort: 5000
-        imagePullPolicy: Always
-        resources:
-          requests:
-            memory: "100Mi"
-            cpu: "10m"
-          limits:
-            memory: "200Mi"
-            cpu: "20m"
+        - name: front-end
+          image: azusctruatacr.azurecr.io/frontend:uat19_v0.0.19
+          envFrom:
+            - configMapRef:
+                name: uat-fe-env-config
+          ports:
+            - containerPort: 5000
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 10m
+            limits:
+              memory: 200Mi
+              cpu: 20m
       nodeSelector:
         workload: uat
-        # volumeMounts:
-        # - name: cibcgenerator-logs
-        #  mountPath: "/ignio/generator/logs"
-        # securityContext:
-        #   allowPrivilegeEscalation: false
-      #terminationGracePeriodSeconds: 300
-      # volumes:
-      # - name: cibcgenerator-logs
-      #   csi:
-      #     driver: file.csi.azure.com
-      #     volumeAttributes:
-      #       secretName: stgacnt-secret-cibc  # required
-      #       shareName: ca-generator-logs  # required
-      #       mountOptions: "dir_mode=0777,file_mode=0777,cache=strict,actimeo=30"
-
-
-#### NOTE :- WHEN PASSING THE REGISTRY HOST VALUE MAKE SURE THAT CLUSTER IP OF REGISTRY IS RUNNING AND
-### THE NAME VALUE IN REGISRY SERVICE IS MENTIONED HERE
