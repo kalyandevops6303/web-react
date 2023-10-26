@@ -82,7 +82,7 @@ const Account = () => {
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(ProfileSchema),
@@ -162,6 +162,16 @@ const Account = () => {
     }
   }, [imageUrlRes]);
 
+  const onSuccess = () => {
+    if (location?.state?.isEditing) {
+      navigate(`/create-club/profile-details`, {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate(`/create-club/profile-details`);
+    }
+  };
+
   const onSubmit = (data) => {
     const { clubName, clubTagline, clubIntroduction, services, tools, skills } = data;
     const skillsSelected = skills.map((skill) => skill.value);
@@ -217,15 +227,19 @@ const Account = () => {
       }
     }
 
-    if (location?.state?.isEditing) {
-      const onApiSuccess = () => {
-        navigate('/dashboard');
-      };
-      dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
-    } else {
-      // setTeamCreateData(removeEmptyKeys(reqData));
-      // setTeamCreatedModal(true);
-    }
+    console.log('data -- ', data);
+    console.log('reqData -- ', reqData);
+    onSuccess();
+
+    // if (location?.state?.isEditing) {
+    //   const onApiSuccess = () => {
+    //     navigate('/dashboard');
+    //   };
+    //   dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
+    // } else {
+    //   setTeamCreateData(removeEmptyKeys(reqData));
+    //   setTeamCreatedModal(true);
+    // }
   };
 
   const loadServicesOptions = async (search) => {
@@ -301,10 +315,6 @@ const Account = () => {
   const onBackClick = () => {
     navigate('/dashboard');
   };
-
-  useEffect(() => {
-    dispatch(getLanguages());
-  }, []);
 
   useEffect(() => {
     if (location?.state?.isEditing) {
@@ -560,14 +570,14 @@ const Account = () => {
             <Button
               color="primary"
               outline={location?.state?.isEditing}
-              disabled={isImageUploading || updateTeamIsLoading}
-              onClick={handleClick}
+              disabled={isImageUploading || !isValid || updateTeamIsLoading}
+              type="submit"
             >
               {updateTeamIsLoading ? (
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Next'}</span>
+                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Save & Continue'}</span>
                   <ChevronRight size={14} />
                 </>
               )}

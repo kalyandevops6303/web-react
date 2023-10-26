@@ -1,8 +1,8 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 // import Select from 'react-select';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
@@ -13,58 +13,96 @@ import theme from '../../configs/themeVariables';
 import { InfoContainer } from '../create-bid/style';
 import { ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
 import { isUrlWithoutProtocol } from '../../utility/Utils';
+import ClubCreatedModal from './ClubCreatedModal';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
-    clubEmailID: yup.string().email().required('Email is required'),
+    clubEmailID: yup.string().email('Please enter a valid email').required('Email is required'),
     clubLinkedin: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
-    clubWebsite: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
-    isWebpage: yup.bool().oneOf([true], 'You must select either Yes or No'),
-    isUniversityApproval: yup.bool().oneOf([true], 'You must select either Yes or No'),
-    universityWebpage: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
+    clubWebsite: yup
+      .string()
+      .test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol)
+      .nullable()
+      .required('Field is required'),
+    isWebpage: yup.string().required('You must select either Yes or No'),
+    isUniversityApproval: yup.string().when('isWebpage', {
+      is: 'No',
+      then: yup.string().required('You must select either Yes or No'),
+    }),
+    universityWebpage: yup
+      .string()
+      .test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol)
+      .nullable()
+      .when('isWebpage', {
+        is: 'Yes',
+        then: yup.string().required('Field is required'),
+        otherwise: yup.string(),
+      }),
   });
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    watch,
+    unregister,
+    register,
+    setValue,
+    formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(ProfileSchema),
+    defaultValues: {
+      isWebpage: '',
+      isUniversityApproval: '',
+    },
   });
 
-  const [checkboxSecond, setCheckboxSecond] = useState(false);
-  const [showWebpageInput, setShowWebpageInput] = useState(false);
+  const [clubCreatedModal, setClubCreatedModal] = useState(false);
+
+  const toggleClubCreatedModal = () => setClubCreatedModal(!clubCreatedModal);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleNoChoiceChange = (value) => {
-    if (value) {
-      setCheckboxSecond(true);
+  const onBackClick = () => {
+    navigate(`/create-club/account-details`);
+  };
+
+  const onSuccess = () => {
+    if (location?.state?.isEditing) {
+      navigate('/dashboard');
     } else {
-      setCheckboxSecond(false);
+      setClubCreatedModal(true);
     }
   };
 
-  const handleYesChoiceChange = (value) => {
-    if (value) {
-      setShowWebpageInput(true);
-    } else {
-      setShowWebpageInput(false);
+  const onSubmit = (data) => {
+    const { isWebpage, isUniversityApproval, clubEmailID, clubLinkedin, clubWebsite, universityWebpage } = data;
+    const formData = { clubEmailID, clubLinkedin, clubWebsite, isWebpage, isUniversityApproval, universityWebpage };
+
+    if (isWebpage === 'Yes' && isUniversityApproval) {
+      formData.isUniversityApproval = ''; // Reset the second question's answer
     }
+
+    console.log('formData: ', formData);
+    onSuccess();
   };
 
-  const handleClick = () => {
-    if (Object.keys(errors).length === 0) {
-      navigate('/create-club/profile-details');
+  const isWebpageValue = watch('isWebpage');
+  const isUniversityApprovalValue = watch('isUniversityApproval');
+
+  useEffect(() => {
+    if (isWebpageValue !== 'Yes') {
+      unregister('universityWebpage');
     } else {
-      ShowToastMessage(ERROR, 'Please fill the mandatory fields');
+      register('universityWebpage');
     }
-  };
+  }, [isWebpageValue, isUniversityApprovalValue, unregister, register]);
 
   return (
     <ProfileFormContainer>
-      <Form>
+      {clubCreatedModal && <ClubCreatedModal modal={clubCreatedModal} toggleModal={toggleClubCreatedModal} />}
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
             <h4 className="m-0 mt-1">Club details</h4>
@@ -95,7 +133,7 @@ const Profile = () => {
               </Col>
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="clubLinkedin">
-                  LinkedIn<span className="label-asterisk me-50">*</span>
+                  LinkedIn
                 </Label>
                 <Controller
                   id="clubLinkedin"
@@ -145,29 +183,13 @@ const Profile = () => {
                 render={({ field }) => (
                   <div className="demo-inline-spacing">
                     <div className="form-check form-check-inline checkbox-custom-margin">
-                      <Input
-                        type="checkbox"
-                        {...field}
-                        id="yesWebpage"
-                        onChange={(e) => {
-                          field.onChange(e);
-                          handleYesChoiceChange(e.target.checked);
-                        }}
-                      />
+                      <Input type="radio" {...field} id="yesWebpage" value="Yes" />
                       <Label for="yesWebpage" className="form-check-label">
                         Yes, there is a web page on the university website.
                       </Label>
                     </div>
                     <div className="form-check form-check-inline checkbox-custom-margin">
-                      <Input
-                        type="checkbox"
-                        {...field}
-                        id="noWebpage"
-                        onChange={(e) => {
-                          field.onChange(e);
-                          handleNoChoiceChange(e.target.checked);
-                        }}
-                      />
+                      <Input type="radio" {...field} id="noWebpage" value="No" />
                       <Label htmlFor="noWebpage" className="form-check-label">
                         No, there is no such web page exists on the university website.
                       </Label>
@@ -177,10 +199,10 @@ const Profile = () => {
               />
               {errors.isWebpage && <FormFeedback>{errors.isWebpage.message}</FormFeedback>}
             </Row>
-            {showWebpageInput && (
+            {isWebpageValue === 'Yes' && (
               <Row className="mt-2">
                 <Col sm="12" md="12" lg="6">
-                  <Label className="form-label" for="clubWebsite">
+                  <Label className="form-label" for="universityWebpage">
                     University Web Page<span className="label-asterisk me-50">*</span>
                   </Label>
                   <Controller
@@ -199,7 +221,7 @@ const Profile = () => {
                 </Col>
               </Row>
             )}
-            {checkboxSecond && (
+            {isWebpageValue === 'No' && (
               <>
                 <Row className="mt-2">
                   <h5 className="m-0">
@@ -214,14 +236,14 @@ const Profile = () => {
                     render={({ field }) => (
                       <div className="demo-inline-spacing flex-nowrap">
                         <div className="form-check form-check-inline checkbox-custom-margin">
-                          <Input type="checkbox" {...field} id="yesUniversityApproval" />
+                          <Input type="radio" {...field} id="yesUniversityApproval" value="Yes" />
                           <Label for="yesUniversityApproval" className="form-check-label">
                             Yes, the Club has already received approval from the University to open its account on
                             Trumio.
                           </Label>
                         </div>
                         <div className="form-check form-check-inline checkbox-custom-margin">
-                          <Input type="checkbox" {...field} id="noUniversityApproval" />
+                          <Input type="radio" {...field} id="noUniversityApproval" value="No" />
                           <Label htmlFor="noUniversityApproval" className="form-check-label">
                             No, the Club has not received approval from the University to open its account on Trumio.
                           </Label>
@@ -237,14 +259,14 @@ const Profile = () => {
         </Card>
 
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
-          <div className="d-flex align-items-center upload-button cursor-pointer">
+          <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
             <UploadIconContainer>
               <ChevronLeft size={18} color={theme.activeNavPillText} />
             </UploadIconContainer>
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button color="primary" onClick={handleClick}>
+            <Button disabled={!isValid} color="primary" type="submit">
               <span className="me-50">Create</span>
             </Button>
           </div>
