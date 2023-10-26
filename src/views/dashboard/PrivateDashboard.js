@@ -48,7 +48,7 @@ const PrivateDashboard = () => {
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
 
   const [optionsModal, setOptionsModal] = useState(null);
-  const [inviteClubMembersModal, setInviteClubMembersModal] = useState(true);
+  const [inviteClubMembersModal, setInviteClubMembersModal] = useState(false);
 
   const query = useSelector((state) => state.search.query);
 
