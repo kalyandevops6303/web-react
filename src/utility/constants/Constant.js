@@ -79,6 +79,17 @@ const disputeStatusEnum = {
   RESPONDED: 'Responded',
   RESOLVED: 'Resolved',
 };
+
+const PAYMENT_STATUS = {
+  PENDING: 'PENDING',
+  INITIATED: 'INITIATED',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  PAYMENT_DUE: 'PAYMENT_DUE',
+  PAYMENT_PROCESSING: 'PAYMENT_PROCESSING',
+  PAYMENT_SUCCESSFUL: 'PAYMENT_SUCCESSFUL',
+  PAYMENT_FAILED: 'PAYMENT_FAILED',
+};
 export {
   ERROR_CODES,
   checkPoints,
@@ -96,4 +107,5 @@ export {
   disputeStatusEnum,
   bidStatusesOptions,
   statusForAllListing,
+  PAYMENT_STATUS,
 };

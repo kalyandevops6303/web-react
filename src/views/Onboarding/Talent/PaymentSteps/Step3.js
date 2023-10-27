@@ -239,7 +239,7 @@ const Step3 = ({ setStep }) => {
   const onAccountCreationSuccess = (res) => {
     if (res?.url?.length > 0) {
       // eslint-disable-next-line no-undef
-      window.open(res.url, '_self', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+      window.open(res.url, '_self');
     }
   };
 
