@@ -82,7 +82,7 @@ const PaymentTable = () => {
         <MakePaymentModal
           modal={makePaymentModal}
           toggleModal={handleCancel}
-          selectedMilestoneIds={selectedPaymentData}
+          selectedMilestoneIds={selectedPaymentId}
         />
       )}
       <Card className="p-1" style={{ backgroundColor: 'transparent' }}>
@@ -109,17 +109,21 @@ const PaymentTable = () => {
                 <tbody>
                   {milestoneData?.map((item) => (
                     <tr key={item?._id}>
-                      <td>
-                        <Input
-                          type="checkbox"
-                          checked={selectedPaymentId.includes(item?._id)}
-                          name={item?._id}
-                          onChange={(e) => handlePaymentSelect(e)}
-                          className="p-50 payment-form-control"
-                          disabled={isDisabled(item.payment_status)}
-                        />
-                      </td>
-                      <td className="fw-bolder">{}</td>
+                      {item?.transaction_id ? (
+                        <td>{}</td>
+                      ) : (
+                        <td>
+                          <Input
+                            type="checkbox"
+                            checked={selectedPaymentId.includes(item?._id)}
+                            name={item?._id}
+                            onChange={(e) => handlePaymentSelect(e)}
+                            className="p-50 payment-form-control"
+                            disabled={isDisabled(item.payment_status)}
+                          />
+                        </td>
+                      )}
+                      <td className="fw-bolder">{item?.transaction_id}</td>
                       <td>{item?.name}</td>
                       <td>{formatDate(item?.created_at)}</td>
                       <td>

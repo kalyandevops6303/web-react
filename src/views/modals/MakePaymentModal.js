@@ -59,16 +59,6 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
     }
   };
 
-  // const curriedHandleMilestoneSelect = (id) => (evt) => {
-  //   const isSelected = selectedIds.find((item) => item === id);
-  //   if (isSelected) {
-  //     const newArray = selectedIds.filter((item) => item !== id);
-  //     setSelectedIds(newArray);
-  //   } else {
-  //     setSelectedIds((prev) => [...prev, id]);
-  //   }
-  // }
-
   const onClose = () => {
     toggleModal();
   };
@@ -155,7 +145,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
               >{`$ ${totalPending.toLocaleString()}`}</CardText>
             </div>
             <div className="d-flex justify-content-end py-1">
-              <Button color="primary" onClick={handlePayment}>
+              <Button color="primary" onClick={handlePayment} disabled={selectedMilestoneIds.length === 0}>
                 {milestoneDataLoading ? <Spinner size="sm" /> : `Pay $ ${totalPending.toLocaleString()}`}
               </Button>
             </div>
