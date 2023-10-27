@@ -80,6 +80,12 @@ const disputeStatusEnum = {
   RESPONDED: 'Responded',
   RESOLVED: 'Resolved',
 };
+
+const roleTypeOptions = [
+  { label: 'Admin', value: 'ADMIN' },
+  { label: 'Member', value: 'MEMBER' },
+];
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -97,4 +103,5 @@ export {
   disputeStatusEnum,
   bidStatusesOptions,
   statusForAllListing,
+  roleTypeOptions,
 };
