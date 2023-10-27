@@ -247,6 +247,13 @@ const API = {
     convertReferral: `${apiAuthEndpoint}/api/v1/referrals/conversion`,
     allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
   },
+
+  // todo
+  clubs: {
+    listClubs: `${apiOnboardingEndpoint}/api/v1/clubs/####`,
+    listMyClubs: `${apiOnboardingEndpoint}/api/v1/clubs/####`,
+    listFav: `${apiOnboardingEndpoint}/api/v1/clubs/####`,
+  },
 };
 
 export default API;

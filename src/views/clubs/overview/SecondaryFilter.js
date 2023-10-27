@@ -286,7 +286,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       }
     });
 
-    if (primaryFilter === 'teams') {
+    if (primaryFilter === 'my_clubs') {
       dispatch(
         getTeamListing({
           metaData,
@@ -296,37 +296,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           userType,
         }),
       );
-    } else if (primaryFilter === 'join_requests') {
-      dispatch(
-        getReqListing({
-          metaData,
-          onSuccess,
-          onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
-        }),
-      );
-    } else if (primaryFilter === 'recommendation') {
-      dispatch(
-        getRecommendationListings({
-          metaData,
-          onSuccess,
-          onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
-        }),
-      );
-    } else if (primaryFilter === 'talents') {
-      dispatch(
-        getTalentListing({
-          metaData,
-          onSuccess,
-          onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
-        }),
-      );
-    } else if (primaryFilter === 'clients') {
+    } else if (primaryFilter === 'all_clubs') {
       dispatch(
         getClientListing({
           metaData,
