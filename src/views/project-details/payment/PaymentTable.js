@@ -70,6 +70,12 @@ const PaymentTable = () => {
     setMakePaymentModal(false);
   };
 
+  const isDisabled = (paymentStatus) =>
+    paymentStatus === PAYMENT_STATUS.PAID ||
+    paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
+    paymentStatus === PAYMENT_STATUS.INITIATED ||
+    paymentStatus === PAYMENT_STATUS.PAYMENT_PROCESSING;
+
   return (
     <>
       {makePaymentModal && (
@@ -109,7 +115,8 @@ const PaymentTable = () => {
                           checked={selectedPaymentId.includes(item?._id)}
                           name={item?._id}
                           onChange={(e) => handlePaymentSelect(e)}
-                          className="p-50"
+                          className="p-50 payment-form-control"
+                          disabled={isDisabled(item.payment_status)}
                         />
                       </td>
                       <td className="fw-bolder">{}</td>

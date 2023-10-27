@@ -59,6 +59,16 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
     }
   };
 
+  // const curriedHandleMilestoneSelect = (id) => (evt) => {
+  //   const isSelected = selectedIds.find((item) => item === id);
+  //   if (isSelected) {
+  //     const newArray = selectedIds.filter((item) => item !== id);
+  //     setSelectedIds(newArray);
+  //   } else {
+  //     setSelectedIds((prev) => [...prev, id]);
+  //   }
+  // }
+
   const onClose = () => {
     toggleModal();
   };
@@ -76,6 +86,13 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
     };
     dispatch(makeMilestonePayment(payload, onSuccess));
   };
+
+  const isDisabled = (paymentStatus) =>
+    paymentStatus === PAYMENT_STATUS.PAID ||
+    paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
+    paymentStatus === PAYMENT_STATUS.INITIATED ||
+    paymentStatus === PAYMENT_STATUS.PAYMENT_PROCESSING;
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={onClose} />
@@ -98,12 +115,18 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                     <div className="d-flex">
                       <Input
                         type="checkbox"
-                        id="m1"
+                        id={item._id}
                         checked={selectedIds.includes(item._id)}
                         onChange={(evt) => handleMilestoneSelect(evt, item._id)}
+                        disabled={isDisabled(item.payment_status)}
+                        className="payment-form-control"
                       />
                       <div className="d-flex flex-column" style={{ marginTop: '-2px' }}>
-                        <Label for="m1" className="text-truncate" style={{ marginLeft: '10px', fontSize: '16px' }}>
+                        <Label
+                          for={item._id}
+                          className="text-truncate"
+                          style={{ marginLeft: '10px', fontSize: '16px' }}
+                        >
                           {item.name}
                         </Label>
                       </div>

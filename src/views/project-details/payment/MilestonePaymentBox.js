@@ -31,9 +31,16 @@ function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, 
     <Card style={{ height: '72px' }} className="d-flex justify-content-center">
       <CardBody className="d-flex justify-content-between">
         <div className="d-flex">
-          <Input type="checkbox" id="m1" onChange={(e) => onSelect(e, id)} checked={checked} disabled={isDisabled} />
+          <Input
+            type="checkbox"
+            id={id}
+            onChange={(e) => onSelect(e, id)}
+            checked={checked}
+            disabled={isDisabled}
+            className="payment-form-control"
+          />
           <div className="d-flex flex-column" style={{ marginTop: '-2px' }}>
-            <Label for="m1" className="text-truncate" style={{ marginLeft: '10px', fontSize: '16px' }}>
+            <Label for={id} className="text-truncate" style={{ marginLeft: '10px', fontSize: '16px' }}>
               {milestoneName}
             </Label>
             <Badge color={getTagSettings(paymentStatus).theme} style={{ width: 'fit-content', marginLeft: '10px' }}>
