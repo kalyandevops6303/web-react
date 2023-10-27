@@ -19,6 +19,7 @@ const userTypes = {
   client: 'CLIENT',
   talent: 'TALENT',
   team: 'TEAM',
+  club: 'CLUB',
 };
 const userOnboarding = {
   client: 'client-onboarding',
