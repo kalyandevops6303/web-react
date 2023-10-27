@@ -124,6 +124,7 @@ const loginUserWithGoogle =
       setItem('access_token', res.data.data.access_token);
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(loginSuccess(res.data.data));
+        dispatch(cometChatLogin(res.data.data.comet_chat_token));
       } else {
         dispatch(loginSuccess(false));
       }
