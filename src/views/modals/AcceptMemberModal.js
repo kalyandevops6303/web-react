@@ -50,6 +50,19 @@ const AcceptMemberModal = ({ title, isLoading, data, onAccept, modal, toggleModa
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
                   </div>
                 </div>
+
+                <div>
+                  <Label className="form-label">Role Type</Label>
+                  <Select
+                    isClearable
+                    options={roleTypeOptions}
+                    classNamePrefix="select"
+                    placeholder="Select role type"
+                    value={selectedRoleType}
+                    onChange={(option) => setSelectedRoleType(option)}
+                    theme={selectThemeColors}
+                  />
+                </div>
               </section>
             </div>
           </div>
