@@ -30,15 +30,25 @@ import theme from '../../configs/themeVariables';
 import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import { servicesService, skillsService, toolsService } from '../../services/staticServices';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
-import { updateTeam } from '../../redux/actions/teamsActions';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
-import { getLanguages } from '../../redux/actions/staticActions';
+import { GroupLabelWrapper } from './style';
+import EducationInstitutionModal from './EducationInstitutionModal';
+import EmailVerifyModal from './EmailVerifyModal';
 
 const Account = () => {
   const ProfileSchema = yup.object().shape({
     clubName: yup.string().max(30, 'Name must be 30 characters or less').required('Name is required'),
     clubTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
+    educationInstitution: yup
+      .array()
+      .of(
+        yup.object().shape({
+          label: yup.string(),
+          value: yup.string(),
+        }),
+      )
+      .required('Education institution is required'),
     clubIntroduction: yup
       .string()
       .max(500, 'Introduction must be 500 characters or less')
@@ -89,7 +99,6 @@ const Account = () => {
   });
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const location = useLocation();
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -98,6 +107,7 @@ const Account = () => {
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [imageUrlRes, setImageUrlRes] = useState(null);
+  const [educationInstitutionModal, setEducationInstitutionModal] = useState(false);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [teamDetails, setTeamDetails] = useState(null);
   const fileInputRef = useRef(null);
@@ -242,6 +252,47 @@ const Account = () => {
     // }
   };
 
+  const loadEducationInstitutionOptions = async (search) => {
+    const options = [
+      {
+        label: 'My Institutions',
+        options: [
+          { value: 'IIT - G', label: 'IIT - G' },
+          { value: 'IIT - M', label: 'IIT - M' },
+        ],
+      },
+      {
+        label: 'Other Institutions',
+        options: [
+          { value: 'IIM', label: 'IIM' },
+          { value: 'NIT', label: 'NIT' },
+        ],
+      },
+    ];
+
+    return { options };
+
+    //  if (search) {
+    //    return {
+    //      options: toolsOptions.filter(
+    //        (tool) =>
+    //          tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
+    //          tool.label.toLowerCase().includes(search.toLowerCase()),
+    //      ),
+    //    };
+    //  }
+    //  try {
+    //    const response = await toolsService();
+    //    const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool._id }));
+    //    setToolsOptions(options);
+    //    return {
+    //      options,
+    //    };
+    //  } catch (error) {
+    //    return { options: [] };
+    //  }
+  };
+
   const loadServicesOptions = async (search) => {
     if (search) {
       return {
@@ -360,16 +411,20 @@ const Account = () => {
     }
   }, [teamDetails]);
 
-  const handleClick = () => {
-    if (Object.keys(errors).length === 0) {
-      navigate('/create-club/profile-details');
-    } else {
-      ShowToastMessage(ERROR, 'Please fill the mandatory fields');
-    }
-  };
+  const formatGroupLabel = (data) => (
+    <GroupLabelWrapper>
+      <span>{data.label}</span>
+    </GroupLabelWrapper>
+  );
 
   return (
     <ProfileFormContainer>
+      {educationInstitutionModal && (
+        <EducationInstitutionModal
+          modal={educationInstitutionModal}
+          toggleModal={() => setEducationInstitutionModal(!educationInstitutionModal)}
+        />
+      )}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
@@ -447,8 +502,35 @@ const Account = () => {
                 {errors.clubTagline && <FormFeedback>{errors.clubTagline.message}</FormFeedback>}
               </Col>
             </Row>
-            <Row className="mb-1">
+            <Row className="mb-1 mt-1">
               <Col sm="12" md="12" lg="6">
+                <Label className="form-label" for="tools">
+                  Education Institution
+                </Label>
+                <Controller
+                  id="educationInstitution"
+                  name="educationInstitution"
+                  control={control}
+                  invalid={errors.educationInstitution && true}
+                  render={({ field }) => (
+                    <AsyncPaginate
+                      loadOptions={loadEducationInstitutionOptions}
+                      classNamePrefix="select"
+                      placeholder="Enter your institution name"
+                      theme={selectThemeColors}
+                      formatGroupLabel={formatGroupLabel}
+                      className={classNames('react-select', {
+                        'is-invalid': errors && errors.educationInstitution,
+                      })}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.educationInstitution && <FormFeedback>{errors.educationInstitution.message}</FormFeedback>}
+              </Col>
+            </Row>
+            <Row className="mb-1">
+              <Col sm="12" md="12" lg="12">
                 <Label className="form-label" for="clubIntroduction">
                   Club Introduction<span className="label-asterisk me-50">*</span>
                 </Label>
