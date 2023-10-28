@@ -2,11 +2,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Badge, Button, Card, CardBody, CardText, Input, Table } from 'reactstrap';
 import { formatDate } from '../../../utility/Utils';
-import { PAYMENT_STATUS } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import MakePaymentModal from '../../modals/MakePaymentModal';
+import { userData } from '../../../redux/selectors/dashboardSelectors';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -16,6 +17,7 @@ const PaymentTable = () => {
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const listLoading = useSelector((state) => state.milestonePayment?.listLoading);
   const projectDetailsData = useSelector(projectDetails);
+  const user = useSelector(userData);
 
   const dispatch = useDispatch();
 
@@ -109,7 +111,7 @@ const PaymentTable = () => {
                 <tbody>
                   {milestoneData?.map((item) => (
                     <tr key={item?._id}>
-                      {item?.transaction_id ? (
+                      {item?.transaction_id?.length > 0 || user.user_type !== userTypes.client ? (
                         <td>{}</td>
                       ) : (
                         <td>
@@ -137,26 +139,32 @@ const PaymentTable = () => {
                 </tbody>
               </Table>
             </div>
-            <div className="d-flex w-100 mt-2 justify-content-between">
-              <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Trumio fee 20%</CardText>
-              <CardText>{`$${trumioFee}`}</CardText>
-            </div>
+            {user.user_type === userTypes.client && (
+              <div className="d-flex w-100 mt-2 justify-content-between">
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Trumio fee 20%</CardText>
+                <CardText>{`$${trumioFee}`}</CardText>
+              </div>
+            )}
             <hr />
-            <div className="d-flex w-100 mt-2 justify-content-between">
-              <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Inclusive of Trumio fee 20%</CardText>
-              <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${totalPending}`}</CardText>
-            </div>
+            {user.user_type === userTypes.client && (
+              <div className="d-flex w-100 mt-2 justify-content-between">
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Inclusive of Trumio fee 20%</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${totalPending}`}</CardText>
+              </div>
+            )}
 
-            <div className="d-flex justify-content-end w-100 mt-5">
-              <Button
-                onClick={handlePayment}
-                className="d-contents"
-                color="primary"
-                disabled={selectedPaymentId.length === 0}
-              >
-                {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}
-              </Button>
-            </div>
+            {user.user_type === userTypes.client && (
+              <div className="d-flex justify-content-end w-100 mt-5">
+                <Button
+                  onClick={handlePayment}
+                  className="d-contents"
+                  color="primary"
+                  disabled={selectedPaymentId.length === 0}
+                >
+                  {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}
+                </Button>
+              </div>
+            )}
           </CardBody>
         )}
       </Card>
