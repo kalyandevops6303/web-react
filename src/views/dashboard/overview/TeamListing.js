@@ -259,8 +259,8 @@ const TeamListing = () => {
                 {teamInvitation?.data?.length > 0 && (
                   <CardText
                     onClick={() => {
-                      navigate('/my-teams');
-                      dispatch(setActiveNavTab('my-teams'));
+                      navigate('/projects/invited');
+                      dispatch(setActiveNavTab('projects'));
                     }}
                     className=" view-all-cta"
                   >

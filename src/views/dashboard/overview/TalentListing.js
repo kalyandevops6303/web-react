@@ -180,7 +180,7 @@ const TalentListing = () => {
             {joinRequests?.data?.length > 0 && (
               <CardText
                 onClick={() => {
-                  navigate('/my-teams/join-requests');
+                  navigate('/my-teams/join_requests');
                   dispatch(setActiveNavTab('my-teams'));
                 }}
                 className="view-all-cta"
