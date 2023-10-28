@@ -15,6 +15,7 @@ import { paginatedProjectsService } from '../../../services/disputeServices';
 import { getAllDisputes, getDisputesCount, raiseNewDispute } from '../../../redux/actions/disputeActions';
 import { raiseDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 import { disputeStatuses } from '../../../utility/constants/Constant';
+import ShowToastMessage from '../../../@core/components/toast';
 
 const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter }) => {
   const DisputeSchema = yup.object().shape({
@@ -55,6 +56,7 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter }) => {
   const raiseDisputeIsLoading = useSelector(raiseDisputeLoading);
 
   const onSuccess = () => {
+    ShowToastMessage('success', `Disputed Raised Successfully`);
     if (primaryFilter === 'all') {
       dispatch(getAllDisputes(null, 1, 10, []));
     } else if (primaryFilter === 'open') {

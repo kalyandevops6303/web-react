@@ -29,6 +29,7 @@ import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
 import { setItem } from '../../utility/localStorageControl';
+import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -122,6 +123,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModal(true);
     } else {
       navigate('/marketplace/teams');
+      dispatch(setActiveNavTab('marketplace'));
     }
   };
 
