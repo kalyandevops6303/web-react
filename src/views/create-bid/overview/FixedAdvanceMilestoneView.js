@@ -1143,14 +1143,7 @@ const FixedAdvanceMilestoneView = () => {
                                 </Card>
                               </Col>
                             </Row>
-                            <div className="d-flex align-items-center justify-content-between w-100">
-                              <div
-                                className="d-flex align-items-center upload-button cursor-pointer"
-                                onClick={handleAddMilestone}
-                              >
-                                <Plus size={16} color={theme.activeNavPillText} />
-                                <h5 className="fw-bold">Add Milestone</h5>
-                              </div>
+                            <div className="d-flex align-items-center justify-content-end w-100">
                               {getValues('milestones').length > 1 && (
                                 <Button
                                   type="button"
@@ -1171,6 +1164,10 @@ const FixedAdvanceMilestoneView = () => {
                   );
                 })}
               </Accordion>
+              <div className="d-flex align-items-center upload-button cursor-pointer pb-2" onClick={handleAddMilestone}>
+                <Plus size={16} color={theme.activeNavPillText} />
+                <h5 className="fw-bold">Add Milestone</h5>
+              </div>
             </CardBody>
           </Card>
           <Card className="mt-2">
