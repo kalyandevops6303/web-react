@@ -135,4 +135,25 @@ const MessageIconWrap = styled.div`
     }
   }
 `;
-export { RemoveMemberModalWrapper, MessageIconWrap, DeleteModalWrapper, EditContractWrap, AcceptModalWrapper };
+
+const MakePaymentModalWrapper = styled.div`
+  .modal-header {
+    font-size: 26px;
+    font-weight: 500;
+  }
+  .modal-title {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .card-header-border {
+    border: 1px solid #ebe9f1;
+  }
+`;
+export {
+  RemoveMemberModalWrapper,
+  MessageIconWrap,
+  DeleteModalWrapper,
+  EditContractWrap,
+  AcceptModalWrapper,
+  MakePaymentModalWrapper,
+};
