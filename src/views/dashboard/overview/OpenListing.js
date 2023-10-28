@@ -34,6 +34,7 @@ import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import ProjectBidCard from './ProjectBidCard';
 import RecommendedTeamsCardForClient from './RecommendedTeamsCardForClient';
+import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -157,10 +158,12 @@ const OpenListing = () => {
   const handleViewAll = (e, path) => {
     e.stopPropagation();
     navigate(path);
+    dispatch(setActiveNavTab('marketplace'));
   };
   const handleViewAllRecommendedTeam = (e, path) => {
     e.stopPropagation();
     navigate(path, { state: { isRecommended: true } });
+    dispatch(setActiveNavTab('marketplace'));
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
