@@ -13,6 +13,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state?.myTeams?.cardData);
   const isLoading = useSelector((state) => state?.myTeams?.cardInfoLoading);
+  const isLoadingSecondaryFilter = useSelector((state) => state?.myTeams?.loading);
+
+  const selectMyTeamMetaData = useSelector((state) => state?.myTeams?.metaData);
 
   useEffect(() => {
     dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
@@ -73,7 +76,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           <Statbox
             isActive={selected === PATH_NAMES.CLIENTS}
             isMarketPlaceTab
-            title={selectCardData?.clients}
+            title={selectCardData?.clients ?? 0}
             desc={TAB_NAMES.CLIENTS}
             icon={<Users height={20} />}
             color="light-turquoise"
@@ -86,7 +89,13 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
         <Statbox
           isActive={selected === PATH_NAMES.RECOMMENDATION}
           isMarketPlaceTab
-          title={selectCardData?.recommended ?? 0}
+          title={
+            selected === PATH_NAMES.RECOMMENDATION && isLoadingSecondaryFilter
+              ? selectCardData?.recommended
+              : selected === PATH_NAMES.RECOMMENDATION
+              ? selectMyTeamMetaData?.total_records
+              : selectCardData?.recommended
+          }
           desc={TAB_NAMES.RECOMMENDATION}
           icon={<ThumbsUp height={20} />}
           color="light-warning"
@@ -100,7 +109,13 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             isActive={selected === PATH_NAMES.JOIN_REQ}
             className="stat-box cursor-pointer"
             isMarketPlaceTab
-            title={selectCardData?.join_request || selectCardData?.join_requests}
+            title={
+              selected === PATH_NAMES.JOIN_REQ && isLoadingSecondaryFilter
+                ? selectCardData?.join_request || selectCardData?.join_requests
+                : selected === PATH_NAMES.JOIN_REQ
+                ? selectMyTeamMetaData?.total_records
+                : selectCardData?.join_request || selectCardData?.join_requests
+            }
             desc={TAB_NAMES.JOIN_REQ}
             icon={<UserCheck height={20} />}
             color="light-success"

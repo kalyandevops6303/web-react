@@ -15,6 +15,7 @@ const steps = [
     title: 'Milestone',
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
+    isDisabled: true,
   },
   {
     title: 'Payment',
