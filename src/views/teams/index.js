@@ -22,9 +22,7 @@ const MyTeams = () => {
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
   const navigate = useNavigate();
-  const [primaryFilter, setPrimaryFilter] = useState(
-    getItem('selectedMyTeamsTab') ?? userDetailsData?.user_type === userTypes.talent ? 'teams' : 'talents',
-  );
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMyTeamsTab') || 'teams');
 
   const routesMatch =
     useMatch('/my-teams/teams') ||
@@ -37,8 +35,18 @@ const MyTeams = () => {
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
-    setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
-    setItem('selectedMyTeamsTab', routesMatch?.pathname?.split('/')?.[2]);
+
+    if (userDetailsData?.user_type === userTypes.talent && primaryFilter === 'talents') {
+      setPrimaryFilter('teams');
+      setItem('selectedMyTeamsTab', 'teams');
+    } else if (userDetailsData?.user_type === userTypes.team && primaryFilter === 'teams') {
+      setPrimaryFilter('talents');
+      setItem('selectedMyTeamsTab', 'talents');
+    } else if (primaryFilter !== routesMatch?.pathname?.split('/')?.[2]) {
+      setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
+      setItem('selectedMyTeamsTab', routesMatch?.pathname?.split('/')?.[2]);
+    }
+
     setItem('baseRoute', 'my-teams');
   }, []);
 

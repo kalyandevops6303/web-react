@@ -68,11 +68,14 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
     window.open(data?.session_url, '_self');
   };
 
+  // eslint-disable-next-line no-undef
+  const currentURL = window.location.href;
+
   const handlePayment = () => {
     const payload = {
       milestones: [...selectedIds],
-      success_url: 'https://www.stripe.com',
-      cancel_url: 'https://www.stripe.com',
+      success_url: currentURL,
+      cancel_url: currentURL,
     };
     dispatch(makeMilestonePayment(payload, onSuccess));
   };

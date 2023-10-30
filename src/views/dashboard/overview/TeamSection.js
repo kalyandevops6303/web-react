@@ -7,6 +7,8 @@ import { TeamSectionWrapper } from './style';
 import UserNameRoleCompanyComp from '../../../@core/components/username-role-company';
 import { getTeamMembers } from '../../../redux/actions/dashboardActions';
 import { selectGetTeamMember } from '../../../redux/selectors/dashboardSelectors';
+import { switchProfile } from '../../../redux/actions/authActions';
+import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
 const TeamSection = ({ toggleModal }) => {
   const teamMembers = useSelector(selectGetTeamMember);
@@ -15,6 +17,8 @@ const TeamSection = ({ toggleModal }) => {
   const dispatch = useDispatch();
   const selectTeamMembersMetadata = useSelector((state) => state.dashboard.getMemberMetaData);
   const selectTeamMembercurrentPreview = useSelector((state) => state.dashboard.memberCurrentPreview);
+  const savedUserDetails = useSelector(selectSavedUserData);
+
   const metadata = { page: 1, page_size: 10 };
 
   useEffect(() => {
@@ -27,8 +31,14 @@ const TeamSection = ({ toggleModal }) => {
     }
   }, [selectTeamMembercurrentPreview]);
 
+  const onFailure = (data) => {
+    if (data?.errorData?.message === 'Not a team member') {
+      dispatch(switchProfile({ data: savedUserDetails, onSuccess: () => {}, selected: false }));
+    }
+  };
+
   useEffect(() => {
-    dispatch(getTeamMembers({ metadata }));
+    dispatch(getTeamMembers({ metadata, onFailure }));
   }, []);
 
   const fetchMore = () => {

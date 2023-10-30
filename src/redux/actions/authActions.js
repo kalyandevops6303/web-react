@@ -317,6 +317,7 @@ const switchProfile =
       dispatch(clearMarketplaceCardData());
       // clearing project card data
       dispatch(clearProjectCardData());
+      removeItem('selectedMyTeamsTab');
     } catch (err) {
       errorHandler(err);
     }

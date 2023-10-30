@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardText, CardTitle, Col, FormFeedback, Input, Label, Row } from 'reactstrap';
@@ -308,7 +309,13 @@ const ContractView = () => {
               <div className="team-sign-section mt-2" style={{ maxHeight: '26rem', overflowY: 'auto' }}>
                 <h6 className="fw-bolder">{updatedWorkers?.length > 0 ? 'Team' : ''} </h6>
                 {updatedWorkers?.map((worker) => (
-                  <div key={worker?.user_id} className="d-flex justify-content-between mb-1">
+                  <div
+                    key={worker?.user_id}
+                    className="d-flex mb-1 justify-content-between"
+                    style={{
+                      width: worker?.user_id?.length === 0 ? '60%' : 'auto',
+                    }}
+                  >
                     <NameInfo
                       img={worker?.image_uri}
                       name={`${worker?.first_name} ${worker?.last_name}`}
@@ -329,6 +336,16 @@ const ContractView = () => {
                           className="btn-sm-block mb-25 mt-1"
                         >
                           {worker?.is_signed ? 'Confirmed Agreement' : 'Confirm Agreement'}
+                        </Button>
+                      ) : worker?.user_id?.length === 0 ? (
+                        <Button
+                          outline
+                          color="primary"
+                          type="secondary"
+                          className="btn-sm-block mb-25 mt-1"
+                          onClick={() => navigate(`/project-details/${projectInfo?._id}/team`)}
+                        >
+                          Assign team member
                         </Button>
                       ) : (
                         <Button

@@ -28,6 +28,7 @@ const ProjectDetails = () => {
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
   const user = useSelector(userData);
+  const [stepsArray, setStepsArray] = useState(steps);
 
   const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
   const isClient = user.user_type === userTypes.client;
@@ -42,16 +43,24 @@ const ProjectDetails = () => {
   const isInviteView = location?.pathname?.includes('project-invitation');
 
   useEffect(() => {
+    let updatedSteps = [];
     if (projectDetailsData) {
-      const updatedSteps = [...steps]; // Create a copy of the original steps array
+      updatedSteps = [...steps]; // Create a copy of the original steps array
       if (projectDetailsData.status === 'COMPLETED') {
+        const milestoneIndex = 2; // Index of the 'Milestone' step
+        updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
+        const paymentIndex = 3; // Index of the 'Payment' step
+        updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
         const ratingIndex = 4; // Index of the 'Rating' step
         updatedSteps[ratingIndex] = { ...updatedSteps[ratingIndex], isDisabled: false };
       }
       if (projectDetailsData.status === 'ON_GOING') {
         const milestoneIndex = 2; // Index of the 'Milestone' step
         updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
+        const paymentIndex = 3; // Index of the 'Payment' step
+        updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
       }
+      setStepsArray(updatedSteps);
     }
   }, [projectDetailsData?.status]);
 
@@ -88,7 +97,11 @@ const ProjectDetails = () => {
           {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>
         <Col lg="9">
-          <CustomStep steps={isInviteView ? InviteView : steps} currentStep={currentStep} onChangeStep={changeStep} />
+          <CustomStep
+            steps={isInviteView ? InviteView : stepsArray}
+            currentStep={currentStep}
+            onChangeStep={changeStep}
+          />
           <Routes>
             <Route path="bid" element={<BidView />} />
             <Route path="milestone" element={<Milestone />} />

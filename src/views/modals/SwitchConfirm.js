@@ -34,7 +34,13 @@ const SwitchConfirmModal = ({
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
     } else if (location.pathname.split('/').includes('projects')) {
-      navigate(`/project-details/${projectId}/milestone`);
+      if (location.pathname.split('/').includes('ongoing')) {
+        navigate(`/project-details/${data?._id}/milestone`);
+      } else if (location.pathname.split('/').includes('completed')) {
+        navigate(`/project-details/${data?._id}/rating`);
+      } else {
+        navigate(`/project-details/${data?._id}/bid`);
+      }
     } else {
       navigate(`/project-details/${projectId}/bid`);
     }

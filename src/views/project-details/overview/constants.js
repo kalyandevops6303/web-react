@@ -21,6 +21,7 @@ const steps = [
     title: 'Payment',
     subtitle: 'Pay transaction',
     icon: <CreditCard size={18} />,
+    isDisabled: true,
   },
   {
     title: 'Rating',
