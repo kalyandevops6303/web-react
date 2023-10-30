@@ -100,6 +100,7 @@ const CountryDropdown = ({ selectedCountry, setSelectedCountry, disabled }) => {
           Option: CustomOption,
           SingleValue: CustomValue,
           Input: MaxLengthInput,
+          LoadingIndicator:() => null
         }}
         value={selectedCountry}
         onChange={handleCountryChange}
