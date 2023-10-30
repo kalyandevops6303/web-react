@@ -19,21 +19,14 @@ import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
 import { selectThemeColors, useIsTab } from '../../../utility/Utils';
 
-import { clearData } from '../../../redux/reducers/myTeams';
+import { clearData } from '../../../redux/reducers/clubs';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import NoDataFoundComponent from './NoDataFoundComp';
-import {
-  getClientListing,
-  getFavListing,
-  getRecommendationListings,
-  getReqListing,
-  getTalentListing,
-  getTeamListing,
-} from '../../../redux/actions/myTeamActions';
 
 import ClubCard from '../../cards/ClubCard';
 import { skillsService, toolsService } from '../../../services/staticServices';
+import { getClubs } from '../../../redux/actions/clubActions';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const statusOptions = [
@@ -53,9 +46,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const filterTypeOptions = [
     { label: 'All', value: 'ALL' },
-    { label: 'New', value: 'NEW' },
+    { label: 'My Clubs', value: 'MY_CLUBS' },
     { label: 'Favorites', value: 'FAVORITES' },
-    { label: 'Alma mater', value: 'ALMA_MATER' },
   ];
 
   const [searchText, setSearchText] = useState('');
@@ -79,158 +71,158 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     filter_type: [{ label: 'All', value: 'ALL' }],
   });
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const selectMyTeamData = useSelector((state) => state?.myTeams?.listData);
-  const selectMyTeamMetaData = useSelector((state) => state?.myTeams?.metaData);
-  const currentPreview = useSelector((state) => state?.myTeams?.currentPreview);
-  const isLoading = useSelector((state) => state?.myTeams?.loading);
-  const isCardLoading = useSelector((state) => state?.myTeams?.cardInfoLoading);
-  const selectCardData = useSelector((state) => state?.myTeams?.cardData);
+  const selectClubsData = useSelector((state) => state?.clubs?.listData);
+  const selectClubsMetaData = useSelector((state) => state?.clubs?.metaData);
+  const currentPreview = useSelector((state) => state?.clubs?.currentPreview);
+  const isLoading = useSelector((state) => state?.clubs?.loading);
+  const isCardLoading = useSelector((state) => state?.clubs?.cardInfoLoading);
+  const selectCardData = useSelector((state) => state?.clubs?.cardData);
 
   const metaData = { page: 1, page_size: 10 };
 
-  const data = [
-    {
-      _id: '650159af54f2ae9b1cabd31f',
-      team_logo: '',
-      introduction:
-        'Hello I am trumio Hello I am trumio Hello I am trumio Hello I am trumio Hello I am trumio Hello I am trumio',
-      tools: [
-        {
-          _id: '6486a6c33cf46b7a02d8bde3',
-          name: 'Amazon AI Services',
-        },
-        {
-          _id: '6486a6c33cf46b7a02d8bde4',
-          name: 'Amazon ECS',
-        },
-        {
-          _id: '6486a6c33cf46b7a02d8bdf2',
-          name: 'AWS CloudFormation',
-        },
-        {
-          _id: '6486a6c33cf46b7a02d8bdf3',
-          name: 'AWS CodeDeploy',
-        },
-        {
-          _id: '6486a6c33cf46b7a02d8bdf4',
-          name: 'AWS Lambda',
-        },
-      ],
-      languages_supported: [
-        {
-          _id: '64831445a51384fb6948e6a7',
-          name: 'Algerian Spoken Arabic',
-        },
-      ],
-      created_by: {
-        first_name: 'Jack',
-        hourly_rate: 3,
-        image_uri:
-          'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64d60539e127974f873d31d8/38d800ea-b3e5-41ba-b5d6-0360a37f5ac2.jpeg',
-        last_name: 'jones',
-        professional_intro: '2',
-        projects_worked_on_count: 0,
-        rating: 0,
-        tagline: 'Hi',
-        work_experience: 24,
-      },
-      skills: [
-        {
-          _id: '6486a65e34730cac6a48042a',
-          name: '.NET Core',
-        },
-        {
-          _id: '6486a65e34730cac6a48042c',
-          name: 'Accessibility',
-        },
-        {
-          _id: '6486a65e34730cac6a48042e',
-          name: 'Angular',
-        },
-        {
-          _id: '6486a65e34730cac6a48042f',
-          name: 'AngularJS',
-        },
-        {
-          _id: '6486a65e34730cac6a480436',
-          name: 'AWS (Amazon Web Services)',
-        },
-      ],
-      availability: {
-        timezone: {
-          _id: '6479f0fafe992bcffe2ab6f5',
-          offset: 10800,
-          offset_name: 'UTC+03:00',
-          name: 'Africa/Addis_Ababa',
-          abbreviation: 'EAT',
-        },
-        weekdays_avl: {
-          start_time: 3,
-          end_time: 8,
-          days: ['TUESDAY'],
-        },
-      },
-      services: [
-        {
-          _id: '64cce2b52fae55f2dfd21af2',
-          created_at: 1691148981229,
-          updated_at: 1691148981229,
-          is_deleted: false,
-          name: 'Hardware',
-        },
-        {
-          _id: '64cce2c42fae55f2dfd21af6',
-          created_at: 1691148996230,
-          updated_at: 1691148996230,
-          is_deleted: false,
-          name: 'Engineering',
-        },
-        {
-          _id: '64cce2ef2fae55f2dfd21af8',
-          name: 'Law',
-          created_at: 1691149039495,
-          is_deleted: false,
-          updated_at: 1691149039495,
-        },
-        {
-          _id: '64cce2ef2fae55f2dfd21af9',
-          name: 'Medical',
-          created_at: 1691149039495,
-          is_deleted: false,
-          updated_at: 1691149039495,
-        },
-        {
-          _id: '64cce2ef2fae55f2dfd21afb',
-          name: 'Other',
-          created_at: 1691149039495,
-          is_deleted: false,
-          updated_at: 1691149039495,
-        },
-      ],
-      name: 'Test team 3',
-      tagline: 'Hello I am trumio',
-      team_members: [
-        {
-          first_name: 'Jack',
-          hourly_rate: 3,
-          image_uri:
-            'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64d60539e127974f873d31d8/38d800ea-b3e5-41ba-b5d6-0360a37f5ac2.jpeg',
-          last_name: 'jones',
-          professional_intro: '2',
-          projects_worked_on_count: 0,
-          rating: 0,
-          tagline: 'Hi',
-          work_experience: 24,
-        },
-      ],
-      match_percentage: 80,
-      team_members_count: 1,
-      is_favourite: false,
-      user_type: 'TEAM',
-      project: {},
-      is_favorite: false,
-    },
-  ];
+  // const data = [
+  //   {
+  //     _id: '650159af54f2ae9b1cabd31f',
+  //     team_logo: '',
+  //     introduction:
+  //       'Hello I am trumio Hello I am trumio Hello I am trumio Hello I am trumio Hello I am trumio Hello I am trumio',
+  //     tools: [
+  //       {
+  //         _id: '6486a6c33cf46b7a02d8bde3',
+  //         name: 'Amazon AI Services',
+  //       },
+  //       {
+  //         _id: '6486a6c33cf46b7a02d8bde4',
+  //         name: 'Amazon ECS',
+  //       },
+  //       {
+  //         _id: '6486a6c33cf46b7a02d8bdf2',
+  //         name: 'AWS CloudFormation',
+  //       },
+  //       {
+  //         _id: '6486a6c33cf46b7a02d8bdf3',
+  //         name: 'AWS CodeDeploy',
+  //       },
+  //       {
+  //         _id: '6486a6c33cf46b7a02d8bdf4',
+  //         name: 'AWS Lambda',
+  //       },
+  //     ],
+  //     languages_supported: [
+  //       {
+  //         _id: '64831445a51384fb6948e6a7',
+  //         name: 'Algerian Spoken Arabic',
+  //       },
+  //     ],
+  //     created_by: {
+  //       first_name: 'Jack',
+  //       hourly_rate: 3,
+  //       image_uri:
+  //         'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64d60539e127974f873d31d8/38d800ea-b3e5-41ba-b5d6-0360a37f5ac2.jpeg',
+  //       last_name: 'jones',
+  //       professional_intro: '2',
+  //       projects_worked_on_count: 0,
+  //       rating: 0,
+  //       tagline: 'Hi',
+  //       work_experience: 24,
+  //     },
+  //     skills: [
+  //       {
+  //         _id: '6486a65e34730cac6a48042a',
+  //         name: '.NET Core',
+  //       },
+  //       {
+  //         _id: '6486a65e34730cac6a48042c',
+  //         name: 'Accessibility',
+  //       },
+  //       {
+  //         _id: '6486a65e34730cac6a48042e',
+  //         name: 'Angular',
+  //       },
+  //       {
+  //         _id: '6486a65e34730cac6a48042f',
+  //         name: 'AngularJS',
+  //       },
+  //       {
+  //         _id: '6486a65e34730cac6a480436',
+  //         name: 'AWS (Amazon Web Services)',
+  //       },
+  //     ],
+  //     availability: {
+  //       timezone: {
+  //         _id: '6479f0fafe992bcffe2ab6f5',
+  //         offset: 10800,
+  //         offset_name: 'UTC+03:00',
+  //         name: 'Africa/Addis_Ababa',
+  //         abbreviation: 'EAT',
+  //       },
+  //       weekdays_avl: {
+  //         start_time: 3,
+  //         end_time: 8,
+  //         days: ['TUESDAY'],
+  //       },
+  //     },
+  //     services: [
+  //       {
+  //         _id: '64cce2b52fae55f2dfd21af2',
+  //         created_at: 1691148981229,
+  //         updated_at: 1691148981229,
+  //         is_deleted: false,
+  //         name: 'Hardware',
+  //       },
+  //       {
+  //         _id: '64cce2c42fae55f2dfd21af6',
+  //         created_at: 1691148996230,
+  //         updated_at: 1691148996230,
+  //         is_deleted: false,
+  //         name: 'Engineering',
+  //       },
+  //       {
+  //         _id: '64cce2ef2fae55f2dfd21af8',
+  //         name: 'Law',
+  //         created_at: 1691149039495,
+  //         is_deleted: false,
+  //         updated_at: 1691149039495,
+  //       },
+  //       {
+  //         _id: '64cce2ef2fae55f2dfd21af9',
+  //         name: 'Medical',
+  //         created_at: 1691149039495,
+  //         is_deleted: false,
+  //         updated_at: 1691149039495,
+  //       },
+  //       {
+  //         _id: '64cce2ef2fae55f2dfd21afb',
+  //         name: 'Other',
+  //         created_at: 1691149039495,
+  //         is_deleted: false,
+  //         updated_at: 1691149039495,
+  //       },
+  //     ],
+  //     name: 'Test team 3',
+  //     tagline: 'Hello I am trumio',
+  //     team_members: [
+  //       {
+  //         first_name: 'Jack',
+  //         hourly_rate: 3,
+  //         image_uri:
+  //           'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64d60539e127974f873d31d8/38d800ea-b3e5-41ba-b5d6-0360a37f5ac2.jpeg',
+  //         last_name: 'jones',
+  //         professional_intro: '2',
+  //         projects_worked_on_count: 0,
+  //         rating: 0,
+  //         tagline: 'Hi',
+  //         work_experience: 24,
+  //       },
+  //     ],
+  //     match_percentage: 80,
+  //     team_members_count: 1,
+  //     is_favourite: false,
+  //     user_type: 'TEAM',
+  //     project: {},
+  //     is_favorite: false,
+  //   },
+  // ];
 
   const onSuccess = () => {};
   const onError = () => {
@@ -267,13 +259,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   useEffect(() => {
     setHasMore(true);
-    if (currentPreview?.length === 0 || selectMyTeamData?.length === selectMyTeamMetaData?.total_records) {
+    if (currentPreview?.length === 0 || selectClubsData?.length === selectClubsMetaData?.total_records) {
       setHasMore(false);
     }
   }, [currentPreview]);
 
   useEffect(() => {
     dispatch(clearData());
+
     const filterData = {};
 
     Object.keys(secondFilterState).forEach((key) => {
@@ -288,32 +281,29 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
     if (primaryFilter === 'my_clubs') {
       dispatch(
-        getTeamListing({
+        getClubs({
           metaData,
           onSuccess,
           onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
+          filterData: { clubs_filter: 'MY_CLUBS', search_query: searchText || '' },
         }),
       );
     } else if (primaryFilter === 'all_clubs') {
       dispatch(
-        getClientListing({
+        getClubs({
           metaData,
           onSuccess,
           onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
+          filterData: { clubs_filter: 'ALL', search_query: searchText || '' },
         }),
       );
     } else if (primaryFilter === 'favourites') {
       dispatch(
-        getFavListing({
+        getClubs({
           metaData,
           onSuccess,
           onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
+          filterData: { clubs_filter: 'FAVORITES', search_query: searchText || '' },
         }),
       );
     }
@@ -362,7 +352,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     const newMetaData = {
       ...metaData,
       // eslint-disable-next-line no-unsafe-optional-chaining
-      page: selectMyTeamMetaData?.current_page + 1 || 1,
+      page: selectClubsMetaData?.current_page + 1 || 1,
     };
 
     const filterData = {};
@@ -377,64 +367,31 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       }
     });
 
-    if (primaryFilter === 'teams') {
+    if (primaryFilter === 'my_clubs') {
       dispatch(
-        getTeamListing({
+        getClubs({
           metaData: newMetaData,
           onSuccess,
           onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
+          filterData: { clubs_filter: 'MY_CLUBS', search_query: searchText || '' },
         }),
       );
-    } else if (primaryFilter === 'join_requests') {
+    } else if (primaryFilter === 'all_clubs') {
       dispatch(
-        getReqListing({
+        getClubs({
           metaData: newMetaData,
           onSuccess,
           onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
-        }),
-      );
-    } else if (primaryFilter === 'recommendation') {
-      dispatch(
-        getRecommendationListings({
-          metaData: newMetaData,
-          onSuccess,
-          onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
-        }),
-      );
-    } else if (primaryFilter === 'talents') {
-      dispatch(
-        getTalentListing({
-          metaData: newMetaData,
-          onSuccess,
-          onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
-        }),
-      );
-    } else if (primaryFilter === 'clients') {
-      dispatch(
-        getClientListing({
-          metaData: newMetaData,
-          onSuccess,
-          onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
+          filterData: { clubs_filter: 'ALL', search_query: searchText || '' },
         }),
       );
     } else if (primaryFilter === 'favourites') {
       dispatch(
-        getFavListing({
+        getClubs({
           metaData: newMetaData,
           onSuccess,
           onError,
-          filterData: { ...filterData, search_query: searchText || '' },
-          userType,
+          filterData: { clubs_filter: 'FAVORITES', search_query: searchText || '' },
         }),
       );
     }
@@ -743,13 +700,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         <ComponentSpinner />
       ) : (
         <InfiniteScroll
-          dataLength={data?.length ?? 0}
+          dataLength={selectClubsData?.length ?? 0}
           next={fetchMore}
           hasMore={hasMore}
           endMessage={
             <div className="d-flex justify-content-center ">
-              {data?.length === 0 ? (
-                <NoDataFoundComponent isRecommanded={primaryFilter === 'recommendation'} data={data} />
+              {selectClubsData?.length === 0 ? (
+                <NoDataFoundComponent isRecommanded={primaryFilter === 'recommendation'} data={selectClubsData} />
               ) : (
                 ''
               )}
@@ -757,7 +714,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           }
           loader={<div className="d-flex justify-content-center">Loading...</div>}
         >
-          {data?.length ? (
+          {selectClubsData?.length ? (
             <div
               className="justify-content-between grid-layout"
               style={
@@ -771,7 +728,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   : {}
               }
             >
-              {data?.map((item) => {
+              {selectClubsData?.map((item) => {
                 const CardComponent = getCardComp();
 
                 return (

@@ -9,7 +9,7 @@ import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getItem, setItem } from '../../utility/localStorageControl';
 
-const TeamsContainer = styled.div`
+const ClubContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
     .primary-row {
       display: block;
@@ -51,7 +51,7 @@ const Clubs = () => {
   };
 
   return (
-    <TeamsContainer>
+    <ClubContainer>
       <div className="d-flex justify-content-between">
         <BreadCrumbs data={[{ title: 'Clubs', link: '/clubs' }, { title: primaryEnum[primaryFilter] }]} />
       </div>
@@ -66,7 +66,7 @@ const Clubs = () => {
         <Route path="my_clubs" element={<SecondComp primaryFilter={primaryFilter} />} />
         <Route path="favourites" element={<SecondComp primaryFilter={primaryFilter} />} />
       </Routes>
-    </TeamsContainer>
+    </ClubContainer>
   );
 };
 

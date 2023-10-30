@@ -1,22 +1,20 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect } from 'react';
-import { Users, UserCheck, Heart, ThumbsUp } from 'react-feather';
+import { Users, Heart } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import Statbox from '../../user-details/overview/Statbox';
-import { getCardInfo } from '../../../redux/actions/myTeamActions';
-import { userTypes } from '../../../utility/constants/Constant';
+import { getClubCardInfo } from '../../../redux/actions/clubActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
-const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
+const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
   const dispatch = useDispatch();
-  const selectCardData = useSelector((state) => state?.myTeams?.cardData);
-  const isLoading = useSelector((state) => state?.myTeams?.cardInfoLoading);
-  const selectMyTeamMetaData = useSelector((state) => state?.myTeams?.metaData);
+  const selectCardData = useSelector((state) => state?.clubs?.cardData);
+  const isLoading = useSelector((state) => state?.clubs?.cardInfoLoading);
 
   useEffect(() => {
-    dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
+    dispatch(getClubCardInfo({ onSuccess: () => {}, onError: () => {} }));
   }, []);
   const TAB_NAMES = {
     ALL_CLUBS: 'All Clubs',
@@ -39,8 +37,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
       <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.MY_CLUB)}>
         <Statbox
           isActive={selected === PATH_NAMES.MY_CLUB}
-          isMarketPlaceTab
-          title={selectCardData?.teams}
+          title={selectCardData?.my_clubs}
           desc={TAB_NAMES.MY_CLUB}
           icon={<Users height={20} />}
           color="light-turquoise"
@@ -52,8 +49,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
         <Statbox
           isActive={selected === PATH_NAMES.FAV}
           className="stat-box cursor-pointer"
-          isMarketPlaceTab
-          title={selected === PATH_NAMES.FAV ? selectMyTeamMetaData?.total_records || '-' : selectCardData?.favorite}
+          title={selectCardData?.favorites}
           desc={TAB_NAMES.FAV}
           icon={<Heart height={20} />}
           color="light-dark-red"
@@ -62,8 +58,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
       <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.ALL_CLUBS)}>
         <Statbox
           isActive={selected === PATH_NAMES.ALL_CLUBS}
-          isMarketPlaceTab
-          title={selectCardData?.teams}
+          title={selectCardData?.all_clubs}
           desc={TAB_NAMES.ALL_CLUBS}
           icon={<Users height={20} />}
           color="light-turquoise"
@@ -77,12 +72,10 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
 PrimaryFilter.propTypes = {
   selected: PropTypes.string,
   handlePrimaryChangeFilter: PropTypes.func,
-  userType: PropTypes.string,
 };
 PrimaryFilter.defaultProps = {
-  selected: 'my-teams',
+  selected: 'my_clubs',
   handlePrimaryChangeFilter: () => {},
-  userType: '',
 };
 
 export default PrimaryFilter;

@@ -248,11 +248,9 @@ const API = {
     allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
   },
 
-  // todo
   clubs: {
-    listClubs: `${apiOnboardingEndpoint}/api/v1/clubs/####`,
-    listMyClubs: `${apiOnboardingEndpoint}/api/v1/clubs/####`,
-    listFav: `${apiOnboardingEndpoint}/api/v1/clubs/####`,
+    listClubs: `${apiOnboardingEndpoint}/api/v1/clubs`,
+    cardInfo: `${apiOnboardingEndpoint}/api/v1/clubs/card-info`,
   },
 };
 

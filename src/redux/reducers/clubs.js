@@ -11,7 +11,7 @@ const initialState = {
 };
 
 const clubs = createSlice({
-  name: 'myTeams',
+  name: 'clubs',
   initialState,
   reducers: {
     getCardInfoReq: (state) => ({
