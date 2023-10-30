@@ -128,7 +128,7 @@ const ThemeNavbar = (props) => {
       >
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
-          <span className="ms-25 mt-25">v0.0.7</span>
+          <span className="ms-25 mt-25">v0.0.8</span>
         </span>
       </div>
 
