@@ -1,14 +1,16 @@
 import React from 'react';
 import Proptypes from 'prop-types';
-import { Button, Modal, ModalHeader, ModalBody, Row, Col, Badge, Input } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Row, Col, Badge, Input, Label } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { Star } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import Select from 'react-select';
+import classNames from 'classnames';
 import '../custom-styles.scss';
 import { InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
-import { returnFormattedRating } from '../../utility/Utils';
+import { returnFormattedRating, selectThemeColors } from '../../utility/Utils';
 
 const SendClubInvitationModal = ({
   createTeamView,
@@ -41,8 +43,8 @@ const SendClubInvitationModal = ({
           <p className="mb-2">{description}</p>
           <InviteUsersListContainer>
             {selectedTalents.map((talent) => (
-              <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center mb-2 w-100 mx-0">
-                <Col sm="12" md="8" lg="6">
+              <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center w-100 mx-0">
+                <Col sm="12" md="8" lg="6" className="d-flex align-items-center ">
                   <div className="d-flex align-items-center">
                     <Avatar
                       img={talent?.image_uri?.length > 0 ? talent?.image_uri : defaultAvatar}
@@ -50,19 +52,36 @@ const SendClubInvitationModal = ({
                       imgWidth="38"
                       className="me-2 user-pic"
                     />
+                  </div>
+                  <div className="">
                     <p className="font-medium-1 fw-bold m-0">{`${talent.first_name} ${talent.last_name}`}</p>
+                    <div className="d-flex align-items-center mt-25">
+                      <Badge>
+                        <div className="d-flex align-items-center">
+                          <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
+                          <p className="m-0 fw-bolder rating-text">{returnFormattedRating(talent.rating)}</p>
+                        </div>
+                      </Badge>
+                      <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
+                    </div>
                   </div>
                 </Col>
                 <Col sm="12" md="4" lg="6">
-                  <div className="d-flex align-items-center">
-                    <Badge>
-                      <div className="d-flex align-items-center">
-                        <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
-                        <p className="m-0 fw-bolder rating-text">{returnFormattedRating(talent.rating)}</p>
-                      </div>
-                    </Badge>
-                    <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
-                  </div>
+                  <Label className="form-label mt-1" for="roleType">
+                    Role Type
+                  </Label>
+
+                  <Select
+                    options={[
+                      { label: 'Member', value: 'MEMBER' },
+                      { label: 'Admin', value: 'ADMIN' },
+                    ]}
+                    classNamePrefix="select"
+                    theme={selectThemeColors}
+                    defaultValue={{ label: 'Member', value: 'MEMBER' }}
+                    className={classNames('react-select')}
+                    placeholder="Select Role Type"
+                  />
                 </Col>
               </Row>
             ))}

@@ -28,7 +28,12 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 import { AccountImageContainer, ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
 import theme from '../../configs/themeVariables';
 import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
-import { servicesService, skillsService, toolsService } from '../../services/staticServices';
+import {
+  paginatedInstitutesService,
+  servicesService,
+  skillsService,
+  toolsService,
+} from '../../services/staticServices';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
@@ -108,12 +113,15 @@ const Account = () => {
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [imageUrlRes, setImageUrlRes] = useState(null);
   const [educationInstitutionModal, setEducationInstitutionModal] = useState(false);
+  const [clubCreateData, setClubCreateData] = useState(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [teamDetails, setTeamDetails] = useState(null);
   const fileInputRef = useRef(null);
 
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
+
+  const dispatch = useDispatch();
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -172,16 +180,6 @@ const Account = () => {
     }
   }, [imageUrlRes]);
 
-  const onSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/create-club/profile-details`, {
-        state: { isEditing: true },
-      });
-    } else {
-      navigate(`/create-club/profile-details`);
-    }
-  };
-
   const onSubmit = (data) => {
     const { clubName, clubTagline, clubIntroduction, services, tools, skills } = data;
     const skillsSelected = skills.map((skill) => skill.value);
@@ -237,60 +235,47 @@ const Account = () => {
       }
     }
 
-    console.log('data -- ', data);
-    console.log('reqData -- ', reqData);
-    onSuccess();
-
-    // if (location?.state?.isEditing) {
-    //   const onApiSuccess = () => {
-    //     navigate('/dashboard');
-    //   };
-    //   dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
-    // } else {
-    //   setTeamCreateData(removeEmptyKeys(reqData));
-    //   setTeamCreatedModal(true);
-    // }
+    if (location?.state?.isEditing) {
+      const onApiSuccess = () => {
+        navigate(`/create-club/profile-details`);
+      };
+      // dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
+    } else {
+      setClubCreateData(removeEmptyKeys(reqData));
+    }
   };
 
-  const loadEducationInstitutionOptions = async (search) => {
-    const options = [
-      {
-        label: 'My Institutions',
-        options: [
-          { value: 'IIT - G', label: 'IIT - G' },
-          { value: 'IIT - M', label: 'IIT - M' },
-        ],
-      },
-      {
-        label: 'Other Institutions',
-        options: [
-          { value: 'IIM', label: 'IIM' },
-          { value: 'NIT', label: 'NIT' },
-        ],
-      },
-    ];
+  const loadEducationInstitutionOptions = async (search, { page = 1 }) => {
+    try {
+      const response = await paginatedInstitutesService(page, search);
+      const myInstitution = userDetailsData?.talent_info?.educational_institute[0].institution;
 
-    return { options };
+      const instituteGroupLabels = [
+        { label: 'My Institutions', options: [] },
+        { label: 'Other Institutions', options: [] },
+      ];
 
-    //  if (search) {
-    //    return {
-    //      options: toolsOptions.filter(
-    //        (tool) =>
-    //          tool.label.toLowerCase().startsWith(search.toLowerCase()) ||
-    //          tool.label.toLowerCase().includes(search.toLowerCase()),
-    //      ),
-    //    };
-    //  }
-    //  try {
-    //    const response = await toolsService();
-    //    const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool._id }));
-    //    setToolsOptions(options);
-    //    return {
-    //      options,
-    //    };
-    //  } catch (error) {
-    //    return { options: [] };
-    //  }
+      const myInstitutionsOptions = { value: myInstitution._id, label: myInstitution.name };
+
+      response?.data?.data?.data?.forEach((institute) => {
+        const instituteOption = { label: institute.name, value: institute._id };
+        if (institute._id === myInstitution._id) {
+          instituteGroupLabels[0].options.push(myInstitutionsOptions);
+        } else {
+          instituteGroupLabels[1].options.push(instituteOption);
+        }
+      });
+
+      return {
+        options: instituteGroupLabels,
+        hasMore: response?.data?.data?.metadata?.has_next_page,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error) {
+      return { options: [], hasMore: false };
+    }
   };
 
   const loadServicesOptions = async (search) => {
@@ -514,6 +499,8 @@ const Account = () => {
                   invalid={errors.educationInstitution && true}
                   render={({ field }) => (
                     <AsyncPaginate
+                      debounceTimeout={1000}
+                      additional={{ page: 1 }}
                       loadOptions={loadEducationInstitutionOptions}
                       classNamePrefix="select"
                       placeholder="Enter your institution name"

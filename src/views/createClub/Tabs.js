@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
@@ -9,6 +9,9 @@ import { TabsContainer } from '../Onboarding/style';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
+
+  const [accountDetails, setAccountDetails] = useState(null);
+  const [profileDetails, setProfileDetails] = useState(null);
 
   return (
     <TabsContainer className="pt-2">
@@ -28,7 +31,7 @@ const Tabs = ({ tabNames, active }) => {
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Account}>
-          {location.pathname === '/create-club/account-details' && <Account />}
+          {location.pathname === '/create-club/account-details' && <Account setAccountDetails={setAccountDetails} />}
           {location.pathname === '/create-club/profile-details' && <Profile />}
         </TabPane>
       </TabContent>
