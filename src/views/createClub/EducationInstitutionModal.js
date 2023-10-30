@@ -8,15 +8,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
 import { Modal, ModalHeader, ModalBody, Form, Row, Col, Label, FormFeedback, Button, Spinner } from 'reactstrap';
 import { AsyncPaginate } from 'react-select-async-paginate';
-import { returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
-import { disputeTypesService } from '../../services/staticServices';
-import { paginatedProjectsService } from '../../services/disputeServices';
-import { getAllDisputes, getDisputesCount, raiseNewDispute } from '../../redux/actions/disputeActions';
-import { raiseDisputeLoading } from '../../redux/selectors/disputeSelectors';
-import { disputeStatuses } from '../../utility/constants/Constant';
+import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
+import { educationsService, paginatedInstitutesService } from '../../services/staticServices';
 import { EducationInstitutionModalContainer } from './style';
+import { userData } from '../../redux/selectors/dashboardSelectors';
+import { saveProfileDetails } from '../../redux/actions/talentOnboardingActions';
 
-const EducationInstitutionModal = ({ modal, toggleModal, primaryFilter }) => {
+const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
   const EducationInstitutionSchema = yup.object().shape({
     educationInstitution: yup
       .object()
@@ -42,40 +40,37 @@ const EducationInstitutionModal = ({ modal, toggleModal, primaryFilter }) => {
 
   const dispatch = useDispatch();
 
-  const [disputeTypesOptions, setDisputeTypesOptions] = useState(null);
+  const [educationsOptions, setEducationsOptions] = useState(null);
 
-  const raiseDisputeIsLoading = useSelector(raiseDisputeLoading);
+  const userDetailsData = useSelector(userData);
 
   const onSuccess = () => {
-    if (primaryFilter === 'all') {
-      dispatch(getAllDisputes(null, 1, 10, []));
-    } else if (primaryFilter === 'open') {
-      dispatch(getAllDisputes(disputeStatuses.open, 1, 10, []));
-    } else if (primaryFilter === 'resolved') {
-      dispatch(getAllDisputes(disputeStatuses.resolved, 1, 10, []));
-    }
-    dispatch(getDisputesCount());
     toggleModal();
   };
 
   const onSubmit = (data) => {
-    const { projectName, disputeType, disputeDetails } = data;
+    const { educationInstitution, degree } = data;
 
     const reqData = {
-      project_id: projectName.value,
-      dispute_type: disputeType.value,
-      description: disputeDetails,
+      educational_institute: [
+        {
+          institution: educationInstitution?.value,
+          education: degree?.value,
+        },
+      ],
     };
 
-    dispatch(raiseNewDispute(reqData, onSuccess));
+    dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
   };
 
-  const loadProjectsOptions = async (search, prevOptions, { page }) => {
+  const loadInstitutesOptions = async (search, prevOptions, { page }) => {
     try {
-      const response = await paginatedProjectsService(page, search);
+      const response = await paginatedInstitutesService(page, search);
 
       return {
-        options: response?.data?.data?.data?.map((project) => ({ label: project.name, value: project._id })),
+        options: response?.data?.data?.data
+          ?.filter((institute) => institute._id !== userDetailsData?.talent_info?.educational_institute?._id)
+          .map((institute) => ({ label: institute.name, value: institute._id })),
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -86,18 +81,18 @@ const EducationInstitutionModal = ({ modal, toggleModal, primaryFilter }) => {
     }
   };
 
-  const loadDisputeTypesOptions = async (search) => {
+  const loadEducationsOptions = async (search) => {
     if (search) {
       return {
-        options: returnFilteredDropdownOptions(search, disputeTypesOptions),
+        options: returnFilteredDropdownOptions(search, educationsOptions),
       };
     }
     try {
-      const response = await disputeTypesService();
+      const response = await educationsService();
 
-      const options = response?.data?.data?.map((dispute) => ({ label: dispute.name, value: dispute._id }));
+      const options = response?.data?.data?.map((education) => ({ label: education.name, value: education._id }));
 
-      setDisputeTypesOptions(options);
+      setEducationsOptions(options);
 
       return {
         options,
@@ -120,64 +115,67 @@ const EducationInstitutionModal = ({ modal, toggleModal, primaryFilter }) => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className="mb-1">
               <Col sm="12" md="12" lg="9">
-                <Label className="form-label" for="projectName">
+                <Label className="form-label" for="educationInstitution">
                   Education Institution<span className="label-asterisk text-danger me-50">*</span>
                 </Label>
                 <Controller
-                  id="projectName"
-                  name="projectName"
+                  id="educationInstitution"
+                  name="educationInstitution"
                   control={control}
-                  invalid={errors.projectName && true}
+                  invalid={errors.educationInstitution && true}
                   render={({ field }) => (
                     <AsyncPaginate
+                      {...field}
                       debounceTimeout={1000}
                       additional={{ page: 1 }}
-                      loadOptions={loadProjectsOptions}
+                      loadOptions={loadInstitutesOptions}
                       classNamePrefix="select"
-                      placeholder="Select project name"
+                      placeholder="Enter your institution name"
                       theme={selectThemeColors}
+                      defaultInputValue={selectedOption?.label}
                       className={classNames('react-select', {
-                        'is-invalid': errors && errors.projectName,
+                        'is-invalid': errors && errors.educationInstitution,
                       })}
-                      {...field}
                     />
                   )}
                 />
-                {errors.projectName && <FormFeedback>{errors.projectName.label.message}</FormFeedback>}
+                {errors.educationInstitution && (
+                  <FormFeedback>{errors.educationInstitution.label.message}</FormFeedback>
+                )}
               </Col>
             </Row>
             <Row className="mb-1 mt-2">
               <Col sm="12" md="12" lg="9">
-                <Label className="form-label" for="disputeType">
+                <Label className="form-label" for="degree">
                   Education<span className="label-asterisk text-danger me-50">*</span>
                 </Label>
                 <Controller
-                  id="disputeType"
-                  name="disputeType"
+                  id="degree"
+                  name="degree"
                   control={control}
-                  invalid={errors.disputeType && true}
+                  invalid={errors.degree && true}
                   render={({ field }) => (
                     <AsyncPaginate
-                      loadOptions={loadDisputeTypesOptions}
+                      loadOptions={loadEducationsOptions}
                       classNamePrefix="select"
-                      placeholder="Select dispute type"
+                      placeholder="Enter your education"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
-                        'is-invalid': errors && errors.disputeType,
+                        'is-invalid': errors && errors.degree,
                       })}
                       {...field}
                     />
                   )}
                 />
-                {errors.disputeType && <FormFeedback>{errors.disputeType.label.message}</FormFeedback>}
+                {errors.degree && <FormFeedback>{errors.degree.label.message}</FormFeedback>}
               </Col>
             </Row>
             <div className="d-flex justify-content-end py-1">
               <Button outline color="primary" className="me-2" onClick={toggleModal}>
                 Cancel
               </Button>
-              <Button color="primary" type="submit" disabled={!isValid || raiseDisputeIsLoading}>
-                {raiseDisputeIsLoading ? <Spinner size="sm" /> : 'Submit'}
+              <Button color="primary" type="submit" disabled={!isValid}>
+                Submit
               </Button>
             </div>
           </Form>
@@ -193,10 +191,12 @@ EducationInstitutionModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   primaryFilter: Proptypes.string,
+  selectedOption: Proptypes.object,
 };
 
 EducationInstitutionModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   primaryFilter: '',
+  selectedOption: {},
 };

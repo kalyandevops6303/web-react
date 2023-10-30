@@ -6,14 +6,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
+import { useDispatch } from 'react-redux';
 import { ChevronLeft } from 'react-feather';
-import ShowToastMessage from '../../@core/components/toast';
-import { ERROR } from '../../utility/constants/ToastTypes';
 import theme from '../../configs/themeVariables';
 import { InfoContainer } from '../create-bid/style';
 import { ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
-import { isUrlWithoutProtocol } from '../../utility/Utils';
+import { isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
 import ClubCreatedModal from './ClubCreatedModal';
+import { registerClubEmail, setClubCreateDataAction } from '../../redux/actions/clubActions';
+import EmailVerifyModal from './EmailVerifyModal';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -58,34 +59,55 @@ const Profile = () => {
   });
 
   const [clubCreatedModal, setClubCreatedModal] = useState(false);
+  const [emailVerifyModal, setEmailVerifyModal] = useState(false);
 
   const toggleClubCreatedModal = () => setClubCreatedModal(!clubCreatedModal);
+  const toggleEmailVerifyModal = () => setEmailVerifyModal(!emailVerifyModal);
 
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const onBackClick = () => {
     navigate(`/create-club/account-details`);
   };
 
-  const onSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate('/dashboard');
-    } else {
-      setClubCreatedModal(true);
-    }
+  // const onSuccess = () => {
+  //   if (location?.state?.isEditing) {
+  //     navigate('/dashboard');
+  //   } else {
+  //     setClubCreatedModal(true);
+  //   }
+  // };
+
+  const onSuccess = () => {};
+
+  const onEmailVerifySuccess = (email) => {
+    dispatch(registerClubEmail({ email, onSuccess }));
+    // onSuccess();
   };
 
   const onSubmit = (data) => {
     const { isWebpage, isUniversityApproval, clubEmailID, clubLinkedin, clubWebsite, universityWebpage } = data;
-    const formData = { clubEmailID, clubLinkedin, clubWebsite, isWebpage, isUniversityApproval, universityWebpage };
+    const formData = { clubEmailID, clubLinkedin, clubWebsite, universityWebpage };
+
+    const clubData = {
+      email: clubEmailID,
+      linked_in: clubLinkedin,
+      website: clubWebsite,
+      university_webpage: universityWebpage,
+    };
 
     if (isWebpage === 'Yes' && isUniversityApproval) {
-      formData.isUniversityApproval = ''; // Reset the second question's answer
+      formData.isUniversityApproval = '';
     }
 
-    console.log('formData: ', formData);
-    onSuccess();
+    const removeEmptyClubData = removeEmptyKeys(clubData);
+
+    console.log('formData: ', removeEmptyClubData);
+    dispatch(setClubCreateDataAction(removeEmptyClubData));
+    onEmailVerifySuccess(formData.clubEmailID);
+    toggleEmailVerifyModal();
   };
 
   const isWebpageValue = watch('isWebpage');
@@ -99,8 +121,17 @@ const Profile = () => {
     }
   }, [isWebpageValue, isUniversityApprovalValue, unregister, register]);
 
+  const disableBtn = isWebpageValue === 'No' && isUniversityApprovalValue === 'No';
+
   return (
     <ProfileFormContainer>
+      {emailVerifyModal && (
+        <EmailVerifyModal
+          modal={emailVerifyModal}
+          toggleModal={toggleEmailVerifyModal}
+          setClubCreatedModal={setClubCreatedModal}
+        />
+      )}
       {clubCreatedModal && <ClubCreatedModal modal={clubCreatedModal} toggleModal={toggleClubCreatedModal} />}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
@@ -266,7 +297,7 @@ const Profile = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button disabled={!isValid} color="primary" type="submit">
+            <Button disabled={!isValid || disableBtn} color="primary" type="submit">
               <span className="me-50">Create</span>
             </Button>
           </div>

@@ -1,6 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useEffect, useRef, useState } from 'react';
-import { AsyncPaginate } from 'react-select-async-paginate';
+import { AsyncPaginate, reduceGroupedOptions } from 'react-select-async-paginate';
 import * as yup from 'yup';
 // import Select from 'react-select';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -30,7 +30,7 @@ import theme from '../../configs/themeVariables';
 import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import {
   paginatedInstitutesService,
-  servicesService,
+  projectAreasService,
   skillsService,
   toolsService,
 } from '../../services/staticServices';
@@ -39,26 +39,24 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
 import { GroupLabelWrapper } from './style';
 import EducationInstitutionModal from './EducationInstitutionModal';
-import EmailVerifyModal from './EmailVerifyModal';
+import { setClubCreateDataAction } from '../../redux/actions/clubActions';
 
 const Account = () => {
   const ProfileSchema = yup.object().shape({
     clubName: yup.string().max(30, 'Name must be 30 characters or less').required('Name is required'),
     clubTagline: yup.string().max(60, 'Tagline must be 60 characters or less').required('Tagline is required'),
     educationInstitution: yup
-      .array()
-      .of(
-        yup.object().shape({
-          label: yup.string(),
-          value: yup.string(),
-        }),
-      )
+      .object()
+      .shape({
+        label: yup.string(),
+        value: yup.string(),
+      })
       .required('Education institution is required'),
     clubIntroduction: yup
       .string()
       .max(500, 'Introduction must be 500 characters or less')
       .required('Introduction is required'),
-    services: yup
+    interests: yup
       .array()
       .of(
         yup.object().shape({
@@ -66,9 +64,9 @@ const Account = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Maximum of five services can be added')
-      .min(1, 'At least one service is required')
-      .required('Service is required'),
+      .max(5, 'Maximum of five interests can be added')
+      .min(1, 'At least one interest is required')
+      .required('Interests is required'),
 
     tools: yup
       .array()
@@ -78,8 +76,8 @@ const Account = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Five tools has to be added')
-      .min(5, 'Five tools has to be added'),
+      .max(5, 'Maximum of five tools can be added')
+      .min(1, 'At least one tool is required'),
     skills: yup
       .array()
       .of(
@@ -89,7 +87,7 @@ const Account = () => {
         }),
       )
       .max(5, 'Maximum of five skills can be added')
-      .min(5, 'Five skills has to be added')
+      .min(1, 'At least one skill is required')
       .required('Skill is required'),
   });
 
@@ -108,18 +106,19 @@ const Account = () => {
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImagePreview, setSelectedImagePreview] = useState(null);
-  const [servicesOptions, setServicesOptions] = useState(null);
+  const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
   const [imageUrlRes, setImageUrlRes] = useState(null);
   const [educationInstitutionModal, setEducationInstitutionModal] = useState(false);
-  const [clubCreateData, setClubCreateData] = useState(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [teamDetails, setTeamDetails] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(null);
   const fileInputRef = useRef(null);
 
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
+  const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
 
   const dispatch = useDispatch();
 
@@ -158,6 +157,21 @@ const Account = () => {
     }
   };
 
+  const handleSelectChange = (option, field) => {
+    setSelectedOption(option);
+    const selectedOptionValue = option?.value;
+    const myInstitution = userDetailsData?.talent_info?.educational_institute
+      .map((educationDetails) => educationDetails.institution)
+      .map((institute) => institute._id);
+
+    const otherIntitution = myInstitution.includes(selectedOptionValue);
+
+    if (!otherIntitution) {
+      setEducationInstitutionModal(true);
+    }
+    field.onChange(option);
+  };
+
   const uploadImage = async (uploadUrl) => {
     try {
       const res = await profileImageUploadToAzureService(uploadUrl, selectedImage, {
@@ -181,9 +195,9 @@ const Account = () => {
   }, [imageUrlRes]);
 
   const onSubmit = (data) => {
-    const { clubName, clubTagline, clubIntroduction, services, tools, skills } = data;
+    const { clubName, clubTagline, clubIntroduction, interests, tools, skills, educationInstitution } = data;
     const skillsSelected = skills.map((skill) => skill.value);
-    const servicesSelected = services.map((skill) => skill.value);
+    const interestsSelected = interests.map((skill) => skill.value);
     const toolsSelected = tools?.map((skill) => skill.value);
 
     let reqData;
@@ -196,9 +210,10 @@ const Account = () => {
           team_logo: imageUrlRes.file_key,
           tagline: clubTagline,
           introduction: clubIntroduction,
-          services: servicesSelected,
+          interests: interestsSelected,
           tools: toolsSelected,
           skills: skillsSelected,
+          education_institute: educationInstitution?.value,
         };
       } else {
         reqData = {
@@ -206,9 +221,10 @@ const Account = () => {
           name: clubName,
           tagline: clubTagline,
           introduction: clubIntroduction,
-          services: servicesSelected,
+          interests: interestsSelected,
           tools: toolsSelected,
           skills: skillsSelected,
+          education_institute: educationInstitution?.value,
         };
       }
     } else {
@@ -219,18 +235,20 @@ const Account = () => {
           team_logo: imageUrlRes.file_key,
           tagline: clubTagline,
           introduction: clubIntroduction,
-          services: servicesSelected,
+          interests: interestsSelected,
           tools: toolsSelected,
           skills: skillsSelected,
+          education_institute: educationInstitution?.value,
         };
       } else {
         reqData = {
           name: clubName,
           tagline: clubTagline,
           introduction: clubIntroduction,
-          services: servicesSelected,
+          interests: interestsSelected,
           tools: toolsSelected,
           skills: skillsSelected,
+          education_institute: educationInstitution?.value,
         };
       }
     }
@@ -241,30 +259,25 @@ const Account = () => {
       };
       // dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
     } else {
-      setClubCreateData(removeEmptyKeys(reqData));
+      const removeEmpty = removeEmptyKeys(reqData);
+      dispatch(setClubCreateDataAction(removeEmpty));
+      navigate(`/create-club/profile-details`);
     }
   };
 
-  const loadEducationInstitutionOptions = async (search, { page = 1 }) => {
+  const loadEducationInstitutionOptions = async (search, prevOptions, { page }) => {
     try {
       const response = await paginatedInstitutesService(page, search);
-      const myInstitution = userDetailsData?.talent_info?.educational_institute[0].institution;
+      const myInstitution = userDetailsData?.talent_info?.educational_institute
+        .map((educationDetails) => educationDetails.institution)
+        .map((institute) => ({ label: institute.name, value: institute._id }));
+
+      const newOptions = response?.data?.data?.data?.map((data) => ({ label: data.name, value: data._id }));
 
       const instituteGroupLabels = [
-        { label: 'My Institutions', options: [] },
-        { label: 'Other Institutions', options: [] },
+        { label: 'My Institutions', options: [...myInstitution] },
+        { label: 'Other Institutions', options: [...newOptions] },
       ];
-
-      const myInstitutionsOptions = { value: myInstitution._id, label: myInstitution.name };
-
-      response?.data?.data?.data?.forEach((institute) => {
-        const instituteOption = { label: institute.name, value: institute._id };
-        if (institute._id === myInstitution._id) {
-          instituteGroupLabels[0].options.push(myInstitutionsOptions);
-        } else {
-          instituteGroupLabels[1].options.push(instituteOption);
-        }
-      });
 
       return {
         options: instituteGroupLabels,
@@ -278,25 +291,18 @@ const Account = () => {
     }
   };
 
-  const loadServicesOptions = async (search) => {
+  const loadInterestsOptions = async (search) => {
     if (search) {
       return {
-        options: returnFilteredDropdownOptions(search, servicesOptions),
+        options: returnFilteredDropdownOptions(search, projectAreasOptions),
       };
     }
     try {
-      const response = await servicesService();
+      const response = await projectAreasService();
 
-      const options = response?.data?.data?.map((service) => ({ label: service.name, value: service._id }));
+      const options = response?.data?.data?.map((area) => ({ label: area.name, value: area._id }));
 
-      const otherIndex = options.findIndex((option) => option.label === 'Other');
-
-      if (otherIndex !== -1) {
-        const otherOption = options.splice(otherIndex, 1)[0];
-        options.push(otherOption);
-      }
-
-      setServicesOptions(options);
+      setProjectAreasOptions(options);
 
       return {
         options,
@@ -351,6 +357,48 @@ const Account = () => {
   const onBackClick = () => {
     navigate('/dashboard');
   };
+
+  // useEffect(() => {
+  //   if (clubCreateData) {
+  //     if (clubCreateData?.team_logo?.length > 0) {
+  //       setSelectedImage(clubCreateData.team_logo);
+  //       setSelectedImagePreview(clubCreateData.team_logo);
+  //     }
+  //     if (clubCreateData?.name?.length > 0) {
+  //       setValue('clubName', clubCreateData?.name, { shouldValidate: true });
+  //     }
+  //     if (clubCreateData?.tagline?.length > 0) {
+  //       setValue('clubTagline', clubCreateData?.tagline, { shouldValidate: true });
+  //     }
+  //     if (clubCreateData?.introduction?.length > 0) {
+  //       setValue('clubIntroduction', clubCreateData?.introduction, { shouldValidate: true });
+  //     }
+  //     if (clubCreateData?.interests?.length > 0) {
+  //       setValue(
+  //         'interests',
+  //         clubCreateData?.interests.map((interest) => ({
+  //           label: interest.name,
+  //           value: interest._id,
+  //         })),
+  //         { shouldValidate: true },
+  //       );
+  //     }
+  //     if (clubCreateData?.tools?.length > 0) {
+  //       setValue(
+  //         'tools',
+  //         clubCreateData?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+  //         { shouldValidate: true },
+  //       );
+  //     }
+  //     if (clubCreateData?.skills?.length > 0) {
+  //       setValue(
+  //         'skills',
+  //         clubCreateData?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+  //         { shouldValidate: true },
+  //       );
+  //     }
+  //   }
+  // }, [clubCreateData]);
 
   useEffect(() => {
     if (location?.state?.isEditing) {
@@ -408,6 +456,7 @@ const Account = () => {
         <EducationInstitutionModal
           modal={educationInstitutionModal}
           toggleModal={() => setEducationInstitutionModal(!educationInstitutionModal)}
+          selectedOption={selectedOption}
         />
       )}
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -490,7 +539,7 @@ const Account = () => {
             <Row className="mb-1 mt-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="tools">
-                  Education Institution
+                  Education Institution<span className="label-asterisk me-50">*</span>
                 </Label>
                 <Controller
                   id="educationInstitution"
@@ -499,9 +548,12 @@ const Account = () => {
                   invalid={errors.educationInstitution && true}
                   render={({ field }) => (
                     <AsyncPaginate
+                      {...field}
                       debounceTimeout={1000}
                       additional={{ page: 1 }}
                       loadOptions={loadEducationInstitutionOptions}
+                      reduceOptions={reduceGroupedOptions}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, field)}
                       classNamePrefix="select"
                       placeholder="Enter your institution name"
                       theme={selectThemeColors}
@@ -509,7 +561,6 @@ const Account = () => {
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.educationInstitution,
                       })}
-                      {...field}
                     />
                   )}
                 />
@@ -552,25 +603,25 @@ const Account = () => {
                   Interests<span className="label-asterisk">*</span> <i>(Top 5)</i>
                 </Label>
                 <Controller
-                  id="services"
-                  name="services"
+                  id="interests"
+                  name="interests"
                   control={control}
-                  invalid={errors.services && true}
+                  invalid={errors.interests && true}
                   render={({ field }) => (
                     <AsyncPaginate
                       isMulti
-                      loadOptions={loadServicesOptions}
+                      loadOptions={loadInterestsOptions}
                       classNamePrefix="select"
                       placeholder="Select up to 5 interests"
                       theme={selectThemeColors}
                       className={classNames('react-select', {
-                        'is-invalid': errors && errors.services,
+                        'is-invalid': errors && errors.interests,
                       })}
                       {...field}
                     />
                   )}
                 />
-                {errors.services && <FormFeedback>{errors.services.message}</FormFeedback>}
+                {errors.interests && <FormFeedback>{errors.interests.message}</FormFeedback>}
               </Col>
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="skills">
@@ -601,7 +652,7 @@ const Account = () => {
             <Row className="mb-1">
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="tools">
-                  Tools <i>(Top 5)</i>
+                  Tools
                 </Label>
                 <Controller
                   id="tools"

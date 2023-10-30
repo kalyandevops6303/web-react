@@ -4,25 +4,35 @@ import OtpInput from 'react-otp-input';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
 import ResendOTPComp from '../auth/components/ResendOTP';
-import { verifyEmail } from '../../redux/actions/authActions';
-import { selectAuthLoading, selectEmail, selectUserType } from '../../redux/selectors/authSelectors';
+import { selectAuthLoading } from '../../redux/selectors/authSelectors';
 import { EmailVerifyModalContainer } from './style';
+import { createClub } from '../../redux/actions/clubActions';
 
-const EmailVerifyModal = ({ modal, toggleModal }) => {
+const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
   const dispatch = useDispatch();
   const [otpError, setOtpError] = useState(false);
   const [code, setCode] = useState('');
-  const userType = useSelector(selectUserType);
   const isLoading = useSelector(selectAuthLoading);
-  const emailId = useSelector(selectEmail);
+  const emailId = useSelector((state) => state.clubs.email);
+  const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
 
   const handleChange = (value) => {
     setCode(value);
     setOtpError(false);
   };
 
+  const onCreateTeamSuccess = () => {
+    toggleModal();
+    setClubCreatedModal(true);
+  };
+
   const verifyOtp = () => {
-    dispatch(verifyEmail({ email: emailId, user_type: userType, code }));
+    const dataWithCode = {
+      ...clubCreateData,
+      email_code: code,
+      team_type: 'CLUB',
+    };
+    dispatch(createClub({ data: dataWithCode, onSuccess: onCreateTeamSuccess }));
   };
 
   return (
@@ -92,9 +102,11 @@ export default EmailVerifyModal;
 EmailVerifyModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  setClubCreatedModal: Proptypes.func,
 };
 
 EmailVerifyModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  setClubCreatedModal: () => {},
 };
