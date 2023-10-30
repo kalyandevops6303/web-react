@@ -1,18 +1,11 @@
 /* eslint-disable react/require-default-props */
-import React from 'react';
-import Select, { components } from 'react-select';
+import React, { useState } from 'react';
+import  { components } from 'react-select';
+import { AsyncPaginate } from 'react-select-async-paginate';
 import PropTypes from 'prop-types';
 import ReactCountryFlag from '../../../lib/country-flag';
-import CountryFile from '../../../utility/constants/CountryList.json';
 import CountryDropdownWrapper from './style';
-
-const options = CountryFile.map((country) => ({
-  value: country.dial_code, // Add the country code as the value
-  label: country.label, // Use the country name as the label
-  code: country.code,
-  dial_code: country.dial_code,
-  _id: country._id,
-}));
+import { countriesService } from '../../../services/staticServices';
 
 const CustomOption = ({ innerProps, data, isFocused, isSelected }) => (
   <div className={`custom-option ${isSelected ? 'selected' : ''} ${isFocused ? 'focused' : ''}`} {...innerProps}>
@@ -45,6 +38,7 @@ const CustomValue = ({ innerProps, data }) => (
       style={{
         width: '2em',
         height: '2em',
+        marginRight:'2px'
       }}
       title={data.code}
     />
@@ -58,20 +52,50 @@ CustomValue.propTypes = {
 const MaxLengthInput = (props) => <components.Input {...props} maxLength={8} />;
 
 const CountryDropdown = ({ selectedCountry, setSelectedCountry, disabled }) => {
+  const [countriesOptions, setCountriesOptions] = useState(null);
+
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
   };
 
+  const loadCountriesOptions = async (search) => {
+    if (search) {
+      return {
+        options: returnFilteredDropdownOptions(search, countriesOptions),
+      };
+    }
+    try {
+      const response = await countriesService();
+
+      const options = response?.data?.data?.map((country) => (
+        { 
+          label: country.name,
+          dial_code: `+${country.dial_code}`,
+          code: country.code,
+          _id: country._id,
+         }
+        ));
+
+      setCountriesOptions(options);
+
+      return {
+        options,
+      };
+    } catch (error) {
+      return { options: [] };
+    }
+  };
+
   return (
     <CountryDropdownWrapper>
-      <Select
+      <AsyncPaginate
         className="select-class"
         classNamePrefix="country__select"
         style={{
           fontSize: '13px',
           paddingLeft: '12px',
         }}
-        options={options}
+        loadOptions={loadCountriesOptions}
         components={{
           Option: CustomOption,
           SingleValue: CustomValue,
