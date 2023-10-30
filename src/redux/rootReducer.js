@@ -53,9 +53,6 @@ const rootReducer = combineReducers({
   rating,
   referralAndReward,
   stripeDetails,
-  clubs,
-
-  // Add more reducers if needed
 });
 
 // Configure Redux Persist for the 'auth' reducer only
