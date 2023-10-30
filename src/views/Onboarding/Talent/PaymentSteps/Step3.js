@@ -50,8 +50,6 @@ const Step3 = ({ setStep }) => {
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
 
-  const TEST_ENV_URL = import.meta.env.VITE_APP_TEST_REFRESH_URL;
-
   const {
     control,
     handleSubmit,
@@ -243,12 +241,14 @@ const Step3 = ({ setStep }) => {
     }
   };
 
+  // eslint-disable-next-line no-undef
+  const currentURL = window.location.href;
+
   const onSuccess = () => {
     const stripeAccountData = {
-      refresh_url: TEST_ENV_URL,
-      return_url: TEST_ENV_URL,
+      refresh_url: currentURL,
+      return_url: currentURL,
     };
-
     dispatch(setupStripeAccount(stripeAccountData, onAccountCreationSuccess));
   };
 
