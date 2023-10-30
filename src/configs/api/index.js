@@ -248,6 +248,11 @@ const API = {
     convertReferral: `${apiAuthEndpoint}/api/v1/referrals/conversion`,
     allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
   },
+
+  clubs: {
+    listClubs: `${apiOnboardingEndpoint}/api/v1/clubs`,
+    cardInfo: `${apiOnboardingEndpoint}/api/v1/clubs/card-info`,
+  },
 };
 
 export default API;

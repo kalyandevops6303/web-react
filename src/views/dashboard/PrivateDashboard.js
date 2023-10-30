@@ -30,6 +30,7 @@ import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
 import { setItem } from '../../utility/localStorageControl';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
+import InviteClubMemberModal from '../modals/InviteClubMemberModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ const PrivateDashboard = () => {
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
 
   const [optionsModal, setOptionsModal] = useState(null);
+  const [inviteClubMembersModal, setInviteClubMembersModal] = useState(false);
 
   const query = useSelector((state) => state.search.query);
 
@@ -176,6 +178,13 @@ const PrivateDashboard = () => {
         <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} />
       )}
 
+      {inviteClubMembersModal && (
+        <InviteClubMemberModal
+          modal={inviteClubMembersModal}
+          toggleModal={() => setInviteClubMembersModal(!inviteClubMembersModal)}
+        />
+      )}
+
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
@@ -191,6 +200,7 @@ const PrivateDashboard = () => {
           </Button>
         </DashboardHeaderWrapper>
       )}
+
       {inviteTalentToTeamModal && (
         <InviteTalentToTeam
           inviteTeamMemberModal={inviteTeamMemberModal}
