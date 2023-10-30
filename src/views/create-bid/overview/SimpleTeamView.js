@@ -252,7 +252,7 @@ const SimpleTeamView = () => {
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>
-              <h5 className="font-medium-1 mt-1">Estimate project team roles</h5>
+              <h5 className="font-medium-1 mt-1">Add project team roles</h5>
               {recommendedRolesOptions?.length > 0 && (
                 <>
                   <p>Recommended roles based on project listing</p>

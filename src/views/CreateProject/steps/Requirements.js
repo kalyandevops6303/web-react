@@ -230,7 +230,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     watch,
     setValue,
     clearErrors,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(ProjectDetailsSchema),
@@ -1770,7 +1770,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               </CardBody>
             </Card>
             <div className="d-flex justify-content-end">
-              <Button onClick={handleSave} color="primary" disabled={uploadingFiles.length > 0}>
+              <Button onClick={handleSave} color="primary" disabled={uploadingFiles.length > 0 || !isValid}>
                 <span className="me-50">Save & Continue</span>
                 <ChevronRight size={14} />
               </Button>

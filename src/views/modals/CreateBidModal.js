@@ -35,7 +35,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
       <ModalHeader toggle={toggleModal} />
       <ModalBody className="pt-0 pb-3">
         <p className="font-large-1 text-center">Create Bid</p>
-        <p className="font-medium-2 fw-bold mt-3 ms-50">Select flow type -</p>
+        <p className="font-medium-2 fw-bold mt-3 ms-50">Select one :</p>
         {/* <div className="d-flex mt-2 px-50"> */}
         <Row className="mt-2 px-50">
           <Col sm="12" md="6" lg="6">
@@ -51,10 +51,10 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
                 <Input type="radio" id="simple" checked={selectedFlow === bidTypes.simple} />
                 <div className="label">
                   <p className="fw-bolder mb-50">
-                    {selectedProject.pay_type.variable_cost ? 'Variable Price' : 'Fixed Price'} - Simple Flow
+                    {selectedProject.pay_type.variable_cost ? 'Variable Price' : 'Fixed Price'} - Simple
                   </p>
                   <p className="fw-light mb-0">
-                    Select this option for a simple and equal split of milestone payments among team members.
+                    Select this option for an equal split of milestone payments among all team members.
                   </p>
                 </div>
               </div>
@@ -73,11 +73,11 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
                 <Input type="radio" id="advance" checked={selectedFlow === bidTypes.advanced} />
                 <div className="label">
                   <p className="fw-bolder mb-50">
-                    {selectedProject.pay_type.variable_cost ? 'Variable Price' : 'Fixed Price'} - Advance Flow
+                    {selectedProject.pay_type.variable_cost ? 'Variable Price' : 'Fixed Price'} - Advanced
                   </p>
                   <p className="fw-light mb-0">
-                    Opt for this advanced choice to allocate milestone payments based on each team member&apos;s worked
-                    hours. Note that you&apos;ll need to define an hourly rate for each team member using this option.
+                    Opt for this advanced choice to allocate milestone payments based on each individual team
+                    member&apos;s estimated hours and hourly rates.
                   </p>
                 </div>
               </div>

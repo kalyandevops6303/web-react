@@ -96,7 +96,7 @@ const Profile = () => {
         }),
       )
       .max(5, 'Maximum of five skills can be added')
-      .min(5, 'Five skills has to be added')
+      .min(1, 'At least one skill is required')
       .required('Skill is required'),
     preferredWorkingTimeZone: yup
       .object()
@@ -704,7 +704,7 @@ const Profile = () => {
                   name="teamName"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter your team's name" invalid={errors.teamName && true} />
+                    <Input {...field} placeholder="Enter your team name" invalid={errors.teamName && true} />
                   )}
                 />
                 {errors.teamName && <FormFeedback>{errors.teamName.message}</FormFeedback>}
@@ -720,7 +720,7 @@ const Profile = () => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder="Enter your team tagline in 60 character"
+                      placeholder="Enter your team tagline in 60 characters"
                       invalid={errors.teamTagline && true}
                     />
                   )}
@@ -741,7 +741,7 @@ const Profile = () => {
                     <Input
                       {...field}
                       type="textarea"
-                      placeholder="Write your team introduction in 500 character"
+                      placeholder="Write your team introduction in 500 characters"
                       rows="5"
                       invalid={errors.teamIntroduction && true}
                     />
@@ -1335,7 +1335,7 @@ const Profile = () => {
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Create team'}</span>
+                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Create Team'}</span>
                   <ChevronRight size={14} />
                 </>
               )}

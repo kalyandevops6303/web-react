@@ -336,7 +336,7 @@ const ProjectModal = ({
                   <Spinner size="sm" />
                 ) : (
                   <>
-                    <span className="me-50">View project</span>
+                    <span className="me-50">View Project</span>
                     <ChevronRight size={14} />
                   </>
                 )}
