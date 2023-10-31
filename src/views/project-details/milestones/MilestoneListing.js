@@ -1,10 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { ChevronRight } from 'react-feather';
 import { Badge, Card, CardBody, CardText } from 'reactstrap';
 import { PropTypes } from 'prop-types';
 
 import { formatDate } from '../../../utility/Utils';
 import MilestoneInfo from './MilestoneInfo';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const getTagSettings = (tag) => {
   if (tag === 'COMPLETED') {
@@ -28,34 +31,40 @@ const getTagSettings = (tag) => {
   return { theme: 'light-primary', text: tag };
 };
 
-const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
-  <div>
-    {milestonesData.map((mile, index) => (
-      <Card className="cursor-pointer" onClick={() => setSelectedMilestoneIndex(index)} key={mile._id}>
-        <CardBody className="py-1 basic-title">
-          <div className="d-flex align-items-center justify-content-between">
-            <CardText className="fw-bold mb-0">{mile.name}</CardText>
-            <div className="d-flex align-items-center">
-              <Badge color={getTagSettings(mile.status).theme}>{getTagSettings(mile.status).text}</Badge>
-              <div className="ms-2">
-                <CardText className="fw-normal mb-0 fs-6">Start Date</CardText>
-                <CardText className="fw-bolder fs-5 mb-0">
-                  {mile.start_date ? formatDate(mile.start_date) : '-'}
-                </CardText>
+const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => {
+  const userDetailsData = useSelector(selectUserData);
+
+  return (
+    <div>
+      {milestonesData.map((mile, index) => (
+        <Card className="cursor-pointer" onClick={() => setSelectedMilestoneIndex(index)} key={mile._id}>
+          <CardBody className="py-1 basic-title">
+            <div className="d-flex align-items-center justify-content-between">
+              <CardText className="fw-bold mb-0">{mile.name}</CardText>
+              <div className="d-flex align-items-center">
+                <Badge color={getTagSettings(mile.status).theme}>{getTagSettings(mile.status).text}</Badge>
+                <div className="ms-2">
+                  <CardText className="fw-normal mb-0 fs-6">Start Date</CardText>
+                  <CardText className="fw-bolder fs-5 mb-0">
+                    {mile.start_date ? formatDate(mile.start_date) : '-'}
+                  </CardText>
+                </div>
+                <div className="mx-2">
+                  <CardText className="fw-normal mb-0 fs-6">Completed</CardText>
+                  <CardText className="fw-bolder fs-5 mb-0">{mile.end_date ? formatDate(mile.end_date) : '-'}</CardText>
+                </div>
+                <ChevronRight color="#B9B9C3" />
               </div>
-              <div className="mx-2">
-                <CardText className="fw-normal mb-0 fs-6">Completed</CardText>
-                <CardText className="fw-bolder fs-5 mb-0">{mile.end_date ? formatDate(mile.end_date) : '-'}</CardText>
-              </div>
-              <ChevronRight color="#B9B9C3" />
             </div>
-          </div>
-        </CardBody>
-        {index === 0 ? <MilestoneInfo /> : null}
-      </Card>
-    ))}
-  </div>
-);
+          </CardBody>
+          {userDetailsData?.user_type === userTypes.client && index === 0 && milestonesData?.length > 2 ? (
+            <MilestoneInfo />
+          ) : null}
+        </Card>
+      ))}
+    </div>
+  );
+};
 
 MilestoneListing.propTypes = {
   setSelectedMilestoneIndex: PropTypes.func.isRequired,

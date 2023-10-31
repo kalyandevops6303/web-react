@@ -200,15 +200,15 @@ const BidDetails = () => {
                 <thead>
                   <tr>
                     <th>Payment for</th>
-                    <th>Milestone Tag</th>
+                    <th>Milestone Name</th>
                     <th>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {bidInfo?.milestones?.map((item) => (
+                  {bidInfo?.milestones?.map((item, index) => (
                     <tr key={item?._id}>
-                      <td className="fw-bolder">{item?.name}</td>
-                      <td>{item?.description}</td>
+                      <td className="fw-bolder">Milestone # {index + 1}</td>
+                      <td>{item?.name}</td>
                       <td>${item?.estimated_cost}</td>
                     </tr>
                   ))}
