@@ -1,7 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { capitalize } from 'lodash';
 import { useParams, useNavigate } from 'react-router';
 import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import { DateTime } from 'luxon';
@@ -13,35 +12,28 @@ import { Link } from 'react-router-dom';
 
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { GrayBorderContainer, GrayCardWrapper } from '../../styled';
-import { getTeams, getWhoInvited } from '../../../redux/actions/teamsActions';
-import { getProfilePercentage, updateInvitation } from '../../../redux/actions/dashboardActions';
+import { getWhoInvited } from '../../../redux/actions/teamsActions';
+import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
-import AcceptRequestModal from '../../modals/AcceptRequestModal';
-import RejectRequestModal from '../../modals/RejectRequestModal';
 import CreateBidModal from '../../modals/CreateBidModal';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 
 const InvitationView = () => {
   const dispatch = useDispatch();
-  // const userData = useSelector(selectUserData);
-  // const inviteToken = getItem('inviteToken');
   const params = useParams();
   const navigate = useNavigate();
 
   const [invitedByData, setInvitedByData] = useState('');
   const [createBidModal, setCreateBidModal] = useState(null);
 
-  const [accpetModal, setAccpetModal] = useState(false);
-  const [rejectModal, setRejectModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
 
   const profilePercentageData = useSelector(profilePercentage);
   const projectDetailsData = useSelector(projectDetails);
   const [status, setStatus] = useState(invitedByData?.request_status);
-  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
 
   const onSuccess = (res) => {
@@ -66,76 +58,11 @@ const InvitationView = () => {
     setCompleteProfileModal(!completeProfileModal);
   };
 
-  const handleCancel = () => {
-    setCompleteProfileModal(false);
-    setAccpetModal(false);
-    setRejectModal(false);
-  };
-
   useEffect(() => {
     if (!profilePercentageData) {
       dispatch(getProfilePercentage());
     }
   }, []);
-
-  const onAccept = () => {
-    const data = {
-      action: 'ACCEPT',
-      request_id: params.inviteId,
-    };
-    setIsStatusUpdating(true);
-    dispatch(
-      updateInvitation({
-        data,
-        onSuccess: () => {
-          setStatus('ACCEPTED');
-          setAccpetModal(false);
-          setIsStatusUpdating(false);
-          dispatch(getTeams({ onSuccess: () => {} }));
-          navigate(`/projects/ongoing`);
-        },
-        onError: () => {
-          setIsStatusUpdating(false);
-        },
-      }),
-    );
-  };
-
-  const handleAccept = () => {
-    if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
-    ) {
-      setCompleteProfileModal(true);
-    } else {
-      setAccpetModal(true);
-    }
-  };
-
-  const onReject = () => {
-    const data = {
-      action: 'REJECT',
-      request_id: params.inviteId,
-    };
-    setIsStatusUpdating(true);
-    dispatch(
-      updateInvitation({
-        data,
-        onSuccess: () => {
-          setStatus('REJECTED');
-          setRejectModal(false);
-          setIsStatusUpdating(false);
-        },
-        onError: () => {
-          setIsStatusUpdating(false);
-        },
-      }),
-    );
-  };
-  const handleDecline = () => {
-    setRejectModal(true);
-  };
 
   if (isGetWhoInvitedLoading) {
     return <ComponentSpinner />;
@@ -152,26 +79,7 @@ const InvitationView = () => {
           selectedProject={projectDetailsData}
         />
       )}
-      {accpetModal && (
-        <AcceptRequestModal
-          title={invitedByData?.request_type}
-          isLoading={isStatusUpdating}
-          data={invitedByData}
-          onAccept={onAccept}
-          modal={accpetModal}
-          toggleModal={handleCancel}
-        />
-      )}
-      {rejectModal && (
-        <RejectRequestModal
-          title={invitedByData?.request_type}
-          isLoading={isStatusUpdating}
-          data={invitedByData}
-          onReject={onReject}
-          modal={rejectModal}
-          toggleModal={handleCancel}
-        />
-      )}
+
       <Col sm="12" md="12" lg="10">
         <GrayCardWrapper>
           <Card>
@@ -187,25 +95,25 @@ const InvitationView = () => {
                   <CardBody>
                     <div className="d-flex justify-content-between align-items-center">
                       <h5 className="mt-1">Request</h5>
-                      {isStatusUpdating ? (
-                        'Loading..'
-                      ) : status === 'PENDING' ? (
-                        <div className="d-flex text-blue text-decoration-underline">
-                          <p className="me-2 cursor-pointer mb-0" onClick={handleDecline}>
-                            Reject
-                          </p>
-                          <p className="cursor-pointer mb-0" onClick={handleAccept}>
-                            Accept
-                          </p>
-                        </div>
-                      ) : status === 'READ_ONLY' ? (
+                      {status === 'READ_ONLY' ? (
                         <div className="d-flex text-blue text-decoration-underline">
                           <p className="cursor-pointer mb-0" onClick={() => setCreateBidModal(true)}>
                             Create bid
                           </p>
                         </div>
                       ) : (
-                        status && capitalize(status)
+                        <div className="d-flex text-blue text-decoration-underline">
+                          <p
+                            className="cursor-pointer mb-0"
+                            onClick={() => {
+                              navigate(
+                                `/project-details/${params?.projectId}/milestone/project-invitation/${params.inviteId}`,
+                              );
+                            }}
+                          >
+                            View milestone
+                          </p>
+                        </div>
                       )}
                     </div>
                     <h5 className="mt-2 pt-50 font-small-4 mb-0">Sent by</h5>
