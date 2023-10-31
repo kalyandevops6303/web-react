@@ -35,7 +35,7 @@ const ClubCard = ({ data, isSearchPage }) => {
     dispatch(
       makeFav({
         user_id: data?._id,
-        user_type: data?.user_type,
+        user_type: 'TEAM',
         onSuccess: () => {},
         onError: () => setIsFavorite(false),
       }),
@@ -76,7 +76,7 @@ const ClubCard = ({ data, isSearchPage }) => {
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
                 </span> */}
               </div>
-              <CardText className="team-desc mb-1">{data?.introduction || data?.tagline} </CardText>
+              <CardText className="team-desc mb-1">{data?.introduction} </CardText>
 
               <div className="avatar-wrap mb-1">
                 {users.length > 3 ? (
