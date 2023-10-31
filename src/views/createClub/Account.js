@@ -195,73 +195,84 @@ const Account = () => {
   }, [imageUrlRes]);
 
   const onSubmit = (data) => {
-    const { clubName, clubTagline, clubIntroduction, interests, tools, skills, educationInstitution } = data;
-    const skillsSelected = skills.map((skill) => skill.value);
-    const interestsSelected = interests.map((skill) => skill.value);
-    const toolsSelected = tools?.map((skill) => skill.value);
+    const selectedOptionValue = selectedOption?.value;
+    const myInstitution = userDetailsData?.talent_info?.educational_institute
+      .map((educationDetails) => educationDetails.institution)
+      .map((institute) => institute._id);
 
-    let reqData;
+    const otherIntitution = myInstitution.includes(selectedOptionValue);
 
-    if (location?.state?.isEditing) {
-      if (imageUrlRes) {
-        reqData = {
-          _id: userDetailsData._id,
-          name: clubName,
-          team_logo: imageUrlRes.file_key,
-          tagline: clubTagline,
-          introduction: clubIntroduction,
-          interests: interestsSelected,
-          tools: toolsSelected,
-          skills: skillsSelected,
-          education_institute: educationInstitution?.value,
-        };
-      } else {
-        reqData = {
-          _id: userDetailsData._id,
-          name: clubName,
-          tagline: clubTagline,
-          introduction: clubIntroduction,
-          interests: interestsSelected,
-          tools: toolsSelected,
-          skills: skillsSelected,
-          education_institute: educationInstitution?.value,
-        };
-      }
+    if (!otherIntitution) {
+      setEducationInstitutionModal(true);
     } else {
-      // eslint-disable-next-line no-lonely-if
-      if (imageUrlRes) {
-        reqData = {
-          name: clubName,
-          team_logo: imageUrlRes.file_key,
-          tagline: clubTagline,
-          introduction: clubIntroduction,
-          interests: interestsSelected,
-          tools: toolsSelected,
-          skills: skillsSelected,
-          education_institute: educationInstitution?.value,
-        };
-      } else {
-        reqData = {
-          name: clubName,
-          tagline: clubTagline,
-          introduction: clubIntroduction,
-          interests: interestsSelected,
-          tools: toolsSelected,
-          skills: skillsSelected,
-          education_institute: educationInstitution?.value,
-        };
-      }
-    }
+      const { clubName, clubTagline, clubIntroduction, interests, tools, skills, educationInstitution } = data;
+      const skillsSelected = skills.map((skill) => skill.value);
+      const interestsSelected = interests.map((skill) => skill.value);
+      const toolsSelected = tools?.map((skill) => skill.value);
 
-    if (location?.state?.isEditing) {
-      const onApiSuccess = () => {
+      let reqData;
+
+      if (location?.state?.isEditing) {
+        if (imageUrlRes) {
+          reqData = {
+            _id: userDetailsData._id,
+            name: clubName,
+            team_logo: imageUrlRes.file_key,
+            tagline: clubTagline,
+            introduction: clubIntroduction,
+            interests: interestsSelected,
+            tools: toolsSelected,
+            skills: skillsSelected,
+            education_institute: educationInstitution?.value,
+          };
+        } else {
+          reqData = {
+            _id: userDetailsData._id,
+            name: clubName,
+            tagline: clubTagline,
+            introduction: clubIntroduction,
+            interests: interestsSelected,
+            tools: toolsSelected,
+            skills: skillsSelected,
+            education_institute: educationInstitution?.value,
+          };
+        }
+      } else {
+        // eslint-disable-next-line no-lonely-if
+        if (imageUrlRes) {
+          reqData = {
+            name: clubName,
+            team_logo: imageUrlRes.file_key,
+            tagline: clubTagline,
+            introduction: clubIntroduction,
+            interests: interestsSelected,
+            tools: toolsSelected,
+            skills: skillsSelected,
+            education_institute: educationInstitution?.value,
+          };
+        } else {
+          reqData = {
+            name: clubName,
+            tagline: clubTagline,
+            introduction: clubIntroduction,
+            interests: interestsSelected,
+            tools: toolsSelected,
+            skills: skillsSelected,
+            education_institute: educationInstitution?.value,
+          };
+        }
+      }
+
+      if (location?.state?.isEditing) {
+        const onApiSuccess = () => {
+          navigate(`/create-club/profile-details`);
+        };
+        // dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
+      } else {
+        const removeEmpty = removeEmptyKeys(reqData);
+        dispatch(setClubCreateDataAction(removeEmpty));
         navigate(`/create-club/profile-details`);
-      };
-      // dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
-    } else {
-      const removeEmpty = removeEmptyKeys(reqData);
-      dispatch(setClubCreateDataAction(removeEmpty));
-      navigate(`/create-club/profile-details`);
+      }
     }
   };
 
@@ -272,7 +283,9 @@ const Account = () => {
         .map((educationDetails) => educationDetails.institution)
         .map((institute) => ({ label: institute.name, value: institute._id }));
 
-      const newOptions = response?.data?.data?.data?.map((data) => ({ label: data.name, value: data._id }));
+      const newOptions = response?.data?.data?.data
+        .map((data) => ({ label: data.name, value: data._id }))
+        .filter((option) => !myInstitution.some((myOption) => myOption.value === option.value));
 
       const instituteGroupLabels = [
         { label: 'My Institutions', options: [...myInstitution] },
@@ -358,47 +371,47 @@ const Account = () => {
     navigate('/dashboard');
   };
 
-  // useEffect(() => {
-  //   if (clubCreateData) {
-  //     if (clubCreateData?.team_logo?.length > 0) {
-  //       setSelectedImage(clubCreateData.team_logo);
-  //       setSelectedImagePreview(clubCreateData.team_logo);
-  //     }
-  //     if (clubCreateData?.name?.length > 0) {
-  //       setValue('clubName', clubCreateData?.name, { shouldValidate: true });
-  //     }
-  //     if (clubCreateData?.tagline?.length > 0) {
-  //       setValue('clubTagline', clubCreateData?.tagline, { shouldValidate: true });
-  //     }
-  //     if (clubCreateData?.introduction?.length > 0) {
-  //       setValue('clubIntroduction', clubCreateData?.introduction, { shouldValidate: true });
-  //     }
-  //     if (clubCreateData?.interests?.length > 0) {
-  //       setValue(
-  //         'interests',
-  //         clubCreateData?.interests.map((interest) => ({
-  //           label: interest.name,
-  //           value: interest._id,
-  //         })),
-  //         { shouldValidate: true },
-  //       );
-  //     }
-  //     if (clubCreateData?.tools?.length > 0) {
-  //       setValue(
-  //         'tools',
-  //         clubCreateData?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
-  //         { shouldValidate: true },
-  //       );
-  //     }
-  //     if (clubCreateData?.skills?.length > 0) {
-  //       setValue(
-  //         'skills',
-  //         clubCreateData?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
-  //         { shouldValidate: true },
-  //       );
-  //     }
-  //   }
-  // }, [clubCreateData]);
+  useEffect(() => {
+    if (clubCreateData) {
+      if (clubCreateData?.team_logo?.length > 0) {
+        setSelectedImage(clubCreateData.team_logo);
+        setSelectedImagePreview(clubCreateData.team_logo);
+      }
+      if (clubCreateData?.name?.length > 0) {
+        setValue('clubName', clubCreateData?.name, { shouldValidate: true });
+      }
+      if (clubCreateData?.tagline?.length > 0) {
+        setValue('clubTagline', clubCreateData?.tagline, { shouldValidate: true });
+      }
+      if (clubCreateData?.introduction?.length > 0) {
+        setValue('clubIntroduction', clubCreateData?.introduction, { shouldValidate: true });
+      }
+      if (clubCreateData?.interests?.length > 0) {
+        setValue(
+          'interests',
+          clubCreateData?.interests.map((interest) => ({
+            label: interest.name,
+            value: interest,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (clubCreateData?.tools?.length > 0) {
+        setValue(
+          'tools',
+          clubCreateData?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          { shouldValidate: true },
+        );
+      }
+      if (clubCreateData?.skills?.length > 0) {
+        setValue(
+          'skills',
+          clubCreateData?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          { shouldValidate: true },
+        );
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (location?.state?.isEditing) {
