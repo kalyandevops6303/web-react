@@ -157,10 +157,11 @@ const getBidDetails =
   };
 
 const updateBidStatus =
-  ({ bid_id, assign, onSuccess, onError }) =>
+  ({ bid_id, assign, status, onSuccess, onError }) =>
   async () => {
     try {
       await updateBidStatusService({ bid_id, assign });
+      ShowToastMessage(SUCCESS, `Bid ${status?.lowercase()}`);
       onSuccess();
     } catch (error) {
       onError();
@@ -271,9 +272,10 @@ const sendDocument =
   async (dispatch) => {
     dispatch(sendDocumentRequest());
     try {
-      await sendDocumentService({ project_id, doc_type, validity, data });
+      const res = await sendDocumentService({ project_id, doc_type, validity, data });
       dispatch(sendDocumentSuccess());
       dispatch(getDocument({ document_id: '', project_id, doc_type }));
+      ShowToastMessage(SUCCESS, res.data.data);
       onSuccess();
     } catch (error) {
       errorHandler(error, sendDocumentFailure);
@@ -286,8 +288,9 @@ const signContractByTalent =
   async (dispatch) => {
     dispatch(signContractByTalentRequest());
     try {
-      await signContractByTalentServive({ project_id, doc_type, role });
+      const res = await signContractByTalentServive({ project_id, doc_type, role });
       dispatch(signContractByTalentSuccess({ role }));
+      ShowToastMessage(SUCCESS, res.data.data);
       onSuccess();
     } catch (error) {
       errorHandler(error, signContractByTalentFailure);

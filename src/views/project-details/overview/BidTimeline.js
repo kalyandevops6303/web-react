@@ -21,6 +21,7 @@ import {
 import ContractTimeline from './ContractTimeline';
 import NDATimeline from './NDATimeline';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { clearDocstate } from '../../../redux/reducers/projectDetails';
 
 const BidTimelineWrapper = styled.div`
   .indicator {
@@ -37,8 +38,8 @@ const BidTimeline = () => {
   const param = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isContract = useSelector(selectIsContract);
-  const isNDA = useSelector(selectIsNDA);
+  const contractData = useSelector(selectIsContract);
+  const ndaData = useSelector(selectIsNDA);
   const projectDetailsData = useSelector(projectDetails);
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
   const bidInfoError = useSelector((state) => state.projectDetails.errorBidInfo);
@@ -48,12 +49,13 @@ const BidTimeline = () => {
   const userType = useSelector(selectUserType);
 
   useEffect(() => {
-    dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'CONTRACT' }));
-  }, []);
-  useEffect(() => {
     if (projectDetailsData?.nda?.is_nda) {
       dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'NDA' }));
     }
+    dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'CONTRACT' }));
+    return () => {
+      dispatch(clearDocstate());
+    };
   }, [projectDetailsData]);
 
   useEffect(() => {
@@ -68,18 +70,18 @@ const BidTimeline = () => {
   const bidStageData = [
     {
       isVisible: projectDetailsData?.nda?.is_nda,
-      isDisabled: isNDA?.show_document === false,
+      isDisabled: ndaData?.show_document === false,
       color: theme.purpleTimelimeColor,
       customContent: (
         <div>
-          {userType === userTypes.client && !isNDA?.is_signed ? (
+          {userType === userTypes.client && !ndaData?.is_signed ? (
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
-                  <CardText className={`d-flex fw-bold mb-0  ${!isNDA?.show_document ? 'disabled-color' : ''}`}>
-                    NDA {isNDA?.show_document && <span className="indicator" />}
+                  <CardText className={`d-flex fw-bold mb-0  ${!ndaData?.show_document ? 'disabled-color' : ''}`}>
+                    NDA {ndaData?.show_document && <span className="indicator" />}
                   </CardText>
-                  {isNDA?.show_document && (
+                  {ndaData?.show_document && (
                     <div className="d-flex gap-50 align-items-center">
                       <span onClick={() => handleDoc({ type: 'nda' })} className="card-cta">
                         Sign NDA
@@ -90,7 +92,7 @@ const BidTimeline = () => {
                 </div>
               </CardBody>
             </Card>
-          ) : isNDA?.show_document ? (
+          ) : ndaData?.show_document ? (
             <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
               <NDATimeline />
             </UncontrolledAccordion>
@@ -98,10 +100,10 @@ const BidTimeline = () => {
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
-                  <CardText className={`d-flex fw-bold mb-0  ${!isNDA?.show_document ? 'disabled-color' : ''}`}>
-                    NDA {isNDA?.show_document && <span className="indicator" />}
+                  <CardText className={`d-flex fw-bold mb-0  ${!ndaData?.show_document ? 'disabled-color' : ''}`}>
+                    NDA {ndaData?.show_document && <span className="indicator" />}
                   </CardText>
-                  {isNDA?.show_document && (
+                  {ndaData?.show_document && (
                     <div className="d-flex gap-50 align-items-center">
                       <span onClick={() => handleDoc({ type: 'nda' })} className="card-cta">
                         Sign NDA
@@ -118,19 +120,19 @@ const BidTimeline = () => {
     },
     {
       isVisible: true,
-      isDisabled: isContract?.show_document === false,
+      isDisabled: contractData?.show_document === false,
       color: theme.orangeColor,
       customContent: (
         <div>
-          {userType === userTypes.client && !isContract?.is_signed ? (
+          {userType === userTypes.client && !contractData?.is_signed ? (
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
-                  <CardText className={`d-flex fw-bold mb-0  ${!isContract?.show_document ? 'disabled-color' : ''}`}>
+                  <CardText className={`d-flex fw-bold mb-0  ${!contractData?.show_document ? 'disabled-color' : ''}`}>
                     Contract
-                    {isContract?.show_document && <span className="indicator" />}
+                    {contractData?.show_document && <span className="indicator" />}
                   </CardText>
-                  {isContract?.show_document && (
+                  {contractData?.show_document && (
                     <div className="d-flex gap-50 align-items-center">
                       <span onClick={() => handleDoc({ type: 'contract' })} className="card-cta">
                         Sign contract
@@ -141,7 +143,7 @@ const BidTimeline = () => {
                 </div>
               </CardBody>
             </Card>
-          ) : isContract?.show_document ? (
+          ) : contractData?.show_document ? (
             <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
               <ContractTimeline />
             </UncontrolledAccordion>
@@ -149,10 +151,10 @@ const BidTimeline = () => {
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
-                  <CardText className={`fw-bold mb-0  ${!isContract?.show_document ? 'disabled-color' : ''}`}>
-                    Contract {isContract?.show_document && <span className="indicator" />}
+                  <CardText className={`fw-bold mb-0  ${!contractData?.show_document ? 'disabled-color' : ''}`}>
+                    Contract {contractData?.show_document && <span className="indicator" />}
                   </CardText>
-                  {isContract?.show_document && (
+                  {contractData?.show_document && (
                     <div className="d-flex gap-50 align-items-center">
                       <span onClick={() => handleDoc({ type: 'contract' })} className="card-cta">
                         Sign contract
@@ -199,10 +201,10 @@ const BidTimeline = () => {
       {userType !== userTypes.client && bidInfo && (
         // If the user type is talent, check if bidInfo is available before proceeding.
         <div>
-          {isContract &&
-            // If isContract is true...
-            (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && isNDA)) && (
-              // If projectDetailsData?.nda?.is_nda is true, check isNDA before rendering Timeline.
+          {contractData &&
+            // If contractData is true...
+            (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && ndaData)) && (
+              // If projectDetailsData?.nda?.is_nda is true, check ndaData before rendering Timeline.
               <Timeline data={bidStageData} />
             )}
         </div>
@@ -210,10 +212,10 @@ const BidTimeline = () => {
       {userType === userTypes.client && (
         // If the user type is client, no need to check bidInfo.
         <div>
-          {isContract &&
-            // If isContract is true...
-            (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && isNDA)) && (
-              // If projectDetailsData?.nda?.is_nda is true, check isNDA before rendering Timeline.
+          {contractData &&
+            // If contractData is true...
+            (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && ndaData)) && (
+              // If projectDetailsData?.nda?.is_nda is true, check ndaData before rendering Timeline.
               <Timeline data={bidStageData} />
             )}
         </div>

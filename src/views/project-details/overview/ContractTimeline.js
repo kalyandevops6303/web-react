@@ -34,10 +34,12 @@ const ContractTimeline = () => {
             )}
           </div>
           <div className="meta-data">
-            <span className="time">{item?.signed_on ? DateTime?.fromMillis(item?.signed_on)?.toRelative() : '-'}</span>
+            <span className="time ms-auto">
+              {item?.signed_on ? DateTime?.fromMillis(item?.signed_on)?.toRelative() : '-'}
+            </span>
             {item?.status !== 'PROJECT_STARTED' && item?.status !== 'PROJECT_COMPLETED' && (
               <span onClick={() => navigate(`doc/contract/${item?.document_id}`)} className="card-cta">
-                View
+                View submitted document
               </span>
             )}
           </div>
@@ -70,12 +72,12 @@ const ContractTimeline = () => {
               {isContract?.is_signed ? (
                 <div className="d-flex gap-1 aling-items-center">
                   {projectDetailsData?.status === 'COMPLETED' ? (
-                    <CardText className="view-all-cta" onClick={handleRating}>
+                    <CardText className="view-card-cta" onClick={handleRating}>
                       Give rating
                     </CardText>
                   ) : (
-                    <CardText onClick={handleContract} className="view-all-cta">
-                      View
+                    <CardText onClick={handleContract} className="view-card-cta">
+                      View contract
                     </CardText>
                   )}
                   {/* <CardText className="d-none view-all-cta">Give rating</CardText> */}

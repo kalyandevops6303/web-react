@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardText, CardTitle, Col, FormFeedback, Input, Label, Row } from 'reactstrap';
 import ReactHtmlParser from 'react-html-parser';
 import html2pdf from 'html2pdf.js';
@@ -26,6 +26,7 @@ import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const ContractView = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isTerminateModalOpen, setIsTerminateModalOpen] = useState(false);
   const [terminateData, setTerminateData] = useState();
@@ -45,6 +46,8 @@ const ContractView = () => {
   const [documentData, setDocumentData] = useState(documentRes);
   const [checked, setChecked] = useState(false);
   const [checkError, setCheckError] = useState(false);
+
+  const bidView = location?.pathname?.split('/')?.slice(0, -2)?.join('/');
 
   const toggleModal = () => {
     setIsEditModalOpen(!isEditModalOpen);
@@ -111,7 +114,10 @@ const ContractView = () => {
         doc_type: getDocType(),
         validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
         data: documentData,
-        onSuccess: () => setIsAcceptModalOpen(false),
+        onSuccess: () => {
+          setIsAcceptModalOpen(false);
+          navigate(bidView);
+        },
       }),
     );
   };
@@ -122,7 +128,10 @@ const ContractView = () => {
         doc_type: getDocType(),
         user_id: data?.user_id,
         role: data?.role,
-        onSuccess: () => setIsAcceptModalOpen(false),
+        onSuccess: () => {
+          setIsAcceptModalOpen(false);
+          navigate(bidView);
+        },
       }),
     );
   };
