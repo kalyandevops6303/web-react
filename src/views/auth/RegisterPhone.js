@@ -37,7 +37,7 @@ const RegisterPhone = () => {
   );
 
   const schema = yup.object().shape({
-    mobile: yup.string().required('Mobile number is required'),
+    mobile: yup.string().required('Mobile number is required').min(10).max(10),
   });
 
   const {

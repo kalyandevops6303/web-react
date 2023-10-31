@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-confusing-arrow */
 import React, { useState } from 'react';
-import { Button, Card, CardText, Col, Input, Label, Row, Spinner } from 'reactstrap';
+import { Badge, Button, Card, CardText, Col, Input, Label, Row, Spinner } from 'reactstrap';
 import Avatar from '@components/avatar';
 import Proptypes from 'prop-types';
 import { Download, ExternalLink, Link, Plus, Upload } from 'react-feather';
@@ -22,6 +22,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
+import { CustomBadge } from '../../styled';
 
 const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
@@ -130,6 +131,16 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     .split(' ');
   const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
+  const statusEnum = {
+    OPEN: 'Open',
+    IN_REVIEW: 'In Review',
+    TERMINATED: 'Terminated',
+    CLOSED: 'Closed',
+    LISTING_EXPIRED: 'Listing Expired',
+    ON_GOING: 'On Going',
+    COMPLETED: 'COMPLETED',
+  };
+
   return (
     <div>
       {raiseDisputeModal && (
@@ -140,6 +151,13 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
         />
       )}
       <Card className="gray-card">
+        <div className="mb-4">
+          <CustomBadge bordered>
+            <Badge className={`${selectedMilestone?.status}`} color="badge">
+              {statusEnum[selectedMilestone?.status]}
+            </Badge>
+          </CustomBadge>
+        </div>
         <div className="mb-3 d-flex gap-5">
           <div>
             <CardText className="fw-normal mb-0 fs-6">Start</CardText>
@@ -153,17 +171,16 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
               selectedMilestone.estimated_duration.duration
             }${selectedMilestone.estimated_duration.duration_type?.[0]?.toLocaleLowerCase()}`}</CardText>
           </div>
-          {selectedMilestone.numbers_of_hours ? (
-            <div>
-              <CardText className="fw-normal mb-0 fs-6">Hours/week</CardText>
-              <CardText className="fw-bolder fs-5 mb-0">{selectedMilestone.numbers_of_hours} hr</CardText>
-            </div>
-          ) : null}
+          <div>
+            <CardText className="fw-normal mb-0 fs-6">Hours/week</CardText>
+            <CardText className="fw-bolder fs-5 mb-0">{selectedMilestone?.numbers_of_hours} hr</CardText>
+          </div>
+
           <div>
             <CardText className="fw-normal mb-0 fs-6">Cost</CardText>
             <CardText className="fw-bolder fs-5 mb-0">$ {selectedMilestone.estimated_cost}</CardText>
           </div>
-          <div>
+          {/* <div>
             <CardText className="fw-normal mb-0 fs-6">Status</CardText>
             <CardText className="fw-bolder fs-5 mb-0">
               {selectedMilestone.status === 'IN_PROGRESS'
@@ -178,7 +195,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                 ? 'On Going'
                 : selectedMilestone.status}
             </CardText>
-          </div>
+          </div> */}
         </div>
         <div className="white-card w-100">
           <CardText className="fw-bolder fs-4 mb-1">Milestone Name</CardText>

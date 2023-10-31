@@ -795,7 +795,9 @@ const VariableAdvanceMilestoneView = () => {
                                         <Row>
                                           <Col sm="12" md="6" lg="6">
                                             <div className="d-flex align-items-center">
-                                              <p className="roles-list-header m-0 me-50">Duration</p>
+                                              <p className="roles-list-header m-0 me-50">
+                                                Duration<span className="label-asterisk">*</span>
+                                              </p>
                                               <Info size={18} color={theme.infoIcon} id="duration-info" />
                                               <UncontrolledTooltip placement="top" target="duration-info">
                                                 <p className="m-0">W = Week</p>
@@ -803,7 +805,9 @@ const VariableAdvanceMilestoneView = () => {
                                             </div>
                                           </Col>
                                           <Col sm="12" md="6" lg="6">
-                                            <p className="roles-list-header m-0">Hours/week</p>
+                                            <p className="roles-list-header m-0">
+                                              Hours/week<span className="label-asterisk">*</span>
+                                            </p>
                                           </Col>
                                         </Row>
                                       </Col>
@@ -1100,14 +1104,7 @@ const VariableAdvanceMilestoneView = () => {
                                 </Card>
                               </Col>
                             </Row>
-                            <div className="d-flex align-items-center justify-content-between w-100">
-                              <div
-                                className="d-flex align-items-center upload-button cursor-pointer"
-                                onClick={handleAddMilestone}
-                              >
-                                <Plus size={16} color={theme.activeNavPillText} />
-                                <h5 className="fw-bold">Add Milestone</h5>
-                              </div>
+                            <div className="d-flex align-items-center justify-content-end w-100">
                               {getValues('milestones').length > 1 && (
                                 <Button
                                   type="button"
@@ -1128,6 +1125,10 @@ const VariableAdvanceMilestoneView = () => {
                   );
                 })}
               </Accordion>
+              <div className="d-flex align-items-center upload-button cursor-pointer pb-2" onClick={handleAddMilestone}>
+                <Plus size={16} color={theme.activeNavPillText} />
+                <h5 className="fw-bold">Add Milestone</h5>
+              </div>
             </CardBody>
           </Card>
           <Card className="mt-2">
