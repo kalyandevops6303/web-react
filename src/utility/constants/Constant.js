@@ -19,6 +19,7 @@ const userTypes = {
   client: 'CLIENT',
   talent: 'TALENT',
   team: 'TEAM',
+  club: 'CLUB',
 };
 const userOnboarding = {
   client: 'client-onboarding',
@@ -80,6 +81,11 @@ const disputeStatusEnum = {
   RESOLVED: 'Resolved',
 };
 
+const roleTypeOptions = [
+  { label: 'Admin', value: 'ADMIN' },
+  { label: 'Member', value: 'MEMBER' },
+];
+
 const PAYMENT_STATUS = {
   PENDING: 'PENDING',
   INITIATED: 'INITIATED',
@@ -107,5 +113,6 @@ export {
   disputeStatusEnum,
   bidStatusesOptions,
   statusForAllListing,
+  roleTypeOptions,
   PAYMENT_STATUS,
 };

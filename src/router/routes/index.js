@@ -39,6 +39,7 @@ import Clubs from '../../views/clubs';
 
 import ReferralAndReward from '../../views/ReferralAndReward';
 import CreateClub from '../../views/createClub';
+import ClubInvitation from '../../views/club-invitation';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -157,6 +158,10 @@ const Routes = [
   {
     path: '/join-request/:inviteId',
     element: <TeamInvitation />,
+  },
+  {
+    path: '/club-invitation/:inviteId',
+    element: <ClubInvitation />,
   },
 
   {
