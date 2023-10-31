@@ -40,6 +40,7 @@ const PrivateDashboard = () => {
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const [deleteModal, setDeletModal] = useState(false);
+  const [isClubInvite, setIsClubInvite] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState();
 
   const [raisedDisputeModal, setRaisedDisputeModal] = useState(null);
@@ -96,6 +97,12 @@ const PrivateDashboard = () => {
   };
 
   const onTeamInvite = () => {
+    setInviteTeamMemberModal(true);
+    setInviteTalentToTeamModal(true);
+  };
+
+  const onClubInvite = () => {
+    setIsClubInvite(true);
     setInviteTeamMemberModal(true);
     setInviteTalentToTeamModal(true);
   };
@@ -194,13 +201,21 @@ const PrivateDashboard = () => {
       )}
       {userDetailsData?.user_type === userTypes.club && (
         <DashboardHeaderWrapper>
-          <Button as="link" color="primary">
+          <Button as="link" color="primary" onClick={onClubInvite}>
             Invite Members
           </Button>
         </DashboardHeaderWrapper>
       )}
-      {inviteTalentToTeamModal && (
+      {inviteTalentToTeamModal && !isClubInvite && (
         <InviteTalentToTeam
+          inviteTeamMemberModal={inviteTeamMemberModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+        />
+      )}
+      {inviteTalentToTeamModal && isClubInvite && (
+        <InviteTalentToTeam
+          isClubInvitation
           inviteTeamMemberModal={inviteTeamMemberModal}
           toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
