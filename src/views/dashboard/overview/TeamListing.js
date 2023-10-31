@@ -37,6 +37,7 @@ import { getMyTeam, getRecommendedTeams, getTeamInvitation } from '../../../redu
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import MyTeamCard from './MyTeamCard';
+import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -165,6 +166,7 @@ const TeamListing = () => {
   const handleViewAll = (e, path) => {
     e.stopPropagation();
     navigate(path, { state: { isRecommended: true } });
+    dispatch(setActiveNavTab('marketplace'));
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
@@ -255,7 +257,13 @@ const TeamListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">Team Invites</span>
                 {teamInvitation?.data?.length > 0 && (
-                  <CardText onClick={() => navigate('/my-teams')} className=" view-all-cta">
+                  <CardText
+                    onClick={() => {
+                      navigate('/projects/invited');
+                      dispatch(setActiveNavTab('projects'));
+                    }}
+                    className=" view-all-cta"
+                  >
                     View All
                   </CardText>
                 )}

@@ -62,7 +62,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [secondFilterState, setSecondFilterState] = useState({
     team_name: [],
     client_name: [],
-    filter_type: [],
+    project_type: [],
     user_type: [],
     invited_by: [invitedByOptions[0]],
     invited_type: [typeOptions[0]],
@@ -218,7 +218,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     setSecondFilterState({
       team_name: [],
       client_name: [],
-      filter_type: [],
+      project_type: [],
       user_type: [],
       invited_by: [invitedByOptions[0]],
       invited_type: [typeOptions[0]],
@@ -259,12 +259,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 classNamePrefix="select"
                 placeholder="Select type"
                 theme={selectThemeColors}
-                onChange={(value) => onChangeFilter('filter_type', value)}
+                onChange={(value) => onChangeFilter('project_type', value)}
                 value={
-                  secondFilterState.filter_type.length > 0
+                  secondFilterState.project_type.length > 0
                     ? {
-                        value: secondFilterState.filter_type[0].value,
-                        label: secondFilterState.filter_type[0].label,
+                        value: secondFilterState.project_type[0].value,
+                        label: secondFilterState.project_type[0].label,
                       }
                     : null
                 }

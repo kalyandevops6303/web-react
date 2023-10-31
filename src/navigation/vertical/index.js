@@ -19,4 +19,9 @@ export default [
     title: 'My Team',
     navLink: '/my-teams',
   },
+  {
+    id: 'clubs',
+    title: 'Clubs',
+    navLink: '/clubs/my_clubs',
+  },
 ];

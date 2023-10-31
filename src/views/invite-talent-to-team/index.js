@@ -67,6 +67,19 @@ const InviteTalentToTeam = ({
           toggleModal={toggleInviteTeamMemberModal}
           setSendInvitationModal={setSendInvitationModal}
         />
+        // <InviteClubMemberModal
+        //   createTeamView={createTeamView}
+        //   projectId={projectId}
+        //   selectedTalents={selectedTalents}
+        //   setSelectedTalents={setSelectedTalents}
+        //   invitedIds={invitedIds}
+        //   setInvitedIds={setInvitedIds}
+        //   selectedIds={selectedIds}
+        //   setSelectedIds={setSelectedIds}
+        //   modal={inviteTeamMemberModal}
+        //   toggleModal={toggleInviteTeamMemberModal}
+        //   setSendInvitationModal={setSendInvitationModal}
+        // />
       )}
       {sendInvitationModal && !isClubInvitation && (
         // <SendInvitationModal

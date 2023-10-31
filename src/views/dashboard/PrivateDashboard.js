@@ -29,8 +29,10 @@ import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
 import { setItem } from '../../utility/localStorageControl';
+import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 import ClubSection from './overview/ClubSection';
+import InviteClubMemberModal from '../modals/InviteClubMemberModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -49,6 +51,7 @@ const PrivateDashboard = () => {
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
 
   const [optionsModal, setOptionsModal] = useState(null);
+  const [inviteClubMembersModal, setInviteClubMembersModal] = useState(false);
 
   const query = useSelector((state) => state.search.query);
 
@@ -147,6 +150,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModal(true);
     } else {
       navigate('/marketplace/teams');
+      dispatch(setActiveNavTab('marketplace'));
     }
   };
 
@@ -182,6 +186,13 @@ const PrivateDashboard = () => {
 
       {optionsModal && (
         <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} />
+      )}
+
+      {inviteClubMembersModal && (
+        <InviteClubMemberModal
+          modal={inviteClubMembersModal}
+          toggleModal={() => setInviteClubMembersModal(!inviteClubMembersModal)}
+        />
       )}
 
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />

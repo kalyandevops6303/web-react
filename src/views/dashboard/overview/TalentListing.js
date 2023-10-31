@@ -35,6 +35,7 @@ import {
 import { getJoinRequest, getRecommendedProjects, getRecommendedTalent } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
+import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -160,6 +161,7 @@ const TalentListing = () => {
   const handleViewAll = (e) => {
     e.stopPropagation();
     navigate('/marketplace/talents', { state: { isRecommended: true } });
+    dispatch(setActiveNavTab('marketplace'));
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
@@ -176,7 +178,13 @@ const TalentListing = () => {
           <AccordionHeadStyle>
             <span className="d-flex align-items-center">Join Requests</span>
             {joinRequests?.data?.length > 0 && (
-              <CardText onClick={() => navigate('/my-teams/join-requests')} className="view-all-cta">
+              <CardText
+                onClick={() => {
+                  navigate('/my-teams/join_requests');
+                  dispatch(setActiveNavTab('my-teams'));
+                }}
+                className="view-all-cta"
+              >
                 View All
               </CardText>
             )}

@@ -105,8 +105,9 @@ function TalentCard({ data, isSearchPage }) {
                       }}
                       to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
                     >
-                      {data?.first_name}&nbsp;
-                      {data?.last_name}
+                      HEY
+                      {/* {data?.first_name}&nbsp;
+                      {data?.last_name} */}
                     </Link>
                   </CardTitle>
                   <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">

@@ -4,6 +4,7 @@ import { Badge, Card, CardBody, CardText } from 'reactstrap';
 import { PropTypes } from 'prop-types';
 
 import { formatDate } from '../../../utility/Utils';
+import MilestoneInfo from './MilestoneInfo';
 
 const getTagSettings = (tag) => {
   if (tag === 'COMPLETED') {
@@ -50,6 +51,7 @@ const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
             </div>
           </div>
         </CardBody>
+        {index === 0 ? <MilestoneInfo /> : null}
       </Card>
     ))}
   </div>
