@@ -1,0 +1,52 @@
+name: frontend-cd-uat
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["frontend-ci-uat"]
+    # branches: [uat]
+    types: 
+      - completed
+env:
+  RGNAME: azusctr-uat-rg
+  AKSNAME: azusctr-uat-aks
+
+jobs:
+  frontend-cd-uat:
+    runs-on: [self-hosted, linux, X64, trumio-orgrunner]
+    steps:
+  
+   # Checkout the branch
+    - uses: actions/checkout@v2
+      with:
+        ref: uat
+        submodules: true
+
+   # Set the target AKS cluster.
+    - uses: Azure/aks-set-context@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS_UAT }}'
+        cluster-name: ${{ env.AKSNAME }}
+        resource-group: ${{ env.RGNAME }}
+
+    #install kubectl on container (runner)
+    - uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.28.2' # default is latest stable
+      id: install
+    
+    # to access ACR from runner
+    - uses: Azure/k8s-create-secret@v1
+      with:
+        container-registry-url: ${{ secrets.UAT_REGISTRY_URL }}
+        container-registry-username: ${{ secrets.UAT_REGISTRY_USERNAME }}
+        container-registry-password: ${{ secrets.UAT_REGISTRY_PASSWORD }}
+        secret-name: k8s-secret
+        
+    ##to deploy on AKS
+    - uses: Azure/k8s-deploy@v4
+      with:
+        action: deploy
+        namespace: 'uat'
+        manifests: |
+          manifests/uat/deployment_frontend.yml
+          manifests/uat/service_frontend.yml

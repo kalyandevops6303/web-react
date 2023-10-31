@@ -5,12 +5,16 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import InfiniteScroll from '../../lib/infinite-scroll';
 import searchAction from '../../redux/actions/gloabalSearch';
-import UserCard from '../cards/UserCard';
+import TalentCard from '../cards/TalentCard';
+import ClientCard from '../cards/ClientCard';
+import TeamCard from '../cards/TeamCard';
+
 import { Header } from '../styled';
 import theme from '../../configs/themeVariables';
-import ProjectCard from '../cards/ProjectCard';
+import ProjectCard from '../cards/MarketPlaceProjectCard';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { userTypes } from '../../utility/constants/Constant';
+import { setItem } from '../../utility/localStorageControl';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -29,6 +33,7 @@ const Search = () => {
     if (!query) {
       navigate('/dashboard');
     }
+    setItem('baseRoute', 'search');
   }, []);
 
   useEffect(() => {
@@ -152,6 +157,9 @@ const Search = () => {
               <li className={activeTab === userTypes.client && 'active'} onClick={() => setActivetab(userTypes.client)}>
                 <CardText>Client ({searchData?.client?.metadata?.total_records})</CardText>
               </li>
+              <li className={activeTab === userTypes.team && 'active'} onClick={() => setActivetab(userTypes.team)}>
+                <CardText>Team ({searchData?.team?.metadata?.total_records})</CardText>
+              </li>
             </NavigationBar>
             {isLoading ? (
               <ComponentSpinner />
@@ -166,17 +174,38 @@ const Search = () => {
                       currentFilterData?.length > 0 ? '' : 'no-data'
                     } `}
                   >
-                    {currentFilterData?.length > 0 ? 'You have seen it all!' : 'No data found!'}
+                    {currentFilterData?.length === 0 ? 'No data found!' : ''}
                   </div>
                 }
                 loader={<div className="d-flex justify-content-center align-items-center">Loading...</div>}
               >
-                <div className="d-flex flex-wrap justify-content-between">
+                <div
+                  style={
+                    activeTab === userTypes.client
+                      ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                      : {}
+                  }
+                  className="grid-layout flex-wrap justify-content-between"
+                >
                   {currentFilterData?.map((item) => {
                     const CardComponent =
-                      activeTab === userTypes.talent || activeTab === userTypes.client ? UserCard : ProjectCard;
+                      // eslint-disable-next-line no-nested-ternary
+                      activeTab === userTypes.talent
+                        ? TalentCard
+                        : // eslint-disable-next-line no-nested-ternary
+                        activeTab === userTypes.client
+                        ? ClientCard
+                        : activeTab === userTypes.team
+                        ? TeamCard
+                        : ProjectCard;
                     return (
-                      <CardComponent userType={activeTab} key={item?._id || item?.id} data={item} isExpanded={false} />
+                      <CardComponent
+                        isSearchPage
+                        userType={activeTab}
+                        key={item?._id || item?.id}
+                        data={item}
+                        isExpanded={false}
+                      />
                     );
                   })}
                 </div>

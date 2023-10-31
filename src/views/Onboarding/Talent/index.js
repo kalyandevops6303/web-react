@@ -24,6 +24,7 @@ const TalentOnboarding = () => {
     else if (location.pathname === `/${userOnboarding.talent}/educational-details`) setActive(tabNames.Educational);
     else if (location.pathname === `/${userOnboarding.talent}/availability-details`) setActive(tabNames.Availability);
     else if (location.pathname === `/${userOnboarding.talent}/social-details`) setActive(tabNames.Social);
+    else if (location.pathname.includes('/payment-details')) setActive(tabNames.Payment);
   }, [location]);
 
   return (

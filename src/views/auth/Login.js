@@ -25,6 +25,7 @@ import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
 import { removeItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
+import { validateUrl } from '../../redux/actions/dashboardActions';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -37,11 +38,35 @@ const Login = () => {
     password: yup.string().required('Password is required'),
   });
 
-  useEffect(() => {
-    if (isLoggedIn) {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const dataParam = urlSearchParams.get('data');
+
+  const onValidUrlSuccess = (res) => {
+    if (res.user_status === 'UNREGISTERED') {
+      navigate('/auth');
+    } else if (isLoggedIn) {
       navigate('/dashboard');
     }
-  }, []);
+  };
+
+  const onInvalidUrlSuccess = () => {};
+
+  useEffect(() => {
+    if (dataParam) {
+      dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
+    } else if (isLoggedIn) {
+      navigate('/dashboard');
+    }
+  }, [isLoggedIn]);
+
+  // Valid link
+  // When user is logged in and he clicks mail, login => dashboard
+  // When user is not looged in and he clicks mail, login =>
+
+  // Invalid link
+  // When user is logged in and he clicks mail, login => dashboard, show message link expired
+  // When user is not looged in and he clicks mail, show link expired message on login
+
   useEffect(() => {
     dispatch(clearDataSuccess());
   }, []);
@@ -126,7 +151,7 @@ const Login = () => {
                   value={field.value || ''} // Set a default value for the input
                   className="input-group-merge"
                   id="password"
-                  placeholder="Confirm your new password"
+                  placeholder="Enter your password"
                 />
               )}
             />

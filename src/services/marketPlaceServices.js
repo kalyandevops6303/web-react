@@ -1,39 +1,43 @@
 import API from '../configs/api';
 import DataService from '../configs/dataService/dataService';
 
-const getTalentCardService = () => DataService.get(API.marketplace.talent.cardInfo);
+const getCardService = () => DataService.get(API.marketplace.cardInfo);
 
-const getClientCardService = () => DataService.get(API.marketplace.client.cardInfo);
-
-const getListProjectTalentService = ({ postData, searchText, metaData, isRecommanded }) =>
+const getListProjectService = ({ postData, searchText, metaData }) =>
   DataService.post(
-    `${API.marketplace.talent.listProject}?is_recommended=${isRecommanded}&search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+    `${API.marketplace.listProject}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
     postData,
   );
 
-const getListProjectClientService = ({ postData, searchText, metaData, isMyListing }) =>
+const getBidProjectService = ({ postData, searchText, metaData }) =>
   DataService.post(
-    `${API.marketplace.client.listProject}?is_my_listings=${isMyListing}&search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+    `${API.marketplace.bidProjects}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
     postData,
   );
 
-const getTalentsService = ({ postData, searchText, metaData, isRecommanded }) =>
+const getTalentsService = ({ postData, searchText, metaData }) =>
   DataService.post(
-    `${API.marketplace.client.listTalents}?is_recommended=${isRecommanded}&search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+    `${API.marketplace.listTalents}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
     postData,
   );
 
-const getClientsService = ({ postData, searchText, metaData, isRecommanded }) =>
+const getClientsService = ({ postData, searchText, metaData }) =>
   DataService.post(
-    `${API.marketplace.talent.listClients}?is_recommended=${isRecommanded}&search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+    `${API.marketplace.listClients}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+    postData,
+  );
+
+const getTeamsService = ({ postData, searchText, metaData }) =>
+  DataService.post(
+    `${API.marketplace.listTeams}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
     postData,
   );
 
 export {
+  getCardService,
+  getListProjectService,
+  getTeamsService,
+  getBidProjectService,
   getTalentsService,
   getClientsService,
-  getTalentCardService,
-  getClientCardService,
-  getListProjectTalentService,
-  getListProjectClientService,
 };

@@ -34,7 +34,7 @@ import { profileDetailsLoading } from '../../../redux/selectors/clientOnboarding
 import { companyIndustriesService, countriesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
-import { userDetails } from '../../../redux/selectors/talentOnboardingSelectors';
+import { userDetails, userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import {
   profileImageUploadService,
   profileImageUploadToAzureService,
@@ -42,6 +42,7 @@ import {
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userOnboarding } from '../../../utility/constants/Constant';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -121,6 +122,7 @@ const Personal = () => {
   const citiesData = useSelector(cities);
   const citiesIsLoading = useSelector(citiesLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const userDetailsIsLoading = useSelector(userDetailsLoading);
   const userDetailsData = useSelector(userDetails);
 
   const isFileValid = (file) => {
@@ -185,6 +187,7 @@ const Personal = () => {
 
     if (watch('country')) {
       dispatch(getStates(watch('country').value));
+      setCitiesOptions([]);
     }
   }, [watch('country')]);
 
@@ -416,402 +419,410 @@ const Personal = () => {
 
   return (
     <ProfileFormContainer>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
-          <CardHeader>
-            <h4 className="m-0 mt-1">About</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <div className="d-flex align-items-center pb-2 image-container">
-              {selectedImage && selectedImagePreview ? (
-                <img src={selectedImagePreview} alt="profile" className="selected-image" />
-              ) : (
-                <AccountImageContainer>
-                  <img src={companyIcon} alt="profile" />
-                </AccountImageContainer>
-              )}
-              <div className="ml-2 mr-1">
-                <input
-                  type="file"
-                  accept=".jpg,.jpeg,.png"
-                  onChange={handleFileChange}
-                  className="file-input"
-                  ref={fileInputRef}
-                />
-                <Button
-                  color="primary"
-                  className="ml-2 mr-1"
-                  disabled={isImageUploading}
-                  onClick={() => fileInputRef.current.click()}
-                >
-                  {isImageUploading ? <Spinner size="sm" /> : 'Upload Logo'}
-                </Button>
-              </div>
-              <Info size={18} color={theme.infoIcon} id="logo-info" />
-              <UncontrolledTooltip placement="right" target="logo-info">
-                <div className="d-flex flex-column align-items-start">
-                  <p className="m-0">Allowed file types:</p>
-                  <p className="m-0">png, jpg, jpeg.</p>
-                  <p className="m-0">Max file size: 5MB</p>
-                </div>
-              </UncontrolledTooltip>
-            </div>
-
-            <Row className="mb-1 mt-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="companyName">
-                  Organization<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="companyName"
-                  name="companyName"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      placeholder="Enter your organization's name"
-                      invalid={errors.companyName && true}
-                    />
-                  )}
-                />
-                {errors.companyName && <FormFeedback>{errors.companyName.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="title">
-                  Title<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="title"
-                  name="title"
-                  control={control}
-                  render={({ field }) => (
-                    <Input {...field} placeholder="Enter your title" invalid={errors.title && true} />
-                  )}
-                />
-                {errors.title && <FormFeedback>{errors.title.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="companyTagline">
-                  Tagline<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="companyTagline"
-                  name="companyTagline"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      placeholder="Enter your tagline in 60 characters or less"
-                      invalid={errors.companyTagline && true}
-                    />
-                  )}
-                />
-                {errors.companyTagline && <FormFeedback>{errors.companyTagline.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="companyIndustry">
-                  Industry<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="companyIndustry"
-                  name="companyIndustry"
-                  control={control}
-                  invalid={errors.companyIndustry && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      loadOptions={loadCompanyIndustriesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select one"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.companyIndustry,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.companyIndustry && <FormFeedback>{errors.companyIndustry.label.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mt-2">
-              <h5 className="m-0">Number of employees or members</h5>
-            </Row>
-            <Row className="mb-3">
-              <div className="demo-inline-spacing m-0">
-                <Controller
-                  control={control}
-                  name="totalStrength"
-                  render={({ field }) => (
-                    <div className="demo-inline-spacing m-0">
-                      <div className="form-check form-check-inline checkbox-custom-margin">
-                        <Input
-                          type="radio"
-                          {...field}
-                          id="1-100"
-                          checked={field.value === 100}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const value = 100;
-
-                            if (isChecked) {
-                              field.onChange(value);
-                            } else {
-                              field.onChange('');
-                            }
-                          }}
-                        />
-                        <Label for="1-100" className="form-check-label fw-bold">
-                          1 - 100
-                        </Label>
-                      </div>
-                      <div className="form-check form-check-inline checkbox-custom-margin">
-                        <Input
-                          type="radio"
-                          {...field}
-                          id="100-500"
-                          checked={field.value === 500}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const value = 500;
-
-                            if (isChecked) {
-                              field.onChange(value);
-                            } else {
-                              field.onChange('');
-                            }
-                          }}
-                        />
-                        <Label for="100-500" className="form-check-label fw-bold">
-                          100 - 500
-                        </Label>
-                      </div>
-                      <div className="form-check form-check-inline checkbox-custom-margin">
-                        <Input
-                          type="radio"
-                          {...field}
-                          id="500-1000"
-                          checked={field.value === 1000}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const value = 1000;
-
-                            if (isChecked) {
-                              field.onChange(value);
-                            } else {
-                              field.onChange('');
-                            }
-                          }}
-                        />
-                        <Label for="500-1000" className="form-check-label fw-bold">
-                          500 - 1000
-                        </Label>
-                      </div>
-                      <div className="form-check form-check-inline checkbox-custom-margin">
-                        <Input
-                          type="radio"
-                          {...field}
-                          id="1000+"
-                          checked={field.value === 1001}
-                          onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            const value = 1001;
-
-                            if (isChecked) {
-                              field.onChange(value);
-                            } else {
-                              field.onChange('');
-                            }
-                          }}
-                        />
-                        <Label for="1000+" className="form-check-label fw-bold">
-                          1000+
-                        </Label>
-                      </div>
-                    </div>
-                  )}
-                />
-              </div>
-            </Row>
-            <Row className="mb-1">
-              <h5 className="m-0">
-                Office Address<span className="label-asterisk me-50">*</span>
-              </h5>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="streetAddress">
-                  Street Address
-                </Label>
-                <Controller
-                  id="streetAddress"
-                  name="streetAddress"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      placeholder="Enter street address"
-                      invalid={errors.streetAddress && true}
-                      autoComplete="none"
-                    />
-                  )}
-                />
-                {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Row>
-                  <Col sm="6" md="6" lg="6">
-                    <Label className="form-label" for="houseNumber">
-                      Suite
-                    </Label>
-                    <Controller
-                      id="houseNumber"
-                      name="houseNumber"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter suite number"
-                          invalid={errors.houseNumber && true}
-                          autoComplete="none"
-                        />
-                      )}
-                    />
-                    {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
-                  </Col>
-                  <Col sm="6" md="6" lg="6">
-                    <Label className="form-label" for="zipCode">
-                      Zip Code
-                    </Label>
-                    <Controller
-                      id="zipCode"
-                      name="zipCode"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter zip code"
-                          invalid={errors.zipCode && true}
-                          autoComplete="none"
-                        />
-                      )}
-                    />
-                    {errors.zipCode && <FormFeedback>{errors.zipCode.message}</FormFeedback>}
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="country">
-                  Country<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="country"
-                  name="country"
-                  control={control}
-                  invalid={errors.country && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      loadOptions={loadCountriesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select your country"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.country,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="state">
-                  State<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="state"
-                  name="state"
-                  control={control}
-                  invalid={errors.state && true}
-                  render={({ field }) => (
-                    <Select
-                      isLoading={statesIsLoading}
-                      options={statesOptions}
-                      menuPosition='fixed'
-                      minMenuHeight={200}
-                      classNamePrefix="select"
-                      placeholder="Select your state"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.state,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="city">
-                  City<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="city"
-                  name="city"
-                  control={control}
-                  invalid={errors.city && true}
-                  render={({ field }) => (
-                    <Select
-                      isLoading={citiesIsLoading}
-                      options={citiesOptions}
-                      menuPosition='fixed'
-                      minMenuHeight={200}
-                      classNamePrefix="select"
-                      placeholder="Select your city"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.city,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
-          <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
-            <UploadIconContainer>
-              <ChevronLeft size={18} color={theme.activeNavPillText} />
-            </UploadIconContainer>
-            <h5 className="fw-bold">Back</h5>
-          </div>
-          <div>
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
-              <span className="me-50">Skip</span>
-              <ChevronRight size={14} />
-            </Button>
-            <Button color="primary" type="submit" disabled={isImageUploading || !isValid || profileDetailsIsLoading}>
-              {profileDetailsIsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
-          </div>
+      {userDetailsIsLoading ? (
+        <div className="w-75">
+          <ComponentSpinner className="mt-5" />
         </div>
-      </Form>
+      ) : (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Card className="w-75">
+            <CardHeader>
+              <h4 className="m-0 mt-1">About</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <div className="d-flex align-items-center pb-2 image-container">
+                {selectedImage && selectedImagePreview ? (
+                  <img src={selectedImagePreview} alt="profile" className="selected-image" />
+                ) : (
+                  <AccountImageContainer>
+                    <img src={companyIcon} alt="profile" />
+                  </AccountImageContainer>
+                )}
+                <div className="ml-2 mr-1">
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    onChange={handleFileChange}
+                    className="file-input"
+                    ref={fileInputRef}
+                  />
+                  <Button
+                    color="primary"
+                    className="ml-2 mr-1"
+                    disabled={isImageUploading}
+                    onClick={() => fileInputRef.current.click()}
+                  >
+                    {isImageUploading ? <Spinner size="sm" /> : 'Upload Company Logo'}
+                  </Button>
+                </div>
+                <Info size={18} color={theme.infoIcon} id="logo-info" />
+                <UncontrolledTooltip placement="right" target="logo-info">
+                  <div className="d-flex flex-column align-items-start">
+                    <p className="m-0">Allowed file types:</p>
+                    <p className="m-0">png, jpg, jpeg.</p>
+                    <p className="m-0">Max file size: 5MB</p>
+                  </div>
+                </UncontrolledTooltip>
+              </div>
+
+              <Row className="mb-1 mt-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="companyName">
+                    Organization<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="companyName"
+                    name="companyName"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Enter your organization's name"
+                        invalid={errors.companyName && true}
+                      />
+                    )}
+                  />
+                  {errors.companyName && <FormFeedback>{errors.companyName.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="title">
+                    Title<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="title"
+                    name="title"
+                    control={control}
+                    render={({ field }) => (
+                      <Input {...field} placeholder="Enter your title" invalid={errors.title && true} />
+                    )}
+                  />
+                  {errors.title && <FormFeedback>{errors.title.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="companyTagline">
+                    Tagline<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="companyTagline"
+                    name="companyTagline"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Enter your tagline in 60 characters or less"
+                        invalid={errors.companyTagline && true}
+                      />
+                    )}
+                  />
+                  {errors.companyTagline && <FormFeedback>{errors.companyTagline.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="companyIndustry">
+                    Industry<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="companyIndustry"
+                    name="companyIndustry"
+                    control={control}
+                    invalid={errors.companyIndustry && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        loadOptions={loadCompanyIndustriesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select one"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.companyIndustry,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.companyIndustry && <FormFeedback>{errors.companyIndustry.label.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mt-2">
+                <h5 className="m-0">Number of employees or members</h5>
+              </Row>
+              <Row className="mb-3">
+                <div className="demo-inline-spacing m-0">
+                  <Controller
+                    control={control}
+                    name="totalStrength"
+                    render={({ field }) => (
+                      <div className="demo-inline-spacing m-0">
+                        <div className="form-check form-check-inline checkbox-custom-margin">
+                          <Input
+                            type="radio"
+                            {...field}
+                            id="1-100"
+                            checked={field.value === 100}
+                            onChange={(e) => {
+                              const isChecked = e.target.checked;
+                              const value = 100;
+
+                              if (isChecked) {
+                                field.onChange(value);
+                              } else {
+                                field.onChange('');
+                              }
+                            }}
+                          />
+                          <Label for="1-100" className="form-check-label fw-bold">
+                            1 - 100
+                          </Label>
+                        </div>
+                        <div className="form-check form-check-inline checkbox-custom-margin">
+                          <Input
+                            type="radio"
+                            {...field}
+                            id="100-500"
+                            checked={field.value === 500}
+                            onChange={(e) => {
+                              const isChecked = e.target.checked;
+                              const value = 500;
+
+                              if (isChecked) {
+                                field.onChange(value);
+                              } else {
+                                field.onChange('');
+                              }
+                            }}
+                          />
+                          <Label for="100-500" className="form-check-label fw-bold">
+                            100 - 500
+                          </Label>
+                        </div>
+                        <div className="form-check form-check-inline checkbox-custom-margin">
+                          <Input
+                            type="radio"
+                            {...field}
+                            id="500-1000"
+                            checked={field.value === 1000}
+                            onChange={(e) => {
+                              const isChecked = e.target.checked;
+                              const value = 1000;
+
+                              if (isChecked) {
+                                field.onChange(value);
+                              } else {
+                                field.onChange('');
+                              }
+                            }}
+                          />
+                          <Label for="500-1000" className="form-check-label fw-bold">
+                            500 - 1000
+                          </Label>
+                        </div>
+                        <div className="form-check form-check-inline checkbox-custom-margin">
+                          <Input
+                            type="radio"
+                            {...field}
+                            id="1000+"
+                            checked={field.value === 1001}
+                            onChange={(e) => {
+                              const isChecked = e.target.checked;
+                              const value = 1001;
+
+                              if (isChecked) {
+                                field.onChange(value);
+                              } else {
+                                field.onChange('');
+                              }
+                            }}
+                          />
+                          <Label for="1000+" className="form-check-label fw-bold">
+                            1000+
+                          </Label>
+                        </div>
+                      </div>
+                    )}
+                  />
+                </div>
+              </Row>
+              <Row className="mb-1">
+                <h5 className="m-0">
+                  Office Address<span className="label-asterisk me-50">*</span>
+                </h5>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="streetAddress">
+                    Street Address
+                  </Label>
+                  <Controller
+                    id="streetAddress"
+                    name="streetAddress"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Enter street address"
+                        invalid={errors.streetAddress && true}
+                        autoComplete="none"
+                      />
+                    )}
+                  />
+                  {errors.streetAddress && <FormFeedback>{errors.streetAddress.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Row>
+                    <Col sm="6" md="6" lg="6">
+                      <Label className="form-label" for="houseNumber">
+                        Suite
+                      </Label>
+                      <Controller
+                        id="houseNumber"
+                        name="houseNumber"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            placeholder="Enter suite number"
+                            invalid={errors.houseNumber && true}
+                            autoComplete="none"
+                          />
+                        )}
+                      />
+                      {errors.houseNumber && <FormFeedback>{errors.houseNumber.message}</FormFeedback>}
+                    </Col>
+                    <Col sm="6" md="6" lg="6">
+                      <Label className="form-label" for="zipCode">
+                        Zip Code
+                      </Label>
+                      <Controller
+                        id="zipCode"
+                        name="zipCode"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            placeholder="Enter zip code"
+                            invalid={errors.zipCode && true}
+                            autoComplete="none"
+                          />
+                        )}
+                      />
+                      {errors.zipCode && <FormFeedback>{errors.zipCode.message}</FormFeedback>}
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="country">
+                    Country<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="country"
+                    name="country"
+                    control={control}
+                    invalid={errors.country && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        loadOptions={loadCountriesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select your country"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.country,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.country && <FormFeedback>{errors.country.label.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="state">
+                    State<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="state"
+                    name="state"
+                    control={control}
+                    invalid={errors.state && true}
+                    render={({ field }) => (
+                      <Select
+                        isDisabled={!watch('country')}
+                        isLoading={statesIsLoading}
+                        options={statesOptions}
+                        menuPosition="fixed"
+                        minMenuHeight={200}
+                        classNamePrefix="select"
+                        placeholder="Select your state"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.state,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.state && <FormFeedback>{errors.state.label.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="city">
+                    City<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="city"
+                    name="city"
+                    control={control}
+                    invalid={errors.city && true}
+                    render={({ field }) => (
+                      <Select
+                        isDisabled={!watch('country') || !watch('state')}
+                        isLoading={citiesIsLoading}
+                        options={citiesOptions}
+                        menuPosition="fixed"
+                        minMenuHeight={200}
+                        classNamePrefix="select"
+                        placeholder="Select your city"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.city,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.city && <FormFeedback>{errors.city.label.message}</FormFeedback>}
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+          <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
+            <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
+              <UploadIconContainer>
+                <ChevronLeft size={18} color={theme.activeNavPillText} />
+              </UploadIconContainer>
+              <h5 className="fw-bold">Back</h5>
+            </div>
+            <div>
+              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <span className="me-50">Skip</span>
+                <ChevronRight size={14} />
+              </Button>
+              <Button color="primary" type="submit" disabled={isImageUploading || !isValid || profileDetailsIsLoading}>
+                {profileDetailsIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Save & Continue</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </Form>
+      )}
     </ProfileFormContainer>
   );
 };

@@ -28,8 +28,14 @@ import {
   saveProfileDetails as saveTalentProfileDetails,
   saveTalentAccountDetails,
 } from '../../redux/actions/talentOnboardingActions';
-import { talentAccountDetailsLoading, userDetails } from '../../redux/selectors/talentOnboardingSelectors';
+import {
+  talentAccountDetailsLoading,
+  userDetails,
+  profileDetailsLoading,
+  userDetailsLoading,
+} from '../../redux/selectors/talentOnboardingSelectors';
 import ShowToastMessage from '../../@core/components/toast';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import {
   saveClientAccountDetails,
   saveProfileDetails as saveClientProfileDetails,
@@ -39,6 +45,9 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
 import { checkPoints, maxFileSize, userOnboarding, userTypes } from '../../utility/constants/Constant';
+import { convertReferral } from '../../redux/actions/referralAndRewardActions';
+import { getItem, removeItem } from '../../utility/localStorageControl';
+import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -63,6 +72,7 @@ const Account = () => {
     control,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -83,6 +93,9 @@ const Account = () => {
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
+  const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const userDetailsIsLoading = useSelector(userDetailsLoading);
+  const convertReferralIsLoading = useSelector(convertReferralLoading);
 
   const [resetPasswordModal, setResetPasswordModal] = useState(null);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
@@ -94,6 +107,13 @@ const Account = () => {
 
   const toggleResetPasswordModal = () => setResetPasswordModal(!resetPasswordModal);
 
+  const onReferralConversionSuccess = () => {
+    userDetailsData?.user_type === 'TALENT'
+      ? navigate(`/${userOnboarding.talent}/personal-details`)
+      : navigate(`/${userOnboarding.client}/personal-details`);
+    removeItem('referral_data');
+  };
+
   const onSuccess = () => {
     if (location?.state?.isEditing) {
       userDetailsData?.user_type === 'TALENT'
@@ -104,9 +124,16 @@ const Account = () => {
             state: { isEditing: true },
           });
     } else {
-      userDetailsData?.user_type === 'TALENT'
-        ? navigate(`/${userOnboarding.talent}/personal-details`)
-        : navigate(`/${userOnboarding.client}/personal-details`);
+      const referralData = getItem('referral_data');
+      if (referralData) {
+        const referralId = referralData?._id;
+        const email = watch('email');
+        dispatch(convertReferral(referralId, email, onReferralConversionSuccess));
+      } else {
+        userDetailsData?.user_type === 'TALENT'
+          ? navigate(`/${userOnboarding.talent}/personal-details`)
+          : navigate(`/${userOnboarding.client}/personal-details`);
+      }
     }
   };
 
@@ -240,164 +267,179 @@ const Account = () => {
   return (
     <AccountDetailsFormContainer>
       {resetPasswordModal && <ResetPasswordModal modal={resetPasswordModal} toggleModal={toggleResetPasswordModal} />}
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
-          <CardHeader>
-            <h4 className="m-0 mt-1">Account Details</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <div className="d-flex align-items-center pb-2 image-container">
-              {selectedImage && selectedImagePreview ? (
-                <img src={selectedImagePreview} alt="profile" className="selected-image" />
-              ) : (
-                <AccountImageContainer>
-                  <UserPlus size={50} />
-                </AccountImageContainer>
-              )}
-              <div className="ml-2 mr-1">
-                <input
-                  type="file"
-                  accept=".jpg,.jpeg,.png"
-                  onChange={handleFileChange}
-                  className="file-input"
-                  ref={fileInputRef}
-                />
-                <Button
-                  color="primary"
-                  className="ml-2 mr-1"
-                  disabled={isImageUploading}
-                  onClick={() => fileInputRef.current.click()}
-                >
-                  {isImageUploading ? <Spinner size="sm" /> : 'Upload Image'}
-                </Button>
-              </div>
-              <Info size={18} color={theme.infoIcon} id="image-info" />
-              <UncontrolledTooltip placement="right" target="image-info">
-                <div className="d-flex flex-column align-items-start">
-                  <p className="m-0">Allowed file types:</p>
-                  <p className="m-0">png, jpg, jpeg.</p>
-                  <p className="m-0">Max file size: 5MB</p>
-                </div>
-              </UncontrolledTooltip>
-            </div>
-
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="firstName">
-                  First Name<span className="label-asterisk">*</span>
-                </Label>
-                <Controller
-                  id="firstName"
-                  name="firstName"
-                  control={control}
-                  render={({ field }) => (
-                    <Input {...field} placeholder="Enter first name" invalid={errors.firstName && true} />
-                  )}
-                />
-                {errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="lastName">
-                  Last Name<span className="label-asterisk">*</span>
-                </Label>
-                <Controller
-                  id="lastName"
-                  name="lastName"
-                  control={control}
-                  render={({ field }) => (
-                    <Input {...field} placeholder="Enter last name" invalid={errors.lastName && true} />
-                  )}
-                />
-                {errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
-              </Col>
-            </Row>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="mobileNumber">
-                  Mobile Number
-                </Label>
-                <Row>
-                  <Col sm="3" md="3" lg="3">
-                    <div className="custom-country-disabled-dropdown">
-                      <CountryDropdown
-                        selectedCountry={{
-                          dial_code: userDetailsData?.phone_country.dial_code,
-                          code: userDetailsData?.phone_country.code,
-                        }}
-                        disabled
-                      />
-                    </div>
-                  </Col>
-                  <Col sm="9" md="9" lg="9">
-                    <Controller
-                      id="mobileNumber"
-                      name="mobileNumber"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter mobile number"
-                          className="filled-form-control"
-                          disabled
-                          invalid={errors.mobileNumber && true}
-                        />
-                      )}
-                    />
-                  </Col>
-                </Row>
-                {errors.mobileNumber && <FormFeedback>{errors.mobileNumber.message}</FormFeedback>}
-              </Col>
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="email">
-                  Email Address
-                </Label>
-                <Controller
-                  id="email"
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      placeholder="Enter email address"
-                      className="filled-form-control"
-                      disabled
-                      invalid={errors.email && true}
-                    />
-                  )}
-                />
-                {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
-        <div className="d-flex justify-content-end">
-          {location?.state?.isEditing && userDetailsData?.oauth_type !== 'google' && (
-            <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
-              Reset Password
-            </Button>
-          )}
-          <Button
-            color="primary"
-            type="submit"
-            disabled={
-              isImageUploading ||
-              (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
-                ? !isValid || talentAccountDetailsIsLoading
-                : !isValid || clientAccountDetailsIsLoading)
-            }
-          >
-            {talentAccountDetailsIsLoading || clientAccountDetailsIsLoading ? (
-              <Spinner size="sm" />
-            ) : (
-              <>
-                <span className="me-50">Save & Continue</span>
-                <ChevronRight size={14} />
-              </>
-            )}
-          </Button>
+      {userDetailsIsLoading ? (
+        <div className="w-75">
+          <ComponentSpinner className="mt-5" />
         </div>
-      </Form>
+      ) : (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Card className="w-75">
+            <CardHeader>
+              <h4 className="m-0 mt-1">Account Details</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <div className="d-flex align-items-center pb-2 image-container">
+                {selectedImage && selectedImagePreview ? (
+                  <img
+                    src={selectedImagePreview}
+                    alt="profile"
+                    className="selected-image"
+                    style={{ objectFit: 'cover' }}
+                  />
+                ) : (
+                  <AccountImageContainer>
+                    <UserPlus size={50} />
+                  </AccountImageContainer>
+                )}
+                <div className="ml-2 mr-1">
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    onChange={handleFileChange}
+                    className="file-input"
+                    ref={fileInputRef}
+                  />
+                  <Button
+                    color="primary"
+                    className="ml-2 mr-1"
+                    disabled={isImageUploading}
+                    onClick={() => fileInputRef.current.click()}
+                  >
+                    {isImageUploading ? <Spinner size="sm" /> : 'Upload Image'}
+                  </Button>
+                </div>
+                <Info size={18} color={theme.infoIcon} id="image-info" />
+                <UncontrolledTooltip placement="right" target="image-info">
+                  <div className="d-flex flex-column align-items-start">
+                    <p className="m-0">Allowed file types:</p>
+                    <p className="m-0">png, jpg, jpeg.</p>
+                    <p className="m-0">Max file size: 5MB</p>
+                  </div>
+                </UncontrolledTooltip>
+              </div>
+
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="firstName">
+                    First Name<span className="label-asterisk">*</span>
+                  </Label>
+                  <Controller
+                    id="firstName"
+                    name="firstName"
+                    control={control}
+                    render={({ field }) => (
+                      <Input {...field} placeholder="Enter first name" invalid={errors.firstName && true} />
+                    )}
+                  />
+                  {errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="lastName">
+                    Last Name<span className="label-asterisk">*</span>
+                  </Label>
+                  <Controller
+                    id="lastName"
+                    name="lastName"
+                    control={control}
+                    render={({ field }) => (
+                      <Input {...field} placeholder="Enter last name" invalid={errors.lastName && true} />
+                    )}
+                  />
+                  {errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="mobileNumber">
+                    Mobile Number
+                  </Label>
+                  <Row>
+                    <Col sm="3" md="3" lg="3">
+                      <div className="custom-country-disabled-dropdown">
+                        <CountryDropdown
+                          selectedCountry={{
+                            dial_code: userDetailsData?.phone_country.dial_code,
+                            code: userDetailsData?.phone_country.code,
+                          }}
+                          disabled
+                        />
+                      </div>
+                    </Col>
+                    <Col sm="9" md="9" lg="9">
+                      <Controller
+                        id="mobileNumber"
+                        name="mobileNumber"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            placeholder="Enter mobile number"
+                            className="filled-form-control"
+                            disabled
+                            invalid={errors.mobileNumber && true}
+                          />
+                        )}
+                      />
+                    </Col>
+                  </Row>
+                  {errors.mobileNumber && <FormFeedback>{errors.mobileNumber.message}</FormFeedback>}
+                </Col>
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="email">
+                    Email Address
+                  </Label>
+                  <Controller
+                    id="email"
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder="Enter email address"
+                        className="filled-form-control"
+                        disabled
+                        invalid={errors.email && true}
+                      />
+                    )}
+                  />
+                  {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+          <div className="d-flex justify-content-end w-75">
+            {location?.state?.isEditing && userDetailsData?.oauth_type !== 'google' && (
+              <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
+                Reset Password
+              </Button>
+            )}
+            <Button
+              color="primary"
+              type="submit"
+              disabled={
+                isImageUploading ||
+                convertReferralIsLoading ||
+                (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
+                  ? !isValid || talentAccountDetailsIsLoading
+                  : !isValid || clientAccountDetailsIsLoading)
+              }
+            >
+              {talentAccountDetailsIsLoading ||
+              clientAccountDetailsIsLoading ||
+              convertReferralIsLoading ||
+              profileDetailsIsLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span className="me-50">Save & Continue</span>
+                  <ChevronRight size={14} />
+                </>
+              )}
+            </Button>
+          </div>
+        </Form>
+      )}
     </AccountDetailsFormContainer>
   );
 };

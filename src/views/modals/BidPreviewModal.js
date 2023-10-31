@@ -1,0 +1,156 @@
+import React from 'react';
+import Proptypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import '../custom-styles.scss';
+import { DateTime } from 'luxon';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  CardTitle,
+  CardText,
+  Card,
+  CardBody,
+  Table,
+  UncontrolledTooltip,
+} from 'reactstrap';
+import PdfIcon from '@src/assets/images/pdfimg.png';
+import { Info } from 'react-feather';
+import { formatFileSize } from '../../utility/Utils';
+import { BidDetailsWrap } from '../project-details/style';
+import { userTypes } from '../../utility/constants/Constant';
+import theme from '../../configs/themeVariables';
+
+const BidPreviewModal = ({ modal, toggleModal }) => {
+  const navigate = useNavigate();
+
+  const onClose = () => {
+    toggleModal();
+  };
+
+  const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+
+  const onEditBidClick = () => {
+    if (bidInfo?.bid_by?.entity === userTypes.talent) {
+      navigate(
+        `/create-bid/${bidInfo?.project_id}/${bidInfo?.project_type.toLowerCase()}-${bidInfo?.bid_type.toLowerCase()}/${
+          bidInfo?._id
+        }/milestone`,
+      );
+    } else {
+      navigate(
+        `/create-bid/${bidInfo?.project_id}/${bidInfo?.project_type.toLowerCase()}-${bidInfo?.bid_type.toLowerCase()}/${
+          bidInfo?._id
+        }/team`,
+      );
+    }
+  };
+
+  return (
+    <Modal isOpen={modal} contentClassName="custom-modal-style-70" className="modal-dialog-centered">
+      <ModalHeader toggle={onClose} className="py-0 pt-50" />
+      <ModalBody className="pt-0">
+        <BidDetailsWrap>
+          <div className="d-flex justify-content-between">
+            <p className="font-medium-3 fw-bold">Bid Submitted Preview</p>
+            {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'REJECTED' && (
+              <p className="edit-bid-btn mt-1 cursor-pointer" onClick={onEditBidClick}>
+                Edit Bid
+              </p>
+            )}
+          </div>
+          <Card>
+            <CardTitle className="main-card-title">Project Bid Estimation</CardTitle>
+            <CardBody className="main-card-body bid-eta">
+              <div>
+                <CardText className="value">
+                  {bidInfo?.total_estimated_duration?.duration}
+                  {bidInfo?.total_estimated_duration?.duration_type &&
+                    bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
+                </CardText>
+                <div className="d-flex align-items-center m-0">
+                  <CardText className="key mb-0">Estimation Duration</CardText>
+                  <Info size={14} color={theme.infoIcon} id="bid-info" className="ms-50" />
+                  <UncontrolledTooltip placement="bottom" target="bid-info">
+                    <p className="m-0">Sum total of all milestone duration hours/week</p>
+                  </UncontrolledTooltip>
+                </div>
+              </div>
+              <div>
+                <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
+                <div className="d-flex align-items-center m-0">
+                  <CardText className="key mb-0">Total Bid Amount</CardText>
+                  <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
+                  <UncontrolledTooltip placement="right" target="duration-info">
+                    <p className="m-0">A Total of talent cost + duration for all the milestone</p>
+                  </UncontrolledTooltip>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardBody className="main-card-body">
+              <CardText className="milestone-title d-block mb-1">Milestone</CardText>
+              <Table responsive className="milestone-table">
+                <thead>
+                  <tr>
+                    <th>Payment for</th>
+                    <th>Milestone Tag</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bidInfo?.milestones?.map((item) => (
+                    <tr key={item?._id}>
+                      <td className="fw-bolder">{item?.name}</td>
+                      <td>{item?.description}</td>
+                      <td>${item?.estimated_cost}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </CardBody>
+          </Card>
+          <Card>
+            {bidInfo?.documents?.map((item) => (
+              <a
+                key={item?.created_at}
+                className="text-decoration-none"
+                href={item?.download_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <CardBody className="d-flex align-items-center">
+                  <img src={PdfIcon} alt="pdficon" />
+                  <div className="d-flex justify-content-between w-100 ms-1 font-weight-bold">
+                    <CardText className="mb-0">{item?.file_name}</CardText>
+                    <div className="d-flex gap-4">
+                      <CardText className="mb-0">{formatFileSize(item?.size)}</CardText>
+                      <CardText className="mb-0">
+                        {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
+                      </CardText>
+                    </div>
+                  </div>
+                </CardBody>
+              </a>
+            ))}
+          </Card>
+        </BidDetailsWrap>
+      </ModalBody>
+    </Modal>
+  );
+};
+
+export default BidPreviewModal;
+
+BidPreviewModal.propTypes = {
+  modal: Proptypes.bool,
+  toggleModal: Proptypes.func,
+};
+
+BidPreviewModal.defaultProps = {
+  modal: false,
+  toggleModal: () => {},
+};

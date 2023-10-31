@@ -1,31 +1,33 @@
 /* eslint-disable no-nested-ternary */
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { DateTime } from 'luxon';
 import Mpin from '@src/assets/images/map-pin.png';
-import LikeIcon from '@src/assets/images/like.png';
 import { useState, useEffect, useRef } from 'react';
-import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import { useDispatch } from 'react-redux';
-import Avatar from '@components/avatar';
-import { Heart } from 'react-feather';
-import { useLocation } from 'react-router-dom';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import theme from '../../configs/themeVariables';
-import RatingBadge from '../../@core/components/rating-group/RatingBadge';
-import BadgeGroup from '../../@core/components/badge-group';
+import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
-import { makeFavFromMarketplace, removeFavFromMarketplace } from '../../redux/actions/marketPlaceActions';
+import ProjectWithTeamUI from './ProjectWithTeamUI';
+import BaseInfoUI from './BaseInfoCardUI';
+import CreateBidModal from '../modals/CreateBidModal';
+import CompleteProfileModal from '../modals/CompleteProfileModal';
+import SwitchConfirmModal from '../modals/SwitchConfirm';
 
-const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
-  const dispatch = useDispatch();
-  const location = useLocation();
+const ProjectCard = ({
+  secondaryFilterForInvitedType,
+  primaryFilter,
+  isProjectWithTeam,
+  isTeam,
+  isExpanded,
+  data,
+  isPopoverOpen,
+}) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
+  const [switchProfileModal, setSwitchProfileModal] = useState(false);
 
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);
@@ -34,7 +36,8 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     setShowModal(!showModal);
   };
 
-  const handleToggleView = () => {
+  const handleToggleView = (e) => {
+    e.stopPropagation();
     setShowFullText(!showFullText);
   };
 
@@ -44,17 +47,27 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
+    COMPLETED: 'Completed',
+    ON_GOING: 'On Going',
   };
-  const giveStrokeColor = (percentage) => {
-    if (percentage <= 40) {
-      return theme.red;
-      // eslint-disable-next-line
-    } else if (percentage > 40 && percentage <= 70) {
-      return theme.orange;
-    } else {
-      return theme.green;
-    }
-  };
+  // const giveStrokeColor = (percentage) => {
+  //   if (percentage <= 40) {
+  //     return theme.red;
+  //     // eslint-disable-next-line
+  //   } else if (percentage > 40 && percentage <= 70) {
+  //     return theme.orange;
+  //   } else {
+  //     return theme.green;
+  //   }
+  // };
+
+  // const avatarGroup = data?.worker_details?.workers?.map((worker) => ({
+  //   title: `${worker?.first_name} ${worker?.last_name}`,
+  //   img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
+  //   placement: 'bottom',
+  //   imgHeight: 33,
+  //   imgWidth: 33,
+  // }));
 
   const divRef = useRef(null);
 
@@ -65,17 +78,29 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
     }
   }, []);
 
-  const handleLike = () => {
-    dispatch(makeFavFromMarketplace({ project_id: data?._id }));
+  const [createBidModal, setCreateBidModal] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const toggleCreateBidModal = () => {
+    setCreateBidModal(!createBidModal);
   };
-  const handleUnLike = () => {
-    dispatch(removeFavFromMarketplace({ project_id: data?._id }));
+
+  const toggleCompleteProfileModal = () => {
+    setShowModal(false);
+    setCompleteProfileModal(!completeProfileModal);
   };
-  const isSearchPage = location.pathname.split('/').includes('search');
+
+  const handleRedirection = () => {
+    setShowModal(true);
+  };
+
+  const handleShowProject = () => {
+    setShowModal(true);
+  };
 
   return (
     <ProjectCardWrap>
-      <Card>
+      <Card onClick={handleShowProject} className="cursor-pointer">
         <CardBody>
           <Row>
             <Col lg="8">
@@ -87,24 +112,9 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                 </CustomBadge>
               </div>
               <CardTitle className="d-flex align-items-center">
-                <span className="cursor-pointer" onClick={() => setShowModal(true)}>
-                  {data?.details?.name}{' '}
+                <span className="cursor-pointer" onClick={handleRedirection}>
+                  {data?.name}{' '}
                 </span>
-                {!isSearchPage && (
-                  <span>
-                    {data?.is_favorite ? (
-                      <Heart
-                        className="cursor-pointer d-flex m-auto ms-75  heart"
-                        fill={theme.red}
-                        stroke={theme.red}
-                        onClick={handleUnLike}
-                        size={20}
-                      />
-                    ) : (
-                      <Heart className="cursor-pointer d-flex m-auto ms-75 heart" onClick={handleLike} size={20} />
-                    )}
-                  </span>
-                )}
               </CardTitle>
               <div className="d-flex flex-wrap project-stats">
                 <CardText className="project">
@@ -116,92 +126,80 @@ const ProjectCard = ({ isExpanded, data, isPopoverOpen }) => {
                     </>
                   )}
                 </CardText>
-                {data?.match_percentage > 1 && (
-                  <CardText className="project d-flex align-items-center">
-                    <img src={LikeIcon} alt="recommanded_icon" className="recom" /> Recommended
-                  </CardText>
-                )}
+                <CardText className=" project mb-1">{`Assigned Date: ${DateTime?.fromMillis(
+                  data?.assigned_date ?? 0,
+                ).toFormat('dd-MM-yy')}`}</CardText>
                 <CardText className="project d-flex align-items-center">
                   <img src={Mpin} alt="Mpin" className="mpin" />
-                  {data?.client_details?.office_address?.country?.name || 'Location'}
+                  {data?.client?.office_address?.country?.name || 'Location'}
                 </CardText>
                 <CardText className=" mb-1">
-                  {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}
+                  {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
                 </CardText>
               </div>
 
               {!showFullText ? (
-                <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                <div
+                  className="my-div"
+                  ref={divRef}
+                  style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
+                >
                   {data?.details?.description}
                 </div>
               ) : (
-                <div className="my-div" ref={divRef}>
+                <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
                   {data?.details?.description}
                 </div>
               )}
 
               {isContentOverflowing && (
-                <CardText className="cursor-pointer show-more" onClick={handleToggleView}>
+                <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
                   {showFullText ? 'Show less' : 'Show more'}
                 </CardText>
               )}
             </Col>
             <Col lg="4">
-              <div className={`d-flex mb-2 ${data?.match_percentage >= 0 ? '' : 'align-items-center'}`}>
-                <Avatar
-                  img={data?.client_details?.image_uri?.length > 0 ? data?.client_details?.image_uri : defaultAvatar}
-                  imgHeight="30"
-                  imgWidth="30"
-                  className={`market-place-card-photo me-1 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
+              {isProjectWithTeam ? (
+                <ProjectWithTeamUI
+                  secondaryFilterForInvitedType={secondaryFilterForInvitedType}
+                  primaryFilter={primaryFilter}
+                  data={data}
                 />
-                <div className={`${data?.match_percentage >= 0 ? '' : ' d-flex w-100 align-items-center'}`}>
-                  <div className="flex-grow-1">
-                    <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                      {data?.client_details?.first_name} {data?.client_details?.last_name}
-                    </CardTitle>
-                    <CardText className="fw-300 ms-25 marketplace-card-role">
-                      {data?.client_details?.company_name}
-                    </CardText>
-                  </div>
-                  <div className="d-flex flex-grow-1">
-                    <RatingBadge number="0" />
-                    <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
-                  </div>
-                </div>
-                {data?.match_percentage >= 0 && (
-                  <div className="circular-progressbar-container mt-25">
-                    <CircularProgressbarWithChildren
-                      value={data?.match_percentage}
-                      styles={{
-                        path: {
-                          stroke: giveStrokeColor(data?.match_percentage),
-                          strokeLinecap: 'round',
-                          transition: 'stroke-dashoffset 0.5s ease 0s',
-                          transform: 'rotate(0turn)',
-                          transformOrigin: 'center center',
-                        },
-                        trail: {
-                          stroke: theme.progressBarBg,
-                          strokeLinecap: 'round',
-                          transform: 'rotate(0turn)',
-                          transformOrigin: 'center center',
-                        },
-                      }}
-                    >
-                      <div className="d-flex justify-content-center align-items-center">
-                        <p className="percentage-text m-0">{data?.match_percentage}%</p>
-                      </div>
-                    </CircularProgressbarWithChildren>
-                  </div>
-                )}
-              </div>
-              <BadgeGroup title="Skills" data={data?.proficiency?.skills} color="light-blue" />
-              <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" />
+              ) : null}
+              {!isTeam && !isProjectWithTeam && <BaseInfoUI data={data} />}
             </Col>
           </Row>
         </CardBody>
       </Card>
-      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
+      {showModal && (
+        <ProjectModal
+          data={data}
+          modal={showModal}
+          toggleModal={handleToggle}
+          setCreateBidModal={setCreateBidModal}
+          setSelectedProject={setSelectedProject}
+          toggleCompleteProfileModal={toggleCompleteProfileModal}
+          setSwitchProfileModal={setSwitchProfileModal}
+        />
+      )}
+      {switchProfileModal && (
+        <SwitchConfirmModal
+          data={{ ...data, project_id: data?._id }}
+          modal={switchProfileModal}
+          toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
+        />
+      )}
+      {createBidModal && (
+        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={selectedProject} />
+      )}
+
+      {completeProfileModal && (
+        <CompleteProfileModal
+          modal={completeProfileModal}
+          toggleModal={toggleCompleteProfileModal}
+          modalInfoText="create bid"
+        />
+      )}
     </ProjectCardWrap>
   );
 };
@@ -210,12 +208,20 @@ ProjectCard.propTypes = {
   isExpanded: PropTypes.bool,
   data: PropTypes.object,
   isPopoverOpen: PropTypes.bool,
+  isProjectWithTeam: PropTypes.bool,
+  isTeam: PropTypes.bool,
+  primaryFilter: PropTypes.string,
+  secondaryFilterForInvitedType: PropTypes.string,
 };
 
 ProjectCard.defaultProps = {
   isExpanded: false,
   data: {},
   isPopoverOpen: false,
+  isProjectWithTeam: false,
+  isTeam: false,
+  primaryFilter: '',
+  secondaryFilterForInvitedType: '',
 };
 
 export default ProjectCard;

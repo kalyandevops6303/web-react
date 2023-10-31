@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { CustomBadge } from '../../../views/styled';
 import { BadgeGroupWrap } from './style';
+import uuidv4 from '../../../lib/uuidv4';
 
-const BadgeGroup = ({ user_id, data, title, color }) => {
-  const [visibleTags, setVisibleTags] = useState([]);
-  const [hiddenTagsCount, setHiddenTagsCount] = useState(0);
+const BadgeGroup = ({ id, data, title, color }) => {
   if (!data || data.length === 0) {
     return null;
   }
+  const [visibleTags, setVisibleTags] = useState([]);
+  const [hiddenTagsCount, setHiddenTagsCount] = useState(0);
   const renderBadge = (name, index) => {
     const isLongName = name?.length > 35;
     const badgeClassName = isLongName ? `${color}` : color;
@@ -104,13 +105,13 @@ const BadgeGroup = ({ user_id, data, title, color }) => {
     return tagWidth;
   };
 
-  const customBadgeId = `tooltip-${title}-${user_id}`; // Generate a unique ID using uuidv4()
+  const customBadgeId = id ?? `tooltip-${uuidv4()}`; // Generate a unique ID using uuidv4()
   return (
     <BadgeGroupWrap>
       <div className="badge-box-wrap mb-50">
         <div className="info-key">{title || ''}</div>
         <div className="d-flex align-items-center">
-          <div className="badge-box mt-25">{visibleTags && visibleTags?.map(renderBadge)}</div>
+          <div className="w-auto badge-box mt-25">{visibleTags && visibleTags?.map(renderBadge)}</div>
           {hiddenTagsCount > 0 && (
             <>
               <CustomBadge id={customBadgeId} className="count">

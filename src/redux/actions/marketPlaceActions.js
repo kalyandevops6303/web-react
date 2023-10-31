@@ -1,56 +1,65 @@
 import errorHandler from '../../utility/errorHandler';
 import {
-  getClientCardService,
+  getBidProjectService,
+  getCardService,
   getClientsService,
-  getListProjectClientService,
-  getListProjectTalentService,
-  getTalentCardService,
+  getListProjectService,
   getTalentsService,
+  getTeamsService,
 } from '../../services/marketPlaceServices';
 
 import {
+  getCardInfoError,
+  getCardInfoRequest,
   getCardInfoSuccess,
   getListErr,
   getListProjectsSuccess,
   getListReq,
   getUsersSuccess,
-  makeFavFromMarketplaceSuccess,
-  removeFavFromMarketplaceSuccess,
 } from '../reducers/marketPlace';
-import { userTypes } from '../../utility/constants/Constant';
 import { makeFavService, makeProjectFavService, removeFavService } from '../../services/profileServices';
 
 const getCardInfo =
-  ({ userType, onSuccess, onError }) =>
+  ({ onSuccess, onError }) =>
   async (dispatch) => {
+    dispatch(getCardInfoRequest());
     try {
-      let res;
-      if (userType === userTypes.client) {
-        res = await getClientCardService();
-      } else {
-        res = await getTalentCardService();
-      }
+      const res = await getCardService();
       dispatch(getCardInfoSuccess(res.data.data));
       onSuccess();
     } catch (error) {
       onError();
-      errorHandler(error);
+      errorHandler(error, getCardInfoError);
     }
   };
 
 const getListProjects =
-  ({ isMyListing, isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
+  ({ isMyListing, isRecommanded, isMyBids, metaData, onSuccess, onError, postData, searchText, isFavorite }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
+    let res;
     try {
-      let res;
-      if (userType === userTypes.client) {
-        res = await getListProjectClientService({ postData, searchText, metaData, isRecommanded, isMyListing });
+      if (isMyBids) {
+        res = await getBidProjectService({
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
+          searchText,
+          metaData,
+        });
       } else {
-        res = await getListProjectTalentService({ postData, searchText, metaData, isRecommanded });
+        res = await getListProjectService({
+          postData: {
+            ...postData,
+            is_my_listings: isMyListing,
+            is_recommended: isRecommanded,
+            is_favourite: isFavorite,
+          },
+          searchText,
+          metaData,
+        });
       }
+
       dispatch(getListProjectsSuccess(res.data.data));
       onSuccess();
     } catch (error) {
@@ -60,17 +69,31 @@ const getListProjects =
   };
 
 const getUsers =
-  ({ isRecommanded, metaData, userType, onSuccess, onError, postData, searchText }) =>
+  ({ isRecommanded, metaData, primaryFilter, onSuccess, onError, postData, searchText, isFavorite }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
     try {
       let res;
-      if (userType === userTypes.client) {
-        res = await getTalentsService({ postData, searchText, metaData, isRecommanded });
-      } else {
-        res = await getClientsService({ postData, searchText, metaData, isRecommanded });
+      if (primaryFilter === 'talents') {
+        res = await getTalentsService({
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
+          searchText,
+          metaData,
+        });
+      } else if (primaryFilter === 'clients') {
+        res = await getClientsService({
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
+          searchText,
+          metaData,
+        });
+      } else if (primaryFilter === 'teams') {
+        res = await getTeamsService({
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
+          searchText,
+          metaData,
+        });
       }
       dispatch(getUsersSuccess(res.data.data));
       onSuccess();
@@ -80,30 +103,40 @@ const getUsers =
     }
   };
 
-const makeFavFromMarketplace =
-  ({ user_id, user_type, project_id }) =>
-  async (dispatch) => {
+const makeFav =
+  ({ user_id, user_type, project_id, onSuccess, onError }) =>
+  async () => {
     try {
       if (project_id) {
         await makeProjectFavService(project_id);
       } else {
         await makeFavService(user_id, user_type);
       }
-      dispatch(makeFavFromMarketplaceSuccess({ user_id, user_type, _id: project_id }));
+      onSuccess();
     } catch (error) {
-      errorHandler(error);
-    }
-  };
-const removeFavFromMarketplace =
-  ({ user_id, project_id }) =>
-  async (dispatch) => {
-    try {
-      const data = project_id ? { project_id } : { user_id };
-      await removeFavService(data);
-      dispatch(removeFavFromMarketplaceSuccess({ _id: project_id, user_id }));
-    } catch (error) {
+      onError();
       errorHandler(error);
     }
   };
 
-export { getCardInfo, getUsers, getListProjects, makeFavFromMarketplace, removeFavFromMarketplace };
+const removeFav =
+  ({ user_id, project_id, team_id, onSuccess, onError }) =>
+  async () => {
+    try {
+      let data;
+      if (project_id) {
+        data = { project_id };
+      } else if (team_id) {
+        data = { team_id };
+      } else {
+        data = { user_id };
+      }
+      await removeFavService(data);
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error);
+    }
+  };
+
+export { getCardInfo, getUsers, getListProjects, removeFav, makeFav };

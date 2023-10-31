@@ -25,13 +25,23 @@ import {
   skillsService,
   toolsService,
 } from '../../../services/staticServices';
-import UserCard from '../../cards/UserCard';
-import ProjectCard from '../../cards/ProjectCard';
+import ProjectCard from '../../cards/MarketPlaceProjectCard';
 import { clearData } from '../../../redux/reducers/marketPlace';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
-import { projectTypesOptions, sortingOptions, statusesOptions, userTypes } from '../../../utility/constants/Constant';
+import {
+  bidStatusesOptions,
+  projectTypesOptions,
+  sortingOptions,
+  statusForAllListing,
+  statusesOptions,
+  userTypes,
+} from '../../../utility/constants/Constant';
 import NoDataFoundComponent from './NoDataFoundComp';
+import TeamCard from '../../cards/TeamCard';
+import ClientCard from '../../cards/ClientCard';
+import TalentCard from '../../cards/TalentCard';
+import { ResponsiveGrid } from '../../cards/style';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -47,14 +57,17 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const selectMarkeMetaData = useSelector((state) => state.marketPlace.metaData);
   const currentPreview = useSelector((state) => state.marketPlace.currentPreview);
   const isLoading = useSelector((state) => state.marketPlace.loading);
+  const isCardLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
+  const selectCardData = useSelector((state) => state?.marketPlace?.cardData);
 
   const metaData = { page: 1, page_size: 10 };
   const [secondFilterState, setSecondFilterState] = useState({
     statuses: [],
+    bid_statuses: [],
     project_types: [],
     skills: [],
     tools: [],
-    sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMADED' }] : [],
+    sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMENDED' }] : [],
     industries: [],
     project_areas: [],
   });
@@ -66,7 +79,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const isRecommanded = sort_by[0]?.value === 'RECOMMADED';
+  const isRecommanded = sort_by[0]?.value === 'RECOMMENDED';
+  const isFavorite = sort_by[0]?.value === 'FAVOURITE';
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -103,6 +117,19 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [currentPreview]);
 
+  const getCardComp = () => {
+    if (primaryFilter === 'talents') {
+      return TalentCard;
+    }
+    if (primaryFilter === 'clients') {
+      return ClientCard;
+    }
+    if (primaryFilter === 'teams') {
+      return TeamCard;
+    }
+    return ProjectCard;
+  };
+
   const onSuccess = () => {};
   const onError = () => {
     setHasMore(false);
@@ -113,10 +140,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       valuesOnly[key] = secondFilterState[key].map((item) => item.value);
     });
-    if (primaryFilter === 'talents' || primaryFilter === 'clients') {
+
+    if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
       dispatch(
         getUsers({
           isRecommanded,
+          isFavorite,
+          primaryFilter,
           metaData,
           userType,
           onSuccess,
@@ -129,7 +159,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       dispatch(
         getListProjects({
           isMyListing: primaryFilter === 'my_listings',
+          isMyBids: primaryFilter === 'my_bids',
           isRecommanded,
+          isFavorite,
           metaData,
           userType,
           onSuccess,
@@ -139,13 +171,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         }),
       );
     }
-  }, [secondFilterState, searchText, primaryFilter, isRecommanded]);
+  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite]);
 
   useEffect(() => {
     if (location?.state?.isRecommended) {
       setSecondFilterState({
         ...secondFilterState,
-        sort_by: [{ label: 'Recommended', value: 'RECOMMADED' }],
+        sort_by: [{ label: 'Recommended', value: 'RECOMMENDED' }],
       });
     }
   }, [location]);
@@ -171,6 +203,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const handleReset = () => {
     setSecondFilterState({
       statuses: [],
+      bid_statuses: [],
       project_types: [],
       skills: [],
       tools: [],
@@ -290,10 +323,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       valuesOnly[key] = secondFilterState[key].map((item) => item.value);
     });
-    if (primaryFilter === 'talents' || primaryFilter === 'clients') {
+    if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
       dispatch(
         getUsers({
           isRecommanded,
+          isFavorite,
+          primaryFilter,
           metaData: newMeteData,
           userType,
           onSuccess,
@@ -306,7 +341,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       dispatch(
         getListProjects({
           isMyListing: primaryFilter === 'my_listings',
+          isMyBids: primaryFilter === 'my_bids',
           isRecommanded,
+          isFavorite,
           metaData: newMeteData,
           userType,
           onSuccess,
@@ -320,6 +357,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const isUsers =
     location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
+
+  const inMyBids = location.pathname?.split('/')?.includes('my_bids');
 
   const ExpandCollapseComp = (
     <>
@@ -361,6 +400,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       </Popover>
     </>
   );
+  if (isCardLoading && !selectCardData) {
+    return <div />;
+  }
 
   return (
     <>
@@ -381,6 +423,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           <Row>
             {primaryFilter !== 'talents' &&
               primaryFilter !== 'clients' &&
+              primaryFilter !== 'teams' &&
               (isTab ? (
                 <div className="d-flex mt-auto mb-1 cursor-pointer" id="popoverButton">
                   {ExpandCollapseComp}
@@ -390,43 +433,75 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   {ExpandCollapseComp}
                 </Col>
               ))}
-            {(userType === userTypes.talent || primaryFilter === 'talents') && (
+            {(userType === userTypes.talent ||
+              userType === userTypes.team ||
+              primaryFilter === 'talents' ||
+              primaryFilter === 'teams') &&
+              !inMyBids && (
+                <Col>
+                  <Label className="form-label">{primaryFilter === 'all_listings' ? 'Project' : 'Type'}</Label>
+                  <Select
+                    isClearable
+                    options={sortingOptions}
+                    classNamePrefix="select"
+                    placeholder="Select type"
+                    theme={selectThemeColors}
+                    onChange={onChangeSort}
+                    value={
+                      secondFilterState.sort_by.length > 0
+                        ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
+                        : null
+                    }
+                  />
+                </Col>
+              )}
+            {primaryFilter === 'my_bids' && userType !== userTypes.client ? (
               <Col>
-                <Label className="form-label">Sort by</Label>
+                <Label className="form-label">Bid status</Label>
                 <Select
                   isClearable
-                  options={sortingOptions}
-                  classNamePrefix="select"
-                  placeholder="Select type"
-                  theme={selectThemeColors}
-                  onChange={onChangeSort}
-                  value={
-                    secondFilterState.sort_by.length > 0
-                      ? { value: secondFilterState.sort_by[0].value, label: secondFilterState.sort_by[0].label }
-                      : null
-                  }
-                />
-              </Col>
-            )}
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && (
-              <Col>
-                <Label className="form-label">Status</Label>
-                <Select
-                  isClearable
-                  options={statusesOptions}
+                  options={bidStatusesOptions}
                   classNamePrefix="select"
                   placeholder="Select status"
                   theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('statuses', value)}
+                  onChange={(value) => onChangeFilter('bid_statuses', value)}
                   value={
-                    secondFilterState.statuses.length > 0
-                      ? { value: secondFilterState.statuses[0].value, label: secondFilterState.statuses[0].label }
+                    secondFilterState.bid_statuses.length > 0
+                      ? {
+                          value: secondFilterState.bid_statuses[0].value,
+                          label: secondFilterState.bid_statuses[0].label,
+                        }
                       : null
                   }
                 />
               </Col>
+            ) : (
+              <span className="w-auto">
+                {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
+                  <Col>
+                    <Label className="form-label">Status</Label>
+                    <Select
+                      isClearable
+                      options={primaryFilter === 'all_listings' ? statusForAllListing : statusesOptions}
+                      classNamePrefix="select"
+                      placeholder="Select status"
+                      theme={selectThemeColors}
+                      onChange={(value) => onChangeFilter('statuses', value)}
+                      value={
+                        secondFilterState.statuses.length > 0
+                          ? {
+                              value: secondFilterState.statuses[0].value,
+                              label: secondFilterState.statuses[0].label,
+                            }
+                          : null
+                      }
+                    />
+                  </Col>
+                )}
+              </span>
             )}
-            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && (
+
+            {primaryFilter !== 'talents' && primaryFilter !== 'clients' && primaryFilter !== 'teams' && (
               <Col>
                 <Label className="form-label">Payment type</Label>
                 <Select
@@ -447,7 +522,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents') && (
+            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
               <Col>
                 <Label className="form-label">Skills</Label>
                 <AsyncPaginate
@@ -466,7 +541,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                 />
               </Col>
             )}
-            {(primaryFilter === 'all_listings' || primaryFilter === 'talents') && (
+            {(primaryFilter === 'all_listings' || primaryFilter === 'talents' || primaryFilter === 'teams') && (
               <Col>
                 <Label className="form-label">Tools</Label>
                 <AsyncPaginate
@@ -550,40 +625,51 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       {isLoading ? (
         <ComponentSpinner />
       ) : (
-        <InfiniteScroll
-          dataLength={selectMarketPlaceData?.length}
-          next={fetchMore}
-          hasMore={hasMore}
-          endMessage={
-            <div className="d-flex justify-content-center ">
-              {selectMarketPlaceData?.length > 0 ? (
-                <span className="mt-2">You have seen it all!</span>
-              ) : (
-                <NoDataFoundComponent
-                  isMyListing={primaryFilter === 'my_listings'}
-                  isRecommanded={isRecommanded}
-                  data={selectMarketPlaceData}
-                />
-              )}
-            </div>
-          }
-          loader={<div className="d-flex justify-content-center">Loading...</div>}
-        >
-          <div className="d-flex flex-wrap justify-content-between">
+        <ResponsiveGrid>
+          <InfiniteScroll
+            dataLength={selectMarketPlaceData?.length}
+            next={fetchMore}
+            hasMore={hasMore}
+            endMessage={
+              <div className="d-flex justify-content-center ">
+                {selectMarketPlaceData?.length === 0 ? (
+                  <NoDataFoundComponent
+                    isMyListing={primaryFilter === 'my_listings'}
+                    isRecommanded={isRecommanded}
+                    data={selectMarketPlaceData}
+                  />
+                ) : (
+                  ''
+                )}
+              </div>
+            }
+            loader={<div className="d-flex justify-content-center">Loading...</div>}
+            className="responsive-grid"
+            style={
+              primaryFilter === 'clients'
+                ? {
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill,minmax(33%,auto))',
+                  }
+                : {}
+            }
+          >
             {selectMarketPlaceData?.map((item) => {
-              const CardComponent = primaryFilter === 'talents' || primaryFilter === 'clients' ? UserCard : ProjectCard;
+              const CardComponent = getCardComp();
+
               return (
                 <CardComponent
                   key={item?._id || item?.id}
                   data={item}
                   isPopoverOpen={popoverOpen}
                   isExpanded={isExpanded}
+                  primaryFilter={primaryFilter}
                   userType={primaryFilter === 'talents' ? userTypes.talent : userTypes.client}
                 />
               );
             })}
-          </div>
-        </InfiniteScroll>
+          </InfiniteScroll>
+        </ResponsiveGrid>
       )}
     </>
   );

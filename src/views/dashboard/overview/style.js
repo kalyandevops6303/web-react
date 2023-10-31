@@ -196,6 +196,14 @@ const ProjectWrapper = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .truncate-1 {
+    height: 1.6rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .user-section {
     .rounded {
@@ -213,7 +221,6 @@ const ProjectWrapper = styled.div`
       margin-top: -2px;
       margin-left: 4px;
     }
-    width: 50%;
     color: ${theme.headingTextColor};
     .avatar-wrap {
       .avatars {
@@ -229,6 +236,7 @@ const ProjectWrapper = styled.div`
   }
   .active-project-users {
     height: 34px;
+    margin: 0.8rem 0;
   }
   .main-row {
     display: flex;
@@ -273,7 +281,16 @@ const ProjectWrapper = styled.div`
   .circular-progressbar-container {
     width: 40px;
     height: 40px;
-
+    .percentage-text {
+      font-weight: 400;
+      font-size: 10px;
+      color: ${theme.headingTextColor};
+    }
+  }
+  .circular-progressbar-container-large {
+    width: 60px;
+    height: 60px;
+    margin: auto;
     .percentage-text {
       font-weight: 400;
       font-size: 10px;
@@ -286,6 +303,71 @@ const ProjectWrapper = styled.div`
     font-weight: 600;
     font-size: 12px;
     margin: auto;
+  }
+
+  .active-project-name {
+    color: #5e5873;
+    font-size: 16px;
+    font-weight: 400;
+    height: 40px;
+  }
+
+  .team-badge {
+    border-radius: 17px;
+    background: rgba(48, 214, 211, 0.12);
+    width: fit-content;
+
+    p {
+      color: #30d6d2;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+
+  .active-project-team-name {
+    color: #5e5873;
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .active-project-simple-heading {
+    color: #b9b9c3;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: -10px;
+  }
+
+  .active-project-milestone-name {
+    color: #5e5873;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .bids-count-wrapper {
+    .bid-label {
+      color: #6e6b7b;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .bid-count {
+      color: #5e5873;
+      font-size: 16px;
+      font-weight: 400;
+    }
+  }
+
+  .client-badge {
+    border-radius: 17px;
+    background: rgba(0, 94, 255, 0.12);
+    width: fit-content;
+
+    p {
+      color: #005eff;
+      font-size: 12px;
+      font-weight: 600;
+    }
   }
 `;
 
@@ -363,23 +445,20 @@ const DashboardHeaderWrapper = styled.div`
 `;
 
 const TagsWrap = styled.div`
-  height: 60px;
+  // height: ${(props) => (props.fullWidth ? 'auto' : '60px')};
   overflow: hidden;
-  width: 75% !important;
-
   display: flex;
   align-items: center;
-  width: 100%;
-  margin-left: 10px;
+  width: ${(props) => (props.fullWidth ? '100%' : '75%')} !important;
+  margin: ${(props) => (props.fullWidth ? '0 0 0.75rem 0' : '0.5rem 0 0 10px')};
 
   .badge-box-wrap {
     max-height: 2rem;
     overflow: hidden;
-    width: 100%;
     .badge {
       margin: 0 0.5rem 0.5rem 0;
       font-size: 0.75rem;
-      max-width: 10rem;
+      max-width: ${(props) => (props.fullWidth ? '15rem' : '10rem')};
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -402,7 +481,55 @@ const TagsWrap = styled.div`
     color: ${theme.lightBlueColor};
     font-weight: 600;
     font-size: 12px;
-    margin: auto;
+    margin: 0 0 0 10px;
+  }
+`;
+const CreateTeamButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  margin-top: -3.5rem;
+
+  @media (max-width: 767px) {
+    margin-top: -2rem;
+  }
+`;
+
+const TeamSectionWrapper = styled(CardWrapper)`
+  .card-header {
+    padding: 1.6rem 1.5rem;
+  }
+  .card-body {
+    padding: 0.5rem 1.5rem 1rem !important;
+  }
+  .card-title {
+    font-size: 1.125rem;
+  }
+  .members-count {
+    margin-left: 0.75rem;
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.25rem;
+  }
+`;
+
+const DisputesLegend = styled.div`
+  width: 16px;
+  height: 6px;
+  border-radius: 5px;
+  background: ${(props) => props.fillColor};
+`;
+
+const DisputesChartContainer = styled.div`
+  position: relative;
+
+  .total-disputes {
+    position: absolute;
+    top: 32%;
+    left: 37%;
   }
 `;
 
@@ -417,4 +544,8 @@ export {
   ProjectsListingWrap,
   AlertCardWrapper,
   DashboardHeaderWrapper,
+  TeamSectionWrapper,
+  CreateTeamButtonWrapper,
+  DisputesLegend,
+  DisputesChartContainer,
 };

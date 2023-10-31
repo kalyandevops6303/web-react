@@ -54,15 +54,25 @@ import {
   resetPasswordRequest,
   resetPasswordSuccess,
   resetPasswordFailure,
+  userDataRequest,
+  userDataFailure,
+  userDataSuccess,
+  switchProfileSuccess,
   getUserDataSuccess,
+  cometChatLogin,
 } from '../reducers/auth';
-import { setItem } from '../../utility/localStorageControl';
+import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
-import { clearData } from '../reducers/dashboard';
-import { checkPoints } from '../../utility/constants/Constant';
+import { checkPoints, userTypes } from '../../utility/constants/Constant';
+import { userDataService } from '../../services/dashboardServices';
+import { getTeamById } from '../../services/teamServices';
+import { clearTeams } from '../reducers/team';
 import { clearNotificationsData } from '../reducers/notifications';
-import { userDetailsService } from '../../services/talentOnboardingServices';
+import { getTeams } from './teamsActions';
+import { clearTeamCardData } from '../reducers/myTeams';
+import { clearMarketplaceCardData } from '../reducers/marketPlace';
+import { clearProjectCardData } from '../reducers/project';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -90,6 +100,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     onSuccess(res.data.data);
     if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
       dispatch(loginSuccess(res.data.data));
+      dispatch(cometChatLogin(res.data.data.comet_chat_token));
       setItem('isUserVisited', true);
     } else {
       dispatch(loginSuccess(false));
@@ -113,6 +124,7 @@ const loginUserWithGoogle =
       setItem('access_token', res.data.data.access_token);
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(loginSuccess(res.data.data));
+        dispatch(cometChatLogin(res.data.data.comet_chat_token));
       } else {
         dispatch(loginSuccess(false));
       }
@@ -243,7 +255,10 @@ const logoutAction =
       dispatch(fcmUnsubscribeNotification(fcmToken));
     }
     dispatch(logOut());
-    dispatch(clearData());
+    dispatch(clearTeams());
+    dispatch(clearTeamCardData());
+    dispatch(clearProjectCardData());
+    dispatch(clearMarketplaceCardData());
     dispatch(clearNotificationsData());
     onSuccess();
   };
@@ -263,16 +278,54 @@ const resetPassword = (data, onSuccess) => async (dispatch) => {
     errorHandler(error, resetPasswordFailure);
   }
 };
+
 const getUserData = () => async (dispatch) => {
+  dispatch(userDataRequest());
   try {
-    const res = await userDetailsService();
-    dispatch(getUserDataSuccess(res.data.data.user_type));
+    const team_id = getItem('team_id');
+    let res;
+    if (team_id) {
+      res = await getTeamById(team_id);
+    } else {
+      res = await userDataService();
+    }
+    if (res.data.data?.user_type === userTypes.talent || res.data.data?.user_type === userTypes.team) {
+      dispatch(getTeams({ onSuccess: () => {} }));
+    }
+    dispatch(userDataSuccess(res.data.data));
+    dispatch(getUserDataSuccess(res.data.data?.user_type));
+    setItem('userData', res.data.data);
   } catch (error) {
-    errorHandler(error);
+    errorHandler(error, userDataFailure);
   }
 };
 
+const switchProfile =
+  ({ data, onSuccess, selected }) =>
+  async (dispatch) => {
+    try {
+      dispatch(switchProfileSuccess(data));
+      if (data?.user_type === 'TEAM') {
+        setItem('team_id', data?._id);
+      } else {
+        removeItem('team_id');
+      }
+      onSuccess(selected);
+      // clearing my team data
+      dispatch(clearTeamCardData());
+      // clearing marketplace card data
+      dispatch(clearMarketplaceCardData());
+      // clearing project card data
+      dispatch(clearProjectCardData());
+      removeItem('selectedMyTeamsTab');
+    } catch (err) {
+      errorHandler(err);
+    }
+  };
+
 export {
+  switchProfile,
+  getUserData,
   resendAction,
   loginUserWithGoogle,
   setUserType,
@@ -289,5 +342,4 @@ export {
   fcmUnsubscribeNotification,
   logoutAction,
   resetPassword,
-  getUserData,
 };

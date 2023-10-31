@@ -290,13 +290,15 @@
           align-items: center;
 
           .user-name {
-            width: 8rem;
             display: inline-block;
             margin-bottom: 0.435rem;
             margin-left: 0.2rem;
             text-align: right;
-
             display: block;
+            
+          }
+          .truncate-1 {
+            max-width: 8rem;
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;

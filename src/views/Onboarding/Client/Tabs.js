@@ -1,6 +1,6 @@
 import React from 'react';
 import Proptypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { Clock, Home, Link, User } from 'react-feather';
 import { TabsContainer } from '../style';
@@ -15,23 +15,50 @@ import { userOnboarding } from '../../../utility/constants/Constant';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const onTabClick = (path) => {
+    if (location?.state?.isEditing) {
+      navigate(path, {
+        state: { isEditing: true },
+      });
+    }
+  };
 
   return (
-    <TabsContainer className="pt-2">
+    <TabsContainer className="pt-2" isEditing={location?.state?.isEditing}>
       <Nav pills className="mb-2">
-        <NavItem>
+        <NavItem
+          onClick={() => {
+            if (location?.state?.isEditing) {
+              onTabClick(`/${userOnboarding.client}/account-details`);
+            }
+          }}
+        >
           <NavLink active={location.pathname === `/${userOnboarding.client}/account-details`}>
             <Home className="font-medium-3 me-50" />
             <span className="fw-bold">Account</span>
           </NavLink>
         </NavItem>
-        <NavItem>
+        <NavItem
+          onClick={() => {
+            if (location?.state?.isEditing) {
+              onTabClick(`/${userOnboarding.client}/personal-details`);
+            }
+          }}
+        >
           <NavLink active={location.pathname === `/${userOnboarding.client}/personal-details`}>
             <User className="font-medium-3 me-50" />
             <span className="fw-bold">Personal</span>
           </NavLink>
         </NavItem>
-        <NavItem>
+        <NavItem
+          onClick={() => {
+            if (location?.state?.isEditing) {
+              onTabClick(`/${userOnboarding.client}/educational-details`);
+            }
+          }}
+        >
           <NavLink active={location.pathname === `/${userOnboarding.client}/educational-details`}>
             {location.pathname === `/${userOnboarding.client}/educational-details` ? (
               <img src={EducationTabActiveImg} alt="education-active" width={20} height={20} className="me-50" />
@@ -41,13 +68,25 @@ const Tabs = ({ tabNames, active }) => {
             <span className="fw-bold">Education</span>
           </NavLink>
         </NavItem>
-        <NavItem>
+        <NavItem
+          onClick={() => {
+            if (location?.state?.isEditing) {
+              onTabClick(`/${userOnboarding.client}/availability-details`);
+            }
+          }}
+        >
           <NavLink active={location.pathname === `/${userOnboarding.client}/availability-details`}>
             <Clock className="font-medium-3 me-50" />
             <span className="fw-bold">Availability</span>
           </NavLink>
         </NavItem>
-        <NavItem>
+        <NavItem
+          onClick={() => {
+            if (location?.state?.isEditing) {
+              onTabClick(`/${userOnboarding.client}/social-details`);
+            }
+          }}
+        >
           <NavLink active={location.pathname === `/${userOnboarding.client}/social-details`}>
             <Link className="font-medium-3 me-50" />
             <span className="fw-bold">Social</span>
@@ -70,7 +109,6 @@ const Tabs = ({ tabNames, active }) => {
         <TabPane tabId={tabNames.Social}>
           {location.pathname === `/${userOnboarding.client}/social-details` && <Social />}
         </TabPane>
-        <TabPane tabId={tabNames.Payment}>Payment</TabPane>
       </TabContent>
     </TabsContainer>
   );

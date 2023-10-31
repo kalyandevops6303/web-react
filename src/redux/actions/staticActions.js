@@ -5,10 +5,12 @@ import {
   companyIndustriesService,
   countriesService,
   currenciesService,
+  disputeTypesService,
   educationsService,
   institutesService,
   languagesService,
   projectAreasService,
+  ratingTagsService,
   skillsService,
   statesService,
   talentRolesService,
@@ -58,6 +60,12 @@ import {
   certificatesRequest,
   certificatesSuccess,
   certificatesFailure,
+  disputeTypesRequest,
+  disputeTypesSuccess,
+  disputeTypesFailure,
+  ratingTagsRequest,
+  ratingTagsSuccess,
+  ratingTagsFailure,
 } from '../reducers/static';
 
 const getTalentRoles = () => async (dispatch) => {
@@ -200,6 +208,26 @@ const getProjectAreas = () => async (dispatch) => {
   }
 };
 
+const getDisputeTypes = () => async (dispatch) => {
+  dispatch(disputeTypesRequest());
+  try {
+    const res = await disputeTypesService();
+    dispatch(disputeTypesSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, disputeTypesFailure);
+  }
+};
+
+const getRatingTags = (userType) => async (dispatch) => {
+  dispatch(ratingTagsRequest());
+  try {
+    const res = await ratingTagsService(userType);
+    dispatch(ratingTagsSuccess(res.data));
+  } catch (error) {
+    errorHandler(error, ratingTagsFailure);
+  }
+};
+
 export {
   getTalentRoles,
   getLanguages,
@@ -215,4 +243,6 @@ export {
   getCurrencies,
   getCompanyIndustries,
   getProjectAreas,
+  getDisputeTypes,
+  getRatingTags,
 };

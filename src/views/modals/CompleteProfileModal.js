@@ -9,7 +9,7 @@ import { giveProgressBarColorClassName } from '../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import { profilePercentage, userData } from '../../redux/selectors/dashboardSelectors';
 
-const CompleteProfileModal = ({ modal, toggleModal }) => {
+const CompleteProfileModal = ({ modal, toggleModal, modalInfoText }) => {
   const navigate = useNavigate();
 
   const userDetailsData = useSelector(userData);
@@ -33,7 +33,9 @@ const CompleteProfileModal = ({ modal, toggleModal }) => {
           <img src={CompleteProfileGif} alt="complete-profile" width={140} height={140} />
           <div className="pe-1 ms-3">
             <h2 className="fw-bold font-large-1">Complete Profile</h2>
-            <p className="fw-normal font-medium-3 mt-1">Completing your profile will enable you to create project</p>
+            <p className="fw-normal font-medium-3 mt-1">
+              Completing your profile will enable you to {modalInfoText || 'perform this action'}
+            </p>
             <span className="font-weight-bold percentage">{profilePercentageData?.profile_completed}%</span>
             <Progress
               style={{ height: '0.5rem' }}
@@ -70,9 +72,11 @@ export default CompleteProfileModal;
 CompleteProfileModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  modalInfoText: Proptypes.string,
 };
 
 CompleteProfileModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  modalInfoText: '',
 };

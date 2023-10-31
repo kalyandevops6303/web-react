@@ -1,44 +1,93 @@
 .custom-modal-style {
-    width: 670px !important;
-    margin: 0 auto;
+  width: 670px !important;
+  margin: 0 auto;
+}
+
+.custom-modal-style-70 {
+  width: 70% !important;
+  margin: 0 auto;
+}
+
+.listing-team-members-modal-style {
+  width: 1050px !important;
+  margin: 0 auto;
+}
+
+.invite-talent-listing-modal-style {
+  width: 750px !important;
+  margin: 0 auto;
+}
+
+.gray-modal {
+  .modal-header {
+    background-color: #f8f8f8;
+  }
+  .modal-body {
+    background-color: #f8f8f8;
+  }
 }
 
 .custom-reset-password-modal-style {
-    width: 500px !important;
-    margin: 0 auto;
+  width: 500px !important;
+  margin: 0 auto;
 }
 
 .custom-larger-than-medium-modal-style {
-    width: 540px !important;
-    margin: 0 auto;
+  width: 540px !important;
+  margin: 0 auto;
+}
+.custom-modal-style-sm {
+  width: 30% !important;
+  margin: auto;
 }
 
 .modal-dialog {
-    max-width: none !important;
+  max-width: none !important;
 }
 .custom-modal-project-details {
-    width: 78% !important;
-    margin: 0 auto;
+  width: 78% !important;
+  margin: 0 auto;
 }
 @media (max-width: 768px) {
-    .custom-modal-project-details {
-        width: 100% !important;
-    }
-
+  .custom-modal-project-details {
+    width: 100% !important;
+  }
+  .custom-modal-style-sm {
+    width: 30% !important;
+  }
 }
 
 // Tooltip
 .show-more-popover-body {
-    padding: 0.2rem 0;
-    border: none;
+  padding: 0.2rem 0;
+  border: none;
 }
-.tooltip-option{
-    padding: 0.3rem 1rem;
-    cursor: pointer;
+.tooltip-option {
+  padding: 0.3rem 1rem;
+  cursor: pointer;
 }
-.tooltip-option:hover{
-    background-color: #E9F3FF;
+.tooltip-option:hover {
+  background-color: #e9f3ff;
 }
-.tooltip-option-active{
-    background-color: #E9F3FF;
+.tooltip-option-active {
+  background-color: #e9f3ff;
+}
+
+.accordion-item {
+  .accordion-header {
+    .accordion-button::after {
+      transform: rotate(0deg);
+    }
+    .collapsed::after {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.form-control:disabled {
+  background-color: #fff;
+}
+
+.payment-form-control:disabled {
+background-color: #efefef !important;
 }

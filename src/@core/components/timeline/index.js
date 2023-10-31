@@ -1,70 +1,61 @@
 // ** Third Party Components
-import Proptypes from "prop-types";
-import classnames from "classnames";
+import Proptypes from 'prop-types';
+import classnames from 'classnames';
+import styled from 'styled-components';
+import { useMemo } from 'react';
 
 const Timeline = (props) => {
   // ** Props
   const { data, tag, className } = props;
 
   // ** Custom Tagg
-  const Tag = tag ? tag : "ul";
+  const Tag = tag ? tag : 'ul';
 
-  return (
-    <Tag
-      className={classnames("timeline", {
-        [className]: className,
-      })}
-    >
-      {data.map((item, i) => {
-        const ItemTag = item.tag ? item.tag : "li";
+  const TimelineWrap = styled.div`
+    > .timeline-point-indicator {
+      border: 0;
+      background-color: ${(props) => props.color} !important;
+      opacity: ${(props) => (props.isDisabled ? '0.5' : '')};
+      &:before {
+        background: ${(props) => props.color} !important;
+        opacity: 0.2;
+      }
+    }
+  `;
+  const memoizedTag = useMemo(() => {
+    return data.map((item, i) => {
+      const ItemTag = item.tag ? item.tag : 'li';
 
-        return (
-          <ItemTag
-            key={i}
-            className={classnames("timeline-item", {
-              [item.className]: className,
-            })}
-          >
+      return (
+        <ItemTag
+          key={i}
+          className={classnames('timeline-item', {
+            [item.className]: className,
+          })}
+        >
+          <TimelineWrap color={item.color} isDisabled={item.isDisabled}>
             <span
-              className={classnames("timeline-point", {
+              className={classnames('timeline-point', {
                 [`timeline-point-${item.color}`]: item.color,
-                "timeline-point-indicator": !item.icon,
+                'timeline-point-indicator': !item.icon,
               })}
             >
               {item.icon ? item.icon : null}
             </span>
-            <div className="timeline-event">
-              <div
-                className={classnames(
-                  "d-flex justify-content-between flex-sm-row flex-column",
-                  {
-                    "mb-sm-0 mb-1": item.meta,
-                  }
-                )}
-              >
-                <h6>{item.title}</h6>
-                {item.meta ? (
-                  <span
-                    className={classnames("timeline-event-time", {
-                      [item.metaClassName]: item.metaClassName,
-                    })}
-                  >
-                    {item.meta}
-                  </span>
-                ) : null}
-              </div>
-              <p
-                className={classnames({
-                  "mb-0": i === data.length - 1 && !item.customContent,
-                })}
-              >
-                {item.content}
-              </p>
-              {item.customContent ? item.customContent : null}
-            </div>
-          </ItemTag>
-        );
+            <div className="timeline-event">{item.customContent ? item.customContent : null}</div>
+          </TimelineWrap>
+        </ItemTag>
+      );
+    });
+  }, []);
+
+  return (
+    <Tag
+      className={classnames('timeline', {
+        [className]: className,
       })}
+    >
+      {memoizedTag}
     </Tag>
   );
 };

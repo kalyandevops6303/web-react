@@ -11,16 +11,18 @@ import { Card, CardTitle, CardBody, CardText, Badge } from 'reactstrap';
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import hat from '@src/assets/images/hat.png';
-
 import { useState } from 'react';
-import { DateTime } from 'luxon';
 import { ProjectWrapper } from './style';
+import DateTime from '../../../lib/date-time';
+
 import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
 import { CustomBadge } from '../../styled';
 import TagsSection from './TagsSection';
+import CreateBidModal from '../../modals/CreateBidModal';
+import CompleteProfileModal from '../../modals/CompleteProfileModal';
 
-const UserSection = ({ users, tagName, name, isAlma }) => (
+const UserSection = ({ totalCount, users, tagName, name, isAlma }) => (
   <div className="user-section">
     <div className="d-flex">
       <Badge className="rounded light-client" color={`light-client'}`}>
@@ -36,7 +38,7 @@ const UserSection = ({ users, tagName, name, isAlma }) => (
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
-          <AvatarGroup size="sm" className="mr-4" data={users.slice(0, 3)} />
+          <AvatarGroup totalCount={totalCount} size="sm" className="mr-4" data={users.slice(0, 3)} />
         </span>
       ) : (
         <AvatarGroup size="sm" data={users} />
@@ -50,52 +52,15 @@ UserSection.propTypes = {
   isAlma: PropTypes.bool,
   name: PropTypes.string,
   tagName: PropTypes.string,
+  totalCount: PropTypes.number,
 };
 
-const Project = ({ open, data, className, recommended }) => {
+const Project = ({ open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleToggle = () => {
     setShowModal(!showModal);
   };
-
-  const avatarGroupArr = [
-    {
-      title: 'Billy Hopkins',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Amy Carson',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Brandon Miles',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Daisy Weber',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-    {
-      title: 'Jenny Looper',
-      img: avatar7,
-      placement: 'bottom',
-      imgHeight: 33,
-      imgWidth: 33,
-    },
-  ];
 
   const giveStrokeColor = (percentage) => {
     if (percentage <= 40) {
@@ -116,6 +81,19 @@ const Project = ({ open, data, className, recommended }) => {
     LISTING_EXPIRED: 'Listing Expired',
   };
 
+  const [createBidModal, setCreateBidModal] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+
+  const toggleCreateBidModal = () => {
+    setCreateBidModal(!createBidModal);
+  };
+
+  const toggleCompleteProfileModal = () => {
+    setShowModal(false);
+    setCompleteProfileModal(!completeProfileModal);
+  };
+
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
@@ -125,10 +103,7 @@ const Project = ({ open, data, className, recommended }) => {
               {statusEnum[data?.status]}
             </Badge>
           </CustomBadge>
-          <CardTitle className="mt-50 active-project-title truncate-2 mb-1.5">
-            {/* {recommendedProjectsData?.data?.details?.name} */}
-            {data?.details.name}
-          </CardTitle>
+          <CardTitle className="mt-50 active-project-title truncate-2 mb-1.5">{data?.details.name}</CardTitle>
           <div className="d-flex w-100 mb-1">
             <div className="circular-progressbar-container">
               <CircularProgressbarWithChildren
@@ -169,15 +144,10 @@ const Project = ({ open, data, className, recommended }) => {
                   imgWidth: 33,
                 },
               ]}
-              isAlma={data?.client_info?.is_alma_matter}
+              isAlma={data?.client_info?.is_alma_mater}
             />
-            {!recommended && <UserSection tagName="Team" name={data.teamName} users={avatarGroupArr} />}
           </div>
-          {!recommended && (
-            <div className="design-group mb-50 pt-2">
-              <h6 className="section-label">Milestone 2</h6>
-            </div>
-          )}
+
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper">
               <div className="design-planning">
@@ -202,7 +172,27 @@ const Project = ({ open, data, className, recommended }) => {
           </div>
         </CardBody>
       </Card>
-      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
+      {showModal && (
+        <ProjectModal
+          data={data}
+          modal={showModal}
+          toggleModal={handleToggle}
+          setCreateBidModal={setCreateBidModal}
+          setSelectedProject={setSelectedProject}
+          toggleCompleteProfileModal={toggleCompleteProfileModal}
+          isMyTeam={false}
+        />
+      )}
+      {createBidModal && (
+        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={selectedProject} />
+      )}
+      {completeProfileModal && (
+        <CompleteProfileModal
+          modal={completeProfileModal}
+          toggleModal={toggleCompleteProfileModal}
+          modalInfoText="create bid"
+        />
+      )}
     </ProjectWrapper>
   );
 };
@@ -210,7 +200,6 @@ const Project = ({ open, data, className, recommended }) => {
 Project.propTypes = {
   data: PropTypes.object,
   className: PropTypes.string,
-  recommended: PropTypes.bool,
   open: PropTypes.string,
 };
 export default Project;

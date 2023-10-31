@@ -1,11 +1,12 @@
 // ** React Imports
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import ShowToastMessage from '../../../../@core/components/toast';
 
 // ** Custom Components
 import Avatar from '@components/avatar';
 
 // ** Third Party Components
-import { User, Power } from 'react-feather';
+import { User, Power, Check, CheckCircle } from 'react-feather';
 
 // ** Reactstrap Imports
 import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip } from 'reactstrap';
@@ -14,22 +15,45 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, Uncon
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '../../../../redux/selectors/dashboardSelectors';
+import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
-import { logoutAction } from '../../../../redux/actions/authActions';
+import { logoutAction, switchProfile } from '../../../../redux/actions/authActions';
 import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
 import { userTypes } from '../../../../utility/constants/Constant';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
+import {
+  selectSavedUserData,
+  selectIsTeamLoggedIn,
+  selectUserData,
+  selectAuthLoading,
+} from '../../../../redux/selectors/authSelectors';
+import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
+import { useState } from 'react';
+import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
+import { CometChat } from '@cometchat-pro/chat';
+import { messaging } from '../../../../configs/api/firebase';
 
 const UserDropdown = () => {
-  const userDetailsData = useSelector(userData);
+  const userDetailsData = useSelector(selectUserData);
+  const isLoading = useSelector((state) => state.auth.userDataLoading);
+  const savedUserDetails = useSelector(selectSavedUserData);
+  const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
+  const teams = useSelector(selectTeamData);
+
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const handleLogout = () => {
+  const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
+
+  const handleEdit = () => {
+    navigate(`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`);
+  };
+
+  const handleLogout = async () => {
     const onSuccess = () => {
       navigate('/auth/login');
       const keyToPreserve = 'isUserVisited';
@@ -42,6 +66,10 @@ const UserDropdown = () => {
     };
 
     dispatch(logoutAction({ fcmToken, onSuccess }));
+
+    // CometChat logout
+    await messaging.deleteToken();
+    await CometChat.logout();
   };
   const LineWrapper = styled.div`
     position: relative;
@@ -57,17 +85,66 @@ const UserDropdown = () => {
     }
   `;
 
-  const userName = userDetailsData
+  const UserDropDownWrapper = styled.div`
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .isActive {
+      background: ${theme.primary}1f;
+      color: ${theme.primary};
+    }
+    .logout {
+      color: ${theme.red};
+      padding: 1rem 1.2rem;
+      display: block;
+    }
+    .edit {
+      color: ${theme.primary};
+      padding: 1rem 1.2rem;
+      display: block;
+      border-top: 1px solid ${theme.cardHeaderBorderColor};
+      margin-top: 1rem;
+      &:active {
+        color: white;
+      }
+    }
+    .dropdown-item {
+      width: 100%;
+    }
+  `;
+
+  const handleShowModal = (selected) => {
+    !selected && ShowToastMessage('success', `Profile switched successfully`);
+    navigate('/dashboard');
+  };
+  const handleSwitch = (data, selected) => {
+    dispatch(switchProfile({ data, onSuccess: handleShowModal, selected }));
+  };
+
+  const userName = isTeamLoggedIn
+    ? userDetailsData?.name
+    : userDetailsData
     ? userDetailsData?.user_type === userTypes.talent
-      ? userDetailsData?.talent_info?.first_name + ' ' + userDetailsData?.talent_info?.last_name || 'User'
-      : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name || 'User'
-    : 'User';
+      ? userDetailsData?.talent_info?.first_name + ' ' + userDetailsData?.talent_info?.last_name
+      : userDetailsData?.client_info?.first_name + ' ' + userDetailsData?.client_info?.last_name
+    : '';
+
+  const savedUserName = savedUserDetails
+    ? savedUserDetails?.user_type === userTypes.talent
+      ? savedUserDetails?.talent_info?.first_name + ' ' + savedUserDetails?.talent_info?.last_name
+      : savedUserDetails?.client_info?.first_name + ' ' + savedUserDetails?.client_info?.last_name
+    : '';
 
   return (
-    <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
-      <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
+    <UncontrolledDropdown
+      tag="li"
+      style={isLoading && !userName ? { minWidth: '10rem' } : {}}
+      className={`dropdown-user nav-item ${isLoading && !userName ? 'invisible' : ''}`}
+    >
+      <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
         <div className="user-nav d-sm-flex d-none">
-          <span className="user-name fw-bold" id="username">
+          <span className="user-name truncate-1 fw-bold" id="username">
             {userName}
           </span>
           {userName?.length > 15 && (
@@ -79,7 +156,7 @@ const UserDropdown = () => {
           )}
           <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
         </div>
-        {userDetailsData?.user_type === userTypes.talent ? (
+        {userDetailsData?.user_type === userTypes.talent && (
           <Avatar
             img={
               userDetailsData?.talent_info?.image_uri.length > 0
@@ -89,7 +166,8 @@ const UserDropdown = () => {
             imgHeight="40"
             imgWidth="40"
           />
-        ) : (
+        )}
+        {userDetailsData?.user_type === userTypes.client && (
           <Avatar
             img={
               userDetailsData?.client_info?.image_uri.length > 0
@@ -100,6 +178,9 @@ const UserDropdown = () => {
             imgWidth="40"
           />
         )}
+        {userDetailsData?.user_type === userTypes.team && (
+          <Avatar img={userDetailsData?.team_logo || defaultAvatar} imgHeight="40" imgWidth="40" />
+        )}
       </DropdownToggle>
 
       {location?.pathname?.split?.('/')?.[3] === userDetailsData?._id && (
@@ -108,17 +189,94 @@ const UserDropdown = () => {
         </LineWrapper>
       )}
 
-      <DropdownMenu end>
-        <DropdownItem tag={Link} to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}>
-          <User size={14} className="me-75" />
-          <span className="align-middle">Profile</span>
-        </DropdownItem>
+      <UserDropDownWrapper>
+        <DropdownMenu end>
+          <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
+            {userDetailsData && (
+              <DropdownItem
+                className={`d-flex justify-content-between ${
+                  savedUserDetails?._id === userDetailsData?._id && !isLoading ? 'isActive' : ''
+                }`}
+                onClick={() => handleSwitch(savedUserDetails, savedUserDetails?._id === userDetailsData?._id)}
+              >
+                <section className="user-info-avatar d-flex align-items-center">
+                  {savedUserDetails?.user_type === userTypes.talent ? (
+                    <Avatar
+                      img={
+                        savedUserDetails?.talent_info?.image_uri.length > 0
+                          ? savedUserDetails?.talent_info?.image_uri
+                          : defaultAvatar
+                      }
+                      imgHeight="40"
+                      imgWidth="40"
+                    />
+                  ) : (
+                    <Avatar
+                      img={
+                        savedUserDetails?.client_info?.image_uri.length > 0
+                          ? savedUserDetails?.client_info?.image_uri
+                          : defaultAvatar
+                      }
+                      imgHeight="40"
+                      imgWidth="40"
+                    />
+                  )}
+                  <div className="user-info ms-1 ms user-nav">
+                    <span className="mb-50 user-name fw-bold text-start d-block" id="username">
+                      {savedUserName}
+                    </span>
+                    {savedUserName?.length > 15 && (
+                      <UncontrolledTooltip placement="right" target="username">
+                        <div className="d-flex flex-column align-items-start">
+                          <p className="text-start m-0">{savedUserName}</p>
+                        </div>
+                      </UncontrolledTooltip>
+                    )}
+                    <span className="w-100 font-small-3 d-block user-status text-start">
+                      {savedUserDetails?.user_type ? capitalize(savedUserDetails?.user_type) : ''}
+                    </span>
+                  </div>
+                </section>
+                {savedUserDetails?._id === userDetailsData?._id && <Check className="m-auto ms-3 me-0" size={14} />}
+              </DropdownItem>
+            )}
+            {teams?.map((team) => (
+              <DropdownItem
+                className={`d-flex justify-content-between ${userDetailsData?._id === team?._id ? 'isActive' : ''}`} // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
+                onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
+              >
+                <section className="user-info-avatar d-flex align-items-center">
+                  <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
 
-        <DropdownItem onClick={handleLogout} className="w-100">
-          <Power size={14} className="me-75" />
-          <span className="align-middle">Logout</span>
-        </DropdownItem>
-      </DropdownMenu>
+                  <div className="user-info ms-1 user-nav">
+                    <span className="mb-50 user-name fw-bold text-start d-block" id={`username-${team?._id}`}>
+                      {team?.name}
+                    </span>
+                    {team?.name?.length > 15 && (
+                      <UncontrolledTooltip placement="right" target={`username-${team?._id}`}>
+                        <div className="d-flex flex-column align-items-start">
+                          <p className="text-start m-0">{team?.name}</p>
+                        </div>
+                      </UncontrolledTooltip>
+                    )}
+                    <span className="w-100 font-small-3 d-block user-status text-start">
+                      {capitalize(team?.user_type) || 'Role'}
+                    </span>
+                  </div>
+                </section>
+                {userDetailsData?._id === team?._id && <Check className="m-auto ms-3 me-0" size={14} />}
+              </DropdownItem>
+            ))}
+          </div>
+          <DropdownItem onClick={handleEdit} className="w-100 edit">
+            <span className="align-middle ">Profile</span>
+          </DropdownItem>
+          <DropdownItem onClick={handleLogout} className="w-100 logout">
+            <span className="align-middle ">Logout</span>
+          </DropdownItem>
+        </DropdownMenu>
+      </UserDropDownWrapper>
+      {isProfileSwitchLoading && <ProfileSwitchModal modal={isProfileSwitchLoading} />}
     </UncontrolledDropdown>
   );
 };

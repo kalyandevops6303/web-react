@@ -33,6 +33,10 @@ import { currenciesService, timezonesService } from '../../../services/staticSer
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
 import { userOnboarding } from '../../../utility/constants/Constant';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
+import { getCurrencies } from '../../../redux/actions/staticActions';
+import { currencies, currenciesLoading } from '../../../redux/selectors/staticSelectors';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -135,6 +139,9 @@ const Availability = () => {
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const userDetailsIsLoading = useSelector(userDetailsLoading);
+  const currenciesData = useSelector(currencies);
+  const currenciesIsLoading = useSelector(currenciesLoading);
 
   const onBackClick = () => {
     if (location?.state?.isEditing) {
@@ -309,521 +316,546 @@ const Availability = () => {
   };
 
   useEffect(() => {
+    if (currenciesData?.length > 0) {
+      setValue(
+        'currencyPreference',
+        { label: currenciesData[0]?.name, value: currenciesData[0]?._id },
+        { shouldValidate: true },
+      );
+    }
+  }, [currenciesData]);
+
+  useEffect(() => {
     dispatch(getUserDetails(onGetUserDetailsSuccess));
+    dispatch(getCurrencies());
   }, []);
 
   return (
     <ProfileFormContainer>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
-          <CardHeader>
-            <h4 className="m-0 mt-1">Availability</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <Row className="mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="preferredWorkingTimeZone">
-                  Preferred time zone<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="preferredWorkingTimeZone"
-                  name="preferredWorkingTimeZone"
-                  control={control}
-                  invalid={errors.preferredWorkingTimeZone && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      loadOptions={loadTimezonesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select one"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.preferredWorkingTimeZone,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.preferredWorkingTimeZone && (
-                  <FormFeedback>{errors.preferredWorkingTimeZone.label.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-            <Row className="mt-2">
-              <h5 className="m-0">
-                Days available<span className="label-asterisk me-50">*</span>
-              </h5>
-            </Row>
-            <Row className="custom-checkbox-border">
-              <Controller
-                control={control}
-                name="availabilityDays"
-                render={({ field }) => (
-                  <div className="demo-inline-spacing">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
-                      <Input
-                        type="checkbox"
-                        {...field}
-                        id="weekdays"
-                        checked={field.value.includes('weekdays')}
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          const value = 'weekdays';
-
-                          if (isChecked) {
-                            field.onChange([...field.value, value]);
-                          } else {
-                            field.onChange(field.value.filter((v) => v !== value));
-                          }
-                        }}
-                      />
-                      <Label for="weekdays" className="form-check-label">
-                        Weekdays
-                      </Label>
-                    </div>
-                    <div className="form-check form-check-inline checkbox-custom-margin">
-                      <Input
-                        type="checkbox"
-                        {...field}
-                        id="weekends"
-                        checked={field.value.includes('weekends')}
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          const value = 'weekends';
-
-                          if (isChecked) {
-                            field.onChange([...field.value, value]);
-                          } else {
-                            field.onChange(field.value.filter((v) => v !== value));
-                          }
-                        }}
-                      />
-                      <Label htmlFor="weekends" className="form-check-label">
-                        Weekend
-                      </Label>
-                    </div>
-                  </div>
-                )}
-              />
-              {errors.availabilityDays && <FormFeedback>{errors.availabilityDays.message}</FormFeedback>}
-            </Row>
-            <Row>
-              {availabilityDays && (availabilityDays.includes('weekdays') || availabilityDays.includes('weekends')) && (
-                <>
-                  {availabilityDays.includes('weekdays') && (
-                    <div>
-                      <Row className="mb-1 mt-2">
-                        <div className="d-flex align-items-center">
-                          <h5 className="m-0">Weekday </h5>
-                          <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') &&
-                              watch('preferredWorkingTimeZone')?.value?.abbreviation}
-                          </p>
-                          <Info size={18} color={theme.infoIcon} id="time-zone-info-weekday" />
-                          <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
-                            <div className="d-flex flex-column align-items-start">
-                              <p className="m-0">
-                                Based on preferred
-                                <br /> time zone
-                              </p>
-                            </div>
-                          </UncontrolledTooltip>
-                        </div>
-                      </Row>
-                      <Row className="mb-1 mt-2">
-                        <Col sm="6" md="6" lg="3">
-                          <Label className="form-label" for="weekdayStartTime">
-                            Start time<span className="label-asterisk me-50">*</span>
-                          </Label>
-                          <Controller
-                            id="weekdayStartTime"
-                            name="weekdayStartTime"
-                            control={control}
-                            invalid={errors.weekdayStartTime && true}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={timeOptions}
-                                classNamePrefix="select"
-                                placeholder="Select start time"
-                                theme={selectThemeColors}
-                                className={classNames('react-select', {
-                                  'is-invalid': errors && errors.weekdayStartTime,
-                                })}
-                                onChange={(selectedOption) => {
-                                  field.onChange(selectedOption);
-                                  setValue('weekdayEndTime', null);
-                                }}
-                              />
-                            )}
-                          />
-                          {errors.weekdayStartTime && (
-                            <FormFeedback>{errors.weekdayStartTime.label.message}</FormFeedback>
-                          )}
-                        </Col>
-                        <Col sm="6" md="6" lg="3">
-                          <Label className="form-label" for="weekdayEndTime">
-                            End time<span className="label-asterisk me-50">*</span>
-                          </Label>
-                          <Controller
-                            id="weekdayEndTime"
-                            name="weekdayEndTime"
-                            control={control}
-                            invalid={errors.weekdayEndTime && true}
-                            render={({ field }) => (
-                              <Select
-                                options={
-                                  watch('weekdayStartTime')
-                                    ? timeOptions.filter(
-                                        (t) => parseInt(t.value, 10) > parseInt(watch('weekdayStartTime').value, 10),
-                                      )
-                                    : timeOptions
-                                }
-                                classNamePrefix="select"
-                                placeholder="Select end time"
-                                theme={selectThemeColors}
-                                className={classNames('react-select', {
-                                  'is-invalid': errors && errors.weekdayEndTime,
-                                })}
-                                {...field}
-                              />
-                            )}
-                          />
-                          {errors.weekdayEndTime && <FormFeedback>{errors.weekdayEndTime.label.message}</FormFeedback>}
-                        </Col>
-                      </Row>
-                      <Row className="mt-2">
-                        <h5 className="m-0">
-                          Which days?
-                          <span className="label-asterisk me-50">*</span>
-                        </h5>
-                      </Row>
-                      <div className="custom-checkbox-border">
-                        <Controller
-                          control={control}
-                          name="weekdays"
-                          render={({ field }) => (
-                            <div className="demo-inline-spacing">
-                              <div className="form-check form-check-inline checkbox-custom-margin">
-                                <Input
-                                  type="checkbox"
-                                  {...field}
-                                  id="MONDAY"
-                                  checked={field.value.includes('MONDAY')}
-                                  onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    const value = 'MONDAY';
-
-                                    if (isChecked) {
-                                      field.onChange([...field.value, value]);
-                                    } else {
-                                      field.onChange(field.value.filter((v) => v !== value));
-                                    }
-                                  }}
-                                />
-                                <Label for="MONDAY" className="form-check-label">
-                                  Mon
-                                </Label>
-                              </div>
-                              <div className="form-check form-check-inline checkbox-custom-margin">
-                                <Input
-                                  type="checkbox"
-                                  {...field}
-                                  id="TUESDAY"
-                                  checked={field.value.includes('TUESDAY')}
-                                  onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    const value = 'TUESDAY';
-
-                                    if (isChecked) {
-                                      field.onChange([...field.value, value]);
-                                    } else {
-                                      field.onChange(field.value.filter((v) => v !== value));
-                                    }
-                                  }}
-                                />
-                                <Label for="TUESDAY" className="form-check-label">
-                                  Tue
-                                </Label>
-                              </div>
-                              <div className="form-check form-check-inline checkbox-custom-margin">
-                                <Input
-                                  type="checkbox"
-                                  {...field}
-                                  id="WEDNESDAY"
-                                  checked={field.value.includes('WEDNESDAY')}
-                                  onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    const value = 'WEDNESDAY';
-
-                                    if (isChecked) {
-                                      field.onChange([...field.value, value]);
-                                    } else {
-                                      field.onChange(field.value.filter((v) => v !== value));
-                                    }
-                                  }}
-                                />
-                                <Label for="WEDNESDAY" className="form-check-label">
-                                  Wed
-                                </Label>
-                              </div>
-                              <div className="form-check form-check-inline checkbox-custom-margin">
-                                <Input
-                                  type="checkbox"
-                                  {...field}
-                                  id="THURSDAY"
-                                  checked={field.value.includes('THURSDAY')}
-                                  onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    const value = 'THURSDAY';
-
-                                    if (isChecked) {
-                                      field.onChange([...field.value, value]);
-                                    } else {
-                                      field.onChange(field.value.filter((v) => v !== value));
-                                    }
-                                  }}
-                                />
-                                <Label for="THURSDAY" className="form-check-label">
-                                  Thu
-                                </Label>
-                              </div>
-                              <div className="form-check form-check-inline checkbox-custom-margin">
-                                <Input
-                                  type="checkbox"
-                                  {...field}
-                                  id="FRIDAY"
-                                  checked={field.value.includes('FRIDAY')}
-                                  onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    const value = 'FRIDAY';
-
-                                    if (isChecked) {
-                                      field.onChange([...field.value, value]);
-                                    } else {
-                                      field.onChange(field.value.filter((v) => v !== value));
-                                    }
-                                  }}
-                                />
-                                <Label for="FRIDAY" className="form-check-label">
-                                  Fri
-                                </Label>
-                              </div>
-                            </div>
-                          )}
-                        />
-                      </div>
-                      {errors.weekdays && <FormFeedback>{errors.weekdays.message}</FormFeedback>}
-                    </div>
-                  )}
-
-                  {availabilityDays.includes('weekends') && (
-                    <div>
-                      <Row className="mb-1 mt-2">
-                        <div className="d-flex align-items-center">
-                          <h5 className="m-0">Weekend </h5>
-                          <p className="m-0 mx-1 px-50 time-zone-border">
-                            {watch('preferredWorkingTimeZone') &&
-                              watch('preferredWorkingTimeZone')?.value?.abbreviation}
-                          </p>
-                          <Info size={18} color={theme.infoIcon} id="time-zone-info-weekend" />
-                          <UncontrolledTooltip placement="right" target="time-zone-info-weekend">
-                            <div className="d-flex flex-column align-items-start">
-                              <p className="m-0">
-                                Based on preferred
-                                <br /> time zone
-                              </p>
-                            </div>
-                          </UncontrolledTooltip>
-                        </div>
-                      </Row>
-                      <Row className="mb-1 mt-2">
-                        <Col sm="6" md="6" lg="3">
-                          <Label className="form-label" for="weekendStartTime">
-                            Start time<span className="label-asterisk me-50">*</span>
-                          </Label>
-                          <Controller
-                            id="weekendStartTime"
-                            name="weekendStartTime"
-                            control={control}
-                            invalid={errors.weekendStartTime && true}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={timeOptions}
-                                classNamePrefix="select"
-                                placeholder="Select start time"
-                                theme={selectThemeColors}
-                                className={classNames('react-select', {
-                                  'is-invalid': errors && errors.weekendStartTime,
-                                })}
-                                onChange={(selectedOption) => {
-                                  field.onChange(selectedOption);
-                                  setValue('weekendEndTime', null);
-                                }}
-                              />
-                            )}
-                          />
-                          {errors.weekendStartTime && (
-                            <FormFeedback>{errors.weekendStartTime.label.message}</FormFeedback>
-                          )}
-                        </Col>
-                        <Col sm="6" md="6" lg="3">
-                          <Label className="form-label" for="weekendEndTime">
-                            End time<span className="label-asterisk me-50">*</span>
-                          </Label>
-                          <Controller
-                            id="weekendEndTime"
-                            name="weekendEndTime"
-                            control={control}
-                            invalid={errors.weekendEndTime && true}
-                            render={({ field }) => (
-                              <Select
-                                options={
-                                  watch('weekendStartTime')
-                                    ? timeOptions.filter(
-                                        (t) => parseInt(t.value, 10) > parseInt(watch('weekendStartTime').value, 10),
-                                      )
-                                    : timeOptions
-                                }
-                                classNamePrefix="select"
-                                placeholder="Select end time"
-                                theme={selectThemeColors}
-                                className={classNames('react-select', {
-                                  'is-invalid': errors && errors.weekendEndTime,
-                                })}
-                                {...field}
-                              />
-                            )}
-                          />
-                          {errors.weekendEndTime && <FormFeedback>{errors.weekendEndTime.label.message}</FormFeedback>}
-                        </Col>
-                      </Row>
-                      <Row className="mt-2">
-                        <h5 className="m-0">
-                          Which days?
-                          <span className="label-asterisk me-50">*</span>
-                        </h5>
-                      </Row>
-                      <div className="custom-checkbox-border">
-                        <Controller
-                          control={control}
-                          name="weekends"
-                          render={({ field }) => (
-                            <div className="demo-inline-spacing">
-                              <div className="form-check form-check-inline checkbox-custom-margin">
-                                <Input
-                                  type="checkbox"
-                                  {...field}
-                                  id="SATURDAY"
-                                  checked={field.value.includes('SATURDAY')}
-                                  onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    const value = 'SATURDAY';
-
-                                    if (isChecked) {
-                                      field.onChange([...field.value, value]);
-                                    } else {
-                                      field.onChange(field.value.filter((v) => v !== value));
-                                    }
-                                  }}
-                                />
-                                <Label for="SATURDAY" className="form-check-label">
-                                  Sat
-                                </Label>
-                              </div>
-                              <div className="form-check form-check-inline checkbox-custom-margin">
-                                <Input
-                                  type="checkbox"
-                                  {...field}
-                                  id="SUNDAY"
-                                  checked={field.value.includes('SUNDAY')}
-                                  onChange={(e) => {
-                                    const isChecked = e.target.checked;
-                                    const value = 'SUNDAY';
-
-                                    if (isChecked) {
-                                      field.onChange([...field.value, value]);
-                                    } else {
-                                      field.onChange(field.value.filter((v) => v !== value));
-                                    }
-                                  }}
-                                />
-                                <Label for="SUNDAY" className="form-check-label">
-                                  Sun
-                                </Label>
-                              </div>
-                            </div>
-                          )}
-                        />
-                      </div>
-                      {errors.weekends && <FormFeedback>{errors.weekends.message}</FormFeedback>}
-                    </div>
-                  )}
-                </>
-              )}
-            </Row>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader>
-            <h4 className="m-0 mt-1">Payments</h4>
-          </CardHeader>
-          <hr className="m-0 card-header-border" />
-          <CardBody>
-            <Row className="mb-1">
-              <Col sm="12" md="6" lg="3">
-                <Label className="form-label" for="currencyPreference">
-                  Preferred Currency<span className="label-asterisk me-50">*</span>
-                </Label>
-                <Controller
-                  id="currencyPreference"
-                  name="currencyPreference"
-                  control={control}
-                  invalid={errors.currencyPreference && true}
-                  render={({ field }) => (
-                    <AsyncPaginate
-                      loadOptions={loadCurrenciesOptions}
-                      classNamePrefix="select"
-                      placeholder="Select one"
-                      theme={selectThemeColors}
-                      className={classNames('react-select', {
-                        'is-invalid': errors && errors.currencyPreference,
-                      })}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.currencyPreference && <FormFeedback>{errors.currencyPreference.label.message}</FormFeedback>}
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
-          <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
-            <UploadIconContainer>
-              <ChevronLeft size={18} color={theme.activeNavPillText} />
-            </UploadIconContainer>
-            <h5 className="fw-bold">Back</h5>
-          </div>
-          <div>
-            <Button color="primary" outline className="me-2" onClick={onSkipClick}>
-              <span className="me-50">Skip</span>
-              <ChevronRight size={14} />
-            </Button>
-            <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
-              {profileDetailsIsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
-          </div>
+      {userDetailsIsLoading || currenciesIsLoading ? (
+        <div className="w-75">
+          <ComponentSpinner className="mt-5" />
         </div>
-      </Form>
+      ) : (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Card className="w-75">
+            <CardHeader>
+              <h4 className="m-0 mt-1">Availability</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <Row className="mb-1">
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="preferredWorkingTimeZone">
+                    Preferred time zone<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="preferredWorkingTimeZone"
+                    name="preferredWorkingTimeZone"
+                    control={control}
+                    invalid={errors.preferredWorkingTimeZone && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        loadOptions={loadTimezonesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select one"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.preferredWorkingTimeZone,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.preferredWorkingTimeZone && (
+                    <FormFeedback>{errors.preferredWorkingTimeZone.label.message}</FormFeedback>
+                  )}
+                </Col>
+              </Row>
+              <Row className="mt-2">
+                <h5 className="m-0">
+                  Days available<span className="label-asterisk me-50">*</span>
+                </h5>
+              </Row>
+              <Row className="custom-checkbox-border">
+                <Controller
+                  control={control}
+                  name="availabilityDays"
+                  render={({ field }) => (
+                    <div className="demo-inline-spacing">
+                      <div className="form-check form-check-inline checkbox-custom-margin">
+                        <Input
+                          type="checkbox"
+                          {...field}
+                          id="weekdays"
+                          checked={field.value.includes('weekdays')}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const value = 'weekdays';
+
+                            if (isChecked) {
+                              field.onChange([...field.value, value]);
+                            } else {
+                              field.onChange(field.value.filter((v) => v !== value));
+                            }
+                          }}
+                        />
+                        <Label for="weekdays" className="form-check-label">
+                          Weekdays
+                        </Label>
+                      </div>
+                      <div className="form-check form-check-inline checkbox-custom-margin">
+                        <Input
+                          type="checkbox"
+                          {...field}
+                          id="weekends"
+                          checked={field.value.includes('weekends')}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const value = 'weekends';
+
+                            if (isChecked) {
+                              field.onChange([...field.value, value]);
+                            } else {
+                              field.onChange(field.value.filter((v) => v !== value));
+                            }
+                          }}
+                        />
+                        <Label htmlFor="weekends" className="form-check-label">
+                          Weekend
+                        </Label>
+                      </div>
+                    </div>
+                  )}
+                />
+                {errors.availabilityDays && <FormFeedback>{errors.availabilityDays.message}</FormFeedback>}
+              </Row>
+              <Row>
+                {availabilityDays &&
+                  (availabilityDays.includes('weekdays') || availabilityDays.includes('weekends')) && (
+                    <>
+                      {availabilityDays.includes('weekdays') && (
+                        <div>
+                          <Row className="mb-1 mt-2">
+                            <div className="d-flex align-items-center">
+                              <h5 className="m-0">Weekday </h5>
+                              <p className="m-0 mx-1 px-50 time-zone-border">
+                                {watch('preferredWorkingTimeZone') &&
+                                  watch('preferredWorkingTimeZone')?.value?.abbreviation}
+                              </p>
+                              <Info size={18} color={theme.infoIcon} id="time-zone-info-weekday" />
+                              <UncontrolledTooltip placement="right" target="time-zone-info-weekday">
+                                <div className="d-flex flex-column align-items-start">
+                                  <p className="m-0">
+                                    Based on preferred
+                                    <br /> time zone
+                                  </p>
+                                </div>
+                              </UncontrolledTooltip>
+                            </div>
+                          </Row>
+                          <Row className="mb-1 mt-2">
+                            <Col sm="6" md="6" lg="3">
+                              <Label className="form-label" for="weekdayStartTime">
+                                Start time<span className="label-asterisk me-50">*</span>
+                              </Label>
+                              <Controller
+                                id="weekdayStartTime"
+                                name="weekdayStartTime"
+                                control={control}
+                                invalid={errors.weekdayStartTime && true}
+                                render={({ field }) => (
+                                  <Select
+                                    {...field}
+                                    options={timeOptions}
+                                    classNamePrefix="select"
+                                    placeholder="Select start time"
+                                    theme={selectThemeColors}
+                                    className={classNames('react-select', {
+                                      'is-invalid': errors && errors.weekdayStartTime,
+                                    })}
+                                    onChange={(selectedOption) => {
+                                      field.onChange(selectedOption);
+                                      setValue('weekdayEndTime', null);
+                                    }}
+                                  />
+                                )}
+                              />
+                              {errors.weekdayStartTime && (
+                                <FormFeedback>{errors.weekdayStartTime.label.message}</FormFeedback>
+                              )}
+                            </Col>
+                            <Col sm="6" md="6" lg="3">
+                              <Label className="form-label" for="weekdayEndTime">
+                                End time<span className="label-asterisk me-50">*</span>
+                              </Label>
+                              <Controller
+                                id="weekdayEndTime"
+                                name="weekdayEndTime"
+                                control={control}
+                                invalid={errors.weekdayEndTime && true}
+                                render={({ field }) => (
+                                  <Select
+                                    options={
+                                      watch('weekdayStartTime')
+                                        ? timeOptions.filter(
+                                            (t) =>
+                                              parseInt(t.value, 10) > parseInt(watch('weekdayStartTime').value, 10),
+                                          )
+                                        : timeOptions
+                                    }
+                                    classNamePrefix="select"
+                                    placeholder="Select end time"
+                                    theme={selectThemeColors}
+                                    className={classNames('react-select', {
+                                      'is-invalid': errors && errors.weekdayEndTime,
+                                    })}
+                                    {...field}
+                                  />
+                                )}
+                              />
+                              {errors.weekdayEndTime && (
+                                <FormFeedback>{errors.weekdayEndTime.label.message}</FormFeedback>
+                              )}
+                            </Col>
+                          </Row>
+                          <Row className="mt-2">
+                            <h5 className="m-0">
+                              Which days?
+                              <span className="label-asterisk me-50">*</span>
+                            </h5>
+                          </Row>
+                          <div className="custom-checkbox-border">
+                            <Controller
+                              control={control}
+                              name="weekdays"
+                              render={({ field }) => (
+                                <div className="demo-inline-spacing">
+                                  <div className="form-check form-check-inline checkbox-custom-margin">
+                                    <Input
+                                      type="checkbox"
+                                      {...field}
+                                      id="MONDAY"
+                                      checked={field.value.includes('MONDAY')}
+                                      onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        const value = 'MONDAY';
+
+                                        if (isChecked) {
+                                          field.onChange([...field.value, value]);
+                                        } else {
+                                          field.onChange(field.value.filter((v) => v !== value));
+                                        }
+                                      }}
+                                    />
+                                    <Label for="MONDAY" className="form-check-label">
+                                      Mon
+                                    </Label>
+                                  </div>
+                                  <div className="form-check form-check-inline checkbox-custom-margin">
+                                    <Input
+                                      type="checkbox"
+                                      {...field}
+                                      id="TUESDAY"
+                                      checked={field.value.includes('TUESDAY')}
+                                      onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        const value = 'TUESDAY';
+
+                                        if (isChecked) {
+                                          field.onChange([...field.value, value]);
+                                        } else {
+                                          field.onChange(field.value.filter((v) => v !== value));
+                                        }
+                                      }}
+                                    />
+                                    <Label for="TUESDAY" className="form-check-label">
+                                      Tue
+                                    </Label>
+                                  </div>
+                                  <div className="form-check form-check-inline checkbox-custom-margin">
+                                    <Input
+                                      type="checkbox"
+                                      {...field}
+                                      id="WEDNESDAY"
+                                      checked={field.value.includes('WEDNESDAY')}
+                                      onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        const value = 'WEDNESDAY';
+
+                                        if (isChecked) {
+                                          field.onChange([...field.value, value]);
+                                        } else {
+                                          field.onChange(field.value.filter((v) => v !== value));
+                                        }
+                                      }}
+                                    />
+                                    <Label for="WEDNESDAY" className="form-check-label">
+                                      Wed
+                                    </Label>
+                                  </div>
+                                  <div className="form-check form-check-inline checkbox-custom-margin">
+                                    <Input
+                                      type="checkbox"
+                                      {...field}
+                                      id="THURSDAY"
+                                      checked={field.value.includes('THURSDAY')}
+                                      onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        const value = 'THURSDAY';
+
+                                        if (isChecked) {
+                                          field.onChange([...field.value, value]);
+                                        } else {
+                                          field.onChange(field.value.filter((v) => v !== value));
+                                        }
+                                      }}
+                                    />
+                                    <Label for="THURSDAY" className="form-check-label">
+                                      Thu
+                                    </Label>
+                                  </div>
+                                  <div className="form-check form-check-inline checkbox-custom-margin">
+                                    <Input
+                                      type="checkbox"
+                                      {...field}
+                                      id="FRIDAY"
+                                      checked={field.value.includes('FRIDAY')}
+                                      onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        const value = 'FRIDAY';
+
+                                        if (isChecked) {
+                                          field.onChange([...field.value, value]);
+                                        } else {
+                                          field.onChange(field.value.filter((v) => v !== value));
+                                        }
+                                      }}
+                                    />
+                                    <Label for="FRIDAY" className="form-check-label">
+                                      Fri
+                                    </Label>
+                                  </div>
+                                </div>
+                              )}
+                            />
+                          </div>
+                          {errors.weekdays && <FormFeedback>{errors.weekdays.message}</FormFeedback>}
+                        </div>
+                      )}
+
+                      {availabilityDays.includes('weekends') && (
+                        <div>
+                          <Row className="mb-1 mt-2">
+                            <div className="d-flex align-items-center">
+                              <h5 className="m-0">Weekend </h5>
+                              <p className="m-0 mx-1 px-50 time-zone-border">
+                                {watch('preferredWorkingTimeZone') &&
+                                  watch('preferredWorkingTimeZone')?.value?.abbreviation}
+                              </p>
+                              <Info size={18} color={theme.infoIcon} id="time-zone-info-weekend" />
+                              <UncontrolledTooltip placement="right" target="time-zone-info-weekend">
+                                <div className="d-flex flex-column align-items-start">
+                                  <p className="m-0">
+                                    Based on preferred
+                                    <br /> time zone
+                                  </p>
+                                </div>
+                              </UncontrolledTooltip>
+                            </div>
+                          </Row>
+                          <Row className="mb-1 mt-2">
+                            <Col sm="6" md="6" lg="3">
+                              <Label className="form-label" for="weekendStartTime">
+                                Start time<span className="label-asterisk me-50">*</span>
+                              </Label>
+                              <Controller
+                                id="weekendStartTime"
+                                name="weekendStartTime"
+                                control={control}
+                                invalid={errors.weekendStartTime && true}
+                                render={({ field }) => (
+                                  <Select
+                                    {...field}
+                                    options={timeOptions}
+                                    classNamePrefix="select"
+                                    placeholder="Select start time"
+                                    theme={selectThemeColors}
+                                    className={classNames('react-select', {
+                                      'is-invalid': errors && errors.weekendStartTime,
+                                    })}
+                                    onChange={(selectedOption) => {
+                                      field.onChange(selectedOption);
+                                      setValue('weekendEndTime', null);
+                                    }}
+                                  />
+                                )}
+                              />
+                              {errors.weekendStartTime && (
+                                <FormFeedback>{errors.weekendStartTime.label.message}</FormFeedback>
+                              )}
+                            </Col>
+                            <Col sm="6" md="6" lg="3">
+                              <Label className="form-label" for="weekendEndTime">
+                                End time<span className="label-asterisk me-50">*</span>
+                              </Label>
+                              <Controller
+                                id="weekendEndTime"
+                                name="weekendEndTime"
+                                control={control}
+                                invalid={errors.weekendEndTime && true}
+                                render={({ field }) => (
+                                  <Select
+                                    options={
+                                      watch('weekendStartTime')
+                                        ? timeOptions.filter(
+                                            (t) =>
+                                              parseInt(t.value, 10) > parseInt(watch('weekendStartTime').value, 10),
+                                          )
+                                        : timeOptions
+                                    }
+                                    classNamePrefix="select"
+                                    placeholder="Select end time"
+                                    theme={selectThemeColors}
+                                    className={classNames('react-select', {
+                                      'is-invalid': errors && errors.weekendEndTime,
+                                    })}
+                                    {...field}
+                                  />
+                                )}
+                              />
+                              {errors.weekendEndTime && (
+                                <FormFeedback>{errors.weekendEndTime.label.message}</FormFeedback>
+                              )}
+                            </Col>
+                          </Row>
+                          <Row className="mt-2">
+                            <h5 className="m-0">
+                              Which days?
+                              <span className="label-asterisk me-50">*</span>
+                            </h5>
+                          </Row>
+                          <div className="custom-checkbox-border">
+                            <Controller
+                              control={control}
+                              name="weekends"
+                              render={({ field }) => (
+                                <div className="demo-inline-spacing">
+                                  <div className="form-check form-check-inline checkbox-custom-margin">
+                                    <Input
+                                      type="checkbox"
+                                      {...field}
+                                      id="SATURDAY"
+                                      checked={field.value.includes('SATURDAY')}
+                                      onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        const value = 'SATURDAY';
+
+                                        if (isChecked) {
+                                          field.onChange([...field.value, value]);
+                                        } else {
+                                          field.onChange(field.value.filter((v) => v !== value));
+                                        }
+                                      }}
+                                    />
+                                    <Label for="SATURDAY" className="form-check-label">
+                                      Sat
+                                    </Label>
+                                  </div>
+                                  <div className="form-check form-check-inline checkbox-custom-margin">
+                                    <Input
+                                      type="checkbox"
+                                      {...field}
+                                      id="SUNDAY"
+                                      checked={field.value.includes('SUNDAY')}
+                                      onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        const value = 'SUNDAY';
+
+                                        if (isChecked) {
+                                          field.onChange([...field.value, value]);
+                                        } else {
+                                          field.onChange(field.value.filter((v) => v !== value));
+                                        }
+                                      }}
+                                    />
+                                    <Label for="SUNDAY" className="form-check-label">
+                                      Sun
+                                    </Label>
+                                  </div>
+                                </div>
+                              )}
+                            />
+                          </div>
+                          {errors.weekends && <FormFeedback>{errors.weekends.message}</FormFeedback>}
+                        </div>
+                      )}
+                    </>
+                  )}
+              </Row>
+            </CardBody>
+          </Card>
+          <Card className="w-75">
+            <CardHeader>
+              <h4 className="m-0 mt-1">Payments</h4>
+            </CardHeader>
+            <hr className="m-0 card-header-border" />
+            <CardBody>
+              <Row className="mb-1">
+                <Col sm="12" md="6" lg="3">
+                  <Label className="form-label" for="currencyPreference">
+                    Preferred Currency<span className="label-asterisk me-50">*</span>
+                  </Label>
+                  <Controller
+                    id="currencyPreference"
+                    name="currencyPreference"
+                    control={control}
+                    invalid={errors.currencyPreference && true}
+                    render={({ field }) => (
+                      <AsyncPaginate
+                        isDisabled
+                        loadOptions={loadCurrenciesOptions}
+                        classNamePrefix="select"
+                        placeholder="Select one"
+                        theme={selectThemeColors}
+                        className={classNames('react-select', {
+                          'is-invalid': errors && errors.currencyPreference,
+                        })}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.currencyPreference && <FormFeedback>{errors.currencyPreference.label.message}</FormFeedback>}
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+          <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
+            <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
+              <UploadIconContainer>
+                <ChevronLeft size={18} color={theme.activeNavPillText} />
+              </UploadIconContainer>
+              <h5 className="fw-bold">Back</h5>
+            </div>
+            <div>
+              <Button color="primary" outline className="me-2" onClick={onSkipClick}>
+                <span className="me-50">Skip</span>
+                <ChevronRight size={14} />
+              </Button>
+              <Button color="primary" type="submit" disabled={!isValid || profileDetailsIsLoading}>
+                {profileDetailsIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Save & Continue</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </Form>
+      )}
     </ProfileFormContainer>
   );
 };

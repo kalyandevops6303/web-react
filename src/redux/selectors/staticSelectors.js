@@ -32,11 +32,19 @@ export const educationsLoading = createSelector(staticSelector, (staticData) => 
 
 export const toolsList = createSelector(staticSelector, (staticData) => staticData.tools);
 
+export const toolsListAI = createSelector(staticSelector, (staticData) => staticData.toolsFromAI);
+
 export const toolsLoading = createSelector(staticSelector, (staticData) => staticData.toolsLoading);
+
+export const toolsLoadingAI = createSelector(staticSelector, (staticData) => staticData.toolsFromAILoading);
 
 export const skillsList = createSelector(staticSelector, (staticData) => staticData.skills);
 
+export const skillsListAI = createSelector(staticSelector, (staticData) => staticData.skillsFromAI);
+
 export const skillsLoading = createSelector(staticSelector, (staticData) => staticData.skillsLoading);
+
+export const skillsLoadingAI = createSelector(staticSelector, (staticData) => staticData.skillsFromAILoading);
 
 export const certificatesList = createSelector(staticSelector, (staticData) => staticData.certificates);
 
@@ -60,3 +68,11 @@ export const companyIndustriesLoading = createSelector(
 export const projectAreas = createSelector(staticSelector, (staticData) => staticData.projectAreas);
 
 export const projectAreasLoading = createSelector(staticSelector, (staticData) => staticData.projectAreasLoading);
+
+export const disputeTypes = createSelector(staticSelector, (staticData) => staticData.disputeTypes);
+
+export const disputeTypesLoading = createSelector(staticSelector, (staticData) => staticData.disputeTypesLoading);
+
+export const ratingTags = createSelector(staticSelector, (staticData) => staticData.ratingTags);
+
+export const ratingTagsLoading = createSelector(staticSelector, (staticData) => staticData.ratingTagsLoading);

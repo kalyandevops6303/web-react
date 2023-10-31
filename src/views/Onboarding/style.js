@@ -15,6 +15,9 @@ export const HeaderContainer = styled.div`
     .version {
       margin-top: 0.4rem;
     }
+    .onboarding-header-logo {
+      max-height: 28px;
+    }
   }
 `;
 
@@ -46,7 +49,7 @@ export const TabsContainer = styled.div`
 
   .nav-item {
     .nav-link {
-      cursor: default;
+      cursor: ${(props) => (props.isEditing ? 'pointer' : 'default')};
     }
   }
 `;
@@ -236,6 +239,11 @@ export const ProfileFormContainer = styled.div`
 
   .card-header-border {
     border: 1px solid ${theme.cardHeaderBorderColor};
+  }
+  .order-list {
+    li {
+      margin-top: 15px;
+    }
   }
 `;
 

@@ -384,7 +384,7 @@ export const TableContainer = styled.div`
 
 export const InviteUsersListContainer = styled.div`
   max-height: 200px;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   .user-pic {
     cursor: auto !important;
@@ -430,6 +430,8 @@ export const TextEditorContainer = styled.div`
 
   .ql-toolbar.ql-snow + .ql-container.ql-snow {
     min-height: 150px;
+    max-height: 35rem;
+    overflow-y: auto;
   }
 `;
 

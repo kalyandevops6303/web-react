@@ -4,9 +4,19 @@ const createProjectSelector = (state) => state.createProject;
 
 export const createProjectData = createSelector(createProjectSelector, (createProject) => createProject.createProject);
 
+export const createProjectAIData = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.createProjectUsingAI,
+);
+
 export const createProjectLoading = createSelector(
   createProjectSelector,
   (createProject) => createProject.createProjectLoading,
+);
+
+export const createProjectAILoading = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.createProjectAILoading,
 );
 
 export const bestTalents = createSelector(createProjectSelector, (createProject) => createProject.bestTalents);
@@ -21,6 +31,13 @@ export const favoriteTalents = createSelector(createProjectSelector, (createProj
 export const favoriteTalentsLoading = createSelector(
   createProjectSelector,
   (createProject) => createProject.favoriteTalentsLoading,
+);
+
+export const favoriteTeams = createSelector(createProjectSelector, (createProject) => createProject.favoriteTeams);
+
+export const favoriteTeamsLoading = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.favoriteTeamsLoading,
 );
 
 export const almaMaterTalents = createSelector(

@@ -2,11 +2,15 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   createProject: null,
+  createProjectUsingAI: null,
   createProjectLoading: false,
+  createProjectAILoading: false,
   bestTalents: null,
   bestTalentsLoading: false,
   favoriteTalents: null,
   favoriteTalentsLoading: false,
+  favoriteTeams: null,
+  favoriteTeamsLoading: false,
   almaMaterTalents: null,
   almaMaterTalentsLoading: false,
   inviteTalentsLoading: false,
@@ -33,6 +37,22 @@ const createProjectSlice = createSlice({
       error: action.payload,
     }),
 
+    createProjectAIRequest: (state) => ({
+      ...state,
+      createProjectAILoading: true,
+      error: null,
+    }),
+    createProjectAISuccess: (state, action) => ({
+      ...state,
+      createProjectAILoading: false,
+      createProjectUsingAI: action.payload,
+    }),
+    createProjectAIFailure: (state, action) => ({
+      ...state,
+      createProjectAILoading: false,
+      error: action.payload,
+    }),
+
     clearCreateProjectData: (state) => ({
       ...state,
       createProjectLoading: false,
@@ -41,6 +61,8 @@ const createProjectSlice = createSlice({
       bestTalentsLoading: false,
       favoriteTalents: null,
       favoriteTalentsLoading: false,
+      favoriteTeams: null,
+      favoriteTeamsLoading: false,
       almaMaterTalents: null,
       almaMaterTalentsLoading: false,
     }),
@@ -77,6 +99,22 @@ const createProjectSlice = createSlice({
       error: action.payload,
     }),
 
+    favoriteTeamsRequest: (state) => ({
+      ...state,
+      favoriteTeamsLoading: true,
+      error: null,
+    }),
+    favoriteTeamsSuccess: (state, action) => ({
+      ...state,
+      favoriteTeamsLoading: false,
+      favoriteTeams: action.payload,
+    }),
+    favoriteTeamsFailure: (state, action) => ({
+      ...state,
+      favoriteTeamsLoading: false,
+      error: action.payload,
+    }),
+
     almaMaterTalentsRequest: (state) => ({
       ...state,
       almaMaterTalentsLoading: true,
@@ -107,6 +145,15 @@ const createProjectSlice = createSlice({
       inviteTalentsLoading: false,
       error: action.payload,
     }),
+    clearModalData: (state) => ({
+      ...state,
+      bestTalents: null,
+      bestTalentsLoading: false,
+      favoriteTalents: null,
+      favoriteTalentsLoading: false,
+      almaMaterTalents: null,
+      almaMaterTalentsLoading: false,
+    }),
   },
 });
 
@@ -114,6 +161,9 @@ export const {
   createProjectRequest,
   createProjectSuccess,
   createProjectFailure,
+  createProjectAIRequest,
+  createProjectAISuccess,
+  createProjectAIFailure,
   clearCreateProjectData,
   bestTalentsRequest,
   bestTalentsSuccess,
@@ -121,12 +171,16 @@ export const {
   favoriteTalentsRequest,
   favoriteTalentsSuccess,
   favoriteTalentsFailure,
+  favoriteTeamsRequest,
+  favoriteTeamsSuccess,
+  favoriteTeamsFailure,
   almaMaterTalentsRequest,
   almaMaterTalentsSuccess,
   almaMaterTalentsFailure,
   inviteTalentsRequest,
   inviteTalentsSuccess,
   inviteTalentsFailure,
+  clearModalData,
 } = createProjectSlice.actions;
 
 export default createProjectSlice.reducer;

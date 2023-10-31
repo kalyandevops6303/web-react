@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { TimeCardWrapper } from './style';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import AvailableTimeComp from '../../../@core/components/available-time-comp';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const AvailableTime = () => {
   const navigate = useNavigate();
@@ -20,9 +21,15 @@ const AvailableTime = () => {
 
   const handleEditClick = (e) => {
     e.stopPropagation();
-    navigate(`/${userDetailsData?.user_type?.toLowerCase()}-onboarding/availability-details`, {
-      state: { isEditing: true },
-    });
+    if (userDetailsData.user_type === userTypes.team) {
+      navigate(`/create-team/profile-details`, {
+        state: { isEditing: true },
+      });
+    } else {
+      navigate(`/${userDetailsData?.user_type?.toLowerCase()}-onboarding/availability-details`, {
+        state: { isEditing: true },
+      });
+    }
   };
 
   return (

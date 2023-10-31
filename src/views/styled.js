@@ -31,19 +31,29 @@ const Header = styled.div`
 `;
 
 const CustomBadge = styled.span`
-  .light-blue {
+  .light-blue,
+  .NEW {
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
   }
   .OPEN {
-    background: ${theme.succesGreenBg};
-    color: ${theme.succesGreenColor};
+    background: ${theme.lightGreenBg} !important;
+    color: ${theme.lighGreenColor};
   }
-  .IN_REVIEW {
+  .COMPLETED,
+  .ACCEPTED {
+    background: ${theme.lightGreenBg} !important;
+    color: ${theme.lighGreenColor};
+  }
+  .IN_REVIEW,
+  .ON_GOING,
+  .REVIEWED,
+  .DRAFT {
     background: ${theme.orange}1f;
     color: ${theme.orange};
   }
-  .TERMINATED {
+  .TERMINATED,
+  .REJECTED {
     background: ${theme.darkRedColor}1f;
     color: ${theme.darkRedColor};
   }
@@ -52,16 +62,26 @@ const CustomBadge = styled.span`
     background: ${theme.disabledGrayColor}1f;
     color: ${theme.disabledGrayColor};
   }
+  .OPEN_PROJECT {
+    background: ${theme.lightGreenBg}1f !important;
+    color: ${theme.lighGreenColor};
+  }
+  .INVITED {
+    color: ${theme.purpleColor};
+    background: ${theme.purpleColor}1f !important;
+  }
 `;
 
 const FormWrapper = styled.div`
   .select__placeholder,
-  .wide__placeholder {
+  .wide__placeholder,
+  .name__placeholder {
     font-size: 12px;
     color: ${theme.textMuted};
   }
   .select__indicator,
-  .wide__indicator {
+  .wide__indicator,
+  .name__indicator {
     svg {
       color: ${theme.textMuted};
     }
@@ -74,6 +94,7 @@ const SecondaryFiltersWrap = styled.div`
   gap: 1rem;
   margin-top: 0.4rem;
   margin-bottom: 2rem;
+
   .marketplace-search {
     min-width: 18rem;
   }
@@ -85,6 +106,11 @@ const SecondaryFiltersWrap = styled.div`
     min-width: 12rem;
     width: 12rem;
   }
+  .name__control {
+    min-width: 14rem;
+    width: 14rem;
+  }
+
   .wide__menu {
     width: 250px;
   }
@@ -131,11 +157,13 @@ const SecondaryFiltersWrap = styled.div`
       width: 100%;
       margin-bottom: 1rem;
     }
-    .wide__control {
+    .wide__control,
+    .name__control {
       width: 100%;
       margin-bottom: 1rem;
     }
-    .wide__menu {
+    .wide__menu,
+    .name__menu {
       width: 100%;
     }
     .reset-btn {
@@ -177,13 +205,13 @@ const TimeWrapper = styled.section`
     height: 8px;
     width: 8px;
     display: block;
-    background: rgba(217, 217, 217, 0.5);
+    background: ${theme.dotBg};
     border-radius: 50%;
     margin: auto;
     margin-bottom: 6px;
   }
   .active {
-    background: #28c76f;
+    background: ${theme.green};
   }
   .line {
     width: 1px;
@@ -212,4 +240,114 @@ const TimeWrapper = styled.section`
     }
   }
 `;
-export { CardWrapper, Header, CustomBadge, FormWrapper, SecondaryFiltersWrap, TimeWrapper };
+
+const CreateBidRadioOption = styled.div`
+  min-height: 210px;
+  padding: 1rem;
+  border-radius: 6px;
+  border: ${(props) => (props.active ? `1px solid ${theme.activeNavPillText}` : `1px solid ${theme.darkBorder}`)};
+  background-color: ${(props) => (props.active ? `${theme.lightBlueBgRadio}` : `${theme.lightGrayBgRadio}`)};
+
+  .form-check-input:not(:disabled):checked {
+    box-shadow: 0px 2px 4px ${theme.checkboxShadow};
+  }
+
+  .form-check-input:checked {
+    background-color: ${theme.activeNavPillText};
+    border-color: ${theme.activeNavPillText};
+  }
+
+  .label {
+    p {
+      color: ${(props) => (props.active ? `${theme.activeNavPillText}` : `${theme.secondary}`)};
+    }
+  }
+`;
+
+const GrayBorderContainer = styled.div`
+  border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+
+  .custom-header-margin {
+    margin-top: -1.6rem;
+  }
+`;
+
+const InviteHeadContainer = styled.div`
+  border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+
+  .custom-header-margin {
+    margin-top: -2.2rem;
+  }
+`;
+
+export const BlueNavsContainer = styled.div`
+  .nav {
+    border-radius: 0;
+  }
+
+  .nav-link {
+    font-weight: 400;
+  }
+
+  .nav-tabs .nav-link.active {
+    border-bottom: 3px solid ${theme.activeNavPillText} !important;
+    margin-bottom: -2px;
+    color: ${theme.activeNavPillText};
+    font-weight: 600;
+  }
+
+  .nav-tabs .nav-link:after {
+    background: none !important;
+  }
+`;
+
+const GrayCardWrapper = styled.div`
+  .card-header {
+    background-color: ${theme.headerBackground};
+  }
+
+  .card-body {
+    background-color: ${theme.headerBackground};
+  }
+
+  .white-card-bg {
+    .card-body {
+      border-radius: 6px;
+      background-color: ${theme.white};
+      box-shadow: 0px 4px 24px 0px ${theme.cardShadowLight};
+    }
+
+    .text-blue {
+      color: ${theme.activeNavPillText};
+    }
+  }
+`;
+const TeamCreatedModalImageWrapper = styled.section`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid ${theme.navPillText};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const TeamCreatedModalLogoImg = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+`;
+
+export {
+  CardWrapper,
+  Header,
+  CustomBadge,
+  FormWrapper,
+  SecondaryFiltersWrap,
+  TimeWrapper,
+  CreateBidRadioOption,
+  GrayBorderContainer,
+  InviteHeadContainer,
+  GrayCardWrapper,
+  TeamCreatedModalImageWrapper,
+  TeamCreatedModalLogoImg,
+};
