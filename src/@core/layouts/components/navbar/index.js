@@ -195,7 +195,7 @@ const ThemeNavbar = (props) => {
 
           {userData?.user_type === userTypes.talent && (
             <NavLink
-              onClick={() => setActiveTab('clubs')}
+              onClick={() => dispatch(setActiveNavTab('clubs'))}
               className={
                 (location?.pathname?.split('/')?.[1] === 'clubs' ||
                 location?.state?.from?.primary === 'clubs' ||
