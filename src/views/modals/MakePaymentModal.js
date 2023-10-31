@@ -90,13 +90,12 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
         <MakePaymentModalWrapper>
           <CardTitle className="d-flex justify-content-center modal-header">Milestone Payment</CardTitle>
           <div className="px-4">
-            <CardTitle className="modal-title">Let&apos;s Start!</CardTitle>
             <CardText className="mt-1">
-              In order for the project to start, at any given point of time minimum of 2 milestone payments needs to be
-              made.
+              At any given point of time a minimum of 2 milestone payments need to be paid. This does not apply for
+              projects with only 1 milestone.
             </CardText>
             <CardText>
-              <b>Note: </b> Insufficient funds will result in putting the upcoming milestone on hold
+              <b>Note: </b> Without the minimum milestone payment the project will be put on hold.
             </CardText>
             {milestoneData?.length > 0 &&
               milestoneData.map((item) => (
@@ -134,12 +133,14 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                 </Card>
               ))}
             <div className="d-flex justify-content-between px-1">
-              <CardText style={{ fontSize: '16px' }}>Trumio Fee 20%</CardText>
+              <CardText style={{ fontSize: '16px' }}>Trumio Fee (20%)</CardText>
               <CardText style={{ fontSize: '16px' }}>{`$ ${trumioFee.toLocaleString()}`}</CardText>
             </div>
             <hr className="m-0 card-header-border" />
             <div className="d-flex justify-content-between p-1">
-              <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Inclusive of Trumio fee 20%</CardText>
+              <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                Total payment (Inclusive of Trumio fee)
+              </CardText>
               <CardText
                 style={{ fontSize: '16px', fontWeight: '500' }}
               >{`$ ${totalPending.toLocaleString()}`}</CardText>

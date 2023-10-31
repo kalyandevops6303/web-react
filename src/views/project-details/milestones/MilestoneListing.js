@@ -39,13 +39,15 @@ const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
               <Badge color={getTagSettings(mile.status).theme}>{getTagSettings(mile.status).text}</Badge>
               <div className="ms-2">
                 <CardText className="fw-normal mb-0 fs-6">Start Date</CardText>
-                <CardText className="fw-bolder fs-5 mb-0">
+                <CardText className="fw-bolder fs-5 mb-0 text-center">
                   {mile.start_date ? formatDate(mile.start_date) : '-'}
                 </CardText>
               </div>
               <div className="mx-2">
-                <CardText className="fw-normal mb-0 fs-6">Completed</CardText>
-                <CardText className="fw-bolder fs-5 mb-0">{mile.end_date ? formatDate(mile.end_date) : '-'}</CardText>
+                <CardText className="fw-normal mb-0 fs-6">End Date</CardText>
+                <CardText className="fw-bolder fs-5 mb-0 text-center">
+                  {mile.end_date ? formatDate(mile.end_date) : '-'}
+                </CardText>
               </div>
               <ChevronRight color="#B9B9C3" />
             </div>
