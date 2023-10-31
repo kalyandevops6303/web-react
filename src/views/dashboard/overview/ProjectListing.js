@@ -206,7 +206,9 @@ const ProjectListing = () => {
         dispatch(getActiveProjectsForClient());
       } else if (userDetailsData?.user_type === userTypes.talent) {
         dispatch(getActiveProjectsForTalent());
-      } else if (userDetailsData?.user_type === userTypes.team) {
+      } else if (userDetailsData?.team_type === userTypes.team) {
+        dispatch(getActiveProjectsForTeam());
+      } else if (userDetailsData?.team_type === userTypes.club) {
         dispatch(getActiveProjectsForTeam());
       }
     }
@@ -215,12 +217,18 @@ const ProjectListing = () => {
         dispatch(getUpcomingProjectsForClient());
       } else if (userDetailsData?.user_type === userTypes.talent) {
         dispatch(getUpcomingProjectsForTalent());
-      } else if (userDetailsData?.user_type === userTypes.team) {
+      } else if (userDetailsData?.team_type === userTypes.team) {
+        dispatch(getUpcomingProjectsForTeam());
+      } else if (userDetailsData?.team_type === userTypes.club) {
         dispatch(getUpcomingProjectsForTeam());
       }
     }
     if (open === '3') {
-      if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
+      if (
+        userDetailsData?.user_type === userTypes.talent ||
+        userDetailsData?.team_type === userTypes.team ||
+        userDetailsData?.team_type === userTypes.club
+      ) {
         dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
       }
     }

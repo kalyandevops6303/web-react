@@ -36,6 +36,7 @@ const tooltipColor = '#ff0000';
 const darkGreenColor = '#0097A7';
 const darkGreenBgColor = '#E0F7FA';
 const orange = '#FF6D00';
+const lightOrange = '#FF6D001A';
 const blueBorderColorv2 = '#0578FB';
 const blueCardBg = '#E9F3FF';
 const tableHeaderColor = '#F3F2F7';
@@ -128,6 +129,7 @@ const theme = {
   darkGreenColor,
   darkGreenBgColor,
   orange,
+  lightOrange,
   succesGreenColor,
   succesGreenBg,
   joinReqColor,

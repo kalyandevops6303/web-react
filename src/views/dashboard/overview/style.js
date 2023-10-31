@@ -444,6 +444,15 @@ const DashboardHeaderWrapper = styled.div`
   }
 `;
 
+const InReviewButton = styled.button`
+  background-color: ${theme.lightOrange} !important;
+  color: ${theme.orange} !important;
+  border-radius: 16px !important;
+  padding: 4px 15px !important;
+  border: none;
+  outline: none;
+`;
+
 const TagsWrap = styled.div`
   // height: ${(props) => (props.fullWidth ? 'auto' : '60px')};
   overflow: hidden;
@@ -548,4 +557,5 @@ export {
   CreateTeamButtonWrapper,
   DisputesLegend,
   DisputesChartContainer,
+  InReviewButton,
 };

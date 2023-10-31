@@ -248,7 +248,9 @@ const TalentListing = () => {
       <AccordionItem>
         <AccordionHeader targetId="2">
           <AccordionHeadStyle>
-            <span className="d-flex align-items-center">Recommended Talents</span>
+            <span className="d-flex align-items-center">
+              {userDetailsData?.team_type === userTypes.club ? 'Recommended Members' : 'Recommended Talents'}
+            </span>
             {recommendedTalent?.data?.length > 0 && (
               <CardText onClick={handleViewAll} className="view-all-cta">
                 View All

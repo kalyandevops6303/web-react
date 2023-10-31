@@ -13,7 +13,7 @@ import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
 import { checkBidsAccepted, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
-import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
+import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
@@ -179,22 +179,18 @@ const PrivateDashboard = () => {
       {deleteModal && (
         <RemoveMemberModal modal={deleteModal} data={deleteModalData} toggleModal={() => setDeletModal(!deleteModal)} />
       )}
-
       {raisedDisputeModal && (
         <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
       )}
-
       {optionsModal && (
         <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} />
       )}
-
       {inviteClubMembersModal && (
         <InviteClubMemberModal
           modal={inviteClubMembersModal}
           toggleModal={() => setInviteClubMembersModal(!inviteClubMembersModal)}
         />
       )}
-
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
@@ -203,20 +199,25 @@ const PrivateDashboard = () => {
           </Button>
         </DashboardHeaderWrapper>
       )}
-      {userDetailsData?.user_type === userTypes.team && (
+      {userDetailsData?.team_type === userTypes.team && (
         <DashboardHeaderWrapper>
           <Button as="link" color="primary" onClick={onTeamInvite}>
             Invite Talent
           </Button>
         </DashboardHeaderWrapper>
       )}
-      {userDetailsData?.user_type === userTypes.club && (
+      {userDetailsData?.team_type === userTypes.club && (
         <DashboardHeaderWrapper>
-          <Button as="link" color="primary" onClick={onClubInvite}>
-            Invite Members
-          </Button>
+          {userDetailsData?.is_verified ? (
+            <Button as="link" color="primary" onClick={onClubInvite}>
+              Invite Members
+            </Button>
+          ) : (
+            <InReviewButton>In review</InReviewButton>
+          )}
         </DashboardHeaderWrapper>
       )}
+
       {inviteTalentToTeamModal && !isClubInvite && (
         <InviteTalentToTeam
           inviteTeamMemberModal={inviteTeamMemberModal}
@@ -245,7 +246,6 @@ const PrivateDashboard = () => {
           </Button>
         </CreateTeamButtonWrapper>
       )}
-
       <Row>
         <Col lg="8" sm="12">
           <Row>
@@ -266,9 +266,15 @@ const PrivateDashboard = () => {
               <OpenListing />
             </section>
           )}
-          {userDetailsData?.user_type === userTypes.team && (
+          {userDetailsData?.team_type === userTypes.team && (
             <section className="mb-2">
               <Header className="mb-1">Talents</Header>
+              <TalentListing />
+            </section>
+          )}
+          {userDetailsData?.team_type === userTypes.club && (
+            <section className="mb-2">
+              <Header className="mb-1">Members</Header>
               <TalentListing />
             </section>
           )}
@@ -281,15 +287,15 @@ const PrivateDashboard = () => {
         </Col>
 
         <Col lg="4" sm="12">
-          {userDetailsData?.user_type !== userTypes.club && <AvailableTime />}
-          {userDetailsData?.user_type === userTypes.club && (
+          {userDetailsData?.team_type !== userTypes.club && <AvailableTime />}
+          {userDetailsData?.team_type === userTypes.club && (
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
               // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
-          {userDetailsData?.user_type === userTypes.team && (
+          {userDetailsData?.team_type === userTypes.team && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}

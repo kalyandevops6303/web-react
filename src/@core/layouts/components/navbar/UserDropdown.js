@@ -154,7 +154,11 @@ const UserDropdown = () => {
               </div>
             </UncontrolledTooltip>
           )}
-          <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
+          <span className="user-status">
+            {userDetailsData?.team_type
+              ? capitalize(userDetailsData?.team_type)
+              : capitalize(userDetailsData?.user_type) || 'Role'}
+          </span>
         </div>
         {userDetailsData?.user_type === userTypes.talent && (
           <Avatar
@@ -260,7 +264,7 @@ const UserDropdown = () => {
                       </UncontrolledTooltip>
                     )}
                     <span className="w-100 font-small-3 d-block user-status text-start">
-                      {capitalize(team?.user_type) || 'Role'}
+                      {capitalize(team?.team_type) || 'Role'}
                     </span>
                   </div>
                 </section>
