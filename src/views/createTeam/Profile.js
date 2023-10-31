@@ -85,8 +85,7 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Five tools has to be added')
-      .min(5, 'Five tools has to be added'),
+      .max(5, 'Maximum of five tools can be added'),
     skills: yup
       .array()
       .of(
@@ -95,9 +94,7 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Maximum of five skills can be added')
-      .min(5, 'Five skills has to be added')
-      .required('Skill is required'),
+      .max(5, 'Maximum of five skills can be added'),
     preferredWorkingTimeZone: yup
       .object()
       .shape({
@@ -281,8 +278,9 @@ const Profile = () => {
       weekendStartTime,
       weekendEndTime,
     } = data;
+
     const languages_supported = languagesSupported?.map((language) => language.value);
-    const skillsSelected = skills.map((skill) => skill.value);
+    const skillsSelected = skills?.map((skill) => skill.value);
     const servicesSelected = services.map((skill) => skill.value);
     const toolsSelected = tools?.map((skill) => skill.value);
     const availability = {
@@ -839,7 +837,7 @@ const Profile = () => {
               </Col>
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="skills">
-                  Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
+                  Skills <i>(Top 5)</i>
                 </Label>
                 <Controller
                   id="skills"

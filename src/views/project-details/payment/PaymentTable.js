@@ -50,8 +50,11 @@ const PaymentTable = () => {
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
       return { theme: 'light-warning', text: 'Payment Due' };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING || tag === PAYMENT_STATUS.INITIATED) {
+    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: 'Payment Processing' };
+    }
+    if (tag === PAYMENT_STATUS.INITIATED) {
+      return { theme: 'light-primary', text: 'Payment Initiated' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
       return { theme: 'light-success', text: 'Payment Success' };
