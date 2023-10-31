@@ -76,7 +76,7 @@ const ClubCard = ({ data, isSearchPage }) => {
                   {data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : ''}
                 </span> */}
               </div>
-              <CardText className="team-desc mb-1">{data?.introduction} </CardText>
+              <CardText className="team-desc mb-1">{data?.introduction || data?.tagline} </CardText>
 
               <div className="avatar-wrap mb-1">
                 {users.length > 3 ? (
