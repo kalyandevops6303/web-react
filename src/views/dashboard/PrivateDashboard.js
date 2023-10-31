@@ -29,7 +29,9 @@ import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
 import { setItem } from '../../utility/localStorageControl';
+import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
+import ClubSection from './overview/ClubSection';
 import InviteClubMemberModal from '../modals/InviteClubMemberModal';
 
 const PrivateDashboard = () => {
@@ -141,6 +143,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModal(true);
     } else {
       navigate('/marketplace/teams');
+      dispatch(setActiveNavTab('marketplace'));
     }
   };
 
@@ -200,7 +203,13 @@ const PrivateDashboard = () => {
           </Button>
         </DashboardHeaderWrapper>
       )}
-
+      {userDetailsData?.user_type === userTypes.club && (
+        <DashboardHeaderWrapper>
+          <Button as="link" color="primary">
+            Invite Members
+          </Button>
+        </DashboardHeaderWrapper>
+      )}
       {inviteTalentToTeamModal && (
         <InviteTalentToTeam
           inviteTeamMemberModal={inviteTeamMemberModal}
@@ -223,18 +232,15 @@ const PrivateDashboard = () => {
       )}
 
       <Row>
-        <Col lg="4" sm="12">
-          <EarningCard />
-        </Col>
-        <Col lg="4" sm="12">
-          <RewardsCard />
-        </Col>
-        <Col lg="4" sm="12">
-          <AvailableTime />
-        </Col>
-      </Row>
-      <Row>
         <Col lg="8" sm="12">
+          <Row>
+            <Col lg="6" sm="12">
+              <EarningCard />
+            </Col>
+            <Col lg="6" sm="12">
+              <RewardsCard />
+            </Col>
+          </Row>
           <section className="mb-2">
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
@@ -258,7 +264,16 @@ const PrivateDashboard = () => {
             </section>
           )}
         </Col>
+
         <Col lg="4" sm="12">
+          {userDetailsData?.user_type !== userTypes.club && <AvailableTime />}
+          {userDetailsData?.user_type === userTypes.club && (
+            <ClubSection
+              modal={listingTeamMembersModal}
+              toggleModal={toggleListingTeamMembersModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            />
+          )}
           {userDetailsData?.user_type === userTypes.team && (
             <TeamSection
               modal={listingTeamMembersModal}

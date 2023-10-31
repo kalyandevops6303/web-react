@@ -103,8 +103,6 @@ const Profile = () => {
     }
 
     const removeEmptyClubData = removeEmptyKeys(clubData);
-
-    console.log('formData: ', removeEmptyClubData);
     dispatch(setClubCreateDataAction(removeEmptyClubData));
     onEmailVerifySuccess(formData.clubEmailID);
     toggleEmailVerifyModal();

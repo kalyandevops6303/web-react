@@ -61,7 +61,7 @@ const Account = () => {
       .of(
         yup.object().shape({
           label: yup.string(),
-          value: yup.string(),
+          value: yup.object(),
         }),
       )
       .max(5, 'Maximum of five interests can be added')
@@ -73,7 +73,7 @@ const Account = () => {
       .of(
         yup.object().shape({
           label: yup.string(),
-          value: yup.string(),
+          value: yup.object(),
         }),
       )
       .max(5, 'Maximum of five tools can be added')
@@ -83,7 +83,7 @@ const Account = () => {
       .of(
         yup.object().shape({
           label: yup.string(),
-          value: yup.string(),
+          value: yup.object(),
         }),
       )
       .max(5, 'Maximum of five skills can be added')
@@ -223,7 +223,7 @@ const Account = () => {
             interests: interestsSelected,
             tools: toolsSelected,
             skills: skillsSelected,
-            education_institute: educationInstitution?.value,
+            education_institute: educationInstitution,
           };
         } else {
           reqData = {
@@ -234,7 +234,7 @@ const Account = () => {
             interests: interestsSelected,
             tools: toolsSelected,
             skills: skillsSelected,
-            education_institute: educationInstitution?.value,
+            education_institute: educationInstitution,
           };
         }
       } else {
@@ -248,7 +248,7 @@ const Account = () => {
             interests: interestsSelected,
             tools: toolsSelected,
             skills: skillsSelected,
-            education_institute: educationInstitution?.value,
+            education_institute: educationInstitution,
           };
         } else {
           reqData = {
@@ -258,7 +258,7 @@ const Account = () => {
             interests: interestsSelected,
             tools: toolsSelected,
             skills: skillsSelected,
-            education_institute: educationInstitution?.value,
+            education_institute: educationInstitution,
           };
         }
       }
@@ -313,7 +313,7 @@ const Account = () => {
     try {
       const response = await projectAreasService();
 
-      const options = response?.data?.data?.map((area) => ({ label: area.name, value: area._id }));
+      const options = response?.data?.data?.map((area) => ({ label: area.name, value: area }));
 
       setProjectAreasOptions(options);
 
@@ -334,7 +334,7 @@ const Account = () => {
     try {
       const response = await toolsService();
 
-      const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool._id }));
+      const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool }));
 
       setToolsOptions(options);
 
@@ -355,7 +355,7 @@ const Account = () => {
     try {
       const response = await skillsService();
 
-      const options = response?.data?.data?.map((skill) => ({ label: skill.name, value: skill._id }));
+      const options = response?.data?.data?.map((skill) => ({ label: skill.name, value: skill }));
 
       setSkillsOptions(options);
 
@@ -386,6 +386,10 @@ const Account = () => {
       if (clubCreateData?.introduction?.length > 0) {
         setValue('clubIntroduction', clubCreateData?.introduction, { shouldValidate: true });
       }
+      if (clubCreateData?.education_institute) {
+        setValue('educationInstitution', clubCreateData?.education_institute, { shouldValidate: true });
+        setSelectedOption(clubCreateData?.education_institute);
+      }
       if (clubCreateData?.interests?.length > 0) {
         setValue(
           'interests',
@@ -399,14 +403,14 @@ const Account = () => {
       if (clubCreateData?.tools?.length > 0) {
         setValue(
           'tools',
-          clubCreateData?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          clubCreateData?.tools.map((tool) => ({ label: tool.name, value: tool })),
           { shouldValidate: true },
         );
       }
       if (clubCreateData?.skills?.length > 0) {
         setValue(
           'skills',
-          clubCreateData?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          clubCreateData?.skills.map((skill) => ({ label: skill.name, value: skill })),
           { shouldValidate: true },
         );
       }
@@ -566,7 +570,7 @@ const Account = () => {
                       additional={{ page: 1 }}
                       loadOptions={loadEducationInstitutionOptions}
                       reduceOptions={reduceGroupedOptions}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, field)}
+                      onChange={(selOption) => handleSelectChange(selOption, field)}
                       classNamePrefix="select"
                       placeholder="Enter your institution name"
                       theme={selectThemeColors}

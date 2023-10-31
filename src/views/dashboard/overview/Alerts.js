@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
+import { Badge, Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
 import { AlertCardWrapper } from './style';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { getAlerts, getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
@@ -11,6 +11,7 @@ import { returnCompleteProfileDetailsCta } from '../../../utility/constants/Comp
 import { userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { CustomBadge } from '../../styled';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -207,6 +208,25 @@ const Alerts = () => {
         )}
 
         <div>
+          <Card className="card-inside d-none">
+            <CardHeader className="d-flex">
+              <CardTitle tag="h4">Club - Request Submitted</CardTitle>
+              <p className=" font-small-2 fw-light m-0">2 Hours ago</p>
+            </CardHeader>
+            <CardBody>
+              <div className="d-flex justify-content-between">
+                <p className="font-small-3 m-0"> The Intellectuals League</p>
+                <div className="d-flex status-row">
+                  <CustomBadge>
+                    <Badge className="IN_REVIEW truncate-1" color="badge">
+                      In Review
+                    </Badge>
+                  </CustomBadge>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+
           {alerts &&
             alerts?.alerts?.data.map((item) => (
               <Card key={item?._id} className="card-inside">

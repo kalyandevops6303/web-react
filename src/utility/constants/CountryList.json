@@ -16,5 +16,11 @@
     "dial_code": "+1",
     "code": "US",
     "_id": "6479c2071183add75cda4e37"
+  },
+  {
+    "label": "United Kingdom",
+    "dial_code": "+44",
+    "code": "GB",
+    "_id": "6479c2071183add75cda4e36"
   }
 ]

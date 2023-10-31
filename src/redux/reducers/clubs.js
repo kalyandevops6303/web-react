@@ -35,23 +35,6 @@ const clubSlice = createSlice({
       loading: false,
       error: action.payload,
     }),
-
-    // Verify Email
-    verifyEmailRequest: (state) => ({
-      ...state,
-      loading: true,
-      error: null,
-    }),
-    verifyEmailSuccess: (state) => ({
-      ...state,
-      loading: false,
-      isEmailVerified: true,
-    }),
-    verifyEmailFailure: (state, action) => ({
-      ...state,
-      loading: false,
-      error: action.payload,
-    }),
     getClubCreated: (state, action) => ({
       ...state,
       teamCreated: action.payload,
@@ -113,9 +96,6 @@ export const {
   registerClubEmailRequest,
   registerClubEmailSuccess,
   registerClubEmailFailure,
-  verifyEmailRequest,
-  verifyEmailSuccess,
-  verifyEmailFailure,
   getClubCreated,
   setClubCreateData,
   getCardInfoReq,

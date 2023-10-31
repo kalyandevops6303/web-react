@@ -67,7 +67,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           yup
             .number()
             .min(1, 'Expected duration should be at least 1 week')
-            .max(12, 'Expected duration cannot be greater than 12 weeks')
+            .max(52, 'Expected duration cannot be greater than 52 weeks')
             .integer('Expected duration should be a number')
             .typeError('Please enter a number')
             .required('Expected duration is required'),

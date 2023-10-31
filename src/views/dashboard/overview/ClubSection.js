@@ -7,18 +7,14 @@ import { TeamSectionWrapper } from './style';
 import UserNameRoleCompanyComp from '../../../@core/components/username-role-company';
 import { getTeamMembers } from '../../../redux/actions/dashboardActions';
 import { selectGetTeamMember } from '../../../redux/selectors/dashboardSelectors';
-import { switchProfile } from '../../../redux/actions/authActions';
-import { selectSavedUserData } from '../../../redux/selectors/authSelectors';
 
-const TeamSection = ({ toggleModal }) => {
+const ClubSection = ({ toggleModal }) => {
   const teamMembers = useSelector(selectGetTeamMember);
   const [hasMore, setHasMore] = useState(true);
 
   const dispatch = useDispatch();
   const selectTeamMembersMetadata = useSelector((state) => state.dashboard.getMemberMetaData);
   const selectTeamMembercurrentPreview = useSelector((state) => state.dashboard.memberCurrentPreview);
-  const savedUserDetails = useSelector(selectSavedUserData);
-
   const metadata = { page: 1, page_size: 10 };
 
   useEffect(() => {
@@ -31,14 +27,8 @@ const TeamSection = ({ toggleModal }) => {
     }
   }, [selectTeamMembercurrentPreview]);
 
-  const onFailure = (data) => {
-    if (data?.errorData?.message === 'Not a team member') {
-      dispatch(switchProfile({ data: savedUserDetails, onSuccess: () => {}, selected: false }));
-    }
-  };
-
   useEffect(() => {
-    dispatch(getTeamMembers({ metadata, onFailure }));
+    dispatch(getTeamMembers({ metadata }));
   }, []);
 
   const fetchMore = () => {
@@ -54,7 +44,7 @@ const TeamSection = ({ toggleModal }) => {
       <Card>
         <CardHeader className="earning-head">
           <CardTitle tag="h6">
-            Team <span className="members-count">{selectTeamMembersMetadata?.total_records} Members</span>
+            Club <span className="members-count">{selectTeamMembersMetadata?.total_records} Members</span>
           </CardTitle>
           <CardText
             onClick={toggleModal}
@@ -88,11 +78,11 @@ const TeamSection = ({ toggleModal }) => {
   );
 };
 
-TeamSection.propTypes = {
+ClubSection.propTypes = {
   toggleModal: Proptypes.func,
 };
-TeamSection.defaultProps = {
+ClubSection.defaultProps = {
   toggleModal: () => {},
 };
 
-export default TeamSection;
+export default ClubSection;

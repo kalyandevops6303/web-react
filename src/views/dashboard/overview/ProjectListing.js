@@ -57,6 +57,7 @@ import ActiveProjectCardForTalent from './ActiveProjectCardForTalent';
 import UpcomingProjectCardForTalent from './UpcomingProjectCardForTalent';
 import UpcomingProjectCardForTeam from './UpcomingProjectCardForTeam';
 import ActiveProjectCardForTeam from './ActiveProjectCardForTeam';
+import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -189,6 +190,7 @@ const ProjectListing = () => {
   const handleViewAll = (e) => {
     e.stopPropagation();
     navigate('/marketplace/all_listings', { state: { isRecommended: true } });
+    dispatch(setActiveNavTab('marketplace'));
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
@@ -227,6 +229,7 @@ const ProjectListing = () => {
   const onViewAllClick = (e, path) => {
     e.stopPropagation();
     navigate(path);
+    dispatch(setActiveNavTab('projects'));
   };
 
   return (

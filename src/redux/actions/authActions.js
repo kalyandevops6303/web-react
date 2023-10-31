@@ -73,6 +73,7 @@ import { getTeams } from './teamsActions';
 import { clearTeamCardData } from '../reducers/myTeams';
 import { clearMarketplaceCardData } from '../reducers/marketPlace';
 import { clearProjectCardData } from '../reducers/project';
+import { registerClubEmailService } from '../../services/clubServices';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -124,6 +125,7 @@ const loginUserWithGoogle =
       setItem('access_token', res.data.data.access_token);
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(loginSuccess(res.data.data));
+        dispatch(cometChatLogin(res.data.data.comet_chat_token));
       } else {
         dispatch(loginSuccess(false));
       }
@@ -217,12 +219,15 @@ const verifyOtp = (email, otp) => async (dispatch) => {
 };
 
 const resendAction =
-  ({ email, isEmailResend, phone, userType, country_code, isPhoneResend, isEmailResendFP }) =>
+  ({ email, isEmailResend, isClubEmailResend, phone, userType, country_code, isPhoneResend, isEmailResendFP }) =>
   async (dispatch) => {
     dispatch(resendRequest());
     try {
       if (isEmailResendFP) {
         await forgotPasswordService(email);
+      }
+      if (isClubEmailResend) {
+        await registerClubEmailService(email);
       }
       if (isEmailResend) {
         await registerEmailService(email, userType);
@@ -316,6 +321,7 @@ const switchProfile =
       dispatch(clearMarketplaceCardData());
       // clearing project card data
       dispatch(clearProjectCardData());
+      removeItem('selectedMyTeamsTab');
     } catch (err) {
       errorHandler(err);
     }
