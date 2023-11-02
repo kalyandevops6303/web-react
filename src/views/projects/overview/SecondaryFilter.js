@@ -196,7 +196,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       const response = await getClientNameService(page, search);
 
       return {
-        options: response?.data?.data?.data?.map((institute) => ({ label: institute.name, value: institute._id })),
+        options: response?.data?.data?.data?.map((institute) => ({
+          label: `${institute.first_name} ${institute.last_name}`,
+          value: institute._id,
+        })),
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
