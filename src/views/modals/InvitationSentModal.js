@@ -127,7 +127,6 @@ const InvitationSentModal = ({
           <img src={GreatJobTick} alt="great-job" width={120} height={120} className="me-4" />
           <div className="w-100">
             <h2 className="fw-bold font-large-1 mb-1">Great Job!</h2>
-            <h4 className="fw-bold font-small-5">Invitation sent</h4>
             <p className="fw-light font-medium-3 mt-75">{description}</p>
             <InviteUsersListContainer>
               {selectedTalents.map((talent) => (

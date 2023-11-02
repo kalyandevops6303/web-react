@@ -102,7 +102,7 @@ const SwitchConfirmModal = ({
             <div className="pe-1 ms-3">
               <h2 className="fw-bold title">Switch Profile</h2>
               <p className="fw-normal mt-1 sub-title">
-                To preform this action you <br /> need to switch to teams profile
+                This action needs to be taken by a Team. Please switch to the relevant Team profile.
               </p>
             </div>
           </div>

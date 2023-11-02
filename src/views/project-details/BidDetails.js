@@ -163,7 +163,7 @@ const BidDetails = () => {
         </Col>
         <Col lg="9">
           <Card>
-            <CardTitle className="main-card-title">Project Bid Estimation</CardTitle>
+            <CardTitle className="main-card-title">Bid Details</CardTitle>
             <CardBody className="main-card-body bid-eta">
               <div>
                 <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
@@ -183,7 +183,7 @@ const BidDetails = () => {
                     bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                 </CardText>
                 <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Estimation Duration</CardText>
+                  <CardText className="key mb-0">Estimated Duration</CardText>
                   <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
                   <UncontrolledTooltip placement="right" target="duration-info">
                     <p className="m-0">Sum total of all milestone duration hours/week</p>
@@ -200,15 +200,15 @@ const BidDetails = () => {
                 <thead>
                   <tr>
                     <th>Payment for</th>
-                    <th>Milestone Tag</th>
+                    <th>Milestone Name</th>
                     <th>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {bidInfo?.milestones?.map((item) => (
+                  {bidInfo?.milestones?.map((item, index) => (
                     <tr key={item?._id}>
-                      <td className="fw-bolder">{item?.name}</td>
-                      <td>{item?.description}</td>
+                      <td className="fw-bolder">Milestone # {index + 1}</td>
+                      <td>{item?.name}</td>
                       <td>${item?.estimated_cost}</td>
                     </tr>
                   ))}

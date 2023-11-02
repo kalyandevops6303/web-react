@@ -276,12 +276,12 @@ const InviteTeamMemberModal = ({
         </InviteHeadContainer>
         <div className="px-2 py-2">
           <p className="fw-bold font-medium-1 mb-50">
-            Invite talent to {projectId ? 'work on this project ' : 'join your team'}
+            Add new team members {projectId ? 'work on this project ' : ''}
             {userData?.user_type !== userTypes.client && inviteRole ? `as a ${inviteRole}` : ''}
           </p>
           <p className="pe-5">
             <span className="fw-bold"> Note:</span> If a talent is not already part of your team, they will need to join
-            before they can be added to the project
+            before they can be added to a project
           </p>
           <Row>
             <Col sm="12" md="12" lg="9">

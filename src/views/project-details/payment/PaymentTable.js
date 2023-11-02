@@ -144,14 +144,16 @@ const PaymentTable = () => {
             </div>
             {user.user_type === userTypes.client && (
               <div className="d-flex w-100 mt-2 justify-content-between">
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Trumio fee 20%</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Trumio fee (20%)</CardText>
                 <CardText>{`$${trumioFee}`}</CardText>
               </div>
             )}
             <hr />
             {user.user_type === userTypes.client && (
               <div className="d-flex w-100 mt-2 justify-content-between">
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Inclusive of Trumio fee 20%</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                  Total payment (Inclusive of Trumio fee)
+                </CardText>
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${totalPending}`}</CardText>
               </div>
             )}

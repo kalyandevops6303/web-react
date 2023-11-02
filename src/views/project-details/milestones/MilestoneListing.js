@@ -1,8 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { ChevronRight } from 'react-feather';
 import { Badge, Card, CardBody, CardText } from 'reactstrap';
 import { PropTypes } from 'prop-types';
-import { useSelector } from 'react-redux';
 
 import { formatDate } from '../../../utility/Utils';
 import MilestoneInfo from './MilestoneInfo';
