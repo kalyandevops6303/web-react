@@ -73,7 +73,7 @@ function MilestonePaymentListing() {
               />
             ))}
           <div className="d-flex justify-content-end">
-            <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={selectedMilestone.length < 2}>
+            <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={selectedMilestone.length === 0}>
               Make Payment
             </Button>
           </div>
