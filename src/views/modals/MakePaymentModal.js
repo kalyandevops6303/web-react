@@ -102,7 +102,11 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
             </CardText>
             {milestoneData?.length > 0 &&
               milestoneData.map((item) => (
-                <Card style={{ height: '55px' }} className="d-flex justify-content-center" key={item._id}>
+                <Card
+                  style={{ height: '55px', backgroundColor: selectedIds.includes(item._id) ? '#0185E41F' : 'white' }}
+                  className="d-flex justify-content-center"
+                  key={item._id}
+                >
                   <CardBody className="d-flex justify-content-between">
                     <div className="d-flex">
                       <Input
@@ -149,7 +153,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
               >{`$ ${totalPending.toLocaleString()}`}</CardText>
             </div>
             <div className="d-flex justify-content-end py-1">
-              <Button color="primary" onClick={handlePayment} disabled={selectedMilestoneIds.length === 0}>
+              <Button color="primary" onClick={handlePayment} disabled={selectedIds.length < 2}>
                 {milestoneDataLoading ? <Spinner size="sm" /> : `Pay $ ${totalPending.toLocaleString()}`}
               </Button>
             </div>
