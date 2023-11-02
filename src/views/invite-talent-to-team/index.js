@@ -39,21 +39,23 @@ const InviteTalentToTeam = ({
   return (
     <>
       {inviteTeamMemberModal && !isClubInvitation && (
-        // <InviteTeamMemberModal
-        //   createTeamView={createTeamView}
-        //   inviteRole={inviteRole}
-        //   projectId={projectId}
-        //   selectedTalents={selectedTalents}
-        //   setSelectedTalents={setSelectedTalents}
-        //   invitedIds={invitedIds}
-        //   setInvitedIds={setInvitedIds}
-        //   selectedIds={selectedIds}
-        //   setSelectedIds={setSelectedIds}
-        //   modal={inviteTeamMemberModal}
-        //   toggleInviteShareModal={toggleInviteModal}
-        //   toggleModal={toggleInviteTeamMemberModal}
-        //   setSendInvitationModal={setSendInvitationModal}
-        // />
+        <InviteTeamMemberModal
+          createTeamView={createTeamView}
+          inviteRole={inviteRole}
+          projectId={projectId}
+          selectedTalents={selectedTalents}
+          setSelectedTalents={setSelectedTalents}
+          invitedIds={invitedIds}
+          setInvitedIds={setInvitedIds}
+          selectedIds={selectedIds}
+          setSelectedIds={setSelectedIds}
+          modal={inviteTeamMemberModal}
+          toggleInviteShareModal={toggleInviteModal}
+          toggleModal={toggleInviteTeamMemberModal}
+          setSendInvitationModal={setSendInvitationModal}
+        />
+      )}
+      {inviteTeamMemberModal && isClubInvitation && (
         <InviteClubMemberModal
           createTeamView={createTeamView}
           projectId={projectId}
@@ -67,33 +69,23 @@ const InviteTalentToTeam = ({
           toggleModal={toggleInviteTeamMemberModal}
           setSendInvitationModal={setSendInvitationModal}
         />
-        // <InviteClubMemberModal
-        //   createTeamView={createTeamView}
-        //   projectId={projectId}
-        //   selectedTalents={selectedTalents}
-        //   setSelectedTalents={setSelectedTalents}
-        //   invitedIds={invitedIds}
-        //   setInvitedIds={setInvitedIds}
-        //   selectedIds={selectedIds}
-        //   setSelectedIds={setSelectedIds}
-        //   modal={inviteTeamMemberModal}
-        //   toggleModal={toggleInviteTeamMemberModal}
-        //   setSendInvitationModal={setSendInvitationModal}
-        // />
       )}
+
       {sendInvitationModal && !isClubInvitation && (
-        // <SendInvitationModal
-        //   createTeamView={createTeamView}
-        //   projectId={projectId}
-        //   inviteRole={inviteRole}
-        //   modal={sendInvitationModal}
-        //   toggleModal={toggleSendInvitationModal}
-        //   selectedTalents={selectedTalents}
-        //   setInvitationSentModal={setInvitationSentModal}
-        //   message={message}
-        //   setMessage={setMessage}
-        //   description="You are inviting the below to join your team."
-        // />
+        <SendInvitationModal
+          createTeamView={createTeamView}
+          projectId={projectId}
+          inviteRole={inviteRole}
+          modal={sendInvitationModal}
+          toggleModal={toggleSendInvitationModal}
+          selectedTalents={selectedTalents}
+          setInvitationSentModal={setInvitationSentModal}
+          message={message}
+          setMessage={setMessage}
+          description="You are inviting the below to join your team."
+        />
+      )}
+      {sendInvitationModal && isClubInvitation && (
         <SendClubInvitationModal
           createTeamView={createTeamView}
           projectId={projectId}

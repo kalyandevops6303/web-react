@@ -66,7 +66,13 @@ const Reviews = () => {
   const isLoading = useSelector((state) => state.currentProfile.isRecentProjectLoading);
 
   useEffect(() => {
-    dispatch(getReview({ user_id: param?.userId, entity: param?.userType.toUpperCase(), metadata }));
+    dispatch(
+      getReview({
+        user_id: param?.userId,
+        entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+        metadata,
+      }),
+    );
   }, []);
 
   useEffect(() => {
@@ -82,7 +88,13 @@ const Reviews = () => {
       // eslint-disable-next-line no-unsafe-optional-chaining
       page: reviewMetadata?.current_page + 1 || 1,
     };
-    dispatch(getReview({ user_id: param?.userId, entity: param?.userType.toUpperCase(), metadata: newMeteData }));
+    dispatch(
+      getReview({
+        user_id: param?.userId,
+        entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+        metadata: newMeteData,
+      }),
+    );
   };
   if (isLoading) {
     return (

@@ -50,7 +50,8 @@ const UserDropdown = () => {
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
 
   const handleEdit = () => {
-    navigate(`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`);
+    const talentProfile = userDetailsData?.user_type === userTypes.talent;
+    navigate(`/profile/${talentProfile ? userTypes.talent : userDetailsData?.team_type}/${userDetailsData?._id}`);
   };
 
   const handleLogout = async () => {

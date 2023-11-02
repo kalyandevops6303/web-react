@@ -23,6 +23,8 @@ const Alerts = () => {
   const alerts = useSelector((state) => state.dashboard.alerts);
 
   const isProfileCompleted = profilePercentageData?.profile_completed === 100;
+  const talentProfile = userDetailsData?.user_type === userTypes.talent;
+
   useEffect(() => {
     dispatch(getAlerts());
     if (userDetailsData?.user_type === userTypes.team) {
@@ -153,19 +155,26 @@ const Alerts = () => {
                 className={`${giveProgressBarColorClassName(profilePercentageData?.profile_completed)} mt-25`}
                 value={profilePercentageData?.profile_completed}
               />
-              {returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing) && (
+              {returnCompleteProfileDetailsCta(
+                talentProfile ? 'TALENT' : userDetailsData?.team_type,
+                profilePercentageData?.values_missing,
+              ) && (
                 <CardText
                   className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"
                   onClick={() =>
                     onAddDetailsClick(
-                      returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                        ?.path,
+                      returnCompleteProfileDetailsCta(
+                        talentProfile ? 'TALENT' : userDetailsData?.team_type,
+                        profilePercentageData?.values_missing,
+                      )?.path,
                     )
                   }
                 >
                   {
-                    returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                      ?.label
+                    returnCompleteProfileDetailsCta(
+                      talentProfile ? 'TALENT' : userDetailsData?.team_type,
+                      profilePercentageData?.values_missing,
+                    )?.label
                   }
                 </CardText>
               )}

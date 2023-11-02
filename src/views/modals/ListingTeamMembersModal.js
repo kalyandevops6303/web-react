@@ -1,13 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { Button, Modal, ModalHeader, ModalBody, Card, CardBody, Row, Col, Spinner } from 'reactstrap';
-import { Mail, Trash2 } from 'react-feather';
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Card,
+  CardBody,
+  Row,
+  Col,
+  Spinner,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from 'reactstrap';
+import { Mail, MoreVertical, Trash2 } from 'react-feather';
 import { capitalize } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Avatar from '@components/avatar';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import styled from 'styled-components';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../lib/date-time';
 import { GrayBorderContainer } from '../styled';
@@ -17,14 +32,40 @@ import { selectGetInvitedMember, selectGetTeamMember } from '../../redux/selecto
 import { MessageIconWrap } from './style';
 import { getItem } from '../../utility/localStorageControl';
 import { inviteTalents } from '../../redux/actions/inviteTalent';
+import { userTypes } from '../../utility/constants/Constant';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import ChangeClubMemberModal from './ChangeClubMemberModal';
+
+const ClubDropDownWrapper = styled.div`
+  .logout {
+    color: ${theme.red};
+    padding: 1rem 1.2rem;
+    display: block;
+  }
+  .edit {
+    color: ${theme.primary};
+    padding: 1rem 1.2rem;
+    display: block;
+    &:active {
+      color: white;
+    }
+  }
+  .dropdown-item {
+    width: 100%;
+  }
+`;
 
 const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) => {
   const teamMembers = useSelector(selectGetTeamMember);
+  const userDetailsData = useSelector(selectAuthUserData);
   const [hasMore, setHasMore] = useState(true);
+  const [changeMemberModal, setChangeMemberModal] = useState(false);
   const dispatch = useDispatch();
   const selectTeamMembersMetadata = useSelector((state) => state.dashboard.getMemberMetaData);
   const selectTeamMembercurrentPreview = useSelector((state) => state.dashboard.memberCurrentPreview);
   const metadata = { page: 1, page_size: 10 };
+
+  const isClubView = userDetailsData?.team_type === userTypes.club;
 
   useEffect(() => {
     setHasMore(true);
@@ -49,12 +90,27 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
     dispatch(getTeamMembers({ metadata: newMeteData }));
   };
 
+  const handleChangeMember = () => {
+    setChangeMemberModal(true);
+  };
+
+  const toggleChangeMember = () => {
+    setChangeMemberModal(!changeMemberModal);
+  };
+
   return (
     <div>
+      {changeMemberModal && (
+        <ChangeClubMemberModal
+          modal={changeMemberModal}
+          toggleModal={toggleChangeMember}
+          description="You are about to change the role type to Admin."
+        />
+      )}
       <GrayBorderContainer className="d-flex justify-content-between px-2 py-1">
-        <h3 className="font-medium-4">Team Member</h3>
+        <h3 className="font-medium-4">{isClubView ? 'Club Member' : 'Team Member'}</h3>
         <Button color="primary" onClick={onInviteTeamMemberClick}>
-          Invite Team Member
+          {isClubView ? 'Invite Member' : ' Invite Team Member'}
         </Button>
       </GrayBorderContainer>
       <div className="p-2 mb-2" id="scrollableDivTeamMemberModal" style={{ maxHeight: '22rem', overflowY: 'auto' }}>
@@ -97,7 +153,7 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
                     </Link>
                   </Col>
                   <Col sm="12" md="3" lg="2">
-                    <p className="fw-bold m-0">Team Member</p>
+                    <p className="fw-bold m-0">{isClubView ? 'Member' : 'Team Member'}</p>
                   </Col>
                   <Col sm="12" md="3" lg="5">
                     <p className="m-0">{item?.is_creator ? 'Created on' : 'Accepted on'}</p>
@@ -105,13 +161,37 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
                       {DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') || '-'}
                     </p>
                   </Col>
-                  <Col sm="12" md="1" lg="1">
-                    {teamMembers?.length > 1 && (
-                      <div className="d-flex justify-content-end">
-                        <Trash2 onClick={() => handleRemoveMember(item)} color={theme.red} className="cursor-pointer" />
-                      </div>
-                    )}
-                  </Col>
+                  {isClubView ? (
+                    <Col sm="12" md="1" lg="1">
+                      <ClubDropDownWrapper>
+                        <UncontrolledDropdown>
+                          <DropdownToggle color="" className="bg-transparent btn-sm border-0 p-50">
+                            <MoreVertical size={18} className="cursor-pointer" />
+                          </DropdownToggle>
+                          <DropdownMenu end>
+                            <DropdownItem className="w-100 edit" onClick={handleChangeMember}>
+                              Change Member
+                            </DropdownItem>
+                            <DropdownItem className="w-100 logout" onClick={() => handleRemoveMember(item)}>
+                              Delete
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      </ClubDropDownWrapper>
+                    </Col>
+                  ) : (
+                    <Col sm="12" md="1" lg="1">
+                      {teamMembers?.length > 1 && (
+                        <div className="d-flex justify-content-end">
+                          <Trash2
+                            onClick={() => handleRemoveMember(item)}
+                            color={theme.red}
+                            className="cursor-pointer"
+                          />
+                        </div>
+                      )}
+                    </Col>
+                  )}
                 </Row>
               </CardBody>
             </Card>
