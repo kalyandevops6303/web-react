@@ -303,7 +303,7 @@ const SubmitRating = () => {
                               <p className="fw-bold font-medium-5">Your opinion matters to us!</p>
                               <Row className="mb-1">
                                 <Label className="form-label fw-bold font-medium-1 mb-75" for="ratings">
-                                  Ratings<span className="label-asterisk">*</span>
+                                  Rating<span className="label-asterisk">*</span>
                                 </Label>
                                 <Rating
                                   emptySymbol={

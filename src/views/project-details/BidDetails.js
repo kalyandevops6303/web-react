@@ -163,7 +163,7 @@ const BidDetails = () => {
         </Col>
         <Col lg="9">
           <Card>
-            <CardTitle className="main-card-title">Project Bid Estimation</CardTitle>
+            <CardTitle className="main-card-title">Bid Details</CardTitle>
             <CardBody className="main-card-body bid-eta">
               <div>
                 <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
@@ -183,7 +183,7 @@ const BidDetails = () => {
                     bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                 </CardText>
                 <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Estimation Duration</CardText>
+                  <CardText className="key mb-0">Estimated Duration</CardText>
                   <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
                   <UncontrolledTooltip placement="right" target="duration-info">
                     <p className="m-0">Sum total of all milestone duration hours/week</p>
