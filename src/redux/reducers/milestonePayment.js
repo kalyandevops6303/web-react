@@ -42,6 +42,14 @@ const milestonePaymentSlice = createSlice({
       listLoading: false,
       error: action.payload,
     }),
+    clearPaymentListingData: (state) => ({
+      ...state,
+      milestoneListDetails: null,
+      checkoutDetails: null,
+      listLoading: false,
+      checkoutLoading: false,
+      error: null,
+    }),
   },
 });
 
@@ -52,5 +60,6 @@ export const {
   milestoneListFailure,
   milestoneListRequest,
   milestoneListSuccess,
+  clearPaymentListingData,
 } = milestonePaymentSlice.actions;
 export default milestonePaymentSlice.reducer;

@@ -5,6 +5,7 @@ import MilestonePaymentBox from './MilestonePaymentBox';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
 import MakePaymentModal from '../../modals/MakePaymentModal';
+import { clearPaymentListingData } from '../../../redux/reducers/milestonePayment';
 
 function MilestonePaymentListing() {
   const [selectedMilestone, setSelectedMilestone] = useState([]);
@@ -15,6 +16,10 @@ function MilestonePaymentListing() {
   const milestoneDataLoading = useSelector((state) => state.milestonePayment?.listLoading);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(clearPaymentListingData());
+  }, []);
 
   useEffect(() => {
     if (projectDetailsData?._id) {
