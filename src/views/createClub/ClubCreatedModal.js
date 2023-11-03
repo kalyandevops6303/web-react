@@ -13,12 +13,13 @@ const ClubCreatedModal = ({ modal, toggleModal }) => {
   };
 
   const onCountinue = () => {
+    onClose();
     navigate('/dashboard');
   };
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={onClose} />
+      <ModalHeader toggle={onCountinue} />
       <ModalBody>
         <div className="d-flex justify-content-between pr-1">
           <img

@@ -4,7 +4,6 @@ import OtpInput from 'react-otp-input';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
 import ResendOTPComp from '../auth/components/ResendOTP';
-import { selectAuthLoading } from '../../redux/selectors/authSelectors';
 import { EmailVerifyModalContainer } from './style';
 import { createClub } from '../../redux/actions/clubActions';
 
@@ -12,7 +11,7 @@ const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
   const dispatch = useDispatch();
   const [otpError, setOtpError] = useState(false);
   const [code, setCode] = useState('');
-  const isLoading = useSelector(selectAuthLoading);
+  const [isLoading, setIsLoading] = useState(false);
   const emailId = useSelector((state) => state.clubs.email);
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
 
@@ -26,13 +25,15 @@ const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
     setClubCreatedModal(true);
   };
 
-  const verifyOtp = () => {
+  const verifyOtp = async () => {
+    setIsLoading(true);
     const dataWithCode = {
       ...clubCreateData,
       email_code: code,
       team_type: 'CLUB',
     };
-    dispatch(createClub({ data: dataWithCode, onSuccess: onCreateTeamSuccess }));
+    await dispatch(createClub({ data: dataWithCode, onSuccess: onCreateTeamSuccess }));
+    setIsLoading(false);
   };
 
   return (
