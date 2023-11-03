@@ -253,7 +253,7 @@ const PrivateDashboard = () => {
           )}
           {userDetailsData?.user_type === userTypes.team && (
             <section className="mb-2">
-              <Header className="mb-1">Talents</Header>
+              <Header className="mb-1">Talent</Header>
               <TalentListing />
             </section>
           )}

@@ -23,9 +23,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const TAB_NAMES = {
     TEAMS: 'Teams',
     CLIENTS: 'Clients',
-    TALENTS: 'Talents',
-    JOIN_REQ: 'Join Request',
-    FAV: 'Favourite',
+    TALENTS: 'Team Members',
+    JOIN_REQ: 'Join Requests',
+    FAV: 'Favorites',
     RECOMMENDATION: 'Recommended',
   };
 

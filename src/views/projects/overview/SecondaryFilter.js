@@ -119,7 +119,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       if (Array.isArray(secondFilterState[key])) {
         if (key === 'team_name' || key === 'client_name') {
-          filterData[key] = secondFilterState[key][0]?.label;
+          filterData[key] = secondFilterState[key][0]?.value;
         } else if (key === 'invited_by' || key === 'invited_type' || key === 'invitation_to') {
           filterData[key] = secondFilterState[key][0]?.value;
         } else {
@@ -155,7 +155,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     Object.keys(secondFilterState).forEach((key) => {
       if (Array.isArray(secondFilterState[key])) {
         if (key === 'team_name' || key === 'client_name') {
-          filterData[key] = secondFilterState[key][0]?.label;
+          filterData[key] = secondFilterState[key][0]?.value;
         } else {
           filterData[key] = secondFilterState[key][0]?.value;
         }
@@ -196,7 +196,10 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       const response = await getClientNameService(page, search);
 
       return {
-        options: response?.data?.data?.data?.map((institute) => ({ label: institute.name, value: institute._id })),
+        options: response?.data?.data?.data?.map((client) => ({
+          label: `${client.first_name} ${client.last_name}`,
+          value: client.user_id,
+        })),
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,

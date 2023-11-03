@@ -242,7 +242,7 @@ const Invite = ({ stepper }) => {
           setInvitationSentModal={setInvitationSentModal}
           message={message}
           setMessage={setMessage}
-          description="You are inviting the below to join your project."
+          description=""
         />
       )}
       {invitationSentModal && (
@@ -258,7 +258,7 @@ const Invite = ({ stepper }) => {
           invitedIds={invitedIds}
           setInvitedIds={setInvitedIds}
           setSelectedTalents={setSelectedTalents}
-          description="You’ve sent a project invitation"
+          description="You’ve sent invitations to bid on your project."
         />
       )}
       <Card>
@@ -275,7 +275,7 @@ const Invite = ({ stepper }) => {
         </CardHeader>
         <hr className="m-0 card-header-border" />
         <CardBody>
-          <p className="font-medium-1 fw-bold">Share your project listing with the best talent</p>
+          <p className="font-medium-1 fw-bold">Share your project listing with the best talent and teams</p>
           <Row>
             <Col sm="12" md="12" lg="7">
               <InputGroup className="input-group-merge">

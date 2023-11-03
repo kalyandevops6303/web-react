@@ -138,7 +138,6 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
           </AccountCreatedImageContainer>
           <div className="ms-2">
             <p className="font-large-1 text-center mb-3">Well Done!</p>
-            <p className="fw-bold font-medium-3 ">Project Bid Submitted</p>
             <p className="w-75">You have completed bidding for this project. Good Luck!</p>
           </div>
         </div>

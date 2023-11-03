@@ -70,7 +70,7 @@ const SendInvitationModal = ({
           <Input
             type="textarea"
             rows="5"
-            placeholder="Enter your message to talent."
+            placeholder="Enter your message"
             className="mt-2"
             value={message}
             onChange={(e) => setMessage(e.target.value)}

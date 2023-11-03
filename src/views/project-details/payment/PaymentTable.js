@@ -50,8 +50,11 @@ const PaymentTable = () => {
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
       return { theme: 'light-warning', text: 'Payment Due' };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING || tag === PAYMENT_STATUS.INITIATED) {
+    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: 'Payment Processing' };
+    }
+    if (tag === PAYMENT_STATUS.INITIATED) {
+      return { theme: 'light-primary', text: 'Payment Initiated' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
       return { theme: 'light-success', text: 'Payment Success' };
@@ -72,11 +75,29 @@ const PaymentTable = () => {
     setMakePaymentModal(false);
   };
 
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
+  const isFirstTwoMilestonePaid =
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
+
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
     paymentStatus === PAYMENT_STATUS.INITIATED ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_PROCESSING;
+
+  const isPaymentDisabled = () => {
+    if (selectedPaymentId.length === 0) {
+      return true;
+    }
+    if (!isFirstTwoMilestonePaid && selectedPaymentId?.length < 2) {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <>
@@ -141,26 +162,23 @@ const PaymentTable = () => {
             </div>
             {user.user_type === userTypes.client && (
               <div className="d-flex w-100 mt-2 justify-content-between">
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Trumio fee 20%</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Trumio fee (20%)</CardText>
                 <CardText>{`$${trumioFee}`}</CardText>
               </div>
             )}
             <hr />
             {user.user_type === userTypes.client && (
               <div className="d-flex w-100 mt-2 justify-content-between">
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Inclusive of Trumio fee 20%</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                  Total payment (Inclusive of Trumio fee)
+                </CardText>
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${totalPending}`}</CardText>
               </div>
             )}
 
             {user.user_type === userTypes.client && (
               <div className="d-flex justify-content-end w-100 mt-5">
-                <Button
-                  onClick={handlePayment}
-                  className="d-contents"
-                  color="primary"
-                  disabled={selectedPaymentId.length === 0}
-                >
+                <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
                   {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}
                 </Button>
               </div>

@@ -76,7 +76,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
               className="stat-box cursor-pointer"
               isMarketPlaceTab
               title={selectCardData?.dispute || 0}
-              desc="Dispute"
+              desc="Disputed"
               icon={<UserX height={20} />}
               color="light-red"
             />

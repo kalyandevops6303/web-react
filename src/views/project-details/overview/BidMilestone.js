@@ -128,7 +128,7 @@ const BidMilestone = () => {
                   bidData?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
               </CardText>
               <div className="d-flex align-items-center m-0">
-                <CardText className="key mb-0">Estimation Duration</CardText>
+                <CardText className="key mb-0">Estimated Duration</CardText>
               </div>
             </div>
           </CardBody>

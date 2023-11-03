@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { ChevronRight } from 'react-feather';
 import { Badge, Card, CardBody, CardText } from 'reactstrap';
 import { PropTypes } from 'prop-types';
@@ -51,7 +52,7 @@ const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
             </div>
           </div>
         </CardBody>
-        {index === 0 ? <MilestoneInfo /> : null}
+        <MilestoneInfo milestonesData={milestonesData} currentIndex={index} />
       </Card>
     ))}
   </div>
