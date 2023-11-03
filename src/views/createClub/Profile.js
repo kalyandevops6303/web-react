@@ -104,7 +104,6 @@ const Profile = () => {
 
     const removeEmptyClubData = removeEmptyKeys(clubData);
 
-    console.log('formData: ', removeEmptyClubData);
     dispatch(setClubCreateDataAction(removeEmptyClubData));
     onEmailVerifySuccess(formData.clubEmailID);
     toggleEmailVerifyModal();
@@ -213,13 +212,13 @@ const Profile = () => {
                 name="isWebpage"
                 render={({ field }) => (
                   <div className="demo-inline-spacing">
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div style={{ maxWidth: '350px' }} className="form-check form-check-inline checkbox-custom-margin">
                       <Input type="radio" {...field} id="yesWebpage" value="Yes" />
                       <Label for="yesWebpage" className="form-check-label">
                         Yes, there is a web page on the university website.
                       </Label>
                     </div>
-                    <div className="form-check form-check-inline checkbox-custom-margin">
+                    <div style={{ maxWidth: '350px' }} className="form-check form-check-inline checkbox-custom-margin">
                       <Input type="radio" {...field} id="noWebpage" value="No" />
                       <Label htmlFor="noWebpage" className="form-check-label">
                         No, there is no such web page exists on the university website.
@@ -266,14 +265,20 @@ const Profile = () => {
                     name="isUniversityApproval"
                     render={({ field }) => (
                       <div className="demo-inline-spacing flex-nowrap">
-                        <div className="form-check form-check-inline checkbox-custom-margin">
+                        <div
+                          style={{ maxWidth: '350px' }}
+                          className="form-check form-check-inline checkbox-custom-margin"
+                        >
                           <Input type="radio" {...field} id="yesUniversityApproval" value="Yes" />
                           <Label for="yesUniversityApproval" className="form-check-label">
                             Yes, the Club has already received approval from the University to open its account on
                             Trumio.
                           </Label>
                         </div>
-                        <div className="form-check form-check-inline checkbox-custom-margin">
+                        <div
+                          style={{ maxWidth: '350px' }}
+                          className="form-check form-check-inline checkbox-custom-margin"
+                        >
                           <Input type="radio" {...field} id="noUniversityApproval" value="No" />
                           <Label htmlFor="noUniversityApproval" className="form-check-label">
                             No, the Club has not received approval from the University to open its account on Trumio.
