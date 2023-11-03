@@ -19,9 +19,9 @@ const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleMod
             <img className="gif m-auto" src={DeleteGif} width={160} height={160} alt="gif" />
             <div style={{ width: '60%' }}>
               <CardTitle className="modal-title-custom">{title}</CardTitle>
-              <CardSubtitle className="mb-75 fw-bold subtitle">Reject request</CardSubtitle>
+              <CardSubtitle className="mb-75 fw-bold subtitle">Decline request</CardSubtitle>
 
-              <CardText className="desc fw-light w-76">You are rejecting this request from</CardText>
+              <CardText className="desc fw-light w-76">You are declining this request from</CardText>
               <section className="d-flex gap-2 stats">
                 <div>
                   <CardText className="value mb-25">
@@ -40,8 +40,8 @@ const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleMod
             <Button onClick={onClose} outline color="primary">
               Cancel
             </Button>
-            <Button color="primary" onClick={onReject}>
-              {isLoading ? <Spinner size="sm" /> : 'Reject'}
+            <Button color="danger" onClick={onReject}>
+              {isLoading ? <Spinner size="sm" /> : 'Decline'}
             </Button>
           </div>
         </DeleteModalWrapper>
