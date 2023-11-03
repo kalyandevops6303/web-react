@@ -208,13 +208,12 @@ const PrivateDashboard = () => {
       )}
       {userDetailsData?.team_type === userTypes.club && (
         <DashboardHeaderWrapper>
-          {userDetailsData?.is_verified ? (
+          {userDetailsData?.club_status === 'ACCEPTED' && (
             <Button as="link" color="primary" onClick={onClubInvite}>
               Invite Members
             </Button>
-          ) : (
-            <InReviewButton>In review</InReviewButton>
           )}
+          {userDetailsData?.club_status === 'IN_REVIEW' && <InReviewButton>In review</InReviewButton>}
         </DashboardHeaderWrapper>
       )}
 
