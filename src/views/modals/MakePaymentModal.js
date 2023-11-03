@@ -80,12 +80,29 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
     dispatch(makeMilestonePayment(payload, onSuccess));
   };
 
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
+  const isFirstTwoMilestonePaid =
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
+
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
     paymentStatus === PAYMENT_STATUS.INITIATED ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_PROCESSING;
 
+  const isPaymentDisabled = () => {
+    if (selectedIds.length === 0) {
+      return true;
+    }
+    if (!isFirstTwoMilestonePaid && selectedIds?.length < 2) {
+      return true;
+    }
+    return false;
+  };
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={onClose} />
@@ -102,7 +119,11 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
             </CardText>
             {milestoneData?.length > 0 &&
               milestoneData.map((item) => (
-                <Card style={{ height: '55px' }} className="d-flex justify-content-center" key={item._id}>
+                <Card
+                  style={{ height: '55px', backgroundColor: selectedIds.includes(item._id) ? '#0185E41F' : 'white' }}
+                  className="d-flex justify-content-center"
+                  key={item._id}
+                >
                   <CardBody className="d-flex justify-content-between">
                     <div className="d-flex">
                       <Input
@@ -149,7 +170,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
               >{`$ ${totalPending.toLocaleString()}`}</CardText>
             </div>
             <div className="d-flex justify-content-end py-1">
-              <Button color="primary" onClick={handlePayment} disabled={selectedMilestoneIds.length === 0}>
+              <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled()}>
                 {milestoneDataLoading ? <Spinner size="sm" /> : `Pay $ ${totalPending.toLocaleString()}`}
               </Button>
             </div>

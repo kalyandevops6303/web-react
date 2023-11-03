@@ -75,11 +75,29 @@ const PaymentTable = () => {
     setMakePaymentModal(false);
   };
 
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
+  const isFirstTwoMilestonePaid =
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
+
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
     paymentStatus === PAYMENT_STATUS.INITIATED ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_PROCESSING;
+
+  const isPaymentDisabled = () => {
+    if (selectedPaymentId.length === 0) {
+      return true;
+    }
+    if (!isFirstTwoMilestonePaid && selectedPaymentId?.length < 2) {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <>
@@ -160,12 +178,7 @@ const PaymentTable = () => {
 
             {user.user_type === userTypes.client && (
               <div className="d-flex justify-content-end w-100 mt-5">
-                <Button
-                  onClick={handlePayment}
-                  className="d-contents"
-                  color="primary"
-                  disabled={selectedPaymentId.length === 0}
-                >
+                <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
                   {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}
                 </Button>
               </div>
