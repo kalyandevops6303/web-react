@@ -23,7 +23,7 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
-import { removeItem } from '../../utility/localStorageControl';
+import { removeItem, setItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
 import { validateUrl } from '../../redux/actions/dashboardActions';
 
@@ -43,6 +43,9 @@ const Login = () => {
 
   const onValidUrlSuccess = (res) => {
     if (res.user_status === 'UNREGISTERED') {
+      removeItem('isUserVisited');
+      setItem('referral_via_share_data', res);
+
       navigate('/auth');
     } else if (isLoggedIn) {
       navigate('/dashboard');
