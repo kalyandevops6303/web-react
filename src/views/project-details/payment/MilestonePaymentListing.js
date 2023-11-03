@@ -5,9 +5,11 @@ import MilestonePaymentBox from './MilestonePaymentBox';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
 import MakePaymentModal from '../../modals/MakePaymentModal';
+import { clearPaymentListingData } from '../../../redux/reducers/milestonePayment';
+import { PAYMENT_STATUS } from '../../../utility/constants/Constant';
 
 function MilestonePaymentListing() {
-  const [selectedMilestone, setSelectedMilestone] = useState([]);
+  const [selectedMilestones, setSelectedMilestones] = useState([]);
   const [makePaymentModal, setMakePaymentModal] = useState(false);
 
   const projectDetailsData = useSelector(projectDetails);
@@ -17,18 +19,22 @@ function MilestonePaymentListing() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(clearPaymentListingData());
+  }, []);
+
+  useEffect(() => {
     if (projectDetailsData?._id) {
       dispatch(getMilestonePaymentListing(projectDetailsData?._id, () => {}));
     }
   }, [projectDetailsData?._id]);
 
   const handleMilestoneSelect = (evt, id) => {
-    const isSelected = selectedMilestone.find((item) => item === id);
+    const isSelected = selectedMilestones.find((item) => item === id);
     if (isSelected) {
-      const newArray = selectedMilestone.filter((item) => item !== id);
-      setSelectedMilestone(newArray);
+      const newArray = selectedMilestones.filter((item) => item !== id);
+      setSelectedMilestones(newArray);
     } else {
-      setSelectedMilestone((prev) => [...prev, id]);
+      setSelectedMilestones((prev) => [...prev, id]);
     }
   };
 
@@ -39,13 +45,31 @@ function MilestonePaymentListing() {
   const handleCancel = () => {
     setMakePaymentModal(false);
   };
+
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
+  const isFirstTwoMilestonePaid =
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
+
+  const isDisabled = () => {
+    if (selectedMilestones.length === 0) {
+      return true;
+    }
+    if (!isFirstTwoMilestonePaid && selectedMilestones?.length < 2) {
+      return true;
+    }
+    return false;
+  };
   return (
     <div className="mt-2">
       {makePaymentModal && (
         <MakePaymentModal
           modal={makePaymentModal}
           toggleModal={handleCancel}
-          selectedMilestoneIds={selectedMilestone}
+          selectedMilestoneIds={selectedMilestones}
         />
       )}
       {milestoneDataLoading ? (
@@ -63,12 +87,12 @@ function MilestonePaymentListing() {
                 milestoneName={milestone.name}
                 payableAmount={milestone.estimated_cost}
                 paymentStatus={milestone.payment_status}
-                checked={selectedMilestone.includes(milestone._id)}
+                checked={selectedMilestones.includes(milestone._id)}
                 onSelect={handleMilestoneSelect}
               />
             ))}
           <div className="d-flex justify-content-end">
-            <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={selectedMilestone.length === 0}>
+            <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={isDisabled()}>
               Make Payment
             </Button>
           </div>

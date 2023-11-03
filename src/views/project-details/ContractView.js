@@ -264,7 +264,7 @@ const ContractView = () => {
                           id="contract-sign"
                           name="agreeTerms"
                         />
-                        I have read Terms and Conditions
+                        I have read the terms and conditions of the contract
                       </Label>
                     </div>
                   )}

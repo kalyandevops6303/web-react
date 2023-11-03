@@ -85,8 +85,7 @@ const Profile = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Five tools has to be added')
-      .min(5, 'Five tools has to be added'),
+      .max(5, 'Maximum of five tools can be added'),
     skills: yup
       .array()
       .of(
@@ -96,7 +95,7 @@ const Profile = () => {
         }),
       )
       .max(5, 'Maximum of five skills can be added')
-      .min(5, 'Five skills has to be added')
+      .min(1, 'At least one skill is required')
       .required('Skill is required'),
     preferredWorkingTimeZone: yup
       .object()
@@ -281,8 +280,9 @@ const Profile = () => {
       weekendStartTime,
       weekendEndTime,
     } = data;
+
     const languages_supported = languagesSupported?.map((language) => language.value);
-    const skillsSelected = skills.map((skill) => skill.value);
+    const skillsSelected = skills?.map((skill) => skill.value);
     const servicesSelected = services.map((skill) => skill.value);
     const toolsSelected = tools?.map((skill) => skill.value);
     const availability = {
@@ -704,7 +704,7 @@ const Profile = () => {
                   name="teamName"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter your team's name" invalid={errors.teamName && true} />
+                    <Input {...field} placeholder="Enter your team name" invalid={errors.teamName && true} />
                   )}
                 />
                 {errors.teamName && <FormFeedback>{errors.teamName.message}</FormFeedback>}
@@ -720,7 +720,7 @@ const Profile = () => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder="Enter your team tagline in 60 character"
+                      placeholder="Enter your team tagline in 60 characters"
                       invalid={errors.teamTagline && true}
                     />
                   )}
@@ -741,7 +741,7 @@ const Profile = () => {
                     <Input
                       {...field}
                       type="textarea"
-                      placeholder="Write your team introduction in 500 character"
+                      placeholder="Write your team introduction in 500 characters"
                       rows="5"
                       invalid={errors.teamIntroduction && true}
                     />
@@ -839,7 +839,7 @@ const Profile = () => {
               </Col>
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="skills">
-                  Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
+                  Skills <i>(Top 5)</i>
                 </Label>
                 <Controller
                   id="skills"
@@ -1335,7 +1335,7 @@ const Profile = () => {
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Create team'}</span>
+                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Create Team'}</span>
                   <ChevronRight size={14} />
                 </>
               )}

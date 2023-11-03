@@ -66,8 +66,10 @@ const YouDidItModal = ({ modal, toggleModal, onNewProjectCreation }) => {
           </YouDidItGifContainer>
           <div>
             <h2 className="fw-bold font-large-1 text-center mb-2">You did it!</h2>
-            <h4 className="fw-bold font-small-5">Your project has been created. </h4>
-            <p className="fw-light mt-50">It will be posted on the start date</p>
+            <h4 className="fw-bold font-small-5">Your project is ready to be listed on the marketplace.</h4>
+            <p className="fw-light mt-50">
+              If you have selected a start date then your project will be listed on the requested date.
+            </p>
           </div>
         </div>
         <div className="d-flex justify-content-end align-items-center mt-3 mb-2 me-2">

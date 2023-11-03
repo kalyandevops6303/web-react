@@ -79,17 +79,14 @@ const TeamCreatedModal = ({ previewImage, teamCreateData, onInvite, toggleModal,
           <img src={GreatJobGif} width={120} height={120} alt="great-job" className="me-5" />
           <div className="w-75">
             <h2 className="fw-bold font-large-1 mb-1">Great Job!</h2>
-            <h3 className="fw-bold font-medium-3">Team Created</h3>
-            <p className="font-medium-2">You successfully created a team</p>
+            <p className="font-medium-2">You have successfully created a team.</p>
             <div className="my-1 d-flex align-items-center">
               <TeamCreatedModalImageWrapper>
                 {previewImage ? <TeamCreatedModalLogoImg src={previewImage} alt="team-logo" /> : <UserPlus size={30} />}
               </TeamCreatedModalImageWrapper>
               <h3 className="fw-bold m-0 ms-1">{teamCreateData?.name}</h3>
             </div>
-            <p>
-              <span className="fw-bolder">Note : </span>The next step is to add more team members to <br /> this team
-            </p>
+            <p>Add more team members to start collaborating.</p>
           </div>
         </div>
         <div className="d-none d-flex justify-content-end py-2">
