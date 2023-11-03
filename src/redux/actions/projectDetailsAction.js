@@ -161,7 +161,7 @@ const updateBidStatus =
   async () => {
     try {
       await updateBidStatusService({ bid_id, assign });
-      ShowToastMessage(SUCCESS, `Bid ${status?.lowercase()}`);
+      ShowToastMessage(SUCCESS, `Bid ${status?.toLowerCase()}`);
       onSuccess();
     } catch (error) {
       onError();
@@ -233,19 +233,33 @@ const getDocumentTimeline =
   };
 
 const checkDocumentActivated =
-  ({ project_id, doc_type }) =>
+  ({ isNDA, project_id }) =>
   async (dispatch) => {
     dispatch(checkDocumentActivatedRequest());
     try {
-      const res = await checkDocumentActivatedService({ project_id, doc_type });
-      if (res.data.data.show_document) {
-        dispatch(getDocumentTimeline({ project_id, doc_type }));
-      }
-      if (doc_type === 'CONTRACT') {
-        dispatch(checkDocumentActivatedSuccess({ isContract: res.data.data }));
-      }
-      if (doc_type === 'NDA') {
-        dispatch(checkDocumentActivatedSuccess({ isNDA: res.data.data }));
+      let resContract;
+      let resNDA;
+      const getContract = async () => {
+        resContract = await checkDocumentActivatedService({ project_id, doc_type: 'CONTRACT' });
+        dispatch(checkDocumentActivatedSuccess({ isContract: resContract.data.data }));
+        if (resContract.data.data.show_document) {
+          dispatch(getDocumentTimeline({ project_id, doc_type: 'CONTRACT' }));
+        }
+      };
+      if (isNDA) {
+        resNDA = await checkDocumentActivatedService({ project_id, doc_type: 'NDA' });
+        if (resNDA.data.data.show_document) {
+          dispatch(getDocumentTimeline({ project_id, doc_type: 'NDA' }));
+        }
+        dispatch(checkDocumentActivatedSuccess({ isNDA: resNDA.data.data }));
+
+        if (resNDA.data.data.is_signed) {
+          await getContract();
+        } else {
+          dispatch(checkDocumentActivatedSuccess({ isContract: { show_document: false, is_signed: false } }));
+        }
+      } else {
+        await getContract();
       }
     } catch (error) {
       errorHandler(error, checkDocumentActivatedFailure);

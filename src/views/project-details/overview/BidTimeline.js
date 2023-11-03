@@ -49,10 +49,12 @@ const BidTimeline = () => {
   const userType = useSelector(selectUserType);
 
   useEffect(() => {
-    if (projectDetailsData?.nda?.is_nda) {
-      dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'NDA' }));
-    }
-    dispatch(checkDocumentActivated({ project_id: param.projectId, doc_type: 'CONTRACT' }));
+    dispatch(
+      checkDocumentActivated({
+        isNDA: projectDetailsData?.nda?.is_nda,
+        project_id: param.projectId,
+      }),
+    );
     return () => {
       dispatch(clearDocstate());
     };
