@@ -451,7 +451,7 @@ const Account = () => {
   );
 
   return (
-    <ProfileFormContainer>
+    <ProfileFormContainer className="w-75">
       {educationInstitutionModal && (
         <EducationInstitutionModal
           modal={educationInstitutionModal}

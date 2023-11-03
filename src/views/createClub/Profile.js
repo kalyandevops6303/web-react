@@ -124,7 +124,7 @@ const Profile = () => {
   const disableBtn = isWebpageValue === 'No' && isUniversityApprovalValue === 'No';
 
   return (
-    <ProfileFormContainer>
+    <ProfileFormContainer className="w-75">
       {emailVerifyModal && (
         <EmailVerifyModal
           modal={emailVerifyModal}
