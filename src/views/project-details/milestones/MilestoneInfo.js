@@ -1,9 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Info } from 'react-feather';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { userData } from '../../../redux/selectors/dashboardSelectors';
+import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 
-function MilestoneInfo({ milestoneCount, milestoneData, currentIndex }) {
-  return (
+function MilestoneInfo({ milestonesData, currentIndex }) {
+  const userDetailsData = useSelector(userData);
+  const [isInfoVisible, setIsInfoVisible] = useState(false);
+
+  const isAllMilestonePaid = milestonesData.every(
+    (mile) => mile.payment_status === PAYMENT_STATUS.PAID || mile.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL,
+  );
+  const isClient = userDetailsData?.user_type === userTypes.client;
+  const milestoneCount = milestonesData?.length;
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
+  const isFirstTwoMilestonePaid = isPaymentDone(milestonesData[0]) && isPaymentDone(milestonesData[1]);
+  const showInfo = () => {
+    if (isClient) {
+      if (isAllMilestonePaid) return false;
+      if (milestoneCount === 1) return true;
+
+      if (!isFirstTwoMilestonePaid && currentIndex === 1) {
+        return true;
+      }
+
+      if (
+        isPaymentDone(milestonesData[currentIndex - 2]) &&
+        isPaymentDone(milestonesData[currentIndex - 1]) &&
+        !isPaymentDone(milestonesData[currentIndex])
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    if (showInfo()) setIsInfoVisible(true);
+    else setIsInfoVisible(false);
+  }, []);
+
+  return isInfoVisible ? (
     <div
       className="d-flex w-100 p-1"
       style={{
@@ -16,39 +57,44 @@ function MilestoneInfo({ milestoneCount, milestoneData, currentIndex }) {
       <div>
         <Info size={18} color="#0185E4" id="amount-info" className="me-50" style={{ marginBottom: '4px' }} />
       </div>
-      {milestoneCount < 3 ? (
+      {milestoneCount === 1 ? (
         <div>
           <span>
-            Complete the payment for atleast <b>2</b> milestones to proceed.
+            Complete the payment of <b>{milestonesData[currentIndex]?.name}</b> to start the project.
           </span>
         </div>
       ) : null}
-      {milestoneCount > 2 && (
+      {!isFirstTwoMilestonePaid ? (
+        <div>
+          <span>
+            Complete payment for the <b>first two</b> milestones to proceed.
+          </span>
+        </div>
+      ) : null}
+      {milestoneCount > 2 && isFirstTwoMilestonePaid && (
         <div>
           <span>
             {`Payment is due at the end of `}
-            <strong>{`${milestoneData[currentIndex - 2]?.name}`}</strong>
+            <strong>{`${milestonesData[currentIndex - 2]?.name}`}</strong>
             {` and must be paid before the end of `}
-            <strong>{` ${milestoneData[currentIndex - 1]?.name}`}</strong>
+            <strong>{` ${milestonesData[currentIndex - 1]?.name}`}</strong>
             {`. If payment is not received by the end of `}
-            <strong>{`${milestoneData[currentIndex - 1]?.name}`}</strong>, the project goes on hold. The project
+            <strong>{`${milestonesData[currentIndex - 1]?.name}`}</strong>, the project goes on hold. The project
             terminates if no payment is received within 1 week of the due date.
           </span>
         </div>
       )}
     </div>
-  );
+  ) : null;
 }
 
 MilestoneInfo.propTypes = {
-  milestoneCount: PropTypes.number,
-  milestoneData: PropTypes.array,
+  milestonesData: PropTypes.array,
   currentIndex: PropTypes.number,
 };
 
 MilestoneInfo.defaultProps = {
-  milestoneCount: 0,
-  milestoneData: [],
+  milestonesData: [],
   currentIndex: 0,
 };
 
