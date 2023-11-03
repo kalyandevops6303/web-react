@@ -32,7 +32,7 @@ const NDATimeline = () => {
             <span className="time ms-auto">
               {item?.signed_on ? DateTime?.fromMillis(item?.signed_on)?.toRelative() : '-'}
             </span>
-            <span onClick={() => navigate(`doc/nda/${item?.document_id}`)} className="card-cta">
+            <span onClick={() => navigate(`doc/nda/${item?.document_id}`)} className="d-none card-cta">
               View submitted document
             </span>
           </div>
@@ -62,7 +62,7 @@ const NDATimeline = () => {
                 <div className="d-flex gap-1 aling-items-center">
                   <CardText className="d-none view-card-cta">Give rating</CardText>
                   <CardText onClick={handleContract} className="view-card-cta">
-                    View NDA
+                    View
                   </CardText>
 
                   <div className="d-flex gap-1 aling-items-center">

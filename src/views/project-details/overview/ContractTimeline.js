@@ -38,7 +38,7 @@ const ContractTimeline = () => {
               {item?.signed_on ? DateTime?.fromMillis(item?.signed_on)?.toRelative() : '-'}
             </span>
             {item?.status !== 'PROJECT_STARTED' && item?.status !== 'PROJECT_COMPLETED' && (
-              <span onClick={() => navigate(`doc/contract/${item?.document_id}`)} className="card-cta">
+              <span onClick={() => navigate(`doc/contract/${item?.document_id}`)} className="d-none card-cta">
                 View submitted document
               </span>
             )}
@@ -77,7 +77,7 @@ const ContractTimeline = () => {
                     </CardText>
                   ) : (
                     <CardText onClick={handleContract} className="view-card-cta">
-                      View contract
+                      View
                     </CardText>
                   )}
                   {/* <CardText className="d-none view-all-cta">Give rating</CardText> */}
