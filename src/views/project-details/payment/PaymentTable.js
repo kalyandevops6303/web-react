@@ -4,7 +4,7 @@ import { Badge, Button, Card, CardBody, CardText, Input, Table } from 'reactstra
 import { formatDate } from '../../../utility/Utils';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
-import { getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
+import { getApplicationFee, getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import MakePaymentModal from '../../modals/MakePaymentModal';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
@@ -13,6 +13,7 @@ const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
   const [selectedPaymentData, setSelectedPaymentData] = useState([]);
   const [makePaymentModal, setMakePaymentModal] = useState(false);
+  const [feeStructre, setFeeStructure] = useState(null);
 
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const listLoading = useSelector((state) => state.milestonePayment?.listLoading);
@@ -20,6 +21,14 @@ const PaymentTable = () => {
   const user = useSelector(userData);
 
   const dispatch = useDispatch();
+
+  const onGetApplicationFee = (data) => {
+    setFeeStructure(data);
+  };
+
+  useEffect(() => {
+    dispatch(getApplicationFee(onGetApplicationFee));
+  }, []);
 
   useEffect(() => {
     if (projectDetailsData?._id) {
@@ -64,7 +73,9 @@ const PaymentTable = () => {
 
   const totalAmount = selectedPaymentData.reduce((acc, curr) => acc + curr.estimated_cost, 0);
 
-  const trumioFee = (totalAmount * 20) / 100;
+  const applicationFee = feeStructre?.application_fee;
+  // eslint-disable-next-line no-unsafe-optional-chaining
+  const trumioFee = (totalAmount * applicationFee?.percentage) / 100;
   const totalPending = totalAmount + trumioFee;
 
   const handlePayment = () => {
@@ -162,17 +173,21 @@ const PaymentTable = () => {
             </div>
             {user.user_type === userTypes.client && (
               <div className="d-flex w-100 mt-2 justify-content-between">
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Trumio fee (20%)</CardText>
-                <CardText>{`$${trumioFee}`}</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`${applicationFee?.name ?? ''} (${
+                  applicationFee?.percentage ?? 0
+                }%)`}</CardText>
+                <CardText>{`$${Number.isNaN(trumioFee) ? 0 : trumioFee.toLocaleString()}`}</CardText>
               </div>
             )}
             <hr />
             {user.user_type === userTypes.client && (
               <div className="d-flex w-100 mt-2 justify-content-between">
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
-                  Total payment (Inclusive of Trumio fee)
+                  {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
                 </CardText>
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${totalPending}`}</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${
+                  Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()
+                }`}</CardText>
               </div>
             )}
 

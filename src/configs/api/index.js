@@ -241,6 +241,8 @@ const API = {
     createStripeAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
     linkStripeAccount: `${apiPaymentEndPoint}/api/v1/payment-account-link`,
     makeMilestonePayment: `${apiPaymentEndPoint}/api/v1/checkout-session`,
+    applicationFee: `${apiPaymentEndPoint}/api/v1/settings/application-fee`,
+    transferFunds: `${apiPaymentEndPoint}/api/v1/transfer-funds`,
   },
   referralAndReward: {
     createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,

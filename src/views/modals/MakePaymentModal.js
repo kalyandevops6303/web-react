@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Badge,
@@ -16,11 +16,12 @@ import {
 } from 'reactstrap';
 import { PropTypes } from 'prop-types';
 import { MakePaymentModalWrapper } from './style';
-import { makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
+import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
 import { PAYMENT_STATUS } from '../../utility/constants/Constant';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
+  const [feeStructre, setFeeStructure] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -31,8 +32,18 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
 
   const totalAmount = filteredMilestones?.reduce((acc, curr) => acc + curr.estimated_cost, 0);
 
-  const trumioFee = (totalAmount * 20) / 100;
+  const applicationFee = feeStructre?.application_fee;
+  // eslint-disable-next-line no-unsafe-optional-chaining
+  const trumioFee = (totalAmount * applicationFee?.percentage) / 100;
   const totalPending = totalAmount + trumioFee;
+
+  const onGetApplicationFee = (data) => {
+    setFeeStructure(data);
+  };
+
+  useEffect(() => {
+    dispatch(getApplicationFee(onGetApplicationFee));
+  }, []);
 
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
@@ -157,17 +168,21 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                 </Card>
               ))}
             <div className="d-flex justify-content-between px-1">
-              <CardText style={{ fontSize: '16px' }}>Trumio Fee (20%)</CardText>
-              <CardText style={{ fontSize: '16px' }}>{`$ ${trumioFee.toLocaleString()}`}</CardText>
+              <CardText style={{ fontSize: '16px' }}>{`${applicationFee?.name ?? ''} (${
+                applicationFee?.percentage ?? 0
+              }%)`}</CardText>
+              <CardText style={{ fontSize: '16px' }}>{`$ ${
+                Number.isNaN(trumioFee) ? 0 : trumioFee.toLocaleString()
+              }`}</CardText>
             </div>
             <hr className="m-0 card-header-border" />
             <div className="d-flex justify-content-between p-1">
               <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
-                Total payment (Inclusive of Trumio fee)
+                {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
               </CardText>
-              <CardText
-                style={{ fontSize: '16px', fontWeight: '500' }}
-              >{`$ ${totalPending.toLocaleString()}`}</CardText>
+              <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${
+                Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()
+              }`}</CardText>
             </div>
             <div className="d-flex justify-content-end py-1">
               <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled()}>
