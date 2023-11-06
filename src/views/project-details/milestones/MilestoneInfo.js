@@ -60,14 +60,14 @@ function MilestoneInfo({ milestonesData, currentIndex }) {
       {milestoneCount === 1 ? (
         <div>
           <span>
-            Complete the payment of <b>{milestonesData[currentIndex]?.name}</b> to start the project.
+            Complete the payment for <b>Milestone: {milestonesData[currentIndex]?.name}</b>.
           </span>
         </div>
       ) : null}
       {!isFirstTwoMilestonePaid && milestoneCount > 1 ? (
         <div>
           <span>
-            Complete payment for the <b>first two</b> milestones to proceed.
+            Complete payment for the <b>first two</b> milestones to start the project.
           </span>
         </div>
       ) : null}
