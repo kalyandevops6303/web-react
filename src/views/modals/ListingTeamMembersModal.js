@@ -17,6 +17,7 @@ import {
   DropdownItem,
 } from 'reactstrap';
 import { Mail, MoreVertical, Trash2 } from 'react-feather';
+import FilledStar from '@src/assets/images/filler_star.png';
 import { capitalize } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -60,6 +61,7 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
   const userDetailsData = useSelector(selectAuthUserData);
   const [hasMore, setHasMore] = useState(true);
   const [changeMemberModal, setChangeMemberModal] = useState(false);
+  const [memberType, setMemberType] = useState(null);
   const dispatch = useDispatch();
   const selectTeamMembersMetadata = useSelector((state) => state.dashboard.getMemberMetaData);
   const selectTeamMembercurrentPreview = useSelector((state) => state.dashboard.memberCurrentPreview);
@@ -90,8 +92,9 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
     dispatch(getTeamMembers({ metadata: newMeteData }));
   };
 
-  const handleChangeMember = () => {
+  const handleChangeMember = (item) => {
     setChangeMemberModal(true);
+    setMemberType(item.member_type);
   };
 
   const toggleChangeMember = () => {
@@ -101,11 +104,7 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
   return (
     <div>
       {changeMemberModal && (
-        <ChangeClubMemberModal
-          modal={changeMemberModal}
-          toggleModal={toggleChangeMember}
-          description="You are about to change the role type to Admin."
-        />
+        <ChangeClubMemberModal modal={changeMemberModal} toggleModal={toggleChangeMember} memberType={memberType} />
       )}
       <GrayBorderContainer className="d-flex justify-content-between px-2 py-1">
         <h3 className="font-medium-4">{isClubView ? 'Club Member' : 'Team Member'}</h3>
@@ -153,7 +152,20 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
                     </Link>
                   </Col>
                   <Col sm="12" md="3" lg="2">
-                    <p className="fw-bold m-0">{isClubView ? 'Member' : 'Team Member'}</p>
+                    <p className="fw-bold m-0">
+                      {isClubView ? (
+                        <span className="d-flex align-items-center">
+                          <img
+                            src={FilledStar}
+                            alt="Filled star"
+                            style={{ width: '12px', height: '12px', marginRight: '5px' }}
+                          />
+                          {capitalize(item.member_type)}
+                        </span>
+                      ) : (
+                        'Team Member'
+                      )}
+                    </p>
                   </Col>
                   <Col sm="12" md="3" lg="5">
                     <p className="m-0">{item?.is_creator ? 'Created on' : 'Accepted on'}</p>
@@ -169,7 +181,7 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
                             <MoreVertical size={18} className="cursor-pointer" />
                           </DropdownToggle>
                           <DropdownMenu end>
-                            <DropdownItem className="w-100 edit" onClick={handleChangeMember}>
+                            <DropdownItem className="w-100 edit" onClick={() => handleChangeMember(item)}>
                               Change Member
                             </DropdownItem>
                             <DropdownItem className="w-100 logout" onClick={() => handleRemoveMember(item)}>

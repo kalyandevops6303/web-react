@@ -8,7 +8,8 @@ import '../custom-styles.scss';
 import SwitchMember from '../../assets/images/gifs/switch.gif';
 import { InviteUsersListContainer } from '../CreateProject/style';
 
-const ChangeClubMemberModal = ({ modal, toggleModal, description }) => {
+const ChangeClubMemberModal = ({ modal, toggleModal, memberType }) => {
+  const member = memberType === 'ADMIN' ? 'Member' : 'Admin';
   const handleClose = () => {
     toggleModal();
   };
@@ -21,7 +22,9 @@ const ChangeClubMemberModal = ({ modal, toggleModal, description }) => {
           <img src={SwitchMember} alt="great-job" width={120} height={120} className="me-4" />
           <div className="w-100">
             <h2 className="fw-bold font-large-1 mb-1">Change Membership</h2>
-            <p className="fw-light font-medium-3 mt-75">{description}</p>
+            <p className="fw-light font-medium-3 mt-75">
+              You are about to change the role type to <span className="text-primary fw-bolder">{member}.</span>
+            </p>
             <InviteUsersListContainer>
               <Row className="d-flex align-items-center mb-2 mx-0">
                 <Col sm="12" md="12" lg="12">
@@ -54,11 +57,11 @@ export default ChangeClubMemberModal;
 ChangeClubMemberModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  description: Proptypes.string,
+  memberType: Proptypes.string,
 };
 
 ChangeClubMemberModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  description: '',
+  memberType: '',
 };

@@ -119,7 +119,7 @@ const InviteTalentToTeam = ({
           invitedIds={invitedIds}
           setInvitedIds={setInvitedIds}
           setSelectedTalents={setSelectedTalents}
-          description="You’ve sent a team member invitation"
+          description={`You’ve sent a ${isClubView ? 'club' : 'team member'} invitation`}
         />
       )}
       {shareModal && (
