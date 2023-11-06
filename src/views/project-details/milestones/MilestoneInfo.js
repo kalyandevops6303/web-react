@@ -64,7 +64,7 @@ function MilestoneInfo({ milestonesData, currentIndex }) {
           </span>
         </div>
       ) : null}
-      {!isFirstTwoMilestonePaid ? (
+      {!isFirstTwoMilestonePaid && milestoneCount > 1 ? (
         <div>
           <span>
             Complete payment for the <b>first two</b> milestones to proceed.

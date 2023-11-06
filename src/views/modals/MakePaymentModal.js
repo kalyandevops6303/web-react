@@ -109,6 +109,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
     if (selectedIds.length === 0) {
       return true;
     }
+    if (milestoneData?.length === 1) return false;
     if (!isFirstTwoMilestonePaid && selectedIds?.length < 2) {
       return true;
     }

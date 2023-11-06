@@ -104,6 +104,7 @@ const PaymentTable = () => {
     if (selectedPaymentId.length === 0) {
       return true;
     }
+    if (milestoneData?.length === 1) return false;
     if (!isFirstTwoMilestonePaid && selectedPaymentId?.length < 2) {
       return true;
     }
