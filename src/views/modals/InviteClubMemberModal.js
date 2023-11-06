@@ -42,6 +42,7 @@ const InviteClubMemberModal = ({
   projectId,
   invitedIds,
   setSelectedIds,
+  text,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -160,14 +161,18 @@ const InviteClubMemberModal = ({
       <ModalBody className="p-0">
         <InviteHeadContainer className="px-2">
           <div className="custom-header-margin d-flex justify-content-between align-items-center">
-            <h3 className="font-medium-3">Invite Club Member</h3>
+            <h3 className="font-medium-3">{text ? text.heading : 'Invite Club Member'}</h3>
           </div>
         </InviteHeadContainer>
         <div className="px-2 py-2">
-          <p className="fw-bold font-medium-1 mb-50">Invite club member to join this club</p>
+          <p className="fw-bold font-medium-1 mb-50">
+            {text ? text.subHeading : 'Invite club member to join this club'}
+          </p>
           <p className="pe-5">
-            <span className="fw-bold"> Note:</span> If a user is not already part of your club, they will need to join
-            before they can be added to the project
+            <span className="fw-bold"> Note:</span>
+            {text
+              ? text.desc
+              : 'If a user is not already part of your club, they will need to join before they can be added to the project'}
           </p>
           <Row>
             <Col sm="12" md="12" lg="9">
@@ -305,6 +310,7 @@ InviteClubMemberModal.propTypes = {
   setSelectedTalents: Proptypes.func,
   setSendInvitationModal: Proptypes.func,
   projectId: Proptypes.string,
+  text: Proptypes.object,
 };
 InviteClubMemberModal.defaultProps = {
   createTeamView: false,
@@ -317,4 +323,5 @@ InviteClubMemberModal.defaultProps = {
   setSelectedTalents: () => {},
   setSendInvitationModal: () => {},
   projectId: '',
+  text: null,
 };

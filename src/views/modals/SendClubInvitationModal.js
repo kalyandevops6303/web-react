@@ -23,6 +23,7 @@ const SendClubInvitationModal = ({
   setMessage,
   setSelectedTalents,
   description,
+  isClubView,
 }) => {
   const navigate = useNavigate();
 
@@ -54,21 +55,24 @@ const SendClubInvitationModal = ({
         <div className="px-3">
           <h2 className="fw-bold font-large-1 text-center mb-3">Send Invitation</h2>
           <p className="mb-2">{description}</p>
-          <InviteUsersListContainer>
-            {selectedTalents.map((talent, index) => (
-              <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center w-100 mx-0">
-                <Col sm="12" md="8" lg="6" className="d-flex align-items-center ">
-                  <div className="d-flex align-items-center">
-                    <Avatar
-                      img={talent?.image_uri?.length > 0 ? talent?.image_uri : defaultAvatar}
-                      imgHeight="38"
-                      imgWidth="38"
-                      className="me-2 user-pic"
-                    />
-                  </div>
-                  <div className="">
-                    <p className="font-medium-1 fw-bold m-0">{`${talent.first_name} ${talent.last_name}`}</p>
-                    <div className="d-flex align-items-center mt-25">
+
+          {isClubView ? (
+            <InviteUsersListContainer>
+              {selectedTalents.map((talent) => (
+                <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center mb-2 w-100 mx-0">
+                  <Col sm="12" md="8" lg="6">
+                    <div className="d-flex align-items-center">
+                      <Avatar
+                        img={talent?.image_uri?.length > 0 ? talent?.image_uri : defaultAvatar}
+                        imgHeight="38"
+                        imgWidth="38"
+                        className="me-2 user-pic"
+                      />
+                      <p className="font-medium-1 fw-bold m-0">{`${talent.first_name} ${talent.last_name}`}</p>
+                    </div>
+                  </Col>
+                  <Col sm="12" md="4" lg="6">
+                    <div className="d-flex align-items-center">
                       <Badge>
                         <div className="d-flex align-items-center">
                           <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
@@ -77,32 +81,62 @@ const SendClubInvitationModal = ({
                       </Badge>
                       <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
                     </div>
-                  </div>
-                </Col>
-                <Col sm="12" md="4" lg="6">
-                  <Label className="form-label mt-1" for="roleType">
-                    Role Type
-                  </Label>
+                  </Col>
+                </Row>
+              ))}
+            </InviteUsersListContainer>
+          ) : (
+            <InviteUsersListContainer>
+              {selectedTalents.map((talent, index) => (
+                <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center w-100 mx-0">
+                  <Col sm="12" md="8" lg="6" className="d-flex align-items-center ">
+                    <div className="d-flex align-items-center">
+                      <Avatar
+                        img={talent?.image_uri?.length > 0 ? talent?.image_uri : defaultAvatar}
+                        imgHeight="38"
+                        imgWidth="38"
+                        className="me-2 user-pic"
+                      />
+                    </div>
+                    <div className="">
+                      <p className="font-medium-1 fw-bold m-0">{`${talent.first_name} ${talent.last_name}`}</p>
+                      <div className="d-flex align-items-center mt-25">
+                        <Badge>
+                          <div className="d-flex align-items-center">
+                            <Star size={12} color={theme.starRatingBg} fill={theme.starRatingBg} className="me-50" />
+                            <p className="m-0 fw-bolder rating-text">{returnFormattedRating(talent.rating)}</p>
+                          </div>
+                        </Badge>
+                        <p className="m-0 font-small-3 fw-light ms-1">{talent.projects_worked_on_count} Projects</p>
+                      </div>
+                    </div>
+                  </Col>
+                  <Col sm="12" md="4" lg="6">
+                    <Label className="form-label mt-1" for="roleType">
+                      Role Type
+                    </Label>
 
-                  <Select
-                    options={[
-                      { label: 'Member', value: 'Member' },
-                      { label: 'Admin', value: 'Admin' },
-                    ]}
-                    classNamePrefix="select"
-                    theme={selectThemeColors}
-                    defaultValue={{ label: 'Member', value: 'Member' }}
-                    value={{ label: talent.role || 'Member', value: talent.role || 'Member' }}
-                    onChange={(selectedOption) => {
-                      handleRoleChange(index, selectedOption.label);
-                    }}
-                    className={classNames('react-select')}
-                    placeholder="Select Role Type"
-                  />
-                </Col>
-              </Row>
-            ))}
-          </InviteUsersListContainer>
+                    <Select
+                      options={[
+                        { label: 'Member', value: 'Member' },
+                        { label: 'Admin', value: 'Admin' },
+                      ]}
+                      classNamePrefix="select"
+                      theme={selectThemeColors}
+                      defaultValue={{ label: 'Member', value: 'Member' }}
+                      value={{ label: talent.role || 'Member', value: talent.role || 'Member' }}
+                      onChange={(selectedOption) => {
+                        handleRoleChange(index, selectedOption.label);
+                      }}
+                      className={classNames('react-select')}
+                      placeholder="Select Role Type"
+                    />
+                  </Col>
+                </Row>
+              ))}
+            </InviteUsersListContainer>
+          )}
+
           <Input
             type="textarea"
             rows="5"
@@ -143,6 +177,7 @@ SendClubInvitationModal.propTypes = {
   setMessage: Proptypes.func,
   setSelectedTalents: Proptypes.func,
   description: Proptypes.string,
+  isClubView: Proptypes.bool,
 };
 
 SendClubInvitationModal.defaultProps = {
@@ -155,4 +190,5 @@ SendClubInvitationModal.defaultProps = {
   setMessage: () => {},
   setSelectedTalents: () => {},
   description: '',
+  isClubView: false,
 };

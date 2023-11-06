@@ -15,6 +15,8 @@ const InviteTalentToTeam = ({
   inviteTeamMemberModal,
   toggleInviteTeamMemberModal,
   isClubInvitation,
+  text,
+  isClubView,
 }) => {
   const [selectedTalents, setSelectedTalents] = useState([]);
   const [invitedIds, setInvitedIds] = useState([]);
@@ -68,6 +70,7 @@ const InviteTalentToTeam = ({
           modal={inviteTeamMemberModal}
           toggleModal={toggleInviteTeamMemberModal}
           setSendInvitationModal={setSendInvitationModal}
+          text={text}
         />
       )}
 
@@ -97,7 +100,8 @@ const InviteTalentToTeam = ({
           setInvitationSentModal={setInvitationSentModal}
           message={message}
           setMessage={setMessage}
-          description="You are inviting the below to join your club."
+          isClubView={isClubView}
+          description={`You are inviting the below to join your ${isClubView ? 'project' : 'club'}.`}
         />
       )}
       {invitationSentModal && (
@@ -137,6 +141,8 @@ InviteTalentToTeam.propTypes = {
   projectId: PropTypes.string,
   inviteRole: PropTypes.string,
   createTeamView: PropTypes.bool,
+  text: PropTypes.object,
+  isClubView: PropTypes.bool,
 };
 InviteTalentToTeam.defaultProps = {
   inviteTeamMemberModal: false,
@@ -145,5 +151,7 @@ InviteTalentToTeam.defaultProps = {
   inviteRole: '',
   createTeamView: false,
   isClubInvitation: false,
+  text: null,
+  isClubView: false,
 };
 export default InviteTalentToTeam;
