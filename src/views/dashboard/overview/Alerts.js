@@ -23,7 +23,8 @@ const Alerts = () => {
   const alerts = useSelector((state) => state.dashboard.alerts);
 
   const isProfileCompleted = profilePercentageData?.profile_completed === 100;
-  const talentProfile = userDetailsData?.user_type === userTypes.talent;
+  const talentOrClientProfile =
+    userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.talent;
 
   useEffect(() => {
     dispatch(getAlerts());
@@ -156,7 +157,7 @@ const Alerts = () => {
                 value={profilePercentageData?.profile_completed}
               />
               {returnCompleteProfileDetailsCta(
-                talentProfile ? 'TALENT' : userDetailsData?.team_type,
+                talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
                 profilePercentageData?.values_missing,
               ) && (
                 <CardText
@@ -164,7 +165,7 @@ const Alerts = () => {
                   onClick={() =>
                     onAddDetailsClick(
                       returnCompleteProfileDetailsCta(
-                        talentProfile ? 'TALENT' : userDetailsData?.team_type,
+                        talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
                         profilePercentageData?.values_missing,
                       )?.path,
                     )
@@ -172,7 +173,7 @@ const Alerts = () => {
                 >
                   {
                     returnCompleteProfileDetailsCta(
-                      talentProfile ? 'TALENT' : userDetailsData?.team_type,
+                      talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
                       profilePercentageData?.values_missing,
                     )?.label
                   }

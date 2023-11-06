@@ -6,6 +6,7 @@ import { Star } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Select from 'react-select';
+import { upperCase } from 'lodash';
 import classNames from 'classnames';
 import '../custom-styles.scss';
 import { InviteUsersListContainer } from '../CreateProject/style';
@@ -39,7 +40,7 @@ const SendClubInvitationModal = ({
 
   const handleRoleChange = (index, newRole) => {
     const talentCopy = { ...selectedTalents[index] };
-    talentCopy.role = newRole;
+    talentCopy.role = upperCase(newRole);
     const updatedTalents = [...selectedTalents];
     updatedTalents[index] = talentCopy;
 
@@ -85,15 +86,15 @@ const SendClubInvitationModal = ({
 
                   <Select
                     options={[
-                      { label: 'Member', value: 'MEMBER' },
-                      { label: 'Admin', value: 'ADMIN' },
+                      { label: 'Member', value: 'Member' },
+                      { label: 'Admin', value: 'Admin' },
                     ]}
                     classNamePrefix="select"
                     theme={selectThemeColors}
-                    defaultValue={{ label: 'Member', value: 'MEMBER' }}
+                    defaultValue={{ label: 'Member', value: 'Member' }}
                     value={{ label: talent.role || 'Member', value: talent.role || 'Member' }}
                     onChange={(selectedOption) => {
-                      handleRoleChange(index, selectedOption.value);
+                      handleRoleChange(index, selectedOption.label);
                     }}
                     className={classNames('react-select')}
                     placeholder="Select Role Type"
