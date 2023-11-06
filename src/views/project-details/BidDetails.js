@@ -43,6 +43,7 @@ const BidDetails = () => {
   };
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
   const isLoading = useSelector((state) => state.projectDetails.getBidInfoLoading);
+  const bidView = location?.pathname?.split('/')?.slice(0, -1)?.join('/');
 
   useEffect(() => {
     dispatch(getBidDetails({ bid_id: param?.bidId }));
@@ -53,11 +54,13 @@ const BidDetails = () => {
     dispatch(
       updateBidStatus({
         bid_id: param?.bidId,
+        status,
         assign: status === 'ACCEPTED',
         onSuccess: () => {
           setIsBidStatusUpating(false);
           setBidStatus(status);
           handleCancel();
+          navigate(bidView);
         },
         onError: () => setIsBidStatusUpating(false),
       }),

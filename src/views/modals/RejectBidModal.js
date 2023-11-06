@@ -35,11 +35,11 @@ const RejectBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) 
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 justify-content-end">
-            <Button onClick={onClose} outline color="primary">
+            <Button disabled={isLoading} onClick={onClose} outline color="primary">
               Cancel
             </Button>
             <Button color="danger" onClick={onAccept}>
-              {isLoading ? <Spinner /> : 'Reject Bid'}
+              {isLoading ? <Spinner size="sm" /> : 'Reject Bid'}
             </Button>
           </div>
         </DeleteModalWrapper>

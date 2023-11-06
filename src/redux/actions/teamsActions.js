@@ -15,7 +15,7 @@ const getTeams =
     try {
       const res = await getTeamService();
       dispatch(getTeamSuccess(res.data.data.data));
-      onSuccess();
+      onSuccess(res.data.data.data);
     } catch (error) {
       errorHandler(error);
     }

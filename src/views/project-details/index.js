@@ -29,6 +29,7 @@ const ProjectDetails = () => {
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
   const user = useSelector(userData);
   const [stepsArray, setStepsArray] = useState(steps);
+  const [stepsArrayInvite, setStepsArrayInvite] = useState(InviteView);
 
   const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
   const isClient = user.user_type === userTypes.client;
@@ -64,6 +65,15 @@ const ProjectDetails = () => {
     }
   }, [projectDetailsData?.status]);
 
+  useEffect(() => {
+    let updatedInviteSteps = [];
+    if (invitedByData?.request_status === 'READ_ONLY') {
+      updatedInviteSteps = [...InviteView]; // Create a copy of the original steps array
+      updatedInviteSteps[1] = { ...updatedInviteSteps[1], isDisabled: true };
+      setStepsArrayInvite(updatedInviteSteps);
+    }
+  }, [invitedByData?.request_status]);
+
   const fromLocationPrimary = () => {
     if (getItem('baseRoute') === 'marketplace')
       return {
@@ -98,7 +108,7 @@ const ProjectDetails = () => {
         </Col>
         <Col lg="9">
           <CustomStep
-            steps={isInviteView ? InviteView : stepsArray}
+            steps={isInviteView ? stepsArrayInvite : stepsArray}
             currentStep={currentStep}
             onChangeStep={changeStep}
           />
