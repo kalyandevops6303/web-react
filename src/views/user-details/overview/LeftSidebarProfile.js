@@ -604,7 +604,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           setInvitationSentModal={setInvitationSentModal}
           message={inputMessage}
           setMessage={setInputMessage}
-          description="You are inviting the below to join your team."
+          description={`You are inviting the below to join your ${userData?.team_type === 'CLUB' ? 'club' : 'team'}`}
         />
       )}
       {invitationSentModal && (
@@ -615,7 +615,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           message={inputMessage}
           toggleSendInvitationModal={toggleSendInviteModal}
           setSelectedTalents={setSelectedTalent}
-          description="You’ve sent a team member invitation"
+          description={`You’ve sent a ${userData?.team_type === 'CLUB' ? 'club' : 'team'} member invitation`}
         />
       )}
       {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}
