@@ -59,7 +59,7 @@ const ClubCard = ({ data, isSearchPage }) => {
   };
 
   const handleCard = () => {
-    navigate(`/profile/team/${data?._id}`);
+    navigate(`/profile/CLUB/${data?._id}`);
   };
 
   return (
