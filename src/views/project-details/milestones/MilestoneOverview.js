@@ -152,15 +152,17 @@ const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, mileston
         >
           Details
         </div>
-        {/* <div
-          className={`tablink ${tab === 'Pay Outs' ? 'active-tablink' : ''}`}
-          onClick={() => {
-            setTab('Pay Outs');
-          }}
-        >
-          {userDataLocal.user_type === userTypes.client ? 'Pay Outs' : 'My Payments'}
-        </div> */}
-        {/* {userDataLocal.user_type === userTypes.client ? null : (
+        {userDataLocal.user_type === userTypes.client ? null : (
+          <div
+            className={`tablink ${tab === 'Pay Outs' ? 'active-tablink' : ''}`}
+            onClick={() => {
+              setTab('Pay Outs');
+            }}
+          >
+            {userDataLocal.user_type === userTypes.client ? 'Pay Outs' : 'My Payments'}
+          </div>
+        )}
+        {userDataLocal.user_type === userTypes.client ? null : (
           <div
             className={`tablink ${tab === 'Team Payments' ? 'active-tablink' : ''}`}
             onClick={() => {
@@ -169,7 +171,7 @@ const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, mileston
           >
             Team Payments
           </div>
-        )} */}
+        )}
       </div>
 
       <div className={`tabcontent ${tab === 'Details' ? 'active-tabcontent' : ''}`}>

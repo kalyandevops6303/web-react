@@ -58,6 +58,7 @@ function MilestonePaymentListing() {
     if (selectedMilestones.length === 0) {
       return true;
     }
+    if (milestoneData?.length === 1) return false;
     if (!isFirstTwoMilestonePaid && selectedMilestones?.length < 2) {
       return true;
     }
