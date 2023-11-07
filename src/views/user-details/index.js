@@ -155,9 +155,7 @@ const UserDetails = () => {
             {isTeamView && (
               <Col lg="3">
                 <Statbox
-                  title={`${currentProfile?.total_project_value?.code || ''} ${
-                    currentProfile?.total_project_value || 0
-                  }`}
+                  title={`USD ${currentProfile?.total_project_value || 0}`}
                   desc="Total Project Value"
                   icon={<img src={MoneyIcon} height={22} alt="money" />}
                   color="light-warning"
