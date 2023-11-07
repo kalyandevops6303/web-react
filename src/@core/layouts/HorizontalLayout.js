@@ -50,7 +50,6 @@ const HorizontalLayout = (props) => {
 
   // ** States
   const [isMounted, setIsMounted] = useState(false);
-  const [navbarScrolled, setNavbarScrolled] = useState(false);
   const isNavbarSearchBarOpen = useSelector((state) => state.search?.isNavbarSearchBarOpen);
 
   // ** Store Vars
@@ -70,20 +69,11 @@ const HorizontalLayout = (props) => {
   // ** UseEffect Cleanup
   const cleanup = () => {
     setIsMounted(false);
-    setNavbarScrolled(false);
   };
 
   //  ComponentDidMount
   useEffect(() => {
     setIsMounted(true);
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 65 && navbarScrolled === false) {
-        setNavbarScrolled(true);
-      }
-      if (window.pageYOffset < 65) {
-        setNavbarScrolled(false);
-      }
-    });
     return () => cleanup();
   }, []);
 
@@ -121,7 +111,7 @@ const HorizontalLayout = (props) => {
             isNavbarSearchBarOpen ? 'active-search' : ''
           } header-navbar navbar-fixed align-items-center navbar-shadow navbar-brand-center`,
           {
-            'navbar-scrolled': navbarScrolled,
+            'navbar-scrolled': true,
           },
         )}
       >
