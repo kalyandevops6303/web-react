@@ -117,7 +117,7 @@ const AcceptClubInviationModal = ({
             color="flat-danger"
             className="me-1"
             onClick={handleRecallClick}
-            disabled={inviteTalentsIsLoading || isTeaminviteLoading}
+            disabled={inviteTalentsIsLoading || isTeaminviteLoading || onLoading}
           >
             Recall ({timer}s)
           </Button>
