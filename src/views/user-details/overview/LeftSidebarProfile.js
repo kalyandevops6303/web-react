@@ -579,7 +579,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                       </Button>
                     </div>
                   )}
-                {!isEditable && (
+                {!isEditable && param?.userType.toUpperCase() !== userTypes.team && (
                   <Button className="w-50" color="primary" onClick={onMessageClick}>
                     Message
                   </Button>
