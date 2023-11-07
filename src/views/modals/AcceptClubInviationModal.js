@@ -23,6 +23,7 @@ const AcceptClubInviationModal = ({
   toggleSendInvitationModal,
   description,
   onAccept,
+  onLoading,
 }) => {
   const inviteTalentsIsLoading = useSelector(inviteTalentsLoading);
   const isTeaminviteLoading = useSelector(teamInviteLoading);
@@ -138,6 +139,7 @@ AcceptClubInviationModal.propTypes = {
   toggleSendInvitationModal: Proptypes.func,
   description: Proptypes.string,
   onAccept: Proptypes.func,
+  onLoading: Proptypes.bool,
 };
 
 AcceptClubInviationModal.defaultProps = {
@@ -147,4 +149,5 @@ AcceptClubInviationModal.defaultProps = {
   toggleSendInvitationModal: () => {},
   onAccept: () => {},
   description: '',
+  onLoading: false,
 };
