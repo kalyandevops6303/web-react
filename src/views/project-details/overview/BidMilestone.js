@@ -340,7 +340,7 @@ const BidMilestone = () => {
                 Decline
               </Button>
               <Button onClick={handleAccept} color="primary">
-                Accpet invite
+                Accept Invite
               </Button>
             </div>
           ) : (
