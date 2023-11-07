@@ -106,6 +106,12 @@ const LeftSidebarProfile = ({
     dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
   };
 
+  const onMessageClick = () => {
+    navigate(`/chat`, {
+      state: { targetId: data?.user_id },
+    });
+  };
+
   return (
     <LeftSidebarProfileWrapper>
       <Card>
@@ -405,10 +411,11 @@ const LeftSidebarProfile = ({
                   <Button className="w-50" size="md" outline color="primary" onClick={handleViewProfile}>
                     View Profile
                   </Button>
-
-                  <Button size="md" className="w-50" color="primary">
-                    Message
-                  </Button>
+                  {data?.user_type === userTypes.talent && (
+                    <Button size="md" className="w-50" color="primary" onClick={() => onMessageClick()}>
+                      Message
+                    </Button>
+                  )}
                 </div>
               </div>
             )}
