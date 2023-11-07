@@ -166,6 +166,28 @@ const UserDetails = () => {
     );
   };
 
+  const onDecline = () => {
+    const postData = {
+      action: 'REJECT',
+      request_id: requestStatusData._id,
+    };
+    setIsStatusUpdating(true);
+    dispatch(
+      updateInvitation({
+        data: postData,
+        onSuccess: () => {
+          setIsStatusUpdating(false);
+          setDeclineInvitationModal(false);
+          dispatch(getRequestStatusSuccess(null));
+          dispatch(makeTeamMemberSuccess());
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
+  };
+
   return (
     <>
       {/* <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} /> */}
@@ -285,7 +307,7 @@ const UserDetails = () => {
           description="You’ve accepted club invitation"
           selectedTalents={[currentProfile]}
           onAccept={onAccept}
-          isStatusUpdating={isStatusUpdating}
+          onLoading={isStatusUpdating}
         />
       )}
 
@@ -294,6 +316,8 @@ const UserDetails = () => {
           modal={declineInvitationModal}
           toggleModal={toggleDeclineInvitaionModal}
           data={currentProfile}
+          onDecline={onDecline}
+          onLoading={isStatusUpdating}
         />
       )}
     </>

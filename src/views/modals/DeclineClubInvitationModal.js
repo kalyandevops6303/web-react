@@ -1,39 +1,19 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { useDispatch, useSelector } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '@components/avatar';
-import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle, Spinner } from 'reactstrap';
 import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { RemoveMemberModalWrapper } from './style';
-import { removeTeamMember } from '../../redux/actions/dashboardActions';
-import { getItem } from '../../utility/localStorageControl';
-import { switchProfile } from '../../redux/actions/authActions';
-import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 
-const DeclineClubInvitaionModal = ({ modal, toggleModal, data }) => {
-  const dispatch = useDispatch();
-  const savedUserDetails = useSelector(selectSavedUserData);
-
+const DeclineClubInvitaionModal = ({ modal, toggleModal, data, onDecline, onLoading }) => {
   const onClose = () => {
     toggleModal();
   };
 
-  const handleRemoveMember = (removeData) => {
-    const onSuccess = () => {
-      if (savedUserDetails?._id === removeData.user_id) {
-        dispatch(switchProfile({ data: savedUserDetails, onSuccess: () => {}, selected: false }));
-      }
-    };
-    onClose();
-    const teamId = getItem('team_id');
-    const postData = {
-      user_id: removeData.user_id,
-      team_id: teamId,
-      is_deleted: true,
-    };
-    dispatch(removeTeamMember({ postData, onSuccess, isSelfRemove: savedUserDetails?._id === removeData.user_id }));
+  const handleDecline = () => {
+    onDecline();
   };
 
   return (
@@ -65,8 +45,8 @@ const DeclineClubInvitaionModal = ({ modal, toggleModal, data }) => {
             <Button outline color="primary" onClick={() => onClose()}>
               Cancel
             </Button>
-            <Button onClick={() => handleRemoveMember(data)} color="danger">
-              Decline
+            <Button onClick={() => handleDecline()} color="danger">
+              {onLoading ? <Spinner size="sm" /> : 'Decline'}
             </Button>
           </div>
         </RemoveMemberModalWrapper>
@@ -81,10 +61,15 @@ DeclineClubInvitaionModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
+  onDecline: Proptypes.func,
+  onLoading:Proptypes.bool,
 };
 
 DeclineClubInvitaionModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  onDecline: () => {},
+  onLoading:false,
+
   data: {},
 };
