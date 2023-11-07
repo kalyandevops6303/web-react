@@ -121,7 +121,7 @@ const AcceptClubInviationModal = ({
             Recall ({timer}s)
           </Button>
           <Button color="primary" onClick={handleClose} disabled={inviteTalentsIsLoading || isTeaminviteLoading}>
-            {inviteTalentsIsLoading || isTeaminviteLoading ? <Spinner size="sm" /> : <>Close</>}
+            {inviteTalentsIsLoading || isTeaminviteLoading || onLoading ? <Spinner size="sm" /> : <>Close</>}
           </Button>
         </div>
       </ModalBody>
