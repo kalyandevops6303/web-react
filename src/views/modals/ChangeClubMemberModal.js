@@ -1,17 +1,45 @@
 /* eslint-disable no-undef */
-import React from 'react';
+import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
 import '../custom-styles.scss';
 import SwitchMember from '../../assets/images/gifs/switch.gif';
 import { InviteUsersListContainer } from '../CreateProject/style';
+import { changeMemberType } from '../../redux/actions/clubActions';
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import ShowToastMessage from '../../@core/components/toast';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { getTeamMembers } from '../../redux/actions/dashboardActions';
 
 const ChangeClubMemberModal = ({ modal, toggleModal, memberType }) => {
-  const member = memberType === 'ADMIN' ? 'Member' : 'Admin';
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const userDetailsData = useSelector(selectUserData);
+
+  const member = memberType.member_type === 'ADMIN' ? 'Member' : 'Admin';
+  const metadata = { page: 1, page_size: 10 };
   const handleClose = () => {
     toggleModal();
+  };
+
+  const onSuccess = () => {
+    ShowToastMessage(SUCCESS, 'Member type changed successfully');
+    setLoading(false);
+    dispatch(getTeamMembers({ metadata }));
+    toggleModal();
+  };
+
+  const handleChange = () => {
+    setLoading(true);
+    const data = {
+      team_id: userDetailsData._id,
+      user_id: memberType.user_id,
+      member_type: memberType.member_type === 'ADMIN' ? 'MEMBER' : 'ADMIN',
+    };
+    dispatch(changeMemberType(data, onSuccess));
   };
 
   return (
@@ -31,7 +59,10 @@ const ChangeClubMemberModal = ({ modal, toggleModal, memberType }) => {
                   <div className="d-flex align-items-center">
                     <Avatar img={defaultAvatar} imgHeight="48" imgWidth="48" className="me-2 user-pic" />
                     <div>
-                      <p className="font-medium-1 fw-bold m-0 mb-50">Gertrude Barton</p>
+                      <p className="font-medium-1 fw-bold m-0">
+                        {memberType?.first_name} {memberType?.last_name}
+                      </p>
+                      <p className="font-small-3 m-0">{memberType?.role?.name}</p>
                     </div>
                   </div>
                 </Col>
@@ -43,7 +74,7 @@ const ChangeClubMemberModal = ({ modal, toggleModal, memberType }) => {
           <Button color="outline-secondary" className="me-1" onClick={handleClose}>
             Cancel
           </Button>
-          <Button color="primary" onClick={handleClose}>
+          <Button disabled={loading} color="primary" onClick={handleChange}>
             Change
           </Button>
         </div>

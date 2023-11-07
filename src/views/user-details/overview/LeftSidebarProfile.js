@@ -438,6 +438,19 @@ const LeftSidebarProfile = ({
                     </div>
                   </div>
                 )}
+                {data?.interests && data?.interests?.length !== 0 && (
+                  <div className="d-flex mb-50 ">
+                    <span className="info-key me-25">Interests:</span>
+                    <div className="d-flex flex-wrap">
+                      {data.interests.map((item, index) => (
+                        <span key={item?.id} className="me-25">
+                          {item?.name}
+                          {index !== data.interests.length - 1 && ', '}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <BadgeGroup color="light-blue" title="Skills" data={data?.skills} />
                 <BadgeGroup color="light-blue" title="Tools" data={data?.tools} />
                 <BadgeGroup color="light-blue" title="Language" data={data?.languages_supported} />
