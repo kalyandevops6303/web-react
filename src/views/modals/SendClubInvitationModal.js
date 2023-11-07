@@ -41,7 +41,7 @@ const SendClubInvitationModal = ({
 
   const handleRoleChange = (index, newRole) => {
     const talentCopy = { ...selectedTalents[index] };
-    talentCopy.role = upperCase(newRole);
+    talentCopy.clubRole = upperCase(newRole);
     const updatedTalents = [...selectedTalents];
     updatedTalents[index] = talentCopy;
 
@@ -124,7 +124,7 @@ const SendClubInvitationModal = ({
                       classNamePrefix="select"
                       theme={selectThemeColors}
                       defaultValue={{ label: 'Member', value: 'Member' }}
-                      value={{ label: talent.role || 'Member', value: talent.role || 'Member' }}
+                      value={{ label: talent.clubRole || 'Member', value: talent.clubRole || 'Member' }}
                       onChange={(selectedOption) => {
                         handleRoleChange(index, selectedOption.label);
                       }}

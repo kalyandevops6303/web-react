@@ -41,8 +41,17 @@ import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
 import InvitationSentModal from '../../modals/InvitationSentModal';
 import JoinTeamModal from '../../modals/JoinTeamModal';
 import ReportUserModal from './ReportUserModal';
+import SendClubInvitationModal from '../../modals/SendClubInvitationModal';
 
-const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
+const LeftSidebarProfile = ({
+  isTalentView,
+  isInvited,
+  isProjectDetailsView,
+  isTeamView,
+  isClient,
+  data,
+  isClubProfile,
+}) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
@@ -537,7 +546,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             <div>
               {/* Sensitive code below, If any changes done please check with all personas in each user type profile */}
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                {requestStatusData && (
+                {requestStatusData && !isClubProfile && (
                   <span className="w-50">
                     {!isEditable && teamId && data?.user_type === userTypes.talent && (
                       <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
@@ -596,7 +605,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           </section>
         </CardBody>
       </Card>
-      {sendInviteModal && (
+      {sendInviteModal && userData?.team_type !== 'CLUB' && (
         <SendInvitationModal
           modal={sendInviteModal}
           toggleModal={toggleSendInviteModal}
@@ -604,9 +613,23 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           setInvitationSentModal={setInvitationSentModal}
           message={inputMessage}
           setMessage={setInputMessage}
-          description={`You are inviting the below to join your ${userData?.team_type === 'CLUB' ? 'club' : 'team'}`}
+          description="You are inviting the below to join your team"
         />
       )}
+
+      {sendInviteModal && userData?.team_type === 'CLUB' && (
+        <SendClubInvitationModal
+          modal={sendInviteModal}
+          toggleModal={toggleSendInviteModal}
+          selectedTalents={selectedTalent}
+          setSelectedTalents={setSelectedTalent}
+          setInvitationSentModal={setInvitationSentModal}
+          message={inputMessage}
+          setMessage={setInputMessage}
+          description="You are inviting the below to join your club"
+        />
+      )}
+
       {invitationSentModal && (
         <InvitationSentModal
           modal={invitationSentModal}
@@ -630,6 +653,7 @@ LeftSidebarProfile.propTypes = {
   isTeamView: PropTypes.bool,
   isProjectDetailsView: PropTypes.bool,
   isInvited: PropTypes.bool,
+  isClubProfile: PropTypes.bool,
 };
 LeftSidebarProfile.defaultProps = {
   data: {},
@@ -638,6 +662,7 @@ LeftSidebarProfile.defaultProps = {
   isTeamView: false,
   isProjectDetailsView: false,
   isInvited: false,
+  isClubProfile: false,
 };
 
 export default LeftSidebarProfile;

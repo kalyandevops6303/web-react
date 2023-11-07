@@ -1,9 +1,9 @@
 import { Briefcase, Calendar, Check } from 'react-feather';
 import { useParams } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
-import { Col, Row } from 'reactstrap';
+import { Button, CardText, Col, Row } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from './overview/Statbox';
 import round from '../../lib/round';
@@ -15,16 +15,26 @@ import Reviews from './overview/Reviews';
 import { getProfile } from '../../redux/actions/profileActions';
 import { selectCurrentProfile, selectError, selectLoading } from '../../redux/selectors/profileSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
-import { clearData } from '../../redux/reducers/profile';
+import { clearData, makeTeamMemberSuccess } from '../../redux/reducers/profile';
 import Error from '../Error';
 import { userTypes } from '../../utility/constants/Constant';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 import { getItem } from '../../utility/localStorageControl';
+import AcceptClubInviationModal from '../modals/AcceptClubInviationModal';
+import DeclineClubInvitaionModal from '../modals/DeclineClubInvitationModal';
+import { updateInvitation } from '../../redux/actions/dashboardActions';
+import { getRequestStatusSuccess } from '../../redux/reducers/inviteTalent';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
   const param = useParams();
   const userData = useSelector(selectAuthUserData);
+  const requestStatusData = useSelector((state) => state.inviteTalent.getRequestStatus);
+
+  const [acceptInvitationModal, setAcceptInvitationModal] = useState(null);
+  const [declineInvitationModal, setDeclineInvitationModal] = useState(null);
+
+  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
 
   const isEditable = userData?._id === param?.userId;
   useEffect(() => {
@@ -126,10 +136,56 @@ const UserDetails = () => {
     return <Error />;
   }
 
+  const toggleAcceptInvitationModal = () => {
+    setAcceptInvitationModal(!acceptInvitationModal);
+  };
+
+  const toggleDeclineInvitaionModal = () => {
+    setDeclineInvitationModal(!declineInvitationModal);
+  };
+
+  const onAccept = () => {
+    const postData = {
+      action: 'ACCEPT',
+      request_id: requestStatusData._id,
+    };
+    setIsStatusUpdating(true);
+    dispatch(
+      updateInvitation({
+        data: postData,
+        onSuccess: () => {
+          setIsStatusUpdating(false);
+          setAcceptInvitationModal(false);
+          dispatch(getRequestStatusSuccess(null));
+          dispatch(makeTeamMemberSuccess());
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
+  };
+
   return (
     <>
       {/* <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} /> */}
-      <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} />
+      {/* <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} /> */}
+      <div className="d-flex justify-content-between align-items-center ">
+        <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} />
+        {currentProfile.team_type === 'CLUB' && requestStatusData && (
+          <div className="d-flex align-items-center gap-2 mb-2">
+            <CardText
+              className="mb-0 cursor-pointer text-danger fw-bold"
+              onClick={() => setDeclineInvitationModal(true)}
+            >
+              Decline
+            </CardText>
+            <Button color="primary " onClick={() => setAcceptInvitationModal(true)}>
+              Accept
+            </Button>
+          </div>
+        )}
+      </div>
       <Row>
         <Col lg="3">
           <LeftSidebarProfile
@@ -138,6 +194,7 @@ const UserDetails = () => {
             isClient={isClient}
             data={currentProfile}
             isEditable={userData?._id === param?.userId}
+            isClubProfile={currentProfile.team_type === 'CLUB'}
           />
         </Col>
         <Col lg="9">
@@ -221,6 +278,24 @@ const UserDetails = () => {
           </Row>
         </Col>
       </Row>
+      {acceptInvitationModal && (
+        <AcceptClubInviationModal
+          modal={acceptInvitationModal}
+          toggleModal={toggleAcceptInvitationModal}
+          description="You’ve accepted club invitation"
+          selectedTalents={[currentProfile]}
+          onAccept={onAccept}
+          isStatusUpdating={isStatusUpdating}
+        />
+      )}
+
+      {declineInvitationModal && (
+        <DeclineClubInvitaionModal
+          modal={declineInvitationModal}
+          toggleModal={toggleDeclineInvitaionModal}
+          data={currentProfile}
+        />
+      )}
     </>
   );
 };
