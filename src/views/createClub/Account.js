@@ -196,14 +196,18 @@ const Account = () => {
   }, [imageUrlRes]);
 
   const onSubmit = (data) => {
-    const selectedOptionValue = selectedOption?.value;
-    const myInstitution = userDetailsData?.talent_info?.educational_institute
-      .map((educationDetails) => educationDetails.institution)
-      .map((institute) => institute._id);
+    console.log(data, 'submit');
+    let otherIntitution;
+    if (!location.state?.isEditing) {
+      const selectedOptionValue = selectedOption?.value;
+      const myInstitution = userDetailsData?.talent_info?.educational_institute
+        .map((educationDetails) => educationDetails.institution)
+        .map((institute) => institute._id);
 
-    const otherIntitution = myInstitution.includes(selectedOptionValue);
+      otherIntitution = myInstitution.includes(selectedOptionValue);
+    }
 
-    if (!otherIntitution) {
+    if (!location.state?.isEditing && !otherIntitution) {
       setEducationInstitutionModal(true);
     } else {
       const { clubName, clubTagline, clubIntroduction, interests, tools, skills, educationInstitution } = data;
@@ -264,14 +268,12 @@ const Account = () => {
         }
       }
 
+      const removeEmpty = removeEmptyKeys(reqData);
+      dispatch(setClubCreateDataAction(removeEmpty));
+
       if (location?.state?.isEditing) {
-        // const onApiSuccess = () => {
-        //   navigate(`/create-club/profile-details`);
-        // };
-        // dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
+        navigate(`/create-club/profile-details`, { state: { isEditing: true } });
       } else {
-        const removeEmpty = removeEmptyKeys(reqData);
-        dispatch(setClubCreateDataAction(removeEmpty));
         navigate(`/create-club/profile-details`);
       }
     }
@@ -432,6 +434,7 @@ const Account = () => {
   useEffect(() => {
     if (location?.state?.isEditing) {
       if (clubDetails) {
+        console.log('clubDetails', clubDetails);
         if (clubDetails?.team_logo?.length > 0) {
           setSelectedImage(clubDetails.team_logo);
           setSelectedImagePreview(clubDetails.team_logo);
@@ -446,8 +449,18 @@ const Account = () => {
           setValue('clubIntroduction', clubDetails?.introduction, { shouldValidate: true });
         }
         if (clubDetails?.education_institute) {
-          setValue('educationInstitution', clubDetails?.education_institute, { shouldValidate: true });
-          setSelectedOption(clubDetails?.education_institute);
+          setSelectedOption({
+            label: clubDetails?.education_institute[0]?.name,
+            value: clubDetails?.education_institute[0]._id,
+          });
+          setValue(
+            'educationInstitution',
+            {
+              label: clubDetails?.education_institute[0]?.name,
+              value: clubDetails?.education_institute[0]._id,
+            },
+            { shouldValidate: true },
+          );
         }
         if (clubDetails?.interests?.length > 0) {
           setValue(
@@ -545,7 +558,13 @@ const Account = () => {
                   name="clubName"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter your club's name" invalid={errors.clubName && true} />
+                    <Input
+                      {...field}
+                      placeholder="Enter your club's name"
+                      disabled={location?.state?.isEditing}
+                      invalid={errors.clubName && true}
+                      className={`${location?.state?.isEditing ? 'disabled-input' : ''}`}
+                    />
                   )}
                 />
                 {errors.clubName && <FormFeedback>{errors.clubName.message}</FormFeedback>}
@@ -585,6 +604,7 @@ const Account = () => {
                       debounceTimeout={1000}
                       additional={{ page: 1 }}
                       loadOptions={loadEducationInstitutionOptions}
+                      isDisabled={location?.state?.isEditing}
                       reduceOptions={reduceGroupedOptions}
                       onChange={(selOption) => handleSelectChange(selOption, field)}
                       classNamePrefix="select"

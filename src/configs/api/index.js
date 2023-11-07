@@ -203,6 +203,7 @@ const API = {
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     update: `${apiAuthEndpoint}/api/v1/team/update`,
+    memberType: `${apiAuthEndpoint}/api/v1/team/member_type`,
     getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
   },
   dispute: {
@@ -249,7 +250,6 @@ const API = {
     convertReferral: `${apiAuthEndpoint}/api/v1/referrals/conversion`,
     allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
   },
-
   clubs: {
     listClubs: `${apiOnboardingEndpoint}/api/v1/clubs`,
     cardInfo: `${apiOnboardingEndpoint}/api/v1/clubs/card-info`,

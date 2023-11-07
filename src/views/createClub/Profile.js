@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChevronLeft } from 'react-feather';
 import theme from '../../configs/themeVariables';
 import { InfoContainer } from '../create-bid/style';
@@ -15,6 +15,8 @@ import { isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
 import ClubCreatedModal from './ClubCreatedModal';
 import { registerClubEmail, setClubCreateDataAction } from '../../redux/actions/clubActions';
 import EmailVerifyModal from './EmailVerifyModal';
+import { getTeamById } from '../../services/teamServices';
+import { userData } from '../../redux/selectors/dashboardSelectors';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -60,6 +62,9 @@ const Profile = () => {
 
   const [clubCreatedModal, setClubCreatedModal] = useState(false);
   const [emailVerifyModal, setEmailVerifyModal] = useState(false);
+  const [clubDetails, setClubDetails] = useState(null);
+
+  const userDetailsData = useSelector(userData);
 
   const toggleClubCreatedModal = () => setClubCreatedModal(!clubCreatedModal);
   const toggleEmailVerifyModal = () => setEmailVerifyModal(!emailVerifyModal);
@@ -106,6 +111,11 @@ const Profile = () => {
     dispatch(setClubCreateDataAction(removeEmptyClubData));
     onEmailVerifySuccess(formData.clubEmailID);
     toggleEmailVerifyModal();
+
+    // const onApiSuccess = () => {
+    //   navigate(`/create-club/profile-details`);
+    // };
+    // dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
   };
 
   const isWebpageValue = watch('isWebpage');
@@ -118,6 +128,38 @@ const Profile = () => {
       register('universityWebpage');
     }
   }, [isWebpageValue, isUniversityApprovalValue, unregister, register]);
+
+  const getTeamDetails = async () => {
+    const res = await getTeamById(userDetailsData._id);
+    if (res) {
+      setClubDetails(res.data.data);
+    }
+  };
+
+  useEffect(() => {
+    getTeamDetails();
+  }, []);
+
+  useEffect(() => {
+    if (location?.state?.isEditing) {
+      if (clubDetails) {
+        console.log('clubDetails', clubDetails);
+        if (clubDetails?.email?.length > 0) {
+          setValue('clubEmailID', clubDetails?.email, { shouldValidate: true });
+        }
+        if (clubDetails?.linkedIn?.length > 0) {
+          setValue('clubLinkedin', clubDetails?.linkedIn, { shouldValidate: true });
+        }
+        if (clubDetails?.website?.length > 0) {
+          setValue('clubWebsite', clubDetails?.website, { shouldValidate: true });
+        }
+        if (clubDetails?.webpage?.length > 0) {
+          setValue('isWebpage', 'Yes', { shouldValidate: true });
+          setValue('universityWebpage', clubDetails?.webpage, { shouldValidate: true });
+        }
+      }
+    }
+  }, [clubDetails]);
 
   const disableBtn = isWebpageValue === 'No' && isUniversityApprovalValue === 'No';
 

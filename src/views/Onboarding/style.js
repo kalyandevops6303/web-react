@@ -136,6 +136,12 @@ export const ProfileFormContainer = styled.div`
     margin-left: 4px;
   }
 
+  .disabled-input {
+    background-color: #f2f2f2 !important;
+    cursor: not-allowed !important;
+    border: none !important;
+  }
+
   // dropdown styles
   .select__placeholder {
     font-size: 12px;

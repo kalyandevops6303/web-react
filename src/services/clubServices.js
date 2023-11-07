@@ -8,4 +8,9 @@ const getClubsCardInfoService = () => DataService.get(API.clubs.cardInfo);
 
 const registerClubEmailService = (data) => DataService.post(API.auth.regsterClubEmail, data);
 
-export { getClubsService, getClubsCardInfoService, registerClubEmailService };
+const changeMemberTypeService = (data) =>
+  DataService.put(
+    `${API.team.memberType}?user_id=${data?.user_id}&team_id=${data?.team_id}&member_type=${data?.member_type}`,
+  );
+
+export { getClubsService, getClubsCardInfoService, registerClubEmailService, changeMemberTypeService };

@@ -1,6 +1,11 @@
 /* eslint-disable import/no-cycle */
 import errorHandler from '../../utility/errorHandler';
-import { getClubsService, getClubsCardInfoService, registerClubEmailService } from '../../services/clubServices';
+import {
+  getClubsService,
+  getClubsCardInfoService,
+  registerClubEmailService,
+  changeMemberTypeService,
+} from '../../services/clubServices';
 import { createTeamService } from '../../services/teamServices';
 import {
   getClubCreated,
@@ -77,4 +82,13 @@ const createClub =
     }
   };
 
-export { setClubCreateDataAction, registerClubEmail, createClub, getClubs, getClubCardInfo };
+const changeMemberType = (data, onSuccess) => async () => {
+  try {
+    const res = await changeMemberTypeService(data);
+    onSuccess();
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+export { setClubCreateDataAction, registerClubEmail, createClub, getClubs, getClubCardInfo, changeMemberType };
