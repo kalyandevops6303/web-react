@@ -31,6 +31,7 @@ const InvitationSentModal = ({
   setInvitedIds,
   setSelectedTalents,
   description,
+  onInviteSucess,
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -47,7 +48,9 @@ const InvitationSentModal = ({
     setInvitedIds([]);
     setSelectedIds([]);
     setSelectedTalents([]);
-
+    if (location.pathname?.split('/')?.includes('project-details')) {
+      onInviteSucess();
+    }
     if (location.pathname === '/create-team/profile-details') {
       navigate('/dashboard');
     }
@@ -190,6 +193,7 @@ InvitationSentModal.propTypes = {
   setInvitedIds: Proptypes.func,
   setSelectedTalents: Proptypes.func,
   description: Proptypes.string,
+  onInviteSucess: Proptypes.func,
 };
 
 InvitationSentModal.defaultProps = {
@@ -202,6 +206,7 @@ InvitationSentModal.defaultProps = {
   setSelectedIds: () => {},
   setInvitedIds: () => {},
   setSelectedTalents: () => {},
+  onInviteSucess: () => {},
   description: '',
   inviteRole: '',
 };

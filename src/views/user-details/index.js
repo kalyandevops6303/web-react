@@ -25,6 +25,7 @@ const UserDetails = () => {
   const dispatch = useDispatch();
   const param = useParams();
   const userData = useSelector(selectAuthUserData);
+  const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
 
   const isEditable = userData?._id === param?.userId;
   useEffect(() => {
@@ -135,7 +136,7 @@ const UserDetails = () => {
           <Row>
             <Col lg="3">
               <Statbox
-                title={currentProfile?.projects_worked_on_count || 0}
+                title={recentProjectsMetadata?.total_records || 0}
                 desc="Completed Projects"
                 icon={<Check height={20} />}
                 color="light-success"

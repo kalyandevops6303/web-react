@@ -253,7 +253,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                 </div>
               </div>
             </div>
-            <div className="d-flex" style={{ marginTop: '35px' }}>
+            <div className="d-flex mt-2" style={{ marginTop: '35px' }}>
               <BadgeGroup
                 title="Tools"
                 data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
@@ -263,27 +263,65 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
             </div>
           </section>
           <div className="w-50">
-            <div className="flex-grow-1" onClick={(e) => handleTeamTalentNavigate(e)}>
-              <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
-                {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
-              </CardTitle>
-            </div>
-            {avatarGroup?.length > 3 ? (
-              <AvatarGroup
-                totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
-                size="sm"
-                className="ms-25 mb-50"
-                data={avatarGroup?.slice(0, 3)}
-              />
-            ) : (
-              <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
-            )}
+            <div>
+              {data?.worker_details?.user_type === userTypes.talent ? (
+                <div>
+                  <div className="d-flex w-100">
+                    <img
+                      className="market-place-card-photo cursor-pointer me-75"
+                      src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
+                      alt="avatar"
+                      width={40}
+                      height={50}
+                      style={{ objectFit: 'cover' }}
+                      onClick={(e) => handleClientNavigate(e)}
+                    />
+                    <div>
+                      <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
+                        <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
+                          {data?.worker_details?.name ??
+                            `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}{' '}
+                        </CardTitle>
+                        <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
+                          {data?.worker_details?.title || 'Role'}
+                        </CardText>
+                      </div>
+                      <div className="d-flex flex-grow-1 mt-25">
+                        <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
+                        <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                          {data?.worker_details?.project_count} Projects
+                        </CardText>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex-grow-1" onClick={(e) => handleTeamTalentNavigate(e)}>
+                    <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
+                      {data?.worker_details?.name ??
+                        `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
+                    </CardTitle>
+                  </div>
+                  {avatarGroup?.length > 3 ? (
+                    <AvatarGroup
+                      totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
+                      size="sm"
+                      className="ms-25 mb-50"
+                      data={avatarGroup?.slice(0, 3)}
+                    />
+                  ) : (
+                    <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
+                  )}
 
-            <div className="d-flex flex-grow-1 mt-25">
-              <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
-              <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {data?.client?.project_count} Projects
-              </CardText>
+                  <div className="d-flex flex-grow-1 mt-25">
+                    <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
+                    <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                      {data?.client?.project_count} Projects
+                    </CardText>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="mt-2">
               <BadgeGroup

@@ -12,6 +12,7 @@ const InviteTalentToTeam = ({
   inviteRole,
   inviteTeamMemberModal,
   toggleInviteTeamMemberModal,
+  onInviteSucess,
 }) => {
   const [selectedTalents, setSelectedTalents] = useState([]);
   const [invitedIds, setInvitedIds] = useState([]);
@@ -81,6 +82,7 @@ const InviteTalentToTeam = ({
           invitedIds={invitedIds}
           setInvitedIds={setInvitedIds}
           setSelectedTalents={setSelectedTalents}
+          onInviteSucess={onInviteSucess}
           description="You’ve sent a team member invitation"
         />
       )}
@@ -102,6 +104,7 @@ InviteTalentToTeam.propTypes = {
   projectId: PropTypes.string,
   inviteRole: PropTypes.string,
   createTeamView: PropTypes.bool,
+  onInviteSucess: PropTypes.func,
 };
 InviteTalentToTeam.defaultProps = {
   inviteTeamMemberModal: false,
@@ -109,5 +112,6 @@ InviteTalentToTeam.defaultProps = {
   projectId: '',
   inviteRole: '',
   createTeamView: false,
+  onInviteSucess: () => {},
 };
 export default InviteTalentToTeam;
