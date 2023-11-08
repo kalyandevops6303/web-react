@@ -31,7 +31,7 @@ const ClubInvitation = () => {
   const profilePercentageData = useSelector(profilePercentage);
 
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
-  const breadCrumb = [{ title: 'Dashboard' }, { title: invitedByData?.request_type }];
+  const breadCrumb = [{ title: 'Dashboard' }, { title: 'Club invitation request' }];
 
   const onSuccess = (res) => {
     setInvitedByData(res);
@@ -140,6 +140,7 @@ const ClubInvitation = () => {
           onAccept={onAccept}
           modal={accpetModal}
           toggleModal={handleCancel}
+          isClubInvitation
         />
       )}
       {rejectModal && (
@@ -150,6 +151,7 @@ const ClubInvitation = () => {
           onReject={onReject}
           modal={rejectModal}
           toggleModal={handleCancel}
+          isClubInvitation
         />
       )}
 
@@ -159,7 +161,6 @@ const ClubInvitation = () => {
             <Card>
               <CardHeader className="p-0">
                 <GrayBorderContainer className="w-100 px-2 pt-2 pb-1">
-                  {/* <h4 className="m-0">{invitedByData?.request_type}</h4> */}
                   <h4 className="m-0">Club invitation request</h4>
                 </GrayBorderContainer>
               </CardHeader>
@@ -169,7 +170,8 @@ const ClubInvitation = () => {
                   <Card className="white-card-bg w-100" style={{ minHeight: '18rem' }}>
                     <CardBody>
                       <div className="d-flex justify-content-between align-items-center">
-                        <h4 className="m-0">{invitedByData?.request_type}</h4>
+                        {/* <h4 className="m-0">{invitedByData?.request_type}</h4> */}
+                        <h4 className="m-0">Club invitation request</h4>
 
                         {isStatusUpdating ? (
                           'Loading..'
@@ -224,19 +226,16 @@ const ClubInvitation = () => {
                           </Link>
                           <p className="m-0">
                             {invitedByData?.request_for?.team_name || invitedByData?.request_from?.team_name
-                              ? 'Team Name'
+                              ? 'Club Name'
                               : ''}
                           </p>
                         </div>
                       </div>
-                      {(invitedByData?.message || 'yes') && (
+                      {invitedByData?.message && (
                         <>
                           <p className="fw-bolder mt-2 mb-0">Message</p>
                           <div className="w-75">
-                            <p className="font-small-3 w-50">
-                              {invitedByData?.message ||
-                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim ut tellus elementum sagittis vitae et leo.'}
-                            </p>
+                            <p className="font-small-3 w-50">{invitedByData?.message}</p>
                           </div>
                         </>
                       )}
