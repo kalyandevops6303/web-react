@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
-import { Button, CardText, Col, Row } from 'reactstrap';
+import { Button, Col, Row } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from './overview/Statbox';
 import round from '../../lib/round';
@@ -197,12 +197,9 @@ const UserDetails = () => {
         <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} />
         {currentProfile.team_type === 'CLUB' && requestStatusData && (
           <div className="d-flex align-items-center gap-2 mb-2">
-            <CardText
-              className="mb-0 cursor-pointer text-danger fw-bold"
-              onClick={() => setDeclineInvitationModal(true)}
-            >
+            <Button onClick={() => setDeclineInvitationModal(true)} color="flat-danger" className="me-1">
               Decline
-            </CardText>
+            </Button>
             <Button color="primary " onClick={() => setAcceptInvitationModal(true)}>
               Accept
             </Button>

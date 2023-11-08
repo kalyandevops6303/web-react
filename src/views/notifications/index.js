@@ -69,6 +69,12 @@ const Notifications = () => {
       navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
+    } else if (status === 'Club Invitation Request' && inviteId) {
+      navigate(`/club-invitation/${inviteId}`);
+    } else if (status === 'Club Join Request' && inviteId) {
+      navigate(`/join-request/${inviteId}`);
+    } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
+      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
     } else {
       navigate(`/project-details/${projectId}/bid`);
     }
@@ -94,6 +100,12 @@ const Notifications = () => {
         return true;
       case 'Team Join Request':
         return true;
+      case 'Club Invitation Request':
+        return true;
+      case 'Club Join Request':
+        return true;
+      case 'Project Club Invitation Request':
+        return true;
       default:
         return false;
     }
@@ -107,6 +119,7 @@ const Notifications = () => {
         return true;
       case 'DISPUTE_RESOLVED':
         return true;
+
       default:
         return false;
     }
@@ -146,6 +159,7 @@ const Notifications = () => {
   if (isLoading) {
     return <ComponentSpinner />;
   }
+
   return (
     <>
       <div className="d-flex justify-content-between mb-2 mt-1">
