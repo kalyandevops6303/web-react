@@ -109,7 +109,8 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember, isA
       <GrayBorderContainer className="d-flex justify-content-between px-2 py-1">
         <h3 className="font-medium-4">{isClubView ? 'Club Member' : 'Team Member'}</h3>
         <Button color="primary" onClick={onInviteTeamMemberClick}>
-          {isClubView && isAdmin ? 'Invite Member' : ' Invite Team Member'}
+          {isClubView && isAdmin && 'Invite Member'}
+          {!isClubView && 'Invite Team Member'}
         </Button>
       </GrayBorderContainer>
       <div className="p-2 mb-2" id="scrollableDivTeamMemberModal" style={{ maxHeight: '22rem', overflowY: 'auto' }}>
