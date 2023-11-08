@@ -21,6 +21,8 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectEmail, selectUserType } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
+import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
+import TermsModal from '../modals/TermsModal';
 
 const RegisterEmail = () => {
   const navigate = useNavigate();
@@ -36,6 +38,12 @@ const RegisterEmail = () => {
   }, [userType, navigate]);
 
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [privacyPolicyModal, setPrivacyPolicyModal] = useState(null);
+  const [termsModal, setTermsModal] = useState(null);
+
+  const togglePrivacyPolicyModal = () => setPrivacyPolicyModal(!privacyPolicyModal);
+
+  const toggleTermsModal = () => setTermsModal(!termsModal);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -68,6 +76,8 @@ const RegisterEmail = () => {
 
   return (
     <OnBoardWrap>
+      {privacyPolicyModal && <PrivacyPolicyModal modal={privacyPolicyModal} toggleModal={togglePrivacyPolicyModal} />}
+      {termsModal && <TermsModal modal={termsModal} toggleModal={toggleTermsModal} />}
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
@@ -127,11 +137,15 @@ const RegisterEmail = () => {
 
               <Label color={theme.primary} className="mb-0 ">
                 <small className="privacy-terms-label">
-                  <u>Privacy policy </u>
+                  <u className="cursor-pointer" onClick={() => setPrivacyPolicyModal(true)}>
+                    Privacy policy{' '}
+                  </u>
                 </small>
                 <small className="privacy-terms-label">&</small>
                 <small className="privacy-terms-label">
-                  <u>Terms</u>
+                  <u className="cursor-pointer" onClick={() => setTermsModal(true)}>
+                    Terms
+                  </u>
                 </small>
               </Label>
             </div>
