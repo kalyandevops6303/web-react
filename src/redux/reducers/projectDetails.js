@@ -6,6 +6,8 @@ const initialState = {
   getTeamMember: [],
   getTeamMemberLoading: false,
   receivedBids: [],
+  isNDA: null,
+  isContract: null,
   getReceivedBidsLoading: false,
   removeWorkerLoading: false,
   error: null,
@@ -143,6 +145,12 @@ const projectDetails = createSlice({
       ...state,
       checkDocumentActivatedLoading: false,
       error: action.payload,
+    }),
+
+    clearDocstate: (state) => ({
+      ...state,
+      isNDA: null,
+      isContract: null,
     }),
 
     getDocumentRequest: (state) => ({
@@ -341,6 +349,7 @@ const projectDetails = createSlice({
 });
 
 export const {
+  clearDocstate,
   makeFavSuccess,
   removeFavSuccess,
   getInvitedMemberFailure,

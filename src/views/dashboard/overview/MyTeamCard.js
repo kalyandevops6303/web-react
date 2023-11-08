@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/require-default-props */
 // ** Third Party Components
 import PropTypes from 'prop-types';
@@ -16,27 +17,6 @@ import { ProjectWrapper } from './style';
 import ProjectModal from '../../modals/ProjectModal';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { setItem } from '../../../utility/localStorageControl';
-
-const UserSection = ({ totalCount, users, name }) => (
-  <div className="user-section">
-    <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
-    <div className="avatar-wrap">
-      {users.length > 3 ? (
-        <span className="d-flex avatars">
-          <AvatarGroup totalCount={totalCount} size="sm" className="mr-4" data={users.slice(0, 3)} />
-        </span>
-      ) : (
-        <AvatarGroup size="sm" data={users} />
-      )}
-    </div>
-  </div>
-);
-
-UserSection.propTypes = {
-  users: PropTypes.array,
-  name: PropTypes.string,
-  totalCount: PropTypes.number,
-};
 
 const MyTeamCard = ({ data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -79,11 +59,24 @@ const MyTeamCard = ({ data, className }) => {
                     totalCount={data?.team_members_count || data?.workers_count}
                     size="sm"
                     className="mr-4"
-                    data={users.slice(0, 3)}
+                    data={[
+                      ...users.slice(0, 3).map((user) => ({
+                        ...user,
+                        tooltipId: `${data?.name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
+                      })),
+                    ]}
                   />
                 </span>
               ) : (
-                <AvatarGroup size="sm" data={users} />
+                <AvatarGroup
+                  size="sm"
+                  data={[
+                    ...users?.map((user) => ({
+                      ...user,
+                      tooltipId: `${data?.name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
+                    })),
+                  ]}
+                />
               )}
             </div>
             <div

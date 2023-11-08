@@ -17,6 +17,7 @@ const InviteTalentToTeam = ({
   isClubInvitation,
   text,
   isClubView,
+  onInviteSucess,
 }) => {
   const [selectedTalents, setSelectedTalents] = useState([]);
   const [invitedIds, setInvitedIds] = useState([]);
@@ -119,6 +120,7 @@ const InviteTalentToTeam = ({
           invitedIds={invitedIds}
           setInvitedIds={setInvitedIds}
           setSelectedTalents={setSelectedTalents}
+          onInviteSucess={onInviteSucess}
           description={`You’ve sent a ${isClubView ? 'club' : 'team member'} invitation`}
         />
       )}
@@ -143,6 +145,7 @@ InviteTalentToTeam.propTypes = {
   createTeamView: PropTypes.bool,
   text: PropTypes.object,
   isClubView: PropTypes.bool,
+  onInviteSucess: PropTypes.func,
 };
 InviteTalentToTeam.defaultProps = {
   inviteTeamMemberModal: false,
@@ -153,5 +156,6 @@ InviteTalentToTeam.defaultProps = {
   isClubInvitation: false,
   text: null,
   isClubView: false,
+  onInviteSucess: () => {},
 };
 export default InviteTalentToTeam;

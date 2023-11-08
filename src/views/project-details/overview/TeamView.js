@@ -24,6 +24,7 @@ import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
 import { returnFormattedRating } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
 const InvitedMemberComponent = () => {
   const inviteMembers = useSelector((state) => state.projectDetails.getInvitedMember);
@@ -61,7 +62,7 @@ const InvitedMemberComponent = () => {
   };
   const teamId = getItem('team_id');
 
-  const handleSendMail = ({ id, role }) => {
+  const handleSendMail = ({ id, role, user_id }) => {
     setLoadingItems((prevLoadingItems) => ({
       ...prevLoadingItems,
       [id]: true,
@@ -72,7 +73,7 @@ const InvitedMemberComponent = () => {
       // eslint-disable-next-line no-undef
       redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
       requests_to: {
-        user_ids: [id],
+        user_ids: [user_id],
         team_ids: [],
         email_ids: [],
       },
@@ -112,7 +113,7 @@ const InvitedMemberComponent = () => {
               loader={<div className="d-flex justify-content-center">Loading...</div>}
             >
               {inviteMembers.map((data) => (
-                <Card key={data?._id}>
+                <Card key={data?.send_to?.user_id}>
                   <CardBody>
                     <section className="d-flex justify-content-between">
                       <div className="d-flex align-items-center gap-1 w-100">
@@ -149,13 +150,19 @@ const InvitedMemberComponent = () => {
                         </div>
                       </div>
                       {loadingItems[data?._id] ? (
-                        <div className="d-flex justify-content-center">
+                        <div className="d-flex justify-content-center m-auto">
                           <Spinner size="sm" />
                         </div>
                       ) : (
                         <span
-                          onClick={() => handleSendMail({ id: data?._id, role: data?.request_for?.role })}
-                          className="mail-bg cursor-pointer"
+                          onClick={() =>
+                            handleSendMail({
+                              user_id: data?.send_to?.user_id,
+                              id: data?._id,
+                              role: data?.request_for?.role,
+                            })
+                          }
+                          className="mail-bg cursor-pointer m-auto"
                         >
                           <Mail size={20} className="mail-icon" color={theme.activeColor} />
                         </span>
@@ -177,10 +184,12 @@ const TeamView = () => {
   const params = useParams();
   const userData = useSelector(selectUserData);
   const savedUser = useSelector(selectSavedUserData);
+  const projectDetailsData = useSelector(projectDetails);
   const teamMembers = useSelector((state) => state.projectDetails.getTeamMember);
   const unassigned = useSelector((state) => state.projectDetails.unassignedRole);
   const isTeamLoading = useSelector((state) => state.projectDetails.getTeamMemberLoading);
   const isUnassignLoading = useSelector((state) => state.projectDetails.getUnassignedRoleLoading);
+  const metadata = { page: 1, page_size: 10 };
 
   useEffect(() => {
     dispatch(getTeamMembers({ project_id: params.projectId }));
@@ -214,6 +223,9 @@ const TeamView = () => {
     desc: 'If a talent is not already part of your team, they will need to join before they can be added to the project',
   };
 
+  const onInviteSucess = () => {
+    dispatch(getInvitedMember({ metadata, project_id: params?.projectId }));
+  };
   return (
     <TeamVieWrapper>
       <Card>
@@ -277,7 +289,9 @@ const TeamView = () => {
           </CardBody>
         </Card>
       )}
-      <InvitedMemberComponent />
+      {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') && (
+        <InvitedMemberComponent />
+      )}
 
       {inviteTalentToTeamModal && (
         <InviteTalentToTeam
@@ -289,6 +303,7 @@ const TeamView = () => {
           isClubInvitation={userData?.team_type === 'CLUB'}
           text={userData?.team_type === 'CLUB' ? modalTextForClubView : null}
           isClubView={userData?.team_type === 'CLUB'}
+          onInviteSucess={onInviteSucess}
         />
       )}
     </TeamVieWrapper>

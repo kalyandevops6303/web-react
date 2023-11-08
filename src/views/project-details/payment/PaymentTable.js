@@ -4,7 +4,7 @@ import { Badge, Button, Card, CardBody, CardText, Input, Table } from 'reactstra
 import { formatDate } from '../../../utility/Utils';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
-import { getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
+import { getApplicationFee, getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import MakePaymentModal from '../../modals/MakePaymentModal';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
@@ -13,6 +13,7 @@ const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
   const [selectedPaymentData, setSelectedPaymentData] = useState([]);
   const [makePaymentModal, setMakePaymentModal] = useState(false);
+  const [feeStructre, setFeeStructure] = useState(null);
 
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const listLoading = useSelector((state) => state.milestonePayment?.listLoading);
@@ -20,6 +21,14 @@ const PaymentTable = () => {
   const user = useSelector(userData);
 
   const dispatch = useDispatch();
+
+  const onGetApplicationFee = (data) => {
+    setFeeStructure(data);
+  };
+
+  useEffect(() => {
+    dispatch(getApplicationFee(onGetApplicationFee));
+  }, []);
 
   useEffect(() => {
     if (projectDetailsData?._id) {
@@ -50,8 +59,11 @@ const PaymentTable = () => {
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
       return { theme: 'light-warning', text: 'Payment Due' };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING || tag === PAYMENT_STATUS.INITIATED) {
+    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: 'Payment Processing' };
+    }
+    if (tag === PAYMENT_STATUS.INITIATED) {
+      return { theme: 'light-primary', text: 'Payment Initiated' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
       return { theme: 'light-success', text: 'Payment Success' };
@@ -61,7 +73,9 @@ const PaymentTable = () => {
 
   const totalAmount = selectedPaymentData.reduce((acc, curr) => acc + curr.estimated_cost, 0);
 
-  const trumioFee = (totalAmount * 20) / 100;
+  const applicationFee = feeStructre?.application_fee;
+  // eslint-disable-next-line no-unsafe-optional-chaining
+  const trumioFee = (totalAmount * applicationFee?.percentage) / 100;
   const totalPending = totalAmount + trumioFee;
 
   const handlePayment = () => {
@@ -72,11 +86,30 @@ const PaymentTable = () => {
     setMakePaymentModal(false);
   };
 
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
+  const isFirstTwoMilestonePaid =
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
+
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
     paymentStatus === PAYMENT_STATUS.INITIATED ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_PROCESSING;
+
+  const isPaymentDisabled = () => {
+    if (selectedPaymentId.length === 0) {
+      return true;
+    }
+    if (milestoneData?.length === 1) return false;
+    if (!isFirstTwoMilestonePaid && selectedPaymentId?.length < 2) {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <>
@@ -141,26 +174,27 @@ const PaymentTable = () => {
             </div>
             {user.user_type === userTypes.client && (
               <div className="d-flex w-100 mt-2 justify-content-between">
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Trumio fee 20%</CardText>
-                <CardText>{`$${trumioFee}`}</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`${applicationFee?.name ?? ''} (${
+                  applicationFee?.percentage ?? 0
+                }%)`}</CardText>
+                <CardText>{`$${Number.isNaN(trumioFee) ? 0 : trumioFee.toLocaleString()}`}</CardText>
               </div>
             )}
             <hr />
             {user.user_type === userTypes.client && (
               <div className="d-flex w-100 mt-2 justify-content-between">
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Inclusive of Trumio fee 20%</CardText>
-                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${totalPending}`}</CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                  {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
+                </CardText>
+                <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${
+                  Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()
+                }`}</CardText>
               </div>
             )}
 
             {user.user_type === userTypes.client && (
               <div className="d-flex justify-content-end w-100 mt-5">
-                <Button
-                  onClick={handlePayment}
-                  className="d-contents"
-                  color="primary"
-                  disabled={selectedPaymentId.length === 0}
-                >
+                <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
                   {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}
                 </Button>
               </div>
