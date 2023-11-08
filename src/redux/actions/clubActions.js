@@ -6,7 +6,7 @@ import {
   registerClubEmailService,
   changeMemberTypeService,
 } from '../../services/clubServices';
-import { createTeamService } from '../../services/teamServices';
+import { createTeamService, updateTeamService } from '../../services/teamServices';
 import {
   getClubCreated,
   registerClubEmailFailure,
@@ -20,6 +20,7 @@ import {
   getListReq,
   storeSuccessData,
 } from '../reducers/clubs';
+import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
 
 const getClubs =
   ({ filterData, metaData, onSuccess, onError }) =>
@@ -84,11 +85,30 @@ const createClub =
 
 const changeMemberType = (data, onSuccess) => async () => {
   try {
-    const res = await changeMemberTypeService(data);
+    await changeMemberTypeService(data);
     onSuccess();
   } catch (error) {
     errorHandler(error);
   }
 };
 
-export { setClubCreateDataAction, registerClubEmail, createClub, getClubs, getClubCardInfo, changeMemberType };
+const updateClub = (data, onSuccess) => async (dispatch) => {
+  dispatch(updateTeamRequest());
+  try {
+    const res = await updateTeamService(data);
+    dispatch(updateTeamSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, updateTeamFailure);
+  }
+};
+
+export {
+  setClubCreateDataAction,
+  registerClubEmail,
+  createClub,
+  getClubs,
+  getClubCardInfo,
+  changeMemberType,
+  updateClub,
+};

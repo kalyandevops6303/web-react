@@ -196,7 +196,6 @@ const Account = () => {
   }, [imageUrlRes]);
 
   const onSubmit = (data) => {
-    console.log(data, 'submit');
     let otherIntitution;
     if (!location.state?.isEditing) {
       const selectedOptionValue = selectedOption?.value;
@@ -434,7 +433,6 @@ const Account = () => {
   useEffect(() => {
     if (location?.state?.isEditing) {
       if (clubDetails) {
-        console.log('clubDetails', clubDetails);
         if (clubDetails?.team_logo?.length > 0) {
           setSelectedImage(clubDetails.team_logo);
           setSelectedImagePreview(clubDetails.team_logo);
