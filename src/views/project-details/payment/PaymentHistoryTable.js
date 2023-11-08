@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Card, CardText, Table } from 'reactstrap';
 
-import { milestoneTransactionsService } from '../../../services/projectMilestoneService';
+import { milestoneTransactionsServiceForClient } from '../../../services/projectMilestoneService';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
 import { formatDate } from '../../../utility/Utils';
@@ -15,9 +15,9 @@ function PaymentHistoryTable() {
 
   useEffect(() => {
     if (projectDetailsData?._id) {
-      milestoneTransactionsService(projectDetailsData._id).then((res) => {
-        if (res.data.data.order_history) {
-          setTransactions(res.data.data.order_history);
+      milestoneTransactionsServiceForClient(projectDetailsData._id).then((res) => {
+        if (res.data.data) {
+          setTransactions(res.data.data);
         }
       });
     }
@@ -40,6 +40,13 @@ function PaymentHistoryTable() {
       return { theme: 'light-success', text: 'Payment Success' };
     }
     return { theme: 'light-primary', text: tag };
+  };
+
+  const getTotalAmount = (payment) => {
+    if (payment?.application_fee && payment?.amount) {
+      return (payment.amount + payment.application_fee).toLocaleString();
+    }
+    return 0;
   };
   return (
     <Card className="gray-card p-0">
@@ -65,7 +72,7 @@ function PaymentHistoryTable() {
                 <td>
                   <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
                 </td>
-                <td>${item?.milestone?.amount ?? 0}</td>
+                <td>${getTotalAmount(item)}</td>
               </tr>
             ))}
           </tbody>

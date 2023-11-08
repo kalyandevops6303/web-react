@@ -140,7 +140,8 @@ const API = {
   },
   projectMilestones: {
     getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,
-    getProjectTransactions: `${apiCreateProjectEndpoint}/api/v1/project/transactions`,
+    getProjectTransactionsForTalent: `${apiCreateProjectEndpoint}/api/v1/project/transactions-talent`,
+    getProjectTransactionsForClient: `${apiCreateProjectEndpoint}/api/v1/project/transactions-client`,
     submitMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/submission`,
     acceptMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/acceptance`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
