@@ -27,7 +27,9 @@ const PaymentTable = () => {
   };
 
   useEffect(() => {
-    dispatch(getApplicationFee(onGetApplicationFee));
+    if (user?.user_type === userTypes.client) {
+      dispatch(getApplicationFee(onGetApplicationFee));
+    }
   }, []);
 
   useEffect(() => {

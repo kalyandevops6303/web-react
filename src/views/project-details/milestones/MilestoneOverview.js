@@ -127,11 +127,7 @@ const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, mileston
           payments = res.data.data.pay_outs.map((item) => item?.[Object.keys(item)?.[0]]?.[0]);
         }
         if (res.data.data.my_payments) {
-          res.data.data.my_payments.forEach((item) => {
-            if (item?.[Object.keys(item)?.[0]]?.[0]) {
-              payments.push(item?.[Object.keys(item)?.[0]]?.[0]);
-            }
-          });
+          payments = [...res.data.data.my_payments];
         }
         if (res.data.data.team_payments) {
           setTeamPayments(res.data.data.team_payments);
