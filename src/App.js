@@ -48,7 +48,6 @@ const App = () => {
     }
     CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
       const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
-      console.log('UNREAD COUNT INDEX', totalCount);
       dispatch(setUnreadMsgCount(totalCount));
     });
   };
@@ -58,9 +57,7 @@ const App = () => {
       let data;
       const tokenFunc = async () => {
         data = await getToken();
-        console.log('FCM TOKEN 61', data);
         if (data) {
-          console.log('FCM TOKEN 63', data);
           dispatch(fcmSubscribeNotification(data));
           loginUser({ cometToken: cometAuthToken, fcm: data });
           setItem('fcmToken', data);

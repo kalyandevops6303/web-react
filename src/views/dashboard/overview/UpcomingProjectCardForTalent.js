@@ -43,6 +43,7 @@ const UpcomingProjectCardForTalent = ({ data, className }) => {
                     placement: 'bottom',
                     imgHeight: 33,
                     imgWidth: 33,
+                    tooltipId: `tooltip_${data?._id}_${data?.current_milestone?.name.replace(/\s+/g, '-')}`,
                   },
                 ]}
               />

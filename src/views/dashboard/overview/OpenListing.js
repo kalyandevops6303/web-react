@@ -34,6 +34,7 @@ import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import ProjectBidCard from './ProjectBidCard';
 import RecommendedTeamsCardForClient from './RecommendedTeamsCardForClient';
+import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -157,10 +158,12 @@ const OpenListing = () => {
   const handleViewAll = (e, path) => {
     e.stopPropagation();
     navigate(path);
+    dispatch(setActiveNavTab('marketplace'));
   };
   const handleViewAllRecommendedTeam = (e, path) => {
     e.stopPropagation();
     navigate(path, { state: { isRecommended: true } });
+    dispatch(setActiveNavTab('marketplace'));
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
@@ -177,7 +180,7 @@ const OpenListing = () => {
           <>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Projects Bids</span>
+                <span className="d-flex align-items-center">Received Bids</span>
                 {projectsBidsForClientData?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/my_bids')} className="view-all-cta">
                     View All

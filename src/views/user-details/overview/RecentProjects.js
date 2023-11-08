@@ -20,7 +20,13 @@ const RecentProjects = () => {
   const metadata = { page: 1, page_size: 10 };
 
   useEffect(() => {
-    dispatch(getRecentProjects({ user_id: param?.userId, entity: param?.userType.toUpperCase(), metadata }));
+    dispatch(
+      getRecentProjects({
+        user_id: param?.userId,
+        entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+        metadata,
+      }),
+    );
   }, []);
 
   useEffect(() => {
@@ -40,7 +46,11 @@ const RecentProjects = () => {
       page: recentProjectsMetadata?.current_page + 1 || 1,
     };
     dispatch(
-      getRecentProjects({ user_id: param?.userId, entity: param?.userType.toUpperCase(), metadata: newMeteData }),
+      getRecentProjects({
+        user_id: param?.userId,
+        entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+        metadata: newMeteData,
+      }),
     );
   };
   if (isLoading) {
@@ -83,7 +93,7 @@ const RecentProjects = () => {
                         data={item}
                         role={item?.role}
                         rating={item?.rating}
-                        userType={param?.userType.toUpperCase()}
+                        userType={param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase()}
                         title={item?.details?.name}
                         desc={item?.details?.description}
                       />

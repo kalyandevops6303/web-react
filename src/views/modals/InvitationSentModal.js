@@ -31,6 +31,7 @@ const InvitationSentModal = ({
   setInvitedIds,
   setSelectedTalents,
   description,
+  onInviteSucess,
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -47,7 +48,9 @@ const InvitationSentModal = ({
     setInvitedIds([]);
     setSelectedIds([]);
     setSelectedTalents([]);
-
+    if (location.pathname?.split('/')?.includes('project-details')) {
+      onInviteSucess();
+    }
     if (location.pathname === '/create-team/profile-details') {
       navigate('/dashboard');
     }
@@ -55,6 +58,8 @@ const InvitationSentModal = ({
 
   const onInviteTalents = () => {
     const userIds = selectedTalents.filter((user) => user?.user_id).map((talent) => talent.user_id);
+    const clubAdminIds = selectedTalents.filter((user) => user?.role === 'ADMIN').map((talent) => talent.user_id);
+
     const teamIds = selectedTalents
       .filter((user) => user?._id) // Filter out non-team users
       .map((user) => user?._id); // Map to an array of team_ids
@@ -72,8 +77,28 @@ const InvitationSentModal = ({
         project_id: projectId || '',
         team_id: teamId || '',
         role: inviteRole || '',
+        member_type: 'MEMBER',
       },
     };
+
+    if (clubAdminIds.length > 0) {
+      const newAdminPostData = {
+        message,
+        redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+        requests_to: {
+          user_ids: clubAdminIds || [],
+          team_ids: teamIds.length > 0 ? teamIds : [],
+          email_ids: [],
+        },
+        request_for: {
+          project_id: projectId || '',
+          team_id: teamId || '',
+          role: inviteRole || '',
+          member_type: 'ADMIN',
+        },
+      };
+      dispatch(inviteTalentForTeam({ data: newAdminPostData, onSuccess }));
+    }
 
     dispatch(inviteTalentForTeam({ data: newPostData, onSuccess }));
   };
@@ -127,7 +152,6 @@ const InvitationSentModal = ({
           <img src={GreatJobTick} alt="great-job" width={120} height={120} className="me-4" />
           <div className="w-100">
             <h2 className="fw-bold font-large-1 mb-1">Great Job!</h2>
-            <h4 className="fw-bold font-small-5">Invitation sent</h4>
             <p className="fw-light font-medium-3 mt-75">{description}</p>
             <InviteUsersListContainer>
               {selectedTalents.map((talent) => (
@@ -191,6 +215,7 @@ InvitationSentModal.propTypes = {
   setInvitedIds: Proptypes.func,
   setSelectedTalents: Proptypes.func,
   description: Proptypes.string,
+  onInviteSucess: Proptypes.func,
 };
 
 InvitationSentModal.defaultProps = {
@@ -203,6 +228,7 @@ InvitationSentModal.defaultProps = {
   setSelectedIds: () => {},
   setInvitedIds: () => {},
   setSelectedTalents: () => {},
+  onInviteSucess: () => {},
   description: '',
   inviteRole: '',
 };

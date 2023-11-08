@@ -113,6 +113,9 @@ const getRecommendedProjects =
       if (user_type === userTypes.team) {
         res = await recommendedProjectsTeamService();
       }
+      if (user_type === userTypes.club) {
+        res = await recommendedProjectsTeamService();
+      }
       dispatch(recommendedProjectsSuccess(res.data.data));
     } catch (error) {
       errorHandler(error, recommendedProjectsFailure);
@@ -130,13 +133,14 @@ const getProfilePercentage = () => async (dispatch) => {
 };
 
 const getTeamMembers =
-  ({ metadata }) =>
+  ({ metadata, onFailure }) =>
   async (dispatch) => {
     dispatch(getTeamMemberRequest());
     try {
       const res = await getTeamMemberService({ metadata });
       dispatch(getTeamMemberSuccess(res.data.data));
     } catch (error) {
+      onFailure(error.response.data);
       errorHandler(error, getTeamMemberFailure);
     }
   };

@@ -22,12 +22,14 @@ import { getUserData } from '../../../../redux/actions/authActions';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../../utility/constants/Constant';
 import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
+import { setActiveNavTab } from '../../../../redux/reducers/activeNavTab';
 
 const ThemeNavbar = (props) => {
   const userData = useSelector(selectUserData);
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
+  const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
 
   // ** Props
   const { skin, setSkin, setMenuVisibility, className } = props;
@@ -73,8 +75,6 @@ const ThemeNavbar = (props) => {
     }
   `;
 
-  const [activeTab, setActiveTab] = useState('');
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -94,15 +94,14 @@ const ThemeNavbar = (props) => {
   }
 
   useEffect(() => {
-    if (location?.pathname?.split('/')?.[1] === 'dashboard') setActiveTab('dashboard');
+    if (location?.pathname?.split('/')?.[1] === 'dashboard') dispatch(setActiveNavTab('dashboard'));
   }, [userData]);
 
   useEffect(() => {
-    if(location?.pathname?.split?.('/')?.[3] === userData?._id ) setActiveTab('');
-    if(location?.pathname?.split?.('/')?.[1]==="notifications") setActiveTab('')
-    if(location?.pathname?.split?.('/')?.[1]==="search") setActiveTab('')
-  },[location])
-
+    if (location?.pathname?.split?.('/')?.[3] === userData?._id) dispatch(setActiveNavTab(''));
+    if (location?.pathname?.split?.('/')?.[1] === 'notifications') dispatch(setActiveNavTab(''));
+    if (location?.pathname?.split?.('/')?.[1] === 'search') dispatch(setActiveNavTab(''));
+  }, [location]);
 
   return (
     <HeadWrapper className={className}>
@@ -124,12 +123,12 @@ const ThemeNavbar = (props) => {
           } else {
             navigate('/auth');
           }
-          setActiveTab('dashboard');
+          dispatch(setActiveNavTab('dashboard'));
         }}
       >
         <span className="brand-logo">
           <img src={themeConfig.app.appLogoImage} alt="logo" />
-          <span className="ms-25 mt-25">v0.0.6</span>
+          <span className="ms-25 mt-25">v0.0.8</span>
         </span>
       </div>
 
@@ -141,13 +140,13 @@ const ThemeNavbar = (props) => {
               ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
             to="/dashboard"
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => dispatch(setActiveNavTab('dashboard'))}
           >
             Dashboard
           </NavLink>
           <NavLink
             onClick={() => {
-              setActiveTab('marketplace');
+              dispatch(setActiveNavTab('marketplace'));
               setItem(
                 'selectedMarketplaceTab',
                 userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
@@ -175,13 +174,13 @@ const ThemeNavbar = (props) => {
             to="/projects/ongoing"
             onClick={() => {
               localStorage.removeItem('selectedProjectTab');
-              setActiveTab('projects');
+              dispatch(setActiveNavTab('projects'));
             }}
           >
             Project
           </NavLink>
           <NavLink
-            onClick={() => setActiveTab('my-teams')}
+            onClick={() => dispatch(setActiveNavTab('my-teams'))}
             className={
               (location?.pathname?.split('/')?.[1] === 'my-teams' ||
               location?.state?.from?.primary === 'my-teams' ||
@@ -189,10 +188,26 @@ const ThemeNavbar = (props) => {
                 ? 'is-active'
                 : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
-            to={`/my-teams/${userData?.user_type === userTypes.talent ? 'teams' : 'talents'}`}
+            to={`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`}
           >
             My Team
           </NavLink>
+
+          {userData?.user_type === userTypes.talent && (
+            <NavLink
+              onClick={() => dispatch(setActiveNavTab('clubs'))}
+              className={
+                (location?.pathname?.split('/')?.[1] === 'clubs' ||
+                location?.state?.from?.primary === 'clubs' ||
+                activeTab === 'clubs'
+                  ? 'is-active'
+                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+              }
+              to="/clubs/my_clubs"
+            >
+              Clubs
+            </NavLink>
+          )}
         </>
       )}
 

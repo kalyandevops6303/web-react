@@ -1,13 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { Button, Modal, ModalHeader, ModalBody, Card, CardBody, Row, Col, Spinner } from 'reactstrap';
-import { Mail, Trash2 } from 'react-feather';
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Card,
+  CardBody,
+  Row,
+  Col,
+  Spinner,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from 'reactstrap';
+import { Mail, MoreVertical, Trash2 } from 'react-feather';
+import FilledStar from '@src/assets/images/filler_star.png';
 import { capitalize } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Avatar from '@components/avatar';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import styled from 'styled-components';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../lib/date-time';
 import { GrayBorderContainer } from '../styled';
@@ -17,14 +33,41 @@ import { selectGetInvitedMember, selectGetTeamMember } from '../../redux/selecto
 import { MessageIconWrap } from './style';
 import { getItem } from '../../utility/localStorageControl';
 import { inviteTalents } from '../../redux/actions/inviteTalent';
+import { userTypes } from '../../utility/constants/Constant';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import ChangeClubMemberModal from './ChangeClubMemberModal';
 
-const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) => {
+const ClubDropDownWrapper = styled.div`
+  .logout {
+    color: ${theme.red};
+    padding: 1rem 1.2rem;
+    display: block;
+  }
+  .edit {
+    color: ${theme.primary};
+    padding: 1rem 1.2rem;
+    display: block;
+    &:active {
+      color: white;
+    }
+  }
+  .dropdown-item {
+    width: 100%;
+  }
+`;
+
+const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember, isAdmin }) => {
   const teamMembers = useSelector(selectGetTeamMember);
+  const userDetailsData = useSelector(selectAuthUserData);
   const [hasMore, setHasMore] = useState(true);
+  const [changeMemberModal, setChangeMemberModal] = useState(false);
+  const [memberType, setMemberType] = useState(null);
   const dispatch = useDispatch();
   const selectTeamMembersMetadata = useSelector((state) => state.dashboard.getMemberMetaData);
   const selectTeamMembercurrentPreview = useSelector((state) => state.dashboard.memberCurrentPreview);
   const metadata = { page: 1, page_size: 10 };
+
+  const isClubView = userDetailsData?.team_type === userTypes.club;
 
   useEffect(() => {
     setHasMore(true);
@@ -49,13 +92,32 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
     dispatch(getTeamMembers({ metadata: newMeteData }));
   };
 
+  const handleChangeMember = (item) => {
+    setChangeMemberModal(true);
+    setMemberType(item);
+  };
+
+  const toggleChangeMember = () => {
+    setChangeMemberModal(!changeMemberModal);
+  };
+
   return (
     <div>
+      {changeMemberModal && (
+        <ChangeClubMemberModal modal={changeMemberModal} toggleModal={toggleChangeMember} memberType={memberType} />
+      )}
       <GrayBorderContainer className="d-flex justify-content-between px-2 py-1">
-        <h3 className="font-medium-4">Team Member</h3>
-        <Button color="primary" onClick={onInviteTeamMemberClick}>
-          Invite Team Member
-        </Button>
+        <h3 className="font-medium-4">{isClubView ? 'Club Member' : 'Team Member'}</h3>
+        {isClubView && isAdmin && (
+          <Button color="primary" onClick={onInviteTeamMemberClick}>
+            Invite Member
+          </Button>
+        )}
+        {!isClubView && (
+          <Button color="primary" onClick={onInviteTeamMemberClick}>
+            Invite Team Member
+          </Button>
+        )}
       </GrayBorderContainer>
       <div className="p-2 mb-2" id="scrollableDivTeamMemberModal" style={{ maxHeight: '22rem', overflowY: 'auto' }}>
         <InfiniteScroll
@@ -97,7 +159,23 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
                     </Link>
                   </Col>
                   <Col sm="12" md="3" lg="2">
-                    <p className="fw-bold m-0">Team Member</p>
+                    <p className="fw-bold m-0">
+                      {isClubView ? (
+                        <span className="d-flex align-items-center">
+                          {item.member_type === 'ADMIN' && (
+                            <img
+                              src={FilledStar}
+                              alt="Filled star"
+                              style={{ width: '12px', height: '12px', marginRight: '5px' }}
+                            />
+                          )}
+
+                          {capitalize(item.member_type)}
+                        </span>
+                      ) : (
+                        'Team Member'
+                      )}
+                    </p>
                   </Col>
                   <Col sm="12" md="3" lg="5">
                     <p className="m-0">{item?.is_creator ? 'Created on' : 'Accepted on'}</p>
@@ -105,13 +183,37 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
                       {DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') || '-'}
                     </p>
                   </Col>
-                  <Col sm="12" md="1" lg="1">
-                    {teamMembers?.length > 1 && (
-                      <div className="d-flex justify-content-end">
-                        <Trash2 onClick={() => handleRemoveMember(item)} color={theme.red} className="cursor-pointer" />
-                      </div>
-                    )}
-                  </Col>
+                  {isClubView && isAdmin ? (
+                    <Col sm="12" md="1" lg="1">
+                      <ClubDropDownWrapper>
+                        <UncontrolledDropdown>
+                          <DropdownToggle color="" className="bg-transparent btn-sm border-0 p-50">
+                            <MoreVertical size={18} className="cursor-pointer" />
+                          </DropdownToggle>
+                          <DropdownMenu end>
+                            <DropdownItem className="w-100 edit" onClick={() => handleChangeMember(item)}>
+                              Change to {item.member_type === 'ADMIN' ? 'member' : 'admin'}
+                            </DropdownItem>
+                            <DropdownItem className="w-100 logout" onClick={() => handleRemoveMember(item)}>
+                              Delete
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      </ClubDropDownWrapper>
+                    </Col>
+                  ) : (
+                    <Col sm="12" md="1" lg="1">
+                      {teamMembers?.length > 1 && (
+                        <div className="d-flex justify-content-end">
+                          <Trash2
+                            onClick={() => handleRemoveMember(item)}
+                            color={theme.red}
+                            className="cursor-pointer"
+                          />
+                        </div>
+                      )}
+                    </Col>
+                  )}
                 </Row>
               </CardBody>
             </Card>
@@ -124,10 +226,12 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember }) =
 TeamMembersComponent.propTypes = {
   onInviteTeamMemberClick: Proptypes.func,
   handleRemoveMember: Proptypes.func,
+  isAdmin: Proptypes.bool,
 };
 TeamMembersComponent.defaultProps = {
   onInviteTeamMemberClick: () => {},
   handleRemoveMember: () => {},
+  isAdmin: false,
 };
 
 const InvitedMemberComponent = () => {
@@ -286,6 +390,7 @@ const ListingTeamMembersModal = ({
   onRemove,
   toggleInviteTeamMemberModal,
   setInviteTalentToTeamModal,
+  isAdmin,
 }) => {
   const onInviteTeamMemberClick = () => {
     toggleModal();
@@ -308,6 +413,7 @@ const ListingTeamMembersModal = ({
               <TeamMembersComponent
                 handleRemoveMember={handleRemoveMember}
                 onInviteTeamMemberClick={onInviteTeamMemberClick}
+                isAdmin={isAdmin}
               />
               <InvitedMemberComponent />
             </div>
@@ -322,6 +428,7 @@ export default ListingTeamMembersModal;
 
 ListingTeamMembersModal.propTypes = {
   modal: Proptypes.bool,
+  isAdmin: Proptypes.bool,
   toggleModal: Proptypes.func,
   toggleInviteTeamMemberModal: Proptypes.func,
   setInviteTalentToTeamModal: Proptypes.func,
@@ -330,6 +437,7 @@ ListingTeamMembersModal.propTypes = {
 
 ListingTeamMembersModal.defaultProps = {
   modal: false,
+  isAdmin: false,
   toggleModal: () => {},
   toggleInviteTeamMemberModal: () => {},
   setInviteTalentToTeamModal: () => {},

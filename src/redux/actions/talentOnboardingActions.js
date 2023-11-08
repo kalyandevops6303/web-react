@@ -19,6 +19,7 @@ import {
   checkpointCompleteSuccess,
   checkpointCompleteFailure,
 } from '../reducers/talentOnboarding';
+import { cometChatLogin } from '../reducers/auth';
 
 const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   dispatch(userDetailsRequest());
@@ -36,6 +37,7 @@ const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
   try {
     const res = await accountDetailsService(data);
     dispatch(accountDetailsSuccess(res.data.data));
+    dispatch(cometChatLogin(res.data.data.comet_chat_token));
     onSuccess();
   } catch (error) {
     errorHandler(error, accountDetailsFailure);

@@ -9,12 +9,14 @@ import {
 } from '../reducers/clientOnboarding';
 import { accountDetailsService, profileDetailsService } from '../../services/clientOnboardingServices';
 import { saveCheckpointComplete } from './talentOnboardingActions';
+import { cometChatLogin } from '../reducers/auth';
 
 const saveClientAccountDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(accountDetailsRequest());
   try {
     const res = await accountDetailsService(data);
     dispatch(accountDetailsSuccess(res.data.data));
+    dispatch(cometChatLogin(res.data.data.comet_chat_token));
     onSuccess();
   } catch (error) {
     errorHandler(error, accountDetailsFailure);

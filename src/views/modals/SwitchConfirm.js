@@ -34,7 +34,13 @@ const SwitchConfirmModal = ({
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
     } else if (location.pathname.split('/').includes('projects')) {
-      navigate(`/project-details/${projectId}/milestone`);
+      if (location.pathname.split('/').includes('ongoing')) {
+        navigate(`/project-details/${data?._id}/milestone`);
+      } else if (location.pathname.split('/').includes('completed')) {
+        navigate(`/project-details/${data?._id}/rating`);
+      } else {
+        navigate(`/project-details/${data?._id}/bid`);
+      }
     } else {
       navigate(`/project-details/${projectId}/bid`);
     }
@@ -96,7 +102,7 @@ const SwitchConfirmModal = ({
             <div className="pe-1 ms-3">
               <h2 className="fw-bold title">Switch Profile</h2>
               <p className="fw-normal mt-1 sub-title">
-                To preform this action you <br /> need to switch to teams profile
+                This action needs to be taken by a Team. Please switch to the relevant Team profile.
               </p>
             </div>
           </div>

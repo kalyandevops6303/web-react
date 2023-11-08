@@ -50,8 +50,6 @@ const Step3 = ({ setStep }) => {
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
 
-  const TEST_ENV_URL = import.meta.env.VITE_APP_TEST_REFRESH_URL;
-
   const {
     control,
     handleSubmit,
@@ -239,16 +237,18 @@ const Step3 = ({ setStep }) => {
   const onAccountCreationSuccess = (res) => {
     if (res?.url?.length > 0) {
       // eslint-disable-next-line no-undef
-      window.open(res.url, '_self', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+      window.open(res.url, '_self');
     }
   };
 
+  // eslint-disable-next-line no-undef
+  const currentURL = window.location.href;
+
   const onSuccess = () => {
     const stripeAccountData = {
-      refresh_url: TEST_ENV_URL,
-      return_url: TEST_ENV_URL,
+      refresh_url: currentURL,
+      return_url: currentURL,
     };
-
     dispatch(setupStripeAccount(stripeAccountData, onAccountCreationSuccess));
   };
 

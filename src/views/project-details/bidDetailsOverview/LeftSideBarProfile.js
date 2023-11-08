@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -79,6 +79,14 @@ const LeftSidebarProfile = ({
     }
   }, []);
 
+  const handleViewProfile = () => {
+    if (data?.user_type === userTypes.team) {
+      navigate(`/profile/team/${data?.team_id}`);
+    } else {
+      navigate(`/profile/${data?.user_type?.toLowerCase()}/${data?.user_id}`);
+    }
+  };
+
   const handleJoinTeam = () => {
     const newPostData = {
       message: '',
@@ -96,6 +104,12 @@ const LeftSidebarProfile = ({
     };
     const onSuccess = () => {};
     dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
+  };
+
+  const onMessageClick = () => {
+    navigate(`/chat`, {
+      state: { targetId: data?.user_id },
+    });
   };
 
   return (
@@ -394,14 +408,14 @@ const LeftSidebarProfile = ({
             {isProjectDetailsView && (
               <div className="invited-box">
                 <div className="d-flex gap-1 mt-3 justify-content-center">
-                  <RouterLink className="w-50" to={`/profile/${data?.user_type?.toLowerCase()}/${data?.user_id}`}>
-                    <Button className="w-100" size="md" outline color="primary">
-                      View Profile
-                    </Button>
-                  </RouterLink>
-                  <Button size="md" className="w-50" color="primary">
-                    Message
+                  <Button className="w-50" size="md" outline color="primary" onClick={handleViewProfile}>
+                    View Profile
                   </Button>
+                  {data?.user_type === userTypes.talent && (
+                    <Button size="md" className="w-50" color="primary" onClick={() => onMessageClick()}>
+                      Message
+                    </Button>
+                  )}
                 </div>
               </div>
             )}

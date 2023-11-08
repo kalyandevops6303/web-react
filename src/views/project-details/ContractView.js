@@ -1,5 +1,6 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardText, CardTitle, Col, FormFeedback, Input, Label, Row } from 'reactstrap';
 import ReactHtmlParser from 'react-html-parser';
 import html2pdf from 'html2pdf.js';
@@ -25,6 +26,7 @@ import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 const ContractView = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isTerminateModalOpen, setIsTerminateModalOpen] = useState(false);
   const [terminateData, setTerminateData] = useState();
@@ -44,6 +46,8 @@ const ContractView = () => {
   const [documentData, setDocumentData] = useState(documentRes);
   const [checked, setChecked] = useState(false);
   const [checkError, setCheckError] = useState(false);
+
+  const bidView = location?.pathname?.split('/')?.slice(0, -2)?.join('/');
 
   const toggleModal = () => {
     setIsEditModalOpen(!isEditModalOpen);
@@ -110,7 +114,10 @@ const ContractView = () => {
         doc_type: getDocType(),
         validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
         data: documentData,
-        onSuccess: () => setIsAcceptModalOpen(false),
+        onSuccess: () => {
+          setIsAcceptModalOpen(false);
+          navigate(bidView);
+        },
       }),
     );
   };
@@ -121,7 +128,10 @@ const ContractView = () => {
         doc_type: getDocType(),
         user_id: data?.user_id,
         role: data?.role,
-        onSuccess: () => setIsAcceptModalOpen(false),
+        onSuccess: () => {
+          setIsAcceptModalOpen(false);
+          navigate(bidView);
+        },
       }),
     );
   };
@@ -254,7 +264,7 @@ const ContractView = () => {
                           id="contract-sign"
                           name="agreeTerms"
                         />
-                        I have read Terms and Conditions
+                        I have read the terms and conditions of the contract
                       </Label>
                     </div>
                   )}
@@ -308,7 +318,13 @@ const ContractView = () => {
               <div className="team-sign-section mt-2" style={{ maxHeight: '26rem', overflowY: 'auto' }}>
                 <h6 className="fw-bolder">{updatedWorkers?.length > 0 ? 'Team' : ''} </h6>
                 {updatedWorkers?.map((worker) => (
-                  <div key={worker?.user_id} className="d-flex justify-content-between mb-1">
+                  <div
+                    key={worker?.user_id}
+                    className="d-flex mb-1 justify-content-between"
+                    style={{
+                      width: worker?.user_id?.length === 0 ? '60%' : 'auto',
+                    }}
+                  >
                     <NameInfo
                       img={worker?.image_uri}
                       name={`${worker?.first_name} ${worker?.last_name}`}
@@ -329,6 +345,16 @@ const ContractView = () => {
                           className="btn-sm-block mb-25 mt-1"
                         >
                           {worker?.is_signed ? 'Confirmed Agreement' : 'Confirm Agreement'}
+                        </Button>
+                      ) : worker?.user_id?.length === 0 ? (
+                        <Button
+                          outline
+                          color="primary"
+                          type="secondary"
+                          className="btn-sm-block mb-25 mt-1"
+                          onClick={() => navigate(`/project-details/${projectInfo?._id}/team`)}
+                        >
+                          Assign team member
                         </Button>
                       ) : (
                         <Button

@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/require-default-props */
 // ** Third Party Components
 import PropTypes from 'prop-types';
@@ -29,12 +30,27 @@ const UserSection = ({ totalCount, users, name, isAlma }) => (
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
-          <AvatarGroup totalCount={totalCount} size="sm" className="mr-4" data={users.slice(0, 3)} />
+          <AvatarGroup
+            totalCount={totalCount}
+            size="sm"
+            className="mr-4"
+            data={[
+              ...users.slice(0, 3).map((user) => ({
+                ...user,
+                tooltipId: `${name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
+              })),
+            ]}
+          />
           {isAlma && <img src={AlmaMaterImg} alt="alma-mater" />}
         </span>
       ) : (
         <span className="d-flex avatars">
-          <AvatarGroup size="sm" data={users} />
+          <AvatarGroup
+            size="sm"
+            data={[
+              ...users?.map((user) => ({ ...user, tooltipId: `${name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-') })),
+            ]}
+          />
           {isAlma && <img src={AlmaMaterImg} alt="alma-mater" />}
         </span>
       )}

@@ -11,13 +11,13 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { checkBidsAccepted, profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { checkBidsAccepted, profilePercentage, selectGetTeamMember } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
-import { CreateTeamButtonWrapper, DashboardHeaderWrapper } from './overview/style';
+import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
-import { selectUserData } from '../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
@@ -29,7 +29,10 @@ import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
 import { setItem } from '../../utility/localStorageControl';
+import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
+import ClubSection from './overview/ClubSection';
+import InviteClubMemberModal from '../modals/InviteClubMemberModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -39,6 +42,7 @@ const PrivateDashboard = () => {
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(null);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const [deleteModal, setDeletModal] = useState(false);
+  const [isClubInvite, setIsClubInvite] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState();
 
   const [raisedDisputeModal, setRaisedDisputeModal] = useState(null);
@@ -47,6 +51,7 @@ const PrivateDashboard = () => {
   const [completeProfileModalInfoText, setCompleteProfileModalInfoText] = useState(null);
 
   const [optionsModal, setOptionsModal] = useState(null);
+  const [inviteClubMembersModal, setInviteClubMembersModal] = useState(false);
 
   const query = useSelector((state) => state.search.query);
 
@@ -60,8 +65,16 @@ const PrivateDashboard = () => {
   };
 
   const userDetailsData = useSelector(selectUserData);
+  const savedUserDetailsData = useSelector(selectSavedUserData);
+  const teamMemberData = useSelector(selectGetTeamMember);
   const profilePercentageData = useSelector(profilePercentage);
   const checkBidsAcceptedData = useSelector(checkBidsAccepted);
+
+  const isAdminExists = teamMemberData?.filter(
+    (talent) => talent.user_id === savedUserDetailsData._id && talent.member_type === 'ADMIN',
+  );
+
+  const isAdmin = isAdminExists && isAdminExists.length > 0;
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -95,6 +108,12 @@ const PrivateDashboard = () => {
   };
 
   const onTeamInvite = () => {
+    setInviteTeamMemberModal(true);
+    setInviteTalentToTeamModal(true);
+  };
+
+  const onClubInvite = () => {
+    setIsClubInvite(true);
     setInviteTeamMemberModal(true);
     setInviteTalentToTeamModal(true);
   };
@@ -139,6 +158,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModal(true);
     } else {
       navigate('/marketplace/teams');
+      dispatch(setActiveNavTab('marketplace'));
     }
   };
 
@@ -162,20 +182,24 @@ const PrivateDashboard = () => {
           toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
           onRemove={handleRemoveMember}
+          isAdmin={isAdmin}
         />
       )}
       {deleteModal && (
         <RemoveMemberModal modal={deleteModal} data={deleteModalData} toggleModal={() => setDeletModal(!deleteModal)} />
       )}
-
       {raisedDisputeModal && (
         <RaiseDisputeModal modal={raisedDisputeModal} toggleModal={() => setRaisedDisputeModal(!raisedDisputeModal)} />
       )}
-
       {optionsModal && (
         <CreateClubOrTeamModal modal={optionsModal} toggleModal={() => setOptionsModal(!optionsModal)} />
       )}
-
+      {inviteClubMembersModal && (
+        <InviteClubMemberModal
+          modal={inviteClubMembersModal}
+          toggleModal={() => setInviteClubMembersModal(!inviteClubMembersModal)}
+        />
+      )}
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
@@ -184,15 +208,34 @@ const PrivateDashboard = () => {
           </Button>
         </DashboardHeaderWrapper>
       )}
-      {userDetailsData?.user_type === userTypes.team && (
+      {userDetailsData?.team_type === userTypes.team && (
         <DashboardHeaderWrapper>
           <Button as="link" color="primary" onClick={onTeamInvite}>
             Invite Talent
           </Button>
         </DashboardHeaderWrapper>
       )}
-      {inviteTalentToTeamModal && (
+      {userDetailsData?.team_type === userTypes.club && (
+        <DashboardHeaderWrapper>
+          {userDetailsData?.club_status === 'ACCEPTED' && isAdmin && (
+            <Button as="link" color="primary" onClick={onClubInvite}>
+              Invite Members
+            </Button>
+          )}
+          {userDetailsData?.club_status === 'IN_REVIEW' && <InReviewButton>In review</InReviewButton>}
+        </DashboardHeaderWrapper>
+      )}
+
+      {inviteTalentToTeamModal && !isClubInvite && (
         <InviteTalentToTeam
+          inviteTeamMemberModal={inviteTeamMemberModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+        />
+      )}
+      {inviteTalentToTeamModal && isClubInvite && (
+        <InviteTalentToTeam
+          isClubInvitation
           inviteTeamMemberModal={inviteTeamMemberModal}
           toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
@@ -211,20 +254,16 @@ const PrivateDashboard = () => {
           </Button>
         </CreateTeamButtonWrapper>
       )}
-
-      <Row>
-        <Col lg="4" sm="12">
-          <EarningCard />
-        </Col>
-        <Col lg="4" sm="12">
-          <RewardsCard />
-        </Col>
-        <Col lg="4" sm="12">
-          <AvailableTime />
-        </Col>
-      </Row>
       <Row>
         <Col lg="8" sm="12">
+          <Row>
+            <Col lg="6" sm="12">
+              <EarningCard />
+            </Col>
+            <Col lg="6" sm="12">
+              <RewardsCard />
+            </Col>
+          </Row>
           <section className="mb-2">
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
@@ -235,9 +274,15 @@ const PrivateDashboard = () => {
               <OpenListing />
             </section>
           )}
-          {userDetailsData?.user_type === userTypes.team && (
+          {userDetailsData?.team_type === userTypes.team && (
             <section className="mb-2">
-              <Header className="mb-1">Talents</Header>
+              <Header className="mb-1">Talent</Header>
+              <TalentListing />
+            </section>
+          )}
+          {userDetailsData?.team_type === userTypes.club && (
+            <section className="mb-2">
+              <Header className="mb-1">Members</Header>
               <TalentListing />
             </section>
           )}
@@ -248,8 +293,17 @@ const PrivateDashboard = () => {
             </section>
           )}
         </Col>
+
         <Col lg="4" sm="12">
-          {userDetailsData?.user_type === userTypes.team && (
+          {userDetailsData?.team_type !== userTypes.club && <AvailableTime />}
+          {userDetailsData?.team_type === userTypes.club && (
+            <ClubSection
+              modal={listingTeamMembersModal}
+              toggleModal={toggleListingTeamMembersModal}
+              // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+            />
+          )}
+          {userDetailsData?.team_type === userTypes.team && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}

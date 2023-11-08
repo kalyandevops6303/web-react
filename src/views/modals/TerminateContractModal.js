@@ -55,11 +55,11 @@ const TerminateContractModal = ({ project_id, docType, modalData, modal, toggleM
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 justify-content-end">
-            <Button onClick={onClose} outline color="primary">
+            <Button disabled={isLoading} onClick={onClose} outline color="primary">
               Cancel
             </Button>
             <Button color="danger" onClick={onTerminate}>
-              {isLoading ? <Spinner /> : <span>{`Terminate ${isContractView ? 'Contract' : 'NDA'}`}</span>}
+              {isLoading ? <Spinner size="sm" /> : <span>{`Terminate ${isContractView ? 'Contract' : 'NDA'}`}</span>}
             </Button>
           </div>
         </DeleteModalWrapper>

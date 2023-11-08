@@ -25,14 +25,21 @@ const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
     setClubCreatedModal(true);
   };
 
-  const verifyOtp = async () => {
-    setIsLoading(true);
+  const verifyOtp = () => {
+    const skillsWithId = clubCreateData?.skills?.map((skill) => skill._id);
+    const toolsWithId = clubCreateData?.tools?.map((tool) => tool._id);
+    const interestsWithId = clubCreateData?.interests?.map((interest) => interest._id);
+    const institutionId = clubCreateData?.education_institute?.value;
     const dataWithCode = {
       ...clubCreateData,
+      education_institute: institutionId,
+      skills: skillsWithId,
+      tools: toolsWithId,
+      interests: interestsWithId,
       email_code: code,
       team_type: 'CLUB',
     };
-    await dispatch(createClub({ data: dataWithCode, onSuccess: onCreateTeamSuccess }));
+    dispatch(createClub({ data: dataWithCode, onSuccess: onCreateTeamSuccess }));
     setIsLoading(false);
   };
 
@@ -91,7 +98,7 @@ const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
               {isLoading ? <Spinner size="sm" /> : 'Verify OTP'}
             </Button>
           </Form>
-          <ResendOTPComp isEmailResend />
+          <ResendOTPComp isClubEmailResend />
         </EmailVerifyModalContainer>
       </ModalBody>
     </Modal>

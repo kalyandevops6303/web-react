@@ -6,15 +6,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChevronLeft } from 'react-feather';
 import theme from '../../configs/themeVariables';
 import { InfoContainer } from '../create-bid/style';
 import { ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
 import { isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
 import ClubCreatedModal from './ClubCreatedModal';
-import { registerClubEmail, setClubCreateDataAction } from '../../redux/actions/clubActions';
+import { registerClubEmail, setClubCreateDataAction, updateClub } from '../../redux/actions/clubActions';
 import EmailVerifyModal from './EmailVerifyModal';
+import { getTeamById } from '../../services/teamServices';
+import { userData } from '../../redux/selectors/dashboardSelectors';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -60,6 +62,10 @@ const Profile = () => {
 
   const [clubCreatedModal, setClubCreatedModal] = useState(false);
   const [emailVerifyModal, setEmailVerifyModal] = useState(false);
+  const [clubDetails, setClubDetails] = useState(null);
+
+  const userDetailsData = useSelector(userData);
+  const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
 
   const toggleClubCreatedModal = () => setClubCreatedModal(!clubCreatedModal);
   const toggleEmailVerifyModal = () => setEmailVerifyModal(!emailVerifyModal);
@@ -72,19 +78,10 @@ const Profile = () => {
     navigate(`/create-club/account-details`);
   };
 
-  // const onSuccess = () => {
-  //   if (location?.state?.isEditing) {
-  //     navigate('/dashboard');
-  //   } else {
-  //     setClubCreatedModal(true);
-  //   }
-  // };
-
   const onSuccess = () => {};
 
   const onEmailVerifySuccess = (email) => {
     dispatch(registerClubEmail({ email, onSuccess }));
-    // onSuccess();
   };
 
   const onSubmit = (data) => {
@@ -103,10 +100,34 @@ const Profile = () => {
     }
 
     const removeEmptyClubData = removeEmptyKeys(clubData);
-
     dispatch(setClubCreateDataAction(removeEmptyClubData));
-    onEmailVerifySuccess(formData.clubEmailID);
-    toggleEmailVerifyModal();
+
+    if (location?.state?.isEditing) {
+      const skillsWithId = clubCreateData?.skills?.map((skill) => skill._id);
+      const toolsWithId = clubCreateData?.tools?.map((tool) => tool._id);
+      const interestsWithId = clubCreateData?.interests?.map((interest) => interest._id);
+      const tagline = clubCreateData?.tagline;
+      const team_logo = clubCreateData?.team_logo;
+      const introduction = clubCreateData?.introduction;
+      const linked_in = clubCreateData?.linked_in;
+      const reqData = {
+        skills: skillsWithId,
+        tools: toolsWithId,
+        interests: interestsWithId,
+        tagline,
+        team_logo,
+        introduction,
+        linked_in,
+        _id: clubCreateData?._id,
+      };
+      const onApiSuccess = () => {
+        navigate(`/dashboard`);
+      };
+      dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
+    } else {
+      onEmailVerifySuccess(formData.clubEmailID);
+      toggleEmailVerifyModal();
+    }
   };
 
   const isWebpageValue = watch('isWebpage');
@@ -119,6 +140,37 @@ const Profile = () => {
       register('universityWebpage');
     }
   }, [isWebpageValue, isUniversityApprovalValue, unregister, register]);
+
+  const getTeamDetails = async () => {
+    const res = await getTeamById(userDetailsData._id);
+    if (res) {
+      setClubDetails(res.data.data);
+    }
+  };
+
+  useEffect(() => {
+    getTeamDetails();
+  }, []);
+
+  useEffect(() => {
+    if (location?.state?.isEditing) {
+      if (clubDetails) {
+        if (clubDetails?.email?.length > 0) {
+          setValue('clubEmailID', clubDetails?.email, { shouldValidate: true });
+        }
+        if (clubDetails?.linked_in?.length > 0) {
+          setValue('clubLinkedin', clubDetails?.linked_in, { shouldValidate: true });
+        }
+        if (clubDetails?.website?.length > 0) {
+          setValue('clubWebsite', clubDetails?.website, { shouldValidate: true });
+        }
+        if (clubDetails?.university_webpage?.length > 0) {
+          setValue('isWebpage', 'Yes', { shouldValidate: true });
+          setValue('universityWebpage', clubDetails?.university_webpage, { shouldValidate: true });
+        }
+      }
+    }
+  }, [clubDetails]);
 
   const disableBtn = isWebpageValue === 'No' && isUniversityApprovalValue === 'No';
 
@@ -156,7 +208,13 @@ const Profile = () => {
                   name="clubEmailID"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter your club email ID" invalid={errors.clubEmailID && true} />
+                    <Input
+                      {...field}
+                      disabled={location?.state?.isEditing}
+                      placeholder="Enter your club email ID"
+                      invalid={errors.clubEmailID && true}
+                      className={`${location?.state?.isEditing ? 'disabled-input' : ''}`}
+                    />
                   )}
                 />
                 {errors.clubEmailID && <FormFeedback>{errors.clubEmailID.message}</FormFeedback>}
@@ -193,7 +251,9 @@ const Profile = () => {
                     <Input
                       {...field}
                       placeholder="Enter your club tagline in 60 character"
+                      disabled={location?.state?.isEditing}
                       invalid={errors.clubWebsite && true}
+                      className={`${location?.state?.isEditing ? 'disabled-input' : ''}`}
                     />
                   )}
                 />
@@ -210,6 +270,7 @@ const Profile = () => {
               <Controller
                 control={control}
                 name="isWebpage"
+                id="isWebpage"
                 render={({ field }) => (
                   <div className="demo-inline-spacing">
                     <div style={{ maxWidth: '350px' }} className="form-check form-check-inline checkbox-custom-margin">
@@ -243,7 +304,9 @@ const Profile = () => {
                       <Input
                         {...field}
                         placeholder="Enter university web page link"
+                        disabled={location?.state?.isEditing}
                         invalid={errors.universityWebpage && true}
+                        className={`${location?.state?.isEditing ? 'disabled-input' : ''}`}
                       />
                     )}
                   />

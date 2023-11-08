@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import '../custom-styles.scss';
@@ -6,13 +6,14 @@ import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
-import { Modal, ModalHeader, ModalBody, Form, Row, Col, Label, FormFeedback, Button, Spinner } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Form, Row, Col, Label, FormFeedback, Button } from 'reactstrap';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import { educationsService, paginatedInstitutesService } from '../../services/staticServices';
 import { EducationInstitutionModalContainer } from './style';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { saveProfileDetails } from '../../redux/actions/talentOnboardingActions';
+import { getUserData } from '../../redux/actions/authActions';
 
 const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
   const EducationInstitutionSchema = yup.object().shape({
@@ -32,6 +33,7 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -45,14 +47,20 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
   const userDetailsData = useSelector(userData);
 
   const onSuccess = () => {
+    dispatch(getUserData());
     toggleModal();
   };
 
   const onSubmit = (data) => {
     const { educationInstitution, degree } = data;
+    const myInstitutions = userDetailsData?.talent_info?.educational_institute.map((educationDetails) => ({
+      institution: educationDetails.institution._id,
+      education: educationDetails.education._id,
+    }));
 
     const reqData = {
       educational_institute: [
+        ...myInstitutions,
         {
           institution: educationInstitution?.value,
           education: degree?.value,
@@ -65,12 +73,15 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
 
   const loadInstitutesOptions = async (search, prevOptions, { page }) => {
     try {
+      const myInstitution = userDetailsData?.talent_info?.educational_institute
+        .map((educationDetails) => educationDetails?.institution)
+        .map((institute) => ({ label: institute?.name, value: institute?._id }));
       const response = await paginatedInstitutesService(page, search);
 
       return {
         options: response?.data?.data?.data
-          ?.filter((institute) => institute._id !== userDetailsData?.talent_info?.educational_institute?._id)
-          .map((institute) => ({ label: institute.name, value: institute._id })),
+          .map((institute) => ({ label: institute.name, value: institute._id }))
+          .filter((option) => !myInstitution.some((myOption) => myOption.value === option.value)),
         hasMore: response?.data?.data?.metadata?.has_next_page,
         additional: {
           page: page + 1,
@@ -102,6 +113,12 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
     }
   };
 
+  useEffect(() => {
+    if (selectedOption) {
+      setValue('educationInstitution', selectedOption);
+    }
+  }, [selectedOption]);
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered">
       <ModalHeader toggle={toggleModal} />
@@ -132,7 +149,6 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
                       classNamePrefix="select"
                       placeholder="Enter your institution name"
                       theme={selectThemeColors}
-                      defaultInputValue={selectedOption?.label}
                       className={classNames('react-select', {
                         'is-invalid': errors && errors.educationInstitution,
                       })}

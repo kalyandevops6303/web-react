@@ -67,7 +67,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           yup
             .number()
             .min(1, 'Expected duration should be at least 1 week')
-            .max(12, 'Expected duration cannot be greater than 12 weeks')
+            .max(52, 'Expected duration cannot be greater than 52 weeks')
             .integer('Expected duration should be a number')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
@@ -230,7 +230,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     watch,
     setValue,
     clearErrors,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(ProjectDetailsSchema),
@@ -1770,7 +1770,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               </CardBody>
             </Card>
             <div className="d-flex justify-content-end">
-              <Button onClick={handleSave} color="primary" disabled={uploadingFiles.length > 0}>
+              <Button onClick={handleSave} color="primary" disabled={uploadingFiles.length > 0 || !isValid}>
                 <span className="me-50">Save & Continue</span>
                 <ChevronRight size={14} />
               </Button>

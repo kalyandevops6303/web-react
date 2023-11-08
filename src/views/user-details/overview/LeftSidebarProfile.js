@@ -41,12 +41,24 @@ import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
 import InvitationSentModal from '../../modals/InvitationSentModal';
 import JoinTeamModal from '../../modals/JoinTeamModal';
 import ReportUserModal from './ReportUserModal';
+import SendClubInvitationModal from '../../modals/SendClubInvitationModal';
 
-const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
+const LeftSidebarProfile = ({
+  isTalentView,
+  isInvited,
+  isProjectDetailsView,
+  isTeamView,
+  isClient,
+  data,
+  isClubProfile,
+}) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
+  const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
+  const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
+
   const [modalInformationText, setModalInformationText] = useState('');
   const teamId = getItem('team_id');
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
@@ -316,19 +328,17 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             </div>
           )}
 
-          {(isClient || isTalentView) && (
-            <div className="projects-rating projects-rating-public">
-              <Rating
-                initialRating={returnFormattedRating(data?.rating)}
-                emptySymbol={<img height={22} src={EmptyStar} alt="Empty star" />}
-                fullSymbol={<img height={22} src={FilledStar} alt="Filled star" />}
-                readonly
-              />
-              <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
-                {data?.projects_worked_on_count} Projects | 0 Reviews
-              </CardText>
-            </div>
-          )}
+          <div className="projects-rating projects-rating-public">
+            <Rating
+              initialRating={returnFormattedRating(data?.rating)}
+              emptySymbol={<img height={22} src={EmptyStar} alt="Empty star" />}
+              fullSymbol={<img height={22} src={FilledStar} alt="Filled star" />}
+              readonly
+            />
+            <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
+              {recentProjectsMetadata?.total_records || 0} Projects | {reviewMetadata?.total_records || 0} Reviews
+            </CardText>
+          </div>
 
           {showProfilePercent && (
             <div className="profile-completion mt-2">
@@ -424,6 +434,19 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                         <span key={item?.id} className="me-25">
                           {item?.name}
                           {index !== data.services.length - 1 && ', '}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {data?.interests && data?.interests?.length !== 0 && (
+                  <div className="d-flex mb-50 ">
+                    <span className="info-key me-25">Interests:</span>
+                    <div className="d-flex flex-wrap">
+                      {data.interests.map((item, index) => (
+                        <span key={item?.id} className="me-25">
+                          {item?.name}
+                          {index !== data.interests.length - 1 && ', '}
                         </span>
                       ))}
                     </div>
@@ -537,7 +560,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             <div>
               {/* Sensitive code below, If any changes done please check with all personas in each user type profile */}
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                {requestStatusData && (
+                {requestStatusData && !isClubProfile && (
                   <span className="w-50">
                     {!isEditable && teamId && data?.user_type === userTypes.talent && (
                       <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
@@ -565,7 +588,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   !data?.is_team_member &&
                   isTeamView &&
                   !teamId &&
-                  userData?.user_type === userTypes.talent && (
+                  userData?.user_type === userTypes.talent &&
+                  !isClubProfile && (
                     <div className="w-50 d-flex gap-1 justify-content-center">
                       <Button
                         disabled={inJoinTeamLoading}
@@ -578,7 +602,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                       </Button>
                     </div>
                   )}
-                {!isEditable && (
+                {!isEditable && param?.userType.toUpperCase() !== userTypes.team && (
                   <Button className="w-50" color="primary" onClick={onMessageClick}>
                     Message
                   </Button>
@@ -596,7 +620,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           </section>
         </CardBody>
       </Card>
-      {sendInviteModal && (
+      {sendInviteModal && userData?.team_type !== 'CLUB' && (
         <SendInvitationModal
           modal={sendInviteModal}
           toggleModal={toggleSendInviteModal}
@@ -604,9 +628,23 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           setInvitationSentModal={setInvitationSentModal}
           message={inputMessage}
           setMessage={setInputMessage}
-          description="You are inviting the below to join your team."
+          description="You are inviting the below to join your team"
         />
       )}
+
+      {sendInviteModal && userData?.team_type === 'CLUB' && (
+        <SendClubInvitationModal
+          modal={sendInviteModal}
+          toggleModal={toggleSendInviteModal}
+          selectedTalents={selectedTalent}
+          setSelectedTalents={setSelectedTalent}
+          setInvitationSentModal={setInvitationSentModal}
+          message={inputMessage}
+          setMessage={setInputMessage}
+          description="You are inviting the below to join your club"
+        />
+      )}
+
       {invitationSentModal && (
         <InvitationSentModal
           modal={invitationSentModal}
@@ -615,7 +653,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           message={inputMessage}
           toggleSendInvitationModal={toggleSendInviteModal}
           setSelectedTalents={setSelectedTalent}
-          description="You’ve sent a team member invitation"
+          description={`You’ve sent a ${userData?.team_type === 'CLUB' ? 'club' : 'team'} member invitation`}
         />
       )}
       {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}
@@ -630,6 +668,7 @@ LeftSidebarProfile.propTypes = {
   isTeamView: PropTypes.bool,
   isProjectDetailsView: PropTypes.bool,
   isInvited: PropTypes.bool,
+  isClubProfile: PropTypes.bool,
 };
 LeftSidebarProfile.defaultProps = {
   data: {},
@@ -638,6 +677,7 @@ LeftSidebarProfile.defaultProps = {
   isTeamView: false,
   isProjectDetailsView: false,
   isInvited: false,
+  isClubProfile: false,
 };
 
 export default LeftSidebarProfile;

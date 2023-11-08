@@ -57,6 +57,7 @@ import ActiveProjectCardForTalent from './ActiveProjectCardForTalent';
 import UpcomingProjectCardForTalent from './UpcomingProjectCardForTalent';
 import UpcomingProjectCardForTeam from './UpcomingProjectCardForTeam';
 import ActiveProjectCardForTeam from './ActiveProjectCardForTeam';
+import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -189,6 +190,7 @@ const ProjectListing = () => {
   const handleViewAll = (e) => {
     e.stopPropagation();
     navigate('/marketplace/all_listings', { state: { isRecommended: true } });
+    dispatch(setActiveNavTab('marketplace'));
   };
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
@@ -204,7 +206,9 @@ const ProjectListing = () => {
         dispatch(getActiveProjectsForClient());
       } else if (userDetailsData?.user_type === userTypes.talent) {
         dispatch(getActiveProjectsForTalent());
-      } else if (userDetailsData?.user_type === userTypes.team) {
+      } else if (userDetailsData?.team_type === userTypes.team) {
+        dispatch(getActiveProjectsForTeam());
+      } else if (userDetailsData?.team_type === userTypes.club) {
         dispatch(getActiveProjectsForTeam());
       }
     }
@@ -213,12 +217,18 @@ const ProjectListing = () => {
         dispatch(getUpcomingProjectsForClient());
       } else if (userDetailsData?.user_type === userTypes.talent) {
         dispatch(getUpcomingProjectsForTalent());
-      } else if (userDetailsData?.user_type === userTypes.team) {
+      } else if (userDetailsData?.team_type === userTypes.team) {
+        dispatch(getUpcomingProjectsForTeam());
+      } else if (userDetailsData?.team_type === userTypes.club) {
         dispatch(getUpcomingProjectsForTeam());
       }
     }
     if (open === '3') {
-      if (userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.team) {
+      if (
+        userDetailsData?.user_type === userTypes.talent ||
+        userDetailsData?.team_type === userTypes.team ||
+        userDetailsData?.team_type === userTypes.club
+      ) {
         dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
       }
     }
@@ -227,6 +237,7 @@ const ProjectListing = () => {
   const onViewAllClick = (e, path) => {
     e.stopPropagation();
     navigate(path);
+    dispatch(setActiveNavTab('projects'));
   };
 
   return (

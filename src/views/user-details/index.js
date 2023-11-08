@@ -1,9 +1,9 @@
 import { Briefcase, Calendar, Check } from 'react-feather';
 import { useParams } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
-import { Col, Row } from 'reactstrap';
+import { Button, CardText, Col, Row } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from './overview/Statbox';
 import round from '../../lib/round';
@@ -15,28 +15,42 @@ import Reviews from './overview/Reviews';
 import { getProfile } from '../../redux/actions/profileActions';
 import { selectCurrentProfile, selectError, selectLoading } from '../../redux/selectors/profileSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
-import { clearData } from '../../redux/reducers/profile';
+import { clearData, makeTeamMemberSuccess } from '../../redux/reducers/profile';
 import Error from '../Error';
 import { userTypes } from '../../utility/constants/Constant';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 import { getItem } from '../../utility/localStorageControl';
+import AcceptClubInviationModal from '../modals/AcceptClubInviationModal';
+import DeclineClubInvitaionModal from '../modals/DeclineClubInvitationModal';
+import { updateInvitation } from '../../redux/actions/dashboardActions';
+import { getRequestStatusSuccess } from '../../redux/reducers/inviteTalent';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
   const param = useParams();
   const userData = useSelector(selectAuthUserData);
+  const requestStatusData = useSelector((state) => state.inviteTalent.getRequestStatus);
+
+  const [acceptInvitationModal, setAcceptInvitationModal] = useState(null);
+  const [declineInvitationModal, setDeclineInvitationModal] = useState(null);
+
+  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
+  const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
 
   const isEditable = userData?._id === param?.userId;
   useEffect(() => {
     dispatch(clearData());
     // eslint-disable-next-line no-undef
     window?.scrollTo(0, 0);
-    dispatch(getProfile(param?.userId, param?.userType.toUpperCase(), isEditable));
+    dispatch(
+      getProfile(param?.userId, param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(), isEditable),
+    );
   }, []);
 
   const isClient = param?.userType.toUpperCase() === userTypes.client;
   const isTalentView = param?.userType.toUpperCase() === userTypes.talent;
   const isTeamView = param?.userType.toUpperCase() === userTypes.team;
+  const isClubView = param?.userType.toUpperCase() === userTypes.club;
   const isOwnProfile = param?.userId === userData?._id;
 
   const currentProfile = useSelector(selectCurrentProfile);
@@ -97,7 +111,10 @@ const UserDetails = () => {
   const defaultBreadCrumb = [
     { title: 'Profile', link: '#' },
     {
-      title: isTeamView ? currentProfile?.name : `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User',
+      title:
+        isTeamView || isClubView
+          ? currentProfile?.name
+          : `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User',
     },
   ];
   const dynamicBreadCrumb = [
@@ -106,7 +123,10 @@ const UserDetails = () => {
       ? [{ title: capitalize(secondaryRouteWithoutDash), link: `/${baseRoute}/${secondaryRoute}` }]
       : []),
     {
-      title: isTeamView ? currentProfile?.name : `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User',
+      title:
+        isTeamView || isClubView
+          ? currentProfile?.name
+          : `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User',
     },
   ];
 
@@ -117,85 +137,158 @@ const UserDetails = () => {
     return <Error />;
   }
 
+  const toggleAcceptInvitationModal = () => {
+    setAcceptInvitationModal(!acceptInvitationModal);
+  };
+
+  const toggleDeclineInvitaionModal = () => {
+    setDeclineInvitationModal(!declineInvitationModal);
+  };
+
+  const onAccept = () => {
+    const postData = {
+      action: 'ACCEPT',
+      request_id: requestStatusData._id,
+    };
+    setIsStatusUpdating(true);
+    dispatch(
+      updateInvitation({
+        data: postData,
+        onSuccess: () => {
+          setIsStatusUpdating(false);
+          setAcceptInvitationModal(false);
+          dispatch(getRequestStatusSuccess(null));
+          dispatch(makeTeamMemberSuccess());
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
+  };
+
+  const onDecline = () => {
+    const postData = {
+      action: 'REJECT',
+      request_id: requestStatusData._id,
+    };
+    setIsStatusUpdating(true);
+    dispatch(
+      updateInvitation({
+        data: postData,
+        onSuccess: () => {
+          setIsStatusUpdating(false);
+          setDeclineInvitationModal(false);
+          dispatch(getRequestStatusSuccess(null));
+          dispatch(makeTeamMemberSuccess());
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
+  };
+
   return (
     <>
       {/* <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} /> */}
-      <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} />
+      {/* <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} /> */}
+      <div className="d-flex justify-content-between align-items-center ">
+        <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} />
+        {currentProfile.team_type === 'CLUB' && requestStatusData && (
+          <div className="d-flex align-items-center gap-2 mb-2">
+            <CardText
+              className="mb-0 cursor-pointer text-danger fw-bold"
+              onClick={() => setDeclineInvitationModal(true)}
+            >
+              Decline
+            </CardText>
+            <Button color="primary " onClick={() => setAcceptInvitationModal(true)}>
+              Accept
+            </Button>
+          </div>
+        )}
+      </div>
       <Row>
         <Col lg="3">
           <LeftSidebarProfile
             isTalentView={isTalentView}
-            isTeamView={isTeamView}
+            isTeamView={isTeamView || isClubView}
             isClient={isClient}
             data={currentProfile}
             isEditable={userData?._id === param?.userId}
+            isClubProfile={currentProfile.team_type === 'CLUB'}
           />
         </Col>
         <Col lg="9">
-          <Row>
-            <Col lg="3">
-              <Statbox
-                title={currentProfile?.projects_worked_on_count || 0}
-                desc="Completed Projects"
-                icon={<Check height={20} />}
-                color="light-success"
-              />
-            </Col>
-            {isTalentView && (
+          {!isClubView && (
+            <Row>
               <Col lg="3">
                 <Statbox
-                  title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
-                  desc="Hourly Rate"
-                  icon={<img src={MoneyIcon} height={22} alt="money" />}
-                  color="light-warning"
+                  title={recentProjectsMetadata?.total_records || 0}
+                  desc="Completed Projects"
+                  icon={<Check height={20} />}
+                  color="light-success"
                 />
               </Col>
-            )}
-            {isTeamView && (
+              {isTalentView && (
+                <Col lg="3">
+                  <Statbox
+                    title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
+                    desc="Hourly Rate"
+                    icon={<img src={MoneyIcon} height={22} alt="money" />}
+                    color="light-warning"
+                  />
+                </Col>
+              )}
+              {isTeamView ||
+                (isClubView && (
+                  <Col lg="3">
+                    <Statbox
+                      title={`${currentProfile?.total_project_value?.code || ''} ${
+                        currentProfile?.total_project_value || 0
+                      }`}
+                      desc="Total Project Value"
+                      icon={<img src={MoneyIcon} height={22} alt="money" />}
+                      color="light-warning"
+                    />
+                  </Col>
+                ))}
+              {isTalentView && (
+                <Col lg="3">
+                  <Statbox
+                    title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
+                    desc="Work Experience"
+                    icon={<Briefcase height={20} />}
+                    color="light-warning"
+                  />
+                </Col>
+              )}
               <Col lg="3">
                 <Statbox
-                  title={`${currentProfile?.total_project_value?.code || ''} ${
-                    currentProfile?.total_project_value || 0
-                  }`}
-                  desc="Total Project Value"
-                  icon={<img src={MoneyIcon} height={22} alt="money" />}
-                  color="light-warning"
+                  title={
+                    <>
+                      {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
+                        ? 0
+                        : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
+                      hours/week <br />
+                      {currentProfile?.availability?.timezone?.abbreviation}(
+                      {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
+                    </>
+                  }
+                  desc="Availability"
+                  icon={<Calendar height={20} />}
+                  color="light-primary"
                 />
               </Col>
-            )}
-            {isTalentView && (
-              <Col lg="3">
-                <Statbox
-                  title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
-                  desc="Work Experience"
-                  icon={<Briefcase height={20} />}
-                  color="light-warning"
-                />
-              </Col>
-            )}
-            <Col lg="3">
-              <Statbox
-                title={
-                  <>
-                    {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
-                      ? 0
-                      : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
-                    hours/week <br />
-                    {currentProfile?.availability?.timezone?.abbreviation}(
-                    {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
-                  </>
-                }
-                desc="Availability"
-                icon={<Calendar height={20} />}
-                color="light-primary"
-              />
-            </Col>
-          </Row>
+            </Row>
+          )}
+
           <Row>
             <UserBio
               data={currentProfile}
               isTalentView={isTalentView}
-              isTeamView={isTeamView}
+              isTeamView={isTeamView || isClubView}
               isClient={isClient}
               isEditable={userData?._id === param?.userId}
             />
@@ -208,6 +301,26 @@ const UserDetails = () => {
           </Row>
         </Col>
       </Row>
+      {acceptInvitationModal && (
+        <AcceptClubInviationModal
+          modal={acceptInvitationModal}
+          toggleModal={toggleAcceptInvitationModal}
+          description="You’ve accepted club invitation"
+          selectedTalents={[currentProfile]}
+          onAccept={onAccept}
+          onLoading={isStatusUpdating}
+        />
+      )}
+
+      {declineInvitationModal && (
+        <DeclineClubInvitaionModal
+          modal={declineInvitationModal}
+          toggleModal={toggleDeclineInvitaionModal}
+          data={currentProfile}
+          onDecline={onDecline}
+          onLoading={isStatusUpdating}
+        />
+      )}
     </>
   );
 };

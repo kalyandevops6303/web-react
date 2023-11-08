@@ -17,20 +17,20 @@ import {
   TabPane,
 } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, Search, Share2, Star } from 'react-feather';
+import { Check, Search, Star } from 'react-feather';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { BlueNavsContainer, InviteHeadContainer } from '../styled';
+import { InviteHeadContainer } from '../styled';
 import theme from '../../configs/themeVariables';
-import { BlueBgIconContainer, TableContainer } from '../CreateProject/style';
-import AlmaMaterImg from '../../assets/images/almaMater.png';
+import { TableContainer } from '../CreateProject/style';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import InfiniteScroll from '../../lib/infinite-scroll';
 import { giveStrokeColor, returnFormattedRating } from '../../utility/Utils';
 import { getBestTalents } from '../../redux/actions/inviteTalent';
 import { bestTalents, bestTalentsLoading } from '../../redux/selectors/inviteTalentSelector';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+
 const InviteClubMemberModal = ({
   createTeamView,
   selectedIds,
@@ -42,12 +42,14 @@ const InviteClubMemberModal = ({
   projectId,
   invitedIds,
   setSelectedIds,
+  text,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const listData = useSelector(bestTalents);
   const isBestTalentsLoading = useSelector(bestTalentsLoading);
   const [searchValue, setSearchValue] = useState('');
+
   const loadNewBestTalents = () => {
     dispatch(
       getBestTalents(
@@ -60,6 +62,7 @@ const InviteClubMemberModal = ({
       ),
     );
   };
+
   useEffect(() => {
     let delayDebounceFn = null;
     delayDebounceFn = setTimeout(() => {
@@ -67,6 +70,7 @@ const InviteClubMemberModal = ({
     }, 500);
     return () => clearTimeout(delayDebounceFn);
   }, [searchValue]);
+
   const onSearch = (e) => {
     setSearchValue(e.target.value);
   };
@@ -107,6 +111,7 @@ const InviteClubMemberModal = ({
       );
     }
   };
+
   const removeDuplicates = (arr, key) => {
     const seen = new Set();
     return arr.filter((obj) => {
@@ -118,6 +123,7 @@ const InviteClubMemberModal = ({
       return false;
     });
   };
+
   const onSendInvitationModalOpen = () => {
     const reformattedData = selectedTalents.map((talent) => {
       if ('talent_details' in talent) {
@@ -136,9 +142,11 @@ const InviteClubMemberModal = ({
     toggleModal();
     setSendInvitationModal(true);
   };
+
   const redirectToDashboard = () => {
     navigate('/dashboard');
   };
+
   const handleClose = () => {
     if (createTeamView) {
       redirectToDashboard();
@@ -147,22 +155,24 @@ const InviteClubMemberModal = ({
     }
   };
 
-  console.log(selectedIds, 'IDS');
-
   return (
     <Modal isOpen={modal} contentClassName="invite-talent-listing-modal-style" className="modal-dialog-centered">
       <ModalHeader toggle={createTeamView ? redirectToDashboard : toggleModal} />
       <ModalBody className="p-0">
         <InviteHeadContainer className="px-2">
           <div className="custom-header-margin d-flex justify-content-between align-items-center">
-            <h3 className="font-medium-3">Invite Club Member</h3>
+            <h3 className="font-medium-3">{text ? text.heading : 'Invite Club Member'}</h3>
           </div>
         </InviteHeadContainer>
         <div className="px-2 py-2">
-          <p className="fw-bold font-medium-1 mb-50">Invite club member to join this club</p>
+          <p className="fw-bold font-medium-1 mb-50">
+            {text ? text.subHeading : 'Invite club member to join this club'}
+          </p>
           <p className="pe-5">
-            <span className="fw-bold"> Note:</span> If a user is not already part of your club, they will need to join
-            before they can be added to the project
+            <span className="fw-bold"> Note:</span>
+            {text
+              ? text.desc
+              : 'If a user is not already part of your club, they will need to join before they can be added to the project'}
           </p>
           <Row>
             <Col sm="12" md="12" lg="9">
@@ -300,6 +310,7 @@ InviteClubMemberModal.propTypes = {
   setSelectedTalents: Proptypes.func,
   setSendInvitationModal: Proptypes.func,
   projectId: Proptypes.string,
+  text: Proptypes.object,
 };
 InviteClubMemberModal.defaultProps = {
   createTeamView: false,
@@ -312,4 +323,5 @@ InviteClubMemberModal.defaultProps = {
   setSelectedTalents: () => {},
   setSendInvitationModal: () => {},
   projectId: '',
+  text: null,
 };
