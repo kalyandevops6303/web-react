@@ -587,7 +587,8 @@ const LeftSidebarProfile = ({
                   !data?.is_team_member &&
                   isTeamView &&
                   !teamId &&
-                  userData?.user_type === userTypes.talent && (
+                  userData?.user_type === userTypes.talent &&
+                  !isClubProfile && (
                     <div className="w-50 d-flex gap-1 justify-content-center">
                       <Button
                         disabled={inJoinTeamLoading}
