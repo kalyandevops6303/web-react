@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
-import { Modal, ModalHeader, ModalBody, Form, Row, Col, Label, FormFeedback, Button } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Form, Row, Col, Label, FormFeedback, Button, Spinner } from 'reactstrap';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import { educationsService, paginatedInstitutesService } from '../../services/staticServices';
@@ -43,6 +43,7 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
   const dispatch = useDispatch();
 
   const [educationsOptions, setEducationsOptions] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const userDetailsData = useSelector(userData);
 
@@ -52,6 +53,7 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
   };
 
   const onSubmit = (data) => {
+    setLoading(true);
     const { educationInstitution, degree } = data;
     const myInstitutions = userDetailsData?.talent_info?.educational_institute.map((educationDetails) => ({
       institution: educationDetails.institution._id,
@@ -69,6 +71,7 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
     };
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    setLoading(false);
   };
 
   const loadInstitutesOptions = async (search, prevOptions, { page }) => {
@@ -190,8 +193,8 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
               <Button outline color="primary" className="me-2" onClick={toggleModal}>
                 Cancel
               </Button>
-              <Button color="primary" type="submit" disabled={!isValid}>
-                Submit
+              <Button color="primary" type="submit" disabled={!isValid || loading}>
+                {loading ? <Spinner size="sm" /> : 'Submit'}
               </Button>
             </div>
           </Form>

@@ -107,13 +107,13 @@ const PrivateDashboard = () => {
     }
   };
 
-  const onTeamInvite = () => {
+  const onClubInvite = () => {
+    setIsClubInvite(true);
     setInviteTeamMemberModal(true);
     setInviteTalentToTeamModal(true);
   };
 
-  const onClubInvite = () => {
-    setIsClubInvite(true);
+  const onTeamInvite = () => {
     setInviteTeamMemberModal(true);
     setInviteTalentToTeamModal(true);
   };
@@ -226,13 +226,6 @@ const PrivateDashboard = () => {
         </DashboardHeaderWrapper>
       )}
 
-      {inviteTalentToTeamModal && !isClubInvite && (
-        <InviteTalentToTeam
-          inviteTeamMemberModal={inviteTeamMemberModal}
-          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
-          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
-        />
-      )}
       {inviteTalentToTeamModal && isClubInvite && (
         <InviteTalentToTeam
           isClubInvitation
@@ -241,6 +234,15 @@ const PrivateDashboard = () => {
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
         />
       )}
+
+      {inviteTalentToTeamModal && !isClubInvite && (
+        <InviteTalentToTeam
+          inviteTeamMemberModal={inviteTeamMemberModal}
+          toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
+          setInviteTalentToTeamModal={setInviteTalentToTeamModal}
+        />
+      )}
+
       {userDetailsData?.user_type === userTypes.talent && (
         <CreateTeamButtonWrapper>
           <span className="text-decoration-underline font-medium-2 link-primary cursor-pointer" onClick={onCreateClub}>
