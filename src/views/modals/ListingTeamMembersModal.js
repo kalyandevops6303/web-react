@@ -34,7 +34,7 @@ import { MessageIconWrap } from './style';
 import { getItem } from '../../utility/localStorageControl';
 import { inviteTalents } from '../../redux/actions/inviteTalent';
 import { userTypes } from '../../utility/constants/Constant';
-import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import ChangeClubMemberModal from './ChangeClubMemberModal';
 
 const ClubDropDownWrapper = styled.div`
@@ -183,7 +183,7 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember, isA
                       {DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') || '-'}
                     </p>
                   </Col>
-                  {isClubView && isAdmin ? (
+                  {isClubView && isAdmin && teamMembers?.length > 1 && (
                     <Col sm="12" md="1" lg="1">
                       <ClubDropDownWrapper>
                         <UncontrolledDropdown>
@@ -201,7 +201,8 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember, isA
                         </UncontrolledDropdown>
                       </ClubDropDownWrapper>
                     </Col>
-                  ) : (
+                  )}
+                  {!isClubView && (
                     <Col sm="12" md="1" lg="1">
                       {teamMembers?.length > 1 && (
                         <div className="d-flex justify-content-end">
@@ -243,6 +244,10 @@ const InvitedMemberComponent = () => {
 
   const selectInvitedMembersMetadata = useSelector((state) => state.dashboard.invitedMemberMetaData);
   const selectInvitedMembercurrentPreview = useSelector((state) => state.dashboard.invitedMemberCurrentPreview);
+  const userDetailsData = useSelector(selectUserData);
+
+  const isClubView = userDetailsData?.team_type === userTypes.club;
+
   const metadata = { page: 1, page_size: 10 };
 
   useEffect(() => {
@@ -347,7 +352,7 @@ const InvitedMemberComponent = () => {
                         </div>
                       </Col>
                       <Col sm="12" md="3" lg="2">
-                        <p className="fw-bold m-0">Team Member</p>
+                        <p className="fw-bold m-0">{isClubView ? capitalize(item?.member_type) : 'Team Member'}</p>
                       </Col>
                       <Col sm="12" md="3" lg="3">
                         <p className="m-0">Invited on</p>

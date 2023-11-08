@@ -4,7 +4,7 @@ import Proptypes from 'prop-types';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Row, Col, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
 import SwitchMember from '../../assets/images/gifs/switch.gif';
 import { InviteUsersListContainer } from '../CreateProject/style';
@@ -75,7 +75,7 @@ const ChangeClubMemberModal = ({ modal, toggleModal, memberType }) => {
             Cancel
           </Button>
           <Button disabled={loading} color="primary" onClick={handleChange}>
-            Change
+            {loading ? <Spinner size="sm" /> : 'Change'}
           </Button>
         </div>
       </ModalBody>

@@ -6,7 +6,7 @@ import { Star } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Select from 'react-select';
-import { upperCase } from 'lodash';
+import { upperCase, capitalize } from 'lodash';
 import classNames from 'classnames';
 import '../custom-styles.scss';
 import { InviteUsersListContainer } from '../CreateProject/style';
@@ -124,7 +124,7 @@ const SendClubInvitationModal = ({
                       classNamePrefix="select"
                       theme={selectThemeColors}
                       defaultValue={{ label: 'Member', value: 'Member' }}
-                      value={{ label: talent.clubRole || 'Member', value: talent.clubRole || 'Member' }}
+                      value={{ label: capitalize(talent?.clubRole) || 'Member', value: talent.clubRole || 'Member' }}
                       onChange={(selectedOption) => {
                         handleRoleChange(index, selectedOption.label);
                       }}

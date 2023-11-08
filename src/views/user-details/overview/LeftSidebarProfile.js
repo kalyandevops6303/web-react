@@ -138,8 +138,12 @@ const LeftSidebarProfile = ({
   };
 
   const onEditClick = () => {
-    if (data.user_type === userTypes.team) {
+    if (data.team_type === userTypes.team) {
       navigate(`/create-team/profile-details`, {
+        state: { isEditing: true },
+      });
+    } else if (data.team_type === userTypes.club) {
+      navigate(`/create-club/account-details`, {
         state: { isEditing: true },
       });
     } else {

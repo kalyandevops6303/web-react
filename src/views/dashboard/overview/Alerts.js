@@ -60,6 +60,8 @@ const Alerts = () => {
         return true;
       case 'Team Invitation Request':
         return true;
+      case 'Club Invitation Request':
+        return true;
       case 'Project Team Invitation Request':
         return true;
       case 'Team Join Request':
@@ -76,6 +78,9 @@ const Alerts = () => {
       case 'Team Invitation Request':
         return 'Team Invitation';
 
+      case 'Club Invitation Request':
+        return 'Club Invitation';
+
       case 'Project Team Invitation Request':
         return 'Project Invitation';
 
@@ -91,7 +96,11 @@ const Alerts = () => {
       navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
     } else if (status === 'Team Invitation Request' && inviteId) {
       navigate(`/team-invitation/${inviteId}`);
+    } else if (status === 'Club Invitation Request' && inviteId) {
+      navigate(`/club-invitation/${inviteId}`);
     } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
+      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+    } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
       navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
@@ -112,6 +121,7 @@ const Alerts = () => {
 
   const handleView = (data) => {
     // setSwitchProfileModal(true);
+
     setSwitchData({ ...data, isDisputeAlert: isDisputesNotification(data?.title) });
 
     if (userDetailsData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
