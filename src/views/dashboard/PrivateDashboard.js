@@ -12,7 +12,7 @@ import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
 import { checkBidsAccepted, profilePercentage, selectGetTeamMember } from '../../redux/selectors/dashboardSelectors';
-import { userTypes } from '../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
@@ -218,12 +218,12 @@ const PrivateDashboard = () => {
       )}
       {userDetailsData?.team_type === userTypes.club && (
         <DashboardHeaderWrapper>
-          {userDetailsData?.club_status === 'ACCEPTED' && isAdmin && (
+          {userDetailsData?.club_status === clubStatus.ACCEPTED && isAdmin && (
             <Button as="link" color="primary" onClick={onClubInvite}>
               Invite Members
             </Button>
           )}
-          {userDetailsData?.club_status === 'IN_REVIEW' && <InReviewButton>In review</InReviewButton>}
+          {userDetailsData?.club_status === clubStatus.IN_REVIEW && <InReviewButton>In review</InReviewButton>}
         </DashboardHeaderWrapper>
       )}
 

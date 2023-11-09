@@ -49,6 +49,7 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
 
   const onSuccess = () => {
     dispatch(getUserData());
+    setLoading(false);
     toggleModal();
   };
 
@@ -71,7 +72,6 @@ const EducationInstitutionModal = ({ modal, toggleModal, selectedOption }) => {
     };
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    setLoading(false);
   };
 
   const loadInstitutesOptions = async (search, prevOptions, { page }) => {

@@ -86,6 +86,12 @@ const roleTypeOptions = [
   { label: 'Member', value: 'MEMBER' },
 ];
 
+const clubStatus = {
+  ACCEPTED: 'ACCEPTED',
+  IN_REVIEW: 'IN_REVIEW',
+  DECLINED: 'DECLINED',
+};
+
 const PAYMENT_STATUS = {
   PENDING: 'PENDING',
   INITIATED: 'INITIATED',
@@ -115,4 +121,5 @@ export {
   statusForAllListing,
   roleTypeOptions,
   PAYMENT_STATUS,
+  clubStatus,
 };

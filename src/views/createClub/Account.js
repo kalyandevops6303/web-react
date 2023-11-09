@@ -39,7 +39,7 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { updateTeamLoading } from '../../redux/selectors/teamSelectors';
 import { GroupLabelWrapper } from './style';
 import EducationInstitutionModal from './EducationInstitutionModal';
-import { setClubCreateDataAction } from '../../redux/actions/clubActions';
+import { setClubCreateDataAction, updateClub } from '../../redux/actions/clubActions';
 import { getTeamById } from '../../services/teamServices';
 
 const Account = () => {
@@ -220,25 +220,21 @@ const Account = () => {
         if (imageUrlRes) {
           reqData = {
             _id: userDetailsData._id,
-            name: clubName,
             team_logo: imageUrlRes.file_key,
             tagline: clubTagline,
             introduction: clubIntroduction,
-            interests: interestsSelected,
-            tools: toolsSelected,
-            skills: skillsSelected,
-            education_institute: educationInstitution,
+            interests: interestsSelected?.map((interest) => interest._id),
+            tools: toolsSelected?.map((tool) => tool._id),
+            skills: skillsSelected?.map((skill) => skill._id),
           };
         } else {
           reqData = {
             _id: userDetailsData._id,
-            name: clubName,
             tagline: clubTagline,
             introduction: clubIntroduction,
-            interests: interestsSelected,
-            tools: toolsSelected,
-            skills: skillsSelected,
-            education_institute: educationInstitution,
+            interests: interestsSelected?.map((tool) => tool._id),
+            tools: toolsSelected?.map((tool) => tool._id),
+            skills: skillsSelected?.map((skill) => skill._id),
           };
         }
       } else {
@@ -271,7 +267,10 @@ const Account = () => {
       dispatch(setClubCreateDataAction(removeEmpty));
 
       if (location?.state?.isEditing) {
-        navigate(`/create-club/profile-details`, { state: { isEditing: true } });
+        const onApiSuccess = () => {
+          navigate(`/create-club/profile-details`, { state: { isEditing: true } });
+        };
+        dispatch(updateClub(removeEmptyKeys(removeEmpty), onApiSuccess));
       } else {
         navigate(`/create-club/profile-details`);
       }
