@@ -64,8 +64,15 @@ const Alerts = () => {
         return true;
       case 'Project Team Invitation Request':
         return true;
+      case 'Project Club Invitation Request':
+        return true;
       case 'Team Join Request':
         return true;
+      case 'Membership Updated':
+        return true;
+      case 'Club - Request Submitted':
+        return true;
+
       default:
         return false;
     }
@@ -82,6 +89,9 @@ const Alerts = () => {
         return 'Club Invitation';
 
       case 'Project Team Invitation Request':
+        return 'Project Invitation';
+
+      case 'Project Club Invitation Request':
         return 'Project Invitation';
 
       case 'Team Join Request':
@@ -104,6 +114,10 @@ const Alerts = () => {
       navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
+    } else if (status === 'Membership Updated') {
+      navigate('/dashboard');
+    } else if (status === 'Club - Request Submitted') {
+      navigate('/dashboard');
     } else {
       navigate(`/project-details/${projectId}/bid`);
     }

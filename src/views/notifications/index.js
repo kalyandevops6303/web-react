@@ -75,6 +75,10 @@ const Notifications = () => {
       navigate(`/join-request/${inviteId}`);
     } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
       navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+    } else if (status === 'Membership Updated') {
+      navigate('/dashboard');
+    } else if (status === 'Club - Request Submitted') {
+      navigate('/dashboard');
     } else {
       navigate(`/project-details/${projectId}/bid`);
     }
@@ -106,6 +110,11 @@ const Notifications = () => {
         return true;
       case 'Project Club Invitation Request':
         return true;
+      case 'Membership Updated':
+        return true;
+      case 'Club - Request Submitted':
+        return true;
+
       default:
         return false;
     }
