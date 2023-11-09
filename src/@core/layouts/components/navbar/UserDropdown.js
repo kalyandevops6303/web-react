@@ -31,7 +31,7 @@ import { logoutAction, switchProfile } from '../../../../redux/actions/authActio
 import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
-import { userTypes } from '../../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
 import {
   selectSavedUserData,
@@ -40,10 +40,11 @@ import {
   selectAuthLoading,
 } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
+import { ERROR } from '../../../../utility/constants/ToastTypes';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(selectUserData);
@@ -89,7 +90,7 @@ const UserDropdown = () => {
   };
 
   const [open, setOpen] = useState('');
-  const toggle = (id) => (open === id ? setOpen() : setOpen(id));
+  const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
 
   const LineWrapper = styled.div`
     position: relative;
@@ -231,10 +232,14 @@ const UserDropdown = () => {
   };
 
   const handleEditProfileForClub = (tab) => {
-    if (tab === 'account') {
-      navigate('/create-club/account-details', { state: { isEditing: true } });
+    if (userDetailsData.club_status === clubStatus.ACCEPTED) {
+      if (tab === 'account') {
+        navigate('/create-club/account-details', { state: { isEditing: true } });
+      } else {
+        navigate('/create-club/profile-details', { state: { isEditing: true } });
+      }
     } else {
-      navigate('/create-club/profile-details', { state: { isEditing: true } });
+      ShowToastMessage(ERROR, 'Club is not verified yet');
     }
   };
   return (
