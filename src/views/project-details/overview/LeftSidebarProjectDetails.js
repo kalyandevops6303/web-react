@@ -18,6 +18,7 @@ import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
 import { returnFormattedRating } from '../../../utility/Utils';
 import { clearModalData } from '../../../redux/reducers/createProject';
+import DeleteProjectModal from '../../modals/DeleteProjectModal';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,8 @@ const LeftSidebarProjectDetails = () => {
   const userData = useSelector(selectUserData);
   const [inviteModal, setInviteModal] = useState(false);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteModalData, setDeleteModalData] = useState(null);
   const toggleModal = () => {
     setInviteModal(!inviteModal);
     dispatch(clearModalData());
@@ -82,8 +85,20 @@ const LeftSidebarProjectDetails = () => {
     });
   };
 
+  const handleDelete = () => {
+    setDeleteModal(true);
+    setDeleteModalData(projectDetailsData);
+  };
+
   return (
     <LeftSidebarProjectDetailsWrapper>
+      {deleteModal && (
+        <DeleteProjectModal
+          modal={deleteModal}
+          toggleModal={() => setDeleteModal(!deleteModal)}
+          data={deleteModalData}
+        />
+      )}
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between status-head">
@@ -171,8 +186,8 @@ const LeftSidebarProjectDetails = () => {
           {userData?.user_type === userTypes.client && (
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                <Button className="w-50 d-none" outline color="danger">
-                  Delete
+                <Button className="w-50" color="danger" onClick={handleDelete}>
+                  Terminate
                 </Button>
                 {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') && (
                   <Button className="w-50" color="primary" onClick={handleInvite}>

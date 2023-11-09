@@ -48,12 +48,20 @@
   width: 78% !important;
   margin: 0 auto;
 }
+.delete-modal{
+  width: 44% !important;
+  margin: 0 auto;
+}
 @media (max-width: 768px) {
   .custom-modal-project-details {
     width: 100% !important;
   }
   .custom-modal-style-sm {
     width: 30% !important;
+  }
+  .delete-modal{
+    width: 100% !important;
+    margin: 0 auto;
   }
 }
 

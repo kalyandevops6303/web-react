@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardText, CardTitle, Col, FormFeedback, Input, Label, Row } from 'reactstrap';
 import ReactHtmlParser from 'react-html-parser';
 import html2pdf from 'html2pdf.js';
-import { ArrowLeft } from 'react-feather';
+import { ArrowLeft, Info } from 'react-feather';
 import DownloadImg from '@src/assets/images/Download.svg';
 import EditImg from '@src/assets/images/Edit.svg';
 import { useDispatch, useSelector } from 'react-redux';
@@ -186,6 +186,13 @@ const ContractView = () => {
               !isFreshDoc ? '(View only)' : ''
             }`}</CardTitle>
             <CardBody>
+              <div className="contract-info error-banner mb-2 d-flex px-1 py-2">
+                <Info size={18} color={theme.red} className="me-50" />
+                <p className="font-medium-1 m-0 error">
+                  <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of the
+                  project. Please adjust your cost in order to submit the bid
+                </p>
+              </div>
               <Card>
                 <CardBody className="contract-card-body">
                   <div className="d-flex justify-content-between ">
