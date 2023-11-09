@@ -185,7 +185,9 @@ const FixedSimpleMilestoneView = () => {
     };
     const total_estimated_cost = milestones.reduce((total, milestone) => total + Number(milestone.talentCost || 0), 0);
     const newMilestones = milestones.filter((milestone) => !('_id' in milestone.otherDetails));
-    const create_milestones = newMilestones.map((milestone) => ({
+    const updatedMilestones = milestones.filter((milestone) => '_id' in milestone.otherDetails);
+    const maxSeqValue = updatedMilestones.reduce((max, obj) => Math.max(max, obj?.otherDetails?.seq), 0);
+    const create_milestones = newMilestones.map((milestone, index) => ({
       name: milestone.name,
       description: milestone.description,
       estimated_duration: {
@@ -194,8 +196,8 @@ const FixedSimpleMilestoneView = () => {
       },
       estimated_cost: milestone.talentCost,
       deliverables: milestone.deliverables,
+      seq: maxSeqValue + index + 1,
     }));
-    const updatedMilestones = milestones.filter((milestone) => '_id' in milestone.otherDetails);
     const update_milestones = updatedMilestones.map((milestone) => ({
       name: milestone.name,
       description: milestone.description,
@@ -206,6 +208,7 @@ const FixedSimpleMilestoneView = () => {
       estimated_cost: milestone.talentCost,
       deliverables: milestone.deliverables,
       milestone_id: milestone.otherDetails._id,
+      seq: milestone.otherDetails.seq,
     }));
     const removed_milestone_ids = removedMilestoneIds.filter((id) => id !== undefined);
     const documents = files.map((file) => ({
