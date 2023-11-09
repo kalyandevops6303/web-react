@@ -82,9 +82,7 @@ const ThemeNavbar = (props) => {
 
   useEffect(() => {
     if (token) {
-      setTimeout(() => {
-        dispatch(getUserData());
-      }, 1000);
+      dispatch(getUserData());
     }
   }, []);
 
