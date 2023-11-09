@@ -1,11 +1,15 @@
 /* eslint-disable no-nested-ternary */
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, Card, CardBody, CardText, Input, Table } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardText, Input, Table, UncontrolledTooltip } from 'reactstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
-import { getApplicationFee, getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
+import {
+  getApplicationFee,
+  getMilestonePaymentListing,
+  getMilestoneTransactions,
+} from '../../../redux/actions/milestonePaymentActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import MakePaymentModal from '../../modals/MakePaymentModal';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
@@ -13,6 +17,8 @@ import { formatDate } from '../../../utility/Utils';
 import TransactionTimeline from './TransactionTimeline';
 import PaymentStatusForRow from './PaymentStatusForRow';
 import PaymentBy from './PaymentBy';
+import { clearMilestoneTransactions } from '../../../redux/reducers/milestonePayment';
+import PaymentTableWrapper from './style';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -20,154 +26,77 @@ const PaymentTable = () => {
   const [makePaymentModal, setMakePaymentModal] = useState(false);
   const [feeStructure, setFeeStructure] = useState(null);
   const [open, setOpen] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
-  // const milestonesData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
+  const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const listLoading = useSelector((state) => state.milestonePayment?.listLoading);
   const projectDetailsData = useSelector(projectDetails);
+  const milestoneTransactionLoading = useSelector((state) => state.milestonePayment?.transactionLoading);
+  const milestoneTransactionDetails = useSelector((state) => state.milestonePayment?.milestoneTransactionDetails);
   const user = useSelector(userData);
 
   const dispatch = useDispatch();
 
-  const timelineData = [
-    {
-      color: '#7367F0',
-      customContent: (
-        <div className="d-flex flex-column">
-          <span>#1321</span>
-          <span>Jan 10, 23</span>
-        </div>
-      ),
-    },
-    {
-      color: '#7367F0',
-      customContent: (
-        <div className="d-flex flex-column">
-          <span>#1321</span>
-          <span>Jan 10, 23</span>
-        </div>
-      ),
-    },
-    {
-      color: '#7367F0',
-      customContent: (
-        <div className="d-flex flex-column">
-          <span>#1321</span>
-          <span>Jan 10, 23</span>
-        </div>
-      ),
-    },
-    {
-      color: '#FF9F43',
-      customContent: (
-        <div className="d-flex flex-column">
-          <span>#1321</span>
-          <span>Jan 10, 23</span>
-        </div>
-      ),
-    },
-    {
-      color: '#FF9F43',
-      customContent: <span>#1321</span>,
-    },
-    {
-      color: '#FF9F43',
-      customContent: <span>#1321</span>,
-    },
-    {
-      color: '#FF9F43',
-      customContent: <span>#1321</span>,
-    },
-  ];
-  const milestoneData = [
-    {
-      _id: '64ff210ac9c3c174b544fb63',
-      created_at: 1694441738703,
-      updated_at: 1699354848949,
-      is_deleted: false,
-      payment_status: 'PAID',
-      deleted_by: '',
-      bid_id: '64ff2062c9c3c174b544fb0d',
-      description: 'desc',
-      project_id: '64ff2053c9c3c174b544fb06',
-      deliverables: [],
-      end_date: 0,
-      links: [],
-      estimated_duration: {
-        duration: 4,
-        duration_type: 'WEEK',
-      },
-      numbers_of_hours: 0,
-      status: 'IN_REVIEW',
-      milestone_by: {
-        entity: 'TEAM',
-        entity_id: '64e43ef14556ff69c1e31d27',
-        team_member_id: '64e373744556ff69c1e31be5',
-      },
-      workers: [],
-      estimated_cost: 4000.0,
-      start_date: 1694441959470,
-      documents: [
-        {
-          file_name: 'June 2023 Rent and Maintenance Bills.pdf',
-          file_key: 'milestones/64e373744556ff69c1e31be5/05549684-f80e-4014-b022-a792c569bdae.pdf',
-          download_url:
-            'https://trumiodevsa.blob.core.windows.net/trumio-private/milestones/64e373744556ff69c1e31be5/05549684-f80e-4014-b022-a792c569bdae.pdf?se=2023-11-08T11%3A16%3A02Z&sp=r&sv=2023-08-03&sr=b&sig=hqfFEkjj/ZeJPli92UfL3ZNnNveaQiBmLSSbh2MSNP8%3D',
-          size: 0,
-          created_at: 0,
-        },
-      ],
-      name: 'Milestone 1',
-      seq: 0,
-    },
-    {
-      _id: '64ff210ac9c3c174b544fb64',
-      created_at: 1694441738703,
-      updated_at: 1699354848949,
-      is_deleted: false,
-      payment_status: 'FAILED',
-      deleted_by: '',
-      bid_id: '64ff2062c9c3c174b544fb0d',
-      description: '',
-      project_id: '64ff2053c9c3c174b544fb06',
-      deliverables: [],
-      end_date: 0,
-      links: [],
-      estimated_duration: {
-        duration: 6,
-        duration_type: 'WEEK',
-      },
-      numbers_of_hours: 0,
-      status: 'IN_REVIEW',
-      milestone_by: {
-        entity: 'TEAM',
-        entity_id: '64e43ef14556ff69c1e31d27',
-        team_member_id: '64e373744556ff69c1e31be5',
-      },
-      workers: [],
-      estimated_cost: 6000.0,
-      start_date: 1698070759543,
-      documents: [
-        {
-          file_name: 'Insertion sort.pdf',
-          file_key: 'milestones/64e373744556ff69c1e31be5/ef194ddd-1f02-4ccf-a550-33f1d8c19727.pdf',
-          download_url:
-            'https://trumiodevsa.blob.core.windows.net/trumio-private/milestones/64e373744556ff69c1e31be5/ef194ddd-1f02-4ccf-a550-33f1d8c19727.pdf?se=2023-11-08T11%3A16%3A02Z&sp=r&sv=2023-08-03&sr=b&sig=UUsZsV5S5tiZsF9aeTS5PTK3OGGJ0aAl53iEw3r%2BUuw%3D',
-          size: 0,
-          created_at: 0,
-        },
-      ],
-      name: 'milestone 2',
-      seq: 0,
-    },
-  ];
+  const PAYMENT_TYPES = {
+    CHECKOUT: 'CHECKOUT',
+    TRANSFER: 'TRANSFER',
+  };
 
+  const handleCopyToClipboard = (text) => {
+    // eslint-disable-next-line no-undef
+    navigator.clipboard.writeText(text);
+  };
+
+  const getTimelineItem = (type, transaction_id, date) => ({
+    color: type === PAYMENT_TYPES.CHECKOUT ? '#FF9F43' : '#7367F0',
+    customContent: (
+      <div className="d-flex flex-column">
+        {transaction_id?.length > 8 && (
+          <UncontrolledTooltip placement="top" target={transaction_id.replace(/^[^a-zA-Z_]/, '_')}>
+            {transaction_id}
+          </UncontrolledTooltip>
+        )}
+        <span
+          className="fw-bold"
+          style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '80px', whiteSpace: 'nowrap' }}
+          id={transaction_id.replace(/^[^a-zA-Z_]/, '_')}
+          onClick={() => handleCopyToClipboard(transaction_id)}
+        >
+          {transaction_id}
+        </span>
+
+        <span>{formatDate(date)}</span>
+      </div>
+    ),
+  });
+
+  const timelineData = milestoneTransactionDetails?.map((item) =>
+    getTimelineItem(item?.payment_type, item?.transaction_id, item?.created_at),
+  );
+
+  const paymentStatusList = milestoneTransactionDetails?.map((item) => item?.status);
   const isClient = user?.user_type === userTypes.client;
 
-  const toggle = (id) => {
-    if (isClient) {
-      if (open === id) {
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
+  useEffect(() => {
+    if (isOpen) {
+      dispatch(clearMilestoneTransactions());
+      dispatch(getMilestoneTransactions(projectDetailsData?._id, open));
+    }
+  }, [isOpen]);
+
+  const showMilestoneTransanctions = (milestoneId, item) => {
+    if (isClient && isPaymentDone(item)) {
+      if (open === milestoneId) {
+        setIsOpen(false);
         setOpen(null);
-      } else setOpen(id);
+      } else {
+        setIsOpen(true);
+        setOpen(milestoneId);
+      }
     }
   };
 
@@ -237,10 +166,6 @@ const PaymentTable = () => {
     setMakePaymentModal(false);
   };
 
-  const isPaymentDone = (milestone) =>
-    milestone?.payment_status === PAYMENT_STATUS.PAID ||
-    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
-
   const isFirstTwoMilestonePaid =
     isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
     isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
@@ -282,113 +207,135 @@ const PaymentTable = () => {
           <hr />
           <CardBody>
             <div className="w-100 shadow rounded" style={{ backgroundColor: 'white' }}>
-              <Table responsive className="w-100">
-                <thead>
-                  <tr>
-                    {isClient ? <th> </th> : null}
-                    {isClient ? <th>Transaction ID</th> : null}
-                    <th>Milestone</th>
-                    <th>{}</th>
-                    <th>Status</th>
-                    <th>Amount</th>
-                    {isClient ? <th> </th> : null}
-                  </tr>
-                </thead>
-                <tbody>
-                  {milestoneData?.map((item) => (
-                    <>
-                      <tr
-                        className={isPaymentDone(item) ? 'cursor-pointer' : ''}
-                        key={item?._id}
-                        onClick={() => toggle(item?._id)}
-                      >
-                        {isClient ? (
-                          !isPaymentDone(item) ? (
+              <PaymentTableWrapper>
+                <Table responsive className="w-100">
+                  <thead>
+                    <tr>
+                      {isClient ? <th className="checkboxCol"> </th> : null}
+                      {isClient ? <th className="transactionCol">Transaction ID</th> : null}
+                      <th>Milestone</th>
+                      <th>{}</th>
+                      <th>Status</th>
+                      <th>{}</th>
+                      <th>Amount</th>
+                      {isClient ? <th> </th> : null}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {milestoneData?.map((item) => (
+                      <>
+                        <tr
+                          className={isPaymentDone(item) ? 'cursor-pointer' : ''}
+                          key={item?._id}
+                          onClick={() => showMilestoneTransanctions(item?._id, item)}
+                        >
+                          {isClient ? (
+                            !isPaymentDone(item) ? (
+                              <td className="py-1">
+                                <Input
+                                  type="checkbox"
+                                  checked={selectedPaymentId.includes(item?._id)}
+                                  name={item?._id}
+                                  onChange={(e) => handlePaymentSelect(e)}
+                                  className="p-50 payment-form-control"
+                                  disabled={isDisabled(item.payment_status)}
+                                />
+                              </td>
+                            ) : (
+                              <td>{}</td>
+                            )
+                          ) : null}
+                          {isClient ? (
                             <td>
-                              <Input
-                                type="checkbox"
-                                checked={selectedPaymentId.includes(item?._id)}
-                                name={item?._id}
-                                onChange={(e) => handlePaymentSelect(e)}
-                                className="p-50 payment-form-control"
-                                disabled={isDisabled(item.payment_status)}
-                              />
-                            </td>
-                          ) : (
-                            <td>{}</td>
-                          )
-                        ) : null}
-                        {isClient ? (
-                          isPaymentDone(item) ? (
-                            <td>
-                              <div className="d-flex flex-column">
+                              {/* <div className="d-flex flex-column">
                                 <span className="fw-bolder">{item?._id}</span>
                                 <span className="fw-light" style={{ fontSize: '12px' }}>
                                   {formatDate(item?.created_at)}
                                 </span>
-                              </div>
+                              </div> */}
                             </td>
+                          ) : null}
+                          <td>{item?.name}</td>
+                          <td>{}</td>
+                          <td className="statusCol">
+                            <Badge color={getTagSettings(item?.payment_status).theme}>
+                              {getTagSettings(item?.payment_status).text}
+                            </Badge>
+                          </td>
+                          <td>{}</td>
+                          <td className="amountCol">{`$ ${item.estimated_cost.toLocaleString()}`}</td>
+                          {isClient && isPaymentDone(item) ? (
+                            <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
+                          ) : null}
+                        </tr>
+
+                        {item?._id === open && isPaymentDone(item) ? (
+                          milestoneTransactionLoading ? (
+                            <tr>
+                              <td>{}</td>
+                              <td>{}</td>
+                              <td>{}</td>
+                              <td>Loading...</td>
+                              <td>{}</td>
+                              <td>{}</td>
+                              <td>{}</td>
+                              <td>{}</td>
+                            </tr>
                           ) : (
-                            <td>{}</td>
+                            <>
+                              <tr style={{ borderBottom: '1px solid white' }}>
+                                <td>{}</td>
+                                <td>
+                                  <div className="d-flex flex-column">
+                                    <span>Amount</span>
+                                    <span>{`${applicationFee?.name}`}</span>
+                                  </div>
+                                </td>
+                                <td>{}</td>
+                                <td>{}</td>
+                                <td>{}</td>
+                                <td>{}</td>
+                                <td>
+                                  <div className="d-flex flex-column">
+                                    <span>
+                                      ${' '}
+                                      {milestoneTransactionDetails?.find(
+                                        (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
+                                      )?.amount ?? 0}
+                                    </span>
+                                    <span>
+                                      $
+                                      {milestoneTransactionDetails?.find(
+                                        (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
+                                      )?.applicationFee ?? 0}
+                                    </span>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>{}</td>
+                                <td>
+                                  <TransactionTimeline transactionData={timelineData} />
+                                </td>
+                                <td>{}</td>
+                                <td>
+                                  <PaymentStatusForRow paymentStatus={paymentStatusList} />
+                                </td>
+                                <td>{}</td>
+                                <td colSpan={2}>
+                                  <PaymentBy paymentBy={milestoneTransactionDetails} />
+                                </td>
+
+                                <td>{}</td>
+                              </tr>
+                            </>
                           )
                         ) : null}
-                        <td>{item?.name}</td>
-                        <td>{}</td>
-                        <td>
-                          <Badge color={getTagSettings(item?.payment_status).theme}>
-                            {getTagSettings(item?.payment_status).text}
-                          </Badge>
-                        </td>
-                        <td>{`$ ${item.estimated_cost.toLocaleString()}`}</td>
-                        {isClient && isPaymentDone(item) ? (
-                          <td>{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
-                        ) : null}
-                      </tr>
-
-                      {item?._id === open && isPaymentDone(item) ? (
-                        <>
-                          <tr style={{ borderStyle: 'none' }}>
-                            <td>{}</td>
-                            <td>
-                              <div className="d-flex flex-column">
-                                <span>Amount</span>
-                                <span>Trumio Fee 20%</span>
-                              </div>
-                            </td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>{}</td>
-                            <td>
-                              <div className="d-flex flex-column">
-                                <span>$1000.12</span>
-                                <span>$89.90</span>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>{}</td>
-                            <td>
-                              <TransactionTimeline transactionData={timelineData} />
-                            </td>
-                            <td>{}</td>
-                            <td>
-                              <PaymentStatusForRow
-                                paymentStatus={['PENDING', 'INITIATED', 'PAID', 'PAID', 'PAID', 'FAILED', 'FAILED']}
-                              />
-                            </td>
-                            <td>{}</td>
-                            <td>
-                              <PaymentBy
-                                projectBy={['Client', 'Trumio', 'Trumio', 'Stripe', 'Client', 'Stripe', 'Trumio']}
-                              />
-                            </td>
-                          </tr>
-                        </>
-                      ) : null}
-                    </>
-                  ))}
-                </tbody>
-              </Table>
+                      </>
+                    ))}
+                  </tbody>
+                </Table>
+              </PaymentTableWrapper>
             </div>
             {user.user_type === userTypes.client && (
               <div className="d-flex w-100 mt-2 justify-content-between">
