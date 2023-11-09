@@ -75,7 +75,11 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const onBackClick = () => {
-    navigate(`/create-club/account-details`);
+    if (location?.state?.isEditing) {
+      navigate(`/create-club/account-details`, { state: { isEditing: true } });
+    } else {
+      navigate(`/create-club/account-details`);
+    }
   };
 
   const onSuccess = () => {};
@@ -103,20 +107,8 @@ const Profile = () => {
     dispatch(setClubCreateDataAction(removeEmptyClubData));
 
     if (location?.state?.isEditing) {
-      const skillsWithId = clubCreateData?.skills?.map((skill) => skill._id);
-      const toolsWithId = clubCreateData?.tools?.map((tool) => tool._id);
-      const interestsWithId = clubCreateData?.interests?.map((interest) => interest._id);
-      const tagline = clubCreateData?.tagline;
-      const team_logo = clubCreateData?.team_logo;
-      const introduction = clubCreateData?.introduction;
-      const linked_in = clubCreateData?.linked_in;
+      const linked_in = clubLinkedin;
       const reqData = {
-        skills: skillsWithId,
-        tools: toolsWithId,
-        interests: interestsWithId,
-        tagline,
-        team_logo,
-        introduction,
         linked_in,
         _id: clubCreateData?._id,
       };
@@ -134,10 +126,12 @@ const Profile = () => {
   const isUniversityApprovalValue = watch('isUniversityApproval');
 
   useEffect(() => {
-    if (isWebpageValue !== 'Yes') {
-      unregister('universityWebpage');
-    } else {
-      register('universityWebpage');
+    if (!location?.state?.isEditing) {
+      if (isWebpageValue !== 'Yes') {
+        unregister('universityWebpage');
+      } else {
+        register('universityWebpage');
+      }
     }
   }, [isWebpageValue, isUniversityApprovalValue, unregister, register]);
 
@@ -274,13 +268,13 @@ const Profile = () => {
                 render={({ field }) => (
                   <div className="demo-inline-spacing">
                     <div style={{ maxWidth: '350px' }} className="form-check form-check-inline checkbox-custom-margin">
-                      <Input type="radio" {...field} id="yesWebpage" value="Yes" />
+                      <Input type="radio" {...field} id="yesWebpage" value="Yes" checked={field.value === 'Yes'} />
                       <Label for="yesWebpage" className="form-check-label">
                         Yes, there is a web page on the university website.
                       </Label>
                     </div>
                     <div style={{ maxWidth: '350px' }} className="form-check form-check-inline checkbox-custom-margin">
-                      <Input type="radio" {...field} id="noWebpage" value="No" />
+                      <Input type="radio" {...field} id="noWebpage" value="No" checked={field.value === 'No'} />
                       <Label htmlFor="noWebpage" className="form-check-label">
                         No, there is no such web page exists on the university website.
                       </Label>

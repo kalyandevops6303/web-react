@@ -24,7 +24,7 @@ import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
 import { getItem } from '../../../utility/localStorageControl';
-import { userTypes } from '../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import {
   getProfilePercentage,
@@ -42,6 +42,8 @@ import InvitationSentModal from '../../modals/InvitationSentModal';
 import JoinTeamModal from '../../modals/JoinTeamModal';
 import ReportUserModal from './ReportUserModal';
 import SendClubInvitationModal from '../../modals/SendClubInvitationModal';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
 
 const LeftSidebarProfile = ({
   isTalentView,
@@ -142,10 +144,12 @@ const LeftSidebarProfile = ({
       navigate(`/create-team/profile-details`, {
         state: { isEditing: true },
       });
-    } else if (data.team_type === userTypes.club) {
+    } else if (data.team_type === userTypes.club && data.club_status === clubStatus.ACCEPTED) {
       navigate(`/create-club/account-details`, {
         state: { isEditing: true },
       });
+    } else if (data.team_type === userTypes.club && data.club_status === clubStatus.IN_REVIEW) {
+      ShowToastMessage(ERROR, 'Club is not verified yet');
     } else {
       navigate(`/${data.user_type.toLowerCase()}-onboarding/account-details`, {
         state: { isEditing: true },
