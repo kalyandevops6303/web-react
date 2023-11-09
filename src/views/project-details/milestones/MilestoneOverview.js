@@ -10,7 +10,7 @@ import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import TeamPayments from './TeamPayments';
-import { milestoneTransactionsService } from '../../../services/projectMilestoneService';
+import { milestoneTransactionsServiceForTalent } from '../../../services/projectMilestoneService';
 
 const TabWrapper = styled.div`
   /* Style the tab */
@@ -121,17 +121,13 @@ const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, mileston
 
   useEffect(() => {
     if (projectDetailsData?._id) {
-      milestoneTransactionsService(projectDetailsData._id).then((res) => {
+      milestoneTransactionsServiceForTalent(projectDetailsData._id, selectedMilestone._id).then((res) => {
         let payments = [];
         if (res.data.data.pay_outs) {
           payments = res.data.data.pay_outs.map((item) => item?.[Object.keys(item)?.[0]]?.[0]);
         }
         if (res.data.data.my_payments) {
-          res.data.data.my_payments.forEach((item) => {
-            if (item?.[Object.keys(item)?.[0]]?.[0]) {
-              payments.push(item?.[Object.keys(item)?.[0]]?.[0]);
-            }
-          });
+          payments = [...res.data.data.my_payments];
         }
         if (res.data.data.team_payments) {
           setTeamPayments(res.data.data.team_payments);
