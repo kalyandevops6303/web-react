@@ -37,6 +37,7 @@ import { messaging } from '../../../../configs/api/firebase';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(selectUserData);
+  console.log(userDetailsData);
   const isLoading = useSelector((state) => state.auth.userDataLoading);
   const savedUserDetails = useSelector(selectSavedUserData);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
@@ -139,8 +140,8 @@ const UserDropdown = () => {
   return (
     <UncontrolledDropdown
       tag="li"
-      style={isLoading && !userName ? { minWidth: '10rem' } : {}}
-      className={`dropdown-user nav-item ${isLoading && !userName ? 'invisible' : ''}`}
+      style={!userName ? { minWidth: '10rem' } : {}}
+      className={`dropdown-user nav-item ${!userName ? 'invisible' : ''}`}
     >
       <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
         <div className="user-nav d-sm-flex d-none">
@@ -156,6 +157,7 @@ const UserDropdown = () => {
           )}
           <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
         </div>
+
         {userDetailsData?.user_type === userTypes.talent && (
           <Avatar
             img={

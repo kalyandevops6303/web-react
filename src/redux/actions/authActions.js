@@ -280,20 +280,27 @@ const resetPassword = (data, onSuccess) => async (dispatch) => {
 };
 
 const getUserData = () => async (dispatch) => {
+  // const state = getState();
+  // console.log(state.auth.userData?.user_type, 'userData');
   dispatch(userDataRequest());
   try {
     const team_id = getItem('team_id');
     let res;
     if (team_id) {
       res = await getTeamById(team_id);
+      if (team_id) {
+        dispatch(getUserDataSuccess(res.data.data?.user_type));
+        dispatch(userDataSuccess(res.data.data));
+      }
     } else {
       res = await userDataService();
+      setItem('savedUserData', res.data.data);
+      dispatch(userDataSuccess(res.data.data));
+      dispatch(getUserDataSuccess(res.data.data?.user_type));
     }
     if (res.data.data?.user_type === userTypes.talent || res.data.data?.user_type === userTypes.team) {
       dispatch(getTeams({ onSuccess: () => {} }));
     }
-    dispatch(userDataSuccess(res.data.data));
-    dispatch(getUserDataSuccess(res.data.data?.user_type));
     setItem('userData', res.data.data);
   } catch (error) {
     errorHandler(error, userDataFailure);
@@ -319,7 +326,7 @@ const switchProfile =
       dispatch(clearProjectCardData());
       removeItem('selectedMyTeamsTab');
     } catch (err) {
-      errorHandler(err);
+      console.error(err);
     }
   };
 

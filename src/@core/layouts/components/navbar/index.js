@@ -14,7 +14,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CometChat } from '@cometchat-pro/chat';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
@@ -82,7 +82,9 @@ const ThemeNavbar = (props) => {
 
   useEffect(() => {
     if (token) {
-      dispatch(getUserData());
+      setTimeout(() => {
+        dispatch(getUserData());
+      }, 1000);
     }
   }, []);
 
@@ -200,4 +202,4 @@ const ThemeNavbar = (props) => {
   );
 };
 
-export default ThemeNavbar;
+export default memo(ThemeNavbar);

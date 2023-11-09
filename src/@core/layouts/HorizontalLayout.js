@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 // ** React Imports
-import { useState, useEffect } from 'react';
 
 // ** Store & Actions
 import { useSelector, useDispatch } from 'react-redux';
@@ -49,7 +48,6 @@ const HorizontalLayout = (props) => {
   const { layout, setLayout, setLastLayout } = useLayout();
 
   // ** States
-  const [isMounted, setIsMounted] = useState(false);
   const isNavbarSearchBarOpen = useSelector((state) => state.search?.isNavbarSearchBarOpen);
 
   // ** Store Vars
@@ -67,15 +65,6 @@ const HorizontalLayout = (props) => {
   const setIsHidden = (val) => dispatch(handleMenuHidden(val));
 
   // ** UseEffect Cleanup
-  const cleanup = () => {
-    setIsMounted(false);
-  };
-
-  //  ComponentDidMount
-  useEffect(() => {
-    setIsMounted(true);
-    return () => cleanup();
-  }, []);
 
   // ** Vars
   const footerClasses = {
@@ -90,9 +79,9 @@ const HorizontalLayout = (props) => {
     static: 'navbar-static',
   };
 
-  if (!isMounted) {
-    return null;
-  }
+  // if (!isMounted) {
+  //   return null;
+  // }
 
   return (
     <div
