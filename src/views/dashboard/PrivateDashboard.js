@@ -183,6 +183,7 @@ const PrivateDashboard = () => {
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
           onRemove={handleRemoveMember}
           isAdmin={isAdmin}
+          onClubInvite={onClubInvite}
         />
       )}
       {deleteModal && (
