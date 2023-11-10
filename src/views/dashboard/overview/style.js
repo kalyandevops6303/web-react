@@ -167,6 +167,9 @@ const ProjectWrapper = styled.div`
   @media (max-width: 768px) {
     min-width: 20rem;
   }
+  .payment-card {
+    width: 260px;
+  }
   .row {
     margin: 0;
     > * {

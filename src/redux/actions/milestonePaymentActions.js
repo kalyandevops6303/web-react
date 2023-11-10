@@ -6,6 +6,7 @@ import {
   applicationFeeService,
   makeMilestonePaymentService,
   spendingDetailService,
+  upcomingPaymentsService,
 } from '../../services/paymentDetailService';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -17,6 +18,9 @@ import {
   milestoneTransactionFailure,
   milestoneTransactionRequest,
   milestoneTransactionSuccess,
+  upcomingPaymentFailure,
+  upcomingPaymentRequest,
+  upcomingPaymentSuccess,
 } from '../reducers/milestonePayment';
 
 const getMilestonePaymentListing = (project_id, onSuccess) => async (dispatch) => {
@@ -69,10 +73,21 @@ const getDashboardPaymentSpending = (onSuccess) => async () => {
   }
 };
 
+const getDashboardUpcomingPayments = () => async (dispatch) => {
+  dispatch(upcomingPaymentRequest());
+  try {
+    const res = await upcomingPaymentsService();
+    dispatch(upcomingPaymentSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, upcomingPaymentFailure);
+  }
+};
+
 export {
   getMilestonePaymentListing,
   makeMilestonePayment,
   getApplicationFee,
   getMilestoneTransactions,
   getDashboardPaymentSpending,
+  getDashboardUpcomingPayments,
 };

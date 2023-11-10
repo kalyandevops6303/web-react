@@ -244,8 +244,8 @@ const API = {
     makeMilestonePayment: `${apiPaymentEndPoint}/api/v1/checkout-session`,
     applicationFee: `${apiPaymentEndPoint}/api/v1/settings/application-fee`,
     transferFunds: `${apiPaymentEndPoint}/api/v1/transfer-funds`,
-    spendingDetails: `${apiOnboardingEndpoint}/api/v1/users/payments/`,
-    upcomingPayments: `${apiOnboardingEndpoint}/api/v1/users/upcoming-payments/`,
+    spendingDetails: `${apiOnboardingEndpoint}/api/v1/users/payments`,
+    upcomingPayments: `${apiOnboardingEndpoint}/api/v1/users/upcoming-payments`,
   },
   referralAndReward: {
     createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
