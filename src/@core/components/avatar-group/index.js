@@ -25,7 +25,7 @@ const AvatarGroup = (props) => {
   const renderData = () =>
     data.map((item, i) => {
       const ItemTag = item.tag || 'div';
-      const tooltipId = item?.tooltipId ?? item.title?.split(' ').join( '-');
+      const tooltipId = item?.tooltipId ?? item.title?.split(' ').join('-');
       return (
         <Fragment key={i}>
           {item.title ? (
