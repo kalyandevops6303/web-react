@@ -121,6 +121,7 @@ const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, mileston
 
   useEffect(() => {
     if (projectDetailsData?._id) {
+      if (userDataLocal?.user_type === 'CLIENT') return;
       milestoneTransactionsServiceForTalent(projectDetailsData._id, selectedMilestone._id).then((res) => {
         let payments = [];
         if (res.data.data.pay_outs) {
