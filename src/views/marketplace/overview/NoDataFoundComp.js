@@ -27,7 +27,8 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
+      profilePercentageData?.values_missing?.includes('availability') ||
+      profilePercentageData?.values_missing?.includes('payment_account')
     ) {
       setCompleteProfileModal(true);
     } else {
