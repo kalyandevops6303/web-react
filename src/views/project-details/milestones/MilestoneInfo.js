@@ -25,12 +25,11 @@ function MilestoneInfo({ milestonesData, currentIndex }) {
     if (isClient) {
       if (isAllMilestonePaid) return false;
       if (milestoneCount === 1) return true;
-
       if (!isFirstTwoMilestonePaid && currentIndex === 1) {
         return true;
       }
 
-      if (milestonesData[currentIndex]?._id === firstNonPaidMilestone?._id) {
+      if (milestoneCount > 2 && milestonesData[currentIndex]?._id === firstNonPaidMilestone?._id) {
         return true;
       }
     }
