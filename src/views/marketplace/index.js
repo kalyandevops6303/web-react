@@ -48,7 +48,9 @@ const MarketPlace = () => {
     useMatch('/marketplace/my_bids');
 
   const [primaryFilter, setPrimaryFilter] = useState(
-    getItem('selectedMarketplaceTab') ?? routesMatch?.pathname?.split('/')?.[2],
+    getItem('selectedMarketplaceTab') !== routesMatch?.pathname?.split('/')?.[2]
+      ? routesMatch?.pathname?.split('/')?.[2]
+      : getItem('selectedMarketplaceTab'),
   );
 
   useEffect(() => {
