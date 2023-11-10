@@ -50,10 +50,6 @@ const bidStatusesOptions = [
 const statusesOptions = [
   { label: 'Open', value: 'OPEN' },
   { label: 'In-review', value: 'IN_REVIEW' },
-  { label: 'Terminated', value: 'TERMINATED' },
-  { label: 'Closed', value: 'CLOSED' },
-  { label: 'On Going', value: 'ON_GOING' },
-  { label: 'Active', value: 'ACTIVE' },
 ];
 const statusForAllListing = [
   { label: 'Open', value: 'OPEN' },
