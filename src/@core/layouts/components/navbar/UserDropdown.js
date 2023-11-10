@@ -1,50 +1,34 @@
 // ** React Imports
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import ShowToastMessage from '../../../../@core/components/toast';
 
 // ** Custom Components
 import Avatar from '@components/avatar';
 
 // ** Third Party Components
-import { User, Power, Check, CheckCircle } from 'react-feather';
+import { Check } from 'react-feather';
 
 // ** Reactstrap Imports
-import {
-  UncontrolledDropdown,
-  DropdownMenu,
-  DropdownToggle,
-  DropdownItem,
-  UncontrolledTooltip,
-  Accordion,
-  AccordionItem,
-  AccordionHeader,
-  AccordionBody,
-} from 'reactstrap';
+import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip } from 'reactstrap';
 
 // ** Default Avatar Image
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useDispatch, useSelector } from 'react-redux';
-import { userData } from '../../../../redux/selectors/dashboardSelectors';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { logoutAction, switchProfile } from '../../../../redux/actions/authActions';
 import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
-import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
+import { userTypes } from '../../../../utility/constants/Constant';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
-import {
-  selectSavedUserData,
-  selectIsTeamLoggedIn,
-  selectUserData,
-  selectAuthLoading,
-} from '../../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectIsTeamLoggedIn, selectUserData } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
-import { useCallback, useState } from 'react';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
-import { ERROR } from '../../../../utility/constants/ToastTypes';
+import EditProfileAccordion from './EditProfileDropdown';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(selectUserData);
@@ -88,9 +72,6 @@ const UserDropdown = () => {
     await messaging.deleteToken();
     await CometChat.logout();
   };
-
-  const [open, setOpen] = useState('');
-  const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
 
   const LineWrapper = styled.div`
     position: relative;
@@ -174,74 +155,6 @@ const UserDropdown = () => {
       : savedUserDetails?.client_info?.first_name + ' ' + savedUserDetails?.client_info?.last_name
     : '';
 
-  const handleEditProfileForTeam = () => {
-    navigate('/create-team/profile-details', {
-      state: { isEditing: true },
-    });
-  };
-
-  const handleEditProfileForTalent = (tab) => {
-    if (tab === 'account') {
-      navigate('/talent-onboarding/account-details', {
-        state: { isEditing: true },
-      });
-    } else if (tab === 'personal') {
-      navigate('/talent-onboarding/personal-details', {
-        state: { isEditing: true },
-      });
-    } else if (tab === 'education') {
-      navigate('/talent-onboarding/educational-details', {
-        state: { isEditing: true },
-      });
-    } else if (tab === 'availability') {
-      navigate('/talent-onboarding/availability-details', {
-        state: { isEditing: true },
-      });
-    } else if (tab === 'social') {
-      navigate('/talent-onboarding/social-details', {
-        state: { isEditing: true },
-      });
-    } else {
-      navigate('/talent-onboarding/payment-details', {
-        state: { isEditing: true },
-      });
-    }
-  };
-  const handleEditProfileForClient = (tab) => {
-    if (tab === 'account') {
-      navigate('/client-onboarding/account-details', {
-        state: { isEditing: true },
-      });
-    } else if (tab === 'personal') {
-      navigate('/client-onboarding/personal-details', {
-        state: { isEditing: true },
-      });
-    } else if (tab === 'education') {
-      navigate('/client-onboarding/educational-details', {
-        state: { isEditing: true },
-      });
-    } else if (tab === 'availability') {
-      navigate('/client-onboarding/availability-details', {
-        state: { isEditing: true },
-      });
-    } else {
-      navigate('/client-onboarding/social-details', {
-        state: { isEditing: true },
-      });
-    }
-  };
-
-  const handleEditProfileForClub = (tab) => {
-    if (userDetailsData.club_status === clubStatus.ACCEPTED) {
-      if (tab === 'account') {
-        navigate('/create-club/account-details', { state: { isEditing: true } });
-      } else {
-        navigate('/create-club/profile-details', { state: { isEditing: true } });
-      }
-    } else {
-      ShowToastMessage(ERROR, 'Club is not verified yet');
-    }
-  };
   return (
     <UncontrolledDropdown
       tag="li"
@@ -304,103 +217,7 @@ const UserDropdown = () => {
           <DropdownItem onClick={handleEdit} className="w-100 edit">
             <span className="align-middle ">Public Profile</span>
           </DropdownItem>
-          <div className="edit-accordion">
-            <Accordion open={open} toggle={toggle}>
-              <AccordionItem>
-                <AccordionHeader className={open === '1' ? 'isActive' : ''} targetId="1">
-                  Edit Profile
-                </AccordionHeader>
-
-                <div style={{ maxHeight: '9rem', overflowY: 'auto' }}>
-                  <AccordionBody accordionId="1">
-                    {userDetailsData?.user_type === userTypes.talent && (
-                      <>
-                        <DropdownItem
-                          onClick={() => handleEditProfileForTalent('account')}
-                          className="w-100 edit-link "
-                        >
-                          <span className="align-middle p-1">Account</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          onClick={() => handleEditProfileForTalent('personal')}
-                          className="w-100 edit-link "
-                        >
-                          <span className="align-middle p-1">Personal</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          onClick={() => handleEditProfileForTalent('education')}
-                          className="w-100 edit-link "
-                        >
-                          <span className="align-middle p-1">Education</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          onClick={() => handleEditProfileForTalent('availability')}
-                          className="w-100 edit-link "
-                        >
-                          <span className="align-middle p-1">Availability</span>
-                        </DropdownItem>
-                        <DropdownItem onClick={() => handleEditProfileForTalent('social')} className="w-100 edit-link ">
-                          <span className="align-middle p-1">Social</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          onClick={() => handleEditProfileForTalent('payment')}
-                          className="w-100 edit-link "
-                        >
-                          <span className="align-middle p-1">Payment</span>
-                        </DropdownItem>
-                      </>
-                    )}
-                    {userDetailsData?.user_type === userTypes.client && (
-                      <>
-                        <DropdownItem
-                          onClick={() => handleEditProfileForClient('account')}
-                          className="w-100 edit-link "
-                        >
-                          <span className="align-middle p-1">Account</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          onClick={() => handleEditProfileForClient('personal')}
-                          className="w-100 edit-link "
-                        >
-                          <span className="align-middle p-1">Personal</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          onClick={() => handleEditProfileForClient('education')}
-                          className="w-100 edit-link "
-                        >
-                          <span className="align-middle p-1">Education</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          onClick={() => handleEditProfileForClient('availability')}
-                          className="w-100 edit-link "
-                        >
-                          <span className="align-middle p-1">Availability</span>
-                        </DropdownItem>
-                        <DropdownItem onClick={() => handleEditProfileForClient('social')} className="w-100 edit-link ">
-                          <span className="align-middle p-1">Social</span>
-                        </DropdownItem>
-                      </>
-                    )}
-                    {userDetailsData?.user_type === userTypes.team && userDetailsData?.team_type === 'CLUB' && (
-                      <>
-                        <DropdownItem onClick={() => handleEditProfileForClub('account')} className="w-100 edit-link">
-                          <span className="align-middle p-1">Account</span>
-                        </DropdownItem>
-                        <DropdownItem onClick={() => handleEditProfileForClub('profile')} className="w-100 edit-link">
-                          <span className="align-middle p-1">Profile</span>
-                        </DropdownItem>
-                      </>
-                    )}
-                    {userDetailsData?.user_type === userTypes.team && userDetailsData?.team_type === 'TEAM' && (
-                      <DropdownItem onClick={handleEditProfileForTeam} className="w-100 edit-link ">
-                        <span className="align-middle p-1">Profile</span>
-                      </DropdownItem>
-                    )}
-                  </AccordionBody>
-                </div>
-              </AccordionItem>
-            </Accordion>
-          </div>
+          <EditProfileAccordion />
 
           <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
             {userDetailsData && (
