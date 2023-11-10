@@ -61,6 +61,12 @@ const ProjectDetails = () => {
         const paymentIndex = 3; // Index of the 'Payment' step
         updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
       }
+      if (projectDetailsData.status === 'ACTIVE') {
+        const milestoneIndex = 2; // Index of the 'Milestone' step
+        updatedSteps[milestoneIndex] = { ...updatedSteps[milestoneIndex], isDisabled: false };
+        const paymentIndex = 3; // Index of the 'Payment' step
+        updatedSteps[paymentIndex] = { ...updatedSteps[paymentIndex], isDisabled: false };
+      }
       setStepsArray(updatedSteps);
     }
   }, [projectDetailsData?.status]);

@@ -1,5 +1,5 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import { Badge, Card, CardBody, CardText } from 'reactstrap';
@@ -7,17 +7,26 @@ import { Badge, Card, CardBody, CardText } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../../lib/date-time';
+import SwitchConfirmModal from '../../modals/SwitchConfirm';
 
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 
 const UpcomingPaymentsCard = ({ data, className }) => {
   const navigate = useNavigate();
+  const [openSwitchModal, setOpenSwitchModal] = useState(false);
 
-  const handleViewDetails = (projectId) => {
-    navigate(`/project-details/${projectId}/payment`);
+  const handleViewDetails = (transactionData) => {
+    if (data?.switch_team_id?.length > 0) {
+      setOpenSwitchModal(true);
+    } else {
+      navigate(`/project-details/${transactionData?._id}/payment`);
+    }
   };
 
+  const dashboardRedirection = (projectId) => {
+    navigate(`/project-details/${projectId}/payment`);
+  };
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
@@ -101,13 +110,25 @@ const UpcomingPaymentsCard = ({ data, className }) => {
             </div>
           </div>
           <div
-            onClick={() => handleViewDetails(data?._id)}
+            onClick={() => handleViewDetails(data)}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
           >
             View Details
           </div>
         </CardBody>
       </Card>
+      {openSwitchModal && (
+        <SwitchConfirmModal
+          dashboardRedirection={() => dashboardRedirection(data?._id)}
+          data={{
+            project_id: data?._id,
+            isDashboardRedirection: true,
+            custom_payload: { switch_team_id: data?.switch_team_id },
+          }}
+          modal={openSwitchModal}
+          toggleModal={() => setOpenSwitchModal(!openSwitchModal)}
+        />
+      )}
     </ProjectWrapper>
   );
 };
