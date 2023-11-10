@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Badge, Card, CardText, Table } from 'reactstrap';
+import { Badge, Card, CardText, Table, UncontrolledTooltip } from 'reactstrap';
 
 import { milestoneTransactionsServiceForClient } from '../../../services/projectMilestoneService';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
@@ -10,6 +10,7 @@ import { PAYMENT_STATUS } from '../../../utility/constants/Constant';
 
 function PaymentHistoryTable() {
   const [transactions, setTransactions] = useState([]);
+  const [isCopied, setIsCopied] = useState(false);
 
   const projectDetailsData = useSelector(projectDetails);
 
@@ -43,11 +44,29 @@ function PaymentHistoryTable() {
   };
 
   const getTotalAmount = (payment) => {
-    if (payment?.application_fee && payment?.amount) {
-      return (payment.amount + payment.application_fee).toLocaleString();
+    if (payment?.amount) {
+      if (payment?.application_fee) {
+        return payment.amount + payment.application_fee;
+      }
+      return payment.amount;
     }
     return 0;
   };
+
+  const PAYMENT_TYPES = {
+    CHECKOUT: 'CHECKOUT',
+    TRANSFER: 'TRANSFER',
+  };
+
+  const handleCopyToClipboard = (text) => {
+    // eslint-disable-next-line no-undef
+    navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
+
   return (
     <Card className="gray-card p-0">
       <div className="p-2 pb-0">
@@ -58,8 +77,9 @@ function PaymentHistoryTable() {
         <Table responsive className="milestone-table w-100">
           <thead>
             <tr>
-              <th>Transaction ID</th>
-              <th>Date</th>
+              <th>TRANSACTION ID</th>
+              <th>BY</th>
+              <th>MILESTONE</th>
               <th>Status</th>
               <th>Amount</th>
             </tr>
@@ -67,8 +87,26 @@ function PaymentHistoryTable() {
           <tbody>
             {transactions?.map((item) => (
               <tr key={item?.transaction_id}>
-                <td className="fw-bolder">{item?._id}</td>
-                <td>{formatDate(item?.created_at)}</td>
+                <td>
+                  <div className="d-flex flex-column">
+                    {item?.transaction_id?.length > 8 && (
+                      <UncontrolledTooltip placement="top" target={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}>
+                        {isCopied ? 'Copied!' : item?.transaction_id}
+                      </UncontrolledTooltip>
+                    )}
+                    <span
+                      className="fw-bold"
+                      style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '80px', whiteSpace: 'nowrap' }}
+                      id={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}
+                      onClick={() => handleCopyToClipboard(item?.transaction_id)}
+                    >
+                      {item?.transaction_id}
+                    </span>
+                    <span>{formatDate(item?.created_at)}</span>
+                  </div>
+                </td>
+                <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Client' : 'Stripe'}</td>
+                <td>{item?.milestone?.name}</td>
                 <td>
                   <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
                 </td>
