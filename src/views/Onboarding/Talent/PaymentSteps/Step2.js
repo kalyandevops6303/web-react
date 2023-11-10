@@ -305,7 +305,7 @@ const Step2 = ({ setStep }) => {
                     type="checkbox"
                     name="checkbox1"
                     checked={confirmSign.checkbox1 || isPaymentOnboardingDone}
-                    disabled={isPaymentOnboardingDone}
+                    disabled={isPaymentOnboardingDone || isDocumentConfirmed}
                     onChange={handleSignCheck}
                   />
                   <Label className="fs-6">
@@ -317,7 +317,7 @@ const Step2 = ({ setStep }) => {
                     type="checkbox"
                     name="checkbox2"
                     checked={confirmSign.checkbox2 || isPaymentOnboardingDone}
-                    disabled={isPaymentOnboardingDone}
+                    disabled={isPaymentOnboardingDone || isDocumentConfirmed}
                     onChange={handleSignCheck}
                   />
                   <Label className="fs-6">I consent to receive tax documents digitaly.</Label>
@@ -327,7 +327,9 @@ const Step2 = ({ setStep }) => {
                   onClick={() => setIsDocumentConfirmed(true)}
                   className="mt-1 mb-1"
                   style={{ width: '120px' }}
-                  disabled={isDocumentConfirmed || isPaymentOnboardingDone}
+                  disabled={
+                    !confirmSign.checkbox1 || !confirmSign.checkbox2 || isDocumentConfirmed || isPaymentOnboardingDone
+                  }
                 >
                   {isDocumentConfirmed || isPaymentOnboardingDone ? 'Confirmed' : 'I Confirm'}
                 </Button>
