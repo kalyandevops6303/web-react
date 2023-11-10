@@ -269,33 +269,35 @@ const UserDropdown = () => {
                 {savedUserDetails?._id === userDetailsData?._id && <Check className="m-auto ms-3 me-0" size={14} />}
               </DropdownItem>
             )}
-            {teams?.map((team) => (
-              <DropdownItem
-                className={`d-flex justify-content-between ${userDetailsData?._id === team?._id ? 'isActive' : ''}`} // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
-                onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
-              >
-                <section className="user-info-avatar d-flex align-items-center">
-                  <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
+            {teams
+              ?.filter((team) => team?.team_type === 'TEAM')
+              ?.map((team) => (
+                <DropdownItem
+                  className={`d-flex justify-content-between ${userDetailsData?._id === team?._id ? 'isActive' : ''}`} // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
+                  onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
+                >
+                  <section className="user-info-avatar d-flex align-items-center">
+                    <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
 
-                  <div className="user-info ms-1 user-nav">
-                    <span className="mb-50 user-name fw-bold text-start d-block" id={`username-${team?._id}`}>
-                      {team?.name}
-                    </span>
-                    {team?.name?.length > 15 && (
-                      <UncontrolledTooltip placement="right" target={`username-${team?._id}`}>
-                        <div className="d-flex flex-column align-items-start">
-                          <p className="text-start m-0">{team?.name}</p>
-                        </div>
-                      </UncontrolledTooltip>
-                    )}
-                    <span className="w-100 font-small-3 d-block user-status text-start">
-                      {capitalize(team?.team_type) || 'Role'}
-                    </span>
-                  </div>
-                </section>
-                {userDetailsData?._id === team?._id && <Check className="m-auto ms-3 me-0" size={14} />}
-              </DropdownItem>
-            ))}
+                    <div className="user-info ms-1 user-nav">
+                      <span className="mb-50 user-name fw-bold text-start d-block" id={`username-${team?._id}`}>
+                        {team?.name}
+                      </span>
+                      {team?.name?.length > 15 && (
+                        <UncontrolledTooltip placement="right" target={`username-${team?._id}`}>
+                          <div className="d-flex flex-column align-items-start">
+                            <p className="text-start m-0">{team?.name}</p>
+                          </div>
+                        </UncontrolledTooltip>
+                      )}
+                      <span className="w-100 font-small-3 d-block user-status text-start">
+                        {capitalize(team?.team_type) || 'Role'}
+                      </span>
+                    </div>
+                  </section>
+                  {userDetailsData?._id === team?._id && <Check className="m-auto ms-3 me-0" size={14} />}
+                </DropdownItem>
+              ))}
           </div>
 
           <DropdownItem onClick={handleLogout} className="w-100 logout">
