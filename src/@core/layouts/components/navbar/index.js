@@ -86,12 +86,14 @@ const ThemeNavbar = (props) => {
     }
   }, []);
 
-  if (isCometChatLoggedIn) {
-    CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
-      const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
-      dispatch(setUnreadMsgCount(totalCount));
-    });
-  }
+  useEffect(() => {
+    if (isCometChatLoggedIn) {
+      CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
+        const totalCount = Object.values(unreadMsgs).reduce((acc, count) => acc + count, 0);
+        dispatch(setUnreadMsgCount(totalCount));
+      });
+    }
+  }, [isCometChatLoggedIn]);
 
   useEffect(() => {
     if (location?.pathname?.split('/')?.[1] === 'dashboard') dispatch(setActiveNavTab('dashboard'));
