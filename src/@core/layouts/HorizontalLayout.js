@@ -7,8 +7,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { handleMenuHidden, handleContentWidth } from '@store/layout';
 
 // ** Third Party Components
+import { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { ArrowUp } from 'react-feather';
+import { useLocation } from 'react-router-dom';
 
 // ** Reactstrap Imports
 import { Navbar, Button } from 'reactstrap';
@@ -46,12 +48,15 @@ const HorizontalLayout = (props) => {
   const { footerType, setFooterType } = useFooterType();
   const { navbarColor, setNavbarColor } = useNavbarColor();
   const { layout, setLayout, setLastLayout } = useLayout();
+  const [isNavBarLoading, setNavBarLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
   // ** States
   const isNavbarSearchBarOpen = useSelector((state) => state.search?.isNavbarSearchBarOpen);
 
   // ** Store Vars
   const dispatch = useDispatch();
+  const location = useLocation();
   const layoutStore = useSelector((state) => state.layout);
 
   // ** Vars
@@ -78,10 +83,19 @@ const HorizontalLayout = (props) => {
     sticky: 'navbar-sticky',
     static: 'navbar-static',
   };
+  const cleanup = () => {
+    setIsMounted(false);
+  };
+  //  ComponentDidMount
+  useEffect(() => {
+    setIsMounted(true);
+    setNavBarLoading(true);
+    return () => cleanup();
+  }, [location]);
 
-  // if (!isMounted) {
-  //   return null;
-  // }
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div
@@ -105,13 +119,12 @@ const HorizontalLayout = (props) => {
         )}
       >
         <div className="navbar-container d-flex content ">
-          {/* {navbar ? navbar({ skin, setSkin }) : <NavbarComponent skin={skin} setSkin={setSkin} />} */}
-
-          <NavbarComponent skin={skin} setSkin={setSkin} />
+          <NavbarComponent skin={skin} setSkin={setSkin} setNavBarLoading={setNavBarLoading} />
         </div>
       </Navbar>
 
-      {children}
+      {isNavBarLoading ? '...Loading' : children}
+
       {themeConfig.layout.customizer === true ? (
         <Customizer
           skin={skin}

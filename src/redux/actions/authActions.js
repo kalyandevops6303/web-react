@@ -63,11 +63,11 @@ import {
 } from '../reducers/auth';
 import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
-import { SUCCESS } from '../../utility/constants/ToastTypes';
+import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
-import { getTeamById } from '../../services/teamServices';
-import { clearTeams } from '../reducers/team';
+import { getTeamById, getTeamService } from '../../services/teamServices';
+import { clearTeams, getTeamSuccess } from '../reducers/team';
 import { clearNotificationsData } from '../reducers/notifications';
 import { getTeams } from './teamsActions';
 import { clearTeamCardData } from '../reducers/myTeams';
@@ -278,35 +278,6 @@ const resetPassword = (data, onSuccess) => async (dispatch) => {
     errorHandler(error, resetPasswordFailure);
   }
 };
-
-const getUserData = () => async (dispatch) => {
-  // const state = getState();
-  // console.log(state.auth.userData?.user_type, 'userData');
-  dispatch(userDataRequest());
-  try {
-    const team_id = getItem('team_id');
-    let res;
-    if (team_id) {
-      res = await getTeamById(team_id);
-      if (team_id) {
-        dispatch(getUserDataSuccess(res.data.data?.user_type));
-        dispatch(userDataSuccess(res.data.data));
-      }
-    } else {
-      res = await userDataService();
-      setItem('savedUserData', res.data.data);
-      dispatch(userDataSuccess(res.data.data));
-      dispatch(getUserDataSuccess(res.data.data?.user_type));
-    }
-    if (res.data.data?.user_type === userTypes.talent || res.data.data?.user_type === userTypes.team) {
-      dispatch(getTeams({ onSuccess: () => {} }));
-    }
-    setItem('userData', res.data.data);
-  } catch (error) {
-    errorHandler(error, userDataFailure);
-  }
-};
-
 const switchProfile =
   ({ data, onSuccess, selected }) =>
   async (dispatch) => {
@@ -327,6 +298,50 @@ const switchProfile =
       removeItem('selectedMyTeamsTab');
     } catch (err) {
       console.error(err);
+    }
+  };
+
+const getUserData =
+  ({ onSuccess, onError }) =>
+  async (dispatch) => {
+    dispatch(userDataRequest());
+    try {
+      const team_id = getItem('team_id');
+
+      let res;
+      if (team_id) {
+        res = await getTeamById(team_id);
+        const teamRes = await getTeamService();
+        dispatch(getTeamSuccess(teamRes.data.data.data));
+        const idExists = teamRes.data.data.data.some((obj) => obj._id === team_id);
+        if (!idExists) {
+          const userData = await getItem('savedUserData');
+          dispatch(switchProfile({ data: userData, onSuccess: () => {}, selected: false }));
+          ShowToastMessage(ERROR, "You're no longer a team member");
+        } else {
+          dispatch(userDataSuccess(res.data.data));
+          dispatch(getUserDataSuccess(res.data.data?.user_type));
+          setItem('userData', res.data.data);
+        }
+      } else {
+        res = await userDataService();
+        setItem('savedUserData', res.data.data);
+        dispatch(userDataSuccess(res.data.data));
+        dispatch(getUserDataSuccess(res.data.data?.user_type));
+        setItem('userData', res.data.data);
+      }
+      if (res.data.data?.user_type === userTypes.talent) {
+        dispatch(getTeams({ onSuccess: () => {} }));
+      }
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+      if (onError) {
+        onError();
+      }
+      errorHandler(error, userDataFailure);
     }
   };
 

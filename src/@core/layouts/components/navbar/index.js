@@ -32,7 +32,7 @@ const ThemeNavbar = (props) => {
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
 
   // ** Props
-  const { skin, setSkin, setMenuVisibility, className } = props;
+  const { skin, setSkin, setMenuVisibility, className, setNavBarLoading } = props;
   // ** Function to toggle Theme (Light/Dark)
 
   const HeadWrapper = styled.div`
@@ -82,9 +82,20 @@ const ThemeNavbar = (props) => {
 
   useEffect(() => {
     if (token) {
-      dispatch(getUserData());
+      // setNavBarLoading(true);
+      dispatch(
+        getUserData({
+          onSuccess: () => {
+            setNavBarLoading(false);
+          },
+          onError: () => {
+            setNavBarLoading(false);
+          },
+        }),
+      );
     }
-  }, []);
+    console.count('navbar');
+  }, [location.pathname]);
 
   if (isCometChatLoggedIn) {
     CometChat.getUnreadMessageCountForAllUsers().then((unreadMsgs) => {
@@ -200,4 +211,4 @@ const ThemeNavbar = (props) => {
   );
 };
 
-export default memo(ThemeNavbar);
+export default ThemeNavbar;

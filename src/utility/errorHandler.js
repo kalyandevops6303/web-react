@@ -1,9 +1,6 @@
 /* eslint-disable no-undef */
 import ShowToastMessage from '../@core/components/toast';
 // eslint-disable-next-line import/no-cycle
-import { switchProfile } from '../redux/actions/authActions';
-import { userDataSuccess } from '../redux/reducers/auth';
-import { removeTeamFromList } from '../redux/reducers/team';
 import { store } from '../redux/store';
 import { fcmUnsubscribeService } from '../services/authServices';
 import { ERROR } from './constants/ToastTypes';
@@ -43,18 +40,6 @@ const handleErrorCode = async (err, callBack) => {
     }
     window.location.href = '/auth/login';
     localStorage.clear();
-  } else if (
-    err?.response?.status === 404 &&
-    err?.response?.data?.errorData?.message === "You're no longer a team member"
-  ) {
-    const teamId = await getItem('team_id');
-    const userData = await getItem('savedUserData');
-    if (teamId) {
-      dispatch(removeTeamFromList(teamId));
-      dispatch(switchProfile({ data: userData, onSuccess: () => {}, selected: false }));
-      showErrorNotification("You're no longer a team member");
-      dispatch(userDataSuccess(userData));
-    }
   } else {
     handleError(err, callBack);
   }
