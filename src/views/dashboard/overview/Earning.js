@@ -78,7 +78,7 @@ const EarningCard = () => {
               outline
               onClick={() => handleFilter('MONTH')}
             >
-              {DateTime.now().toFormat('MMM yy')}
+              {DateTime.now().toFormat('MMM yyyy')}
             </Button>
             <Button
               tag="label"
