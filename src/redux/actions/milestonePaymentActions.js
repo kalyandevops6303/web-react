@@ -2,7 +2,11 @@ import {
   milestoneTransactionsServiceForClient,
   projectMilestonesService,
 } from '../../services/projectMilestoneService';
-import { applicationFeeService, makeMilestonePaymentService } from '../../services/paymentDetailService';
+import {
+  applicationFeeService,
+  makeMilestonePaymentService,
+  spendingDetailService,
+} from '../../services/paymentDetailService';
 import errorHandler from '../../utility/errorHandler';
 import {
   milestoneListRequest,
@@ -56,4 +60,19 @@ const getMilestoneTransactions = (projectId, milestoneId) => async (dispatch) =>
   }
 };
 
-export { getMilestonePaymentListing, makeMilestonePayment, getApplicationFee, getMilestoneTransactions };
+const getDashboardPaymentSpending = (onSuccess) => async () => {
+  try {
+    const res = await spendingDetailService();
+    onSuccess(res.data.data);
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+export {
+  getMilestonePaymentListing,
+  makeMilestonePayment,
+  getApplicationFee,
+  getMilestoneTransactions,
+  getDashboardPaymentSpending,
+};

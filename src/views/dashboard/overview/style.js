@@ -34,6 +34,9 @@ const RewardCardWrapper = styled(CardWrapper)`
 `;
 
 const EarningCardWrapper = styled(CardWrapper)`
+  .card-payment {
+    min-height: 190px;
+  }
   .earning-head {
     padding: 1.5rem 1.5rem 0.8rem 1.5rem;
   }
