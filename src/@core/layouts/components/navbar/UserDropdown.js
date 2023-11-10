@@ -90,7 +90,7 @@ const UserDropdown = () => {
   };
 
   const [open, setOpen] = useState('');
-  const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
+  const toggle = (id) => (open === id ? setOpen() : setOpen(id));
 
   const LineWrapper = styled.div`
     position: relative;
