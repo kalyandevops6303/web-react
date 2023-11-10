@@ -4,7 +4,7 @@ import propTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, CardHeader, CardText, CardTitle } from 'reactstrap';
-import { Cell, Pie, PieChart } from 'recharts';
+import { PieChart } from 'react-minimal-pie-chart';
 import { getDisputesCount } from '../../../redux/actions/disputeActions';
 import { disputesCount } from '../../../redux/selectors/disputeSelectors';
 import { DisputesChartContainer, DisputesLegend } from './style';
@@ -15,7 +15,7 @@ const Disputes = ({ handleRaiseDispute }) => {
 
   const disputesCountData = useSelector(disputesCount);
 
-  const [chartData, setChartData] = useState(null);
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     dispatch(getDisputesCount());
@@ -23,8 +23,8 @@ const Disputes = ({ handleRaiseDispute }) => {
 
   useEffect(() => {
     const data = [
-      { name: 'Resolved', value: disputesCountData?.resolved_disputes },
-      { name: 'Open', value: disputesCountData?.open_disputes },
+      { title: 'Resolved', value: disputesCountData?.resolved_disputes, color: theme.green },
+      { title: 'Open', value: disputesCountData?.open_disputes, color: theme.openDisputesChartColor },
     ];
 
     setChartData(data);
@@ -69,12 +69,9 @@ const Disputes = ({ handleRaiseDispute }) => {
                 </p>
                 <p className="font-small-3 mb-0">Total</p>
               </div>
-              <PieChart width={120} height={120}>
-                <Pie data={chartData} innerRadius={40} outerRadius={56} paddingAngle={0} dataKey="value">
-                  <Cell fill={theme.green} />
-                  <Cell fill={theme.openDisputesChartColor} />
-                </Pie>
-              </PieChart>
+              <div className="chart">
+                <PieChart lineWidth={26} data={chartData} />
+              </div>
             </DisputesChartContainer>
           </div>
         ) : (

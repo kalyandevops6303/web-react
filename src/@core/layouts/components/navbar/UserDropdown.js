@@ -275,7 +275,6 @@ const UserDropdown = () => {
               >
                 <section className="user-info-avatar d-flex align-items-center">
                   <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
-
                   <div className="user-info ms-1 user-nav">
                     <span className="mb-50 user-name fw-bold text-start d-block" id={`username-${team?._id}`}>
                       {team?.name}
@@ -296,7 +295,6 @@ const UserDropdown = () => {
               </DropdownItem>
             ))}
           </div>
-
           <DropdownItem onClick={handleLogout} className="w-100 logout">
             <span className="align-middle ">Logout</span>
           </DropdownItem>

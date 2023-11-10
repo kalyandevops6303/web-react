@@ -540,6 +540,11 @@ const DisputesChartContainer = styled.div`
     top: 32%;
     left: 37%;
   }
+
+  .chart {
+    width: 120px;
+    height: 120px;
+  }
 `;
 
 export {
