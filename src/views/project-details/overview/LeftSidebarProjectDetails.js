@@ -41,6 +41,7 @@ const LeftSidebarProjectDetails = () => {
     LISTING_EXPIRED: 'Listing Expired',
     ON_GOING: 'On Going',
     COMPLETED: 'COMPLETED',
+    ACTIVE: 'Active',
   };
 
   const isLoading = useSelector(projectDetailsLoading);
@@ -179,7 +180,7 @@ const LeftSidebarProjectDetails = () => {
                     Invite
                   </Button>
                 )}
-                {projectDetailsData?.status === 'ON_GOING' && (
+                {(projectDetailsData?.status === 'ON_GOING' || projectDetailsData?.status === 'COMPLETED') && (
                   <Button className="w-50" outline color="primary" onClick={onMessageClick}>
                     Message
                   </Button>
@@ -188,7 +189,7 @@ const LeftSidebarProjectDetails = () => {
             </div>
           )}
 
-          {projectDetailsData?.status === 'ON_GOING' &&
+          {(projectDetailsData?.status === 'ON_GOING' || projectDetailsData?.status === 'COMPLETED') &&
             projectDetailsData?.worker_details?.entity_id === userData._id && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50" color="primary" onClick={onMessageClick}>

@@ -140,7 +140,8 @@ const API = {
   },
   projectMilestones: {
     getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,
-    getProjectTransactions: `${apiCreateProjectEndpoint}/api/v1/project/transactions`,
+    getProjectTransactionsForTalent: `${apiCreateProjectEndpoint}/api/v1/project/transactions-talent`,
+    getProjectTransactionsForClient: `${apiCreateProjectEndpoint}/api/v1/project/transactions-client`,
     submitMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/submission`,
     acceptMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/acceptance`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
@@ -241,6 +242,10 @@ const API = {
     createStripeAccount: `${apiPaymentEndPoint}/api/v1/payment-account`,
     linkStripeAccount: `${apiPaymentEndPoint}/api/v1/payment-account-link`,
     makeMilestonePayment: `${apiPaymentEndPoint}/api/v1/checkout-session`,
+    applicationFee: `${apiPaymentEndPoint}/api/v1/settings/application-fee`,
+    transferFunds: `${apiPaymentEndPoint}/api/v1/transfer-funds`,
+    spendingDetails: `${apiOnboardingEndpoint}/api/v1/users/payments`,
+    upcomingPayments: `${apiOnboardingEndpoint}/api/v1/users/upcoming-payments`,
   },
   referralAndReward: {
     createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,

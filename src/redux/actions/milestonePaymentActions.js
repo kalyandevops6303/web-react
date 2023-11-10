@@ -1,5 +1,13 @@
-import { projectMilestonesService } from '../../services/projectMilestoneService';
-import { makeMilestonePaymentService } from '../../services/paymentDetailService';
+import {
+  milestoneTransactionsServiceForClient,
+  projectMilestonesService,
+} from '../../services/projectMilestoneService';
+import {
+  applicationFeeService,
+  makeMilestonePaymentService,
+  spendingDetailService,
+  upcomingPaymentsService,
+} from '../../services/paymentDetailService';
 import errorHandler from '../../utility/errorHandler';
 import {
   milestoneListRequest,
@@ -7,6 +15,12 @@ import {
   milestonePaymentFailure,
   milestonePaymentRequest,
   milestonePaymentSuccess,
+  milestoneTransactionFailure,
+  milestoneTransactionRequest,
+  milestoneTransactionSuccess,
+  upcomingPaymentFailure,
+  upcomingPaymentRequest,
+  upcomingPaymentSuccess,
 } from '../reducers/milestonePayment';
 
 const getMilestonePaymentListing = (project_id, onSuccess) => async (dispatch) => {
@@ -31,4 +45,49 @@ const makeMilestonePayment = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-export { getMilestonePaymentListing, makeMilestonePayment };
+const getApplicationFee = (onSuccess) => async () => {
+  try {
+    const res = await applicationFeeService();
+    onSuccess(res.data);
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+const getMilestoneTransactions = (projectId, milestoneId) => async (dispatch) => {
+  dispatch(milestoneTransactionRequest());
+  try {
+    const res = await milestoneTransactionsServiceForClient(projectId, milestoneId);
+    dispatch(milestoneTransactionSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, milestoneTransactionFailure);
+  }
+};
+
+const getDashboardPaymentSpending = (onSuccess) => async () => {
+  try {
+    const res = await spendingDetailService();
+    onSuccess(res.data.data);
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+const getDashboardUpcomingPayments = () => async (dispatch) => {
+  dispatch(upcomingPaymentRequest());
+  try {
+    const res = await upcomingPaymentsService();
+    dispatch(upcomingPaymentSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, upcomingPaymentFailure);
+  }
+};
+
+export {
+  getMilestonePaymentListing,
+  makeMilestonePayment,
+  getApplicationFee,
+  getMilestoneTransactions,
+  getDashboardPaymentSpending,
+  getDashboardUpcomingPayments,
+};

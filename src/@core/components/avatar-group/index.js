@@ -25,10 +25,11 @@ const AvatarGroup = (props) => {
   const renderData = () =>
     data.map((item, i) => {
       const ItemTag = item.tag || 'div';
+      const tooltipId = item?.tooltipId ?? item.title?.split(' ').join( '-');
       return (
         <Fragment key={i}>
           {item.title ? (
-            <UncontrolledTooltip placement={item.placement} target={item.title.split(' ').join('-')}>
+            <UncontrolledTooltip placement={item.placement} target={tooltipId}>
               {item.title}
             </UncontrolledTooltip>
           ) : null}
@@ -39,7 +40,7 @@ const AvatarGroup = (props) => {
               className={classnames('pull-up', {
                 [item.className]: item.className,
               })}
-              {...(item.title ? { id: item.title.split(' ').join('-') } : {})}
+              {...(item.title ? { id: tooltipId } : {})}
               {...item}
               title={undefined}
               meta={undefined}

@@ -197,7 +197,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   <div className="d-flex flex-grow-1 mt-25">
                     <RatingBadge number={Math.round(profileToShowInRightSideOfCard?.rating ?? 0)} />
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                      {profileToShowInRightSideOfCard?.project_count} Projects
+                      {profileToShowInRightSideOfCard?.project_count ?? 0} Projects
                     </CardText>
                   </div>
                 </div>
@@ -224,77 +224,135 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
           )}
         </section>
       ) : (
-        <div className="d-flex">
-          <section className="w-50 me-2 ">
-            <div className="d-flex w-100">
-              <img
-                className="market-place-card-photo cursor-pointer me-75"
-                src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
-                alt="avatar"
-                width={40}
-                height={50}
-                style={{ objectFit: 'cover' }}
-                onClick={(e) => handleClientNavigate(e)}
-              />
-              <div>
-                <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
-                  <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
-                    {data?.client?.first_name} {data?.client?.last_name}
-                  </CardTitle>
-                  <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                    {data?.client?.title}
-                  </CardText>
-                </div>
-                <div className="d-flex flex-grow-1 mt-25">
-                  <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
-                  <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                    {data?.client?.project_count} Projects
-                  </CardText>
+        <>
+          <div className="d-flex">
+            <section
+              className={
+                userData?.user_type === userTypes.client
+                  ? 'w-50 me-2 d-none'
+                  : 'w-50 me-2 d-flex flex-column justify-content-between'
+              }
+            >
+              <div className="d-flex w-100">
+                <img
+                  className="market-place-card-photo cursor-pointer me-75"
+                  src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
+                  alt="avatar"
+                  width={40}
+                  height={50}
+                  style={{ objectFit: 'cover' }}
+                  onClick={(e) => handleClientNavigate(e)}
+                />
+                <div>
+                  <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
+                    <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
+                      {data?.client?.first_name} {data?.client?.last_name}
+                    </CardTitle>
+                    <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
+                      {data?.client?.title}
+                    </CardText>
+                  </div>
+                  <div className="d-flex flex-grow-1 mt-25">
+                    <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
+                    <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                      {data?.client?.project_count} Projects
+                    </CardText>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="d-flex" style={{ marginTop: '35px' }}>
-              <BadgeGroup
-                title="Tools"
-                data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
-                color="light-blue"
-                id={`tooltip-tools-${data?._id}`}
-              />
-            </div>
-          </section>
-          <div className="w-50">
-            <div className="flex-grow-1" onClick={(e) => handleTeamTalentNavigate(e)}>
-              <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
-                {data?.worker_details?.name ?? `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
-              </CardTitle>
-            </div>
-            {avatarGroup?.length > 3 ? (
-              <AvatarGroup
-                totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
-                size="sm"
-                className="ms-25 mb-50"
-                data={avatarGroup?.slice(0, 3)}
-              />
-            ) : (
-              <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
-            )}
+            </section>
+            <div
+              className={
+                userData?.user_type === userTypes.talent || userData?.user_type === userTypes.team
+                  ? 'w-50 d-flex flex-column justify-content-between'
+                  : 'w-50'
+              }
+            >
+              <div>
+                {data?.worker_details?.user_type === userTypes.talent ? (
+                  <div className={userData?.user_type === userTypes.talent ? 'd-none' : ''}>
+                    <div className="d-flex w-100">
+                      <img
+                        className="market-place-card-photo cursor-pointer me-75"
+                        src={data?.worker_details?.image_uri?.length ? data?.worker_details?.image_uri : defaultAvatar}
+                        alt="avatar"
+                        width={40}
+                        height={50}
+                        style={{ objectFit: 'cover' }}
+                        onClick={(e) => handleClientNavigate(e)}
+                      />
+                      <div>
+                        <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
+                          <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
+                            {data?.worker_details?.name ??
+                              `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}{' '}
+                          </CardTitle>
+                          <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
+                            {data?.worker_details?.title || 'Role'}
+                          </CardText>
+                        </div>
+                        <div className="d-flex flex-grow-1 mt-25">
+                          <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
+                          <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                            {data?.worker_details?.project_count} Projects
+                          </CardText>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={userData?.user_type === userTypes.team ? 'd-none' : ''}>
+                    <div className="flex-grow-1" onClick={(e) => handleTeamTalentNavigate(e)}>
+                      <CardTitle className="marketplace-card-title mb-50 ms-25 fw-bolder">
+                        {data?.worker_details?.name ??
+                          `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}
+                      </CardTitle>
+                    </div>
+                    {avatarGroup?.length > 3 ? (
+                      <AvatarGroup
+                        totalCount={data?.worker_details?.team_members_count || data?.worker_details?.workers_count}
+                        size="sm"
+                        className="ms-25 mb-50"
+                        data={avatarGroup?.slice(0, 3)}
+                      />
+                    ) : (
+                      <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
+                    )}
 
-            <div className="d-flex flex-grow-1 mt-25">
-              <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
-              <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {data?.client?.project_count} Projects
-              </CardText>
-            </div>
-            <div className="mt-2">
-              <BadgeGroup
-                title="Skills"
-                data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
-                color="light-blue"
-                id={`tooltip-skills-${data?._id}`}
-              />
+                    <div className="d-flex flex-grow-1 mt-25">
+                      <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
+                      <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                        {data?.client?.project_count} Projects
+                      </CardText>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+          <div className="d-flex">
+            <section className="w-50 me-2">
+              <div className="d-flex mt-2" style={{ marginTop: '35px' }}>
+                <BadgeGroup
+                  title="Skills"
+                  data={[...clientSkills]?.sort((a, b) => b.name.length - a.name.length)}
+                  color="light-blue"
+                  id={`tooltip-skills-${data?._id}`}
+                />
+              </div>
+            </section>
+            <div className="w-50">
+              <div className="mt-2">
+                <BadgeGroup
+                  title="Tools"
+                  data={[...clientTools]?.sort((a, b) => b.name.length - a.name.length)}
+                  color="light-blue"
+                  id={`tooltip-tools-${data?._id}`}
+                />
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

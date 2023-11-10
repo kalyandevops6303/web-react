@@ -1,50 +1,48 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { Badge, Card, CardBody, CardText, Spinner } from 'reactstrap';
+import { Badge, Card, CardBody, CardText } from 'reactstrap';
+
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import DateTime from '../../../lib/date-time';
+import SwitchConfirmModal from '../../modals/SwitchConfirm';
+
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
-import DateTime from '../../../lib/date-time';
-import ProjectModalViews from './ProjectModalViews';
 
-const ActiveProjectCard = ({ data, className }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [switchModal, setSwitchModal] = useState(false);
-  const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
-  const projectModalId = useSelector((state) => state.dashboard.projectModalId);
+const UpcomingPaymentsCard = ({ data, className }) => {
+  const navigate = useNavigate();
+  const [openSwitchModal, setOpenSwitchModal] = useState(false);
 
-  const statusEnum = {
-    OPEN: 'Open Listing',
-    IN_REVIEW: 'In Review',
-    ON_GOING: 'On Going',
-    ACTIVE: 'Active',
-    TERMINATED: 'Terminated',
-    CLOSED: 'Closed',
-    LISTING_EXPIRED: 'Listing Expired',
+  const handleViewDetails = (transactionData) => {
+    if (data?.switch_team_id?.length > 0) {
+      setOpenSwitchModal(true);
+    } else {
+      navigate(`/project-details/${transactionData?._id}/payment`);
+    }
   };
 
-  const viewProject = () => {
-    // navigate(`/project-details/${data._id}/milestone`);
-    setShowModal(true);
+  const dashboardRedirection = (projectId) => {
+    navigate(`/project-details/${projectId}/payment`);
   };
-
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
         <CardBody>
-          <CustomBadge>
-            <Badge className={`${data?.status}`} color="badge">
-              {statusEnum[data?.status]}
-            </Badge>
-          </CustomBadge>
+          {data?.payment_status?.length > 0 ? (
+            <CustomBadge>
+              <Badge className="status" color="badge">
+                status
+              </Badge>
+            </CustomBadge>
+          ) : null}
           <p className="active-project-name mt-1 truncate-2" style={{ height: '40px' }}>
             {data?.name}
           </p>
-          <div className="team-badge px-1 mb-75">
-            <p className="mb-0">Team</p>
+          <div className={`${'name' in data?.bid_by ? 'team-badge' : 'client-badge'} px-1 mb-75`}>
+            <p className="mb-0">{'name' in data?.bid_by ? 'Team' : 'Talent'}</p>
           </div>
           <p className="active-project-team-name mb-50">
             {'name' in data?.bid_by ? data?.bid_by?.name : `${data?.bid_by?.first_name} ${data?.bid_by?.last_name}`}
@@ -90,57 +88,59 @@ const ActiveProjectCard = ({ data, className }) => {
               />
             )}
           </div>
-          <p className="active-project-simple-heading">Project</p>
-          <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
-              <div className="design-planning">
-                <CardText className="mb-25">Start Date</CardText>
-                <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
+          <p className="active-project-simple-heading">Milestone Payment </p>
+          <div className="d-flex gap-2">
+            <div className="bottom-detail d-flex mt-1">
+              <div className="design-planning-wrapper">
+                <div className="design-planning">
+                  <CardText className="mb-25">Due Date</CardText>
+                  <h6 className="mb-0">{`${
+                    DateTime.fromMillis(data?.project_start_date).toFormat('MMM dd, yy') || '-'
+                  }`}</h6>
+                </div>
               </div>
             </div>
-          </div>
-          <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
-          <div className="bottom-detail d-flex mt-1">
-            <div className="design-planning-wrapper">
-              <div className="design-planning">
-                <CardText className="mb-25">Due Date</CardText>
-                <h6 className="mb-0">{`${
-                  DateTime.fromMillis(data?.current_milestone?.due_date).toFormat('MMM dd, yy') || '-'
-                }`}</h6>
+            <div className="bottom-detail d-flex mt-1">
+              <div className="design-planning-wrapper">
+                <div className="design-planning">
+                  <CardText className="mb-25">Payment Due</CardText>
+                  <h6 className="mb-0">${data?.amount}</h6>
+                </div>
               </div>
-              <p className="active-project-milestone-name">{data?.current_milestone?.name}</p>
             </div>
           </div>
           <div
-            onClick={viewProject}
+            onClick={() => handleViewDetails(data)}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-50"
           >
-            {isModalLoading && projectModalId === data?._id ? <Spinner size="sm" /> : 'View Project'}
+            View Details
           </div>
         </CardBody>
       </Card>
-      {(showModal || switchModal) && (
-        <ProjectModalViews
-          isActiveProject
-          project_id={data?._id}
-          showModal={showModal}
-          toggleModal={() => setShowModal(!showModal)}
-          switchModal={switchModal}
-          setSwitchModal={setSwitchModal}
+      {openSwitchModal && (
+        <SwitchConfirmModal
+          dashboardRedirection={() => dashboardRedirection(data?._id)}
+          data={{
+            project_id: data?._id,
+            isDashboardRedirection: true,
+            custom_payload: { switch_team_id: data?.switch_team_id },
+          }}
+          modal={openSwitchModal}
+          toggleModal={() => setOpenSwitchModal(!openSwitchModal)}
         />
       )}
     </ProjectWrapper>
   );
 };
 
-export default ActiveProjectCard;
+export default UpcomingPaymentsCard;
 
-ActiveProjectCard.propTypes = {
+UpcomingPaymentsCard.propTypes = {
   data: Proptypes.object,
   className: Proptypes.string,
 };
 
-ActiveProjectCard.defaultProps = {
+UpcomingPaymentsCard.defaultProps = {
   data: {},
   className: '',
 };

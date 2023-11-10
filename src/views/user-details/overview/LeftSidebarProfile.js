@@ -47,6 +47,9 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
+  const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
+  const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
+
   const [modalInformationText, setModalInformationText] = useState('');
   const teamId = getItem('team_id');
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
@@ -93,7 +96,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
+      profilePercentageData?.values_missing?.includes('availability') ||
+      profilePercentageData?.values_missing?.includes('payment_account')
     ) {
       setCompleteProfileModal(true);
       setModalInformationText('accept request');
@@ -179,7 +183,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
+      profilePercentageData?.values_missing?.includes('availability') ||
+      profilePercentageData?.values_missing?.includes('payment_account')
     ) {
       setCompleteProfileModal(true);
       setModalInformationText('join team');
@@ -316,19 +321,17 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             </div>
           )}
 
-          {(isClient || isTalentView) && (
-            <div className="projects-rating projects-rating-public">
-              <Rating
-                initialRating={returnFormattedRating(data?.rating)}
-                emptySymbol={<img height={22} src={EmptyStar} alt="Empty star" />}
-                fullSymbol={<img height={22} src={FilledStar} alt="Filled star" />}
-                readonly
-              />
-              <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
-                {data?.projects_worked_on_count} Projects | 0 Reviews
-              </CardText>
-            </div>
-          )}
+          <div className="projects-rating projects-rating-public">
+            <Rating
+              initialRating={returnFormattedRating(data?.rating)}
+              emptySymbol={<img height={22} src={EmptyStar} alt="Empty star" />}
+              fullSymbol={<img height={22} src={FilledStar} alt="Filled star" />}
+              readonly
+            />
+            <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
+              {recentProjectsMetadata?.total_records || 0} Projects | {reviewMetadata?.total_records || 0} Reviews
+            </CardText>
+          </div>
 
           {showProfilePercent && (
             <div className="profile-completion mt-2">
@@ -578,7 +581,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                       </Button>
                     </div>
                   )}
-                {!isEditable && (
+                {!isEditable && param?.userType.toUpperCase() !== userTypes.team && (
                   <Button className="w-50" color="primary" onClick={onMessageClick}>
                     Message
                   </Button>

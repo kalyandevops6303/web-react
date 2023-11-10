@@ -1,7 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle, Spinner } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, Spinner } from 'reactstrap';
 import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { DeleteModalWrapper } from './style';
 
@@ -19,9 +19,9 @@ const RejectBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) 
             <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
             <div>
               <CardTitle className="modal-title-custom">Tough Call</CardTitle>
-              <CardSubtitle className="mb-75 fw-bold subtitle">Reject Bid</CardSubtitle>
-
-              <CardText className="desc fw-light w-76">You are rejecting this project bid made by the below </CardText>
+              <CardText className="desc fw-light w-76">
+                You are rejecting this project bid offered by the following team or talent:
+              </CardText>
               <section className="d-flex gap-2 stats">
                 <div style={{ minWidth: '10rem' }}>
                   <CardText className="value mb-25">{modalData?.name || 'Talent/Team name'}</CardText>
@@ -35,11 +35,11 @@ const RejectBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) 
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 justify-content-end">
-            <Button onClick={onClose} outline color="primary">
+            <Button disabled={isLoading} onClick={onClose} outline color="primary">
               Cancel
             </Button>
             <Button color="danger" onClick={onAccept}>
-              {isLoading ? <Spinner /> : 'Reject Bid'}
+              {isLoading ? <Spinner size="sm" /> : 'Reject Bid'}
             </Button>
           </div>
         </DeleteModalWrapper>

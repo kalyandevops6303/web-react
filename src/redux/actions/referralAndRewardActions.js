@@ -46,16 +46,18 @@ const validateReferral = (token) => async (dispatch) => {
   }
 };
 
-const convertReferral = (referralId, email, onSuccess) => async (dispatch) => {
-  dispatch(convertReferralRequest());
-  try {
-    const res = await convertReferralService(referralId, email);
-    dispatch(convertReferralSuccess(res.data.data));
-    onSuccess();
-  } catch (error) {
-    errorHandler(error, convertReferralFailure);
-  }
-};
+const convertReferral =
+  ({ referral_id, email, onSuccess, invite_type }) =>
+  async (dispatch) => {
+    dispatch(convertReferralRequest());
+    try {
+      const res = await convertReferralService(referral_id, email, invite_type);
+      dispatch(convertReferralSuccess(res.data.data));
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, convertReferralFailure);
+    }
+  };
 
 const getAllReferrals = (page, pageSize, oldData) => async (dispatch) => {
   if (page === 1) {

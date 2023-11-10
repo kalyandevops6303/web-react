@@ -70,7 +70,7 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
                     bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                 </CardText>
                 <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Estimation Duration</CardText>
+                  <CardText className="key mb-0">Estimated Duration</CardText>
                   <Info size={14} color={theme.infoIcon} id="bid-info" className="ms-50" />
                   <UncontrolledTooltip placement="bottom" target="bid-info">
                     <p className="m-0">Sum total of all milestone duration hours/week</p>

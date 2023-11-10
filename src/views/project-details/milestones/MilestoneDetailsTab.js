@@ -12,11 +12,8 @@ import RaiseDisputeModal from '../../disputes/overview/RaiseDisputeModal';
 import { formatDate, isFileValid, renderFilePreview, renderFileSize } from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
-import {
-  acceptMilestoneService,
-  milestoneFileUploadService,
-  submitMilestoneService,
-} from '../../../services/projectMilestoneService';
+import { milestoneFileUploadService, submitMilestoneService } from '../../../services/projectMilestoneService';
+import { transferFundService } from '../../../services/paymentDetailService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
@@ -57,9 +54,14 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
 
   const acceptMilestone = async () => {
     setIsLoading(true);
+
+    const payload = {
+      milestone: selectedMilestone._id,
+    };
+
     try {
       setClientButtonText('Accepting...');
-      await acceptMilestoneService(selectedMilestone._id);
+      await transferFundService(payload);
       await fetchProjectMilestones();
       setClientButtonText('Accepted');
     } catch (error) {

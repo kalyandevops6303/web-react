@@ -125,10 +125,28 @@ const Account = () => {
           });
     } else {
       const referralData = getItem('referral_data');
-      if (referralData) {
+      const referralViaShareData = getItem('referral_via_share_data');
+      if (referralViaShareData) {
+        const email = watch('email');
+        dispatch(
+          convertReferral({
+            referral_id: referralViaShareData.referral_id,
+            email,
+            onSuccess: onReferralConversionSuccess,
+            invite_type: referralViaShareData.referral_invitation_type,
+          }),
+        );
+      } else if (referralData) {
         const referralId = referralData?._id;
         const email = watch('email');
-        dispatch(convertReferral(referralId, email, onReferralConversionSuccess));
+        dispatch(
+          convertReferral({
+            referral_id: referralId,
+            email,
+            onSuccess: onReferralConversionSuccess,
+            invite_type: referralData?.invitation_type,
+          }),
+        );
       } else {
         userDetailsData?.user_type === 'TALENT'
           ? navigate(`/${userOnboarding.talent}/personal-details`)

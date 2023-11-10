@@ -1,7 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle, Spinner } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, Spinner } from 'reactstrap';
 import AcceptGif from '../../assets/images/gifs/accept_bid.gif';
 import { AcceptModalWrapper } from './style';
 
@@ -18,11 +18,9 @@ const AcceptBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) 
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" style={{ margin: 'auto' }} src={AcceptGif} width={160} height={160} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Great Choice</CardTitle>
-              <CardSubtitle className="mb-75 fw-bold subtitle">Accept bid</CardSubtitle>
-
+              <CardTitle className="modal-title-custom">Great Choice!</CardTitle>
               <CardText className="desc fw-light">
-                By accepting this bid you are assigning this project to the below{' '}
+                By accepting this bid you are assigning this project to the following team or talent:
               </CardText>
               <section className="d-flex gap-2 stats">
                 <div style={{ minWidth: '10rem' }}>

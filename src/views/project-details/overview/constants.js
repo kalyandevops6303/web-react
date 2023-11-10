@@ -3,7 +3,7 @@ import { Box, CreditCard, FileText, Star, Users } from 'react-feather';
 const steps = [
   {
     title: 'Team',
-    subtitle: 'Team list & Permission',
+    subtitle: 'Team members',
     icon: <Users size={18} />,
   },
   {

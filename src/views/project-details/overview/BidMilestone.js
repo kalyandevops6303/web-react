@@ -1,15 +1,17 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import {
   AccordionBody,
   AccordionHeader,
   AccordionItem,
+  Button,
   Card,
   CardBody,
   CardText,
   CardTitle,
   UncontrolledAccordion,
 } from 'reactstrap';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { BidDetailsWrap } from '../style';
@@ -17,7 +19,19 @@ import theme from '../../../configs/themeVariables';
 import { getBidMilestone } from '../../../redux/actions/projectDetailsAction';
 import DateTime from '../../../lib/date-time';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { getWhoInvited } from '../../../redux/actions/teamsActions';
+import { getWhoInvited, getTeams } from '../../../redux/actions/teamsActions';
+import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
+// import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
+import capitalize from '../../../lib/capitalize';
+
+import { getProfilePercentage, updateInvitation } from '../../../redux/actions/dashboardActions';
+import CompleteProfileModal from '../../modals/CompleteProfileModal';
+import AcceptRequestModal from '../../modals/AcceptRequestModal';
+import RejectRequestModal from '../../modals/RejectRequestModal';
+// import CreateBidModal from '../../modals/CreateBidModal';
+import { switchProfile } from '../../../redux/actions/authActions';
+import ShowToastMessage from '../../../@core/components/toast';
+import { SUCCESS } from '../../../utility/constants/ToastTypes';
 
 const BidMilestoneWrap = styled.div`
   .value {
@@ -75,14 +89,29 @@ const AccordionHeadStyle = styled.div`
 `;
 
 const BidMilestone = () => {
-  const param = useParams();
+  const params = useParams();
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const bidData = useSelector((state) => state.projectDetails.bidMilestone);
   const [isLoading, setLoading] = useState(false);
-  const onSuccess = (res) => {
+
+  const [invitedByData, setInvitedByData] = useState('');
+
+  const [accpetModal, setAccpetModal] = useState(false);
+  const [rejectModal, setRejectModal] = useState(false);
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+
+  const profilePercentageData = useSelector(profilePercentage);
+  // const projectDetailsData = useSelector(projectDetails);
+  const [status, setStatus] = useState(invitedByData?.request_status);
+  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
+  const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
+
+  const onGetMilestoneSuccess = (res) => {
     dispatch(
       getBidMilestone({
-        project_id: param?.projectId,
+        project_id: params?.projectId,
         entity_id: res?.request_from?.team_id,
         onSuccess: () => setLoading(false),
         onError: () => setLoading(false),
@@ -90,17 +119,150 @@ const BidMilestone = () => {
     );
     setLoading(false);
   };
+  const onSuccess = (res) => {
+    setInvitedByData(res);
+    setGetWhoInvitedLoading(false);
+
+    setStatus(res?.request_status);
+  };
+
+  const onError = () => {
+    setGetWhoInvitedLoading(false);
+  };
   useEffect(() => {
-    setLoading(true);
-    dispatch(getWhoInvited({ id: param.inviteId, onSuccess, onError: () => setLoading(false) }));
+    setGetWhoInvitedLoading(true);
+    dispatch(
+      getWhoInvited({
+        id: params.inviteId,
+        onSuccess: (res) => {
+          onSuccess(res);
+          onGetMilestoneSuccess(res);
+        },
+        onError,
+      }),
+    );
   }, []);
 
-  if (isLoading) {
+  const toggleCompleteProfileModal = () => {
+    setCompleteProfileModal(!completeProfileModal);
+  };
+
+  const handleCancel = () => {
+    setCompleteProfileModal(false);
+    setAccpetModal(false);
+    setRejectModal(false);
+  };
+
+  useEffect(() => {
+    if (!profilePercentageData) {
+      dispatch(getProfilePercentage());
+    }
+  }, []);
+
+  const onGetTeams = (res) => {
+    const teamToSwitch = res.filter((item) => item._id === invitedByData?.request_from?.team_id)?.[0];
+    if (teamToSwitch) {
+      dispatch(
+        switchProfile({
+          data: teamToSwitch,
+          onSuccess: () => {
+            navigate(`/project-details/${params?.projectId}/bid`);
+          },
+        }),
+      );
+    }
+  };
+
+  const onAccept = () => {
+    const data = {
+      action: 'ACCEPT',
+      request_id: params.inviteId,
+    };
+    setIsStatusUpdating(true);
+    dispatch(
+      updateInvitation({
+        data,
+        onSuccess: () => {
+          setStatus('ACCEPTED');
+          setAccpetModal(false);
+          setIsStatusUpdating(false);
+          ShowToastMessage(SUCCESS, 'Request accepted');
+          dispatch(getTeams({ onSuccess: onGetTeams }));
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
+  };
+
+  const handleAccept = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability') ||
+      profilePercentageData?.values_missing?.includes('payment_account')
+    ) {
+      setCompleteProfileModal(true);
+    } else {
+      setAccpetModal(true);
+    }
+  };
+
+  const onReject = () => {
+    const data = {
+      action: 'REJECT',
+      request_id: params.inviteId,
+    };
+    setIsStatusUpdating(true);
+    dispatch(
+      updateInvitation({
+        data,
+        onSuccess: () => {
+          setStatus('DECLINED');
+          setRejectModal(false);
+          setIsStatusUpdating(false);
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
+  };
+  const handleDecline = () => {
+    setRejectModal(true);
+  };
+
+  if (isLoading || isGetWhoInvitedLoading) {
     return <ComponentSpinner />;
   }
 
   return (
     <BidDetailsWrap>
+      {completeProfileModal && (
+        <CompleteProfileModal modal={completeProfileModal} toggleModal={toggleCompleteProfileModal} />
+      )}
+
+      {accpetModal && (
+        <AcceptRequestModal
+          title={invitedByData?.request_type}
+          isLoading={isStatusUpdating}
+          data={invitedByData}
+          onAccept={onAccept}
+          modal={accpetModal}
+          toggleModal={handleCancel}
+        />
+      )}
+      {rejectModal && (
+        <RejectRequestModal
+          title={invitedByData?.request_type}
+          isLoading={isStatusUpdating}
+          data={invitedByData}
+          onReject={onReject}
+          modal={rejectModal}
+          toggleModal={handleCancel}
+        />
+      )}
       <BidMilestoneWrap>
         <Card>
           <CardTitle className="main-card-title">Project Bid Estimation</CardTitle>
@@ -128,7 +290,7 @@ const BidMilestone = () => {
                   bidData?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
               </CardText>
               <div className="d-flex align-items-center m-0">
-                <CardText className="key mb-0">Estimation Duration</CardText>
+                <CardText className="key mb-0">Estimated Duration</CardText>
               </div>
             </div>
           </CardBody>
@@ -169,6 +331,25 @@ const BidMilestone = () => {
             </AccordionItem>
           </UncontrolledAccordion>
         ))}
+
+        <div className="ms-auto">
+          {isStatusUpdating ? (
+            'Loading...'
+          ) : status === 'PENDING' ? (
+            <div className="d-flex justify-content-end">
+              <Button onClick={handleDecline} color="flat-danger" className="me-1">
+                Decline
+              </Button>
+              <Button onClick={handleAccept} color="primary">
+                Accept Invite
+              </Button>
+            </div>
+          ) : (
+            <span style={{ textAlign: 'right' }} className="ms-auto text-right w-full d-block me-1">
+              {status && `Invite ${capitalize(status === 'DECLINED' || status === 'REJECTED' ? 'DECLINED' : status)}`}
+            </span>
+          )}
+        </div>
       </BidMilestoneWrap>
     </BidDetailsWrap>
   );

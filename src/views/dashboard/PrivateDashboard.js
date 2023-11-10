@@ -82,7 +82,8 @@ const PrivateDashboard = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
+      profilePercentageData?.values_missing?.includes('availability') ||
+      profilePercentageData?.values_missing?.includes('payment_account')
     ) {
       setCompleteProfileModalInfoText('create project');
       setCompleteProfileModal(true);
@@ -100,7 +101,8 @@ const PrivateDashboard = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
+      profilePercentageData?.values_missing?.includes('availability') ||
+      profilePercentageData?.values_missing?.includes('payment_account')
     ) {
       setCompleteProfileModalInfoText('create team');
       setCompleteProfileModal(true);
@@ -117,7 +119,8 @@ const PrivateDashboard = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
+      profilePercentageData?.values_missing?.includes('availability') ||
+      profilePercentageData?.values_missing?.includes('payment_account')
     ) {
       setCompleteProfileModalInfoText('join team');
       setCompleteProfileModal(true);
@@ -215,7 +218,7 @@ const PrivateDashboard = () => {
           )}
           {userDetailsData?.user_type === userTypes.team && (
             <section className="mb-2">
-              <Header className="mb-1">Talents</Header>
+              <Header className="mb-1">Talent</Header>
               <TalentListing />
             </section>
           )}

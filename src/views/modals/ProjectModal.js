@@ -134,7 +134,8 @@ const ProjectModal = ({
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
+      profilePercentageData?.values_missing?.includes('availability') ||
+      profilePercentageData?.values_missing?.includes('payment_account')
     ) {
       toggleCompleteProfileModal();
     } else {
@@ -336,7 +337,7 @@ const ProjectModal = ({
                   <Spinner size="sm" />
                 ) : (
                   <>
-                    <span className="me-50">View project</span>
+                    <span className="me-50">View Project</span>
                     <ChevronRight size={14} />
                   </>
                 )}
