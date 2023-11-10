@@ -1,12 +1,12 @@
 // ** React Imports
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ShowToastMessage from '../../../../@core/components/toast';
 
 // ** Custom Components
 import Avatar from '@components/avatar';
 
 // ** Third Party Components
-import { User, Power, Check, CheckCircle } from 'react-feather';
+import { Check } from 'react-feather';
 
 // ** Reactstrap Imports
 import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip } from 'reactstrap';
@@ -14,7 +14,6 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, Uncon
 // ** Default Avatar Image
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useDispatch, useSelector } from 'react-redux';
-import { userData } from '../../../../redux/selectors/dashboardSelectors';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { logoutAction, switchProfile } from '../../../../redux/actions/authActions';
@@ -23,17 +22,13 @@ import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
 import { userTypes } from '../../../../utility/constants/Constant';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
-import {
-  selectSavedUserData,
-  selectIsTeamLoggedIn,
-  selectUserData,
-  selectAuthLoading,
-} from '../../../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectIsTeamLoggedIn, selectUserData } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
 import { useState } from 'react';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
+import EditProfileAccordion from './EditProfileAccordion';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(selectUserData);
@@ -50,7 +45,13 @@ const UserDropdown = () => {
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
 
   const handleEdit = () => {
-    navigate(`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`);
+    const talentOrClientProfile =
+      userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.client;
+    navigate(
+      `/profile/${talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type}/${
+        userDetailsData?._id
+      }`,
+    );
   };
 
   const handleLogout = async () => {
@@ -71,6 +72,7 @@ const UserDropdown = () => {
     await messaging.deleteToken();
     await CometChat.logout();
   };
+
   const LineWrapper = styled.div`
     position: relative;
     .line {
@@ -98,19 +100,36 @@ const UserDropdown = () => {
       color: ${theme.red};
       padding: 1rem 1.2rem;
       display: block;
+      border-top: 1px solid ${theme.cardHeaderBorderColor};
+      margin-top: 1rem;
     }
     .edit {
       color: ${theme.primary};
       padding: 1rem 1.2rem;
       display: block;
-      border-top: 1px solid ${theme.cardHeaderBorderColor};
-      margin-top: 1rem;
+      border-bottom: 1px solid ${theme.cardHeaderBorderColor};
       &:active {
         color: white;
       }
     }
+
     .dropdown-item {
       width: 100%;
+    }
+    .edit-accordion {
+      border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+      margin-bottom: 1rem;
+    }
+    .accordion-button {
+      font-size: 14px !important;
+      font-weight: normal !important;
+    }
+    .accordion-body {
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+    .edit-link {
+      padding: 1rem 1.2rem;
     }
   `;
 
@@ -154,7 +173,11 @@ const UserDropdown = () => {
               </div>
             </UncontrolledTooltip>
           )}
-          <span className="user-status">{capitalize(userDetailsData?.user_type) || 'Role'}</span>
+          <span className="user-status">
+            {userDetailsData?.team_type
+              ? capitalize(userDetailsData?.team_type)
+              : capitalize(userDetailsData?.user_type) || 'Role'}
+          </span>
         </div>
         {userDetailsData?.user_type === userTypes.talent && (
           <Avatar
@@ -191,6 +214,12 @@ const UserDropdown = () => {
 
       <UserDropDownWrapper>
         <DropdownMenu end>
+          <DropdownItem onClick={handleEdit} className="w-100 edit">
+            <span className="align-middle ">Public Profile</span>
+          </DropdownItem>
+
+          <EditProfileAccordion />
+
           <div style={{ maxHeight: '13rem', overflowY: 'auto' }}>
             {userDetailsData && (
               <DropdownItem
@@ -260,7 +289,7 @@ const UserDropdown = () => {
                       </UncontrolledTooltip>
                     )}
                     <span className="w-100 font-small-3 d-block user-status text-start">
-                      {capitalize(team?.user_type) || 'Role'}
+                      {capitalize(team?.team_type) || 'Role'}
                     </span>
                   </div>
                 </section>
@@ -268,9 +297,7 @@ const UserDropdown = () => {
               </DropdownItem>
             ))}
           </div>
-          <DropdownItem onClick={handleEdit} className="w-100 edit">
-            <span className="align-middle ">Profile</span>
-          </DropdownItem>
+
           <DropdownItem onClick={handleLogout} className="w-100 logout">
             <span className="align-middle ">Logout</span>
           </DropdownItem>

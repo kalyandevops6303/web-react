@@ -90,6 +90,13 @@ const PAYMENT_STATUS = {
   PAYMENT_SUCCESSFUL: 'PAYMENT_SUCCESSFUL',
   PAYMENT_FAILED: 'PAYMENT_FAILED',
 };
+
+const clubStatus = {
+  ACCEPTED: 'ACCEPTED',
+  IN_REVIEW: 'IN_REVIEW',
+  DECLINED: 'DECLINED',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -108,4 +115,5 @@ export {
   bidStatusesOptions,
   statusForAllListing,
   PAYMENT_STATUS,
+  clubStatus,
 };
