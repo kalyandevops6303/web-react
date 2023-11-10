@@ -28,7 +28,7 @@ import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
 import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
-import EditProfileAccordion from './EditProfileDropdown';
+import EditProfileAccordion from './EditProfileAccordion';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(selectUserData);
