@@ -71,7 +71,7 @@ const PrivateDashboard = () => {
   const checkBidsAcceptedData = useSelector(checkBidsAccepted);
 
   const isAdminExists = teamMemberData?.filter(
-    (talent) => talent.user_id === savedUserDetailsData._id && talent.member_type === 'ADMIN',
+    (talent) => talent.user_id === savedUserDetailsData?._id && talent.member_type === 'ADMIN',
   );
 
   const isAdmin = isAdminExists && isAdminExists.length > 0;

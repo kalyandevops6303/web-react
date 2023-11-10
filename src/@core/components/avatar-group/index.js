@@ -13,6 +13,7 @@ import { CardText, UncontrolledTooltip } from 'reactstrap';
 
 // ** Custom Components Imports
 import Avatar from '@components/avatar';
+import uuidv4 from '../../../lib/uuidv4';
 
 const AvatarGroup = (props) => {
   // ** Props
@@ -25,7 +26,8 @@ const AvatarGroup = (props) => {
   const renderData = () =>
     data.map((item, i) => {
       const ItemTag = item.tag || 'div';
-      const tooltipId = item?.tooltipId ?? item.title?.split(' ').join( '-');
+      const tooltipId = uuidv4();
+
       return (
         <Fragment key={i}>
           {item.title ? (
