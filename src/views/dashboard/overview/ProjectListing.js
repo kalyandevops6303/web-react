@@ -58,6 +58,9 @@ import UpcomingProjectCardForTalent from './UpcomingProjectCardForTalent';
 import UpcomingProjectCardForTeam from './UpcomingProjectCardForTeam';
 import ActiveProjectCardForTeam from './ActiveProjectCardForTeam';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
+import { getDashboardUpcomingPayments } from '../../../redux/actions/milestonePaymentActions';
+import UpcomingPaymentsCard from './UpcomingPaymentsCard';
+import { clearUpcomingPayments } from '../../../redux/reducers/milestonePayment';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -187,6 +190,9 @@ const ProjectListing = () => {
   const upcomingProjectsForTeamData = useSelector(upcomingProjectsForTeam);
   const upcomingProjectsForTeamIsLoading = useSelector(upcomingProjectsForTeamLoading);
 
+  const upcomingPaymentData = useSelector((state) => state?.milestonePayment?.upcomingPaymentsData);
+  const upcomingPaymentDataLoading = useSelector((state) => state?.milestonePayment?.upcomingPaymentDataLoading);
+
   const handleViewAll = (e) => {
     e.stopPropagation();
     navigate('/marketplace/all_listings', { state: { isRecommended: true } });
@@ -231,6 +237,10 @@ const ProjectListing = () => {
       ) {
         dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
       }
+    }
+    if (open === '4') {
+      dispatch(clearUpcomingPayments());
+      dispatch(getDashboardUpcomingPayments());
     }
   }, [open]);
 
@@ -662,21 +672,45 @@ const ProjectListing = () => {
             </AccordionBody>
           </>
         )}
-        {userDetailsData?.user_type === userTypes.client && (
-          <>
-            <AccordionHeader targetId="3">Upcoming Payments</AccordionHeader>
-            <AccordionBody accordionId="3">
+      </AccordionItem>
+      {userDetailsData?.user_type === userTypes.team ? null : (
+        <AccordionItem>
+          <AccordionHeader targetId="4">Upcoming Payments</AccordionHeader>
+          <AccordionBody accordionId="4">
+            {isSliderLoading || upcomingPaymentDataLoading ? (
+              <div style={{ height: '250px' }} className="d-flex justify-content-center gap-1">
+                <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+              </div>
+            ) : (
               <ProjectsListingWrap>
-                {isTab ? (
-                  <Empty active={false} recommended={false} payment />
+                {upcomingPaymentData?.data?.length > 0 && isTab ? (
+                  upcomingPaymentData?.data?.map((project) => <UpcomingPaymentsCard key={project._id} data={project} />)
+                ) : upcomingPaymentData?.data?.length > 0 ? (
+                  <>
+                    {upcomingPaymentData?.data?.length >= 4 ? (
+                      <Slider {...settings}>
+                        {upcomingPaymentData?.data?.map((project, index) => (
+                          <UpcomingPaymentsCard className={`slide-${index}`} key={project._id} data={project} />
+                        ))}
+                      </Slider>
+                    ) : (
+                      <div className="custom-slider-wrap">
+                        {upcomingPaymentData?.data?.map((project) => (
+                          <UpcomingPaymentsCard className="custom-slider-project" key={project._id} data={project} />
+                        ))}
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <Empty active={false} recommended={false} payment />
                 )}
               </ProjectsListingWrap>
-            </AccordionBody>
-          </>
-        )}
-      </AccordionItem>
+            )}
+          </AccordionBody>
+        </AccordionItem>
+      )}
     </Accordion>
   );
 };

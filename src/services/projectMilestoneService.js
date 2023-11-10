@@ -4,10 +4,8 @@ import DataService from '../configs/dataService/dataService';
 const projectMilestonesService = (projectId) =>
   DataService.get(`${API.projectMilestones.getProjectMilestones}?project_id=${projectId}`);
 
-const milestoneTransactionsServiceForTalent = (projectId, milestoneId) =>
-  DataService.get(
-    `${API.projectMilestones.getProjectTransactionsForTalent}?project_id=${projectId}&milestone_id=${milestoneId}`,
-  );
+const milestoneTransactionsServiceForTeam = (projectId) =>
+  DataService.get(`${API.projectMilestones.getProjectTransactionsForTalent}?project_id=${projectId}`);
 const milestoneTransactionsServiceForClient = (projectId, milestoneId) => {
   let QUERY = `${API.projectMilestones.getProjectTransactionsForClient}?project_id=${projectId}`;
 
@@ -32,5 +30,5 @@ export {
   acceptMilestoneService,
   milestoneFileUploadService,
   milestoneTransactionsServiceForClient,
-  milestoneTransactionsServiceForTalent,
+  milestoneTransactionsServiceForTeam,
 };

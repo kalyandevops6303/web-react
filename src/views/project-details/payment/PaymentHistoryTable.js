@@ -2,25 +2,40 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Card, CardText, Table, UncontrolledTooltip } from 'reactstrap';
 
-import { milestoneTransactionsServiceForClient } from '../../../services/projectMilestoneService';
+import {
+  milestoneTransactionsServiceForClient,
+  milestoneTransactionsServiceForTeam,
+} from '../../../services/projectMilestoneService';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
 import { formatDate } from '../../../utility/Utils';
-import { PAYMENT_STATUS } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
+import { userData } from '../../../redux/selectors/dashboardSelectors';
 
 function PaymentHistoryTable() {
   const [transactions, setTransactions] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
 
   const projectDetailsData = useSelector(projectDetails);
+  const user = useSelector(userData);
 
   useEffect(() => {
     if (projectDetailsData?._id) {
-      milestoneTransactionsServiceForClient(projectDetailsData._id).then((res) => {
-        if (res.data.data) {
-          setTransactions(res.data.data);
-        }
-      });
+      if (user?.user_type === userTypes.client) {
+        milestoneTransactionsServiceForClient(projectDetailsData._id).then((res) => {
+          if (res.data.data) {
+            setTransactions(res.data.data);
+          }
+        });
+      } else {
+        milestoneTransactionsServiceForTeam(projectDetailsData?._id).then((res) => {
+          if (res.data.data) {
+            if (user?.user_type === userTypes.talent) {
+              setTransactions(res.data.data?.my_payments);
+            } else setTransactions(res.data?.data?.team_payments);
+          }
+        });
+      }
     }
   }, [projectDetailsData?._id]);
 
@@ -77,7 +92,7 @@ function PaymentHistoryTable() {
         <Table responsive className="milestone-table w-100">
           <thead>
             <tr>
-              <th>TRANSACTION ID</th>
+              {user?.user_type === userTypes.client && <th>TRANSACTION ID</th>}
               <th>BY</th>
               <th>MILESTONE</th>
               <th>Status</th>
@@ -86,25 +101,27 @@ function PaymentHistoryTable() {
           </thead>
           <tbody>
             {transactions?.map((item) => (
-              <tr key={item?.transaction_id}>
-                <td>
-                  <div className="d-flex flex-column">
-                    {item?.transaction_id?.length > 8 && (
-                      <UncontrolledTooltip placement="top" target={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}>
-                        {isCopied ? 'Copied!' : item?.transaction_id}
-                      </UncontrolledTooltip>
-                    )}
-                    <span
-                      className="fw-bold"
-                      style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '80px', whiteSpace: 'nowrap' }}
-                      id={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}
-                      onClick={() => handleCopyToClipboard(item?.transaction_id)}
-                    >
-                      {item?.transaction_id}
-                    </span>
-                    <span>{formatDate(item?.created_at)}</span>
-                  </div>
-                </td>
+              <tr key={item?._id}>
+                {user?.user_type === userTypes.client ? (
+                  <td>
+                    <div className="d-flex flex-column">
+                      {item?.transaction_id?.length > 8 && (
+                        <UncontrolledTooltip placement="top" target={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}>
+                          {isCopied ? 'Copied!' : item?.transaction_id}
+                        </UncontrolledTooltip>
+                      )}
+                      <span
+                        className="fw-bold"
+                        style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '80px', whiteSpace: 'nowrap' }}
+                        id={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}
+                        onClick={() => handleCopyToClipboard(item?.transaction_id)}
+                      >
+                        {item?.transaction_id}
+                      </span>
+                      <span>{formatDate(item?.created_at)}</span>
+                    </div>
+                  </td>
+                ) : null}
                 <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Client' : 'Stripe'}</td>
                 <td>{item?.milestone?.name}</td>
                 <td>

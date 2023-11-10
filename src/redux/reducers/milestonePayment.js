@@ -4,9 +4,11 @@ const initialState = {
   milestoneListDetails: null,
   checkoutDetails: null,
   milestoneTransactionDetails: null,
+  upcomingPaymentsData: null,
   listLoading: false,
   checkoutLoading: false,
   transactionLoading: false,
+  upcomingPaymentDataLoading: false,
   error: null,
 };
 
@@ -61,6 +63,22 @@ const milestonePaymentSlice = createSlice({
       transactionLoading: false,
     }),
 
+    upcomingPaymentRequest: (state) => ({
+      ...state,
+      upcomingPaymentDataLoading: true,
+      error: null,
+    }),
+    upcomingPaymentSuccess: (state, action) => ({
+      ...state,
+      upcomingPaymentsData: action.payload,
+      upcomingPaymentDataLoading: false,
+    }),
+    upcomingPaymentFailure: (state, action) => ({
+      ...state,
+      error: action.payload,
+      upcomingPaymentDataLoading: false,
+    }),
+
     clearPaymentListingData: (state) => ({
       ...state,
       milestoneListDetails: null,
@@ -75,6 +93,11 @@ const milestonePaymentSlice = createSlice({
       ...state,
       milestoneTransactionDetails: null,
       transactionLoading: false,
+    }),
+    clearUpcomingPayments: (state) => ({
+      ...state,
+      upcomingPaymentsData: null,
+      upcomingPaymentDataLoading: false,
     }),
   },
 });
@@ -91,5 +114,9 @@ export const {
   milestoneTransactionRequest,
   milestoneTransactionSuccess,
   clearMilestoneTransactions,
+  clearUpcomingPayments,
+  upcomingPaymentFailure,
+  upcomingPaymentRequest,
+  upcomingPaymentSuccess,
 } = milestonePaymentSlice.actions;
 export default milestonePaymentSlice.reducer;
