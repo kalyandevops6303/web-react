@@ -108,8 +108,8 @@ const RegisterEmail = () => {
             {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
           </div>
           <div className="form-check mb-1">
-            <div className="d-flex justify-content-between align-items-center">
-              <Label color="primary" className="form-check-label" for="remember-me">
+            <div className="d-flex justify-content-between align-items-center checkbox-custom-label">
+              <Label className="form-check-label" for="remember-me">
                 <small>
                   <Controller
                     type="checkbox"
@@ -138,10 +138,12 @@ const RegisterEmail = () => {
               <Label color={theme.primary} className="mb-0 ">
                 <small className="privacy-terms-label">
                   <u className="cursor-pointer" onClick={() => setPrivacyPolicyModal(true)}>
-                    Privacy policy{' '}
+                    Privacy Policy
                   </u>
                 </small>
-                <small className="privacy-terms-label">&</small>
+                <small>
+                  {'  '}&{'  '}
+                </small>
                 <small className="privacy-terms-label">
                   <u className="cursor-pointer" onClick={() => setTermsModal(true)}>
                     Terms
@@ -161,7 +163,7 @@ const RegisterEmail = () => {
             {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>
         </Form>
-        <div className="divider my-2">
+        <div className="divider my-2 custom-divider">
           <div className="divider-text">Or</div>
         </div>
 

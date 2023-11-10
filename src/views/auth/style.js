@@ -202,6 +202,18 @@ export const OnBoardWrap = styled.div`
       left: 4%;
     }
   }
+
+  .checkbox-custom-label {
+    .form-check-label {
+      color: ${theme.headingTextColor};
+    }
+  }
+
+  .custom-divider {
+    .divider-text {
+      color: ${theme.headingTextColor};
+    }
+  }
 `;
 export const UserTypeCard = styled.div`
   box-shadow: 0px 4px 14px rgba(0, 101, 193, 0.15);

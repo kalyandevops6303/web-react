@@ -178,7 +178,7 @@ const Login = () => {
             {isLoading ? <Spinner size="sm" /> : 'Sign in'}
           </Button>
         </Form>
-        <div className="divider my-2">
+        <div className="divider my-2 custom-divider">
           <div className="divider-text">Or</div>
         </div>
         <SigninWithGoogle title="Sign In" />

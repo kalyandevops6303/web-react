@@ -256,7 +256,9 @@ const VariableAdvanceMilestoneView = () => {
     const total_estimated_cost = totalCost;
     const total_numbers_of_hours = totalHours;
     const newMilestones = milestones.filter((milestone) => !('_id' in milestone.otherDetails));
-    const create_milestones = newMilestones.map((milestone) => {
+    const updatedMilestones = milestones.filter((milestone) => '_id' in milestone.otherDetails);
+    const maxSeqValue = updatedMilestones.reduce((max, obj) => Math.max(max, obj?.otherDetails?.seq), 0);
+    const create_milestones = newMilestones.map((milestone, index) => {
       const reqIndex = allMilestones.findIndex((mile) => mile.milestoneId === milestone.milestoneId);
 
       const { milestoneDuration, milestoneHours, milestoneCost } = calculateMilestoneValues(reqIndex);
@@ -282,9 +284,9 @@ const VariableAdvanceMilestoneView = () => {
             number_of_weeks: Number(worker.duration),
             hours_per_week: Number(worker.hours),
           })),
+        seq: maxSeqValue + index + 1,
       };
     });
-    const updatedMilestones = milestones.filter((milestone) => '_id' in milestone.otherDetails);
     const update_milestones = updatedMilestones.map((milestone) => {
       const reqIndex = allMilestones.findIndex((mile) => mile.milestoneId === milestone.milestoneId);
 
@@ -312,6 +314,7 @@ const VariableAdvanceMilestoneView = () => {
             number_of_weeks: Number(worker.duration),
             hours_per_week: Number(worker.hours),
           })),
+        seq: milestone.otherDetails.seq,
       };
     });
     const removed_milestone_ids = removedMilestoneIds.filter((id) => id !== undefined);

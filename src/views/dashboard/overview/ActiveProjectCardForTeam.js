@@ -118,12 +118,14 @@ const ActiveProjectCardForTeam = ({ data, className }) => {
               </div>
             </div>
           </div>
-          <p className="active-project-simple-heading">Milestone {data?.completed_milestones + 1}</p>
+          <p className="active-project-simple-heading">Milestone {data?.current_milestone?.seq}</p>
           <div className="bottom-detail d-flex mt-1">
             <div className="design-planning-wrapper justify-content-between w-100">
               <div className="design-planning">
                 <CardText className="mb-25">Due Date</CardText>
-                <h6 className="mb-0">{`${DateTime.fromMillis(data?.start_date).toFormat('MMM dd, yy') || '-'}`}</h6>
+                <h6 className="mb-0">{`${
+                  DateTime.fromMillis(data?.current_milestone?.due_date).toFormat('MMM dd, yy') || '-'
+                }`}</h6>
               </div>
               <p className="active-project-milestone-name">{data?.current_milestone?.name}</p>
             </div>
