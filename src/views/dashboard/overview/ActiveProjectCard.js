@@ -20,6 +20,7 @@ const ActiveProjectCard = ({ data, className }) => {
     OPEN: 'Open Listing',
     IN_REVIEW: 'In Review',
     ON_GOING: 'On Going',
+    ACTIVE: 'Active',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
     LISTING_EXPIRED: 'Listing Expired',
