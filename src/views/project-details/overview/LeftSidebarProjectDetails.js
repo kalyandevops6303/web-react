@@ -44,6 +44,7 @@ const LeftSidebarProjectDetails = () => {
     LISTING_EXPIRED: 'Listing Expired',
     ON_GOING: 'On Going',
     COMPLETED: 'COMPLETED',
+    ACTIVE: 'Active',
   };
 
   const isLoading = useSelector(projectDetailsLoading);

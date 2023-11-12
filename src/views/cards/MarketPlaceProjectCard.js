@@ -48,6 +48,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
     ACCEPTED: 'Accepted',
     REJECTED: 'Closed',
     REVIEWED: 'Reviewed',
+    ACTIVE: 'Active',
   };
 
   const divRef = useRef(null);
