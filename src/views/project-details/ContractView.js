@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, CardBody, CardText, CardTitle, Col, FormFeedback, Input, Label, Row } from 'reactstrap';
 import ReactHtmlParser from 'react-html-parser';
 import html2pdf from 'html2pdf.js';
-import { ArrowLeft, Info } from 'react-feather';
+import { ArrowLeft } from 'react-feather';
 import DownloadImg from '@src/assets/images/Download.svg';
 import EditImg from '@src/assets/images/Edit.svg';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +14,6 @@ import theme from '../../configs/themeVariables';
 import LeftSidebarProfile from './overview/LeftSidebarProjectDetails';
 import NameInfo from '../../@core/components/name-info';
 import EditContractModal from '../modals/EditContractModal';
-import TerminateContractModal from '../modals/TerminateContractModal';
 import { ContractDetailsWrap } from './style';
 import { currentProfile } from './overview/constants';
 import { projectDetails, selectDocument } from '../../redux/selectors/projectDetailsSelectors';
@@ -23,13 +22,12 @@ import { selectSavedUserData, selectUserType } from '../../redux/selectors/authS
 import { userTypes } from '../../utility/constants/Constant';
 import ConfirmContractModal from '../modals/ConfirmContractModal';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import AlertAndNote from './overview/AlertAndNote';
 
 const ContractView = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isTerminateModalOpen, setIsTerminateModalOpen] = useState(false);
-  const [terminateData, setTerminateData] = useState();
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
   const [acceptModalData, setAcceptModalData] = useState();
   const projectInfo = useSelector(projectDetails);
@@ -72,11 +70,6 @@ const ContractView = () => {
   useEffect(() => {
     setDocumentData(documentRes);
   }, [document]);
-
-  const toggleTerminateModal = () => {
-    setIsTerminateModalOpen(!isTerminateModalOpen);
-    setTerminateData(document);
-  };
 
   const toggleAcceptModal = () => {
     setIsAcceptModalOpen(false);
@@ -166,6 +159,32 @@ const ContractView = () => {
     return <ComponentSpinner />;
   }
 
+  // Client View
+
+  // if(is_documents_sent===false && status:ACCEPTED)
+  // NDA/CONTRACT view: You have 30(bid_validity) days to sign the document => bid_validity
+
+  // if(is_documents_signed===false && status:ACCEPTED)
+  // NDA/CONTRACT view: Talent have 7 (documents_validity) days to sign the document => Extend (documents_validity_extended_by===0)
+
+  // if(is_payment_made===false && status:ACCEPTED)
+  // After both party have signed in NDA/Contract view => Note: Client has 7(payment_validity) days to make payment for milestones or project will be terminated (Extend) (payment_validity_extended_by===0)
+
+  // if(is_payment_made===false && status:ACCEPTED)
+  // After both party have signed in bid view => CTA => Make payment
+
+  // if contract is sent it cannot be edited
+
+  // Edit to be happen on FE
+
+  // Talent/Team View
+
+  // if(is_documents_signed===false && status:ACCEPTED)
+  // NDA/CONTRACT view: Talent have 7(documents_validity) days to sign the document
+
+  // if(is_payment_made===false && status:ACCEPTED)
+  // After both party have signed in NDA/Contract view => Note: Client has 7(payment_validity) days to make payment for milestones or project will be terminated
+
   return (
     <ContractDetailsWrap>
       <BackButtonContainer className="p-0 mb-1">
@@ -186,19 +205,26 @@ const ContractView = () => {
               !isFreshDoc ? '(View only)' : ''
             }`}</CardTitle>
             <CardBody>
-              <div className="contract-info error-banner mb-2 d-flex px-1 py-2">
+              {/* <div className="contract-info error-banner mb-2 d-flex px-1 py-2">
                 <Info size={18} color={theme.red} className="me-50" />
                 <p className="font-medium-1 m-0 error">
                   <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of the
                   project. Please adjust your cost in order to submit the bid
                 </p>
-              </div>
+                <CardText
+                  className="me-1 ms-2 my-auto cursor-pointer"
+                  style={{ width: '10rem', color: theme.activeColor }}
+                >
+                  Extend validity
+                </CardText>
+              </div> */}
+              <AlertAndNote />
               <Card>
                 <CardBody className="contract-card-body">
                   <div className="d-flex justify-content-between ">
                     <CardTitle className="mb-1"> {CapitalizeDocType()}</CardTitle>
                     <div className="d-flex gap-1 align-items-center mb-75">
-                      {document?.is_contract_sent && isContractView && isFreshDoc && userType === userTypes.client && (
+                      {/* {document?.is_contract_sent && isContractView && isFreshDoc && userType === userTypes.client && (
                         <div>
                           {document?.is_terminated ? (
                             <CardText className="terminate me-1">Terminated</CardText>
@@ -218,7 +244,7 @@ const ContractView = () => {
                           docType={getDocType()}
                           project_id={param?.projectId}
                         />
-                      )}
+                      )} */}
                       {isAcceptModalOpen && (
                         <ConfirmContractModal
                           modalData={acceptModalData}
@@ -232,11 +258,14 @@ const ContractView = () => {
                           project_id={param?.projectId}
                         />
                       )}
-                      {!document?.is_terminated && isFreshDoc && userType === userTypes.client && (
-                        <span className="icon-bg cursor-pointer" onClick={toggleModal}>
-                          <img src={EditImg} alt="edit" />
-                        </span>
-                      )}
+                      {isFreshDoc &&
+                        userType === userTypes.client &&
+                        !document?.is_nda_sent &&
+                        !document?.is_contract_sent && (
+                          <span className="icon-bg cursor-pointer" onClick={toggleModal}>
+                            <img src={EditImg} alt="edit" />
+                          </span>
+                        )}
 
                       {isEditModalOpen && (
                         <EditContractModal

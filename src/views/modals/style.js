@@ -46,6 +46,39 @@ const AcceptModalWrapper = styled.div`
 const DeleteModalWrapper = styled.div`
   padding-bottom: 1.2rem;
   .gif {
+    margin: -30px 0 -70px -1rem;
+  }
+  .modal-title-custom {
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: ${theme.red};
+    margin-bottom: 0.75rem;
+  }
+  .subtitle {
+    font-size: 1.125rem;
+  }
+  .desc {
+    font-size: 1.125rem;
+  }
+  .stats {
+    margin-top: 1.2rem;
+    .names {
+      width: 55%;
+    }
+    .key {
+      font-size: 0.9rem;
+      color: ${theme.gray};
+    }
+    .value {
+      font-size: 1.312rem;
+      font-weight: 500;
+    }
+  }
+`;
+
+const TerminateModalWrapper = styled.div`
+  padding-bottom: 1.2rem;
+  .gif {
     margin: 1rem 0.5rem 0px 0rem;
   }
   .modal-title-custom {
@@ -74,6 +107,11 @@ const DeleteModalWrapper = styled.div`
       font-size: 1.312rem;
       font-weight: 500;
     }
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns, each taking 50% */
+    gap: 1rem; /* Adjust the gap as needed */
   }
 `;
 
@@ -187,4 +225,5 @@ export {
   AcceptModalWrapper,
   MakePaymentModalWrapper,
   PrivacyPolicyModalWrapper,
+  TerminateModalWrapper,
 };

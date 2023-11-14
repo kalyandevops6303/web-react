@@ -12,12 +12,15 @@ import {
   selectIsContract,
 } from '../../../redux/selectors/projectDetailsSelectors';
 import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
+import { selectUserType } from '../../../redux/selectors/authSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const ContractTimeline = () => {
   const navigate = useNavigate();
   const isContract = useSelector(selectIsContract);
   const contractTimeline = useSelector(selectContractTimeline);
   const projectDetailsData = useSelector(projectDetails);
+  const userType = useSelector(selectUserType);
   const bidUpdatesDataSet = [];
   contractTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
@@ -53,6 +56,9 @@ const ContractTimeline = () => {
   const handleRating = () => {
     navigate(`/project-details/${projectDetailsData?._id}/rating`);
   };
+  const handlePayement = () => {
+    navigate(`/project-details/${projectDetailsData?._id}/payment`);
+  };
   return (
     <AccordionItem>
       <AccordionHeader targetId="1">
@@ -71,6 +77,11 @@ const ContractTimeline = () => {
             <div>
               {isContract?.is_signed ? (
                 <div className="d-flex gap-1 aling-items-center">
+                  {userType === userTypes.client && isContract?.is_documents_signed && !isContract?.is_payment_made && (
+                    <CardText className="view-card-cta" onClick={handlePayement}>
+                      Make payment
+                    </CardText>
+                  )}
                   {projectDetailsData?.status === 'COMPLETED' ? (
                     <CardText className="view-card-cta" onClick={handleRating}>
                       Give rating

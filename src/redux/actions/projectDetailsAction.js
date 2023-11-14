@@ -3,6 +3,7 @@ import { makeFavService, removeFavService } from '../../services/profileServices
 import {
   acceptInvitation,
   checkDocumentActivatedService,
+  extendPaymentValidityService,
   getBidDetailsService,
   getCommonBidDetailsService,
   getCommonBidPublicDetailsService,
@@ -20,6 +21,9 @@ import {
   signContractByTalentServive,
   terminateContractService,
   updateBidStatusService,
+  extendDocValidityService,
+  terminateProjectService,
+  relistProjectService,
 } from '../../services/projectDetailsServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
@@ -27,6 +31,9 @@ import {
   checkDocumentActivatedFailure,
   checkDocumentActivatedRequest,
   checkDocumentActivatedSuccess,
+  extendValidityFailure,
+  extendValidityRequest,
+  extendValiditySuccess,
   getBidInfoFailure,
   getBidInfoRequest,
   getBidInfoSuccess,
@@ -58,6 +65,9 @@ import {
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
+  relistProjectFailure,
+  relistProjectRequest,
+  relistProjectSuccess,
   removeFavSuccess,
   removeWorkerFailure,
   removeWorkerRequest,
@@ -71,6 +81,9 @@ import {
   terminateContractFailure,
   terminateContractRequest,
   terminateContractSuccess,
+  terminateProjectFailure,
+  terminateProjectRequest,
+  terminateProjectSuccess,
   updateContractFailure,
   updateContractRequest,
   updateContractSuccess,
@@ -326,6 +339,56 @@ const terminateContract =
     }
   };
 
+// Action creator for extending docs
+
+const extendValidity =
+  ({ project_id, validity_type, onSuccess, onError }) =>
+  async (dispatch) => {
+    dispatch(extendValidityRequest());
+    try {
+      if (validity_type === 'DOCUMENT') {
+        await extendDocValidityService({ project_id });
+      } else if (validity_type === 'PAYMENT') {
+        await extendPaymentValidityService({ project_id });
+      }
+      dispatch(extendValiditySuccess());
+      onSuccess();
+    } catch (error) {
+      onError();
+      errorHandler(error, extendValidityFailure);
+    }
+  };
+
+// Action creator for terminate
+
+const terminateProject =
+  ({ project_id, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(terminateProjectRequest());
+    try {
+      const res = await terminateProjectService({ project_id });
+      ShowToastMessage(SUCCESS, res.data.data);
+      dispatch(terminateProjectSuccess());
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, terminateProjectFailure);
+    }
+  };
+
+const relistProject =
+  ({ project_id, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(relistProjectRequest());
+    try {
+      const res = await relistProjectService({ project_id });
+      ShowToastMessage(SUCCESS, res.data.data);
+      dispatch(relistProjectSuccess());
+      onSuccess();
+    } catch (error) {
+      errorHandler(error, relistProjectFailure);
+    }
+  };
+
 const updateContract =
   ({ project_id, doc_type, onSuccess, data, validity }) =>
   async (dispatch) => {
@@ -372,6 +435,9 @@ const getBidMilestone =
   };
 
 export {
+  extendValidity,
+  terminateProject,
+  relistProject,
   makeFavourite,
   removeFavourite,
   getInvitedMember,
