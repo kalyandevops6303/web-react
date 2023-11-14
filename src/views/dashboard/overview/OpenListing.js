@@ -40,6 +40,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
   const navigate = useNavigate();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
+  const dispatch = useDispatch();
 
   const onAddDetailsClick = (path) => {
     navigate(path, {
@@ -69,7 +70,10 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
           </div>
           {active && (
             <div
-              onClick={() => navigate('/marketplace/all_listings')}
+              onClick={() => {
+                navigate('/marketplace/all_listings');
+                dispatch(setActiveNavTab('marketplace'));
+              }}
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
             >
               Explore Projects
