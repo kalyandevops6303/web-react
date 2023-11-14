@@ -95,7 +95,7 @@ const EarningCard = () => {
           <div className="d-flex justify-content-around card-amount-details pt-1">
             <EarningAmount>
               <UncontrolledTooltip target="total_spendings" placement="top">
-                Total money spend on all projects
+                Total money {userDetailsData?.user_type === userTypes.client ? 'spend on' : 'earned by'} all projects
               </UncontrolledTooltip>
               <span className="title">
                 Total <Info size={14} id="total_spendings" />
@@ -105,7 +105,8 @@ const EarningCard = () => {
             </EarningAmount>
             <EarningAmount>
               <UncontrolledTooltip target="completed_spendings" placement="top">
-                Total money spend on completed projects
+                Total money {userDetailsData?.user_type === userTypes.client ? 'spend on' : 'earned by'} completed
+                projects
               </UncontrolledTooltip>
               <span className="title">
                 Completed <Info size={14} id="completed_spendings" />
