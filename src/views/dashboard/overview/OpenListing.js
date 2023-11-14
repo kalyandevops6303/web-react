@@ -71,8 +71,8 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
           {active && (
             <div
               onClick={() => {
-                navigate('/marketplace/all_listings');
                 dispatch(setActiveNavTab('marketplace'));
+                navigate('/marketplace/all_listings');
               }}
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
             >
@@ -100,7 +100,10 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
           ) : (
             <div
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
-              onClick={() => navigate('/marketplace/teams')}
+              onClick={() => {
+                dispatch(setActiveNavTab('marketplace'));
+                navigate('/marketplace/teams');
+              }}
             >
               View Teams
             </div>

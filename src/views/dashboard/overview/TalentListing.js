@@ -103,7 +103,13 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
               Explore Projects
             </div>
           ) : (
-            <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
+            <div
+              onClick={() => {
+                navigate('/marketplace/talents');
+                dispatch(setActiveNavTab('marketplace'));
+              }}
+              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+            >
               Invite Talent
             </div>
           )}
