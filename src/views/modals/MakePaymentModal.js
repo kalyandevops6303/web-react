@@ -18,6 +18,7 @@ import { PropTypes } from 'prop-types';
 import { MakePaymentModalWrapper } from './style';
 import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
 import { PAYMENT_STATUS } from '../../utility/constants/Constant';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
@@ -27,6 +28,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
 
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const milestoneDataLoading = useSelector((state) => state.milestonePayment?.checkoutLoading);
+  const paymentFeeLoading = useSelector((state) => state.milestonePayment?.paymentFeeLoading);
 
   const filteredMilestones = milestoneData?.filter((milestone) => selectedIds.includes(milestone._id));
 
@@ -168,28 +170,40 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                   </CardBody>
                 </Card>
               ))}
-            <div className="d-flex justify-content-between px-1">
-              <CardText style={{ fontSize: '16px' }}>{`${applicationFee?.name ?? ''} (${
-                applicationFee?.percentage ?? 0
-              }%)`}</CardText>
-              <CardText style={{ fontSize: '16px' }}>{`$ ${
-                Number.isNaN(trumioFee) ? 0 : trumioFee.toLocaleString()
-              }`}</CardText>
-            </div>
-            <hr className="m-0 card-header-border" />
-            <div className="d-flex justify-content-between p-1">
-              <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
-                {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
-              </CardText>
-              <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${
-                Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()
-              }`}</CardText>
-            </div>
-            <div className="d-flex justify-content-end py-1">
-              <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled()}>
-                {milestoneDataLoading ? <Spinner size="sm" /> : `Pay $ ${totalPending.toLocaleString()}`}
-              </Button>
-            </div>
+            {paymentFeeLoading ? (
+              <ComponentSpinner size="sm" />
+            ) : (
+              <>
+                <div className="d-flex justify-content-between px-1">
+                  <CardText style={{ fontSize: '16px' }}>{`${applicationFee?.name ?? ''} (${
+                    applicationFee?.percentage ?? 0
+                  }%)`}</CardText>
+                  <CardText style={{ fontSize: '16px' }}>{`$ ${
+                    Number.isNaN(trumioFee) ? 0 : trumioFee.toLocaleString()
+                  }`}</CardText>
+                </div>
+                <hr className="m-0 card-header-border" />
+                <div className="d-flex justify-content-between p-1">
+                  <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                    {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
+                  </CardText>
+                  <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${
+                    Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()
+                  }`}</CardText>
+                </div>
+              </>
+            )}
+            {paymentFeeLoading ? null : (
+              <div className="d-flex justify-content-end py-1">
+                <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled()}>
+                  {milestoneDataLoading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    `Pay $ ${Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()}`
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
         </MakePaymentModalWrapper>
       </ModalBody>
