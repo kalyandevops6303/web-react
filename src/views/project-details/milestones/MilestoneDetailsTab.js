@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import RaiseDisputeModal from '../../disputes/overview/RaiseDisputeModal';
 import { formatDate, isFileValid, renderFilePreview, renderFileSize } from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
-import { userTypes } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { milestoneFileUploadService, submitMilestoneService } from '../../../services/projectMilestoneService';
 import { transferFundService } from '../../../services/paymentDetailService';
 import errorHandler from '../../../utility/errorHandler';
@@ -142,6 +142,10 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     ON_GOING: 'On Going',
     COMPLETED: 'COMPLETED',
   };
+
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
 
   return (
     <div>
@@ -358,7 +362,11 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
             {clientButtonText}
           </Button>
         ) : isEditable ? (
-          <Button onClick={() => submitMilestone()} disabled={teamButtonText !== 'Submit'} color="primary">
+          <Button
+            onClick={() => submitMilestone()}
+            disabled={teamButtonText !== 'Submit' || !isPaymentDone(selectedMilestone)}
+            color="primary"
+          >
             {isLoading ? <Spinner className="me-1" size="sm" /> : null}
             {teamButtonText}
           </Button>
