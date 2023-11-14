@@ -152,7 +152,7 @@ const Step1 = ({ setStep }) => {
                   disabled={isPaymentOnboardingDone}
                   onChange={handlePrePaymentChange}
                 />
-                <div className="w-75">US Person - Permeant residents or Citizens with US Tax Identification</div>
+                <div className="w-75">US Person - Permanent residents or Citizens with US Tax Identification</div>
               </Col>
               <Col className="d-flex gap-50">
                 <Input
