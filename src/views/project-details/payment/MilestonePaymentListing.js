@@ -54,6 +54,10 @@ function MilestonePaymentListing() {
     isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
     isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
 
+  const isAllMilestonePaid = milestoneData?.every(
+    (mile) => mile.payment_status === PAYMENT_STATUS.PAID || mile.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL,
+  );
+
   const isDisabled = () => {
     if (selectedMilestones.length === 0) {
       return true;
@@ -93,9 +97,11 @@ function MilestonePaymentListing() {
               />
             ))}
           <div className="d-flex justify-content-end">
-            <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={isDisabled()}>
-              Make Payment
-            </Button>
+            {!isAllMilestonePaid ? (
+              <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={isDisabled()}>
+                Make Payment
+              </Button>
+            ) : null}
           </div>
         </>
       )}

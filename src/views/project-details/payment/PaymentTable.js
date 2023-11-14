@@ -71,11 +71,12 @@ const PaymentTable = () => {
   });
 
   const timelineData = milestoneTransactionDetails?.map((item) =>
-    getTimelineItem(item?.payment_type, item?.transaction_id, item?.created_at),
+    getTimelineItem(item?.payment_type, item?.transaction_id ?? item?._id, item?.created_at),
   );
 
   const paymentStatusList = milestoneTransactionDetails?.map((item) => item?.status);
   const isClient = user?.user_type === userTypes.client;
+  const isTeam = user?.user_type === userTypes.team;
 
   const isPaymentDone = (milestone) =>
     milestone?.payment_status === PAYMENT_STATUS.PAID ||
@@ -84,12 +85,12 @@ const PaymentTable = () => {
   useEffect(() => {
     if (isOpen) {
       dispatch(clearMilestoneTransactions());
-      dispatch(getMilestoneTransactions(projectDetailsData?._id, open));
+      dispatch(getMilestoneTransactions(projectDetailsData?._id, open, isClient));
     }
   }, [isOpen]);
 
   const showMilestoneTransanctions = (milestoneId, item) => {
-    if (isClient && isPaymentDone(item)) {
+    if (!isTeam && isPaymentDone(item)) {
       if (open === milestoneId) {
         setIsOpen(false);
         setOpen(null);
@@ -170,6 +171,9 @@ const PaymentTable = () => {
     isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
     isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
 
+  const isAllMilestonePaid = milestoneData?.every(
+    (mile) => mile.payment_status === PAYMENT_STATUS.PAID || mile.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL,
+  );
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
@@ -211,14 +215,14 @@ const PaymentTable = () => {
                 <Table responsive className="w-100">
                   <thead>
                     <tr>
-                      {isClient ? <th className="checkboxCol"> </th> : null}
-                      {isClient ? <th className="transactionCol">Transaction ID</th> : null}
+                      {!isTeam ? <th className="checkboxCol"> </th> : null}
+                      {!isTeam ? <th className="transactionCol">Transaction ID</th> : null}
                       <th>Milestone</th>
                       <th>{}</th>
                       <th>Status</th>
                       <th>{}</th>
                       <th>Amount</th>
-                      {isClient ? <th> </th> : null}
+                      {!isTeam ? <th> </th> : null}
                     </tr>
                   </thead>
                   <tbody>
@@ -244,17 +248,10 @@ const PaymentTable = () => {
                             ) : (
                               <td>{}</td>
                             )
-                          ) : null}
-                          {isClient ? (
-                            <td>
-                              {/* <div className="d-flex flex-column">
-                                <span className="fw-bolder">{item?._id}</span>
-                                <span className="fw-light" style={{ fontSize: '12px' }}>
-                                  {formatDate(item?.created_at)}
-                                </span>
-                              </div> */}
-                            </td>
-                          ) : null}
+                          ) : isTeam ? null : (
+                            <td> </td>
+                          )}
+                          {!isTeam ? <td>{}</td> : null}
                           <td>{item?.name}</td>
                           <td>{}</td>
                           <td className="statusCol">
@@ -264,7 +261,7 @@ const PaymentTable = () => {
                           </td>
                           <td>{}</td>
                           <td className="amountCol">{`$ ${item.estimated_cost.toLocaleString()}`}</td>
-                          {isClient && isPaymentDone(item) ? (
+                          {!isTeam && isPaymentDone(item) ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
                           ) : null}
                         </tr>
@@ -283,35 +280,37 @@ const PaymentTable = () => {
                             </tr>
                           ) : (
                             <>
-                              <tr style={{ borderBottom: '1px solid white' }}>
-                                <td>{}</td>
-                                <td>
-                                  <div className="d-flex flex-column">
-                                    <span>Amount</span>
-                                    <span>{`${applicationFee?.name}`}</span>
-                                  </div>
-                                </td>
-                                <td>{}</td>
-                                <td>{}</td>
-                                <td>{}</td>
-                                <td>{}</td>
-                                <td>
-                                  <div className="d-flex flex-column">
-                                    <span>
-                                      ${' '}
-                                      {milestoneTransactionDetails?.find(
-                                        (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
-                                      )?.amount ?? 0}
-                                    </span>
-                                    <span>
-                                      $
-                                      {milestoneTransactionDetails?.find(
-                                        (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
-                                      )?.applicationFee ?? 0}
-                                    </span>
-                                  </div>
-                                </td>
-                              </tr>
+                              {isClient ? (
+                                <tr style={{ borderBottom: '1px solid white' }}>
+                                  <td>{}</td>
+                                  <td>
+                                    <div className="d-flex flex-column">
+                                      <span>Amount</span>
+                                      <span>{`${applicationFee?.name}`}</span>
+                                    </div>
+                                  </td>
+                                  <td>{}</td>
+                                  <td>{}</td>
+                                  <td>{}</td>
+                                  <td>{}</td>
+                                  <td>
+                                    <div className="d-flex flex-column">
+                                      <span>
+                                        ${' '}
+                                        {milestoneTransactionDetails?.find(
+                                          (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
+                                        )?.amount ?? 0}
+                                      </span>
+                                      <span>
+                                        $
+                                        {milestoneTransactionDetails?.find(
+                                          (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
+                                        )?.applicationFee ?? 0}
+                                      </span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : null}
                               <tr>
                                 <td>{}</td>
                                 <td>
@@ -357,7 +356,7 @@ const PaymentTable = () => {
               </div>
             )}
 
-            {user.user_type === userTypes.client && (
+            {user.user_type === userTypes.client && !isAllMilestonePaid && (
               <div className="d-flex justify-content-end w-100 mt-5">
                 <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
                   {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}

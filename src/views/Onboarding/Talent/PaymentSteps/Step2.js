@@ -17,6 +17,7 @@ import theme from '../../../../configs/themeVariables';
 import { getPaymentDetails, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
+import { formatDate } from '../../../../utility/Utils';
 
 // eslint-disable-next-line react/prop-types
 const Step2 = ({ setStep }) => {
@@ -89,6 +90,16 @@ const Step2 = ({ setStep }) => {
         setValue('taxId', res.tax_identification?.national_taxpayer_number);
       }
     }
+  };
+
+  const [currentDate, setCurrentDate] = useState(null);
+
+  const handleConfirmed = () => {
+    setIsDocumentConfirmed(true);
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString();
+
+    setCurrentDate(formatDate(formattedDate));
   };
 
   useEffect(() => {
@@ -299,7 +310,7 @@ const Step2 = ({ setStep }) => {
                 </ol>
               </div>
               <div className="d-flex flex-column mt-2">
-                <Label className="fs-5">Sign On :-</Label>
+                <Label className="fs-5">Signed On : {currentDate || ''}</Label>
                 <Col className="d-flex gap-50 mt-1 mb-1">
                   <Input
                     type="checkbox"
@@ -320,11 +331,11 @@ const Step2 = ({ setStep }) => {
                     disabled={isPaymentOnboardingDone || isDocumentConfirmed}
                     onChange={handleSignCheck}
                   />
-                  <Label className="fs-6">I consent to receive tax documents digitaly.</Label>
+                  <Label className="fs-6">I consent to receive tax documents digitally.</Label>
                 </Col>
                 <Button
                   color="primary"
-                  onClick={() => setIsDocumentConfirmed(true)}
+                  onClick={handleConfirmed}
                   className="mt-1 mb-1"
                   style={{ width: '120px' }}
                   disabled={
