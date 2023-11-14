@@ -170,6 +170,9 @@ const PaymentTable = () => {
     isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
     isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
 
+  const isAllMilestonePaid = milestoneData?.every(
+    (mile) => mile.payment_status === PAYMENT_STATUS.PAID || mile.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL,
+  );
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
@@ -357,7 +360,7 @@ const PaymentTable = () => {
               </div>
             )}
 
-            {user.user_type === userTypes.client && (
+            {user.user_type === userTypes.client && !isAllMilestonePaid && (
               <div className="d-flex justify-content-end w-100 mt-5">
                 <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
                   {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}

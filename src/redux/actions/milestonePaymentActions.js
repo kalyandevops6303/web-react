@@ -18,6 +18,9 @@ import {
   milestoneTransactionFailure,
   milestoneTransactionRequest,
   milestoneTransactionSuccess,
+  paymentFeeFailure,
+  paymentFeeRequest,
+  paymentFeeSuccess,
   upcomingPaymentFailure,
   upcomingPaymentRequest,
   upcomingPaymentSuccess,
@@ -45,12 +48,14 @@ const makeMilestonePayment = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-const getApplicationFee = (onSuccess) => async () => {
+const getApplicationFee = (onSuccess) => async (dispatch) => {
+  dispatch(paymentFeeRequest());
   try {
     const res = await applicationFeeService();
+    dispatch(paymentFeeSuccess());
     onSuccess(res.data);
   } catch (error) {
-    errorHandler(error);
+    errorHandler(error, paymentFeeFailure);
   }
 };
 
