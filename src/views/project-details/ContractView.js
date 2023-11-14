@@ -164,14 +164,16 @@ const ContractView = () => {
   const updatedWorkers = moveAllObjectsToBeginning(document?.workers, userData?._id);
 
   const isUserNotSigned = (array, userId) => {
-    const user = array?.find((item) => item.user_id === userId);
-    if (user) {
-      return !user.is_signed;
+    const userRoles = array?.filter((item) => item.user_id === userId);
+    if (userRoles?.length > 0) {
+      // If any role has is_signed as false, return false
+      return !userRoles?.every((role) => role.is_signed);
     }
+    // If userRoles is empty, meaning user not found, return false
     return false;
   };
 
-  if (isLoading && !document) {
+  if (isLoading) {
     return <ComponentSpinner />;
   }
 
@@ -334,13 +336,7 @@ const ContractView = () => {
               <div className="team-sign-section mt-2" style={{ maxHeight: '26rem', overflowY: 'auto' }}>
                 <h6 className="fw-bolder">{updatedWorkers?.length > 0 ? 'Team' : ''} </h6>
                 {updatedWorkers?.map((worker) => (
-                  <div
-                    key={worker?.user_id}
-                    className="d-flex mb-1 justify-content-between"
-                    style={{
-                      width: worker?.user_id?.length === 0 ? '60%' : 'auto',
-                    }}
-                  >
+                  <div key={worker?.user_id} className="d-flex mb-1 justify-content-between">
                     <NameInfo
                       img={worker?.image_uri}
                       name={`${worker?.first_name} ${worker?.last_name}`}
@@ -373,13 +369,16 @@ const ContractView = () => {
                         </Button>
                       ) : worker?.user_id?.length === 0 ? (
                         <Button
+                          disabled={userType === userTypes.client}
                           outline
                           color="primary"
                           type="secondary"
                           className="btn-sm-block mb-25 mt-1"
-                          onClick={() => navigate(`/project-details/${projectInfo?._id}/team`)}
+                          onClick={() =>
+                            (userType === userTypes.client ? {} : navigate(`/project-details/${projectInfo?._id}/team`))
+                          }
                         >
-                          Assign team member
+                          {userType === userTypes.client ? 'Member not yet assigned' : 'Assign team member'}
                         </Button>
                       ) : (
                         <Button
