@@ -220,7 +220,7 @@ const Step1 = ({ setStep }) => {
           </div>
           <div>
             <Button color="primary" outline className="me-2" onClick={onSkipClick}>
-              <span className="me-50">Skip</span>
+              <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
             </Button>
             <Button color="primary" onClick={handleNextClick}>
