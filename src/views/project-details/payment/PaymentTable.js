@@ -251,7 +251,7 @@ const PaymentTable = () => {
                           ) : isTeam ? null : (
                             <td> </td>
                           )}
-                          {isClient ? <td>{}</td> : <td> </td>}
+                          {!isTeam ? <td>{}</td> : null}
                           <td>{item?.name}</td>
                           <td>{}</td>
                           <td className="statusCol">
