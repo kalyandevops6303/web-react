@@ -23,6 +23,9 @@ import { selectSavedUserData, selectUserType } from '../../redux/selectors/authS
 import { userTypes } from '../../utility/constants/Constant';
 import ConfirmContractModal from '../modals/ConfirmContractModal';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import CompleteProfileModal from '../modals/CompleteProfileModal';
+import { getProfilePercentage } from '../../redux/actions/dashboardActions';
 
 const ContractView = () => {
   const navigate = useNavigate();
@@ -32,9 +35,11 @@ const ContractView = () => {
   const [terminateData, setTerminateData] = useState();
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
   const [acceptModalData, setAcceptModalData] = useState();
+  const [completeProfileModal, setCompleteProfileModal] = useState(false);
   const projectInfo = useSelector(projectDetails);
   const userType = useSelector(selectUserType);
   const userData = useSelector(selectSavedUserData);
+  const profilePercentageData = useSelector(profilePercentage);
   const isLoading = useSelector((state) => state.projectDetails?.getDocumentLoading);
   const param = useParams();
   const dispatch = useDispatch();
@@ -96,6 +101,7 @@ const ContractView = () => {
 
   useEffect(() => {
     dispatch(getDocument({ document_id: param?.docId || '', project_id: param?.projectId, doc_type: getDocType() }));
+    dispatch(getProfilePercentage());
   }, []);
 
   const handleOpenAcceptModal = (worker) => {
@@ -105,6 +111,9 @@ const ContractView = () => {
       setIsAcceptModalOpen(true);
       setAcceptModalData({ name: worker?.name, user_id: worker?.user_id, role: worker?.role });
     }
+  };
+  const toggleCompleteProfileModal = () => {
+    setCompleteProfileModal(!completeProfileModal);
   };
 
   const handleSendDocByClient = () => {
@@ -225,6 +234,13 @@ const ContractView = () => {
                           project_id={param?.projectId}
                         />
                       )}
+                      {completeProfileModal && (
+                        <CompleteProfileModal
+                          modal={completeProfileModal}
+                          toggleModal={toggleCompleteProfileModal}
+                          modalInfoText="confirm agreement"
+                        />
+                      )}
                       {!document?.is_terminated && isFreshDoc && userType === userTypes.client && (
                         <span className="icon-bg cursor-pointer" onClick={toggleModal}>
                           <img src={EditImg} alt="edit" />
@@ -334,12 +350,21 @@ const ContractView = () => {
                       {userData?._id === worker?.user_id ? (
                         <Button
                           style={{ minWidth: '14.5rem' }}
-                          onClick={() =>
-                            handleOpenAcceptModal({
-                              name: `${worker?.first_name} ${worker?.last_name}`,
-                              role: worker?.role,
-                            })
-                          }
+                          onClick={() => {
+                            if (
+                              profilePercentageData?.values_missing?.includes('company_name') ||
+                              profilePercentageData?.values_missing?.includes('educational_institute') ||
+                              profilePercentageData?.values_missing?.includes('availability') ||
+                              profilePercentageData?.values_missing?.includes('payment_account')
+                            ) {
+                              toggleCompleteProfileModal();
+                            } else {
+                              handleOpenAcceptModal({
+                                name: `${worker?.first_name} ${worker?.last_name}`,
+                                role: worker?.role,
+                              });
+                            }
+                          }}
                           disabled={isFreshDoc === false || worker?.is_signed}
                           color="primary"
                           className="btn-sm-block mb-25 mt-1"
