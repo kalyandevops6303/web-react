@@ -26,7 +26,6 @@ const PaymentTable = () => {
   const [makePaymentModal, setMakePaymentModal] = useState(false);
   const [feeStructure, setFeeStructure] = useState(null);
   const [open, setOpen] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
 
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const listLoading = useSelector((state) => state.milestonePayment?.listLoading);
@@ -82,21 +81,14 @@ const PaymentTable = () => {
     milestone?.payment_status === PAYMENT_STATUS.PAID ||
     milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
 
-  useEffect(() => {
-    if (isOpen) {
-      dispatch(clearMilestoneTransactions());
-      dispatch(getMilestoneTransactions(projectDetailsData?._id, open, isClient));
-    }
-  }, [isOpen]);
-
   const showMilestoneTransanctions = (milestoneId, item) => {
     if (!isTeam && isPaymentDone(item)) {
       if (open === milestoneId) {
-        setIsOpen(false);
         setOpen(null);
       } else {
-        setIsOpen(true);
         setOpen(milestoneId);
+        dispatch(clearMilestoneTransactions());
+        dispatch(getMilestoneTransactions(projectDetailsData?._id, milestoneId, isClient));
       }
     }
   };
