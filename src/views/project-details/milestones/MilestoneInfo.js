@@ -68,10 +68,11 @@ function MilestoneInfo({ milestonesData, currentIndex }) {
           </span>
         </div>
       ) : null}
-      {milestoneCount > 2 && milestonesData[currentIndex]?._id === firstNonPaidMilestone?._id && (
+      {milestoneCount > 2 && currentIndex > 1 && milestonesData[currentIndex]?._id === firstNonPaidMilestone?._id && (
         <div>
           <span>
-            {`Payment is due at the end of `}
+            <strong>{`${milestonesData[currentIndex]?.name} `}</strong>
+            {`payment is due at the end of `}
             <strong>{`${milestonesData[currentIndex - 2]?.name}`}</strong>
             {` and must be paid before the end of `}
             <strong>{` ${milestonesData[currentIndex - 1]?.name}`}</strong>
