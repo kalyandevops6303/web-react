@@ -49,7 +49,9 @@ const SwitchConfirmModal = ({
   const onSuccess = () => {
     toggleModal();
 
-    if (data?.isDisputesNotification) {
+    if (data?.title === 'Project Accepted') {
+      navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
+    } else if (data?.isDisputesNotification) {
       disputesRedirection(data?.notification_type);
     } else if (data?.isDisputeAlert) {
       disputesAlertRedirection(data?.title);
@@ -102,7 +104,7 @@ const SwitchConfirmModal = ({
             <div className="pe-1 ms-3">
               <h2 className="fw-bold title">Switch Profile</h2>
               <p className="fw-normal mt-1 sub-title">
-                To preform this action you <br /> need to switch to teams profile
+                This action needs to be taken by a Team. Please switch to the relevant Team profile.
               </p>
             </div>
           </div>

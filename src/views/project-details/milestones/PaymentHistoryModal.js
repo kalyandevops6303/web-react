@@ -38,7 +38,6 @@ const PaymentHistoryModal = ({ isOpen, toggleModal, name, role, payments, amount
         <Table responsive className="milestone-table w-100">
           <thead>
             <tr>
-              <th>Transaction ID</th>
               <th>Date</th>
               <th>Status</th>
               <th>Amount</th>
@@ -47,7 +46,6 @@ const PaymentHistoryModal = ({ isOpen, toggleModal, name, role, payments, amount
           <tbody>
             {payments?.map((item) => (
               <tr key={item?._id}>
-                <td className="fw-bolder">#{item?._id}</td>
                 <td>{formatDate(item?.created_at)}</td>
                 <td>
                   <Badge color={item?.status === 'PENDING' ? 'light-danger' : 'light-success'}>{item?.status}</Badge>

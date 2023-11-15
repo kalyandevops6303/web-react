@@ -149,6 +149,35 @@ const MakePaymentModalWrapper = styled.div`
     border: 1px solid #ebe9f1;
   }
 `;
+
+const PrivacyPolicyModalWrapper = styled.div`
+  max-height: 80vh;
+  overflow: auto;
+
+  table {
+    width: 90%;
+
+    .row-bottom-border {
+      border-bottom: 1px solid black;
+    }
+    .row-right-border {
+      border-right: 1px solid black;
+    }
+    .row-left-border {
+      border-left: 1px solid black;
+    }
+    .row-content-top {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+  }
+
+  .underline-text {
+    text-decoration: underline;
+  }
+`;
+
 export {
   RemoveMemberModalWrapper,
   MessageIconWrap,
@@ -156,4 +185,5 @@ export {
   EditContractWrap,
   AcceptModalWrapper,
   MakePaymentModalWrapper,
+  PrivacyPolicyModalWrapper,
 };

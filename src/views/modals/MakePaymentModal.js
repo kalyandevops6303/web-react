@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Badge,
@@ -16,23 +16,36 @@ import {
 } from 'reactstrap';
 import { PropTypes } from 'prop-types';
 import { MakePaymentModalWrapper } from './style';
-import { makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
+import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
 import { PAYMENT_STATUS } from '../../utility/constants/Constant';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
+  const [feeStructre, setFeeStructure] = useState(null);
 
   const dispatch = useDispatch();
 
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const milestoneDataLoading = useSelector((state) => state.milestonePayment?.checkoutLoading);
+  const paymentFeeLoading = useSelector((state) => state.milestonePayment?.paymentFeeLoading);
 
   const filteredMilestones = milestoneData?.filter((milestone) => selectedIds.includes(milestone._id));
 
   const totalAmount = filteredMilestones?.reduce((acc, curr) => acc + curr.estimated_cost, 0);
 
-  const trumioFee = (totalAmount * 20) / 100;
+  const applicationFee = feeStructre?.application_fee;
+  // eslint-disable-next-line no-unsafe-optional-chaining
+  const trumioFee = (totalAmount * applicationFee?.percentage) / 100;
   const totalPending = totalAmount + trumioFee;
+
+  const onGetApplicationFee = (data) => {
+    setFeeStructure(data);
+  };
+
+  useEffect(() => {
+    dispatch(getApplicationFee(onGetApplicationFee));
+  }, []);
 
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
@@ -80,12 +93,30 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
     dispatch(makeMilestonePayment(payload, onSuccess));
   };
 
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
+  const isFirstTwoMilestonePaid =
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
+    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
+
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
     paymentStatus === PAYMENT_STATUS.INITIATED ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_PROCESSING;
 
+  const isPaymentDisabled = () => {
+    if (selectedIds.length === 0) {
+      return true;
+    }
+    if (milestoneData?.length === 1) return false;
+    if (!isFirstTwoMilestonePaid && selectedIds?.length < 2) {
+      return true;
+    }
+    return false;
+  };
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={onClose} />
@@ -93,17 +124,20 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
         <MakePaymentModalWrapper>
           <CardTitle className="d-flex justify-content-center modal-header">Milestone Payment</CardTitle>
           <div className="px-4">
-            <CardTitle className="modal-title">Let&apos;s Start!</CardTitle>
             <CardText className="mt-1">
-              In order for the project to start, at any given point of time minimum of 2 milestone payments needs to be
-              made.
+              At any given point of time a minimum of 2 milestone payments need to be paid. This does not apply for
+              projects with only 1 milestone.
             </CardText>
             <CardText>
-              <b>Note: </b> Insufficient funds will result in putting the upcoming milestone on hold
+              <b>Note: </b> Without the minimum milestone payment the project will be put on hold.
             </CardText>
             {milestoneData?.length > 0 &&
               milestoneData.map((item) => (
-                <Card style={{ height: '55px' }} className="d-flex justify-content-center" key={item._id}>
+                <Card
+                  style={{ height: '55px', backgroundColor: selectedIds.includes(item._id) ? '#0185E41F' : 'white' }}
+                  className="d-flex justify-content-center"
+                  key={item._id}
+                >
                   <CardBody className="d-flex justify-content-between">
                     <div className="d-flex">
                       <Input
@@ -136,22 +170,40 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                   </CardBody>
                 </Card>
               ))}
-            <div className="d-flex justify-content-between px-1">
-              <CardText style={{ fontSize: '16px' }}>Trumio Fee 20%</CardText>
-              <CardText style={{ fontSize: '16px' }}>{`$ ${trumioFee.toLocaleString()}`}</CardText>
-            </div>
-            <hr className="m-0 card-header-border" />
-            <div className="d-flex justify-content-between p-1">
-              <CardText style={{ fontSize: '16px', fontWeight: '500' }}>Inclusive of Trumio fee 20%</CardText>
-              <CardText
-                style={{ fontSize: '16px', fontWeight: '500' }}
-              >{`$ ${totalPending.toLocaleString()}`}</CardText>
-            </div>
-            <div className="d-flex justify-content-end py-1">
-              <Button color="primary" onClick={handlePayment} disabled={selectedMilestoneIds.length === 0}>
-                {milestoneDataLoading ? <Spinner size="sm" /> : `Pay $ ${totalPending.toLocaleString()}`}
-              </Button>
-            </div>
+            {paymentFeeLoading ? (
+              <ComponentSpinner size="sm" />
+            ) : (
+              <>
+                <div className="d-flex justify-content-between px-1">
+                  <CardText style={{ fontSize: '16px' }}>{`${applicationFee?.name ?? ''} (${
+                    applicationFee?.percentage ?? 0
+                  }%)`}</CardText>
+                  <CardText style={{ fontSize: '16px' }}>{`$ ${
+                    Number.isNaN(trumioFee) ? 0 : trumioFee.toLocaleString()
+                  }`}</CardText>
+                </div>
+                <hr className="m-0 card-header-border" />
+                <div className="d-flex justify-content-between p-1">
+                  <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
+                    {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
+                  </CardText>
+                  <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${
+                    Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()
+                  }`}</CardText>
+                </div>
+              </>
+            )}
+            {paymentFeeLoading ? null : (
+              <div className="d-flex justify-content-end py-1">
+                <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled()}>
+                  {milestoneDataLoading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    `Pay $ ${Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()}`
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
         </MakePaymentModalWrapper>
       </ModalBody>

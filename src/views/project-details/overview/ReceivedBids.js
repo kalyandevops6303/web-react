@@ -254,10 +254,7 @@ const ReceivedBids = ({ projectName }) => {
       </AccordionHeader>
       <AccordionBody accordionId="1">
         <div className="accordion-body-desc">
-          <CardText className="desc mb-0">
-            Your proposal request has reached the best solution partners around the globe. Below are the list of
-            solution partner that have submitted bid for your proposal request.
-          </CardText>
+          <CardText className="desc mb-0">Please review the bids received for your project</CardText>
           <Row className="justify-content-between w-100 mb-2">
             <Col className="d-flex align-items-end" sm="12" md="12" lg="5">
               <InputGroup className="input-group-merge">

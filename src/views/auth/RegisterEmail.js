@@ -21,6 +21,8 @@ import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectEmail, selectUserType } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
 import theme from '../../configs/themeVariables';
+import PrivacyPolicyModal from '../modals/PrivacyPolicyModal';
+import TermsModal from '../modals/TermsModal';
 
 const RegisterEmail = () => {
   const navigate = useNavigate();
@@ -36,6 +38,12 @@ const RegisterEmail = () => {
   }, [userType, navigate]);
 
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [privacyPolicyModal, setPrivacyPolicyModal] = useState(null);
+  const [termsModal, setTermsModal] = useState(null);
+
+  const togglePrivacyPolicyModal = () => setPrivacyPolicyModal(!privacyPolicyModal);
+
+  const toggleTermsModal = () => setTermsModal(!termsModal);
 
   const schema = yup.object().shape({
     email: validations.email.email('Invalid email address').required('Email is required'),
@@ -68,6 +76,8 @@ const RegisterEmail = () => {
 
   return (
     <OnBoardWrap>
+      {privacyPolicyModal && <PrivacyPolicyModal modal={privacyPolicyModal} toggleModal={togglePrivacyPolicyModal} />}
+      {termsModal && <TermsModal modal={termsModal} toggleModal={toggleTermsModal} />}
       <div className="card-onboard">
         <LogoComp />
         <CardTitle tag="h1" className="card-title-onboard">
@@ -98,8 +108,8 @@ const RegisterEmail = () => {
             {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
           </div>
           <div className="form-check mb-1">
-            <div className="d-flex justify-content-between align-items-center">
-              <Label color="primary" className="form-check-label" for="remember-me">
+            <div className="d-flex justify-content-between align-items-center checkbox-custom-label">
+              <Label className="form-check-label" for="remember-me">
                 <small>
                   <Controller
                     type="checkbox"
@@ -127,11 +137,17 @@ const RegisterEmail = () => {
 
               <Label color={theme.primary} className="mb-0 ">
                 <small className="privacy-terms-label">
-                  <u>Privacy policy </u>
+                  <u className="cursor-pointer" onClick={() => setPrivacyPolicyModal(true)}>
+                    Privacy Policy
+                  </u>
                 </small>
-                <small className="privacy-terms-label">&</small>
+                <small>
+                  {'  '}&{'  '}
+                </small>
                 <small className="privacy-terms-label">
-                  <u>Terms</u>
+                  <u className="cursor-pointer" onClick={() => setTermsModal(true)}>
+                    Terms
+                  </u>
                 </small>
               </Label>
             </div>
@@ -147,7 +163,7 @@ const RegisterEmail = () => {
             {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>
         </Form>
-        <div className="divider my-2">
+        <div className="divider my-2 custom-divider">
           <div className="divider-text">Or</div>
         </div>
 

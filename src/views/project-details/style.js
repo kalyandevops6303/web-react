@@ -192,6 +192,7 @@ const BidWrapper = styled.div`
     text-decoration: underline;
     color: ${theme.activeNavPillText};
     cursor: pointer;
+    font-weight: 500;
   }
   .indicator {
     height: 0.5rem;
@@ -360,8 +361,16 @@ const AccordionHeadStyle = styled.div`
     color: ${theme.activeColor};
     text-decoration: underline;
     margin: auto 1rem auto auto;
-    font-weight: 400;
+    font-weight: 500;
   }
+  .view-card-cta {
+    font-size: 1rem;
+    color: ${theme.activeColor};
+    text-decoration: underline;
+    margin: auto 1rem auto auto;
+    font-weight: 500;
+  }
+
   .key {
     color: ${theme.bodyColor};
     font-size: 0.75rem;

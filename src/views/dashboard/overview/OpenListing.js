@@ -40,6 +40,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
   const navigate = useNavigate();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
+  const dispatch = useDispatch();
 
   const onAddDetailsClick = (path) => {
     navigate(path, {
@@ -69,7 +70,10 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
           </div>
           {active && (
             <div
-              onClick={() => navigate('/marketplace/all_listings')}
+              onClick={() => {
+                dispatch(setActiveNavTab('marketplace'));
+                navigate('/marketplace/all_listings');
+              }}
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
             >
               Explore Projects
@@ -96,7 +100,10 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
           ) : (
             <div
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
-              onClick={() => navigate('/marketplace/teams')}
+              onClick={() => {
+                dispatch(setActiveNavTab('marketplace'));
+                navigate('/marketplace/teams');
+              }}
             >
               View Teams
             </div>
@@ -180,7 +187,7 @@ const OpenListing = () => {
           <>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Projects Bids</span>
+                <span className="d-flex align-items-center">Received Bids</span>
                 {projectsBidsForClientData?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/my_bids')} className="view-all-cta">
                     View All

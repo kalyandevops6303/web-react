@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/require-default-props */
 // ** Third Party Components
 import PropTypes from 'prop-types';
@@ -14,16 +15,34 @@ import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { ProjectWrapper } from './style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 
-const UserSection = ({ totalCount, users, name }) => (
+const UserSection = ({ totalCount, users, name, projectName }) => (
   <div className="user-section">
     <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
-          <AvatarGroup totalCount={totalCount} size="sm" className="mr-4" data={users.slice(0, 3)} />
+          <AvatarGroup
+            totalCount={totalCount}
+            size="sm"
+            className="mr-4"
+            data={[
+              ...users.slice(0, 3).map((user) => ({
+                ...user,
+                tooltipId: `${projectName ?? name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
+              })),
+            ]}
+          />
         </span>
       ) : (
-        <AvatarGroup size="sm" data={users} />
+        <AvatarGroup
+          size="sm"
+          data={[
+            ...users?.map((user) => ({
+              ...user,
+              tooltipId: `${projectName ?? name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
+            })),
+          ]}
+        />
       )}
     </div>
   </div>
@@ -33,6 +52,7 @@ UserSection.propTypes = {
   users: PropTypes.array,
   name: PropTypes.string,
   totalCount: PropTypes.number,
+  projectName: PropTypes.string,
 };
 
 const TeamInvitaionCard = ({ data, className }) => {
@@ -73,6 +93,7 @@ const TeamInvitaionCard = ({ data, className }) => {
             tagName="Team"
             name={data?.name}
             users={users}
+            projectName={data?.project?.name}
           />
           <div className="design-planning-wrapper pt-5 d-none">
             <div className="design-planning">

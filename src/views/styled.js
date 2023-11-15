@@ -32,7 +32,8 @@ const Header = styled.div`
 
 const CustomBadge = styled.span`
   .light-blue,
-  .NEW {
+  .NEW,
+  .ACTIVE {
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
   }
