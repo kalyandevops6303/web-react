@@ -1,11 +1,11 @@
-name: frontend-uat
+name: frontend-prod
 on:
   workflow_dispatch:
   push:
     # branches:
     #   - uat
     tags:
-      - 'uat_v*'
+      - 'v*'
 
 jobs:
   build-and-deploy:
@@ -31,4 +31,4 @@ jobs:
       uses: TravisSpomer/deploy-to-azure-storage@v1.5.0
       with:
         source-path: dist
-        sas-url: ${{ secrets.FE_UAT_SAS_URL }}
+        sas-url: ${{ secrets.FE_PROD_SAS_URL }}
