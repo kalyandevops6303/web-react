@@ -82,8 +82,7 @@ const PrivateDashboard = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability') ||
-      profilePercentageData?.values_missing?.includes('payment_account')
+      profilePercentageData?.values_missing?.includes('availability')
     ) {
       setCompleteProfileModalInfoText('create project');
       setCompleteProfileModal(true);
@@ -101,8 +100,7 @@ const PrivateDashboard = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability') ||
-      profilePercentageData?.values_missing?.includes('payment_account')
+      profilePercentageData?.values_missing?.includes('availability')
     ) {
       setCompleteProfileModalInfoText('create team');
       setCompleteProfileModal(true);
@@ -119,8 +117,7 @@ const PrivateDashboard = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability') ||
-      profilePercentageData?.values_missing?.includes('payment_account')
+      profilePercentageData?.values_missing?.includes('availability')
     ) {
       setCompleteProfileModalInfoText('join team');
       setCompleteProfileModal(true);

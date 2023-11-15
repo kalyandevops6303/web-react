@@ -107,7 +107,10 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
           ) : (
             <div
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
-              onClick={() => navigate('/marketplace/teams')}
+              onClick={() => {
+                navigate('/marketplace/teams');
+                dispatch(setActiveNavTab('marketplace'));
+              }}
             >
               View Teams
             </div>
