@@ -163,8 +163,13 @@ const RegisterEmail = () => {
             {isLoading ? <Spinner size="sm" /> : 'Submit'}
           </Button>
         </Form>
-        <div className="divider my-2 custom-divider">
+        {/* <div className="divider my-2 custom-divider">
           <div className="divider-text">Or</div>
+        </div> */}
+        <div className="my-2 custom-divider">
+          <span className="custom-line" />
+          <p className="custom-divider-text m-0 px-1">Or</p>
+          <span className="custom-line" />
         </div>
 
         <SigninWithGoogle title="Sign Up" />

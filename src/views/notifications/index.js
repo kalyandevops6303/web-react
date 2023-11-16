@@ -128,6 +128,8 @@ const Notifications = () => {
       });
     } else if (isDisputesNotification(data?.notification_type)) {
       disputesRedirection(data?.notification_type);
+    } else if (data?.title === 'Milestone Submitted') {
+      navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
     } else if (data?.title === 'Project Accepted') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
     } else {
