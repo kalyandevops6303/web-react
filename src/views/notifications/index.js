@@ -134,10 +134,16 @@ const Notifications = () => {
     }
   };
 
+  const dashboardRedirection = () => {
+    navigate(`/dashboard`);
+  };
+
   const handleNotification = (data) => {
     setSwitchData({
       ...data,
       isDisputesNotification: isDisputesNotification(data?.notification_type),
+      // eslint-disable-next-line no-unneeded-ternary
+      isDashboardRedirection: data?.title === 'Team Created' || data?.title === 'Team Member Added' ? true : false,
     });
 
     if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
@@ -247,6 +253,7 @@ const Notifications = () => {
             modal={switchProfileModal}
             toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
             disputesRedirection={disputesRedirection}
+            dashboardRedirection={dashboardRedirection}
           />
         )}
       </InfiniteScroll>

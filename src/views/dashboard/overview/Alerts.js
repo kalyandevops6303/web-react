@@ -135,8 +135,12 @@ const Alerts = () => {
 
   const handleView = (data) => {
     // setSwitchProfileModal(true);
-
-    setSwitchData({ ...data, isDisputeAlert: isDisputesNotification(data?.title) });
+    setSwitchData({
+      ...data,
+      isDisputeAlert: isDisputesNotification(data?.title),
+      // eslint-disable-next-line no-unneeded-ternary
+      isDashboardRedirection: data?.title === 'Team Created' || data?.title === 'Team Member Added' ? true : false,
+    });
 
     if (userDetailsData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
       setSwitchProfileModal(true);
@@ -160,6 +164,11 @@ const Alerts = () => {
   const handleRedirection = () => {
     navigate('/notifications');
   };
+
+  const dashboardRedirection = () => {
+    navigate(`/dashboard`);
+  };
+
   return (
     <AlertCardWrapper>
       <Card>
@@ -299,6 +308,7 @@ const Alerts = () => {
           modal={switchProfileModal}
           toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
           disputesAlertRedirection={disputesAlertRedirection}
+          dashboardRedirection={dashboardRedirection}
         />
       )}
     </AlertCardWrapper>
