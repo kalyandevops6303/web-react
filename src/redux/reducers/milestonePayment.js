@@ -9,6 +9,7 @@ const initialState = {
   checkoutLoading: false,
   transactionLoading: false,
   upcomingPaymentDataLoading: false,
+  paymentFeeLoading: false,
   error: null,
 };
 
@@ -79,6 +80,21 @@ const milestonePaymentSlice = createSlice({
       upcomingPaymentDataLoading: false,
     }),
 
+    paymentFeeRequest: (state) => ({
+      ...state,
+      paymentFeeLoading: true,
+      error: null,
+    }),
+    paymentFeeSuccess: (state) => ({
+      ...state,
+      paymentFeeLoading: false,
+    }),
+    paymentFeeFailure: (state, action) => ({
+      ...state,
+      error: action.payload,
+      paymentFeeLoading: false,
+    }),
+
     clearPaymentListingData: (state) => ({
       ...state,
       milestoneListDetails: null,
@@ -118,5 +134,8 @@ export const {
   upcomingPaymentFailure,
   upcomingPaymentRequest,
   upcomingPaymentSuccess,
+  paymentFeeFailure,
+  paymentFeeRequest,
+  paymentFeeSuccess,
 } = milestonePaymentSlice.actions;
 export default milestonePaymentSlice.reducer;

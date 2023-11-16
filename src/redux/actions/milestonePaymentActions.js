@@ -1,5 +1,6 @@
 import {
   milestoneTransactionsServiceForClient,
+  milestoneTransactionsServiceForTeam,
   projectMilestonesService,
 } from '../../services/projectMilestoneService';
 import {
@@ -18,6 +19,9 @@ import {
   milestoneTransactionFailure,
   milestoneTransactionRequest,
   milestoneTransactionSuccess,
+  paymentFeeFailure,
+  paymentFeeRequest,
+  paymentFeeSuccess,
   upcomingPaymentFailure,
   upcomingPaymentRequest,
   upcomingPaymentSuccess,
@@ -45,20 +49,28 @@ const makeMilestonePayment = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-const getApplicationFee = (onSuccess) => async () => {
+const getApplicationFee = (onSuccess) => async (dispatch) => {
+  dispatch(paymentFeeRequest());
   try {
     const res = await applicationFeeService();
+    dispatch(paymentFeeSuccess());
     onSuccess(res.data);
   } catch (error) {
-    errorHandler(error);
+    errorHandler(error, paymentFeeFailure);
   }
 };
 
-const getMilestoneTransactions = (projectId, milestoneId) => async (dispatch) => {
+const getMilestoneTransactions = (projectId, milestoneId, isClient) => async (dispatch) => {
   dispatch(milestoneTransactionRequest());
+  let res = null;
   try {
-    const res = await milestoneTransactionsServiceForClient(projectId, milestoneId);
-    dispatch(milestoneTransactionSuccess(res.data.data));
+    if (isClient) {
+      res = await milestoneTransactionsServiceForClient(projectId, milestoneId);
+      dispatch(milestoneTransactionSuccess(res.data.data));
+    } else {
+      res = await milestoneTransactionsServiceForTeam(projectId, milestoneId);
+      dispatch(milestoneTransactionSuccess(res.data.data.my_payments));
+    }
   } catch (error) {
     errorHandler(error, milestoneTransactionFailure);
   }

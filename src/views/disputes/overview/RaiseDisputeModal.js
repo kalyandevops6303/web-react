@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import '../../custom-styles.scss';
@@ -17,7 +17,7 @@ import { raiseDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 import { disputeStatuses } from '../../../utility/constants/Constant';
 import ShowToastMessage from '../../../@core/components/toast';
 
-const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter }) => {
+const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail }) => {
   const DisputeSchema = yup.object().shape({
     projectName: yup
       .object()
@@ -43,6 +43,7 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter }) => {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -116,6 +117,14 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter }) => {
       return { options: [] };
     }
   };
+
+  useEffect(() => {
+    if (projectDetail) {
+      setValue('projectName', projectDetail);
+    } else {
+      setValue('projectName', undefined);
+    }
+  }, []);
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered">
@@ -219,10 +228,12 @@ RaiseDisputeModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   primaryFilter: Proptypes.string,
+  projectDetail: Proptypes.object,
 };
 
 RaiseDisputeModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   primaryFilter: '',
+  projectDetail: null,
 };

@@ -58,6 +58,11 @@ const CompleteProfileDetailsCta = {
       label: 'Complete Your Profile',
       path: '/create-team/profile-details',
     },
+    {
+      keyToMatch: 'payment_account',
+      label: 'Add Payment Details',
+      path: `/${userOnboarding.talent}/payment-details`,
+    },
   ],
 };
 
@@ -72,7 +77,7 @@ const returnCompleteProfileDetailsCta = (userType, missingValues) => {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'educational_institute');
   } else if (missingValues?.includes('availability')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'availability');
-  } else if (userType === 'TALENT' && missingValues?.includes('payment_account')) {
+  } else if (missingValues?.includes('payment_account')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'payment_account');
   } else if (missingValues?.includes('social_links')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'social_links');

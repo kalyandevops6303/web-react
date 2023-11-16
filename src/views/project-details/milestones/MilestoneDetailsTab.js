@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import RaiseDisputeModal from '../../disputes/overview/RaiseDisputeModal';
 import { formatDate, isFileValid, renderFilePreview, renderFileSize } from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
-import { userTypes } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { milestoneFileUploadService, submitMilestoneService } from '../../../services/projectMilestoneService';
 import { transferFundService } from '../../../services/paymentDetailService';
 import errorHandler from '../../../utility/errorHandler';
@@ -20,6 +20,7 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import { CustomBadge } from '../../styled';
+import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
 const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
@@ -31,6 +32,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [documents, setDocuments] = useState(selectedMilestone.documents);
 
   const userDataLocal = useSelector(selectAuthUserData);
+  const projectDetailsData = useSelector(projectDetails);
 
   const submitMilestone = async () => {
     setIsLoading(true);
@@ -143,6 +145,10 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     COMPLETED: 'COMPLETED',
   };
 
+  const isPaymentDone = (milestone) =>
+    milestone?.payment_status === PAYMENT_STATUS.PAID ||
+    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
   return (
     <div>
       {raiseDisputeModal && (
@@ -150,6 +156,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           modal={raiseDisputeModal}
           toggleModal={() => setRaiseDisputeModal(!raiseDisputeModal)}
           primaryFilter="all"
+          projectDetail={{ label: projectDetailsData?.details?.name, value: projectDetailsData?._id }}
         />
       )}
       <Card className="gray-card">
@@ -358,7 +365,11 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
             {clientButtonText}
           </Button>
         ) : isEditable ? (
-          <Button onClick={() => submitMilestone()} disabled={teamButtonText !== 'Submit'} color="primary">
+          <Button
+            onClick={() => submitMilestone()}
+            disabled={teamButtonText !== 'Submit' || !isPaymentDone(selectedMilestone)}
+            color="primary"
+          >
             {isLoading ? <Spinner className="me-1" size="sm" /> : null}
             {teamButtonText}
           </Button>
