@@ -42,6 +42,8 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
 
+  const dispatch = useDispatch();
+
   const onAddDetailsClick = (path) => {
     navigate(path, {
       state: { isEditing: true },
@@ -70,7 +72,10 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
           </div>
           {active && (
             <div
-              onClick={() => navigate('/marketplace/all_listings')}
+              onClick={() => {
+                navigate('/marketplace/all_listings');
+                dispatch(setActiveNavTab('marketplace'));
+              }}
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
             >
               Explore Projects
@@ -89,13 +94,22 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
             </div>
           ) : recommended ? (
             <div
-              onClick={() => navigate('/marketplace/all_listings')}
+              onClick={() => {
+                navigate('/marketplace/all_listings');
+                dispatch(setActiveNavTab('marketplace'));
+              }}
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
             >
               Explore Projects
             </div>
           ) : (
-            <div className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer">
+            <div
+              onClick={() => {
+                navigate('/marketplace/talents');
+                dispatch(setActiveNavTab('marketplace'));
+              }}
+              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+            >
               Invite Talent
             </div>
           )}

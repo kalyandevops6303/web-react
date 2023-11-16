@@ -51,7 +51,9 @@ const SwitchConfirmModal = ({
   const onSuccess = () => {
     toggleModal();
 
-    if (data?.isDisputesNotification) {
+    if (data?.title === 'Project Accepted') {
+      navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
+    } else if (data?.isDisputesNotification) {
       disputesRedirection(data?.notification_type);
     } else if (data?.isDisputeAlert) {
       disputesAlertRedirection(data?.title);

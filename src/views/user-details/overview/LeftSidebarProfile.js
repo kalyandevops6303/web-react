@@ -107,8 +107,7 @@ const LeftSidebarProfile = ({
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability') ||
-      profilePercentageData?.values_missing?.includes('payment_account')
+      profilePercentageData?.values_missing?.includes('availability')
     ) {
       setCompleteProfileModal(true);
       setModalInformationText('accept request');
@@ -200,8 +199,7 @@ const LeftSidebarProfile = ({
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability') ||
-      profilePercentageData?.values_missing?.includes('payment_account')
+      profilePercentageData?.values_missing?.includes('availability')
     ) {
       setCompleteProfileModal(true);
       setModalInformationText('join team');

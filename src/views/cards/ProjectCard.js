@@ -49,6 +49,7 @@ const ProjectCard = ({
     LISTING_EXPIRED: 'Listing Expired',
     COMPLETED: 'Completed',
     ON_GOING: 'On Going',
+    ACTIVE: 'Active',
   };
   // const giveStrokeColor = (percentage) => {
   //   if (percentage <= 40) {

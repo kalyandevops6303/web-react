@@ -27,9 +27,9 @@ const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleMod
               <section className="d-flex gap-2 stats">
                 <div>
                   <CardText className="value mb-25">
-                    {`${data?.request_from?.first_name} ${data?.request_from?.last_name}` || 'Talent/Team name'}
+                    {`${data?.request_from?.team_name}` || 'Talent/Team name'}
                   </CardText>
-                  <small className="key d-block">{data?.request_from?.role}</small>
+                  <small className="key d-block">{data?.request_from?.user_type ? 'Team name' : ''}</small>
                 </div>
                 <div className="d-none">
                   <CardText className="value mb-25">$-</CardText>
