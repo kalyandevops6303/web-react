@@ -20,6 +20,7 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import { CustomBadge } from '../../styled';
+import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
 const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
@@ -31,6 +32,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [documents, setDocuments] = useState(selectedMilestone.documents);
 
   const userDataLocal = useSelector(selectAuthUserData);
+  const projectDetailsData = useSelector(projectDetails);
 
   const submitMilestone = async () => {
     setIsLoading(true);
@@ -154,6 +156,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           modal={raiseDisputeModal}
           toggleModal={() => setRaiseDisputeModal(!raiseDisputeModal)}
           primaryFilter="all"
+          projectDetail={{ label: projectDetailsData?.details?.name, value: projectDetailsData?._id }}
         />
       )}
       <Card className="gray-card">

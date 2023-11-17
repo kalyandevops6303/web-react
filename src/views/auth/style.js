@@ -210,8 +210,17 @@ export const OnBoardWrap = styled.div`
   }
 
   .custom-divider {
-    .divider-text {
+    .custom-divider-text {
+      font-size: 14px;
       color: ${theme.headingTextColor};
+    }
+
+    display: flex;
+    align-items: center;
+
+    .custom-line {
+      width: 50%;
+      border-bottom: 1px solid #ebe9f1;
     }
   }
 `;

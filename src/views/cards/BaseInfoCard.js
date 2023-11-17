@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
+import AvatarGroup from '@components/avatar-group';
 import { Heart } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -91,6 +92,16 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
     }
   };
 
+  const avatarGroup = data?.bidder_details?.workers?.length
+    ? data?.bidder_details?.workers?.map((worker) => ({
+        title: `${worker?.first_name} ${worker?.last_name}`,
+        img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
+        placement: 'bottom',
+        imgHeight: 33,
+        imgWidth: 33,
+      }))
+    : [];
+
   return (
     <div>
       <div className="d-flex justify-content-end">
@@ -144,15 +155,30 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
           ) : null}
         </div>
       </div>
-      <div className="d-flex mb-2 align-items-center">
-        <img
-          className="market-place-card-photo me-75"
-          src={getImage()}
-          alt="avatar"
-          width={40}
-          height={50}
-          style={{ objectFit: 'cover' }}
-        />
+      <div className="d-flex mb-25 align-items-center">
+        {data?.bidder_details ? (
+          <div>
+            {data?.bidder_details?.user_type === userTypes.talent && (
+              <img
+                className="market-place-card-photo me-75"
+                src={getImage()}
+                alt="avatar"
+                width={40}
+                height={50}
+                style={{ objectFit: 'cover' }}
+              />
+            )}
+          </div>
+        ) : (
+          <img
+            className="market-place-card-photo me-75"
+            src={getImage()}
+            alt="avatar"
+            width={40}
+            height={50}
+            style={{ objectFit: 'cover' }}
+          />
+        )}
         <div className="d-flex w-100 align-items-center">
           <div onClick={(e) => handleNavigate(e)} className="flex-grow-1">
             <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
@@ -197,6 +223,22 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
           </div>
         </div>
       </div>
+      {data?.bidder_details && data?.bidder_details?.user_type === userTypes.team ? (
+        <div className="mb-2">
+          {avatarGroup?.length > 3 ? (
+            <AvatarGroup
+              totalCount={data?.bidder_details?.workers?.length || 0}
+              size="sm"
+              className="ms-25 mb-50"
+              data={avatarGroup?.slice(0, 3)}
+            />
+          ) : (
+            <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
+          )}
+        </div>
+      ) : (
+        <div className="mb-2" />
+      )}
       <div>
         <BadgeGroup
           title="Skills"
