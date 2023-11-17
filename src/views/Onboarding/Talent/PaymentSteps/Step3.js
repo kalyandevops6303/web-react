@@ -15,9 +15,9 @@ import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
 import { returnFilteredDropdownOptions } from '../../../../utility/Utils';
 import { countriesService } from '../../../../services/staticServices';
-import { getStates, getCities } from '../../../../redux/actions/staticActions';
+import { getStates, getCities, getCountries } from '../../../../redux/actions/staticActions';
 import { getPaymentDetails, setupStripeAccount, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
-import { states, statesLoading, cities, citiesLoading } from '../../../../redux/selectors/staticSelectors';
+import { states, statesLoading, cities, citiesLoading, countries } from '../../../../redux/selectors/staticSelectors';
 import CertificationUS from './CertificationUs';
 import CertificationNonUs from './CertificationNonUs';
 import AccountCreatedModal from '../../AccountCreatedModal';
@@ -43,6 +43,7 @@ const Step3 = ({ setStep }) => {
   const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
   const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
 
+  const countriesData = useSelector(countries);
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
   const citiesData = useSelector(cities);
@@ -217,7 +218,19 @@ const Step3 = ({ setStep }) => {
   };
 
   useEffect(() => {
+    if (countriesData?.length > 0 && paymentDetailsRes && paymentDetailsRes?.tax_user_type === 'US') {
+      const unitedStates = countriesData.find((country) => country.name === 'United States');
+
+      setValue('citizen', {
+        label: unitedStates?.name,
+        value: unitedStates?._id,
+      });
+    }
+  }, [countriesData, paymentDetailsRes]);
+
+  useEffect(() => {
     dispatch(getPaymentDetails(onGetPaymentDetailsSuccess));
+    dispatch(getCountries());
   }, []);
 
   const handleTaxPayerNoOption = (e) => {
@@ -309,6 +322,7 @@ const Step3 = ({ setStep }) => {
     const newData = {
       ...wDetails,
     };
+
     dispatch(updatePaymentDetails(newData, onSuccess));
   };
 
@@ -362,6 +376,7 @@ const Step3 = ({ setStep }) => {
                     render={({ field }) => (
                       <AsyncPaginate
                         {...field}
+                        isDisabled={isUsPerson}
                         loadOptions={loadCountriesOptions}
                         classNamePrefix="select"
                         placeholder="Select your country"
