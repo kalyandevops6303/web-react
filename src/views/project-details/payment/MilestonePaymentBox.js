@@ -44,7 +44,17 @@ function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, 
           />
 
           <div className="d-flex flex-column" style={{ marginTop: '-2px' }}>
-            <Label for={id} className="text-truncate" style={{ marginLeft: '10px', fontSize: '16px' }}>
+            <Label
+              for={id}
+              style={{
+                marginLeft: '10px',
+                fontSize: '16px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                width: '150px',
+              }}
+            >
               {milestoneName}
             </Label>
             <Badge color={getTagSettings(paymentStatus).theme} style={{ width: 'fit-content', marginLeft: '10px' }}>
