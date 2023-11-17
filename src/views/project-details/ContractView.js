@@ -284,11 +284,6 @@ const ContractView = () => {
                           modalInfoText="confirm agreement"
                         />
                       )}
-                      {!document?.is_terminated && isFreshDoc && userType === userTypes.client && (
-                        <span className="icon-bg cursor-pointer" onClick={toggleModal}>
-                          <img src={EditImg} alt="edit" />
-                        </span>
-                      )}
 
                       {isEditModalOpen && (
                         <EditContractModal

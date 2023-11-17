@@ -98,6 +98,7 @@ const LeftSidebarProjectDetails = () => {
           modal={deleteModal}
           toggleModal={() => setDeleteModal(!deleteModal)}
           data={deleteModalData}
+          workers={projectDetailsData?.worker_details}
         />
       )}
       <Card>
@@ -112,7 +113,60 @@ const LeftSidebarProjectDetails = () => {
           </div>
           <CardTitle className="title">{projectDetailsData?.details?.name}</CardTitle>
 
-          <div className="d-flex">
+          {projectDetailsData?.worker_details?.entity_type && userData?.user_type === userTypes.client ? (
+            <div className="d-flex">
+              <Avatar
+                img={
+                  // eslint-disable-next-line no-nested-ternary
+                  projectDetailsData?.worker_details?.entity_type === userTypes.talent
+                    ? projectDetailsData?.worker_details?.image_uri || defaultAvatar
+                    : projectDetailsData?.worker_details?.entity_type === userTypes.team
+                    ? projectDetailsData?.worker_details?.team_logo || defaultAvatar
+                    : defaultAvatar
+                }
+                imgHeight="35"
+                imgWidth="35"
+                className="project-details-card-photo me-1 mt-50"
+              />
+              <div>
+                <CardText className="mb-0 ms-25">
+                  {projectDetailsData?.worker_details?.entity_type === userTypes.talent
+                    ? `${projectDetailsData?.worker_details?.first_name} 
+                      ${projectDetailsData?.worker_details?.last_name}`
+                    : projectDetailsData?.worker_details?.name}
+                </CardText>
+                <div className="d-flex flex-wrap">
+                  <RatingBadge number={returnFormattedRating(projectDetailsData?.worker_details?.rating) || 0} />
+                  <CardText className="ps-75 font-small-2 fw-300 rating-label">
+                    {projectDetailsData?.worker_details?.projects_worked_on_count || 0} Projects
+                  </CardText>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="d-flex">
+              <Avatar
+                img={
+                  projectDetailsData?.client_details?.company_logo?.length > 0
+                    ? projectDetailsData?.client_details?.company_logo
+                    : defaultAvatar
+                }
+                imgHeight="35"
+                imgWidth="35"
+                className="project-details-card-photo me-1 mt-50"
+              />
+              <div>
+                <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
+                <div className="d-flex flex-wrap">
+                  <RatingBadge number={returnFormattedRating(projectDetailsData?.client_details?.rating) || 0} />
+                  <CardText className="ps-75 font-small-2 fw-300 rating-label">
+                    {projectDetailsData?.client_details?.projects_listed_count || 0} Projects
+                  </CardText>
+                </div>
+              </div>
+            </div>
+          )}
+          {/* <div className="d-flex">
             <Avatar
               img={
                 projectDetailsData?.client_details?.company_logo?.length > 0
@@ -132,7 +186,7 @@ const LeftSidebarProjectDetails = () => {
                 </CardText>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <section className="stats d-flex mt-2 justify-content-between ">
             {!projectDetailsData?.pay_type?.variable_cost && (
@@ -187,9 +241,13 @@ const LeftSidebarProjectDetails = () => {
           {userData?.user_type === userTypes.client && (
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                <Button className="w-50" color="danger" onClick={handleDelete}>
-                  Terminate
-                </Button>
+                {(projectDetailsData?.status === 'OPEN' ||
+                  projectDetailsData?.status === 'IN_REVIEW' ||
+                  projectDetailsData?.status === 'ACTIVE') && (
+                  <Button className="w-50" color="danger" onClick={handleDelete}>
+                    Terminate
+                  </Button>
+                )}
                 {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') && (
                   <Button className="w-50" color="primary" onClick={handleInvite}>
                     Invite
