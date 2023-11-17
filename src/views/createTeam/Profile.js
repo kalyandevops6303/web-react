@@ -839,7 +839,7 @@ const Profile = () => {
               </Col>
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="skills">
-                  Skills <i>(Top 5)</i>
+                  Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
                 </Label>
                 <Controller
                   id="skills"

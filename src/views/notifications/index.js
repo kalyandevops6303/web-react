@@ -112,10 +112,16 @@ const Notifications = () => {
     }
   };
 
+  const dashboardRedirection = () => {
+    navigate(`/dashboard`);
+  };
+
   const handleNotification = (data) => {
     setSwitchData({
       ...data,
       isDisputesNotification: isDisputesNotification(data?.notification_type),
+      // eslint-disable-next-line no-unneeded-ternary
+      isDashboardRedirection: data?.title === 'Team Created' || data?.title === 'Team Member Added' ? true : false,
     });
 
     if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
@@ -128,6 +134,8 @@ const Notifications = () => {
       });
     } else if (isDisputesNotification(data?.notification_type)) {
       disputesRedirection(data?.notification_type);
+    } else if (data?.title === 'Milestone Submitted') {
+      navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
     } else if (data?.title === 'Project Accepted') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
     } else {
@@ -222,6 +230,7 @@ const Notifications = () => {
             modal={switchProfileModal}
             toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
             disputesRedirection={disputesRedirection}
+            dashboardRedirection={dashboardRedirection}
           />
         )}
       </InfiniteScroll>
