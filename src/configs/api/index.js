@@ -125,6 +125,8 @@ const API = {
     getSentInvitaion: `${apiAuthEndpoint}/api/v1/invitations/sent`,
     removeWorker: `${apiCreateProjectEndpoint}/api/v1/project-course/workers`,
     requests: `${apiAuthEndpoint}/api/v1/requests`,
+    terminateProject: `${apiCreateProjectEndpoint}/api/v1/project/termination`,
+    relistProject: `${apiCreateProjectEndpoint}/api/v1/project/relisting`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
@@ -133,6 +135,8 @@ const API = {
     signContractByTalent: `${apiCreateProjectEndpoint}/api/v1/legal/document/sign`,
     terminateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/terminate`,
     updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
+    extendDocValidity: `${apiCreateProjectEndpoint}/api/v1/project/documents-validity-extension`,
+    extendPaymentValidity: `${apiCreateProjectEndpoint}/api/v1/project/payment-validity-extension`,
     // invite get
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
