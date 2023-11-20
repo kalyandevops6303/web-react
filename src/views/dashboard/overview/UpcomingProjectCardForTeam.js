@@ -46,7 +46,10 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
                         placement: 'bottom',
                         imgHeight: 33,
                         imgWidth: 33,
-                        tooltipId: `tooltip_${data?._id}_${data?.current_milestone?.name.replace(/\s+/g, '-')}`,
+                        tooltipId: `tooltip-${data?.client_info?.first_name?.replace(
+                          /\s+/g,
+                          '-',
+                        )}-${data?.client_info?.last_name?.replace(/\s+/g, '-')}`,
                       },
                     ]}
                   />
@@ -74,10 +77,10 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
                           placement: 'bottom',
                           imgHeight: 33,
                           imgWidth: 33,
-                          tooltipId: `tooltip_${data?._id}_${worker?.first_name.replace(
+                          tooltipId: `tooltip-${worker?.first_name?.replace(/\s+/g, '-')}-${worker?.last_name?.replace(
                             /\s+/g,
                             '-',
-                          )}_${data?.current_milestone?.name.replace(/\s+/g, '-')}`,
+                          )}`,
                         })),
                       ]}
                     />
@@ -92,10 +95,10 @@ const UpcomingProjectCardForTeam = ({ data, className }) => {
                         placement: 'bottom',
                         imgHeight: 33,
                         imgWidth: 33,
-                        tooltipId: `tooltip_${data?._id}_${worker?.first_name.replace(
+                        tooltipId: `tooltip-${worker?.first_name?.replace(/\s+/g, '-')}-${worker?.last_name?.replace(
                           /\s+/g,
                           '-',
-                        )}_${data?.current_milestone?.name.replace(/\s+/g, '-')}`,
+                        )}`,
                       })),
                     ]}
                   />

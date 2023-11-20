@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
 
 import theme from '../../../configs/themeVariables';
 import MilestoneDetailsTab from './MilestoneDetailsTab';
-import PayHistory from './PayHistory';
-import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
-import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
-import { userTypes } from '../../../utility/constants/Constant';
-import TeamPayments from './TeamPayments';
-import { milestoneTransactionsService } from '../../../services/projectMilestoneService';
 
 const TabWrapper = styled.div`
   /* Style the tab */
@@ -111,35 +104,8 @@ const TabWrapper = styled.div`
   }
 `;
 
-const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, milestonesData, selectedMilestoneIndex }) => {
+const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [tab, setTab] = useState('Details');
-  const [transactions, setTransactions] = useState([]);
-  const [teamPayments, setTeamPayments] = useState([]);
-
-  const userDataLocal = useSelector(selectAuthUserData);
-  const projectDetailsData = useSelector(projectDetails);
-
-  useEffect(() => {
-    if (projectDetailsData?._id) {
-      milestoneTransactionsService(projectDetailsData._id).then((res) => {
-        let payments = [];
-        if (res.data.data.pay_outs) {
-          payments = res.data.data.pay_outs.map((item) => item?.[Object.keys(item)?.[0]]?.[0]);
-        }
-        if (res.data.data.my_payments) {
-          res.data.data.my_payments.forEach((item) => {
-            if (item?.[Object.keys(item)?.[0]]?.[0]) {
-              payments.push(item?.[Object.keys(item)?.[0]]?.[0]);
-            }
-          });
-        }
-        if (res.data.data.team_payments) {
-          setTeamPayments(res.data.data.team_payments);
-        }
-        setTransactions(payments);
-      });
-    }
-  }, [projectDetailsData?._id]);
 
   return (
     <TabWrapper>
@@ -152,52 +118,17 @@ const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, mileston
         >
           Details
         </div>
-        {userDataLocal.user_type === userTypes.client ? null : (
-          <div
-            className={`tablink ${tab === 'Pay Outs' ? 'active-tablink' : ''}`}
-            onClick={() => {
-              setTab('Pay Outs');
-            }}
-          >
-            {userDataLocal.user_type === userTypes.client ? 'Pay Outs' : 'My Payments'}
-          </div>
-        )}
-        {userDataLocal.user_type === userTypes.client ? null : (
-          <div
-            className={`tablink ${tab === 'Team Payments' ? 'active-tablink' : ''}`}
-            onClick={() => {
-              setTab('Team Payments');
-            }}
-          >
-            Team Payments
-          </div>
-        )}
       </div>
 
       <div className={`tabcontent ${tab === 'Details' ? 'active-tabcontent' : ''}`}>
         <MilestoneDetailsTab fetchProjectMilestones={fetchProjectMilestones} selectedMilestone={selectedMilestone} />
       </div>
-
-      <div className={`tabcontent ${tab === 'Pay Outs' ? 'active-tabcontent' : ''}`}>
-        <PayHistory transactions={transactions} />
-      </div>
-      {userDataLocal.user_type === userTypes.client ? null : (
-        <div className={`tabcontent ${tab === 'Team Payments' ? 'active-tabcontent' : ''}`}>
-          <TeamPayments
-            selectedMilestoneIndex={selectedMilestoneIndex}
-            milestonesData={milestonesData}
-            teamPayments={teamPayments}
-          />
-        </div>
-      )}
     </TabWrapper>
   );
 };
 MilestoneOverview.propTypes = {
   selectedMilestone: Proptypes.object.isRequired,
   fetchProjectMilestones: Proptypes.func.isRequired,
-  milestonesData: Proptypes.arrayOf(Proptypes.object).isRequired,
-  selectedMilestoneIndex: Proptypes.number.isRequired,
 };
 
 export default MilestoneOverview;

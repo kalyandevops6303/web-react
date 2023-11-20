@@ -13,7 +13,6 @@ const PayHistory = ({ transactions = [] }) => (
       <Table responsive className="milestone-table w-100">
         <thead>
           <tr>
-            <th>Transaction ID</th>
             <th>Date</th>
             <th>Status</th>
             <th>Amount</th>
@@ -22,7 +21,6 @@ const PayHistory = ({ transactions = [] }) => (
         <tbody>
           {transactions?.map((item) => (
             <tr key={item?._id}>
-              <td className="fw-bolder">{item?._id}</td>
               <td>{formatDate(item?.created_at)}</td>
               <td>
                 <Badge color={item?.status === 'PENDING' ? 'light-danger' : 'light-success'}>{item?.status}</Badge>

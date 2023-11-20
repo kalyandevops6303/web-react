@@ -34,6 +34,9 @@ const RewardCardWrapper = styled(CardWrapper)`
 `;
 
 const EarningCardWrapper = styled(CardWrapper)`
+  .card-payment {
+    min-height: 190px;
+  }
   .earning-head {
     padding: 1.5rem 1.5rem 0.8rem 1.5rem;
   }
@@ -163,6 +166,9 @@ const EarningAmount = styled.div`
 const ProjectWrapper = styled.div`
   @media (max-width: 768px) {
     min-width: 20rem;
+  }
+  .payment-card {
+    width: 260px;
   }
   .row {
     margin: 0;
@@ -530,6 +536,11 @@ const DisputesChartContainer = styled.div`
     position: absolute;
     top: 32%;
     left: 37%;
+  }
+
+  .chart {
+    width: 120px;
+    height: 120px;
   }
 `;
 

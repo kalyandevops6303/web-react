@@ -17,6 +17,11 @@ const CompleteProfileDetailsCta = {
       label: 'Add Availability Details',
       path: `/${userOnboarding.talent}/availability-details`,
     },
+    {
+      keyToMatch: 'payment_account',
+      label: 'Add Payment Details',
+      path: `/${userOnboarding.talent}/payment-details`,
+    },
     { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userOnboarding.talent}/social-details` },
     { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${userOnboarding.talent}/account-details` },
     {
@@ -53,6 +58,11 @@ const CompleteProfileDetailsCta = {
       label: 'Complete Your Profile',
       path: '/create-team/profile-details',
     },
+    {
+      keyToMatch: 'payment_account',
+      label: 'Add Payment Details',
+      path: `/${userOnboarding.talent}/payment-details`,
+    },
   ],
 };
 
@@ -67,6 +77,8 @@ const returnCompleteProfileDetailsCta = (userType, missingValues) => {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'educational_institute');
   } else if (missingValues?.includes('availability')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'availability');
+  } else if (missingValues?.includes('payment_account')) {
+    return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'payment_account');
   } else if (missingValues?.includes('social_links')) {
     return CompleteProfileDetailsCta[userType]?.find((item) => item.keyToMatch === 'social_links');
   } else if (missingValues?.includes('image_uri')) {

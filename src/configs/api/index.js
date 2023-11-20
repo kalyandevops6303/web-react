@@ -125,6 +125,8 @@ const API = {
     getSentInvitaion: `${apiAuthEndpoint}/api/v1/invitations/sent`,
     removeWorker: `${apiCreateProjectEndpoint}/api/v1/project-course/workers`,
     requests: `${apiAuthEndpoint}/api/v1/requests`,
+    terminateProject: `${apiCreateProjectEndpoint}/api/v1/project/termination`,
+    relistProject: `${apiCreateProjectEndpoint}/api/v1/project/relisting`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
@@ -133,6 +135,8 @@ const API = {
     signContractByTalent: `${apiCreateProjectEndpoint}/api/v1/legal/document/sign`,
     terminateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/terminate`,
     updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
+    extendDocValidity: `${apiCreateProjectEndpoint}/api/v1/project/documents-validity-extension`,
+    extendPaymentValidity: `${apiCreateProjectEndpoint}/api/v1/project/payment-validity-extension`,
     // invite get
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
@@ -140,7 +144,8 @@ const API = {
   },
   projectMilestones: {
     getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,
-    getProjectTransactions: `${apiCreateProjectEndpoint}/api/v1/project/transactions`,
+    getProjectTransactionsForTalent: `${apiCreateProjectEndpoint}/api/v1/project/transactions-talent`,
+    getProjectTransactionsForClient: `${apiCreateProjectEndpoint}/api/v1/project/transactions-client`,
     submitMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/submission`,
     acceptMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/acceptance`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
@@ -243,6 +248,8 @@ const API = {
     makeMilestonePayment: `${apiPaymentEndPoint}/api/v1/checkout-session`,
     applicationFee: `${apiPaymentEndPoint}/api/v1/settings/application-fee`,
     transferFunds: `${apiPaymentEndPoint}/api/v1/transfer-funds`,
+    spendingDetails: `${apiOnboardingEndpoint}/api/v1/users/payments`,
+    upcomingPayments: `${apiOnboardingEndpoint}/api/v1/users/upcoming-payments`,
   },
   referralAndReward: {
     createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,

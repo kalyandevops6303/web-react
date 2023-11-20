@@ -178,8 +178,13 @@ const Login = () => {
             {isLoading ? <Spinner size="sm" /> : 'Sign in'}
           </Button>
         </Form>
-        <div className="divider my-2">
+        {/* <div className="divider my-2 custom-divider">
           <div className="divider-text">Or</div>
+        </div> */}
+        <div className="my-2 custom-divider">
+          <span className="custom-line" />
+          <p className="custom-divider-text m-0 px-1">Or</p>
+          <span className="custom-line" />
         </div>
         <SigninWithGoogle title="Sign In" />
         <div className="d-flex justify-content-center sign-info">

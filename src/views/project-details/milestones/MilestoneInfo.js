@@ -19,20 +19,17 @@ function MilestoneInfo({ milestonesData, currentIndex }) {
     milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
 
   const isFirstTwoMilestonePaid = isPaymentDone(milestonesData[0]) && isPaymentDone(milestonesData[1]);
+
+  const firstNonPaidMilestone = milestonesData.find((mile) => !isPaymentDone(mile));
   const showInfo = () => {
     if (isClient) {
       if (isAllMilestonePaid) return false;
       if (milestoneCount === 1) return true;
-
       if (!isFirstTwoMilestonePaid && currentIndex === 1) {
         return true;
       }
 
-      if (
-        isPaymentDone(milestonesData[currentIndex - 2]) &&
-        isPaymentDone(milestonesData[currentIndex - 1]) &&
-        !isPaymentDone(milestonesData[currentIndex])
-      ) {
+      if (milestoneCount > 2 && milestonesData[currentIndex]?._id === firstNonPaidMilestone?._id) {
         return true;
       }
     }
@@ -64,17 +61,18 @@ function MilestoneInfo({ milestonesData, currentIndex }) {
           </span>
         </div>
       ) : null}
-      {!isFirstTwoMilestonePaid && milestoneCount > 1 ? (
+      {!isFirstTwoMilestonePaid ? (
         <div>
           <span>
             Complete payment for the <b>first two</b> milestones to start the project.
           </span>
         </div>
       ) : null}
-      {milestoneCount > 2 && isFirstTwoMilestonePaid && (
+      {milestoneCount > 2 && currentIndex > 1 && milestonesData[currentIndex]?._id === firstNonPaidMilestone?._id && (
         <div>
           <span>
-            {`Payment is due at the end of `}
+            <strong>{`${milestonesData[currentIndex]?.name} `}</strong>
+            {`payment is due at the end of `}
             <strong>{`${milestonesData[currentIndex - 2]?.name}`}</strong>
             {` and must be paid before the end of `}
             <strong>{` ${milestonesData[currentIndex - 1]?.name}`}</strong>

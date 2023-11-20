@@ -152,7 +152,7 @@ const Step1 = ({ setStep }) => {
                   disabled={isPaymentOnboardingDone}
                   onChange={handlePrePaymentChange}
                 />
-                <div className="w-75">US Person - Permeant residents or Citizens with US Tax Identification</div>
+                <div className="w-75">US Person - Permanent residents or Citizens with US Tax Identification</div>
               </Col>
               <Col className="d-flex gap-50">
                 <Input
@@ -220,7 +220,7 @@ const Step1 = ({ setStep }) => {
           </div>
           <div>
             <Button color="primary" outline className="me-2" onClick={onSkipClick}>
-              <span className="me-50">Skip</span>
+              <span className="me-50">{isPaymentOnboardingDone ? 'Go To Dashboard' : 'Skip'}</span>
               <ChevronRight size={14} />
             </Button>
             <Button color="primary" onClick={handleNextClick}>

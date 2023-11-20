@@ -1,9 +1,11 @@
+/* eslint-disable no-else-return */
 import React, { useState } from 'react';
 import { CardText, CardTitle, Badge } from 'reactstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
+import AvatarGroup from '@components/avatar-group';
 import { Heart } from 'react-feather';
 import { useDispatch } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -11,6 +13,8 @@ import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
+import { userTypes } from '../../utility/constants/Constant';
+import { returnFormattedRating } from '../../utility/Utils';
 
 const BaseInfoCard = ({ isSearchPage, data }) => {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
@@ -65,8 +69,38 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
         secondary: fromLocationSecondary() || fromLocationSearch(),
       },
     };
-    navigate(`/profile/client/${data?.client_details?.user_id}`, { state });
+    if (data?.bidder_details) {
+      if (data?.bidder_details?.user_type === userTypes.team) {
+        navigate(`/profile/team/${data?.bidder_details?.team_id}`, { state });
+      } else {
+        navigate(`/profile/talent/${data?.bidder_details?.user_id}`, { state });
+      }
+    } else {
+      navigate(`/profile/client/${data?.client_details?.user_id}`, { state });
+    }
   };
+
+  const getImage = () => {
+    if (data?.bidder_details) {
+      if (data?.bidder_details?.user_type === userTypes.team) {
+        return data?.bidder_details?.team_logo?.length ? data?.bidder_details?.team_logo : defaultAvatar;
+      } else {
+        return data?.bidder_details?.image_uri?.length ? data?.bidder_details?.image_uri : defaultAvatar;
+      }
+    } else {
+      return clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar;
+    }
+  };
+
+  const avatarGroup = data?.bidder_details?.workers?.length
+    ? data?.bidder_details?.workers?.map((worker) => ({
+        title: `${worker?.first_name} ${worker?.last_name}`,
+        img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
+        placement: 'bottom',
+        imgHeight: 33,
+        imgWidth: 33,
+      }))
+    : [];
 
   return (
     <div>
@@ -121,35 +155,90 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
           ) : null}
         </div>
       </div>
-      <div className="d-flex mb-2 align-items-center">
-        <img
-          className="market-place-card-photo me-75"
-          src={clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar}
-          alt="avatar"
-          width={40}
-          height={50}
-          style={{ objectFit: 'cover' }}
-        />
+      <div className="d-flex mb-25 align-items-center">
+        {data?.bidder_details ? (
+          <div>
+            {data?.bidder_details?.user_type === userTypes.talent && (
+              <img
+                className="market-place-card-photo me-75"
+                src={getImage()}
+                alt="avatar"
+                width={40}
+                height={50}
+                style={{ objectFit: 'cover' }}
+              />
+            )}
+          </div>
+        ) : (
+          <img
+            className="market-place-card-photo me-75"
+            src={getImage()}
+            alt="avatar"
+            width={40}
+            height={50}
+            style={{ objectFit: 'cover' }}
+          />
+        )}
         <div className="d-flex w-100 align-items-center">
           <div onClick={(e) => handleNavigate(e)} className="flex-grow-1">
             <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-              <span>
-                {data?.client_details?.first_name}&nbsp;
-                {data?.client_details?.last_name}
-              </span>
+              {data?.bidder_details ? (
+                <span>
+                  {data?.bidder_details?.user_type === userTypes.team
+                    ? data?.bidder_details?.name
+                    : `${data?.bidder_details?.first_name} ${data?.bidder_details?.last_name}`}
+                </span>
+              ) : (
+                <span>
+                  {data?.client_details?.first_name}&nbsp;
+                  {data?.client_details?.last_name}
+                </span>
+              )}
             </CardTitle>
-            <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-              {clientDetails?.title ?? clientDetails?.company_name}
-            </CardText>
+            {data?.bidder_details ? (
+              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+                {data?.bidder_details?.role?.name}
+              </CardText>
+            ) : (
+              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+                {clientDetails?.title ?? clientDetails?.company_name}
+              </CardText>
+            )}
           </div>
           <div className="d-flex flex-grow-1">
-            <RatingBadge number={Math.round(clientDetails?.rating ?? 0)} />
-            <CardText className="ps-1 font-small-3 fw-300 rating-label">
-              {clientDetails?.project_listed_count ?? 0} Projects
-            </CardText>
+            <RatingBadge
+              number={returnFormattedRating(
+                data?.bidder_details ? data?.bidder_details?.rating ?? 0 : clientDetails?.rating ?? 0,
+              )}
+            />
+            {data?.bidder_details ? (
+              <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                {data?.bidder_details?.projects_worked_on_count ?? 0} Projects
+              </CardText>
+            ) : (
+              <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                {clientDetails?.project_listed_count ?? 0} Projects
+              </CardText>
+            )}
           </div>
         </div>
       </div>
+      {data?.bidder_details && data?.bidder_details?.user_type === userTypes.team ? (
+        <div className="mb-2">
+          {avatarGroup?.length > 3 ? (
+            <AvatarGroup
+              totalCount={data?.bidder_details?.workers?.length || 0}
+              size="sm"
+              className="ms-25 mb-50"
+              data={avatarGroup?.slice(0, 3)}
+            />
+          ) : (
+            <AvatarGroup size="sm" className="ms-25 mb-50" data={avatarGroup} />
+          )}
+        </div>
+      ) : (
+        <div className="mb-2" />
+      )}
       <div>
         <BadgeGroup
           title="Skills"

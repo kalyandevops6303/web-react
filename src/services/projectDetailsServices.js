@@ -95,7 +95,21 @@ const almaMaterTalentsProjectService = (projectId, searchText, page, pageSize) =
     `${API.projectDetails.almaMaterTalents}?search_text=${searchText}&page=${page}&page_size=${pageSize}&project_id=${projectId}`,
   );
 
+const extendDocValidityService = ({ project_id }) =>
+  DataService.put(`${API.projectDetails.extendDocValidity}?project_id=${project_id}`);
+
+const extendPaymentValidityService = ({ project_id }) =>
+  DataService.put(`${API.projectDetails.extendPaymentValidity}?project_id=${project_id}`);
+
+const terminateProjectService = ({ project_id }) =>
+  DataService.put(`${API.projectDetails.terminateProject}?project_id=${project_id}`);
+
+const relistProjectService = ({ project_id }) =>
+  DataService.put(`${API.projectDetails.relistProject}?project_id=${project_id}`);
+
 export {
+  extendDocValidityService,
+  extendPaymentValidityService,
   getCommonBidPublicDetailsService,
   bestTalentsForProjectService,
   favoriteTalentsForProjectService,
@@ -118,4 +132,6 @@ export {
   getReceivedBidsService,
   getCommonBidDetailsService,
   getUnassignedRoleService,
+  terminateProjectService,
+  relistProjectService,
 };

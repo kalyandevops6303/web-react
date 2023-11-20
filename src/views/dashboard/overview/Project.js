@@ -142,7 +142,10 @@ const Project = ({ open, data, className }) => {
                   placement: 'bottom',
                   imgHeight: 33,
                   imgWidth: 33,
-                  tooltipId: `tooltip_${data?._id}_${data?.current_milestone?.name.replace(/\s+/g, '-')}`,
+                  tooltipId: `tooltip-${data?.client_info?.first_name?.replace(
+                    /\s+/g,
+                    '-',
+                  )}-${data?.client_info?.last_name?.replace(/\s+/g, '-')}`,
                 },
               ]}
               isAlma={data?.client_info?.is_alma_mater}
