@@ -14,7 +14,7 @@ import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
 import { clearUnreadMsgCountData } from '../../../../redux/reducers/chat';
 
-const NavbarUser = () => {
+const NavbarUser = ({ setNavBarLoading }) => {
   const isTab = useIsTab();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ const NavbarUser = () => {
               <MessageSquare size={20} color={theme.bodyColor} />
             </div>
           </MessageIconContainer>
-          <UserDropdown />
+          <UserDropdown setNavBarLoading={setNavBarLoading} />
         </>
       )}
     </ul>

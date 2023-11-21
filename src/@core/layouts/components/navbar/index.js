@@ -79,12 +79,16 @@ const ThemeNavbar = (props) => {
   const navigate = useNavigate();
 
   const token = getItem('access_token');
+  // const baseRoute = getItem('baseRoute');
+
+  const baseRoute = location.pathname.split('/')[1];
 
   useEffect(() => {
     if (token) {
       // setNavBarLoading(true);
       dispatch(
         getUserData({
+          setNavBarLoading: setNavBarLoading,
           onSuccess: () => {
             setNavBarLoading(false);
           },
@@ -94,8 +98,8 @@ const ThemeNavbar = (props) => {
         }),
       );
     }
-    console.count('navbar');
-  }, [location.pathname]);
+  }, [baseRoute]);
+  console.log(baseRoute, 'baseRoute');
 
   useEffect(() => {
     if (isCometChatLoggedIn) {
@@ -153,7 +157,10 @@ const ThemeNavbar = (props) => {
               ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
             to="/dashboard"
-            onClick={() => dispatch(setActiveNavTab('dashboard'))}
+            onClick={() => {
+              dispatch(setActiveNavTab('dashboard'));
+              setNavBarLoading(true);
+            }}
           >
             Dashboard
           </NavLink>
@@ -164,6 +171,7 @@ const ThemeNavbar = (props) => {
                 'selectedMarketplaceTab',
                 userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
               );
+              setNavBarLoading(true);
             }}
             className={
               (location?.pathname?.split('/')?.[1] === 'marketplace' ||
@@ -188,12 +196,16 @@ const ThemeNavbar = (props) => {
             onClick={() => {
               localStorage.removeItem('selectedProjectTab');
               dispatch(setActiveNavTab('projects'));
+              setNavBarLoading(true);
             }}
           >
             Project
           </NavLink>
           <NavLink
-            onClick={() => dispatch(setActiveNavTab('my-teams'))}
+            onClick={() => {
+              dispatch(setActiveNavTab('my-teams'));
+              setNavBarLoading(true);
+            }}
             className={
               (location?.pathname?.split('/')?.[1] === 'my-teams' ||
               location?.state?.from?.primary === 'my-teams' ||
@@ -208,7 +220,7 @@ const ThemeNavbar = (props) => {
         </>
       )}
 
-      <NavbarUser skin={skin} setSkin={setSkin} />
+      <NavbarUser setNavBarLoading={setNavBarLoading} skin={skin} setSkin={setSkin} />
     </HeadWrapper>
   );
 };

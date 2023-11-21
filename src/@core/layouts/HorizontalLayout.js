@@ -36,6 +36,7 @@ import FooterComponent from './components/footer';
 
 // ** Styles
 import '@styles/base/core/menu/menu-types/horizontal-menu.scss';
+import ComponentSpinner from '../components/spinner/Loading-spinner';
 
 const HorizontalLayout = (props) => {
   // ** Props
@@ -48,7 +49,7 @@ const HorizontalLayout = (props) => {
   const { footerType, setFooterType } = useFooterType();
   const { navbarColor, setNavbarColor } = useNavbarColor();
   const { layout, setLayout, setLastLayout } = useLayout();
-  const [isNavBarLoading, setNavBarLoading] = useState(true);
+  const [isNavBarLoading, setNavBarLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   // ** States
@@ -89,7 +90,6 @@ const HorizontalLayout = (props) => {
   //  ComponentDidMount
   useEffect(() => {
     setIsMounted(true);
-    setNavBarLoading(true);
     return () => cleanup();
   }, [location]);
 
@@ -123,7 +123,13 @@ const HorizontalLayout = (props) => {
         </div>
       </Navbar>
 
-      {isNavBarLoading ? '...Loading' : children}
+      {isNavBarLoading ? (
+        <div className="h-100 d-flex justify-content-center align-items-center">
+          <ComponentSpinner />
+        </div>
+      ) : (
+        children
+      )}
 
       {themeConfig.layout.customizer === true ? (
         <Customizer

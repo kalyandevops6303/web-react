@@ -30,7 +30,7 @@ import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
 
-const UserDropdown = () => {
+const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
   console.log(userDetailsData);
   const isLoading = useSelector((state) => state.auth.userDataLoading);
@@ -139,6 +139,9 @@ const UserDropdown = () => {
     navigate('/dashboard');
   };
   const handleSwitch = (data, selected) => {
+    // if (userDetailsData?.user_type === userTypes.team) {
+    //   setNavBarLoading(true);
+    // }
     dispatch(switchProfile({ data, onSuccess: handleShowModal, selected }));
   };
 

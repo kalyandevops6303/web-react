@@ -302,9 +302,12 @@ const switchProfile =
   };
 
 const getUserData =
-  ({ onSuccess, onError }) =>
+  ({ onSuccess, onError, setNavBarLoading }) =>
   async (dispatch) => {
     dispatch(userDataRequest());
+    if (setNavBarLoading) {
+      setNavBarLoading(true);
+    }
     try {
       const team_id = getItem('team_id');
 
@@ -316,28 +319,52 @@ const getUserData =
         const idExists = teamRes.data.data.data.some((obj) => obj._id === team_id);
         if (!idExists) {
           const userData = await getItem('savedUserData');
-          dispatch(switchProfile({ data: userData, onSuccess: () => {}, selected: false }));
+          // if (setNavBarLoadingTrue) {
+          //   setNavBarLoadingTrue();
+          // }
+          dispatch(
+            switchProfile({
+              data: userData,
+              onSuccess: () => {
+                if (onSuccess) {
+                  onSuccess();
+                }
+              },
+              selected: false,
+            }),
+          );
           ShowToastMessage(ERROR, "You're no longer a team member");
         } else {
           dispatch(userDataSuccess(res.data.data));
           dispatch(getUserDataSuccess(res.data.data?.user_type));
           setItem('userData', res.data.data);
+          if (onSuccess) {
+            onSuccess();
+          }
         }
       } else {
         res = await userDataService();
+        if (res.data.data?.user_type === userTypes.talent) {
+          dispatch(
+            getTeams({
+              onSuccess: () => {
+                if (onSuccess) {
+                  onSuccess();
+                }
+              },
+            }),
+          );
+        } else if (onSuccess) {
+          onSuccess();
+        }
         setItem('savedUserData', res.data.data);
         dispatch(userDataSuccess(res.data.data));
         dispatch(getUserDataSuccess(res.data.data?.user_type));
         setItem('userData', res.data.data);
       }
-      if (res.data.data?.user_type === userTypes.talent) {
-        dispatch(getTeams({ onSuccess: () => {} }));
-      }
-
-      if (onSuccess) {
-        onSuccess();
-      }
     } catch (error) {
+      setNavBarLoading(false);
+      console.error(error);
       if (onError) {
         onError();
       }
