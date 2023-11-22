@@ -1,4 +1,4 @@
-name: AKS Scaling
+name: AKS Scaling-up
 
 on:
   workflow_dispatch:
