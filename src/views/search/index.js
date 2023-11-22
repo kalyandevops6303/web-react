@@ -1,4 +1,4 @@
-import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
+import { Card, CardBody, CardText, CardTitle, UncontrolledTooltip } from 'reactstrap';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
@@ -110,6 +110,10 @@ const Search = () => {
       font-weight: 600;
       cursor: auto;
     }
+    .no-data {
+      cursor: not-allowed;
+      height: fit-content !important;
+    }
   `;
   const SearchCardWrap = styled.div`
     .card-body {
@@ -136,6 +140,33 @@ const Search = () => {
     return sum;
   }, 0);
 
+  useEffect(() => {
+    if (searchData) {
+      if (searchData?.scope === 'PROJECT') {
+        if (
+          searchData?.project?.data?.length === 0 &&
+          searchData?.talent?.data?.length === 0 &&
+          searchData?.client?.data?.length === 0 &&
+          searchData?.team?.data?.length === 0
+        ) {
+          setActivetab('PROJECT');
+        } else if (
+          searchData?.project?.data?.length === 0 &&
+          searchData?.talent?.data?.length === 0 &&
+          searchData?.client?.data?.length === 0
+        ) {
+          setActivetab(userTypes.team);
+        } else if (searchData?.project?.data?.length === 0 && searchData?.talent?.data?.length === 0) {
+          setActivetab(userTypes.client);
+        } else if (searchData?.project?.data?.length === 0) {
+          setActivetab(userTypes.talent);
+        } else if (searchData?.project?.data?.length > 0) {
+          setActivetab('PROJECT');
+        }
+      }
+    }
+  }, [searchData]);
+
   return (
     <div>
       <Header isTopCards className="d-flex justify-content-between">
@@ -149,17 +180,65 @@ const Search = () => {
             </CardText>
             <CardTitle className="ms-50">{query}</CardTitle>
             <NavigationBar className=" ms-50 mb-50">
-              <li className={activeTab === 'PROJECT' && 'active'} onClick={() => setActivetab('PROJECT')}>
-                <CardText>Project ({searchData?.project?.metadata?.total_records})</CardText>
+              <li
+                className={
+                  activeTab === 'PROJECT'
+                    ? 'active'
+                    : `${searchData?.project?.metadata?.total_records === 0 ? 'no-data' : ''}`
+                }
+                onClick={() => searchData?.project?.metadata?.total_records !== 0 && setActivetab('PROJECT')}
+              >
+                <CardText id="project-tab">Project ({searchData?.project?.metadata?.total_records})</CardText>
+                {searchData?.project?.metadata?.total_records === 0 && (
+                  <UncontrolledTooltip placement="top" target="project-tab">
+                    No results found
+                  </UncontrolledTooltip>
+                )}
               </li>
-              <li className={activeTab === userTypes.talent && 'active'} onClick={() => setActivetab(userTypes.talent)}>
-                <CardText>Talent ({searchData?.talent?.metadata?.total_records})</CardText>
+              <li
+                className={
+                  activeTab === userTypes.talent
+                    ? 'active'
+                    : `${searchData?.talent?.metadata?.total_records === 0 ? 'no-data' : ''}`
+                }
+                onClick={() => searchData?.talent?.metadata?.total_records !== 0 && setActivetab(userTypes.talent)}
+              >
+                <CardText id="talent-tab">Talent ({searchData?.talent?.metadata?.total_records})</CardText>
+                {searchData?.talent?.metadata?.total_records === 0 && (
+                  <UncontrolledTooltip placement="top" target="talent-tab">
+                    No results found
+                  </UncontrolledTooltip>
+                )}
               </li>
-              <li className={activeTab === userTypes.client && 'active'} onClick={() => setActivetab(userTypes.client)}>
-                <CardText>Client ({searchData?.client?.metadata?.total_records})</CardText>
+              <li
+                className={
+                  activeTab === userTypes.client
+                    ? 'active'
+                    : `${searchData?.client?.metadata?.total_records === 0 ? 'no-data' : ''}`
+                }
+                onClick={() => searchData?.client?.metadata?.total_records !== 0 && setActivetab(userTypes.client)}
+              >
+                <CardText id="client-tab">Client ({searchData?.client?.metadata?.total_records})</CardText>
+                {searchData?.client?.metadata?.total_records === 0 && (
+                  <UncontrolledTooltip placement="top" target="client-tab">
+                    No results found
+                  </UncontrolledTooltip>
+                )}
               </li>
-              <li className={activeTab === userTypes.team && 'active'} onClick={() => setActivetab(userTypes.team)}>
-                <CardText>Team ({searchData?.team?.metadata?.total_records})</CardText>
+              <li
+                className={
+                  activeTab === userTypes.team
+                    ? 'active'
+                    : `${searchData?.team?.metadata?.total_records === 0 ? 'no-data' : ''}`
+                }
+                onClick={() => searchData?.team?.metadata?.total_records !== 0 && setActivetab(userTypes.team)}
+              >
+                <CardText id="team-tab">Team ({searchData?.team?.metadata?.total_records})</CardText>
+                {searchData?.team?.metadata?.total_records === 0 && (
+                  <UncontrolledTooltip placement="top" target="team-tab">
+                    No results found
+                  </UncontrolledTooltip>
+                )}
               </li>
               <li className={activeTab === userTypes.club && 'active'} onClick={() => setActivetab(userTypes.club)}>
                 <CardText>Club ({searchData?.club?.metadata?.total_records})</CardText>
