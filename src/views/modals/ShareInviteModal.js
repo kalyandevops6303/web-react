@@ -7,11 +7,10 @@ import CreatableSelect from 'react-select/creatable';
 import { Button, Modal, ModalHeader, ModalBody, Row, FormFeedback, Col, Spinner, Input, InputGroup } from 'reactstrap';
 import '../custom-styles.scss';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { selectThemeColors } from '../../utility/Utils';
+import { getTeamId, selectThemeColors } from '../../utility/Utils';
 import { validEmailRegex } from '../../utility/constants/Constant';
 import { RequirementsFormContainer } from '../CreateProject/style';
 import { inviteTalents } from '../../redux/actions/inviteTalent';
-import { getItem } from '../../utility/localStorageControl';
 import { inviteTalentsLoading } from '../../redux/selectors/inviteTalentSelector';
 
 const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, projectId }) => {
@@ -44,7 +43,7 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
 
   const onSubmit = () => {
     const allEmails = customEmailsValue.map((email) => email.label);
-    const teamId = getItem('team_id');
+    const teamId = getTeamId('team_id');
 
     const newPostData = {
       message: '',

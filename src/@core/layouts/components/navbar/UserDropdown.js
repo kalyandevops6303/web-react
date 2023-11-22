@@ -62,6 +62,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
       const preservedValue = getItem(keyToPreserve);
       // eslint-disable-next-line no-undef
       window.localStorage.clear();
+      window.sessionStorage.clear();
       if (preservedValue) {
         setItem(keyToPreserve, preservedValue);
       }

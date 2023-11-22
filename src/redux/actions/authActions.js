@@ -61,18 +61,20 @@ import {
   getUserDataSuccess,
   cometChatLogin,
 } from '../reducers/auth';
-import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
+import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
-import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes } from '../../utility/constants/Constant';
 import { userDataService } from '../../services/dashboardServices';
-import { getTeamById, getTeamService } from '../../services/teamServices';
-import { clearTeams, getTeamSuccess } from '../reducers/team';
+import { getTeamById } from '../../services/teamServices';
+import { clearTeams } from '../reducers/team';
 import { clearNotificationsData } from '../reducers/notifications';
 import { getTeams } from './teamsActions';
 import { clearTeamCardData } from '../reducers/myTeams';
 import { clearMarketplaceCardData } from '../reducers/marketPlace';
 import { clearProjectCardData } from '../reducers/project';
+import { getTeamId } from '../../utility/Utils';
+import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -284,9 +286,9 @@ const switchProfile =
     try {
       dispatch(switchProfileSuccess(data));
       if (data?.user_type === 'TEAM') {
-        setItem('team_id', data?._id);
+        setItemFromSession('team_id', data?._id);
       } else {
-        removeItem('team_id');
+        removeItemFromSession('team_id');
       }
       onSuccess(selected);
       // clearing my team data
@@ -301,76 +303,44 @@ const switchProfile =
     }
   };
 
-const getUserData =
-  ({ onSuccess, onError, setNavBarLoading }) =>
-  async (dispatch) => {
-    dispatch(userDataRequest());
-    if (setNavBarLoading) {
-      setNavBarLoading(true);
-    }
-    try {
-      const team_id = getItem('team_id');
+const getUserData = () => async (dispatch) => {
+  dispatch(userDataRequest());
 
-      let res;
-      if (team_id) {
-        res = await getTeamById(team_id);
-        const teamRes = await getTeamService();
-        dispatch(getTeamSuccess(teamRes.data.data.data));
-        const idExists = teamRes.data.data.data.some((obj) => obj._id === team_id);
-        if (!idExists) {
-          const userData = await getItem('savedUserData');
-          // if (setNavBarLoadingTrue) {
-          //   setNavBarLoadingTrue();
-          // }
-          dispatch(
-            switchProfile({
-              data: userData,
-              onSuccess: () => {
-                if (onSuccess) {
-                  onSuccess();
-                }
-              },
-              selected: false,
-            }),
-          );
-          ShowToastMessage(ERROR, "You're no longer a team member");
-        } else {
-          dispatch(userDataSuccess(res.data.data));
-          dispatch(getUserDataSuccess(res.data.data?.user_type));
-          setItem('userData', res.data.data);
-          if (onSuccess) {
-            onSuccess();
-          }
-        }
-      } else {
-        res = await userDataService();
-        if (res.data.data?.user_type === userTypes.talent) {
-          dispatch(
-            getTeams({
-              onSuccess: () => {
-                if (onSuccess) {
-                  onSuccess();
-                }
-              },
-            }),
-          );
-        } else if (onSuccess) {
-          onSuccess();
-        }
-        setItem('savedUserData', res.data.data);
-        dispatch(userDataSuccess(res.data.data));
-        dispatch(getUserDataSuccess(res.data.data?.user_type));
-        setItem('userData', res.data.data);
+  try {
+    const isUserVisited = getItemFromSession('isUserVisited');
+    const teamId = getTeamId('team_id');
+
+    if (isUserVisited && teamId) {
+      // User has visited and has a team ID
+      const teamRes = await getTeamById(teamId);
+      const userData = teamRes.data.data;
+
+      if (userData) {
+        dispatch(getUserDataSuccess(userData.user_type));
+        dispatch(userDataSuccess(userData));
+        dispatch(getTeams({ onSuccess: () => {} }));
+        setItem('userData', userData);
       }
-    } catch (error) {
-      setNavBarLoading(false);
-      console.error(error);
-      if (onError) {
-        onError();
+    } else {
+      // User is visiting for the first time or doesn't have a team ID
+      const userRes = await userDataService();
+      const userData = userRes.data.data;
+
+      setItem('savedUserData', userData);
+      setItem('userData', userData);
+      dispatch(userDataSuccess(userData));
+      dispatch(getUserDataSuccess(userData.user_type));
+
+      if (userData.user_type === userTypes.talent) {
+        dispatch(getTeams({ onSuccess: () => {} }));
       }
-      errorHandler(error, userDataFailure);
+
+      setItemFromSession('isUserVisited', true);
     }
-  };
+  } catch (error) {
+    errorHandler(error, userDataFailure);
+  }
+};
 
 export {
   switchProfile,

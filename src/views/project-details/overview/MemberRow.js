@@ -12,14 +12,14 @@ import { MemberRowWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import DateTime from '../../../lib/date-time';
 import RemoveProjectTeamMemberModal from '../../modals/RemoveProjectTeamMemberModal';
-import { getItem } from '../../../utility/localStorageControl';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
+import { getTeamId } from '../../../utility/Utils';
 
 const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
   const [removeProjectTeamMemberModal, setRemoveProjectTeamMemberModal] = useState(null);
   const projectDetailsData = useSelector(projectDetails);
 
-  const teamId = getItem('team_id');
+  const teamId = getTeamId('team_id');
   const toggleRemoveProjectTeamMemberModal = () => {
     setRemoveProjectTeamMemberModal(!removeProjectTeamMemberModal);
   };

@@ -32,7 +32,7 @@ const ThemeNavbar = (props) => {
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
 
   // ** Props
-  const { skin, setSkin, setMenuVisibility, className, setNavBarLoading } = props;
+  const { skin, setSkin, setMenuVisibility, className } = props;
   // ** Function to toggle Theme (Light/Dark)
 
   const HeadWrapper = styled.div`
@@ -79,27 +79,12 @@ const ThemeNavbar = (props) => {
   const navigate = useNavigate();
 
   const token = getItem('access_token');
-  // const baseRoute = getItem('baseRoute');
-
-  const baseRoute = location.pathname.split('/')[1];
 
   useEffect(() => {
     if (token) {
-      // setNavBarLoading(true);
-      dispatch(
-        getUserData({
-          setNavBarLoading: setNavBarLoading,
-          onSuccess: () => {
-            setNavBarLoading(false);
-          },
-          onError: () => {
-            setNavBarLoading(false);
-          },
-        }),
-      );
+      dispatch(getUserData());
     }
-  }, [baseRoute]);
-  console.log(baseRoute, 'baseRoute');
+  }, []);
 
   useEffect(() => {
     if (isCometChatLoggedIn) {
@@ -159,7 +144,6 @@ const ThemeNavbar = (props) => {
             to="/dashboard"
             onClick={() => {
               dispatch(setActiveNavTab('dashboard'));
-              setNavBarLoading(true);
             }}
           >
             Dashboard
@@ -171,7 +155,6 @@ const ThemeNavbar = (props) => {
                 'selectedMarketplaceTab',
                 userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
               );
-              setNavBarLoading(true);
             }}
             className={
               (location?.pathname?.split('/')?.[1] === 'marketplace' ||
@@ -196,7 +179,6 @@ const ThemeNavbar = (props) => {
             onClick={() => {
               localStorage.removeItem('selectedProjectTab');
               dispatch(setActiveNavTab('projects'));
-              setNavBarLoading(true);
             }}
           >
             Project
@@ -204,7 +186,6 @@ const ThemeNavbar = (props) => {
           <NavLink
             onClick={() => {
               dispatch(setActiveNavTab('my-teams'));
-              setNavBarLoading(true);
             }}
             className={
               (location?.pathname?.split('/')?.[1] === 'my-teams' ||
@@ -220,7 +201,7 @@ const ThemeNavbar = (props) => {
         </>
       )}
 
-      <NavbarUser setNavBarLoading={setNavBarLoading} skin={skin} setSkin={setSkin} />
+      <NavbarUser skin={skin} setSkin={setSkin} />
     </HeadWrapper>
   );
 };
