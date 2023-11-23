@@ -103,6 +103,11 @@ const ThemeNavbar = (props) => {
     if (location?.pathname?.split?.('/')?.[3] === userData?._id) dispatch(setActiveNavTab(''));
     if (location?.pathname?.split?.('/')?.[1] === 'notifications') dispatch(setActiveNavTab(''));
     if (location?.pathname?.split?.('/')?.[1] === 'search') dispatch(setActiveNavTab(''));
+
+    if (location?.pathname?.split?.('/')?.[1] === 'marketplace') dispatch(setActiveNavTab('marketplace'));
+    if (location?.pathname?.split?.('/')?.[1] === 'projects') dispatch(setActiveNavTab('projects'));
+    if (location?.pathname?.split?.('/')?.[1] === 'dashboard') dispatch(setActiveNavTab('dashboard'));
+    if (location?.pathname?.split?.('/')?.[1] === 'my-teams') dispatch(setActiveNavTab('my-teams'));
   }, [location]);
 
   return (
