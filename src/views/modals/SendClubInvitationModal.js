@@ -9,7 +9,7 @@ import Select from 'react-select';
 import { upperCase, capitalize } from 'lodash';
 import classNames from 'classnames';
 import '../custom-styles.scss';
-import { InviteUsersListContainer } from '../CreateProject/style';
+import { InviteClubUsersListContainer, InviteUsersListContainer } from '../CreateProject/style';
 import theme from '../../configs/themeVariables';
 import { returnFormattedRating, selectThemeColors } from '../../utility/Utils';
 
@@ -86,7 +86,7 @@ const SendClubInvitationModal = ({
               ))}
             </InviteUsersListContainer>
           ) : (
-            <InviteUsersListContainer>
+            <InviteClubUsersListContainer>
               {selectedTalents.map((talent, index) => (
                 <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center w-100 mx-0">
                   <Col sm="12" md="8" lg="6" className="d-flex align-items-center ">
@@ -130,11 +130,14 @@ const SendClubInvitationModal = ({
                       }}
                       className={classNames('react-select')}
                       placeholder="Select Role Type"
+                      menuPlacement={
+                        selectedTalents.length > 1 && index + 1 === selectedTalents.length ? 'top' : 'auto'
+                      }
                     />
                   </Col>
                 </Row>
               ))}
-            </InviteUsersListContainer>
+            </InviteClubUsersListContainer>
           )}
 
           <Input

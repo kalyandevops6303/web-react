@@ -56,14 +56,20 @@ const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
               <Label className="form-label" for="login-email">
                 Email ID<span className="label-asterisk text-danger me-50">*</span>
               </Label>
-              <Input
-                defaultValue={emailId}
-                type="email"
-                id="login-email"
-                placeholder="john@example.com"
-                autoFocus
-                disabled
-              />
+              {emailId ? (
+                <Input
+                  defaultValue={emailId}
+                  type="email"
+                  id="login-email"
+                  placeholder="john@example.com"
+                  autoFocus
+                  disabled
+                />
+              ) : (
+                <div>
+                  <Spinner size="sm" />
+                </div>
+              )}
             </div>
 
             <OtpInput

@@ -39,7 +39,7 @@ const Notifications = () => {
   const isLoading = useSelector(notificationsLoading);
   useEffect(() => {
     dispatch(getNotifications('', 1, 10, []));
-    setItem('baseRoute', 'notification');
+    setItem('baseRoute', 'notifications');
     return () => dispatch(clearNotificationsData());
   }, []);
 

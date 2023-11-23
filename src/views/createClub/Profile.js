@@ -360,7 +360,7 @@ const Profile = () => {
           </div>
           <div>
             <Button disabled={!isValid || disableBtn} color="primary" type="submit">
-              <span className="me-50">Create</span>
+              <span className="me-50">{location.state?.isEditing ? 'Save' : 'Create'}</span>
             </Button>
           </div>
         </div>

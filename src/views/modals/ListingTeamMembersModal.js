@@ -34,7 +34,7 @@ import { MessageIconWrap } from './style';
 import { getItem } from '../../utility/localStorageControl';
 import { inviteTalents } from '../../redux/actions/inviteTalent';
 import { userTypes } from '../../utility/constants/Constant';
-import { selectAuthUserData, selectUserData } from '../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import ChangeClubMemberModal from './ChangeClubMemberModal';
 
 const ClubDropDownWrapper = styled.div`
@@ -59,6 +59,7 @@ const ClubDropDownWrapper = styled.div`
 const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember, isAdmin }) => {
   const teamMembers = useSelector(selectGetTeamMember);
   const userDetailsData = useSelector(selectAuthUserData);
+  const savedUserData = useSelector(selectSavedUserData);
   const [hasMore, setHasMore] = useState(true);
   const [changeMemberModal, setChangeMemberModal] = useState(false);
   const [memberType, setMemberType] = useState(null);
@@ -183,7 +184,7 @@ const TeamMembersComponent = ({ onInviteTeamMemberClick, handleRemoveMember, isA
                       {DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') || '-'}
                     </p>
                   </Col>
-                  {isClubView && isAdmin && teamMembers?.length > 1 && (
+                  {isClubView && isAdmin && teamMembers?.length > 1 && savedUserData._id !== item?.user_id && (
                     <Col sm="12" md="1" lg="1">
                       <ClubDropDownWrapper>
                         <UncontrolledDropdown>
