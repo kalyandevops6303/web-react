@@ -14,11 +14,16 @@ import { RewardCardWrapper } from './style';
 import { getTotalReferralAmount } from '../../../redux/actions/dashboardActions';
 import { totalReferralAmount } from '../../../redux/selectors/dashboardSelectors';
 import ReferNowModal from '../../ReferralAndReward/overview/ReferNowModal';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { clubStatus } from '../../../utility/constants/Constant';
 
 const RewardsCard = ({ cols }) => {
   const dispatch = useDispatch();
 
   const totalReferralAmountData = useSelector(totalReferralAmount);
+  const userDetailsData = useSelector(selectUserData);
+
+  const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
   const [data, setData] = useState([
     {
@@ -66,20 +71,32 @@ const RewardsCard = ({ cols }) => {
       <Card className="card-reward">
         <CardHeader>
           <CardTitle tag="h4">Rewards</CardTitle>
-          <Link to="/referral-reward/all">
-            <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
+          {isDisabled ? (
+            <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-muted cursor-not-allowed">
               View All
             </CardText>
-          </Link>
+          ) : (
+            <Link to="/referral-reward/all">
+              <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
+                View All
+              </CardText>
+            </Link>
+          )}
         </CardHeader>
         <CardBody className="reward-body">
           <Row className="reward-comp">{renderData()}</Row>
-          <CardText
-            className="text-center card-text font-small-4 mt-20 text-primary earn-more cursor-pointer"
-            onClick={() => setEarnMoreModal(true)}
-          >
-            Earn More
-          </CardText>
+          {isDisabled ? (
+            <CardText className="text-center card-text font-small-4 mt-20 text-primary text-muted earn-more cursor-not-allowed">
+              Earn More
+            </CardText>
+          ) : (
+            <CardText
+              className="text-center card-text font-small-4 mt-20 text-primary earn-more cursor-pointer"
+              onClick={() => setEarnMoreModal(true)}
+            >
+              Earn More
+            </CardText>
+          )}
         </CardBody>
       </Card>
     </RewardCardWrapper>

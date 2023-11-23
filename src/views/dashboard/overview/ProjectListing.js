@@ -49,7 +49,7 @@ import {
   getUpcomingProjectsForTeam,
 } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
-import { userTypes } from '../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import ActiveProjectCard from './ActiveProjectCard';
 import UpcomingProjectCard from './UpcomingProjectCard';
@@ -67,6 +67,8 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
   const dispatch = useDispatch();
+
+  const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
   const onAddDetailsClick = (path) => {
     navigate(path, {
@@ -95,10 +97,14 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
           {active && (
             <div
               onClick={() => {
-                navigate('/marketplace/all_listings');
-                dispatch(setActiveNavTab('marketplace'));
+                if (!isDisabled) {
+                  navigate('/marketplace/all_listings');
+                  dispatch(setActiveNavTab('marketplace'));
+                }
               }}
-              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+              className={`font-weight-normal text-center text-primary project-cta mt-25  ${
+                isDisabled ? 'text-muted cursor-not-allowed' : 'cursor-pointer'
+              }`}
             >
               Explore Projects
             </div>
@@ -126,10 +132,14 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
               ) : (
                 <div
                   onClick={() => {
-                    navigate('/marketplace/all_listings');
-                    dispatch(setActiveNavTab('marketplace'));
+                    if (!isDisabled) {
+                      navigate('/marketplace/all_listings');
+                      dispatch(setActiveNavTab('marketplace'));
+                    }
                   }}
-                  className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+                  className={`font-weight-normal text-center text-primary project-cta mt-25  ${
+                    isDisabled ? 'text-muted cursor-not-allowed' : 'cursor-pointer'
+                  }`}
                 >
                   Explore Projects
                 </div>

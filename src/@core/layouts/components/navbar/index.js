@@ -20,7 +20,7 @@ import { CometChat } from '@cometchat-pro/chat';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { getUserData } from '../../../../redux/actions/authActions';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
-import { userTypes } from '../../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
 import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 import { setActiveNavTab } from '../../../../redux/reducers/activeNavTab';
 
@@ -30,6 +30,8 @@ const ThemeNavbar = (props) => {
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
   const activeTab = useSelector((state) => state.activeNavTab?.activeTab);
+
+  const isTabDisabled = userData?.club_status === clubStatus.IN_REVIEW;
 
   // ** Props
   const { skin, setSkin, setMenuVisibility, className } = props;
@@ -151,54 +153,68 @@ const ThemeNavbar = (props) => {
           >
             Dashboard
           </NavLink>
-          <NavLink
-            onClick={() => {
-              dispatch(setActiveNavTab('marketplace'));
-              setItem(
-                'selectedMarketplaceTab',
-                userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
-              );
-            }}
-            className={
-              (location?.pathname?.split('/')?.[1] === 'marketplace' ||
-              location?.state?.from?.primary === 'Marketplace' ||
-              activeTab === 'marketplace'
-                ? 'is-active'
-                : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
-            }
-            to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`}
-          >
-            Marketplace
-          </NavLink>
-          <NavLink
-            className={
-              (location?.pathname?.split('/')?.[1] === 'projects' ||
-              location?.state?.from?.primary === 'projects' ||
-              activeTab === 'projects'
-                ? 'is-active'
-                : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
-            }
-            to="/projects/ongoing"
-            onClick={() => {
-              localStorage.removeItem('selectedProjectTab');
-              dispatch(setActiveNavTab('projects'));
-            }}
-          >
-            Project
-          </NavLink>
-          <NavLink
-            onClick={() => dispatch(setActiveNavTab('my-teams'))}
-            className={
-              (location?.pathname?.split('/')?.[1] === 'my-teams' ||
-              location?.state?.from?.primary === 'my-teams' ||
-              activeTab === 'my-teams'
-                ? 'is-active'
-                : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
-            }
-            to={`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`}
-          >
-            My Team
-          </NavLink>
+          {isTabDisabled ? (
+            <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Marketplace</span>
+          ) : (
+            <NavLink
+              onClick={() => {
+                dispatch(setActiveNavTab('marketplace'));
+                setItem(
+                  'selectedMarketplaceTab',
+                  userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
+                );
+              }}
+              className={
+                (location?.pathname?.split('/')?.[1] === 'marketplace' ||
+                location?.state?.from?.primary === 'Marketplace' ||
+                activeTab === 'marketplace'
+                  ? 'is-active'
+                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+              }
+              to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`}
+            >
+              Marketplace
+            </NavLink>
+          )}
+
+          {isTabDisabled ? (
+            <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Project</span>
+          ) : (
+            <NavLink
+              className={
+                (location?.pathname?.split('/')?.[1] === 'projects' ||
+                location?.state?.from?.primary === 'projects' ||
+                activeTab === 'projects'
+                  ? 'is-active'
+                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+              }
+              to="/projects/ongoing"
+              onClick={() => {
+                localStorage.removeItem('selectedProjectTab');
+                dispatch(setActiveNavTab('projects'));
+              }}
+            >
+              Project
+            </NavLink>
+          )}
+
+          {isTabDisabled ? (
+            <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>My Team</span>
+          ) : (
+            <NavLink
+              onClick={() => dispatch(setActiveNavTab('my-teams'))}
+              className={
+                (location?.pathname?.split('/')?.[1] === 'my-teams' ||
+                location?.state?.from?.primary === 'my-teams' ||
+                activeTab === 'my-teams'
+                  ? 'is-active'
+                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+              }
+              to={`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`}
+            >
+              My Team
+            </NavLink>
+          )}
 
           {userData?.user_type === userTypes.talent && (
             <NavLink

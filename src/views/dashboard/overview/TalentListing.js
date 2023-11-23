@@ -34,13 +34,15 @@ import {
 } from '../../../redux/selectors/dashboardSelectors';
 import { getJoinRequest, getRecommendedProjects, getRecommendedTalent } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
-import { userTypes } from '../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
+
+  const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
   const dispatch = useDispatch();
 
@@ -105,10 +107,14 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
           ) : (
             <div
               onClick={() => {
-                navigate('/marketplace/talents');
-                dispatch(setActiveNavTab('marketplace'));
+                if (!isDisabled) {
+                  navigate('/marketplace/talents');
+                  dispatch(setActiveNavTab('marketplace'));
+                }
               }}
-              className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
+              className={`font-weight-normal text-center text-primary project-cta mt-25  ${
+                isDisabled ? 'text-muted cursor-not-allowed' : 'cursor-pointer'
+              }} `}
             >
               Invite Talent
             </div>
@@ -145,6 +151,8 @@ const TalentListing = () => {
 
   const recommendedTalent = useSelector(selectRecommendedTalent);
   const isRecommendedTalentLoading = useSelector(selectRecommendedTalentLoading);
+
+  const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
@@ -194,10 +202,12 @@ const TalentListing = () => {
             {joinRequests?.data?.length > 0 && (
               <CardText
                 onClick={() => {
-                  navigate('/my-teams/join_requests');
-                  dispatch(setActiveNavTab('my-teams'));
+                  if (!isDisabled) {
+                    navigate('/my-teams/join_requests');
+                    dispatch(setActiveNavTab('my-teams'));
+                  }
                 }}
-                className="view-all-cta"
+                className={`view-all-cta ${isDisabled && 'text-muted'}`}
               >
                 View All
               </CardText>
@@ -266,7 +276,14 @@ const TalentListing = () => {
               {userDetailsData?.team_type === userTypes.club ? 'Recommended Members' : 'Recommended Talents'}
             </span>
             {recommendedTalent?.data?.length > 0 && (
-              <CardText onClick={handleViewAll} className="view-all-cta">
+              <CardText
+                onClick={() => {
+                  if (!isDisabled) {
+                    handleViewAll();
+                  }
+                }}
+                className={`view-all-cta ${isDisabled && 'text-muted'}`}
+              >
                 View All
               </CardText>
             )}

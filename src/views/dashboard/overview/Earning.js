@@ -11,7 +11,7 @@ import { Card, CardHeader, CardTitle, CardBody, CardText, ButtonGroup, Button, U
 import DateTime from '../../../lib/date-time';
 import { EarningAmount, EarningCardWrapper } from './style';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
-import { userTypes } from '../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { getDashboardPaymentSpending } from '../../../redux/actions/milestonePaymentActions';
 
 const EarningCard = () => {
@@ -71,6 +71,7 @@ const EarningCard = () => {
           <ButtonGroup className="button-grp">
             <Button
               tag="label"
+              disabled={userDetailsData?.club_status === clubStatus.IN_REVIEW}
               className={classNames('btn-icon ', {
                 active: activeFilter === FILTER_TYPE.MONTH,
               })}
@@ -82,6 +83,7 @@ const EarningCard = () => {
             </Button>
             <Button
               tag="label"
+              disabled={userDetailsData?.club_status === clubStatus.IN_REVIEW}
               className={classNames('btn-icon', {
                 active: activeFilter === FILTER_TYPE.YEAR,
               })}

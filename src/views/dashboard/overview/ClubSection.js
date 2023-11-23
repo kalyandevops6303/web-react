@@ -7,15 +7,21 @@ import { TeamSectionWrapper } from './style';
 import UserNameRoleCompanyComp from '../../../@core/components/username-role-company';
 import { getTeamMembers } from '../../../redux/actions/dashboardActions';
 import { selectGetTeamMember } from '../../../redux/selectors/dashboardSelectors';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { clubStatus } from '../../../utility/constants/Constant';
 
 const ClubSection = ({ toggleModal }) => {
   const teamMembers = useSelector(selectGetTeamMember);
+  const userDetailsData = useSelector(selectUserData);
+
   const [hasMore, setHasMore] = useState(true);
 
   const dispatch = useDispatch();
   const selectTeamMembersMetadata = useSelector((state) => state.dashboard.getMemberMetaData);
   const selectTeamMembercurrentPreview = useSelector((state) => state.dashboard.memberCurrentPreview);
   const metadata = { page: 1, page_size: 10 };
+
+  const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
   useEffect(() => {
     setHasMore(true);
@@ -48,7 +54,9 @@ const ClubSection = ({ toggleModal }) => {
           </CardTitle>
           <CardText
             onClick={toggleModal}
-            className="cursor-pointer text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary"
+            className={` text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary ${
+              isDisabled ? 'text-muted cursor-not-allowed' : 'cursor-pointer'
+            }`}
           >
             View All
           </CardText>

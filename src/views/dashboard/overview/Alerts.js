@@ -8,7 +8,7 @@ import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { getAlerts, getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
-import { userTypes } from '../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { CustomBadge } from '../../styled';
@@ -25,6 +25,8 @@ const Alerts = () => {
   const isProfileCompleted = profilePercentageData?.profile_completed === 100;
   const talentOrClientProfile =
     userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.talent;
+
+  const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
   useEffect(() => {
     dispatch(getAlerts());
@@ -174,9 +176,17 @@ const Alerts = () => {
       <Card>
         <CardHeader className="earning-head">
           <CardTitle tag="h4">Alerts</CardTitle>
-          <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
-            <Link to="/notifications">View All</Link>
-          </CardText>
+          {isDisabled ? (
+            <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-muted cursor-not-allowed">
+              View All
+            </CardText>
+          ) : (
+            <Link to="/notifications">
+              <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
+                View All
+              </CardText>
+            </Link>
+          )}
         </CardHeader>
         {!isProfileCompleted && (
           <Card className="card-inside">
