@@ -43,6 +43,10 @@ const clubSlice = createSlice({
       ...state,
       clubCreateData: { ...state.clubCreateData, ...action.payload },
     }),
+    clearClubCreateData: (state) => ({
+      ...state,
+      clubCreateData: null,
+    }),
     getCardInfoReq: (state) => ({
       ...state,
       cardInfoLoading: true,
@@ -98,6 +102,7 @@ export const {
   registerClubEmailFailure,
   getClubCreated,
   setClubCreateData,
+  clearClubCreateData,
   getCardInfoReq,
   getCardInfoErr,
   getCardInfoSuccess,

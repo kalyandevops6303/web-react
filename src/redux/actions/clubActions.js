@@ -19,6 +19,7 @@ import {
   getListErr,
   getListReq,
   storeSuccessData,
+  clearClubCreateData,
 } from '../reducers/clubs';
 import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
 
@@ -54,6 +55,10 @@ const getClubCardInfo =
 
 const setClubCreateDataAction = (data) => async (dispatch) => {
   dispatch(setClubCreateData(data));
+};
+
+const clearClubCreateDataAction = () => async (dispatch) => {
+  dispatch(clearClubCreateData());
 };
 
 const registerClubEmail =
@@ -105,6 +110,7 @@ const updateClub = (data, onSuccess) => async (dispatch) => {
 
 export {
   setClubCreateDataAction,
+  clearClubCreateDataAction,
   registerClubEmail,
   createClub,
   getClubs,

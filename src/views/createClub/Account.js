@@ -384,6 +384,8 @@ const Account = () => {
   useEffect(() => {
     if (location?.state?.isEditing) {
       getTeamDetails();
+    } else {
+      dispatch(setClubCreateDataAction(null));
     }
   }, []);
 
@@ -500,7 +502,7 @@ const Account = () => {
         { shouldValidate: true },
       );
     }
-    if (clubCreateData?.tools?.length > 0 && allToolsList.length > 0) {
+    if (clubCreateData?.tools?.length > 0 && allToolsList?.length > 0) {
       const selectedTools = clubCreateData?.tools.map((tool) => tool);
       setValue(
         'tools',
@@ -513,7 +515,7 @@ const Account = () => {
         { shouldValidate: true },
       );
     }
-    if (clubCreateData?.skills?.length > 0 && allSkillsList.length > 0) {
+    if (clubCreateData?.skills?.length > 0 && allSkillsList?.length > 0) {
       const selectedSkills = clubCreateData?.skills.map((skill) => skill);
       setValue(
         'skills',
