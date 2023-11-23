@@ -41,6 +41,8 @@ import { GroupLabelWrapper } from './style';
 import EducationInstitutionModal from './EducationInstitutionModal';
 import { setClubCreateDataAction, updateClub } from '../../redux/actions/clubActions';
 import { getTeamById } from '../../services/teamServices';
+import { getProjectAreas, getSkills, getTools } from '../../redux/actions/staticActions';
+import { projectAreas, skillsList, toolsList } from '../../redux/selectors/staticSelectors';
 
 const Account = () => {
   const ProfileSchema = yup.object().shape({
@@ -62,7 +64,7 @@ const Account = () => {
       .of(
         yup.object().shape({
           label: yup.string(),
-          value: yup.object(),
+          value: yup.string(),
         }),
       )
       .max(5, 'Maximum of five interests can be added')
@@ -74,7 +76,7 @@ const Account = () => {
       .of(
         yup.object().shape({
           label: yup.string(),
-          value: yup.object(),
+          value: yup.string(),
         }),
       )
       .max(5, 'Maximum of five tools can be added')
@@ -84,7 +86,7 @@ const Account = () => {
       .of(
         yup.object().shape({
           label: yup.string(),
-          value: yup.object(),
+          value: yup.string(),
         }),
       )
       .max(5, 'Maximum of five skills can be added')
@@ -223,18 +225,18 @@ const Account = () => {
             team_logo: imageUrlRes.file_key,
             tagline: clubTagline,
             introduction: clubIntroduction,
-            interests: interestsSelected?.map((interest) => interest._id),
-            tools: toolsSelected?.map((tool) => tool._id),
-            skills: skillsSelected?.map((skill) => skill._id),
+            interests: interestsSelected,
+            tools: toolsSelected,
+            skills: skillsSelected,
           };
         } else {
           reqData = {
             _id: userDetailsData._id,
             tagline: clubTagline,
             introduction: clubIntroduction,
-            interests: interestsSelected?.map((tool) => tool._id),
-            tools: toolsSelected?.map((tool) => tool._id),
-            skills: skillsSelected?.map((skill) => skill._id),
+            interests: interestsSelected,
+            tools: toolsSelected,
+            skills: skillsSelected,
           };
         }
       } else {
@@ -314,7 +316,7 @@ const Account = () => {
     try {
       const response = await projectAreasService();
 
-      const options = response?.data?.data?.map((area) => ({ label: area.name, value: area }));
+      const options = response?.data?.data?.map((area) => ({ label: area.name, value: area._id }));
 
       setProjectAreasOptions(options);
 
@@ -335,7 +337,7 @@ const Account = () => {
     try {
       const response = await toolsService();
 
-      const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool }));
+      const options = response?.data?.data?.map((tool) => ({ label: tool.name, value: tool._id }));
 
       setToolsOptions(options);
 
@@ -356,7 +358,7 @@ const Account = () => {
     try {
       const response = await skillsService();
 
-      const options = response?.data?.data?.map((skill) => ({ label: skill.name, value: skill }));
+      const options = response?.data?.data?.map((skill) => ({ label: skill.name, value: skill._id }));
 
       setSkillsOptions(options);
 
@@ -380,8 +382,14 @@ const Account = () => {
   };
 
   useEffect(() => {
-    getTeamDetails();
+    if (location?.state?.isEditing) {
+      getTeamDetails();
+    }
   }, []);
+
+  const allToolsList = useSelector(toolsList);
+  const allSkillsList = useSelector(skillsList);
+  const projectAreasList = useSelector(projectAreas);
 
   useEffect(() => {
     if (clubCreateData) {
@@ -402,32 +410,22 @@ const Account = () => {
         setValue('educationInstitution', clubCreateData?.education_institute, { shouldValidate: true });
         setSelectedOption(clubCreateData?.education_institute);
       }
-      if (clubCreateData?.interests?.length > 0) {
-        setValue(
-          'interests',
-          clubCreateData?.interests.map((interest) => ({
-            label: interest.name,
-            value: interest,
-          })),
-          { shouldValidate: true },
-        );
-      }
-      if (clubCreateData?.tools?.length > 0) {
-        setValue(
-          'tools',
-          clubCreateData?.tools.map((tool) => ({ label: tool.name, value: tool })),
-          { shouldValidate: true },
-        );
-      }
-      if (clubCreateData?.skills?.length > 0) {
-        setValue(
-          'skills',
-          clubCreateData?.skills.map((skill) => ({ label: skill.name, value: skill })),
-          { shouldValidate: true },
-        );
-      }
     }
   }, []);
+
+  useEffect(() => {
+    if (clubCreateData) {
+      if (clubCreateData?.tools?.length > 0) {
+        dispatch(getTools());
+      }
+      if (clubCreateData?.skills?.length > 0) {
+        dispatch(getSkills());
+      }
+      if (clubCreateData?.interests?.length > 0) {
+        dispatch(getProjectAreas());
+      }
+    }
+  }, [clubCreateData]);
 
   useEffect(() => {
     if (location?.state?.isEditing) {
@@ -464,7 +462,7 @@ const Account = () => {
             'interests',
             clubDetails?.interests.map((interest) => ({
               label: interest.name,
-              value: interest,
+              value: interest._id,
             })),
             { shouldValidate: true },
           );
@@ -472,20 +470,63 @@ const Account = () => {
         if (clubDetails?.tools?.length > 0) {
           setValue(
             'tools',
-            clubDetails?.tools.map((tool) => ({ label: tool.name, value: tool })),
+            clubDetails?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
             { shouldValidate: true },
           );
         }
         if (clubDetails?.skills?.length > 0) {
           setValue(
             'skills',
-            clubDetails?.skills.map((skill) => ({ label: skill.name, value: skill })),
+            clubDetails?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
             { shouldValidate: true },
           );
         }
       }
     }
   }, [clubDetails]);
+
+  useEffect(() => {
+    if (clubCreateData?.interests?.length > 0 && projectAreasList?.length > 0) {
+      const selectedInterests = clubCreateData?.interests.map((interest) => interest);
+
+      setValue(
+        'interests',
+        projectAreasList
+          .filter((int) => selectedInterests.includes(int._id))
+          .map((int) => ({
+            label: int.name,
+            value: int._id,
+          })),
+        { shouldValidate: true },
+      );
+    }
+    if (clubCreateData?.tools?.length > 0 && allToolsList.length > 0) {
+      const selectedTools = clubCreateData?.tools.map((tool) => tool);
+      setValue(
+        'tools',
+        allToolsList
+          .filter((int) => selectedTools.includes(int._id))
+          .map((int) => ({
+            label: int.name,
+            value: int._id,
+          })),
+        { shouldValidate: true },
+      );
+    }
+    if (clubCreateData?.skills?.length > 0 && allSkillsList.length > 0) {
+      const selectedSkills = clubCreateData?.skills.map((skill) => skill);
+      setValue(
+        'skills',
+        allSkillsList
+          .filter((int) => selectedSkills.includes(int._id))
+          .map((int) => ({
+            label: int.name,
+            value: int._id,
+          })),
+        { shouldValidate: true },
+      );
+    }
+  }, [allToolsList, allSkillsList, projectAreasList, clubCreateData]);
 
   const formatGroupLabel = (data) => (
     <GroupLabelWrapper>
@@ -686,6 +727,7 @@ const Account = () => {
                     <AsyncPaginate
                       isMulti
                       loadOptions={loadSkillsOptions}
+                      hideSelectedOptions
                       classNamePrefix="select"
                       placeholder="Select up to 5 skills"
                       theme={selectThemeColors}
@@ -747,7 +789,7 @@ const Account = () => {
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Save & Continue'}</span>
+                  <span className="me-50">Save & Continue</span>
                   <ChevronRight size={14} />
                 </>
               )}

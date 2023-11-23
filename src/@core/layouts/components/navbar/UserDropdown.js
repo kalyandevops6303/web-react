@@ -21,7 +21,7 @@ import { logoutAction, switchProfile } from '../../../../redux/actions/authActio
 import { capitalize } from 'lodash';
 import styled from 'styled-components';
 import theme from '../../../../configs/themeVariables';
-import { userTypes } from '../../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
 import { selectSavedUserData, selectIsTeamLoggedIn, selectUserData } from '../../../../redux/selectors/authSelectors';
 import ProfileSwitchModal from '../../../../views/modals/ProfileSwitchModal';
@@ -29,6 +29,7 @@ import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
+import { DeclinedButton } from './style';
 
 const UserDropdown = () => {
   const userDetailsData = useSelector(selectUserData);
@@ -272,6 +273,7 @@ const UserDropdown = () => {
               <DropdownItem
                 className={`d-flex justify-content-between ${userDetailsData?._id === team?._id ? 'isActive' : ''}`} // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
                 onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
+                disabled={team?.club_status === clubStatus.DECLINED}
               >
                 <section className="user-info-avatar d-flex align-items-center">
                   <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />
@@ -291,6 +293,7 @@ const UserDropdown = () => {
                     </span>
                   </div>
                 </section>
+                {team.club_status === clubStatus.DECLINED && <DeclinedButton>Rejected</DeclinedButton>}
                 {userDetailsData?._id === team?._id && <Check className="m-auto ms-3 me-0" size={14} />}
               </DropdownItem>
             ))}

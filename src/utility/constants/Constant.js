@@ -86,7 +86,7 @@ const roleTypeOptions = [
 const clubStatus = {
   ACCEPTED: 'ACCEPTED',
   IN_REVIEW: 'IN_REVIEW',
-  DECLINED: 'DECLINED',
+  DECLINED: 'REJECTED',
 };
 
 const PAYMENT_STATUS = {

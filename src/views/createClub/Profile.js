@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row, Spinner } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChevronLeft } from 'react-feather';
 import theme from '../../configs/themeVariables';
@@ -66,6 +66,7 @@ const Profile = () => {
 
   const userDetailsData = useSelector(userData);
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
+  const loading = useSelector((state) => state.clubs.loading);
 
   const toggleClubCreatedModal = () => setClubCreatedModal(!clubCreatedModal);
   const toggleEmailVerifyModal = () => setEmailVerifyModal(!emailVerifyModal);
@@ -82,7 +83,9 @@ const Profile = () => {
     }
   };
 
-  const onSuccess = () => {};
+  const onSuccess = () => {
+    toggleEmailVerifyModal();
+  };
 
   const onEmailVerifySuccess = (email) => {
     dispatch(registerClubEmail({ email, onSuccess }));
@@ -118,7 +121,6 @@ const Profile = () => {
       dispatch(updateClub(removeEmptyKeys(reqData), onApiSuccess));
     } else {
       onEmailVerifySuccess(formData.clubEmailID);
-      toggleEmailVerifyModal();
     }
   };
 
@@ -143,7 +145,9 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    getTeamDetails();
+    if (location?.state?.isEditing) {
+      getTeamDetails();
+    }
   }, []);
 
   useEffect(() => {
@@ -265,16 +269,31 @@ const Profile = () => {
                 control={control}
                 name="isWebpage"
                 id="isWebpage"
+                disabled={location?.state?.isEditing}
                 render={({ field }) => (
                   <div className="demo-inline-spacing">
                     <div style={{ maxWidth: '350px' }} className="form-check form-check-inline checkbox-custom-margin">
-                      <Input type="radio" {...field} id="yesWebpage" value="Yes" checked={field.value === 'Yes'} />
+                      <Input
+                        type="radio"
+                        {...field}
+                        disabled={location?.state?.isEditing}
+                        id="yesWebpage"
+                        value="Yes"
+                        checked={field.value === 'Yes'}
+                      />
                       <Label for="yesWebpage" className="form-check-label">
                         Yes, there is a web page on the university website.
                       </Label>
                     </div>
                     <div style={{ maxWidth: '350px' }} className="form-check form-check-inline checkbox-custom-margin">
-                      <Input type="radio" {...field} id="noWebpage" value="No" checked={field.value === 'No'} />
+                      <Input
+                        type="radio"
+                        {...field}
+                        disabled={location?.state?.isEditing}
+                        id="noWebpage"
+                        value="No"
+                        checked={field.value === 'No'}
+                      />
                       <Label htmlFor="noWebpage" className="form-check-label">
                         No, there is no such web page exists on the university website.
                       </Label>
@@ -360,7 +379,11 @@ const Profile = () => {
           </div>
           <div>
             <Button disabled={!isValid || disableBtn} color="primary" type="submit">
-              <span className="me-50">{location.state?.isEditing ? 'Save' : 'Create'}</span>
+              {loading ? (
+                <Spinner size="sm" />
+              ) : (
+                <span className="me-50">{location.state?.isEditing ? 'Save' : 'Create'}</span>
+              )}
             </Button>
           </div>
         </div>

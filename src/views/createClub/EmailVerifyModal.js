@@ -28,9 +28,9 @@ const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
 
   const verifyOtp = () => {
     setIsLoading(true);
-    const skillsWithId = clubCreateData?.skills?.map((skill) => skill._id);
-    const toolsWithId = clubCreateData?.tools?.map((tool) => tool._id);
-    const interestsWithId = clubCreateData?.interests?.map((interest) => interest._id);
+    const skillsWithId = clubCreateData?.skills?.map((skill) => skill);
+    const toolsWithId = clubCreateData?.tools?.map((tool) => tool);
+    const interestsWithId = clubCreateData?.interests?.map((interest) => interest);
     const institutionId = clubCreateData?.education_institute?.value;
     const dataWithCode = {
       ...clubCreateData,
