@@ -33,6 +33,7 @@ import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 import ClubSection from './overview/ClubSection';
 import InviteClubMemberModal from '../modals/InviteClubMemberModal';
+import { getTeamId } from '../../utility/Utils';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -277,7 +278,7 @@ const PrivateDashboard = () => {
               <OpenListing />
             </section>
           )}
-          {userDetailsData?.team_type === userTypes.team && (
+          {userDetailsData?.user_type === userTypes.team && getTeamId('team_id') && (
             <section className="mb-2">
               <Header className="mb-1">Talent</Header>
               <TalentListing />
@@ -299,14 +300,14 @@ const PrivateDashboard = () => {
 
         <Col lg="4" sm="12">
           {userDetailsData?.team_type !== userTypes.club && <AvailableTime />}
-          {userDetailsData?.team_type === userTypes.club && (
+          {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}
               // toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
             />
           )}
-          {userDetailsData?.team_type === userTypes.team && (
+          {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}

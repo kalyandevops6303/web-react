@@ -15,7 +15,7 @@ import { ERROR } from '../../../../utility/constants/ToastTypes';
 import { clearUnreadMsgCountData } from '../../../../redux/reducers/chat';
 import { clubStatus } from '../../../../utility/constants/Constant';
 
-const NavbarUser = () => {
+const NavbarUser = ({ setNavBarLoading }) => {
   const isTab = useIsTab();
   const dispatch = useDispatch();
   const navigate = useNavigate();

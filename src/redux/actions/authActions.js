@@ -61,7 +61,7 @@ import {
   getUserDataSuccess,
   cometChatLogin,
 } from '../reducers/auth';
-import { getItem, removeItem, setItem } from '../../utility/localStorageControl';
+import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import { checkPoints, userTypes } from '../../utility/constants/Constant';
@@ -74,6 +74,8 @@ import { clearTeamCardData } from '../reducers/myTeams';
 import { clearMarketplaceCardData } from '../reducers/marketPlace';
 import { clearProjectCardData } from '../reducers/project';
 import { registerClubEmailService } from '../../services/clubServices';
+import { getTeamId } from '../../utility/Utils';
+import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -282,37 +284,15 @@ const resetPassword = (data, onSuccess) => async (dispatch) => {
     errorHandler(error, resetPasswordFailure);
   }
 };
-
-const getUserData = () => async (dispatch) => {
-  dispatch(userDataRequest());
-  try {
-    const team_id = getItem('team_id');
-    let res;
-    if (team_id) {
-      res = await getTeamById(team_id);
-    } else {
-      res = await userDataService();
-    }
-    if (res.data.data?.user_type === userTypes.talent || res.data.data?.user_type === userTypes.team) {
-      dispatch(getTeams({ onSuccess: () => {} }));
-    }
-    dispatch(userDataSuccess(res.data.data));
-    dispatch(getUserDataSuccess(res.data.data?.user_type));
-    setItem('userData', res.data.data);
-  } catch (error) {
-    errorHandler(error, userDataFailure);
-  }
-};
-
 const switchProfile =
   ({ data, onSuccess, selected }) =>
   async (dispatch) => {
     try {
       dispatch(switchProfileSuccess(data));
       if (data?.user_type === 'TEAM') {
-        setItem('team_id', data?._id);
+        setItemFromSession('team_id', data?._id);
       } else {
-        removeItem('team_id');
+        removeItemFromSession('team_id');
       }
       onSuccess(selected);
       // clearing my team data
@@ -323,9 +303,48 @@ const switchProfile =
       dispatch(clearProjectCardData());
       removeItem('selectedMyTeamsTab');
     } catch (err) {
-      errorHandler(err);
+      console.error(err);
     }
   };
+
+const getUserData = () => async (dispatch) => {
+  dispatch(userDataRequest());
+
+  try {
+    const isUserVisited = getItemFromSession('isUserVisited');
+    const teamId = getTeamId('team_id');
+
+    if (isUserVisited && teamId) {
+      // User has visited and has a team ID
+      const teamRes = await getTeamById(teamId);
+      const userData = teamRes.data.data;
+
+      if (userData) {
+        dispatch(getUserDataSuccess(userData.user_type));
+        dispatch(userDataSuccess(userData));
+        dispatch(getTeams({ onSuccess: () => {} }));
+        setItem('userData', userData);
+      }
+    } else {
+      // User is visiting for the first time or doesn't have a team ID
+      const userRes = await userDataService();
+      const userData = userRes.data.data;
+
+      setItem('savedUserData', userData);
+      setItem('userData', userData);
+      dispatch(userDataSuccess(userData));
+      dispatch(getUserDataSuccess(userData.user_type));
+
+      if (userData.user_type === userTypes.talent) {
+        dispatch(getTeams({ onSuccess: () => {} }));
+      }
+
+      setItemFromSession('isUserVisited', true);
+    }
+  } catch (error) {
+    errorHandler(error, userDataFailure);
+  }
+};
 
 export {
   switchProfile,

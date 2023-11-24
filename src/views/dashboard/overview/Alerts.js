@@ -6,7 +6,7 @@ import { Badge, Card, CardBody, CardHeader, CardText, CardTitle, Progress } from
 import { AlertCardWrapper } from './style';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { getAlerts, getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
-import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import { getTeamId, giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
@@ -30,7 +30,7 @@ const Alerts = () => {
 
   useEffect(() => {
     dispatch(getAlerts());
-    if (userDetailsData?.user_type === userTypes.team) {
+    if (userDetailsData?.user_type === userTypes.team && getTeamId('team_id')) {
       dispatch(getTeamProfilePercentage());
     } else {
       dispatch(getProfilePercentage());

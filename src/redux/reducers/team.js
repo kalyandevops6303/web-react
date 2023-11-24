@@ -38,10 +38,22 @@ const teamSlice = createSlice({
       updateTeamLoading: false,
       error: action.payload,
     }),
+
+    removeTeamFromList: (state, action) => ({
+      ...state,
+      teams: state.teams.filter((team) => team._id !== action.payload),
+    }),
   },
 });
 
-export const { getTeamSuccess, clearTeams, getTeamCreated, updateTeamRequest, updateTeamSuccess, updateTeamFailure } =
-  teamSlice.actions;
+export const {
+  removeTeamFromList,
+  getTeamSuccess,
+  clearTeams,
+  getTeamCreated,
+  updateTeamRequest,
+  updateTeamSuccess,
+  updateTeamFailure,
+} = teamSlice.actions;
 
 export default teamSlice.reducer;

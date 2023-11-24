@@ -19,10 +19,9 @@ import { getInvitedMember, getTeamMembers, getUnassignedRoles } from '../../../r
 import InviteTalentToTeam from '../../invite-talent-to-team';
 import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
-import { getItem } from '../../../utility/localStorageControl';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
-import { returnFormattedRating } from '../../../utility/Utils';
+import { getTeamId, returnFormattedRating } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
@@ -60,7 +59,7 @@ const InvitedMemberComponent = () => {
     };
     dispatch(getInvitedMember({ metadata: newMeteData, project_id: param?.projectId }));
   };
-  const teamId = getItem('team_id');
+  const teamId = getTeamId('team_id');
 
   const handleSendMail = ({ id, role, user_id }) => {
     setLoadingItems((prevLoadingItems) => ({

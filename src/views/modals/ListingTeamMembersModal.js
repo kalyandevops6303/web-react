@@ -31,11 +31,11 @@ import theme from '../../configs/themeVariables';
 import { getInvitedMember, getTeamMembers } from '../../redux/actions/dashboardActions';
 import { selectGetInvitedMember, selectGetTeamMember } from '../../redux/selectors/dashboardSelectors';
 import { MessageIconWrap } from './style';
-import { getItem } from '../../utility/localStorageControl';
 import { inviteTalents } from '../../redux/actions/inviteTalent';
 import { userTypes } from '../../utility/constants/Constant';
 import { selectAuthUserData, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import ChangeClubMemberModal from './ChangeClubMemberModal';
+import { getTeamId } from '../../utility/Utils';
 
 const ClubDropDownWrapper = styled.div`
   .logout {
@@ -273,7 +273,7 @@ const InvitedMemberComponent = () => {
     };
     dispatch(getInvitedMember({ metadata: newMeteData }));
   };
-  const teamId = getItem('team_id');
+  const teamId = getTeamId('team_id');
 
   const handleSendMail = ({ id }) => {
     setLoadingItems((prevLoadingItems) => ({

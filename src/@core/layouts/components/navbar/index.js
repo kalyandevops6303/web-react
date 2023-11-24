@@ -14,7 +14,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CometChat } from '@cometchat-pro/chat';
 import { getItem, setItem } from '../../../../utility/localStorageControl';
@@ -149,7 +149,9 @@ const ThemeNavbar = (props) => {
               ' menu-item nav-menu-main menu-toggle hidden-xs'
             }
             to="/dashboard"
-            onClick={() => dispatch(setActiveNavTab('dashboard'))}
+            onClick={() => {
+              dispatch(setActiveNavTab('dashboard'));
+            }}
           >
             Dashboard
           </NavLink>

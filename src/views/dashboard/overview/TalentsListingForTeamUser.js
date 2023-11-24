@@ -22,8 +22,8 @@ import TagsSection from './TagsSection';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
-import { setItem } from '../../../utility/localStorageControl';
 import { returnFormattedRating } from '../../../utility/Utils';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -99,7 +99,7 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
   };
 
   const handleViewTeam = (id) => {
-    setItem('team_id', id);
+    setItemFromSession('team_id', id);
     navigate(`/profile/team/${id}`);
   };
 

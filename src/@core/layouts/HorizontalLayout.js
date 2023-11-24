@@ -1,15 +1,16 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 // ** React Imports
-import { useState, useEffect } from 'react';
 
 // ** Store & Actions
 import { useSelector, useDispatch } from 'react-redux';
 import { handleMenuHidden, handleContentWidth } from '@store/layout';
 
 // ** Third Party Components
+import { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { ArrowUp } from 'react-feather';
+import { useLocation } from 'react-router-dom';
 
 // ** Reactstrap Imports
 import { Navbar, Button } from 'reactstrap';
@@ -47,13 +48,14 @@ const HorizontalLayout = (props) => {
   const { footerType, setFooterType } = useFooterType();
   const { navbarColor, setNavbarColor } = useNavbarColor();
   const { layout, setLayout, setLastLayout } = useLayout();
+  const [isMounted, setIsMounted] = useState(false);
 
   // ** States
-  const [isMounted, setIsMounted] = useState(false);
   const isNavbarSearchBarOpen = useSelector((state) => state.search?.isNavbarSearchBarOpen);
 
   // ** Store Vars
   const dispatch = useDispatch();
+  const location = useLocation();
   const layoutStore = useSelector((state) => state.layout);
 
   // ** Vars
@@ -67,15 +69,6 @@ const HorizontalLayout = (props) => {
   const setIsHidden = (val) => dispatch(handleMenuHidden(val));
 
   // ** UseEffect Cleanup
-  const cleanup = () => {
-    setIsMounted(false);
-  };
-
-  //  ComponentDidMount
-  useEffect(() => {
-    setIsMounted(true);
-    return () => cleanup();
-  }, []);
 
   // ** Vars
   const footerClasses = {
@@ -89,6 +82,14 @@ const HorizontalLayout = (props) => {
     sticky: 'navbar-sticky',
     static: 'navbar-static',
   };
+  const cleanup = () => {
+    setIsMounted(false);
+  };
+  //  ComponentDidMount
+  useEffect(() => {
+    setIsMounted(true);
+    return () => cleanup();
+  }, [location]);
 
   if (!isMounted) {
     return null;
@@ -116,13 +117,12 @@ const HorizontalLayout = (props) => {
         )}
       >
         <div className="navbar-container d-flex content ">
-          {/* {navbar ? navbar({ skin, setSkin }) : <NavbarComponent skin={skin} setSkin={setSkin} />} */}
-
           <NavbarComponent skin={skin} setSkin={setSkin} />
         </div>
       </Navbar>
 
       {children}
+
       {themeConfig.layout.customizer === true ? (
         <Customizer
           skin={skin}

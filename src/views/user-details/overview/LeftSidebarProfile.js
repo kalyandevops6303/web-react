@@ -21,9 +21,8 @@ import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
-import { giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
+import { getTeamId, giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
-import { getItem } from '../../../utility/localStorageControl';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import {
@@ -62,7 +61,7 @@ const LeftSidebarProfile = ({
   const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
 
   const [modalInformationText, setModalInformationText] = useState('');
-  const teamId = getItem('team_id');
+  const teamId = getTeamId('team_id');
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
