@@ -114,6 +114,10 @@ const AlertAndNote = () => {
     </div>
   );
 
+  if (document?.bid_validity === null) {
+    return '';
+  }
+
   if (userType === userTypes.client) {
     if (!document?.is_documents_sent) {
       const alertText = `A max of ${calculateTimeDifference(
