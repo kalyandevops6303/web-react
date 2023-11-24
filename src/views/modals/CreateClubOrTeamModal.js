@@ -70,11 +70,9 @@ export default CreateClubOrTeamModal;
 CreateClubOrTeamModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  selectedProject: Proptypes.object,
 };
 
 CreateClubOrTeamModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  selectedProject: {},
 };
