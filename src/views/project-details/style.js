@@ -428,6 +428,25 @@ const ContractDetailsWrap = styled.div`
     max-height: 40rem;
     overflow-y: auto;
   }
+
+  .contract-info {
+    border-radius: 6px;
+  }
+  .error-banner {
+    background: ${theme.errorBannerBg};
+
+    p {
+      color: ${theme.red};
+    }
+  }
+
+  .info-banner {
+    background: ${theme.infoBannerBg};
+
+    p {
+      color: ${theme.activeNavPillText};
+    }
+  }
 `;
 
 const MemberRowWrapper = styled.div`

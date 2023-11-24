@@ -13,16 +13,20 @@ import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
 import { clearUnreadMsgCountData } from '../../../../redux/reducers/chat';
+import { clubStatus } from '../../../../utility/constants/Constant';
 
-const NavbarUser = () => {
+const NavbarUser = ({ setNavBarLoading }) => {
   const isTab = useIsTab();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isNotificationCount = useSelector((state) => state.notifications.notificationCount);
   const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
+  const userDetailsData = useSelector(selectUserData);
 
   const unreadMsgCount = useSelector((state) => state.chat.unreadMsgCount);
+
+  const isTabDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
   const handleNotificaionClick = () => {
     isNotificationCount && dispatch(notificationCount(false));
@@ -46,18 +50,36 @@ const NavbarUser = () => {
         ''
       ) : (
         <>
-          <NotificationIconContainer onClick={handleNotificaionClick}>
-            <Link to="/notifications">
-              {isNotificationCount && <span className="notification-dot" />}
-              <Bell size={20} color={theme.bodyColor} />
-            </Link>
-          </NotificationIconContainer>
-          <MessageIconContainer>
-            <div onClick={handleChatNavigate}>
-              {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
-              <MessageSquare size={20} color={theme.bodyColor} />
+          {isTabDisabled ? (
+            <div className="text-muted cursor-not-allowed">
+              <NotificationIconContainer>
+                <Bell size={20} color={theme.bodyColor} />
+              </NotificationIconContainer>
             </div>
-          </MessageIconContainer>
+          ) : (
+            <NotificationIconContainer onClick={handleNotificaionClick}>
+              <Link to="/notifications">
+                {isNotificationCount && <span className="notification-dot" />}
+                <Bell size={20} color={theme.bodyColor} />
+              </Link>
+            </NotificationIconContainer>
+          )}
+
+          {isTabDisabled ? (
+            <MessageIconContainer>
+              <div className="text-muted cursor-not-allowed">
+                <MessageSquare size={20} color={theme.bodyColor} />
+              </div>
+            </MessageIconContainer>
+          ) : (
+            <MessageIconContainer>
+              <div onClick={handleChatNavigate}>
+                {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
+                <MessageSquare size={20} color={theme.bodyColor} />
+              </div>
+            </MessageIconContainer>
+          )}
+
           <UserDropdown />
         </>
       )}

@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { ProjectWrapper } from './style';
 import ProjectModal from '../../modals/ProjectModal';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
-import { setItem } from '../../../utility/localStorageControl';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const MyTeamCard = ({ data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -38,7 +38,7 @@ const MyTeamCard = ({ data, className }) => {
   );
 
   const handleViewTeam = (id) => {
-    setItem('team_id', id);
+    setItemFromSession('team_id', id);
     navigate(`/profile/team/${id}`);
   };
 

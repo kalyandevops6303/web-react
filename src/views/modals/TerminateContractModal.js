@@ -44,7 +44,7 @@ const TerminateContractModal = ({ project_id, docType, modalData, modal, toggleM
               </CardText>
               <section className="d-none d-flex gap-2 stats">
                 <div style={{ minWidth: '10rem' }}>
-                  <CardText className="value mb-25">{modalData?.name || 'Talent/Team name'}</CardText>
+                  <CardText className=" value mb-25">{modalData?.name || 'Talent/Team name'}</CardText>
                   <small className="key">Talent/Team name</small>
                 </div>
                 <div className="d-none">

@@ -1,22 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ReactQuill from 'react-quill';
-import { DateTime } from 'luxon';
 import { Button, CardText, Form, FormFeedback, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TextEditorContainer } from '../CreateProject/style';
 import { EditContractWrap } from './style';
-import { updateContract } from '../../redux/actions/projectDetailsAction';
 import ShowToastMessage from '../../@core/components/toast';
 
-const EditContractModal = ({ docType, project_id, setDocumentData, modal, toggleModal, data }) => {
+const EditContractModal = ({ docType, setDocumentData, modal, toggleModal, data }) => {
   const ProjectDetailsSchema = yup.object().shape({
     contractDetails: yup.string().required('Contract details is required'),
   });
-  const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.projectDetails.updateContractLoading);
   const {
     control,
@@ -37,19 +34,21 @@ const EditContractModal = ({ docType, project_id, setDocumentData, modal, toggle
     if (trimmedContent === '') {
       ShowToastMessage('error', 'Contract cannot be blank');
     } else {
-      const onSuccess = () => {
-        setDocumentData(contractDetails);
-        toggleModal();
-      };
-      dispatch(
-        updateContract({
-          project_id,
-          doc_type: docType,
-          validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
-          onSuccess,
-          data: contractDetails,
-        }),
-      );
+      setDocumentData(contractDetails);
+      toggleModal();
+      // const onSuccess = () => {
+      //   setDocumentData(contractDetails);
+      //   toggleModal();
+      // };
+      // dispatch(
+      //   updateContract({
+      //     project_id,
+      //     doc_type: docType,
+      //     validity: DateTime.now().plus({ months: 1 }).toFormat('dd-MM-yyyy'),
+      //     onSuccess,
+      //     data: contractDetails,
+      //   }),
+      // );
     }
   };
 
@@ -81,7 +80,7 @@ const EditContractModal = ({ docType, project_id, setDocumentData, modal, toggle
                 Cancel
               </Button>
               <Button disabled={isLoading} color="primary" type="submit">
-                {isLoading ? <Spinner size="sm" /> : 'Sign & Send'}
+                {isLoading ? <Spinner size="sm" /> : 'Save'}
               </Button>
             </div>
           </Form>

@@ -6,11 +6,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { resendAction } from '../../../redux/actions/authActions';
 import { selectEmail, selectMobile, selectUserType } from '../../../redux/selectors/authSelectors';
 
-const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP }) => {
+const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP, isClubEmailResend }) => {
   const dispatch = useDispatch();
   const userType = useSelector(selectUserType);
   const emailId = useSelector(selectEmail);
   const phoneData = useSelector(selectMobile);
+  const clubEmailId = useSelector((state) => state.clubs.email);
   const [countdown, setCountdown] = useState(60);
   const minutes = Math.floor(countdown / 60);
   const seconds = countdown % 60;
@@ -29,6 +30,9 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP }) => {
     if (countdown === 0) {
       if (isEmailResendFP) {
         dispatch(resendAction({ email: emailId, isEmailResendFP: true }));
+      }
+      if (isClubEmailResend) {
+        dispatch(resendAction({ email: clubEmailId, isClubEmailResend: true }));
       }
       if (isEmailResend) {
         dispatch(resendAction({ email: emailId, isEmailResend: true, userType }));
@@ -51,7 +55,7 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP }) => {
       onClick={handleResend}
     >
       <Label className={`${countdown === 0 && 'cursor-pointer primary'}`}>
-        <small>Resend Code </small>
+        <small>Resend Code&nbsp;</small>
       </Label>
 
       {countdown !== 0 && (
@@ -68,6 +72,7 @@ const ResendOTPComp = ({ isEmailResend, isPhoneResend, isEmailResendFP }) => {
 export default ResendOTPComp;
 
 ResendOTPComp.propTypes = {
+  isClubEmailResend: PropTypes.bool,
   isEmailResend: PropTypes.bool,
   isPhoneResend: PropTypes.bool,
   isEmailResendFP: PropTypes.bool,

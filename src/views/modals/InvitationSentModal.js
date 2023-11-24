@@ -16,8 +16,7 @@ import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelecto
 import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors/inviteTalentSelector';
 
 import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
-import { getItem } from '../../utility/localStorageControl';
-import { returnFormattedRating } from '../../utility/Utils';
+import { getTeamId, returnFormattedRating } from '../../utility/Utils';
 
 const InvitationSentModal = ({
   projectId,
@@ -58,11 +57,13 @@ const InvitationSentModal = ({
 
   const onInviteTalents = () => {
     const userIds = selectedTalents.filter((user) => user?.user_id).map((talent) => talent.user_id);
+    const clubAdminIds = selectedTalents.filter((user) => user?.role === 'ADMIN').map((talent) => talent.user_id);
+
     const teamIds = selectedTalents
       .filter((user) => user?._id) // Filter out non-team users
       .map((user) => user?._id); // Map to an array of team_ids
 
-    const teamId = getItem('team_id');
+    const teamId = getTeamId('team_id');
     const newPostData = {
       message,
       redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
@@ -75,8 +76,28 @@ const InvitationSentModal = ({
         project_id: projectId || '',
         team_id: teamId || '',
         role: inviteRole || '',
+        member_type: 'MEMBER',
       },
     };
+
+    if (clubAdminIds.length > 0) {
+      const newAdminPostData = {
+        message,
+        redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
+        requests_to: {
+          user_ids: clubAdminIds || [],
+          team_ids: teamIds.length > 0 ? teamIds : [],
+          email_ids: [],
+        },
+        request_for: {
+          project_id: projectId || '',
+          team_id: teamId || '',
+          role: inviteRole || '',
+          member_type: 'ADMIN',
+        },
+      };
+      dispatch(inviteTalentForTeam({ data: newAdminPostData, onSuccess }));
+    }
 
     dispatch(inviteTalentForTeam({ data: newPostData, onSuccess }));
   };

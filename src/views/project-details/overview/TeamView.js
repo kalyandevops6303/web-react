@@ -19,10 +19,9 @@ import { getInvitedMember, getTeamMembers, getUnassignedRoles } from '../../../r
 import InviteTalentToTeam from '../../invite-talent-to-team';
 import { selectSavedUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
-import { getItem } from '../../../utility/localStorageControl';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
-import { returnFormattedRating } from '../../../utility/Utils';
+import { getTeamId, returnFormattedRating } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
@@ -60,7 +59,7 @@ const InvitedMemberComponent = () => {
     };
     dispatch(getInvitedMember({ metadata: newMeteData, project_id: param?.projectId }));
   };
-  const teamId = getItem('team_id');
+  const teamId = getTeamId('team_id');
 
   const handleSendMail = ({ id, role, user_id }) => {
     setLoadingItems((prevLoadingItems) => ({
@@ -217,6 +216,12 @@ const TeamView = () => {
     return <ComponentSpinner />;
   }
 
+  const modalTextForClubView = {
+    heading: 'Invite Member',
+    subHeading: `Invite talent to work on this project ${inviteRole ? `as a ${inviteRole}` : ''}`,
+    desc: 'If a talent is not already part of your team, they will need to join before they can be added to the project',
+  };
+
   const onInviteSucess = () => {
     dispatch(getInvitedMember({ metadata, project_id: params?.projectId }));
   };
@@ -294,6 +299,9 @@ const TeamView = () => {
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
           inviteRole={inviteRole}
           projectId={params.projectId}
+          isClubInvitation={userData?.team_type === 'CLUB'}
+          text={userData?.team_type === 'CLUB' ? modalTextForClubView : null}
+          isClubView={userData?.team_type === 'CLUB'}
           onInviteSucess={onInviteSucess}
         />
       )}

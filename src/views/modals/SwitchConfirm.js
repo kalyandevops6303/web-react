@@ -33,6 +33,8 @@ const SwitchConfirmModal = ({
       navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
+    } else if (status === 'Membership Updated') {
+      navigate('/dashboard');
     } else if (location.pathname.split('/').includes('projects')) {
       if (location.pathname.split('/').includes('ongoing')) {
         navigate(`/project-details/${data?._id}/milestone`);

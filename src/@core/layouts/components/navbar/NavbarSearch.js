@@ -16,6 +16,8 @@ import Autocomplete from '@components/autocomplete';
 import theme from '../../../../configs/themeVariables';
 import { useNavigate } from 'react-router';
 import { clearQuery, handleQuery, toggleIsNavbarSearchBarOpen } from '../../../../redux/reducers/gloabalSearch';
+import { selectUserData } from '../../../../redux/selectors/authSelectors';
+import { clubStatus } from '../../../../utility/constants/Constant';
 
 const NavbarSearch = () => {
   // ** Store Vars
@@ -25,6 +27,9 @@ const NavbarSearch = () => {
   // ** States
   const [suggestions, setSuggestions] = useState([]);
   const query = useSelector((state) => state.search);
+  const userDetailsData = useSelector(selectUserData);
+
+  const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
   // ** ComponentDidMount
 
   // ** Function to close search on ESC & ENTER Click
@@ -41,13 +46,15 @@ const NavbarSearch = () => {
 
   return (
     <NavItem
-      className="nav-search"
+      className={`${isDisabled && 'cursor-not-allowed'} nav-search`}
       onClick={() => {
-        dispatch(toggleIsNavbarSearchBarOpen());
+        if (!isDisabled) {
+          dispatch(toggleIsNavbarSearchBarOpen());
+        }
       }}
     >
       {!query.isNavbarSearchBarOpen && (
-        <NavLink className="nav-link-search me-1">
+        <NavLink className={`${isDisabled && 'cursor-not-allowed'} nav-link-search me-1`}>
           <Icon.Search className="ficon" />
         </NavLink>
       )}
@@ -57,7 +64,7 @@ const NavbarSearch = () => {
           open: query.isNavbarSearchBarOpen === true || (query?.query && true),
         })}
       >
-        <div className="search-input-icon">
+        <div className={`${isDisabled && 'cursor-not-allowed'} search-input-icon`}>
           <Icon.Search color={theme.activeNavPillText} />
         </div>
         {query.isNavbarSearchBarOpen || query?.query ? (

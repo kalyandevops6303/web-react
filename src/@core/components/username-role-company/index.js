@@ -6,8 +6,6 @@ import { useNavigate } from 'react-router-dom';
 const UserNameRoleCompanyComp = ({ data }) => {
   const navigate = useNavigate();
 
-  console.log(data, 'USER DATA');
-
   const handleNavigate = () => {
     navigate(`/profile/TALENT/${data?.user_id}`);
   };

@@ -29,6 +29,22 @@ const getTagSettings = (tag) => {
   return { theme: 'light-primary', text: tag };
 };
 
+const getCompletedDate = (mile) => {
+  let result;
+  switch (true) {
+    // To set the completed date for older milestones, since it was blank
+    case mile.end_date === 0 && mile.status === 'COMPLETED':
+      result = formatDate(mile.updated_at);
+      break;
+    case mile.end_date > 0:
+      result = formatDate(mile.end_date);
+      break;
+    default:
+      result = '-';
+  }
+  return result;
+};
+
 const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
   <div>
     {milestonesData.map((mile, index) => (
@@ -46,7 +62,7 @@ const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
               </div>
               <div className="mx-2">
                 <CardText className="fw-normal mb-0 fs-6">Completed</CardText>
-                <CardText className="fw-bolder fs-5 mb-0">{mile.end_date ? formatDate(mile.end_date) : '-'}</CardText>
+                <CardText className="fw-bolder fs-5 mb-0">{getCompletedDate(mile)}</CardText>
               </div>
               <ChevronRight color="#B9B9C3" />
             </div>

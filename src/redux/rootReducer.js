@@ -3,6 +3,7 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './reducers/auth';
 import chat from './reducers/chat';
+import clubs from './reducers/clubs';
 import staticReducer from './reducers/static';
 import talentOnboardingReducer from './reducers/talentOnboarding';
 import clientOnboardingReducer from './reducers/clientOnboarding';
@@ -31,6 +32,7 @@ import activeNavTab from './reducers/activeNavTab';
 const rootReducer = combineReducers({
   auth: authReducer,
   chat,
+  clubs,
   staticData: staticReducer,
   talentOnboarding: talentOnboardingReducer,
   clientOnboarding: clientOnboardingReducer,

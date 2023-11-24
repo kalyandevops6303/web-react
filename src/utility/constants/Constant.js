@@ -19,6 +19,7 @@ const userTypes = {
   client: 'CLIENT',
   talent: 'TALENT',
   team: 'TEAM',
+  club: 'CLUB',
 };
 const userOnboarding = {
   client: 'client-onboarding',
@@ -77,6 +78,17 @@ const disputeStatusEnum = {
   RESOLVED: 'Resolved',
 };
 
+const roleTypeOptions = [
+  { label: 'Admin', value: 'ADMIN' },
+  { label: 'Member', value: 'MEMBER' },
+];
+
+const clubStatus = {
+  ACCEPTED: 'ACCEPTED',
+  IN_REVIEW: 'IN_REVIEW',
+  DECLINED: 'REJECTED',
+};
+
 const PAYMENT_STATUS = {
   PENDING: 'PENDING',
   INITIATED: 'INITIATED',
@@ -86,12 +98,6 @@ const PAYMENT_STATUS = {
   PAYMENT_PROCESSING: 'PAYMENT_PROCESSING',
   PAYMENT_SUCCESSFUL: 'PAYMENT_SUCCESSFUL',
   PAYMENT_FAILED: 'PAYMENT_FAILED',
-};
-
-const clubStatus = {
-  ACCEPTED: 'ACCEPTED',
-  IN_REVIEW: 'IN_REVIEW',
-  DECLINED: 'DECLINED',
 };
 
 export {
@@ -111,6 +117,7 @@ export {
   disputeStatusEnum,
   bidStatusesOptions,
   statusForAllListing,
+  roleTypeOptions,
   PAYMENT_STATUS,
   clubStatus,
 };

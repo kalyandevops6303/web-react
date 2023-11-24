@@ -20,10 +20,11 @@ import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
 import TagsSection from './TagsSection';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
-import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
+import { selectIsTeamLoggedIn, selectUserData } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
-import { setItem } from '../../../utility/localStorageControl';
 import { returnFormattedRating } from '../../../utility/Utils';
+import { clubStatus } from '../../../utility/constants/Constant';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -69,6 +70,9 @@ UserSection.propTypes = {
 const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
+  const userDetailsData = useSelector(selectUserData);
+
+  const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
   const navigate = useNavigate();
 
   const handleToggle = () => {
@@ -99,7 +103,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
   };
 
   const handleViewTeam = (id) => {
-    setItem('team_id', id);
+    setItemFromSession('team_id', id);
     navigate(`/profile/team/${id}`);
   };
 
@@ -214,7 +218,11 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
           </div>
           {isTeamLoggedIn ? (
             <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1">
-              <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
+              {isDisabled ? (
+                <span className="text-muted cursor-not-allowed">View Talent Profile</span>
+              ) : (
+                <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
+              )}
             </div>
           ) : (
             <div
