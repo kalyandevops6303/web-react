@@ -164,9 +164,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                     >
                       {getTagSettings(item.payment_status).text}
                     </Badge>
-                    <div
-                      style={{ fontSize: '16px', fontWeight: '500' }}
-                    >{`$ ${item.estimated_cost.toLocaleString()}`}</div>
+                    <div style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${item.estimated_cost}`}</div>
                   </CardBody>
                 </Card>
               ))}
@@ -178,9 +176,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                   <CardText style={{ fontSize: '16px' }}>{`${applicationFee?.name ?? ''} (${
                     applicationFee?.percentage ?? 0
                   }%)`}</CardText>
-                  <CardText style={{ fontSize: '16px' }}>{`$ ${
-                    Number.isNaN(trumioFee) ? 0 : trumioFee.toLocaleString()
-                  }`}</CardText>
+                  <CardText style={{ fontSize: '16px' }}>{`$ ${Number.isNaN(trumioFee) ? 0 : trumioFee}`}</CardText>
                 </div>
                 <hr className="m-0 card-header-border" />
                 <div className="d-flex justify-content-between p-1">
@@ -188,7 +184,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                     {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
                   </CardText>
                   <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${
-                    Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()
+                    Number.isNaN(totalPending) ? 0 : totalPending
                   }`}</CardText>
                 </div>
               </>
@@ -199,7 +195,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                   {milestoneDataLoading ? (
                     <Spinner size="sm" />
                   ) : (
-                    `Pay $ ${Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()}`
+                    `Pay $ ${Number.isNaN(totalPending) ? 0 : totalPending}`
                   )}
                 </Button>
               </div>

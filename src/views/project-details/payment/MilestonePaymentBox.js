@@ -62,7 +62,7 @@ function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, 
             </Badge>
           </div>
         </div>
-        <div style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${payableAmount.toLocaleString()}`}</div>
+        <div style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${payableAmount}`}</div>
       </CardBody>
     </Card>
   );

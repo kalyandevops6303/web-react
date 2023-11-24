@@ -127,7 +127,7 @@ function PaymentHistoryTable() {
                 <td>
                   <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
                 </td>
-                <td>${getTotalAmount(item)}</td>
+                <td>$ {getTotalAmount(item)}</td>
               </tr>
             ))}
           </tbody>

@@ -252,7 +252,7 @@ const PaymentTable = () => {
                             </Badge>
                           </td>
                           <td>{}</td>
-                          <td className="amountCol">{`$ ${item.estimated_cost.toLocaleString()}`}</td>
+                          <td className="amountCol">{`$ ${item.estimated_cost}`}</td>
                           {!isTeam && isPaymentDone(item) ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
                           ) : null}
@@ -294,7 +294,7 @@ const PaymentTable = () => {
                                         )?.amount ?? 0}
                                       </span>
                                       <span>
-                                        $
+                                        ${' '}
                                         {milestoneTransactionDetails?.find(
                                           (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
                                         )?.application_fee ?? 0}
@@ -333,7 +333,7 @@ const PaymentTable = () => {
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`${applicationFee?.name ?? ''} (${
                   applicationFee?.percentage ?? 0
                 }%)`}</CardText>
-                <CardText>{`$${Number.isNaN(trumioFee) ? 0 : trumioFee.toLocaleString()}`}</CardText>
+                <CardText>{`$${Number.isNaN(trumioFee) ? 0 : trumioFee}`}</CardText>
               </div>
             )}
             <hr />
@@ -343,7 +343,7 @@ const PaymentTable = () => {
                   {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
                 </CardText>
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`$${
-                  Number.isNaN(totalPending) ? 0 : totalPending.toLocaleString()
+                  Number.isNaN(totalPending) ? 0 : totalPending
                 }`}</CardText>
               </div>
             )}
