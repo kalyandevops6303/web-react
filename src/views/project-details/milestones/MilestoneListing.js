@@ -46,9 +46,7 @@ const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
               </div>
               <div className="mx-2">
                 <CardText className="fw-normal mb-0 fs-6">Completed</CardText>
-                <CardText className="fw-bolder fs-5 mb-0">
-                  {mile?.completed_at ? formatDate(mile?.completed_at) : '-'}
-                </CardText>
+                <CardText className="fw-bolder fs-5 mb-0">{mile.end_date ? formatDate(mile.end_date) : '-'}</CardText>
               </div>
               <ChevronRight color="#B9B9C3" />
             </div>
