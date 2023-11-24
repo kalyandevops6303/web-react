@@ -284,7 +284,7 @@ const PrivateDashboard = () => {
               <TalentListing />
             </section>
           )}
-          {userDetailsData?.team_type === userTypes.club && (
+          {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <section className="mb-2">
               <Header className="mb-1">Members</Header>
               <TalentListing />
