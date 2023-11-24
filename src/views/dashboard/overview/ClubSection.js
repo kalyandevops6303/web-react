@@ -53,7 +53,7 @@ const ClubSection = ({ toggleModal }) => {
             Club <span className="members-count">{selectTeamMembersMetadata?.total_records} Members</span>
           </CardTitle>
           <CardText
-            onClick={toggleModal}
+            onClick={!isDisabled && toggleModal}
             className={` text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary ${
               isDisabled ? 'text-muted cursor-not-allowed' : 'cursor-pointer'
             }`}
