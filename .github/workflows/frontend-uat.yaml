@@ -8,14 +8,44 @@ on:
       - 'uat_v*'
 
 jobs:
-  build-and-deploy:
-    name: Build and deploy
-    #runs-on: [self-hosted, Linux, X64, trumio-orgrunner]
-    runs-on: ubuntu-latest
-    
+  build:
+    # runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, X64, trumio-orgrunner]
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+
+    # - name: Azure CLI script
+    #   uses: azure/CLI@v1
+    #   with:
+    #       azcliversion: latest
+    #       inlineScript: |
+    #         az --version
+      
+    # - uses: azure/login@v1
+    #   with:
+    #       creds: ${{ secrets.AZURE_CREDENTIALS_UAT }}
+
+    - name: Install Azure cli        
+      run: |
+          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+          AZ_REPO=$(lsb_release -cs)
+          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+          sudo apt-get update
+          sudo apt-get install azure-cli
+
+    - uses: azure/login@v1
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_UAT }}
+
+    # - name: Authenticate Azure CLI
+    #   run: az login
+
+    # - uses: azure/CLI@v1
+    #   with:
+    #     azcliversion: latest
+    #     inlineScript: |
+    #       az account show
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -26,9 +56,25 @@ jobs:
       run: |
         npm install
         npm run build
-        
-    - name: Deploy to Azure
-      uses: TravisSpomer/deploy-to-azure-storage@v1.5.0
-      with:
-        source-path: dist
-        sas-url: ${{ secrets.FE_UAT_SAS_URL }}
+
+    # - name: Upload to blob storage
+    #   uses: azure/CLI@v1
+    #   with:
+    #     azcliversion: latest
+    #     inlineScript: |
+    #         az storage blob upload-batch --account-name trumiouatwebsa --auth-mode key -d '$web' --source ./dist --overwrite
+
+    - name: Delete blob storage
+      run: az storage blob delete-batch --account-name azusctruatwebsa --auth-mode key --source '$web' --pattern '*'
+
+    - name: Upload to blob storage
+      run: az storage blob upload-batch --account-name azusctruatwebsa --auth-mode key -d '$web' --source ./dist
+    
+    - name: Purge CDN endpoint
+      run: az afd endpoint purge --resource-group azusctr-uat-rg --profile-name azusctr-uat-cdn --endpoint-name trumiouatcdn --domains uat.trumio.ai --content-paths '/*'
+
+  # Azure logout
+    - name: logout
+      run: |
+            az logout
+      if: always()
