@@ -160,6 +160,8 @@ const Notifications = () => {
       navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
     } else if (data?.title === 'Project Accepted') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
+    } else if (data?.title === 'Team Created') {
+      navigate(`/dashboard`);
     } else {
       redirectionFunction({ projectId: data?.custom_payload?.project_id });
     }

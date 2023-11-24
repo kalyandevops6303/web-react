@@ -51,24 +51,6 @@ const ProjectCard = ({
     ON_GOING: 'On Going',
     ACTIVE: 'Active',
   };
-  // const giveStrokeColor = (percentage) => {
-  //   if (percentage <= 40) {
-  //     return theme.red;
-  //     // eslint-disable-next-line
-  //   } else if (percentage > 40 && percentage <= 70) {
-  //     return theme.orange;
-  //   } else {
-  //     return theme.green;
-  //   }
-  // };
-
-  // const avatarGroup = data?.worker_details?.workers?.map((worker) => ({
-  //   title: `${worker?.first_name} ${worker?.last_name}`,
-  //   img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
-  //   placement: 'bottom',
-  //   imgHeight: 33,
-  //   imgWidth: 33,
-  // }));
 
   const divRef = useRef(null);
 
@@ -160,13 +142,15 @@ const ProjectCard = ({
               )}
             </Col>
             <Col lg="4">
-              {isProjectWithTeam ? (
+              {isProjectWithTeam && primaryFilter !== 'terminated' ? (
                 <ProjectWithTeamUI
                   secondaryFilterForInvitedType={secondaryFilterForInvitedType}
                   primaryFilter={primaryFilter}
                   data={data}
                 />
-              ) : null}
+              ) : (
+                <BaseInfoUI data={data} />
+              )}
               {!isTeam && !isProjectWithTeam && <BaseInfoUI data={data} />}
             </Col>
           </Row>

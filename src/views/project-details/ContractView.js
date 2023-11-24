@@ -377,9 +377,21 @@ const ContractView = () => {
                       img={worker?.image_uri}
                       name={`${worker?.first_name} ${worker?.last_name}`}
                       info={worker?.role}
+                      acceptedDate={worker?.accepted_date}
                     />
                     <div>
-                      {userData?._id === worker?.user_id ? (
+                      {worker?.accepted_date === 0 ? (
+                        <Button
+                          disabled={userType === userTypes.client}
+                          outline
+                          color="primary"
+                          type="secondary"
+                          className="btn-sm-block mb-25 mt-1"
+                          onClick={() => navigate(`/project-details/${projectInfo?._id}/team`)}
+                        >
+                          {userType === userTypes.client ? 'Member not yet assigned' : 'Assign team member'}
+                        </Button>
+                      ) : userData?._id === worker?.user_id ? (
                         <Button
                           style={{ minWidth: '14.5rem' }}
                           onClick={() => {
@@ -402,19 +414,6 @@ const ContractView = () => {
                           className="btn-sm-block mb-25 mt-1"
                         >
                           {worker?.is_signed ? 'Confirmed Agreement' : 'Confirm Agreement'}
-                        </Button>
-                      ) : worker?.user_id?.length === 0 ? (
-                        <Button
-                          disabled={userType === userTypes.client}
-                          outline
-                          color="primary"
-                          type="secondary"
-                          className="btn-sm-block mb-25 mt-1"
-                          onClick={() =>
-                            (userType === userTypes.client ? {} : navigate(`/project-details/${projectInfo?._id}/team`))
-                          }
-                        >
-                          {userType === userTypes.client ? 'Member not yet assigned' : 'Assign team member'}
                         </Button>
                       ) : (
                         <Button

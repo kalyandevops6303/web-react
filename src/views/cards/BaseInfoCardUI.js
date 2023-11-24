@@ -15,11 +15,13 @@ const BaseInfoUI = ({ data }) => {
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
-  const handleLike = () => {
+  const handleLike = (e) => {
+    e.stopPropagation();
     setIsFavorite(true);
     dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
   };
-  const handleUnLike = () => {
+  const handleUnLike = (e) => {
+    e.stopPropagation();
     setIsFavorite(false);
     dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
@@ -49,37 +51,39 @@ const BaseInfoUI = ({ data }) => {
               className="cursor-pointer d-flex heart"
               fill={theme.red}
               stroke={theme.red}
-              onClick={handleUnLike}
+              onClick={(e) => handleUnLike(e)}
               size={20}
             />
           ) : (
-            <Heart className="cursor-pointer d-flex heart" onClick={handleLike} size={20} />
+            <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
           )}
 
-          <div className="circular-progressbar-container m-0">
-            <CircularProgressbarWithChildren
-              value={data?.match_percentage}
-              styles={{
-                path: {
-                  stroke: giveStrokeColor(data?.match_percentage),
-                  strokeLinecap: 'round',
-                  transition: 'stroke-dashoffset 0.5s ease 0s',
-                  transform: 'rotate(0turn)',
-                  transformOrigin: 'center center',
-                },
-                trail: {
-                  stroke: theme.progressBarBg,
-                  strokeLinecap: 'round',
-                  transform: 'rotate(0turn)',
-                  transformOrigin: 'center center',
-                },
-              }}
-            >
-              <div className="d-flex justify-content-center align-items-center">
-                <p className="percentage-text m-0">{data?.match_percentage}%</p>
-              </div>
-            </CircularProgressbarWithChildren>
-          </div>
+          {data?.match_percentage && (
+            <div className="circular-progressbar-container m-0">
+              <CircularProgressbarWithChildren
+                value={data?.match_percentage}
+                styles={{
+                  path: {
+                    stroke: giveStrokeColor(data?.match_percentage),
+                    strokeLinecap: 'round',
+                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                  trail: {
+                    stroke: theme.progressBarBg,
+                    strokeLinecap: 'round',
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                  },
+                }}
+              >
+                <div className="d-flex justify-content-center align-items-center">
+                  <p className="percentage-text m-0">{data?.match_percentage}%</p>
+                </div>
+              </CircularProgressbarWithChildren>
+            </div>
+          )}
         </div>
       </div>
       <div className="d-flex mb-2 align-items-center">
