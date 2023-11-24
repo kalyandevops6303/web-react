@@ -65,6 +65,12 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter }) => {
           className="stat-box cursor-pointer"
         />
       </Col>
+      <Col>
+        <div />
+      </Col>
+      <Col>
+        <div />
+      </Col>
     </Row>
   );
 };
