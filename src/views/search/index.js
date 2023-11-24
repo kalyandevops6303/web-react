@@ -15,6 +15,7 @@ import ProjectCard from '../cards/MarketPlaceProjectCard';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { userTypes } from '../../utility/constants/Constant';
 import { setItem } from '../../utility/localStorageControl';
+import ClubCard from '../cards/ClubCard';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -239,6 +240,9 @@ const Search = () => {
                   </UncontrolledTooltip>
                 )}
               </li>
+              <li className={activeTab === userTypes.club && 'active'} onClick={() => setActivetab(userTypes.club)}>
+                <CardText>Club ({searchData?.club?.metadata?.total_records})</CardText>
+              </li>
             </NavigationBar>
             {isLoading ? (
               <ComponentSpinner />
@@ -274,8 +278,12 @@ const Search = () => {
                         : // eslint-disable-next-line no-nested-ternary
                         activeTab === userTypes.client
                         ? ClientCard
-                        : activeTab === userTypes.team
+                        : // eslint-disable-next-line no-nested-ternary
+                        activeTab === userTypes.team
                         ? TeamCard
+                        : // eslint-disable-next-line no-nested-ternary
+                        activeTab === userTypes.club
+                        ? ClubCard
                         : ProjectCard;
                     return (
                       <CardComponent

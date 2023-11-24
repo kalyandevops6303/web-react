@@ -216,6 +216,12 @@ const TeamView = () => {
     return <ComponentSpinner />;
   }
 
+  const modalTextForClubView = {
+    heading: 'Invite Member',
+    subHeading: `Invite talent to work on this project ${inviteRole ? `as a ${inviteRole}` : ''}`,
+    desc: 'If a talent is not already part of your team, they will need to join before they can be added to the project',
+  };
+
   const onInviteSucess = () => {
     dispatch(getInvitedMember({ metadata, project_id: params?.projectId }));
   };
@@ -293,6 +299,9 @@ const TeamView = () => {
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
           inviteRole={inviteRole}
           projectId={params.projectId}
+          isClubInvitation={userData?.team_type === 'CLUB'}
+          text={userData?.team_type === 'CLUB' ? modalTextForClubView : null}
+          isClubView={userData?.team_type === 'CLUB'}
           onInviteSucess={onInviteSucess}
         />
       )}

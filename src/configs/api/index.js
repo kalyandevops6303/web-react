@@ -10,6 +10,7 @@ const API = {
     socialSignUpSingIn: `${apiAuthEndpoint}/api/v1/user/social-auth/google`,
     registerEmail: `${apiAuthEndpoint}/api/v1/user/email/create-otp`,
     verifyEmail: `${apiAuthEndpoint}/api/v1/user/email/verify-otp`,
+    regsterClubEmail: `${apiAuthEndpoint}/api/v1/club/email/create-otp`,
     createNewPassowrd: `${apiAuthEndpoint}/api/v1/user/password/create`,
     registerPhone: `${apiAuthEndpoint}/api/v1/user/phone/create-otp`,
     verifyPhone: `${apiAuthEndpoint}/api/v1/user/phone/verify-otp`,
@@ -207,6 +208,7 @@ const API = {
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     update: `${apiAuthEndpoint}/api/v1/team/update`,
+    memberType: `${apiAuthEndpoint}/api/v1/team/member_type`,
     getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
   },
   dispute: {
@@ -256,6 +258,10 @@ const API = {
     validateReferral: `${apiAuthEndpoint}/api/v1/referrals/validation`,
     convertReferral: `${apiAuthEndpoint}/api/v1/referrals/conversion`,
     allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
+  },
+  clubs: {
+    listClubs: `${apiOnboardingEndpoint}/api/v1/clubs`,
+    cardInfo: `${apiOnboardingEndpoint}/api/v1/clubs/card-info`,
   },
 };
 

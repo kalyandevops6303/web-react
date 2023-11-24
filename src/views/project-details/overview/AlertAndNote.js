@@ -38,7 +38,7 @@ const AlertAndNote = () => {
       return `${Math.floor(duration.as('days'))} day(s)`;
     }
 
-    return `${duration.toFormat('hh:mm')}`;
+    return duration.toFormat(" hh'h' mm'm'");
   };
 
   const add7Days = (timestamp) => {
@@ -77,7 +77,7 @@ const AlertAndNote = () => {
   };
 
   const renderExtendValidityButton = (onClickHandler, buttonText, validityType) => (
-    <span>
+    <span className="m-auto">
       <CardText
         onClick={() => {
           setExtendModal(!extendModal);

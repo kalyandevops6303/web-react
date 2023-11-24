@@ -23,7 +23,7 @@ import { makeFavourite, removeFavourite } from '../../../redux/actions/profileAc
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { getTeamId, giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
-import { userTypes } from '../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import {
   getProfilePercentage,
@@ -40,8 +40,19 @@ import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
 import InvitationSentModal from '../../modals/InvitationSentModal';
 import JoinTeamModal from '../../modals/JoinTeamModal';
 import ReportUserModal from './ReportUserModal';
+import SendClubInvitationModal from '../../modals/SendClubInvitationModal';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
 
-const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
+const LeftSidebarProfile = ({
+  isTalentView,
+  isInvited,
+  isProjectDetailsView,
+  isTeamView,
+  isClient,
+  data,
+  isClubProfile,
+}) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
@@ -128,10 +139,16 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   };
 
   const onEditClick = () => {
-    if (data.user_type === userTypes.team) {
+    if (data.team_type === userTypes.team) {
       navigate(`/create-team/profile-details`, {
         state: { isEditing: true },
       });
+    } else if (data.team_type === userTypes.club && data.club_status === clubStatus.ACCEPTED) {
+      navigate(`/create-club/account-details`, {
+        state: { isEditing: true },
+      });
+    } else if (data.team_type === userTypes.club && data.club_status === clubStatus.IN_REVIEW) {
+      ShowToastMessage(ERROR, 'Club is not verified yet');
     } else {
       navigate(`/${data.user_type.toLowerCase()}-onboarding/account-details`, {
         state: { isEditing: true },
@@ -429,6 +446,19 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                     </div>
                   </div>
                 )}
+                {data?.interests && data?.interests?.length !== 0 && (
+                  <div className="d-flex mb-50 ">
+                    <span className="info-key me-25">Interests:</span>
+                    <div className="d-flex flex-wrap">
+                      {data.interests.map((item, index) => (
+                        <span key={item?.id} className="me-25">
+                          {item?.name}
+                          {index !== data.interests.length - 1 && ', '}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <BadgeGroup color="light-blue" title="Skills" data={data?.skills} />
                 <BadgeGroup color="light-blue" title="Tools" data={data?.tools} />
                 <BadgeGroup color="light-blue" title="Language" data={data?.languages_supported} />
@@ -537,7 +567,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             <div>
               {/* Sensitive code below, If any changes done please check with all personas in each user type profile */}
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                {requestStatusData && (
+                {requestStatusData && !isClubProfile && (
                   <span className="w-50">
                     {!isEditable && teamId && data?.user_type === userTypes.talent && (
                       <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
@@ -565,7 +595,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   !data?.is_team_member &&
                   isTeamView &&
                   !teamId &&
-                  userData?.user_type === userTypes.talent && (
+                  userData?.user_type === userTypes.talent &&
+                  !isClubProfile && (
                     <div className="w-50 d-flex gap-1 justify-content-center">
                       <Button
                         disabled={inJoinTeamLoading}
@@ -596,7 +627,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           </section>
         </CardBody>
       </Card>
-      {sendInviteModal && (
+      {sendInviteModal && userData?.team_type !== 'CLUB' && (
         <SendInvitationModal
           modal={sendInviteModal}
           toggleModal={toggleSendInviteModal}
@@ -604,9 +635,23 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           setInvitationSentModal={setInvitationSentModal}
           message={inputMessage}
           setMessage={setInputMessage}
-          description="You are inviting the below to join your team."
+          description="You are inviting the below to join your team"
         />
       )}
+
+      {sendInviteModal && userData?.team_type === 'CLUB' && (
+        <SendClubInvitationModal
+          modal={sendInviteModal}
+          toggleModal={toggleSendInviteModal}
+          selectedTalents={selectedTalent}
+          setSelectedTalents={setSelectedTalent}
+          setInvitationSentModal={setInvitationSentModal}
+          message={inputMessage}
+          setMessage={setInputMessage}
+          description="You are inviting the below to join your club"
+        />
+      )}
+
       {invitationSentModal && (
         <InvitationSentModal
           modal={invitationSentModal}
@@ -615,7 +660,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           message={inputMessage}
           toggleSendInvitationModal={toggleSendInviteModal}
           setSelectedTalents={setSelectedTalent}
-          description="You’ve sent a team member invitation"
+          description={`You’ve sent a ${userData?.team_type === 'CLUB' ? 'club' : 'team'} member invitation`}
         />
       )}
       {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}
@@ -630,6 +675,7 @@ LeftSidebarProfile.propTypes = {
   isTeamView: PropTypes.bool,
   isProjectDetailsView: PropTypes.bool,
   isInvited: PropTypes.bool,
+  isClubProfile: PropTypes.bool,
 };
 LeftSidebarProfile.defaultProps = {
   data: {},
@@ -638,6 +684,7 @@ LeftSidebarProfile.defaultProps = {
   isTeamView: false,
   isProjectDetailsView: false,
   isInvited: false,
+  isClubProfile: false,
 };
 
 export default LeftSidebarProfile;

@@ -41,3 +41,15 @@ export const MessageIconContainer = styled.div`
     font-size: 10px;
   }
 `;
+
+export const DeclinedButton = styled.button`
+  background-color: ${theme.red} !important;
+  color: ${theme.white} !important;
+  border-radius: 12px !important;
+  font-size: 10px;
+  padding: 4px 10px !important;
+  align-self: flex-end !important;
+  margin-bottom: 3px;
+  border: none;
+  outline: none;
+`;

@@ -35,7 +35,11 @@ import { userOnboarding } from '../../utility/constants/Constant';
 import Chat from '../../views/chat';
 import Projects from '../../views/projects';
 import MyTeams from '../../views/teams';
+import Clubs from '../../views/clubs';
+
 import ReferralAndReward from '../../views/ReferralAndReward';
+import CreateClub from '../../views/createClub';
+import ClubInvitation from '../../views/club-invitation';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -102,6 +106,11 @@ const Routes = [
   },
 
   {
+    path: '/clubs/*',
+    element: <Clubs />,
+  },
+
+  {
     path: '/auth/*',
     element: <AuthRoute />,
     meta: {
@@ -150,10 +159,21 @@ const Routes = [
     path: '/join-request/:inviteId',
     element: <TeamInvitation />,
   },
+  {
+    path: '/club-invitation/:inviteId',
+    element: <ClubInvitation />,
+  },
 
   {
     path: '/create-team/:section-details',
     element: <CreateTeam />,
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/create-club/:section-details',
+    element: <CreateClub />,
     meta: {
       layout: 'blank',
     },
