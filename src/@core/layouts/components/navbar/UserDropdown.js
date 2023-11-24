@@ -30,8 +30,9 @@ import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
 
-const UserDropdown = () => {
+const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
+  console.log(userDetailsData);
   const isLoading = useSelector((state) => state.auth.userDataLoading);
   const savedUserDetails = useSelector(selectSavedUserData);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
@@ -61,6 +62,7 @@ const UserDropdown = () => {
       const preservedValue = getItem(keyToPreserve);
       // eslint-disable-next-line no-undef
       window.localStorage.clear();
+      window.sessionStorage.clear();
       if (preservedValue) {
         setItem(keyToPreserve, preservedValue);
       }
@@ -138,6 +140,9 @@ const UserDropdown = () => {
     navigate('/dashboard');
   };
   const handleSwitch = (data, selected) => {
+    // if (userDetailsData?.user_type === userTypes.team) {
+    //   setNavBarLoading(true);
+    // }
     dispatch(switchProfile({ data, onSuccess: handleShowModal, selected }));
   };
 
@@ -158,8 +163,8 @@ const UserDropdown = () => {
   return (
     <UncontrolledDropdown
       tag="li"
-      style={isLoading && !userName ? { minWidth: '10rem' } : {}}
-      className={`dropdown-user nav-item ${isLoading && !userName ? 'invisible' : ''}`}
+      style={!userName ? { minWidth: '10rem' } : {}}
+      className={`dropdown-user nav-item ${!userName ? 'invisible' : ''}`}
     >
       <DropdownToggle href="/" tag="a" className={`nav-link dropdown-user-link `} onClick={(e) => e.preventDefault()}>
         <div className="user-nav d-sm-flex d-none">
@@ -179,6 +184,7 @@ const UserDropdown = () => {
               : capitalize(userDetailsData?.user_type) || 'Role'}
           </span>
         </div>
+
         {userDetailsData?.user_type === userTypes.talent && (
           <Avatar
             img={

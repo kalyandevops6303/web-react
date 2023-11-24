@@ -297,7 +297,7 @@ const PaymentTable = () => {
                                         $
                                         {milestoneTransactionDetails?.find(
                                           (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
-                                        )?.applicationFee ?? 0}
+                                        )?.application_fee ?? 0}
                                       </span>
                                     </div>
                                   </td>

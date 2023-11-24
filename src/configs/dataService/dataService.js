@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getItem } from '../../utility/localStorageControl';
+import { getTeamId } from '../../utility/Utils';
 
 const authHeader = () => ({
   Authorization: `Bearer ${getItem('access_token')}`,
@@ -24,7 +25,7 @@ function constructUrlWithParams(baseUrl, params) {
 }
 class DataService {
   static get(path = '') {
-    const team_id = getItem('team_id');
+    const team_id = getTeamId('team_id');
     const params = {
       team_id,
     };
@@ -38,7 +39,7 @@ class DataService {
   }
 
   static post(path = '', data = {}, optionalHeader = {}) {
-    const team_id = getItem('team_id');
+    const team_id = getTeamId('team_id');
     const params = {
       team_id,
     };
@@ -52,7 +53,7 @@ class DataService {
   }
 
   static patch(path = '', data = {}, optionalHeader = {}) {
-    const team_id = getItem('team_id');
+    const team_id = getTeamId('team_id');
     const params = {
       team_id,
     };
@@ -66,7 +67,7 @@ class DataService {
   }
 
   static put(path = '', data = {}, optionalHeader = {}) {
-    const team_id = getItem('team_id');
+    const team_id = getTeamId('team_id');
     const params = {
       team_id,
     };
@@ -89,7 +90,7 @@ class DataService {
   }
 
   static delete(path = '', data = {}) {
-    const team_id = getItem('team_id');
+    const team_id = getTeamId('team_id');
     const params = {
       team_id,
     };

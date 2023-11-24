@@ -30,6 +30,7 @@ import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
 import { setItem } from '../../utility/localStorageControl';
 import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
+import { getTeamId } from '../../utility/Utils';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -213,7 +214,7 @@ const PrivateDashboard = () => {
               <OpenListing />
             </section>
           )}
-          {userDetailsData?.user_type === userTypes.team && (
+          {userDetailsData?.user_type === userTypes.team && getTeamId('team_id') && (
             <section className="mb-2">
               <Header className="mb-1">Talent</Header>
               <TalentListing />
@@ -227,7 +228,7 @@ const PrivateDashboard = () => {
           )}
         </Col>
         <Col lg="4" sm="12">
-          {userDetailsData?.user_type === userTypes.team && (
+          {userDetailsData?.user_type === userTypes.team && getTeamId('team_id') && (
             <TeamSection
               modal={listingTeamMembersModal}
               toggleModal={toggleListingTeamMembersModal}

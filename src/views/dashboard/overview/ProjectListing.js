@@ -19,7 +19,7 @@ import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, getTeamId } from '../../../utility/Utils';
 
 import {
   activeProjectsForClient,
@@ -219,7 +219,7 @@ const ProjectListing = () => {
         dispatch(getActiveProjectsForClient());
       } else if (userDetailsData?.user_type === userTypes.talent) {
         dispatch(getActiveProjectsForTalent());
-      } else if (userDetailsData?.user_type === userTypes.team) {
+      } else if (userDetailsData?.user_type === userTypes.team && getTeamId('team_id')) {
         dispatch(getActiveProjectsForTeam());
       }
     }
@@ -228,7 +228,7 @@ const ProjectListing = () => {
         dispatch(getUpcomingProjectsForClient());
       } else if (userDetailsData?.user_type === userTypes.talent) {
         dispatch(getUpcomingProjectsForTalent());
-      } else if (userDetailsData?.user_type === userTypes.team) {
+      } else if (userDetailsData?.user_type === userTypes.team && getTeamId('team_id')) {
         dispatch(getUpcomingProjectsForTeam());
       }
     }

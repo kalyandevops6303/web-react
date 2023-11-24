@@ -8,6 +8,7 @@ import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta
 import { maxFileSize } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
+import { getItemFromSession } from './sessesionStorageControl';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -302,7 +303,8 @@ export const renderFileSize = (size) => {
     // eslint-disable-next-line
   } else {
     return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-  }};
+  }
+};
 
 export const getProjectStatus = ({ status, type }) => {
   switch (status) {
@@ -385,3 +387,6 @@ export const returnFormattedRating = (num) => {
     return Math.round(num * 10) / 10;
   }
 };
+
+// eslint-disable-next-line no-undef
+export const getTeamId = () => getItemFromSession('team_id');
