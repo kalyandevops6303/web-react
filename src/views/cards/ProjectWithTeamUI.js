@@ -255,7 +255,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                   <div className="d-flex flex-grow-1 mt-25">
                     <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                      {data?.client?.project_count} Projects
+                      {data?.client?.project_count ?? 0} Projects
                     </CardText>
                   </div>
                 </div>
@@ -294,7 +294,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                         <div className="d-flex flex-grow-1 mt-25">
                           <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
                           <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                            {data?.worker_details?.project_count} Projects
+                            {data?.worker_details?.project_count ?? 0} Projects
                           </CardText>
                         </div>
                       </div>

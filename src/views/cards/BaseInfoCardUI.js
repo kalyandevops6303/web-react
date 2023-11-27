@@ -100,7 +100,7 @@ const BaseInfoUI = ({ data }) => {
             <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
           </div>
           <div className="d-flex flex-grow-1">
-            <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
+            <RatingBadge number={Math.round(data?.invitations_to?.rating ?? data?.client?.rating)} />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
           </div>
         </div>

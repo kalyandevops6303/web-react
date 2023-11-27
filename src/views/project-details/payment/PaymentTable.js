@@ -183,6 +183,12 @@ const PaymentTable = () => {
     return false;
   };
 
+  const getTotalCost = (item) => {
+    if (isClient) {
+      return item.estimated_cost + item.transaction_service_fee + item.application_fee;
+    }
+    return item.estimated_cost;
+  };
   return (
     <>
       {makePaymentModal && (
@@ -252,10 +258,12 @@ const PaymentTable = () => {
                             </Badge>
                           </td>
                           <td>{}</td>
-                          <td className="amountCol">{`$ ${item.estimated_cost}`}</td>{' '}
+                          <td className="amountCol">$ {getTotalCost(item)}</td>{' '}
                           {!isTeam && isPaymentDone(item) ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
-                          ) : null}
+                          ) : (
+                            <td>{}</td>
+                          )}
                         </tr>
 
                         {item?._id === open && isPaymentDone(item) ? (
