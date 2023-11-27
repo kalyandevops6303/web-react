@@ -31,8 +31,10 @@ const Step3 = ({ setStep }) => {
   const navigate = useNavigate();
 
   const [countriesOptions, setCountriesOptions] = useState(null);
-  const [statesOptions, setStatesOptions] = useState(null);
-  const [citiesOptions, setCitiesOptions] = useState(null);
+  const [pStatesOptions, setPStatesOptions] = useState(null);
+  const [mStatesOptions, setMStatesOptions] = useState(null);
+  const [pCitiesOptions, setPCitiesOptions] = useState(null);
+  const [mCitiesOptions, setMCitiesOptions] = useState(null);
   const [copyAddress, setCopyAddress] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
@@ -92,13 +94,27 @@ const Step3 = ({ setStep }) => {
   }, [watch('pState')]);
 
   useEffect(() => {
+    if (watch('mCountry')) {
+      dispatch(getStates(watch('mCountry').value));
+    }
+  }, [watch('mCountry')]);
+
+  useEffect(() => {
+    if (watch('mState')) {
+      dispatch(getCities(watch('mState').value));
+    }
+  }, [watch('mState')]);
+
+  useEffect(() => {
     const requiredData = statesData?.map((state) => ({ label: state.name, value: state._id }));
-    setStatesOptions(requiredData);
+    setPStatesOptions(requiredData);
+    setMStatesOptions(requiredData);
   }, [statesData]);
 
   useEffect(() => {
     const requiredData = citiesData?.map((city) => ({ label: city.name, value: city._id }));
-    setCitiesOptions(requiredData);
+    setPCitiesOptions(requiredData);
+    setMCitiesOptions(requiredData);
   }, [citiesData]);
 
   const loadCountriesOptions = async (search) => {
@@ -462,7 +478,7 @@ const Step3 = ({ setStep }) => {
                     render={({ field }) => (
                       <Select
                         isLoading={statesIsLoading}
-                        options={statesOptions}
+                        options={pStatesOptions}
                         menuPosition="fixed"
                         classNamePrefix="select"
                         placeholder="Select your state"
@@ -493,7 +509,7 @@ const Step3 = ({ setStep }) => {
                         isLoading={citiesIsLoading}
                         menuPosition="fixed"
                         minMenuHeight={200}
-                        options={citiesOptions}
+                        options={pCitiesOptions}
                         classNamePrefix="select"
                         placeholder="Select your city"
                         theme={selectThemeColors}
@@ -617,7 +633,7 @@ const Step3 = ({ setStep }) => {
                       <Select
                         isLoading={statesIsLoading}
                         isDisabled={copyAddress}
-                        options={statesOptions}
+                        options={mStatesOptions}
                         menuPosition="fixed"
                         classNamePrefix="select"
                         placeholder="Select your state"
@@ -649,7 +665,7 @@ const Step3 = ({ setStep }) => {
                         menuPosition="fixed"
                         minMenuHeight={200}
                         isDisabled={copyAddress}
-                        options={citiesOptions}
+                        options={mCitiesOptions}
                         classNamePrefix="select"
                         placeholder="Select your city"
                         theme={selectThemeColors}
