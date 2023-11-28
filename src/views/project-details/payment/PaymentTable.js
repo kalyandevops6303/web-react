@@ -189,6 +189,9 @@ const PaymentTable = () => {
     }
     return item.estimated_cost;
   };
+  const showPaymentCalculation =
+    user.user_type === userTypes.client && !isAllMilestonePaid && selectedPaymentId.length > 0;
+
   return (
     <>
       {makePaymentModal && (
@@ -336,7 +339,7 @@ const PaymentTable = () => {
                 </Table>
               </PaymentTableWrapper>
             </div>
-            {user.user_type === userTypes.client && (
+            {showPaymentCalculation && (
               <div className="d-flex w-100 mt-2 justify-content-between">
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`${applicationFee?.name ?? ''} (${
                   applicationFee?.percentage ?? 0
@@ -345,7 +348,7 @@ const PaymentTable = () => {
               </div>
             )}
             <hr />
-            {user.user_type === userTypes.client && (
+            {showPaymentCalculation && (
               <div className="d-flex w-100 mt-2 justify-content-between">
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
                   {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
@@ -356,7 +359,7 @@ const PaymentTable = () => {
               </div>
             )}
 
-            {user.user_type === userTypes.client && !isAllMilestonePaid && (
+            {showPaymentCalculation && !isAllMilestonePaid && (
               <div className="d-flex justify-content-end w-100 mt-5">
                 <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
                   {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}
