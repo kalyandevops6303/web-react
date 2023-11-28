@@ -211,13 +211,12 @@ const PaymentTable = () => {
           </div>
           <hr />
           <CardBody>
-            <div className="w-100 shadow rounded" style={{ backgroundColor: 'white' }}>
+            <div className="shadow rounded" style={{ backgroundColor: 'white', width: '90%' }}>
               <PaymentTableWrapper>
                 <Table responsive className="w-100">
                   <thead>
                     <tr>
                       {!isTeam ? <th className="checkboxCol"> </th> : null}
-                      {!isTeam ? <th className="transactionCol">Transaction ID</th> : null}
                       <th>Milestone</th>
                       <th>{}</th>
                       <th>Status</th>
@@ -252,7 +251,6 @@ const PaymentTable = () => {
                           ) : isTeam ? null : (
                             <td> </td>
                           )}
-                          {!isTeam ? <td>{}</td> : null}
                           <td>{item?.name}</td>
                           <td>{}</td>
                           <td className="statusCol">
@@ -279,7 +277,6 @@ const PaymentTable = () => {
                               <td>{}</td>
                               <td>{}</td>
                               <td>{}</td>
-                              <td>{}</td>
                             </tr>
                           ) : (
                             <>
@@ -292,7 +289,6 @@ const PaymentTable = () => {
                                       <span>{`${applicationFee?.name}`}</span>
                                     </div>
                                   </td>
-                                  <td>{}</td>
                                   <td>{}</td>
                                   <td>{}</td>
                                   <td>{}</td>
@@ -327,8 +323,6 @@ const PaymentTable = () => {
                                 <td colSpan={2}>
                                   <PaymentBy paymentBy={milestoneTransactionDetails} />
                                 </td>
-
-                                <td>{}</td>
                               </tr>
                             </>
                           )
