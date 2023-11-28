@@ -114,7 +114,6 @@ const Notifications = () => {
         return true;
       case 'Club - Request Submitted':
         return true;
-
       default:
         return false;
     }
@@ -143,7 +142,11 @@ const Notifications = () => {
       ...data,
       isDisputesNotification: isDisputesNotification(data?.notification_type),
       // eslint-disable-next-line no-unneeded-ternary
-      isDashboardRedirection: data?.title === 'Team Created' || data?.title === 'Team Member Added' ? true : false,
+      isDashboardRedirection: !!(
+        data?.title === 'Team Created' ||
+        data?.title === 'Team Member Added' ||
+        data?.title === 'Club - Request Submitted'
+      ),
     });
 
     if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {

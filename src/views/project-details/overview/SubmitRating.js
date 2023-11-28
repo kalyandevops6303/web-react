@@ -368,11 +368,7 @@ const SubmitRating = () => {
                             <Button color="primary" type="button" outline className="me-2">
                               Cancel
                             </Button>
-                            <Button
-                              color="primary"
-                              type="submit"
-                              disabled={!isValid || !rating || selectedTags.length === 0 || giveRatingIsLoading}
-                            >
+                            <Button color="primary" type="submit" disabled={!isValid || !rating || giveRatingIsLoading}>
                               {giveRatingIsLoading ? <Spinner size="sm" /> : 'Submit'}
                             </Button>
                           </div>
