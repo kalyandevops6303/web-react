@@ -31,6 +31,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [clientButtonText, setClientButtonText] = useState('Accept');
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [documents, setDocuments] = useState(selectedMilestone.documents);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const userDataLocal = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
@@ -159,17 +160,23 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   };
 
   const handleDownloadFile = async (file) => {
-    if (file?.download_url) {
-      const response = await fetch(file.download_url);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = file.name;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
+    try {
+      if (file?.download_url) {
+        setIsDownloading(true);
+        const response = await fetch(file.download_url);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.file_name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        setIsDownloading(false);
+      }
+    } catch (error) {
+      setIsDownloading(false);
     }
   };
 
@@ -296,12 +303,16 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                   {requiredFormattedDate}
                 </Col>
                 <Col sm="1" md="1" className="pe-0" lg="1">
-                  <Avatar
-                    onClick={() => handleDownloadFile(file)}
-                    color="light-primary"
-                    icon={<Download size="14" />}
-                    className=""
-                  />
+                  {isDownloading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <Avatar
+                      onClick={() => handleDownloadFile(file)}
+                      color="light-primary"
+                      icon={<Download size="14" />}
+                      className=""
+                    />
+                  )}
                 </Col>
               </Row>
             ),

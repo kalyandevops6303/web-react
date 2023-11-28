@@ -29,7 +29,7 @@ function MilestoneInfo({ milestonesData, currentIndex }) {
         return true;
       }
 
-      if (milestoneCount > 2 && milestonesData[currentIndex]?._id === firstNonPaidMilestone?._id) {
+      if (milestoneCount > 2 && currentIndex > 1 && milestonesData[currentIndex]?._id === firstNonPaidMilestone?._id) {
         return true;
       }
     }
