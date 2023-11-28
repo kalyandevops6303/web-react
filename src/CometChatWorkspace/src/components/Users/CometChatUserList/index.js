@@ -174,7 +174,6 @@ class CometChatUserList extends React.PureComponent {
 
     let val = e.target.value;
     this.UserListManager = new UserListManager(this.getContext(), val);
-    console.log(this.UserListManager);
     this.UserListManager.initializeUsersRequest()
       .then((response) => {
         this.timeout = setTimeout(() => {

@@ -127,7 +127,7 @@ const SubmitRating = () => {
   const getFormImage = () => {
     let image;
 
-    if (userData.user_type === userTypes.client) {
+    if (userData?.user_type === userTypes.client) {
       if (projectDetailsData?.worker_details?.entity_type === userTypes.team) {
         image = projectDetailsData?.worker_details?.team_logo;
       } else if (projectDetailsData?.worker_details?.entity_type === userTypes.talent) {
@@ -143,7 +143,7 @@ const SubmitRating = () => {
   const getFormName = () => {
     let name;
 
-    if (userData.user_type === userTypes.client) {
+    if (userData?.user_type === userTypes.client) {
       if (projectDetailsData?.worker_details?.entity_type === userTypes.team) {
         name = projectDetailsData?.worker_details?.name;
         // eslint-disable-next-line no-else-return
@@ -160,7 +160,7 @@ const SubmitRating = () => {
   const getFormOtherInfo = () => {
     let info;
 
-    if (userData.user_type === userTypes.client) {
+    if (userData?.user_type === userTypes.client) {
       if (projectDetailsData?.worker_details?.entity_type === userTypes.talent) {
         info = projectDetailsData?.worker_details?.role;
       }

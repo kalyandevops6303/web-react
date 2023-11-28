@@ -112,7 +112,6 @@ class CometChatUI extends React.Component {
   };
 
   render() {
-    console.log(this.props);
     let messageScreen = (
       <CometChatMessages
         data={({ avatar, presence }) => this.setState({ avatar, presence })}

@@ -263,7 +263,7 @@ const LeftSidebarProjectDetails = () => {
           )}
 
           {(projectDetailsData?.status === 'ON_GOING' || projectDetailsData?.status === 'COMPLETED') &&
-            projectDetailsData?.worker_details?.entity_id === userData._id && (
+            projectDetailsData?.worker_details?.entity_id === userData?._id && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50" color="primary" onClick={onMessageClick}>
                   Message
