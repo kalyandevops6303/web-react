@@ -94,6 +94,8 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
 
   const avatarGroup = data?.bidder_details?.workers?.length
     ? data?.bidder_details?.workers?.map((worker) => ({
+        user_id: worker?.user_id,
+        user_type: userTypes.talent,
         title: `${worker?.first_name} ${worker?.last_name}`,
         img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
         placement: 'bottom',

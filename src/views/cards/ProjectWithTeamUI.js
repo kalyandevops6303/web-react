@@ -72,6 +72,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
 
   const avatarGroup = data?.worker_details?.workers?.length
     ? data?.worker_details?.workers?.map((worker) => ({
+        user_type: userTypes.talent,
+        user_id: worker?.user_id,
         title: `${worker?.first_name} ${worker?.last_name}`,
         img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
         placement: 'bottom',
@@ -87,6 +89,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
 
   const teamAvatar = profileToShowInRightSideOfCard?.team_members?.length
     ? profileToShowInRightSideOfCard?.team_members?.map((user) => ({
+        user_id: user?.user_id,
+        user_type: userTypes.talent,
         title: `${user?.first_name} ${user?.last_name}`,
         img: user?.image_uri?.length ? user?.image_uri : defaultAvatar,
         placement: 'bottom',

@@ -23,6 +23,7 @@ import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { returnFormattedRating } from '../../../utility/Utils';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -78,6 +79,8 @@ const RecommendedTeamsCardForClient = ({ isRecommendedTeam, open, data, classNam
 
   data?.team_members?.map((user) =>
     users.push({
+      user_type: userTypes.talent,
+      user_id: user?.user_id,
       title: `${user?.first_name} ${user?.last_name}` || 'user',
       img: user.image_uri || avatar7,
       placement: 'bottom',
@@ -174,6 +177,8 @@ const RecommendedTeamsCardForClient = ({ isRecommendedTeam, open, data, classNam
                   name={`${data?.first_name} ${data?.last_name}`}
                   users={[
                     {
+                      user_type: userTypes.client,
+                      user_id: data?.user_id,
                       title: `${data?.first_name} ${data?.last_name}`,
                       img: data?.image_uri || avatar7,
                       placement: 'bottom',

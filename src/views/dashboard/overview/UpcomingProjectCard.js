@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const UpcomingProjectCard = ({ data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -43,6 +44,8 @@ const UpcomingProjectCard = ({ data, className }) => {
                   className="mr-4"
                   data={[
                     ...data?.worker_details?.slice(0, 3)?.map((worker) => ({
+                      user_type: userTypes.talent,
+                      user_id: worker?.user_id,
                       title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
                       img: worker.image_uri || defaultAvatar,
                       placement: 'bottom',
@@ -61,6 +64,8 @@ const UpcomingProjectCard = ({ data, className }) => {
                 size="sm"
                 data={[
                   ...data?.worker_details?.map((worker) => ({
+                    user_type: userTypes.talent,
+                    user_id: worker?.user_id,
                     title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
                     img: worker.image_uri || defaultAvatar,
                     placement: 'bottom',

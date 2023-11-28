@@ -13,6 +13,7 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { TeamCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
+import { userTypes } from '../../utility/constants/Constant';
 
 const ClubCard = ({ data, isSearchPage }) => {
   const dispatch = useDispatch();
@@ -21,6 +22,8 @@ const ClubCard = ({ data, isSearchPage }) => {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   data?.team_members?.map((user) =>
     users.push({
+      user_id: user?.user_id,
+      user_type: userTypes.talent,
       title: `${user?.full_name ?? user?.first_name}` || 'user',
       img: (user?.profile_picture ?? user?.image_uri) || avatar7,
       placement: 'bottom',

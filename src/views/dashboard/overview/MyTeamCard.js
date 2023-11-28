@@ -17,6 +17,7 @@ import { ProjectWrapper } from './style';
 import ProjectModal from '../../modals/ProjectModal';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const MyTeamCard = ({ data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -29,6 +30,8 @@ const MyTeamCard = ({ data, className }) => {
   const users = [];
   data?.team_members?.map((user) =>
     users.push({
+      user_id: user?.user_id,
+      user_type: userTypes.talent,
       title: `${user?.first_name} ${user?.last_name} ` || 'user',
       img: user.image_uri || avatar7,
       placement: 'bottom',
