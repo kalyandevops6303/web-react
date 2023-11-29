@@ -262,7 +262,7 @@ const PaymentTable = () => {
                           <td className="amountCol">$ {getTotalCost(item)}</td>{' '}
                           {!isTeam && isPaymentDone(item) ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
-                          ) : !isPaymentDone(item) ? (
+                          ) : !isPaymentDone(item) && !isTeam ? (
                             <td>{}</td>
                           ) : null}
                         </tr>

@@ -25,8 +25,8 @@ const AvatarGroup = (props) => {
   const navigate = useNavigate()
 
   const handleProfileNavigate = (evt,item) => {
+    evt.stopPropagation();
     if(item?.user_id?.length > 0 && item?.user_type?.length > 0){ 
-      evt.stopPropagation();
       navigate(`/profile/${item?.user_type}/${item?.user_id}`);
     }
   }

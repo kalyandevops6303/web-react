@@ -159,9 +159,9 @@ const Notifications = () => {
       });
     } else if (isDisputesNotification(data?.notification_type)) {
       disputesRedirection(data?.notification_type);
-    } else if (data?.title === 'Milestone Submitted') {
+    } else if (data?.title === 'Milestone Submitted' || data?.title === 'Milestone Accepted') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
-    } else if (data?.title === 'Project Accepted') {
+    } else if (data?.title === 'Project Accepted' || data?.title === 'Milestone payment completed.') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
     } else if (data?.title === 'Team Created') {
       navigate(`/dashboard`);
