@@ -76,7 +76,6 @@ const App = () => {
       channel?.addEventListener('message', (event) => {
         // Handle the received data from the service worker
         const { data } = event;
-        console.log(data, 'COMET');
 
         if (data?.data?.alert) {
           dispatch(unreadMsgCountSuccess());
@@ -89,7 +88,7 @@ const App = () => {
     return () => {
       // Cleanup when the component unmounts
       if (channel) {
-        channel?.removeEventListener('message');
+        channel?.removeEventListener('message', () => {});
         channel?.close();
       }
     };

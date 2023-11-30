@@ -45,7 +45,6 @@ export const requestPermission = () =>
         return getToken(messaging, { vapidKey: publicKey })
           .then((currentToken) => {
             if (currentToken) {
-              console.log('Client Token: ', currentToken);
               resolve(currentToken);
             } else {
               console.log('Failed to generate the app registration token.');

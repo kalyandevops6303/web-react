@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Card, CardText, Table, UncontrolledTooltip } from 'reactstrap';
+import { Info } from 'react-feather';
 
 import {
   milestoneTransactionsServiceForClient,
@@ -11,6 +12,7 @@ import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors
 import { formatDate } from '../../../utility/Utils';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
+import theme from '../../../configs/themeVariables';
 
 function PaymentHistoryTable() {
   const [transactions, setTransactions] = useState([]);
@@ -18,6 +20,8 @@ function PaymentHistoryTable() {
 
   const projectDetailsData = useSelector(projectDetails);
   const user = useSelector(userData);
+
+  const isTalent = user?.user_type === userTypes.talent;
 
   useEffect(() => {
     if (projectDetailsData?._id) {
@@ -41,7 +45,7 @@ function PaymentHistoryTable() {
 
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: 'Payment Failed' };
+      return { theme: 'light-danger', text: 'Transaction Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
       return { theme: 'light-warning', text: 'Payment Due' };
@@ -53,7 +57,7 @@ function PaymentHistoryTable() {
       return { theme: 'light-primary', text: 'Payment Initiated' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Payment Success' };
+      return { theme: 'light-success', text: 'Transaction Successful' };
     }
     return { theme: 'light-primary', text: tag };
   };
@@ -93,10 +97,25 @@ function PaymentHistoryTable() {
           <thead>
             <tr>
               {user?.user_type === userTypes.client && <th>TRANSACTION ID</th>}
-              <th>BY</th>
               <th>MILESTONE</th>
+              <th>From</th>
+              {isTalent ? null : <th>To</th>}
+              <th>Type</th>
               <th>Status</th>
-              <th>Amount</th>
+              {isTalent ? null : <th>Platform Fee</th>}
+              <th>
+                {isTalent ? 'Amount' : 'Final Amount'}
+                {isTalent ? (
+                  ''
+                ) : (
+                  <>
+                    <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
+                    <UncontrolledTooltip placement="top" target="amount-info">
+                      <p className="m-0">Final Amount = Platform Fee + Milestone Amount </p>
+                    </UncontrolledTooltip>
+                  </>
+                )}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -122,11 +141,20 @@ function PaymentHistoryTable() {
                     </div>
                   </td>
                 ) : null}
-                <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Client' : 'Stripe'}</td>
                 <td>{item?.milestone?.name}</td>
+                <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Client' : 'Trumio'}</td>
+                {isTalent ? null : (
+                  <td>
+                    {item?.payment_type === PAYMENT_TYPES.CHECKOUT
+                      ? 'Trumio'
+                      : `${item?.payment_to?.first_name} ${item?.payment_to?.last_name}`}
+                  </td>
+                )}
+                <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Payment Deposited' : 'Pay Out'}</td>
                 <td>
                   <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
                 </td>
+                {isTalent ? null : <td>{item?.application_fee ? `$ ${item?.application_fee}` : '-'}</td>}
                 <td>$ {getTotalAmount(item)}</td>
               </tr>
             ))}

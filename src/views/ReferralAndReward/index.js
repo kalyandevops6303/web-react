@@ -169,7 +169,7 @@ const ReferralAndReward = () => {
         <p className="notes-heading">Note:</p>
         <p>
           For Rewards rules please visit{' '}
-          <a target="_blank" href="https://trumio.ai/support" rel="noreferrer">
+          <a target="_blank" href="https://trumio.ai" rel="noreferrer">
             www.trumio.ai
           </a>{' '}
           and review our FAQ's.

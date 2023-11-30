@@ -23,7 +23,7 @@ import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn, selectUserData } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { returnFormattedRating } from '../../../utility/Utils';
-import { clubStatus } from '../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
@@ -83,6 +83,8 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
 
   data?.team_members?.map((user) =>
     users.push({
+      user_type: userTypes.talent,
+      user_id: user?.user_id,
       title: `${user?.first_name} ${user?.last_name}` || 'user',
       img: user.image_uri || avatar7,
       placement: 'bottom',
@@ -180,6 +182,8 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
                   name={`${data?.first_name} ${data?.last_name}`}
                   users={[
                     {
+                      user_type: userTypes.talent,
+                      user_id: data?.user_id,
                       title: `${data?.first_name} ${data?.last_name}`,
                       img: data?.image_uri || avatar7,
                       placement: 'bottom',

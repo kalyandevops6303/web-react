@@ -69,7 +69,6 @@ let testUrl = 'https://uat.trumio.ai/';
 messaging.onBackgroundMessage((payload) => {
   const { data } = payload;
 
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
   // Customize notification here
   const notificationTitle = data?.title;
   const notificationOptions = {

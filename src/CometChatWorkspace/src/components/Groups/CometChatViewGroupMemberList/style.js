@@ -119,6 +119,7 @@ export const listStyle = () => {
 		width: "100%",
 		height: "200px",
 		overflowY: "auto",
+		gap: '10px'
 	};
 };
 

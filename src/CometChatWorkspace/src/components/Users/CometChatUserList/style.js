@@ -1,6 +1,6 @@
 export const contactWrapperStyle = (props, theme) => {
 	const mq = [...theme.breakPoints];
-	console.log(mq)
+
 	const style =
 		props.type !== "group"
 			? {

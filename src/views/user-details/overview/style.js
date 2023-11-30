@@ -175,6 +175,13 @@ const LeftSidebarProfileWrapper = styled.div`
   }
 `;
 
+const DownloadIconContainer = styled.div`
+  background: ${theme.uploadIconBackground};
+  border-radius: 50%;
+  padding: 4px 5px;
+  width: fit-content;
+`;
+
 const UserBioWrap = styled.div`
   .card {
     min-height: 8rem;
@@ -293,6 +300,7 @@ export {
   StatboxWrap,
   ReviewWrap,
   LeftSidebarProfileWrapper,
+  DownloadIconContainer,
   UserBioWrap,
   RecentProjectsWrap,
   ReviewsContainer,

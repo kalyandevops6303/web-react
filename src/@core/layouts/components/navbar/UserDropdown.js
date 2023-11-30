@@ -33,7 +33,6 @@ import { DeclinedButton } from './style';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
-  console.log(userDetailsData);
   const isLoading = useSelector((state) => state.auth.userDataLoading);
   const savedUserDetails = useSelector(selectSavedUserData);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);

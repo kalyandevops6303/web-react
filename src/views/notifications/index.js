@@ -114,7 +114,6 @@ const Notifications = () => {
         return true;
       case 'Club - Request Submitted':
         return true;
-
       default:
         return false;
     }
@@ -143,7 +142,11 @@ const Notifications = () => {
       ...data,
       isDisputesNotification: isDisputesNotification(data?.notification_type),
       // eslint-disable-next-line no-unneeded-ternary
-      isDashboardRedirection: data?.title === 'Team Created' || data?.title === 'Team Member Added' ? true : false,
+      isDashboardRedirection: !!(
+        data?.title === 'Team Created' ||
+        data?.title === 'Team Member Added' ||
+        data?.title === 'Club - Request Submitted'
+      ),
     });
 
     if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
@@ -156,9 +159,11 @@ const Notifications = () => {
       });
     } else if (isDisputesNotification(data?.notification_type)) {
       disputesRedirection(data?.notification_type);
-    } else if (data?.title === 'Milestone Submitted') {
+    } else if (data?.title === 'Milestone Submitted' || data?.title === 'Milestone Accepted') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
-    } else if (data?.title === 'Project Accepted') {
+    } else if (data?.title === 'Project Completed') {
+      navigate(`/project-details/${data?.custom_payload?.project_id}/rating`);
+    } else if (data?.title === 'Project Accepted' || data?.title === 'Milestone payment completed.') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
     } else if (data?.title === 'Team Created') {
       navigate(`/dashboard`);

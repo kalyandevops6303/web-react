@@ -11,6 +11,7 @@ import SwitchConfirmModal from '../../modals/SwitchConfirm';
 
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const UpcomingPaymentsCard = ({ data, className }) => {
   const navigate = useNavigate();
@@ -56,6 +57,8 @@ const UpcomingPaymentsCard = ({ data, className }) => {
                   className="mr-4"
                   data={[
                     ...data?.worker_details?.slice(0, 3)?.map((worker) => ({
+                      user_type: userTypes.talent,
+                      user_id: worker?.user_id,
                       title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
                       img: worker.image_uri || defaultAvatar,
                       placement: 'bottom',
@@ -74,6 +77,8 @@ const UpcomingPaymentsCard = ({ data, className }) => {
                 size="sm"
                 data={[
                   ...data?.worker_details?.map((worker) => ({
+                    user_type: userTypes.talent,
+                    user_id: worker?.user_id,
                     title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
                     img: worker.image_uri || defaultAvatar,
                     placement: 'bottom',

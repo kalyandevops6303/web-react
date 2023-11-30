@@ -16,11 +16,8 @@ const Sidebar = (props) => {
   const { menuCollapsed, menu, skin, menuData } = props;
 
   const userDetailsData = useSelector(selectUserData);
-  console.log(userDetailsData?.user_type);
 
   const menus = userDetailsData?.user_type === 'TALENT' ? menuData : menuData.filter((menu) => menu.id !== 'clubs');
-
-  console.log(menus);
 
   // ** States
   const [groupOpen, setGroupOpen] = useState([]);

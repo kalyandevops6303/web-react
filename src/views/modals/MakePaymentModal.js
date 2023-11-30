@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -170,7 +171,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
               ))}
             {paymentFeeLoading ? (
               <ComponentSpinner size="sm" />
-            ) : (
+            ) : selectedIds.length === 0 ? null : (
               <>
                 <div className="d-flex justify-content-between px-1">
                   <CardText style={{ fontSize: '16px' }}>{`${applicationFee?.name ?? ''} (${
@@ -189,7 +190,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                 </div>
               </>
             )}
-            {paymentFeeLoading ? null : (
+            {paymentFeeLoading || selectedIds.length === 0 ? null : (
               <div className="d-flex justify-content-end py-1">
                 <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled()}>
                   {milestoneDataLoading ? (

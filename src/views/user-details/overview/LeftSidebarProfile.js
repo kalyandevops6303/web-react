@@ -15,8 +15,8 @@ import BehanceIcon from '@src/assets/images/behance.png';
 import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
-import { GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
-import { LeftSidebarProfileWrapper } from './style';
+import { Download, GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
+import { DownloadIconContainer, LeftSidebarProfileWrapper } from './style';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
@@ -216,6 +216,16 @@ const LeftSidebarProfile = ({
     setSendInviteModal(true);
   };
 
+  const handleDownload = () => {
+    const downloadLink = data?.resume?.download_url;
+    const link = document.createElement('a');
+    link.href = downloadLink;
+    link.download = 'filename';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.click();
+  };
+
   return (
     <LeftSidebarProfileWrapper>
       {completeProfileModal && (
@@ -387,17 +397,28 @@ const LeftSidebarProfile = ({
               </>
             )}
             {isTalentView && (
-              <div className="d-flex mb-75">
-                <span className="info-key">Location:</span>
-                {data?.current_residency?.city ? (
-                  <CardText>
-                    {data?.current_residency?.city?.name}, {data?.current_residency?.state?.name},
-                    {data?.current_residency?.country?.name}
-                  </CardText>
-                ) : (
-                  '-'
+              <>
+                {data?.resume?.file_name && (
+                  <div onClick={handleDownload} className="d-flex my-1 align-items-center cursor-pointer">
+                    <DownloadIconContainer>
+                      <Download size={18} color={theme.activeNavPillText} />
+                    </DownloadIconContainer>
+                    <h6 className="mb-0 ms-50 text-primary ">Download resume</h6>
+                  </div>
                 )}
-              </div>
+
+                <div className="d-flex mb-75">
+                  <span className="info-key">Location:</span>
+                  {data?.current_residency?.city ? (
+                    <CardText>
+                      {data?.current_residency?.city?.name}, {data?.current_residency?.state?.name},
+                      {data?.current_residency?.country?.name}
+                    </CardText>
+                  ) : (
+                    '-'
+                  )}
+                </div>
+              </>
             )}
             {isClient && (
               <BadgeGroup

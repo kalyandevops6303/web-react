@@ -14,6 +14,7 @@ import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { ProjectWrapper } from './style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const UserSection = ({ totalCount, users, name, projectName }) => (
   <div className="user-section">
@@ -70,6 +71,8 @@ const TeamInvitaionCard = ({ data, className }) => {
 
   data?.team_members?.map((user) =>
     users.push({
+      user_type: userTypes.talent,
+      user_id: user?.user_id,
       title: `${user?.first_name} ${user?.last_name}` || 'user',
       img: user.image_uri || avatar7,
       placement: 'bottom',

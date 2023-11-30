@@ -189,6 +189,9 @@ const PaymentTable = () => {
     }
     return item.estimated_cost;
   };
+  const showPaymentCalculation =
+    user.user_type === userTypes.client && !isAllMilestonePaid && selectedPaymentId.length > 0;
+
   return (
     <>
       {makePaymentModal && (
@@ -208,13 +211,12 @@ const PaymentTable = () => {
           </div>
           <hr />
           <CardBody>
-            <div className="w-100 shadow rounded" style={{ backgroundColor: 'white' }}>
+            <div className="shadow rounded" style={{ backgroundColor: 'white', width: '90%' }}>
               <PaymentTableWrapper>
                 <Table responsive className="w-100">
                   <thead>
                     <tr>
                       {!isTeam ? <th className="checkboxCol"> </th> : null}
-                      {!isTeam ? <th className="transactionCol">Transaction ID</th> : null}
                       <th>Milestone</th>
                       <th>{}</th>
                       <th>Status</th>
@@ -227,7 +229,7 @@ const PaymentTable = () => {
                     {milestoneData?.map((item) => (
                       <>
                         <tr
-                          className={isPaymentDone(item) ? 'cursor-pointer' : ''}
+                          className={isPaymentDone(item) && !isTeam ? 'cursor-pointer' : ''}
                           key={item?._id}
                           onClick={() => showMilestoneTransanctions(item?._id, item)}
                         >
@@ -249,7 +251,6 @@ const PaymentTable = () => {
                           ) : isTeam ? null : (
                             <td> </td>
                           )}
-                          {!isTeam ? <td>{}</td> : null}
                           <td>{item?.name}</td>
                           <td>{}</td>
                           <td className="statusCol">
@@ -261,9 +262,9 @@ const PaymentTable = () => {
                           <td className="amountCol">$ {getTotalCost(item)}</td>{' '}
                           {!isTeam && isPaymentDone(item) ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
-                          ) : (
+                          ) : !isPaymentDone(item) && !isTeam ? (
                             <td>{}</td>
-                          )}
+                          ) : null}
                         </tr>
 
                         {item?._id === open && isPaymentDone(item) ? (
@@ -273,7 +274,6 @@ const PaymentTable = () => {
                               <td>{}</td>
                               <td>{}</td>
                               <td>Loading...</td>
-                              <td>{}</td>
                               <td>{}</td>
                               <td>{}</td>
                               <td>{}</td>
@@ -289,7 +289,6 @@ const PaymentTable = () => {
                                       <span>{`${applicationFee?.name}`}</span>
                                     </div>
                                   </td>
-                                  <td>{}</td>
                                   <td>{}</td>
                                   <td>{}</td>
                                   <td>{}</td>
@@ -316,7 +315,13 @@ const PaymentTable = () => {
                                 <td>
                                   <TransactionTimeline transactionData={timelineData} />
                                 </td>
-                                <td>{}</td>
+                                <td>
+                                  <div className="d-flex flex-column" style={{ gap: '60px' }}>
+                                    {milestoneTransactionDetails?.map((transaction) => (
+                                      <span key={transaction?._id}>$ {transaction?.amount}</span>
+                                    ))}
+                                  </div>
+                                </td>
                                 <td>
                                   <PaymentStatusForRow paymentStatus={paymentStatusList} />
                                 </td>
@@ -324,8 +329,6 @@ const PaymentTable = () => {
                                 <td colSpan={2}>
                                   <PaymentBy paymentBy={milestoneTransactionDetails} />
                                 </td>
-
-                                <td>{}</td>
                               </tr>
                             </>
                           )
@@ -336,7 +339,7 @@ const PaymentTable = () => {
                 </Table>
               </PaymentTableWrapper>
             </div>
-            {user.user_type === userTypes.client && (
+            {showPaymentCalculation && (
               <div className="d-flex w-100 mt-2 justify-content-between">
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`${applicationFee?.name ?? ''} (${
                   applicationFee?.percentage ?? 0
@@ -345,7 +348,7 @@ const PaymentTable = () => {
               </div>
             )}
             <hr />
-            {user.user_type === userTypes.client && (
+            {showPaymentCalculation && (
               <div className="d-flex w-100 mt-2 justify-content-between">
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
                   {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
@@ -356,7 +359,7 @@ const PaymentTable = () => {
               </div>
             )}
 
-            {user.user_type === userTypes.client && !isAllMilestonePaid && (
+            {showPaymentCalculation && !isAllMilestonePaid && (
               <div className="d-flex justify-content-end w-100 mt-5">
                 <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
                   {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}
