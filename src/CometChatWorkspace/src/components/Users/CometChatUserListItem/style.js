@@ -1,5 +1,4 @@
 export const listItem = (props, context) => {
-	console.log(props)
 	const selectedState =
 		props.selectedUser && props.selectedUser.uid === props.user.uid
 			? {

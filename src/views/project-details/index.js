@@ -32,7 +32,7 @@ const ProjectDetails = () => {
   const [stepsArrayInvite, setStepsArrayInvite] = useState(InviteView);
 
   const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
-  const isClient = user.user_type === userTypes.client;
+  const isClient = user?.user_type === userTypes.client;
 
   const changeStep = (step) => {
     setCurrentStep(step);

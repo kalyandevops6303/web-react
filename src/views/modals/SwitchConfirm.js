@@ -33,6 +33,8 @@ const SwitchConfirmModal = ({
       navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
+    } else if (status === 'Membership Updated') {
+      navigate('/dashboard');
     } else if (location.pathname.split('/').includes('projects')) {
       if (location.pathname.split('/').includes('ongoing')) {
         navigate(`/project-details/${data?._id}/milestone`);
@@ -49,8 +51,10 @@ const SwitchConfirmModal = ({
   const onSuccess = () => {
     toggleModal();
 
-    if (data?.title === 'Project Accepted') {
+    if (data?.title === 'Project Accepted' || data?.title === 'Milestone payment completed.') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
+    } else if (data?.title === 'Milestone Submitted' || data?.title === 'Milestone Accepted') {
+      navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
     } else if (data?.isDisputesNotification) {
       disputesRedirection(data?.notification_type);
     } else if (data?.isDisputeAlert) {

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState } from 'react';
 import BreadCrumbs from '@components/breadcrumbs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -166,7 +167,14 @@ const ReferralAndReward = () => {
       </div>
       <NotesContainer className="p-2">
         <p className="notes-heading">Note:</p>
-        <ul className="m-0">
+        <p>
+          For Rewards rules please visit{' '}
+          <a target="_blank" href="https://trumio.ai" rel="noreferrer">
+            www.trumio.ai
+          </a>{' '}
+          and review our FAQ's.
+        </p>
+        {/* <ul className="m-0">
           <li className="notes-info">
             The fixed cost will be equally distributed between each talent Referral recorded to user for 180 days for
             start of transaction
@@ -185,7 +193,7 @@ const ReferralAndReward = () => {
             Invite any user, get a fixed percentage after the invited user either spends or earns above $100 in the
             platform within the first 180 days for the next 2 years.
           </li>
-        </ul>
+        </ul> */}
       </NotesContainer>
 
       {allReferralsIsLoading ? (

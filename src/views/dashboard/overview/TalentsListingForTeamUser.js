@@ -22,8 +22,9 @@ import TagsSection from './TagsSection';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
-import { setItem } from '../../../utility/localStorageControl';
 import { returnFormattedRating } from '../../../utility/Utils';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -79,6 +80,8 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
 
   data?.team_members?.map((user) =>
     users.push({
+      user_type: userTypes.talent,
+      user_id: user?.user_id,
       title: `${user?.first_name} ${user?.last_name}` || 'user',
       img: user.image_uri || avatar7,
       placement: 'bottom',
@@ -99,7 +102,7 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
   };
 
   const handleViewTeam = (id) => {
-    setItem('team_id', id);
+    setItemFromSession('team_id', id);
     navigate(`/profile/team/${id}`);
   };
 
@@ -181,6 +184,8 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
                   name={`${data?.talent_info?.first_name} ${data?.talent_info?.last_name}`}
                   users={[
                     {
+                      uuser_type: userTypes.talent,
+                      user_id: data?.talent_info?.user_id,
                       title: `${data?.talent_info?.first_name} ${data?.talent_info?.last_name}`,
                       img: data?.talent_info?.image_uri || avatar7,
                       placement: 'bottom',

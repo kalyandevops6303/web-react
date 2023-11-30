@@ -27,7 +27,7 @@ const getTeamInvitationService = () => DataService.get(API.dashboard.teamInvitai
 
 const recommendedProjectsTeamService = () => DataService.get(API.dashboard.recommendedProjectsTeam);
 
-const getMyTeamService = () => DataService.get(`${API.dashboard.getMyTeam}?page=1&page_size=50`);
+const getMyTeamService = () => DataService.get(`${API.dashboard.getMyTeam}?page=1&page_size=100`);
 const getProjectInviteService = () =>
   DataService.get(`${API.dashboard.projectInvites}?invitation_type=PROJECT&page=1&page_size=5`);
 

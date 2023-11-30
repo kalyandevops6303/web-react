@@ -324,8 +324,9 @@ const GrayCardWrapper = styled.div`
   }
 `;
 const TeamCreatedModalImageWrapper = styled.section`
-  width: 60px;
-  height: 60px;
+  width: ${(props) => (props.width ? '46px' : '60px')};
+  height: ${(props) => (props.width ? '46px' : '60px')};
+
   border-radius: 50%;
   border: 1px solid ${theme.navPillText};
   display: flex;

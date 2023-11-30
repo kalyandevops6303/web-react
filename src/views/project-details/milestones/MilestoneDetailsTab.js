@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-confusing-arrow */
 import React, { useState } from 'react';
@@ -30,6 +31,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [clientButtonText, setClientButtonText] = useState('Accept');
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [documents, setDocuments] = useState(selectedMilestone.documents);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const userDataLocal = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
@@ -149,6 +151,35 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     milestone?.payment_status === PAYMENT_STATUS.PAID ||
     milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
 
+  const handleLinkOpen = (URL) => {
+    if (URL && (URL.startsWith('http://') || URL.startsWith('https://'))) {
+      window.open(URL, '_blank');
+    } else {
+      window.open(`https://${URL}`, '_blank');
+    }
+  };
+
+  const handleDownloadFile = async (file) => {
+    try {
+      if (file?.download_url) {
+        setIsDownloading(true);
+        const response = await fetch(file.download_url);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.file_name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        setIsDownloading(false);
+      }
+    } catch (error) {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div>
       {raiseDisputeModal && (
@@ -266,21 +297,22 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                   {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
                 </Col>
                 <Col sm="2" md="2" lg="2">
-                  {file.file ? renderFileSize(file.file.size) : null}
+                  {file?.size ? renderFileSize(file?.size) : null}
                 </Col>
                 <Col sm="2" md="2" lg="3">
                   {requiredFormattedDate}
                 </Col>
                 <Col sm="1" md="1" className="pe-0" lg="1">
-                  <Avatar
-                    onClick={() => {
-                      // eslint-disable-next-line no-undef
-                      // window.open(file.uploadData.upload_url, '_blank');
-                    }}
-                    color="light-primary"
-                    icon={<Download size="14" />}
-                    className=""
-                  />
+                  {isDownloading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    <Avatar
+                      onClick={() => handleDownloadFile(file)}
+                      color="light-primary"
+                      icon={<Download size="14" />}
+                      className=""
+                    />
+                  )}
                 </Col>
               </Row>
             ),
@@ -315,19 +347,17 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
               </div>
             ) : (
               <div
-                className="white-card d-flex mb-1 px-1 medium-shadow align-items-center justify-content-between py-16"
+                className="white-card d-flex mb-1 medium-shadow align-items-center justify-content-between py-16"
                 // eslint-disable-next-line react/no-array-index-key
                 key={`links-${index}`}
+                style={{ paddingLeft: '25px', paddingRight: '50px' }}
               >
                 <div className="d-flex">
                   <Link size="18" className="me-1" />
                   <p className="mb-0">{item}</p>
                 </div>
                 <Avatar
-                  onClick={() => {
-                    // eslint-disable-next-line no-undef
-                    window.open(item, '_blank');
-                  }}
+                  onClick={() => handleLinkOpen(item)}
                   color="light-primary"
                   icon={<ExternalLink size="14" />}
                   className="me-2"

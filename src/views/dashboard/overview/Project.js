@@ -21,6 +21,7 @@ import { CustomBadge } from '../../styled';
 import TagsSection from './TagsSection';
 import CreateBidModal from '../../modals/CreateBidModal';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const UserSection = ({ totalCount, users, tagName, name, isAlma }) => (
   <div className="user-section">
@@ -137,6 +138,8 @@ const Project = ({ open, data, className }) => {
               name={`${data?.client_info?.first_name} ${data?.client_info?.last_name}`}
               users={[
                 {
+                  user_type: userTypes.client,
+                  user_id: data?.client_info?.user_id,
                   title: `${data?.client_info?.first_name} ${data?.client_info?.last_name}`,
                   img: data?.client_info?.image_uri || avatar7,
                   placement: 'bottom',

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useEffect, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
@@ -20,7 +21,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Upload } from 'react-feather';
+import { ChevronLeft, ChevronRight, FileText, Upload } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,8 +45,13 @@ import {
 } from '../../../redux/selectors/talentOnboardingSelectors';
 import { countriesService, languagesService, talentRolesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { maxFileSize, userOnboarding } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import ShowToastMessage from '../../../@core/components/toast';
+import { ERROR } from '../../../utility/constants/ToastTypes';
+import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
+import uuidv4 from '../../../lib/uuidv4';
+import { resumeUploadService } from '../../../services/talentOnboardingServices';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -75,6 +81,7 @@ const Personal = () => {
         value: yup.string().required('Role is required'),
       })
       .required('Role is required'),
+    resume: yup.mixed(),
     speakLanguages: yup
       .array()
       .of(
@@ -156,6 +163,8 @@ const Personal = () => {
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
+  const [uploadingFiles, setUploadingFiles] = useState([]);
+  const [files, setFiles] = useState([]);
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
@@ -166,6 +175,107 @@ const Personal = () => {
   const userDetailsData = useSelector(userDetails);
   const languagesData = useSelector(languages);
   const languagesIsLoading = useSelector(languagesLoading);
+
+  const handleRemoveFile = (file) => {
+    const uploadedFiles = files;
+    const filtered = uploadedFiles.filter((i) => i.id !== file.id);
+    setFiles([...filtered]);
+  };
+
+  const isFileValid = (file) => {
+    if (file.size > maxFileSize) {
+      ShowToastMessage(ERROR, `${file.name} size exceeds the maximum limit (5MB).`);
+      return false;
+    }
+    return true;
+  };
+
+  const handleUploadFile = async (file) => {
+    try {
+      setUploadingFiles([file]);
+
+      await projectFileUploadToAzureService(file.uploadData.upload_url, file.file, {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': file.file.type,
+      });
+    } catch (error) {
+      ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
+    } finally {
+      setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
+    }
+  };
+
+  const fetchUploadUrl = async (file) => {
+    if (isFileValid(file)) {
+      const response = await resumeUploadService(file.name);
+
+      const fileWithUrl = {
+        id: uuidv4(),
+        file,
+        uploadData: response?.data?.data,
+      };
+
+      setFiles([fileWithUrl]);
+
+      handleUploadFile(fileWithUrl);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    fetchUploadUrl(e.target.files[0]);
+  };
+
+  const renderFileSize = (size) => {
+    if (Math.round(size / 100) / 10 > 1000) {
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
+      // eslint-disable-next-line
+    } else {
+      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
+    }
+  };
+
+  const formattedDate = new Date()
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+    .replace(',', '')
+    .split(' ');
+  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
+
+  const fileList = () => (
+    <div className="custom-card mb-1">
+      <Card className="p-1">
+        {files?.map((file, index) => (
+          <Row
+            key={file.id}
+            className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
+          >
+            <Col sm="6" md="4" lg="4">
+              <FileText size="18" className="me-75 mb-50" />
+              {file.file.name}
+            </Col>
+            <Col sm="6" md="2" lg="2">
+              {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              {renderFileSize(file.file.size)}
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              {requiredFormattedDate}
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              <Button
+                color="flat-danger"
+                className="btn-left-margin"
+                disabled={uploadingFiles.includes(file)}
+                onClick={() => handleRemoveFile(file)}
+              >
+                Remove
+              </Button>
+            </Col>
+          </Row>
+        ))}
+      </Card>
+    </div>
+  );
 
   useEffect(() => {
     if (watch('country')?.value !== userDetailsData?.talent_info?.current_residency?.country?._id) {
@@ -276,6 +386,10 @@ const Personal = () => {
         languages_read,
         languages_write,
         current_residency,
+        resume: {
+          file_name: files[0]?.file?.name,
+          file_key: files[0]?.uploadData?.file_key,
+        },
       };
     } else {
       reqData = {
@@ -286,6 +400,10 @@ const Personal = () => {
         languages_read,
         languages_write,
         current_residency,
+        resume: {
+          file_name: files[0]?.file?.name,
+          file_key: files[0]?.uploadData?.file_key,
+        },
       };
     }
 
@@ -377,6 +495,19 @@ const Personal = () => {
           { label: res?.talent_info?.role?.name, value: res?.talent_info?.role?._id },
           { shouldValidate: true },
         );
+      }
+      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+        setFiles([
+          {
+            file: {
+              name: res?.talent_info?.resume?.file_name,
+              size: res?.talent_info?.resume?.size,
+            },
+            uploadData: {
+              file_key: res?.talent_info?.resume?.file_key,
+            },
+          },
+        ]);
       }
       if (
         'streetAddress' in res?.talent_info?.current_residency ||
@@ -597,13 +728,36 @@ const Personal = () => {
                   {errors.role && <FormFeedback>{errors.role.label.message}</FormFeedback>}
                 </Col>
               </Row>
-              <Row className="mt-3 mb-3 d-none">
-                <div className="d-flex align-items-center upload-button cursor-pointer">
-                  <UploadIconContainer>
-                    <Upload size={18} color={theme.activeNavPillText} />
-                  </UploadIconContainer>
-                  <h5 className="fw-bold">Upload your resume</h5>
-                </div>
+              <Row className="mt-3 mb-3">
+                {files.length > 0 ? (
+                  <div className="px-1 mt-50">{fileList()}</div>
+                ) : (
+                  <>
+                    <Label for="resume" className="me-2 d-flex align-items-center upload-button cursor-pointer">
+                      <UploadIconContainer>
+                        <Upload size={18} color={theme.activeNavPillText} />
+                      </UploadIconContainer>
+                      <h5 className="fw-bold">Upload your resume</h5>
+                    </Label>
+                    <Controller
+                      id="resume"
+                      name="resume"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          id="resume"
+                          type="file"
+                          accept="application/pdf"
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            handleFileChange(e);
+                          }}
+                        />
+                      )}
+                    />
+                  </>
+                )}
               </Row>
               <Row className="mb-1 mt-3">
                 <h5 className="m-0">Languages</h5>

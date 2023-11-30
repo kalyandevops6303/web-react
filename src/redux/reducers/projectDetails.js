@@ -271,6 +271,50 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
+    extendValidityRequest: (state) => ({
+      ...state,
+      extendValidityLoading: true,
+      error: null,
+    }),
+    extendValiditySuccess: (state) => ({
+      ...state,
+      extendValidityLoading: false,
+    }),
+    extendValidityFailure: (state, action) => ({
+      ...state,
+      extendValidityLoading: false,
+      error: action.payload,
+    }),
+    terminateProjectRequest: (state) => ({
+      ...state,
+      terminateProjectLoading: true,
+      error: null,
+    }),
+    terminateProjectSuccess: (state) => ({
+      ...state,
+      terminateProjectLoading: false,
+    }),
+    terminateProjectFailure: (state, action) => ({
+      ...state,
+      terminateProjectLoading: false,
+      error: action.payload,
+    }),
+
+    relistProjectRequest: (state) => ({
+      ...state,
+      relistProjectLoading: true,
+      error: null,
+    }),
+    relistProjectSuccess: (state) => ({
+      ...state,
+      relistProjectLoading: false,
+    }),
+    relistProjectFailure: (state, action) => ({
+      ...state,
+      relistProjectLoading: false,
+      error: action.payload,
+    }),
+
     removeWorkerRequest: (state) => ({
       ...state,
       removeWorkerLoading: true,
@@ -401,6 +445,15 @@ export const {
   getBidMilestoneRequest,
   getBidMilestoneSuccess,
   getBidMilestoneFailure,
+  extendValidityRequest,
+  extendValiditySuccess,
+  extendValidityFailure,
+  terminateProjectRequest,
+  terminateProjectSuccess,
+  terminateProjectFailure,
+  relistProjectRequest,
+  relistProjectSuccess,
+  relistProjectFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

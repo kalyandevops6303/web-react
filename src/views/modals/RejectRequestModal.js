@@ -5,7 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitl
 import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { DeleteModalWrapper } from './style';
 
-const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleModal }) => {
+const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleModal, isClubInvitation }) => {
   const onClose = () => {
     toggleModal();
   };
@@ -18,7 +18,9 @@ const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleMod
           <div className="d-flex justify-content-between pr-1">
             <img className="gif m-auto" src={DeleteGif} width={160} height={160} alt="gif" />
             <div style={{ width: '60%' }}>
-              <CardTitle className="modal-title-custom">{title}</CardTitle>
+              <CardTitle className="modal-title-custom">
+                {isClubInvitation ? 'Club Invitation Request' : title}
+              </CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">Decline request</CardSubtitle>
 
               <CardText className="desc fw-light w-76">You are declining this request from</CardText>
@@ -59,6 +61,7 @@ RejectRequestModal.propTypes = {
   data: Proptypes.object,
   onReject: Proptypes.func,
   isLoading: Proptypes.bool,
+  isClubInvitation: Proptypes.bool,
 };
 
 RejectRequestModal.defaultProps = {
@@ -68,4 +71,5 @@ RejectRequestModal.defaultProps = {
   data: {},
   onReject: () => {},
   isLoading: false,
+  isClubInvitation:false
 };

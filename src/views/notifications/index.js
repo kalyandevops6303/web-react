@@ -39,7 +39,7 @@ const Notifications = () => {
   const isLoading = useSelector(notificationsLoading);
   useEffect(() => {
     dispatch(getNotifications('', 1, 10, []));
-    setItem('baseRoute', 'notification');
+    setItem('baseRoute', 'notifications');
     return () => dispatch(clearNotificationsData());
   }, []);
 
@@ -69,6 +69,16 @@ const Notifications = () => {
       navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
+    } else if (status === 'Club Invitation Request' && inviteId) {
+      navigate(`/club-invitation/${inviteId}`);
+    } else if (status === 'Club Join Request' && inviteId) {
+      navigate(`/join-request/${inviteId}`);
+    } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
+      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+    } else if (status === 'Membership Updated') {
+      navigate('/dashboard');
+    } else if (status === 'Club - Request Submitted') {
+      navigate('/dashboard');
     } else {
       navigate(`/project-details/${projectId}/bid`);
     }
@@ -94,6 +104,16 @@ const Notifications = () => {
         return true;
       case 'Team Join Request':
         return true;
+      case 'Club Invitation Request':
+        return true;
+      case 'Club Join Request':
+        return true;
+      case 'Project Club Invitation Request':
+        return true;
+      case 'Membership Updated':
+        return true;
+      case 'Club - Request Submitted':
+        return true;
       default:
         return false;
     }
@@ -107,6 +127,7 @@ const Notifications = () => {
         return true;
       case 'DISPUTE_RESOLVED':
         return true;
+
       default:
         return false;
     }
@@ -121,7 +142,11 @@ const Notifications = () => {
       ...data,
       isDisputesNotification: isDisputesNotification(data?.notification_type),
       // eslint-disable-next-line no-unneeded-ternary
-      isDashboardRedirection: data?.title === 'Team Created' || data?.title === 'Team Member Added' ? true : false,
+      isDashboardRedirection: !!(
+        data?.title === 'Team Created' ||
+        data?.title === 'Team Member Added' ||
+        data?.title === 'Club - Request Submitted'
+      ),
     });
 
     if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
@@ -134,10 +159,14 @@ const Notifications = () => {
       });
     } else if (isDisputesNotification(data?.notification_type)) {
       disputesRedirection(data?.notification_type);
-    } else if (data?.title === 'Milestone Submitted') {
+    } else if (data?.title === 'Milestone Submitted' || data?.title === 'Milestone Accepted') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
-    } else if (data?.title === 'Project Accepted') {
+    } else if (data?.title === 'Project Completed') {
+      navigate(`/project-details/${data?.custom_payload?.project_id}/rating`);
+    } else if (data?.title === 'Project Accepted' || data?.title === 'Milestone payment completed.') {
       navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
+    } else if (data?.title === 'Team Created') {
+      navigate(`/dashboard`);
     } else {
       redirectionFunction({ projectId: data?.custom_payload?.project_id });
     }
@@ -156,6 +185,7 @@ const Notifications = () => {
   if (isLoading) {
     return <ComponentSpinner />;
   }
+
   return (
     <>
       <div className="d-flex justify-content-between mb-2 mt-1">

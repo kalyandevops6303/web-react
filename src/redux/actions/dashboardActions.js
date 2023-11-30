@@ -113,6 +113,9 @@ const getRecommendedProjects =
       if (user_type === userTypes.team) {
         res = await recommendedProjectsTeamService();
       }
+      if (user_type === userTypes.club) {
+        res = await recommendedProjectsTeamService();
+      }
       dispatch(recommendedProjectsSuccess(res.data.data));
     } catch (error) {
       errorHandler(error, recommendedProjectsFailure);

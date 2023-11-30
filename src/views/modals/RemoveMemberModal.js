@@ -8,9 +8,9 @@ import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitl
 import DeleteGif from '../../assets/images/gifs/delete.gif';
 import { RemoveMemberModalWrapper } from './style';
 import { removeTeamMember } from '../../redux/actions/dashboardActions';
-import { getItem } from '../../utility/localStorageControl';
 import { switchProfile } from '../../redux/actions/authActions';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
+import { getTeamId } from '../../utility/Utils';
 
 const RemoveMemberModal = ({ modal, toggleModal, data }) => {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const RemoveMemberModal = ({ modal, toggleModal, data }) => {
       }
     };
     onClose();
-    const teamId = getItem('team_id');
+    const teamId = getTeamId('team_id');
     const postData = {
       user_id: removeData.user_id,
       team_id: teamId,

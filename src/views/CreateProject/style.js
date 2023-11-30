@@ -402,6 +402,26 @@ export const InviteUsersListContainer = styled.div`
     color: ${theme.wizardStepSvgColor};
   }
 `;
+export const InviteClubUsersListContainer = styled.div`
+  height: 170px;
+  overflow-y: auto;
+
+  .user-pic {
+    cursor: auto !important;
+  }
+
+  .badge {
+    padding: 0 8px 0 8px;
+  }
+
+  .bg-secondary {
+    background-color: ${theme.ratingBadgeBg} !important;
+  }
+
+  .rating-text {
+    color: ${theme.wizardStepSvgColor};
+  }
+`;
 
 export const TextEditorContainer = styled.div`
   .ql-toolbar.ql-snow {

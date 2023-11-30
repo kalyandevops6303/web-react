@@ -8,6 +8,7 @@ import { Card, CardBody, CardText, Spinner } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const UpcomingProjectCardForTalent = ({ data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -38,6 +39,8 @@ const UpcomingProjectCardForTalent = ({ data, className }) => {
                 className="mr-4"
                 data={[
                   {
+                    user_type: userTypes.client,
+                    user_id: data?.client_info?.user_id,
                     title: `${data?.client_info?.first_name} ${data?.client_info?.last_name} ` || 'user',
                     img: data?.client_info.image_uri || defaultAvatar,
                     placement: 'bottom',

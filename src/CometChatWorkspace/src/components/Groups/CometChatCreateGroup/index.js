@@ -139,7 +139,6 @@ class CometChatCreateGroup extends React.Component {
   };
 
   handleUserItemClick = (user) => {
-    console.log('user clicked', user);
     const selectedUsers = [...this.state.selectedUsers];
     if (selectedUsers.includes(user.uid)) {
       this.setState((prevState) => {
@@ -150,7 +149,6 @@ class CometChatCreateGroup extends React.Component {
         selectedUsers: [...selectedUsers, user.uid],
       });
     }
-    console.log('selected users', this.state.selectedUsers);
   };
 
   validate = () => {
@@ -223,10 +221,8 @@ class CometChatCreateGroup extends React.Component {
       return members;
     };
     const members = createGroupMembersObjArray(this.state.selectedUsers);
-    // console.log("Group members object array", GroupMembers());
     CometChat.createGroupWithMembers(group, members, [])
       .then((newGroupObj) => {
-        console.log('Group created successfully:', newGroupObj);
         this.setState({ creatingGroup: false });
 
         if (typeof newGroupObj === 'object' && Object.keys(newGroupObj).length) {

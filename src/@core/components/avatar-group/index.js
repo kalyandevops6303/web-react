@@ -3,6 +3,7 @@
 /* eslint-disable react/prop-types */
 // ** React Imports
 import { Fragment } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // ** Third Party Components
 import Proptypes from 'prop-types';
@@ -21,11 +22,19 @@ const AvatarGroup = (props) => {
   // ** Conditional Tag
   const Tag = tag || 'div';
 
+  const navigate = useNavigate()
+
+  const handleProfileNavigate = (evt,item) => {
+    evt.stopPropagation();
+    if(item?.user_id?.length > 0 && item?.user_type?.length > 0){ 
+      navigate(`/profile/${item?.user_type}/${item?.user_id}`);
+    }
+  }
   // ** Render Data
   const renderData = () =>
     data.map((item, i) => {
       const ItemTag = item.tag || 'div';
-      const tooltipId = item?.tooltipId ?? item.title?.split(' ').join( '-');
+      const tooltipId = item?.tooltipId ?? item.title?.split(' ').join('-');
       return (
         <Fragment key={i}>
           {item.title ? (
@@ -44,6 +53,7 @@ const AvatarGroup = (props) => {
               {...item}
               title={undefined}
               meta={undefined}
+              onClick={(evt) => handleProfileNavigate(evt,item)}
             />
           ) : null}
           {item.meta ? <ItemTag className="d-flex align-items-center ps-1">{item.meta}</ItemTag> : null}

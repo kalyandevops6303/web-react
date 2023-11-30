@@ -10,6 +10,7 @@ const API = {
     socialSignUpSingIn: `${apiAuthEndpoint}/api/v1/user/social-auth/google`,
     registerEmail: `${apiAuthEndpoint}/api/v1/user/email/create-otp`,
     verifyEmail: `${apiAuthEndpoint}/api/v1/user/email/verify-otp`,
+    regsterClubEmail: `${apiAuthEndpoint}/api/v1/club/email/create-otp`,
     createNewPassowrd: `${apiAuthEndpoint}/api/v1/user/password/create`,
     registerPhone: `${apiAuthEndpoint}/api/v1/user/phone/create-otp`,
     verifyPhone: `${apiAuthEndpoint}/api/v1/user/phone/verify-otp`,
@@ -46,6 +47,7 @@ const API = {
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,
     profileImageUpload: `${apiAuthEndpoint}/api/v1/user/profile/image-url`,
+    profileResumeUpload: `${apiAuthEndpoint}/api/v1/talent/resume`,
   },
   clientOnboarding: {
     accountDetails: `${apiAuthEndpoint}/api/v1/client/account-details`,
@@ -125,6 +127,8 @@ const API = {
     getSentInvitaion: `${apiAuthEndpoint}/api/v1/invitations/sent`,
     removeWorker: `${apiCreateProjectEndpoint}/api/v1/project-course/workers`,
     requests: `${apiAuthEndpoint}/api/v1/requests`,
+    terminateProject: `${apiCreateProjectEndpoint}/api/v1/project/termination`,
+    relistProject: `${apiCreateProjectEndpoint}/api/v1/project/relisting`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
@@ -133,6 +137,8 @@ const API = {
     signContractByTalent: `${apiCreateProjectEndpoint}/api/v1/legal/document/sign`,
     terminateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/terminate`,
     updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
+    extendDocValidity: `${apiCreateProjectEndpoint}/api/v1/project/documents-validity-extension`,
+    extendPaymentValidity: `${apiCreateProjectEndpoint}/api/v1/project/payment-validity-extension`,
     // invite get
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
@@ -203,6 +209,7 @@ const API = {
     teamById: `${apiOnboardingEndpoint}/api/v1/teams`,
     create: `${apiAuthEndpoint}/api/v1/team/create`,
     update: `${apiAuthEndpoint}/api/v1/team/update`,
+    memberType: `${apiAuthEndpoint}/api/v1/team/member_type`,
     getInvitation: `${apiAuthEndpoint}/api/v1/requests`,
   },
   dispute: {
@@ -252,6 +259,10 @@ const API = {
     validateReferral: `${apiAuthEndpoint}/api/v1/referrals/validation`,
     convertReferral: `${apiAuthEndpoint}/api/v1/referrals/conversion`,
     allReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
+  },
+  clubs: {
+    listClubs: `${apiOnboardingEndpoint}/api/v1/clubs`,
+    cardInfo: `${apiOnboardingEndpoint}/api/v1/clubs/card-info`,
   },
 };
 

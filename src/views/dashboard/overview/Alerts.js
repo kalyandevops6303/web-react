@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
+import { Badge, Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
 import { AlertCardWrapper } from './style';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { getAlerts, getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
-import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import { getTeamId, giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
-import { userTypes } from '../../../utility/constants/Constant';
+import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { CustomBadge } from '../../styled';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -22,9 +23,14 @@ const Alerts = () => {
   const alerts = useSelector((state) => state.dashboard.alerts);
 
   const isProfileCompleted = profilePercentageData?.profile_completed === 100;
+  const talentOrClientProfile =
+    userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.talent;
+
+  const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
+
   useEffect(() => {
     dispatch(getAlerts());
-    if (userDetailsData?.user_type === userTypes.team) {
+    if (userDetailsData?.user_type === userTypes.team && getTeamId('team_id')) {
       dispatch(getTeamProfilePercentage());
     } else {
       dispatch(getProfilePercentage());
@@ -56,10 +62,19 @@ const Alerts = () => {
         return true;
       case 'Team Invitation Request':
         return true;
+      case 'Club Invitation Request':
+        return true;
       case 'Project Team Invitation Request':
+        return true;
+      case 'Project Club Invitation Request':
         return true;
       case 'Team Join Request':
         return true;
+      case 'Membership Updated':
+        return true;
+      case 'Club - Request Submitted':
+        return true;
+
       default:
         return false;
     }
@@ -72,7 +87,13 @@ const Alerts = () => {
       case 'Team Invitation Request':
         return 'Team Invitation';
 
+      case 'Club Invitation Request':
+        return 'Club Invitation';
+
       case 'Project Team Invitation Request':
+        return 'Project Invitation';
+
+      case 'Project Club Invitation Request':
         return 'Project Invitation';
 
       case 'Team Join Request':
@@ -87,10 +108,18 @@ const Alerts = () => {
       navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
     } else if (status === 'Team Invitation Request' && inviteId) {
       navigate(`/team-invitation/${inviteId}`);
+    } else if (status === 'Club Invitation Request' && inviteId) {
+      navigate(`/club-invitation/${inviteId}`);
     } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
+      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+    } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
       navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
     } else if (status === 'Team Join Request' && inviteId) {
       navigate(`/join-request/${inviteId}`);
+    } else if (status === 'Membership Updated') {
+      navigate('/dashboard');
+    } else if (status === 'Club - Request Submitted') {
+      navigate('/dashboard');
     } else {
       navigate(`/project-details/${projectId}/bid`);
     }
@@ -112,7 +141,12 @@ const Alerts = () => {
       ...data,
       isDisputeAlert: isDisputesNotification(data?.title),
       // eslint-disable-next-line no-unneeded-ternary
-      isDashboardRedirection: data?.title === 'Team Created' || data?.title === 'Team Member Added' ? true : false,
+      isDashboardRedirection: !!(
+        data?.title === 'Team Created' ||
+        data?.title === 'Team Member Added' ||
+        data?.title === 'Membership Updated' ||
+        data?.title === 'Club - Request Submitted'
+      ),
     });
 
     if (userDetailsData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
@@ -147,9 +181,17 @@ const Alerts = () => {
       <Card>
         <CardHeader className="earning-head">
           <CardTitle tag="h4">Alerts</CardTitle>
-          <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
-            <Link to="/notifications">View All</Link>
-          </CardText>
+          {isDisabled ? (
+            <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-muted cursor-not-allowed">
+              View All
+            </CardText>
+          ) : (
+            <Link to="/notifications">
+              <CardText className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer">
+                View All
+              </CardText>
+            </Link>
+          )}
         </CardHeader>
         {!isProfileCompleted && (
           <Card className="card-inside">
@@ -166,19 +208,26 @@ const Alerts = () => {
                 className={`${giveProgressBarColorClassName(profilePercentageData?.profile_completed)} mt-25`}
                 value={profilePercentageData?.profile_completed}
               />
-              {returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing) && (
+              {returnCompleteProfileDetailsCta(
+                talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
+                profilePercentageData?.values_missing,
+              ) && (
                 <CardText
                   className="card-text font-medium-2 mt-2 mb-0 text-primary text-center cursor-pointer"
                   onClick={() =>
                     onAddDetailsClick(
-                      returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                        ?.path,
+                      returnCompleteProfileDetailsCta(
+                        talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
+                        profilePercentageData?.values_missing,
+                      )?.path,
                     )
                   }
                 >
                   {
-                    returnCompleteProfileDetailsCta(userDetailsData?.user_type, profilePercentageData?.values_missing)
-                      ?.label
+                    returnCompleteProfileDetailsCta(
+                      talentOrClientProfile ? userDetailsData?.user_type : userDetailsData?.team_type,
+                      profilePercentageData?.values_missing,
+                    )?.label
                   }
                 </CardText>
               )}
@@ -221,6 +270,25 @@ const Alerts = () => {
         )}
 
         <div>
+          <Card className="card-inside d-none">
+            <CardHeader className="d-flex">
+              <CardTitle tag="h4">Club - Request Submitted</CardTitle>
+              <p className=" font-small-2 fw-light m-0">2 Hours ago</p>
+            </CardHeader>
+            <CardBody>
+              <div className="d-flex justify-content-between">
+                <p className="font-small-3 m-0"> The Intellectuals League</p>
+                <div className="d-flex status-row">
+                  <CustomBadge>
+                    <Badge className="IN_REVIEW truncate-1" color="badge">
+                      In Review
+                    </Badge>
+                  </CustomBadge>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+
           {alerts &&
             alerts?.alerts?.data.map((item) => (
               <Card key={item?._id} className="card-inside">
