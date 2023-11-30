@@ -315,7 +315,13 @@ const PaymentTable = () => {
                                 <td>
                                   <TransactionTimeline transactionData={timelineData} />
                                 </td>
-                                <td>{}</td>
+                                <td>
+                                  <div className="d-flex flex-column" style={{ gap: '60px' }}>
+                                    {milestoneTransactionDetails?.map((transaction) => (
+                                      <span key={transaction?._id}>$ {transaction?.amount}</span>
+                                    ))}
+                                  </div>
+                                </td>
                                 <td>
                                   <PaymentStatusForRow paymentStatus={paymentStatusList} />
                                 </td>
