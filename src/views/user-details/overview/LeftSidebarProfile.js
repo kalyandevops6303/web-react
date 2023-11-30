@@ -217,7 +217,7 @@ const LeftSidebarProfile = ({
   };
 
   const handleDownload = () => {
-    const downloadLink = userData?.talent_info?.resume?.download_url;
+    const downloadLink = data?.resume?.download_url;
     const link = document.createElement('a');
     link.href = downloadLink;
     link.download = 'filename';
@@ -398,8 +398,8 @@ const LeftSidebarProfile = ({
             )}
             {isTalentView && (
               <>
-                {userData?.talent_info?.resume?.file_name && (
-                  <div onClick={handleDownload} className="d-flex my-1  align-items-center cursor-pointer">
+                {data?.resume?.file_name && (
+                  <div onClick={handleDownload} className="d-flex my-1 align-items-center cursor-pointer">
                     <DownloadIconContainer>
                       <Download size={18} color={theme.activeNavPillText} />
                     </DownloadIconContainer>

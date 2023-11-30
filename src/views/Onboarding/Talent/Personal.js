@@ -496,7 +496,7 @@ const Personal = () => {
           { shouldValidate: true },
         );
       }
-      if ('file_name' in res?.talent_info?.resume) {
+      if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
         setFiles([
           {
             file: {
