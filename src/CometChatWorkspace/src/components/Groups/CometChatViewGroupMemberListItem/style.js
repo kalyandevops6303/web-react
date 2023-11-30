@@ -93,7 +93,8 @@ export const nameStyle = (context, participantView) => {
 		  };
 
 	return {
-		overflow: "hidden",
+		overflow: 'visible', 
+		marginTop: '10px',
 		textOverflow: "ellipsis",
 		whiteSpace: "nowrap",
 		...widthProp,
