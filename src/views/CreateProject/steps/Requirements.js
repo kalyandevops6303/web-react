@@ -810,7 +810,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                             <div className="d-flex align-items-center justify-content-center flex-column p-3">
                               <h4 className="font-medium-1">Drop files here or click to upload</h4>
                               <p className="text-secondary font-small-5 text-center mt-50 fw-light">
-                                (This is just a demo dropzone. Selected files are not actually uploaded.)
+                                (Drag and drop your files here, or click to browse and select files for upload)
                               </p>
                             </div>
                           </div>
