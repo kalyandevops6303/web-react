@@ -433,3 +433,15 @@ export const downloadFile = async ({ data, file_name }) => {
     toast.dismiss();
   }
 };
+
+export const truncateSentence = ({ sentence, maxCharacters }) => {
+  // Check if the sentence exceeds the maximum number of characters
+  if (sentence?.length > maxCharacters) {
+    // Truncate the sentence to the maximum number of characters
+    const truncatedSentence = `${sentence?.substring(0, maxCharacters)}...`;
+
+    return truncatedSentence;
+  }
+  // If the sentence is within the limit, return it as is
+  return sentence;
+};

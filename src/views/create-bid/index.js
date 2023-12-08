@@ -16,6 +16,7 @@ import AdvanceTeamView from './overview/AdvanceTeamView';
 import VariableAdvanceMilestoneView from './overview/VariableAdvanceMilestoneView';
 import { projectDetails } from '../../redux/selectors/createBidSelectors';
 import FixedAdvanceMilestoneView from './overview/FixedAdvanceMilestoneView';
+import { truncateSentence } from '../../utility/Utils';
 
 const CreateBid = () => {
   const location = useLocation();
@@ -50,7 +51,7 @@ const CreateBid = () => {
       <BreadCrumbs
         data={[
           { title: 'Marketplace', link: '/marketplace/all_listings' },
-          { title: projectDetailsData?.details?.name || 'Project' },
+          { title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) || 'Project' },
           { title: 'Create Bid', link: '#' },
         ]}
       />
