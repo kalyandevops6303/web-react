@@ -28,10 +28,11 @@ import AvailableTimeComp from '../../@core/components/available-time-comp';
 import { userTypes } from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
-import { selectUserData } from '../../redux/selectors/authSelectors';
+import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { downloadFile } from '../../utility/Utils';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -87,6 +88,7 @@ const ProjectModal = ({
 
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
+  const selectSavedUserDetailsData = useSelector(selectSavedUserData);
   const profilePercentageData = useSelector(profilePercentage);
 
   const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
@@ -180,6 +182,11 @@ const ProjectModal = ({
       navigate(`/project-details/${data?._id}/bid`);
     }
   };
+
+  const showCreateBidButton =
+    selectUserDetailsData?.team_members?.map((member) => member?.user_id)?.includes(selectSavedUserDetailsData?._id) &&
+    selectUserDetailsData?.team_members?.find((member) => member?.user_id === selectSavedUserDetailsData?._id)
+      ?.member_type === 'ADMIN';
 
   return (
     <Modal
@@ -295,10 +302,14 @@ const ProjectModal = ({
                     }
                   >
                     <Col sm="6" md="6" lg="8">
-                      <a href={document?.download_url} target="_blank" rel="noopener noreferrer">
-                        <FileText size="18" className="me-75 mb-50" />
+                      <span
+                        className="cursor-pointer"
+                        style={{ color: theme.activeColor }}
+                        onClick={() => downloadFile({ data: document })}
+                      >
+                        <FileText size="18" className="me-75" />
                         {document?.file_name}
-                      </a>
+                      </span>
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
                       {renderFileSize(document?.size)}
@@ -350,18 +361,22 @@ const ProjectModal = ({
                   <Button color="flat-danger" className="d-none me-1">
                     Report
                   </Button>
-                  {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') && (
-                    <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
-                      {checkBidLoadingIsLoading ? (
-                        <Spinner size="sm" />
-                      ) : (
-                        <>
-                          <span className="me-50">Create Bid</span>
-                          <ChevronRight size={14} />
-                        </>
-                      )}
-                    </Button>
-                  )}
+
+                  {(data?.status === 'OPEN' || data?.status === 'IN_REVIEW') &&
+                    (selectUserDetailsData?.user_type === userTypes.team && selectUserDetailsData?.team_type === 'CLUB'
+                      ? showCreateBidButton
+                      : true) && (
+                      <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleCreateBid}>
+                        {checkBidLoadingIsLoading ? (
+                          <Spinner size="sm" />
+                        ) : (
+                          <>
+                            <span className="me-50">Create Bid</span>
+                            <ChevronRight size={14} />
+                          </>
+                        )}
+                      </Button>
+                    )}
                 </div>
               )}
             </div>

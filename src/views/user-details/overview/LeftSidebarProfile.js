@@ -21,7 +21,7 @@ import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
-import { getTeamId, giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
+import { downloadFile, getTeamId, giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
@@ -216,16 +216,6 @@ const LeftSidebarProfile = ({
     setSendInviteModal(true);
   };
 
-  const handleDownload = () => {
-    const downloadLink = data?.resume?.download_url;
-    const link = document.createElement('a');
-    link.href = downloadLink;
-    link.download = 'filename';
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    link.click();
-  };
-
   return (
     <LeftSidebarProfileWrapper>
       {completeProfileModal && (
@@ -399,7 +389,12 @@ const LeftSidebarProfile = ({
             {isTalentView && (
               <>
                 {data?.resume?.file_name && (
-                  <div onClick={handleDownload} className="d-flex my-1 align-items-center cursor-pointer">
+                  <div
+                    onClick={() =>
+                      downloadFile({ data: data?.resume, file_name: `${data?.first_name} ${data?.last_name}` })
+                    }
+                    className="d-flex my-1 align-items-center cursor-pointer"
+                  >
                     <DownloadIconContainer>
                       <Download size={18} color={theme.activeNavPillText} />
                     </DownloadIconContainer>
