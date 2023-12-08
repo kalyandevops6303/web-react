@@ -17,7 +17,7 @@ import {
 } from 'reactstrap';
 import PdfIcon from '@src/assets/images/pdfimg.png';
 import { Info } from 'react-feather';
-import { formatFileSize } from '../../utility/Utils';
+import { downloadFile, formatFileSize } from '../../utility/Utils';
 import { BidDetailsWrap } from '../project-details/style';
 import { userTypes } from '../../utility/constants/Constant';
 import theme from '../../configs/themeVariables';
@@ -97,15 +97,15 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
                 <thead>
                   <tr>
                     <th>Payment for</th>
-                    <th>Milestone Tag</th>
+                    <th>Milestone name</th>
                     <th>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {bidInfo?.milestones?.map((item) => (
+                  {bidInfo?.milestones?.map((item, index) => (
                     <tr key={item?._id}>
-                      <td className="fw-bolder">{item?.name}</td>
-                      <td>{item?.description}</td>
+                      <td className="fw-bolder">Milestone #{index + 1}</td>
+                      <td>{item?.name}</td>
                       <td>${item?.estimated_cost}</td>
                     </tr>
                   ))}
@@ -115,12 +115,11 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
           </Card>
           <Card>
             {bidInfo?.documents?.map((item) => (
-              <a
+              <span
                 key={item?.created_at}
-                className="text-decoration-none"
-                href={item?.download_url}
-                target="_blank"
-                rel="noopener noreferrer"
+                className="text-decoration-none cursor-pointer"
+                onClick={() => downloadFile({ data: item })}
+                style={{ color: theme.activeColor }}
               >
                 <CardBody className="d-flex align-items-center">
                   <img src={PdfIcon} alt="pdficon" />
@@ -134,7 +133,7 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
                     </div>
                   </div>
                 </CardBody>
-              </a>
+              </span>
             ))}
           </Card>
         </BidDetailsWrap>

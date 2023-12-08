@@ -21,6 +21,7 @@ import PaymentTab from './payment/PaymentTab';
 import MilestonePaymentListing from './payment/MilestonePaymentListing';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import { truncateSentence } from '../../utility/Utils';
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -102,8 +103,11 @@ const ProjectDetails = () => {
       <BreadCrumbs
         data={
           isInviteView
-            ? [{ title: projectDetailsData?.details?.name }]
-            : [fromLocationPrimary(), { title: projectDetailsData?.details?.name }]
+            ? [{ title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) }]
+            : [
+                fromLocationPrimary(),
+                { title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) },
+              ]
         }
       />
       <Row>

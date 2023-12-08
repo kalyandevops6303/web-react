@@ -9,6 +9,7 @@ import Timeline from '../../../@core/components/timeline';
 import theme from '../../../configs/themeVariables';
 import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
+import { downloadFile } from '../../../utility/Utils';
 
 const BidSubmitted = () => {
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
@@ -102,17 +103,16 @@ const BidSubmitted = () => {
                   </span>
                 </div>
                 {bidInfo?.documents?.map((doc) => (
-                  <a
+                  <span
+                    onClick={() => downloadFile({ data: doc })}
                     key={doc?.created_at}
-                    className="text-decoration-none"
-                    href={doc?.download_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    className="text-decoration-none cursor-pointer"
+                    style={{ color: theme.activeColor }}
                   >
                     <div className="d-flex gap-25 align-items-center">
                       <img src={PdfIcon} alt="pdficon" /> <h6 className="mb-0">{doc?.file_name}</h6>
                     </div>
-                  </a>
+                  </span>
                 ))}
               </>
             )}

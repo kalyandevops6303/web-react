@@ -26,10 +26,10 @@ export const getToken = async () => {
         currentToken = await messaging?.getToken({ vapidKey: publicKey });
       })
       .catch((error) => {
-        console.error(error, 'from firebase..');
+        console.log(error, 'from firebase..');
       });
   } catch (error) {
-    console.error('error', error);
+    console.log('error', error);
   }
 
   return currentToken;
