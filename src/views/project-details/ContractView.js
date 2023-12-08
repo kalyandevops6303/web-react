@@ -83,7 +83,7 @@ const ContractView = () => {
   const downloadPdf = (element) => {
     const opt = {
       margin: 10,
-      filename: `project_name_${getDocType()?.toLocaleLowerCase()}.pdf`,
+      filename: `${projectInfo?.details?.name || 'project name'} ${getDocType()?.toLocaleLowerCase()}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },

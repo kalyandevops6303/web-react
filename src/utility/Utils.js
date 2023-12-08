@@ -4,6 +4,7 @@ import { FileText } from 'react-feather';
 
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
+import toast from '../lib/toast';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
 import { maxFileSize } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
@@ -390,3 +391,45 @@ export const returnFormattedRating = (num) => {
 
 // eslint-disable-next-line no-undef
 export const getTeamId = () => getItemFromSession('team_id');
+
+export const downloadFile = async ({ data, file_name }) => {
+  // Replace 'your_file_url' with the actual URL of the file you want to download
+  const fileUrl = data?.download_url;
+
+  try {
+    toast.loading('Downloading file...');
+    // Fetch the file using the URL
+    const response = await fetch(fileUrl);
+    const blob = await response.blob();
+
+    // Create a blob URL for the file
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Create a hidden anchor element
+    // eslint-disable-next-line no-undef
+    const a = document.createElement('a');
+    a.style.display = 'none';
+
+    // Set the href attribute to the blob URL
+    a.href = blobUrl;
+
+    // Set the download attribute with the extracted file name
+    a.download = file_name || data?.file_name;
+
+    // Append the anchor element to the document
+    // eslint-disable-next-line no-undef
+    document.body.appendChild(a);
+
+    // Trigger a click on the anchor element to start the download
+    a.click();
+
+    // Remove the anchor element and revoke the blob URL from the document
+    // eslint-disable-next-line no-undef
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+    toast.dismiss();
+  } catch (error) {
+    console.error('Error downloading the file:', error);
+    toast.dismiss();
+  }
+};

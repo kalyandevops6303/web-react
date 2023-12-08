@@ -12,7 +12,7 @@ import theme from '../../configs/themeVariables';
 import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
 import { userTypes } from '../../utility/constants/Constant';
-import { formatFileSize } from '../../utility/Utils';
+import { downloadFile, formatFileSize } from '../../utility/Utils';
 import AcceptBidModal from '../modals/AccpetBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
@@ -81,6 +81,7 @@ const BidDetails = () => {
     if (getItem('baseRoute') === 'my-teams') return { title: 'My teams', link: '/my-teams' };
     return '';
   };
+
   return (
     <BidDetailsWrap>
       <div className="d-flex justify-content-between mb-2 pb-2 rounded" style={{ position: 'relative' }}>
@@ -223,9 +224,9 @@ const BidDetails = () => {
             {bidInfo?.documents?.map((item) => (
               <a
                 key={item?.created_at}
-                className="text-decoration-none"
-                href={item?.download_url}
-                target="_blank"
+                className="text-decoration-none "
+                style={{ color: theme.activeColor }}
+                onClick={() => downloadFile({ data: item })}
                 rel="noopener noreferrer"
               >
                 <CardBody className="d-flex align-items-center">
