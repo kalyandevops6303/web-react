@@ -1,15 +1,30 @@
+/* eslint-disable no-confusing-arrow */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
-import { Button, Card, CardBody, CardHeader, CardText, Col, Row, Table, UncontrolledTooltip } from 'reactstrap';
+import {
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardText,
+  Col,
+  Row,
+  UncontrolledAccordion,
+  UncontrolledTooltip,
+} from 'reactstrap';
 import { ChevronLeft, ChevronRight, FileText, Info } from 'react-feather';
-import { PreviewSectionWrapper } from '../style';
+import { AccordionBodyContent, AccordionTableHeader, PreviewSectionWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
 import BidSubmittedModal from './BidSubmittedModal';
 import { getBidDetails } from '../../../redux/actions/createBidActions';
 import { bidDetails, bidDetailsLoading } from '../../../redux/selectors/createBidSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 
 const Preview = () => {
   const dispatch = useDispatch();
@@ -121,7 +136,7 @@ const Preview = () => {
               <CardText className="milestone-title font-medium-3 fw-bold mb-1">Milestones</CardText>
               <Card className="white-card-bg m-0">
                 <CardBody className="p-0">
-                  <Table responsive className="milestone-table">
+                  {/* <Table responsive className="milestone-table">
                     <thead>
                       <tr>
                         <th>Payment For</th>
@@ -138,7 +153,115 @@ const Preview = () => {
                         </tr>
                       ))}
                     </tbody>
-                  </Table>
+                  </Table> */}
+                  <AccordionTableHeader className="py-75 px-1">
+                    <Row>
+                      <Col sm="12" md="12" lg="2">
+                        <p>Payment For</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="4">
+                        <p>Milestone Name</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="2">
+                        <p>Duration</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="2">
+                        <p>Team Members</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="2">
+                        <p>Amount</p>
+                      </Col>
+                    </Row>
+                  </AccordionTableHeader>
+                  <UncontrolledAccordion>
+                    {bidDetailsData?.milestones?.map((milestone, index) => (
+                      <AccordionItem className="py-0" key={milestone._id}>
+                        <AccordionHeader targetId={index + 1} className="p-0">
+                          <Row className="p-0 w-100">
+                            <Col sm="12" md="12" lg="2">
+                              <p className="fw-bolder m-0 font-small-4">Milestone # {index + 1}</p>
+                            </Col>
+                            <Col sm="12" md="12" lg="4" className="ps-1">
+                              <p className="fw-light m-0 font-small-4">{milestone.name}</p>
+                            </Col>
+                            <Col sm="12" md="12" lg="2" className="ps-2">
+                              <p className="fw-light m-0 font-small-4">
+                                {milestone?.estimated_duration?.duration} week
+                              </p>
+                            </Col>
+                            <Col sm="12" md="12" lg="2" className="ps-2">
+                              <p className="fw-light m-0 font-small-4 ps-50">
+                                {milestone?.team_members?.length} team me
+                              </p>
+                            </Col>
+                            <Col sm="12" md="12" lg="2" className="ps-2">
+                              <p className="fw-light m-0 font-small-4 ps-50">${milestone.estimated_cost}</p>
+                            </Col>
+                          </Row>
+                        </AccordionHeader>
+                        <AccordionBody accordionId={index + 1}>
+                          <AccordionBodyContent>
+                            {milestone?.description?.length > 0 && (
+                              <>
+                                <p className="content-header mb-25">Description</p>
+                                <p className="m-0 content-description">
+                                  <ShowMoreLess content={milestone?.description} maxLength={200} />
+                                </p>
+                              </>
+                            )}
+                            {milestone?.deliverables?.length > 0 && (
+                              <>
+                                <p className="content-header mb-25">Deliverables</p>
+                                <p className="m-0 content-description">
+                                  {milestone?.deliverables?.map((deliverable, deliverableIndex) =>
+                                    deliverableIndex + 1 === milestone?.deliverables?.length
+                                      ? `${deliverable}`
+                                      : `${deliverable}, `,
+                                  )}
+                                </p>
+                              </>
+                            )}
+                            <Row className="mt-2">
+                              <Col sm="12" md="12" lg="4">
+                                <p className="content-header mb-25">Team Member</p>
+                              </Col>
+                              <Col sm="12" md="12" lg="3">
+                                <p className="content-header mb-25">Designation</p>
+                              </Col>
+                              <Col sm="12" md="12" lg="2">
+                                <p className="content-header mb-25">Duration</p>
+                              </Col>
+                              <Col sm="12" md="12" lg="2">
+                                <p className="content-header mb-25">Amount</p>
+                              </Col>
+                            </Row>
+                            {milestone?.workers?.length > 0 && (
+                              <div>
+                                {milestone?.workers?.map((worker) => (
+                                  <Row className="mt-1" key={worker?.role}>
+                                    <Col sm="12" md="12" lg="4">
+                                      <p className="fw-bolder content-description">
+                                        {worker?.first_name} {worker?.last_name}
+                                      </p>
+                                    </Col>
+                                    <Col sm="12" md="12" lg="3">
+                                      <p className="fw-bold content-description">{worker?.role}</p>
+                                    </Col>
+                                    <Col sm="12" md="12" lg="2">
+                                      <p className="fw-bold content-description">{worker?.number_of_weeks} week</p>
+                                    </Col>
+                                    <Col sm="12" md="12" lg="2">
+                                      <p className="fw-bold content-description">Amount</p>
+                                    </Col>
+                                  </Row>
+                                ))}
+                              </div>
+                            )}
+                          </AccordionBodyContent>
+                        </AccordionBody>
+                      </AccordionItem>
+                    ))}
+                  </UncontrolledAccordion>
                 </CardBody>
               </Card>
             </CardBody>
