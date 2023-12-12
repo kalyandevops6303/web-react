@@ -140,24 +140,6 @@ const Preview = () => {
               <CardText className="milestone-title font-medium-3 fw-bold mb-1">Milestones</CardText>
               <Card className="white-card-bg m-0">
                 <CardBody className="p-0">
-                  {/* <Table responsive className="milestone-table">
-                    <thead>
-                      <tr>
-                        <th>Payment For</th>
-                        <th>Milestone Name</th>
-                        <th className="text-end">Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {bidDetailsData?.milestones?.map((milestone, index) => (
-                        <tr key={milestone._id}>
-                          <td className="fw-bolder">Milestone # {index + 1}</td>
-                          <td className="fw-light">{milestone.name}</td>
-                          <td className="text-end">${milestone.estimated_cost}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table> */}
                   <AccordionTableHeader className="py-75 px-1">
                     <Row>
                       <Col sm="12" md="12" lg="2">
