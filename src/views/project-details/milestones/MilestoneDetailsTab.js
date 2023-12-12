@@ -9,6 +9,7 @@ import { Download, ExternalLink, Link, Plus, Upload } from 'react-feather';
 import { useDropzone } from 'react-dropzone';
 import { useSelector } from 'react-redux';
 
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RaiseDisputeModal from '../../disputes/overview/RaiseDisputeModal';
 import { formatDate, isFileValid, renderFilePreview, renderFileSize } from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
@@ -18,6 +19,7 @@ import { transferFundService } from '../../../services/paymentDetailService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
+
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import { CustomBadge } from '../../styled';
@@ -250,6 +252,26 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
         <hr className="my-2" />
         <div className="white-card w-100">
           <CardText className="fw-bolder fs-4 mb-1">Milestone Deliverables</CardText>
+          <Row
+            style={{ fontFamily: 'Montserrat' }}
+            className="d-flex mb-1 mx-0 px-1 fw-bolder align-items-center justify-content-between py-8 mt-2"
+          >
+            <Col sm="6" md="4" lg="3">
+              FILE NAME
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              STATUS
+            </Col>
+            <Col sm="2" md="2" lg="2">
+              SIZE
+            </Col>
+            <Col sm="2" md="2" lg="3">
+              UPLOADED ON
+            </Col>
+            <Col sm="1" md="1" className="pe-0" lg="1">
+              ACTION
+            </Col>
+          </Row>
           {documents.map((file) =>
             isEditable ? (
               <Row
@@ -385,6 +407,62 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           ) : null}
         </div>
       </Card>
+      <Card style={{ padding: '2rem' }} className="gray-card">
+        <div style={{ padding: '2rem' }} className="w-100 white-card medium-shadow">
+          <div className="pb-0">
+            <CardText className="fs-4 mb-0 fw-bold">Team Member(s)</CardText>
+          </div>
+          <Row className="mt-2 w-100">
+            <Col sm="12" md="12" lg="4">
+              <p className="content-header mb-25">Team Member</p>
+            </Col>
+            <Col sm="12" md="12" lg="3">
+              <p className="content-header mb-25">Designation</p>
+            </Col>
+            <Col sm="12" md="12" lg="2">
+              <p className="content-header mb-25">Duration</p>
+            </Col>
+            <Col sm="12" md="12" lg="2">
+              <p className="content-header mb-25">Amount</p>
+            </Col>
+          </Row>
+          {selectedMilestone?.workers?.length > 0 && (
+            <div className="w-100">
+              {selectedMilestone?.workers?.map((worker) => (
+                <Row className="mt-1 w-100" key={worker?.role}>
+                  <Col sm="12" md="12" lg="4">
+                    <div className="d-flex align-items-center">
+                      <Avatar
+                        img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
+                        imgHeight="32"
+                        imgWidth="32"
+                        className="me-50"
+                      />
+                      {worker?.user_id ? (
+                        <p className="fw-bolder content-description m-0 ms-50">
+                          {worker?.first_name} {worker?.last_name}
+                        </p>
+                      ) : (
+                        <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
+                      )}
+                    </div>
+                  </Col>
+                  <Col sm="12" md="12" lg="3">
+                    <p className="fw-bold content-description">{worker?.role}</p>
+                  </Col>
+                  <Col sm="12" md="12" lg="2">
+                    <p className="fw-bold content-description">{worker?.number_of_weeks} week</p>
+                  </Col>
+                  <Col sm="12" md="12" lg="2">
+                    <p className="fw-bold content-description">${worker?.amount || 0}</p>
+                  </Col>
+                </Row>
+              ))}
+            </div>
+          )}
+        </div>
+      </Card>
+
       <div className="d-flex justify-content-end">
         <Button className="me-2 raise-dispute-btn" onClick={() => setRaiseDisputeModal(true)}>
           Raise Dispute
@@ -412,6 +490,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
 MilestoneDetailsTab.propTypes = {
   selectedMilestone: Proptypes.object.isRequired,
   fetchProjectMilestones: Proptypes.func.isRequired,
+  milestonesData: Proptypes.object.isRequired,
 };
 
 export default MilestoneDetailsTab;

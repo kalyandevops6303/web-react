@@ -53,13 +53,13 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
       return { theme: 'light-danger', text: 'Payment Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Payment Due' };
+      return { theme: 'light-warning', text: 'Milestone In Progress' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING || tag === PAYMENT_STATUS.INITIATED) {
       return { theme: 'light-primary', text: 'Payment Processing' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Payment Success' };
+      return { theme: 'light-success', text: 'Funds Available' };
     }
     return { theme: 'light-primary', text: tag };
   };

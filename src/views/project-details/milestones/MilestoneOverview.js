@@ -104,7 +104,7 @@ const TabWrapper = styled.div`
   }
 `;
 
-const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones }) => {
+const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones, setSelectedMilestoneIndex }) => {
   const [tab, setTab] = useState('Details');
 
   return (
@@ -113,6 +113,7 @@ const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones }) => {
         <div
           className={`tablink ${tab === 'Details' ? 'active-tablink' : ''}`}
           onClick={() => {
+            setSelectedMilestoneIndex(null);
             setTab('Details');
           }}
         >
@@ -129,6 +130,7 @@ const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones }) => {
 MilestoneOverview.propTypes = {
   selectedMilestone: Proptypes.object.isRequired,
   fetchProjectMilestones: Proptypes.func.isRequired,
+  setSelectedMilestoneIndex: Proptypes.func.isRequired,
 };
 
 export default MilestoneOverview;
