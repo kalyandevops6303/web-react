@@ -130,6 +130,7 @@ const FixedSimpleMilestoneView = () => {
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
+  const [allWorkers, setAllWorkers] = useState([]);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
 
@@ -279,6 +280,7 @@ const FixedSimpleMilestoneView = () => {
         talentCost: undefined,
         deliverables: [''],
         otherDetails: {},
+        workers: allWorkers,
       });
 
       toggle(getValues('milestones')?.length);
@@ -429,6 +431,20 @@ const FixedSimpleMilestoneView = () => {
         }));
 
         setValue('milestones', reqData, { shouldValidate: true });
+      } else if (res?.workers?.length > 0) {
+        const reqData = [
+          {
+            duration: undefined,
+            talentCost: undefined,
+            name: undefined,
+            description: undefined,
+            deliverables: [''],
+            otherDetails: {},
+            workers: res?.workers?.length > 0 ? res?.workers : [],
+          },
+        ];
+
+        setValue('milestones', reqData, { shouldValidate: true });
       }
       if (res?.documents?.length > 0) {
         const reqFiles = res?.documents?.map((file) => ({
@@ -439,6 +455,9 @@ const FixedSimpleMilestoneView = () => {
           },
         }));
         setFiles(reqFiles);
+      }
+      if (res?.workers?.length > 0) {
+        setAllWorkers(res?.workers);
       }
     }
   };
