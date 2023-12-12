@@ -17,6 +17,9 @@ import {
   UncontrolledTooltip,
 } from 'reactstrap';
 import { ChevronLeft, ChevronRight, FileText, Info } from 'react-feather';
+import Avatar from '@components/avatar';
+import AvatarGroup from '@components/avatar-group';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { AccordionBodyContent, AccordionTableHeader, PreviewSectionWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
@@ -25,6 +28,7 @@ import { getBidDetails } from '../../../redux/actions/createBidActions';
 import { bidDetails, bidDetailsLoading } from '../../../redux/selectors/createBidSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const Preview = () => {
   const dispatch = useDispatch();
@@ -191,7 +195,53 @@ const Preview = () => {
                             </Col>
                             <Col sm="12" md="12" lg="2" className="ps-2">
                               <p className="fw-light m-0 font-small-4 ps-50">
-                                {milestone?.team_members?.length} team me
+                                {milestone?.workers?.filter((worker) => worker.user_id)?.length > 3 ? (
+                                  <AvatarGroup
+                                    totalCount={milestone?.workers?.filter((worker) => worker.user_id)?.length || 0}
+                                    size="sm"
+                                    className="ms-25 mb-50"
+                                    data={milestone?.workers
+                                      ?.filter((worker) => worker.user_id)
+                                      ?.map((worker) => ({
+                                        user_id: worker?.user_id,
+                                        user_type: userTypes.talent,
+                                        title: `${worker?.first_name} ${worker?.last_name}` || 'user',
+                                        img: worker?.image_uri || defaultAvatar,
+                                        placement: 'bottom',
+                                        imgHeight: 21,
+                                        imgWidth: 21,
+                                        tooltipId: `${worker?.first_name?.replace(
+                                          /\s+/g,
+                                          '-',
+                                        )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
+                                          (Math.random() * 20).toFixed(0),
+                                        )}`,
+                                      }))
+                                      ?.slice(0, 3)}
+                                  />
+                                ) : (
+                                  <AvatarGroup
+                                    size="sm"
+                                    className="ms-25 mb-50"
+                                    data={milestone?.workers
+                                      ?.filter((worker) => worker.user_id)
+                                      ?.map((worker) => ({
+                                        user_id: worker?.user_id,
+                                        user_type: userTypes.talent,
+                                        title: `${worker?.first_name} ${worker?.last_name}` || 'user',
+                                        img: worker?.image_uri || defaultAvatar,
+                                        placement: 'bottom',
+                                        imgHeight: 21,
+                                        imgWidth: 21,
+                                        tooltipId: `${worker?.first_name?.replace(
+                                          /\s+/g,
+                                          '-',
+                                        )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
+                                          (Math.random() * 30).toFixed(0),
+                                        )}`,
+                                      }))}
+                                  />
+                                )}
                               </p>
                             </Col>
                             <Col sm="12" md="12" lg="2" className="ps-2">
@@ -240,9 +290,20 @@ const Preview = () => {
                                 {milestone?.workers?.map((worker) => (
                                   <Row className="mt-1" key={worker?.role}>
                                     <Col sm="12" md="12" lg="4">
-                                      <p className="fw-bolder content-description">
-                                        {worker?.first_name} {worker?.last_name}
-                                      </p>
+                                      <div className="d-flex align-items-center">
+                                        <Avatar
+                                          img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
+                                          imgHeight="32"
+                                          imgWidth="32"
+                                        />
+                                        {worker?.user_id ? (
+                                          <p className="fw-bolder content-description m-0 ms-50">
+                                            {worker?.first_name} {worker?.last_name}
+                                          </p>
+                                        ) : (
+                                          <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
+                                        )}
+                                      </div>
                                     </Col>
                                     <Col sm="12" md="12" lg="3">
                                       <p className="fw-bold content-description">{worker?.role}</p>
@@ -251,7 +312,7 @@ const Preview = () => {
                                       <p className="fw-bold content-description">{worker?.number_of_weeks} week</p>
                                     </Col>
                                     <Col sm="12" md="12" lg="2">
-                                      <p className="fw-bold content-description">Amount</p>
+                                      <p className="fw-bold content-description">${worker?.amount || 0}</p>
                                     </Col>
                                   </Row>
                                 ))}

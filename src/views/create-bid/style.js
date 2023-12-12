@@ -417,6 +417,10 @@ const AccordionBodyContent = styled.div`
   .content-description {
     color: ${theme.checkboxLabel};
   }
+
+  .to-be-assigned-text {
+    color: ${theme.orangeColor};
+  }
 `;
 
 export {
