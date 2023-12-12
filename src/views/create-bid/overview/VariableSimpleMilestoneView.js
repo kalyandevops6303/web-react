@@ -195,6 +195,10 @@ const VariableSimpleMilestoneView = () => {
       estimated_cost: milestone.talentCost,
       deliverables: milestone.deliverables,
       seq: maxSeqValue + index + 1,
+      workers: milestone.workers.map((worker) => ({
+        ...worker,
+        number_of_weeks: Number(milestone.duration),
+      })),
     }));
     const update_milestones = updatedMilestones.map((milestone) => ({
       name: milestone.name,
@@ -207,6 +211,10 @@ const VariableSimpleMilestoneView = () => {
       deliverables: milestone.deliverables,
       milestone_id: milestone.otherDetails._id,
       seq: milestone.otherDetails.seq,
+      workers: milestone.workers.map((worker) => ({
+        ...worker,
+        number_of_weeks: Number(milestone.duration),
+      })),
     }));
     const removed_milestone_ids = removedMilestoneIds.filter((id) => id !== undefined);
     const documents = files.map((file) => ({
@@ -410,6 +418,7 @@ const VariableSimpleMilestoneView = () => {
           name: milestone?.name,
           description: milestone?.description,
           deliverables: milestone?.deliverables?.length > 0 ? milestone?.deliverables : [''],
+          workers: res?.workers?.length > 0 ? res?.workers : [],
           otherDetails: milestone,
         }));
 
