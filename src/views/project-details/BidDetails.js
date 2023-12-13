@@ -206,10 +206,10 @@ const BidDetails = () => {
               <div>
                 <CardText className="value">${(bidInfo?.total_estimated_cost * 0.2).toFixed(0)}</CardText>
                 <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Platform Fees 20%</CardText>
+                  <CardText className="key mb-0">Platform Fees</CardText>
                   <Info size={14} color={theme.infoIcon} id="bid-platform-fee-info" className="ms-50" />
                   <UncontrolledTooltip placement="bottom" target="bid-platform-fee-info">
-                    <p className="m-0">This is platform fee</p>
+                    <p className="m-0">This fee is calculated as 20% of the bid amount</p>
                   </UncontrolledTooltip>
                 </div>
               </div>
@@ -231,7 +231,7 @@ const BidDetails = () => {
                 <div className="d-flex align-items-center m-0">
                   <CardText className="key mb-0">Estimated Duration</CardText>
                   <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
-                  <UncontrolledTooltip placement="right" target="duration-info">
+                  <UncontrolledTooltip placement="bottom" target="duration-info">
                     <p className="m-0">Sum total of all milestone duration hours/week</p>
                   </UncontrolledTooltip>
                 </div>
