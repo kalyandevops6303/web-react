@@ -264,7 +264,7 @@ const Preview = () => {
                                 <p className="content-header mb-25">Duration</p>
                               </Col>
                               <Col sm="12" md="12" lg="2">
-                                <p className="content-header mb-25">Amount</p>
+                                <p className="content-header mb-25 text-end me-3">Amount</p>
                               </Col>
                             </Row>
                             {milestone?.workers?.length > 0 && (
@@ -288,13 +288,15 @@ const Preview = () => {
                                       </div>
                                     </Col>
                                     <Col sm="12" md="12" lg="3">
-                                      <p className="fw-bold content-description">{worker?.role}</p>
+                                      <p className="font-small-3 fw-bold content-description">{worker?.role}</p>
                                     </Col>
                                     <Col sm="12" md="12" lg="2">
-                                      <p className="fw-bold content-description">{worker?.number_of_weeks} week</p>
+                                      <p className="font-small-3 fw-bold content-description">
+                                        {worker?.number_of_weeks} week
+                                      </p>
                                     </Col>
                                     <Col sm="12" md="12" lg="2">
-                                      <p className="fw-bold content-description">${worker?.amount || 0}</p>
+                                      <p className="content-description text-end me-3">${worker?.amount || 0}</p>
                                     </Col>
                                   </Row>
                                 ))}

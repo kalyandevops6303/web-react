@@ -111,6 +111,10 @@ const BidDetailsWrap = styled.div`
     }
     .key {
     }
+
+    .symbol {
+      color: ${theme.infoIcon};
+    }
   }
 
   // milestone
