@@ -32,9 +32,8 @@ const Milestone = () => {
     }
   }, [projectDetailsData?._id]);
 
-  if (loading) {
-    return <ComponentSpinner />;
-  }
+  if (loading && typeof selectedMilestoneIndex !== 'number') return <ComponentSpinner />;
+
   return (
     <div>
       {typeof selectedMilestoneIndex === 'number' ? (

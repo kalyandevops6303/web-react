@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-confusing-arrow */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge, Button, Card, CardText, Col, Input, Label, Row, Spinner } from 'reactstrap';
 import Avatar from '@components/avatar';
 import Proptypes from 'prop-types';
@@ -14,7 +14,12 @@ import RaiseDisputeModal from '../../disputes/overview/RaiseDisputeModal';
 import { formatDate, isFileValid, renderFilePreview, renderFileSize } from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
-import { milestoneFileUploadService, submitMilestoneService } from '../../../services/projectMilestoneService';
+import {
+  milestoneFileUploadService,
+  rejectMilestoneService,
+  saveMilestoneService,
+  submitMilestoneService,
+} from '../../../services/projectMilestoneService';
 import { transferFundService } from '../../../services/paymentDetailService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -24,13 +29,24 @@ import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import { CustomBadge } from '../../styled';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
+import SubmitMilestoneModal from '../../modals/SubmitMilestoneModal';
+import ChangeRequestMilestoneModal from '../../modals/ChangeRequestMilestoneModal';
+import AcceptMilestoneModal from '../../modals/AcceptMilestone';
 
 const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
+  const [saveModal, setSaveModal] = useState(false);
+  const [submitModal, setSubmitModal] = useState(false);
+  const [rejectModal, setRejectModal] = useState(false);
+  const [acceptModal, setAcceptModal] = useState(false);
+
   const [links, setLinks] = useState(selectedMilestone.links);
   const [isLoading, setIsLoading] = useState(false);
-  const [teamButtonText, setTeamButtonText] = useState('Submit');
-  const [clientButtonText, setClientButtonText] = useState('Accept');
+  const [submitBtnText, setSubmitBtnText] = useState('Milestone complete');
+  const [acceptBtnText, setAcceptBtnText] = useState('Accept');
+  const [saveBtnText, setSaveBtnText] = useState('Submit');
+  const [rejectBtnText, setRejectBtnText] = useState('Request change');
+
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [documents, setDocuments] = useState(selectedMilestone.documents);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -38,24 +54,61 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const userDataLocal = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
 
-  const submitMilestone = async () => {
+  useEffect(() => {
+    setSaveBtnText('Submit');
+  }, [documents]);
+
+  // Submit
+  const saveMilestone = async () => {
     setIsLoading(true);
     try {
-      setTeamButtonText('Submitting...');
-      await submitMilestoneService(selectedMilestone._id, {
+      setSaveBtnText('Loading...');
+      await saveMilestoneService(selectedMilestone._id, {
         links,
         documents: documents.map((file) => ({
-          file_key: file.uploadData.file_key,
-          file_name: file.file.name,
+          file_key: file.file_key || file.uploadData.file_key,
+          file_name: file.file_name || file.file.name,
         })),
       });
       await fetchProjectMilestones();
-      setTeamButtonText('Submitted');
+      setSaveBtnText('Submitted');
     } catch (error) {
       errorHandler(error);
-      setTeamButtonText('Submit');
+      setSaveBtnText('Submit');
     }
     setIsLoading(false);
+    setSaveModal(false);
+  };
+
+  // Final Milestone complete
+  const finalSubmitMilestone = async () => {
+    setIsLoading(true);
+    try {
+      setSubmitBtnText('Loading...');
+      await submitMilestoneService(selectedMilestone._id);
+      await fetchProjectMilestones();
+      setSubmitBtnText('Milestone completed');
+    } catch (error) {
+      errorHandler(error);
+      setSubmitBtnText('Milestone complete');
+    }
+    setIsLoading(false);
+    setSubmitModal(false);
+  };
+
+  const rejectMilestone = async () => {
+    setIsLoading(true);
+    try {
+      setRejectBtnText('Loading...');
+      await rejectMilestoneService(selectedMilestone._id);
+      await fetchProjectMilestones();
+      setRejectBtnText('Requested change');
+    } catch (error) {
+      errorHandler(error);
+      setRejectBtnText('Request change');
+    }
+    setIsLoading(false);
+    setRejectModal(false);
   };
 
   const acceptMilestone = async () => {
@@ -66,15 +119,16 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     };
 
     try {
-      setClientButtonText('Accepting...');
+      setAcceptBtnText('Loading...');
       await transferFundService(payload);
       await fetchProjectMilestones();
-      setClientButtonText('Accepted');
+      setAcceptBtnText('Accepted');
     } catch (error) {
       errorHandler(error);
-      setClientButtonText('Accept');
+      setAcceptBtnText('Accept');
     }
     setIsLoading(false);
+    setAcceptModal(false);
   };
 
   const handleUploadFile = async (file) => {
@@ -128,10 +182,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     onDrop,
   });
 
-  const isEditable =
-    userDataLocal.user_type !== userTypes.client &&
-    selectedMilestone.status === 'ON_GOING' &&
-    teamButtonText !== 'Submitted';
+  const isEditable = userDataLocal.user_type !== userTypes.client && selectedMilestone.status === 'ON_GOING';
 
   const formattedDate = new Date()
     .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -190,6 +241,40 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           toggleModal={() => setRaiseDisputeModal(!raiseDisputeModal)}
           primaryFilter="all"
           projectDetail={{ label: projectDetailsData?.details?.name, value: projectDetailsData?._id }}
+        />
+      )}
+      {saveModal && (
+        <SubmitMilestoneModal
+          modal={saveModal}
+          toggleModal={() => setSaveModal(!saveModal)}
+          isFinalSubmit={false}
+          isLoading={isLoading}
+          onAccept={saveMilestone}
+        />
+      )}
+      {submitModal && (
+        <SubmitMilestoneModal
+          modal={submitModal}
+          toggleModal={() => setSubmitModal(!submitModal)}
+          isFinalSubmit
+          isLoading={isLoading}
+          onAccept={finalSubmitMilestone}
+        />
+      )}
+      {rejectModal && (
+        <ChangeRequestMilestoneModal
+          modal={rejectModal}
+          toggleModal={() => setRejectModal(!rejectModal)}
+          isLoading={isLoading}
+          onAccept={rejectMilestone}
+        />
+      )}
+      {acceptModal && (
+        <AcceptMilestoneModal
+          modal={acceptModal}
+          toggleModal={() => setAcceptModal(!acceptModal)}
+          isLoading={isLoading}
+          onAccept={acceptMilestone}
         />
       )}
       <Card className="gray-card">
@@ -252,26 +337,28 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
         <hr className="my-2" />
         <div className="white-card w-100">
           <CardText className="fw-bolder fs-4 mb-1">Milestone Deliverables</CardText>
-          <Row
-            style={{ fontFamily: 'Montserrat' }}
-            className="d-flex mb-1 mx-0 px-1 fw-bolder align-items-center justify-content-between py-8 mt-2"
-          >
-            <Col sm="6" md="4" lg="3">
-              FILE NAME
-            </Col>
-            <Col sm="2" md="2" lg="2">
-              STATUS
-            </Col>
-            <Col sm="2" md="2" lg="2">
-              SIZE
-            </Col>
-            <Col sm="2" md="2" lg="3">
-              UPLOADED ON
-            </Col>
-            <Col sm="1" md="1" className="pe-0" lg="1">
-              ACTION
-            </Col>
-          </Row>
+          {documents.length > 0 && (
+            <Row
+              style={{ fontFamily: 'Montserrat' }}
+              className="d-flex mb-1 mx-0 px-1 fw-bolder align-items-center justify-content-between py-8 mt-2"
+            >
+              <Col sm="6" md="4" lg="3">
+                FILE NAME
+              </Col>
+              <Col sm="2" md="2" lg="2">
+                STATUS
+              </Col>
+              <Col sm="2" md="2" lg="2">
+                SIZE
+              </Col>
+              <Col sm="2" md="2" lg="3">
+                UPLOADED ON
+              </Col>
+              <Col sm="1" md="1" className="pe-0" lg="1">
+                ACTION
+              </Col>
+            </Row>
+          )}
           {documents.map((file) =>
             isEditable ? (
               <Row
@@ -280,13 +367,13 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
               >
                 <Col sm="6" md="4" lg="3">
                   {renderFilePreview(file.file)}
-                  {file.file.name}
+                  {file?.file?.name ?? file.file_name}
                 </Col>
                 <Col sm="6" md="2" lg="2">
                   {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
                 </Col>
                 <Col sm="2" md="2" lg="2">
-                  {renderFileSize(file.file.size)}
+                  {renderFileSize(file?.size ?? file.file.size)}
                 </Col>
                 <Col sm="2" md="2" lg="3">
                   {requiredFormattedDate}
@@ -298,8 +385,12 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                     disabled={uploadingFiles.includes(file)}
                     onClick={() => {
                       const uploadedDocuments = documents;
-                      const filtered = uploadedDocuments.filter((i) => i.id !== file.id);
-                      setDocuments([...filtered]);
+                      const filteredData = uploadedDocuments.filter(
+                        (item) =>
+                          item.file_key !== file.file_key &&
+                          (!item.uploadData || item.uploadData.file_key !== file.uploadData.file_key),
+                      );
+                      setDocuments([...filteredData]);
                     }}
                   >
                     Remove
@@ -406,8 +497,66 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
             </div>
           ) : null}
         </div>
-      </Card>
-      <Card style={{ padding: '2rem' }} className="gray-card">
+        <div className="w-100 mt-2 mb-2 d-flex justify-content-end">
+          <div>
+            <Button className="me-2 raise-dispute-btn" onClick={() => setRaiseDisputeModal(true)}>
+              Raise Dispute
+            </Button>
+            {userDataLocal.user_type === userTypes.client && selectedMilestone.status === 'IN_REVIEW' ? (
+              <>
+                <Button
+                  onClick={() => setAcceptModal(true)}
+                  disabled={isLoading || acceptBtnText !== 'Accept'}
+                  color="primary"
+                  className="me-2"
+                >
+                  {/* {isLoading ? <Spinner className="me-1" size="sm" /> : null} */}
+                  {acceptBtnText}
+                </Button>
+                <Button
+                  onClick={() => setRejectModal(true)}
+                  disabled={isLoading || rejectBtnText !== 'Request change'}
+                  color="primary"
+                >
+                  {/* {isLoading ? <Spinner className="me-1" size="sm" /> : null} */}
+                  {rejectBtnText}
+                </Button>
+              </>
+            ) : isEditable ? (
+              <Button
+                onClick={() => setSaveModal(true)}
+                disabled={
+                  uploadingFiles.length > 0 ||
+                  isLoading ||
+                  [...documents, ...links].length === 0 ||
+                  saveBtnText !== 'Submit' ||
+                  !isPaymentDone(selectedMilestone)
+                }
+                color="primary"
+              >
+                {/* {isLoading ? <Spinner className="me-1" size="sm" /> : null} */}
+                {saveBtnText}
+              </Button>
+            ) : null}
+          </div>
+          <div className="ms-2 d-flex justify-content-end">
+            {userDataLocal.user_type !== userTypes.client && isEditable && (
+              <Button
+                onClick={() => setSubmitModal(true)}
+                disabled={
+                  uploadingFiles.length > 0 ||
+                  isLoading ||
+                  submitBtnText !== 'Milestone complete' ||
+                  [...documents, ...links].length === 0 ||
+                  !isPaymentDone(selectedMilestone)
+                }
+                color="primary"
+              >
+                {submitBtnText}
+              </Button>
+            )}
+          </div>
+        </div>
         <div style={{ padding: '2rem' }} className="w-100 white-card medium-shadow">
           <div className="pb-0">
             <CardText className="fs-4 mb-0 fw-bold">Team Member(s)</CardText>
@@ -426,7 +575,60 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
               <p className="content-header mb-25">Amount</p>
             </Col>
           </Row>
-          {selectedMilestone?.workers?.length > 0 && (
+          <div className="w-100">
+            {selectedMilestone?.workers?.map((worker) => (
+              <Row className="mt-1 w-100" key={worker?.role}>
+                <Col sm="12" md="12" lg="4">
+                  <div className="d-flex align-items-center">
+                    <Avatar
+                      img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
+                      imgHeight="32"
+                      imgWidth="32"
+                      className="me-50"
+                    />
+                    {worker?.user_id ? (
+                      <p className="fw-bolder content-description m-0 ms-50">
+                        {worker?.first_name} {worker?.last_name}
+                      </p>
+                    ) : (
+                      <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
+                    )}
+                  </div>
+                </Col>
+                <Col sm="12" md="12" lg="3">
+                  <p className="fw-bold content-description">{worker?.role}</p>
+                </Col>
+                <Col sm="12" md="12" lg="2">
+                  <p className="fw-bold content-description">{worker?.number_of_weeks} week</p>
+                </Col>
+                <Col sm="12" md="12" lg="2">
+                  <p className="fw-bold content-description">${worker?.amount || 0}</p>
+                </Col>
+              </Row>
+            ))}
+          </div>
+        </div>
+      </Card>
+      {/* {
+        <Card style={{ padding: '2rem' }} className="gray-card">
+          <div style={{ padding: '2rem' }} className="w-100 white-card medium-shadow">
+            <div className="pb-0">
+              <CardText className="fs-4 mb-0 fw-bold">Team Member(s)</CardText>
+            </div>
+            <Row className="mt-2 w-100">
+              <Col sm="12" md="12" lg="4">
+                <p className="content-header mb-25">Team Member</p>
+              </Col>
+              <Col sm="12" md="12" lg="3">
+                <p className="content-header mb-25">Designation</p>
+              </Col>
+              <Col sm="12" md="12" lg="2">
+                <p className="content-header mb-25">Duration</p>
+              </Col>
+              <Col sm="12" md="12" lg="2">
+                <p className="content-header mb-25">Amount</p>
+              </Col>
+            </Row>
             <div className="w-100">
               {selectedMilestone?.workers?.map((worker) => (
                 <Row className="mt-1 w-100" key={worker?.role}>
@@ -459,30 +661,26 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                 </Row>
               ))}
             </div>
-          )}
-        </div>
-      </Card>
-
-      <div className="d-flex justify-content-end">
-        <Button className="me-2 raise-dispute-btn" onClick={() => setRaiseDisputeModal(true)}>
-          Raise Dispute
-        </Button>
-        {userDataLocal.user_type === userTypes.client && selectedMilestone.status === 'IN_REVIEW' ? (
-          <Button onClick={() => acceptMilestone()} disabled={clientButtonText !== 'Accept'} color="primary">
-            {isLoading ? <Spinner className="me-1" size="sm" /> : null}
-            {clientButtonText}
-          </Button>
-        ) : isEditable ? (
+          </div>
+        </Card>
+      } */}
+      {/* <div className="d-flex justify-content-end">
+        {userDataLocal.user_type !== userTypes.client && isEditable && (
           <Button
-            onClick={() => submitMilestone()}
-            disabled={teamButtonText !== 'Submit' || !isPaymentDone(selectedMilestone)}
+            onClick={() => setSubmitModal(true)}
+            disabled={
+              uploadingFiles.length > 0 ||
+              isLoading ||
+              submitBtnText !== 'Milestone complete' ||
+              [...documents, ...links].length === 0 ||
+              !isPaymentDone(selectedMilestone)
+            }
             color="primary"
           >
-            {isLoading ? <Spinner className="me-1" size="sm" /> : null}
-            {teamButtonText}
+            {submitBtnText}
           </Button>
-        ) : null}
-      </div>
+        )}
+      </div> */}
     </div>
   );
 };
