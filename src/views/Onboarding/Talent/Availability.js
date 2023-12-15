@@ -114,6 +114,7 @@ const Availability = () => {
     hourlyRate: yup
       .number()
       .min(1, 'Hourly rate should be atleast 1')
+      .max(999, 'Hourly rate must be 999 or less')
       .integer('Hourly rate must be an integer')
       .typeError('Hourly rate must be a number')
       .required('Hourly rate is required'),
