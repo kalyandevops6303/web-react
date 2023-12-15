@@ -2,6 +2,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-confusing-arrow */
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { Badge, Button, Card, CardText, Col, Input, Label, Row, Spinner } from 'reactstrap';
 import Avatar from '@components/avatar';
 import Proptypes from 'prop-types';
@@ -233,6 +234,29 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     }
   };
 
+  const TruncateString = styled.span`
+    max-width: 9rem;
+    display: inline-block;
+    display: block;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    .truncate-1 {
+      max-width: 2rem;
+      display: inline-block;
+      display: block;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  `;
+
+  const isClient = userDataLocal.user_type === userTypes.client;
+
   return (
     <div>
       {raiseDisputeModal && (
@@ -337,48 +361,53 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
         <hr className="my-2" />
         <div className="white-card w-100">
           <CardText className="fw-bolder fs-4 mb-1">Milestone Deliverables</CardText>
+
           {documents.length > 0 && (
             <Row
               style={{ fontFamily: 'Montserrat' }}
               className="d-flex mb-1 mx-0 px-1 fw-bolder align-items-center justify-content-between py-8 mt-2"
             >
-              <Col sm="6" md="4" lg="3">
+              <Col sm="6" md="4" style={{ width: isClient ? '32%' : '25%' }}>
                 FILE NAME
               </Col>
-              <Col sm="2" md="2" lg="2">
-                STATUS
-              </Col>
-              <Col sm="2" md="2" lg="2">
+              {userDataLocal.user_type !== userTypes.client && (
+                <Col sm="2" md="2" style={{ width: isClient ? '15%' : '15%' }}>
+                  STATUS
+                </Col>
+              )}
+              <Col sm="2" md="2" style={{ width: isClient ? '24%' : '15%' }}>
                 SIZE
               </Col>
-              <Col sm="2" md="2" lg="3">
+              <Col sm="2" md="2" style={{ width: isClient ? '30%' : '25%' }}>
                 UPLOADED ON
               </Col>
-              <Col sm="1" md="1" className="pe-0" lg="1">
+              <Col sm="1" md="1" className="pe-0" style={{ width: isClient ? '10%' : '15%' }}>
                 ACTION
               </Col>
             </Row>
           )}
-          {documents.map((file) =>
+          {documents.map((file, index) =>
             isEditable ? (
               <Row
                 key={file.id}
                 className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
               >
-                <Col sm="6" md="4" lg="3">
+                <Col className="d-flex" sm="6" md="4" lg="3">
                   {renderFilePreview(file.file)}
-                  {file?.file?.name ?? file.file_name}
+                  <TruncateString id={`name-edit-${index}`}>{file?.file?.name ?? file.file_name}</TruncateString>
                 </Col>
-                <Col sm="6" md="2" lg="2">
-                  {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
-                </Col>
+                {userDataLocal.user_type !== userTypes.client && (
+                  <Col sm="2" md="2" lg="2">
+                    {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
+                  </Col>
+                )}
                 <Col sm="2" md="2" lg="2">
                   {renderFileSize(file?.size ?? file.file.size)}
                 </Col>
                 <Col sm="2" md="2" lg="3">
                   {requiredFormattedDate}
                 </Col>
-                <Col sm="2" md="2" className="pe-0" lg="2">
+                <Col sm="1" md="1" className="pe-0" lg="2">
                   <Button
                     color="flat-danger"
                     className="btn-left-margin"
@@ -402,13 +431,15 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                 key={file.id}
                 className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
               >
-                <Col sm="6" md="4" lg="3">
+                <Col className="d-flex" sm="6" md="4" lg="3">
                   {renderFilePreview(file.file)}
-                  {file?.file?.name ?? file.file_name}
+                  <TruncateString id={`name-${index}`}>{file?.file?.name ?? file.file_name}</TruncateString>
                 </Col>
-                <Col sm="6" md="2" lg="2">
-                  {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
-                </Col>
+                {userDataLocal.user_type !== userTypes.client && (
+                  <Col sm="6" md="2" lg="2">
+                    {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
+                  </Col>
+                )}
                 <Col sm="2" md="2" lg="2">
                   {file?.size ? renderFileSize(file?.size) : null}
                 </Col>
@@ -510,7 +541,6 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                   color="primary"
                   className="me-2"
                 >
-                  {/* {isLoading ? <Spinner className="me-1" size="sm" /> : null} */}
                   {acceptBtnText}
                 </Button>
                 <Button
@@ -518,7 +548,6 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                   disabled={isLoading || rejectBtnText !== 'Request change'}
                   color="primary"
                 >
-                  {/* {isLoading ? <Spinner className="me-1" size="sm" /> : null} */}
                   {rejectBtnText}
                 </Button>
               </>
@@ -534,7 +563,6 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                 }
                 color="primary"
               >
-                {/* {isLoading ? <Spinner className="me-1" size="sm" /> : null} */}
                 {saveBtnText}
               </Button>
             ) : null}
@@ -563,16 +591,16 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           </div>
           <Row className="mt-2 w-100">
             <Col sm="12" md="12" lg="4">
-              <p className="content-header mb-25">Team Member</p>
+              <p className="content-header fw-bold mb-25">Team Member</p>
             </Col>
             <Col sm="12" md="12" lg="3">
-              <p className="content-header mb-25">Designation</p>
+              <p className="content-header fw-bold mb-25">Designation</p>
             </Col>
             <Col sm="12" md="12" lg="2">
-              <p className="content-header mb-25">Duration</p>
+              <p className="content-header fw-bold mb-25">Duration</p>
             </Col>
             <Col sm="12" md="12" lg="2">
-              <p className="content-header mb-25">Amount</p>
+              <p className="content-header fw-bold mb-25">Amount</p>
             </Col>
           </Row>
           <div className="w-100">
@@ -609,78 +637,6 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           </div>
         </div>
       </Card>
-      {/* {
-        <Card style={{ padding: '2rem' }} className="gray-card">
-          <div style={{ padding: '2rem' }} className="w-100 white-card medium-shadow">
-            <div className="pb-0">
-              <CardText className="fs-4 mb-0 fw-bold">Team Member(s)</CardText>
-            </div>
-            <Row className="mt-2 w-100">
-              <Col sm="12" md="12" lg="4">
-                <p className="content-header mb-25">Team Member</p>
-              </Col>
-              <Col sm="12" md="12" lg="3">
-                <p className="content-header mb-25">Designation</p>
-              </Col>
-              <Col sm="12" md="12" lg="2">
-                <p className="content-header mb-25">Duration</p>
-              </Col>
-              <Col sm="12" md="12" lg="2">
-                <p className="content-header mb-25">Amount</p>
-              </Col>
-            </Row>
-            <div className="w-100">
-              {selectedMilestone?.workers?.map((worker) => (
-                <Row className="mt-1 w-100" key={worker?.role}>
-                  <Col sm="12" md="12" lg="4">
-                    <div className="d-flex align-items-center">
-                      <Avatar
-                        img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
-                        imgHeight="32"
-                        imgWidth="32"
-                        className="me-50"
-                      />
-                      {worker?.user_id ? (
-                        <p className="fw-bolder content-description m-0 ms-50">
-                          {worker?.first_name} {worker?.last_name}
-                        </p>
-                      ) : (
-                        <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
-                      )}
-                    </div>
-                  </Col>
-                  <Col sm="12" md="12" lg="3">
-                    <p className="fw-bold content-description">{worker?.role}</p>
-                  </Col>
-                  <Col sm="12" md="12" lg="2">
-                    <p className="fw-bold content-description">{worker?.number_of_weeks} week</p>
-                  </Col>
-                  <Col sm="12" md="12" lg="2">
-                    <p className="fw-bold content-description">${worker?.amount || 0}</p>
-                  </Col>
-                </Row>
-              ))}
-            </div>
-          </div>
-        </Card>
-      } */}
-      {/* <div className="d-flex justify-content-end">
-        {userDataLocal.user_type !== userTypes.client && isEditable && (
-          <Button
-            onClick={() => setSubmitModal(true)}
-            disabled={
-              uploadingFiles.length > 0 ||
-              isLoading ||
-              submitBtnText !== 'Milestone complete' ||
-              [...documents, ...links].length === 0 ||
-              !isPaymentDone(selectedMilestone)
-            }
-            color="primary"
-          >
-            {submitBtnText}
-          </Button>
-        )}
-      </div> */}
     </div>
   );
 };
