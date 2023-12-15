@@ -99,6 +99,20 @@ const Preview = () => {
     setTimeout(() => window.scrollTo(0, 0), 30);
   }, []);
 
+  const filterUniqueWorkers = (arr) => {
+    const uniqueUserIds = [];
+    const filteredArray = [];
+
+    arr.forEach((obj) => {
+      if (!uniqueUserIds.includes(obj.user_id)) {
+        uniqueUserIds.push(obj.user_id);
+        filteredArray.push(obj);
+      }
+    });
+
+    return filteredArray;
+  };
+
   return (
     <PreviewSectionWrapper>
       {bidSubmittedModal && <BidSubmittedModal modal={bidSubmittedModal} toggleModal={toggleBidSubmittedModal} />}
@@ -177,13 +191,16 @@ const Preview = () => {
                             </Col>
                             <Col sm="12" md="12" lg="2" className="ps-2">
                               <p className="fw-light m-0 font-small-4 ps-50">
-                                {milestone?.workers?.filter((worker) => worker.user_id)?.length > 3 ? (
+                                {filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.length >
+                                3 ? (
                                   <AvatarGroup
-                                    totalCount={milestone?.workers?.filter((worker) => worker.user_id)?.length || 0}
+                                    totalCount={
+                                      filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
+                                        ?.length || 0
+                                    }
                                     size="sm"
                                     className="ms-25 mb-50"
-                                    data={milestone?.workers
-                                      ?.filter((worker) => worker.user_id)
+                                    data={filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
                                       ?.map((worker) => ({
                                         user_id: worker?.user_id,
                                         user_type: userTypes.talent,
@@ -205,23 +222,23 @@ const Preview = () => {
                                   <AvatarGroup
                                     size="sm"
                                     className="ms-25 mb-50"
-                                    data={milestone?.workers
-                                      ?.filter((worker) => worker.user_id)
-                                      ?.map((worker) => ({
-                                        user_id: worker?.user_id,
-                                        user_type: userTypes.talent,
-                                        title: `${worker?.first_name} ${worker?.last_name}` || 'user',
-                                        img: worker?.image_uri || defaultAvatar,
-                                        placement: 'bottom',
-                                        imgHeight: 21,
-                                        imgWidth: 21,
-                                        tooltipId: `${worker?.first_name?.replace(
-                                          /\s+/g,
-                                          '-',
-                                        )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
-                                          (Math.random() * 30).toFixed(0),
-                                        )}`,
-                                      }))}
+                                    data={filterUniqueWorkers(
+                                      milestone?.workers?.filter((worker) => worker.user_id),
+                                    )?.map((worker) => ({
+                                      user_id: worker?.user_id,
+                                      user_type: userTypes.talent,
+                                      title: `${worker?.first_name} ${worker?.last_name}` || 'user',
+                                      img: worker?.image_uri || defaultAvatar,
+                                      placement: 'bottom',
+                                      imgHeight: 21,
+                                      imgWidth: 21,
+                                      tooltipId: `${worker?.first_name?.replace(
+                                        /\s+/g,
+                                        '-',
+                                      )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
+                                        (Math.random() * 30).toFixed(0),
+                                      )}`,
+                                    }))}
                                   />
                                 )}
                               </p>
