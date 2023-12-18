@@ -162,7 +162,12 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
 
         const promises = validFiles.map(async (file) => {
           const response = await milestoneFileUploadService(file.name);
-          return { id: uuidv4(), file, uploadData: response?.data?.data };
+          return {
+            id: uuidv4(),
+            file,
+            uploadData: response?.data?.data,
+            file_key: response?.data?.data?.file_key,
+          };
         });
 
         const filesWithUrls = await Promise.all(promises);
@@ -414,11 +419,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                     disabled={uploadingFiles.includes(file)}
                     onClick={() => {
                       const uploadedDocuments = documents;
-                      const filteredData = uploadedDocuments.filter(
-                        (item) =>
-                          item.file_key !== file.file_key &&
-                          (!item.uploadData || item.uploadData.file_key !== file.uploadData.file_key),
-                      );
+                      const filteredData = uploadedDocuments.filter((item) => item.file_key !== file.file_key);
                       setDocuments([...filteredData]);
                     }}
                   >
