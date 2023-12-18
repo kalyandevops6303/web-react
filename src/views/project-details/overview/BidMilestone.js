@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import {
+  Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
@@ -9,11 +10,14 @@ import {
   CardBody,
   CardText,
   CardTitle,
-  UncontrolledAccordion,
+  Col,
+  Row,
 } from 'reactstrap';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import Avatar from '@components/avatar';
 import { BidDetailsWrap } from '../style';
 import theme from '../../../configs/themeVariables';
 import { getBidMilestone } from '../../../redux/actions/projectDetailsAction';
@@ -33,6 +37,8 @@ import { switchProfile } from '../../../redux/actions/authActions';
 import ShowToastMessage from '../../../@core/components/toast';
 import { SUCCESS } from '../../../utility/constants/ToastTypes';
 import { clearInitedByData } from '../../../redux/reducers/projectDetails';
+import { AccordionBodyContent } from '../../create-bid/style';
+import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 
 const BidMilestoneWrap = styled.div`
   .value {
@@ -92,6 +98,7 @@ const AccordionHeadStyle = styled.div`
 const BidMilestone = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const [openedAccordion, setOpenedAccordion] = useState(null);
 
   const dispatch = useDispatch();
   const bidData = useSelector((state) => state.projectDetails.bidMilestone);
@@ -297,9 +304,14 @@ const BidMilestone = () => {
           </CardBody>
         </Card>
         {bidData?.milestones?.map((milestone, index) => (
-          <UncontrolledAccordion key={milestone?._id} className="accordion-timeline mb-2" defaultOpen="1">
+          <Accordion
+            onClick={() => setOpenedAccordion(index + 1)}
+            key={milestone?._id}
+            className="accordion-timeline mb-2"
+            open={openedAccordion}
+          >
             <AccordionItem style={{ paddingLeft: '0.5rem' }}>
-              <AccordionHeader targetId="1">
+              <AccordionHeader targetId={index + 1}>
                 <AccordionHeadStyle>
                   <span className="title-head">Milestone #{index + 1}</span>
 
@@ -325,12 +337,79 @@ const BidMilestone = () => {
                   </div>
                 </AccordionHeadStyle>
               </AccordionHeader>
-              <AccordionBody accordionId="1" className="accordion-status-body milestone-content">
-                <CardTitle>{milestone?.name}</CardTitle>
-                <CardText>{milestone?.description}</CardText>
+              <AccordionBody accordionId={index + 1} className="accordion-status-body milestone-content">
+                <AccordionBodyContent>
+                  {milestone?.description?.length > 0 && (
+                    <>
+                      <p className="content-header mb-25">Description</p>
+                      <p className="m-0 content-description">
+                        <ShowMoreLess content={milestone?.description} maxLength={200} />
+                      </p>
+                    </>
+                  )}
+                  {milestone?.deliverables?.length > 0 && (
+                    <>
+                      <p className="content-header mb-25">Deliverables</p>
+                      <p className="m-0 content-description">
+                        {milestone?.deliverables?.map((deliverable, deliverableIndex) =>
+                          (deliverableIndex + 1 === milestone?.deliverables?.length
+                            ? `${deliverable}`
+                            : `${deliverable}, `),
+                        )}
+                      </p>
+                    </>
+                  )}
+                  <Row className="mt-2">
+                    <Col sm="12" md="12" lg="4">
+                      <p className="content-header mb-25">Team Member</p>
+                    </Col>
+                    <Col sm="12" md="12" lg="3">
+                      <p className="content-header mb-25">Designation</p>
+                    </Col>
+                    <Col sm="12" md="12" lg="2">
+                      <p className="content-header mb-25">Duration</p>
+                    </Col>
+                    <Col sm="12" md="12" lg="2">
+                      <p className="content-header mb-25 text-end me-3">Amount</p>
+                    </Col>
+                  </Row>
+                  {milestone?.workers?.length > 0 && (
+                    <div>
+                      {milestone?.workers?.map((worker) => (
+                        <Row className="mt-1" key={worker?.role}>
+                          <Col sm="12" md="12" lg="4">
+                            <div className="d-flex align-items-center">
+                              <Avatar
+                                img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
+                                imgHeight="32"
+                                imgWidth="32"
+                              />
+                              {worker?.user_id ? (
+                                <p className="fw-bolder content-description m-0 ms-50">
+                                  {worker?.first_name} {worker?.last_name}
+                                </p>
+                              ) : (
+                                <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
+                              )}
+                            </div>
+                          </Col>
+                          <Col sm="12" md="12" lg="3">
+                            <p className="font-small-3 fw-bold content-description">{worker?.role}</p>
+                          </Col>
+                          <Col sm="12" md="12" lg="2">
+                            <p className="font-small-3 fw-bold content-description">{worker?.number_of_weeks} week</p>
+                          </Col>
+                          <Col sm="12" md="12" lg="2">
+                            <p className="content-description text-end me-3">${worker?.amount || 0}</p>
+                          </Col>
+                        </Row>
+                      ))}
+                    </div>
+                  )}
+                </AccordionBodyContent>
               </AccordionBody>
             </AccordionItem>
-          </UncontrolledAccordion>
+          </Accordion>
         ))}
 
         <div className="ms-auto">
