@@ -5,7 +5,7 @@ import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
-import { CustomBadge } from '../styled';
+import { CustomBadge, Elevate } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import ProjectWithTeamUI from './ProjectWithTeamUI';
 import BaseInfoUI from './BaseInfoCardUI';
@@ -84,77 +84,79 @@ const ProjectCard = ({
   return (
     <ProjectCardWrap>
       <Card onClick={handleShowProject} className="cursor-pointer">
-        <CardBody>
-          <Row>
-            <Col lg="8">
-              <div className="d-flex mb-1 status-row">
-                <CustomBadge>
-                  <Badge className={`${data?.status} truncate-1`} color="badge">
-                    {statusEnum[data?.status]}
-                  </Badge>
-                </CustomBadge>
-              </div>
-              <CardTitle className="d-flex align-items-center">
-                <span className="cursor-pointer" onClick={handleRedirection}>
-                  {data?.name}{' '}
-                </span>
-              </CardTitle>
-              <div className="d-flex flex-wrap project-stats">
-                <CardText className="project">
-                  {data?.pay_type?.variable_cost ? (
-                    <>Variable Price&nbsp;</>
-                  ) : (
-                    <>
-                      Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
-                    </>
-                  )}
-                </CardText>
-                <CardText className=" project mb-1">{`Assigned Date: ${DateTime?.fromMillis(
-                  data?.invitation_to?.updated_at ?? data?.assigned_date,
-                ).toFormat('dd-MM-yy')}`}</CardText>
-                <CardText className="project d-flex align-items-center">
-                  <img src={Mpin} alt="Mpin" className="mpin" />
-                  {data?.client?.office_address?.country?.name || 'Location'}
-                </CardText>
-                <CardText className=" mb-1">
-                  {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
-                </CardText>
-              </div>
-
-              {!showFullText ? (
-                <div
-                  className="my-div"
-                  ref={divRef}
-                  style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
-                >
-                  {data?.details?.description}
+        <Elevate>
+          <CardBody>
+            <Row>
+              <Col lg="8">
+                <div className="d-flex mb-1 status-row">
+                  <CustomBadge>
+                    <Badge className={`${data?.status} truncate-1`} color="badge">
+                      {statusEnum[data?.status]}
+                    </Badge>
+                  </CustomBadge>
                 </div>
-              ) : (
-                <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
-                  {data?.details?.description}
+                <CardTitle className="d-flex align-items-center">
+                  <span className="cursor-pointer" onClick={handleRedirection}>
+                    {data?.name}
+                  </span>
+                </CardTitle>
+                <div className="d-flex flex-wrap project-stats">
+                  <CardText className="project">
+                    {data?.pay_type?.variable_cost ? (
+                      <>Variable Price&nbsp;</>
+                    ) : (
+                      <>
+                        Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
+                      </>
+                    )}
+                  </CardText>
+                  <CardText className=" project mb-1">{`Assigned Date: ${DateTime?.fromMillis(
+                    data?.invitation_to?.updated_at ?? data?.assigned_date,
+                  ).toFormat('dd-MM-yy')}`}</CardText>
+                  <CardText className="project d-flex align-items-center">
+                    <img src={Mpin} alt="Mpin" className="mpin" />
+                    {data?.client?.office_address?.country?.name || 'Location'}
+                  </CardText>
+                  <CardText className=" mb-1">
+                    {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
+                  </CardText>
                 </div>
-              )}
 
-              {isContentOverflowing && (
-                <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
-                  {showFullText ? 'Show less' : 'Show more'}
-                </CardText>
-              )}
-            </Col>
-            <Col lg="4">
-              {isProjectWithTeam && primaryFilter !== 'terminated' ? (
-                <ProjectWithTeamUI
-                  secondaryFilterForInvitedType={secondaryFilterForInvitedType}
-                  primaryFilter={primaryFilter}
-                  data={data}
-                />
-              ) : (
-                <BaseInfoUI data={data} />
-              )}
-              {!isTeam && !isProjectWithTeam && <BaseInfoUI data={data} />}
-            </Col>
-          </Row>
-        </CardBody>
+                {!showFullText ? (
+                  <div
+                    className="my-div"
+                    ref={divRef}
+                    style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
+                  >
+                    {data?.details?.description}
+                  </div>
+                ) : (
+                  <div className="my-div" ref={divRef} style={{ whiteSpace: 'pre-line' }}>
+                    {data?.details?.description}
+                  </div>
+                )}
+
+                {isContentOverflowing && (
+                  <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
+                    {showFullText ? 'Show less' : 'Show more'}
+                  </CardText>
+                )}
+              </Col>
+              <Col lg="4">
+                {isProjectWithTeam && primaryFilter !== 'terminated' ? (
+                  <ProjectWithTeamUI
+                    secondaryFilterForInvitedType={secondaryFilterForInvitedType}
+                    primaryFilter={primaryFilter}
+                    data={data}
+                  />
+                ) : (
+                  <BaseInfoUI data={data} />
+                )}
+                {!isTeam && !isProjectWithTeam && <BaseInfoUI data={data} />}
+              </Col>
+            </Row>
+          </CardBody>
+        </Elevate>
       </Card>
       {showModal && (
         <ProjectModal

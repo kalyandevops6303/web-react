@@ -9,7 +9,9 @@ const CardWrap = styled.div`
 `;
 
 const ProjectCardWrap = styled(CardWrap)`
-  width: 100%;
+  margin: auto;
+  margin-top: 1rem;
+  width: 98%;
   .card-body {
     padding: 2.1rem 2.6rem 1.4rem 2.6rem;
   }
@@ -121,7 +123,9 @@ const ProjectCardWrap = styled(CardWrap)`
 `;
 
 const TeamCardWrap = styled(CardWrap)`
-  width: 100%;
+  width: 98%;
+  margin: auto;
+  margin-top: 1rem;
   .card-title {
     font-size: 22px;
     color: ${theme.activeNavPillText};
