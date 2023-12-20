@@ -36,6 +36,9 @@ import { getJoinRequest, getRecommendedProjects, getRecommendedTalent } from '..
 import theme from '../../../configs/themeVariables';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
+import Tag from '../../../@core/components/tags';
+import { AccordionName } from './DashboardConstant';
+import ViewAllCard from './ViewAllCard';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
@@ -157,13 +160,16 @@ const TalentListing = () => {
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
   useEffect(() => {
-    if (open === '1') {
-      dispatch(getJoinRequest(userDetailsData?._id));
-    }
-    if (open === '2') {
-      dispatch(getRecommendedTalent(userDetailsData?._id));
-    }
-  }, [open]);
+    // if (open === '1') {
+    //   dispatch(getJoinRequest(userDetailsData?._id));
+    // }
+    // if (open === '2') {
+    //   dispatch(getRecommendedTalent(userDetailsData?._id));
+    // }
+
+    dispatch(getJoinRequest(userDetailsData?._id));
+    dispatch(getRecommendedTalent(userDetailsData?._id));
+  }, []);
 
   const settings = {
     dots: false,
@@ -198,7 +204,9 @@ const TalentListing = () => {
       <AccordionItem>
         <AccordionHeader targetId="1">
           <AccordionHeadStyle>
-            <span className="d-flex align-items-center">Join Requests</span>
+            <span className="d-flex align-items-center">
+              Join Requests <Tag>{joinRequests?.metadata?.total_records}</Tag>
+            </span>
             {joinRequests?.data?.length > 0 && (
               <CardText
                 onClick={() => {
@@ -231,6 +239,17 @@ const TalentListing = () => {
                 <>
                   {joinRequests?.data?.length >= 4 ? (
                     <Slider {...settings}>
+                      <ViewAllCard
+                        accordionName={AccordionName.joinRequest}
+                        height="218px"
+                        onViewAll={() => {
+                          if (!isDisabled) {
+                            navigate('/my-teams/join_requests');
+                            dispatch(setActiveNavTab('my-teams'));
+                          }
+                        }}
+                        viewAll="View All"
+                      />
                       {joinRequests?.data?.map((project, index) => (
                         <TalentsListingForTeamUser
                           className={`slide-${index}`}
@@ -273,7 +292,8 @@ const TalentListing = () => {
         <AccordionHeader targetId="2">
           <AccordionHeadStyle>
             <span className="d-flex align-items-center">
-              {userDetailsData?.team_type === userTypes.club ? 'Recommended Members' : 'Recommended Talents'}
+              {userDetailsData?.team_type === userTypes.club ? 'Recommended Members' : 'Recommended Talents'}{' '}
+              <Tag>{recommendedTalent?.metadata?.total_records}</Tag>
             </span>
             {recommendedTalent?.data?.length > 0 && (
               <CardText
@@ -306,6 +326,20 @@ const TalentListing = () => {
                 <>
                   {recommendedTalent?.data?.length >= 4 ? (
                     <Slider {...settings}>
+                      <ViewAllCard
+                        accordionName={
+                          userDetailsData?.team_type === userTypes.club
+                            ? AccordionName.recommendedMembers
+                            : AccordionName.recommendedTalents
+                        }
+                        height="208px"
+                        onViewAll={() => {
+                          if (!isDisabled) {
+                            handleViewAll();
+                          }
+                        }}
+                        viewAll="View All"
+                      />
                       {recommendedTalent?.data?.map((project, index) => (
                         <TeamTalentCard className={`slide-${index}`} key={project.id} data={project} recommended />
                       ))}

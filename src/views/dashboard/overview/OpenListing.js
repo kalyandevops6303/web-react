@@ -13,6 +13,7 @@ import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
 import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
 import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
+import Tag from '../../../@core/components/tags';
 
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
@@ -137,13 +138,17 @@ const OpenListing = () => {
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
   useEffect(() => {
-    if (open === '1') {
-      dispatch(getProjectsBidsForClient());
-    }
-    if (open === '2') {
-      dispatch(getRecommendedTeamsForClient());
-    }
-  }, [open]);
+    // if (open === '1') {
+    //   dispatch(getProjectsBidsForClient());
+    // }
+    // if (open === '2') {
+    //   dispatch(getRecommendedTeamsForClient());
+    // }
+
+    dispatch(getProjectsBidsForClient());
+
+    dispatch(getRecommendedTeamsForClient());
+  }, []);
 
   const settings = {
     dots: false,
@@ -187,7 +192,9 @@ const OpenListing = () => {
           <>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Received Bids</span>
+                <span className="d-flex align-items-center">
+                  Received Bids <Tag>{projectsBidsForClientData?.metadata?.total_records}</Tag>
+                </span>
                 {projectsBidsForClientData?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/my_bids')} className="view-all-cta">
                     View All
@@ -247,7 +254,9 @@ const OpenListing = () => {
           <>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Recommended Teams</span>
+                <span className="d-flex align-items-center">
+                  Recommended Teams <Tag>{recommendedTeamsForClientData?.metadata?.total_records}</Tag>
+                </span>
                 {recommendedTeamsForClientData?.data?.length > 0 && (
                   <CardText
                     onClick={(e) => handleViewAllRecommendedTeam(e, '/marketplace/teams')}
