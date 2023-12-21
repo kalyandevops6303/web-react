@@ -303,7 +303,7 @@ const Alerts = () => {
                     <div key={item?._id}>
                       <div className="d-flex justify-content-between">
                         <p className="font-small-3 m-0">{item?.message || 'Name'}</p>
-                        <CardText className="text-primary">View</CardText>
+                        <CardText className="text-primary d-none">View</CardText>
                       </div>
                     </div>
                   </CardBody>
