@@ -414,6 +414,7 @@ const ClientCardWrap = styled(CardWrap)`
 `;
 
 const ResponsiveGrid = styled.div`
+  margin: 0 -12px;
   @media only screen and (max-device-width: 800px) {
     .responsive-grid {
       grid-template-columns: 1fr !important;
