@@ -9,7 +9,7 @@ import { fcmUnsubscribeService } from '../services/authServices';
 import { ERROR_CODES } from './constants/Constant';
 import { ERROR } from './constants/ToastTypes';
 import { getItem } from './localStorageControl';
-import { getItemFromSession } from './sessesionStorageControl';
+import { getItemFromSession, setItemFromSession } from './sessesionStorageControl';
 
 const { dispatch } = store;
 
@@ -43,9 +43,20 @@ const handleErrorCode = async (err, callBack) => {
         console.error(error);
       }
     }
+    const teamId = getItemFromSession('team_id');
+    const teamData = getItemFromSession('team_data');
     window.location.href = '/auth/login';
     localStorage.clear();
     sessionStorage.clear();
+    if (teamId) {
+      setItemFromSession('redirect_to_location', window.location.pathname);
+      setItemFromSession('team_id', teamId);
+      setItemFromSession('team_data', teamData);
+      setItemFromSession('isUserVisited', true);
+    } else {
+      setItemFromSession('redirect_to_location', window.location.pathname);
+      setItemFromSession('isUserVisited', true);
+    }
   } else if (
     err?.response?.status === ERROR_CODES.EC_404 &&
     err?.response?.data?.errorData?.message === "You're no longer a team member"
