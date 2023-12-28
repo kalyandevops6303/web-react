@@ -130,6 +130,11 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
+    clearInitedByData: (state) => ({
+      ...state,
+      invitedBy: null,
+    }),
+
     // Contract flow
     checkDocumentActivatedRequest: (state) => ({
       ...state,
@@ -420,6 +425,7 @@ export const {
   getInvitedByRequest,
   getInvitedBySuccess,
   getInvitedByFailure,
+  clearInitedByData,
   getUnassignedRoleRequest,
   getUnassignedRoleSuccess,
   getUnassignedRoleFailure,

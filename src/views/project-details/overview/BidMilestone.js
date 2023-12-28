@@ -32,6 +32,7 @@ import RejectRequestModal from '../../modals/RejectRequestModal';
 import { switchProfile } from '../../../redux/actions/authActions';
 import ShowToastMessage from '../../../@core/components/toast';
 import { SUCCESS } from '../../../utility/constants/ToastTypes';
+import { clearInitedByData } from '../../../redux/reducers/projectDetails';
 
 const BidMilestoneWrap = styled.div`
   .value {
@@ -166,6 +167,7 @@ const BidMilestone = () => {
         switchProfile({
           data: teamToSwitch,
           onSuccess: () => {
+            dispatch(clearInitedByData());
             navigate(`/project-details/${params?.projectId}/bid`);
           },
         }),

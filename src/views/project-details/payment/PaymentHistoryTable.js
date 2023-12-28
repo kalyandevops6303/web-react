@@ -22,6 +22,7 @@ function PaymentHistoryTable() {
   const user = useSelector(userData);
 
   const isTalent = user?.user_type === userTypes.talent;
+  const isTeam = user?.user_type === userTypes.team;
 
   useEffect(() => {
     if (projectDetailsData?._id) {
@@ -34,9 +35,11 @@ function PaymentHistoryTable() {
       } else {
         milestoneTransactionsServiceForTeam(projectDetailsData?._id).then((res) => {
           if (res.data.data) {
-            if (user?.user_type === userTypes.talent) {
-              setTransactions(res.data.data?.my_payments);
-            } else setTransactions(res.data?.data?.team_payments);
+            setTransactions(res.data.data?.my_payments);
+
+            // if (user?.user_type === userTypes.talent) {
+            //   setTransactions(res.data.data?.my_payments);
+            // } else setTransactions(res.data?.data?.team_payments);
           }
         });
       }
@@ -48,7 +51,7 @@ function PaymentHistoryTable() {
       return { theme: 'light-danger', text: 'Transaction Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Payment Due' };
+      return { theme: 'light-warning', text: 'Milestone In Progress' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: 'Payment Processing' };
@@ -99,13 +102,13 @@ function PaymentHistoryTable() {
               {user?.user_type === userTypes.client && <th>TRANSACTION ID</th>}
               <th>MILESTONE</th>
               <th>From</th>
-              {isTalent ? null : <th>To</th>}
+              {isTalent || isTeam ? null : <th>To</th>}
               <th>Type</th>
               <th>Status</th>
-              {isTalent ? null : <th>Platform Fee</th>}
+              {isTalent || isTeam ? null : <th>Platform Fee</th>}
               <th>
-                {isTalent ? 'Amount' : 'Final Amount'}
-                {isTalent ? (
+                {isTalent || isTeam ? 'Amount' : 'Final Amount'}
+                {isTalent || isTeam ? (
                   ''
                 ) : (
                   <>
@@ -143,7 +146,7 @@ function PaymentHistoryTable() {
                 ) : null}
                 <td>{item?.milestone?.name}</td>
                 <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Client' : 'Trumio'}</td>
-                {isTalent ? null : (
+                {isTalent || isTeam ? null : (
                   <td>
                     {item?.payment_type === PAYMENT_TYPES.CHECKOUT
                       ? 'Trumio'
@@ -154,7 +157,7 @@ function PaymentHistoryTable() {
                 <td>
                   <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
                 </td>
-                {isTalent ? null : <td>{item?.application_fee ? `$ ${item?.application_fee}` : '-'}</td>}
+                {isTalent || isTeam ? null : <td>{item?.application_fee ? `$ ${item?.application_fee}` : '-'}</td>}
                 <td>$ {getTotalAmount(item)}</td>
               </tr>
             ))}

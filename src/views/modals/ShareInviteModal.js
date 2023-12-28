@@ -4,9 +4,8 @@ import { useLocation, useNavigate } from 'react-router';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import CreatableSelect from 'react-select/creatable';
-import { Button, Modal, ModalHeader, ModalBody, Row, FormFeedback, Col, Spinner, Input, InputGroup } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Row, FormFeedback, Col, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { getTeamId, selectThemeColors } from '../../utility/Utils';
 import { validEmailRegex } from '../../utility/constants/Constant';
 import { RequirementsFormContainer } from '../CreateProject/style';
@@ -21,9 +20,6 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
   const [validEmailError, setValidEmailError] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [customEmailsValue, setCustomEmailsValue] = useState([]);
-
-  const [shareInputValue, setShareInputValue] = useState('');
-  const [isCopied, setIsCopied] = useState(false);
 
   const customSelectComponents = {
     DropdownIndicator: null,
@@ -91,12 +87,6 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
     }
   };
 
-  const handleCopy = () => {
-    setIsCopied(true);
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 1500);
-  };
   const redirectToDashboard = () => {
     navigate('/dashboard');
   };
@@ -133,31 +123,10 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
                 {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
               </Col>
             </Row>
-            <div className="divider my-2 d-none">
-              <div className="divider-text">Or</div>
-            </div>
-            <Row className="d-none">
-              <Col sm="12" md="12" lg="12">
-                <div className="mb-1">
-                  <InputGroup>
-                    <Input
-                      type="url"
-                      id="share"
-                      name="share"
-                      placeholder="Lorem ipsum dolor sit amet, consectet."
-                      onChange={(e) => setShareInputValue(e.target.value)}
-                    />
-                    <div className="input-group-append">
-                      <CopyToClipboard text={shareInputValue} onCopy={handleCopy}>
-                        <Button color="primary" type="button">
-                          {isCopied ? 'Copied' : 'Copy Link'}
-                        </Button>
-                      </CopyToClipboard>
-                    </div>
-                  </InputGroup>
-                </div>
-              </Col>
-            </Row>
+            <p className="font-small-2 mt-50">
+              Note: Please press either of &quot;Enter&quot; or &quot;Space&quot; or &quot;Comma&quot; after entering
+              the email id in order to add it
+            </p>
             <div className="d-flex justify-content-end">
               <Button
                 color="primary"

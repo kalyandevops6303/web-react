@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText, ButtonGroup, Button, UncontrolledTooltip } from 'reactstrap';
 import DateTime from '../../../lib/date-time';
+import round from '../../../lib/round';
 import { EarningAmount, EarningCardWrapper } from './style';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
@@ -102,7 +103,7 @@ const EarningCard = () => {
               <span className="title">
                 Total <Info size={14} id="total_spendings" />
               </span>
-              <span className="amount">$ {spendingsPer?.total ?? 0}</span>
+              <span className="amount">$ {round(spendingsPer?.total ?? 0, 2)}</span>
               {/* <span className="change">+0%</span> */}
             </EarningAmount>
             <EarningAmount>
@@ -113,7 +114,7 @@ const EarningCard = () => {
               <span className="title">
                 Completed <Info size={14} id="completed_spendings" />
               </span>
-              <span className="amount">$ {spendingsPer?.completed ?? 0}</span>
+              <span className="amount">$ {round(spendingsPer?.completed ?? 0, 2)}</span>
               {/* <span className="change">+0%</span> */}
             </EarningAmount>
           </div>

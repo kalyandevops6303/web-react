@@ -58,6 +58,20 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
     }
   };
 
+  const filterUniqueWorkers = (arr) => {
+    const uniqueUserIds = [];
+    const filteredArray = [];
+
+    arr.forEach((obj) => {
+      if (!uniqueUserIds.includes(obj.user_id)) {
+        uniqueUserIds.push(obj.user_id);
+        filteredArray.push(obj);
+      }
+    });
+
+    return filteredArray;
+  };
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style-70" className="modal-dialog-centered">
       <ModalHeader toggle={onClose} className="py-0 pt-50" />
@@ -139,13 +153,15 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
                         </Col>
                         <Col sm="12" md="12" lg="2" className="ps-2">
                           <p className="fw-light m-0 font-small-4 ps-50">
-                            {milestone?.workers?.filter((worker) => worker.user_id)?.length > 3 ? (
+                            {filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.length > 3 ? (
                               <AvatarGroup
-                                totalCount={milestone?.workers?.filter((worker) => worker.user_id)?.length || 0}
+                                totalCount={
+                                  filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.length ||
+                                  0
+                                }
                                 size="sm"
                                 className="ms-25 mb-50"
-                                data={milestone?.workers
-                                  ?.filter((worker) => worker.user_id)
+                                data={filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
                                   ?.map((worker) => ({
                                     user_id: worker?.user_id,
                                     user_type: userTypes.talent,
@@ -167,9 +183,8 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
                               <AvatarGroup
                                 size="sm"
                                 className="ms-25 mb-50"
-                                data={milestone?.workers
-                                  ?.filter((worker) => worker.user_id)
-                                  ?.map((worker) => ({
+                                data={filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.map(
+                                  (worker) => ({
                                     user_id: worker?.user_id,
                                     user_type: userTypes.talent,
                                     title: `${worker?.first_name} ${worker?.last_name}` || 'user',
@@ -183,7 +198,8 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
                                     )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
                                       (Math.random() * 30).toFixed(0),
                                     )}`,
-                                  }))}
+                                  }),
+                                )}
                               />
                             )}
                           </p>
