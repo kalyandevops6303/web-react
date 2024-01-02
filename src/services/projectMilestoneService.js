@@ -24,8 +24,8 @@ const milestoneTransactionsServiceForClient = (projectId, milestoneId) => {
 const saveMilestoneService = (milestone_id, data) =>
   DataService.put(`${API.projectMilestones.saveMilestone}?milestone_id=${milestone_id}`, data);
 
-const submitMilestoneService = (milestone_id) =>
-  DataService.put(`${API.projectMilestones.submitMilestone}?milestone_id=${milestone_id}`);
+const submitMilestoneService = (milestone_id, data) =>
+  DataService.put(`${API.projectMilestones.submitMilestone}?milestone_id=${milestone_id}`, data);
 
 const acceptMilestoneService = (milestone_id) =>
   DataService.put(`${API.projectMilestones.acceptMilestone}?milestone_id=${milestone_id}`);

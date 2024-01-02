@@ -23,7 +23,7 @@ import {
 import { transferFundService } from '../../../services/paymentDetailService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
+import { ERROR, SUCCESS } from '../../../utility/constants/ToastTypes';
 
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
@@ -43,8 +43,9 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
 
   const [links, setLinks] = useState(selectedMilestone.links);
   const [isLoading, setIsLoading] = useState(false);
-  const [submitBtnText, setSubmitBtnText] = useState('Milestone complete');
+  const [submitBtnText, setSubmitBtnText] = useState('Submit');
   const [acceptBtnText, setAcceptBtnText] = useState('Accept');
+  // eslint-disable-next-line no-unused-vars
   const [saveBtnText, setSaveBtnText] = useState('Submit');
   const [rejectBtnText, setRejectBtnText] = useState('Request change');
 
@@ -90,13 +91,20 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const finalSubmitMilestone = async () => {
     setIsLoading(true);
     try {
-      setSubmitBtnText('Loading...');
-      await submitMilestoneService(selectedMilestone._id);
+      setSubmitBtnText('Submitting...');
+      await submitMilestoneService(selectedMilestone._id, {
+        links,
+        documents: documents.map((file) => ({
+          file_key: file.file_key || file.uploadData.file_key,
+          file_name: file.file_name || file.file.name,
+        })),
+      });
       await fetchProjectMilestones();
-      setSubmitBtnText('Milestone completed');
+      setSubmitBtnText('Milestone submitted');
+      ShowToastMessage(SUCCESS, 'Milestone submitted');
     } catch (error) {
       errorHandler(error);
-      setSubmitBtnText('Milestone complete');
+      setSubmitBtnText('Submit');
     }
     setIsLoading(false);
     setSubmitModal(false);
@@ -129,6 +137,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
       await transferFundService(payload);
       await fetchProjectMilestones();
       setAcceptBtnText('Accepted');
+      ShowToastMessage(SUCCESS, 'Milestone accepted');
     } catch (error) {
       errorHandler(error);
       setAcceptBtnText('Accept');
@@ -545,10 +554,10 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
             {userDataLocal.user_type === userTypes.client && selectedMilestone.status === 'IN_REVIEW' ? (
               <>
                 <Button
-                  onClick={() => setAcceptModal(true)}
+                  onClick={() => acceptMilestone()}
                   disabled={isLoading || acceptBtnText !== 'Accept'}
                   color="primary"
-                  className="me-2"
+                  className=" me-2"
                 >
                   {acceptBtnText}
                 </Button>
@@ -556,30 +565,31 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                   onClick={() => setRejectModal(true)}
                   disabled={isLoading || rejectBtnText !== 'Request change'}
                   color="primary"
+                  className="d-none"
                 >
                   {rejectBtnText}
                 </Button>
               </>
             ) : isEditable ? (
               <Button
-                onClick={() => setSaveModal(true)}
+                onClick={() => finalSubmitMilestone()}
                 disabled={
                   uploadingFiles.length > 0 ||
                   isLoading ||
                   [...documents, ...links].length === 0 ||
-                  saveBtnText !== 'Submit' ||
+                  submitBtnText !== 'Submit' ||
                   !isPaymentDone(selectedMilestone)
                 }
                 color="primary"
               >
-                {saveBtnText}
+                {submitBtnText}
               </Button>
             ) : null}
           </div>
-          <div className="ms-2 d-flex justify-content-end">
+          <div className="d-none ms-2 d-flex justify-content-end">
             {userDataLocal.user_type !== userTypes.client && isEditable && (
               <Button
-                onClick={() => setSubmitModal(true)}
+                onClick={() => finalSubmitMilestone()}
                 disabled={
                   uploadingFiles.length > 0 ||
                   isLoading ||
