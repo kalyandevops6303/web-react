@@ -80,7 +80,7 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
           <div className="d-flex justify-content-between">
             <p className="font-medium-3 fw-bold">Bid Submitted Preview</p>
             {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'REJECTED' && (
-              <p className="edit-bid-btn mt-1 cursor-pointer" onClick={onEditBidClick}>
+              <p className="d-none edit-bid-btn mt-1 cursor-pointer" onClick={onEditBidClick}>
                 Edit Bid
               </p>
             )}
