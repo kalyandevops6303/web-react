@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
-import { CustomBadge } from '../styled';
+import { CustomBadge, Elevate } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
 import BaseInfoUI from './BaseInfoCard';
 import CreateBidModal from '../modals/CreateBidModal';
@@ -79,73 +79,75 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
   return (
     <ProjectCardWrap>
       <Card onClick={handleShowProject} className="cursor-pointer">
-        <CardBody>
-          <Row>
-            <Col lg="8">
-              <div className="d-flex mb-1 status-row">
-                <CustomBadge>
-                  <Badge
-                    className={`${
-                      primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
-                        ? data?.bid_status
-                        : data?.status
-                    } truncate-1`}
-                    color="badge"
-                  >
-                    {primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
-                      ? statusEnum[data?.bid_status]
-                      : statusEnum[data?.status]}
-                  </Badge>
-                </CustomBadge>
-              </div>
-              <CardTitle className="d-flex align-items-center">
-                <span className="cursor-pointer">{data?.details?.name ?? data?.name}</span>
-              </CardTitle>
-              <div className="d-flex flex-wrap project-stats">
-                <CardText className="project">
-                  {data?.pay_type?.variable_cost ? (
-                    <>Variable Price&nbsp;</>
-                  ) : (
-                    <>
-                      Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
-                    </>
-                  )}
-                </CardText>
-                {/* <CardText className=" project mb-1">{`Assigned Date - ${
+        <Elevate>
+          <CardBody>
+            <Row>
+              <Col lg="8">
+                <div className="d-flex mb-1 status-row">
+                  <CustomBadge>
+                    <Badge
+                      className={`${
+                        primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
+                          ? data?.bid_status
+                          : data?.status
+                      } truncate-1`}
+                      color="badge"
+                    >
+                      {primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
+                        ? statusEnum[data?.bid_status]
+                        : statusEnum[data?.status]}
+                    </Badge>
+                  </CustomBadge>
+                </div>
+                <CardTitle className="d-flex align-items-center">
+                  <span className="cursor-pointer">{data?.details?.name ?? data?.name}</span>
+                </CardTitle>
+                <div className="d-flex flex-wrap project-stats">
+                  <CardText className="project">
+                    {data?.pay_type?.variable_cost ? (
+                      <>Variable Price&nbsp;</>
+                    ) : (
+                      <>
+                        Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
+                      </>
+                    )}
+                  </CardText>
+                  {/* <CardText className=" project mb-1">{`Assigned Date - ${
                   data?.total_estimated_cost
                 }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText> */}
-                <CardText className="project d-flex align-items-center">
-                  <img src={Mpin} alt="Mpin" className="mpin" />
-                  {data?.client?.office_address?.country?.name ||
-                    data?.client_details?.office_address?.country?.name ||
-                    'Location'}
-                </CardText>
-                <CardText className=" mb-1">
-                  {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
-                </CardText>
-              </div>
-
-              {!showFullText ? (
-                <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
-                  {data?.details?.description ?? data?.description}
+                  <CardText className="project d-flex align-items-center">
+                    <img src={Mpin} alt="Mpin" className="mpin" />
+                    {data?.client?.office_address?.country?.name ||
+                      data?.client_details?.office_address?.country?.name ||
+                      'Location'}
+                  </CardText>
+                  <CardText className=" mb-1">
+                    {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
+                  </CardText>
                 </div>
-              ) : (
-                <div className="my-div" ref={divRef}>
-                  {data?.details?.description ?? data?.description}
-                </div>
-              )}
 
-              {isContentOverflowing && (
-                <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
-                  {showFullText ? 'Show less' : 'Show more'}
-                </CardText>
-              )}
-            </Col>
-            <Col lg="4">
-              <BaseInfoUI isSearchPage={isSearchPage} data={data} />
-            </Col>
-          </Row>
-        </CardBody>
+                {!showFullText ? (
+                  <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                    {data?.details?.description ?? data?.description}
+                  </div>
+                ) : (
+                  <div className="my-div" ref={divRef}>
+                    {data?.details?.description ?? data?.description}
+                  </div>
+                )}
+
+                {isContentOverflowing && (
+                  <CardText className="cursor-pointer show-more" onClick={(e) => handleToggleView(e)}>
+                    {showFullText ? 'Show less' : 'Show more'}
+                  </CardText>
+                )}
+              </Col>
+              <Col lg="4">
+                <BaseInfoUI isSearchPage={isSearchPage} data={data} />
+              </Col>
+            </Row>
+          </CardBody>
+        </Elevate>
       </Card>
       {showModal && (
         <ProjectModal

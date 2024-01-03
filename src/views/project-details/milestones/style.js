@@ -14,5 +14,29 @@ const UserNameWrapper = styled.div`
       text-overflow: ellipsis;
     }
 `;
+
+const DocumentsWrapper = styled.div`
+  .truncated-filename {
+    max-width: 9rem;
+    display: inline-block;
+    display: block;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    .truncate-1 {
+      max-width: 2rem;
+      display: inline-block;
+      display: block;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+`;
+
 // eslint-disable-next-line import/prefer-default-export
-export { UserNameWrapper };
+export { UserNameWrapper, DocumentsWrapper };

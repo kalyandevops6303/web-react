@@ -2,8 +2,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-confusing-arrow */
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Badge, Button, Card, CardText, Col, Input, Label, Row, Spinner } from 'reactstrap';
+import { Badge, Button, Card, CardText, Col, Input, Label, Row, Spinner, UncontrolledTooltip } from 'reactstrap';
 import Avatar from '@components/avatar';
 import Proptypes from 'prop-types';
 import { Download, ExternalLink, Link, Plus, Upload } from 'react-feather';
@@ -24,7 +23,7 @@ import {
 import { transferFundService } from '../../../services/paymentDetailService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
+import { ERROR, SUCCESS } from '../../../utility/constants/ToastTypes';
 
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
@@ -33,6 +32,7 @@ import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors
 import SubmitMilestoneModal from '../../modals/SubmitMilestoneModal';
 import ChangeRequestMilestoneModal from '../../modals/ChangeRequestMilestoneModal';
 import AcceptMilestoneModal from '../../modals/AcceptMilestone';
+import { DocumentsWrapper } from './style';
 
 const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
@@ -43,13 +43,19 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
 
   const [links, setLinks] = useState(selectedMilestone.links);
   const [isLoading, setIsLoading] = useState(false);
-  const [submitBtnText, setSubmitBtnText] = useState('Milestone complete');
+  const [submitBtnText, setSubmitBtnText] = useState('Submit');
   const [acceptBtnText, setAcceptBtnText] = useState('Accept');
+  // eslint-disable-next-line no-unused-vars
   const [saveBtnText, setSaveBtnText] = useState('Submit');
   const [rejectBtnText, setRejectBtnText] = useState('Request change');
 
   const [uploadingFiles, setUploadingFiles] = useState([]);
-  const [documents, setDocuments] = useState(selectedMilestone.documents);
+  const [documents, setDocuments] = useState(
+    selectedMilestone.documents.map((doc) => ({
+      ...doc,
+      newId: `${doc.file_key.split('.')[0].split('/')[0]}-${doc.file_key.split('.')[0].split('/')[2]}`,
+    })),
+  );
   const [isDownloading, setIsDownloading] = useState(false);
 
   const userDataLocal = useSelector(selectAuthUserData);
@@ -85,13 +91,20 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const finalSubmitMilestone = async () => {
     setIsLoading(true);
     try {
-      setSubmitBtnText('Loading...');
-      await submitMilestoneService(selectedMilestone._id);
+      setSubmitBtnText('Submitting...');
+      await submitMilestoneService(selectedMilestone._id, {
+        links,
+        documents: documents.map((file) => ({
+          file_key: file.file_key || file.uploadData.file_key,
+          file_name: file.file_name || file.file.name,
+        })),
+      });
       await fetchProjectMilestones();
-      setSubmitBtnText('Milestone completed');
+      setSubmitBtnText('Milestone submitted');
+      ShowToastMessage(SUCCESS, 'Milestone submitted');
     } catch (error) {
       errorHandler(error);
-      setSubmitBtnText('Milestone complete');
+      setSubmitBtnText('Submit');
     }
     setIsLoading(false);
     setSubmitModal(false);
@@ -124,6 +137,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
       await transferFundService(payload);
       await fetchProjectMilestones();
       setAcceptBtnText('Accepted');
+      ShowToastMessage(SUCCESS, 'Milestone accepted');
     } catch (error) {
       errorHandler(error);
       setAcceptBtnText('Accept');
@@ -167,6 +181,9 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
             file,
             uploadData: response?.data?.data,
             file_key: response?.data?.data?.file_key,
+            newId: `${response?.data?.data?.file_key.split('.')[0].split('/')[0]}-${
+              response?.data?.data?.file_key.split('.')[0].split('/')[2]
+            }`,
           };
         });
 
@@ -239,28 +256,16 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     }
   };
 
-  const TruncateString = styled.span`
-    max-width: 9rem;
-    display: inline-block;
-    display: block;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    .truncate-1 {
-      max-width: 2rem;
-      display: inline-block;
-      display: block;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  `;
-
   const isClient = userDataLocal.user_type === userTypes.client;
+
+  // useEffect(() => {
+  //   const newDocs = documents.map((doc, index) => ({
+  //     ...doc,
+  //     newId: `${doc.file_key.split('.')[0].split('/')[0]}-${doc.file_key.split('.')[0].split('/')[2]}-${index}`,
+  //   }));
+
+  //   setDocuments(newDocs);
+  // }, [documents]);
 
   return (
     <div>
@@ -391,77 +396,89 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
               </Col>
             </Row>
           )}
-          {documents.map((file, index) =>
-            isEditable ? (
-              <Row
-                key={file.id}
-                className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
-              >
-                <Col className="d-flex" sm="6" md="4" lg="3">
-                  {renderFilePreview(file.file)}
-                  <TruncateString id={`name-edit-${index}`}>{file?.file?.name ?? file.file_name}</TruncateString>
-                </Col>
-                {userDataLocal.user_type !== userTypes.client && (
-                  <Col sm="2" md="2" lg="2">
-                    {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
+          <DocumentsWrapper>
+            {documents.map((file) =>
+              isEditable ? (
+                <Row
+                  key={file.file_key}
+                  className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
+                >
+                  <Col className="d-flex" sm="6" md="4" lg="3">
+                    {renderFilePreview(file.file)}
+                    <span className="truncated-filename" id={file.newId}>
+                      {file?.file?.name ?? file.file_name}
+                    </span>
+                    <UncontrolledTooltip placement="bottom" target={file.newId}>
+                      {file?.file?.name ?? file.file_name}
+                    </UncontrolledTooltip>
                   </Col>
-                )}
-                <Col sm="2" md="2" lg="2">
-                  {renderFileSize(file?.size ?? file.file.size)}
-                </Col>
-                <Col sm="2" md="2" lg="3">
-                  {requiredFormattedDate}
-                </Col>
-                <Col sm="1" md="1" className="pe-0" lg="2">
-                  <Button
-                    color="flat-danger"
-                    className="btn-left-margin"
-                    disabled={uploadingFiles.includes(file)}
-                    onClick={() => {
-                      const uploadedDocuments = documents;
-                      const filteredData = uploadedDocuments.filter((item) => item.file_key !== file.file_key);
-                      setDocuments([...filteredData]);
-                    }}
-                  >
-                    Remove
-                  </Button>
-                </Col>
-              </Row>
-            ) : (
-              <Row
-                key={file.id}
-                className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
-              >
-                <Col className="d-flex" sm="6" md="4" lg="3">
-                  {renderFilePreview(file.file)}
-                  <TruncateString id={`name-${index}`}>{file?.file?.name ?? file.file_name}</TruncateString>
-                </Col>
-                {userDataLocal.user_type !== userTypes.client && (
-                  <Col sm="6" md="2" lg="2">
-                    {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
-                  </Col>
-                )}
-                <Col sm="2" md="2" lg="2">
-                  {file?.size ? renderFileSize(file?.size) : null}
-                </Col>
-                <Col sm="2" md="2" lg="3">
-                  {requiredFormattedDate}
-                </Col>
-                <Col sm="1" md="1" className="pe-0" lg="1">
-                  {isDownloading ? (
-                    <Spinner size="sm" />
-                  ) : (
-                    <Avatar
-                      onClick={() => handleDownloadFile(file)}
-                      color="light-primary"
-                      icon={<Download size="14" />}
-                      className=""
-                    />
+                  {userDataLocal.user_type !== userTypes.client && (
+                    <Col sm="2" md="2" lg="2">
+                      {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
+                    </Col>
                   )}
-                </Col>
-              </Row>
-            ),
-          )}
+                  <Col sm="2" md="2" lg="2">
+                    {renderFileSize(file?.size ?? file.file.size)}
+                  </Col>
+                  <Col sm="2" md="2" lg="3">
+                    {requiredFormattedDate}
+                  </Col>
+                  <Col sm="1" md="1" className="pe-0" lg="2">
+                    <Button
+                      color="flat-danger"
+                      className="btn-left-margin"
+                      disabled={uploadingFiles.includes(file)}
+                      onClick={() => {
+                        const uploadedDocuments = documents;
+                        const filteredData = uploadedDocuments.filter((item) => item.file_key !== file.file_key);
+                        setDocuments([...filteredData]);
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </Col>
+                </Row>
+              ) : (
+                <Row
+                  key={file.id}
+                  className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
+                >
+                  <Col className="d-flex" sm="6" md="4" lg="3">
+                    {renderFilePreview(file.file)}
+                    <span className="truncated-filename" id={file.newId}>
+                      {file?.file?.name ?? file.file_name}
+                    </span>
+                    <UncontrolledTooltip placement="bottom" target={file.newId}>
+                      {file?.file?.name ?? file.file_name}
+                    </UncontrolledTooltip>
+                  </Col>
+                  {userDataLocal.user_type !== userTypes.client && (
+                    <Col sm="6" md="2" lg="2">
+                      {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
+                    </Col>
+                  )}
+                  <Col sm="2" md="2" lg="2">
+                    {file?.size ? renderFileSize(file?.size) : null}
+                  </Col>
+                  <Col sm="2" md="2" lg="3">
+                    {requiredFormattedDate}
+                  </Col>
+                  <Col sm="1" md="1" className="pe-0" lg="1">
+                    {isDownloading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <Avatar
+                        onClick={() => handleDownloadFile(file)}
+                        color="light-primary"
+                        icon={<Download size="14" />}
+                        className=""
+                      />
+                    )}
+                  </Col>
+                </Row>
+              ),
+            )}
+          </DocumentsWrapper>
           {links.map((item, index) =>
             isEditable ? (
               <div
@@ -537,10 +554,10 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
             {userDataLocal.user_type === userTypes.client && selectedMilestone.status === 'IN_REVIEW' ? (
               <>
                 <Button
-                  onClick={() => setAcceptModal(true)}
+                  onClick={() => acceptMilestone()}
                   disabled={isLoading || acceptBtnText !== 'Accept'}
                   color="primary"
-                  className="me-2"
+                  className=" me-2"
                 >
                   {acceptBtnText}
                 </Button>
@@ -548,30 +565,31 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                   onClick={() => setRejectModal(true)}
                   disabled={isLoading || rejectBtnText !== 'Request change'}
                   color="primary"
+                  className="d-none"
                 >
                   {rejectBtnText}
                 </Button>
               </>
             ) : isEditable ? (
               <Button
-                onClick={() => setSaveModal(true)}
+                onClick={() => finalSubmitMilestone()}
                 disabled={
                   uploadingFiles.length > 0 ||
                   isLoading ||
                   [...documents, ...links].length === 0 ||
-                  saveBtnText !== 'Submit' ||
+                  submitBtnText !== 'Submit' ||
                   !isPaymentDone(selectedMilestone)
                 }
                 color="primary"
               >
-                {saveBtnText}
+                {submitBtnText}
               </Button>
             ) : null}
           </div>
-          <div className="ms-2 d-flex justify-content-end">
+          <div className="d-none ms-2 d-flex justify-content-end">
             {userDataLocal.user_type !== userTypes.client && isEditable && (
               <Button
-                onClick={() => setSubmitModal(true)}
+                onClick={() => finalSubmitMilestone()}
                 disabled={
                   uploadingFiles.length > 0 ||
                   isLoading ||
