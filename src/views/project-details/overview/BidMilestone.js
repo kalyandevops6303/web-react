@@ -378,12 +378,16 @@ const BidMilestone = () => {
                         <Row className="mt-1" key={worker?.role}>
                           <Col sm="12" md="12" lg="4">
                             <div className="d-flex align-items-center">
-                              <Avatar
-                                img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
-                                imgHeight="32"
-                                imgWidth="32"
-                              />
-                              {worker?.user_id ? (
+                              {worker?.accepted_date > 0 ? (
+                                <Avatar
+                                  img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
+                                  imgHeight="32"
+                                  imgWidth="32"
+                                />
+                              ) : (
+                                <Avatar img={defaultAvatar} imgHeight="32" imgWidth="32" />
+                              )}
+                              {worker?.accepted_date > 0 ? (
                                 <p className="fw-bolder content-description m-0 ms-50">
                                   {worker?.first_name} {worker?.last_name}
                                 </p>
