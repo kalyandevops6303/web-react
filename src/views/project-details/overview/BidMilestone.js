@@ -286,7 +286,7 @@ const BidMilestone = () => {
               </div>
             </div>
             <div>
-              <CardText className="value"> ${bidData?.total_estimated_cost} </CardText>
+              <CardText className="value"> $ {bidData?.total_estimated_cost} </CardText>
               <div className="d-flex align-items-center m-0">
                 <CardText className="key mb-0">Project Earnings</CardText>
               </div>
@@ -316,7 +316,7 @@ const BidMilestone = () => {
                   <span className="title-head">Milestone #{index + 1}</span>
 
                   <div className="d-flex gap-1 aling-items-center">
-                    <div className="d-flex gap-1 aling-items-center">
+                    <div className="d-flex gap-3 aling-items-center">
                       <div>
                         <span className="key">Duration</span>
                         <CardText className="value text-end">
@@ -327,11 +327,11 @@ const BidMilestone = () => {
                       </div>
                       <div className="me-1">
                         <span className="key">Total Hours</span>
-                        <CardText className="value text-end">{milestone?.numbers_of_hours}</CardText>
+                        <CardText className="value text-end">{milestone?.numbers_of_hours}hr</CardText>
                       </div>
                       <div className="me-1">
                         <span className="key">Cost</span>
-                        <CardText className="value text-end">${milestone?.estimated_cost}</CardText>
+                        <CardText className="value text-end">$ {milestone?.estimated_cost}</CardText>
                       </div>
                     </div>
                   </div>

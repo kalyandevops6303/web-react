@@ -102,16 +102,18 @@ const SecondaryFiltersWrap = styled.div`
   .select__control {
     min-width: 12rem;
     width: 12rem;
+    cursor: pointer;
   }
   .wide__control {
     min-width: 12rem;
     width: 12rem;
+    cursor: pointer;
   }
   .name__control {
     min-width: 14rem;
     width: 14rem;
+    cursor: pointer;
   }
-
   .wide__menu {
     width: 250px;
   }
@@ -346,8 +348,14 @@ const Elevate = styled.div`
     box-shadow: 0px 0px 0px 1px ${theme.blueBorderColorv2}, /* First box shadow */ 0px 8px 12px 0px rgba(0, 0, 0, 0.08); /* Second box shadow */
   }
 `;
+const ElevateShadow = styled(Elevate)`
+  &:hover {
+    box-shadow: 0px 8px 12px 0px rgba(0, 0, 0, 0.08); /* Second box shadow */
+  }
+`;
 
 export {
+  ElevateShadow,
   CardWrapper,
   Header,
   CustomBadge,
