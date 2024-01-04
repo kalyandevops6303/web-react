@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Accordion,
   AccordionBody,
@@ -115,6 +115,10 @@ const BidMilestone = () => {
   const [status, setStatus] = useState(invitedByData?.request_status);
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
+  const toggle = useCallback(
+    (id) => (openedAccordion === id ? setOpenedAccordion() : setOpenedAccordion(id)),
+    [openedAccordion],
+  );
 
   const onGetMilestoneSuccess = (res) => {
     dispatch(
@@ -304,12 +308,7 @@ const BidMilestone = () => {
           </CardBody>
         </Card>
         {bidData?.milestones?.map((milestone, index) => (
-          <Accordion
-            onClick={() => setOpenedAccordion(index + 1)}
-            key={milestone?._id}
-            className="accordion-timeline mb-2"
-            open={openedAccordion}
-          >
+          <Accordion toggle={toggle} key={milestone?._id} className="accordion-timeline mb-2" open={openedAccordion}>
             <AccordionItem style={{ paddingLeft: '0.5rem' }}>
               <AccordionHeader targetId={index + 1}>
                 <AccordionHeadStyle>
