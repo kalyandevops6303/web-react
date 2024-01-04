@@ -15,6 +15,7 @@ import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import TextToolTip from './TextToolTip';
+import { Elevate } from '../styled';
 
 const giveStrokeColor = (percentage) => {
   if (percentage <= 40) {
@@ -86,142 +87,144 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
   return (
     <ClientCardWrap userType={userType} clientCard>
       <Card style={{ height: '93%' }} onClick={handleCard} className="cursor-pointer">
-        <CardBody>
-          <Col className="d-flex justify-content-between">
-            <div className="d-flex align-items-center" style={{ width: '60%' }}>
-              <Avatar
-                img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
-                imgHeight="40"
-                imgWidth="40"
-                className={`client-card-photo me-1 mb-1 `}
-              />
-              <div className="d-flex flex-column" style={{ width: '70%' }}>
-                <CardTitle className="text-decoration-none marketplace-card-title mb-0 text-truncate">
-                  {data?.first_name}&nbsp;
-                  {data?.last_name}
-                </CardTitle>
-                <p
-                  className="font-small-3 fw-300 mb-25 marketplace-card-role"
-                  style={{ width: '80%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                >
-                  {data?.user_type === userTypes.client
-                    ? data?.company_name || 'Company Name'
-                    : data?.role?.name || 'Role'}
-                </p>
-
-                <div className="d-flex w-100" style={{ marginLeft: '-2px' }}>
-                  {locationDetails ? (
-                    <div className="d-flex align-items-center overflow-hidden">
-                      <MapPin size={18} className="me-50" />
-                      <TextToolTip
-                        text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
-                        id={`tooltip-location-${data?.user_id}`}
-                      />
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-            <div className="d-flex flex-column align-items-start" style={{ width: '40%' }}>
-              <div className="d-flex w-100 gap-50 justify-content-end">
-                {data?.is_alma_mater && (
-                  <Badge className="bg-white" style={{ marginTop: '-5px' }}>
-                    <img src={hat} alt="client-badge" />
-                  </Badge>
-                )}
-                {!isSearchPage && (
-                  <div className="mb-25">
-                    {isFavorite ? (
-                      <Heart
-                        className="cursor-pointer d-flex heart"
-                        fill={theme.red}
-                        stroke={theme.red}
-                        onClick={(e) => handleUnLike(e)}
-                        size={20}
-                      />
-                    ) : (
-                      <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className="d-flex mt-1 justify-content-end w-100">
-                <RatingBadge number={Math.round(data?.rating ?? 0)} />
-                <CardText className="ps-50 font-small-3 fw-300 rating-label">
-                  {data?.project_listed_count ?? 0} Projects
-                </CardText>
-              </div>
-            </div>
-          </Col>
-          <div className="d-flex">
-            <div
-              className={`circular-progressbar-container mt-1 ${isSearchPage ? 'invisible' : ''}`}
-              style={{ marginRight: '15px', width: '50px', height: '50px' }}
-            >
-              <CircularProgressbarWithChildren
-                value={data?.match_percentage ?? 0}
-                styles={{
-                  path: {
-                    stroke: giveStrokeColor(data?.match_percentage ?? 0),
-                    strokeLinecap: 'round',
-                    transition: 'stroke-dashoffset 0.5s ease 0s',
-                    transform: 'rotate(0turn)',
-                    transformOrigin: 'center center',
-                  },
-                  trail: {
-                    stroke: theme.progressBarBg,
-                    strokeLinecap: 'round',
-                    transform: 'rotate(0turn)',
-                    transformOrigin: 'center center',
-                  },
-                }}
-              >
-                <div className="d-flex justify-content-center align-items-center">
-                  <p className="percentage-text m-0">{data?.match_percentage ?? 0}%</p>
-                </div>
-              </CircularProgressbarWithChildren>
-            </div>
-            <div className=" w-100">
-              {data?.project_area_of_interest?.area ? (
-                <div className="mt-1 badge-box-wrap mb-50">
-                  <div className="info-key">Area of Interest</div>
-                  <Badge
-                    className="mt-50"
-                    color=""
-                    style={{ color: theme.lightBlueColor, backgroundColor: theme.lightBlueBgColor }}
+        <Elevate style={{ height: '100%' }}>
+          <CardBody>
+            <Col className="d-flex justify-content-between">
+              <div className="d-flex align-items-center" style={{ width: '60%' }}>
+                <Avatar
+                  img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
+                  imgHeight="40"
+                  imgWidth="40"
+                  className={`client-card-photo me-1 mb-1 `}
+                />
+                <div className="d-flex flex-column" style={{ width: '70%' }}>
+                  <CardTitle className="text-decoration-none marketplace-card-title mb-0 text-truncate">
+                    {data?.first_name}&nbsp;
+                    {data?.last_name}
+                  </CardTitle>
+                  <p
+                    className="font-small-3 fw-300 mb-25 marketplace-card-role"
+                    style={{ width: '80%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
                   >
-                    {data?.project_area_of_interest?.area?.name}
-                  </Badge>
+                    {data?.user_type === userTypes.client
+                      ? data?.company_name || 'Company Name'
+                      : data?.role?.name || 'Role'}
+                  </p>
+
+                  <div className="d-flex w-100" style={{ marginLeft: '-2px' }}>
+                    {locationDetails ? (
+                      <div className="d-flex align-items-center overflow-hidden">
+                        <MapPin size={18} className="me-50" />
+                        <TextToolTip
+                          text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
+                          id={`tooltip-location-${data?.user_id}`}
+                        />
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-              ) : null}
-              <div className="badge-box-wrap mb-20 mt-1">
-                <div className="info-key">Desired Skills</div>
-                <div className="d-flex flex-row flex-wrap gap-50 mt-20">
-                  {clientSkills?.map((skill) => (
-                    <div className="badge-box mt-25" key={skill?._id}>
-                      <Badge
-                        id={`tooltip-${skill?._id}-${data?.user_id}`}
-                        className={skill?.name?.length > 12 ? 'truncate-1' : ''}
-                        color=""
-                        style={{
-                          color: theme.lightBlueColor,
-                          backgroundColor: theme.lightBlueBgColor,
-                        }}
-                      >
-                        {skill?.name}
-                      </Badge>
-                      {skill?.name?.length > 12 ? (
-                        <UncontrolledTooltip target={`tooltip-${skill?._id}-${data?.user_id}`}>
-                          {skill?.name}
-                        </UncontrolledTooltip>
-                      ) : null}
+              </div>
+              <div className="d-flex flex-column align-items-start" style={{ width: '40%' }}>
+                <div className="d-flex w-100 gap-50 justify-content-end">
+                  {data?.is_alma_mater && (
+                    <Badge className="bg-white" style={{ marginTop: '-5px' }}>
+                      <img src={hat} alt="client-badge" />
+                    </Badge>
+                  )}
+                  {!isSearchPage && (
+                    <div className="mb-25">
+                      {isFavorite ? (
+                        <Heart
+                          className="cursor-pointer d-flex heart"
+                          fill={theme.red}
+                          stroke={theme.red}
+                          onClick={(e) => handleUnLike(e)}
+                          size={20}
+                        />
+                      ) : (
+                        <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
+                      )}
                     </div>
-                  ))}
+                  )}
+                </div>
+                <div className="d-flex mt-1 justify-content-end w-100">
+                  <RatingBadge number={Math.round(data?.rating ?? 0)} />
+                  <CardText className="ps-50 font-small-3 fw-300 rating-label">
+                    {data?.project_listed_count ?? 0} Projects
+                  </CardText>
+                </div>
+              </div>
+            </Col>
+            <div className="d-flex">
+              <div
+                className={`circular-progressbar-container mt-1 ${isSearchPage ? 'invisible' : ''}`}
+                style={{ marginRight: '15px', width: '50px', height: '50px' }}
+              >
+                <CircularProgressbarWithChildren
+                  value={data?.match_percentage ?? 0}
+                  styles={{
+                    path: {
+                      stroke: giveStrokeColor(data?.match_percentage ?? 0),
+                      strokeLinecap: 'round',
+                      transition: 'stroke-dashoffset 0.5s ease 0s',
+                      transform: 'rotate(0turn)',
+                      transformOrigin: 'center center',
+                    },
+                    trail: {
+                      stroke: theme.progressBarBg,
+                      strokeLinecap: 'round',
+                      transform: 'rotate(0turn)',
+                      transformOrigin: 'center center',
+                    },
+                  }}
+                >
+                  <div className="d-flex justify-content-center align-items-center">
+                    <p className="percentage-text m-0">{data?.match_percentage ?? 0}%</p>
+                  </div>
+                </CircularProgressbarWithChildren>
+              </div>
+              <div className=" w-100">
+                {data?.project_area_of_interest?.area ? (
+                  <div className="mt-1 badge-box-wrap mb-50">
+                    <div className="info-key">Area of Interest</div>
+                    <Badge
+                      className="mt-50"
+                      color=""
+                      style={{ color: theme.lightBlueColor, backgroundColor: theme.lightBlueBgColor }}
+                    >
+                      {data?.project_area_of_interest?.area?.name}
+                    </Badge>
+                  </div>
+                ) : null}
+                <div className="badge-box-wrap mb-20 mt-1">
+                  <div className="info-key">Desired Skills</div>
+                  <div className="d-flex flex-row flex-wrap gap-50 mt-20">
+                    {clientSkills?.map((skill) => (
+                      <div className="badge-box mt-25" key={skill?._id}>
+                        <Badge
+                          id={`tooltip-${skill?._id}-${data?.user_id}`}
+                          className={skill?.name?.length > 12 ? 'truncate-1' : ''}
+                          color=""
+                          style={{
+                            color: theme.lightBlueColor,
+                            backgroundColor: theme.lightBlueBgColor,
+                          }}
+                        >
+                          {skill?.name}
+                        </Badge>
+                        {skill?.name?.length > 12 ? (
+                          <UncontrolledTooltip target={`tooltip-${skill?._id}-${data?.user_id}`}>
+                            {skill?.name}
+                          </UncontrolledTooltip>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </CardBody>
+          </CardBody>
+        </Elevate>
       </Card>
     </ClientCardWrap>
   );

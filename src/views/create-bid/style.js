@@ -394,6 +394,35 @@ const InfoContainer = styled.div`
   margin-bottom: 0.75rem;
 `;
 
+const AccordionTableHeader = styled.div`
+  background-color: ${theme.tableHeaderColor};
+  border: 1px solid ${theme.cardHeaderBorderColor};
+
+  p {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 0;
+  }
+`;
+
+const AccordionBodyContent = styled.div`
+  .content-header {
+    color: ${theme.gray};
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .content-description {
+    color: ${theme.checkboxLabel};
+  }
+
+  .to-be-assigned-text {
+    color: ${theme.orangeColor};
+  }
+`;
+
 export {
   LeftSidebarProjectDetailsWrapper,
   ProgressBarWrapper,
@@ -401,4 +430,6 @@ export {
   MilestoneSectionWrapper,
   PreviewSectionWrapper,
   InfoContainer,
+  AccordionTableHeader,
+  AccordionBodyContent,
 };

@@ -1,7 +1,20 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Card, CardBody, CardHeader, Input, Label, Row, FormFeedback, Spinner } from 'reactstrap';
-import { ChevronLeft, ChevronRight } from 'react-feather';
+import {
+  Button,
+  Col,
+  Form,
+  Card,
+  CardBody,
+  CardHeader,
+  Input,
+  Label,
+  Row,
+  FormFeedback,
+  Spinner,
+  UncontrolledTooltip,
+} from 'reactstrap';
+import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
@@ -256,8 +269,18 @@ const Step2 = ({ setStep }) => {
               <Col sm="12" md="12" lg="6">
                 <Label className="form-label" for="taxId">
                   {taxUserType === 'NON_US' ? 'NSN #' : 'SSN #'}
-                  <span className="label-asterisk me-50">*</span>
+                  <span className="label-asterisk me-25">*</span>
                 </Label>
+                <Info size={18} color={theme.infoIcon} id="security-number" />
+                <UncontrolledTooltip placement="right" target="security-number">
+                  <div className="d-flex flex-column align-items-start">
+                    <p className="m-0">
+                      {taxUserType === 'NON_US'
+                        ? 'National security number(NSN); Government recognized unique national security number eg PAN card, Aadhar card etc'
+                        : 'Social security number(SSN)'}
+                    </p>
+                  </div>
+                </UncontrolledTooltip>
                 <Controller
                   id="taxId"
                   name="taxId"

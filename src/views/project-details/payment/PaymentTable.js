@@ -75,14 +75,13 @@ const PaymentTable = () => {
 
   const paymentStatusList = milestoneTransactionDetails?.map((item) => item?.status);
   const isClient = user?.user_type === userTypes.client;
-  const isTeam = user?.user_type === userTypes.team;
 
   const isPaymentDone = (milestone) =>
     milestone?.payment_status === PAYMENT_STATUS.PAID ||
     milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
 
   const showMilestoneTransanctions = (milestoneId, item) => {
-    if (!isTeam && isPaymentDone(item)) {
+    if (isPaymentDone(item)) {
       if (open === milestoneId) {
         setOpen(null);
       } else {
@@ -130,7 +129,7 @@ const PaymentTable = () => {
       return { theme: 'light-danger', text: 'Payment Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Payment Due' };
+      return { theme: 'light-warning', text: 'Milestone In Progress' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: 'Payment Processing' };
@@ -139,7 +138,7 @@ const PaymentTable = () => {
       return { theme: 'light-primary', text: 'Payment Initiated' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Payment Success' };
+      return { theme: 'light-success', text: 'Funds Available' };
     }
     return { theme: 'light-primary', text: tag };
   };
@@ -211,25 +210,27 @@ const PaymentTable = () => {
           </div>
           <hr />
           <CardBody>
-            <div className="shadow rounded" style={{ backgroundColor: 'white', width: '90%' }}>
+            <div className="shadow rounded" style={{ backgroundColor: 'white', width: '100%' }}>
               <PaymentTableWrapper>
                 <Table responsive className="w-100">
                   <thead>
                     <tr>
-                      {!isTeam ? <th className="checkboxCol"> </th> : null}
+                      {/* {!isTeam ? <th className="checkboxCol"> </th> : null} */}
+                      <th className="checkboxCol"> </th>
                       <th>Milestone</th>
                       <th>{}</th>
                       <th>Status</th>
                       <th>{}</th>
                       <th>Amount</th>
-                      {!isTeam ? <th> </th> : null}
+                      {/* {!isTeam ? <th> </th> : null} */}
+                      <th>{}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {milestoneData?.map((item) => (
                       <>
                         <tr
-                          className={isPaymentDone(item) && !isTeam ? 'cursor-pointer' : ''}
+                          className={isPaymentDone(item) ? 'cursor-pointer' : ''}
                           key={item?._id}
                           onClick={() => showMilestoneTransanctions(item?._id, item)}
                         >
@@ -248,7 +249,7 @@ const PaymentTable = () => {
                             ) : (
                               <td>{}</td>
                             )
-                          ) : isTeam ? null : (
+                          ) : (
                             <td> </td>
                           )}
                           <td>{item?.name}</td>
@@ -260,9 +261,9 @@ const PaymentTable = () => {
                           </td>
                           <td>{}</td>
                           <td className="amountCol">$ {getTotalCost(item)}</td>{' '}
-                          {!isTeam && isPaymentDone(item) ? (
+                          {isPaymentDone(item) ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
-                          ) : !isPaymentDone(item) && !isTeam ? (
+                          ) : !isPaymentDone(item) ? (
                             <td>{}</td>
                           ) : null}
                         </tr>

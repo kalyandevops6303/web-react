@@ -151,6 +151,8 @@ const API = {
     submitMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/submission`,
     acceptMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/acceptance`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
+    saveMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/update`,
+    rejectMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestone/reject`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,

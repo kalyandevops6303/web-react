@@ -1,16 +1,24 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { DropdownItem, Accordion, AccordionItem, AccordionHeader, AccordionBody } from 'reactstrap';
+import {
+  DropdownItem,
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  AccordionBody,
+  UncontrolledTooltip,
+} from 'reactstrap';
 
 import { useSelector } from 'react-redux';
 
 import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
 import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
-import { selectUserData } from '../../../../redux/selectors/authSelectors';
+import { selectUserData, selectSavedUserData } from '../../../../redux/selectors/authSelectors';
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
+  const selectSavedUserDetailsData = useSelector(selectSavedUserData);
 
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
@@ -84,6 +92,11 @@ const EditProfileAccordion = () => {
     }
   };
 
+  const notAnAdmin =
+    userDetailsData?.team_members?.map((member) => member?.user_id)?.includes(selectSavedUserDetailsData?._id) &&
+    userDetailsData?.team_members?.find((member) => member?.user_id === selectSavedUserDetailsData?._id)
+      ?.member_type !== 'ADMIN';
+
   return (
     <div className="edit-accordion">
       <Accordion open={open} toggle={toggle}>
@@ -137,12 +150,34 @@ const EditProfileAccordion = () => {
               )}
               {userDetailsData?.user_type === userTypes.team && userDetailsData?.team_type === 'CLUB' && (
                 <>
-                  <DropdownItem onClick={() => handleEditProfileForClub('account')} className="w-100 edit-link">
-                    <span className="align-middle p-1">Account</span>
-                  </DropdownItem>
-                  <DropdownItem onClick={() => handleEditProfileForClub('profile')} className="w-100 edit-link">
-                    <span className="align-middle p-1">Profile</span>
-                  </DropdownItem>
+                  <div id="account-edit">
+                    <DropdownItem
+                      onClick={() => handleEditProfileForClub('account')}
+                      className="w-100 edit-link"
+                      disabled={notAnAdmin}
+                    >
+                      <span className="align-middle p-1">Account</span>
+                    </DropdownItem>
+                  </div>
+                  {notAnAdmin && (
+                    <UncontrolledTooltip placement="left" target="account-edit" className="disabled-tooltip">
+                      <p className="m-0 disabled-tooltip">Only an admin can edit the club profile</p>
+                    </UncontrolledTooltip>
+                  )}
+                  <div id="profile-edit">
+                    <DropdownItem
+                      onClick={() => handleEditProfileForClub('profile')}
+                      className="w-100 edit-link"
+                      disabled={notAnAdmin}
+                    >
+                      <span className="align-middle p-1">Profile</span>
+                    </DropdownItem>
+                    {notAnAdmin && (
+                      <UncontrolledTooltip placement="left" target="profile-edit" className="disabled-tooltip">
+                        <p className="m-0 disabled-tooltip">Only an admin can edit the club profile</p>
+                      </UncontrolledTooltip>
+                    )}
+                  </div>
                 </>
               )}
               {userDetailsData?.user_type === userTypes.team && userDetailsData?.team_type === 'TEAM' && (

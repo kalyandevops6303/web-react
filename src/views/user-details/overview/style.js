@@ -13,7 +13,7 @@ const getPadding = (props) => {
 };
 
 const StatboxWrap = styled(Card)`
-  border: 1px solid ${(props) => (props.isActive ? `${theme.blueBorderColorv2} !important` : '')}; // active-border color
+  border: 1.5px solid ${(props) => (props.isActive ? `${theme.blueBorderColorv2} !important` : '')}; // active-border color
   background: ${(props) => (props.isActive ? `${theme.blueCardBg} !important` : '')}; // active-bg color
   flex: ${(props) => props.isMarketPlaceTab && '1'};
   svg {
