@@ -1,7 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import styled from 'styled-components';
@@ -12,72 +12,72 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 
 const SwitchConfirmModal = ({
   data,
-  dashboardRedirection,
+  // dashboardRedirection,
   modal,
   toggleModal,
-  disputesRedirection,
-  disputesAlertRedirection,
+  // disputesRedirection,
+  // disputesAlertRedirection,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
+  // const location = useLocation();
 
   const teams = useSelector((state) => state.team?.teams);
 
-  const redirectionFunction = ({ projectId, inviteId, status }) => {
-    if (status === 'Project Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
-    } else if (status === 'Team Invitation Request' && inviteId) {
-      navigate(`/team-invitation/${inviteId}`);
-    } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Team Join Request' && inviteId) {
-      navigate(`/join-request/${inviteId}`);
-    } else if (status === 'Membership Updated') {
-      navigate('/dashboard');
-    } else if (location.pathname.split('/').includes('projects')) {
-      if (location.pathname.split('/').includes('ongoing')) {
-        navigate(`/project-details/${data?._id}/milestone`);
-      } else if (location.pathname.split('/').includes('completed')) {
-        navigate(`/project-details/${data?._id}/rating`);
-      } else {
-        navigate(`/project-details/${data?._id}/bid`);
-      }
-    } else {
-      navigate(`/project-details/${projectId}/bid`);
-    }
-  };
+  // const redirectionFunction = ({ projectId, inviteId, status }) => {
+  // if (status === 'Project Invitation Request' && projectId && inviteId) {
+  //   navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
+  // } else if (status === 'Team Invitation Request' && inviteId) {
+  //   navigate(`/team-invitation/${inviteId}`);
+  // } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
+  //   navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
+  // } else if (status === 'Team Join Request' && inviteId) {
+  //   navigate(`/join-request/${inviteId}`);
+  // } else if (status === 'Membership Updated') {
+  //   navigate('/dashboard');
+  // } else if (location.pathname.split('/').includes('projects')) {
+  //   if (location.pathname.split('/').includes('ongoing')) {
+  //     navigate(`/project-details/${data?._id}/milestone`);
+  //   } else if (location.pathname.split('/').includes('completed')) {
+  //     navigate(`/project-details/${data?._id}/rating`);
+  //   } else {
+  //     navigate(`/project-details/${data?._id}/bid`);
+  //   }
+  // } else {
+  //   navigate(`/project-details/${projectId}/bid`);
+  // }
+  // };
 
   const onSuccess = () => {
     toggleModal();
-
-    if (data?.title === 'Project Accepted' || data?.title === 'Milestone payment completed.') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
-    } else if (data?.title === 'Milestone Submitted' || data?.title === 'Milestone Accepted') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
-    } else if (data?.isDisputesNotification) {
-      disputesRedirection(data?.notification_type);
-    } else if (data?.isDisputeAlert) {
-      disputesAlertRedirection(data?.title);
-    } else if (data?.isDashboardRedirection) {
-      dashboardRedirection();
-    } else {
-      redirectionFunction({
-        status: data?.title,
-        projectId:
-          data?.custom_payload?.request_to?.project_id ||
-          data?.custom_payload?.project_id ||
-          data?.project_id ||
-          data?.custom_payload?.request_for?.project_id,
-        inviteId: data?.custom_payload?.request_id,
-      });
-    }
+    navigate(data?.path);
+    // if (data?.title === 'Project Accepted' || data?.title === 'Milestone payment completed.') {
+    //   navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
+    // } else if (data?.title === 'Milestone Submitted' || data?.title === 'Milestone Accepted') {
+    //   navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
+    // } else if (data?.isDisputesNotification) {
+    //   disputesRedirection(data?.notification_type);
+    // } else if (data?.isDisputeAlert) {
+    //   disputesAlertRedirection(data?.title);
+    // } else if (data?.isDashboardRedirection) {
+    //   dashboardRedirection();
+    // } else {
+    //   redirectionFunction({
+    //     status: data?.title,
+    //     projectId:
+    //       data?.custom_payload?.request_to?.project_id ||
+    //       data?.custom_payload?.project_id ||
+    //       data?.project_id ||
+    //       data?.custom_payload?.request_for?.project_id,
+    //     inviteId: data?.custom_payload?.request_id,
+    //   });
+    // }
   };
 
   const handleSwitch = () => {
-    const teamData = teams?.filter(
-      (team) => team._id === data?.custom_payload?.switch_team_id || team._id === data?.switch_team_id,
-    );
+    const switch_team_id = data?.path?.split('switch_team_id=')[1];
+
+    const teamData = teams?.filter((team) => team._id === switch_team_id);
     if (teamData?.length > 0) {
       dispatch(switchProfile({ data: teamData[0], onSuccess, selected: false }));
     } else {
@@ -129,16 +129,16 @@ SwitchConfirmModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
-  disputesRedirection: Proptypes.func,
-  disputesAlertRedirection: Proptypes.func,
-  dashboardRedirection: Proptypes.func,
+  // disputesRedirection: Proptypes.func,
+  // disputesAlertRedirection: Proptypes.func,
+  // dashboardRedirection: Proptypes.func,
 };
 
 SwitchConfirmModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   data: {},
-  disputesRedirection: () => {},
-  disputesAlertRedirection: () => {},
-  dashboardRedirection: () => {},
+  // disputesRedirection: () => {},
+  // disputesAlertRedirection: () => {},
+  // dashboardRedirection: () => {},
 };

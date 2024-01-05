@@ -19,6 +19,141 @@ import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { setItem } from '../../utility/localStorageControl';
 
+const NOTI = [
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Payment Request',
+    priority: 1,
+    trigger_type: 'MANUAL',
+    path: '/project-details/657a9db38d6f34065659fec3/bid?entity=TALENT',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '657a9db38d6f34065659fec3',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '',
+      entity: 'TALENT',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'Please make the initial payment.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Payment Request For Client',
+    priority: 2,
+    trigger_type: 'MANUAL',
+    path: '/project-details/657a9db38d6f34065659fec3/bid?entity=TALENT',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '657a9db38d6f34065659fec3',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '',
+      entity: 'TALENT',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'Please make the initial payment for the project: Comprehensive Audio Book Platform, to begin.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Team Join Request',
+    priority: 3,
+    trigger_type: 'MANUAL',
+    path: '/project-details/657a9df48d6f34065659fec8/bid?entity=TEAM&switch_team_id=6555ecbe24bdfe4c836a7e27',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '657a9df48d6f34065659fec8',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '6555ecbe24bdfe4c836a7e27',
+      entity: 'TALENT',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'You have got a new team join request.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Milestone Submitted',
+    priority: 4,
+    trigger_type: 'MANUAL',
+    path: '/project-details/655d9cc23c57c3bfbb03ef21/bid?entity=TEAM&switch_team_id=64ff01b2f2e6af73ce49c45c',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '655d9cc23c57c3bfbb03ef21',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '64ff01b2f2e6af73ce49c45c',
+      entity: 'TEAM',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'Milestone for the project: Comprehensive Audio Book Platform is submitted.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+];
+
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const userData = useSelector(selectUserData);
@@ -29,6 +164,13 @@ const Notifications = () => {
     PRIORITY_2: 'green',
     PRIORITY_3: 'info',
     PRIORITY_4: 'secondary',
+  };
+
+  const prioritiess = {
+    1: 'red',
+    2: 'green',
+    3: 'info',
+    4: 'secondary',
   };
 
   const [selectedPriority, setSelectedPriority] = useState({ label: 'All Priorities', value: '' });
@@ -182,6 +324,15 @@ const Notifications = () => {
     // setItem('inviteToken', data.custom_payload?.token);
   };
 
+  const handleNotificationClick = (path) => {
+    if (userData?.user_type === userTypes.talent && path.includes('switch_team_id')) {
+      setSwitchData({ path });
+      setSwitchProfileModal(true);
+    } else {
+      navigate(path);
+    }
+  };
+
   if (isLoading) {
     return <ComponentSpinner />;
   }
@@ -211,6 +362,43 @@ const Notifications = () => {
           </Col>
         </Row>
       </div>
+
+      {NOTI?.length > 0 ? (
+        NOTI?.map((item) => (
+          <BorderCardContainer
+            onClick={() => handleNotificationClick(item?.path)}
+            key={item?._id}
+            priorityColor={prioritiess?.[item?.priority]}
+          >
+            <Card className="cursor-pointer">
+              <CardBody>
+                <div className="d-flex justify-content-between">
+                  <div className="d-flex align-items-center">
+                    <NotificationBadgeContainer priorityColor={prioritiess?.[item?.priority]}>
+                      <div className="position-relative">
+                        <Badge pill color="danger" className="badge-up" />
+                        <Bell color={theme.white} size={18} />
+                      </div>
+                    </NotificationBadgeContainer>
+                    <p className="notification-title fw-bolder m-0 ms-1">{item.title}</p>
+                  </div>
+                  <p className="font-small-3 fw-light">
+                    {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
+                  </p>
+                </div>
+                <div className="d-flex justify-content-between ms-3">
+                  <p className="m-0">{item.message}</p>
+                </div>
+              </CardBody>
+            </Card>
+          </BorderCardContainer>
+        ))
+      ) : (
+        <div className="no-data-found-container d-flex flex-column align-items-center py-1">
+          <img src={NoDataFoundGif} alt="no-data" width={200} height={200} className="no-data-found-gif" />
+          <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+        </div>
+      )}
 
       <InfiniteScroll
         dataLength={notificationsData?.data?.length || 0}
