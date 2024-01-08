@@ -109,7 +109,12 @@ const LeftSidebarProjectDetails = () => {
                 {statusEnum[projectDetailsData?.status]}
               </Badge>
             </CustomBadge>
-            <CardText className="fw-bold days">{daysLeft === 0 ? 'Listing Expired' : `${daysLeft} Days left`}</CardText>
+
+            {projectDetailsData?.status === 'OPEN' && (
+              <CardText className="fw-bold days">
+                {daysLeft === 0 ? 'Listing Expired' : `${daysLeft} Days left`}
+              </CardText>
+            )}
           </div>
           <CardTitle className="title">{projectDetailsData?.details?.name}</CardTitle>
 

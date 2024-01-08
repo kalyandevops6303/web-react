@@ -18,7 +18,7 @@ function PaymentStatusForRow({ paymentStatus = [] }) {
       return { theme: 'light-primary', text: 'Payment Initiated' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Funds Available' };
+      return { theme: 'light-success', text: 'Paid' };
     }
     return { theme: 'light-primary', text: tag };
   };

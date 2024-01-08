@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { selectThemeColors } from '@utils';
 import { Badge, Card, CardBody, Col, Label, Row } from 'reactstrap';
 import { useNavigate } from 'react-router';
+import styled from 'styled-components';
 import { Bell } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { BorderCardContainer, NotificationBadgeContainer } from './style';
@@ -18,6 +19,7 @@ import { selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { setItem } from '../../utility/localStorageControl';
+import { ElevateShadow } from '../styled';
 
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
@@ -133,6 +135,12 @@ const Notifications = () => {
     }
   };
 
+  const FiltersWrap = styled.div`
+    .select__control {
+      cursor: pointer;
+    }
+  `;
+
   const dashboardRedirection = () => {
     navigate(`/dashboard`);
   };
@@ -193,21 +201,24 @@ const Notifications = () => {
         <Row className="mt-2 w-100 justify-content-end">
           <Col sm="6" md="4" lg="2">
             <Label>Priority</Label>
-            <Select
-              options={[
-                { label: 'All Priorities', value: '' },
-                { label: 'Priority 1', value: 'PRIORITY_1' },
-                { label: 'Priority 2', value: 'PRIORITY_2' },
-                { label: 'Priority 3', value: 'PRIORITY_3' },
-                { label: 'Priority 4', value: 'PRIORITY_4' },
-              ]}
-              value={selectedPriority}
-              classNamePrefix="select"
-              placeholder="Select priority"
-              theme={selectThemeColors}
-              className="react-select"
-              onChange={(option) => onPriorityChange(option)}
-            />
+            <FiltersWrap>
+              <Select
+                style={{ cursor: 'pointer' }}
+                options={[
+                  { label: 'All Priorities', value: '' },
+                  { label: 'Priority 1', value: 'PRIORITY_1' },
+                  { label: 'Priority 2', value: 'PRIORITY_2' },
+                  { label: 'Priority 3', value: 'PRIORITY_3' },
+                  { label: 'Priority 4', value: 'PRIORITY_4' },
+                ]}
+                value={selectedPriority}
+                classNamePrefix="select"
+                placeholder="Select priority"
+                theme={selectThemeColors}
+                className="cursor-pointer"
+                onChange={(option) => onPriorityChange(option)}
+              />
+            </FiltersWrap>
           </Col>
         </Row>
       </div>
@@ -215,6 +226,7 @@ const Notifications = () => {
       <InfiniteScroll
         dataLength={notificationsData?.data?.length || 0}
         next={loadNewNotifications}
+        className="overflow-visible"
         hasMore={notificationsData?.metadata?.has_next_page}
         loader={<div className="d-flex justify-content-center">Loading...</div>}
       >
@@ -226,25 +238,27 @@ const Notifications = () => {
               priorityColor={priorities?.[item?.custom_payload?.priority]}
             >
               <Card className="cursor-pointer">
-                <CardBody>
-                  <div className="d-flex justify-content-between">
-                    <div className="d-flex align-items-center">
-                      <NotificationBadgeContainer priorityColor={priorities?.[item?.custom_payload?.priority]}>
-                        <div className="position-relative">
-                          <Badge pill color="danger" className="badge-up" />
-                          <Bell color={theme.white} size={18} />
-                        </div>
-                      </NotificationBadgeContainer>
-                      <p className="notification-title fw-bolder m-0 ms-1">{item.title}</p>
+                <ElevateShadow>
+                  <CardBody>
+                    <div className="d-flex justify-content-between">
+                      <div className="d-flex align-items-center">
+                        <NotificationBadgeContainer priorityColor={priorities?.[item?.custom_payload?.priority]}>
+                          <div className="position-relative">
+                            <Badge pill color="danger" className="badge-up" />
+                            <Bell color={theme.white} size={18} />
+                          </div>
+                        </NotificationBadgeContainer>
+                        <p className="notification-title fw-bolder m-0 ms-1">{item.title}</p>
+                      </div>
+                      <p className="font-small-3 fw-light">
+                        {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
+                      </p>
                     </div>
-                    <p className="font-small-3 fw-light">
-                      {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
-                    </p>
-                  </div>
-                  <div className="d-flex justify-content-between ms-3">
-                    <p className="m-0">{item.message}</p>
-                  </div>
-                </CardBody>
+                    <div className="d-flex justify-content-between ms-3">
+                      <p className="m-0">{item.message}</p>
+                    </div>
+                  </CardBody>
+                </ElevateShadow>
               </Card>
             </BorderCardContainer>
           ))

@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Accordion,
   AccordionBody,
@@ -115,6 +115,10 @@ const BidMilestone = () => {
   const [status, setStatus] = useState(invitedByData?.request_status);
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const [isGetWhoInvitedLoading, setGetWhoInvitedLoading] = useState(false);
+  const toggle = useCallback(
+    (id) => (openedAccordion === id ? setOpenedAccordion() : setOpenedAccordion(id)),
+    [openedAccordion],
+  );
 
   const onGetMilestoneSuccess = (res) => {
     dispatch(
@@ -286,7 +290,7 @@ const BidMilestone = () => {
               </div>
             </div>
             <div>
-              <CardText className="value"> ${bidData?.total_estimated_cost} </CardText>
+              <CardText className="value"> $ {bidData?.total_estimated_cost} </CardText>
               <div className="d-flex align-items-center m-0">
                 <CardText className="key mb-0">Project Earnings</CardText>
               </div>
@@ -304,19 +308,14 @@ const BidMilestone = () => {
           </CardBody>
         </Card>
         {bidData?.milestones?.map((milestone, index) => (
-          <Accordion
-            onClick={() => setOpenedAccordion(index + 1)}
-            key={milestone?._id}
-            className="accordion-timeline mb-2"
-            open={openedAccordion}
-          >
+          <Accordion toggle={toggle} key={milestone?._id} className="accordion-timeline mb-2" open={openedAccordion}>
             <AccordionItem style={{ paddingLeft: '0.5rem' }}>
               <AccordionHeader targetId={index + 1}>
                 <AccordionHeadStyle>
                   <span className="title-head">Milestone #{index + 1}</span>
 
                   <div className="d-flex gap-1 aling-items-center">
-                    <div className="d-flex gap-1 aling-items-center">
+                    <div className="d-flex gap-3 aling-items-center">
                       <div>
                         <span className="key">Duration</span>
                         <CardText className="value text-end">
@@ -327,11 +326,11 @@ const BidMilestone = () => {
                       </div>
                       <div className="me-1">
                         <span className="key">Total Hours</span>
-                        <CardText className="value text-end">{milestone?.numbers_of_hours}</CardText>
+                        <CardText className="value text-end">{milestone?.numbers_of_hours}hr</CardText>
                       </div>
                       <div className="me-1">
                         <span className="key">Cost</span>
-                        <CardText className="value text-end">${milestone?.estimated_cost}</CardText>
+                        <CardText className="value text-end">$ {milestone?.estimated_cost}</CardText>
                       </div>
                     </div>
                   </div>
@@ -379,11 +378,15 @@ const BidMilestone = () => {
                         <Row className="mt-1" key={worker?.role}>
                           <Col sm="12" md="12" lg="4">
                             <div className="d-flex align-items-center">
-                              <Avatar
-                                img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
-                                imgHeight="32"
-                                imgWidth="32"
-                              />
+                              {worker?.user_id ? (
+                                <Avatar
+                                  img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
+                                  imgHeight="32"
+                                  imgWidth="32"
+                                />
+                              ) : (
+                                <Avatar img={defaultAvatar} imgHeight="32" imgWidth="32" />
+                              )}
                               {worker?.user_id ? (
                                 <p className="fw-bolder content-description m-0 ms-50">
                                   {worker?.first_name} {worker?.last_name}
