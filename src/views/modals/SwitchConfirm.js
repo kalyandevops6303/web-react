@@ -10,8 +10,9 @@ import { switchProfile } from '../../redux/actions/authActions';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
+import { getTeamId } from '../../utility/Utils';
 
-const SwitchConfirmModal = ({ data, entity, navigateTo, switchTeamId, modal, toggleModal }) => {
+const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleModal }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
@@ -26,11 +27,10 @@ const SwitchConfirmModal = ({ data, entity, navigateTo, switchTeamId, modal, tog
   const handleSwitch = () => {
     if (entity === 'TALENT') {
       dispatch(switchProfile({ data: selectSavedUserDetailsData, onSuccess, selected: false }));
+    } else if (entity === 'TEAM' && switchTeamId === getTeamId()) {
+      navigate(navigateTo);
     } else {
-      const teamData = teams?.filter(
-        (team) =>
-          team._id === switchTeamId || data?.custom_payload?.switch_team_id || team._id === data?.switch_team_id,
-      );
+      const teamData = teams?.filter((team) => team._id === switchTeamId);
       if (teamData?.length > 0) {
         dispatch(switchProfile({ data: teamData[0], onSuccess, selected: false }));
       } else {
@@ -62,7 +62,7 @@ const SwitchConfirmModal = ({ data, entity, navigateTo, switchTeamId, modal, tog
             <div className="pe-1 ms-3">
               <h2 className="fw-bold title">Switch Profile</h2>
               <p className="fw-normal mt-1 sub-title">
-                This action needs to be taken by a {entity}. Please switch to the relevant profile.
+                This action needs to be taken by a different profile. Please switch to the relevant profile.
               </p>
             </div>
           </div>
@@ -82,7 +82,6 @@ export default SwitchConfirmModal;
 SwitchConfirmModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  data: Proptypes.object,
   switchTeamId: Proptypes.string,
   entity: Proptypes.string,
   navigateTo: Proptypes.string,
@@ -91,7 +90,6 @@ SwitchConfirmModal.propTypes = {
 SwitchConfirmModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  data: {},
   switchTeamId: '',
   entity: '',
   navigateTo: '',
