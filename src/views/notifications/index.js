@@ -21,21 +21,157 @@ import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { setItem } from '../../utility/localStorageControl';
 import { ElevateShadow } from '../styled';
 
+const NOTI = [
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Payment Request',
+    priority: 1,
+    trigger_type: 'MANUAL',
+    path: '/project-details/657a9db38d6f34065659fec3/bid?entity=TALENT',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '657a9db38d6f34065659fec3',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '',
+      entity: 'TALENT',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'Please make the initial payment.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Payment Request For Client',
+    priority: 2,
+    trigger_type: 'MANUAL',
+    path: '/project-details/657a9db38d6f34065659fec3/bid?entity=TALENT',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '657a9db38d6f34065659fec3',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '',
+      entity: 'TALENT',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'Please make the initial payment for the project: Comprehensive Audio Book Platform, to begin.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Team Join Request',
+    priority: 3,
+    trigger_type: 'MANUAL',
+    path: '/project-details/657a9df48d6f34065659fec8/bid?entity=TEAM&switch_team_id=6555ecbe24bdfe4c836a7e27',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '657a9df48d6f34065659fec8',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '6555ecbe24bdfe4c836a7e27',
+      entity: 'TALENT',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'You have got a new team join request.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Milestone Submitted',
+    priority: 4,
+    trigger_type: 'MANUAL',
+    path: '/project-details/655d9cc23c57c3bfbb03ef21/bid?entity=TEAM&switch_team_id=64ff01b2f2e6af73ce49c45c',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '655d9cc23c57c3bfbb03ef21',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '64ff01b2f2e6af73ce49c45c',
+      entity: 'TEAM',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'Milestone for the project: Comprehensive Audio Book Platform is submitted.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+];
+
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const userData = useSelector(selectUserData);
   const [switchData, setSwitchData] = useState();
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const priorities = {
-    PRIORITY_1: 'red',
-    PRIORITY_2: 'green',
-    PRIORITY_3: 'info',
-    PRIORITY_4: 'secondary',
+    1: 'red',
+    2: 'green',
+    3: 'info',
+    4: 'secondary',
   };
 
   const [selectedPriority, setSelectedPriority] = useState({ label: 'All Priorities', value: '' });
-
-  const dispatch = useDispatch();
 
   const notificationsData = useSelector(notifications);
   const isLoading = useSelector(notificationsLoading);
@@ -62,132 +198,24 @@ const Notifications = () => {
     dispatch(getNotifications(option.value, 1, 10, []));
   };
 
-  const redirectionFunction = ({ projectId, inviteId, status }) => {
-    if (status === 'Project Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
-    } else if (status === 'Team Invitation Request' && inviteId) {
-      navigate(`/team-invitation/${inviteId}`);
-    } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Team Join Request' && inviteId) {
-      navigate(`/join-request/${inviteId}`);
-    } else if (status === 'Club Invitation Request' && inviteId) {
-      navigate(`/club-invitation/${inviteId}`);
-    } else if (status === 'Club Join Request' && inviteId) {
-      navigate(`/join-request/${inviteId}`);
-    } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Membership Updated') {
-      navigate('/dashboard');
-    } else if (status === 'Club - Request Submitted') {
-      navigate('/dashboard');
-    } else {
-      navigate(`/project-details/${projectId}/bid`);
-    }
-  };
-
-  const disputesRedirection = (type) => {
-    if (type === 'DISPUTE_CREATED' || type === 'DISPUTE_UPDATED') {
-      navigate(`/disputes/open`);
-    } else if (type === 'DISPUTE_RESOLVED') {
-      navigate(`/disputes/resolved`);
-    } else {
-      navigate(`/disputes/open`);
-    }
-  };
-
-  const isReqeustFlowStatus = (status) => {
-    switch (status) {
-      case 'Project Invitation Request':
-        return true;
-      case 'Team Invitation Request':
-        return true;
-      case 'Project Team Invitation Request':
-        return true;
-      case 'Team Join Request':
-        return true;
-      case 'Club Invitation Request':
-        return true;
-      case 'Club Join Request':
-        return true;
-      case 'Project Club Invitation Request':
-        return true;
-      case 'Membership Updated':
-        return true;
-      case 'Club - Request Submitted':
-        return true;
-      default:
-        return false;
-    }
-  };
-
-  const isDisputesNotification = (type) => {
-    switch (type) {
-      case 'DISPUTE_CREATED':
-        return true;
-      case 'DISPUTE_UPDATED':
-        return true;
-      case 'DISPUTE_RESOLVED':
-        return true;
-
-      default:
-        return false;
-    }
-  };
-
   const FiltersWrap = styled.div`
     .select__control {
       cursor: pointer;
     }
   `;
 
-  const dashboardRedirection = () => {
-    navigate(`/dashboard`);
-  };
-
-  const handleNotification = (data) => {
-    setSwitchData({
-      ...data,
-      isDisputesNotification: isDisputesNotification(data?.notification_type),
-      // eslint-disable-next-line no-unneeded-ternary
-      isDashboardRedirection: !!(
-        data?.title === 'Team Created' ||
-        data?.title === 'Team Member Added' ||
-        data?.title === 'Club - Request Submitted'
-      ),
-    });
-
-    if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
-      setSwitchProfileModal(true);
-    } else if (isReqeustFlowStatus(data?.title)) {
-      redirectionFunction({
-        status: data?.title,
-        projectId: data?.custom_payload?.request_for?.project_id,
-        inviteId: data?.custom_payload?.request_id,
+  const handleNotificationClick = (path) => {
+    const switch_team_id = path?.split('switch_team_id=')[1];
+    if (userData?.user_type === userTypes.talent && path.includes('switch_team_id')) {
+      setSwitchData({
+        entity: switch_team_id ? 'TEAM' : 'TALENT',
+        navigateTo: path?.split('?')[0],
+        switchTeamId: switch_team_id,
       });
-    } else if (isDisputesNotification(data?.notification_type)) {
-      disputesRedirection(data?.notification_type);
-    } else if (data?.title === 'Milestone Submitted' || data?.title === 'Milestone Accepted') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
-    } else if (data?.title === 'Project Completed') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/rating`);
-    } else if (data?.title === 'Project Accepted' || data?.title === 'Milestone payment completed.') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
-    } else if (data?.title === 'Team Created') {
-      navigate(`/dashboard`);
+      setSwitchProfileModal(true);
     } else {
-      redirectionFunction({ projectId: data?.custom_payload?.project_id });
+      navigate(path?.split('?')[0]);
     }
-
-    // if (data?.notification_type === 'TEAM_INVITATION') {
-    //   navigate(`/team-invitation/${data.custom_payload?.invitation_id}`);
-    // }
-    // if (data?.notification_type === 'PROJECT_INVITATION') {
-    //   navigate(
-    //     `/project-details/${data.custom_payload?.project_id}/project/project-invitation/${data.custom_payload?.invitation_id}`,
-    //   );
-    // }
-    // setItem('inviteToken', data.custom_payload?.token);
   };
 
   if (isLoading) {
@@ -223,6 +251,43 @@ const Notifications = () => {
         </Row>
       </div>
 
+      {NOTI?.length > 0 ? (
+        NOTI?.map((item) => (
+          <BorderCardContainer
+            onClick={() => handleNotificationClick(item?.path)}
+            key={item?._id}
+            priorityColor={priorities?.[item?.priority]}
+          >
+            <Card className="cursor-pointer">
+              <CardBody>
+                <div className="d-flex justify-content-between">
+                  <div className="d-flex align-items-center">
+                    <NotificationBadgeContainer priorityColor={priorities?.[item?.priority]}>
+                      <div className="position-relative">
+                        <Badge pill color="danger" className="badge-up" />
+                        <Bell color={theme.white} size={18} />
+                      </div>
+                    </NotificationBadgeContainer>
+                    <p className="notification-title fw-bolder m-0 ms-1">{item.title}</p>
+                  </div>
+                  <p className="font-small-3 fw-light">
+                    {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
+                  </p>
+                </div>
+                <div className="d-flex justify-content-between ms-3">
+                  <p className="m-0">{item.message}</p>
+                </div>
+              </CardBody>
+            </Card>
+          </BorderCardContainer>
+        ))
+      ) : (
+        <div className="no-data-found-container d-flex flex-column align-items-center py-1">
+          <img src={NoDataFoundGif} alt="no-data" width={200} height={200} className="no-data-found-gif" />
+          <p className="m-0 fw-bold font-medium-3">No Data Found</p>
+        </div>
+      )}
+
       <InfiniteScroll
         dataLength={notificationsData?.data?.length || 0}
         next={loadNewNotifications}
@@ -233,7 +298,7 @@ const Notifications = () => {
         {notificationsData?.data?.length > 0 ? (
           notificationsData?.data?.map((item) => (
             <BorderCardContainer
-              onClick={() => handleNotification(item)}
+              onClick={() => handleNotificationClick(item?.path)}
               key={item?._id}
               priorityColor={priorities?.[item?.custom_payload?.priority]}
             >
@@ -270,11 +335,11 @@ const Notifications = () => {
         )}
         {switchProfileModal && (
           <SwitchConfirmModal
-            data={switchData}
+            entity={switchData?.entity}
+            navigateTo={switchData?.navigateTo}
+            switchTeamId={switchData?.switchTeamId}
             modal={switchProfileModal}
             toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
-            disputesRedirection={disputesRedirection}
-            dashboardRedirection={dashboardRedirection}
           />
         )}
       </InfiniteScroll>

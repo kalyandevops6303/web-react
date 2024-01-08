@@ -13,6 +13,141 @@ import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { CustomBadge, Elevate } from '../../styled';
 
+const NOTI = [
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Payment Request',
+    priority: 1,
+    trigger_type: 'MANUAL',
+    path: '/project-details/657a9db38d6f34065659fec3/bid?entity=TALENT',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '657a9db38d6f34065659fec3',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '',
+      entity: 'TALENT',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'Please make the initial payment.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Payment Request For Client',
+    priority: 2,
+    trigger_type: 'MANUAL',
+    path: '/project-details/657a9db38d6f34065659fec3/bid?entity=TALENT',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '657a9db38d6f34065659fec3',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '',
+      entity: 'TALENT',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'Please make the initial payment for the project: Comprehensive Audio Book Platform, to begin.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Team Join Request',
+    priority: 3,
+    trigger_type: 'MANUAL',
+    path: '/project-details/657a9df48d6f34065659fec8/bid?entity=TEAM&switch_team_id=6555ecbe24bdfe4c836a7e27',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '657a9df48d6f34065659fec8',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '6555ecbe24bdfe4c836a7e27',
+      entity: 'TALENT',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'You have got a new team join request.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+  {
+    _id: '6594222f8132f14462d6825e',
+    created_at: 1704206895747,
+    updated_at: 1704206895747,
+    is_deleted: false,
+    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
+    title: 'Milestone Submitted',
+    priority: 4,
+    trigger_type: 'MANUAL',
+    path: '/project-details/655d9cc23c57c3bfbb03ef21/bid?entity=TEAM&switch_team_id=64ff01b2f2e6af73ce49c45c',
+    status: 'UNREAD',
+    topic: 'u64e843f347a11f69d95a8f7b',
+    metadata: {
+      project_id: '655d9cc23c57c3bfbb03ef21',
+      project_name: 'Comprehensive Audio Book Platform',
+      client_name: 'Vighnesh Client',
+      talent_name: 'Jack jones',
+      bid_id: '6593c78e19be5191f556237d',
+      switch_team_id: '64ff01b2f2e6af73ce49c45c',
+      entity: 'TEAM',
+      entity_name: 'Jack jones',
+      document_id: '6593dc82839a1f5b0995a46e',
+    },
+    to_entity: {
+      user_id: '64e843f347a11f69d95a8f7b',
+      user_type: 'CLIENT',
+    },
+    message: 'Milestone for the project: Comprehensive Audio Book Platform is submitted.',
+    from_entity: {
+      user_id: '64d60539e127974f873d31d8',
+      user_type: 'TALENT',
+    },
+  },
+];
+
 const Alerts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -43,42 +178,6 @@ const Alerts = () => {
     });
   };
 
-  const isDisputesNotification = (type) => {
-    switch (type) {
-      case 'Dispute Created':
-        return true;
-      case 'Dispute Replied!':
-        return true;
-      case 'Dispute Resolved!':
-        return true;
-      default:
-        return false;
-    }
-  };
-
-  const isReqeustFlowStatus = (status) => {
-    switch (status) {
-      case 'Project Invitation Request':
-        return true;
-      case 'Team Invitation Request':
-        return true;
-      case 'Club Invitation Request':
-        return true;
-      case 'Project Team Invitation Request':
-        return true;
-      case 'Project Club Invitation Request':
-        return true;
-      case 'Team Join Request':
-        return true;
-      case 'Membership Updated':
-        return true;
-      case 'Club - Request Submitted':
-        return true;
-
-      default:
-        return false;
-    }
-  };
   const getStatusShortName = (status) => {
     switch (status) {
       case 'Project Invitation Request':
@@ -103,77 +202,23 @@ const Alerts = () => {
         return status;
     }
   };
-  const redirectionFunction = ({ projectId, inviteId, status }) => {
-    if (status === 'Project Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
-    } else if (status === 'Team Invitation Request' && inviteId) {
-      navigate(`/team-invitation/${inviteId}`);
-    } else if (status === 'Club Invitation Request' && inviteId) {
-      navigate(`/club-invitation/${inviteId}`);
-    } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Team Join Request' && inviteId) {
-      navigate(`/join-request/${inviteId}`);
-    } else if (status === 'Membership Updated') {
-      navigate('/dashboard');
-    } else if (status === 'Club - Request Submitted') {
-      navigate('/dashboard');
-    } else {
-      navigate(`/project-details/${projectId}/bid`);
-    }
-  };
 
-  const disputesAlertRedirection = (type) => {
-    if (type === 'Dispute Created' || type === 'Dispute Replied!') {
-      navigate(`/disputes/open`);
-    } else if (type === 'Dispute Resolved!') {
-      navigate(`/disputes/resolved`);
-    } else {
-      navigate(`/disputes/open`);
-    }
-  };
-
-  const handleView = (data) => {
-    // setSwitchProfileModal(true);
-    setSwitchData({
-      ...data,
-      isDisputeAlert: isDisputesNotification(data?.title),
-      // eslint-disable-next-line no-unneeded-ternary
-      isDashboardRedirection: !!(
-        data?.title === 'Team Created' ||
-        data?.title === 'Team Member Added' ||
-        data?.title === 'Membership Updated' ||
-        data?.title === 'Club - Request Submitted'
-      ),
-    });
-
-    if (userDetailsData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
-      setSwitchProfileModal(true);
-    } else if (isReqeustFlowStatus(data?.title)) {
-      redirectionFunction({
-        status: data?.title,
-        projectId: data?.custom_payload?.request_for?.project_id,
-        inviteId: data?.custom_payload?.request_id,
+  const handleAlertClick = (path) => {
+    const switch_team_id = path?.split('switch_team_id=')[1];
+    if (userDetailsData?.user_type === userTypes.talent && path.includes('switch_team_id')) {
+      setSwitchData({
+        entity: switch_team_id ? 'TEAM' : 'TALENT',
+        navigateTo: path?.split('?')[0],
+        switchTeamId: switch_team_id,
       });
-    } else if (isDisputesNotification(data?.title)) {
-      disputesAlertRedirection(data?.title);
-    } else if (data?.title === 'Milestone Submitted') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
-    } else if (data?.title === 'Project Accepted') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
+      setSwitchProfileModal(true);
     } else {
-      redirectionFunction({ projectId: data?.custom_payload?.project_id });
+      navigate(path?.split('?')[0]);
     }
   };
 
   const handleRedirection = () => {
     navigate('/notifications');
-  };
-
-  const dashboardRedirection = () => {
-    navigate(`/dashboard`);
   };
 
   return (
@@ -289,9 +334,31 @@ const Alerts = () => {
             </CardBody>
           </Card>
 
+          {NOTI &&
+            NOTI?.map((item) => (
+              <Card onClick={() => handleAlertClick(item?.path)} key={item?._id} className="cursor-pointer card-inside">
+                <Elevate key={item?._id}>
+                  <CardHeader className="d-flex">
+                    <CardTitle tag="h4">{getStatusShortName(item?.title)}</CardTitle>
+                    <p className="relative-time font-small-2 fw-light m-0 ms-50">
+                      {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : ''}
+                    </p>
+                  </CardHeader>
+                  <CardBody>
+                    <div key={item?._id}>
+                      <div className="d-flex justify-content-between">
+                        <p className="font-small-3 m-0">{item?.message || 'Name'}</p>
+                        <CardText className="text-primary d-none">View</CardText>
+                      </div>
+                    </div>
+                  </CardBody>
+                </Elevate>
+              </Card>
+            ))}
+
           {alerts &&
             alerts?.alerts?.data.map((item) => (
-              <Card onClick={() => handleView(item)} key={item?._id} className="cursor-pointer card-inside">
+              <Card onClick={() => handleAlertClick(item?.path)} key={item?._id} className="cursor-pointer card-inside">
                 <Elevate key={item?._id}>
                   <CardHeader className="d-flex">
                     <CardTitle tag="h4">{getStatusShortName(item?.title)}</CardTitle>
@@ -319,11 +386,11 @@ const Alerts = () => {
       </Card>
       {switchProfileModal && (
         <SwitchConfirmModal
-          data={switchData}
+          entity={switchData?.entity}
+          navigateTo={switchData?.navigateTo}
+          switchTeamId={switchData?.switchTeamId}
           modal={switchProfileModal}
           toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
-          disputesAlertRedirection={disputesAlertRedirection}
-          dashboardRedirection={dashboardRedirection}
         />
       )}
     </AlertCardWrapper>
