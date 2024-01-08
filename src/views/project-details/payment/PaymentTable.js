@@ -204,7 +204,7 @@ const PaymentTable = () => {
       {listLoading ? (
         <ComponentSpinner />
       ) : (
-        <Card className="p-1" style={{ backgroundColor: 'transparent' }}>
+        <Card className="" style={{ backgroundColor: 'transparent' }}>
           <div className="p-2 pb-0">
             <CardText className="fs-4 mb-0 fw-bold">Milestone Payment</CardText>
           </div>

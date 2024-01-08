@@ -384,6 +384,25 @@ const PreviewSectionWrapper = styled.div`
       box-shadow: 0px 4px 24px 0px ${theme.cardShadowLight} !important;
     }
   }
+
+  .custom-milestone-accordion {
+    .accordion-item:first-of-type {
+      border-top-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+    }
+
+    .accordion-item:first-of-type .accordion-button {
+      border-top-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+    }
+    .accordion-item {
+      border-right: 1px solid ${theme.cardHeaderBorderColor};
+      border-left: 1px solid ${theme.cardHeaderBorderColor};
+    }
+    .accordion-item:last-of-type {
+      border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+    }
+  }
 `;
 
 const InfoContainer = styled.div`
