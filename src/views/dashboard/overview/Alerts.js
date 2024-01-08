@@ -178,42 +178,6 @@ const Alerts = () => {
     });
   };
 
-  const isDisputesNotification = (type) => {
-    switch (type) {
-      case 'Dispute Created':
-        return true;
-      case 'Dispute Replied!':
-        return true;
-      case 'Dispute Resolved!':
-        return true;
-      default:
-        return false;
-    }
-  };
-
-  const isReqeustFlowStatus = (status) => {
-    switch (status) {
-      case 'Project Invitation Request':
-        return true;
-      case 'Team Invitation Request':
-        return true;
-      case 'Club Invitation Request':
-        return true;
-      case 'Project Team Invitation Request':
-        return true;
-      case 'Project Club Invitation Request':
-        return true;
-      case 'Team Join Request':
-        return true;
-      case 'Membership Updated':
-        return true;
-      case 'Club - Request Submitted':
-        return true;
-
-      default:
-        return false;
-    }
-  };
   const getStatusShortName = (status) => {
     switch (status) {
       case 'Project Invitation Request':
@@ -238,86 +202,23 @@ const Alerts = () => {
         return status;
     }
   };
-  const redirectionFunction = ({ projectId, inviteId, status }) => {
-    if (status === 'Project Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
-    } else if (status === 'Team Invitation Request' && inviteId) {
-      navigate(`/team-invitation/${inviteId}`);
-    } else if (status === 'Club Invitation Request' && inviteId) {
-      navigate(`/club-invitation/${inviteId}`);
-    } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Team Join Request' && inviteId) {
-      navigate(`/join-request/${inviteId}`);
-    } else if (status === 'Membership Updated') {
-      navigate('/dashboard');
-    } else if (status === 'Club - Request Submitted') {
-      navigate('/dashboard');
-    } else {
-      navigate(`/project-details/${projectId}/bid`);
-    }
-  };
-
-  const disputesAlertRedirection = (type) => {
-    if (type === 'Dispute Created' || type === 'Dispute Replied!') {
-      navigate(`/disputes/open`);
-    } else if (type === 'Dispute Resolved!') {
-      navigate(`/disputes/resolved`);
-    } else {
-      navigate(`/disputes/open`);
-    }
-  };
-
-  const handleView = (data) => {
-    // setSwitchProfileModal(true);
-    setSwitchData({
-      ...data,
-      isDisputeAlert: isDisputesNotification(data?.title),
-      // eslint-disable-next-line no-unneeded-ternary
-      isDashboardRedirection: !!(
-        data?.title === 'Team Created' ||
-        data?.title === 'Team Member Added' ||
-        data?.title === 'Membership Updated' ||
-        data?.title === 'Club - Request Submitted'
-      ),
-    });
-
-    if (userDetailsData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
-      setSwitchProfileModal(true);
-    } else if (isReqeustFlowStatus(data?.title)) {
-      redirectionFunction({
-        status: data?.title,
-        projectId: data?.custom_payload?.request_for?.project_id,
-        inviteId: data?.custom_payload?.request_id,
-      });
-    } else if (isDisputesNotification(data?.title)) {
-      disputesAlertRedirection(data?.title);
-    } else if (data?.title === 'Milestone Submitted') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
-    } else if (data?.title === 'Project Accepted') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
-    } else {
-      redirectionFunction({ projectId: data?.custom_payload?.project_id });
-    }
-  };
 
   const handleAlertClick = (path) => {
+    const switch_team_id = path?.split('switch_team_id=')[1];
     if (userDetailsData?.user_type === userTypes.talent && path.includes('switch_team_id')) {
-      setSwitchData({ path });
+      setSwitchData({
+        entity: switch_team_id ? 'TEAM' : 'TALENT',
+        navigateTo: path?.split('?')[0],
+        switchTeamId: switch_team_id,
+      });
       setSwitchProfileModal(true);
     } else {
-      navigate(path);
+      navigate(path?.split('?')[0]);
     }
   };
 
   const handleRedirection = () => {
     navigate('/notifications');
-  };
-
-  const dashboardRedirection = () => {
-    navigate(`/dashboard`);
   };
 
   return (
@@ -457,7 +358,7 @@ const Alerts = () => {
 
           {alerts &&
             alerts?.alerts?.data.map((item) => (
-              <Card onClick={() => handleView(item)} key={item?._id} className="cursor-pointer card-inside">
+              <Card onClick={() => handleAlertClick(item?.path)} key={item?._id} className="cursor-pointer card-inside">
                 <Elevate key={item?._id}>
                   <CardHeader className="d-flex">
                     <CardTitle tag="h4">{getStatusShortName(item?.title)}</CardTitle>
@@ -485,11 +386,11 @@ const Alerts = () => {
       </Card>
       {switchProfileModal && (
         <SwitchConfirmModal
-          data={switchData}
+          entity={switchData?.entity}
+          navigateTo={switchData?.navigateTo}
+          switchTeamId={switchData?.switchTeamId}
           modal={switchProfileModal}
           toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
-          disputesAlertRedirection={disputesAlertRedirection}
-          dashboardRedirection={dashboardRedirection}
         />
       )}
     </AlertCardWrapper>
