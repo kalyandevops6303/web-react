@@ -10,7 +10,7 @@ import { NavItem, NavLink as RsNavLink } from 'reactstrap';
 import themeConfig from '@configs/themeConfig';
 
 // ** Custom Components
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarUser from './NavbarUser';
 import theme from '../../../../configs/themeVariables';
@@ -23,8 +23,50 @@ import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
 import { setUnreadMsgCount } from '../../../../redux/reducers/chat';
 import { setActiveNavTab } from '../../../../redux/reducers/activeNavTab';
+import SwitchConfirmModal from '../../../../views/modals/SwitchConfirm';
+
+const HeadWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  .navbar-brand {
+    margin: auto 0;
+    .brand-logo {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      img {
+        max-height: 30px;
+      }
+    }
+  }
+  .menu-item {
+    padding: 1rem 0;
+    margin: 0 1rem 0 2rem;
+    margin-bottom: -11px;
+    font-size: 16px;
+    font-weight: 400;
+    color: ${theme.textColor};
+    &:hover {
+      color: ${theme.textColor};
+    }
+  }
+  .is-active {
+    font-weight: 600;
+    border-bottom: 2px solid ${theme.activeColor};
+    color: ${theme.activeColor};
+    &:hover {
+      color: ${theme.activeColor};
+    }
+  }
+  @media (max-width: 1200px) {
+    .menu-item {
+      display: none;
+    }
+  }
+`;
 
 const ThemeNavbar = (props) => {
+  const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const userData = useSelector(selectUserData);
   const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
@@ -36,46 +78,6 @@ const ThemeNavbar = (props) => {
   // ** Props
   const { skin, setSkin, setMenuVisibility, className } = props;
   // ** Function to toggle Theme (Light/Dark)
-
-  const HeadWrapper = styled.div`
-    display: flex;
-    width: 100%;
-    .navbar-brand {
-      margin: auto 0;
-      .brand-logo {
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        img {
-          max-height: 30px;
-        }
-      }
-    }
-    .menu-item {
-      padding: 1rem 0;
-      margin: 0 1rem 0 2rem;
-      margin-bottom: -11px;
-      font-size: 16px;
-      font-weight: 400;
-      color: ${theme.textColor};
-      &:hover {
-        color: ${theme.textColor};
-      }
-    }
-    .is-active {
-      font-weight: 600;
-      border-bottom: 2px solid ${theme.activeColor};
-      color: ${theme.activeColor};
-      &:hover {
-        color: ${theme.activeColor};
-      }
-    }
-    @media (max-width: 1200px) {
-      .menu-item {
-        display: none;
-      }
-    }
-  `;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();

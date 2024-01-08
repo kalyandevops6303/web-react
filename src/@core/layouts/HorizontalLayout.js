@@ -10,7 +10,7 @@ import { handleMenuHidden, handleContentWidth } from '@store/layout';
 import { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { ArrowUp } from 'react-feather';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 // ** Reactstrap Imports
 import { Navbar, Button } from 'reactstrap';
@@ -36,10 +36,12 @@ import FooterComponent from './components/footer';
 
 // ** Styles
 import '@styles/base/core/menu/menu-types/horizontal-menu.scss';
+import SwitchConfirmModal from '../../views/modals/SwitchConfirm';
 
 const HorizontalLayout = (props) => {
   // ** Props
   const { footer, children } = props;
+  const [switchProfileModal, setSwitchProfileModal] = useState(false);
 
   // ** Hooks
   const { skin, setSkin } = useSkin();
@@ -57,6 +59,7 @@ const HorizontalLayout = (props) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const layoutStore = useSelector((state) => state.layout);
+  const [searchParams] = useSearchParams();
 
   // ** Vars
   const { contentWidth } = layoutStore;
@@ -85,6 +88,15 @@ const HorizontalLayout = (props) => {
   const cleanup = () => {
     setIsMounted(false);
   };
+
+  const entity = searchParams.get('entity');
+  const switchTeamId = searchParams.get('switch_team_id');
+  useEffect(() => {
+    if (entity === 'TALENT' || switchTeamId) {
+      setSwitchProfileModal(true);
+    }
+  }, []);
+
   //  ComponentDidMount
   useEffect(() => {
     setIsMounted(true);
@@ -120,8 +132,18 @@ const HorizontalLayout = (props) => {
           <NavbarComponent skin={skin} setSkin={setSkin} />
         </div>
       </Navbar>
-
-      {children}
+      {entity
+        ? switchProfileModal && (
+            <SwitchConfirmModal
+              // data={{ ...data, project_id: data?._id }}
+              entity={entity}
+              navigateTo={location?.pathname}
+              switchTeamId={switchTeamId}
+              modal={switchProfileModal}
+              toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
+            />
+          )
+        : children}
 
       {themeConfig.layout.customizer === true ? (
         <Customizer

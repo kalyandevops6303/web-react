@@ -49,12 +49,12 @@ const handleErrorCode = async (err, callBack) => {
     localStorage.clear();
     sessionStorage.clear();
     if (teamId) {
-      setItemFromSession('redirect_to_location', window.location.pathname);
+      setItemFromSession('redirect_to_location', window.location.pathname + window.location.search);
       setItemFromSession('team_id', teamId);
       setItemFromSession('team_data', teamData);
       setItemFromSession('isUserVisited', true);
     } else {
-      setItemFromSession('redirect_to_location', window.location.pathname);
+      setItemFromSession('redirect_to_location', window.location.pathname + window.location.search);
       setItemFromSession('isUserVisited', true);
     }
   } else if (
