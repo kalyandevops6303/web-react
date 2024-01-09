@@ -21,18 +21,26 @@ const milestoneTransactionsServiceForClient = (projectId, milestoneId) => {
   return DataService.get(QUERY);
 };
 
+const saveMilestoneService = (milestone_id, data) =>
+  DataService.put(`${API.projectMilestones.saveMilestone}?milestone_id=${milestone_id}`, data);
+
 const submitMilestoneService = (milestone_id, data) =>
   DataService.put(`${API.projectMilestones.submitMilestone}?milestone_id=${milestone_id}`, data);
 
 const acceptMilestoneService = (milestone_id) =>
   DataService.put(`${API.projectMilestones.acceptMilestone}?milestone_id=${milestone_id}`);
 
+const rejectMilestoneService = (milestone_id) =>
+  DataService.put(`${API.projectMilestones.rejectMilestone}?milestone_id=${milestone_id}`);
+
 const milestoneFileUploadService = (filename) =>
   DataService.get(`${API.projectMilestones.projectFileUpload}?filename=${filename}`);
 
 export {
-  projectMilestonesService,
   submitMilestoneService,
+  rejectMilestoneService,
+  projectMilestonesService,
+  saveMilestoneService,
   acceptMilestoneService,
   milestoneFileUploadService,
   milestoneTransactionsServiceForClient,

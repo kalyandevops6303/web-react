@@ -15,6 +15,7 @@ import theme from '../../configs/themeVariables';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import TextToolTip from './TextToolTip';
+import { Elevate } from '../styled';
 
 function TalentCard({ data, isSearchPage }) {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
@@ -84,126 +85,133 @@ function TalentCard({ data, isSearchPage }) {
   return (
     <TeamCardWrap>
       <Card onClick={handleCard} className="cursor-pointer">
-        <CardBody>
-          <div className="d-flex teamcard-flex-cloumn">
-            <div className="w-75">
-              <div className="d-flex">
-                <Avatar
-                  img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
-                  imgHeight="40"
-                  imgWidth="40"
-                  className={`market-place-card-photo me-1 mt-25 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
-                />
-                <Col className="ms-50">
-                  <CardTitle className="d-flex truncate-1 text-decoration-none marketplace-card-title mb-0">
-                    <Link
-                      state={{
-                        from: {
-                          primary: fromLocationPrimary(),
-                          secondary: fromLocationSecondary() || fromLocationSearch(),
-                        },
-                      }}
-                      to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
-                    >
-                      {data?.first_name}&nbsp;
-                      {data?.last_name}
-                    </Link>
-                  </CardTitle>
-                  <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
-                    {data?.role?.name || 'Role'}
-                  </CardText>
-                  <div className="d-flex teamcard-flex-cloumn">
-                    <div className="d-flex mr-2">
-                      <RatingBadge number={Math.round(data?.rating ?? 0)} />
-                      <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                        {data?.user_type === userTypes.talent ? data?.projects_worked_on_count : 0} Projects
-                      </CardText>
-                    </div>
-                    <div className="d-flex margin-none" style={{ marginLeft: '20px' }}>
-                      {locationDetails ? (
-                        <div className="d-flex align-items-center">
-                          <MapPin size={20} className="me-50" />
-                          <TextToolTip
-                            text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
-                            id={`tooltip-location-${data?.user_id}`}
-                          />
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                </Col>
-              </div>
-              <div className="mt-2">{data?.professional_intro}</div>
-            </div>
-            <div className="w-25 teamcard-width">
-              <div className="d-flex flex-column align-items-start">
-                <div className="d-flex w-100 justify-content-end gap-50">
-                  {data?.is_alma_mater && (
-                    <Badge className="bg-white" style={{ marginTop: '-3px' }}>
-                      <img src={hat} alt="client-badge" width={20} height={20} />
-                    </Badge>
-                  )}
-                  {!isSearchPage && (
-                    <div className="mb-25">
-                      {isFavorite ? (
-                        <Heart
-                          className="cursor-pointer d-flex heart"
-                          fill={theme.red}
-                          stroke={theme.red}
-                          onClick={(e) => handleUnLike(e)}
-                          size={20}
-                        />
-                      ) : (
-                        <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
-                      )}
-                    </div>
-                  )}
-                  {data?.match_percentage ? (
-                    <div style={{ width: '35px', height: '35px', marginTop: '-8px' }}>
-                      <CircularProgressbarWithChildren
-                        value={data?.match_percentage}
-                        styles={{
-                          path: {
-                            stroke: giveStrokeColor(data?.match_percentage),
-                            strokeLinecap: 'round',
-                            transition: 'stroke-dashoffset 0.5s ease 0s',
-                            transform: 'rotate(0turn)',
-                            transformOrigin: 'center center',
-                          },
-                          trail: {
-                            stroke: theme.progressBarBg,
-                            strokeLinecap: 'round',
-                            transform: 'rotate(0turn)',
-                            transformOrigin: 'center center',
+        <Elevate>
+          <CardBody>
+            <div className="d-flex teamcard-flex-cloumn">
+              <div className="w-75">
+                <div className="d-flex">
+                  <Avatar
+                    img={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
+                    imgHeight="40"
+                    imgWidth="40"
+                    className={`market-place-card-photo me-1 mt-25 ${data?.match_percentage >= 0 ? 'mt-25' : ''}`}
+                  />
+                  <Col className="ms-50">
+                    <CardTitle className="d-flex truncate-1 text-decoration-none marketplace-card-title mb-0">
+                      <Link
+                        state={{
+                          from: {
+                            primary: fromLocationPrimary(),
+                            secondary: fromLocationSecondary() || fromLocationSearch(),
                           },
                         }}
+                        to={`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`}
                       >
-                        <div className="d-flex justify-content-center align-items-center">
-                          <p className="m-0" style={{ fontSize: '10px' }}>
-                            {data?.match_percentage ?? 80}%
-                          </p>
-                        </div>
-                      </CircularProgressbarWithChildren>
+                        {data?.first_name}&nbsp;
+                        {data?.last_name}
+                      </Link>
+                    </CardTitle>
+                    <CardText className="truncate-1 font-small-3 fw-300 mb-25 marketplace-card-role">
+                      {data?.role?.name || 'Role'}
+                    </CardText>
+                    <div className="d-flex teamcard-flex-cloumn">
+                      <div className="d-flex mr-2">
+                        <RatingBadge number={Math.round(data?.rating ?? 0)} />
+                        <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                          {data?.user_type === userTypes.talent ? data?.projects_worked_on_count : 0} Projects
+                        </CardText>
+                      </div>
+                      <div className="d-flex margin-none" style={{ marginLeft: '20px' }}>
+                        {locationDetails ? (
+                          <div className="d-flex align-items-center">
+                            <MapPin size={20} className="me-50" />
+                            <TextToolTip
+                              text={`${locationDetails?.city?.name ?? ''}, ${locationDetails?.country?.name ?? ''}`}
+                              id={`tooltip-location-${data?.user_id}`}
+                            />
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
-                  ) : null}
+                  </Col>
+                </div>
+                <div className="mt-2">{data?.professional_intro}</div>
+              </div>
+              <div className="w-25 teamcard-width">
+                <div className="d-flex flex-column align-items-start">
+                  <div className="d-flex w-100 justify-content-end gap-50">
+                    {data?.is_alma_mater && (
+                      <Badge className="bg-white" style={{ marginTop: '-3px' }}>
+                        <img src={hat} alt="client-badge" width={20} height={20} />
+                      </Badge>
+                    )}
+                    {!isSearchPage && (
+                      <div className="mb-25">
+                        {isFavorite ? (
+                          <Heart
+                            className="cursor-pointer d-flex heart"
+                            fill={theme.red}
+                            stroke={theme.red}
+                            onClick={(e) => handleUnLike(e)}
+                            size={20}
+                          />
+                        ) : (
+                          <Heart className="cursor-pointer d-flex heart" onClick={(e) => handleLike(e)} size={20} />
+                        )}
+                      </div>
+                    )}
+                    {data?.match_percentage ? (
+                      <div style={{ width: '35px', height: '35px', marginTop: '-8px' }}>
+                        <CircularProgressbarWithChildren
+                          value={data?.match_percentage}
+                          styles={{
+                            path: {
+                              stroke: giveStrokeColor(data?.match_percentage),
+                              strokeLinecap: 'round',
+                              transition: 'stroke-dashoffset 0.5s ease 0s',
+                              transform: 'rotate(0turn)',
+                              transformOrigin: 'center center',
+                            },
+                            trail: {
+                              stroke: theme.progressBarBg,
+                              strokeLinecap: 'round',
+                              transform: 'rotate(0turn)',
+                              transformOrigin: 'center center',
+                            },
+                          }}
+                        >
+                          <div className="d-flex justify-content-center align-items-center">
+                            <p className="m-0" style={{ fontSize: '10px' }}>
+                              {data?.match_percentage ?? 80}%
+                            </p>
+                          </div>
+                        </CircularProgressbarWithChildren>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="">
+                  {data?.expertise?.skills && (
+                    <BadgeGroup
+                      title="Skills"
+                      data={data?.expertise?.skills}
+                      color="light-blue"
+                      user_id={data?.user_id}
+                    />
+                  )}
+                  {data?.expertise?.tools && (
+                    <BadgeGroup
+                      title="Tools"
+                      data={data?.expertise?.tools}
+                      color="light-blue"
+                      user_id={data?.user_id}
+                    />
+                  )}
                 </div>
               </div>
-              <div className="">
-                {data?.expertise?.skills && (
-                  <BadgeGroup
-                    title="Skills"
-                    data={data?.expertise?.skills}
-                    color="light-blue"
-                    user_id={data?.user_id}
-                  />
-                )}
-                {data?.expertise?.tools && (
-                  <BadgeGroup title="Tools" data={data?.expertise?.tools} color="light-blue" user_id={data?.user_id} />
-                )}
-              </div>
             </div>
-          </div>
-        </CardBody>
+          </CardBody>
+        </Elevate>
       </Card>
     </TeamCardWrap>
   );

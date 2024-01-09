@@ -11,7 +11,7 @@ import { returnCompleteProfileDetailsCta } from '../../../utility/constants/Comp
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
-import { CustomBadge } from '../../styled';
+import { CustomBadge, Elevate } from '../../styled';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -291,23 +291,23 @@ const Alerts = () => {
 
           {alerts &&
             alerts?.alerts?.data.map((item) => (
-              <Card key={item?._id} className="card-inside">
-                <CardHeader className="d-flex">
-                  <CardTitle tag="h4">{getStatusShortName(item?.title)}</CardTitle>
-                  <p className="relative-time font-small-2 fw-light m-0 ms-50">
-                    {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : ''}
-                  </p>
-                </CardHeader>
-                <CardBody>
-                  <div key={item?._id}>
-                    <div className="d-flex justify-content-between">
-                      <p className="font-small-3 m-0">{item?.message || 'Name'}</p>
-                      <CardText className="cursor-pointer text-primary" onClick={() => handleView(item)}>
-                        View
-                      </CardText>
+              <Card onClick={() => handleView(item)} key={item?._id} className="cursor-pointer card-inside">
+                <Elevate key={item?._id}>
+                  <CardHeader className="d-flex">
+                    <CardTitle tag="h4">{getStatusShortName(item?.title)}</CardTitle>
+                    <p className="relative-time font-small-2 fw-light m-0 ms-50">
+                      {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : ''}
+                    </p>
+                  </CardHeader>
+                  <CardBody>
+                    <div key={item?._id}>
+                      <div className="d-flex justify-content-between">
+                        <p className="font-small-3 m-0">{item?.message || 'Name'}</p>
+                        <CardText className="text-primary d-none">View</CardText>
+                      </div>
                     </div>
-                  </div>
-                </CardBody>
+                  </CardBody>
+                </Elevate>
               </Card>
             ))}
           {alerts?.alerts?.metadata?.total_records > 4 && (

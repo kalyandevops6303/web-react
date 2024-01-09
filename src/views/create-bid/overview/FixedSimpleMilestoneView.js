@@ -130,6 +130,7 @@ const FixedSimpleMilestoneView = () => {
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
+  const [allWorkers, setAllWorkers] = useState([]);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
 
@@ -197,6 +198,13 @@ const FixedSimpleMilestoneView = () => {
       estimated_cost: milestone.talentCost,
       deliverables: milestone.deliverables,
       seq: maxSeqValue + index + 1,
+      workers: milestone.workers.map((worker) => {
+        const { amount, image_uri, ...rest } = worker;
+        return {
+          ...rest,
+          number_of_weeks: Number(milestone.duration),
+        };
+      }),
     }));
     const update_milestones = updatedMilestones.map((milestone) => ({
       name: milestone.name,
@@ -209,6 +217,13 @@ const FixedSimpleMilestoneView = () => {
       deliverables: milestone.deliverables,
       milestone_id: milestone.otherDetails._id,
       seq: milestone.otherDetails.seq,
+      workers: milestone.workers.map((worker) => {
+        const { amount, image_uri, ...rest } = worker;
+        return {
+          ...rest,
+          number_of_weeks: Number(milestone.duration),
+        };
+      }),
     }));
     const removed_milestone_ids = removedMilestoneIds.filter((id) => id !== undefined);
     const documents = files.map((file) => ({
@@ -271,6 +286,7 @@ const FixedSimpleMilestoneView = () => {
         talentCost: undefined,
         deliverables: [''],
         otherDetails: {},
+        workers: allWorkers,
       });
 
       toggle(getValues('milestones')?.length);
@@ -416,8 +432,23 @@ const FixedSimpleMilestoneView = () => {
           name: milestone?.name,
           description: milestone?.description,
           deliverables: milestone?.deliverables?.length > 0 ? milestone?.deliverables : [''],
+          workers: res?.workers?.length > 0 ? res?.workers : [],
           otherDetails: milestone,
         }));
+
+        setValue('milestones', reqData, { shouldValidate: true });
+      } else if (res?.workers?.length > 0) {
+        const reqData = [
+          {
+            duration: undefined,
+            talentCost: undefined,
+            name: undefined,
+            description: undefined,
+            deliverables: [''],
+            otherDetails: {},
+            workers: res?.workers?.length > 0 ? res?.workers : [],
+          },
+        ];
 
         setValue('milestones', reqData, { shouldValidate: true });
       }
@@ -430,6 +461,9 @@ const FixedSimpleMilestoneView = () => {
           },
         }));
         setFiles(reqFiles);
+      }
+      if (res?.workers?.length > 0) {
+        setAllWorkers(res?.workers);
       }
     }
   };

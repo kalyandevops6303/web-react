@@ -21,6 +21,7 @@ import { getClientNameService, getTeamNameSerive } from '../../../services/proje
 import { userTypes } from '../../../utility/constants/Constant';
 import { clearData } from '../../../redux/reducers/project';
 import theme from '../../../configs/themeVariables';
+import { ResponsiveGrid } from '../../cards/style';
 
 // eslint-disable-next-line react/prop-types
 const SecondaryFilters = ({ primaryFilter, userType }) => {
@@ -404,36 +405,38 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       {isLoading ? (
         <ComponentSpinner />
       ) : (
-        <InfiniteScroll
-          dataLength={selectProjectData?.length}
-          next={fetchMore}
-          hasMore={hasMore}
-          endMessage={
-            <div className="d-flex justify-content-center ">
-              {selectProjectData?.length > 0 ? (
-                <span className="mt-2">You have seen it all!</span>
-              ) : (
-                <NoDataFoundComponent data={selectProjectData} />
-              )}
-            </div>
-          }
-          loader={<div className="d-flex justify-content-center">Loading...</div>}
-        >
-          {selectProjectData?.map((item) => {
-            const CardComponent = ProjectCard;
-            return (
-              <CardComponent
-                key={item?._id || item?.id}
-                data={item}
-                isPopoverOpen={popoverOpen}
-                isExpanded={false}
-                primaryFilter={primaryFilter}
-                secondaryFilterForInvitedType={secondFilterState.invited_type[0].value}
-                isProjectWithTeam
-              />
-            );
-          })}
-        </InfiniteScroll>
+        <ResponsiveGrid>
+          <InfiniteScroll
+            dataLength={selectProjectData?.length}
+            next={fetchMore}
+            hasMore={hasMore}
+            endMessage={
+              <div className="d-flex justify-content-center ">
+                {selectProjectData?.length > 0 ? (
+                  <span className="mt-2">You have seen it all!</span>
+                ) : (
+                  <NoDataFoundComponent data={selectProjectData} />
+                )}
+              </div>
+            }
+            loader={<div className="d-flex justify-content-center">Loading...</div>}
+          >
+            {selectProjectData?.map((item) => {
+              const CardComponent = ProjectCard;
+              return (
+                <CardComponent
+                  key={item?._id || item?.id}
+                  data={item}
+                  isPopoverOpen={popoverOpen}
+                  isExpanded={false}
+                  primaryFilter={primaryFilter}
+                  secondaryFilterForInvitedType={secondFilterState.invited_type[0].value}
+                  isProjectWithTeam
+                />
+              );
+            })}
+          </InfiniteScroll>
+        </ResponsiveGrid>
       )}
     </>
   );

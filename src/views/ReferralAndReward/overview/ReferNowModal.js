@@ -95,6 +95,10 @@ const ReferNowModal = ({ modal, toggleModal }) => {
                 {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
               </Col>
             </Row>
+            <p className="font-small-2 mt-50">
+              Note: Please press either of &quot;Enter&quot; or &quot;Space&quot; or &quot;Comma&quot; after entering
+              the email id in order to add it
+            </p>
             <div className="d-flex justify-content-end mt-50">
               <Button
                 color="primary"

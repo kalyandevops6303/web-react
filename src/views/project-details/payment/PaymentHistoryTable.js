@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Card, CardText, Table, UncontrolledTooltip } from 'reactstrap';
 import { Info } from 'react-feather';
+import styled from 'styled-components';
 
 import {
   milestoneTransactionsServiceForClient,
@@ -22,6 +23,7 @@ function PaymentHistoryTable() {
   const user = useSelector(userData);
 
   const isTalent = user?.user_type === userTypes.talent;
+  const isTeam = user?.user_type === userTypes.team;
 
   useEffect(() => {
     if (projectDetailsData?._id) {
@@ -34,9 +36,11 @@ function PaymentHistoryTable() {
       } else {
         milestoneTransactionsServiceForTeam(projectDetailsData?._id).then((res) => {
           if (res.data.data) {
-            if (user?.user_type === userTypes.talent) {
-              setTransactions(res.data.data?.my_payments);
-            } else setTransactions(res.data?.data?.team_payments);
+            setTransactions(res.data.data?.my_payments);
+
+            // if (user?.user_type === userTypes.talent) {
+            //   setTransactions(res.data.data?.my_payments);
+            // } else setTransactions(res.data?.data?.team_payments);
           }
         });
       }
@@ -45,19 +49,19 @@ function PaymentHistoryTable() {
 
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: 'Transaction Failed' };
+      return { theme: 'light-danger', text: 'Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Payment Due' };
+      return { theme: 'light-warning', text: 'Milestone In Progress' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
-      return { theme: 'light-primary', text: 'Payment Processing' };
+      return { theme: 'light-primary', text: 'Processing' };
     }
     if (tag === PAYMENT_STATUS.INITIATED) {
-      return { theme: 'light-primary', text: 'Payment Initiated' };
+      return { theme: 'light-primary', text: 'Initiated' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Transaction Successful' };
+      return { theme: 'light-success', text: 'Successful' };
     }
     return { theme: 'light-primary', text: tag };
   };
@@ -86,42 +90,58 @@ function PaymentHistoryTable() {
     }, 2000);
   };
 
+  const PaymentTableWrapper = styled.div`
+    .table > :not(caption) > * > * {
+      padding: 0.72rem 1rem;
+    }
+    .table-responsive {
+      box-shadow: 0px 4px 24px 0px ${theme.cardShadowLight} !important;
+    }
+    .table {
+      border: 1px solid ${theme.cardHeaderBorderColor};
+      box-shadow: 0px 4px 24px 0px ${theme.cardShadowLight} !important;
+    }
+  `;
+
+  if (transactions?.length === 0) {
+    return null;
+  }
   return (
     <Card className="gray-card p-0">
       <div className="p-2 pb-0">
         <CardText className="fs-4 mb-0 fw-bold">Payment History</CardText>
       </div>
       <hr />
-      <div className="p-2 pt-1 w-100">
-        <Table responsive className="milestone-table w-100">
-          <thead>
-            <tr>
-              {user?.user_type === userTypes.client && <th>TRANSACTION ID</th>}
-              <th>MILESTONE</th>
-              <th>From</th>
-              {isTalent ? null : <th>To</th>}
-              <th>Type</th>
-              <th>Status</th>
-              {isTalent ? null : <th>Platform Fee</th>}
-              <th>
-                {isTalent ? 'Amount' : 'Final Amount'}
-                {isTalent ? (
-                  ''
-                ) : (
-                  <>
-                    <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
-                    <UncontrolledTooltip placement="top" target="amount-info">
-                      <p className="m-0">Final Amount = Platform Fee + Milestone Amount </p>
-                    </UncontrolledTooltip>
-                  </>
-                )}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions?.map((item) => (
-              <tr key={item?._id}>
-                {user?.user_type === userTypes.client ? (
+      <PaymentTableWrapper>
+        <div className="p-2 pt-1 w-100">
+          <Table responsive className="shadow milestone-table w-100">
+            <thead>
+              <tr>
+                <th style={{ minWidth: '8%' }}>TRANSACTION ID</th>
+                <th>MILESTONE</th>
+                <th style={{ minWidth: '12%' }}>From</th>
+                {isTalent || isTeam ? null : <th style={{ minWidth: '12%' }}>To</th>}
+                <th style={{ minWidth: '12%' }}>Type</th>
+                <th style={{ minWidth: '12%' }}>Status</th>
+                {isTalent || isTeam ? null : <th style={{ minWidth: '12%' }}>Platform Fee</th>}
+                <th style={{ minWidth: '12%' }}>
+                  {isTalent || isTeam ? 'Amount' : 'Final Amount'}
+                  {isTalent || isTeam ? (
+                    ''
+                  ) : (
+                    <>
+                      <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
+                      <UncontrolledTooltip placement="top" target="amount-info">
+                        <p className="m-0">Final Amount = Platform Fee + Milestone Amount </p>
+                      </UncontrolledTooltip>
+                    </>
+                  )}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions?.map((item) => (
+                <tr key={item?._id}>
                   <td>
                     <div className="d-flex flex-column">
                       {item?.transaction_id?.length > 8 && (
@@ -131,7 +151,12 @@ function PaymentHistoryTable() {
                       )}
                       <span
                         className="fw-bold"
-                        style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '80px', whiteSpace: 'nowrap' }}
+                        style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          width: '80px',
+                          whiteSpace: 'nowrap',
+                        }}
                         id={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}
                         onClick={() => handleCopyToClipboard(item?.transaction_id)}
                       >
@@ -140,27 +165,27 @@ function PaymentHistoryTable() {
                       <span>{formatDate(item?.created_at)}</span>
                     </div>
                   </td>
-                ) : null}
-                <td>{item?.milestone?.name}</td>
-                <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Client' : 'Trumio'}</td>
-                {isTalent ? null : (
+                  <td>{item?.milestone?.name}</td>
+                  <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Client' : 'Trumio'}</td>
+                  {isTalent || isTeam ? null : (
+                    <td>
+                      {item?.payment_type === PAYMENT_TYPES.CHECKOUT
+                        ? 'Trumio'
+                        : `${item?.payment_to?.first_name} ${item?.payment_to?.last_name}`}
+                    </td>
+                  )}
+                  <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Payment Deposited' : 'Pay Out'}</td>
                   <td>
-                    {item?.payment_type === PAYMENT_TYPES.CHECKOUT
-                      ? 'Trumio'
-                      : `${item?.payment_to?.first_name} ${item?.payment_to?.last_name}`}
+                    <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
                   </td>
-                )}
-                <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Payment Deposited' : 'Pay Out'}</td>
-                <td>
-                  <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
-                </td>
-                {isTalent ? null : <td>{item?.application_fee ? `$ ${item?.application_fee}` : '-'}</td>}
-                <td>$ {getTotalAmount(item)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
+                  {isTalent || isTeam ? null : <td>{item?.application_fee ? `$ ${item?.application_fee}` : '-'}</td>}
+                  <td>$ {getTotalAmount(item)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      </PaymentTableWrapper>
     </Card>
   );
 }
