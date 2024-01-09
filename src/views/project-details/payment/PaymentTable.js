@@ -81,7 +81,7 @@ const PaymentTable = () => {
     milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
 
   const showMilestoneTransanctions = (milestoneId, item) => {
-    if (isPaymentDone(item)) {
+    if ((isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED')) {
       if (open === milestoneId) {
         setOpen(null);
       } else {
@@ -216,21 +216,27 @@ const PaymentTable = () => {
                   <thead>
                     <tr>
                       {/* {!isTeam ? <th className="checkboxCol"> </th> : null} */}
-                      <th className="checkboxCol"> </th>
-                      <th>Milestone</th>
-                      <th>{}</th>
-                      <th>Status</th>
-                      <th>{}</th>
-                      <th>Amount</th>
+                      <th style={{ minWidth: '12%' }} className="checkboxCol">
+                        {' '}
+                      </th>
+                      <th style={{ minWidth: '12%' }}>Milestone</th>
+                      <th style={{ minWidth: '10rem' }}>{}</th>
+                      <th style={{ minWidth: '12%' }}>Status</th>
+                      <th style={{ minWidth: '12%' }}>{}</th>
+                      <th style={{ minWidth: '12%' }}>Amount</th>
                       {/* {!isTeam ? <th> </th> : null} */}
-                      <th>{}</th>
+                      <th style={{ minWidth: '12%' }}>{}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {milestoneData?.map((item) => (
                       <>
                         <tr
-                          className={isPaymentDone(item) ? 'cursor-pointer' : ''}
+                          className={
+                            (isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED')
+                              ? 'cursor-pointer'
+                              : ''
+                          }
                           key={item?._id}
                           onClick={() => showMilestoneTransanctions(item?._id, item)}
                         >
@@ -261,11 +267,13 @@ const PaymentTable = () => {
                           </td>
                           <td>{}</td>
                           <td className="amountCol">$ {getTotalCost(item)}</td>{' '}
-                          {isPaymentDone(item) ? (
+                          {(isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED') ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
                           ) : !isPaymentDone(item) ? (
                             <td>{}</td>
-                          ) : null}
+                          ) : (
+                            <td>{}</td>
+                          )}
                         </tr>
 
                         {item?._id === open && isPaymentDone(item) ? (
