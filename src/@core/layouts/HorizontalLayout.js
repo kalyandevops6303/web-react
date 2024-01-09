@@ -38,9 +38,10 @@ import FooterComponent from './components/footer';
 // ** Styles
 import '@styles/base/core/menu/menu-types/horizontal-menu.scss';
 import SwitchConfirmModal from '../../views/modals/SwitchConfirm';
-import { selectUserType } from '../../redux/selectors/authSelectors';
+import { selectUserData, selectUserType } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { getTeamId } from '../../utility/Utils';
+import { getUserData } from '../../redux/actions/authActions';
 
 const HorizontalLayout = (props) => {
   // ** Props
@@ -59,6 +60,7 @@ const HorizontalLayout = (props) => {
   // ** States
   const isNavbarSearchBarOpen = useSelector((state) => state.search?.isNavbarSearchBarOpen);
   const userType = useSelector(selectUserType);
+  const userData = useSelector(selectUserData);
 
   // ** Store Vars
   const dispatch = useDispatch();
@@ -107,6 +109,12 @@ const HorizontalLayout = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!userData) {
+      dispatch(getUserData());
+    }
+  }, []);
+
   // 1 ✅ Talent is logged and cliked on team email => Switch modal opens
   // 2 ✅ Talent is not logged in and click on team email => logout => Saved url => loggin and switch modal
   // 3 ✅ Talent is logged in and clicks on talents email => Direct redirection
@@ -152,18 +160,7 @@ const HorizontalLayout = (props) => {
           <NavbarComponent skin={skin} setSkin={setSkin} />
         </div>
       </Navbar>
-      {switchTeamId && !getTeamId() ? (
-        <>
-          <SwitchConfirmModal
-            entity={entity}
-            navigateTo={location?.pathname}
-            switchTeamId={switchTeamId}
-            modal={switchProfileModal}
-            toggleModal={() => setSwitchProfileModal(false)}
-          />
-          {children}
-        </>
-      ) : switchProfileModal ? (
+      {switchProfileModal ? (
         <SwitchConfirmModal
           entity={entity}
           navigateTo={location?.pathname}
