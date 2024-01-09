@@ -117,14 +117,14 @@ function PaymentHistoryTable() {
           <Table responsive className="shadow milestone-table w-100">
             <thead>
               <tr>
-                <th style={{ minWidth: '11rem' }}>TRANSACTION ID</th>
+                <th style={{ minWidth: '8%' }}>TRANSACTION ID</th>
                 <th>MILESTONE</th>
-                <th>From</th>
-                {isTalent || isTeam ? null : <th style={{ minWidth: '8rem' }}>To</th>}
-                <th>Type</th>
-                <th>Status</th>
-                {isTalent || isTeam ? null : <th style={{ minWidth: '10rem' }}>Platform Fee</th>}
-                <th style={{ minWidth: '11rem' }}>
+                <th style={{ minWidth: '12%' }}>From</th>
+                {isTalent || isTeam ? null : <th style={{ minWidth: '12%' }}>To</th>}
+                <th style={{ minWidth: '12%' }}>Type</th>
+                <th style={{ minWidth: '12%' }}>Status</th>
+                {isTalent || isTeam ? null : <th style={{ minWidth: '12%' }}>Platform Fee</th>}
+                <th style={{ minWidth: '12%' }}>
                   {isTalent || isTeam ? 'Amount' : 'Final Amount'}
                   {isTalent || isTeam ? (
                     ''
