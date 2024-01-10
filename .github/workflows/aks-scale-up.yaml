@@ -34,7 +34,7 @@ jobs:
         resource-group: ${{ env.RGNAME }}
 
     - name: Scale AKS nodes up
-      run: az aks nodepool scale --resource-group ${{ env.RGNAME }} --cluster-name ${{ env.AKSNAME }} --nodepool-name trghauatnp --node-count 2 
+      run: az aks nodepool scale --resource-group ${{ env.RGNAME }} --cluster-name ${{ env.AKSNAME }} --nodepool-name trghauatnp --node-count 1 
 
     # Azure logout
 
