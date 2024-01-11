@@ -6,7 +6,7 @@ on:
     # branches:
     #   - uat
     tags:
-      - 'test_v*'
+      - 'aksuat_scaleup'
 
 env:
   RGNAME: azusctr-uat-rg
