@@ -21,141 +21,6 @@ import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { setItem } from '../../utility/localStorageControl';
 import { ElevateShadow } from '../styled';
 
-const NOTI = [
-  {
-    _id: '6594222f8132f14462d6825e',
-    created_at: 1704206895747,
-    updated_at: 1704206895747,
-    is_deleted: false,
-    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
-    title: 'Payment Request',
-    priority: 1,
-    trigger_type: 'MANUAL',
-    path: '/project-details/657a9db38d6f34065659fec3/bid?entity=TALENT',
-    status: 'UNREAD',
-    topic: 'u64e843f347a11f69d95a8f7b',
-    metadata: {
-      project_id: '657a9db38d6f34065659fec3',
-      project_name: 'Comprehensive Audio Book Platform',
-      client_name: 'Vighnesh Client',
-      talent_name: 'Jack jones',
-      bid_id: '6593c78e19be5191f556237d',
-      switch_team_id: '',
-      entity: 'TALENT',
-      entity_name: 'Jack jones',
-      document_id: '6593dc82839a1f5b0995a46e',
-    },
-    to_entity: {
-      user_id: '64e843f347a11f69d95a8f7b',
-      user_type: 'CLIENT',
-    },
-    message: 'Please make the initial payment.',
-    from_entity: {
-      user_id: '64d60539e127974f873d31d8',
-      user_type: 'TALENT',
-    },
-  },
-  {
-    _id: '6594222f8132f14462d6825e',
-    created_at: 1704206895747,
-    updated_at: 1704206895747,
-    is_deleted: false,
-    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
-    title: 'Payment Request For Client',
-    priority: 2,
-    trigger_type: 'MANUAL',
-    path: '/project-details/657a9db38d6f34065659fec3/bid?entity=TALENT',
-    status: 'UNREAD',
-    topic: 'u64e843f347a11f69d95a8f7b',
-    metadata: {
-      project_id: '657a9db38d6f34065659fec3',
-      project_name: 'Comprehensive Audio Book Platform',
-      client_name: 'Vighnesh Client',
-      talent_name: 'Jack jones',
-      bid_id: '6593c78e19be5191f556237d',
-      switch_team_id: '',
-      entity: 'TALENT',
-      entity_name: 'Jack jones',
-      document_id: '6593dc82839a1f5b0995a46e',
-    },
-    to_entity: {
-      user_id: '64e843f347a11f69d95a8f7b',
-      user_type: 'CLIENT',
-    },
-    message: 'Please make the initial payment for the project: Comprehensive Audio Book Platform, to begin.',
-    from_entity: {
-      user_id: '64d60539e127974f873d31d8',
-      user_type: 'TALENT',
-    },
-  },
-  {
-    _id: '6594222f8132f14462d6825e',
-    created_at: 1704206895747,
-    updated_at: 1704206895747,
-    is_deleted: false,
-    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
-    title: 'Team Join Request',
-    priority: 3,
-    trigger_type: 'MANUAL',
-    path: '/project-details/657a9df48d6f34065659fec8/bid?entity=TEAM&switch_team_id=6555ecbe24bdfe4c836a7e27',
-    status: 'UNREAD',
-    topic: 'u64e843f347a11f69d95a8f7b',
-    metadata: {
-      project_id: '657a9df48d6f34065659fec8',
-      project_name: 'Comprehensive Audio Book Platform',
-      client_name: 'Vighnesh Client',
-      talent_name: 'Jack jones',
-      bid_id: '6593c78e19be5191f556237d',
-      switch_team_id: '6555ecbe24bdfe4c836a7e27',
-      entity: 'TALENT',
-      entity_name: 'Jack jones',
-      document_id: '6593dc82839a1f5b0995a46e',
-    },
-    to_entity: {
-      user_id: '64e843f347a11f69d95a8f7b',
-      user_type: 'CLIENT',
-    },
-    message: 'You have got a new team join request.',
-    from_entity: {
-      user_id: '64d60539e127974f873d31d8',
-      user_type: 'TALENT',
-    },
-  },
-  {
-    _id: '6594222f8132f14462d6825e',
-    created_at: 1704206895747,
-    updated_at: 1704206895747,
-    is_deleted: false,
-    notification_type: 'PAYMENT_REQUEST_FOR_CLIENT',
-    title: 'Milestone Submitted',
-    priority: 4,
-    trigger_type: 'MANUAL',
-    path: '/project-details/655d9cc23c57c3bfbb03ef21/bid?entity=TEAM&switch_team_id=64ff01b2f2e6af73ce49c45c',
-    status: 'UNREAD',
-    topic: 'u64e843f347a11f69d95a8f7b',
-    metadata: {
-      project_id: '655d9cc23c57c3bfbb03ef21',
-      project_name: 'Comprehensive Audio Book Platform',
-      client_name: 'Vighnesh Client',
-      talent_name: 'Jack jones',
-      bid_id: '6593c78e19be5191f556237d',
-      switch_team_id: '64ff01b2f2e6af73ce49c45c',
-      entity: 'TEAM',
-      entity_name: 'Jack jones',
-      document_id: '6593dc82839a1f5b0995a46e',
-    },
-    to_entity: {
-      user_id: '64e843f347a11f69d95a8f7b',
-      user_type: 'CLIENT',
-    },
-    message: 'Milestone for the project: Comprehensive Audio Book Platform is submitted.',
-    from_entity: {
-      user_id: '64d60539e127974f873d31d8',
-      user_type: 'TALENT',
-    },
-  },
-];
-
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const userData = useSelector(selectUserData);
@@ -176,7 +41,7 @@ const Notifications = () => {
   const notificationsData = useSelector(notifications);
   const isLoading = useSelector(notificationsLoading);
   useEffect(() => {
-    dispatch(getNotifications('', 1, 10, []));
+    dispatch(getNotifications(0, 1, 10, []));
     setItem('baseRoute', 'notifications');
     return () => dispatch(clearNotificationsData());
   }, []);
@@ -198,14 +63,11 @@ const Notifications = () => {
     dispatch(getNotifications(option.value, 1, 10, []));
   };
 
-  const FiltersWrap = styled.div`
-    .select__control {
-      cursor: pointer;
-    }
-  `;
-
   const handleNotificationClick = (path) => {
-    const switch_team_id = path?.split('switch_team_id=')[1];
+    // eslint-disable-next-line no-undef
+    const url = new URL(`${window.location.protocol}//${window.location.host}${path}`);
+    const params = url.searchParams;
+    const switch_team_id = params.get('switch_team_id');
     if (userData?.user_type === userTypes.talent && path.includes('switch_team_id')) {
       setSwitchData({
         entity: switch_team_id ? 'TEAM' : 'TALENT',
@@ -217,6 +79,12 @@ const Notifications = () => {
       navigate(path?.split('?')[0]);
     }
   };
+
+  const FiltersWrap = styled.div`
+    .select__control {
+      cursor: pointer;
+    }
+  `;
 
   if (isLoading) {
     return <ComponentSpinner />;
@@ -233,11 +101,11 @@ const Notifications = () => {
               <Select
                 style={{ cursor: 'pointer' }}
                 options={[
-                  { label: 'All Priorities', value: '' },
-                  { label: 'Priority 1', value: 'PRIORITY_1' },
-                  { label: 'Priority 2', value: 'PRIORITY_2' },
-                  { label: 'Priority 3', value: 'PRIORITY_3' },
-                  { label: 'Priority 4', value: 'PRIORITY_4' },
+                  { label: 'All Priorities', value: 0 },
+                  { label: 'Priority 1', value: 1 },
+                  { label: 'Priority 2', value: 2 },
+                  { label: 'Priority 3', value: 3 },
+                  { label: 'Priority 4', value: 4 },
                 ]}
                 value={selectedPriority}
                 classNamePrefix="select"
@@ -251,43 +119,6 @@ const Notifications = () => {
         </Row>
       </div>
 
-      {NOTI?.length > 0 ? (
-        NOTI?.map((item) => (
-          <BorderCardContainer
-            onClick={() => handleNotificationClick(item?.path)}
-            key={item?._id}
-            priorityColor={priorities?.[item?.priority]}
-          >
-            <Card className="cursor-pointer">
-              <CardBody>
-                <div className="d-flex justify-content-between">
-                  <div className="d-flex align-items-center">
-                    <NotificationBadgeContainer priorityColor={priorities?.[item?.priority]}>
-                      <div className="position-relative">
-                        <Badge pill color="danger" className="badge-up" />
-                        <Bell color={theme.white} size={18} />
-                      </div>
-                    </NotificationBadgeContainer>
-                    <p className="notification-title fw-bolder m-0 ms-1">{item.title}</p>
-                  </div>
-                  <p className="font-small-3 fw-light">
-                    {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
-                  </p>
-                </div>
-                <div className="d-flex justify-content-between ms-3">
-                  <p className="m-0">{item.message}</p>
-                </div>
-              </CardBody>
-            </Card>
-          </BorderCardContainer>
-        ))
-      ) : (
-        <div className="no-data-found-container d-flex flex-column align-items-center py-1">
-          <img src={NoDataFoundGif} alt="no-data" width={200} height={200} className="no-data-found-gif" />
-          <p className="m-0 fw-bold font-medium-3">No Data Found</p>
-        </div>
-      )}
-
       <InfiniteScroll
         dataLength={notificationsData?.data?.length || 0}
         next={loadNewNotifications}
@@ -300,14 +131,14 @@ const Notifications = () => {
             <BorderCardContainer
               onClick={() => handleNotificationClick(item?.path)}
               key={item?._id}
-              priorityColor={priorities?.[item?.custom_payload?.priority]}
+              priorityColor={priorities?.[item?.priority]}
             >
               <Card className="cursor-pointer">
                 <ElevateShadow>
                   <CardBody>
                     <div className="d-flex justify-content-between">
                       <div className="d-flex align-items-center">
-                        <NotificationBadgeContainer priorityColor={priorities?.[item?.custom_payload?.priority]}>
+                        <NotificationBadgeContainer priorityColor={priorities?.[item?.priority]}>
                           <div className="position-relative">
                             <Badge pill color="danger" className="badge-up" />
                             <Bell color={theme.white} size={18} />
