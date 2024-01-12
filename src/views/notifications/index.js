@@ -41,7 +41,7 @@ const Notifications = () => {
   const notificationsData = useSelector(notifications);
   const isLoading = useSelector(notificationsLoading);
   useEffect(() => {
-    dispatch(getNotifications('', 1, 10, []));
+    dispatch(getNotifications(0, 1, 10, []));
     setItem('baseRoute', 'notifications');
     return () => dispatch(clearNotificationsData());
   }, []);
@@ -64,7 +64,10 @@ const Notifications = () => {
   };
 
   const handleNotificationClick = (path) => {
-    const switch_team_id = path?.split('switch_team_id=')[1];
+    // eslint-disable-next-line no-undef
+    const url = new URL(`${window.location.protocol}//${window.location.host}${path}`);
+    const params = url.searchParams;
+    const switch_team_id = params.get('switch_team_id');
     if (userData?.user_type === userTypes.talent && path.includes('switch_team_id')) {
       setSwitchData({
         entity: switch_team_id ? 'TEAM' : 'TALENT',
@@ -97,11 +100,11 @@ const Notifications = () => {
               <Select
                 style={{ cursor: 'pointer' }}
                 options={[
-                  { label: 'All Priorities', value: '' },
-                  { label: 'Priority 1', value: 'PRIORITY_1' },
-                  { label: 'Priority 2', value: 'PRIORITY_2' },
-                  { label: 'Priority 3', value: 'PRIORITY_3' },
-                  { label: 'Priority 4', value: 'PRIORITY_4' },
+                  { label: 'All Priorities', value: 0 },
+                  { label: 'Priority 1', value: 1 },
+                  { label: 'Priority 2', value: 2 },
+                  { label: 'Priority 3', value: 3 },
+                  { label: 'Priority 4', value: 4 },
                 ]}
                 value={selectedPriority}
                 classNamePrefix="select"
@@ -127,14 +130,14 @@ const Notifications = () => {
             <BorderCardContainer
               onClick={() => handleNotificationClick(item?.path)}
               key={item?._id}
-              priorityColor={priorities?.[item?.custom_payload?.priority]}
+              priorityColor={priorities?.[item?.priority]}
             >
               <Card className="cursor-pointer">
                 <ElevateShadow>
                   <CardBody>
                     <div className="d-flex justify-content-between">
                       <div className="d-flex align-items-center">
-                        <NotificationBadgeContainer priorityColor={priorities?.[item?.custom_payload?.priority]}>
+                        <NotificationBadgeContainer priorityColor={priorities?.[item?.priority]}>
                           <div className="position-relative">
                             <Badge pill color="danger" className="badge-up" />
                             <Bell color={theme.white} size={18} />
