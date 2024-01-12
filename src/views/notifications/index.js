@@ -25,17 +25,18 @@ const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const userData = useSelector(selectUserData);
   const [switchData, setSwitchData] = useState();
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const priorities = {
-    PRIORITY_1: 'red',
-    PRIORITY_2: 'green',
-    PRIORITY_3: 'info',
-    PRIORITY_4: 'secondary',
+    1: 'red',
+    2: 'green',
+    3: 'info',
+    4: 'secondary',
   };
 
   const [selectedPriority, setSelectedPriority] = useState({ label: 'All Priorities', value: '' });
-
-  const dispatch = useDispatch();
 
   const notificationsData = useSelector(notifications);
   const isLoading = useSelector(notificationsLoading);
@@ -62,133 +63,24 @@ const Notifications = () => {
     dispatch(getNotifications(option.value, 1, 10, []));
   };
 
-  const redirectionFunction = ({ projectId, inviteId, status }) => {
-    if (status === 'Project Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
-    } else if (status === 'Team Invitation Request' && inviteId) {
-      navigate(`/team-invitation/${inviteId}`);
-    } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Team Join Request' && inviteId) {
-      navigate(`/join-request/${inviteId}`);
-    } else if (status === 'Club Invitation Request' && inviteId) {
-      navigate(`/club-invitation/${inviteId}`);
-    } else if (status === 'Club Join Request' && inviteId) {
-      navigate(`/join-request/${inviteId}`);
-    } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Membership Updated') {
-      navigate('/dashboard');
-    } else if (status === 'Club - Request Submitted') {
-      navigate('/dashboard');
+  const handleNotificationClick = (path) => {
+    const switch_team_id = path?.split('switch_team_id=')[1];
+    if (userData?.user_type === userTypes.talent && path.includes('switch_team_id')) {
+      setSwitchData({
+        entity: switch_team_id ? 'TEAM' : 'TALENT',
+        navigateTo: path?.split('?')[0],
+        switchTeamId: switch_team_id,
+      });
+      setSwitchProfileModal(true);
     } else {
-      navigate(`/project-details/${projectId}/bid`);
+      navigate(path?.split('?')[0]);
     }
   };
-
-  const disputesRedirection = (type) => {
-    if (type === 'DISPUTE_CREATED' || type === 'DISPUTE_UPDATED') {
-      navigate(`/disputes/open`);
-    } else if (type === 'DISPUTE_RESOLVED') {
-      navigate(`/disputes/resolved`);
-    } else {
-      navigate(`/disputes/open`);
-    }
-  };
-
-  const isReqeustFlowStatus = (status) => {
-    switch (status) {
-      case 'Project Invitation Request':
-        return true;
-      case 'Team Invitation Request':
-        return true;
-      case 'Project Team Invitation Request':
-        return true;
-      case 'Team Join Request':
-        return true;
-      case 'Club Invitation Request':
-        return true;
-      case 'Club Join Request':
-        return true;
-      case 'Project Club Invitation Request':
-        return true;
-      case 'Membership Updated':
-        return true;
-      case 'Club - Request Submitted':
-        return true;
-      default:
-        return false;
-    }
-  };
-
-  const isDisputesNotification = (type) => {
-    switch (type) {
-      case 'DISPUTE_CREATED':
-        return true;
-      case 'DISPUTE_UPDATED':
-        return true;
-      case 'DISPUTE_RESOLVED':
-        return true;
-
-      default:
-        return false;
-    }
-  };
-
   const FiltersWrap = styled.div`
     .select__control {
       cursor: pointer;
     }
   `;
-
-  const dashboardRedirection = () => {
-    navigate(`/dashboard`);
-  };
-
-  const handleNotification = (data) => {
-    setSwitchData({
-      ...data,
-      isDisputesNotification: isDisputesNotification(data?.notification_type),
-      // eslint-disable-next-line no-unneeded-ternary
-      isDashboardRedirection: !!(
-        data?.title === 'Team Created' ||
-        data?.title === 'Team Member Added' ||
-        data?.title === 'Club - Request Submitted'
-      ),
-    });
-
-    if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
-      setSwitchProfileModal(true);
-    } else if (isReqeustFlowStatus(data?.title)) {
-      redirectionFunction({
-        status: data?.title,
-        projectId: data?.custom_payload?.request_for?.project_id,
-        inviteId: data?.custom_payload?.request_id,
-      });
-    } else if (isDisputesNotification(data?.notification_type)) {
-      disputesRedirection(data?.notification_type);
-    } else if (data?.title === 'Milestone Submitted' || data?.title === 'Milestone Accepted') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
-    } else if (data?.title === 'Project Completed') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/rating`);
-    } else if (data?.title === 'Project Accepted' || data?.title === 'Milestone payment completed.') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
-    } else if (data?.title === 'Team Created') {
-      navigate(`/dashboard`);
-    } else {
-      redirectionFunction({ projectId: data?.custom_payload?.project_id });
-    }
-
-    // if (data?.notification_type === 'TEAM_INVITATION') {
-    //   navigate(`/team-invitation/${data.custom_payload?.invitation_id}`);
-    // }
-    // if (data?.notification_type === 'PROJECT_INVITATION') {
-    //   navigate(
-    //     `/project-details/${data.custom_payload?.project_id}/project/project-invitation/${data.custom_payload?.invitation_id}`,
-    //   );
-    // }
-    // setItem('inviteToken', data.custom_payload?.token);
-  };
 
   if (isLoading) {
     return <ComponentSpinner />;
@@ -233,7 +125,7 @@ const Notifications = () => {
         {notificationsData?.data?.length > 0 ? (
           notificationsData?.data?.map((item) => (
             <BorderCardContainer
-              onClick={() => handleNotification(item)}
+              onClick={() => handleNotificationClick(item?.path)}
               key={item?._id}
               priorityColor={priorities?.[item?.custom_payload?.priority]}
             >
@@ -270,11 +162,11 @@ const Notifications = () => {
         )}
         {switchProfileModal && (
           <SwitchConfirmModal
-            data={switchData}
+            entity={switchData?.entity}
+            navigateTo={switchData?.navigateTo}
+            switchTeamId={switchData?.switchTeamId}
             modal={switchProfileModal}
             toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
-            disputesRedirection={disputesRedirection}
-            dashboardRedirection={dashboardRedirection}
           />
         )}
       </InfiniteScroll>
