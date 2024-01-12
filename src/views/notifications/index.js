@@ -10,7 +10,7 @@ import { Bell } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { BorderCardContainer, NotificationBadgeContainer } from './style';
 import theme from '../../configs/themeVariables';
-import getNotifications from '../../redux/actions/notificationsActions';
+// import getNotifications from '../../redux/actions/notificationsActions';
 import { notifications, notificationsLoading } from '../../redux/selectors/notificationsSelectors';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import { clearNotificationsData } from '../../redux/reducers/notifications';
@@ -20,6 +20,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { setItem } from '../../utility/localStorageControl';
 import { ElevateShadow } from '../styled';
+import { getNotifications } from '../../redux/actions/notificationsActions';
 
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
@@ -36,31 +37,31 @@ const Notifications = () => {
     4: 'secondary',
   };
 
-  const [selectedPriority, setSelectedPriority] = useState({ label: 'All Priorities', value: '' });
+  const [selectedPriority, setSelectedPriority] = useState({ label: 'All Priorities', value: 0 });
 
   const notificationsData = useSelector(notifications);
   const isLoading = useSelector(notificationsLoading);
   useEffect(() => {
-    dispatch(getNotifications(0, 1, 10, []));
+    dispatch(getNotifications({ priority: 0, page: 1, pageSize: 10, oldData: [] }));
     setItem('baseRoute', 'notifications');
     return () => dispatch(clearNotificationsData());
   }, []);
 
   const loadNewNotifications = () => {
     dispatch(
-      getNotifications(
-        '',
+      getNotifications({
+        priority: selectedPriority?.value,
         // eslint-disable-next-line no-unsafe-optional-chaining
-        notificationsData?.metadata?.current_page + 1,
-        10,
-        notificationsData?.data,
-      ),
+        page: notificationsData?.metadata?.current_page + 1,
+        pageSize: 10,
+        oldData: notificationsData?.data,
+      }),
     );
   };
 
   const onPriorityChange = (option) => {
     setSelectedPriority(option);
-    dispatch(getNotifications(option.value, 1, 10, []));
+    dispatch(getNotifications({ priority: option.value, page: 1, pageSize: 10, oldData: [] }));
   };
 
   const handleNotificationClick = (path) => {

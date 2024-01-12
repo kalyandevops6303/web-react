@@ -6,4 +6,9 @@ const getNotificationsService = (priority, page, pageSize) =>
     priorities: priority === 0 ? [] : [priority],
   });
 
-export default getNotificationsService;
+const getAlertsNotificationsService = (priority, page, pageSize) =>
+  DataService.post(`${API.notifications.allNotifications}?page=${page}&page_size=${pageSize}`, {
+    priorities: priority,
+  });
+
+export { getNotificationsService, getAlertsNotificationsService };
