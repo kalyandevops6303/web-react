@@ -1,7 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import styled from 'styled-components';
@@ -15,6 +15,7 @@ import { getTeamId } from '../../utility/Utils';
 const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleModal }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
 
   const teams = useSelector((state) => state.team?.teams);
@@ -23,6 +24,15 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleMod
     toggleModal();
     navigate(navigateTo);
   };
+
+  const toggleOnSwitch = () => {
+    toggleModal();
+    navigate('/dashboard');
+  };
+
+  const isSwitchModalViaUrl =
+    location.search.includes('switch_team_id') &&
+    (location.pathname.includes('project-details') || location.pathname.includes('join-request'));
 
   const handleSwitch = () => {
     if (entity === 'TALENT') {
@@ -54,7 +64,7 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleMod
       contentClassName="custom-larger-than-medium-modal-style"
       className="modal-dialog-centered modal-lg"
     >
-      <ModalHeader toggle={toggleModal} />
+      <ModalHeader toggle={isSwitchModalViaUrl ? toggleOnSwitch : toggleModal} />
       <ModalBody className="py-0">
         <SwitchModalWrapper>
           <div className="d-flex align-items-center px-50 py-0">

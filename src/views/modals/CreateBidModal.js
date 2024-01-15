@@ -35,7 +35,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={toggleModal} />
+      <ModalHeader toggle={createBidLoadingIsLoading ? null : toggleModal} />
       <ModalBody className="pt-0 pb-3">
         <p className="font-large-1 text-center">Create Bid</p>
         <p className="font-medium-2 fw-bold mt-3 ms-50">Select one :</p>
