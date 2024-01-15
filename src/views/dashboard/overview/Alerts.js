@@ -75,7 +75,11 @@ const Alerts = () => {
     const url = new URL(`${window.location.protocol}//${window.location.host}${path}`);
     const params = url.searchParams;
     const switch_team_id = params.get('switch_team_id');
-    if (userDetailsData?.user_type === userTypes.talent && path.includes('switch_team_id')) {
+    if (
+      userDetailsData?.user_type === userTypes.talent &&
+      path.includes('switch_team_id') &&
+      switch_team_id?.length > 0
+    ) {
       setSwitchData({
         entity: switch_team_id ? 'TEAM' : 'TALENT',
         navigateTo: path?.split('?')[0],

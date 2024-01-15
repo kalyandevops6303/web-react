@@ -101,9 +101,10 @@ const HorizontalLayout = (props) => {
 
   useEffect(() => {
     if (
-      (entity === 'TALENT' && userType === userTypes.team) ||
-      (switchTeamId && getTeamId() && getTeamId() !== switchTeamId) ||
-      (switchTeamId && !getTeamId())
+      ((entity === 'TALENT' && userType === userTypes.team) ||
+        (switchTeamId && getTeamId() && getTeamId() !== switchTeamId) ||
+        (switchTeamId && !getTeamId())) &&
+      switchTeamId?.length > 0
     ) {
       setSwitchProfileModal(true);
     }
