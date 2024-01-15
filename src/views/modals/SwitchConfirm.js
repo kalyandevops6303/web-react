@@ -3,7 +3,7 @@ import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { useNavigate, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Button, Spinner } from 'reactstrap';
 import styled from 'styled-components';
 import SwitchGif from '../../assets/images/gifs/switch.gif';
 import { switchProfile } from '../../redux/actions/authActions';
@@ -17,6 +17,7 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleMod
   const dispatch = useDispatch();
   const location = useLocation();
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
+  const isGetTeamLoading = useSelector((state) => state.team?.isTeamsLoading);
 
   const teams = useSelector((state) => state.team?.teams);
 
@@ -77,8 +78,8 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleMod
             </div>
           </div>
           <div className="d-flex gap-1 mb-2 justify-content-end">
-            <Button color="primary" onClick={handleSwitch}>
-              Switch
+            <Button disabled={isGetTeamLoading} color="primary" onClick={handleSwitch}>
+              {isGetTeamLoading ? <Spinner size="sm" /> : 'Switch'}
             </Button>
           </div>
         </SwitchModalWrapper>
