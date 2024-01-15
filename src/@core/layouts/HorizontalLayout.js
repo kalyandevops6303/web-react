@@ -110,7 +110,9 @@ const HorizontalLayout = (props) => {
   }, []);
 
   useEffect(() => {
-    if (!userData) {
+    const isAuthPath = window.location.pathname.includes('/auth');
+    const isBasePath = window.location.pathname === '/';
+    if (!userData && !isAuthPath && !isBasePath) {
       dispatch(getUserData());
     }
   }, []);
