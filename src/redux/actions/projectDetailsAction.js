@@ -213,17 +213,19 @@ const updateInvitation =
     }
   };
 
-const removeWorkerFromProjectTeam = (projectId, teamId, workerId, onSuccess) => async (dispatch) => {
-  dispatch(removeWorkerRequest());
-  try {
-    const res = await removeWorkerService(projectId, teamId, workerId);
-    dispatch(removeWorkerSuccess(res.data.data));
-    onSuccess();
-    ShowToastMessage(SUCCESS, res.data.data);
-  } catch (error) {
-    errorHandler(error, removeWorkerFailure);
-  }
-};
+const removeWorkerFromProjectTeam =
+  ({ projectId, teamId, role, workerId, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(removeWorkerRequest());
+    try {
+      const res = await removeWorkerService(projectId, teamId, workerId, role);
+      dispatch(removeWorkerSuccess(res.data.data));
+      onSuccess();
+      ShowToastMessage(SUCCESS, res.data.data);
+    } catch (error) {
+      errorHandler(error, removeWorkerFailure);
+    }
+  };
 
 // Contract flow
 
