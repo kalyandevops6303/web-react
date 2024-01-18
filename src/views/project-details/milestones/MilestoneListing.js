@@ -51,7 +51,13 @@ const getCompletedDate = (mile) => {
 const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
   <div>
     {milestonesData.map((mile, index) => (
-      <Card className="cursor-pointer" onClick={() => setSelectedMilestoneIndex(index)} key={mile._id}>
+      <Card
+        className="cursor-pointer"
+        onClick={() => {
+          setSelectedMilestoneIndex(index);
+        }}
+        key={mile._id}
+      >
         <CardBody className="py-1 basic-title">
           <div className="d-flex align-items-center justify-content-between">
             <CardText className="fw-bold mb-0">{mile.name}</CardText>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import Proptypes from 'prop-types';
 
 import MilestoneListing from './MilestoneListing';
 import MilestoneOverview from './MilestoneOverview';
@@ -8,7 +9,7 @@ import errorHandler from '../../../utility/errorHandler';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
-const Milestone = () => {
+const Milestone = ({ setSelectedMilestone }) => {
   const [selectedMilestoneIndex, setSelectedMilestoneIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const projectDetailsData = useSelector(projectDetails);
@@ -27,10 +28,14 @@ const Milestone = () => {
   };
 
   useEffect(() => {
-    if (projectDetailsData?._id) {
+    setSelectedMilestone(selectedMilestoneIndex === null ? null : milestonesData[selectedMilestoneIndex]);
+  }, [selectedMilestoneIndex]);
+
+  useEffect(() => {
+    if (projectDetailsData?._id && selectedMilestoneIndex === null) {
       fetchProjectMilestones();
     }
-  }, [projectDetailsData?._id]);
+  }, [projectDetailsData?._id, selectedMilestoneIndex]);
 
   if (loading && typeof selectedMilestoneIndex !== 'number') return <ComponentSpinner />;
 
@@ -42,12 +47,17 @@ const Milestone = () => {
           selectedMilestone={milestonesData[selectedMilestoneIndex]}
           selectedMilestoneIndex={selectedMilestoneIndex}
           setSelectedMilestoneIndex={setSelectedMilestoneIndex}
+          setSelectedMilestone={setSelectedMilestone}
         />
       ) : (
         <MilestoneListing milestonesData={milestonesData} setSelectedMilestoneIndex={setSelectedMilestoneIndex} />
       )}
     </div>
   );
+};
+
+Milestone.propTypes = {
+  setSelectedMilestone: Proptypes.func.isRequired,
 };
 
 export default Milestone;
