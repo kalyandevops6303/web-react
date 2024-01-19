@@ -40,6 +40,8 @@ const UserDetails = () => {
   const isEditable = userData?._id === param?.userId;
   useEffect(() => {
     dispatch(clearData());
+    dispatch(getRequestStatusSuccess(null));
+
     // eslint-disable-next-line no-undef
     window?.scrollTo(0, 0);
     dispatch(

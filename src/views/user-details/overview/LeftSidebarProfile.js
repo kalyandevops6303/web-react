@@ -43,6 +43,7 @@ import ReportUserModal from './ReportUserModal';
 import SendClubInvitationModal from '../../modals/SendClubInvitationModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
+import RejectRequestModal from '../../modals/RejectRequestModal';
 
 const LeftSidebarProfile = ({
   isTalentView,
@@ -75,6 +76,8 @@ const LeftSidebarProfile = ({
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [accpetModal, setAccpetModal] = useState(false);
+  const [declineModal, setDeclineModal] = useState(false);
+
   const [invitationSentModal, setInvitationSentModal] = useState(null);
   const [openJoinTeamModal, setOpenJoinTeamModal] = useState(false);
   const [reportModal, setReportModal] = useState(false);
@@ -102,6 +105,26 @@ const LeftSidebarProfile = ({
       }),
     );
   };
+  const onReject = () => {
+    const postData = {
+      action: 'REJECT',
+      request_id: requestStatusData._id,
+    };
+    setIsStatusUpdating(true);
+    dispatch(
+      updateInvitation({
+        data: postData,
+        onSuccess: () => {
+          setIsStatusUpdating(false);
+          setDeclineModal(false);
+          dispatch(getRequestStatusSuccess(null));
+        },
+        onError: () => {
+          setIsStatusUpdating(false);
+        },
+      }),
+    );
+  };
   const handleAcceptRequest = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
@@ -114,6 +137,18 @@ const LeftSidebarProfile = ({
       setAccpetModal(true);
     }
   };
+  const handleDeclineRequest = () => {
+    if (
+      profilePercentageData?.values_missing?.includes('company_name') ||
+      profilePercentageData?.values_missing?.includes('educational_institute') ||
+      profilePercentageData?.values_missing?.includes('availability')
+    ) {
+      setCompleteProfileModal(true);
+      setModalInformationText('decline request');
+    } else {
+      setDeclineModal(true);
+    }
+  };
 
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
@@ -122,6 +157,7 @@ const LeftSidebarProfile = ({
   const handleCancel = () => {
     setCompleteProfileModal(false);
     setAccpetModal(false);
+    setDeclineModal(false);
   };
 
   const handleJoinModalCancel = () => {
@@ -232,6 +268,16 @@ const LeftSidebarProfile = ({
           data={requestStatusData}
           onAccept={onAccept}
           modal={accpetModal}
+          toggleModal={handleCancel}
+        />
+      )}
+      {declineModal && (
+        <RejectRequestModal
+          title={requestStatusData?.request_type}
+          isLoading={isStatusUpdating}
+          data={requestStatusData}
+          onReject={onReject}
+          modal={declineModal}
           toggleModal={handleCancel}
         />
       )}
@@ -582,55 +628,74 @@ const LeftSidebarProfile = ({
             )}
             <div>
               {/* Sensitive code below, If any changes done please check with all personas in each user type profile */}
-              <div className="d-flex gap-1 mt-3 justify-content-center">
-                {requestStatusData && !isClubProfile && (
-                  <span className="w-50">
-                    {!isEditable && teamId && data?.user_type === userTypes.talent && (
-                      <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
-                        Accept
-                      </Button>
-                    )}
-                    {isTeamView && (
-                      <Button className="w-100" outline color="primary" onClick={handleAcceptRequest}>
-                        Accept
-                      </Button>
-                    )}
-                  </span>
-                )}
+              <div>
+                <div className="d-flex gap-1 mt-3 mb-1 justify-content-center">
+                  {requestStatusData && !isClubProfile && (
+                    <span className="w-50">
+                      {!isEditable && teamId && data?.user_type === userTypes.talent && (
+                        <Button className="w-100" outline color="primary" onClick={handleDeclineRequest}>
+                          Decline
+                        </Button>
+                      )}
+                      {isTeamView && (
+                        <Button className="w-100" outline color="primary" onClick={handleDeclineRequest}>
+                          Decline
+                        </Button>
+                      )}
+                    </span>
+                  )}
+                  {requestStatusData && !isClubProfile && (
+                    <span className="w-50">
+                      {!isEditable && teamId && data?.user_type === userTypes.talent && (
+                        <Button className="w-100" color="primary" onClick={handleAcceptRequest}>
+                          Accept
+                        </Button>
+                      )}
+                      {isTeamView && (
+                        <Button className="w-100" color="primary" onClick={handleAcceptRequest}>
+                          Accept
+                        </Button>
+                      )}
+                    </span>
+                  )}
 
-                {!requestStatusData &&
-                  !isEditable &&
-                  !data?.is_team_member &&
-                  teamId &&
-                  data?.user_type === userTypes.talent && (
-                    <Button className="w-50" outline color="primary" onClick={handleInviteTalent}>
-                      Invite
+                  {!requestStatusData &&
+                    !isEditable &&
+                    !data?.is_team_member &&
+                    teamId &&
+                    data?.user_type === userTypes.talent && (
+                      <Button className="w-50" outline color="primary" onClick={handleInviteTalent}>
+                        Invite
+                      </Button>
+                    )}
+                  {!requestStatusData &&
+                    !data?.is_team_member &&
+                    isTeamView &&
+                    !teamId &&
+                    userData?.user_type === userTypes.talent &&
+                    !isClubProfile && (
+                      <div className="w-50 d-flex gap-1 justify-content-center">
+                        <Button
+                          disabled={inJoinTeamLoading}
+                          className="w-100"
+                          color="primary"
+                          outline
+                          onClick={handleJoinTeam}
+                        >
+                          Join Team
+                        </Button>
+                      </div>
+                    )}
+                </div>
+                <div className="d-flex justify-content-center">
+                  {!isEditable && param?.userType.toUpperCase() !== userTypes.team && (
+                    <Button className="w-50" color="primary" onClick={onMessageClick}>
+                      Message
                     </Button>
                   )}
-                {!requestStatusData &&
-                  !data?.is_team_member &&
-                  isTeamView &&
-                  !teamId &&
-                  userData?.user_type === userTypes.talent &&
-                  !isClubProfile && (
-                    <div className="w-50 d-flex gap-1 justify-content-center">
-                      <Button
-                        disabled={inJoinTeamLoading}
-                        className="w-100"
-                        color="primary"
-                        outline
-                        onClick={handleJoinTeam}
-                      >
-                        Join Team
-                      </Button>
-                    </div>
-                  )}
-                {!isEditable && param?.userType.toUpperCase() !== userTypes.team && (
-                  <Button className="w-50" color="primary" onClick={onMessageClick}>
-                    Message
-                  </Button>
-                )}
+                </div>
               </div>
+
               {(userDataSelector?.user_type === userTypes.client || userDataSelector?.user_type === userTypes.team) &&
                 param?.userType.toUpperCase() === userTypes.talent && (
                   <div className="d-flex justify-content-center">
