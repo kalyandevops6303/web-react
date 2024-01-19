@@ -45,7 +45,7 @@ import {
 } from '../../../redux/selectors/talentOnboardingSelectors';
 import { countriesService, languagesService, talentRolesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
-import { maxFileSize, userOnboarding } from '../../../utility/constants/Constant';
+import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
@@ -310,30 +310,24 @@ const Personal = () => {
   }, [citiesData]);
 
   const onBackClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/account-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/account-details`);
     } else {
       navigate(`/${userOnboarding.talent}/account-details`);
     }
   };
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/educational-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
       navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 
   const onSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/educational-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
       navigate(`/${userOnboarding.talent}/educational-details`);
     }

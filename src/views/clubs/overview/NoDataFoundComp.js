@@ -1,19 +1,20 @@
 import styled from 'styled-components';
 import { Card, CardText } from 'reactstrap';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import NodataFound from '@src/assets/images/noDataFoundGif.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
-
 import theme from '../../../configs/themeVariables';
 import { getProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { returnDetailsForMarketPlace } from '../../../utility/Utils';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const NoDataFoundComponent = ({ isRecommanded }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const userDetailsData = useSelector(userData);
   const navigate = useNavigate();
   const NoDataFoundWrapper = styled.div`
@@ -33,6 +34,7 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
   }, []);
 
   const onAddDetailsClick = (path) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path, {
       state: { isEditing: true },
     });

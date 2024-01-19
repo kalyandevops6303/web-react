@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -29,6 +29,7 @@ import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/a
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { LeftSidebarProfileWrapper } from '../../user-details/overview/style';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const LeftSidebarProfile = ({
   isTalentView,
@@ -40,6 +41,7 @@ const LeftSidebarProfile = ({
   isEditable,
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const param = useParams();
   const navigate = useNavigate();
   const userData = getItem('userData');
@@ -62,9 +64,8 @@ const LeftSidebarProfile = ({
         state: { isEditing: true },
       });
     } else {
-      navigate(`/${data.user_type.toLowerCase()}-onboarding/account-details`, {
-        state: { isEditing: true },
-      });
+      setItemFromSession('backRouteForProfileEdit', location.pathname);
+      navigate(`/${data.user_type.toLowerCase()}-profile-edit/account-details`);
     }
   };
 

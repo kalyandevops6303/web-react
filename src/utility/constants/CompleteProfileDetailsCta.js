@@ -1,55 +1,55 @@
-import { userOnboarding } from './Constant';
+import { userProfileEdit } from './Constant';
 
 const CompleteProfileDetailsCta = {
   TALENT: [
     {
       keyToMatch: 'tagline',
       label: 'Add Personal Details',
-      path: `/${userOnboarding.talent}/personal-details`,
+      path: `/${userProfileEdit.talent}/personal-details`,
     },
     {
       keyToMatch: 'educational_institute',
       label: 'Add Education Details',
-      path: `/${userOnboarding.talent}/educational-details`,
+      path: `/${userProfileEdit.talent}/educational-details`,
     },
     {
       keyToMatch: 'availability',
       label: 'Add Availability Details',
-      path: `/${userOnboarding.talent}/availability-details`,
+      path: `/${userProfileEdit.talent}/availability-details`,
     },
     {
       keyToMatch: 'payment_account',
       label: 'Add Payment Details',
-      path: `/${userOnboarding.talent}/payment-details`,
+      path: `/${userProfileEdit.talent}/payment-details`,
     },
-    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userOnboarding.talent}/social-details` },
-    { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${userOnboarding.talent}/account-details` },
+    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userProfileEdit.talent}/social-details` },
+    { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${userProfileEdit.talent}/account-details` },
     {
       keyToMatch: 'work_experience',
       label: 'Complete Your Profile',
-      path: `/${userOnboarding.talent}/personal-details`,
+      path: `/${userProfileEdit.talent}/personal-details`,
     },
-    { keyToMatch: 'languages', label: 'Complete Your Profile', path: `/${userOnboarding.talent}/personal-details` },
+    { keyToMatch: 'languages', label: 'Complete Your Profile', path: `/${userProfileEdit.talent}/personal-details` },
   ],
   CLIENT: [
-    { keyToMatch: 'company_name', label: 'Add Personal Details', path: `/${userOnboarding.client}/personal-details` },
+    { keyToMatch: 'company_name', label: 'Add Personal Details', path: `/${userProfileEdit.client}/personal-details` },
     {
       keyToMatch: 'educational_institute',
       label: 'Add Education Details',
-      path: `/${userOnboarding.client}/educational-details`,
+      path: `/${userProfileEdit.client}/educational-details`,
     },
     {
       keyToMatch: 'availability',
       label: 'Add Availability Details',
-      path: `/${userOnboarding.client}/availability-details`,
+      path: `/${userProfileEdit.client}/availability-details`,
     },
-    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userOnboarding.client}/social-details` },
-    { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${userOnboarding.client}/account-details` },
-    { keyToMatch: 'company_logo', label: 'Complete Your Profile', path: `/${userOnboarding.client}/personal-details` },
+    { keyToMatch: 'social_links', label: 'Add Social Details', path: `/${userProfileEdit.client}/social-details` },
+    { keyToMatch: 'image_uri', label: 'Complete Your Profile', path: `/${userProfileEdit.client}/account-details` },
+    { keyToMatch: 'company_logo', label: 'Complete Your Profile', path: `/${userProfileEdit.client}/personal-details` },
     {
       keyToMatch: 'company_strength',
       label: 'Complete Your Profile',
-      path: `/${userOnboarding.client}/personal-details`,
+      path: `/${userProfileEdit.client}/personal-details`,
     },
   ],
   TEAM: [
@@ -61,7 +61,7 @@ const CompleteProfileDetailsCta = {
     {
       keyToMatch: 'payment_account',
       label: 'Add Payment Details',
-      path: `/${userOnboarding.talent}/payment-details`,
+      path: `/${userProfileEdit.talent}/payment-details`,
     },
   ],
   CLUB: [

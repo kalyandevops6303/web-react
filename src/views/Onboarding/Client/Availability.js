@@ -32,7 +32,7 @@ import { profileDetailsLoading } from '../../../redux/selectors/clientOnboarding
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { getCurrencies } from '../../../redux/actions/staticActions';
@@ -144,30 +144,24 @@ const Availability = () => {
   const currenciesIsLoading = useSelector(currenciesLoading);
 
   const onBackClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/educational-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/educational-details`);
     } else {
       navigate(`/${userOnboarding.client}/educational-details`);
     }
   };
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/social-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/social-details`);
     } else {
       navigate(`/${userOnboarding.client}/social-details`);
     }
   };
 
   const onSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/social-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/social-details`);
     } else {
       navigate(`/${userOnboarding.client}/social-details`);
     }
