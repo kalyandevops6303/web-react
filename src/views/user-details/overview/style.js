@@ -296,7 +296,14 @@ const ReviewWrap = styled.div`
     background: #f2fcfc !important;
   }
 `;
+
+const ActionButtonWrapper = styled.div`
+  .w-47 {
+    width: 47%;
+  }
+`;
 export {
+  ActionButtonWrapper,
   StatboxWrap,
   ReviewWrap,
   LeftSidebarProfileWrapper,

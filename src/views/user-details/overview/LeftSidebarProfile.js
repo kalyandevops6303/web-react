@@ -16,7 +16,7 @@ import Avatar from '@components/avatar';
 
 import Rating from 'react-rating';
 import { Download, GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
-import { DownloadIconContainer, LeftSidebarProfileWrapper } from './style';
+import { ActionButtonWrapper, DownloadIconContainer, LeftSidebarProfileWrapper } from './style';
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
@@ -621,17 +621,16 @@ const LeftSidebarProfile = ({
             )}
             {isEditable && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                <Button className="w-50" color="primary" onClick={onEditClick}>
+                <Button color="primary" onClick={onEditClick}>
                   Edit
                 </Button>
               </div>
             )}
             <div>
-              {/* Sensitive code below, If any changes done please check with all personas in each user type profile */}
-              <div>
-                <div className="d-flex gap-1 mt-3 mb-1 justify-content-center">
+              <ActionButtonWrapper>
+                <div className="d-flex gap-1 mt-3 mb-1 justify-content-center flex-wrap">
                   {requestStatusData && !isClubProfile && (
-                    <span className="w-50">
+                    <span className="w-47">
                       {!isEditable && teamId && data?.user_type === userTypes.talent && (
                         <Button className="w-100" outline color="primary" onClick={handleDeclineRequest}>
                           Decline
@@ -645,7 +644,7 @@ const LeftSidebarProfile = ({
                     </span>
                   )}
                   {requestStatusData && !isClubProfile && (
-                    <span className="w-50">
+                    <span className="w-47">
                       {!isEditable && teamId && data?.user_type === userTypes.talent && (
                         <Button className="w-100" color="primary" onClick={handleAcceptRequest}>
                           Accept
@@ -664,7 +663,7 @@ const LeftSidebarProfile = ({
                     !data?.is_team_member &&
                     teamId &&
                     data?.user_type === userTypes.talent && (
-                      <Button className="w-50" outline color="primary" onClick={handleInviteTalent}>
+                      <Button className="w-47" outline color="primary" onClick={handleInviteTalent}>
                         Invite
                       </Button>
                     )}
@@ -686,15 +685,15 @@ const LeftSidebarProfile = ({
                         </Button>
                       </div>
                     )}
-                </div>
-                <div className="d-flex justify-content-center">
+                  {/* </div> */}
+                  {/* <div className="d-flex justify-content-center"> */}
                   {!isEditable && param?.userType.toUpperCase() !== userTypes.team && (
-                    <Button className="w-50" color="primary" onClick={onMessageClick}>
+                    <Button className="w-47" color="primary" onClick={onMessageClick}>
                       Message
                     </Button>
                   )}
                 </div>
-              </div>
+              </ActionButtonWrapper>
 
               {(userDataSelector?.user_type === userTypes.client || userDataSelector?.user_type === userTypes.team) &&
                 param?.userType.toUpperCase() === userTypes.talent && (
