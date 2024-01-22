@@ -88,8 +88,6 @@ const BidDetails = () => {
     );
   };
 
-  if (isLoading) return <ComponentSpinner />;
-
   const fromLocationPrimary = () => {
     if (getItem('baseRoute') === 'marketplace')
       return {
@@ -119,7 +117,7 @@ const BidDetails = () => {
 
   const BidDetailsHeaderSection = styled.div`
     .fixed-head {
-      z-index: 1;
+      z-index: 20;
       margin-top: -5rem;
       padding-top: 1rem;
       position: fixed;
@@ -141,10 +139,12 @@ const BidDetails = () => {
     }
   `;
 
+  if (isLoading) return <ComponentSpinner />;
+
   return (
     <BidDetailsWrap>
       <div className="d-flex justify-content-between mb-2 pb-2 rounded" style={{ position: 'relative' }}>
-        <div className="d-flex justify-content-between fixed-header">
+        <div className="d-flex justify-content-between fixed-header z-index-20" style={{ zIndex: '20' }}>
           <BreadCrumbs
             data={[
               fromLocationPrimary(),
@@ -219,7 +219,7 @@ const BidDetails = () => {
                     {isBidStatusUpating ? (
                       'Updating...'
                     ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
-                      <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
+                      <span className="d-flex align-items-center me-2">{`${bidStatus || bidInfo?.status}`}</span>
                     ) : (
                       <div style={{ marginTop: '-0.2rem' }} className="d-flex gap-2 align-items-center pe-1">
                         <CardText
