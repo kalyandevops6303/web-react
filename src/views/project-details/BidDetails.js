@@ -143,8 +143,8 @@ const BidDetails = () => {
 
   return (
     <BidDetailsWrap>
-      <div className="d-flex justify-content-between mb-2 pb-2 rounded" style={{ position: 'relative' }}>
-        <div className="d-flex justify-content-between fixed-header z-index-20" style={{ zIndex: '20' }}>
+      <div className="d-flex justify-content-between mb-2 pb-2 rounded top-head">
+        <div className="d-flex justify-content-between fixed-header">
           <BreadCrumbs
             data={[
               fromLocationPrimary(),
