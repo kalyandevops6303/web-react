@@ -58,7 +58,15 @@ const RemoveProjectTeamMemberModal = ({ modal, toggleModal, data }) => {
             <Button
               color="danger"
               onClick={() =>
-                dispatch(removeWorkerFromProjectTeam(params.projectId, userData?._id, data?.user_id, onSuccess))
+                dispatch(
+                  removeWorkerFromProjectTeam({
+                    projectId: params.projectId,
+                    teamId: userData?._id,
+                    workerId: data?.user_id,
+                    role: data?.role,
+                    onSuccess,
+                  }),
+                )
               }
               disabled={removeWorkerIsLoading}
             >
