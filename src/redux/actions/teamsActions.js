@@ -1,7 +1,10 @@
 import { getTeamService, createTeamService, getInviteDetails, updateTeamService } from '../../services/teamServices';
+// eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
 import {
   getTeamCreated,
+  getTeamError,
+  getTeamRequest,
   getTeamSuccess,
   updateTeamFailure,
   updateTeamRequest,
@@ -12,12 +15,13 @@ import { getInvitedBySuccess } from '../reducers/projectDetails';
 const getTeams =
   ({ onSuccess }) =>
   async (dispatch) => {
+    dispatch(getTeamRequest());
     try {
       const res = await getTeamService();
       dispatch(getTeamSuccess(res.data.data.data));
       onSuccess(res.data.data.data);
     } catch (error) {
-      errorHandler(error);
+      errorHandler(error, getTeamError);
     }
   };
 

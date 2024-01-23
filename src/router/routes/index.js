@@ -31,7 +31,7 @@ import ComingSoon from '../../views/auth/ComingSoon';
 import ProjectDetails from '../../views/project-details';
 import BidDetails from '../../views/project-details/BidDetails';
 import ContractView from '../../views/project-details/ContractView';
-import { userOnboarding } from '../../utility/constants/Constant';
+import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
 import Chat from '../../views/chat';
 import Projects from '../../views/projects';
 import MyTeams from '../../views/teams';
@@ -124,7 +124,6 @@ const Routes = [
       layout: 'blank',
     },
   },
-
   {
     path: `/${userOnboarding.talent}/:section-details`,
     element: <TalentOnboarding />,
@@ -138,6 +137,14 @@ const Routes = [
     meta: {
       layout: 'blank',
     },
+  },
+  {
+    path: `/${userProfileEdit.talent}/:section-details`,
+    element: <TalentOnboarding />,
+  },
+  {
+    path: `/${userProfileEdit.client}/:section-details`,
+    element: <ClientOnboarding />,
   },
   {
     path: '/create-project',

@@ -664,6 +664,7 @@ MilestoneDetailsTab.propTypes = {
   selectedMilestone: Proptypes.object.isRequired,
   fetchProjectMilestones: Proptypes.func.isRequired,
   milestonesData: Proptypes.object.isRequired,
+  setSelectedMilestoneIndex: Proptypes.func.isRequired,
 };
 
 export default MilestoneDetailsTab;

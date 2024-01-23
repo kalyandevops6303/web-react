@@ -315,7 +315,7 @@ const Step3 = ({ setStep }) => {
   }, [copyAddress]);
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
       dispatch(saveCheckpointComplete(onSuccess));

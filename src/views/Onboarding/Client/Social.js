@@ -16,7 +16,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { getUserDetails, saveCheckpointComplete } from '../../../redux/actions/talentOnboardingActions';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
@@ -76,17 +76,15 @@ const Social = () => {
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onBackClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/availability-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/availability-details`);
     } else {
       navigate(`/${userOnboarding.client}/availability-details`);
     }
   };
 
   const onSuccess = () => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
       setAccountCreatedModal(true);
@@ -94,7 +92,7 @@ const Social = () => {
   };
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
       dispatch(saveCheckpointComplete(onSuccess));
@@ -129,14 +127,14 @@ const Social = () => {
     };
 
     if (removeEmptyKeys(reqData)) {
-      if (location?.state?.isEditing) {
+      if (location.pathname.includes('profile-edit')) {
         dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
       } else {
         dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
       }
     } else {
       // eslint-disable-next-line no-lonely-if
-      if (location?.state?.isEditing) {
+      if (location.pathname.includes('profile-edit')) {
         navigate('/dashboard');
       } else {
         dispatch(saveCheckpointComplete(onSuccess));
