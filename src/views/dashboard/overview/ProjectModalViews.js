@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import ProjectModal from '../../modals/ProjectModal';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import { getModalData } from '../../../redux/actions/dashboardActions';
+import { getPath } from '../../../utility/Utils';
 
 const ProjectModalViews = ({
   isActiveProject,
@@ -19,7 +19,7 @@ const ProjectModalViews = ({
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [modalData, setModalData] = useState(null);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   const onSuccess = (projectRes) => {
     setModalData(projectRes);
   };
@@ -34,14 +34,6 @@ const ProjectModalViews = ({
   const toggleCompleteProfileModal = () => {
     toggleModal();
     setCompleteProfileModal(!completeProfileModal);
-  };
-
-  const dashboardRedirection = () => {
-    if (isActiveProject) {
-      navigate(`/project-details/${project_id}/milestone`);
-    } else if (isUpcomingProject) {
-      navigate(`/project-details/${project_id}/bid`);
-    }
   };
 
   return (
@@ -62,8 +54,9 @@ const ProjectModalViews = ({
 
       {switchModal && (
         <SwitchConfirmModal
-          dashboardRedirection={dashboardRedirection}
-          data={{ ...modalData, project_id: modalData?._id, isDashboardRedirection: true }}
+          entity={modalData?.switch_team_id ? 'TEAM' : 'TALENT'}
+          navigateTo={getPath({ isActiveProject, projectId: modalData?._id })}
+          switchTeamId={modalData?.switch_team_id}
           modal={switchModal}
           toggleModal={() => setSwitchModal(!switchModal)}
         />

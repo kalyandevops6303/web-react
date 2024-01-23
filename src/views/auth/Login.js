@@ -18,7 +18,7 @@ import InputPasswordToggle from '@components/input-password-toggle';
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
 import { validations } from '../../utility/Utils';
-import { loginUser } from '../../redux/actions/authActions';
+import { loginUser, switchProfile } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
@@ -26,6 +26,7 @@ import LogoComp from './components/LogoComp';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import { checkPoints } from '../../utility/constants/Constant';
 import { validateUrl } from '../../redux/actions/dashboardActions';
+import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -58,7 +59,26 @@ const Login = () => {
     if (dataParam) {
       dispatch(validateUrl({ data: dataParam, onSuccess: onValidUrlSuccess, onError: onInvalidUrlSuccess }));
     } else if (isLoggedIn) {
-      navigate('/dashboard');
+      const teamId = getItemFromSession('team_id');
+      const teamData = getItemFromSession('team_data');
+      const redirectToLocation = getItemFromSession('redirect_to_location');
+      if (redirectToLocation && teamId) {
+        setItemFromSession('team_id', teamId);
+
+        dispatch(
+          switchProfile({
+            data: teamData,
+            onSuccess: navigate(redirectToLocation),
+            selected: false,
+          }),
+        );
+        removeItemFromSession('redirect_to_location');
+      } else if (redirectToLocation) {
+        navigate(redirectToLocation);
+        removeItemFromSession('redirect_to_location');
+      } else {
+        navigate('/dashboard');
+      }
     }
   }, [isLoggedIn]);
 

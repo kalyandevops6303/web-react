@@ -16,7 +16,7 @@ const ConfirmContractModal = ({ docType, modalData, onAccept, modal, toggleModal
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={onClose} />
+      <ModalHeader toggle={isSignLoading || isLoading ? null : onClose} />
       <ModalBody>
         <AcceptModalWrapper>
           <div className="d-flex justify-content-between pr-1">
@@ -46,7 +46,7 @@ const ConfirmContractModal = ({ docType, modalData, onAccept, modal, toggleModal
             <Button disabled={isSignLoading || isLoading} outline color="primary" onClick={onClose}>
               Cancel
             </Button>
-            <Button color="primary" onClick={onAccept}>
+            <Button disabled={isSignLoading || isLoading} color="primary" onClick={onAccept}>
               {isSignLoading || isLoading ? <Spinner size="sm" /> : 'Agree & Sign'}
             </Button>
           </div>
