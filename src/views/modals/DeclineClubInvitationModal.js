@@ -18,7 +18,7 @@ const DeclineClubInvitaionModal = ({ modal, toggleModal, data, onDecline, onLoad
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={onClose} />
+      <ModalHeader toggle={onLoading ? null : onClose} />
       <ModalBody>
         <RemoveMemberModalWrapper>
           <div className="d-flex justify-content-between pr-1">
@@ -42,10 +42,10 @@ const DeclineClubInvitaionModal = ({ modal, toggleModal, data, onDecline, onLoad
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 me-1 justify-content-end">
-            <Button outline color="primary" onClick={() => onClose()}>
+            <Button disabled={onLoading} outline color="primary" onClick={() => onClose()}>
               Cancel
             </Button>
-            <Button onClick={() => handleDecline()} color="danger">
+            <Button disabled={onLoading} onClick={() => handleDecline()} color="danger">
               {onLoading ? <Spinner size="sm" /> : 'Decline'}
             </Button>
           </div>
@@ -62,14 +62,14 @@ DeclineClubInvitaionModal.propTypes = {
   toggleModal: Proptypes.func,
   data: Proptypes.object,
   onDecline: Proptypes.func,
-  onLoading:Proptypes.bool,
+  onLoading: Proptypes.bool,
 };
 
 DeclineClubInvitaionModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   onDecline: () => {},
-  onLoading:false,
+  onLoading: false,
 
   data: {},
 };

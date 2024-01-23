@@ -39,8 +39,10 @@ const acceptInvitation = ({ id }) => DataService.put(`${API.projectDetails.accep
 
 const rejectInvitation = ({ id }) => DataService.put(`${API.projectDetails.reject}/${id}`);
 
-const removeWorkerService = (projectId, teamId, workerId) =>
-  DataService.put(`${API.projectDetails.removeWorker}?project_id=${projectId}&team_id=${teamId}&worker_id=${workerId}`);
+const removeWorkerService = (projectId, teamId, workerId, role) =>
+  DataService.put(
+    `${API.projectDetails.removeWorker}?role=${role}&project_id=${projectId}&team_id=${teamId}&worker_id=${workerId}`,
+  );
 
 // Contract flow
 

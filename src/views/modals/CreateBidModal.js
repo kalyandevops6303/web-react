@@ -51,7 +51,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
         <Row className="mt-2 px-50">
           <Col sm="12" md="6" lg="6">
             <CreateBidRadioOption
-              className="cursor-pointer"
+              className="cursor-pointer d-flex"
               active={selectedFlow === bidTypes.simple}
               onClick={() => {
                 !createBidLoadingIsLoading && setSelectedFlow(bidTypes.simple);
@@ -77,7 +77,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
           </Col>
           <Col sm="12" md="6" lg="6">
             <CreateBidRadioOption
-              className="cursor-pointer"
+              className="cursor-pointer d-flex"
               active={selectedFlow === bidTypes.advanced}
               onClick={() => {
                 !createBidLoadingIsLoading && setSelectedFlow(bidTypes.advanced);

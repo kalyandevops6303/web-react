@@ -44,7 +44,7 @@ const ChangeClubMemberModal = ({ modal, toggleModal, memberType }) => {
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={handleClose} />
+      <ModalHeader toggle={isLoading ? null : handleClose} />
       <ModalBody className="px-3 py-0">
         <div className="d-flex align-items-center">
           <img src={SwitchMember} alt="great-job" width={120} height={120} className="me-4" />
@@ -71,7 +71,7 @@ const ChangeClubMemberModal = ({ modal, toggleModal, memberType }) => {
           </div>
         </div>
         <div className="d-flex justify-content-end mt-1 mb-2">
-          <Button color="outline-secondary" className="me-1" onClick={handleClose}>
+          <Button disabled={loading} color="outline-secondary" className="me-1" onClick={handleClose}>
             Cancel
           </Button>
           <Button disabled={loading} color="primary" onClick={handleChange}>
