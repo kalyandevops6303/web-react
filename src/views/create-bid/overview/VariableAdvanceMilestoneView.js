@@ -62,13 +62,18 @@ const VariableAdvanceMilestoneView = () => {
           .max(500, 'Description must be 500 characters or less')
           .transform((value) => (value === '' ? undefined : value))
           .optional(),
-        deliverables: yup.array().of(
-          yup
-            .string()
-            .min(4, 'Deliverable must be at least 4 characters')
-            .max(50, 'Deliverable must be 50 characters or less')
-            .transform((value) => (value === '' ? undefined : value)),
-        ),
+        deliverables: yup
+          .array()
+          .of(
+            yup
+              .string()
+              .min(4, 'Deliverable must be at least 4 characters')
+              .max(50, 'Deliverable must be 50 characters or less')
+              .transform((value) => (value === '' ? undefined : value))
+              .required('Deliverable is required'),
+          )
+          .min(1, 'At least 1 deliverable is required')
+          .required('At least 1 deliverable is required'),
         otherDetails: yup.object().optional(),
         workers: yup.array().of(
           yup.object().shape({
@@ -130,7 +135,7 @@ const VariableAdvanceMilestoneView = () => {
           milestoneId: uuidv4(),
           name: undefined,
           description: undefined,
-          deliverables: [''],
+          deliverables: [undefined],
           otherDetails: {},
           workers: [],
         },
@@ -345,7 +350,7 @@ const VariableAdvanceMilestoneView = () => {
       deliverables: [...milestoneDeliverables, defaultValue],
     };
 
-    if (milestoneDeliverables.every((deliverable) => deliverable.trim() !== '')) {
+    if (milestoneDeliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
       milestonesUpdate(milestoneIndex, newData);
     } else {
       ShowToastMessage(ERROR, 'Please fill all deliverables before adding a new one.');
@@ -370,7 +375,8 @@ const VariableAdvanceMilestoneView = () => {
         milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
         milestone.workers
           .filter((worker) => worker.isChecked)
-          .every((worker) => worker.duration > 0 && worker.hours > 0),
+          .every((worker) => worker.duration > 0 && worker.hours > 0) &&
+        milestone.deliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
     );
 
     if (allMilestonesValid) {
@@ -378,7 +384,7 @@ const VariableAdvanceMilestoneView = () => {
         milestoneId: uuidv4(),
         name: undefined,
         description: undefined,
-        deliverables: [''],
+        deliverables: [undefined],
         otherDetails: {},
         workers: allWorkers.map((worker) => ({
           role: worker.role,
@@ -530,7 +536,7 @@ const VariableAdvanceMilestoneView = () => {
           milestoneId: uuidv4(),
           name: milestone?.name,
           description: milestone?.description,
-          deliverables: milestone?.deliverables?.length > 0 ? milestone?.deliverables : [''],
+          deliverables: milestone?.deliverables?.length > 0 ? milestone?.deliverables : [undefined],
           otherDetails: milestone,
           workers: res?.workers.map((worker) => {
             if (milestone.workers.find((w) => w.role === worker.role)) {
@@ -562,7 +568,7 @@ const VariableAdvanceMilestoneView = () => {
             milestoneId: uuidv4(),
             name: undefined,
             description: undefined,
-            deliverables: [''],
+            deliverables: [undefined],
             otherDetails: {},
             workers: res?.workers.map((worker) => ({
               role: worker.role,
@@ -1033,10 +1039,10 @@ const VariableAdvanceMilestoneView = () => {
                                 <Card>
                                   <CardBody>
                                     <p className="fw-bold font-medium-1 text-secondary mb-2 pb-2">
-                                      Deliverable Details
+                                      Deliverable Details<span className="label-asterisk">*</span>
                                     </p>
                                     {milestone.deliverables.map((item, index) => (
-                                      <Row key={item.id} className="mb-1 d-flex align-items-center">
+                                      <Row key={item?.id} className="mb-1 d-flex align-items-center">
                                         <Col sm="12" md="12" lg="8">
                                           <Controller
                                             id={`milestones[${milestoneIndex}].deliverables[${index}]`}
