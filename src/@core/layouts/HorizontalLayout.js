@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 // ** React Imports
@@ -10,7 +11,7 @@ import { handleMenuHidden, handleContentWidth } from '@store/layout';
 import { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { ArrowUp } from 'react-feather';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 // ** Reactstrap Imports
 import { Navbar, Button } from 'reactstrap';
@@ -36,10 +37,16 @@ import FooterComponent from './components/footer';
 
 // ** Styles
 import '@styles/base/core/menu/menu-types/horizontal-menu.scss';
+import SwitchConfirmModal from '../../views/modals/SwitchConfirm';
+import { selectUserData, selectUserType } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
+import { getTeamId } from '../../utility/Utils';
+import { getUserData } from '../../redux/actions/authActions';
 
 const HorizontalLayout = (props) => {
   // ** Props
   const { footer, children } = props;
+  const [switchProfileModal, setSwitchProfileModal] = useState(false);
 
   // ** Hooks
   const { skin, setSkin } = useSkin();
@@ -52,11 +59,14 @@ const HorizontalLayout = (props) => {
 
   // ** States
   const isNavbarSearchBarOpen = useSelector((state) => state.search?.isNavbarSearchBarOpen);
+  const userType = useSelector(selectUserType);
+  const userData = useSelector(selectUserData);
 
   // ** Store Vars
   const dispatch = useDispatch();
   const location = useLocation();
   const layoutStore = useSelector((state) => state.layout);
+  const [searchParams] = useSearchParams();
 
   // ** Vars
   const { contentWidth } = layoutStore;
@@ -85,6 +95,39 @@ const HorizontalLayout = (props) => {
   const cleanup = () => {
     setIsMounted(false);
   };
+
+  const entity = searchParams.get('entity');
+  const switchTeamId = searchParams.get('switch_team_id');
+
+  useEffect(() => {
+    if (
+      ((entity === 'TALENT' && userType === userTypes.team) ||
+        (switchTeamId && getTeamId() && getTeamId() !== switchTeamId) ||
+        (switchTeamId && !getTeamId())) &&
+      switchTeamId?.length > 0
+    ) {
+      setSwitchProfileModal(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const isAuthPath = window.location.pathname.includes('/auth');
+    const isBasePath = window.location.pathname === '/';
+    if (!userData && !isAuthPath && !isBasePath) {
+      dispatch(getUserData());
+    }
+  }, []);
+
+  // 1 ✅ Talent is logged and cliked on team email => Switch modal opens
+  // 2 ✅ Talent is not logged in and click on team email => logout => Saved url => loggin and switch modal
+  // 3 ✅ Talent is logged in and clicks on talents email => Direct redirection
+  // 4 ✅ Talent is not logged in and clicks on talents email => logout => Saved url => loggin and no switch modal
+
+  // 5 ✅ Team is logged and cliked on talent email => Switch modal opens
+  // 6 ✅ Team is not logged in (Means it logout and its talent again) and click on talent email works as 4 => logout => Saved url => loggin and no switch modal
+  // 7 ✅ Team is logged in and clicks on team email => Direct redirection
+  // 8 ✅ Team is not logged in and clicks on team email => logout => Saved url => loggin and switch modal
+
   //  ComponentDidMount
   useEffect(() => {
     setIsMounted(true);
@@ -120,9 +163,17 @@ const HorizontalLayout = (props) => {
           <NavbarComponent skin={skin} setSkin={setSkin} />
         </div>
       </Navbar>
-
-      {children}
-
+      {switchProfileModal ? (
+        <SwitchConfirmModal
+          entity={entity}
+          navigateTo={location?.pathname}
+          switchTeamId={switchTeamId}
+          modal={switchProfileModal}
+          toggleModal={() => setSwitchProfileModal(false)}
+        />
+      ) : (
+        children
+      )}
       {themeConfig.layout.customizer === true ? (
         <Customizer
           skin={skin}

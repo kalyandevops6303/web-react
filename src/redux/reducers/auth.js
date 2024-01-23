@@ -273,6 +273,10 @@ const authSlice = createSlice({
       isTeamLoggedIn: action.payload.user_type === 'TEAM',
       userDataLoading: false,
     }),
+    savedUserDataSuccess: (state, action) => ({
+      ...state,
+      savedUserData: action.payload.user_type !== 'TEAM' ? action.payload : state.savedUserData,
+    }),
     userDataFailure: (state, action) => ({
       ...state,
       userDataLoading: false,
@@ -342,6 +346,7 @@ export const {
   userDataSuccess,
   userDataFailure,
   getUserDataSuccess,
+  savedUserDataSuccess,
 } = authSlice.actions;
 
 export default authSlice.reducer;

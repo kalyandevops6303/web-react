@@ -1,21 +1,24 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Progress, CardText } from 'reactstrap';
 import CompleteProfileGif from '../../assets/images/completeYourProfileGif.gif';
 import { giveProgressBarColorClassName } from '../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../utility/constants/CompleteProfileDetailsCta';
 import { profilePercentage, userData } from '../../redux/selectors/dashboardSelectors';
+import { setItemFromSession } from '../../utility/sessesionStorageControl';
 
 const CompleteProfileModal = ({ modal, toggleModal, modalInfoText }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
 
   const onAddDetailsClick = (path) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path, {
       state: { isEditing: true },
     });

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
+import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
 
 import theme from '../configs/themeVariables';
@@ -444,4 +445,25 @@ export const truncateSentence = ({ sentence, maxCharacters }) => {
   }
   // If the sentence is within the limit, return it as is
   return sentence;
+};
+
+export const getPath = ({ isActiveProject, projectId }) => {
+  const location = useLocation();
+  const isDashboard = location.pathname.split('/').includes('dashboard');
+  if (location.pathname.split('/').includes('projects')) {
+    if (location.pathname.split('/').includes('ongoing')) {
+      return `/project-details/${projectId}/milestone`;
+    }
+    if (location.pathname.split('/').includes('completed')) {
+      return `/project-details/${projectId}/rating`;
+    }
+    return `/project-details/${projectId}/bid`;
+  }
+  if (isDashboard) {
+    if (isActiveProject) {
+      return `/project-details/${projectId}/milestone`;
+    }
+    return `/project-details/${projectId}/bid`;
+  }
+  return `/project-details/${projectId}/bid`;
 };

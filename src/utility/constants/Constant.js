@@ -25,6 +25,10 @@ const userOnboarding = {
   client: 'client-onboarding',
   talent: 'talent-onboarding',
 };
+const userProfileEdit = {
+  client: 'client-profile-edit',
+  talent: 'talent-profile-edit',
+};
 const createBidTalentSteps = [
   { title: 'Milestone', subtitle: 'Add milestone', icon: <Watch size={18} /> },
   { title: 'Preview', subtitle: 'Review before posting', icon: <Check size={18} /> },
@@ -105,6 +109,7 @@ export {
   checkPoints,
   userTypes,
   userOnboarding,
+  userProfileEdit,
   sortingOptions,
   statusesOptions,
   projectTypesOptions,
