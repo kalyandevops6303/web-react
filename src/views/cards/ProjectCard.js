@@ -12,6 +12,7 @@ import BaseInfoUI from './BaseInfoCardUI';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import SwitchConfirmModal from '../modals/SwitchConfirm';
+import { getPath } from '../../utility/Utils';
 
 const ProjectCard = ({
   secondaryFilterForInvitedType,
@@ -171,7 +172,9 @@ const ProjectCard = ({
       )}
       {switchProfileModal && (
         <SwitchConfirmModal
-          data={{ ...data, project_id: data?._id }}
+          entity={data?.switch_team_id ? 'TEAM' : 'TALENT'}
+          navigateTo={getPath({ isActiveProject: false, projectId: data?._id })}
+          switchTeamId={data?.switch_team_id}
           modal={switchProfileModal}
           toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
         />
@@ -194,6 +197,7 @@ const ProjectCard = ({
 ProjectCard.propTypes = {
   isExpanded: PropTypes.bool,
   data: PropTypes.object,
+
   isPopoverOpen: PropTypes.bool,
   isProjectWithTeam: PropTypes.bool,
   isTeam: PropTypes.bool,

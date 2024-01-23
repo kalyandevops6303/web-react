@@ -53,13 +53,8 @@ const EditContractModal = ({ docType, setDocumentData, modal, toggleModal, data 
   };
 
   return (
-    <Modal
-      contentClassName="custom-modal-project-details"
-      isOpen={modal}
-      toggle={toggleModal}
-      className="modal-dialog-centered modal-lg"
-    >
-      <ModalHeader toggle={toggleModal} />
+    <Modal contentClassName="custom-modal-project-details" isOpen={modal} className="modal-dialog-centered modal-lg">
+      <ModalHeader toggle={isLoading ? null : toggleModal} />
 
       <ModalBody>
         <EditContractWrap>
@@ -76,7 +71,7 @@ const EditContractModal = ({ docType, setDocumentData, modal, toggleModal, data 
             />
             {errors.contractDetails && <FormFeedback>{errors.contractDetails.message}</FormFeedback>}
             <div className="d-flex gap-1 mt-3 justify-content-end">
-              <Button outline color="primary" onClick={toggleModal}>
+              <Button disabled={isLoading} outline color="primary" onClick={toggleModal}>
                 Cancel
               </Button>
               <Button disabled={isLoading} color="primary" type="submit">
