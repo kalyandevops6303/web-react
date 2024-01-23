@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   DropdownItem,
   Accordion,
@@ -9,13 +8,13 @@ import {
   AccordionBody,
   UncontrolledTooltip,
 } from 'reactstrap';
-
 import { useSelector } from 'react-redux';
-
 import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
-import { clubStatus, userTypes } from '../../../../utility/constants/Constant';
+import { clubStatus, userProfileEdit, userTypes } from '../../../../utility/constants/Constant';
 import { selectUserData, selectSavedUserData } from '../../../../redux/selectors/authSelectors';
+import { setItemFromSession } from '../../../../utility/sessesionStorageControl';
+
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
@@ -23,6 +22,8 @@ const EditProfileAccordion = () => {
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handleEditProfileForTeam = () => {
     navigate('/create-team/profile-details', {
       state: { isEditing: true },
@@ -30,53 +31,35 @@ const EditProfileAccordion = () => {
   };
 
   const handleEditProfileForTalent = (tab) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
+
     if (tab === 'account') {
-      navigate('/talent-onboarding/account-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.talent}/account-details`);
     } else if (tab === 'personal') {
-      navigate('/talent-onboarding/personal-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.talent}/personal-details`);
     } else if (tab === 'education') {
-      navigate('/talent-onboarding/educational-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.talent}/educational-details`);
     } else if (tab === 'availability') {
-      navigate('/talent-onboarding/availability-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.talent}/availability-details`);
     } else if (tab === 'social') {
-      navigate('/talent-onboarding/social-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
-      navigate('/talent-onboarding/payment-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.talent}/payment-details`);
     }
   };
   const handleEditProfileForClient = (tab) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
+
     if (tab === 'account') {
-      navigate('/client-onboarding/account-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.client}/account-details`);
     } else if (tab === 'personal') {
-      navigate('/client-onboarding/personal-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.client}/personal-details`);
     } else if (tab === 'education') {
-      navigate('/client-onboarding/educational-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.client}/educational-details`);
     } else if (tab === 'availability') {
-      navigate('/client-onboarding/availability-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.client}/availability-details`);
     } else {
-      navigate('/client-onboarding/social-details', {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.client}/social-details`);
     }
   };
 

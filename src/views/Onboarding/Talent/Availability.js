@@ -31,7 +31,7 @@ import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talen
 import { profileDetailsLoading, userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { currencies, currenciesLoading } from '../../../redux/selectors/staticSelectors';
 import { getCurrencies } from '../../../redux/actions/staticActions';
@@ -149,30 +149,24 @@ const Availability = () => {
   const currenciesIsLoading = useSelector(currenciesLoading);
 
   const onBackClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/educational-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
       navigate(`/${userOnboarding.talent}/educational-details`);
     }
   };
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/social-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
       navigate(`/${userOnboarding.talent}/social-details`);
     }
   };
 
   const onSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/social-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
       navigate(`/${userOnboarding.talent}/social-details`);
     }

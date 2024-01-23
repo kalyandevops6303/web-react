@@ -3,9 +3,9 @@
 /* eslint-disable react/require-default-props */
 import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
@@ -36,9 +36,11 @@ import { getJoinRequest, getRecommendedProjects, getRecommendedTalent } from '..
 import theme from '../../../configs/themeVariables';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
 
@@ -47,6 +49,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
   const dispatch = useDispatch();
 
   const onAddDetailsClick = (path) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path, {
       state: { isEditing: true },
     });

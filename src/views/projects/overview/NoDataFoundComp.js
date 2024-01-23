@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { Card, CardText } from 'reactstrap';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { useSelector } from 'react-redux';
 import NodataFound from '@src/assets/images/noDataFoundGif.gif';
@@ -11,12 +11,14 @@ import theme from '../../../configs/themeVariables';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import { returnDetailsForMarketPlace } from '../../../utility/Utils';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
 
   const toggleCompleteProfileModal = () => {
@@ -49,6 +51,7 @@ const NoDataFoundComponent = ({ isMyListing, isRecommanded }) => {
   `;
 
   const onAddDetailsClick = (path) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path, {
       state: { isEditing: true },
     });
