@@ -6,7 +6,9 @@ import TrumioChat from './TrumioChat';
 const Chat = () => {
   const authToken = useSelector((state) => state.auth.cometChatToken);
   const location = useLocation();
-  const { targetId, targetType } = location.state;
+  if (!authToken) {
+    return null;
+  }
 
   return (
     <TrumioChat
@@ -16,8 +18,8 @@ const Chat = () => {
         backgroundColor: 'white',
       }}
       authToken={authToken}
-      targetId={targetId}
-      targetType={targetType || 'user'}
+      targetId={location?.state?.targetId || null}
+      targetType={location?.state?.targetType || 'user'}
     />
   );
 };
