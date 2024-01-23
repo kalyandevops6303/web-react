@@ -12,7 +12,7 @@ const RejectBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) 
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={onClose} />
+      <ModalHeader toggle={isLoading ? null : onClose} />
       <ModalBody>
         <DeleteModalWrapper>
           <div className="d-flex justify-content-between pr-1">
@@ -38,7 +38,7 @@ const RejectBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) 
             <Button disabled={isLoading} onClick={onClose} outline color="primary">
               Cancel
             </Button>
-            <Button color="danger" onClick={onAccept}>
+            <Button disabled={isLoading} color="danger" onClick={onAccept}>
               {isLoading ? <Spinner size="sm" /> : 'Reject Bid'}
             </Button>
           </div>

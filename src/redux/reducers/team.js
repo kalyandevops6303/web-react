@@ -10,9 +10,18 @@ const teamSlice = createSlice({
   name: 'team',
   initialState,
   reducers: {
+    getTeamRequest: (state) => ({
+      ...state,
+      isTeamsLoading: true,
+    }),
+    getTeamError: (state) => ({
+      ...state,
+      isTeamsLoading: false,
+    }),
     getTeamSuccess: (state, action) => ({
       ...state,
       teams: action.payload,
+      isTeamsLoading: false,
     }),
     getTeamCreated: (state, action) => ({
       ...state,
@@ -54,6 +63,8 @@ export const {
   updateTeamRequest,
   updateTeamSuccess,
   updateTeamFailure,
+  getTeamRequest,
+  getTeamError,
 } = teamSlice.actions;
 
 export default teamSlice.reducer;

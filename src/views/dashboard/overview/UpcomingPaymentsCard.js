@@ -25,9 +25,6 @@ const UpcomingPaymentsCard = ({ data, className }) => {
     }
   };
 
-  const dashboardRedirection = (projectId) => {
-    navigate(`/project-details/${projectId}/payment`);
-  };
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design">
@@ -124,12 +121,9 @@ const UpcomingPaymentsCard = ({ data, className }) => {
       </Card>
       {openSwitchModal && (
         <SwitchConfirmModal
-          dashboardRedirection={() => dashboardRedirection(data?._id)}
-          data={{
-            project_id: data?._id,
-            isDashboardRedirection: true,
-            custom_payload: { switch_team_id: data?.switch_team_id },
-          }}
+          entity={data?.switch_team_id ? 'TEAM' : 'TALENT'}
+          navigateTo={`/project-details/${data?._id}/payment`}
+          switchTeamId={data?.switch_team_id}
           modal={openSwitchModal}
           toggleModal={() => setOpenSwitchModal(!openSwitchModal)}
         />

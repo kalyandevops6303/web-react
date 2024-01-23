@@ -43,7 +43,7 @@ const DeleteProjectModal = ({ modal, toggleModal, data, workers }) => {
   };
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style delete-modal" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={onClose} />
+      <ModalHeader toggle={isTerminating || isRelisting ? null : onClose} />
       <ModalBody>
         <TerminateModalWrapper>
           <div className="d-flex justify-content-between pr-1">

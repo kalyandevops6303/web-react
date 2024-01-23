@@ -260,6 +260,27 @@ export const UploadIconContainer = styled.div`
   width: fit-content;
 `;
 
+export const BackButtonContainer = styled.div`
+  .upload-button {
+    width: fit-content;
+
+    .add-icon-container {
+      background: ${theme.activeNavPillText};
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 6px;
+      width: fit-content;
+    }
+
+    h5 {
+      margin: 0 0 0 8px;
+      color: ${theme.activeNavPillText};
+    }
+  }
+`;
+
 export const AccountCreatedImageContainer = styled.div`
   margin: -30px 0 -70px 20px;
 `;

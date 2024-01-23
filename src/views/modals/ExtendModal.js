@@ -27,7 +27,7 @@ const ExtendModal = ({ modal, toggleModal, onExtend, validityType, projectDetail
       contentClassName="custom-larger-than-medium-modal-style"
       className="modal-dialog-centered modal-lg"
     >
-      <ModalHeader toggle={toggleModal} />
+      <ModalHeader toggle={isLoading ? null : toggleModal} />
       <ModalBody className="py-0">
         <SwitchModalWrapper>
           <div className="d-flex align-items-center px-50 py-0">
