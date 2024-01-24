@@ -2,12 +2,10 @@ import { Briefcase, Calendar, Check } from 'react-feather';
 import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import BreadCrumbs from '@components/breadcrumbs';
-import { Button, Col, Row } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.png';
 import Statbox from './overview/Statbox';
 import round from '../../lib/round';
-import capitalize from '../../lib/capitalize';
 import LeftSidebarProfile from './overview/LeftSidebarProfile';
 import UserBio from './overview/UserBio';
 import RecentProjects from './overview/RecentProjects';
@@ -19,11 +17,13 @@ import { clearData, makeTeamMemberSuccess } from '../../redux/reducers/profile';
 import Error from '../Error';
 import { userTypes } from '../../utility/constants/Constant';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
-import { getItem } from '../../utility/localStorageControl';
 import AcceptClubInviationModal from '../modals/AcceptClubInviationModal';
 import DeclineClubInvitaionModal from '../modals/DeclineClubInvitationModal';
 import { updateInvitation } from '../../redux/actions/dashboardActions';
 import { getRequestStatusSuccess } from '../../redux/reducers/inviteTalent';
+import DetailsHeader from './overview/DetailsHeader';
+import DetailsCTAHeader from './overview/DetailsCTAHeader';
+import { DetailsHeaderSection, DetailsWrap } from './overview/style';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -53,7 +53,6 @@ const UserDetails = () => {
   const isTalentView = param?.userType.toUpperCase() === userTypes.talent;
   const isTeamView = param?.userType.toUpperCase() === userTypes.team;
   const isClubView = param?.userType.toUpperCase() === userTypes.club;
-  const isOwnProfile = param?.userId === userData?._id;
 
   const currentProfile = useSelector(selectCurrentProfile);
   const loading = useSelector(selectLoading);
@@ -92,52 +91,6 @@ const UserDetails = () => {
     const combined = `${years}y ${months}m`;
     return combined;
   };
-
-  const baseRoute = getItem('baseRoute');
-
-  let secondaryRoute;
-
-  if (baseRoute === 'marketplace') {
-    secondaryRoute = getItem('selectedMarketplaceTab');
-  } else if (baseRoute === 'projects') {
-    secondaryRoute = getItem('selectedProjectTab');
-  } else if (baseRoute === 'my-teams') {
-    secondaryRoute = getItem('selectedMyTeamsTab');
-  } else {
-    secondaryRoute = null;
-  }
-
-  const baseRouteWithoutDash = baseRoute?.replace(/[-_]/g, ' ');
-  const secondaryRouteWithoutDash = secondaryRoute?.replace(/[-_]/g, ' ');
-
-  const defaultBreadCrumb = [
-    { title: 'Profile', link: '#' },
-    {
-      title:
-        isTeamView || isClubView
-          ? currentProfile?.name
-          : `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User',
-    },
-  ];
-  const dynamicBreadCrumb = [
-    { title: capitalize(baseRouteWithoutDash), link: `/${baseRoute}` },
-    ...(secondaryRoute
-      ? [{ title: capitalize(secondaryRouteWithoutDash), link: `/${baseRoute}/${secondaryRoute}` }]
-      : []),
-    {
-      title:
-        isTeamView || isClubView
-          ? currentProfile?.name
-          : `${currentProfile?.first_name} ${currentProfile?.last_name}` || 'User',
-    },
-  ];
-
-  if (loading) {
-    return <ComponentSpinner />;
-  }
-  if (error) {
-    return <Error />;
-  }
 
   const toggleAcceptInvitationModal = () => {
     setAcceptInvitationModal(!acceptInvitationModal);
@@ -191,13 +144,21 @@ const UserDetails = () => {
     );
   };
 
+  if (loading) {
+    return <ComponentSpinner />;
+  }
+  if (error) {
+    return <Error />;
+  }
+
   return (
-    <>
-      {/* <BreadCrumbs data={location?.state?.from ? dynamicBreadCrumb : defaultBreadCrumb} /> */}
-      {/* <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} /> */}
-      <div className="d-flex justify-content-between align-items-center ">
-        <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} />
-        {currentProfile.team_type === 'CLUB' && requestStatusData && (
+    <DetailsWrap>
+      <DetailsHeader />
+
+      {/* Club code */}
+      <div className="d-flex justify-content-between align-items-center">
+        {/* <BreadCrumbs data={isOwnProfile ? defaultBreadCrumb : dynamicBreadCrumb} /> */}
+        {/* {currentProfile.team_type === 'CLUB' && requestStatusData && (
           <div className="d-flex align-items-center gap-2 mb-2">
             <Button onClick={() => setDeclineInvitationModal(true)} color="flat-danger" className="me-1">
               Decline
@@ -206,9 +167,9 @@ const UserDetails = () => {
               Accept
             </Button>
           </div>
-        )}
+        )} */}
       </div>
-      <Row>
+      <Row className="pt-75">
         <Col lg="3">
           <LeftSidebarProfile
             isTalentView={isTalentView}
@@ -220,68 +181,76 @@ const UserDetails = () => {
           />
         </Col>
         <Col lg="9">
-          {!isClubView && (
-            <Row>
-              <Col lg="3">
-                <Statbox
-                  title={recentProjectsMetadata?.total_records || 0}
-                  desc="Completed Projects"
-                  icon={<Check height={20} />}
-                  color="light-success"
+          <DetailsHeaderSection>
+            <Row className="pt-3 details-card">
+                <DetailsCTAHeader
+                  isTalentView={isTalentView}
+                  isTeamView={isTeamView || isClubView}
+                  isClient={isClient}
+                  data={currentProfile}
+                  isEditable={userData?._id === param?.userId}
+                  isClubProfile={currentProfile.team_type === 'CLUB'}
                 />
-              </Col>
-              {isTalentView && (
                 <Col lg="3">
                   <Statbox
-                    title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
-                    desc="Hourly Rate"
-                    icon={<img src={MoneyIcon} height={22} alt="money" />}
-                    color="light-warning"
+                    title={recentProjectsMetadata?.total_records || 0}
+                    desc="Completed Projects"
+                    icon={<Check height={20} />}
+                    color="light-success"
                   />
                 </Col>
-              )}
-              {isTeamView ||
-                (isClubView && (
+                {isTalentView && (
                   <Col lg="3">
                     <Statbox
-                      title={`${currentProfile?.total_project_value?.code || ''} ${
-                        currentProfile?.total_project_value || 0
-                      }`}
-                      desc="Total Project Value"
+                      title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
+                      desc="Hourly Rate"
                       icon={<img src={MoneyIcon} height={22} alt="money" />}
                       color="light-warning"
                     />
                   </Col>
-                ))}
-              {isTalentView && (
+                )}
+                {isTeamView ||
+                  (isClubView && (
+                    <Col lg="3">
+                      <Statbox
+                        title={`${currentProfile?.total_project_value?.code || ''} ${
+                          currentProfile?.total_project_value || 0
+                        }`}
+                        desc="Total Project Value"
+                        icon={<img src={MoneyIcon} height={22} alt="money" />}
+                        color="light-warning"
+                      />
+                    </Col>
+                  ))}
+                {isTalentView && (
+                  <Col lg="3">
+                    <Statbox
+                      title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
+                      desc="Work Experience"
+                      icon={<Briefcase height={20} />}
+                      color="light-warning"
+                    />
+                  </Col>
+                )}
                 <Col lg="3">
                   <Statbox
-                    title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
-                    desc="Work Experience"
-                    icon={<Briefcase height={20} />}
-                    color="light-warning"
+                    title={
+                      <>
+                        {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
+                          ? 0
+                          : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
+                        hours/week <br />
+                        {currentProfile?.availability?.timezone?.abbreviation}(
+                        {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
+                      </>
+                    }
+                    desc="Availability"
+                    icon={<Calendar height={20} />}
+                    color="light-primary"
                   />
                 </Col>
-              )}
-              <Col lg="3">
-                <Statbox
-                  title={
-                    <>
-                      {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
-                        ? 0
-                        : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
-                      hours/week <br />
-                      {currentProfile?.availability?.timezone?.abbreviation}(
-                      {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
-                    </>
-                  }
-                  desc="Availability"
-                  icon={<Calendar height={20} />}
-                  color="light-primary"
-                />
-              </Col>
-            </Row>
-          )}
+              </Row>
+          </DetailsHeaderSection>
 
           <Row>
             <UserBio
@@ -320,7 +289,7 @@ const UserDetails = () => {
           onLoading={isStatusUpdating}
         />
       )}
-    </>
+    </DetailsWrap>
   );
 };
 

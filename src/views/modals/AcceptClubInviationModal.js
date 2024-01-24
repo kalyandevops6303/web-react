@@ -59,7 +59,7 @@ const AcceptClubInviationModal = ({
   }, [modal]);
 
   const closeModal = () => {
-    onInviteTalents();
+    onAccept();
     clearInterval(intervalId.current);
   };
 

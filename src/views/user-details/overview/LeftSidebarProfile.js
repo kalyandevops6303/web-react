@@ -21,149 +21,30 @@ import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
-import { downloadFile, getTeamId, giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
+import { downloadFile, giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
-import {
-  getProfilePercentage,
-  getTeamProfilePercentage,
-  updateInvitation,
-} from '../../../redux/actions/dashboardActions';
-import { inviteTalents } from '../../../redux/actions/inviteTalent';
+import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
-import SendInvitationModal from '../../modals/SendInvitationModal';
-import AcceptRequestModal from '../../modals/AcceptRequestModal';
-import CompleteProfileModal from '../../modals/CompleteProfileModal';
-import { makeTeamMemberSuccess } from '../../../redux/reducers/profile';
-import { getRequestStatusSuccess } from '../../../redux/reducers/inviteTalent';
-import InvitationSentModal from '../../modals/InvitationSentModal';
-import JoinTeamModal from '../../modals/JoinTeamModal';
 import ReportUserModal from './ReportUserModal';
-import SendClubInvitationModal from '../../modals/SendClubInvitationModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import RejectRequestModal from '../../modals/RejectRequestModal';
 
-const LeftSidebarProfile = ({
-  isTalentView,
-  isInvited,
-  isProjectDetailsView,
-  isTeamView,
-  isClient,
-  data,
-  isClubProfile,
-}) => {
+const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
   const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
   const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
-
-  const [modalInformationText, setModalInformationText] = useState('');
-  const teamId = getTeamId('team_id');
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
   const showProfilePercent = param?.userId === userDataSelector?._id;
-  const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
-  const requestStatusData = useSelector((state) => state.inviteTalent.getRequestStatus);
-  const [selectedTalent, setSelectedTalent] = useState([]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [sendInviteModal, setSendInviteModal] = useState(null);
-  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
-  const [completeProfileModal, setCompleteProfileModal] = useState(null);
-  const [accpetModal, setAccpetModal] = useState(false);
-  const [declineModal, setDeclineModal] = useState(false);
-
-  const [invitationSentModal, setInvitationSentModal] = useState(null);
-  const [openJoinTeamModal, setOpenJoinTeamModal] = useState(false);
   const [reportModal, setReportModal] = useState(false);
-  const toggleInvitationSentModal = () => setInvitationSentModal(!invitationSentModal);
   const toggleReportModal = () => setReportModal(!reportModal);
-
-  const onAccept = () => {
-    const postData = {
-      action: 'ACCEPT',
-      request_id: requestStatusData._id,
-    };
-    setIsStatusUpdating(true);
-    dispatch(
-      updateInvitation({
-        data: postData,
-        onSuccess: () => {
-          setIsStatusUpdating(false);
-          setAccpetModal(false);
-          dispatch(getRequestStatusSuccess(null));
-          dispatch(makeTeamMemberSuccess());
-        },
-        onError: () => {
-          setIsStatusUpdating(false);
-        },
-      }),
-    );
-  };
-  const onReject = () => {
-    const postData = {
-      action: 'REJECT',
-      request_id: requestStatusData._id,
-    };
-    setIsStatusUpdating(true);
-    dispatch(
-      updateInvitation({
-        data: postData,
-        onSuccess: () => {
-          setIsStatusUpdating(false);
-          setDeclineModal(false);
-          dispatch(getRequestStatusSuccess(null));
-        },
-        onError: () => {
-          setIsStatusUpdating(false);
-        },
-      }),
-    );
-  };
-  const handleAcceptRequest = () => {
-    if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
-    ) {
-      setCompleteProfileModal(true);
-      setModalInformationText('accept request');
-    } else {
-      setAccpetModal(true);
-    }
-  };
-  const handleDeclineRequest = () => {
-    if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
-    ) {
-      setCompleteProfileModal(true);
-      setModalInformationText('decline request');
-    } else {
-      setDeclineModal(true);
-    }
-  };
-
-  const toggleCompleteProfileModal = () => {
-    setCompleteProfileModal(!completeProfileModal);
-  };
-
-  const handleCancel = () => {
-    setCompleteProfileModal(false);
-    setAccpetModal(false);
-    setDeclineModal(false);
-  };
-
-  const handleJoinModalCancel = () => {
-    setCompleteProfileModal(false);
-    setOpenJoinTeamModal(false);
-  };
 
   const handleLike = () => {
     setIsFavourite(true);
@@ -209,88 +90,8 @@ const LeftSidebarProfile = ({
     }
   }, []);
 
-  const sendJoinTeamRequest = () => {
-    const newPostData = {
-      message: '',
-      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
-      requests_to: {
-        user_ids: [],
-        team_ids: [param?.userId],
-        email_ids: [],
-      },
-      request_for: {
-        project_id: '',
-        team_id: '',
-        role: '',
-      },
-    };
-    const onSuccess = () => {
-      setOpenJoinTeamModal(false);
-    };
-    dispatch(inviteTalents({ data: newPostData, onSuccess, isJoinRequest: true }));
-  };
-
-  const handleJoinTeam = () => {
-    if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
-    ) {
-      setCompleteProfileModal(true);
-      setModalInformationText('join team');
-    } else {
-      setOpenJoinTeamModal(true);
-    }
-  };
-
-  const toggleSendInviteModal = () => {
-    setSendInviteModal(!sendInviteModal);
-  };
-
-  const handleInviteTalent = () => {
-    setSelectedTalent([data]);
-    setSendInviteModal(true);
-  };
-
   return (
     <LeftSidebarProfileWrapper>
-      {completeProfileModal && (
-        <CompleteProfileModal
-          modalInfoText={modalInformationText}
-          modal={completeProfileModal}
-          toggleModal={toggleCompleteProfileModal}
-        />
-      )}
-      {accpetModal && (
-        <AcceptRequestModal
-          title={requestStatusData?.request_type}
-          isLoading={isStatusUpdating}
-          data={requestStatusData}
-          onAccept={onAccept}
-          modal={accpetModal}
-          toggleModal={handleCancel}
-        />
-      )}
-      {declineModal && (
-        <RejectRequestModal
-          title={requestStatusData?.request_type}
-          isLoading={isStatusUpdating}
-          data={requestStatusData}
-          onReject={onReject}
-          modal={declineModal}
-          toggleModal={handleCancel}
-        />
-      )}
-      {openJoinTeamModal && (
-        <JoinTeamModal
-          isLoading={inJoinTeamLoading}
-          data={data}
-          title="Join Team"
-          toggleModal={handleJoinModalCancel}
-          modal={openJoinTeamModal}
-          onAccept={sendJoinTeamRequest}
-        />
-      )}
       <Card>
         <CardBody>
           <div>
@@ -621,72 +422,14 @@ const LeftSidebarProfile = ({
             )}
             {isEditable && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                <Button color="primary" onClick={onEditClick}>
+                <Button className="ps-3 pe-3" color="primary" onClick={onEditClick}>
                   Edit
                 </Button>
               </div>
             )}
             <div>
               <ActionButtonWrapper>
-                <div className="d-flex gap-1 mt-3 mb-1 justify-content-center flex-wrap">
-                  {requestStatusData && !isClubProfile && (
-                    <span className="w-47">
-                      {!isEditable && teamId && data?.user_type === userTypes.talent && (
-                        <Button className="w-100" outline color="primary" onClick={handleDeclineRequest}>
-                          Decline
-                        </Button>
-                      )}
-                      {isTeamView && (
-                        <Button className="w-100" outline color="primary" onClick={handleDeclineRequest}>
-                          Decline
-                        </Button>
-                      )}
-                    </span>
-                  )}
-                  {requestStatusData && !isClubProfile && (
-                    <span className="w-47">
-                      {!isEditable && teamId && data?.user_type === userTypes.talent && (
-                        <Button className="w-100" color="primary" onClick={handleAcceptRequest}>
-                          Accept
-                        </Button>
-                      )}
-                      {isTeamView && (
-                        <Button className="w-100" color="primary" onClick={handleAcceptRequest}>
-                          Accept
-                        </Button>
-                      )}
-                    </span>
-                  )}
-
-                  {!requestStatusData &&
-                    !isEditable &&
-                    !data?.is_team_member &&
-                    teamId &&
-                    data?.user_type === userTypes.talent && (
-                      <Button className="w-47" outline color="primary" onClick={handleInviteTalent}>
-                        Invite
-                      </Button>
-                    )}
-                  {!requestStatusData &&
-                    !data?.is_team_member &&
-                    isTeamView &&
-                    !teamId &&
-                    userData?.user_type === userTypes.talent &&
-                    !isClubProfile && (
-                      <div className="w-50 d-flex gap-1 justify-content-center">
-                        <Button
-                          disabled={inJoinTeamLoading}
-                          className="w-100"
-                          color="primary"
-                          outline
-                          onClick={handleJoinTeam}
-                        >
-                          Join Team
-                        </Button>
-                      </div>
-                    )}
-                  {/* </div> */}
-                  {/* <div className="d-flex justify-content-center"> */}
+                <div className="d-flex gap-1 mt-3 justify-content-center flex-wrap">
                   {!isEditable && param?.userType.toUpperCase() !== userTypes.team && (
                     <Button className="w-47" color="primary" onClick={onMessageClick}>
                       Message
@@ -707,42 +450,7 @@ const LeftSidebarProfile = ({
           </section>
         </CardBody>
       </Card>
-      {sendInviteModal && userData?.team_type !== 'CLUB' && (
-        <SendInvitationModal
-          modal={sendInviteModal}
-          toggleModal={toggleSendInviteModal}
-          selectedTalents={selectedTalent}
-          setInvitationSentModal={setInvitationSentModal}
-          message={inputMessage}
-          setMessage={setInputMessage}
-          description="You are inviting the below to join your team"
-        />
-      )}
 
-      {sendInviteModal && userData?.team_type === 'CLUB' && (
-        <SendClubInvitationModal
-          modal={sendInviteModal}
-          toggleModal={toggleSendInviteModal}
-          selectedTalents={selectedTalent}
-          setSelectedTalents={setSelectedTalent}
-          setInvitationSentModal={setInvitationSentModal}
-          message={inputMessage}
-          setMessage={setInputMessage}
-          description="You are inviting the below to join your club"
-        />
-      )}
-
-      {invitationSentModal && (
-        <InvitationSentModal
-          modal={invitationSentModal}
-          toggleModal={toggleInvitationSentModal}
-          selectedTalents={selectedTalent}
-          message={inputMessage}
-          toggleSendInvitationModal={toggleSendInviteModal}
-          setSelectedTalents={setSelectedTalent}
-          description={`You’ve sent a ${userData?.team_type === 'CLUB' ? 'club' : 'team'} member invitation`}
-        />
-      )}
       {reportModal && <ReportUserModal modal={reportModal} toggleModal={toggleReportModal} userDetails={data} />}
     </LeftSidebarProfileWrapper>
   );
@@ -755,7 +463,6 @@ LeftSidebarProfile.propTypes = {
   isTeamView: PropTypes.bool,
   isProjectDetailsView: PropTypes.bool,
   isInvited: PropTypes.bool,
-  isClubProfile: PropTypes.bool,
 };
 LeftSidebarProfile.defaultProps = {
   data: {},
@@ -764,7 +471,6 @@ LeftSidebarProfile.defaultProps = {
   isTeamView: false,
   isProjectDetailsView: false,
   isInvited: false,
-  isClubProfile: false,
 };
 
 export default LeftSidebarProfile;
