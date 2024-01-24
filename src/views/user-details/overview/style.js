@@ -358,10 +358,10 @@ const DetailsHeaderSection = styled.div`
     background: ${theme.bodyBgColor};
     padding-bottom: 0.8rem;
     margin-left: 0.8rem;
+    padding-left: 0;
     .inner-head {
       display: flex;
       justify-content: space-between;
-      padding-left: 0.2rem;
       padding-right: 1rem;
       .back {
         padding-top: 0.5rem;
