@@ -76,6 +76,7 @@ import { clearProjectCardData } from '../reducers/project';
 import { registerClubEmailService } from '../../services/clubServices';
 import { getTeamId } from '../../utility/Utils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
+import { getClubAdminAccess } from './inviteTalent';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -289,7 +290,11 @@ const switchProfile =
   async (dispatch) => {
     try {
       dispatch(switchProfileSuccess(data));
-      if (data?.user_type === 'TEAM') {
+
+      if (data?.user_type === 'TEAM' && data?.team_type === userTypes.club) {
+        setItemFromSession('team_id', data?._id);
+        dispatch(getClubAdminAccess());
+      } else if (data?.user_type === 'TEAM') {
         setItemFromSession('team_id', data?._id);
       } else {
         removeItemFromSession('team_id');
