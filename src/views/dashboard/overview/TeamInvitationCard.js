@@ -83,9 +83,13 @@ const TeamInvitaionCard = ({ data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        <div className="new-tag d-flex align-items-center px-75">
+          <div className="red-dot m-0 me-25" />
+          <p className="m-0 font-small-3 fw-bold">New</p>
+        </div>
         <CardBody>
-          <CardTitle className="mt-50 active-project-title truncate-2 mb-50">{data?.project?.name}</CardTitle>
+          <CardTitle className="mt-50 active-project-title truncate-2 mb-50 d-none">{data?.project?.name}</CardTitle>
           <div className="d-flex">
             <RatingBadge number="0" />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>

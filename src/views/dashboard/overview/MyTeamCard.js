@@ -47,7 +47,11 @@ const MyTeamCard = ({ data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        <div className="new-tag d-flex align-items-center px-75">
+          <div className="red-dot m-0 me-25" />
+          <p className="m-0 font-small-3 fw-bold">New</p>
+        </div>
         <CardBody>
           <div className="d-flex">
             <RatingBadge number="0" />

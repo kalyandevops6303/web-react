@@ -14,9 +14,13 @@ const ProjectBidCard = ({ data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        <div className="new-tag d-flex align-items-center px-75">
+          <div className="red-dot m-0 me-25" />
+          <p className="m-0 font-small-3 fw-bold">New</p>
+        </div>
         <CardBody>
-          <CardTitle className="active-project-title truncate-2 mb-1.5">{data?.name}</CardTitle>
+          <CardTitle className="active-project-title truncate-2 mb-1.5 mt-50">{data?.name}</CardTitle>
           <div className="bottom-detail d-flex mt-1 align-items-center">
             <div className="design-planning-wrapper mb-0 w-50">
               <div className="design-planning mb-0">
