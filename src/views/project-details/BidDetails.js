@@ -124,10 +124,10 @@ const BidDetails = () => {
       width: 74%;
       background: ${theme.bodyBgColor};
       padding-bottom: 0.8rem;
+      padding-left: 0;
       .inner-head {
         display: flex;
         justify-content: space-between;
-        padding-left: 1rem;
         padding-right: 0.6rem;
         .back {
           padding-top: 0.5rem;
