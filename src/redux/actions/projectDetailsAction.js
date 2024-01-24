@@ -213,17 +213,19 @@ const updateInvitation =
     }
   };
 
-const removeWorkerFromProjectTeam = (projectId, teamId, workerId, onSuccess) => async (dispatch) => {
-  dispatch(removeWorkerRequest());
-  try {
-    const res = await removeWorkerService(projectId, teamId, workerId);
-    dispatch(removeWorkerSuccess(res.data.data));
-    onSuccess();
-    ShowToastMessage(SUCCESS, res.data.data);
-  } catch (error) {
-    errorHandler(error, removeWorkerFailure);
-  }
-};
+const removeWorkerFromProjectTeam =
+  ({ projectId, teamId, role, workerId, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(removeWorkerRequest());
+    try {
+      const res = await removeWorkerService(projectId, teamId, workerId, role);
+      dispatch(removeWorkerSuccess(res.data.data));
+      onSuccess();
+      ShowToastMessage(SUCCESS, res.data.data);
+    } catch (error) {
+      errorHandler(error, removeWorkerFailure);
+    }
+  };
 
 // Contract flow
 
@@ -254,10 +256,10 @@ const checkDocumentActivated =
       let resNDA;
       const getContract = async () => {
         resContract = await checkDocumentActivatedService({ project_id, doc_type: 'CONTRACT' });
-        dispatch(checkDocumentActivatedSuccess({ isContract: resContract.data.data }));
         if (resContract.data.data.show_document) {
           dispatch(getDocumentTimeline({ project_id, doc_type: 'CONTRACT' }));
         }
+        dispatch(checkDocumentActivatedSuccess({ isContract: resContract.data.data }));
       };
       if (isNDA) {
         resNDA = await checkDocumentActivatedService({ project_id, doc_type: 'NDA' });

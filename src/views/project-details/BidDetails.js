@@ -26,6 +26,7 @@ import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { DateTime } from 'luxon';
 import PdfIcon from '@src/assets/images/pdfimg.png';
+import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
@@ -87,8 +88,6 @@ const BidDetails = () => {
     );
   };
 
-  if (isLoading) return <ComponentSpinner />;
-
   const fromLocationPrimary = () => {
     if (getItem('baseRoute') === 'marketplace')
       return {
@@ -116,9 +115,35 @@ const BidDetails = () => {
     return filteredArray;
   };
 
+  const BidDetailsHeaderSection = styled.div`
+    .fixed-head {
+      z-index: 20;
+      margin-top: -5rem;
+      padding-top: 1rem;
+      position: fixed;
+      width: 74%;
+      background: ${theme.bodyBgColor};
+      padding-bottom: 0.8rem;
+      .inner-head {
+        display: flex;
+        justify-content: space-between;
+        padding-left: 1rem;
+        padding-right: 0.6rem;
+        .back {
+          padding-top: 0.5rem;
+        }
+      }
+    }
+    .details-card {
+      margin-top: 3.6rem;
+    }
+  `;
+
+  if (isLoading) return <ComponentSpinner />;
+
   return (
     <BidDetailsWrap>
-      <div className="d-flex justify-content-between mb-2 pb-2 rounded" style={{ position: 'relative' }}>
+      <div className="d-flex justify-content-between mb-2 pb-2 rounded top-head">
         <div className="d-flex justify-content-between fixed-header">
           <BreadCrumbs
             data={[
@@ -130,29 +155,6 @@ const BidDetails = () => {
               { title: 'Bid Details' },
             ]}
           />
-          {bidInfo?.is_acceptable && (
-            <div>
-              {isBidStatusUpating ? (
-                'Updating...'
-              ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
-                <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
-              ) : (
-                <div style={{ marginTop: '-0.2rem' }} className="d-flex gap-2 align-items-center pe-1">
-                  <CardText
-                    onClick={() => setRejectBidModal(true)}
-                    className="cursor-pointer report-text m-0 text-center fw-bold"
-                  >
-                    Reject
-                  </CardText>
-                  <span>
-                    <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
-                      Accept
-                    </Button>
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
       {acceptBidModal && (
@@ -203,55 +205,91 @@ const BidDetails = () => {
           />
         </Col>
         <Col lg="9">
-          <Card>
-            <CardTitle className="main-card-title">Bid Details</CardTitle>
-            <CardBody className="main-card-body bid-eta d-flex align-items-center">
-              <div>
-                <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
-                <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Total Bid Amount</CardText>
-                  <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
-                  <UncontrolledTooltip placement="bottom" target="amount-info">
-                    <p className="m-0">A Total of talent cost + duration for all the milestone</p>
-                  </UncontrolledTooltip>
+          <BidDetailsHeaderSection>
+            <div className="fixed-head">
+              <div className="inner-head">
+                <div className="back back-wrap" onClick={handleBack}>
+                  <span className="chevron-left-bg">
+                    <ChevronLeft size={22} color={theme.acceptColor} />
+                  </span>
+                  <CardText className="back-text">Back</CardText>
                 </div>
+                {bidInfo?.is_acceptable && (
+                  <div>
+                    {isBidStatusUpating ? (
+                      'Updating...'
+                    ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
+                      <span className="d-flex align-items-center me-2">{`${bidStatus || bidInfo?.status}`}</span>
+                    ) : (
+                      <div style={{ marginTop: '-0.2rem' }} className="d-flex gap-2 align-items-center pe-1">
+                        <CardText
+                          onClick={() => setRejectBidModal(true)}
+                          className="cursor-pointer report-text m-0 text-center fw-bold"
+                        >
+                          Reject
+                        </CardText>
+                        <span>
+                          <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
+                            Accept
+                          </Button>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              <p className="m-0 symbol font-medium-4">+</p>
-              <div>
-                <CardText className="value">${(bidInfo?.total_estimated_cost * 0.2).toFixed(0)}</CardText>
-                <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Platform Fees</CardText>
-                  <Info size={14} color={theme.infoIcon} id="bid-platform-fee-info" className="ms-50" />
-                  <UncontrolledTooltip placement="bottom" target="bid-platform-fee-info">
-                    <p className="m-0">This fee is calculated as 20% of the bid amount</p>
-                  </UncontrolledTooltip>
+            </div>
+
+            <Card className="details-card">
+              <CardTitle className="main-card-title">Bid Details</CardTitle>
+              <CardBody className="main-card-body bid-eta d-flex align-items-center">
+                <div>
+                  <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
+                  <div className="d-flex align-items-center m-0">
+                    <CardText className="key mb-0">Total Bid Amount</CardText>
+                    <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
+                    <UncontrolledTooltip placement="bottom" target="amount-info">
+                      <p className="m-0">A Total of talent cost + duration for all the milestone</p>
+                    </UncontrolledTooltip>
+                  </div>
                 </div>
-              </div>
-              <p className="m-0 symbol font-medium-4">=</p>
-              <div>
-                <CardText className="value">
-                  ${(bidInfo?.total_estimated_cost + bidInfo?.total_estimated_cost * 0.2).toFixed(0)}
-                </CardText>
-                <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Total Project Cost</CardText>
+                <p className="m-0 symbol font-medium-4">+</p>
+                <div>
+                  <CardText className="value">${(bidInfo?.total_estimated_cost * 0.2).toFixed(0)}</CardText>
+                  <div className="d-flex align-items-center m-0">
+                    <CardText className="key mb-0">Platform Fees</CardText>
+                    <Info size={14} color={theme.infoIcon} id="bid-platform-fee-info" className="ms-50" />
+                    <UncontrolledTooltip placement="bottom" target="bid-platform-fee-info">
+                      <p className="m-0">This fee is calculated as 20% of the bid amount</p>
+                    </UncontrolledTooltip>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <CardText className="value">
-                  {bidInfo?.total_estimated_duration?.duration}
-                  {bidInfo?.total_estimated_duration?.duration_type &&
-                    bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
-                </CardText>
-                <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Estimated Duration</CardText>
-                  <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
-                  <UncontrolledTooltip placement="bottom" target="duration-info">
-                    <p className="m-0">Sum total of all milestone duration hours/week</p>
-                  </UncontrolledTooltip>
+                <p className="m-0 symbol font-medium-4">=</p>
+                <div>
+                  <CardText className="value">
+                    ${(bidInfo?.total_estimated_cost + bidInfo?.total_estimated_cost * 0.2).toFixed(0)}
+                  </CardText>
+                  <div className="d-flex align-items-center m-0">
+                    <CardText className="key mb-0">Total Project Cost</CardText>
+                  </div>
                 </div>
-              </div>
-            </CardBody>
-          </Card>
+                <div>
+                  <CardText className="value">
+                    {bidInfo?.total_estimated_duration?.duration}
+                    {bidInfo?.total_estimated_duration?.duration_type &&
+                      bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
+                  </CardText>
+                  <div className="d-flex align-items-center m-0">
+                    <CardText className="key mb-0">Estimated Duration</CardText>
+                    <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
+                    <UncontrolledTooltip placement="bottom" target="duration-info">
+                      <p className="m-0">Sum total of all milestone duration hours/week</p>
+                    </UncontrolledTooltip>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          </BidDetailsHeaderSection>
 
           <Card>
             <CardBody className="main-card-body">
@@ -502,42 +540,6 @@ const BidDetails = () => {
               </a>
             ))}
           </Card>
-
-          <div className="d-flex justify-content-between mb-1">
-            <div className="back-wrap" onClick={handleBack}>
-              <span className="chevron-left-bg">
-                <ChevronLeft size={22} color={theme.acceptColor} />
-              </span>
-              <CardText className="back-text">Back</CardText>
-            </div>
-            {/* {isBidStatusUpating ? (
-              'Updating...'
-            ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
-              <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
-            ) : (
-              <div className="d-flex gap-2 align-items-center">
-                <CardText
-                  onClick={() => {
-                    setRejectBidModal(true);
-                  }}
-                  className="report-text m-0 text-center fw-bold cursor-pointer"
-                >
-                  Reject
-                </CardText>
-                <span>
-                  <Button
-                    onClick={() => {
-                      setAcceptBidModal(true);
-                    }}
-                    className="d-contents"
-                    color="primary"
-                  >
-                    Accept
-                  </Button>
-                </span>
-              </div>
-            )} */}
-          </div>
         </Col>
       </Row>
     </BidDetailsWrap>

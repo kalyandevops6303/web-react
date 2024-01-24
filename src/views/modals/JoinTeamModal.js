@@ -13,7 +13,7 @@ const JoinTeamModal = ({ title, isLoading, data, onAccept, modal, toggleModal })
   };
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={onClose} />
+      <ModalHeader toggle={isLoading ? null : onClose} />
       <ModalBody>
         <AcceptModalWrapper>
           <div className="d-flex justify-content-between pr-1">
@@ -37,7 +37,7 @@ const JoinTeamModal = ({ title, isLoading, data, onAccept, modal, toggleModal })
             </div>
           </div>
           <div className="d-flex gap-1 mt-2 justify-content-end">
-            <Button onClick={onClose} outline color="primary">
+            <Button disabled={isLoading} onClick={onClose} outline color="primary">
               Cancel
             </Button>
             <Button disabled={isLoading} color="primary" onClick={onAccept}>

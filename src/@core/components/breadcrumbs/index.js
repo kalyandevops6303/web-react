@@ -18,6 +18,9 @@ const BreadCrumbs = (props) => {
     return data.map((item, index) => {
       const Wrapper = item.link ? Link : Fragment;
       const isLastItem = data.length - 1 === index;
+      if (!item.title) {
+        return null;
+      }
       return (
         <BreadcrumbItem
           tag="li"

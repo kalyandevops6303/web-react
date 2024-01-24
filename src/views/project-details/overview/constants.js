@@ -1,30 +1,39 @@
 import { Box, CreditCard, FileText, Star, Users } from 'react-feather';
 
+const stepName = {
+  team: 'Team',
+  bid: 'Bid',
+  milestone: 'Milestone',
+  payment: 'Payment',
+  rating: 'Rating',
+  project: 'Project',
+};
+
 const steps = [
   {
-    title: 'Team',
+    title: stepName.team,
     subtitle: 'Team members',
     icon: <Users size={18} />,
   },
   {
-    title: 'Bid',
+    title: stepName.bid,
     subtitle: 'Project bid status',
     icon: <FileText size={18} />,
   },
   {
-    title: 'Milestone',
+    title: stepName.milestone,
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
     isDisabled: true,
   },
   {
-    title: 'Payment',
+    title: stepName.payment,
     subtitle: 'Pay transaction',
     icon: <CreditCard size={18} />,
     isDisabled: true,
   },
   {
-    title: 'Rating',
+    title: stepName.rating,
     subtitle: 'Give and get ratings',
     icon: <Star size={18} />,
     isDisabled: true,
@@ -32,24 +41,24 @@ const steps = [
 ];
 const InviteView = [
   {
-    title: 'Project',
+    title: stepName.project,
     subtitle: 'About work details',
     icon: <Box size={18} />,
   },
   {
-    title: 'Milestone',
+    title: stepName.milestone,
     subtitle: 'Status & dispute',
     icon: <Box size={18} />,
     isDisabled: false,
   },
   {
-    title: 'Payment',
+    title: stepName.payment,
     subtitle: 'Pay transaction',
     icon: <CreditCard size={18} />,
     isDisabled: true,
   },
   {
-    title: 'Rating',
+    title: stepName.rating,
     subtitle: 'Give and get ratings',
     icon: <Star size={18} />,
     isDisabled: true,
@@ -190,4 +199,4 @@ const Members = [
     role: 'Developer',
   },
 ];
-export { steps, currentProfile, dummyText, Members, InviteView };
+export { steps, stepName, currentProfile, dummyText, Members, InviteView };

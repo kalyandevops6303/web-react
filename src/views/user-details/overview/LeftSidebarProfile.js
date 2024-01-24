@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -30,9 +30,11 @@ import { selectAuthUserData, selectUserData } from '../../../redux/selectors/aut
 import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
@@ -67,9 +69,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     } else if (data.team_type === userTypes.club && data.club_status === clubStatus.IN_REVIEW) {
       ShowToastMessage(ERROR, 'Club is not verified yet');
     } else {
-      navigate(`/${data.user_type.toLowerCase()}-onboarding/account-details`, {
-        state: { isEditing: true },
-      });
+      setItemFromSession('backRouteForProfileEdit', location.pathname);
+      navigate(`/${data.user_type.toLowerCase()}-profile-edit/account-details`);
     }
   };
 

@@ -15,6 +15,7 @@ import { getTeamId } from '../../utility/Utils';
 const RemoveMemberModal = ({ modal, toggleModal, data }) => {
   const dispatch = useDispatch();
   const savedUserDetails = useSelector(selectSavedUserData);
+  const isLoading = useSelector((state) => state.dashboard?.removeMemberLoading);
 
   const onClose = () => {
     toggleModal();
@@ -38,7 +39,7 @@ const RemoveMemberModal = ({ modal, toggleModal, data }) => {
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={onClose} />
+      <ModalHeader toggle={isLoading ? null : onClose} />
       <ModalBody>
         <RemoveMemberModalWrapper>
           <div className="d-flex justify-content-between pr-1">
@@ -64,10 +65,10 @@ const RemoveMemberModal = ({ modal, toggleModal, data }) => {
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 me-1 justify-content-end">
-            <Button outline color="primary" onClick={() => onClose()}>
+            <Button disabled={isLoading} outline color="primary" onClick={() => onClose()}>
               Cancel
             </Button>
-            <Button onClick={() => handleRemoveMember(data)} color="danger">
+            <Button disabled={isLoading} onClick={() => handleRemoveMember(data)} color="danger">
               Remove
             </Button>
           </div>
