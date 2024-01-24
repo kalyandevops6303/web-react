@@ -31,7 +31,9 @@ const updateInvitationService = ({ action, request_id }) =>
 const getRequestStatusService = ({ entity_type, entity_id }) =>
   DataService.get(`${API.inviteTeamMember.status}?entity_type=${entity_type}&entity_id=${entity_id}`);
 
+const getAdminAccessService = () => DataService.get(`${API.inviteTeamMember.checkAdmin}`);
 export {
+  getAdminAccessService,
   getRequestStatusService,
   bestTalentsService,
   updateInvitationService,
