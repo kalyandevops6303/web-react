@@ -3,11 +3,11 @@ import React, { useEffect, useState, memo } from 'react';
 import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useParams } from 'react-router-dom';
 
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
 import CustomStep from '../../@core/components/custom-stepper';
-import { InviteView, steps } from './overview/constants';
+import { InviteView, stepName, steps } from './overview/constants';
 import BidView from './overview/BidView';
 import TeamView from './overview/TeamView';
 import { projectDetails } from '../../redux/selectors/projectDetailsSelectors';
@@ -31,6 +31,8 @@ const ProjectDetails = () => {
   const user = useSelector(userData);
   const [stepsArray, setStepsArray] = useState(steps);
   const [stepsArrayInvite, setStepsArrayInvite] = useState(InviteView);
+  const [selectedMilestone, setSelectedMilestone] = useState(null);
+  const params = useParams();
 
   const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
   const isClient = user?.user_type === userTypes.client;
@@ -82,32 +84,66 @@ const ProjectDetails = () => {
   }, [invitedByData?.request_status]);
 
   const fromLocationPrimary = () => {
-    if (getItem('baseRoute') === 'marketplace')
-      return {
-        title: 'Marketplace',
-        link: `/marketplace/${getItem('selectedMarketplaceTab') ? getItem('selectedMarketplaceTab') : 'all_listings'}`,
-      };
+    const baseRoute = getItem('baseRoute');
 
-    if (getItem('baseRoute') === 'projects')
-      return {
-        title: 'Project',
-        link: `/projects/${getItem('selectedProjectTab') ? getItem('selectedProjectTab') : 'all_listings'}`,
-      };
-    if (getItem('baseRoute') === 'notification') return { title: 'Notifications', link: '/notifications' };
-    if (getItem('baseRoute') === 'dashboard') return { title: 'Dashboard', link: '/dashboard' };
-    if (getItem('baseRoute') === 'my-teams') return { title: 'My teams', link: '/my-teams' };
-    return '';
+    switch (baseRoute) {
+      case 'marketplace':
+        return {
+          title: 'Marketplace',
+          link: `/marketplace/${getItem('selectedMarketplaceTab') || 'all_listings'}`,
+        };
+      case 'projects':
+        return {
+          title: 'Project',
+          link: `/projects/${getItem('selectedProjectTab') || 'all_listings'}`,
+        };
+      case 'notification':
+        return { title: 'Notifications', link: '/notifications' };
+      case 'dashboard':
+        return { title: 'Dashboard', link: '/dashboard' };
+      case 'my-teams':
+        return { title: 'My teams', link: '/my-teams' };
+      default:
+        return '';
+    }
   };
+
+  const getLocationTernery = () => {
+    const lowercasedStep = currentStep.toLowerCase();
+
+    switch (lowercasedStep) {
+      case stepName.team.toLowerCase():
+        return { title: 'Team' };
+      case stepName.bid.toLowerCase():
+        return { title: 'Bid' };
+      case stepName.milestone.toLowerCase():
+        return {
+          title: 'Milestones',
+          link: `/project-details/${params.projectId}/milestone`,
+        };
+      case stepName.payment.toLowerCase():
+        return { title: 'Payment' };
+      case stepName.rating.toLowerCase():
+        return { title: 'Rating' };
+      default:
+        return '';
+    }
+  };
+
+  const generalBreadcrumb = [
+    fromLocationPrimary(),
+    { title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) },
+    getLocationTernery(),
+    { title: selectedMilestone?.name || null },
+  ];
+
   return (
     <div>
       <BreadCrumbs
         data={
           isInviteView
             ? [{ title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) }]
-            : [
-                fromLocationPrimary(),
-                { title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) },
-              ]
+            : generalBreadcrumb
         }
       />
       <Row>
@@ -117,14 +153,19 @@ const ProjectDetails = () => {
           {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>
         <Col lg="9">
-          <CustomStep
-            steps={isInviteView ? stepsArrayInvite : stepsArray}
-            currentStep={currentStep}
-            onChangeStep={changeStep}
-          />
+          {selectedMilestone === null && (
+            <CustomStep
+              steps={isInviteView ? stepsArrayInvite : stepsArray}
+              currentStep={currentStep}
+              onChangeStep={changeStep}
+            />
+          )}
           <Routes>
             <Route path="bid" element={<BidView />} />
-            <Route path="milestone" element={<Milestone />} />
+            <Route
+              path="milestone"
+              element={<Milestone selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />}
+            />
             <Route path="payment" element={<PaymentTab />} />
             <Route path="team" element={<TeamView />} />
             <Route path="rating" element={<RatingView />} />
