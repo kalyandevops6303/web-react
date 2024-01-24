@@ -12,7 +12,7 @@ const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleMod
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={onClose} />
+      <ModalHeader toggle={isLoading ? null : onClose} />
       <ModalBody>
         <DeleteModalWrapper>
           <div className="d-flex justify-content-between pr-1">
@@ -27,9 +27,11 @@ const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleMod
               <section className="d-flex gap-2 stats">
                 <div>
                   <CardText className="value mb-25">
-                    {`${data?.request_from?.team_name}` || 'Talent/Team name'}
+                    {data?.request_from?.team_name
+                      ? `${data?.request_from?.team_name}`
+                      : `${data?.request_from?.first_name} ${data?.request_from?.last_name}` || 'Talent/Team name'}
                   </CardText>
-                  <small className="key d-block">{data?.request_from?.user_type ? 'Team name' : ''}</small>
+                  <small className="key d-block">{data?.request_from?.role || 'Team name'}</small>
                 </div>
                 <div className="d-none">
                   <CardText className="value mb-25">$-</CardText>
@@ -39,10 +41,10 @@ const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleMod
             </div>
           </div>
           <div className="d-flex gap-1 mt-3 justify-content-end">
-            <Button onClick={onClose} outline color="primary">
+            <Button disabled={isLoading} onClick={onClose} outline color="primary">
               Cancel
             </Button>
-            <Button color="danger" onClick={onReject}>
+            <Button disabled={isLoading} color="danger" onClick={onReject}>
               {isLoading ? <Spinner size="sm" /> : 'Decline'}
             </Button>
           </div>
@@ -71,5 +73,5 @@ RejectRequestModal.defaultProps = {
   data: {},
   onReject: () => {},
   isLoading: false,
-  isClubInvitation:false
+  isClubInvitation: false,
 };

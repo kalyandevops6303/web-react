@@ -36,7 +36,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
@@ -115,30 +115,24 @@ const Educational = () => {
   const userDetailsIsLoading = useSelector(userDetailsLoading);
 
   const onBackClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/personal-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/personal-details`);
     } else {
       navigate(`/${userOnboarding.client}/personal-details`);
     }
   };
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/availability-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/availability-details`);
     } else {
       navigate(`/${userOnboarding.client}/availability-details`);
     }
   };
 
   const onSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/availability-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/availability-details`);
     } else {
       navigate(`/${userOnboarding.client}/availability-details`);
     }

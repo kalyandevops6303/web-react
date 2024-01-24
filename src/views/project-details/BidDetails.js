@@ -26,6 +26,7 @@ import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { DateTime } from 'luxon';
 import PdfIcon from '@src/assets/images/pdfimg.png';
+import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
@@ -87,8 +88,6 @@ const BidDetails = () => {
     );
   };
 
-  if (isLoading) return <ComponentSpinner />;
-
   const fromLocationPrimary = () => {
     if (getItem('baseRoute') === 'marketplace')
       return {
@@ -116,9 +115,35 @@ const BidDetails = () => {
     return filteredArray;
   };
 
+  const BidDetailsHeaderSection = styled.div`
+    .fixed-head {
+      z-index: 20;
+      margin-top: -5rem;
+      padding-top: 1rem;
+      position: fixed;
+      width: 74%;
+      background: ${theme.bodyBgColor};
+      padding-bottom: 0.8rem;
+      padding-left: 0;
+      .inner-head {
+        display: flex;
+        justify-content: space-between;
+        padding-right: 0.6rem;
+        .back {
+          padding-top: 0.5rem;
+        }
+      }
+    }
+    .details-card {
+      margin-top: 3.6rem;
+    }
+  `;
+
+  if (isLoading) return <ComponentSpinner />;
+
   return (
     <BidDetailsWrap>
-      <div className="d-flex justify-content-between mb-2 pb-2 rounded" style={{ position: 'relative' }}>
+      <div className="d-flex justify-content-between mb-2 pb-2 rounded top-head">
         <div className="d-flex justify-content-between fixed-header">
           <BreadCrumbs
             data={[
@@ -130,29 +155,6 @@ const BidDetails = () => {
               { title: 'Bid Details' },
             ]}
           />
-          {bidInfo?.is_acceptable && (
-            <div>
-              {isBidStatusUpating ? (
-                'Updating...'
-              ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
-                <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
-              ) : (
-                <div style={{ marginTop: '-0.2rem' }} className="d-flex gap-2 align-items-center pe-1">
-                  <CardText
-                    onClick={() => setRejectBidModal(true)}
-                    className="cursor-pointer report-text m-0 text-center fw-bold"
-                  >
-                    Reject
-                  </CardText>
-                  <span>
-                    <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
-                      Accept
-                    </Button>
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
       {acceptBidModal && (
@@ -203,264 +205,315 @@ const BidDetails = () => {
           />
         </Col>
         <Col lg="9">
-          <Card>
-            <CardTitle className="main-card-title">Bid Details</CardTitle>
-            <CardBody className="main-card-body bid-eta d-flex align-items-center">
-              <div>
-                <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
-                <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Total Bid Amount</CardText>
-                  <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
-                  <UncontrolledTooltip placement="bottom" target="amount-info">
-                    <p className="m-0">A Total of talent cost + duration for all the milestone</p>
-                  </UncontrolledTooltip>
+          <BidDetailsHeaderSection>
+            <div className="fixed-head">
+              <div className="inner-head">
+                <div className="back back-wrap" onClick={handleBack}>
+                  <span className="chevron-left-bg">
+                    <ChevronLeft size={22} color={theme.acceptColor} />
+                  </span>
+                  <CardText className="back-text">Back</CardText>
                 </div>
+                {bidInfo?.is_acceptable && (
+                  <div>
+                    {isBidStatusUpating ? (
+                      'Updating...'
+                    ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
+                      <span className="d-flex align-items-center me-2">{`${bidStatus || bidInfo?.status}`}</span>
+                    ) : (
+                      <div style={{ marginTop: '-0.2rem' }} className="d-flex gap-2 align-items-center pe-1">
+                        <CardText
+                          onClick={() => setRejectBidModal(true)}
+                          className="cursor-pointer report-text m-0 text-center fw-bold"
+                        >
+                          Reject
+                        </CardText>
+                        <span>
+                          <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
+                            Accept
+                          </Button>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              <p className="m-0 symbol font-medium-4">+</p>
-              <div>
-                <CardText className="value">${(bidInfo?.total_estimated_cost * 0.2).toFixed(0)}</CardText>
-                <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Platform Fees</CardText>
-                  <Info size={14} color={theme.infoIcon} id="bid-platform-fee-info" className="ms-50" />
-                  <UncontrolledTooltip placement="bottom" target="bid-platform-fee-info">
-                    <p className="m-0">This fee is calculated as 20% of the bid amount</p>
-                  </UncontrolledTooltip>
+            </div>
+
+            <Card className="details-card">
+              <CardTitle className="main-card-title">Bid Details</CardTitle>
+              <CardBody className="main-card-body bid-eta d-flex align-items-center">
+                <div>
+                  <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
+                  <div className="d-flex align-items-center m-0">
+                    <CardText className="key mb-0">Total Bid Amount</CardText>
+                    <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
+                    <UncontrolledTooltip placement="bottom" target="amount-info">
+                      <p className="m-0">A Total of talent cost + duration for all the milestone</p>
+                    </UncontrolledTooltip>
+                  </div>
                 </div>
-              </div>
-              <p className="m-0 symbol font-medium-4">=</p>
-              <div>
-                <CardText className="value">
-                  ${(bidInfo?.total_estimated_cost + bidInfo?.total_estimated_cost * 0.2).toFixed(0)}
-                </CardText>
-                <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Total Project Cost</CardText>
+                <p className="m-0 symbol font-medium-4">+</p>
+                <div>
+                  <CardText className="value">${(bidInfo?.total_estimated_cost * 0.2).toFixed(0)}</CardText>
+                  <div className="d-flex align-items-center m-0">
+                    <CardText className="key mb-0">Platform Fees</CardText>
+                    <Info size={14} color={theme.infoIcon} id="bid-platform-fee-info" className="ms-50" />
+                    <UncontrolledTooltip placement="bottom" target="bid-platform-fee-info">
+                      <p className="m-0">This fee is calculated as 20% of the bid amount</p>
+                    </UncontrolledTooltip>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <CardText className="value">
-                  {bidInfo?.total_estimated_duration?.duration}
-                  {bidInfo?.total_estimated_duration?.duration_type &&
-                    bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
-                </CardText>
-                <div className="d-flex align-items-center m-0">
-                  <CardText className="key mb-0">Estimated Duration</CardText>
-                  <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
-                  <UncontrolledTooltip placement="bottom" target="duration-info">
-                    <p className="m-0">Sum total of all milestone duration hours/week</p>
-                  </UncontrolledTooltip>
+                <p className="m-0 symbol font-medium-4">=</p>
+                <div>
+                  <CardText className="value">
+                    ${(bidInfo?.total_estimated_cost + bidInfo?.total_estimated_cost * 0.2).toFixed(0)}
+                  </CardText>
+                  <div className="d-flex align-items-center m-0">
+                    <CardText className="key mb-0">Total Project Cost</CardText>
+                  </div>
                 </div>
-              </div>
-            </CardBody>
-          </Card>
+                <div>
+                  <CardText className="value">
+                    {bidInfo?.total_estimated_duration?.duration}
+                    {bidInfo?.total_estimated_duration?.duration_type &&
+                      bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
+                  </CardText>
+                  <div className="d-flex align-items-center m-0">
+                    <CardText className="key mb-0">Estimated Duration</CardText>
+                    <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
+                    <UncontrolledTooltip placement="bottom" target="duration-info">
+                      <p className="m-0">Sum total of all milestone duration hours/week</p>
+                    </UncontrolledTooltip>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          </BidDetailsHeaderSection>
 
           <Card>
             <CardBody className="main-card-body">
-              <CardText className="milestone-title d-block mb-1">Milestone</CardText>
-              <AccordionTableHeader className="py-75 px-1">
-                <Row>
-                  <Col sm="12" md="12" lg="2">
-                    <p>Payment For</p>
-                  </Col>
-                  <Col sm="12" md="12" lg="4">
-                    <p>Milestone Name</p>
-                  </Col>
-                  <Col sm="12" md="12" lg="2">
-                    <p>Duration</p>
-                  </Col>
-                  <Col sm="12" md="12" lg="2">
-                    <p>Team Members</p>
-                  </Col>
-                  <Col sm="12" md="12" lg="2">
-                    <div className="d-flex align-items-center">
-                      <p>Amount</p>
-                      <Info size={14} color={theme.infoIcon} id="platform-fee-info" className="ms-50" />
-                      <UncontrolledTooltip placement="right" target="platform-fee-info">
-                        <p className="m-0">
-                          The milestone amount is the sum total of the milestone talent cost and the platform fee (20%).
-                        </p>
-                      </UncontrolledTooltip>
-                    </div>
-                  </Col>
-                </Row>
-              </AccordionTableHeader>
-              <UncontrolledAccordion>
-                {bidInfo?.milestones?.map((milestone, index) => (
-                  <AccordionItem className="py-0" key={milestone._id}>
-                    <AccordionHeader targetId={index + 1} className="p-0">
-                      <Row className="p-0 w-100">
-                        <Col sm="12" md="12" lg="2">
-                          <p className="fw-bolder m-0 font-small-4">Milestone # {index + 1}</p>
-                        </Col>
-                        <Col sm="12" md="12" lg="4" className="ps-1">
-                          <p className="fw-light m-0 font-small-4">{milestone.name}</p>
-                        </Col>
-                        <Col sm="12" md="12" lg="2" className="ps-2">
-                          <p className="fw-light m-0 font-small-4">{milestone?.estimated_duration?.duration} week</p>
-                        </Col>
-                        <Col sm="12" md="12" lg="2" className="ps-2">
-                          <p className="fw-light m-0 font-small-4 ps-50">
-                            {filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.length > 3 ? (
-                              <AvatarGroup
-                                totalCount={
-                                  filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.length ||
-                                  0
-                                }
-                                size="sm"
-                                className="ms-25 mb-50"
-                                data={filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
-                                  ?.map((worker) => ({
-                                    user_id: worker?.user_id,
-                                    user_type: userTypes.talent,
-                                    title: `${worker?.first_name} ${worker?.last_name}` || 'user',
-                                    img: worker?.image_uri || defaultAvatar,
-                                    placement: 'bottom',
-                                    imgHeight: 21,
-                                    imgWidth: 21,
-                                    tooltipId: `${worker?.first_name?.replace(
-                                      /\s+/g,
-                                      '-',
-                                    )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
-                                      (Math.random() * 20).toFixed(0),
-                                    )}`,
-                                  }))
-                                  ?.slice(0, 3)}
-                              />
-                            ) : (
-                              <AvatarGroup
-                                size="sm"
-                                className="ms-25 mb-50"
-                                data={filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.map(
-                                  (worker) => ({
-                                    user_id: worker?.user_id,
-                                    user_type: userTypes.talent,
-                                    title: `${worker?.first_name} ${worker?.last_name}` || 'user',
-                                    img: worker?.image_uri || defaultAvatar,
-                                    placement: 'bottom',
-                                    imgHeight: 21,
-                                    imgWidth: 21,
-                                    tooltipId: `${worker?.first_name?.replace(
-                                      /\s+/g,
-                                      '-',
-                                    )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
-                                      (Math.random() * 30).toFixed(0),
-                                    )}`,
-                                  }),
-                                )}
-                              />
-                            )}
-                          </p>
-                        </Col>
-                        <Col sm="12" md="12" lg="2" className="ps-2">
-                          <p className="fw-light m-0 font-small-4 ps-50">
-                            ${(milestone.estimated_cost + milestone.estimated_cost * 0.2).toFixed(0)}
-                          </p>
-                        </Col>
-                      </Row>
-                    </AccordionHeader>
-                    <AccordionBody accordionId={index + 1}>
-                      <AccordionBodyContent>
-                        {milestone?.description?.length > 0 && (
-                          <>
-                            <p className="content-header mb-25">Description</p>
-                            <p className="m-0 content-description">
-                              <ShowMoreLess content={milestone?.description} maxLength={200} />
+              <CardText className="milestone-title d-block mb-1 fw-bold">Milestones</CardText>
+              <Card className="white-card-bg m-0">
+                <CardBody className="p-0">
+                  <AccordionTableHeader className="py-75 px-1">
+                    <Row>
+                      <Col sm="12" md="12" lg="2">
+                        <p>Payment For</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="4">
+                        <p>Milestone Name</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="2">
+                        <p>Team Members</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="2">
+                        <p>Duration</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="2">
+                        <div className="d-flex align-items-center">
+                          <p>Amount</p>
+                          <Info size={14} color={theme.infoIcon} id="platform-fee-info" className="ms-50" />
+                          <UncontrolledTooltip placement="right" target="platform-fee-info">
+                            <p className="m-0">
+                              The milestone amount is the sum total of the milestone talent cost and the platform fee
+                              (20%).
                             </p>
-                          </>
-                        )}
-                        {milestone?.deliverables?.length > 0 && (
-                          <>
-                            <p className="content-header mb-25">Deliverables</p>
-                            <p className="m-0 content-description">
-                              {milestone?.deliverables?.map((deliverable, deliverableIndex) =>
-                                deliverableIndex + 1 === milestone?.deliverables?.length
-                                  ? `${deliverable}`
-                                  : `${deliverable}, `,
-                              )}
-                            </p>
-                          </>
-                        )}
-                        <Row className="mt-2">
-                          <Col sm="12" md="12" lg="4">
-                            <p className="content-header mb-25">Team Member</p>
-                          </Col>
-                          <Col sm="12" md="12" lg="3">
-                            <p className="content-header mb-25">Designation</p>
-                          </Col>
-                          <Col sm="12" md="12" lg="3">
-                            <p className="content-header mb-25">Duration</p>
-                          </Col>
-                          <Col sm="12" md="12" lg="1">
-                            <p className="content-header mb-25 text-end">Amount</p>
-                          </Col>
-                        </Row>
-                        {milestone?.workers?.length > 0 && (
-                          <div>
-                            {milestone?.workers?.map((worker) => (
-                              <Row className="mt-1" key={worker?.role}>
-                                <Col sm="12" md="12" lg="4">
-                                  <div className="d-flex align-items-center">
-                                    <Avatar
-                                      img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
-                                      imgHeight="32"
-                                      imgWidth="32"
+                          </UncontrolledTooltip>
+                        </div>
+                      </Col>
+                    </Row>
+                  </AccordionTableHeader>
+                  <div className="custom-milestone-accordion">
+                    <UncontrolledAccordion>
+                      {bidInfo?.milestones?.map((milestone, index) => (
+                        <AccordionItem className="py-0" key={milestone._id}>
+                          <AccordionHeader targetId={index + 1} className="p-0">
+                            <Row className="p-0 w-100">
+                              <Col sm="12" md="12" lg="2">
+                                <p className="fw-bolder m-0 font-small-4">Milestone # {index + 1}</p>
+                              </Col>
+                              <Col sm="12" md="12" lg="4" className="ps-1">
+                                <p className="fw-light m-0 font-small-4">{milestone.name}</p>
+                              </Col>
+                              <Col sm="12" md="12" lg="2" className="ps-1">
+                                <p className="fw-light m-0 font-small-4 ps-50">
+                                  {filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.length >
+                                  3 ? (
+                                    <AvatarGroup
+                                      totalCount={
+                                        filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
+                                          ?.length || 0
+                                      }
+                                      size="sm"
+                                      className="ms-25 mb-50"
+                                      data={filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
+                                        ?.map((worker) => ({
+                                          user_id: worker?.user_id,
+                                          user_type: userTypes.talent,
+                                          title: `${worker?.first_name} ${worker?.last_name}` || 'user',
+                                          img: worker?.image_uri || defaultAvatar,
+                                          placement: 'bottom',
+                                          imgHeight: 21,
+                                          imgWidth: 21,
+                                          tooltipId: `${worker?.first_name?.replace(
+                                            /\s+/g,
+                                            '-',
+                                          )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
+                                            (Math.random() * 20).toFixed(0),
+                                          )}`,
+                                        }))
+                                        ?.slice(0, 3)}
                                     />
-                                    {worker?.user_id ? (
-                                      <p className="fw-bolder content-description m-0 ms-50">
-                                        {worker?.first_name} {worker?.last_name}
-                                      </p>
-                                    ) : (
-                                      <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
-                                    )}
-                                  </div>
-                                </Col>
-                                <Col sm="12" md="12" lg="3">
-                                  <p className="font-small-3 fw-bold content-description">{worker?.role}</p>
-                                </Col>
-                                <Col sm="12" md="12" lg="3">
-                                  <p className="font-small-3 fw-bold content-description">
-                                    {worker?.number_of_weeks} week
+                                  ) : (
+                                    <AvatarGroup
+                                      size="sm"
+                                      className="ms-25 mb-50"
+                                      data={filterUniqueWorkers(
+                                        milestone?.workers?.filter((worker) => worker.user_id),
+                                      )?.map((worker) => ({
+                                        user_id: worker?.user_id,
+                                        user_type: userTypes.talent,
+                                        title: `${worker?.first_name} ${worker?.last_name}` || 'user',
+                                        img: worker?.image_uri || defaultAvatar,
+                                        placement: 'bottom',
+                                        imgHeight: 21,
+                                        imgWidth: 21,
+                                        tooltipId: `${worker?.first_name?.replace(
+                                          /\s+/g,
+                                          '-',
+                                        )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
+                                          (Math.random() * 30).toFixed(0),
+                                        )}`,
+                                      }))}
+                                    />
+                                  )}
+                                </p>
+                              </Col>
+                              <Col sm="12" md="12" lg="2" className="ps-2">
+                                <p className="fw-light m-0 font-small-4 ms-50">
+                                  {milestone?.estimated_duration?.duration} week
+                                </p>
+                              </Col>
+                              <Col sm="12" md="12" lg="2" className="ps-2">
+                                <p className="fw-light m-0 font-small-4 ps-50">
+                                  ${(milestone.estimated_cost + milestone.estimated_cost * 0.2).toFixed(0)}
+                                </p>
+                              </Col>
+                            </Row>
+                          </AccordionHeader>
+                          <AccordionBody accordionId={index + 1}>
+                            <AccordionBodyContent>
+                              {milestone?.description?.length > 0 && (
+                                <>
+                                  <p className="content-header mb-25">Description</p>
+                                  <p className="m-0 content-description">
+                                    <ShowMoreLess content={milestone?.description} maxLength={200} />
                                   </p>
+                                </>
+                              )}
+                              {milestone?.deliverables?.length > 0 && (
+                                <>
+                                  <p className="content-header mb-25">Deliverables</p>
+                                  <p className="m-0 content-description">
+                                    {milestone?.deliverables?.map((deliverable, deliverableIndex) =>
+                                      deliverableIndex + 1 === milestone?.deliverables?.length
+                                        ? `${deliverable}`
+                                        : `${deliverable}, `,
+                                    )}
+                                  </p>
+                                </>
+                              )}
+                              <Row className="mt-2">
+                                <Col sm="12" md="12" lg="4">
+                                  <p className="content-header mb-25">Team Member</p>
                                 </Col>
-                                <Col sm="12" md="12" lg="1">
-                                  <p className="content-description text-end">${worker?.amount || 0}</p>
+                                <Col sm="12" md="12" lg="4">
+                                  <p className="content-header mb-25">Designation</p>
+                                </Col>
+                                <Col sm="12" md="12" lg="2">
+                                  <p className="content-header mb-25">Duration</p>
+                                </Col>
+                                <Col sm="12" md="12" lg="2">
+                                  <p className="content-header mb-25">Amount</p>
                                 </Col>
                               </Row>
-                            ))}
-                          </div>
-                        )}
-                        <Row>
-                          <Col sm="12" md="12" lg="7" />
-                          <Col sm="12" md="12" lg="4">
-                            <hr className="mt-50" />
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col sm="12" md="12" lg="7" />
-                          <Col sm="12" md="12" lg="3">
-                            <p className="font-small-3 fw-bold content-description">Platform Fee</p>
-                          </Col>
-                          <Col sm="12" md="12" lg="1">
-                            <p className="content-description text-end">
-                              ${(milestone.estimated_cost * 0.2).toFixed(0)}
-                            </p>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col sm="12" md="12" lg="7" />
-                          <Col sm="12" md="12" lg="3">
-                            <p className="font-small-3 fw-bolder content-description">Total Milestone Amount</p>
-                          </Col>
-                          <Col sm="12" md="12" lg="1">
-                            <p className="fw-bolder content-description text-end">
-                              ${(milestone.estimated_cost + milestone.estimated_cost * 0.2).toFixed(0)}
-                            </p>
-                          </Col>
-                        </Row>
-                      </AccordionBodyContent>
-                    </AccordionBody>
-                  </AccordionItem>
-                ))}
-              </UncontrolledAccordion>
+                              {milestone?.workers?.length > 0 && (
+                                <div>
+                                  {milestone?.workers?.map((worker) => (
+                                    <Row className="mt-1" key={worker?.role}>
+                                      <Col sm="12" md="12" lg="4">
+                                        <div className="d-flex align-items-center">
+                                          {worker?.user_id ? (
+                                            <Avatar
+                                              img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
+                                              imgHeight="32"
+                                              imgWidth="32"
+                                            />
+                                          ) : (
+                                            <Avatar img={defaultAvatar} imgHeight="32" imgWidth="32" />
+                                          )}
+
+                                          {worker?.user_id ? (
+                                            <p className="fw-bolder content-description m-0 ms-50">
+                                              {worker?.first_name} {worker?.last_name}
+                                            </p>
+                                          ) : (
+                                            <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
+                                          )}
+                                        </div>
+                                      </Col>
+                                      <Col sm="12" md="12" lg="4">
+                                        <p className="font-small-3 fw-bold content-description">{worker?.role}</p>
+                                      </Col>
+                                      <Col sm="12" md="12" lg="2">
+                                        <p className="font-small-3 fw-bold content-description ms-25">
+                                          {worker?.number_of_weeks} week
+                                        </p>
+                                      </Col>
+                                      <Col sm="12" md="12" lg="2">
+                                        <p className="content-description">${worker?.amount || 0}</p>
+                                      </Col>
+                                    </Row>
+                                  ))}
+                                </div>
+                              )}
+                              <Row>
+                                <Col sm="12" md="12" lg="7" />
+                                <Col sm="12" md="12" lg="4">
+                                  <hr className="mt-50" />
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col sm="12" md="12" lg="8" />
+                                <Col sm="12" md="12" lg="2">
+                                  <p className="font-small-3 fw-bold content-description text-end me-3">Platform Fee</p>
+                                </Col>
+                                <Col sm="12" md="12" lg="2">
+                                  <p className="content-description">${(milestone.estimated_cost * 0.2).toFixed(0)}</p>
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col sm="12" md="12" lg="7" />
+                                <Col sm="12" md="12" lg="3">
+                                  <p className="font-small-3 fw-bolder content-description text-end me-3">
+                                    Total Milestone Amount
+                                  </p>
+                                </Col>
+                                <Col sm="12" md="12" lg="2">
+                                  <p className="fw-bolder content-description">
+                                    ${(milestone.estimated_cost + milestone.estimated_cost * 0.2).toFixed(0)}
+                                  </p>
+                                </Col>
+                              </Row>
+                            </AccordionBodyContent>
+                          </AccordionBody>
+                        </AccordionItem>
+                      ))}
+                    </UncontrolledAccordion>
+                  </div>
+                </CardBody>
+              </Card>
             </CardBody>
           </Card>
           <Card>
@@ -487,42 +540,6 @@ const BidDetails = () => {
               </a>
             ))}
           </Card>
-
-          <div className="d-flex justify-content-between mb-1">
-            <div className="back-wrap" onClick={handleBack}>
-              <span className="chevron-left-bg">
-                <ChevronLeft size={22} color={theme.acceptColor} />
-              </span>
-              <CardText className="back-text">Back</CardText>
-            </div>
-            {/* {isBidStatusUpating ? (
-              'Updating...'
-            ) : bidStatus || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED' ? (
-              <span className="d-flex align-items-center">{`${bidStatus || bidInfo?.status}`}</span>
-            ) : (
-              <div className="d-flex gap-2 align-items-center">
-                <CardText
-                  onClick={() => {
-                    setRejectBidModal(true);
-                  }}
-                  className="report-text m-0 text-center fw-bold cursor-pointer"
-                >
-                  Reject
-                </CardText>
-                <span>
-                  <Button
-                    onClick={() => {
-                      setAcceptBidModal(true);
-                    }}
-                    className="d-contents"
-                    color="primary"
-                  >
-                    Accept
-                  </Button>
-                </span>
-              </div>
-            )} */}
-          </div>
         </Col>
       </Row>
     </BidDetailsWrap>

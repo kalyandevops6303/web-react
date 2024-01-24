@@ -5,11 +5,12 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { selectThemeColors } from '@utils';
 import { Badge, Card, CardBody, Col, Label, Row } from 'reactstrap';
 import { useNavigate } from 'react-router';
+import styled from 'styled-components';
 import { Bell } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { BorderCardContainer, NotificationBadgeContainer } from './style';
 import theme from '../../configs/themeVariables';
-import getNotifications from '../../redux/actions/notificationsActions';
+// import getNotifications from '../../redux/actions/notificationsActions';
 import { notifications, notificationsLoading } from '../../redux/selectors/notificationsSelectors';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import { clearNotificationsData } from '../../redux/reducers/notifications';
@@ -18,169 +19,73 @@ import { selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { setItem } from '../../utility/localStorageControl';
+import { ElevateShadow } from '../styled';
+import { getNotifications } from '../../redux/actions/notificationsActions';
 
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const userData = useSelector(selectUserData);
   const [switchData, setSwitchData] = useState();
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const priorities = {
-    PRIORITY_1: 'red',
-    PRIORITY_2: 'green',
-    PRIORITY_3: 'info',
-    PRIORITY_4: 'secondary',
+    1: 'red',
+    2: 'green',
+    3: 'info',
+    4: 'secondary',
   };
 
-  const [selectedPriority, setSelectedPriority] = useState({ label: 'All Priorities', value: '' });
-
-  const dispatch = useDispatch();
+  const [selectedPriority, setSelectedPriority] = useState({ label: 'All Priorities', value: 0 });
 
   const notificationsData = useSelector(notifications);
   const isLoading = useSelector(notificationsLoading);
   useEffect(() => {
-    dispatch(getNotifications('', 1, 10, []));
+    dispatch(getNotifications({ priority: 0, page: 1, pageSize: 10, oldData: [] }));
     setItem('baseRoute', 'notifications');
     return () => dispatch(clearNotificationsData());
   }, []);
 
   const loadNewNotifications = () => {
     dispatch(
-      getNotifications(
-        '',
+      getNotifications({
+        priority: selectedPriority?.value,
         // eslint-disable-next-line no-unsafe-optional-chaining
-        notificationsData?.metadata?.current_page + 1,
-        10,
-        notificationsData?.data,
-      ),
+        page: notificationsData?.metadata?.current_page + 1,
+        pageSize: 10,
+        oldData: notificationsData?.data,
+      }),
     );
   };
 
   const onPriorityChange = (option) => {
     setSelectedPriority(option);
-    dispatch(getNotifications(option.value, 1, 10, []));
+    dispatch(getNotifications({ priority: option.value, page: 1, pageSize: 10, oldData: [] }));
   };
 
-  const redirectionFunction = ({ projectId, inviteId, status }) => {
-    if (status === 'Project Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation-by-client/${inviteId}`);
-    } else if (status === 'Team Invitation Request' && inviteId) {
-      navigate(`/team-invitation/${inviteId}`);
-    } else if (status === 'Project Team Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Team Join Request' && inviteId) {
-      navigate(`/join-request/${inviteId}`);
-    } else if (status === 'Club Invitation Request' && inviteId) {
-      navigate(`/club-invitation/${inviteId}`);
-    } else if (status === 'Club Join Request' && inviteId) {
-      navigate(`/join-request/${inviteId}`);
-    } else if (status === 'Project Club Invitation Request' && projectId && inviteId) {
-      navigate(`/project-details/${projectId}/project/project-invitation/${inviteId}`);
-    } else if (status === 'Membership Updated') {
-      navigate('/dashboard');
-    } else if (status === 'Club - Request Submitted') {
-      navigate('/dashboard');
-    } else {
-      navigate(`/project-details/${projectId}/bid`);
-    }
-  };
-
-  const disputesRedirection = (type) => {
-    if (type === 'DISPUTE_CREATED' || type === 'DISPUTE_UPDATED') {
-      navigate(`/disputes/open`);
-    } else if (type === 'DISPUTE_RESOLVED') {
-      navigate(`/disputes/resolved`);
-    } else {
-      navigate(`/disputes/open`);
-    }
-  };
-
-  const isReqeustFlowStatus = (status) => {
-    switch (status) {
-      case 'Project Invitation Request':
-        return true;
-      case 'Team Invitation Request':
-        return true;
-      case 'Project Team Invitation Request':
-        return true;
-      case 'Team Join Request':
-        return true;
-      case 'Club Invitation Request':
-        return true;
-      case 'Club Join Request':
-        return true;
-      case 'Project Club Invitation Request':
-        return true;
-      case 'Membership Updated':
-        return true;
-      case 'Club - Request Submitted':
-        return true;
-      default:
-        return false;
-    }
-  };
-
-  const isDisputesNotification = (type) => {
-    switch (type) {
-      case 'DISPUTE_CREATED':
-        return true;
-      case 'DISPUTE_UPDATED':
-        return true;
-      case 'DISPUTE_RESOLVED':
-        return true;
-
-      default:
-        return false;
-    }
-  };
-
-  const dashboardRedirection = () => {
-    navigate(`/dashboard`);
-  };
-
-  const handleNotification = (data) => {
-    setSwitchData({
-      ...data,
-      isDisputesNotification: isDisputesNotification(data?.notification_type),
-      // eslint-disable-next-line no-unneeded-ternary
-      isDashboardRedirection: !!(
-        data?.title === 'Team Created' ||
-        data?.title === 'Team Member Added' ||
-        data?.title === 'Club - Request Submitted'
-      ),
-    });
-
-    if (userData?.user_type === userTypes.talent && data?.custom_payload?.switch_team_id) {
-      setSwitchProfileModal(true);
-    } else if (isReqeustFlowStatus(data?.title)) {
-      redirectionFunction({
-        status: data?.title,
-        projectId: data?.custom_payload?.request_for?.project_id,
-        inviteId: data?.custom_payload?.request_id,
+  const handleNotificationClick = (path) => {
+    // eslint-disable-next-line no-undef
+    const url = new URL(`${window.location.protocol}//${window.location.host}${path}`);
+    const params = url.searchParams;
+    const switch_team_id = params.get('switch_team_id');
+    if (userData?.user_type === userTypes.talent && path.includes('switch_team_id') && switch_team_id?.length > 0) {
+      setSwitchData({
+        entity: switch_team_id ? 'TEAM' : 'TALENT',
+        navigateTo: path?.split('?')[0],
+        switchTeamId: switch_team_id,
       });
-    } else if (isDisputesNotification(data?.notification_type)) {
-      disputesRedirection(data?.notification_type);
-    } else if (data?.title === 'Milestone Submitted' || data?.title === 'Milestone Accepted') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/milestone`);
-    } else if (data?.title === 'Project Completed') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/rating`);
-    } else if (data?.title === 'Project Accepted' || data?.title === 'Milestone payment completed.') {
-      navigate(`/project-details/${data?.custom_payload?.project_id}/payment`);
-    } else if (data?.title === 'Team Created') {
-      navigate(`/dashboard`);
+      setSwitchProfileModal(true);
     } else {
-      redirectionFunction({ projectId: data?.custom_payload?.project_id });
+      navigate(path?.split('?')[0]);
     }
-
-    // if (data?.notification_type === 'TEAM_INVITATION') {
-    //   navigate(`/team-invitation/${data.custom_payload?.invitation_id}`);
-    // }
-    // if (data?.notification_type === 'PROJECT_INVITATION') {
-    //   navigate(
-    //     `/project-details/${data.custom_payload?.project_id}/project/project-invitation/${data.custom_payload?.invitation_id}`,
-    //   );
-    // }
-    // setItem('inviteToken', data.custom_payload?.token);
   };
+
+  const FiltersWrap = styled.div`
+    .select__control {
+      cursor: pointer;
+    }
+  `;
 
   if (isLoading) {
     return <ComponentSpinner />;
@@ -193,21 +98,24 @@ const Notifications = () => {
         <Row className="mt-2 w-100 justify-content-end">
           <Col sm="6" md="4" lg="2">
             <Label>Priority</Label>
-            <Select
-              options={[
-                { label: 'All Priorities', value: '' },
-                { label: 'Priority 1', value: 'PRIORITY_1' },
-                { label: 'Priority 2', value: 'PRIORITY_2' },
-                { label: 'Priority 3', value: 'PRIORITY_3' },
-                { label: 'Priority 4', value: 'PRIORITY_4' },
-              ]}
-              value={selectedPriority}
-              classNamePrefix="select"
-              placeholder="Select priority"
-              theme={selectThemeColors}
-              className="react-select"
-              onChange={(option) => onPriorityChange(option)}
-            />
+            <FiltersWrap>
+              <Select
+                style={{ cursor: 'pointer' }}
+                options={[
+                  { label: 'All Priorities', value: 0 },
+                  { label: 'Priority 1', value: 1 },
+                  { label: 'Priority 2', value: 2 },
+                  { label: 'Priority 3', value: 3 },
+                  { label: 'Priority 4', value: 4 },
+                ]}
+                value={selectedPriority}
+                classNamePrefix="select"
+                placeholder="Select priority"
+                theme={selectThemeColors}
+                className="cursor-pointer"
+                onChange={(option) => onPriorityChange(option)}
+              />
+            </FiltersWrap>
           </Col>
         </Row>
       </div>
@@ -215,36 +123,39 @@ const Notifications = () => {
       <InfiniteScroll
         dataLength={notificationsData?.data?.length || 0}
         next={loadNewNotifications}
+        className="overflow-visible"
         hasMore={notificationsData?.metadata?.has_next_page}
         loader={<div className="d-flex justify-content-center">Loading...</div>}
       >
         {notificationsData?.data?.length > 0 ? (
           notificationsData?.data?.map((item) => (
             <BorderCardContainer
-              onClick={() => handleNotification(item)}
+              onClick={() => handleNotificationClick(item?.path)}
               key={item?._id}
-              priorityColor={priorities?.[item?.custom_payload?.priority]}
+              priorityColor={priorities?.[item?.priority]}
             >
               <Card className="cursor-pointer">
-                <CardBody>
-                  <div className="d-flex justify-content-between">
-                    <div className="d-flex align-items-center">
-                      <NotificationBadgeContainer priorityColor={priorities?.[item?.custom_payload?.priority]}>
-                        <div className="position-relative">
-                          <Badge pill color="danger" className="badge-up" />
-                          <Bell color={theme.white} size={18} />
-                        </div>
-                      </NotificationBadgeContainer>
-                      <p className="notification-title fw-bolder m-0 ms-1">{item.title}</p>
+                <ElevateShadow>
+                  <CardBody>
+                    <div className="d-flex justify-content-between">
+                      <div className="d-flex align-items-center">
+                        <NotificationBadgeContainer priorityColor={priorities?.[item?.priority]}>
+                          <div className="position-relative">
+                            <Badge pill color="danger" className="badge-up" />
+                            <Bell color={theme.white} size={18} />
+                          </div>
+                        </NotificationBadgeContainer>
+                        <p className="notification-title fw-bolder m-0 ms-1">{item.title}</p>
+                      </div>
+                      <p className="font-small-3 fw-light">
+                        {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
+                      </p>
                     </div>
-                    <p className="font-small-3 fw-light">
-                      {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
-                    </p>
-                  </div>
-                  <div className="d-flex justify-content-between ms-3">
-                    <p className="m-0">{item.message}</p>
-                  </div>
-                </CardBody>
+                    <div className="d-flex justify-content-between ms-3">
+                      <p className="m-0">{item.message}</p>
+                    </div>
+                  </CardBody>
+                </ElevateShadow>
               </Card>
             </BorderCardContainer>
           ))
@@ -256,11 +167,11 @@ const Notifications = () => {
         )}
         {switchProfileModal && (
           <SwitchConfirmModal
-            data={switchData}
+            entity={switchData?.entity}
+            navigateTo={switchData?.navigateTo}
+            switchTeamId={switchData?.switchTeamId}
             modal={switchProfileModal}
             toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
-            disputesRedirection={disputesRedirection}
-            dashboardRedirection={dashboardRedirection}
           />
         )}
       </InfiniteScroll>

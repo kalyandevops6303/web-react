@@ -83,14 +83,17 @@ const BidDetailsWrap = styled.div`
   .report-text {
     color: ${theme.red};
   }
-  .fixed-header {
-    top: 4rem;
-    left: 0;
-    position: fixed;
-    z-index: 1;
-    background-color: ${theme.bodyBgColor};
-    width: 100%;
-    padding: 1.8rem 2rem 0.8rem 2rem;
+  .top-head {
+    position: relative;
+    .fixed-header {
+      top: 4rem;
+      left: 0;
+      position: fixed;
+      z-index: 20;
+      background-color: ${theme.bodyBgColor};
+      width: 100%;
+      padding: 1.8rem 2rem 0.8rem 2rem;
+    }
   }
 
   .main-card-title {
@@ -158,6 +161,33 @@ const BidDetailsWrap = styled.div`
     font-size: 16px;
     font-weight: 500;
     text-decoration: underline;
+  }
+
+  .white-card-bg {
+    .card-body {
+      border-radius: 6px;
+      background-color: ${theme.white};
+      box-shadow: 0px 4px 24px 0px ${theme.cardShadowLight} !important;
+    }
+  }
+
+  .custom-milestone-accordion {
+    .accordion-item:first-of-type {
+      border-top-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+    }
+
+    .accordion-item:first-of-type .accordion-button {
+      border-top-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+    }
+    .accordion-item {
+      border-right: 1px solid ${theme.cardHeaderBorderColor};
+      border-left: 1px solid ${theme.cardHeaderBorderColor};
+    }
+    .accordion-item:last-of-type {
+      border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+    }
   }
 `;
 const BidWrapper = styled.div`

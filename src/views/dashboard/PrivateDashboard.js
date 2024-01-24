@@ -11,13 +11,13 @@ import ProjectListing from './overview/ProjectListing';
 import { Header } from '../styled';
 import Disputes from './overview/Disputes';
 import Meetings from './overview/Meetings';
-import { checkBidsAccepted, profilePercentage, selectGetTeamMember } from '../../redux/selectors/dashboardSelectors';
+import { checkBidsAccepted, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { clubStatus, userTypes } from '../../utility/constants/Constant';
 import { CreateTeamButtonWrapper, DashboardHeaderWrapper, InReviewButton } from './overview/style';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import TeamSection from './overview/TeamSection';
 import TalentListing from './overview/TalentListing';
-import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 import InviteTalentToTeam from '../invite-talent-to-team';
 import RemoveMemberModal from '../modals/RemoveMemberModal';
 import ListingTeamMembersModal from '../modals/ListingTeamMembersModal';
@@ -66,21 +66,14 @@ const PrivateDashboard = () => {
   };
 
   const userDetailsData = useSelector(selectUserData);
-  const savedUserDetailsData = useSelector(selectSavedUserData);
-  const teamMemberData = useSelector(selectGetTeamMember);
   const profilePercentageData = useSelector(profilePercentage);
   const checkBidsAcceptedData = useSelector(checkBidsAccepted);
 
-  const isAdminExists = teamMemberData?.filter(
-    (talent) => talent.user_id === savedUserDetailsData?._id && talent.member_type === 'ADMIN',
-  );
-
-  const isAdmin = isAdminExists && isAdminExists.length > 0;
+  const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
-
     if (query) {
       dispatch(toggleIsNavbarSearchBarOpen());
       dispatch(clearQuery(''));
@@ -183,7 +176,7 @@ const PrivateDashboard = () => {
           toggleInviteTeamMemberModal={toggleInviteTeamMemberModal}
           setInviteTalentToTeamModal={setInviteTalentToTeamModal}
           onRemove={handleRemoveMember}
-          isAdmin={isAdmin}
+          isAdmin={isClubAdmin}
           onClubInvite={onClubInvite}
         />
       )}
@@ -218,14 +211,16 @@ const PrivateDashboard = () => {
         </DashboardHeaderWrapper>
       )}
       {userDetailsData?.team_type === userTypes.club && (
-        <DashboardHeaderWrapper>
-          {userDetailsData?.club_status === clubStatus.ACCEPTED && isAdmin && (
-            <Button as="link" color="primary" onClick={onClubInvite}>
-              Invite Members
-            </Button>
+        <span>
+          {userDetailsData?.club_status === clubStatus.ACCEPTED && isClubAdmin && (
+            <DashboardHeaderWrapper>
+              <Button as="link" color="primary" onClick={onClubInvite}>
+                Invite Members
+              </Button>
+              {userDetailsData?.club_status === clubStatus.IN_REVIEW && <InReviewButton>In review</InReviewButton>}
+            </DashboardHeaderWrapper>
           )}
-          {userDetailsData?.club_status === clubStatus.IN_REVIEW && <InReviewButton>In review</InReviewButton>}
-        </DashboardHeaderWrapper>
+        </span>
       )}
 
       {inviteTalentToTeamModal && isClubInvite && (

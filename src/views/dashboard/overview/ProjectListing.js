@@ -3,9 +3,9 @@
 /* eslint-disable react/require-default-props */
 import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
@@ -64,9 +64,11 @@ import { clearUpcomingPayments } from '../../../redux/reducers/milestonePayment'
 import Tag from '../../../@core/components/tags';
 import ViewAllCard from './ViewAllCard';
 import { AccordionName } from './DashboardConstant';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
   const dispatch = useDispatch();
@@ -74,6 +76,7 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
   const onAddDetailsClick = (path) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path, {
       state: { isEditing: true },
     });

@@ -142,7 +142,7 @@ const Preview = () => {
                   <CardText className="key m-0">Talent Cost</CardText>
                   <Info size={14} color={theme.infoIcon} id="cost-info" className="ms-50" />
                   <UncontrolledTooltip placement="right" target="cost-info">
-                    <p className="m-0">The amt that adds up to is same goes to the talent cost</p>
+                    <p className="m-0">Talent cost is the full fee paid to the talent</p>
                   </UncontrolledTooltip>
                 </div>
               </div>
@@ -163,45 +163,64 @@ const Preview = () => {
                         <p>Milestone Name</p>
                       </Col>
                       <Col sm="12" md="12" lg="2">
-                        <p>Duration</p>
+                        <p>Team Members</p>
                       </Col>
                       <Col sm="12" md="12" lg="2">
-                        <p>Team Members</p>
+                        <p>Duration</p>
                       </Col>
                       <Col sm="12" md="12" lg="2">
                         <p>Amount</p>
                       </Col>
                     </Row>
                   </AccordionTableHeader>
-                  <UncontrolledAccordion>
-                    {bidDetailsData?.milestones?.map((milestone, index) => (
-                      <AccordionItem className="py-0" key={milestone._id}>
-                        <AccordionHeader targetId={index + 1} className="p-0">
-                          <Row className="p-0 w-100">
-                            <Col sm="12" md="12" lg="2">
-                              <p className="fw-bolder m-0 font-small-4">Milestone # {index + 1}</p>
-                            </Col>
-                            <Col sm="12" md="12" lg="4" className="ps-1">
-                              <p className="fw-light m-0 font-small-4">{milestone.name}</p>
-                            </Col>
-                            <Col sm="12" md="12" lg="2" className="ps-2">
-                              <p className="fw-light m-0 font-small-4">
-                                {milestone?.estimated_duration?.duration} week
-                              </p>
-                            </Col>
-                            <Col sm="12" md="12" lg="2" className="ps-2">
-                              <p className="fw-light m-0 font-small-4 ps-50">
-                                {filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.length >
-                                3 ? (
-                                  <AvatarGroup
-                                    totalCount={
-                                      filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
-                                        ?.length || 0
-                                    }
-                                    size="sm"
-                                    className="ms-25 mb-50"
-                                    data={filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
-                                      ?.map((worker) => ({
+                  <div className="custom-milestone-accordion">
+                    <UncontrolledAccordion>
+                      {bidDetailsData?.milestones?.map((milestone, index) => (
+                        <AccordionItem className="py-0" key={milestone._id}>
+                          <AccordionHeader targetId={index + 1} className="p-0">
+                            <Row className="p-0 w-100">
+                              <Col sm="12" md="12" lg="2">
+                                <p className="fw-bolder m-0 font-small-4">Milestone # {index + 1}</p>
+                              </Col>
+                              <Col sm="12" md="12" lg="4" className="ps-1">
+                                <p className="fw-light m-0 font-small-4">{milestone.name}</p>
+                              </Col>
+                              <Col sm="12" md="12" lg="2" className="ps-1">
+                                <p className="fw-light m-0 font-small-4 ps-50">
+                                  {filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))?.length >
+                                  3 ? (
+                                    <AvatarGroup
+                                      totalCount={
+                                        filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
+                                          ?.length || 0
+                                      }
+                                      size="sm"
+                                      className="ms-25 mb-50"
+                                      data={filterUniqueWorkers(milestone?.workers?.filter((worker) => worker.user_id))
+                                        ?.map((worker) => ({
+                                          user_id: worker?.user_id,
+                                          user_type: userTypes.talent,
+                                          title: `${worker?.first_name} ${worker?.last_name}` || 'user',
+                                          img: worker?.image_uri || defaultAvatar,
+                                          placement: 'bottom',
+                                          imgHeight: 21,
+                                          imgWidth: 21,
+                                          tooltipId: `${worker?.first_name?.replace(
+                                            /\s+/g,
+                                            '-',
+                                          )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
+                                            (Math.random() * 20).toFixed(0),
+                                          )}`,
+                                        }))
+                                        ?.slice(0, 3)}
+                                    />
+                                  ) : (
+                                    <AvatarGroup
+                                      size="sm"
+                                      className="ms-25 mb-50"
+                                      data={filterUniqueWorkers(
+                                        milestone?.workers?.filter((worker) => worker.user_id),
+                                      )?.map((worker) => ({
                                         user_id: worker?.user_id,
                                         user_type: userTypes.talent,
                                         title: `${worker?.first_name} ${worker?.last_name}` || 'user',
@@ -213,117 +232,100 @@ const Preview = () => {
                                           /\s+/g,
                                           '-',
                                         )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
-                                          (Math.random() * 20).toFixed(0),
+                                          (Math.random() * 30).toFixed(0),
                                         )}`,
-                                      }))
-                                      ?.slice(0, 3)}
-                                  />
-                                ) : (
-                                  <AvatarGroup
-                                    size="sm"
-                                    className="ms-25 mb-50"
-                                    data={filterUniqueWorkers(
-                                      milestone?.workers?.filter((worker) => worker.user_id),
-                                    )?.map((worker) => ({
-                                      user_id: worker?.user_id,
-                                      user_type: userTypes.talent,
-                                      title: `${worker?.first_name} ${worker?.last_name}` || 'user',
-                                      img: worker?.image_uri || defaultAvatar,
-                                      placement: 'bottom',
-                                      imgHeight: 21,
-                                      imgWidth: 21,
-                                      tooltipId: `${worker?.first_name?.replace(
-                                        /\s+/g,
-                                        '-',
-                                      )}-${worker?.last_name?.replace(/\s+/g, '-')}-${Number(
-                                        (Math.random() * 30).toFixed(0),
-                                      )}`,
-                                    }))}
-                                  />
-                                )}
-                              </p>
-                            </Col>
-                            <Col sm="12" md="12" lg="2" className="ps-2">
-                              <p className="fw-light m-0 font-small-4 ps-50">${milestone.estimated_cost}</p>
-                            </Col>
-                          </Row>
-                        </AccordionHeader>
-                        <AccordionBody accordionId={index + 1}>
-                          <AccordionBodyContent>
-                            {milestone?.description?.length > 0 && (
-                              <>
-                                <p className="content-header mb-25">Description</p>
-                                <p className="m-0 content-description">
-                                  <ShowMoreLess content={milestone?.description} maxLength={200} />
-                                </p>
-                              </>
-                            )}
-                            {milestone?.deliverables?.length > 0 && (
-                              <>
-                                <p className="content-header mb-25">Deliverables</p>
-                                <p className="m-0 content-description">
-                                  {milestone?.deliverables?.map((deliverable, deliverableIndex) =>
-                                    deliverableIndex + 1 === milestone?.deliverables?.length
-                                      ? `${deliverable}`
-                                      : `${deliverable}, `,
+                                      }))}
+                                    />
                                   )}
                                 </p>
-                              </>
-                            )}
-                            <Row className="mt-2">
-                              <Col sm="12" md="12" lg="4">
-                                <p className="content-header mb-25">Team Member</p>
                               </Col>
-                              <Col sm="12" md="12" lg="3">
-                                <p className="content-header mb-25">Designation</p>
+                              <Col sm="12" md="12" lg="2" className="ps-2">
+                                <p className="fw-light m-0 font-small-4 ms-50">
+                                  {milestone?.estimated_duration?.duration} week
+                                </p>
                               </Col>
-                              <Col sm="12" md="12" lg="2">
-                                <p className="content-header mb-25">Duration</p>
-                              </Col>
-                              <Col sm="12" md="12" lg="2">
-                                <p className="content-header mb-25 text-end me-3">Amount</p>
+                              <Col sm="12" md="12" lg="2" className="ps-2">
+                                <p className="fw-light m-0 font-small-4 ps-50">${milestone.estimated_cost}</p>
                               </Col>
                             </Row>
-                            {milestone?.workers?.length > 0 && (
-                              <div>
-                                {milestone?.workers?.map((worker) => (
-                                  <Row className="mt-1" key={worker?.role}>
-                                    <Col sm="12" md="12" lg="4">
-                                      <div className="d-flex align-items-center">
-                                        <Avatar
-                                          img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
-                                          imgHeight="32"
-                                          imgWidth="32"
-                                        />
-                                        {worker?.user_id ? (
-                                          <p className="fw-bolder content-description m-0 ms-50">
-                                            {worker?.first_name} {worker?.last_name}
-                                          </p>
-                                        ) : (
-                                          <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
-                                        )}
-                                      </div>
-                                    </Col>
-                                    <Col sm="12" md="12" lg="3">
-                                      <p className="font-small-3 fw-bold content-description">{worker?.role}</p>
-                                    </Col>
-                                    <Col sm="12" md="12" lg="2">
-                                      <p className="font-small-3 fw-bold content-description">
-                                        {worker?.number_of_weeks} week
-                                      </p>
-                                    </Col>
-                                    <Col sm="12" md="12" lg="2">
-                                      <p className="content-description text-end me-3">${worker?.amount || 0}</p>
-                                    </Col>
-                                  </Row>
-                                ))}
-                              </div>
-                            )}
-                          </AccordionBodyContent>
-                        </AccordionBody>
-                      </AccordionItem>
-                    ))}
-                  </UncontrolledAccordion>
+                          </AccordionHeader>
+                          <AccordionBody accordionId={index + 1}>
+                            <AccordionBodyContent>
+                              {milestone?.description?.length > 0 && (
+                                <>
+                                  <p className="content-header mb-25">Description</p>
+                                  <p className="m-0 content-description">
+                                    <ShowMoreLess content={milestone?.description} maxLength={200} />
+                                  </p>
+                                </>
+                              )}
+                              {milestone?.deliverables?.length > 0 && (
+                                <>
+                                  <p className="content-header mb-25">Deliverables</p>
+                                  <p className="m-0 content-description">
+                                    {milestone?.deliverables?.map((deliverable, deliverableIndex) =>
+                                      deliverableIndex + 1 === milestone?.deliverables?.length
+                                        ? `${deliverable}`
+                                        : `${deliverable}, `,
+                                    )}
+                                  </p>
+                                </>
+                              )}
+                              <Row className="mt-2">
+                                <Col sm="12" md="12" lg="4">
+                                  <p className="content-header mb-25">Team Member</p>
+                                </Col>
+                                <Col sm="12" md="12" lg="4">
+                                  <p className="content-header mb-25">Designation</p>
+                                </Col>
+                                <Col sm="12" md="12" lg="2">
+                                  <p className="content-header mb-25">Duration</p>
+                                </Col>
+                                <Col sm="12" md="12" lg="2">
+                                  <p className="content-header mb-25">Amount</p>
+                                </Col>
+                              </Row>
+                              {milestone?.workers?.length > 0 && (
+                                <div>
+                                  {milestone?.workers?.map((worker) => (
+                                    <Row className="mt-1" key={worker?.role}>
+                                      <Col sm="12" md="12" lg="4">
+                                        <div className="d-flex align-items-center">
+                                          <Avatar
+                                            img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
+                                            imgHeight="32"
+                                            imgWidth="32"
+                                          />
+                                          {worker?.user_id ? (
+                                            <p className="fw-bolder content-description m-0 ms-50">
+                                              {worker?.first_name} {worker?.last_name}
+                                            </p>
+                                          ) : (
+                                            <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
+                                          )}
+                                        </div>
+                                      </Col>
+                                      <Col sm="12" md="12" lg="4">
+                                        <p className="font-small-3 fw-bold content-description">{worker?.role}</p>
+                                      </Col>
+                                      <Col sm="12" md="12" lg="2">
+                                        <p className="font-small-3 fw-bold content-description ms-25">
+                                          {worker?.number_of_weeks} week
+                                        </p>
+                                      </Col>
+                                      <Col sm="12" md="12" lg="2">
+                                        <p className="content-description">${worker?.amount || 0}</p>
+                                      </Col>
+                                    </Row>
+                                  ))}
+                                </div>
+                              )}
+                            </AccordionBodyContent>
+                          </AccordionBody>
+                        </AccordionItem>
+                      ))}
+                    </UncontrolledAccordion>
+                  </div>
                 </CardBody>
               </Card>
             </CardBody>

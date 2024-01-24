@@ -14,7 +14,7 @@ import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
-import { userOnboarding } from '../../../utility/constants/Constant';
+import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const Social = () => {
@@ -74,26 +74,24 @@ const Social = () => {
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const onBackClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/availability-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/availability-details`);
     } else {
       navigate(`/${userOnboarding.talent}/availability-details`);
     }
   };
 
   const onSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/payment-details`, { state: { isEditing: true } });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/payment-details`);
     } else {
       navigate(`/${userOnboarding.talent}/payment-details`);
     }
   };
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/payment-details`, { state: { isEditing: true } });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/payment-details`);
     } else {
       navigate(`/${userOnboarding.talent}/payment-details`);
     }

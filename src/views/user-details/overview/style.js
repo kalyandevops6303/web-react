@@ -13,7 +13,7 @@ const getPadding = (props) => {
 };
 
 const StatboxWrap = styled(Card)`
-  border: 1px solid ${(props) => (props.isActive ? `${theme.blueBorderColorv2} !important` : '')}; // active-border color
+  border: 1.5px solid ${(props) => (props.isActive ? `${theme.blueBorderColorv2} !important` : '')}; // active-border color
   background: ${(props) => (props.isActive ? `${theme.blueCardBg} !important` : '')}; // active-bg color
   flex: ${(props) => props.isMarketPlaceTab && '1'};
   svg {
@@ -296,7 +296,84 @@ const ReviewWrap = styled.div`
     background: #f2fcfc !important;
   }
 `;
+
+const ActionButtonWrapper = styled.div`
+  .btn-head-padding-25 {
+    padding-right: 2.5rem;
+    padding-left: 2.5rem;
+  }
+  .w-47 {
+    width: 47%;
+  }
+`;
+
+const DetailsWrap = styled.div`
+  .content-header-left {
+    margin-bottom: 0 !important;
+  }
+  .report-text {
+    color: ${theme.red};
+  }
+  .top-head {
+    position: relative;
+    .fixed-header {
+      top: 4rem;
+      left: 0;
+      position: fixed;
+      z-index: 20;
+      background-color: ${theme.bodyBgColor};
+      width: 100%;
+      padding: 1.8rem 2rem 0.8rem 2rem;
+    }
+  }
+
+  // Back wrap
+  .back-wrap {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    cursor: pointer;
+    .chevron-left-bg {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: ${theme.activeColor}1f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .back-text {
+      color: ${theme.activeColor};
+    }
+  }
+`;
+
+const DetailsHeaderSection = styled.div`
+  .fixed-head {
+    z-index: 20;
+    margin-top: -5.2rem;
+    padding-top: 1rem;
+    position: fixed;
+    width: 74%;
+    background: ${theme.bodyBgColor};
+    padding-bottom: 0.8rem;
+    margin-left: 0.8rem;
+    padding-left: 0;
+    .inner-head {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 1rem;
+      .back {
+        padding-top: 0.5rem;
+      }
+    }
+  }
+  .details-card {
+    margin-top: 0.6rem;
+  }
+`;
 export {
+  ActionButtonWrapper,
   StatboxWrap,
   ReviewWrap,
   LeftSidebarProfileWrapper,
@@ -305,4 +382,6 @@ export {
   RecentProjectsWrap,
   ReviewsContainer,
   RecentProjectWrap,
+  DetailsWrap,
+  DetailsHeaderSection,
 };

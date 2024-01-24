@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
@@ -41,14 +41,17 @@ import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import Tag from '../../../@core/components/tags';
 import { AccordionName } from './DashboardConstant';
 import ViewAllCard from './ViewAllCard';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
   const dispatch = useDispatch();
 
   const onAddDetailsClick = (path) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path, {
       state: { isEditing: true },
     });

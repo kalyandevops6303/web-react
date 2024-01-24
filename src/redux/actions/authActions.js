@@ -60,6 +60,7 @@ import {
   switchProfileSuccess,
   getUserDataSuccess,
   cometChatLogin,
+  savedUserDataSuccess,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -76,6 +77,7 @@ import { clearProjectCardData } from '../reducers/project';
 import { registerClubEmailService } from '../../services/clubServices';
 import { getTeamId } from '../../utility/Utils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
+import { getClubAdminAccess } from './inviteTalent';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -104,7 +106,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
     if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
       dispatch(loginSuccess(res.data.data));
       dispatch(cometChatLogin(res.data.data.comet_chat_token));
-      setItem('isUserVisited', true);
+      setItemFromSession('isUserVisited', true);
     } else {
       dispatch(loginSuccess(false));
     }
@@ -289,10 +291,16 @@ const switchProfile =
   async (dispatch) => {
     try {
       dispatch(switchProfileSuccess(data));
-      if (data?.user_type === 'TEAM') {
+
+      if (data?.user_type === 'TEAM' && data?.team_type === userTypes.club) {
         setItemFromSession('team_id', data?._id);
+        dispatch(getClubAdminAccess());
+      } else if (data?.user_type === 'TEAM') {
+        setItemFromSession('team_id', data?._id);
+        setItemFromSession('team_data', data);
       } else {
         removeItemFromSession('team_id');
+        removeItemFromSession('team_data');
       }
       onSuccess(selected);
       // clearing my team data
@@ -321,10 +329,20 @@ const getUserData = () => async (dispatch) => {
 
       if (userData) {
         dispatch(getUserDataSuccess(userData.user_type));
+        if (userData?.team_type === userTypes.club) {
+          dispatch(getClubAdminAccess());
+        }
         dispatch(userDataSuccess(userData));
         dispatch(getTeams({ onSuccess: () => {} }));
         setItem('userData', userData);
       }
+
+      // For getting the current user's details if we redirect directly to a team's page
+      const userRes = await userDataService();
+      const individualUserData = userRes.data.data;
+
+      setItem('savedUserData', individualUserData);
+      dispatch(savedUserDataSuccess(individualUserData));
     } else {
       // User is visiting for the first time or doesn't have a team ID
       const userRes = await userDataService();

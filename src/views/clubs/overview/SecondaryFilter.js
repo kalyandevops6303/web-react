@@ -27,6 +27,7 @@ import NoDataFoundComponent from './NoDataFoundComp';
 import ClubCard from '../../cards/ClubCard';
 import { skillsService, toolsService } from '../../../services/staticServices';
 import { getClubs } from '../../../redux/actions/clubActions';
+import { ResponsiveGrid } from '../../cards/style';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const statusOptions = [
@@ -555,52 +556,54 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       {isLoading ? (
         <ComponentSpinner />
       ) : (
-        <InfiniteScroll
-          dataLength={selectClubsData?.length ?? 0}
-          next={fetchMore}
-          hasMore={hasMore}
-          endMessage={
-            <div className="d-flex justify-content-center ">
-              {selectClubsData?.length === 0 ? (
-                <NoDataFoundComponent isRecommanded={primaryFilter === 'recommendation'} data={selectClubsData} />
-              ) : (
-                ''
-              )}
-            </div>
-          }
-          loader={<div className="d-flex justify-content-center">Loading...</div>}
-        >
-          {selectClubsData?.length ? (
-            <div
-              className="justify-content-between grid-layout"
-              style={
-                (primaryFilter === 'recommendation' && secondFilterState.user_type[0]?.value === 'CLIENT') ||
-                (primaryFilter === 'favourites' && secondFilterState.user_type[0]?.value === 'CLIENT') ||
-                primaryFilter === 'clients'
-                  ? {
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill,minmax(33%,auto))',
-                    }
-                  : {}
-              }
-            >
-              {selectClubsData?.map((item) => {
-                const CardComponent = getCardComp();
+        <ResponsiveGrid>
+          <InfiniteScroll
+            dataLength={selectClubsData?.length ?? 0}
+            next={fetchMore}
+            hasMore={hasMore}
+            endMessage={
+              <div className="d-flex justify-content-center ">
+                {selectClubsData?.length === 0 ? (
+                  <NoDataFoundComponent isRecommanded={primaryFilter === 'recommendation'} data={selectClubsData} />
+                ) : (
+                  ''
+                )}
+              </div>
+            }
+            loader={<div className="d-flex justify-content-center">Loading...</div>}
+          >
+            {selectClubsData?.length ? (
+              <div
+                className="justify-content-between grid-layout"
+                style={
+                  (primaryFilter === 'recommendation' && secondFilterState.user_type[0]?.value === 'CLIENT') ||
+                  (primaryFilter === 'favourites' && secondFilterState.user_type[0]?.value === 'CLIENT') ||
+                  primaryFilter === 'clients'
+                    ? {
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill,minmax(33%,auto))',
+                      }
+                    : {}
+                }
+              >
+                {selectClubsData?.map((item) => {
+                  const CardComponent = getCardComp();
 
-                return (
-                  <CardComponent
-                    key={item?._id || item?.id}
-                    data={item}
-                    isPopoverOpen={popoverOpen}
-                    userType={userType}
-                    isProjectWithTeam={primaryFilter === 'my-teams'}
-                    isTeam={primaryFilter === 'invitations' || primaryFilter === 'join-requests'}
-                  />
-                );
-              })}
-            </div>
-          ) : null}
-        </InfiniteScroll>
+                  return (
+                    <CardComponent
+                      key={item?._id || item?.id}
+                      data={item}
+                      isPopoverOpen={popoverOpen}
+                      userType={userType}
+                      isProjectWithTeam={primaryFilter === 'my-teams'}
+                      isTeam={primaryFilter === 'invitations' || primaryFilter === 'join-requests'}
+                    />
+                  );
+                })}
+              </div>
+            ) : null}
+          </InfiniteScroll>
+        </ResponsiveGrid>
       )}
     </>
   );
