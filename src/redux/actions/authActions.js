@@ -326,6 +326,9 @@ const getUserData = () => async (dispatch) => {
 
       if (userData) {
         dispatch(getUserDataSuccess(userData.user_type));
+        if (userData?.team_type === userTypes.club) {
+          dispatch(getClubAdminAccess());
+        }
         dispatch(userDataSuccess(userData));
         dispatch(getTeams({ onSuccess: () => {} }));
         setItem('userData', userData);

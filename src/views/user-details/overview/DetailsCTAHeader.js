@@ -31,6 +31,7 @@ const DetailsCTAHeader = ({ isTeamView, data, isClubProfile }) => {
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
+  const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
 
   const [modalInformationText, setModalInformationText] = useState('');
   const teamId = getTeamId('team_id');
@@ -248,11 +249,17 @@ const DetailsCTAHeader = ({ isTeamView, data, isClubProfile }) => {
                 !isEditable &&
                 !data?.is_team_member &&
                 teamId &&
-                data?.user_type === userTypes.talent && (
+                data?.user_type === userTypes.talent &&
+                userData?.team_type !== userTypes.club && (
                   <Button className="btn-head-padding-25" color="primary" onClick={handleInviteTalent}>
                     Invite
                   </Button>
                 )}
+              {userData?.team_type === userTypes.club && isClubAdmin && (
+                <Button className="btn-head-padding-25" color="primary" onClick={handleInviteTalent}>
+                  Invite
+                </Button>
+              )}
               {!requestStatusData &&
                 !data?.is_team_member &&
                 isTeamView &&
