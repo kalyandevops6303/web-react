@@ -214,7 +214,7 @@ const BidDetails = () => {
                   </span>
                   <CardText className="back-text">Back</CardText>
                 </div>
-                {bidInfo?.is_acceptable && (
+                {(bidInfo?.is_acceptable || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED') && (
                   <div>
                     {isBidStatusUpating ? (
                       'Updating...'
@@ -230,7 +230,7 @@ const BidDetails = () => {
                         </CardText>
                         <span>
                           <Button onClick={() => setAcceptBidModal(true)} className="d-contents" color="primary">
-                            Accept
+                            Assign Project
                           </Button>
                         </span>
                       </div>
