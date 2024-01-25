@@ -221,6 +221,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     LISTING_EXPIRED: 'Listing Expired',
     ON_GOING: 'On Going',
     COMPLETED: 'COMPLETED',
+    YET_TO_START: 'Yet to Start',
   };
 
   const isPaymentDone = (milestone) =>
@@ -311,8 +312,8 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           onAccept={acceptMilestone}
         />
       )}
-      <Card className="gray-card">
-        <div className="mb-4">
+      <Card className="gray-card pt-2">
+        <div className="mb-2">
           <CustomBadge bordered>
             <Badge className={`${selectedMilestone?.status}`} color="badge">
               {statusEnum[selectedMilestone?.status]}
