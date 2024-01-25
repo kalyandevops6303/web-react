@@ -18,6 +18,8 @@ const initialState = {
   userType: null,
   fcmToken: '',
   cometChatToken: '',
+  checkAdmin: null,
+  checkAdminLoading: false,
 };
 
 const authSlice = createSlice({
@@ -294,6 +296,22 @@ const authSlice = createSlice({
       ...state,
       userType: action.payload,
     }),
+
+    checkAdminRequest: (state) => ({
+      ...state,
+      checkAdminLoading: true,
+      error: null,
+    }),
+    checkAdminSuccess: (state, action) => ({
+      ...state,
+      checkAdminLoading: false,
+      checkAdmin: action.payload,
+    }),
+    checkAdminFailure: (state, action) => ({
+      ...state,
+      checkAdminLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -347,6 +365,9 @@ export const {
   userDataFailure,
   getUserDataSuccess,
   savedUserDataSuccess,
+  checkAdminRequest,
+  checkAdminSuccess,
+  checkAdminFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -28,6 +28,8 @@ const fcmUnsubscribeService = (token) => DataService.post(`${API.notifications.u
 
 const resetPasswordService = (data) => DataService.post(API.auth.resetPassword, data);
 
+const checkAdminService = (teamId) => DataService.get(`${API.auth.checkAdmin}?team_id=${teamId}`);
+
 export {
   loginService,
   loginServiceGoogle,
@@ -42,4 +44,5 @@ export {
   fcmSubscribeService,
   fcmUnsubscribeService,
   resetPasswordService,
+  checkAdminService,
 };
