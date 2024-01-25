@@ -467,3 +467,9 @@ export const getPath = ({ isActiveProject, projectId }) => {
   }
   return `/project-details/${projectId}/bid`;
 };
+
+export const calculateRemainingBidsCount = (data) => {
+  const totalRecords = data?.metadata?.total_records || 0;
+  const currentRecords = data?.data?.length || 0;
+  return totalRecords - currentRecords;
+};

@@ -21,7 +21,7 @@ import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, calculateRemainingBidsCount } from '../../../utility/Utils';
 
 import {
   profilePercentage,
@@ -40,7 +40,7 @@ import MyTeamCard from './MyTeamCard';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import Tag from '../../../@core/components/tags';
 import { AccordionName } from './DashboardConstant';
-import ViewAllCard from './ViewAllCard';
+import ViewAllCard from './ExtraCardWithCount';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
@@ -126,88 +126,6 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
   );
 };
 
-// const ViewAll = ({ viewAllText, handleViewAll, accordionName, height }) => {
-//   const navigate = useNavigate();
-//   const userDetailsData = useSelector(userData);
-//   const profilePercentageData = useSelector(profilePercentage);
-
-//   const dispatch = useDispatch();
-
-//   const onAddDetailsClick = (path) => {
-//     navigate(path, {
-//       state: { isEditing: true },
-//     });
-//   };
-//   return (
-//     <ProjectWrapper>
-//       <Card className="empty-card">
-//         <CardBody className="empty empty-h-25">
-//           <div>
-//             {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
-//             {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
-//             {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
-//             {active && (
-//               <CardText className="get-started">
-//                 Lets get you <br /> started!
-//               </CardText>
-//             )}
-//             {isTeam && <img src={TeamNoDataGif} className="empty-gif" alt="empty-gif" />}
-
-//             {payment && (
-//               <CardText className="font-weight-normal get-started">
-//                 No Upcoming <br /> Payment
-//               </CardText>
-//             )}
-//           </div>
-//           {active && (
-//             <div
-//               onClick={() => {
-//                 navigate('/marketplace/all_listings');
-//                 dispatch(setActiveNavTab('marketplace'));
-//               }}
-//               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
-//             >
-//               Explore Projects
-//             </div>
-//           )}
-//           {isEducationNotCompleted && recommended ? (
-//             <div
-//               onClick={() =>
-//                 onAddDetailsClick(
-//                   returnDetailsForMarketPlace(userDetailsData?.user_type, profilePercentageData?.values_missing)?.path,
-//                 )
-//               }
-//               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
-//             >
-//               Complete your profile <br /> to get started!
-//             </div>
-//           ) : recommended ? (
-//             <div
-//               onClick={() => {
-//                 navigate('/marketplace/all_listings');
-//                 dispatch(setActiveNavTab('marketplace'));
-//               }}
-//               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
-//             >
-//               Explore Projects
-//             </div>
-//           ) : (
-//             <div
-//               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
-//               onClick={() => {
-//                 navigate('/marketplace/teams');
-//                 dispatch(setActiveNavTab('marketplace'));
-//               }}
-//             >
-//               View Teams
-//             </div>
-//           )}
-//         </CardBody>
-//       </Card>
-//     </ProjectWrapper>
-//   );
-// };
-
 const AccordionHeadStyle = styled.div`
   display: flex;
   justify-content: space-between;
@@ -288,7 +206,7 @@ const TeamListing = () => {
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  My Teams <Tag>{myTeam?.metadata?.total_records}</Tag>
+                  My Teams <Tag hasNew={myTeam?.is_all_read} count={myTeam?.metadata?.total_records} />
                 </span>
                 {myTeam?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta d-none">
@@ -314,14 +232,6 @@ const TeamListing = () => {
                     <>
                       {myTeam?.data?.length >= 4 ? (
                         <Slider {...settings}>
-                          {/* {!recommendedTeams?.metadata?.total_records > 10 && ( */}
-                          <ViewAllCard
-                            accordionName={AccordionName.myTeam}
-                            height="120px"
-                            onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
-                            viewAll="View All"
-                          />
-                          {/* )} */}
                           {myTeam?.data?.map((project, index) => (
                             <MyTeamCard
                               isRecommendedTeam
@@ -331,6 +241,14 @@ const TeamListing = () => {
                               recommended
                             />
                           ))}
+                          {myTeam?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.myTeam}
+                              height={120}
+                              onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
+                              count={calculateRemainingBidsCount(myTeam)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -370,7 +288,8 @@ const TeamListing = () => {
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Team Invites <Tag>{teamInvitation?.metadata?.total_records}</Tag>
+                  Team Invites
+                  <Tag hasNew={teamInvitation?.is_all_read} count={teamInvitation?.metadata?.total_records} />
                 </span>
                 {teamInvitation?.data?.length > 0 && (
                   <CardText
@@ -402,17 +321,6 @@ const TeamListing = () => {
                     <>
                       {teamInvitation?.data?.length >= 4 ? (
                         <Slider {...settings}>
-                          {/* {!recommendedTeams?.metadata?.total_records > 10 && ( */}
-                          <ViewAllCard
-                            accordionName={AccordionName.teamInvitation}
-                            height="215px"
-                            onViewAll={() => {
-                              navigate('/projects/invited');
-                              dispatch(setActiveNavTab('projects'));
-                            }}
-                            viewAll="View All"
-                          />
-                          {/* )} */}
                           {teamInvitation?.data?.map((project, index) => (
                             <TeamInvitationCard
                               isRecommendedTeam
@@ -422,6 +330,18 @@ const TeamListing = () => {
                               recommended
                             />
                           ))}
+
+                          {teamInvitation?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.teamInvitation}
+                              height={215}
+                              onViewAll={() => {
+                                navigate('/projects/invited');
+                                dispatch(setActiveNavTab('projects'));
+                              }}
+                              count={calculateRemainingBidsCount(teamInvitation)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -461,7 +381,8 @@ const TeamListing = () => {
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Recommended Teams <Tag>{recommendedTeams?.metadata?.total_records}</Tag>
+                  Recommended Teams{' '}
+                  <Tag hasNew={recommendedTeams?.is_all_read} count={recommendedTeams?.metadata?.total_records} />
                 </span>
                 {recommendedTeams?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
@@ -487,14 +408,6 @@ const TeamListing = () => {
                     <>
                       {recommendedTeams?.data?.length >= 4 ? (
                         <Slider {...settings}>
-                          {recommendedTeams?.metadata?.total_records > 10 && (
-                            <ViewAllCard
-                              accordionName={AccordionName.recommendedTeams}
-                              height="220px"
-                              onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
-                              viewAll="View All"
-                            />
-                          )}
                           {recommendedTeams?.data?.map((project, index) => (
                             <TeamTalentCard
                               isRecommendedTeam
@@ -503,6 +416,15 @@ const TeamListing = () => {
                               data={project}
                             />
                           ))}
+
+                          {recommendedTeams?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.recommendedTeams}
+                              height={220}
+                              onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
+                              count={calculateRemainingBidsCount(recommendedTeams)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">

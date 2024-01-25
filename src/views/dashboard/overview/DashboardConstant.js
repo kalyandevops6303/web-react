@@ -9,6 +9,7 @@ const AccordionName = {
   recommendedTalents: 'Recommended Talents',
   recommendedProjects: 'Recommended Projects',
   joinRequest: 'Join Requests',
+  receivedBids: 'Received Bids',
 };
 // eslint-disable-next-line import/prefer-default-export
 export { AccordionName };
