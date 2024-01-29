@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
 import ShowToastMessage from '../../@core/components/toast';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
@@ -20,11 +21,15 @@ import {
   teamMemberForInviteFailure,
   teamMemberForInviteRequest,
   teamMemberForInviteSuccess,
+  getAdminAccessRequest,
+  getAdminAccessFailure,
+  getAdminAccessSuccess,
 } from '../reducers/inviteTalent';
 import {
   almaMaterTalentsService,
   bestTalentsService,
   favoriteTalentsService,
+  getAdminAccessService,
   getRequestStatusService,
   getTeamMeberforInviteService,
   inviteRequestService,
@@ -143,7 +148,18 @@ const getRequestStatus =
     }
   };
 
+const getClubAdminAccess = () => async (dispatch) => {
+  dispatch(getAdminAccessRequest());
+  try {
+    const res = await getAdminAccessService();
+    dispatch(getAdminAccessSuccess(res.data.data.data.is_admin));
+  } catch (error) {
+    errorHandler(error, getAdminAccessFailure);
+  }
+};
+
 export {
+  getClubAdminAccess,
   getRequestStatus,
   getBestTalents,
   getTeamMemberForInvite,

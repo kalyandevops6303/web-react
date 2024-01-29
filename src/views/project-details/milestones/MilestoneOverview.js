@@ -1,134 +1,47 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import { ArrowLeft } from 'react-feather';
 import Proptypes from 'prop-types';
 
 import theme from '../../../configs/themeVariables';
 import MilestoneDetailsTab from './MilestoneDetailsTab';
+import { BackButtonContainer, BackIconContainer } from '../../CreateProject/style';
+import { TabWrapper } from './style';
 
-const TabWrapper = styled.div`
-  /* Style the tab */
-  .tab {
-    overflow: hidden;
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 26px;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .gap-5 {
-    gap: 5rem;
-  }
-
-  /* Style the buttons inside the tab */
-  .tablink {
-    cursor: pointer;
-    padding: 16px 8px;
-    font-size: 16px;
-  }
-
-  .active-tablink {
-    border-bottom: 2px solid ${theme.activeNavPillText};
-    color: ${theme.activeNavPillText};
-    font-weight: 600;
-  }
-
-  .color-primary {
-    color: ${theme.primary} !important;
-  }
-  .color-danger {
-    color: ${theme.errorColor} !important;
-  }
-
-  .tabcontent {
-    display: none;
-    padding: 6px 12px;
-  }
-
-  .active-tabcontent {
-    display: block !important;
-  }
-
-  .gray-card {
-    padding: 36px;
-    background: #fafafa !important;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .white-card {
-    background: #fff;
-    padding: 26px;
-    box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.06) !important;
-  }
-
-  .medium-shadow {
-    box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.06) !important;
-  }
-
-  .py-16 {
-    padding-top: 16px;
-    padding-bottom: 16px;
-  }
-
-  .role-text {
-    color: ${theme.gray};
-    font-size: 12px;
-  }
-
-  .cursor-pointer {
-    cursor: pointer;
-  }
-
-  .table {
-    background: #fff;
-    border: solid 1px #e9ecef;
-  }
-
-  hr {
-    width: 100%;
-  }
-
-  .raise-dispute-btn {
-    color: ${theme.errorColor} !important;
-    border: none !important;
-    background: none !important;
-    padding: 11px 20px !important;
-  }
-  .raise-dispute-btn:hover {
-    box-shadow: none !important;
-  }
-  .raise-dispute-btn:active,
-  .raise-dispute-btn:focus {
-    background: none !important;
-  }
-`;
-
-const MilestoneOverview = ({ selectedMilestone, fetchProjectMilestones }) => {
-  const [tab, setTab] = useState('Details');
-
-  return (
-    <TabWrapper>
-      <div className="tab">
-        <div
-          className={`tablink ${tab === 'Details' ? 'active-tablink' : ''}`}
-          onClick={() => {
-            setTab('Details');
-          }}
-        >
-          Details
-        </div>
+const MilestoneOverview = ({
+  setSelectedMilestone,
+  setSelectedMilestoneIndex,
+  selectedMilestone,
+  fetchProjectMilestones,
+}) => (
+  <TabWrapper>
+    <BackButtonContainer className="p-0 mb-1">
+      <div
+        onClick={() => {
+          setSelectedMilestoneIndex(null);
+          setSelectedMilestone(null);
+        }}
+        className="p-0 d-flex"
+      >
+        <BackIconContainer>
+          <ArrowLeft size={18} color={theme.white} />
+        </BackIconContainer>
+        <h4 className="m-0 fw-light blue-text mt-25 mx-50">Go to Milestone</h4>
       </div>
+    </BackButtonContainer>
 
-      <div className={`tabcontent ${tab === 'Details' ? 'active-tabcontent' : ''}`}>
-        <MilestoneDetailsTab fetchProjectMilestones={fetchProjectMilestones} selectedMilestone={selectedMilestone} />
-      </div>
-    </TabWrapper>
-  );
-};
+    <MilestoneDetailsTab
+      setSelectedMilestoneIndex={setSelectedMilestoneIndex}
+      fetchProjectMilestones={fetchProjectMilestones}
+      selectedMilestone={selectedMilestone}
+    />
+  </TabWrapper>
+);
+
 MilestoneOverview.propTypes = {
+  setSelectedMilestone: Proptypes.func.isRequired,
   selectedMilestone: Proptypes.object.isRequired,
   fetchProjectMilestones: Proptypes.func.isRequired,
+  setSelectedMilestoneIndex: Proptypes.func.isRequired,
 };
 
 export default MilestoneOverview;

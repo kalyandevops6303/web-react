@@ -41,7 +41,7 @@ import {
 } from '../../../services/talentOnboardingServices';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { maxFileSize, userOnboarding } from '../../../utility/constants/Constant';
+import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const Personal = () => {
@@ -212,30 +212,24 @@ const Personal = () => {
   }, [citiesData]);
 
   const onBackClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/account-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/account-details`);
     } else {
       navigate(`/${userOnboarding.client}/account-details`);
     }
   };
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/educational-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/educational-details`);
     } else {
       navigate(`/${userOnboarding.client}/educational-details`);
     }
   };
 
   const onSuccess = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.client}/educational-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.client}/educational-details`);
     } else {
       navigate(`/${userOnboarding.client}/educational-details`);
     }

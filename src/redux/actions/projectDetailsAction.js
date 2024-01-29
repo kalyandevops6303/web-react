@@ -256,10 +256,10 @@ const checkDocumentActivated =
       let resNDA;
       const getContract = async () => {
         resContract = await checkDocumentActivatedService({ project_id, doc_type: 'CONTRACT' });
-        dispatch(checkDocumentActivatedSuccess({ isContract: resContract.data.data }));
         if (resContract.data.data.show_document) {
           dispatch(getDocumentTimeline({ project_id, doc_type: 'CONTRACT' }));
         }
+        dispatch(checkDocumentActivatedSuccess({ isContract: resContract.data.data }));
       };
       if (isNDA) {
         resNDA = await checkDocumentActivatedService({ project_id, doc_type: 'NDA' });

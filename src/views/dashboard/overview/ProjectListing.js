@@ -3,9 +3,9 @@
 /* eslint-disable react/require-default-props */
 import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
@@ -19,7 +19,7 @@ import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace, getTeamId } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, getTeamId, calculateRemainingBidsCount } from '../../../utility/Utils';
 
 import {
   activeProjectsForClient,
@@ -61,9 +61,14 @@ import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import { getDashboardUpcomingPayments } from '../../../redux/actions/milestonePaymentActions';
 import UpcomingPaymentsCard from './UpcomingPaymentsCard';
 import { clearUpcomingPayments } from '../../../redux/reducers/milestonePayment';
+import Tag from '../../../@core/components/tags';
+import ViewAllCard from './ExtraCardWithCount';
+import { AccordionName } from './DashboardConstant';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
   const dispatch = useDispatch();
@@ -71,6 +76,7 @@ const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
   const onAddDetailsClick = (path) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path, {
       state: { isEditing: true },
     });
@@ -224,42 +230,73 @@ const ProjectListing = () => {
   }, [open]);
 
   useEffect(() => {
-    if (open === '1') {
-      if (userDetailsData?.user_type === userTypes.client) {
-        dispatch(getActiveProjectsForClient());
-      } else if (userDetailsData?.user_type === userTypes.talent) {
-        dispatch(getActiveProjectsForTalent());
-      } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
-        dispatch(getActiveProjectsForTeam());
-      } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
-        dispatch(getActiveProjectsForTeam());
-      }
+    // if (open === '1') {
+    //   if (userDetailsData?.user_type === userTypes.client) {
+    //     dispatch(getActiveProjectsForClient());
+    //   } else if (userDetailsData?.user_type === userTypes.talent) {
+    //     dispatch(getActiveProjectsForTalent());
+    //   } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
+    //     dispatch(getActiveProjectsForTeam());
+    //   } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
+    //     dispatch(getActiveProjectsForTeam());
+    //   }
+    // }
+    // if (open === '2') {
+    //   if (userDetailsData?.user_type === userTypes.client) {
+    //     dispatch(getUpcomingProjectsForClient());
+    //   } else if (userDetailsData?.user_type === userTypes.talent) {
+    //     dispatch(getUpcomingProjectsForTalent());
+    //   } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
+    //     dispatch(getUpcomingProjectsForTeam());
+    //   } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
+    //     dispatch(getUpcomingProjectsForTeam());
+    //   }
+    // }
+    // if (open === '3') {
+    //   if (
+    //     userDetailsData?.user_type === userTypes.talent ||
+    //     userDetailsData?.team_type === userTypes.team ||
+    //     userDetailsData?.team_type === userTypes.club
+    //   ) {
+    //     dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
+    //   }
+    // }
+    // if (open === '4') {
+    //   dispatch(clearUpcomingPayments());
+    //   dispatch(getDashboardUpcomingPayments());
+    // }
+
+    if (userDetailsData?.user_type === userTypes.client) {
+      dispatch(getActiveProjectsForClient());
+    } else if (userDetailsData?.user_type === userTypes.talent) {
+      dispatch(getActiveProjectsForTalent());
+    } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
+      dispatch(getActiveProjectsForTeam());
+    } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
+      dispatch(getActiveProjectsForTeam());
     }
-    if (open === '2') {
-      if (userDetailsData?.user_type === userTypes.client) {
-        dispatch(getUpcomingProjectsForClient());
-      } else if (userDetailsData?.user_type === userTypes.talent) {
-        dispatch(getUpcomingProjectsForTalent());
-      } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
-        dispatch(getUpcomingProjectsForTeam());
-      } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
-        dispatch(getUpcomingProjectsForTeam());
-      }
+
+    if (userDetailsData?.user_type === userTypes.client) {
+      dispatch(getUpcomingProjectsForClient());
+    } else if (userDetailsData?.user_type === userTypes.talent) {
+      dispatch(getUpcomingProjectsForTalent());
+    } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
+      dispatch(getUpcomingProjectsForTeam());
+    } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
+      dispatch(getUpcomingProjectsForTeam());
     }
-    if (open === '3') {
-      if (
-        userDetailsData?.user_type === userTypes.talent ||
-        userDetailsData?.team_type === userTypes.team ||
-        userDetailsData?.team_type === userTypes.club
-      ) {
-        dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
-      }
+
+    if (
+      userDetailsData?.user_type === userTypes.talent ||
+      userDetailsData?.team_type === userTypes.team ||
+      userDetailsData?.team_type === userTypes.club
+    ) {
+      dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
     }
-    if (open === '4') {
-      dispatch(clearUpcomingPayments());
-      dispatch(getDashboardUpcomingPayments());
-    }
-  }, [open]);
+
+    dispatch(clearUpcomingPayments());
+    dispatch(getDashboardUpcomingPayments());
+  }, []);
 
   const onViewAllClick = (e, path) => {
     e.stopPropagation();
@@ -274,7 +311,13 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Active Projects</span>
+                <span className="d-flex align-items-center">
+                  Active Projects{' '}
+                  <Tag
+                    hasNew={activeProjectsForClientData?.is_all_read}
+                    count={activeProjectsForClientData?.metadata?.total_records}
+                  />
+                </span>
                 {activeProjectsForClientData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/ongoing')} className="view-all-cta">
                     View All
@@ -302,6 +345,15 @@ const ProjectListing = () => {
                           {activeProjectsForClientData?.data?.map((project, index) => (
                             <ActiveProjectCard className={`slide-${index}`} key={project._id} data={project} />
                           ))}
+
+                          {activeProjectsForClientData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.activeProjects}
+                              height={420}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                              count={calculateRemainingBidsCount(activeProjectsForClientData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -329,7 +381,13 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Upcoming Projects</span>
+                <span className="d-flex align-items-center">
+                  Upcoming Projects{' '}
+                  <Tag
+                    hasNew={upcomingProjectsForClientData?.is_all_read}
+                    count={upcomingProjectsForClientData?.metadata?.total_records}
+                  />
+                </span>
                 {activeProjectsForClientData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/upcoming')} className="view-all-cta">
                     View All
@@ -357,6 +415,15 @@ const ProjectListing = () => {
                           {upcomingProjectsForClientData?.data?.map((project, index) => (
                             <UpcomingProjectCard className={`slide-${index}`} key={project._id} data={project} />
                           ))}
+
+                          {upcomingProjectsForClientData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.upcomingProjects}
+                              height={274}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/upcoming')}
+                              count={calculateRemainingBidsCount(upcomingProjectsForClientData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -388,7 +455,13 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Active Projects</span>
+                <span className="d-flex align-items-center">
+                  Active Projects{' '}
+                  <Tag
+                    hasNew={activeProjectsForTalentData?.is_all_read}
+                    count={activeProjectsForTalentData?.metadata?.total_records}
+                  />
+                </span>
                 {activeProjectsForTalentData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/ongoing')} className="view-all-cta">
                     View All
@@ -416,6 +489,15 @@ const ProjectListing = () => {
                           {activeProjectsForTalentData?.data?.map((project, index) => (
                             <ActiveProjectCardForTalent className={`slide-${index}`} key={project._id} data={project} />
                           ))}
+
+                          {activeProjectsForTalentData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.activeProjects}
+                              height={333}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                              count={calculateRemainingBidsCount(activeProjectsForTalentData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -447,7 +529,13 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Upcoming Projects</span>
+                <span className="d-flex align-items-center">
+                  Upcoming Projects{' '}
+                  <Tag
+                    hasNew={upcomingProjectsForTalentData?.is_all_read}
+                    count={upcomingProjectsForTalentData?.metadata?.total_records}
+                  />
+                </span>
                 {upcomingProjectsForTalentData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/upcoming')} className="view-all-cta">
                     View All
@@ -479,6 +567,15 @@ const ProjectListing = () => {
                               data={project}
                             />
                           ))}
+
+                          {upcomingProjectsForTalentData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.upcomingProjects}
+                              height={268}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/upcoming')}
+                              count={calculateRemainingBidsCount(upcomingProjectsForTalentData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -514,7 +611,13 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Active Projects</span>
+                <span className="d-flex align-items-center">
+                  Active Projects{' '}
+                  <Tag
+                    hasNew={activeProjectsForTeamData?.is_all_read}
+                    count={activeProjectsForTeamData?.metadata?.total_records}
+                  />
+                </span>
                 {activeProjectsForTeamData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/ongoing')} className="view-all-cta">
                     View All
@@ -542,6 +645,15 @@ const ProjectListing = () => {
                           {activeProjectsForTeamData?.data?.map((project, index) => (
                             <ActiveProjectCardForTeam className={`slide-${index}`} key={project._id} data={project} />
                           ))}
+
+                          {activeProjectsForTeamData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.activeProjects}
+                              height={333}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                              count={calculateRemainingBidsCount(activeProjectsForTeamData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -573,7 +685,13 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Upcoming Projects</span>
+                <span className="d-flex align-items-center">
+                  Upcoming Projects{' '}
+                  <Tag
+                    hasNew={activeProjectsForTeamData?.is_all_read}
+                    count={activeProjectsForTeamData?.metadata?.total_records}
+                  />
+                </span>
                 {activeProjectsForTeamData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/upcoming')} className="view-all-cta">
                     View All
@@ -601,6 +719,16 @@ const ProjectListing = () => {
                           {upcomingProjectsForTeamData?.data?.map((project, index) => (
                             <UpcomingProjectCardForTeam className={`slide-${index}`} key={project._id} data={project} />
                           ))}
+
+                          {upcomingProjectsForTeamData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.upcomingProjects}
+                              height={268}
+                              width={250}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/upcoming')}
+                              count={calculateRemainingBidsCount(upcomingProjectsForTeamData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -636,7 +764,13 @@ const ProjectListing = () => {
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Recommended Projects</span>
+                <span className="d-flex align-items-center">
+                  Recommended Projects{' '}
+                  <Tag
+                    hasNew={recommendedProjectsData?.is_all_read}
+                    count={recommendedProjectsData?.metadata?.total_records}
+                  />
+                </span>
                 {recommendedProjectsData?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All
@@ -664,6 +798,15 @@ const ProjectListing = () => {
                           {recommendedProjectsData?.data?.map((project, index) => (
                             <Project className={`slide-${index}`} key={project.id} data={project} recommended />
                           ))}
+
+                          {recommendedProjectsData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.recommendedProjects}
+                              height={380}
+                              onViewAll={handleViewAll}
+                              count={calculateRemainingBidsCount(recommendedProjectsData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -692,7 +835,10 @@ const ProjectListing = () => {
       </AccordionItem>
       {userDetailsData?.user_type === userTypes.team ? null : (
         <AccordionItem>
-          <AccordionHeader targetId="4">Upcoming Payments</AccordionHeader>
+          <AccordionHeader targetId="4">
+            Upcoming Payments
+            <Tag hasNew={upcomingPaymentData?.is_all_read} count={upcomingPaymentData?.metadata?.total_records} />
+          </AccordionHeader>
           <AccordionBody accordionId="4">
             {isSliderLoading || upcomingPaymentDataLoading ? (
               <div style={{ height: '250px' }} className="d-flex justify-content-center gap-1">
@@ -711,6 +857,16 @@ const ProjectListing = () => {
                         {upcomingPaymentData?.data?.map((project, index) => (
                           <UpcomingPaymentsCard className={`slide-${index}`} key={project._id} data={project} />
                         ))}
+
+                        {upcomingPaymentData?.metadata?.total_records > 10 && (
+                          <ViewAllCard
+                            accordionName={AccordionName.payments}
+                            height={332}
+                            width={250}
+                            onViewAll={handleViewAll}
+                            count={calculateRemainingBidsCount(upcomingPaymentData)}
+                          />
+                        )}
                       </Slider>
                     ) : (
                       <div className="custom-slider-wrap">

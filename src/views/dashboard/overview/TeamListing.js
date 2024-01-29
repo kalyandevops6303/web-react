@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Card, CardBody, CardText } from 'reactstrap';
 
 import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
@@ -21,7 +21,7 @@ import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, calculateRemainingBidsCount } from '../../../utility/Utils';
 
 import {
   profilePercentage,
@@ -38,15 +38,20 @@ import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import MyTeamCard from './MyTeamCard';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
+import Tag from '../../../@core/components/tags';
+import { AccordionName } from './DashboardConstant';
+import ViewAllCard from './ExtraCardWithCount';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
-
   const dispatch = useDispatch();
 
   const onAddDetailsClick = (path) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path, {
       state: { isEditing: true },
     });
@@ -55,7 +60,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
     <ProjectWrapper>
       <Card className="empty-card">
         <CardBody className="empty empty-h-25">
-          <div>
+          <div style={{ height: 'inherit' }}>
             {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
@@ -64,7 +69,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
                 Lets get you <br /> started!
               </CardText>
             )}
-            {isTeam && <img src={TeamNoDataGif} className="empty-gif" alt="empty-gif" />}
+            {isTeam && <img src={TeamNoDataGif} className="empty-gif object-fit-contain" alt="empty-gif" />}
 
             {payment && (
               <CardText className="font-weight-normal get-started">
@@ -144,16 +149,22 @@ const TeamListing = () => {
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
   useEffect(() => {
-    if (open === '1') {
-      dispatch(getMyTeam());
-    }
-    if (open === '2') {
-      dispatch(getTeamInvitation());
-    }
-    if (open === '3') {
-      dispatch(getRecommendedTeams());
-    }
-  }, [open]);
+    // if (open === '1') {
+    //   dispatch(getMyTeam());
+    // }
+    // if (open === '2') {
+    //   dispatch(getTeamInvitation());
+    // }
+    // if (open === '3') {
+    //   dispatch(getRecommendedTeams());
+    // }
+
+    dispatch(getMyTeam());
+
+    dispatch(getTeamInvitation());
+
+    dispatch(getRecommendedTeams());
+  }, []);
 
   const settings = {
     dots: false,
@@ -194,7 +205,9 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">My Teams</span>
+                <span className="d-flex align-items-center">
+                  My Teams <Tag hasNew={myTeam?.is_all_read} count={myTeam?.metadata?.total_records} />
+                </span>
                 {myTeam?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta d-none">
                     View All
@@ -228,6 +241,14 @@ const TeamListing = () => {
                               recommended
                             />
                           ))}
+                          {myTeam?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.myTeam}
+                              height={120}
+                              onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
+                              count={calculateRemainingBidsCount(myTeam)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -266,7 +287,10 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Team Invites</span>
+                <span className="d-flex align-items-center">
+                  Team Invites
+                  <Tag hasNew={teamInvitation?.is_all_read} count={teamInvitation?.metadata?.total_records} />
+                </span>
                 {teamInvitation?.data?.length > 0 && (
                   <CardText
                     onClick={() => {
@@ -306,6 +330,18 @@ const TeamListing = () => {
                               recommended
                             />
                           ))}
+
+                          {teamInvitation?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.teamInvitation}
+                              height={215}
+                              onViewAll={() => {
+                                navigate('/projects/invited');
+                                dispatch(setActiveNavTab('projects'));
+                              }}
+                              count={calculateRemainingBidsCount(teamInvitation)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -344,7 +380,10 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Recommended Teams</span>
+                <span className="d-flex align-items-center">
+                  Recommended Teams{' '}
+                  <Tag hasNew={recommendedTeams?.is_all_read} count={recommendedTeams?.metadata?.total_records} />
+                </span>
                 {recommendedTeams?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
@@ -377,6 +416,15 @@ const TeamListing = () => {
                               data={project}
                             />
                           ))}
+
+                          {recommendedTeams?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.recommendedTeams}
+                              height={220}
+                              onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
+                              count={calculateRemainingBidsCount(recommendedTeams)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">

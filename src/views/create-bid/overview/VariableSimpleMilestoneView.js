@@ -72,13 +72,18 @@ const VariableSimpleMilestoneView = () => {
           .max(500, 'Description must be 500 characters or less')
           .transform((value) => (value === '' ? undefined : value))
           .optional(),
-        deliverables: yup.array().of(
-          yup
-            .string()
-            .min(4, 'Deliverable must be at least 4 characters')
-            .max(50, 'Deliverable must be 50 characters or less')
-            .transform((value) => (value === '' ? undefined : value)),
-        ),
+        deliverables: yup
+          .array()
+          .of(
+            yup
+              .string()
+              .min(4, 'Deliverable must be at least 4 characters')
+              .max(50, 'Deliverable must be 50 characters or less')
+              .transform((value) => (value === '' ? undefined : value))
+              .required('Deliverable is required'),
+          )
+          .min(1, 'At least 1 deliverable is required')
+          .required('At least 1 deliverable is required'),
         otherDetails: yup.object().optional(),
       }),
     ),
@@ -100,7 +105,7 @@ const VariableSimpleMilestoneView = () => {
           talentCost: undefined,
           name: undefined,
           description: undefined,
-          deliverables: [''],
+          deliverables: [undefined],
           otherDetails: {},
         },
       ],
@@ -250,7 +255,7 @@ const VariableSimpleMilestoneView = () => {
       deliverables: [...milestoneDeliverables, defaultValue],
     };
 
-    if (milestoneDeliverables.every((deliverable) => deliverable.trim() !== '')) {
+    if (milestoneDeliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined)) {
       milestonesUpdate(milestoneIndex, newData);
     } else {
       ShowToastMessage(ERROR, 'Please fill all deliverables before adding a new one.');
@@ -269,7 +274,11 @@ const VariableSimpleMilestoneView = () => {
 
   const handleAddMilestone = () => {
     const allMilestonesValid = getValues('milestones').every(
-      (milestone) => milestone.duration > 0 && milestone.talentCost > 0 && milestone.name.trim() !== '',
+      (milestone) =>
+        milestone.duration > 0 &&
+        milestone.talentCost > 0 &&
+        milestone.name.trim() !== '' &&
+        milestone.deliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
     );
 
     if (allMilestonesValid) {
@@ -278,7 +287,7 @@ const VariableSimpleMilestoneView = () => {
         description: undefined,
         duration: undefined,
         talentCost: undefined,
-        deliverables: [''],
+        deliverables: [undefined],
         otherDetails: {},
         workers: allWorkers,
       });
@@ -425,7 +434,7 @@ const VariableSimpleMilestoneView = () => {
           talentCost: milestone?.estimated_cost,
           name: milestone?.name,
           description: milestone?.description,
-          deliverables: milestone?.deliverables?.length > 0 ? milestone?.deliverables : [''],
+          deliverables: milestone?.deliverables?.length > 0 ? milestone?.deliverables : [undefined],
           workers: res?.workers?.length > 0 ? res?.workers : [],
           otherDetails: milestone,
         }));
@@ -438,7 +447,7 @@ const VariableSimpleMilestoneView = () => {
             talentCost: undefined,
             name: undefined,
             description: undefined,
-            deliverables: [''],
+            deliverables: [undefined],
             otherDetails: {},
             workers: res?.workers?.length > 0 ? res?.workers : [],
           },
@@ -753,9 +762,11 @@ const VariableSimpleMilestoneView = () => {
                             <Col sm="12" md="12" lg="6">
                               <Card>
                                 <CardBody>
-                                  <p className="fw-bold font-medium-1 text-secondary mb-2 pb-2">Deliverable Details</p>
+                                  <p className="fw-bold font-medium-1 text-secondary mb-2 pb-2">
+                                    Deliverable Details<span className="label-asterisk">*</span>
+                                  </p>
                                   {milestone.deliverables.map((item, index) => (
-                                    <Row key={item.id} className="mb-1 d-flex align-items-center">
+                                    <Row key={item?.id} className="mb-1 d-flex align-items-center">
                                       <Col sm="12" md="12" lg="8">
                                         <Controller
                                           id={`milestones[${milestoneIndex}].deliverables[${index}]`}

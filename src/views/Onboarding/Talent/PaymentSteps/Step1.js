@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
-import { userOnboarding } from '../../../../utility/constants/Constant';
+import { userOnboarding, userProfileEdit } from '../../../../utility/constants/Constant';
 
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
@@ -49,10 +49,8 @@ const Step1 = ({ setStep }) => {
   }, []);
 
   const onBackClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/${userOnboarding.talent}/social-details`, {
-        state: { isEditing: true },
-      });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
       navigate(`/${userOnboarding.talent}/social-details`);
     }
@@ -104,7 +102,7 @@ const Step1 = ({ setStep }) => {
   };
 
   const onSkipSuccess = () => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
       setAccountCreatedModal(true);
@@ -112,7 +110,7 @@ const Step1 = ({ setStep }) => {
   };
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
       dispatch(saveCheckpointComplete(onSkipSuccess));
