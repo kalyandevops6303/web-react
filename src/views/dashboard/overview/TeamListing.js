@@ -50,9 +50,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
-    navigate(path, {
-      state: { isEditing: true },
-    });
+    navigate(path);
   };
   return (
     <ProjectWrapper>

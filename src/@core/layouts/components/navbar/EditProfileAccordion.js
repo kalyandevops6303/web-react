@@ -27,9 +27,8 @@ const EditProfileAccordion = () => {
   const dispatch = useDispatch();
 
   const handleEditProfileForTeam = () => {
-    navigate('/create-team/profile-details', {
-      state: { isEditing: true },
-    });
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
+    navigate(`/${userProfileEdit.team}/profile-details`);
   };
 
   const handleEditProfileForTalent = (tab) => {
@@ -67,10 +66,12 @@ const EditProfileAccordion = () => {
 
   const handleEditProfileForClub = (tab) => {
     if (userDetailsData.club_status === clubStatus.ACCEPTED) {
+      setItemFromSession('backRouteForProfileEdit', location.pathname);
+
       if (tab === 'account') {
-        navigate('/create-club/account-details', { state: { isEditing: true } });
+        navigate(`/${userProfileEdit.club}/account-details`);
       } else {
-        navigate('/create-club/profile-details', { state: { isEditing: true } });
+        navigate(`/${userProfileEdit.club}/profile-details`);
       }
     } else {
       ShowToastMessage(ERROR, 'Club is not verified yet');

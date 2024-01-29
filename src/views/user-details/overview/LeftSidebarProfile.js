@@ -23,7 +23,7 @@ import { makeFavourite, removeFavourite } from '../../../redux/actions/profileAc
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { downloadFile, getTeamId, giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
-import { clubStatus, userTypes } from '../../../utility/constants/Constant';
+import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import {
   getProfilePercentage,
@@ -31,7 +31,7 @@ import {
   updateInvitation,
 } from '../../../redux/actions/dashboardActions';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
-import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
+import { checkAdmin, selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import SendInvitationModal from '../../modals/SendInvitationModal';
 import AcceptRequestModal from '../../modals/AcceptRequestModal';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
@@ -43,7 +43,8 @@ import ReportUserModal from './ReportUserModal';
 import SendClubInvitationModal from '../../modals/SendClubInvitationModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { getItemFromSession, setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { checkIsAdmin } from '../../../redux/actions/authActions';
 
 const LeftSidebarProfile = ({
   isTalentView,
@@ -61,6 +62,7 @@ const LeftSidebarProfile = ({
   const userData = useSelector(selectAuthUserData);
   const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
   const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
+  const checkAdminData = useSelector(checkAdmin);
 
   const [modalInformationText, setModalInformationText] = useState('');
   const teamId = getTeamId('team_id');
@@ -141,18 +143,18 @@ const LeftSidebarProfile = ({
   };
 
   const onEditClick = () => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     if (data.team_type === userTypes.team) {
-      navigate(`/create-team/profile-details`, {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.team}/profile-details`);
     } else if (data.team_type === userTypes.club && data.club_status === clubStatus.ACCEPTED) {
-      navigate(`/create-club/account-details`, {
-        state: { isEditing: true },
-      });
+      if (checkAdminData?.is_admin) {
+        navigate(`/${userProfileEdit.club}/account-details`);
+      } else {
+        ShowToastMessage(ERROR, 'Only an admin can edit the club profile');
+      }
     } else if (data.team_type === userTypes.club && data.club_status === clubStatus.IN_REVIEW) {
       ShowToastMessage(ERROR, 'Club is not verified yet');
     } else {
-      setItemFromSession('backRouteForProfileEdit', location.pathname);
       navigate(`/${data.user_type.toLowerCase()}-profile-edit/account-details`);
     }
   };
@@ -216,6 +218,12 @@ const LeftSidebarProfile = ({
     setSelectedTalent([data]);
     setSendInviteModal(true);
   };
+
+  useEffect(() => {
+    if (getItemFromSession('team_id')) {
+      dispatch(checkIsAdmin(getItemFromSession('team_id')));
+    }
+  }, []);
 
   return (
     <LeftSidebarProfileWrapper>

@@ -300,7 +300,7 @@ const Profile = () => {
     };
     let reqData;
 
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       if (imageUrlRes) {
         reqData = {
           _id: userDetailsData._id,
@@ -355,7 +355,7 @@ const Profile = () => {
       }
     }
 
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       const onApiSuccess = () => {
         navigate('/dashboard');
       };
@@ -502,7 +502,7 @@ const Profile = () => {
   }, []);
 
   useEffect(() => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       if (teamDetails) {
         if (teamDetails?.team_logo.length > 0) {
           setSelectedImage(teamDetails.team_logo);
@@ -1327,7 +1327,7 @@ const Profile = () => {
           <div>
             <Button
               color="primary"
-              outline={location?.state?.isEditing}
+              outline={location.pathname.includes('profile-edit')}
               disabled={isImageUploading || updateTeamIsLoading}
               onClick={handleClick}
             >
@@ -1335,7 +1335,7 @@ const Profile = () => {
                 <Spinner size="sm" />
               ) : (
                 <>
-                  <span className="me-50">{location?.state?.isEditing ? 'Save' : 'Create Team'}</span>
+                  <span className="me-50">{location.pathname.includes('profile-edit') ? 'Save' : 'Create Team'}</span>
                   <ChevronRight size={14} />
                 </>
               )}
