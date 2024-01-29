@@ -9,6 +9,7 @@ import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
 
 const UpcomingProjectCardForTalent = ({ data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -24,10 +25,7 @@ const UpcomingProjectCardForTalent = ({ data, className }) => {
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <div className="new-tag d-flex align-items-center px-75">
-          <div className="red-dot m-0 me-25" />
-          <p className="m-0 font-small-3 fw-bold">New</p>
-        </div>
+        <NewTag />
         <CardBody>
           <p className="active-project-name truncate-2 mt-50" style={{ height: '40px' }}>
             {data?.name}

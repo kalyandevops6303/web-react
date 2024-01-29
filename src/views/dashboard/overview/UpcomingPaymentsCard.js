@@ -12,6 +12,7 @@ import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
 
 const UpcomingPaymentsCard = ({ data, className }) => {
   const navigate = useNavigate();
@@ -28,10 +29,7 @@ const UpcomingPaymentsCard = ({ data, className }) => {
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <div className="new-tag d-flex align-items-center px-75">
-          <div className="red-dot m-0 me-25" />
-          <p className="m-0 font-small-3 fw-bold">New</p>
-        </div>
+        <NewTag />
         <CardBody>
           {data?.payment_status?.length > 0 ? (
             <CustomBadge>

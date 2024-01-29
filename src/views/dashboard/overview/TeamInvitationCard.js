@@ -15,6 +15,7 @@ import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { ProjectWrapper } from './style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
 
 const UserSection = ({ totalCount, users, name, projectName }) => (
   <div className="user-section">
@@ -84,10 +85,7 @@ const TeamInvitaionCard = ({ data, className }) => {
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <div className="new-tag d-flex align-items-center px-75">
-          <div className="red-dot m-0 me-25" />
-          <p className="m-0 font-small-3 fw-bold">New</p>
-        </div>
+        <NewTag />
         <CardBody>
           <CardTitle className="mt-50 active-project-title truncate-2 mb-50 d-none">{data?.project?.name}</CardTitle>
           <div className="d-flex">

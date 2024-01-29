@@ -24,6 +24,7 @@ import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { returnFormattedRating } from '../../../utility/Utils';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -107,10 +108,7 @@ const RecommendedTeamsCardForClient = ({ isRecommendedTeam, open, data, classNam
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <div className="new-tag d-flex align-items-center px-75">
-          <div className="red-dot m-0 me-25" />
-          <p className="m-0 font-small-3 fw-bold">New</p>
-        </div>
+        <NewTag />
         <CardBody>
           {isRecommendedTeam ? (
             <div className="d-flex w-100 mb-1">

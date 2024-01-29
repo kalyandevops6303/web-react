@@ -22,6 +22,7 @@ import TagsSection from './TagsSection';
 import CreateBidModal from '../../modals/CreateBidModal';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
 
 const UserSection = ({ totalCount, users, tagName, name, isAlma }) => (
   <div className="user-section">
@@ -98,10 +99,7 @@ const Project = ({ open, data, className }) => {
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <div className="new-tag d-flex align-items-center px-75">
-          <div className="red-dot m-0 me-25" />
-          <p className="m-0 font-small-3 fw-bold">New</p>
-        </div>
+        <NewTag />
         <CardBody>
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">

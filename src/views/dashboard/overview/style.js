@@ -378,23 +378,23 @@ const ProjectWrapper = styled.div`
 
   .new-tag-relative-card {
     position: relative;
-    .new-tag {
-      position: absolute;
-      right: 0;
-      border-radius: 0px 6px 0px 12px;
-      background: rgba(9, 54, 130, 0.08);
+  }
+`;
 
-      .red-dot {
-        width: 6px;
-        height: 6px;
-        background-color: ${theme.red};
-        border-radius: 50%;
-      }
+const NewTagWrap = styled.div`
+  position: absolute;
+  right: 0;
+  border-radius: 0px 6px 0px 12px;
+  background: rgba(9, 54, 130, 0.08);
 
-      p {
-        color: ${theme.newTagColor};
-      }
-    }
+  .red-dot {
+    width: 6px;
+    height: 6px;
+    background-color: ${theme.red};
+    border-radius: 50%;
+  }
+  p {
+    color: ${theme.newTagColor};
   }
 `;
 
@@ -590,4 +590,5 @@ export {
   DisputesLegend,
   DisputesChartContainer,
   InReviewButton,
+  NewTagWrap,
 };
