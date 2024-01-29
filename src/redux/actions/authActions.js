@@ -15,6 +15,7 @@ import {
   fcmSubscribeService,
   fcmUnsubscribeService,
   resetPasswordService,
+  checkAdminService,
 } from '../../services/authServices';
 
 import {
@@ -61,6 +62,9 @@ import {
   getUserDataSuccess,
   cometChatLogin,
   savedUserDataSuccess,
+  checkAdminRequest,
+  checkAdminSuccess,
+  checkAdminFailure,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -77,6 +81,7 @@ import { clearProjectCardData } from '../reducers/project';
 import { registerClubEmailService } from '../../services/clubServices';
 import { getTeamId } from '../../utility/Utils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
+import { getClubAdminAccess } from './inviteTalent';
 
 const fcmSubscribeNotification = (fcmToken) => async (dispatch) => {
   try {
@@ -290,7 +295,11 @@ const switchProfile =
   async (dispatch) => {
     try {
       dispatch(switchProfileSuccess(data));
-      if (data?.user_type === 'TEAM') {
+
+      if (data?.user_type === 'TEAM' && data?.team_type === userTypes.club) {
+        setItemFromSession('team_id', data?._id);
+        dispatch(getClubAdminAccess());
+      } else if (data?.user_type === 'TEAM') {
         setItemFromSession('team_id', data?._id);
         setItemFromSession('team_data', data);
       } else {
@@ -324,6 +333,9 @@ const getUserData = () => async (dispatch) => {
 
       if (userData) {
         dispatch(getUserDataSuccess(userData.user_type));
+        if (userData?.team_type === userTypes.club) {
+          dispatch(getClubAdminAccess());
+        }
         dispatch(userDataSuccess(userData));
         dispatch(getTeams({ onSuccess: () => {} }));
         setItem('userData', userData);
@@ -356,6 +368,16 @@ const getUserData = () => async (dispatch) => {
   }
 };
 
+const checkIsAdmin = (teamId) => async (dispatch) => {
+  dispatch(checkAdminRequest());
+  try {
+    const res = await checkAdminService(teamId);
+    dispatch(checkAdminSuccess(res.data.data.data));
+  } catch (error) {
+    errorHandler(error, checkAdminFailure);
+  }
+};
+
 export {
   switchProfile,
   getUserData,
@@ -375,4 +397,5 @@ export {
   fcmUnsubscribeNotification,
   logoutAction,
   resetPassword,
+  checkIsAdmin,
 };

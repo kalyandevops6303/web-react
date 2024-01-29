@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Card, CardBody, CardHeader, CardText, CardTitle, Progress } from 'reactstrap';
@@ -12,12 +12,14 @@ import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { CustomBadge, Elevate } from '../../styled';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { getAlertsNotifications } from '../../../redux/actions/notificationsActions';
 
 const Alerts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const [switchData, setSwitchData] = useState();
   const userDetailsData = useSelector(selectUserData);
@@ -26,7 +28,7 @@ const Alerts = () => {
 
   const isProfileCompleted = profilePercentageData?.profile_completed === 100;
   const talentOrClientProfile =
-    userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.talent;
+    userDetailsData?.user_type === userTypes.talent || userDetailsData?.user_type === userTypes.client;
 
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
@@ -40,6 +42,7 @@ const Alerts = () => {
   }, [userDetailsData]);
 
   const onAddDetailsClick = (path) => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     navigate(path, {
       state: { isEditing: true },
     });
