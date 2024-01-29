@@ -12,15 +12,16 @@ import ActiveProjectsEmptyGif from '@src/assets/images/GetStarted.gif';
 import PaymentsEmptyGif from '@src/assets/images/no-payments.gif';
 import CardSkeleton from '@src/assets/images/gifs/card_skeleton.gif';
 import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
-import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
+import Nobidgif from '@src/assets/images/gifs/no_bids.gif';
 import Tag from '../../../@core/components/tags';
+import ViewAllCard from './ExtraCardWithCount';
 
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, calculateRemainingBidsCount } from '../../../utility/Utils';
 
 import {
   profilePercentage,
@@ -37,8 +38,9 @@ import ProjectBidCard from './ProjectBidCard';
 import RecommendedTeamsCardForClient from './RecommendedTeamsCardForClient';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import { AccordionName } from './DashboardConstant';
 
-const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
+const Empty = ({ active, recommended, isTeam, payment, receivedBid, isEducationNotCompleted }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const userDetailsData = useSelector(userData);
@@ -57,7 +59,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
         <CardBody className="empty empty-h-25">
           <div>
             {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
-            {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
+            {receivedBid && <img src={Nobidgif} className="empty-gif" alt="empty-gif" />}
             {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {active && (
               <CardText className="get-started">
@@ -70,6 +72,9 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
               <CardText className="font-weight-normal get-started">
                 No Upcoming <br /> Payment
               </CardText>
+            )}
+            {receivedBid && !isEducationNotCompleted && (
+              <CardText className="font-weight-normal get-started">No Project Bids</CardText>
             )}
           </div>
           {active && (
@@ -94,7 +99,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
             >
               Complete your profile <br /> to get started!
             </div>
-          ) : recommended ? (
+          ) : recommended && !isTeam ? (
             <div
               onClick={() => navigate('/create-project')}
               className="font-weight-normal text-center text-primary project-cta mt-25 cursor-pointer"
@@ -196,7 +201,7 @@ const OpenListing = () => {
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Received Bids <Tag>{projectsBidsForClientData?.metadata?.total_records}</Tag>
+                  Received Bids <Tag count={projectsBidsForClientData?.metadata?.total_records} />
                 </span>
                 {projectsBidsForClientData?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/my_bids')} className="view-all-cta">
@@ -225,6 +230,14 @@ const OpenListing = () => {
                           {projectsBidsForClientData?.data?.map((project, index) => (
                             <ProjectBidCard className={`slide-${index}`} key={project._id} data={project} />
                           ))}
+                          {projectsBidsForClientData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.receivedBids}
+                              height={182}
+                              onViewAll={(e) => handleViewAll(e, '/marketplace/my_bids')}
+                              count={calculateRemainingBidsCount(projectsBidsForClientData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -241,6 +254,7 @@ const OpenListing = () => {
                         userDetailsData?.user_type,
                         profilePercentageData?.values_missing,
                       )}
+                      receivedBid
                       recommended
                       payment={false}
                     />
@@ -258,7 +272,11 @@ const OpenListing = () => {
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Recommended Teams <Tag>{recommendedTeamsForClientData?.metadata?.total_records}</Tag>
+                  Recommended Teams{' '}
+                  <Tag
+                    hasNew={recommendedTeamsForClientData?.is_all_read}
+                    count={recommendedTeamsForClientData?.metadata?.total_records}
+                  />
                 </span>
                 {recommendedTeamsForClientData?.data?.length > 0 && (
                   <CardText
@@ -295,6 +313,15 @@ const OpenListing = () => {
                               data={team}
                             />
                           ))}
+
+                          {recommendedTeamsForClientData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.recommendedTeams}
+                              height={217}
+                              onViewAll={(e) => handleViewAllRecommendedTeam(e, '/marketplace/teams')}
+                              count={calculateRemainingBidsCount(recommendedTeamsForClientData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
@@ -316,6 +343,7 @@ const OpenListing = () => {
                         userDetailsData?.user_type,
                         profilePercentageData?.values_missing,
                       )}
+                      isTeam
                       payment={false}
                       recommended
                     />
@@ -336,6 +364,7 @@ Empty.propTypes = {
   active: Proptypes.bool,
   recommended: Proptypes.bool,
   payment: Proptypes.bool,
+  receivedBid: Proptypes.bool,
   isEducationNotCompleted: Proptypes.bool,
   isTeam: Proptypes.bool,
 };
@@ -344,6 +373,7 @@ Empty.defaultProps = {
   active: false,
   recommended: false,
   payment: false,
+  receivedBid: false,
   isEducationNotCompleted: false,
   isTeam: false,
 };
