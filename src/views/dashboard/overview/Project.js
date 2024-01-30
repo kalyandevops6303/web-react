@@ -12,6 +12,7 @@ import { Card, CardTitle, CardBody, CardText, Badge } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import hat from '@src/assets/images/hat.png';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 
@@ -23,6 +24,7 @@ import CreateBidModal from '../../modals/CreateBidModal';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
 const UserSection = ({ totalCount, users, tagName, name, isAlma }) => (
   <div className="user-section">
@@ -57,8 +59,10 @@ UserSection.propTypes = {
   totalCount: PropTypes.number,
 };
 
-const Project = ({ open, data, className }) => {
+const Project = ({ accordionName, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
+  const dispatch = useDispatch();
+  const [isNewTag, setIsNewTag] = useState(true);
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -96,10 +100,20 @@ const Project = ({ open, data, className }) => {
     setCompleteProfileModal(!completeProfileModal);
   };
 
+  const updateCard = () => {
+    const onSuccess = () => {
+      setIsNewTag(false);
+    };
+    const postData = {
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData, onSuccess }));
+  };
+
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <NewTag />
+        {isNewTag && <NewTag />}
         <CardBody>
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">
@@ -183,6 +197,7 @@ const Project = ({ open, data, className }) => {
       </Card>
       {showModal && (
         <ProjectModal
+          onUpdateCard={updateCard}
           data={data}
           modal={showModal}
           toggleModal={handleToggle}
@@ -207,6 +222,7 @@ const Project = ({ open, data, className }) => {
 };
 
 Project.propTypes = {
+  accordionName: PropTypes.string,
   data: PropTypes.object,
   className: PropTypes.string,
   open: PropTypes.string,

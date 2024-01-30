@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
 import { ChevronRight, FileText } from 'react-feather';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Proptypes from 'prop-types';
 import {
   Modal,
@@ -72,6 +72,7 @@ const ViewProjectDetailModalWrap = styled.div`
 `;
 
 const ProjectModal = ({
+  onUpdateCard,
   isUpcomingProject,
   isActiveProject,
   modal,
@@ -92,6 +93,12 @@ const ProjectModal = ({
   const profilePercentageData = useSelector(profilePercentage);
 
   const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
+
+  useEffect(() => {
+    if (onUpdateCard) {
+      onUpdateCard();
+    }
+  }, []);
 
   const onNoBidFound = () => {
     toggleModal();
@@ -390,6 +397,7 @@ const ProjectModal = ({
 export default ProjectModal;
 
 ProjectModal.propTypes = {
+  onUpdateCard: Proptypes.func,
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   data: Proptypes.object,
@@ -402,6 +410,7 @@ ProjectModal.propTypes = {
 };
 
 ProjectModal.defaultProps = {
+  onUpdateCard: () => {},
   modal: false,
   toggleModal: () => {},
   data: {},

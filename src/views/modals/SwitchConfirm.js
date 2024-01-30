@@ -12,7 +12,7 @@ import { ERROR } from '../../utility/constants/ToastTypes';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { getTeamId } from '../../utility/Utils';
 
-const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleModal }) => {
+const SwitchConfirmModal = ({ onUpdateCard, entity, navigateTo, switchTeamId, modal, toggleModal }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -24,6 +24,7 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleMod
   const onSuccess = () => {
     toggleModal();
     navigate(navigateTo);
+    onUpdateCard();
   };
 
   const toggleOnSwitch = () => {
@@ -91,6 +92,7 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleMod
 export default SwitchConfirmModal;
 
 SwitchConfirmModal.propTypes = {
+  onUpdateCard: Proptypes.func,
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   switchTeamId: Proptypes.string,
@@ -99,6 +101,7 @@ SwitchConfirmModal.propTypes = {
 };
 
 SwitchConfirmModal.defaultProps = {
+  onUpdateCard: () => {},
   modal: false,
   toggleModal: () => {},
   switchTeamId: '',

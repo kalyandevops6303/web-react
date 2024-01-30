@@ -226,7 +226,13 @@ const TeamListing = () => {
                 <ProjectsListingWrap>
                   {myTeam?.data?.length > 0 && isTab ? (
                     myTeam?.data?.map((project) => (
-                      <MyTeamCard isRecommendedTeam key={project.id} data={project} recommended />
+                      <MyTeamCard
+                        accordionName={AccordionName.myTeam}
+                        isRecommendedTeam
+                        key={project.id}
+                        data={project}
+                        recommended
+                      />
                     ))
                   ) : myTeam?.data?.length > 0 ? (
                     <>
@@ -234,6 +240,7 @@ const TeamListing = () => {
                         <Slider {...settings}>
                           {myTeam?.data?.map((project, index) => (
                             <MyTeamCard
+                              accordionName={AccordionName.myTeam}
                               isRecommendedTeam
                               className={`slide-${index}`}
                               key={project.id}
@@ -254,6 +261,7 @@ const TeamListing = () => {
                         <div className="custom-slider-wrap">
                           {myTeam?.data?.map((project) => (
                             <MyTeamCard
+                              accordionName={AccordionName.myTeam}
                               isRecommendedTeam
                               className="custom-slider-project"
                               key={project.id}
@@ -315,7 +323,13 @@ const TeamListing = () => {
                 <ProjectsListingWrap>
                   {teamInvitation?.data?.length > 0 && isTab ? (
                     teamInvitation?.data?.map((project) => (
-                      <TeamInvitationCard isRecommendedTeam key={project.id} data={project} recommended />
+                      <TeamInvitationCard
+                        accordionName={AccordionName.teamInvitation}
+                        isRecommendedTeam
+                        key={project.id}
+                        data={project}
+                        recommended
+                      />
                     ))
                   ) : teamInvitation?.data?.length > 0 ? (
                     <>
@@ -323,6 +337,7 @@ const TeamListing = () => {
                         <Slider {...settings}>
                           {teamInvitation?.data?.map((project, index) => (
                             <TeamInvitationCard
+                              accordionName={AccordionName.teamInvitation}
                               isRecommendedTeam
                               className={`slide-${index}`}
                               key={project.id}
@@ -347,6 +362,7 @@ const TeamListing = () => {
                         <div className="custom-slider-wrap">
                           {teamInvitation?.data?.map((project) => (
                             <TeamInvitationCard
+                              accordionName={AccordionName.teamInvitation}
                               isRecommendedTeam
                               className="custom-slider-project"
                               key={project.id}
@@ -402,7 +418,12 @@ const TeamListing = () => {
                 <ProjectsListingWrap>
                   {recommendedTeams?.data?.length > 0 && isTab ? (
                     recommendedTeams?.data?.map((project) => (
-                      <TeamTalentCard isRecommendedTeam key={project.id} data={project} />
+                      <TeamTalentCard
+                        accordionName={AccordionName.recommendedTeams}
+                        isRecommendedTeam
+                        key={project.id}
+                        data={project}
+                      />
                     ))
                   ) : recommendedTeams?.data?.length > 0 ? (
                     <>
@@ -410,6 +431,7 @@ const TeamListing = () => {
                         <Slider {...settings}>
                           {recommendedTeams?.data?.map((project, index) => (
                             <TeamTalentCard
+                              accordionName={AccordionName.recommendedTeams}
                               isRecommendedTeam
                               className={`slide-${index}`}
                               key={project.id}
@@ -430,6 +452,7 @@ const TeamListing = () => {
                         <div className="custom-slider-wrap">
                           {recommendedTeams?.data?.map((project) => (
                             <TeamTalentCard
+                              accordionName={AccordionName.recommendedTeams}
                               isRecommendedTeam
                               className="custom-slider-project"
                               key={project.id}

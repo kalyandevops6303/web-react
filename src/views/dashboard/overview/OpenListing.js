@@ -221,14 +221,19 @@ const OpenListing = () => {
                 <ProjectsListingWrap>
                   {projectsBidsForClientData?.data?.length > 0 && isTab ? (
                     projectsBidsForClientData?.data?.map((project) => (
-                      <ProjectBidCard key={project._id} data={project} />
+                      <ProjectBidCard accordionName={AccordionName.receivedBids} key={project._id} data={project} />
                     ))
                   ) : projectsBidsForClientData?.data?.length > 0 ? (
                     <>
                       {projectsBidsForClientData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {projectsBidsForClientData?.data?.map((project, index) => (
-                            <ProjectBidCard className={`slide-${index}`} key={project._id} data={project} />
+                            <ProjectBidCard
+                              accordionName={AccordionName.receivedBids}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
                           {projectsBidsForClientData?.metadata?.total_records > 10 && (
                             <ViewAllCard
@@ -242,7 +247,12 @@ const OpenListing = () => {
                       ) : (
                         <div className="custom-slider-wrap">
                           {projectsBidsForClientData?.data?.map((project) => (
-                            <ProjectBidCard className="custom-slider-project" key={project._id} data={project} />
+                            <ProjectBidCard
+                              accordionName={AccordionName.receivedBids}
+                              className="custom-slider-project"
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
                         </div>
                       )}
@@ -299,7 +309,12 @@ const OpenListing = () => {
                 <ProjectsListingWrap>
                   {recommendedTeamsForClientData?.data?.length > 0 && isTab ? (
                     recommendedTeamsForClientData?.data?.map((team) => (
-                      <RecommendedTeamsCardForClient isRecommendedTeam key={team._id} data={team} />
+                      <RecommendedTeamsCardForClient
+                        accordionName={AccordionName.recommendedTeams}
+                        isRecommendedTeam
+                        key={team._id}
+                        data={team}
+                      />
                     ))
                   ) : recommendedTeamsForClientData?.data?.length > 0 ? (
                     <>
@@ -307,6 +322,7 @@ const OpenListing = () => {
                         <Slider {...settings}>
                           {recommendedTeamsForClientData?.data?.map((team, index) => (
                             <RecommendedTeamsCardForClient
+                              accordionName={AccordionName.recommendedTeams}
                               isRecommendedTeam
                               className={`slide-${index}`}
                               key={team.id}
@@ -327,6 +343,7 @@ const OpenListing = () => {
                         <div className="custom-slider-wrap">
                           {recommendedTeamsForClientData?.data?.map((team) => (
                             <RecommendedTeamsCardForClient
+                              accordionName={AccordionName.recommendedTeams}
                               isRecommendedTeam
                               className="custom-slider-project"
                               key={team.id}

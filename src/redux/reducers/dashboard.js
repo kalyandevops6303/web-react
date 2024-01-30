@@ -435,10 +435,29 @@ const dashboardSlice = createSlice({
       projectModalData: action.payload,
       projectModalId: null,
     }),
+
+    updateCardStatusRequest: (state) => ({
+      ...state,
+      updateCardStatusLoading: true,
+      error: null,
+    }),
+    updateCardStatusSuccess: (state) => ({
+      ...state,
+      updateCardStatusLoading: false,
+      error: null,
+    }),
+    updateCardStatusFailure: (state, action) => ({
+      ...state,
+      updateCardStatusLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
 export const {
+  updateCardStatusRequest,
+  updateCardStatusSuccess,
+  updateCardStatusFailure,
   getAlertRequest,
   getAlertSuccess,
   getAlertFailure,

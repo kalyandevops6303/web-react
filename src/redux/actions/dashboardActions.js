@@ -25,6 +25,7 @@ import {
   recommendedProjectsTeamService,
   getModalDataService,
   totalReferralAmountService,
+  updateCardStatusService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -95,6 +96,9 @@ import {
   totalReferralAmountRequest,
   totalReferralAmountSuccess,
   totalReferralAmountFailure,
+  updateCardStatusRequest,
+  updateCardStatusSuccess,
+  updateCardStatusFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -390,6 +394,21 @@ const getTotalReferralAmount = () => async (dispatch) => {
   }
 };
 
+const updateCardStatus =
+  ({ onSuccess }) =>
+  async (dispatch) => {
+    dispatch(updateCardStatusRequest());
+    try {
+      await updateCardStatusService({});
+      dispatch(updateCardStatusSuccess());
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+      errorHandler(error, updateCardStatusFailure);
+    }
+  };
+
 export {
   getModalData,
   getAlerts,
@@ -417,4 +436,5 @@ export {
   getActiveProjectsForTeam,
   getUpcomingProjectsForTeam,
   getTotalReferralAmount,
+  updateCardStatus,
 };

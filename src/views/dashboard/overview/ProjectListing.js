@@ -336,14 +336,23 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {activeProjectsForClientData?.data?.length > 0 && isTab ? (
                     activeProjectsForClientData?.data?.map((project) => (
-                      <ActiveProjectCard key={project._id} data={project} />
+                      <ActiveProjectCard
+                        accordionName={AccordionName.activeProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : activeProjectsForClientData?.data?.length > 0 ? (
                     <>
                       {activeProjectsForClientData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {activeProjectsForClientData?.data?.map((project, index) => (
-                            <ActiveProjectCard className={`slide-${index}`} key={project._id} data={project} />
+                            <ActiveProjectCard
+                              accordionName={AccordionName.activeProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
 
                           {activeProjectsForClientData?.metadata?.total_records > 10 && (
@@ -358,7 +367,12 @@ const ProjectListing = () => {
                       ) : (
                         <div className="custom-slider-wrap">
                           {activeProjectsForClientData?.data?.map((project) => (
-                            <ActiveProjectCard className="custom-slider-project" key={project._id} data={project} />
+                            <ActiveProjectCard
+                              accordionName={AccordionName.activeProjects}
+                              className="custom-slider-project"
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
                         </div>
                       )}
@@ -406,14 +420,23 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {upcomingProjectsForClientData?.data?.length > 0 && isTab ? (
                     upcomingProjectsForClientData?.data?.map((project) => (
-                      <UpcomingProjectCard key={project._id} data={project} />
+                      <UpcomingProjectCard
+                        accordionName={AccordionName.upcomingProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : upcomingProjectsForClientData?.data?.length > 0 ? (
                     <>
                       {upcomingProjectsForClientData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {upcomingProjectsForClientData?.data?.map((project, index) => (
-                            <UpcomingProjectCard className={`slide-${index}`} key={project._id} data={project} />
+                            <UpcomingProjectCard
+                              accordionName={AccordionName.upcomingProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
 
                           {upcomingProjectsForClientData?.metadata?.total_records > 10 && (
@@ -428,7 +451,12 @@ const ProjectListing = () => {
                       ) : (
                         <div className="custom-slider-wrap">
                           {upcomingProjectsForClientData?.data?.map((project) => (
-                            <UpcomingProjectCard className="custom-slider-project" key={project._id} data={project} />
+                            <UpcomingProjectCard
+                              accordionName={AccordionName.upcomingProjects}
+                              className="custom-slider-project"
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
                         </div>
                       )}
@@ -480,14 +508,23 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {activeProjectsForTalentData?.data?.length > 0 && isTab ? (
                     activeProjectsForTalentData?.data?.map((project) => (
-                      <ActiveProjectCardForTalent key={project._id} data={project} />
+                      <ActiveProjectCardForTalent
+                        accordionName={AccordionName.activeProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : activeProjectsForTalentData?.data?.length > 0 ? (
                     <>
                       {activeProjectsForTalentData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {activeProjectsForTalentData?.data?.map((project, index) => (
-                            <ActiveProjectCardForTalent className={`slide-${index}`} key={project._id} data={project} />
+                            <ActiveProjectCardForTalent
+                              accordionName={AccordionName.activeProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
 
                           {activeProjectsForTalentData?.metadata?.total_records > 10 && (
@@ -503,6 +540,7 @@ const ProjectListing = () => {
                         <div className="custom-slider-wrap">
                           {activeProjectsForTalentData?.data?.map((project) => (
                             <ActiveProjectCardForTalent
+                              accordionName={AccordionName.activeProjects}
                               className="custom-slider-project"
                               key={project._id}
                               data={project}
@@ -554,7 +592,11 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {upcomingProjectsForTalentData?.data?.length > 0 && isTab ? (
                     upcomingProjectsForTalentData?.data?.map((project) => (
-                      <UpcomingProjectCardForTalent key={project._id} data={project} />
+                      <UpcomingProjectCardForTalent
+                        accordionName={AccordionName.upcomingProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : upcomingProjectsForTalentData?.data?.length > 0 ? (
                     <>
@@ -562,6 +604,7 @@ const ProjectListing = () => {
                         <Slider {...settings}>
                           {upcomingProjectsForTalentData?.data?.map((project, index) => (
                             <UpcomingProjectCardForTalent
+                              accordionName={AccordionName.upcomingProjects}
                               className={`slide-${index}`}
                               key={project._id}
                               data={project}
@@ -581,6 +624,7 @@ const ProjectListing = () => {
                         <div className="custom-slider-wrap">
                           {upcomingProjectsForTalentData?.data?.map((project) => (
                             <UpcomingProjectCardForTalent
+                              accordionName={AccordionName.upcomingProjects}
                               className="custom-slider-project"
                               key={project._id}
                               data={project}
@@ -636,14 +680,23 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {activeProjectsForTeamData?.data?.length > 0 && isTab ? (
                     activeProjectsForTeamData?.data?.map((project) => (
-                      <ActiveProjectCardForTeam key={project._id} data={project} />
+                      <ActiveProjectCardForTeam
+                        accordionName={AccordionName.activeProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : activeProjectsForTeamData?.data?.length > 0 ? (
                     <>
                       {activeProjectsForTeamData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {activeProjectsForTeamData?.data?.map((project, index) => (
-                            <ActiveProjectCardForTeam className={`slide-${index}`} key={project._id} data={project} />
+                            <ActiveProjectCardForTeam
+                              accordionName={AccordionName.activeProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
 
                           {activeProjectsForTeamData?.metadata?.total_records > 10 && (
@@ -659,6 +712,7 @@ const ProjectListing = () => {
                         <div className="custom-slider-wrap">
                           {activeProjectsForTeamData?.data?.map((project) => (
                             <ActiveProjectCardForTeam
+                              accordionName={AccordionName.activeProjects}
                               className="custom-slider-project"
                               key={project._id}
                               data={project}
@@ -710,14 +764,23 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {upcomingProjectsForTeamData?.data?.length > 0 && isTab ? (
                     upcomingProjectsForTeamData?.data?.map((project) => (
-                      <UpcomingProjectCardForTeam key={project._id} data={project} />
+                      <UpcomingProjectCardForTeam
+                        accordionName={AccordionName.upcomingProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : upcomingProjectsForTeamData?.data?.length > 0 ? (
                     <>
                       {upcomingProjectsForTeamData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {upcomingProjectsForTeamData?.data?.map((project, index) => (
-                            <UpcomingProjectCardForTeam className={`slide-${index}`} key={project._id} data={project} />
+                            <UpcomingProjectCardForTeam
+                              accordionName={AccordionName.upcomingProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
 
                           {upcomingProjectsForTeamData?.metadata?.total_records > 10 && (
@@ -734,6 +797,7 @@ const ProjectListing = () => {
                         <div className="custom-slider-wrap">
                           {upcomingProjectsForTeamData?.data?.map((project) => (
                             <UpcomingProjectCardForTeam
+                              accordionName={AccordionName.upcomingProjects}
                               className="custom-slider-project"
                               key={project._id}
                               data={project}
@@ -789,14 +853,25 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {recommendedProjectsData?.data?.length > 0 && isTab ? (
                     recommendedProjectsData?.data?.map((project) => (
-                      <Project key={project.id} data={project} recommended />
+                      <Project
+                        accordionName={AccordionName.recommendedProjects}
+                        key={project.id}
+                        data={project}
+                        recommended
+                      />
                     ))
                   ) : recommendedProjectsData?.data?.length > 0 ? (
                     <>
                       {recommendedProjectsData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {recommendedProjectsData?.data?.map((project, index) => (
-                            <Project className={`slide-${index}`} key={project.id} data={project} recommended />
+                            <Project
+                              accordionName={AccordionName.recommendedProjects}
+                              className={`slide-${index}`}
+                              key={project.id}
+                              data={project}
+                              recommended
+                            />
                           ))}
 
                           {recommendedProjectsData?.metadata?.total_records > 10 && (
@@ -811,7 +886,13 @@ const ProjectListing = () => {
                       ) : (
                         <div className="custom-slider-wrap">
                           {recommendedProjectsData?.data?.map((project) => (
-                            <Project className="custom-slider-project" key={project.id} data={project} recommended />
+                            <Project
+                              accordionName={AccordionName.recommendedProjects}
+                              className="custom-slider-project"
+                              key={project.id}
+                              data={project}
+                              recommended
+                            />
                           ))}
                         </div>
                       )}
@@ -849,13 +930,20 @@ const ProjectListing = () => {
             ) : (
               <ProjectsListingWrap>
                 {upcomingPaymentData?.data?.length > 0 && isTab ? (
-                  upcomingPaymentData?.data?.map((project) => <UpcomingPaymentsCard key={project._id} data={project} />)
+                  upcomingPaymentData?.data?.map((project) => (
+                    <UpcomingPaymentsCard accordionName={AccordionName.payments} key={project._id} data={project} />
+                  ))
                 ) : upcomingPaymentData?.data?.length > 0 ? (
                   <>
                     {upcomingPaymentData?.data?.length >= 4 ? (
                       <Slider {...settings}>
                         {upcomingPaymentData?.data?.map((project, index) => (
-                          <UpcomingPaymentsCard className={`slide-${index}`} key={project._id} data={project} />
+                          <UpcomingPaymentsCard
+                            accordionName={AccordionName.payments}
+                            className={`slide-${index}`}
+                            key={project._id}
+                            data={project}
+                          />
                         ))}
 
                         {upcomingPaymentData?.metadata?.total_records > 10 && (
@@ -871,7 +959,12 @@ const ProjectListing = () => {
                     ) : (
                       <div className="custom-slider-wrap">
                         {upcomingPaymentData?.data?.map((project) => (
-                          <UpcomingPaymentsCard className="custom-slider-project" key={project._id} data={project} />
+                          <UpcomingPaymentsCard
+                            accordionName={AccordionName.payments}
+                            className="custom-slider-project"
+                            key={project._id}
+                            data={project}
+                          />
                         ))}
                       </div>
                     )}

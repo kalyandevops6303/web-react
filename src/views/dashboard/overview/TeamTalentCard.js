@@ -13,8 +13,8 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
@@ -26,6 +26,7 @@ import { returnFormattedRating } from '../../../utility/Utils';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -68,10 +69,14 @@ UserSection.propTypes = {
   totalCount: PropTypes.number,
 };
 
-const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
+const TeamTalentCard = ({ accordionName, isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const userDetailsData = useSelector(selectUserData);
+
+  const [isNewTag, setIsNewTag] = useState(true);
+
+  const dispatch = useDispatch();
 
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
   const navigate = useNavigate();
@@ -105,15 +110,31 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
     }
   };
 
+  const updateCard = () => {
+    const onSuccess = () => {
+      setIsNewTag(false);
+    };
+    const postData = {
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData, onSuccess }));
+  };
+
   const handleViewTeam = (id) => {
+    updateCard();
     setItemFromSession('team_id', id);
     navigate(`/profile/team/${id}`);
+  };
+
+  const handleViewTalent = (id) => {
+    updateCard();
+    navigate(`/profile/talent/${id}`);
   };
 
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <NewTag />
+        {isNewTag && <NewTag />}
         <CardBody>
           {isRecommendedTeam ? (
             <div className="d-flex w-100 mb-1">
@@ -227,7 +248,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
               {isDisabled ? (
                 <span className="text-muted cursor-not-allowed">View Talent Profile</span>
               ) : (
-                <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
+                <span onClick={() => handleViewTalent(data?.user_id)}>View Talent Profile</span>
               )}
             </div>
           ) : (
@@ -246,6 +267,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
 };
 
 TeamTalentCard.propTypes = {
+  accordionName: PropTypes.string,
   data: PropTypes.object,
   className: PropTypes.string,
   isRecommendedTeam: PropTypes.bool,

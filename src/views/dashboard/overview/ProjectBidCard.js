@@ -1,22 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Proptypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const ProjectBidCard = ({ data, className }) => {
+const ProjectBidCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
+  const [isNewTag, setIsNewTag] = useState(true);
+  const dispatch = useDispatch();
+
+  const updateCard = () => {
+    const onSuccess = () => {
+      setIsNewTag(false);
+    };
+    const postData = {
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData, onSuccess }));
+  };
 
   const viewDetails = () => {
+    updateCard();
     navigate(`/project-details/${data._id}/bid`);
   };
 
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <NewTag />
+        {isNewTag && <NewTag />}
         <CardBody>
           <CardTitle className="active-project-title truncate-2 mb-1.5 mt-50">{data?.name}</CardTitle>
           <div className="bottom-detail d-flex mt-1 align-items-center">
@@ -48,9 +63,11 @@ export default ProjectBidCard;
 ProjectBidCard.propTypes = {
   data: Proptypes.object,
   className: Proptypes.string,
+  accordionName: Proptypes.string,
 };
 
 ProjectBidCard.defaultProps = {
   data: {},
   className: '',
+  accordionName: '',
 };

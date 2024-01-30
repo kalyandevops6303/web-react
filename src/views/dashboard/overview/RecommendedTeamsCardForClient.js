@@ -13,8 +13,8 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
@@ -25,6 +25,7 @@ import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { returnFormattedRating } from '../../../utility/Utils';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -67,10 +68,14 @@ UserSection.propTypes = {
   totalCount: PropTypes.number,
 };
 
-const RecommendedTeamsCardForClient = ({ isRecommendedTeam, open, data, className }) => {
+const RecommendedTeamsCardForClient = ({ accordionName, isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const navigate = useNavigate();
+
+  const [isNewTag, setIsNewTag] = useState(true);
+
+  const dispatch = useDispatch();
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -101,14 +106,29 @@ const RecommendedTeamsCardForClient = ({ isRecommendedTeam, open, data, classNam
     }
   };
 
+  const updateCard = () => {
+    const onSuccess = () => {
+      setIsNewTag(false);
+    };
+    const postData = {
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData, onSuccess }));
+  };
+
   const handleViewTeam = (id) => {
+    updateCard();
     navigate(`/profile/team/${id}`);
+  };
+  const handleViewTalent = (id) => {
+    updateCard();
+    navigate(`/profile/talent/${id}`);
   };
 
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <NewTag />
+        {isNewTag && <NewTag />}
         <CardBody>
           {isRecommendedTeam ? (
             <div className="d-flex w-100 mb-1">
@@ -219,7 +239,7 @@ const RecommendedTeamsCardForClient = ({ isRecommendedTeam, open, data, classNam
           </div>
           {isTeamLoggedIn ? (
             <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1">
-              <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
+              <span onClick={() => handleViewTalent(data?.user_id)}>View Talent Profile</span>
             </div>
           ) : (
             <div
@@ -239,6 +259,7 @@ const RecommendedTeamsCardForClient = ({ isRecommendedTeam, open, data, classNam
 export default RecommendedTeamsCardForClient;
 
 RecommendedTeamsCardForClient.propTypes = {
+  accordionName: PropTypes.string,
   data: PropTypes.object,
   className: PropTypes.string,
   isRecommendedTeam: PropTypes.bool,

@@ -4,16 +4,20 @@ import Proptypes from 'prop-types';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Card, CardBody, CardText, Spinner } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const UpcomingProjectCard = ({ data, className }) => {
+const UpcomingProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
+  const [isNewTag, setIsNewTag] = useState(true);
+
+  const dispatch = useDispatch();
 
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
@@ -23,10 +27,20 @@ const UpcomingProjectCard = ({ data, className }) => {
     setShowModal(true);
   };
 
+  const updateCard = () => {
+    const onSuccess = () => {
+      setIsNewTag(false);
+    };
+    const postData = {
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData, onSuccess }));
+  };
+
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <NewTag />
+        {isNewTag && <NewTag />}
         <CardBody>
           <p className="active-project-name truncate-2 mt-50" style={{ height: '40px' }}>
             {data?.name}
@@ -104,6 +118,7 @@ const UpcomingProjectCard = ({ data, className }) => {
       </Card>
       {(showModal || switchModal) && (
         <ProjectModalViews
+          onUpdateCard={updateCard}
           isUpcomingProject
           project_id={data?._id}
           showModal={showModal}
@@ -121,9 +136,11 @@ export default UpcomingProjectCard;
 UpcomingProjectCard.propTypes = {
   data: Proptypes.object,
   className: Proptypes.string,
+  accordionName: Proptypes.string,
 };
 
 UpcomingProjectCard.defaultProps = {
   data: {},
   className: '',
+  accordionName: '',
 };

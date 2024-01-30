@@ -101,6 +101,7 @@ const API = {
     upcomingProjectsForClient: `${apiOnboardingEndpoint}/api/v1/client/upcoming-projects`,
     projectsBidsForClient: `${apiOnboardingEndpoint}/api/v1/client/open-listing`,
     recommendedTeamsForClient: `${apiOnboardingEndpoint}/api/v1/client/recommended-teams`,
+    updateCardStatus: `${apiOnboardingEndpoint}/api/v1/client/update-card-status`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,

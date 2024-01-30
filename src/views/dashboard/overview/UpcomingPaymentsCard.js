@@ -1,5 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import { Badge, Card, CardBody, CardText } from 'reactstrap';
@@ -13,10 +14,14 @@ import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const UpcomingPaymentsCard = ({ data, className }) => {
+const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
   const [openSwitchModal, setOpenSwitchModal] = useState(false);
+
+  const dispatch = useDispatch();
+  const [isNewTag, setIsNewTag] = useState(true);
 
   const handleViewDetails = (transactionData) => {
     if (data?.switch_team_id?.length > 0) {
@@ -26,10 +31,20 @@ const UpcomingPaymentsCard = ({ data, className }) => {
     }
   };
 
+  const updateCard = () => {
+    const onSuccess = () => {
+      setIsNewTag(false);
+    };
+    const postData = {
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData, onSuccess }));
+  };
+
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <NewTag />
+        {isNewTag && <NewTag />}
         <CardBody>
           {data?.payment_status?.length > 0 ? (
             <CustomBadge>
@@ -123,6 +138,7 @@ const UpcomingPaymentsCard = ({ data, className }) => {
       </Card>
       {openSwitchModal && (
         <SwitchConfirmModal
+          onUpdateCard={updateCard}
           entity={data?.switch_team_id ? 'TEAM' : 'TALENT'}
           navigateTo={`/project-details/${data?._id}/payment`}
           switchTeamId={data?.switch_team_id}
@@ -139,9 +155,11 @@ export default UpcomingPaymentsCard;
 UpcomingPaymentsCard.propTypes = {
   data: Proptypes.object,
   className: Proptypes.string,
+  accordionName: Proptypes.string,
 };
 
 UpcomingPaymentsCard.defaultProps = {
   data: {},
   className: '',
+  accordionName: '',
 };

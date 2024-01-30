@@ -238,7 +238,12 @@ const TalentListing = () => {
               <ProjectsListingWrap>
                 {joinRequests?.data?.length > 0 && isTab ? (
                   joinRequests?.data?.map((project) => (
-                    <TalentsListingForTeamUser key={project.id} data={project} recommended />
+                    <TalentsListingForTeamUser
+                      accordionName={AccordionName.joinRequest}
+                      key={project.id}
+                      data={project}
+                      recommended
+                    />
                   ))
                 ) : joinRequests?.data?.length > 0 ? (
                   <>
@@ -246,6 +251,7 @@ const TalentListing = () => {
                       <Slider {...settings}>
                         {joinRequests?.data?.map((project, index) => (
                           <TalentsListingForTeamUser
+                            accordionName={AccordionName.joinRequest}
                             className={`slide-${index}`}
                             key={project.id}
                             data={project}
@@ -271,6 +277,7 @@ const TalentListing = () => {
                       <div className="custom-slider-wrap">
                         {joinRequests?.data?.map((project) => (
                           <TalentsListingForTeamUser
+                            accordionName={AccordionName.joinRequest}
                             className="custom-slider-project"
                             key={project.id}
                             data={project}
@@ -329,14 +336,33 @@ const TalentListing = () => {
             <ProjectsListingWrap>
               {recommendedTalent?.data?.length > 0 && isTab ? (
                 recommendedTalent?.data?.map((project) => (
-                  <TeamTalentCard key={project.id} data={project} recommended />
+                  <TeamTalentCard
+                    accordionName={
+                      userDetailsData?.team_type === userTypes.club
+                        ? AccordionName.recommendedMembers
+                        : AccordionName.recommendedTalents
+                    }
+                    key={project.id}
+                    data={project}
+                    recommended
+                  />
                 ))
               ) : recommendedTalent?.data?.length > 0 ? (
                 <>
                   {recommendedTalent?.data?.length >= 4 ? (
                     <Slider {...settings}>
                       {recommendedTalent?.data?.map((project, index) => (
-                        <TeamTalentCard className={`slide-${index}`} key={project.id} data={project} recommended />
+                        <TeamTalentCard
+                          accordionName={
+                            userDetailsData?.team_type === userTypes.club
+                              ? AccordionName.recommendedMembers
+                              : AccordionName.recommendedTalents
+                          }
+                          className={`slide-${index}`}
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
                       ))}
 
                       {recommendedTalent?.metadata?.total_records > 10 && (
@@ -360,7 +386,17 @@ const TalentListing = () => {
                   ) : (
                     <div className="custom-slider-wrap">
                       {recommendedTalent?.data?.map((project) => (
-                        <TeamTalentCard className="custom-slider-project" key={project.id} data={project} recommended />
+                        <TeamTalentCard
+                          accordionName={
+                            userDetailsData?.team_type === userTypes.club
+                              ? AccordionName.recommendedMembers
+                              : AccordionName.recommendedTalents
+                          }
+                          className="custom-slider-project"
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
                       ))}
                     </div>
                   )}

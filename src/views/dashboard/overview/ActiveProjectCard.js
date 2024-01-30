@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState } from 'react';
 import Proptypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Card, CardBody, CardText, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -11,10 +11,14 @@ import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const ActiveProjectCard = ({ data, className }) => {
+const ActiveProjectCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
+  const [isNewTag, setIsNewTag] = useState(true);
+  const dispatch = useDispatch();
+
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
@@ -33,10 +37,20 @@ const ActiveProjectCard = ({ data, className }) => {
     setShowModal(true);
   };
 
+  const updateCard = () => {
+    const onSuccess = () => {
+      setIsNewTag(false);
+    };
+    const postData = {
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData, onSuccess }));
+  };
+
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        <NewTag />
+        {isNewTag && <NewTag />}
         <CardBody>
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">
@@ -128,6 +142,7 @@ const ActiveProjectCard = ({ data, className }) => {
       </Card>
       {(showModal || switchModal) && (
         <ProjectModalViews
+          onUpdateCard={updateCard}
           isActiveProject
           project_id={data?._id}
           showModal={showModal}
@@ -143,11 +158,13 @@ const ActiveProjectCard = ({ data, className }) => {
 export default ActiveProjectCard;
 
 ActiveProjectCard.propTypes = {
+  accordionName: Proptypes.string,
   data: Proptypes.object,
   className: Proptypes.string,
 };
 
 ActiveProjectCard.defaultProps = {
+  accordionName: '',
   data: {},
   className: '',
 };
