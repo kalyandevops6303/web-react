@@ -62,7 +62,6 @@ UserSection.propTypes = {
 const Project = ({ accordionName, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
-  const [isNewTag, setIsNewTag] = useState(true);
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -101,19 +100,18 @@ const Project = ({ accordionName, open, data, className }) => {
   };
 
   const updateCard = () => {
-    const onSuccess = () => {
-      setIsNewTag(false);
-    };
     const postData = {
+      metadata: {
+        project_id: data._id,
+      },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData, onSuccess }));
+    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'recommendedProjects' }));
   };
-
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {isNewTag && <NewTag />}
+        {!data?.is_read && <NewTag />}
         <CardBody>
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">

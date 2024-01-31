@@ -16,7 +16,6 @@ import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
-  const [isNewTag, setIsNewTag] = useState(true);
   const dispatch = useDispatch();
 
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
@@ -38,19 +37,19 @@ const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
   };
 
   const updateCard = () => {
-    const onSuccess = () => {
-      setIsNewTag(false);
-    };
     const postData = {
+      metadata: {
+        project_id: data._id,
+      },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData, onSuccess }));
+    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
   };
 
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {isNewTag && <NewTag />}
+        {!data?.is_read && <NewTag />}
         <CardBody>
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">

@@ -12,7 +12,6 @@ import { Card, CardBody, CardText } from 'reactstrap';
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
@@ -70,15 +69,9 @@ UserSection.propTypes = {
 };
 
 const TalentsListingForTeamUser = ({ accordionName, isRecommendedTeam, open, data, className }) => {
-  // const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isNewTag, setIsNewTag] = useState(true);
-
-  // const handleToggle = () => {
-  //   setShowModal(!showModal);
-  // };
 
   const users = [];
 
@@ -106,13 +99,13 @@ const TalentsListingForTeamUser = ({ accordionName, isRecommendedTeam, open, dat
   };
 
   const updateCard = () => {
-    const onSuccess = () => {
-      setIsNewTag(false);
-    };
     const postData = {
+      metadata: {
+        user_id: data?._id,
+      },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData, onSuccess }));
+    dispatch(updateCardStatus({ data: postData }));
   };
 
   const handleViewTeam = (id) => {
@@ -129,7 +122,7 @@ const TalentsListingForTeamUser = ({ accordionName, isRecommendedTeam, open, dat
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {isNewTag && <NewTag />}
+        {!data?.is_read && <NewTag />}
         <CardBody>
           {isRecommendedTeam ? (
             <div className="d-flex w-100 mb-1">
@@ -248,7 +241,6 @@ const TalentsListingForTeamUser = ({ accordionName, isRecommendedTeam, open, dat
               className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1"
               onClick={() => handleViewTalent(data?.talent_info?.user_id)}
             >
-              {/* <Link to={`/profile/talent/${data?.talent_info?.user_id}`}>View Talent Profile</Link> */}
               View Talent Profile
             </div>
           ) : (
@@ -261,7 +253,6 @@ const TalentsListingForTeamUser = ({ accordionName, isRecommendedTeam, open, dat
           )}
         </CardBody>
       </Card>
-      {/* {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />} */}
     </ProjectWrapper>
   );
 };

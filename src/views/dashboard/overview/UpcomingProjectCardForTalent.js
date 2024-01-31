@@ -19,17 +19,17 @@ const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
 
   const dispatch = useDispatch();
-  const [isNewTag, setIsNewTag] = useState(true);
 
   const updateCard = () => {
-    const onSuccess = () => {
-      setIsNewTag(false);
-    };
     const postData = {
+      metadata: {
+        project_id: data._id,
+      },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData, onSuccess }));
+    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'upcomingProjectsForTalent' }));
   };
+
   const viewProject = () => {
     // navigate(`/project-details/${data._id}/bid`);
     setShowModal(true);
@@ -38,7 +38,7 @@ const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {isNewTag && <NewTag />}
+        {!data?.is_read && <NewTag />}
         <CardBody>
           <p className="active-project-name truncate-2 mt-50" style={{ height: '40px' }}>
             {data?.name}

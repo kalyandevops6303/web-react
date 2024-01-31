@@ -73,8 +73,6 @@ const RecommendedTeamsCardForClient = ({ accordionName, isRecommendedTeam, open,
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const navigate = useNavigate();
 
-  const [isNewTag, setIsNewTag] = useState(true);
-
   const dispatch = useDispatch();
 
   const handleToggle = () => {
@@ -107,13 +105,13 @@ const RecommendedTeamsCardForClient = ({ accordionName, isRecommendedTeam, open,
   };
 
   const updateCard = () => {
-    const onSuccess = () => {
-      setIsNewTag(false);
-    };
     const postData = {
+      metadata: {
+        team_id: data._id,
+      },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData, onSuccess }));
+    dispatch(updateCardStatus({ data: postData }));
   };
 
   const handleViewTeam = (id) => {
@@ -128,7 +126,7 @@ const RecommendedTeamsCardForClient = ({ accordionName, isRecommendedTeam, open,
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {isNewTag && <NewTag />}
+        {!data?.is_read && <NewTag />}
         <CardBody>
           {isRecommendedTeam ? (
             <div className="d-flex w-100 mb-1">

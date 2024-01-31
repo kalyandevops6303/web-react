@@ -210,7 +210,10 @@ const TalentListing = () => {
             <AccordionHeadStyle>
               <span className="d-flex align-items-center">
                 Join Requests
-                <Tag hasNew={joinRequests?.is_all_read} count={joinRequests?.metadata?.total_records} />
+                <Tag
+                  hasNew={joinRequests?.unreadCount > 0 ? joinRequests?.unreadCount : false}
+                  count={joinRequests?.metadata?.total_records}
+                />
               </span>
               {joinRequests?.data?.length > 0 && (
                 <CardText
@@ -309,7 +312,10 @@ const TalentListing = () => {
           <AccordionHeadStyle>
             <span className="d-flex align-items-center">
               {userDetailsData?.team_type === userTypes.club ? 'Recommended Members' : 'Recommended Talents'}{' '}
-              <Tag hasNew={recommendedTalent?.is_all_read} count={recommendedTalent?.metadata?.total_records} />
+              <Tag
+                hasNew={recommendedTalent?.unreadCount > 0 ? recommendedTalent?.unreadCount : false}
+                count={recommendedTalent?.metadata?.total_records}
+              />
             </span>
             {recommendedTalent?.data?.length > 0 && (
               <CardText

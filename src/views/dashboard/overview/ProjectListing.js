@@ -43,6 +43,7 @@ import {
   getActiveProjectsForClient,
   getActiveProjectsForTalent,
   getActiveProjectsForTeam,
+  getDashboardUpcomingPayments,
   getRecommendedProjects,
   getUpcomingProjectsForClient,
   getUpcomingProjectsForTalent,
@@ -58,7 +59,6 @@ import UpcomingProjectCardForTalent from './UpcomingProjectCardForTalent';
 import UpcomingProjectCardForTeam from './UpcomingProjectCardForTeam';
 import ActiveProjectCardForTeam from './ActiveProjectCardForTeam';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
-import { getDashboardUpcomingPayments } from '../../../redux/actions/milestonePaymentActions';
 import UpcomingPaymentsCard from './UpcomingPaymentsCard';
 import { clearUpcomingPayments } from '../../../redux/reducers/milestonePayment';
 import Tag from '../../../@core/components/tags';
@@ -230,42 +230,6 @@ const ProjectListing = () => {
   }, [open]);
 
   useEffect(() => {
-    // if (open === '1') {
-    //   if (userDetailsData?.user_type === userTypes.client) {
-    //     dispatch(getActiveProjectsForClient());
-    //   } else if (userDetailsData?.user_type === userTypes.talent) {
-    //     dispatch(getActiveProjectsForTalent());
-    //   } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
-    //     dispatch(getActiveProjectsForTeam());
-    //   } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
-    //     dispatch(getActiveProjectsForTeam());
-    //   }
-    // }
-    // if (open === '2') {
-    //   if (userDetailsData?.user_type === userTypes.client) {
-    //     dispatch(getUpcomingProjectsForClient());
-    //   } else if (userDetailsData?.user_type === userTypes.talent) {
-    //     dispatch(getUpcomingProjectsForTalent());
-    //   } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
-    //     dispatch(getUpcomingProjectsForTeam());
-    //   } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
-    //     dispatch(getUpcomingProjectsForTeam());
-    //   }
-    // }
-    // if (open === '3') {
-    //   if (
-    //     userDetailsData?.user_type === userTypes.talent ||
-    //     userDetailsData?.team_type === userTypes.team ||
-    //     userDetailsData?.team_type === userTypes.club
-    //   ) {
-    //     dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
-    //   }
-    // }
-    // if (open === '4') {
-    //   dispatch(clearUpcomingPayments());
-    //   dispatch(getDashboardUpcomingPayments());
-    // }
-
     if (userDetailsData?.user_type === userTypes.client) {
       dispatch(getActiveProjectsForClient());
     } else if (userDetailsData?.user_type === userTypes.talent) {
@@ -312,9 +276,11 @@ const ProjectListing = () => {
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Active Projects{' '}
+                  Active Projects
                   <Tag
-                    hasNew={activeProjectsForClientData?.is_all_read}
+                    hasNew={
+                      activeProjectsForClientData?.unreadCount > 0 ? activeProjectsForClientData?.unreadCount : false
+                    }
                     count={activeProjectsForClientData?.metadata?.total_records}
                   />
                 </span>
@@ -398,7 +364,11 @@ const ProjectListing = () => {
                 <span className="d-flex align-items-center">
                   Upcoming Projects{' '}
                   <Tag
-                    hasNew={upcomingProjectsForClientData?.is_all_read}
+                    hasNew={
+                      upcomingProjectsForClientData?.unreadCount > 0
+                        ? upcomingProjectsForClientData?.unreadCount
+                        : false
+                    }
                     count={upcomingProjectsForClientData?.metadata?.total_records}
                   />
                 </span>
@@ -484,9 +454,11 @@ const ProjectListing = () => {
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Active Projects{' '}
+                  Active Projects
                   <Tag
-                    hasNew={activeProjectsForTalentData?.is_all_read}
+                    hasNew={
+                      activeProjectsForTalentData?.unreadCount > 0 ? activeProjectsForTalentData?.unreadCount : false
+                    }
                     count={activeProjectsForTalentData?.metadata?.total_records}
                   />
                 </span>
@@ -570,7 +542,11 @@ const ProjectListing = () => {
                 <span className="d-flex align-items-center">
                   Upcoming Projects{' '}
                   <Tag
-                    hasNew={upcomingProjectsForTalentData?.is_all_read}
+                    hasNew={
+                      upcomingProjectsForTalentData?.unreadCount > 0
+                        ? upcomingProjectsForTalentData?.unreadCount
+                        : false
+                    }
                     count={upcomingProjectsForTalentData?.metadata?.total_records}
                   />
                 </span>
@@ -658,7 +634,7 @@ const ProjectListing = () => {
                 <span className="d-flex align-items-center">
                   Active Projects{' '}
                   <Tag
-                    hasNew={activeProjectsForTeamData?.is_all_read}
+                    hasNew={activeProjectsForTeamData?.unreadCount > 0 ? activeProjectsForTeamData?.unreadCount : false}
                     count={activeProjectsForTeamData?.metadata?.total_records}
                   />
                 </span>
@@ -742,11 +718,13 @@ const ProjectListing = () => {
                 <span className="d-flex align-items-center">
                   Upcoming Projects{' '}
                   <Tag
-                    hasNew={activeProjectsForTeamData?.is_all_read}
-                    count={activeProjectsForTeamData?.metadata?.total_records}
+                    hasNew={
+                      upcomingProjectsForTeamData?.unreadCount > 0 ? upcomingProjectsForTeamData?.unreadCount : false
+                    }
+                    count={upcomingProjectsForTeamData?.metadata?.total_records}
                   />
                 </span>
-                {activeProjectsForTeamData?.data?.length > 0 && (
+                {upcomingProjectsForTeamData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/upcoming')} className="view-all-cta">
                     View All
                   </CardText>
@@ -831,7 +809,7 @@ const ProjectListing = () => {
                 <span className="d-flex align-items-center">
                   Recommended Projects{' '}
                   <Tag
-                    hasNew={recommendedProjectsData?.is_all_read}
+                    hasNew={recommendedProjectsData?.unreadCount > 0 ? recommendedProjectsData?.unreadCount : false}
                     count={recommendedProjectsData?.metadata?.total_records}
                   />
                 </span>
@@ -918,7 +896,10 @@ const ProjectListing = () => {
         <AccordionItem>
           <AccordionHeader targetId="4">
             Upcoming Payments
-            <Tag hasNew={upcomingPaymentData?.is_all_read} count={upcomingPaymentData?.metadata?.total_records} />
+            <Tag
+              hasNew={upcomingPaymentData?.unreadCount > 0 ? upcomingPaymentData?.unreadCount : false}
+              count={upcomingPaymentData?.metadata?.total_records}
+            />
           </AccordionHeader>
           <AccordionBody accordionId="4">
             {isSliderLoading || upcomingPaymentDataLoading ? (

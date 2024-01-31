@@ -17,7 +17,6 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
-  const [isNewTag, setIsNewTag] = useState(true);
 
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
@@ -37,19 +36,19 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
   };
 
   const updateCard = () => {
-    const onSuccess = () => {
-      setIsNewTag(false);
-    };
     const postData = {
+      metadata: {
+        project_id: data._id,
+      },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData, onSuccess }));
+    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
   };
 
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {isNewTag && <NewTag />}
+        {!data?.is_read && <NewTag />}
         <CardBody>
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">

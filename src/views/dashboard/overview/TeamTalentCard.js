@@ -24,9 +24,9 @@ import { selectIsTeamLoggedIn, selectUserData } from '../../../redux/selectors/a
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { returnFormattedRating } from '../../../utility/Utils';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
-import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
+import { AccordionName } from './DashboardConstant';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -74,8 +74,6 @@ const TeamTalentCard = ({ accordionName, isRecommendedTeam, open, data, classNam
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const userDetailsData = useSelector(selectUserData);
 
-  const [isNewTag, setIsNewTag] = useState(true);
-
   const dispatch = useDispatch();
 
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
@@ -111,18 +109,23 @@ const TeamTalentCard = ({ accordionName, isRecommendedTeam, open, data, classNam
   };
 
   const updateCard = () => {
-    const onSuccess = () => {
-      setIsNewTag(false);
-    };
     const postData = {
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData, onSuccess }));
+    if (accordionName === AccordionName.recommendedTalents) {
+      postData.metadata.user_id = data._id;
+    }
+    if (accordionName === AccordionName.recommendedTeams) {
+      postData.metadata.team_id = data._id;
+    }
+    if (accordionName === AccordionName.recommendedMembers) {
+      postData.metadata.team_id = data._id;
+    }
+    dispatch(updateCardStatus({ data: postData }));
   };
 
   const handleViewTeam = (id) => {
     updateCard();
-    setItemFromSession('team_id', id);
     navigate(`/profile/team/${id}`);
   };
 
@@ -134,7 +137,7 @@ const TeamTalentCard = ({ accordionName, isRecommendedTeam, open, data, classNam
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {isNewTag && <NewTag />}
+        {!data?.is_read && <NewTag />}
         <CardBody>
           {isRecommendedTeam ? (
             <div className="d-flex w-100 mb-1">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -10,17 +10,16 @@ import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
 const ProjectBidCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
-  const [isNewTag, setIsNewTag] = useState(true);
   const dispatch = useDispatch();
 
   const updateCard = () => {
-    const onSuccess = () => {
-      setIsNewTag(false);
-    };
     const postData = {
+      metadata: {
+        project_id: data._id,
+      },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData, onSuccess }));
+    dispatch(updateCardStatus({ data: postData }));
   };
 
   const viewDetails = () => {
@@ -31,7 +30,7 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {isNewTag && <NewTag />}
+        {!data?.is_read && <NewTag />}
         <CardBody>
           <CardTitle className="active-project-title truncate-2 mb-1.5 mt-50">{data?.name}</CardTitle>
           <div className="bottom-detail d-flex mt-1 align-items-center">

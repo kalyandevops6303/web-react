@@ -206,7 +206,11 @@ const TeamListing = () => {
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  My Teams <Tag hasNew={myTeam?.is_all_read} count={myTeam?.metadata?.total_records} />
+                  My Teams
+                  <Tag
+                    hasNew={myTeam?.unreadCount > 0 ? myTeam?.unreadCount : false}
+                    count={myTeam?.metadata?.total_records}
+                  />
                 </span>
                 {myTeam?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta d-none">
@@ -297,7 +301,10 @@ const TeamListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
                   Team Invites
-                  <Tag hasNew={teamInvitation?.is_all_read} count={teamInvitation?.metadata?.total_records} />
+                  <Tag
+                    hasNew={teamInvitation?.unreadCount > 0 ? teamInvitation?.unreadCount : false}
+                    count={teamInvitation?.metadata?.total_records}
+                  />
                 </span>
                 {teamInvitation?.data?.length > 0 && (
                   <CardText
@@ -398,7 +405,10 @@ const TeamListing = () => {
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
                   Recommended Teams{' '}
-                  <Tag hasNew={recommendedTeams?.is_all_read} count={recommendedTeams?.metadata?.total_records} />
+                  <Tag
+                    hasNew={recommendedTeams?.unreadCount > 0 ? recommendedTeams?.unreadCount : false}
+                    count={recommendedTeams?.metadata?.total_records}
+                  />
                 </span>
                 {recommendedTeams?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">

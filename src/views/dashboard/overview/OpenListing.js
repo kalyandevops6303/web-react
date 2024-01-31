@@ -201,7 +201,13 @@ const OpenListing = () => {
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Received Bids <Tag count={projectsBidsForClientData?.metadata?.total_records} />
+                  Received Bids
+                  <Tag
+                    hasNew={
+                      projectsBidsForClientData?.unreadCount > 0 ? recommendedTeamsForClientData?.unreadCount : false
+                    }
+                    count={projectsBidsForClientData?.metadata?.total_records}
+                  />
                 </span>
                 {projectsBidsForClientData?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/my_bids')} className="view-all-cta">
@@ -284,7 +290,9 @@ const OpenListing = () => {
                 <span className="d-flex align-items-center">
                   Recommended Teams{' '}
                   <Tag
-                    hasNew={recommendedTeamsForClientData?.is_all_read}
+                    hasNew={
+                      recommendedTeamsForClientData?.unreadCount > 0 ? projectsBidsForClientData?.unreadCount : false
+                    }
                     count={recommendedTeamsForClientData?.metadata?.total_records}
                   />
                 </span>

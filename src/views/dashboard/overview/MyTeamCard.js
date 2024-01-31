@@ -17,7 +17,6 @@ import { useDispatch } from 'react-redux';
 import { ProjectWrapper } from './style';
 import ProjectModal from '../../modals/ProjectModal';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
-import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
@@ -50,6 +49,9 @@ const MyTeamCard = ({ accordionName, data, className }) => {
       setIsNewTag(false);
     };
     const postData = {
+      metadata: {
+        team_id: data?._id,
+      },
       type: accordionName,
     };
     dispatch(updateCardStatus({ data: postData, onSuccess }));
@@ -57,7 +59,6 @@ const MyTeamCard = ({ accordionName, data, className }) => {
 
   const handleViewTeam = (id) => {
     updateCard();
-    setItemFromSession('team_id', id);
     navigate(`/profile/team/${id}`);
   };
 
