@@ -168,6 +168,7 @@ const API = {
 
     // get status requests
     status: `${apiOnboardingEndpoint}/api/v1/request/get`,
+    checkAdmin: `${apiOnboardingEndpoint}/api/v1/groups/check-admin`,
   },
   marketplace: {
     client: {

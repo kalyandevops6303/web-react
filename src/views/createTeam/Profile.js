@@ -46,6 +46,7 @@ import InviteTalentToTeam from '../invite-talent-to-team';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { getLanguages } from '../../redux/actions/staticActions';
 import { languages } from '../../redux/selectors/staticSelectors';
+import TeamCreatingModal from './TeamCreatingModal';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -181,6 +182,8 @@ const Profile = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [teamCreatedModal, setTeamCreatedModal] = useState(null);
+  const [teamCreatingModal, setTeamCreatingModal] = useState(null);
+  const [teamData, setTeamData] = useState(null);
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(false);
   const [inviteTeamMemberModal, setInviteTeamMemberModal] = useState(false);
 
@@ -203,6 +206,10 @@ const Profile = () => {
 
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
+  };
+
+  const toggleTeamCreatingModal = () => {
+    setTeamCreatingModal(!teamCreatingModal);
   };
 
   const isFileValid = (file) => {
@@ -362,9 +369,7 @@ const Profile = () => {
       dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
     } else {
       setTeamCreateData(removeEmptyKeys(reqData));
-      setTeamCreatedModal(true);
-      // setIsTeamcreating(true);
-      // dispatch(createTeam(removeEmptyKeys(reqData), onSuccess, onError));
+      setTeamCreatingModal(true);
     }
   };
 
@@ -634,6 +639,16 @@ const Profile = () => {
 
   return (
     <ProfileFormContainer>
+      {teamCreatingModal && (
+        <TeamCreatingModal
+          modal={teamCreatingModal}
+          toggleModal={toggleTeamCreatingModal}
+          onInvite={onInvite}
+          setTeamData={setTeamData}
+          teamCreateData={teamCreateData}
+          setTeamCreatedModal={setTeamCreatedModal}
+        />
+      )}
       {teamCreatedModal && (
         <TeamCreatedModal
           previewImage={selectedImagePreview}
@@ -641,6 +656,7 @@ const Profile = () => {
           onInvite={onInvite}
           modal={teamCreatedModal}
           toggleModal={toggleTeamCreatedModal}
+          teamData={teamData}
         />
       )}
       {inviteTalentToTeamModal && (

@@ -83,14 +83,17 @@ const BidDetailsWrap = styled.div`
   .report-text {
     color: ${theme.red};
   }
-  .fixed-header {
-    top: 4rem;
-    left: 0;
-    position: fixed;
-    z-index: 1;
-    background-color: ${theme.bodyBgColor};
-    width: 100%;
-    padding: 1.8rem 2rem 0.8rem 2rem;
+  .top-head {
+    position: relative;
+    .fixed-header {
+      top: 4rem;
+      left: 0;
+      position: fixed;
+      z-index: 20;
+      background-color: ${theme.bodyBgColor};
+      width: 100%;
+      padding: 1.8rem 2rem 0.8rem 2rem;
+    }
   }
 
   .main-card-title {
