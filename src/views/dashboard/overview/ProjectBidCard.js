@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
+import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
 
 const ProjectBidCard = ({ data, className }) => {
   const navigate = useNavigate();
 
+  const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
+
+  const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
+
+  // eslint-disable-next-line no-unused-vars
   const viewDetails = () => {
     navigate(`/project-details/${data._id}/bid`);
   };
 
   return (
     <ProjectWrapper className={className}>
+      {relistConfirmationModal && (
+        <RelistConfirmationModal modal={relistConfirmationModal} toggleModal={toggleRelistConfirmationModal} />
+      )}
       <Card className="card-app-design">
         <CardBody>
           <CardTitle className="active-project-title truncate-2 mb-1.5">{data?.name}</CardTitle>
@@ -44,7 +53,7 @@ const ProjectBidCard = ({ data, className }) => {
             View Details
           </div> */}
           <div
-            onClick={viewDetails}
+            onClick={() => setRelistConfirmationModal(true)}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1"
           >
             Re-list

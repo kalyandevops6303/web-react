@@ -217,6 +217,12 @@ const PrivacyPolicyModalWrapper = styled.div`
   }
 `;
 
+const RelistModalWrapper = styled.div`
+  .note-text {
+    line-height: 29.124px;
+  }
+`;
+
 export {
   RemoveMemberModalWrapper,
   MessageIconWrap,
@@ -226,4 +232,5 @@ export {
   MakePaymentModalWrapper,
   PrivacyPolicyModalWrapper,
   TerminateModalWrapper,
+  RelistModalWrapper,
 };
