@@ -375,6 +375,10 @@ const ProjectWrapper = styled.div`
       font-weight: 600;
     }
   }
+
+  .expired-listing-text {
+    color: ${theme.red} !important;
+  }
 `;
 
 const ProjectsListingWrap = styled.div`

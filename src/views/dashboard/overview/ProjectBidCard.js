@@ -18,10 +18,18 @@ const ProjectBidCard = ({ data, className }) => {
         <CardBody>
           <CardTitle className="active-project-title truncate-2 mb-1.5">{data?.name}</CardTitle>
           <div className="bottom-detail d-flex mt-1 align-items-center">
-            <div className="design-planning-wrapper mb-0 w-50">
+            {/* <div className="design-planning-wrapper mb-0 w-50">
               <div className="design-planning mb-0">
                 <CardText className="mb-25">Posted Date</CardText>
                 <h6 className="mb-0">{`${DateTime.fromMillis(data?.created_at).toFormat('MMM dd, yy') || '-'}`}</h6>
+              </div>
+            </div> */}
+            <div className="design-planning-wrapper mb-0 w-50">
+              <div className="design-planning mb-0">
+                <CardText className="mb-25 expired-listing-text">Expired Date</CardText>
+                <h6 className="mb-0 expired-listing-text">{`${
+                  DateTime.fromMillis(data?.created_at).toFormat('MMM dd, yy') || '-'
+                }`}</h6>
               </div>
             </div>
             <div className="d-flex flex-column justify-content-center align-items-center bids-count-wrapper w-50">
@@ -29,11 +37,17 @@ const ProjectBidCard = ({ data, className }) => {
               <p className="mb-0 text-center bid-count">{data?.total_bids}</p>
             </div>
           </div>
-          <div
+          {/* <div
             onClick={viewDetails}
             className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1"
           >
             View Details
+          </div> */}
+          <div
+            onClick={viewDetails}
+            className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1"
+          >
+            Re-list
           </div>
         </CardBody>
       </Card>
