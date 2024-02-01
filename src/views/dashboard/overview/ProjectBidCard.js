@@ -6,16 +6,20 @@ import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
+import RelistSuccessModal from '../../modals/RelistSuccessModal';
 
 const ProjectBidCard = ({ data, className }) => {
   const navigate = useNavigate();
 
   const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
   const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
+  const [relistSuccessModal, setRelistSuccessModal] = useState(null);
 
   const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
 
   const toggleRelistListingDetailsModal = () => setRelistListingDetailsModal(!relistListingDetailsModal);
+
+  const toggleRelistSuccessModal = () => setRelistSuccessModal(!relistSuccessModal);
 
   // eslint-disable-next-line no-unused-vars
   const viewDetails = () => {
@@ -36,8 +40,10 @@ const ProjectBidCard = ({ data, className }) => {
           modal={relistListingDetailsModal}
           toggleModal={toggleRelistListingDetailsModal}
           setRelistConfirmationModal={setRelistConfirmationModal}
+          setRelistSuccessModal={setRelistSuccessModal}
         />
       )}
+      {relistSuccessModal && <RelistSuccessModal modal={relistSuccessModal} toggleModal={toggleRelistSuccessModal} />}
       <Card className="card-app-design">
         <CardBody>
           <CardTitle className="active-project-title truncate-2 mb-1.5">{data?.name}</CardTitle>

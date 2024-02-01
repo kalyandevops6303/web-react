@@ -10,7 +10,7 @@ import { Button, Modal, ModalHeader, ModalBody, Form, Row, Input, Label, Col, Fo
 import '../custom-styles.scss';
 import { RequirementsFormContainer } from '../CreateProject/style';
 
-const RelistListingDetailsModal = ({ modal, toggleModal, setRelistConfirmationModal }) => {
+const RelistListingDetailsModal = ({ modal, toggleModal, setRelistConfirmationModal, setRelistSuccessModal }) => {
   const ListingDetailsSchema = yup.object().shape({
     listingOption: yup.string().required('Select one'),
     startDate: yup.object().when('listingOption', {
@@ -74,6 +74,8 @@ const RelistListingDetailsModal = ({ modal, toggleModal, setRelistConfirmationMo
 
       // eslint-disable-next-line no-console
       console.log(requiredFormData);
+      toggleModal();
+      setRelistSuccessModal(true);
     } else if (watch('listingOption') === 'enter-duration' && watch('duration')) {
       const newData = {
         listingOption: watch('listingOption'),
@@ -84,6 +86,8 @@ const RelistListingDetailsModal = ({ modal, toggleModal, setRelistConfirmationMo
 
       // eslint-disable-next-line no-console
       console.log(newData);
+      toggleModal();
+      setRelistSuccessModal(true);
     }
   };
 
@@ -275,10 +279,12 @@ RelistListingDetailsModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   setRelistConfirmationModal: Proptypes.func,
+  setRelistSuccessModal: Proptypes.func,
 };
 
 RelistListingDetailsModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   setRelistConfirmationModal: () => {},
+  setRelistSuccessModal: () => {},
 };
