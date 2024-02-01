@@ -5,13 +5,17 @@ import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
+import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
 
 const ProjectBidCard = ({ data, className }) => {
   const navigate = useNavigate();
 
   const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
+  const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
 
   const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
+
+  const toggleRelistListingDetailsModal = () => setRelistListingDetailsModal(!relistListingDetailsModal);
 
   // eslint-disable-next-line no-unused-vars
   const viewDetails = () => {
@@ -21,7 +25,18 @@ const ProjectBidCard = ({ data, className }) => {
   return (
     <ProjectWrapper className={className}>
       {relistConfirmationModal && (
-        <RelistConfirmationModal modal={relistConfirmationModal} toggleModal={toggleRelistConfirmationModal} />
+        <RelistConfirmationModal
+          modal={relistConfirmationModal}
+          toggleModal={toggleRelistConfirmationModal}
+          setRelistListingDetailsModal={setRelistListingDetailsModal}
+        />
+      )}
+      {relistListingDetailsModal && (
+        <RelistListingDetailsModal
+          modal={relistListingDetailsModal}
+          toggleModal={toggleRelistListingDetailsModal}
+          setRelistConfirmationModal={setRelistConfirmationModal}
+        />
       )}
       <Card className="card-app-design">
         <CardBody>

@@ -6,7 +6,7 @@ import '../custom-styles.scss';
 import Notepad from '../../assets/images/youDidIt.gif';
 import { RelistModalWrapper } from './style';
 
-const RelistConfirmationModal = ({ modal, toggleModal }) => {
+const RelistConfirmationModal = ({ modal, toggleModal, setRelistListingDetailsModal }) => {
   const navigate = useNavigate();
 
   const onCreateNewProjectClick = () => {
@@ -34,7 +34,15 @@ const RelistConfirmationModal = ({ modal, toggleModal }) => {
             <Button color="primary" outline className="me-2" onClick={onCreateNewProjectClick}>
               Create New Project
             </Button>
-            <Button color="primary">Re-list</Button>
+            <Button
+              color="primary"
+              onClick={() => {
+                toggleModal();
+                setRelistListingDetailsModal(true);
+              }}
+            >
+              Re-list
+            </Button>
           </div>
         </RelistModalWrapper>
       </ModalBody>
@@ -47,9 +55,11 @@ export default RelistConfirmationModal;
 RelistConfirmationModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  setRelistListingDetailsModal: Proptypes.func,
 };
 
 RelistConfirmationModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  setRelistListingDetailsModal: () => {},
 };
