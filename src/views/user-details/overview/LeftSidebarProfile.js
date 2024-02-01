@@ -26,12 +26,11 @@ import { CustomBadge } from '../../styled';
 import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
-import { checkAdmin, selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { getItemFromSession, setItemFromSession } from '../../../utility/sessesionStorageControl';
-import { checkIsAdmin } from '../../../redux/actions/authActions';
+import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isTeamView, isClient, data }) => {
   const dispatch = useDispatch();
@@ -41,7 +40,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const userData = useSelector(selectAuthUserData);
   const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
   const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
-  const checkAdminData = useSelector(checkAdmin);
+  const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
 
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
   const isEditable = userData?._id === param?.userId;
@@ -65,7 +64,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     if (data.team_type === userTypes.team) {
       navigate(`/${userProfileEdit.team}/profile-details`);
     } else if (data.team_type === userTypes.club && data.club_status === clubStatus.ACCEPTED) {
-      if (checkAdminData?.is_admin) {
+      if (isClubAdmin) {
         navigate(`/${userProfileEdit.club}/account-details`);
       } else {
         ShowToastMessage(ERROR, 'Only an admin can edit the club profile');
@@ -91,12 +90,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
       if (isTeamView) {
         dispatch(getTeamProfilePercentage());
       }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (getItemFromSession('team_id')) {
-      dispatch(checkIsAdmin(getItemFromSession('team_id')));
     }
   }, []);
 

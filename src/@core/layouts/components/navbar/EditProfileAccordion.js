@@ -18,7 +18,7 @@ import { checkIsAdmin } from '../../../../redux/actions/authActions';
 
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
-  const checkAdminData = useSelector(checkAdmin);
+  const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
 
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
@@ -78,12 +78,6 @@ const EditProfileAccordion = () => {
     }
   };
 
-  useEffect(() => {
-    if (getItemFromSession('team_id')) {
-      dispatch(checkIsAdmin(getItemFromSession('team_id')));
-    }
-  }, []);
-
   return (
     <div className="edit-accordion">
       <Accordion open={open} toggle={toggle}>
@@ -141,12 +135,12 @@ const EditProfileAccordion = () => {
                     <DropdownItem
                       onClick={() => handleEditProfileForClub('account')}
                       className="w-100 edit-link"
-                      disabled={!checkAdminData?.is_admin}
+                      disabled={!isClubAdmin}
                     >
                       <span className="align-middle p-1">Account</span>
                     </DropdownItem>
                   </div>
-                  {!checkAdminData?.is_admin && (
+                  {!isClubAdmin && (
                     <UncontrolledTooltip placement="left" target="account-edit" className="disabled-tooltip">
                       <p className="m-0 disabled-tooltip">Only an admin can edit the club profile</p>
                     </UncontrolledTooltip>
@@ -155,11 +149,11 @@ const EditProfileAccordion = () => {
                     <DropdownItem
                       onClick={() => handleEditProfileForClub('profile')}
                       className="w-100 edit-link"
-                      disabled={!checkAdminData?.is_admin}
+                      disabled={!isClubAdmin}
                     >
                       <span className="align-middle p-1">Profile</span>
                     </DropdownItem>
-                    {!checkAdminData?.is_admin && (
+                    {!isClubAdmin && (
                       <UncontrolledTooltip placement="left" target="profile-edit" className="disabled-tooltip">
                         <p className="m-0 disabled-tooltip">Only an admin can edit the club profile</p>
                       </UncontrolledTooltip>
