@@ -43,7 +43,7 @@ jobs:
       run: az storage blob upload-batch --account-name azusctruatwebsa --auth-mode key -d '$web' --source ./dist
     
     - name: Purge CDN endpoint
-      run: az afd endpoint purge --resource-group azusctr-uat-rg --profile-name azusctr-uat-cdn --endpoint-name trumiouatcdn --domains uat.trumio.ai --content-paths '/*'
+      run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name trumiouatfdcdn --domains uat.trumio.ai --content-paths '/*'
 
   # Azure logout
     - name: logout
