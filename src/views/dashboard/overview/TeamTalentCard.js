@@ -111,6 +111,7 @@ const TeamTalentCard = ({ accordionName, isRecommendedTeam, open, data, classNam
   const updateCard = () => {
     const postData = {
       type: accordionName,
+      metadata: {},
     };
     if (accordionName === AccordionName.recommendedTalents) {
       postData.metadata.user_id = data._id;
@@ -125,12 +126,16 @@ const TeamTalentCard = ({ accordionName, isRecommendedTeam, open, data, classNam
   };
 
   const handleViewTeam = (id) => {
-    updateCard();
+    if (data?.is_read === false) {
+      updateCard();
+    }
     navigate(`/profile/team/${id}`);
   };
 
   const handleViewTalent = (id) => {
-    updateCard();
+    if (data?.is_read === false) {
+      updateCard();
+    }
     navigate(`/profile/talent/${id}`);
   };
 

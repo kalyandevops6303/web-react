@@ -281,17 +281,18 @@ const OpenListing = () => {
           </>
         )}
       </AccordionItem>
-
       <AccordionItem>
         {userDetailsData?.user_type === userTypes.client && (
           <>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
                 <span className="d-flex align-items-center">
-                  Recommended Teams{' '}
+                  Recommended Teams
                   <Tag
                     hasNew={
-                      recommendedTeamsForClientData?.unreadCount > 0 ? projectsBidsForClientData?.unreadCount : false
+                      recommendedTeamsForClientData?.unreadCount > 0
+                        ? recommendedTeamsForClientData?.unreadCount
+                        : false
                     }
                     count={recommendedTeamsForClientData?.metadata?.total_records}
                   />

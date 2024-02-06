@@ -213,8 +213,8 @@ const ProjectListing = () => {
   const upcomingProjectsForTeamData = useSelector(upcomingProjectsForTeam);
   const upcomingProjectsForTeamIsLoading = useSelector(upcomingProjectsForTeamLoading);
 
-  const upcomingPaymentData = useSelector((state) => state?.milestonePayment?.upcomingPaymentsData);
-  const upcomingPaymentDataLoading = useSelector((state) => state?.milestonePayment?.upcomingPaymentDataLoading);
+  const upcomingPaymentData = useSelector((state) => state?.dashboard?.upcomingPaymentsData);
+  const upcomingPaymentDataLoading = useSelector((state) => state?.dashboard?.upcomingPaymentDataLoading);
 
   const handleViewAll = (e) => {
     e.stopPropagation();

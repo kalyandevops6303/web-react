@@ -96,8 +96,8 @@ const ProjectModal = ({
   const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
 
   useEffect(() => {
-    if (onUpdateCard && !cardData?.switch_team_id && cardData?.is_read === false) {
-      onUpdateCard();
+    if (onUpdateCard) {
+      onUpdateCard({ switch_team_id: cardData?.switch_team_id });
     }
   }, []);
 

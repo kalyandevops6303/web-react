@@ -109,13 +109,17 @@ const TalentsListingForTeamUser = ({ accordionName, isRecommendedTeam, open, dat
   };
 
   const handleViewTeam = (id) => {
-    updateCard();
+    if (data?.is_read === false) {
+      updateCard();
+    }
     setItemFromSession('team_id', id);
     navigate(`/profile/team/${id}`);
   };
 
   const handleViewTalent = (id) => {
-    updateCard();
+    if (data?.is_read === false) {
+      updateCard();
+    }
     navigate(`/profile/talent/${id}`);
   };
 

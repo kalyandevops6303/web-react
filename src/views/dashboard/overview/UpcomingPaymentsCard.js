@@ -22,14 +22,6 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
 
   const dispatch = useDispatch();
 
-  const handleViewDetails = (transactionData) => {
-    if (data?.switch_team_id?.length > 0) {
-      setOpenSwitchModal(true);
-    } else {
-      navigate(`/project-details/${transactionData?._id}/payment`);
-    }
-  };
-
   const updateCard = () => {
     const postData = {
       metadata: {
@@ -37,7 +29,25 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
       },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'upcomingPaymentsData' }));
+    dispatch(
+      updateCardStatus({
+        id: data?._id,
+        switch_team_id: data?.switch_team_id,
+        data: postData,
+        type: 'upcomingPaymentsData',
+      }),
+    );
+  };
+
+  const handleViewDetails = (transactionData) => {
+    if (data?.is_read === false) {
+      updateCard();
+    }
+    if (data?.switch_team_id?.length > 0) {
+      setOpenSwitchModal(true);
+    } else {
+      navigate(`/project-details/${transactionData?._id}/payment`);
+    }
   };
 
   return (
@@ -153,12 +163,14 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
 export default UpcomingPaymentsCard;
 
 UpcomingPaymentsCard.propTypes = {
+  switch_team_id: Proptypes.string,
   data: Proptypes.object,
   className: Proptypes.string,
   accordionName: Proptypes.string,
 };
 
 UpcomingPaymentsCard.defaultProps = {
+  switch_team_id: '',
   data: {},
   className: '',
   accordionName: '',

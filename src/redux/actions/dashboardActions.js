@@ -171,7 +171,9 @@ const getJoinRequest = (id) => async (dispatch) => {
   dispatch(joinRequestMemberRequest());
   try {
     const res = await getJoinRequestService({ talent_id: id });
-    dispatch(joinRequestMemberSuccess(res.data.data));
+    dispatch(
+      joinRequestMemberSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+    );
   } catch (error) {
     errorHandler(error, joinRequestMemberFailure);
   }
@@ -426,11 +428,11 @@ const getTotalReferralAmount = () => async (dispatch) => {
 };
 
 const updateCardStatus =
-  ({ data, id, type }) =>
+  ({ switch_team_id, data, id, type }) =>
   async (dispatch) => {
     dispatch(updateCardStatusRequest());
     try {
-      await updateCardStatusService(data);
+      await updateCardStatusService({ data, switch_team_id });
       dispatch(updateCardStatusSuccess({ type, id }));
     } catch (error) {
       errorHandler(error, updateCardStatusFailure);

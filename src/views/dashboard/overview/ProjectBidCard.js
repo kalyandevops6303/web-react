@@ -23,14 +23,16 @@ const ProjectBidCard = ({ accordionName, data, className }) => {
   };
 
   const viewDetails = () => {
-    updateCard();
+    if (data?.is_read === false) {
+      updateCard();
+    }
     navigate(`/project-details/${data._id}/bid`);
   };
 
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {!data?.is_read && <NewTag />}
+        {data?.is_read === false && <NewTag />}
         <CardBody>
           <CardTitle className="active-project-title truncate-2 mb-1.5 mt-50">{data?.name}</CardTitle>
           <div className="bottom-detail d-flex mt-1 align-items-center">
