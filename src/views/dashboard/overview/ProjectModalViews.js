@@ -7,6 +7,7 @@ import { getModalData } from '../../../redux/actions/dashboardActions';
 import { getPath } from '../../../utility/Utils';
 
 const ProjectModalViews = ({
+  cardData,
   onUpdateCard,
   isActiveProject,
   switchModal,
@@ -41,6 +42,7 @@ const ProjectModalViews = ({
     <div>
       {modalData && showModal && (
         <ProjectModal
+          cardData={cardData}
           onUpdateCard={onUpdateCard}
           isUpcomingProject={isUpcomingProject}
           isActiveProject={isActiveProject}
@@ -56,6 +58,8 @@ const ProjectModalViews = ({
 
       {switchModal && (
         <SwitchConfirmModal
+          cardData={cardData}
+          data={modalData}
           onUpdateCard={onUpdateCard}
           entity={modalData?.switch_team_id ? 'TEAM' : 'TALENT'}
           navigateTo={getPath({ isActiveProject, projectId: modalData?._id })}
@@ -77,9 +81,11 @@ ProjectModalViews.propTypes = {
   isUpcomingProject: PropTypes.bool,
   switchModal: PropTypes.bool,
   setSwitchModal: PropTypes.func,
+  cardData: PropTypes.object,
 };
 
 ProjectModalViews.defaultProps = {
+  cardData: {},
   onUpdateCard: () => {},
   project_id: '',
   showModal: false,

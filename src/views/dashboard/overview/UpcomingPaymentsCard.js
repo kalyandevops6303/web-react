@@ -37,7 +37,7 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
       },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForClient' }));
+    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'upcomingPaymentsData' }));
   };
 
   return (
@@ -137,6 +137,7 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
       </Card>
       {openSwitchModal && (
         <SwitchConfirmModal
+          cardData={data}
           onUpdateCard={updateCard}
           entity={data?.switch_team_id ? 'TEAM' : 'TALENT'}
           navigateTo={`/project-details/${data?._id}/payment`}

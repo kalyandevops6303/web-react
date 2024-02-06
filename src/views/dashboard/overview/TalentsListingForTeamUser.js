@@ -101,7 +101,7 @@ const TalentsListingForTeamUser = ({ accordionName, isRecommendedTeam, open, dat
   const updateCard = () => {
     const postData = {
       metadata: {
-        user_id: data?._id,
+        request_id: data?._id,
       },
       type: accordionName,
     };
