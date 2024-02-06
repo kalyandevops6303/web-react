@@ -10,13 +10,16 @@ import { useState } from 'react';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
-import { TeamCardWrap } from './style';
+import { IconWrapper, TeamCardWrap } from './style';
 import theme from '../../configs/themeVariables';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import { userTypes } from '../../utility/constants/Constant';
 import { Elevate } from '../styled';
+import NewTag from '../../@core/components/new-tag';
+import { updateCardStatus } from '../../redux/actions/dashboardActions';
+import { getReadType } from '../../utility/Utils';
 
-const Team = ({ data, isSearchPage }) => {
+const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const users = [];
@@ -62,13 +65,28 @@ const Team = ({ data, isSearchPage }) => {
     }
   };
 
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        team_id: data._id,
+      },
+      type: getReadType({ primaryFilter, secondFilterState }),
+    };
+    // if (postData?.type && data?.is_read === false) {
+    if (postData?.type) {
+      dispatch(updateCardStatus({ data: postData }));
+    }
+  };
+
   const handleCard = () => {
+    updateCard();
     navigate(`/profile/team/${data?._id}`);
   };
 
   return (
     <TeamCardWrap>
       <Card onClick={handleCard} className="cursor-pointer">
+        <NewTag />
         <Elevate>
           <CardBody>
             <div className="d-flex teamcard-flex-cloumn">
@@ -103,8 +121,8 @@ const Team = ({ data, isSearchPage }) => {
                 </div>
               </div>
               <div className="w-25 teamcard-width">
-                <div className="d-flex flex-column align-items-start">
-                  <div className="d-flex w-100 justify-content-end gap-1">
+                <IconWrapper className="d-flex flex-column align-items-start pt-50">
+                  <div className="d-flex w-100 justify-content-end gap-70">
                     {data?.is_alma_mater && (
                       <Badge className="bg-white" style={{ marginTop: '-3px' }}>
                         <img src={hat} alt="client-badge" width={20} height={20} />
@@ -154,7 +172,7 @@ const Team = ({ data, isSearchPage }) => {
                       </div>
                     ) : null}
                   </div>
-                </div>
+                </IconWrapper>
                 <div className="">
                   <BadgeGroup
                     title="Skills"
@@ -174,10 +192,14 @@ const Team = ({ data, isSearchPage }) => {
 };
 
 Team.propTypes = {
+  primaryFilter: PropTypes.string,
+  secondFilterState: PropTypes.object,
   data: PropTypes.object,
   isSearchPage: PropTypes.bool,
 };
 Team.defaultProps = {
+  primaryFilter: '',
+  secondFilterState: {},
   data: {},
   isSearchPage: false,
 };

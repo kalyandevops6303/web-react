@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { Heart, MapPin } from 'react-feather';
 import hat from '@src/assets/images/hat.svg';
-import { TeamCardWrap } from './style';
+import { IconWrapper, TeamCardWrap } from './style';
 import { userTypes } from '../../utility/constants/Constant';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import theme from '../../configs/themeVariables';
@@ -16,8 +16,11 @@ import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import TextToolTip from './TextToolTip';
 import { Elevate } from '../styled';
+import NewTag from '../../@core/components/new-tag';
+import { getReadType } from '../../utility/Utils';
+import { updateCardStatus } from '../../redux/actions/dashboardActions';
 
-function TalentCard({ data, isSearchPage }) {
+function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
   const dispatch = useDispatch();
@@ -69,6 +72,18 @@ function TalentCard({ data, isSearchPage }) {
       return theme.green;
     }
   };
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        user_id: data?.user_id,
+      },
+      type: getReadType({ primaryFilter, secondFilterState }),
+    };
+    // if (postData?.type && data?.is_read === false) {
+    if (postData?.type) {
+      dispatch(updateCardStatus({ data: postData }));
+    }
+  };
 
   const handleCard = () => {
     const state = {
@@ -77,6 +92,7 @@ function TalentCard({ data, isSearchPage }) {
         secondary: fromLocationSecondary() || fromLocationSearch(),
       },
     };
+    updateCard();
     navigate(`/profile/${data?.user_type === userTypes.client ? 'client' : 'talent'}/${data?.user_id}`, { state });
   };
 
@@ -85,6 +101,7 @@ function TalentCard({ data, isSearchPage }) {
   return (
     <TeamCardWrap>
       <Card onClick={handleCard} className="cursor-pointer">
+        <NewTag />
         <Elevate>
           <CardBody>
             <div className="d-flex teamcard-flex-cloumn">
@@ -138,8 +155,8 @@ function TalentCard({ data, isSearchPage }) {
                 <div className="mt-2">{data?.professional_intro}</div>
               </div>
               <div className="w-25 teamcard-width">
-                <div className="d-flex flex-column align-items-start">
-                  <div className="d-flex w-100 justify-content-end gap-50">
+                <IconWrapper className="d-flex flex-column align-items-start pt-50">
+                  <div className="d-flex w-100 justify-content-end gap-70">
                     {data?.is_alma_mater && (
                       <Badge className="bg-white" style={{ marginTop: '-3px' }}>
                         <img src={hat} alt="client-badge" width={20} height={20} />
@@ -189,7 +206,7 @@ function TalentCard({ data, isSearchPage }) {
                       </div>
                     ) : null}
                   </div>
-                </div>
+                </IconWrapper>
                 <div className="">
                   {data?.expertise?.skills && (
                     <BadgeGroup
@@ -219,8 +236,12 @@ function TalentCard({ data, isSearchPage }) {
 TalentCard.propTypes = {
   data: PropTypes.object,
   isSearchPage: PropTypes.bool,
+  primaryFilter: PropTypes.string,
+  secondFilterState: PropTypes.object,
 };
 TalentCard.defaultProps = {
+  primaryFilter: '',
+  secondFilterState: {},
   data: {},
   isSearchPage: false,
 };

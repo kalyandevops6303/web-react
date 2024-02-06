@@ -11,6 +11,7 @@ import { maxFileSize } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
+import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -472,4 +473,60 @@ export const calculateRemainingBidsCount = (data) => {
   const totalRecords = data?.metadata?.total_records || 0;
   const currentRecords = data?.data?.length || 0;
   return totalRecords - currentRecords;
+};
+
+export const getReadType = ({ primaryFilter, secondFilterState }) => {
+  switch (primaryFilter.toLowerCase()) {
+    case 'ongoing':
+      return AccordionName.activeProjects;
+    case 'upcoming':
+      return AccordionName.upcomingProjects;
+    case 'all_listings':
+      if (Array.isArray(secondFilterState?.sort_by) && secondFilterState?.sort_by?.length > 0) {
+        // Check if any element in the array has a value of "RECOMMENDED"
+        if (secondFilterState?.sort_by.some((item) => item.value === 'RECOMMENDED')) {
+          return AccordionName.recommendedProjects;
+        }
+      }
+      return '';
+
+    case 'invited':
+      if (Array.isArray(secondFilterState?.invited_by) && secondFilterState?.invited_by?.length > 0) {
+        // Check if any element in the array has a value of "RECOMMENDED"
+        if (secondFilterState?.invited_by.some((item) => item.value === 'TEAM')) {
+          return AccordionName.teamInvitation;
+        }
+      }
+      return '';
+
+    case 'teams':
+      if (Array.isArray(secondFilterState?.sort_by) && secondFilterState?.sort_by?.length > 0) {
+        // Check if any element in the array has a value of "RECOMMENDED"
+        if (secondFilterState?.sort_by.some((item) => item.value === 'RECOMMENDED')) {
+          return AccordionName.recommendedTeams;
+        }
+      }
+      return '';
+
+    case 'talents':
+      if (Array.isArray(secondFilterState?.sort_by) && secondFilterState?.sort_by?.length > 0) {
+        // Check if any element in the array has a value of "RECOMMENDED"
+        if (secondFilterState?.sort_by.some((item) => item.value === 'RECOMMENDED')) {
+          return AccordionName.recommendedTalents;
+        }
+      }
+      return '';
+
+    case 'recommendation':
+      if (Array.isArray(secondFilterState?.user_type) && secondFilterState?.user_type?.length > 0) {
+        // Check if any element in the array has a value of "RECOMMENDED"
+        if (secondFilterState?.user_type.some((item) => item.value === 'TALENT')) {
+          return AccordionName.recommendedTalents;
+        }
+      }
+      return '';
+
+    default:
+      return '';
+  }
 };

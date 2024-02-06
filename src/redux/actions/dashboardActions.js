@@ -426,12 +426,15 @@ const getTotalReferralAmount = () => async (dispatch) => {
 };
 
 const updateCardStatus =
-  ({ data, id, type }) =>
+  ({ data, id, type, onSuccess }) =>
   async (dispatch) => {
     dispatch(updateCardStatusRequest());
     try {
       await updateCardStatusService(data);
       dispatch(updateCardStatusSuccess({ type, id }));
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       errorHandler(error, updateCardStatusFailure);
     }
