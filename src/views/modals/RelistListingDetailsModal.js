@@ -10,7 +10,14 @@ import { Button, Modal, ModalHeader, ModalBody, Form, Row, Input, Label, Col, Fo
 import '../custom-styles.scss';
 import { RequirementsFormContainer } from '../CreateProject/style';
 
-const RelistListingDetailsModal = ({ modal, toggleModal, setRelistConfirmationModal, setRelistSuccessModal }) => {
+const RelistListingDetailsModal = ({
+  modal,
+  toggleModal,
+  setRelistConfirmationModal,
+  setRelistSuccessModal,
+  projectRelistData,
+  setProjectRelistData,
+}) => {
   const ListingDetailsSchema = yup.object().shape({
     listingOption: yup.string().required('Select one'),
     startDate: yup.object().when('listingOption', {
@@ -74,6 +81,12 @@ const RelistListingDetailsModal = ({ modal, toggleModal, setRelistConfirmationMo
 
       // eslint-disable-next-line no-console
       console.log(requiredFormData);
+      setProjectRelistData({
+        ...projectRelistData,
+        startDate: Date.parse(requiredFormData?.startDate),
+        endDate: Date.parse(requiredFormData?.endDate),
+        listingOption: requiredFormData?.listingOption,
+      });
       toggleModal();
       setRelistSuccessModal(true);
     } else if (watch('listingOption') === 'enter-duration' && watch('duration')) {
@@ -86,10 +99,20 @@ const RelistListingDetailsModal = ({ modal, toggleModal, setRelistConfirmationMo
 
       // eslint-disable-next-line no-console
       console.log(newData);
+      setProjectRelistData({
+        ...projectRelistData,
+        startDate: Date.parse(newData?.startDate),
+        endDate: Date.parse(newData?.endDate),
+        listingOption: newData?.listingOption,
+        duration: newData?.duration,
+      });
       toggleModal();
       setRelistSuccessModal(true);
     }
   };
+
+  // eslint-disable-next-line no-console
+  console.log('projectRelistData', projectRelistData);
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
@@ -252,7 +275,7 @@ const RelistListingDetailsModal = ({ modal, toggleModal, setRelistConfirmationMo
             {errors.listingOption && <FormFeedback>{errors.listingOption.message}</FormFeedback>}
           </Form>
         </RequirementsFormContainer>
-        <div className="d-flex justify-content-end align-items-center mb-2">
+        <div className="d-flex justify-content-end align-items-center mb-2 mt-1">
           <Button
             color="primary"
             outline
@@ -280,6 +303,8 @@ RelistListingDetailsModal.propTypes = {
   toggleModal: Proptypes.func,
   setRelistConfirmationModal: Proptypes.func,
   setRelistSuccessModal: Proptypes.func,
+  projectRelistData: Proptypes.object,
+  setProjectRelistData: Proptypes.func,
 };
 
 RelistListingDetailsModal.defaultProps = {
@@ -287,4 +312,6 @@ RelistListingDetailsModal.defaultProps = {
   toggleModal: () => {},
   setRelistConfirmationModal: () => {},
   setRelistSuccessModal: () => {},
+  projectRelistData: {},
+  setProjectRelistData: () => {},
 };

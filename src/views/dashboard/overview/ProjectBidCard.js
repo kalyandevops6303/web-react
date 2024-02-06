@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
@@ -14,6 +14,7 @@ const ProjectBidCard = ({ data, className }) => {
   const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
   const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
+  const [projectRelistData, setProjectRelistData] = useState(null);
 
   const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
 
@@ -25,6 +26,13 @@ const ProjectBidCard = ({ data, className }) => {
   const viewDetails = () => {
     navigate(`/project-details/${data._id}/bid`);
   };
+
+  useEffect(() => {
+    setProjectRelistData({
+      id: data?._id,
+      name: data?.name,
+    });
+  }, []);
 
   return (
     <ProjectWrapper className={className}>
@@ -41,9 +49,17 @@ const ProjectBidCard = ({ data, className }) => {
           toggleModal={toggleRelistListingDetailsModal}
           setRelistConfirmationModal={setRelistConfirmationModal}
           setRelistSuccessModal={setRelistSuccessModal}
+          projectRelistData={projectRelistData}
+          setProjectRelistData={setProjectRelistData}
         />
       )}
-      {relistSuccessModal && <RelistSuccessModal modal={relistSuccessModal} toggleModal={toggleRelistSuccessModal} />}
+      {relistSuccessModal && (
+        <RelistSuccessModal
+          modal={relistSuccessModal}
+          toggleModal={toggleRelistSuccessModal}
+          projectRelistData={projectRelistData}
+        />
+      )}
       <Card className="card-app-design">
         <CardBody>
           <CardTitle className="active-project-title truncate-2 mb-1.5">{data?.name}</CardTitle>

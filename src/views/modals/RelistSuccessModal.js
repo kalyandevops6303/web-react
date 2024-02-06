@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import '../custom-styles.scss';
 import GreatJobTick from '../../assets/images/greatJobGif.gif';
+import DateTime from '../../lib/date-time';
 import { RelistModalWrapper } from './style';
 
-const RelistSuccessModal = ({ modal, toggleModal }) => {
+const RelistSuccessModal = ({ modal, toggleModal, projectRelistData }) => {
   const navigate = useNavigate();
 
   const onDoneClick = () => {
@@ -26,10 +27,17 @@ const RelistSuccessModal = ({ modal, toggleModal }) => {
               <h2 className="mb-1">Project Re-listed</h2>
               <p className="note-text font-medium-3 mt-75">Your project is now re-listed in the marketplace.</p>
               <p className="note-text font-medium-3 mt-75">
-                Project Name: <span className="fw-bolder">Usage Data Collection and Payment</span>
+                Project Name: <span className="fw-bolder">{projectRelistData?.name}</span>
               </p>
               <p className="note-text font-medium-3 mt-75">
-                Listing Duration: <span className="fw-bolder">21 Days</span>
+                Listing Duration:{' '}
+                <span className="fw-bolder">
+                  {projectRelistData?.listingOption === 'select-duration'
+                    ? `${DateTime?.fromMillis(projectRelistData?.startDate).toFormat(
+                        'dd LLL yyyy',
+                      )} - ${DateTime?.fromMillis(projectRelistData?.endDate).toFormat('dd LLL yyyy')}`
+                    : `${projectRelistData?.duration} Days`}
+                </span>
               </p>
             </div>
           </div>
@@ -52,9 +60,11 @@ export default RelistSuccessModal;
 RelistSuccessModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  projectRelistData: Proptypes.object,
 };
 
 RelistSuccessModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  projectRelistData: {},
 };
