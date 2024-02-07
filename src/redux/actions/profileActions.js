@@ -45,7 +45,7 @@ const getProfile =
       if (user_type === userTypes.team) {
         res = await getTeamById(id);
       }
-      if (currentUserType !== userTypes.client && !isEditable) {
+      if (res.data.data.user_type !== userTypes.client && currentUserType !== userTypes.client && !isEditable) {
         dispatch(
           getRequestStatus({
             entity_type: res.data.data?.user_type,
