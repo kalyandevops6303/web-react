@@ -30,32 +30,34 @@ import {
 } from '../reducers/profile';
 import { getRequestStatus } from './inviteTalent';
 
-const getProfile = (id, user_type, isEditable) => async (dispatch) => {
-  dispatch(getProfileRequest());
-  let res;
-  try {
-    if (user_type === userTypes.talent) {
-      res = await getTalentService(id);
+const getProfile =
+  ({ id, user_type, isEditable, currentUserType }) =>
+  async (dispatch) => {
+    dispatch(getProfileRequest());
+    let res;
+    try {
+      if (user_type === userTypes.talent) {
+        res = await getTalentService(id);
+      }
+      if (user_type === userTypes.client) {
+        res = await getClientService(id);
+      }
+      if (user_type === userTypes.team) {
+        res = await getTeamById(id);
+      }
+      if (currentUserType !== userTypes.client && !isEditable) {
+        dispatch(
+          getRequestStatus({
+            entity_type: res.data.data?.user_type,
+            entity_id: res.data.data?.user_id || res.data.data?._id,
+          }),
+        );
+      }
+      dispatch(getProfileSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getProfileFailure);
     }
-    if (user_type === userTypes.client) {
-      res = await getClientService(id);
-    }
-    if (user_type === userTypes.team) {
-      res = await getTeamById(id);
-    }
-    if (res.data.data.user_type !== userTypes.client && !isEditable) {
-      dispatch(
-        getRequestStatus({
-          entity_type: res.data.data?.user_type,
-          entity_id: res.data.data?.user_id || res.data.data?._id,
-        }),
-      );
-    }
-    dispatch(getProfileSuccess(res.data.data));
-  } catch (error) {
-    errorHandler(error, getProfileFailure);
-  }
-};
+  };
 // eslint-disable-next-line import/prefer-default-export
 
 const makeFavourite = (id, user_type) => async (dispatch) => {

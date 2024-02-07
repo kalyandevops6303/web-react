@@ -45,7 +45,12 @@ const UserDetails = () => {
     // eslint-disable-next-line no-undef
     window?.scrollTo(0, 0);
     dispatch(
-      getProfile(param?.userId, param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(), isEditable),
+      getProfile({
+        id: param?.userId,
+        user_type: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+        isEditable,
+        currentUserType: userData?.user_type,
+      }),
     );
   }, []);
 
@@ -183,73 +188,73 @@ const UserDetails = () => {
         <Col lg="9">
           <DetailsHeaderSection>
             <Row className="pt-3 details-card">
-                <DetailsCTAHeader
-                  isTalentView={isTalentView}
-                  isTeamView={isTeamView || isClubView}
-                  isClient={isClient}
-                  data={currentProfile}
-                  isEditable={userData?._id === param?.userId}
-                  isClubProfile={currentProfile.team_type === 'CLUB'}
+              <DetailsCTAHeader
+                isTalentView={isTalentView}
+                isTeamView={isTeamView || isClubView}
+                isClient={isClient}
+                data={currentProfile}
+                isEditable={userData?._id === param?.userId}
+                isClubProfile={currentProfile.team_type === 'CLUB'}
+              />
+              <Col lg="3">
+                <Statbox
+                  title={recentProjectsMetadata?.total_records || 0}
+                  desc="Completed Projects"
+                  icon={<Check height={20} />}
+                  color="light-success"
                 />
+              </Col>
+              {isTalentView && (
                 <Col lg="3">
                   <Statbox
-                    title={recentProjectsMetadata?.total_records || 0}
-                    desc="Completed Projects"
-                    icon={<Check height={20} />}
-                    color="light-success"
+                    title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
+                    desc="Hourly Rate"
+                    icon={<img src={MoneyIcon} height={22} alt="money" />}
+                    color="light-warning"
                   />
                 </Col>
-                {isTalentView && (
+              )}
+              {isTeamView ||
+                (isClubView && (
                   <Col lg="3">
                     <Statbox
-                      title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
-                      desc="Hourly Rate"
+                      title={`${currentProfile?.total_project_value?.code || ''} ${
+                        currentProfile?.total_project_value || 0
+                      }`}
+                      desc="Total Project Value"
                       icon={<img src={MoneyIcon} height={22} alt="money" />}
                       color="light-warning"
                     />
                   </Col>
-                )}
-                {isTeamView ||
-                  (isClubView && (
-                    <Col lg="3">
-                      <Statbox
-                        title={`${currentProfile?.total_project_value?.code || ''} ${
-                          currentProfile?.total_project_value || 0
-                        }`}
-                        desc="Total Project Value"
-                        icon={<img src={MoneyIcon} height={22} alt="money" />}
-                        color="light-warning"
-                      />
-                    </Col>
-                  ))}
-                {isTalentView && (
-                  <Col lg="3">
-                    <Statbox
-                      title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
-                      desc="Work Experience"
-                      icon={<Briefcase height={20} />}
-                      color="light-warning"
-                    />
-                  </Col>
-                )}
+                ))}
+              {isTalentView && (
                 <Col lg="3">
                   <Statbox
-                    title={
-                      <>
-                        {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
-                          ? 0
-                          : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
-                        hours/week <br />
-                        {currentProfile?.availability?.timezone?.abbreviation}(
-                        {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
-                      </>
-                    }
-                    desc="Availability"
-                    icon={<Calendar height={20} />}
-                    color="light-primary"
+                    title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
+                    desc="Work Experience"
+                    icon={<Briefcase height={20} />}
+                    color="light-warning"
                   />
                 </Col>
-              </Row>
+              )}
+              <Col lg="3">
+                <Statbox
+                  title={
+                    <>
+                      {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0
+                        ? 0
+                        : round(calculateAvailableHoursPerWeek(currentProfile?.availability), 2)}{' '}
+                      hours/week <br />
+                      {currentProfile?.availability?.timezone?.abbreviation}(
+                      {currentProfile?.availability?.timezone?.offset_name || 'Time zone'})
+                    </>
+                  }
+                  desc="Availability"
+                  icon={<Calendar height={20} />}
+                  color="light-primary"
+                />
+              </Col>
+            </Row>
           </DetailsHeaderSection>
 
           <Row>
