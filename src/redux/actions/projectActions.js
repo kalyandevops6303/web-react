@@ -1,4 +1,12 @@
-import { getCardService, getProjectListingService } from '../../services/projectServices';
+import {
+  getCardService,
+  getCompletedProjectListingService,
+  getDisutedProjectListingService,
+  getInvitedProjectListingService,
+  getOngoingProjectListingService,
+  getTerminatedProjectListingService,
+  getUpcomingProjectListingService,
+} from '../../services/projectServices';
 import {
   getCardInfoErr,
   getCardInfoReq,
@@ -31,7 +39,21 @@ const getProjectListing =
       dispatch(getListReq());
     }
     try {
-      const res = await getProjectListingService({ data, metaData });
+      let res;
+      if (data?.project_filter === 'ONGOING') {
+        res = await getOngoingProjectListingService({ data, metaData });
+      } else if (data?.project_filter === 'COMPLETED') {
+        res = await getCompletedProjectListingService({ data, metaData });
+      } else if (data?.project_filter === 'UPCOMING') {
+        res = await getUpcomingProjectListingService({ data, metaData });
+      } else if (data?.project_filter === 'DISPUTED') {
+        res = await getDisutedProjectListingService({ data, metaData });
+      } else if (data?.project_filter === 'TERMINATED') {
+        res = await getTerminatedProjectListingService({ data, metaData });
+      } else if (data?.project_filter === 'INVITED') {
+        res = await getInvitedProjectListingService({ data, metaData });
+      }
+      // res = await getProjectListingService({ data, metaData });
       dispatch(storeSuccessData(res?.data?.data));
       onSuccess();
     } catch (error) {
