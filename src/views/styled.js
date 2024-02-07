@@ -42,7 +42,8 @@ const CustomBadge = styled.span`
     color: ${theme.lighGreenColor};
   }
   .COMPLETED,
-  .ACCEPTED {
+  .ACCEPTED,
+  .YET_TO_START {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
   }

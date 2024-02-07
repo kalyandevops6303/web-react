@@ -24,7 +24,7 @@ const getTagSettings = (tag) => {
     return { theme: 'light-warning', text: 'On Going' };
   }
   if (tag === 'YET_TO_START') {
-    return { theme: 'light-success', text: 'Yet to start' };
+    return { theme: 'light-success', text: 'Yet to Start' };
   }
   if (tag === 'IN_REVIEW') {
     return { theme: 'light-primary', text: 'In Review' };

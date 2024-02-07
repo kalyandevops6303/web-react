@@ -18,6 +18,7 @@ const API = {
     verifyOtp: `${apiAuthEndpoint}/api/v1/user/forgot-password/verify`,
     setNewPassword: `${apiAuthEndpoint}/api/v1/user/forgot-password/change`,
     resetPassword: `${apiAuthEndpoint}/api/v1/user/reset-password`,
+    checkAdmin: `${apiOnboardingEndpoint}/api/v1/groups/check-admin`,
   },
   static: {
     talentRoles: `${apiAuthEndpoint}/api/v1/static/talent-role`,

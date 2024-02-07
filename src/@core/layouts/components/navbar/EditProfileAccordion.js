@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   DropdownItem,
@@ -8,21 +8,23 @@ import {
   AccordionBody,
   UncontrolledTooltip,
 } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
 import { clubStatus, userProfileEdit, userTypes } from '../../../../utility/constants/Constant';
-import { selectUserData, selectSavedUserData } from '../../../../redux/selectors/authSelectors';
-import { setItemFromSession } from '../../../../utility/sessesionStorageControl';
+import { selectUserData, checkAdmin } from '../../../../redux/selectors/authSelectors';
+import { getItemFromSession, setItemFromSession } from '../../../../utility/sessesionStorageControl';
+import { checkIsAdmin } from '../../../../redux/actions/authActions';
 
 const EditProfileAccordion = () => {
   const userDetailsData = useSelector(selectUserData);
-  const selectSavedUserDetailsData = useSelector(selectSavedUserData);
+  const checkAdminData = useSelector(checkAdmin);
 
   const [open, setOpen] = useState('');
   const toggle = useCallback((id) => (open === id ? setOpen() : setOpen(id)), [open]);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const handleEditProfileForTeam = () => {
     navigate('/create-team/profile-details', {
@@ -75,10 +77,11 @@ const EditProfileAccordion = () => {
     }
   };
 
-  const notAnAdmin =
-    userDetailsData?.team_members?.map((member) => member?.user_id)?.includes(selectSavedUserDetailsData?._id) &&
-    userDetailsData?.team_members?.find((member) => member?.user_id === selectSavedUserDetailsData?._id)
-      ?.member_type !== 'ADMIN';
+  useEffect(() => {
+    if (getItemFromSession('team_id')) {
+      dispatch(checkIsAdmin(getItemFromSession('team_id')));
+    }
+  }, []);
 
   return (
     <div className="edit-accordion">
@@ -137,12 +140,12 @@ const EditProfileAccordion = () => {
                     <DropdownItem
                       onClick={() => handleEditProfileForClub('account')}
                       className="w-100 edit-link"
-                      disabled={notAnAdmin}
+                      disabled={!checkAdminData?.is_admin}
                     >
                       <span className="align-middle p-1">Account</span>
                     </DropdownItem>
                   </div>
-                  {notAnAdmin && (
+                  {!checkAdminData?.is_admin && (
                     <UncontrolledTooltip placement="left" target="account-edit" className="disabled-tooltip">
                       <p className="m-0 disabled-tooltip">Only an admin can edit the club profile</p>
                     </UncontrolledTooltip>
@@ -151,11 +154,11 @@ const EditProfileAccordion = () => {
                     <DropdownItem
                       onClick={() => handleEditProfileForClub('profile')}
                       className="w-100 edit-link"
-                      disabled={notAnAdmin}
+                      disabled={!checkAdminData?.is_admin}
                     >
                       <span className="align-middle p-1">Profile</span>
                     </DropdownItem>
-                    {notAnAdmin && (
+                    {!checkAdminData?.is_admin && (
                       <UncontrolledTooltip placement="left" target="profile-edit" className="disabled-tooltip">
                         <p className="m-0 disabled-tooltip">Only an admin can edit the club profile</p>
                       </UncontrolledTooltip>

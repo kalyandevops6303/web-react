@@ -25,7 +25,7 @@ const MilestoneOverview = ({
         <BackIconContainer>
           <ArrowLeft size={18} color={theme.white} />
         </BackIconContainer>
-        <h4 className="m-0 fw-light blue-text mt-25 mx-50">Go to Milestone</h4>
+        <h4 className="m-0 fw-light blue-text mt-25 mx-50">Go to Milestones</h4>
       </div>
     </BackButtonContainer>
 
