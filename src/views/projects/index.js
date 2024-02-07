@@ -10,6 +10,7 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
+import { clearData } from '../../redux/reducers/project';
 
 const ProjectContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -42,6 +43,9 @@ const Projects = () => {
     setItem('selectedProjectTab', routesMatch?.pathname?.split('/')?.[2]);
     dispatch(clearProjectData());
     setItem('baseRoute', 'projects');
+
+    // Cleares data for project tab
+    return () => dispatch(clearData());
   }, []);
 
   const handlePrimaryChangeFilter = (props) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
@@ -8,6 +8,7 @@ import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getItem, setItem } from '../../utility/localStorageControl';
+import { clearData } from '../../redux/reducers/clubs';
 
 const ClubContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -19,6 +20,7 @@ const ClubContainer = styled.div`
 
 const Clubs = () => {
   const userDetailsData = useSelector(userData);
+  const dispatch = useDispatch();
   const isTab = useIsTab();
   const navigate = useNavigate();
   const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedClubsTab') && 'my_clubs');
@@ -31,6 +33,9 @@ const Clubs = () => {
     setPrimaryFilter(routesMatch?.pathname?.split('/')?.[2]);
     setItem('selectedClubsTab', routesMatch?.pathname?.split('/')?.[2]);
     setItem('baseRoute', 'clubs');
+
+    // Clears my team data
+    return () => dispatch(clearData());
   }, []);
 
   // Secondary filters
