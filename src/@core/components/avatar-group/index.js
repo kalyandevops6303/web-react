@@ -17,27 +17,28 @@ import Avatar from '@components/avatar';
 
 const AvatarGroup = (props) => {
   // ** Props
-  const { data, tag, className, size, totalCount } = props;
+  const { tag, className, size, totalCount } = props;
 
   // ** Conditional Tag
   const Tag = tag || 'div';
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleProfileNavigate = (evt,item) => {
+  const handleProfileNavigate = (evt, item) => {
     evt.stopPropagation();
-    if(item?.user_id?.length > 0 && item?.user_type?.length > 0){ 
+    if (item?.user_id?.length > 0 && item?.user_type?.length > 0) {
       navigate(`/profile/${item?.user_type}/${item?.user_id}`);
     }
-  }
+  };
+
   // ** Render Data
   const renderData = () =>
-    data.map((item, i) => {
+    props?.data?.map((item, i) => {
       const ItemTag = item.tag || 'div';
       const tooltipId = item?.tooltipId ?? item.title?.split(' ').join('-');
       return (
         <Fragment key={i}>
-          {item.title ? (
+          {tooltipId ? (
             <UncontrolledTooltip placement={item.placement} target={tooltipId}>
               {item.title}
             </UncontrolledTooltip>
@@ -53,7 +54,7 @@ const AvatarGroup = (props) => {
               {...item}
               title={undefined}
               meta={undefined}
-              onClick={(evt) => handleProfileNavigate(evt,item)}
+              onClick={(evt) => handleProfileNavigate(evt, item)}
             />
           ) : null}
           {item.meta ? <ItemTag className="d-flex align-items-center ps-1">{item.meta}</ItemTag> : null}
@@ -61,16 +62,19 @@ const AvatarGroup = (props) => {
       );
     });
 
-  return (
-    <Tag
-      className={classnames('avatar-group', {
-        [className]: className,
-      })}
-    >
-      {renderData()}
-      {totalCount && <CardText className="d-flex align-items-center ps-50"> + {totalCount - 3}</CardText>}
-    </Tag>
-  );
+  if (props?.data && props?.data.length > 0) {
+    return (
+      <Tag
+        className={classnames('avatar-group', {
+          [className]: className,
+        })}
+      >
+        {props?.data && renderData()}
+        {totalCount && <CardText className="d-flex align-items-center ps-50"> + {totalCount - 3}</CardText>}
+      </Tag>
+    );
+  }
+  return null;
 };
 
 export default AvatarGroup;

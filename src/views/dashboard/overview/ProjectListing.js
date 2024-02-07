@@ -19,7 +19,7 @@ import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace, getTeamId } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, getTeamId, calculateRemainingBidsCount } from '../../../utility/Utils';
 
 import {
   activeProjectsForClient,
@@ -43,6 +43,7 @@ import {
   getActiveProjectsForClient,
   getActiveProjectsForTalent,
   getActiveProjectsForTeam,
+  getDashboardUpcomingPayments,
   getRecommendedProjects,
   getUpcomingProjectsForClient,
   getUpcomingProjectsForTalent,
@@ -58,9 +59,11 @@ import UpcomingProjectCardForTalent from './UpcomingProjectCardForTalent';
 import UpcomingProjectCardForTeam from './UpcomingProjectCardForTeam';
 import ActiveProjectCardForTeam from './ActiveProjectCardForTeam';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
-import { getDashboardUpcomingPayments } from '../../../redux/actions/milestonePaymentActions';
 import UpcomingPaymentsCard from './UpcomingPaymentsCard';
 import { clearUpcomingPayments } from '../../../redux/reducers/milestonePayment';
+import Tag from '../../../@core/components/tags';
+import ViewAllCard from './ExtraCardWithCount';
+import { AccordionName } from './DashboardConstant';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
@@ -208,8 +211,8 @@ const ProjectListing = () => {
   const upcomingProjectsForTeamData = useSelector(upcomingProjectsForTeam);
   const upcomingProjectsForTeamIsLoading = useSelector(upcomingProjectsForTeamLoading);
 
-  const upcomingPaymentData = useSelector((state) => state?.milestonePayment?.upcomingPaymentsData);
-  const upcomingPaymentDataLoading = useSelector((state) => state?.milestonePayment?.upcomingPaymentDataLoading);
+  const upcomingPaymentData = useSelector((state) => state?.dashboard?.upcomingPaymentsData);
+  const upcomingPaymentDataLoading = useSelector((state) => state?.dashboard?.upcomingPaymentDataLoading);
 
   const handleViewAll = (e) => {
     e.stopPropagation();
@@ -225,42 +228,37 @@ const ProjectListing = () => {
   }, [open]);
 
   useEffect(() => {
-    if (open === '1') {
-      if (userDetailsData?.user_type === userTypes.client) {
-        dispatch(getActiveProjectsForClient());
-      } else if (userDetailsData?.user_type === userTypes.talent) {
-        dispatch(getActiveProjectsForTalent());
-      } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
-        dispatch(getActiveProjectsForTeam());
-      } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
-        dispatch(getActiveProjectsForTeam());
-      }
+    if (userDetailsData?.user_type === userTypes.client) {
+      dispatch(getActiveProjectsForClient());
+    } else if (userDetailsData?.user_type === userTypes.talent) {
+      dispatch(getActiveProjectsForTalent());
+    } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
+      dispatch(getActiveProjectsForTeam());
+    } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
+      dispatch(getActiveProjectsForTeam());
     }
-    if (open === '2') {
-      if (userDetailsData?.user_type === userTypes.client) {
-        dispatch(getUpcomingProjectsForClient());
-      } else if (userDetailsData?.user_type === userTypes.talent) {
-        dispatch(getUpcomingProjectsForTalent());
-      } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
-        dispatch(getUpcomingProjectsForTeam());
-      } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
-        dispatch(getUpcomingProjectsForTeam());
-      }
+
+    if (userDetailsData?.user_type === userTypes.client) {
+      dispatch(getUpcomingProjectsForClient());
+    } else if (userDetailsData?.user_type === userTypes.talent) {
+      dispatch(getUpcomingProjectsForTalent());
+    } else if (userDetailsData?.team_type === userTypes.team && getTeamId('team_id')) {
+      dispatch(getUpcomingProjectsForTeam());
+    } else if (userDetailsData?.team_type === userTypes.club && getTeamId('team_id')) {
+      dispatch(getUpcomingProjectsForTeam());
     }
-    if (open === '3') {
-      if (
-        userDetailsData?.user_type === userTypes.talent ||
-        userDetailsData?.team_type === userTypes.team ||
-        userDetailsData?.team_type === userTypes.club
-      ) {
-        dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
-      }
+
+    if (
+      userDetailsData?.user_type === userTypes.talent ||
+      userDetailsData?.team_type === userTypes.team ||
+      userDetailsData?.team_type === userTypes.club
+    ) {
+      dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
     }
-    if (open === '4') {
-      dispatch(clearUpcomingPayments());
-      dispatch(getDashboardUpcomingPayments());
-    }
-  }, [open]);
+
+    dispatch(clearUpcomingPayments());
+    dispatch(getDashboardUpcomingPayments());
+  }, []);
 
   const onViewAllClick = (e, path) => {
     e.stopPropagation();
@@ -275,7 +273,15 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Active Projects</span>
+                <span className="d-flex align-items-center">
+                  Active Projects
+                  <Tag
+                    hasNew={
+                      activeProjectsForClientData?.unreadCount > 0 ? activeProjectsForClientData?.unreadCount : false
+                    }
+                    count={activeProjectsForClientData?.metadata?.total_records}
+                  />
+                </span>
                 {activeProjectsForClientData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/ongoing')} className="view-all-cta">
                     View All
@@ -294,134 +300,39 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {activeProjectsForClientData?.data?.length > 0 && isTab ? (
                     activeProjectsForClientData?.data?.map((project) => (
-                      <ActiveProjectCard key={project._id} data={project} />
+                      <ActiveProjectCard
+                        accordionName={AccordionName.activeProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : activeProjectsForClientData?.data?.length > 0 ? (
                     <>
                       {activeProjectsForClientData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {activeProjectsForClientData?.data?.map((project, index) => (
-                            <ActiveProjectCard className={`slide-${index}`} key={project._id} data={project} />
+                            <ActiveProjectCard
+                              accordionName={AccordionName.activeProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
+
+                          {activeProjectsForClientData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.activeProjects}
+                              height={420}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                              count={calculateRemainingBidsCount(activeProjectsForClientData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
                           {activeProjectsForClientData?.data?.map((project) => (
-                            <ActiveProjectCard className="custom-slider-project" key={project._id} data={project} />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Empty
-                      active={false}
-                      isEducationNotCompleted={returnDetailsForMarketPlace(
-                        userDetailsData?.user_type,
-                        profilePercentageData?.values_missing,
-                      )}
-                      recommended
-                      payment={false}
-                    />
-                  )}
-                </ProjectsListingWrap>
-              )}
-            </AccordionBody>
-          </AccordionItem>
-          <AccordionItem>
-            <AccordionHeader targetId="2">
-              <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Upcoming Projects</span>
-                {activeProjectsForClientData?.data?.length > 0 && (
-                  <CardText onClick={(e) => onViewAllClick(e, '/projects/upcoming')} className="view-all-cta">
-                    View All
-                  </CardText>
-                )}
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="2">
-              {isSliderLoading || upcomingProjectsForClientIsLoading ? (
-                <div style={{ height: '250px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-                </div>
-              ) : (
-                <ProjectsListingWrap>
-                  {upcomingProjectsForClientData?.data?.length > 0 && isTab ? (
-                    upcomingProjectsForClientData?.data?.map((project) => (
-                      <UpcomingProjectCard key={project._id} data={project} />
-                    ))
-                  ) : upcomingProjectsForClientData?.data?.length > 0 ? (
-                    <>
-                      {upcomingProjectsForClientData?.data?.length >= 4 ? (
-                        <Slider {...settings}>
-                          {upcomingProjectsForClientData?.data?.map((project, index) => (
-                            <UpcomingProjectCard className={`slide-${index}`} key={project._id} data={project} />
-                          ))}
-                        </Slider>
-                      ) : (
-                        <div className="custom-slider-wrap">
-                          {upcomingProjectsForClientData?.data?.map((project) => (
-                            <UpcomingProjectCard className="custom-slider-project" key={project._id} data={project} />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Empty
-                      active={false}
-                      isEducationNotCompleted={returnDetailsForMarketPlace(
-                        userDetailsData?.user_type,
-                        profilePercentageData?.values_missing,
-                      )}
-                      recommended
-                      payment={false}
-                    />
-                  )}
-                </ProjectsListingWrap>
-              )}
-            </AccordionBody>
-          </AccordionItem>
-        </>
-      )}
-      {userDetailsData?.user_type === userTypes.talent && (
-        <>
-          <AccordionItem>
-            <AccordionHeader targetId="1">
-              <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Active Projects</span>
-                {activeProjectsForTalentData?.data?.length > 0 && (
-                  <CardText onClick={(e) => onViewAllClick(e, '/projects/ongoing')} className="view-all-cta">
-                    View All
-                  </CardText>
-                )}
-              </AccordionHeadStyle>
-            </AccordionHeader>
-            <AccordionBody accordionId="1">
-              {isSliderLoading || activeProjectsForTalentIsLoading ? (
-                <div style={{ height: '340px' }} className="d-flex justify-content-center gap-1">
-                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
-                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
-                </div>
-              ) : (
-                <ProjectsListingWrap>
-                  {activeProjectsForTalentData?.data?.length > 0 && isTab ? (
-                    activeProjectsForTalentData?.data?.map((project) => (
-                      <ActiveProjectCardForTalent key={project._id} data={project} />
-                    ))
-                  ) : activeProjectsForTalentData?.data?.length > 0 ? (
-                    <>
-                      {activeProjectsForTalentData?.data?.length >= 4 ? (
-                        <Slider {...settings}>
-                          {activeProjectsForTalentData?.data?.map((project, index) => (
-                            <ActiveProjectCardForTalent className={`slide-${index}`} key={project._id} data={project} />
-                          ))}
-                        </Slider>
-                      ) : (
-                        <div className="custom-slider-wrap">
-                          {activeProjectsForTalentData?.data?.map((project) => (
-                            <ActiveProjectCardForTalent
+                            <ActiveProjectCard
+                              accordionName={AccordionName.activeProjects}
                               className="custom-slider-project"
                               key={project._id}
                               data={project}
@@ -448,7 +359,195 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Upcoming Projects</span>
+                <span className="d-flex align-items-center">
+                  Upcoming Projects{' '}
+                  <Tag
+                    hasNew={
+                      upcomingProjectsForClientData?.unreadCount > 0
+                        ? upcomingProjectsForClientData?.unreadCount
+                        : false
+                    }
+                    count={upcomingProjectsForClientData?.metadata?.total_records}
+                  />
+                </span>
+                {activeProjectsForClientData?.data?.length > 0 && (
+                  <CardText onClick={(e) => onViewAllClick(e, '/projects/upcoming')} className="view-all-cta">
+                    View All
+                  </CardText>
+                )}
+              </AccordionHeadStyle>
+            </AccordionHeader>
+            <AccordionBody accordionId="2">
+              {isSliderLoading || upcomingProjectsForClientIsLoading ? (
+                <div style={{ height: '250px' }} className="d-flex justify-content-center gap-1">
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
+                </div>
+              ) : (
+                <ProjectsListingWrap>
+                  {upcomingProjectsForClientData?.data?.length > 0 && isTab ? (
+                    upcomingProjectsForClientData?.data?.map((project) => (
+                      <UpcomingProjectCard
+                        accordionName={AccordionName.upcomingProjects}
+                        key={project._id}
+                        data={project}
+                      />
+                    ))
+                  ) : upcomingProjectsForClientData?.data?.length > 0 ? (
+                    <>
+                      {upcomingProjectsForClientData?.data?.length >= 4 ? (
+                        <Slider {...settings}>
+                          {upcomingProjectsForClientData?.data?.map((project, index) => (
+                            <UpcomingProjectCard
+                              accordionName={AccordionName.upcomingProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
+                          ))}
+
+                          {upcomingProjectsForClientData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.upcomingProjects}
+                              height={274}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/upcoming')}
+                              count={calculateRemainingBidsCount(upcomingProjectsForClientData)}
+                            />
+                          )}
+                        </Slider>
+                      ) : (
+                        <div className="custom-slider-wrap">
+                          {upcomingProjectsForClientData?.data?.map((project) => (
+                            <UpcomingProjectCard
+                              accordionName={AccordionName.upcomingProjects}
+                              className="custom-slider-project"
+                              key={project._id}
+                              data={project}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Empty
+                      active={false}
+                      isEducationNotCompleted={returnDetailsForMarketPlace(
+                        userDetailsData?.user_type,
+                        profilePercentageData?.values_missing,
+                      )}
+                      recommended
+                      payment={false}
+                    />
+                  )}
+                </ProjectsListingWrap>
+              )}
+            </AccordionBody>
+          </AccordionItem>
+        </>
+      )}
+      {userDetailsData?.user_type === userTypes.talent && (
+        <>
+          <AccordionItem>
+            <AccordionHeader targetId="1">
+              <AccordionHeadStyle>
+                <span className="d-flex align-items-center">
+                  Active Projects
+                  <Tag
+                    hasNew={
+                      activeProjectsForTalentData?.unreadCount > 0 ? activeProjectsForTalentData?.unreadCount : false
+                    }
+                    count={activeProjectsForTalentData?.metadata?.total_records}
+                  />
+                </span>
+                {activeProjectsForTalentData?.data?.length > 0 && (
+                  <CardText onClick={(e) => onViewAllClick(e, '/projects/ongoing')} className="view-all-cta">
+                    View All
+                  </CardText>
+                )}
+              </AccordionHeadStyle>
+            </AccordionHeader>
+            <AccordionBody accordionId="1">
+              {isSliderLoading || activeProjectsForTalentIsLoading ? (
+                <div style={{ height: '340px' }} className="d-flex justify-content-center gap-1">
+                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                  <img style={{ width: '28%', flex: 1, height: '310px' }} src={CardSkeleton} alt="...Loading" />
+                </div>
+              ) : (
+                <ProjectsListingWrap>
+                  {activeProjectsForTalentData?.data?.length > 0 && isTab ? (
+                    activeProjectsForTalentData?.data?.map((project) => (
+                      <ActiveProjectCardForTalent
+                        accordionName={AccordionName.activeProjects}
+                        key={project._id}
+                        data={project}
+                      />
+                    ))
+                  ) : activeProjectsForTalentData?.data?.length > 0 ? (
+                    <>
+                      {activeProjectsForTalentData?.data?.length >= 4 ? (
+                        <Slider {...settings}>
+                          {activeProjectsForTalentData?.data?.map((project, index) => (
+                            <ActiveProjectCardForTalent
+                              accordionName={AccordionName.activeProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
+                          ))}
+
+                          {activeProjectsForTalentData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.activeProjects}
+                              height={333}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                              count={calculateRemainingBidsCount(activeProjectsForTalentData)}
+                            />
+                          )}
+                        </Slider>
+                      ) : (
+                        <div className="custom-slider-wrap">
+                          {activeProjectsForTalentData?.data?.map((project) => (
+                            <ActiveProjectCardForTalent
+                              accordionName={AccordionName.activeProjects}
+                              className="custom-slider-project"
+                              key={project._id}
+                              data={project}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Empty
+                      active={false}
+                      isEducationNotCompleted={returnDetailsForMarketPlace(
+                        userDetailsData?.user_type,
+                        profilePercentageData?.values_missing,
+                      )}
+                      recommended
+                      payment={false}
+                    />
+                  )}
+                </ProjectsListingWrap>
+              )}
+            </AccordionBody>
+          </AccordionItem>
+          <AccordionItem>
+            <AccordionHeader targetId="2">
+              <AccordionHeadStyle>
+                <span className="d-flex align-items-center">
+                  Upcoming Projects{' '}
+                  <Tag
+                    hasNew={
+                      upcomingProjectsForTalentData?.unreadCount > 0
+                        ? upcomingProjectsForTalentData?.unreadCount
+                        : false
+                    }
+                    count={upcomingProjectsForTalentData?.metadata?.total_records}
+                  />
+                </span>
                 {upcomingProjectsForTalentData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/upcoming')} className="view-all-cta">
                     View All
@@ -467,7 +566,11 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {upcomingProjectsForTalentData?.data?.length > 0 && isTab ? (
                     upcomingProjectsForTalentData?.data?.map((project) => (
-                      <UpcomingProjectCardForTalent key={project._id} data={project} />
+                      <UpcomingProjectCardForTalent
+                        accordionName={AccordionName.upcomingProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : upcomingProjectsForTalentData?.data?.length > 0 ? (
                     <>
@@ -475,16 +578,27 @@ const ProjectListing = () => {
                         <Slider {...settings}>
                           {upcomingProjectsForTalentData?.data?.map((project, index) => (
                             <UpcomingProjectCardForTalent
+                              accordionName={AccordionName.upcomingProjects}
                               className={`slide-${index}`}
                               key={project._id}
                               data={project}
                             />
                           ))}
+
+                          {upcomingProjectsForTalentData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.upcomingProjects}
+                              height={268}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/upcoming')}
+                              count={calculateRemainingBidsCount(upcomingProjectsForTalentData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
                           {upcomingProjectsForTalentData?.data?.map((project) => (
                             <UpcomingProjectCardForTalent
+                              accordionName={AccordionName.upcomingProjects}
                               className="custom-slider-project"
                               key={project._id}
                               data={project}
@@ -515,7 +629,13 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Active Projects</span>
+                <span className="d-flex align-items-center">
+                  Active Projects{' '}
+                  <Tag
+                    hasNew={activeProjectsForTeamData?.unreadCount > 0 ? activeProjectsForTeamData?.unreadCount : false}
+                    count={activeProjectsForTeamData?.metadata?.total_records}
+                  />
+                </span>
                 {activeProjectsForTeamData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/ongoing')} className="view-all-cta">
                     View All
@@ -534,20 +654,39 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {activeProjectsForTeamData?.data?.length > 0 && isTab ? (
                     activeProjectsForTeamData?.data?.map((project) => (
-                      <ActiveProjectCardForTeam key={project._id} data={project} />
+                      <ActiveProjectCardForTeam
+                        accordionName={AccordionName.activeProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : activeProjectsForTeamData?.data?.length > 0 ? (
                     <>
                       {activeProjectsForTeamData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {activeProjectsForTeamData?.data?.map((project, index) => (
-                            <ActiveProjectCardForTeam className={`slide-${index}`} key={project._id} data={project} />
+                            <ActiveProjectCardForTeam
+                              accordionName={AccordionName.activeProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
+
+                          {activeProjectsForTeamData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.activeProjects}
+                              height={333}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/ongoing')}
+                              count={calculateRemainingBidsCount(activeProjectsForTeamData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
                           {activeProjectsForTeamData?.data?.map((project) => (
                             <ActiveProjectCardForTeam
+                              accordionName={AccordionName.activeProjects}
                               className="custom-slider-project"
                               key={project._id}
                               data={project}
@@ -574,8 +713,16 @@ const ProjectListing = () => {
           <AccordionItem>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Upcoming Projects</span>
-                {activeProjectsForTeamData?.data?.length > 0 && (
+                <span className="d-flex align-items-center">
+                  Upcoming Projects{' '}
+                  <Tag
+                    hasNew={
+                      upcomingProjectsForTeamData?.unreadCount > 0 ? upcomingProjectsForTeamData?.unreadCount : false
+                    }
+                    count={upcomingProjectsForTeamData?.metadata?.total_records}
+                  />
+                </span>
+                {upcomingProjectsForTeamData?.data?.length > 0 && (
                   <CardText onClick={(e) => onViewAllClick(e, '/projects/upcoming')} className="view-all-cta">
                     View All
                   </CardText>
@@ -593,20 +740,40 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {upcomingProjectsForTeamData?.data?.length > 0 && isTab ? (
                     upcomingProjectsForTeamData?.data?.map((project) => (
-                      <UpcomingProjectCardForTeam key={project._id} data={project} />
+                      <UpcomingProjectCardForTeam
+                        accordionName={AccordionName.upcomingProjects}
+                        key={project._id}
+                        data={project}
+                      />
                     ))
                   ) : upcomingProjectsForTeamData?.data?.length > 0 ? (
                     <>
                       {upcomingProjectsForTeamData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {upcomingProjectsForTeamData?.data?.map((project, index) => (
-                            <UpcomingProjectCardForTeam className={`slide-${index}`} key={project._id} data={project} />
+                            <UpcomingProjectCardForTeam
+                              accordionName={AccordionName.upcomingProjects}
+                              className={`slide-${index}`}
+                              key={project._id}
+                              data={project}
+                            />
                           ))}
+
+                          {upcomingProjectsForTeamData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.upcomingProjects}
+                              height={268}
+                              width={250}
+                              onViewAll={(e) => onViewAllClick(e, '/projects/upcoming')}
+                              count={calculateRemainingBidsCount(upcomingProjectsForTeamData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
                           {upcomingProjectsForTeamData?.data?.map((project) => (
                             <UpcomingProjectCardForTeam
+                              accordionName={AccordionName.upcomingProjects}
                               className="custom-slider-project"
                               key={project._id}
                               data={project}
@@ -637,7 +804,13 @@ const ProjectListing = () => {
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Recommended Projects</span>
+                <span className="d-flex align-items-center">
+                  Recommended Projects{' '}
+                  <Tag
+                    hasNew={recommendedProjectsData?.unreadCount > 0 ? recommendedProjectsData?.unreadCount : false}
+                    count={recommendedProjectsData?.metadata?.total_records}
+                  />
+                </span>
                 {recommendedProjectsData?.data?.length > 0 && (
                   <CardText onClick={handleViewAll} className="view-all-cta">
                     View All
@@ -656,20 +829,46 @@ const ProjectListing = () => {
                 <ProjectsListingWrap>
                   {recommendedProjectsData?.data?.length > 0 && isTab ? (
                     recommendedProjectsData?.data?.map((project) => (
-                      <Project key={project.id} data={project} recommended />
+                      <Project
+                        accordionName={AccordionName.recommendedProjects}
+                        key={project.id}
+                        data={project}
+                        recommended
+                      />
                     ))
                   ) : recommendedProjectsData?.data?.length > 0 ? (
                     <>
                       {recommendedProjectsData?.data?.length >= 4 ? (
                         <Slider {...settings}>
                           {recommendedProjectsData?.data?.map((project, index) => (
-                            <Project className={`slide-${index}`} key={project.id} data={project} recommended />
+                            <Project
+                              accordionName={AccordionName.recommendedProjects}
+                              className={`slide-${index}`}
+                              key={project.id}
+                              data={project}
+                              recommended
+                            />
                           ))}
+
+                          {recommendedProjectsData?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.recommendedProjects}
+                              height={380}
+                              onViewAll={handleViewAll}
+                              count={calculateRemainingBidsCount(recommendedProjectsData)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
                           {recommendedProjectsData?.data?.map((project) => (
-                            <Project className="custom-slider-project" key={project.id} data={project} recommended />
+                            <Project
+                              accordionName={AccordionName.recommendedProjects}
+                              className="custom-slider-project"
+                              key={project.id}
+                              data={project}
+                              recommended
+                            />
                           ))}
                         </div>
                       )}
@@ -693,7 +892,13 @@ const ProjectListing = () => {
       </AccordionItem>
       {userDetailsData?.user_type === userTypes.team ? null : (
         <AccordionItem>
-          <AccordionHeader targetId="4">Upcoming Payments</AccordionHeader>
+          <AccordionHeader targetId="4">
+            Upcoming Payments
+            <Tag
+              hasNew={upcomingPaymentData?.unreadCount > 0 ? upcomingPaymentData?.unreadCount : false}
+              count={upcomingPaymentData?.metadata?.total_records}
+            />
+          </AccordionHeader>
           <AccordionBody accordionId="4">
             {isSliderLoading || upcomingPaymentDataLoading ? (
               <div style={{ height: '250px' }} className="d-flex justify-content-center gap-1">
@@ -704,19 +909,41 @@ const ProjectListing = () => {
             ) : (
               <ProjectsListingWrap>
                 {upcomingPaymentData?.data?.length > 0 && isTab ? (
-                  upcomingPaymentData?.data?.map((project) => <UpcomingPaymentsCard key={project._id} data={project} />)
+                  upcomingPaymentData?.data?.map((project) => (
+                    <UpcomingPaymentsCard accordionName={AccordionName.payments} key={project._id} data={project} />
+                  ))
                 ) : upcomingPaymentData?.data?.length > 0 ? (
                   <>
                     {upcomingPaymentData?.data?.length >= 4 ? (
                       <Slider {...settings}>
                         {upcomingPaymentData?.data?.map((project, index) => (
-                          <UpcomingPaymentsCard className={`slide-${index}`} key={project._id} data={project} />
+                          <UpcomingPaymentsCard
+                            accordionName={AccordionName.payments}
+                            className={`slide-${index}`}
+                            key={project._id}
+                            data={project}
+                          />
                         ))}
+
+                        {upcomingPaymentData?.metadata?.total_records > 10 && (
+                          <ViewAllCard
+                            accordionName={AccordionName.payments}
+                            height={332}
+                            width={250}
+                            onViewAll={handleViewAll}
+                            count={calculateRemainingBidsCount(upcomingPaymentData)}
+                          />
+                        )}
                       </Slider>
                     ) : (
                       <div className="custom-slider-wrap">
                         {upcomingPaymentData?.data?.map((project) => (
-                          <UpcomingPaymentsCard className="custom-slider-project" key={project._id} data={project} />
+                          <UpcomingPaymentsCard
+                            accordionName={AccordionName.payments}
+                            className="custom-slider-project"
+                            key={project._id}
+                            data={project}
+                          />
                         ))}
                       </div>
                     )}

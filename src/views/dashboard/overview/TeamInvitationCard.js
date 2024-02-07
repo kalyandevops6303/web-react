@@ -8,6 +8,7 @@ import AvatarGroup from '@components/avatar-group';
 // ** Reactstrap Imports
 import { useNavigate } from 'react-router';
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
+import { useDispatch } from 'react-redux';
 
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -15,6 +16,8 @@ import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { ProjectWrapper } from './style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
 const UserSection = ({ totalCount, users, name, projectName }) => (
   <div className="user-section">
@@ -56,10 +59,24 @@ UserSection.propTypes = {
   projectName: PropTypes.string,
 };
 
-const TeamInvitaionCard = ({ data, className }) => {
+const TeamInvitaionCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        team_id: data._id,
+      },
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData }));
+  };
 
   const handleRedirect = () => {
+    if (data?.is_read === false) {
+      updateCard();
+    }
     if (data?.project?._id) {
       navigate(`/project-details/${data?.project?._id}/project/project-invitation/${data?.request_id}`);
     } else {
@@ -83,9 +100,10 @@ const TeamInvitaionCard = ({ data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {!data?.is_new && <NewTag />}
         <CardBody>
-          <CardTitle className="mt-50 active-project-title truncate-2 mb-50">{data?.project?.name}</CardTitle>
+          <CardTitle className="mt-50 active-project-title truncate-2 mb-50 d-none">{data?.project?.name}</CardTitle>
           <div className="d-flex">
             <RatingBadge number="0" />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
@@ -121,6 +139,7 @@ const TeamInvitaionCard = ({ data, className }) => {
 };
 
 TeamInvitaionCard.propTypes = {
+  accordionName: PropTypes.string,
   data: PropTypes.object,
   className: PropTypes.string,
 };

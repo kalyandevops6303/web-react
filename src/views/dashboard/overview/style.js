@@ -375,6 +375,27 @@ const ProjectWrapper = styled.div`
       font-weight: 600;
     }
   }
+
+  .new-tag-relative-card {
+    position: relative;
+  }
+`;
+
+const NewTagWrap = styled.div`
+  position: absolute;
+  right: 0;
+  border-radius: 0px 6px 0px 12px;
+  background: rgba(9, 54, 130, 0.08);
+
+  .red-dot {
+    width: 6px;
+    height: 6px;
+    background-color: ${theme.red};
+    border-radius: 50%;
+  }
+  p {
+    color: ${theme.newTagColor};
+  }
 `;
 
 const ProjectsListingWrap = styled.div`
@@ -569,4 +590,5 @@ export {
   DisputesLegend,
   DisputesChartContainer,
   InReviewButton,
+  NewTagWrap,
 };

@@ -13,8 +13,8 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
 import ProjectModal from '../../modals/ProjectModal';
@@ -24,7 +24,9 @@ import { selectIsTeamLoggedIn, selectUserData } from '../../../redux/selectors/a
 import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { returnFormattedRating } from '../../../utility/Utils';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
-import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
+import { AccordionName } from './DashboardConstant';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -67,10 +69,12 @@ UserSection.propTypes = {
   totalCount: PropTypes.number,
 };
 
-const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
+const TeamTalentCard = ({ accordionName, isRecommendedTeam, open, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const userDetailsData = useSelector(selectUserData);
+
+  const dispatch = useDispatch();
 
   const isDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
   const navigate = useNavigate();
@@ -104,14 +108,41 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
     }
   };
 
+  const updateCard = () => {
+    const postData = {
+      type: accordionName,
+      metadata: {},
+    };
+    if (accordionName === AccordionName.recommendedTalents) {
+      postData.metadata.user_id = data._id;
+    }
+    if (accordionName === AccordionName.recommendedTeams) {
+      postData.metadata.team_id = data._id;
+    }
+    if (accordionName === AccordionName.recommendedMembers) {
+      postData.metadata.team_id = data._id;
+    }
+    dispatch(updateCardStatus({ data: postData }));
+  };
+
   const handleViewTeam = (id) => {
-    setItemFromSession('team_id', id);
+    if (data?.is_read === false) {
+      updateCard();
+    }
     navigate(`/profile/team/${id}`);
+  };
+
+  const handleViewTalent = (id) => {
+    if (data?.is_read === false) {
+      updateCard();
+    }
+    navigate(`/profile/talent/${id}`);
   };
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {!data?.is_read && <NewTag />}
         <CardBody>
           {isRecommendedTeam ? (
             <div className="d-flex w-100 mb-1">
@@ -225,7 +256,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
               {isDisabled ? (
                 <span className="text-muted cursor-not-allowed">View Talent Profile</span>
               ) : (
-                <Link to={`/profile/talent/${data?.user_id}`}>View Talent Profile</Link>
+                <span onClick={() => handleViewTalent(data?.user_id)}>View Talent Profile</span>
               )}
             </div>
           ) : (
@@ -244,6 +275,7 @@ const TeamTalentCard = ({ isRecommendedTeam, open, data, className }) => {
 };
 
 TeamTalentCard.propTypes = {
+  accordionName: PropTypes.string,
   data: PropTypes.object,
   className: PropTypes.string,
   isRecommendedTeam: PropTypes.bool,

@@ -20,7 +20,9 @@ const Tagwrapper = styled.div`
     border-radius: 50%;
     background: red;
     display: block;
-    margin-top: -2px;
+    margin-top: -1px;
+    margin-left: -7px;
+    outline: 1.5px solid white;
   }
 `;
 export default Tagwrapper;

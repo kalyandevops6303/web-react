@@ -1,5 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import { Badge, Card, CardBody, CardText } from 'reactstrap';
@@ -12,12 +13,36 @@ import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const UpcomingPaymentsCard = ({ data, className }) => {
+const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
   const [openSwitchModal, setOpenSwitchModal] = useState(false);
 
+  const dispatch = useDispatch();
+
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        project_id: data._id,
+      },
+      type: accordionName,
+    };
+    dispatch(
+      updateCardStatus({
+        id: data?._id,
+        switch_team_id: data?.switch_team_id,
+        data: postData,
+        type: 'upcomingPaymentsData',
+      }),
+    );
+  };
+
   const handleViewDetails = (transactionData) => {
+    if (data?.is_read === false) {
+      updateCard();
+    }
     if (data?.switch_team_id?.length > 0) {
       setOpenSwitchModal(true);
     } else {
@@ -27,7 +52,8 @@ const UpcomingPaymentsCard = ({ data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {!data?.is_read && <NewTag />}
         <CardBody>
           {data?.payment_status?.length > 0 ? (
             <CustomBadge>
@@ -121,6 +147,8 @@ const UpcomingPaymentsCard = ({ data, className }) => {
       </Card>
       {openSwitchModal && (
         <SwitchConfirmModal
+          cardData={data}
+          onUpdateCard={updateCard}
           entity={data?.switch_team_id ? 'TEAM' : 'TALENT'}
           navigateTo={`/project-details/${data?._id}/payment`}
           switchTeamId={data?.switch_team_id}
@@ -135,11 +163,15 @@ const UpcomingPaymentsCard = ({ data, className }) => {
 export default UpcomingPaymentsCard;
 
 UpcomingPaymentsCard.propTypes = {
+  switch_team_id: Proptypes.string,
   data: Proptypes.object,
   className: Proptypes.string,
+  accordionName: Proptypes.string,
 };
 
 UpcomingPaymentsCard.defaultProps = {
+  switch_team_id: '',
   data: {},
   className: '',
+  accordionName: '',
 };

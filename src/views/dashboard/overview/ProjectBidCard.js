@@ -1,22 +1,40 @@
 import React from 'react';
 import Proptypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const ProjectBidCard = ({ data, className }) => {
+const ProjectBidCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        project_id: data._id,
+      },
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData }));
+  };
 
   const viewDetails = () => {
+    if (data?.is_read === false) {
+      updateCard();
+    }
     navigate(`/project-details/${data._id}/bid`);
   };
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {data?.is_read === false && <NewTag />}
         <CardBody>
-          <CardTitle className="active-project-title truncate-2 mb-1.5">{data?.name}</CardTitle>
+          <CardTitle className="active-project-title truncate-2 mb-1.5 mt-50">{data?.name}</CardTitle>
           <div className="bottom-detail d-flex mt-1 align-items-center">
             <div className="design-planning-wrapper mb-0 w-50">
               <div className="design-planning mb-0">
@@ -46,9 +64,11 @@ export default ProjectBidCard;
 ProjectBidCard.propTypes = {
   data: Proptypes.object,
   className: Proptypes.string,
+  accordionName: Proptypes.string,
 };
 
 ProjectBidCard.defaultProps = {
   data: {},
   className: '',
+  accordionName: '',
 };

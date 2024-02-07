@@ -22,7 +22,7 @@ import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, calculateRemainingBidsCount } from '../../../utility/Utils';
 
 import {
   profilePercentage,
@@ -36,6 +36,9 @@ import { getJoinRequest, getRecommendedProjects, getRecommendedTalent } from '..
 import theme from '../../../configs/themeVariables';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
+import Tag from '../../../@core/components/tags';
+import { AccordionName } from './DashboardConstant';
+import ViewAllCard from './ExtraCardWithCount';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
@@ -158,13 +161,16 @@ const TalentListing = () => {
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
   useEffect(() => {
-    if (open === '1') {
-      dispatch(getJoinRequest(userDetailsData?._id));
-    }
-    if (open === '2') {
-      dispatch(getRecommendedTalent(userDetailsData?._id));
-    }
-  }, [open]);
+    // if (open === '1') {
+    //   dispatch(getJoinRequest(userDetailsData?._id));
+    // }
+    // if (open === '2') {
+    //   dispatch(getRecommendedTalent(userDetailsData?._id));
+    // }
+
+    dispatch(getJoinRequest(userDetailsData?._id));
+    dispatch(getRecommendedTalent(userDetailsData?._id));
+  }, []);
 
   const settings = {
     dots: false,
@@ -196,85 +202,118 @@ const TalentListing = () => {
 
   return (
     <Accordion className="accordion-margin" open={open} toggle={toggle}>
-      <AccordionItem>
-        <AccordionHeader targetId="1">
-          <AccordionHeadStyle>
-            <span className="d-flex align-items-center">Join Requests</span>
-            {joinRequests?.data?.length > 0 && (
-              <CardText
-                onClick={() => {
-                  if (!isDisabled) {
-                    navigate('/my-teams/join_requests');
-                    dispatch(setActiveNavTab('my-teams'));
-                  }
-                }}
-                className={`view-all-cta ${isDisabled && 'text-muted'}`}
-              >
-                View All
-              </CardText>
-            )}
-          </AccordionHeadStyle>
-        </AccordionHeader>
-        <AccordionBody accordionId="1">
-          {isSliderLoading || isJoinRequestLoading ? (
-            <div style={{ height: '200px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
-              <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
-              <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
-              <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
-            </div>
-          ) : (
-            <ProjectsListingWrap>
-              {joinRequests?.data?.length > 0 && isTab ? (
-                joinRequests?.data?.map((project) => (
-                  <TalentsListingForTeamUser key={project.id} data={project} recommended />
-                ))
-              ) : joinRequests?.data?.length > 0 ? (
-                <>
-                  {joinRequests?.data?.length >= 4 ? (
-                    <Slider {...settings}>
-                      {joinRequests?.data?.map((project, index) => (
-                        <TalentsListingForTeamUser
-                          className={`slide-${index}`}
-                          key={project.id}
-                          data={project}
-                          recommended
-                        />
-                      ))}
-                    </Slider>
-                  ) : (
-                    <div className="custom-slider-wrap">
-                      {joinRequests?.data?.map((project) => (
-                        <TalentsListingForTeamUser
-                          className="custom-slider-project"
-                          key={project.id}
-                          data={project}
-                          recommended
-                        />
-                      ))}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <Empty
-                  isTeam
-                  active={false}
-                  isEducationNotCompleted={returnDetailsForMarketPlace(
-                    userDetailsData?.user_type,
-                    profilePercentageData?.values_missing,
-                  )}
-                  payment={false}
+      {userDetailsData?.team_type !== userTypes.club && (
+        <AccordionItem>
+          <AccordionHeader targetId="1">
+            <AccordionHeadStyle>
+              <span className="d-flex align-items-center">
+                Join Requests
+                <Tag
+                  hasNew={joinRequests?.unreadCount > 0 ? joinRequests?.unreadCount : false}
+                  count={joinRequests?.metadata?.total_records}
                 />
+              </span>
+              {joinRequests?.data?.length > 0 && (
+                <CardText
+                  onClick={() => {
+                    if (!isDisabled) {
+                      navigate('/my-teams/join_requests');
+                      dispatch(setActiveNavTab('my-teams'));
+                    }
+                  }}
+                  className={`view-all-cta ${isDisabled && 'text-muted'}`}
+                >
+                  View All
+                </CardText>
               )}
-            </ProjectsListingWrap>
-          )}
-        </AccordionBody>
-      </AccordionItem>
+            </AccordionHeadStyle>
+          </AccordionHeader>
+          <AccordionBody accordionId="1">
+            {isSliderLoading || isJoinRequestLoading ? (
+              <div style={{ height: '200px' }} className="d-flex align-items-center gap-1 pe-1 ps-1">
+                <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
+                <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
+                <img style={{ width: '30%', height: '160px' }} src={CardSkeleton} alt="...Loading" />
+              </div>
+            ) : (
+              <ProjectsListingWrap>
+                {joinRequests?.data?.length > 0 && isTab ? (
+                  joinRequests?.data?.map((project) => (
+                    <TalentsListingForTeamUser
+                      accordionName={AccordionName.joinRequest}
+                      key={project.id}
+                      data={project}
+                      recommended
+                    />
+                  ))
+                ) : joinRequests?.data?.length > 0 ? (
+                  <>
+                    {joinRequests?.data?.length >= 4 ? (
+                      <Slider {...settings}>
+                        {joinRequests?.data?.map((project, index) => (
+                          <TalentsListingForTeamUser
+                            accordionName={AccordionName.joinRequest}
+                            className={`slide-${index}`}
+                            key={project.id}
+                            data={project}
+                            recommended
+                          />
+                        ))}
+
+                        {joinRequests?.metadata?.total_records > 10 && (
+                          <ViewAllCard
+                            accordionName={AccordionName.joinRequest}
+                            height={218}
+                            onViewAll={() => {
+                              if (!isDisabled) {
+                                navigate('/my-teams/join_requests');
+                                dispatch(setActiveNavTab('my-teams'));
+                              }
+                            }}
+                            count={calculateRemainingBidsCount(joinRequests)}
+                          />
+                        )}
+                      </Slider>
+                    ) : (
+                      <div className="custom-slider-wrap">
+                        {joinRequests?.data?.map((project) => (
+                          <TalentsListingForTeamUser
+                            accordionName={AccordionName.joinRequest}
+                            className="custom-slider-project"
+                            key={project.id}
+                            data={project}
+                            recommended
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Empty
+                    isTeam
+                    active={false}
+                    isEducationNotCompleted={returnDetailsForMarketPlace(
+                      userDetailsData?.user_type,
+                      profilePercentageData?.values_missing,
+                    )}
+                    payment={false}
+                  />
+                )}
+              </ProjectsListingWrap>
+            )}
+          </AccordionBody>
+        </AccordionItem>
+      )}
 
       <AccordionItem>
         <AccordionHeader targetId="2">
           <AccordionHeadStyle>
             <span className="d-flex align-items-center">
-              {userDetailsData?.team_type === userTypes.club ? 'Recommended Members' : 'Recommended Talents'}
+              {userDetailsData?.team_type === userTypes.club ? 'Recommended Members' : 'Recommended Talents'}{' '}
+              <Tag
+                hasNew={recommendedTalent?.unreadCount > 0 ? recommendedTalent?.unreadCount : false}
+                count={recommendedTalent?.metadata?.total_records}
+              />
             </span>
             {recommendedTalent?.data?.length > 0 && (
               <CardText
@@ -301,20 +340,67 @@ const TalentListing = () => {
             <ProjectsListingWrap>
               {recommendedTalent?.data?.length > 0 && isTab ? (
                 recommendedTalent?.data?.map((project) => (
-                  <TeamTalentCard key={project.id} data={project} recommended />
+                  <TeamTalentCard
+                    accordionName={
+                      userDetailsData?.team_type === userTypes.club
+                        ? AccordionName.recommendedMembers
+                        : AccordionName.recommendedTalents
+                    }
+                    key={project.id}
+                    data={project}
+                    recommended
+                  />
                 ))
               ) : recommendedTalent?.data?.length > 0 ? (
                 <>
                   {recommendedTalent?.data?.length >= 4 ? (
                     <Slider {...settings}>
                       {recommendedTalent?.data?.map((project, index) => (
-                        <TeamTalentCard className={`slide-${index}`} key={project.id} data={project} recommended />
+                        <TeamTalentCard
+                          accordionName={
+                            userDetailsData?.team_type === userTypes.club
+                              ? AccordionName.recommendedMembers
+                              : AccordionName.recommendedTalents
+                          }
+                          className={`slide-${index}`}
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
                       ))}
+
+                      {recommendedTalent?.metadata?.total_records > 10 && (
+                        <ViewAllCard
+                          accordionName={
+                            userDetailsData?.team_type === userTypes.club
+                              ? AccordionName.recommendedMembers
+                              : AccordionName.recommendedTalents
+                          }
+                          height={208}
+                          width={250}
+                          onViewAll={() => {
+                            if (!isDisabled) {
+                              handleViewAll();
+                            }
+                          }}
+                          count={calculateRemainingBidsCount(recommendedTalent)}
+                        />
+                      )}
                     </Slider>
                   ) : (
                     <div className="custom-slider-wrap">
                       {recommendedTalent?.data?.map((project) => (
-                        <TeamTalentCard className="custom-slider-project" key={project.id} data={project} recommended />
+                        <TeamTalentCard
+                          accordionName={
+                            userDetailsData?.team_type === userTypes.club
+                              ? AccordionName.recommendedMembers
+                              : AccordionName.recommendedTalents
+                          }
+                          className="custom-slider-project"
+                          key={project.id}
+                          data={project}
+                          recommended
+                        />
                       ))}
                     </div>
                   )}
