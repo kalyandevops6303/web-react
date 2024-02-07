@@ -44,7 +44,7 @@ import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboard
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
-import { checkPoints, maxFileSize, userOnboarding, userTypes } from '../../utility/constants/Constant';
+import { checkPoints, maxFileSize, userOnboarding, userProfileEdit, userTypes } from '../../utility/constants/Constant';
 import { convertReferral } from '../../redux/actions/referralAndRewardActions';
 import { getItem, removeItem } from '../../utility/localStorageControl';
 import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
@@ -115,14 +115,10 @@ const Account = () => {
   };
 
   const onSuccess = () => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       userDetailsData?.user_type === 'TALENT'
-        ? navigate(`/${userOnboarding.talent}/personal-details`, {
-            state: { isEditing: true },
-          })
-        : navigate(`/${userOnboarding.client}/personal-details`, {
-            state: { isEditing: true },
-          });
+        ? navigate(`/${userProfileEdit.talent}/personal-details`)
+        : navigate(`/${userProfileEdit.client}/personal-details`);
     } else {
       const referralData = getItem('referral_data');
       const referralViaShareData = getItem('referral_via_share_data');
@@ -427,7 +423,7 @@ const Account = () => {
             </CardBody>
           </Card>
           <div className="d-flex justify-content-end w-75">
-            {location?.state?.isEditing && userDetailsData?.oauth_type !== 'google' && (
+            {location.pathname.includes('profile-edit') && userDetailsData?.oauth_type !== 'google' && (
               <Button color="primary" outline className="me-2" onClick={() => setResetPasswordModal(true)}>
                 Reset Password
               </Button>

@@ -8,6 +8,7 @@ const initialState = {
   almaMaterTalents: null,
   almaMaterTalentsLoading: false,
   inviteTalentsLoading: false,
+  isClubAdmin: false,
   error: null,
 };
 
@@ -119,6 +120,23 @@ const inviteTalentSlice = createSlice({
       teamMemberForInviteLoading: false,
       error: action.payload,
     }),
+    getAdminAccessRequest: (state) => ({
+      ...state,
+      getAdminAcessLoading: true,
+      isClubAdmin: false,
+      error: null,
+    }),
+    getAdminAccessSuccess: (state, action) => ({
+      ...state,
+      getAdminAcessLoading: false,
+      isClubAdmin: action.payload,
+    }),
+    getAdminAccessFailure: (state, action) => ({
+      ...state,
+      getAdminAcessLoading: false,
+      isClubAdmin: false,
+      error: action.payload,
+    }),
     clearModalData: (state) => ({
       ...state,
       bestTalents: null,
@@ -133,6 +151,9 @@ const inviteTalentSlice = createSlice({
 
 export const {
   clearModalData,
+  getAdminAccessSuccess,
+  getAdminAccessRequest,
+  getAdminAccessFailure,
   getRequestStatusFailure,
   getRequestStatusSuccess,
   getRequestStatusRequest,

@@ -69,8 +69,18 @@ const BidTimeline = () => {
     navigate(`doc/${type}`);
   };
 
+  let isNoWorkerAssigned = true;
+  if (projectDetailsData?.worker_details) {
+    if (Array.isArray(projectDetailsData.worker_details)) {
+      isNoWorkerAssigned = projectDetailsData.worker_details.length === 0;
+    } else {
+      isNoWorkerAssigned = Object.keys(projectDetailsData.worker_details).length === 0;
+    }
+  }
+
   const bidStageData = [
     {
+      order: 1,
       isVisible: projectDetailsData?.nda?.is_nda,
       isDisabled: ndaData?.show_document === false,
       color: theme.purpleTimelimeColor,
@@ -121,6 +131,7 @@ const BidTimeline = () => {
       ),
     },
     {
+      order: 2,
       isVisible: true,
       isDisabled: contractData?.show_document === false,
       color: theme.orangeColor,
@@ -173,6 +184,7 @@ const BidTimeline = () => {
     },
 
     {
+      order: 3,
       isVisible: userType !== userTypes.client,
       isDisabled: false,
       color: theme.timelineSuccessColor,
@@ -183,6 +195,7 @@ const BidTimeline = () => {
       ),
     },
     {
+      order: isNoWorkerAssigned ? 0 : 4,
       isVisible: userType === userTypes.client,
       color: theme.timelineSuccessColor,
       isDisabled: false,
@@ -193,6 +206,8 @@ const BidTimeline = () => {
       ),
     },
   ].filter((item) => item.isVisible);
+
+  const bidStageWithOrder = bidStageData.slice().sort((a, b) => a.order - b.order);
 
   if (isDocLoading || isLoading) {
     return <ComponentSpinner />;
@@ -207,7 +222,7 @@ const BidTimeline = () => {
             // If contractData is true...
             (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && ndaData)) && (
               // If projectDetailsData?.nda?.is_nda is true, check ndaData before rendering Timeline.
-              <Timeline data={bidStageData} />
+              <Timeline data={bidStageWithOrder} />
             )}
         </div>
       )}
@@ -218,11 +233,11 @@ const BidTimeline = () => {
             // If contractData is true...
             (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && ndaData)) && (
               // If projectDetailsData?.nda?.is_nda is true, check ndaData before rendering Timeline.
-              <Timeline data={bidStageData} />
+              <Timeline data={bidStageWithOrder} />
             )}
         </div>
       )}
-      {bidInfoError && <Timeline data={bidStageData} />}
+      {bidInfoError && <Timeline data={bidStageWithOrder} />}
     </BidTimelineWrapper>
   );
 };

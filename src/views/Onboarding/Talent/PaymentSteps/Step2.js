@@ -133,7 +133,7 @@ const Step2 = ({ setStep }) => {
   };
 
   const onComplete = () => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
       setAccountCreatedModal(true);
@@ -145,7 +145,7 @@ const Step2 = ({ setStep }) => {
   };
 
   const onSkipClick = () => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
       dispatch(saveCheckpointComplete(onComplete, onComplete));

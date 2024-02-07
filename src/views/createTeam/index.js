@@ -22,7 +22,7 @@ const CreateTeam = () => {
 
       <div className="px-5 py-3">
         <div className="px-2">
-          <h2>Create Team</h2>
+          <h2>{location?.state?.isEditing ? 'Edit Profile' : 'Create Team'}</h2>
           <Tabs tabNames={tabNames} active={active} />
         </div>
       </div>

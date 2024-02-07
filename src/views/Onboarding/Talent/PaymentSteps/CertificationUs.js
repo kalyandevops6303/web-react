@@ -6,7 +6,7 @@ import { formatDate } from '../../../../utility/Utils';
 const CertificationUS = ({ onConfirm, isConfirmed }) => {
   const today = new Date();
   const currentDate = formatDate(today);
-  
+
   return (
     <Card className="w-75">
       <CardHeader>

@@ -10,6 +10,8 @@ const initialState = {
   isContract: null,
   getReceivedBidsLoading: false,
   removeWorkerLoading: false,
+  ndaTimeline: null,
+  contractTimeline: null,
   error: null,
 };
 
@@ -156,6 +158,8 @@ const projectDetails = createSlice({
       ...state,
       isNDA: null,
       isContract: null,
+      ndaTimeline: null,
+      contractTimeline: null,
     }),
 
     getDocumentRequest: (state) => ({
