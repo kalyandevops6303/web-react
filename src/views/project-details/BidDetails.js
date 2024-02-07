@@ -255,7 +255,7 @@ const BidDetails = () => {
                 </div>
                 <p className="m-0 symbol font-medium-4">+</p>
                 <div>
-                  <CardText className="value">${(bidInfo?.total_estimated_cost * 0.2).toFixed(0)}</CardText>
+                  <CardText className="value">${bidInfo?.platform_fee}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Platform Fees</CardText>
                     <Info size={14} color={theme.infoIcon} id="bid-platform-fee-info" className="ms-50" />
@@ -266,9 +266,7 @@ const BidDetails = () => {
                 </div>
                 <p className="m-0 symbol font-medium-4">=</p>
                 <div>
-                  <CardText className="value">
-                    ${(bidInfo?.total_estimated_cost + bidInfo?.total_estimated_cost * 0.2).toFixed(0)}
-                  </CardText>
+                  <CardText className="value">${bidInfo?.total_project_cost}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Total Project Cost</CardText>
                   </div>
@@ -396,9 +394,7 @@ const BidDetails = () => {
                                 </p>
                               </Col>
                               <Col sm="12" md="12" lg="2" className="ps-2">
-                                <p className="fw-light m-0 font-small-4 ps-50">
-                                  ${(milestone.estimated_cost + milestone.estimated_cost * 0.2).toFixed(0)}
-                                </p>
+                                <p className="fw-light m-0 font-small-4 ps-50">${milestone?.total_milestone_cost}</p>
                               </Col>
                             </Row>
                           </AccordionHeader>
@@ -490,7 +486,7 @@ const BidDetails = () => {
                                   <p className="font-small-3 fw-bold content-description text-end me-3">Platform Fee</p>
                                 </Col>
                                 <Col sm="12" md="12" lg="2">
-                                  <p className="content-description">${(milestone.estimated_cost * 0.2).toFixed(0)}</p>
+                                  <p className="content-description">${milestone?.platform_fee}</p>
                                 </Col>
                               </Row>
                               <Row>
@@ -501,9 +497,7 @@ const BidDetails = () => {
                                   </p>
                                 </Col>
                                 <Col sm="12" md="12" lg="2">
-                                  <p className="fw-bolder content-description">
-                                    ${(milestone.estimated_cost + milestone.estimated_cost * 0.2).toFixed(0)}
-                                  </p>
+                                  <p className="fw-bolder content-description">${milestone?.total_milestone_cost}</p>
                                 </Col>
                               </Row>
                             </AccordionBodyContent>

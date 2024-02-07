@@ -12,6 +12,7 @@ const initialState = {
   removeWorkerLoading: false,
   ndaTimeline: null,
   contractTimeline: null,
+  relistProjectByDateLoading: false,
   error: null,
 };
 
@@ -398,6 +399,21 @@ const projectDetails = createSlice({
         },
       },
     }),
+
+    relistProjectByDateRequest: (state) => ({
+      ...state,
+      relistProjectByDateLoading: true,
+      error: null,
+    }),
+    relistProjectByDateSuccess: (state) => ({
+      ...state,
+      relistProjectByDateLoading: false,
+    }),
+    relistProjectByDateFailure: (state, action) => ({
+      ...state,
+      relistProjectByDateLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -464,6 +480,9 @@ export const {
   relistProjectRequest,
   relistProjectSuccess,
   relistProjectFailure,
+  relistProjectByDateRequest,
+  relistProjectByDateSuccess,
+  relistProjectByDateFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

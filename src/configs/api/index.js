@@ -130,6 +130,7 @@ const API = {
     requests: `${apiAuthEndpoint}/api/v1/requests`,
     terminateProject: `${apiCreateProjectEndpoint}/api/v1/project/termination`,
     relistProject: `${apiCreateProjectEndpoint}/api/v1/project/relisting`,
+    relistProjectByDate: `${apiCreateProjectEndpoint}/api/v1/project/relist-by-date`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,

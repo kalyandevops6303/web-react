@@ -3,12 +3,15 @@ import Proptypes from 'prop-types';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch, useSelector } from 'react-redux';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import classNames from 'classnames';
-import { Button, Modal, ModalHeader, ModalBody, Form, Row, Input, Label, Col, FormFeedback } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, Form, Row, Input, Label, Col, FormFeedback, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
 import { RequirementsFormContainer } from '../CreateProject/style';
+import { relistProjectByDate } from '../../redux/actions/projectDetailsAction';
+import { relistProjectByDateLoading } from '../../redux/selectors/projectDetailsSelectors';
 
 const RelistListingDetailsModal = ({
   modal,
@@ -56,6 +59,15 @@ const RelistListingDetailsModal = ({
     defaultValues: {},
   });
 
+  const dispatch = useDispatch();
+
+  const relistProjectByDateIsLoading = useSelector(relistProjectByDateLoading);
+
+  const onSuccess = () => {
+    toggleModal();
+    setRelistSuccessModal(true);
+  };
+
   const onSubmit = () => {
     if (!watch('listingOption')) {
       trigger('listingOption');
@@ -79,16 +91,20 @@ const RelistListingDetailsModal = ({
         endDate: new Date(watch('endDate')),
       };
 
-      // eslint-disable-next-line no-console
-      console.log(requiredFormData);
+      dispatch(
+        relistProjectByDate(
+          projectRelistData?.id,
+          Date.parse(requiredFormData?.startDate),
+          Date.parse(requiredFormData?.endDate),
+          onSuccess,
+        ),
+      );
       setProjectRelistData({
         ...projectRelistData,
         startDate: Date.parse(requiredFormData?.startDate),
         endDate: Date.parse(requiredFormData?.endDate),
         listingOption: requiredFormData?.listingOption,
       });
-      toggleModal();
-      setRelistSuccessModal(true);
     } else if (watch('listingOption') === 'enter-duration' && watch('duration')) {
       const newData = {
         listingOption: watch('listingOption'),
@@ -97,8 +113,14 @@ const RelistListingDetailsModal = ({
         duration: watch('duration'),
       };
 
-      // eslint-disable-next-line no-console
-      console.log(newData);
+      dispatch(
+        relistProjectByDate(
+          projectRelistData?.id,
+          Date.parse(newData?.startDate),
+          Date.parse(newData?.endDate),
+          onSuccess,
+        ),
+      );
       setProjectRelistData({
         ...projectRelistData,
         startDate: Date.parse(newData?.startDate),
@@ -106,17 +128,12 @@ const RelistListingDetailsModal = ({
         listingOption: newData?.listingOption,
         duration: newData?.duration,
       });
-      toggleModal();
-      setRelistSuccessModal(true);
     }
   };
 
-  // eslint-disable-next-line no-console
-  console.log('projectRelistData', projectRelistData);
-
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={toggleModal} />
+      <ModalHeader toggle={relistProjectByDateIsLoading ? null : toggleModal} />
       <ModalBody className="px-3 pt-0">
         <h2 className="mb-2">Add Listing Details</h2>
         <RequirementsFormContainer className="mt-75">
@@ -287,8 +304,8 @@ const RelistListingDetailsModal = ({
           >
             Cancel
           </Button>
-          <Button color="primary" onClick={() => onSubmit()}>
-            Re-list
+          <Button color="primary" disabled={relistProjectByDateIsLoading} onClick={() => onSubmit()}>
+            {relistProjectByDateIsLoading ? <Spinner size="sm" /> : 'Re-list'}
           </Button>
         </div>
       </ModalBody>
