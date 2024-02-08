@@ -19,6 +19,8 @@ import {
 } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router';
+import AvatarGroup from '@components/avatar-group';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import styled from 'styled-components';
 import DateTime from '../../lib/date-time';
 import theme from '../../configs/themeVariables';
@@ -83,6 +85,7 @@ const ProjectModal = ({
   setSelectedProject,
   toggleCompleteProfileModal,
   setSwitchProfileModal,
+  setRelistConfirmationModal,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -196,6 +199,18 @@ const ProjectModal = ({
     selectUserDetailsData?.team_members?.find((member) => member?.user_id === selectSavedUserDetailsData?._id)
       ?.member_type === 'ADMIN';
 
+  const bidsReceivedAvatarGroup = data?.bid_profiles?.length
+    ? data?.bid_profiles?.map((bidder) => ({
+        user_id: bidder?.talent_id || bidder?.team_id,
+        user_type: userTypes.talent,
+        title: bidder?.team_name || `${bidder?.talent_first_name} ${bidder?.talent_last_name}`,
+        img: bidder?.team_logo || bidder?.talent_image_uri || defaultAvatar,
+        placement: 'bottom',
+        imgHeight: 33,
+        imgWidth: 33,
+      }))
+    : [];
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -230,13 +245,22 @@ const ProjectModal = ({
                   </div>
                 </Col>
                 <Col lg="4">
-                  <div>
-                    <CardTitle className="mb-25 fw-bolder">
-                      {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} to{' '}
-                      {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
-                    </CardTitle>
-                    <CardText className="project-name">Listing Duration</CardText>
-                  </div>
+                  {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' ? (
+                    <div>
+                      <CardTitle className="mb-25 fw-bolder">
+                        {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
+                      </CardTitle>
+                      <CardText className="project-name">Expired Date</CardText>
+                    </div>
+                  ) : (
+                    <div>
+                      <CardTitle className="mb-25 fw-bolder">
+                        {DateTime?.fromMillis(data?.listing_details?.start_date_epoch).toFormat('dd LLL yyyy')} to{' '}
+                        {DateTime?.fromMillis(data?.listing_details?.end_date_epoch).toFormat('dd LLL yyyy')}
+                      </CardTitle>
+                      <CardText className="project-name">Listing Duration</CardText>
+                    </div>
+                  )}
                 </Col>
               </Row>
               <Row className="mb-2">
@@ -279,6 +303,27 @@ const ProjectModal = ({
                     <CardText className="project-name">Minimum Overlap</CardText>
                   </div>
                 </Col>
+                {location.pathname.split('/').includes('my_listings') && (
+                  <Col lg="4">
+                    {bidsReceivedAvatarGroup?.length ? (
+                      <div>
+                        {bidsReceivedAvatarGroup?.length > 3 ? (
+                          <AvatarGroup
+                            totalCount={data?.bid_profiles?.length || 0}
+                            size="sm"
+                            className="ms-25 mb-50"
+                            data={bidsReceivedAvatarGroup?.slice(0, 3)}
+                          />
+                        ) : (
+                          <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
+                        )}
+                      </div>
+                    ) : (
+                      <CardTitle className="mb-25 fw-bolder">0</CardTitle>
+                    )}
+                    <CardText className="project-name">Bids Received</CardText>
+                  </Col>
+                )}
               </Row>
             </CardBody>
           </Card>
@@ -350,6 +395,19 @@ const ProjectModal = ({
           isActiveProject ||
           isUpcomingProject ? (
             <div className="d-flex justify-content-end mb-2">
+              {location.pathname.split('/').includes('my_listings') && data?.status === 'LISTING_EXPIRED' && (
+                <Button
+                  color="primary"
+                  outline
+                  className="me-2"
+                  onClick={() => {
+                    toggleModal();
+                    setRelistConfirmationModal(true);
+                  }}
+                >
+                  Re-list
+                </Button>
+              )}
               <Button color="primary" disabled={checkBidLoadingIsLoading} onClick={handleViewProject}>
                 {checkBidLoadingIsLoading ? (
                   <Spinner size="sm" />
@@ -409,6 +467,7 @@ ProjectModal.propTypes = {
   setSwitchProfileModal: Proptypes.func,
   isActiveProject: Proptypes.bool,
   isUpcomingProject: Proptypes.bool,
+  setRelistConfirmationModal: Proptypes.func,
 };
 
 ProjectModal.defaultProps = {
@@ -423,4 +482,5 @@ ProjectModal.defaultProps = {
   setSwitchProfileModal: () => {},
   isActiveProject: false,
   isUpcomingProject: false,
+  setRelistConfirmationModal: () => {},
 };

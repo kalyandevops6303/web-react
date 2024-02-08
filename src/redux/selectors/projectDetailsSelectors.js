@@ -19,3 +19,8 @@ export const selectDocument = createSelector(projectDetailsSelector, (state) => 
 export const selectContractTimeline = createSelector(projectDetailsSelector, (state) => state?.contractTimeline);
 
 export const selectNDATimeline = createSelector(projectDetailsSelector, (state) => state?.ndaTimeline);
+
+export const relistProjectByDateLoading = createSelector(
+  projectDetailsSelector,
+  (state) => state.relistProjectByDateLoading,
+);

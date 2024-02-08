@@ -379,6 +379,10 @@ const ProjectWrapper = styled.div`
   .new-tag-relative-card {
     position: relative;
   }
+
+  .expired-listing-text {
+    color: ${theme.red} !important;
+  }
 `;
 
 const NewTagWrap = styled.div`

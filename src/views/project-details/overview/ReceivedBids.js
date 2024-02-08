@@ -22,7 +22,7 @@ import { useNavigate, useParams, useLocation } from 'react-router';
 import { debounce } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
-import { ChevronDown, Eye, MoreVertical, Paperclip, Search } from 'react-feather';
+import { ChevronDown, Eye, Info, MoreVertical, Paperclip, Search } from 'react-feather';
 import DataTable from 'react-data-table-component';
 import Rating from 'react-rating';
 import hat from '@src/assets/images/hat.png';
@@ -109,7 +109,15 @@ const ReceivedBids = ({ projectName }) => {
       selector: (row) => row.rating,
     },
     {
-      name: 'BID AMT',
+      name: (
+        <div className="d-flex align-items-center">
+          <p className="m-0">COST</p>
+          <Info size={14} color={theme.infoIcon} id="cost-info" className="ms-25" />
+          <UncontrolledTooltip target="cost-info">
+            This is a sum of the talent bid and the Trumio platform fee.
+          </UncontrolledTooltip>
+        </div>
+      ),
       sortable: false,
       minWidth: '13%',
       selector: (row) => row.bid,

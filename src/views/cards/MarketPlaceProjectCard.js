@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
 import ProjectModal from '../modals/ProjectModal';
+import RelistConfirmationModal from '../modals/RelistConfirmationModal';
+import RelistListingDetailsModal from '../modals/RelistListingDetailsModal';
+import RelistSuccessModal from '../modals/RelistSuccessModal';
 import BaseInfoUI from './BaseInfoCard';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
@@ -21,6 +23,17 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
   const [showModal, setShowModal] = useState(false);
   const userData = useSelector(selectUserData);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
+
+  const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
+  const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
+  const [relistSuccessModal, setRelistSuccessModal] = useState(null);
+  const [projectRelistData, setProjectRelistData] = useState(null);
+
+  const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
+
+  const toggleRelistListingDetailsModal = () => setRelistListingDetailsModal(!relistListingDetailsModal);
+
+  const toggleRelistSuccessModal = () => setRelistSuccessModal(!relistSuccessModal);
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -41,7 +54,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
-    LISTING_EXPIRED: 'Listing Expired',
+    LISTING_EXPIRED: 'Expired',
     COMPLETED: 'Completed',
     DRAFT: 'Draft',
     NEW: 'New',
@@ -58,6 +71,11 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
     if (divElement) {
       setIsContentOverflowing(divElement.scrollHeight > divElement.clientHeight);
     }
+
+    setProjectRelistData({
+      id: data?._id,
+      name: data?.details?.name ?? data?.name,
+    });
   }, []);
 
   const [createBidModal, setCreateBidModal] = useState(null);
@@ -78,6 +96,30 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
 
   return (
     <ProjectCardWrap>
+      {relistConfirmationModal && (
+        <RelistConfirmationModal
+          modal={relistConfirmationModal}
+          toggleModal={toggleRelistConfirmationModal}
+          setRelistListingDetailsModal={setRelistListingDetailsModal}
+        />
+      )}
+      {relistListingDetailsModal && (
+        <RelistListingDetailsModal
+          modal={relistListingDetailsModal}
+          toggleModal={toggleRelistListingDetailsModal}
+          setRelistConfirmationModal={setRelistConfirmationModal}
+          setRelistSuccessModal={setRelistSuccessModal}
+          projectRelistData={projectRelistData}
+          setProjectRelistData={setProjectRelistData}
+        />
+      )}
+      {relistSuccessModal && (
+        <RelistSuccessModal
+          modal={relistSuccessModal}
+          toggleModal={toggleRelistSuccessModal}
+          projectRelistData={projectRelistData}
+        />
+      )}
       <Card onClick={handleShowProject} className="cursor-pointer">
         <Elevate>
           <CardBody>
@@ -143,7 +185,11 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
                 )}
               </Col>
               <Col lg="4">
-                <BaseInfoUI isSearchPage={isSearchPage} data={data} />
+                <BaseInfoUI
+                  isSearchPage={isSearchPage}
+                  data={data}
+                  setRelistConfirmationModal={setRelistConfirmationModal}
+                />
               </Col>
             </Row>
           </CardBody>
@@ -158,6 +204,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
           setSelectedProject={setSelectedProject}
           toggleCompleteProfileModal={toggleCompleteProfileModal}
           isMyTeam={isTeam}
+          setRelistConfirmationModal={setRelistConfirmationModal}
         />
       )}
       {createBidModal && (

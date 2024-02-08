@@ -421,4 +421,26 @@ const ResponsiveGrid = styled.div`
     }
   }
 `;
-export { CardWrap, ProjectCardWrap, TeamCardWrap, UserCardWrap, ClientCardWrap, ResponsiveGrid };
+
+const BidsReceivedWrapper = styled.div`
+  .wrapper-title {
+    font-size: 0.8rem;
+  }
+
+  .relist-btn-wrapper {
+    .btn-outline-primary:hover:not(.disabled):not(:disabled) {
+      background-color: ${theme.primary};
+    }
+
+    .btn-outline-primary:hover:not(.disabled):not(:disabled) {
+      color: ${theme.white};
+    }
+
+    .btn:hover {
+      background-color: ${theme.primary} !important;
+      border-color: ${theme.primary} !important;
+    }
+  }
+`;
+
+export { CardWrap, ProjectCardWrap, TeamCardWrap, UserCardWrap, ClientCardWrap, ResponsiveGrid, BidsReceivedWrapper };
