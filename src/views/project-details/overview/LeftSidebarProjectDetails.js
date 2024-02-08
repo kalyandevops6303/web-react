@@ -56,7 +56,7 @@ const LeftSidebarProjectDetails = () => {
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
-    LISTING_EXPIRED: 'Listing Expired',
+    LISTING_EXPIRED: 'Expired',
     ON_GOING: 'On Going',
     COMPLETED: 'COMPLETED',
     ACTIVE: 'Active',
@@ -155,7 +155,7 @@ const LeftSidebarProjectDetails = () => {
             </CustomBadge>
 
             {projectDetailsData?.status === 'OPEN' && (
-              <CardText className="fw-bold days">
+              <CardText className="fw-bold days d-none">
                 {daysLeft === 0 ? 'Listing Expired' : `${daysLeft} Days left`}
               </CardText>
             )}
@@ -287,7 +287,7 @@ const LeftSidebarProjectDetails = () => {
             </CardText>
           </div>
 
-          <div className="d-flex mt-2 justify-content-center">
+          <div className="d-flex mt-2 justify-content-center d-none">
             <Button color="primary" onClick={() => setRelistConfirmationModal(true)}>
               Re-list
             </Button>
