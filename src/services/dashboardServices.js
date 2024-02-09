@@ -63,7 +63,12 @@ const upcomingProjectsForTeamService = () => DataService.get(API.dashboard.upcom
 const getModalDataService = ({ project_id }) =>
   DataService.get(`${API.dashboard.getProjectDetails}?project_id=${project_id}`);
 
-const updateCardStatusService = (data) => DataService.post(API.dashboard.updateCardStatus, data);
+const updateCardStatusService = ({ data, switch_team_id }) => {
+  if (switch_team_id) {
+    return DataService.post(`${API.dashboard.updateCardStatus}?team_id=${switch_team_id}`, data);
+  }
+  return DataService.post(API.dashboard.updateCardStatus, data);
+};
 
 export {
   alertService,

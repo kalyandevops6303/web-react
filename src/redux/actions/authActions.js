@@ -15,6 +15,7 @@ import {
   fcmSubscribeService,
   fcmUnsubscribeService,
   resetPasswordService,
+  checkAdminService,
 } from '../../services/authServices';
 
 import {
@@ -61,6 +62,9 @@ import {
   getUserDataSuccess,
   cometChatLogin,
   savedUserDataSuccess,
+  checkAdminRequest,
+  checkAdminSuccess,
+  checkAdminFailure,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -364,6 +368,16 @@ const getUserData = () => async (dispatch) => {
   }
 };
 
+const checkIsAdmin = (teamId) => async (dispatch) => {
+  dispatch(checkAdminRequest());
+  try {
+    const res = await checkAdminService(teamId);
+    dispatch(checkAdminSuccess(res.data.data.data));
+  } catch (error) {
+    errorHandler(error, checkAdminFailure);
+  }
+};
+
 export {
   switchProfile,
   getUserData,
@@ -383,4 +397,5 @@ export {
   fcmUnsubscribeNotification,
   logoutAction,
   resetPassword,
+  checkIsAdmin,
 };

@@ -35,14 +35,14 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
     setShowModal(true);
   };
 
-  const updateCard = () => {
+  const updateCard = ({ switch_team_id }) => {
     const postData = {
       metadata: {
         project_id: data._id,
       },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
+    dispatch(updateCardStatus({ switch_team_id, id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
   };
 
   return (
@@ -107,6 +107,7 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
       </Card>
       {(showModal || switchModal) && (
         <ProjectModalViews
+          cardData={data}
           onUpdateCard={updateCard}
           isActiveProject
           project_id={data?._id}

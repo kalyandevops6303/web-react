@@ -252,14 +252,14 @@ const TeamListing = () => {
                               recommended
                             />
                           ))}
-                          {myTeam?.metadata?.total_records > 10 && (
+                          {/* {myTeam?.metadata?.total_records > 10 && (
                             <ViewAllCard
                               accordionName={AccordionName.myTeam}
                               height={120}
                               onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
                               count={calculateRemainingBidsCount(myTeam)}
                             />
-                          )}
+                          )} */}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">

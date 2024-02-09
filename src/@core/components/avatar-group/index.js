@@ -61,16 +61,19 @@ const AvatarGroup = (props) => {
       );
     });
 
-  return (
-    <Tag
-      className={classnames('avatar-group', {
-        [className]: className,
-      })}
-    >
-      {props?.data && renderData()}
-      {totalCount && <CardText className="d-flex align-items-center ps-50"> + {totalCount - 3}</CardText>}
-    </Tag>
-  );
+  if (props?.data && props?.data.length > 0) {
+    return (
+      <Tag
+        className={classnames('avatar-group', {
+          [className]: className,
+        })}
+      >
+        {props?.data && renderData()}
+        {totalCount && <CardText className="d-flex align-items-center ps-50"> + {totalCount - 3}</CardText>}
+      </Tag>
+    );
+  }
+  return null;
 };
 
 export default AvatarGroup;

@@ -9,7 +9,7 @@ const Tag = ({ count, hasNew }) => {
   return (
     <Tagwrapper>
       <span className="tag">{count < 10 ? `0${count}` : count}</span>
-      {hasNew && <span className="dot" />}
+      {hasNew ? <span className="dot" /> : null}
     </Tagwrapper>
   );
 };

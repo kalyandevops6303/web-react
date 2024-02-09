@@ -195,6 +195,7 @@ const Project = ({ accordionName, open, data, className }) => {
       </Card>
       {showModal && (
         <ProjectModal
+          cardData={data}
           onUpdateCard={updateCard}
           data={data}
           modal={showModal}

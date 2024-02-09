@@ -25,3 +25,7 @@ export const selectIsPasswordSet = createSelector(authSelector, (auth) => auth.i
 export const selectMobile = createSelector(authSelector, (auth) => auth.phone);
 
 export const selectUserType = createSelector(authSelector, (auth) => auth.userType);
+
+export const checkAdmin = createSelector(authSelector, (auth) => auth.checkAdmin);
+
+export const checkAdminLoading = createSelector(authSelector, (auth) => auth.checkAdminLoading);

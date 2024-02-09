@@ -142,6 +142,7 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
       </Card>
       {(showModal || switchModal) && (
         <ProjectModalViews
+          cardData={data}
           onUpdateCard={updateCard}
           isActiveProject
           project_id={data?._id}

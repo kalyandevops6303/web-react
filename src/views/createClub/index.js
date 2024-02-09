@@ -23,7 +23,7 @@ const CreateClub = () => {
 
       <div className="px-5 py-3">
         <div className="px-2">
-          <h2>{location?.state?.isEditing ? 'Edit Club' : 'Create Club'}</h2>
+          <h2>{location?.state?.isEditing ? 'Edit Profile' : 'Create Club'}</h2>
           <Tabs tabNames={tabNames} active={active} />
         </div>
       </div>

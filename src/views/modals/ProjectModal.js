@@ -72,6 +72,7 @@ const ViewProjectDetailModalWrap = styled.div`
 `;
 
 const ProjectModal = ({
+  cardData,
   onUpdateCard,
   isUpcomingProject,
   isActiveProject,
@@ -96,7 +97,7 @@ const ProjectModal = ({
 
   useEffect(() => {
     if (onUpdateCard) {
-      onUpdateCard();
+      onUpdateCard({ switch_team_id: cardData?.switch_team_id });
     }
   }, []);
 
@@ -397,6 +398,7 @@ const ProjectModal = ({
 export default ProjectModal;
 
 ProjectModal.propTypes = {
+  cardData: Proptypes.object,
   onUpdateCard: Proptypes.func,
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
@@ -410,6 +412,7 @@ ProjectModal.propTypes = {
 };
 
 ProjectModal.defaultProps = {
+  cardData: {},
   onUpdateCard: () => {},
   modal: false,
   toggleModal: () => {},

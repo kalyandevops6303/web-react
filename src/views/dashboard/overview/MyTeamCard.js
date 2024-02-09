@@ -24,7 +24,6 @@ import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 const MyTeamCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  const [isNewTag, setIsNewTag] = useState(true);
   const dispatch = useDispatch();
 
   const handleToggle = () => {
@@ -45,27 +44,27 @@ const MyTeamCard = ({ accordionName, data, className }) => {
   );
 
   const updateCard = () => {
-    const onSuccess = () => {
-      setIsNewTag(false);
-    };
     const postData = {
       metadata: {
         team_id: data?._id,
       },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData, onSuccess }));
+
+    dispatch(updateCardStatus({ data: postData }));
   };
 
   const handleViewTeam = (id) => {
-    updateCard();
+    if (data?.is_read === false) {
+      updateCard();
+    }
     navigate(`/profile/team/${id}`);
   };
 
   return (
     <ProjectWrapper className={className}>
       <Card className="card-app-design new-tag-relative-card">
-        {isNewTag && <NewTag />}
+        {!data?.is_read && <NewTag />}
         <CardBody>
           <div className="d-flex">
             <RatingBadge number="0" />

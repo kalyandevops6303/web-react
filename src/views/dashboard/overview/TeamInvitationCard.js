@@ -74,7 +74,9 @@ const TeamInvitaionCard = ({ accordionName, data, className }) => {
   };
 
   const handleRedirect = () => {
-    updateCard();
+    if (data?.is_read === false) {
+      updateCard();
+    }
     if (data?.project?._id) {
       navigate(`/project-details/${data?.project?._id}/project/project-invitation/${data?.request_id}`);
     } else {

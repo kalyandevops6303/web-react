@@ -135,9 +135,9 @@ const ProjectCard = ({
                   </CardText>
                   <CardText className=" project mb-1">
                     {data?.assigned_date
-                      ? `Assigned Date: ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')} `
+                      ? `Assigned Date: ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')}`
                       : ''}
-
+                    &nbsp;&nbsp;&nbsp;
                     {data?.invitation_to?.updated_at
                       ? `Invite Date: ${DateTime?.fromMillis(data?.invitation_to?.updated_at).toFormat('dd-MM-yy')}`
                       : ''}
