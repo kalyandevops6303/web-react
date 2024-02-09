@@ -475,58 +475,52 @@ export const calculateRemainingBidsCount = (data) => {
   return totalRecords - currentRecords;
 };
 
-export const getReadType = ({ primaryFilter, secondFilterState }) => {
+export const getReadType = ({ primaryFilter, secondFilterState, userType }) => {
+  const { sort_by = [], invited_by = [], user_type = [], invite_type = [] } = secondFilterState || {};
+
   switch (primaryFilter.toLowerCase()) {
     case 'ongoing':
       return AccordionName.activeProjects;
     case 'upcoming':
       return AccordionName.upcomingProjects;
+    case 'my_bids':
+      return AccordionName.receivedBids;
     case 'all_listings':
-      if (Array.isArray(secondFilterState?.sort_by) && secondFilterState?.sort_by?.length > 0) {
-        // Check if any element in the array has a value of "RECOMMENDED"
-        if (secondFilterState?.sort_by.some((item) => item.value === 'RECOMMENDED')) {
-          return AccordionName.recommendedProjects;
-        }
+      if (sort_by.some((item) => item.value === 'RECOMMENDED')) {
+        return AccordionName.recommendedProjects;
       }
-      return '';
-
+      break;
     case 'invited':
-      if (Array.isArray(secondFilterState?.invited_by) && secondFilterState?.invited_by?.length > 0) {
-        // Check if any element in the array has a value of "RECOMMENDED"
-        if (secondFilterState?.invited_by.some((item) => item.value === 'TEAM')) {
-          return AccordionName.teamInvitation;
-        }
+      if (invited_by.some((item) => item.value === 'TEAM')) {
+        return AccordionName.teamInvitation;
       }
-      return '';
-
+      break;
     case 'teams':
-      if (Array.isArray(secondFilterState?.sort_by) && secondFilterState?.sort_by?.length > 0) {
-        // Check if any element in the array has a value of "RECOMMENDED"
-        if (secondFilterState?.sort_by.some((item) => item.value === 'RECOMMENDED')) {
-          return AccordionName.recommendedTeams;
-        }
+      if (sort_by.some((item) => item.value === 'RECOMMENDED')) {
+        return AccordionName.recommendedTeams;
       }
-      return '';
-
+      break;
     case 'talents':
-      if (Array.isArray(secondFilterState?.sort_by) && secondFilterState?.sort_by?.length > 0) {
-        // Check if any element in the array has a value of "RECOMMENDED"
-        if (secondFilterState?.sort_by.some((item) => item.value === 'RECOMMENDED')) {
-          return AccordionName.recommendedTalents;
-        }
+      if (sort_by.some((item) => item.value === 'RECOMMENDED')) {
+        return AccordionName.recommendedTalents;
       }
-      return '';
-
+      break;
     case 'recommendation':
-      if (Array.isArray(secondFilterState?.user_type) && secondFilterState?.user_type?.length > 0) {
-        // Check if any element in the array has a value of "RECOMMENDED"
-        if (secondFilterState?.user_type.some((item) => item.value === 'TALENT')) {
-          return AccordionName.recommendedTalents;
-        }
+      if (user_type.some((item) => item.value === 'TALENT')) {
+        return AccordionName.recommendedTalents;
       }
-      return '';
-
+      if (user_type.some((item) => item.value === 'TEAM')) {
+        return AccordionName.recommendedTeams;
+      }
+      break;
+    case 'join_requests':
+      if (invite_type.some((item) => item.value === 'RECEIVED')) {
+        return userType === 'TALENT' ? AccordionName.teamInvitation : AccordionName.joinRequest;
+      }
+      break;
     default:
-      return '';
+      break;
   }
+
+  return '';
 };

@@ -30,7 +30,7 @@ const MarketPlaceProjectCard = ({
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
-  const [isNewTag, setIsTagNew] = useState(true);
+  const [isNewTag, setIsTagNew] = useState(data?.is_read === false);
   const userData = useSelector(selectUserData);
   const dispatch = useDispatch();
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
@@ -94,13 +94,15 @@ const MarketPlaceProjectCard = ({
       setIsTagNew(false);
     };
     const postData = {
-      metadata: {
-        project_id: data._id,
-      },
+      metadata: {},
       type: getReadType({ primaryFilter, secondFilterState }),
     };
-    // if (postData?.type && data?.is_read === false) {
-    if (postData?.type) {
+    if (primaryFilter === 'my_bids') {
+      postData.metadata.bid_id = data?.bids?._id;
+    } else {
+      postData.metadata.project_id = data?._id;
+    }
+    if (postData?.type && data?.is_read === false) {
       dispatch(updateCardStatus({ data: postData, onSuccess }));
     }
   };

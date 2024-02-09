@@ -79,8 +79,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
       },
       type: getReadType({ primaryFilter, secondFilterState }),
     };
-    // if (postData?.type && data?.is_read === false) {
-    if (postData?.type) {
+    if (postData?.type && data?.is_read === false) {
       dispatch(updateCardStatus({ data: postData }));
     }
   };
@@ -101,7 +100,7 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   return (
     <TeamCardWrap>
       <Card onClick={handleCard} className="cursor-pointer">
-        <NewTag />
+        {data?.is_read === false && <NewTag />}
         <Elevate>
           <CardBody>
             <div className="d-flex teamcard-flex-cloumn">

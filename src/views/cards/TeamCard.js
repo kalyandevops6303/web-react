@@ -1,7 +1,7 @@
 import { Card, CardBody, CardText, CardTitle, Badge } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import hat from '@src/assets/images/hat.svg';
@@ -18,10 +18,13 @@ import { Elevate } from '../styled';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { getReadType } from '../../utility/Utils';
+import { selectUserType } from '../../redux/selectors/authSelectors';
 
 const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userType = useSelector(selectUserType);
+
   const users = [];
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   data?.team_members?.map((user) =>
@@ -70,10 +73,9 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
       metadata: {
         team_id: data._id,
       },
-      type: getReadType({ primaryFilter, secondFilterState }),
+      type: getReadType({ primaryFilter, secondFilterState, userType }),
     };
-    // if (postData?.type && data?.is_read === false) {
-    if (postData?.type) {
+    if (postData?.type && data?.is_read === false) {
       dispatch(updateCardStatus({ data: postData }));
     }
   };
@@ -86,7 +88,7 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
   return (
     <TeamCardWrap>
       <Card onClick={handleCard} className="cursor-pointer">
-        <NewTag />
+        {data?.is_read === false && <NewTag />}
         <Elevate>
           <CardBody>
             <div className="d-flex teamcard-flex-cloumn">
