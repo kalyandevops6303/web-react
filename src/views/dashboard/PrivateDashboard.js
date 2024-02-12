@@ -85,6 +85,7 @@ const PrivateDashboard = () => {
 
     removeItem('selectedMarketplaceTab');
     removeItem('selectedProjectTab');
+    removeItem('selectedMyTeamsTab');
   }, []);
 
   const toggleCompleteProfileModal = () => {

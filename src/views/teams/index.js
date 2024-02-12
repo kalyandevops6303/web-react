@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import { Route, Routes, useMatch, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
@@ -24,7 +24,10 @@ const MyTeams = () => {
   const isTab = useIsTab();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMyTeamsTab') || 'teams');
+  const location = useLocation();
+
+  const filterFromUrl = location?.pathname?.split('/').pop();
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMyTeamsTab') || filterFromUrl);
 
   const routesMatch =
     useMatch('/my-teams/teams') ||
