@@ -11,6 +11,7 @@ import { maxFileSize } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
+import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
 
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
@@ -472,4 +473,54 @@ export const calculateRemainingBidsCount = (data) => {
   const totalRecords = data?.metadata?.total_records || 0;
   const currentRecords = data?.data?.length || 0;
   return totalRecords - currentRecords;
+};
+
+export const getReadType = ({ primaryFilter, secondFilterState, userType }) => {
+  const { sort_by = [], invited_by = [], user_type = [], invite_type = [] } = secondFilterState || {};
+
+  switch (primaryFilter.toLowerCase()) {
+    case 'ongoing':
+      return AccordionName.activeProjects;
+    case 'upcoming':
+      return AccordionName.upcomingProjects;
+    case 'my_bids':
+      return AccordionName.receivedBids;
+    case 'all_listings':
+      if (sort_by.some((item) => item.value === 'RECOMMENDED')) {
+        return AccordionName.recommendedProjects;
+      }
+      break;
+    case 'invited':
+      if (invited_by.some((item) => item.value === 'TEAM')) {
+        return AccordionName.teamInvitation;
+      }
+      break;
+    case 'teams':
+      if (sort_by.some((item) => item.value === 'RECOMMENDED')) {
+        return AccordionName.recommendedTeams;
+      }
+      break;
+    case 'talents':
+      if (sort_by.some((item) => item.value === 'RECOMMENDED')) {
+        return AccordionName.recommendedTalents;
+      }
+      break;
+    case 'recommendation':
+      if (user_type.some((item) => item.value === 'TALENT')) {
+        return AccordionName.recommendedTalents;
+      }
+      if (user_type.some((item) => item.value === 'TEAM')) {
+        return AccordionName.recommendedTeams;
+      }
+      break;
+    case 'join_requests':
+      if (invite_type.some((item) => item.value === 'RECEIVED')) {
+        return userType === 'TALENT' ? AccordionName.teamInvitation : AccordionName.joinRequest;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return '';
 };

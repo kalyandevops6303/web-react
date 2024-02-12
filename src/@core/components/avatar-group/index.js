@@ -30,7 +30,6 @@ const AvatarGroup = (props) => {
       navigate(`/profile/${item?.user_type}/${item?.user_id}`);
     }
   };
-
   // ** Render Data
   const renderData = () =>
     props?.data?.map((item, i) => {
