@@ -177,6 +177,12 @@ const ProjectWrapper = styled.div`
       padding: 0;
     }
   }
+  .team-invite {
+    margin-top: 4.45rem !important;
+  }
+  .max-height {
+    max-height: 20px !important;
+  }
   .card-body {
     padding: 1.4rem 1rem 0.75rem;
     .bg-light-success {

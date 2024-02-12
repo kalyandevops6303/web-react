@@ -356,7 +356,8 @@ const TeamListing = () => {
                           {teamInvitation?.metadata?.total_records > 10 && (
                             <ViewAllCard
                               accordionName={AccordionName.teamInvitation}
-                              height={215}
+                              height={230}
+                              width={225}
                               onViewAll={() => {
                                 navigate('/projects/invited');
                                 dispatch(setActiveNavTab('projects'));

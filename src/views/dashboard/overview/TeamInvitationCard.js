@@ -20,8 +20,8 @@ import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
 const UserSection = ({ totalCount, users, name, projectName }) => (
-  <div className="user-section">
-    <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>
+  <div className={`${projectName ? '' : 'mt-1'} user-section`}>
+    {projectName && <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>}
     <div className="avatar-wrap">
       {users.length > 3 ? (
         <span className="d-flex avatars">
@@ -100,35 +100,45 @@ const TeamInvitaionCard = ({ accordionName, data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design new-tag-relative-card">
+      <Card className="card-app-design new-tag-relative-card" style={{ height: '230px' }}>
         {!data?.is_new && <NewTag />}
-        <CardBody>
-          <CardTitle className="mt-50 active-project-title truncate-2 mb-50 d-none">{data?.project?.name}</CardTitle>
-          <div className="d-flex">
-            <RatingBadge number="0" />
-            <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
-          </div>
+        <CardBody className="d-flex flex-column justify-content-between">
+          <div>
+            <CardTitle
+              className={`${
+                data?.project?.details?.name ? '' : 'max-height'
+              } mt-50 active-project-title truncate-2 mb-50`}
+            >
+              {data?.project?.details?.name || data?.name}
+            </CardTitle>
 
-          <UserSection
-            totalCount={data?.team_members_count || data?.workers_count}
-            tagName="Team"
-            name={data?.name}
-            users={users}
-            projectName={data?.project?.name}
-          />
-          <div className="design-planning-wrapper pt-5 d-none">
-            <div className="design-planning">
-              <CardText className="mb-25">Earned</CardText>
-              <h6 className="mb-0">{`$ ${data?.project?.earned ?? 0}`}</h6>
+            <div className="d-flex">
+              <RatingBadge number="0" />
+              <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
             </div>
-            <div className="design-planning">
-              <CardText className="mb-25">New Amt</CardText>
-              <h6 className="mb-0">{`$ ${data?.project?.newAmt ?? 0}`}</h6>
+            <UserSection
+              totalCount={data?.team_members_count || data?.workers_count}
+              tagName="Team"
+              name={data?.name}
+              users={users}
+              projectName={data?.project?.details?.name}
+            />
+            <div className="design-planning-wrapper pt-5 d-none">
+              <div className="design-planning">
+                <CardText className="mb-25">Earned</CardText>
+                <h6 className="mb-0">{`$ ${data?.project?.earned ?? 0}`}</h6>
+              </div>
+              <div className="design-planning">
+                <CardText className="mb-25">New Amt</CardText>
+                <h6 className="mb-0">{`$ ${data?.project?.newAmt ?? 0}`}</h6>
+              </div>
             </div>
           </div>
           <div
             onClick={handleRedirect}
-            className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-25"
+            className={`${
+              data?.project?.details?.name ? '' : ''
+            } cursor-pointer font-weight-normal text-center text-primary project-cta mt-25`}
           >
             View Invites
           </div>

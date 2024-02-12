@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
@@ -22,6 +22,7 @@ const ProjectContainer = styled.div`
 const Projects = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
 
@@ -32,8 +33,8 @@ const Projects = () => {
     useMatch('/projects/terminated') ||
     useMatch('/projects/dispute') ||
     useMatch('/projects/invited');
-
-  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') || 'ongoing');
+  const filterFromUrl = location.pathname.split('/').pop();
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') || filterFromUrl);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
