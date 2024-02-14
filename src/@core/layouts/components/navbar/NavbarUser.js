@@ -47,7 +47,9 @@ const NavbarUser = ({ setNavBarLoading }) => {
   };
 
   useEffect(() => {
-    dispatch(getNotificationsPolling());
+    if (userDetailsData) {
+      dispatch(getNotificationsPolling());
+    }
   }, [location]);
 
   return (
