@@ -111,21 +111,19 @@ const ReceivedBids = ({ projectName }) => {
     {
       name: (
         <div className="d-flex align-items-center">
-          <p className="m-0">COST</p>
+          <p className="m-0">PROJECT COST</p>
           <Info size={14} color={theme.infoIcon} id="cost-info" className="ms-25" />
-          <UncontrolledTooltip target="cost-info">
-            This is a sum of the talent bid and the Trumio platform fee.
-          </UncontrolledTooltip>
+          <UncontrolledTooltip target="cost-info">Project cost includes Bid amount + Platform fee</UncontrolledTooltip>
         </div>
       ),
       sortable: false,
-      minWidth: '13%',
+      minWidth: '18%',
       selector: (row) => row.bid,
     },
     {
       name: 'ATTACHMENTS',
       sortable: false,
-      minWidth: '18%',
+      minWidth: '13%',
       selector: (row) => row.attachments,
     },
     {
