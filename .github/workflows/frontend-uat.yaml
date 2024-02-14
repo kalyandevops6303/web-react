@@ -39,13 +39,13 @@ jobs:
     - name: Upload to blob storage
       run: |
         today=$(date +%d-%m-%Y-%H.%M)
-        az storage blob upload-batch --account-name azusctruatwebsa --auth-mode key -d "uat-frontend-backup/$today" --source ./dist
+        az storage blob upload-batch --account-name azusctruatwebsa --auth-mode login -d "uat-frontend-backup/$today" --source ./dist
 
     - name: Delete blob storage
-      run: az storage blob delete-batch --account-name azusctruatwebsa --auth-mode key --source '$web' --pattern '*'
+      run: az storage blob delete-batch --account-name azusctruatwebsa --auth-mode login --source '$web' --pattern '*'
 
     - name: Upload to blob storage
-      run: az storage blob upload-batch --account-name azusctruatwebsa --auth-mode key -d '$web' --source ./dist
+      run: az storage blob upload-batch --account-name azusctruatwebsa --auth-mode login -d '$web' --source ./dist
     
     - name: Purge CDN endpoint
       run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name trumiouatfdcdn --domains uat.trumio.ai --content-paths '/*'
