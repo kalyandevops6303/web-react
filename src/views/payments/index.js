@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import DataTable from 'react-data-table-component';
 import { Badge, CardBody, CardText, Col, Row, UncontrolledTooltip } from 'reactstrap';
-import { Calendar, CheckSquare, Info } from 'react-feather';
+import { Calendar, CheckSquare, ChevronDown, ChevronUp, Info } from 'react-feather';
 import Avatar from '@components/avatar';
 // eslint-disable-next-line no-unused-vars
 import AvatarGroup from '@components/avatar-group';
@@ -15,7 +15,7 @@ import { StatboxWrap } from '../user-details/overview/style';
 import { userTypes } from '../../utility/constants/Constant';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import theme from '../../configs/themeVariables';
-import { TableContainer } from './style';
+import { TableContainer, ExpandRowDisabled } from './style';
 
 const paymentHistoryData = {
   data: [
@@ -42,7 +42,7 @@ const paymentHistoryData = {
       transaction_id: 5398,
       transaction_date: 1607341187000,
       project_name: 'Project Name',
-      milestone_seq: 1,
+      milestone_seq: 2,
       client_image:
         'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e373744556ff69c1e31be5/f5c246e2-bdbb-4008-b3e8-cfe2fd8b237d.png',
       client_name: 'John Doe',
@@ -238,7 +238,7 @@ const Payments = () => {
     {
       name: 'Transaction ID',
       sortable: false,
-      minWidth: '12%',
+      minWidth: '10%',
       selector: (row) => row.transaction_id,
     },
     {
@@ -250,7 +250,7 @@ const Payments = () => {
     {
       name: 'Milestone',
       sortable: false,
-      minWidth: '10%',
+      minWidth: '15%',
       selector: (row) => row.milestone_seq,
     },
     {
@@ -262,7 +262,7 @@ const Payments = () => {
     {
       name: 'To',
       sortable: false,
-      minWidth: '20%',
+      minWidth: '15%',
       selector: (row) => row.team_name,
     },
     {
@@ -280,8 +280,15 @@ const Payments = () => {
     {
       name: 'Total Cost',
       sortable: false,
-      minWidth: '10%',
+      minWidth: '8%',
       selector: (row) => row.cost,
+      right: true,
+    },
+    {
+      name: '',
+      // eslint-disable-next-line react/no-unstable-nested-components
+      cell: (row) => (row.disabled ? <ExpandRowDisabled /> : null),
+      minWidth: '4%',
     },
   ];
 
@@ -324,30 +331,49 @@ const Payments = () => {
     },
   ];
 
+  const expandableIcon = {
+    collapsed: <ChevronDown size={24} color={theme.gray} className="mt-50" />,
+    expanded: <ChevronUp size={24} color={theme.gray} className="mt-50" />,
+  };
+
   const paymentHistoryDataset = [];
-  paymentHistoryData?.data?.map((item) =>
-    paymentHistoryDataset.push({
-      transaction_id: (
-        <div>
-          <p className="mb-0 fw-bolder font-small-4">#{item?.transaction_id}</p>
-          <p className="mb-0 font-small-2">{DateTime.fromMillis(item?.transaction_date).toFormat('dd MMM yy')}</p>
-        </div>
-      ),
-      project_name: <p className="mb-0 font-small-4 name-ellipsis">{item?.project_name}</p>,
-      milestone_seq: <p className="mb-0 font-small-4">Milestone #{item?.milestone_seq}</p>,
-      from: <p className="mb-0 font-small-4">{item?.from}</p>,
-      client_name: (
-        <div className="d-flex align-items-center">
-          <Avatar img={item?.client_image || defaultAvatar} imgHeight="28" imgWidth="28" className="avatar-logo" />
-          <p className="mb-0 font-small-4 fw-bold ms-75 name-ellipsis">{item?.client_name}</p>
-        </div>
-      ),
-      team_name: <>{showTeamMembers(item?.team_members, item?.team_name, item?.team_logo, item?.talent_name)}</>,
-      status: <>{showStatusBadge(item?.status)}</>,
-      pay_type: <p className="mb-0 font-small-4">{item?.pay_type}</p>,
-      cost: <p className="mb-0 font-small-4">${item?.cost}</p>,
-    }),
-  );
+  paymentHistoryData?.data
+    ?.map((cell) => {
+      let disabled = false;
+      if (cell.milestone_seq > 1) {
+        disabled = true;
+      }
+      return { ...cell, disabled };
+    })
+    ?.map((item) =>
+      paymentHistoryDataset.push({
+        transaction_id: (
+          <div>
+            <p className="mb-0 fw-bolder font-small-4">#{item?.transaction_id}</p>
+            <p className="mb-0 font-small-2">{DateTime.fromMillis(item?.transaction_date).toFormat('dd MMM yy')}</p>
+          </div>
+        ),
+        project_name: <p className="mb-0 font-small-4 name-ellipsis">{item?.project_name}</p>,
+        milestone_seq: (
+          <p className="mb-0 font-small-4">
+            Milestone #{item?.milestone_seq}
+            <span className="ms-50 extra-milestones px-50 fw-bolder font-small-3">+ 2</span>
+          </p>
+        ),
+        from: <p className="mb-0 font-small-4">{item?.from}</p>,
+        client_name: (
+          <div className="d-flex align-items-center">
+            <Avatar img={item?.client_image || defaultAvatar} imgHeight="28" imgWidth="28" className="avatar-logo" />
+            <p className="mb-0 font-small-4 fw-bold ms-75 name-ellipsis">{item?.client_name}</p>
+          </div>
+        ),
+        team_name: <>{showTeamMembers(item?.team_members, item?.team_name, item?.team_logo, item?.talent_name)}</>,
+        status: <>{showStatusBadge(item?.status)}</>,
+        pay_type: <p className="mb-0 font-small-4">{item?.pay_type}</p>,
+        cost: <p className="mb-0 font-small-4">${item?.cost}</p>,
+        disabled: item?.disabled,
+      }),
+    );
 
   const getTableColumns = () => {
     if (userData?.user_type === userTypes.client) {
@@ -357,6 +383,47 @@ const Payments = () => {
     } else if (userData?.user_type === userTypes.team) {
       return teamTableColumns;
     }
+  };
+
+  //   const ExpandedComponent = ({ data }) => {
+  // eslint-disable-next-line react/no-unstable-nested-components, arrow-body-style, no-unused-vars
+  const ExpandedComponent = () => {
+    return (
+      <div className="expanded-view">
+        <div className="expanded-details d-flex">
+          <div className="empty-container pe-2" />
+          <div className="details-container ps-1 d-flex align-items-center justify-content-between py-1">
+            <p className="m-0">Milestone #1</p>
+            <div className="d-flex justify-content-between additional-details">
+              <div>
+                <p className="mb-50">Talent Cost</p>
+                <p className="m-0">Platform Fee</p>
+              </div>
+              <div className="text-end">
+                <p className="mb-50">$10089</p>
+                <p className="m-0">$100</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="expanded-details d-flex">
+          <div className="empty-container pe-2" />
+          <div className="details-container ps-1 d-flex align-items-center justify-content-between py-1">
+            <p className="m-0">Milestone #2</p>
+            <div className="d-flex justify-content-between additional-details">
+              <div>
+                <p className="mb-50">Talent Cost</p>
+                <p className="m-0">Platform Fee</p>
+              </div>
+              <div className="text-end">
+                <p className="mb-50">$10089</p>
+                <p className="m-0">$100</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -407,6 +474,11 @@ const Payments = () => {
           className="react-dataTable"
           data={paymentHistoryDataset}
           classNamePrefix="react-dataTable"
+          expandableRows
+          expandableRowsComponent={ExpandedComponent}
+          expandOnRowClicked
+          expandableIcon={expandableIcon}
+          expandableRowDisabled={(row) => row.disabled}
         />
       </TableContainer>
     </>
