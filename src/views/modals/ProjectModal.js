@@ -311,7 +311,7 @@ const ProjectModal = ({
                         )}
                       </div>
                     ) : (
-                      <CardTitle className="mb-25 fw-bolder">0</CardTitle>
+                      <CardTitle className="mb-25 fw-bolder">None</CardTitle>
                     )}
                     <CardText className="project-name">Bids Received</CardText>
                   </Col>
