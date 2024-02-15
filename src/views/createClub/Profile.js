@@ -17,6 +17,7 @@ import { registerClubEmail, setClubCreateDataAction, updateClub } from '../../re
 import EmailVerifyModal from './EmailVerifyModal';
 import { getTeamById } from '../../services/teamServices';
 import { userData } from '../../redux/selectors/dashboardSelectors';
+import { userProfileEdit } from '../../utility/constants/Constant';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -76,8 +77,8 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const onBackClick = () => {
-    if (location?.state?.isEditing) {
-      navigate(`/create-club/account-details`, { state: { isEditing: true } });
+    if (location.pathname.includes('profile-edit')) {
+      navigate(`/${userProfileEdit.club}/account-details`);
     } else {
       navigate(`/create-club/account-details`);
     }
@@ -109,7 +110,7 @@ const Profile = () => {
     const removeEmptyClubData = removeEmptyKeys(clubData);
     dispatch(setClubCreateDataAction(removeEmptyClubData));
 
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       const linked_in = clubLinkedin;
       const reqData = {
         linked_in,
@@ -128,7 +129,7 @@ const Profile = () => {
   const isUniversityApprovalValue = watch('isUniversityApproval');
 
   useEffect(() => {
-    if (!location?.state?.isEditing) {
+    if (!location.pathname.includes('profile-edit')) {
       if (isWebpageValue !== 'Yes') {
         unregister('universityWebpage');
       } else {
@@ -145,13 +146,13 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       getTeamDetails();
     }
   }, []);
 
   useEffect(() => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       if (clubDetails) {
         if (clubDetails?.email?.length > 0) {
           setValue('clubEmailID', clubDetails?.email, { shouldValidate: true });
@@ -208,10 +209,10 @@ const Profile = () => {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      disabled={location?.state?.isEditing}
+                      disabled={location.pathname.includes('profile-edit')}
                       placeholder="Enter your club email ID"
                       invalid={errors.clubEmailID && true}
-                      className={`${location?.state?.isEditing ? 'disabled-input' : ''}`}
+                      className={`${location.pathname.includes('profile-edit') ? 'disabled-input' : ''}`}
                     />
                   )}
                 />
@@ -249,9 +250,9 @@ const Profile = () => {
                     <Input
                       {...field}
                       placeholder="Enter your club tagline in 60 character"
-                      disabled={location?.state?.isEditing}
+                      disabled={location.pathname.includes('profile-edit')}
                       invalid={errors.clubWebsite && true}
-                      className={`${location?.state?.isEditing ? 'disabled-input' : ''}`}
+                      className={`${location.pathname.includes('profile-edit') ? 'disabled-input' : ''}`}
                     />
                   )}
                 />
@@ -269,14 +270,14 @@ const Profile = () => {
                 control={control}
                 name="isWebpage"
                 id="isWebpage"
-                disabled={location?.state?.isEditing}
+                disabled={location.pathname.includes('profile-edit')}
                 render={({ field }) => (
                   <div className="demo-inline-spacing">
                     <div style={{ maxWidth: '350px' }} className="form-check form-check-inline checkbox-custom-margin">
                       <Input
                         type="radio"
                         {...field}
-                        disabled={location?.state?.isEditing}
+                        disabled={location.pathname.includes('profile-edit')}
                         id="yesWebpage"
                         value="Yes"
                         checked={field.value === 'Yes'}
@@ -289,7 +290,7 @@ const Profile = () => {
                       <Input
                         type="radio"
                         {...field}
-                        disabled={location?.state?.isEditing}
+                        disabled={location.pathname.includes('profile-edit')}
                         id="noWebpage"
                         value="No"
                         checked={field.value === 'No'}
@@ -317,9 +318,9 @@ const Profile = () => {
                       <Input
                         {...field}
                         placeholder="Enter university web page link"
-                        disabled={location?.state?.isEditing}
+                        disabled={location.pathname.includes('profile-edit')}
                         invalid={errors.universityWebpage && true}
-                        className={`${location?.state?.isEditing ? 'disabled-input' : ''}`}
+                        className={`${location.pathname.includes('profile-edit') ? 'disabled-input' : ''}`}
                       />
                     )}
                   />
@@ -382,7 +383,7 @@ const Profile = () => {
               {loading ? (
                 <Spinner size="sm" />
               ) : (
-                <span className="me-50">{location.state?.isEditing ? 'Save' : 'Create'}</span>
+                <span className="me-50">{location.pathname.includes('profile-edit') ? 'Save' : 'Create'}</span>
               )}
             </Button>
           </div>

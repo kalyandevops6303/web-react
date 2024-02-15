@@ -125,21 +125,6 @@ const Social = () => {
     };
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
-
-    // if (removeEmptyKeys(reqData)) {
-    //   if (location?.state?.isEditing) {
-    //     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    //   } else {
-    //     dispatch(saveSocialProfileDetails(removeEmptyKeys(reqData), onSuccess));
-    //   }
-    // } else {
-    //   // eslint-disable-next-line no-lonely-if
-    //   if (location?.state?.isEditing) {
-    //     navigate(`/${userOnboarding.talent}/payment-details`);
-    //   } else {
-    //     dispatch(saveCheckpointComplete(onSuccess));
-    //   }
-    // }
   };
 
   const isValidURL = (url) => {

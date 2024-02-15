@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
@@ -10,6 +10,7 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
+import { clearData } from '../../redux/reducers/project';
 
 const ProjectContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -22,6 +23,7 @@ const ProjectContainer = styled.div`
 const Projects = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
 
@@ -32,8 +34,8 @@ const Projects = () => {
     useMatch('/projects/terminated') ||
     useMatch('/projects/dispute') ||
     useMatch('/projects/invited');
-
-  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') || 'ongoing');
+  const filterFromUrl = location.pathname.split('/').pop();
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedProjectTab') || filterFromUrl);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -42,6 +44,9 @@ const Projects = () => {
     setItem('selectedProjectTab', routesMatch?.pathname?.split('/')?.[2]);
     dispatch(clearProjectData());
     setItem('baseRoute', 'projects');
+
+    // Cleares data for project tab
+    return () => dispatch(clearData());
   }, []);
 
   const handlePrimaryChangeFilter = (props) => {

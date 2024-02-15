@@ -196,7 +196,7 @@ const ThemeNavbar = (props) => {
                 dispatch(setActiveNavTab('projects'));
               }}
             >
-              Project
+              Projects
             </NavLink>
           )}
 

@@ -2,14 +2,19 @@
 import PropTypes from 'prop-types';
 import Tagwrapper from './style';
 
-const Tag = ({ children, hasNew }) => (
-  <Tagwrapper>
-    <span className="tag">{children}</span>
-    {hasNew && <span className="dot" />}
-  </Tagwrapper>
-);
+const Tag = ({ count, hasNew }) => {
+  if (!count) {
+    return '';
+  }
+  return (
+    <Tagwrapper>
+      <span className="tag">{count < 10 ? `0${count}` : count}</span>
+      {hasNew ? <span className="dot" /> : null}
+    </Tagwrapper>
+  );
+};
 Tag.propTypes = {
-  children: PropTypes.element,
+  count: PropTypes.number,
   hasNew: PropTypes.bool,
 };
 export default Tag;

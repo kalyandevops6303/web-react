@@ -28,12 +28,14 @@ import { getCheckBidsAccepted } from '../../redux/actions/dashboardActions';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { clearQuery, toggleIsNavbarSearchBarOpen } from '../../redux/reducers/gloabalSearch';
-import { setItem } from '../../utility/localStorageControl';
+import { removeItem, setItem } from '../../utility/localStorageControl';
 import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 import ClubSection from './overview/ClubSection';
 import InviteClubMemberModal from '../modals/InviteClubMemberModal';
 import { getTeamId } from '../../utility/Utils';
+import InviteListing from './overview/InviteListing';
+import PaymentListing from './overview/PaymentListing';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -82,6 +84,10 @@ const PrivateDashboard = () => {
     dispatch(getCheckBidsAccepted());
     dispatch(clearProjectData());
     setItem('baseRoute', 'dashboard');
+
+    removeItem('selectedMarketplaceTab');
+    removeItem('selectedProjectTab');
+    removeItem('selectedMyTeamsTab');
   }, []);
 
   const toggleCompleteProfileModal = () => {
@@ -267,13 +273,19 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
+          {userDetailsData?.user_type === userTypes.team ? null : (
+            <section className="mb-2">
+              <Header className="mb-1">Payments</Header>
+              <PaymentListing />
+            </section>
+          )}
           {userDetailsData?.user_type === userTypes.client && (
             <section className="mb-2">
               <Header className="mb-1">Open Listings</Header>
               <OpenListing />
             </section>
           )}
-          {userDetailsData?.user_type === userTypes.team && getTeamId('team_id') && (
+          {userDetailsData?.team_type === userTypes.team && getTeamId('team_id') && (
             <section className="mb-2">
               <Header className="mb-1">Talent</Header>
               <TalentListing />
@@ -289,6 +301,12 @@ const PrivateDashboard = () => {
             <section className="mb-2">
               <Header className="mb-1">Teams</Header>
               <TeamListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.talent && (
+            <section className="mb-2">
+              <Header className="mb-1">Invites</Header>
+              <InviteListing />
             </section>
           )}
         </Col>

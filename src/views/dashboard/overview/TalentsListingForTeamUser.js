@@ -12,12 +12,11 @@ import { Card, CardBody, CardText } from 'reactstrap';
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import theme from '../../../configs/themeVariables';
-import ProjectModal from '../../modals/ProjectModal';
+// import ProjectModal from '../../modals/ProjectModal';
 import TagsSection from './TagsSection';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { selectIsTeamLoggedIn } from '../../../redux/selectors/authSelectors';
@@ -25,6 +24,8 @@ import AlmaMaterImg from '../../../assets/images/almaMater.png';
 import { returnFormattedRating } from '../../../utility/Utils';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
 const UserSection = ({ totalCount, users, name, isAlma }) => (
   <div className="user-section">
@@ -67,14 +68,10 @@ UserSection.propTypes = {
   totalCount: PropTypes.number,
 };
 
-const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className }) => {
-  const [showModal, setShowModal] = useState(false);
+const TalentsListingForTeamUser = ({ accordionName, isRecommendedTeam, open, data, className }) => {
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const navigate = useNavigate();
-
-  const handleToggle = () => {
-    setShowModal(!showModal);
-  };
+  const dispatch = useDispatch();
 
   const users = [];
 
@@ -101,14 +98,35 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
     }
   };
 
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        request_id: data?._id,
+      },
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData }));
+  };
+
   const handleViewTeam = (id) => {
+    if (data?.is_read === false) {
+      updateCard();
+    }
     setItemFromSession('team_id', id);
     navigate(`/profile/team/${id}`);
   };
 
+  const handleViewTalent = (id) => {
+    if (data?.is_read === false) {
+      updateCard();
+    }
+    navigate(`/profile/talent/${id}`);
+  };
+
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {!data?.is_read && <NewTag />}
         <CardBody>
           {isRecommendedTeam ? (
             <div className="d-flex w-100 mb-1">
@@ -223,8 +241,11 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
             )}
           </div>
           {isTeamLoggedIn ? (
-            <div className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1">
-              <Link to={`/profile/talent/${data?.talent_info?.user_id}`}>View Talent Profile</Link>
+            <div
+              className="cursor-pointer font-weight-normal text-center text-primary project-cta mt-1"
+              onClick={() => handleViewTalent(data?.talent_info?.user_id)}
+            >
+              View Talent Profile
             </div>
           ) : (
             <div
@@ -236,12 +257,12 @@ const TalentsListingForTeamUser = ({ isRecommendedTeam, open, data, className })
           )}
         </CardBody>
       </Card>
-      {showModal && <ProjectModal data={data} modal={showModal} toggleModal={handleToggle} />}
     </ProjectWrapper>
   );
 };
 
 TalentsListingForTeamUser.propTypes = {
+  accordionName: PropTypes.string,
   data: PropTypes.object,
   className: PropTypes.string,
   isRecommendedTeam: PropTypes.bool,

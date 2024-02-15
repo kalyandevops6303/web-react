@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 /* eslint-disable no-undef */
 import { Col, Input, InputGroup, InputGroupText, Label, Popover, PopoverBody, Row } from 'reactstrap';
 import { AsyncPaginate } from 'react-select-async-paginate';
@@ -138,7 +139,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     dispatch(clearData());
     const valuesOnly = {};
     Object.keys(secondFilterState).forEach((key) => {
-      valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+      if (key === 'statuses' && secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED')) {
+        valuesOnly[key] = [];
+      } else {
+        valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+      }
     });
 
     if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
@@ -160,6 +165,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         getListProjects({
           isMyListing: primaryFilter === 'my_listings',
           isMyBids: primaryFilter === 'my_bids',
+          show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
           isRecommanded,
           isFavorite,
           metaData,
@@ -321,7 +327,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
     const valuesOnly = {};
     Object.keys(secondFilterState).forEach((key) => {
-      valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+      if (key === 'statuses' && secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED')) {
+        valuesOnly[key] = [];
+      } else {
+        valuesOnly[key] = secondFilterState[key].map((item) => item.value);
+      }
     });
     if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
       dispatch(
@@ -342,6 +352,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         getListProjects({
           isMyListing: primaryFilter === 'my_listings',
           isMyBids: primaryFilter === 'my_bids',
+          show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
           isRecommanded,
           isFavorite,
           metaData: newMeteData,
@@ -359,6 +370,16 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
 
   const inMyBids = location.pathname?.split('/')?.includes('my_bids');
+
+  const setStatusOptions = () => {
+    if (primaryFilter === 'all_listings') {
+      return statusForAllListing;
+    } else if (primaryFilter === 'my_listings') {
+      return [...statusesOptions, { label: 'Expired', value: 'LISTING_EXPIRED' }];
+    } else {
+      return statusesOptions;
+    }
+  };
 
   const ExpandCollapseComp = (
     <>
@@ -482,7 +503,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                     <Label className="form-label">Status</Label>
                     <Select
                       isClearable
-                      options={primaryFilter === 'all_listings' ? statusForAllListing : statusesOptions}
+                      options={setStatusOptions()}
                       classNamePrefix="select"
                       placeholder="Select status"
                       theme={selectThemeColors}
@@ -659,6 +680,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
               return (
                 <CardComponent
+                  secondFilterState={secondFilterState}
                   key={item?._id || item?.id}
                   data={item}
                   isPopoverOpen={popoverOpen}

@@ -59,12 +59,10 @@ const LeftSidebarProfile = ({
   };
 
   const onEditClick = () => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     if (data.user_type === userTypes.team) {
-      navigate(`/create-team/profile-details`, {
-        state: { isEditing: true },
-      });
+      navigate(`/${userDetailsData?.user_type?.toLowerCase()}-profile-edit/profile-details`);
     } else {
-      setItemFromSession('backRouteForProfileEdit', location.pathname);
       navigate(`/${data.user_type.toLowerCase()}-profile-edit/account-details`);
     }
   };

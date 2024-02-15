@@ -36,9 +36,7 @@ const NoDataFoundComponent = ({ isRecommanded }) => {
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
-    navigate(path, {
-      state: { isEditing: true },
-    });
+    navigate(path);
   };
 
   const profilePercentageData = useSelector(profilePercentage);

@@ -28,6 +28,8 @@ const userOnboarding = {
 const userProfileEdit = {
   client: 'client-profile-edit',
   talent: 'talent-profile-edit',
+  team: 'team-profile-edit',
+  club: 'club-profile-edit',
 };
 const createBidTalentSteps = [
   { title: 'Milestone', subtitle: 'Add milestone', icon: <Watch size={18} /> },

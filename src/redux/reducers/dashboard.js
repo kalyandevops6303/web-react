@@ -16,6 +16,8 @@ const initialState = {
   recommendedTeamsLoading: false,
   teamInvitation: null,
   teamInvitationLoading: false,
+  projectInvitation: null,
+  projectInvitationLoading: false,
   getMyTeam: null,
   getMyTeamLoading: false,
   profilePercentage: null,
@@ -44,6 +46,8 @@ const initialState = {
   alerts: [],
   projectModalData: null,
   projectModalDataLoading: false,
+  upcomingPaymentsData: null,
+  upcomingPaymentsDataLoading: false,
   error: null,
 };
 
@@ -189,6 +193,21 @@ const dashboardSlice = createSlice({
     teamInvitationFailure: (state, action) => ({
       ...state,
       teamInvitationLoading: false,
+      error: action.payload,
+    }),
+    projectInvitationRequest: (state) => ({
+      ...state,
+      projectInvitationLoading: true,
+      error: null,
+    }),
+    projectInvitationSuccess: (state, action) => ({
+      ...state,
+      projectInvitation: action.payload,
+      projectInvitationLoading: false,
+    }),
+    projectInvitationFailure: (state, action) => ({
+      ...state,
+      projectInvitationLoading: false,
       error: action.payload,
     }),
 
@@ -435,10 +454,69 @@ const dashboardSlice = createSlice({
       projectModalData: action.payload,
       projectModalId: null,
     }),
+
+    upcomingPaymentRequest: (state) => ({
+      ...state,
+      upcomingPaymentDataLoading: true,
+      error: null,
+    }),
+    upcomingPaymentSuccess: (state, action) => ({
+      ...state,
+      upcomingPaymentsData: action.payload,
+      upcomingPaymentDataLoading: false,
+    }),
+    upcomingPaymentFailure: (state, action) => ({
+      ...state,
+      error: action.payload,
+      upcomingPaymentDataLoading: false,
+    }),
+
+    updateCardStatusRequest: (state) => ({
+      ...state,
+      updateCardStatusLoading: true,
+      error: null,
+    }),
+    updateCardStatusSuccess: (state, action) => {
+      const { type } = action.payload;
+      // Find the card with the specified ID in the list
+      if (action.payload.id) {
+        const updatedCards = state[type].data.map((card) => {
+          if (card._id === action.payload.id) {
+            return {
+              ...card,
+              is_read: true, // Assuming you have an 'isRead' property
+            };
+          }
+          return card;
+        });
+
+        return {
+          ...state,
+          [type]: {
+            ...state[type],
+            data: updatedCards,
+            unreadCount: state[type].unreadCount - 1,
+          },
+          error: null,
+        };
+      }
+      return {
+        ...state,
+        error: null,
+      };
+    },
   },
+  updateCardStatusFailure: (state, action) => ({
+    ...state,
+    updateCardStatusLoading: false,
+    error: action.payload,
+  }),
 });
 
 export const {
+  updateCardStatusRequest,
+  updateCardStatusSuccess,
+  updateCardStatusFailure,
   getAlertRequest,
   getAlertSuccess,
   getAlertFailure,
@@ -507,6 +585,12 @@ export const {
   totalReferralAmountRequest,
   totalReferralAmountSuccess,
   totalReferralAmountFailure,
+  upcomingPaymentRequest,
+  upcomingPaymentSuccess,
+  upcomingPaymentFailure,
+  projectInvitationRequest,
+  projectInvitationSuccess,
+  projectInvitationFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;
