@@ -43,7 +43,6 @@ import {
   getActiveProjectsForClient,
   getActiveProjectsForTalent,
   getActiveProjectsForTeam,
-  getDashboardUpcomingPayments,
   getRecommendedProjects,
   getUpcomingProjectsForClient,
   getUpcomingProjectsForTalent,
@@ -59,8 +58,6 @@ import UpcomingProjectCardForTalent from './UpcomingProjectCardForTalent';
 import UpcomingProjectCardForTeam from './UpcomingProjectCardForTeam';
 import ActiveProjectCardForTeam from './ActiveProjectCardForTeam';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
-import UpcomingPaymentsCard from './UpcomingPaymentsCard';
-import { clearUpcomingPayments } from '../../../redux/reducers/milestonePayment';
 import Tag from '../../../@core/components/tags';
 import ViewAllCard from './ExtraCardWithCount';
 import { AccordionName } from './DashboardConstant';
@@ -211,9 +208,6 @@ const ProjectListing = () => {
   const upcomingProjectsForTeamData = useSelector(upcomingProjectsForTeam);
   const upcomingProjectsForTeamIsLoading = useSelector(upcomingProjectsForTeamLoading);
 
-  const upcomingPaymentData = useSelector((state) => state?.dashboard?.upcomingPaymentsData);
-  const upcomingPaymentDataLoading = useSelector((state) => state?.dashboard?.upcomingPaymentDataLoading);
-
   const handleViewAll = (e) => {
     e.stopPropagation();
     navigate('/marketplace/all_listings', { state: { isRecommended: true } });
@@ -255,9 +249,6 @@ const ProjectListing = () => {
     ) {
       dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
     }
-
-    dispatch(clearUpcomingPayments());
-    dispatch(getDashboardUpcomingPayments());
   }, []);
 
   const onViewAllClick = (e, path) => {
@@ -890,72 +881,6 @@ const ProjectListing = () => {
           </>
         )}
       </AccordionItem>
-      {userDetailsData?.user_type === userTypes.team ? null : (
-        <AccordionItem>
-          <AccordionHeader targetId="4">
-            Upcoming Payments
-            <Tag
-              hasNew={upcomingPaymentData?.unreadCount > 0 ? upcomingPaymentData?.unreadCount : false}
-              count={upcomingPaymentData?.metadata?.total_records}
-            />
-          </AccordionHeader>
-          <AccordionBody accordionId="4">
-            {isSliderLoading || upcomingPaymentDataLoading ? (
-              <div style={{ height: '250px' }} className="d-flex justify-content-center gap-1">
-                <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-                <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-                <img style={{ width: '28%', flex: 1 }} src={CardSkeleton} alt="...Loading" />
-              </div>
-            ) : (
-              <ProjectsListingWrap>
-                {upcomingPaymentData?.data?.length > 0 && isTab ? (
-                  upcomingPaymentData?.data?.map((project) => (
-                    <UpcomingPaymentsCard accordionName={AccordionName.payments} key={project._id} data={project} />
-                  ))
-                ) : upcomingPaymentData?.data?.length > 0 ? (
-                  <>
-                    {upcomingPaymentData?.data?.length >= 4 ? (
-                      <Slider {...settings}>
-                        {upcomingPaymentData?.data?.map((project, index) => (
-                          <UpcomingPaymentsCard
-                            accordionName={AccordionName.payments}
-                            className={`slide-${index}`}
-                            key={project._id}
-                            data={project}
-                          />
-                        ))}
-
-                        {upcomingPaymentData?.metadata?.total_records > 10 && (
-                          <ViewAllCard
-                            accordionName={AccordionName.payments}
-                            height={332}
-                            width={250}
-                            onViewAll={handleViewAll}
-                            count={calculateRemainingBidsCount(upcomingPaymentData)}
-                          />
-                        )}
-                      </Slider>
-                    ) : (
-                      <div className="custom-slider-wrap">
-                        {upcomingPaymentData?.data?.map((project) => (
-                          <UpcomingPaymentsCard
-                            accordionName={AccordionName.payments}
-                            className="custom-slider-project"
-                            key={project._id}
-                            data={project}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <Empty active={false} recommended={false} payment />
-                )}
-              </ProjectsListingWrap>
-            )}
-          </AccordionBody>
-        </AccordionItem>
-      )}
     </Accordion>
   );
 };

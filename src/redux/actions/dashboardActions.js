@@ -26,6 +26,7 @@ import {
   getModalDataService,
   totalReferralAmountService,
   updateCardStatusService,
+  getProjectInvitationService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -102,6 +103,9 @@ import {
   upcomingPaymentFailure,
   upcomingPaymentRequest,
   upcomingPaymentSuccess,
+  projectInvitationRequest,
+  projectInvitationSuccess,
+  projectInvitationFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -224,6 +228,17 @@ const getTeamInvitation = () => async (dispatch) => {
     dispatch(teamInvitationSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }));
   } catch (error) {
     errorHandler(error, teamInvitationFailure);
+  }
+};
+const getProjectInvitation = () => async (dispatch) => {
+  dispatch(projectInvitationRequest());
+  try {
+    const res = await getProjectInvitationService();
+    dispatch(
+      projectInvitationSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+    );
+  } catch (error) {
+    errorHandler(error, projectInvitationFailure);
   }
 };
 
@@ -480,4 +495,5 @@ export {
   getTotalReferralAmount,
   updateCardStatus,
   getDashboardUpcomingPayments,
+  getProjectInvitation,
 };

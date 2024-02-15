@@ -16,6 +16,8 @@ const initialState = {
   recommendedTeamsLoading: false,
   teamInvitation: null,
   teamInvitationLoading: false,
+  projectInvitation: null,
+  projectInvitationLoading: false,
   getMyTeam: null,
   getMyTeamLoading: false,
   profilePercentage: null,
@@ -191,6 +193,21 @@ const dashboardSlice = createSlice({
     teamInvitationFailure: (state, action) => ({
       ...state,
       teamInvitationLoading: false,
+      error: action.payload,
+    }),
+    projectInvitationRequest: (state) => ({
+      ...state,
+      projectInvitationLoading: true,
+      error: null,
+    }),
+    projectInvitationSuccess: (state, action) => ({
+      ...state,
+      projectInvitation: action.payload,
+      projectInvitationLoading: false,
+    }),
+    projectInvitationFailure: (state, action) => ({
+      ...state,
+      projectInvitationLoading: false,
       error: action.payload,
     }),
 
@@ -571,6 +588,9 @@ export const {
   upcomingPaymentRequest,
   upcomingPaymentSuccess,
   upcomingPaymentFailure,
+  projectInvitationRequest,
+  projectInvitationSuccess,
+  projectInvitationFailure,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

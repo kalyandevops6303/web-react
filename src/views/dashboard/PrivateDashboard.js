@@ -34,6 +34,8 @@ import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 import ClubSection from './overview/ClubSection';
 import InviteClubMemberModal from '../modals/InviteClubMemberModal';
 import { getTeamId } from '../../utility/Utils';
+import InviteListing from './overview/InviteListing';
+import PaymentListing from './overview/PaymentListing';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -271,6 +273,10 @@ const PrivateDashboard = () => {
             <Header className="mb-1">Projects</Header>
             <ProjectListing />
           </section>
+          <section className="mb-2">
+            <Header className="mb-1">Payments</Header>
+            <PaymentListing />
+          </section>
           {userDetailsData?.user_type === userTypes.client && (
             <section className="mb-2">
               <Header className="mb-1">Open Listings</Header>
@@ -293,6 +299,12 @@ const PrivateDashboard = () => {
             <section className="mb-2">
               <Header className="mb-1">Teams</Header>
               <TeamListing />
+            </section>
+          )}
+          {userDetailsData?.user_type === userTypes.talent && (
+            <section className="mb-2">
+              <Header className="mb-1">Invites</Header>
+              <InviteListing />
             </section>
           )}
         </Col>

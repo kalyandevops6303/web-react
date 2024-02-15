@@ -42,7 +42,9 @@ const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
       },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ switch_team_id, id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
+    if (data?.is_read === false) {
+      dispatch(updateCardStatus({ switch_team_id, id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
+    }
   };
 
   return (

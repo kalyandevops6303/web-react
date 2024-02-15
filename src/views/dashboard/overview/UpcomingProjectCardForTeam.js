@@ -32,7 +32,9 @@ const UpcomingProjectCardForTeam = ({ accordionName, data, className }) => {
       },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'upcomingProjectsForTeam' }));
+    if (data?.is_read) {
+      dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'upcomingProjectsForTeam' }));
+    }
   };
 
   return (

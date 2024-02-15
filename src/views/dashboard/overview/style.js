@@ -181,7 +181,7 @@ const ProjectWrapper = styled.div`
     margin-top: 4.45rem !important;
   }
   .max-height {
-    max-height: 20px !important;
+    max-height: 40px !important;
   }
   .card-body {
     padding: 1.4rem 1rem 0.75rem;
