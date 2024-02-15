@@ -111,7 +111,9 @@ const RecommendedTeamsCardForClient = ({ accordionName, isRecommendedTeam, open,
       },
       type: accordionName,
     };
-    dispatch(updateCardStatus({ data: postData }));
+    if (data?.is_read === false) {
+      dispatch(updateCardStatus({ data: postData }));
+    }
   };
 
   const handleViewTeam = (id) => {

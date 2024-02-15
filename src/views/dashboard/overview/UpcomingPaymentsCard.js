@@ -29,14 +29,16 @@ const UpcomingPaymentsCard = ({ accordionName, data, className }) => {
       },
       type: accordionName,
     };
-    dispatch(
-      updateCardStatus({
-        id: data?._id,
-        switch_team_id: data?.switch_team_id,
-        data: postData,
-        type: 'upcomingPaymentsData',
-      }),
-    );
+    if (data?.is_read === false) {
+      dispatch(
+        updateCardStatus({
+          id: data?._id,
+          switch_team_id: data?.switch_team_id,
+          data: postData,
+          type: 'upcomingPaymentsData',
+        }),
+      );
+    }
   };
 
   const handleViewDetails = (transactionData) => {

@@ -44,7 +44,9 @@ const ActiveProjectCard = ({ accordionName, data, className }) => {
 
       type: accordionName,
     };
-    dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForClient' }));
+    if (data?.is_read === false) {
+      dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForClient' }));
+    }
   };
 
   return (
