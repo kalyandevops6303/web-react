@@ -25,6 +25,8 @@ const getRecommendedTeamService = () => DataService.get(API.dashboard.recommende
 
 const getTeamInvitationService = () => DataService.get(API.dashboard.teamInvitaion);
 
+const getProjectInvitationService = () => DataService.get(API.dashboard.projectInvite);
+
 const recommendedProjectsTeamService = () => DataService.get(API.dashboard.recommendedProjectsTeam);
 
 const getMyTeamService = () => DataService.get(`${API.dashboard.getMyTeam}?page=1&page_size=100`);
@@ -100,4 +102,5 @@ export {
   upcomingProjectsForTeamService,
   totalReferralAmountService,
   updateCardStatusService,
+  getProjectInvitationService,
 };

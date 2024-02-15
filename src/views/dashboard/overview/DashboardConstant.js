@@ -2,6 +2,7 @@ const AccordionName = {
   myTeam: 'MY_TEAMS',
   recommendedTeams: 'RECOMMENDED_TEAMS',
   teamInvitation: 'TEAM_INVITES',
+  projectInvitation: 'PROJECT_INVITES',
   activeProjects: 'ACTIVE_PROJECTS',
   upcomingProjects: 'UPCOMING_PROJECTS',
   payments: 'UPCOMING_PAYMENTS',
