@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-else-return */
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import DataTable from 'react-data-table-component';
 import { Badge, CardBody, CardText, Col, Row, UncontrolledTooltip } from 'reactstrap';
@@ -16,6 +16,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import theme from '../../configs/themeVariables';
 import { TableContainer, ExpandRowDisabled } from './style';
+import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 
 const paymentHistoryData = {
   data: [
@@ -101,11 +102,13 @@ const paymentHistoryData = {
 };
 
 const Payments = () => {
+  const dispatch = useDispatch();
+
   const userData = useSelector(selectUserData);
 
-  const earningsTooltipText = () => {
+  const firstStatCardTooltipText = () => {
     if (userData?.user_type === userTypes.client) {
-      return 'Total of all your completed payments. This includes funds + platform fee.';
+      return 'All funds distributed after milestone approval.';
     } else if (userData?.user_type === userTypes.talent) {
       return 'Your total earnings till date.';
     } else if (userData?.user_type === userTypes.team && userData?.team_type === userTypes.team) {
@@ -115,15 +118,27 @@ const Payments = () => {
     }
   };
 
-  const upcomingPaymentTooltipText = () => {
+  const secondStatCardTooltipText = () => {
     if (userData?.user_type === userTypes.client) {
-      return 'Total of funds + platform fee for upcoming projects and milestones.';
+      return 'All funds sent to trumio.';
     } else if (userData?.user_type === userTypes.talent) {
       return 'Your total upcoming payments for funded projects and milestones';
     } else if (userData?.user_type === userTypes.team && userData?.team_type === userTypes.team) {
       return 'Your total upcoming payments for funded projects and milestones with this team';
     } else if (userData?.user_type === userTypes.team && userData?.team_type === userTypes.club) {
       return 'Your total upcoming payments for funded projects and milestones with this club.';
+    }
+  };
+
+  const thirdStatCardTooltipText = () => {
+    if (userData?.user_type === userTypes.client) {
+      return 'Funds yet to be deposited to trumio as per contract.';
+    } else if (userData?.user_type === userTypes.talent) {
+      return `Funds may have come in or not come in. this doesn't included the on going milestone`;
+    } else if (userData?.user_type === userTypes.team && userData?.team_type === userTypes.team) {
+      return `Funds may have come in or not come in. this doesn't included the on going milestone with this team`;
+    } else if (userData?.user_type === userTypes.team && userData?.team_type === userTypes.club) {
+      return `Funds may have come in or not come in. this doesn't included the on going milestone with this club.`;
     }
   };
 
@@ -426,20 +441,26 @@ const Payments = () => {
     );
   };
 
+  useEffect(() => {
+    dispatch(setActiveNavTab(''));
+  }, []);
+
   return (
     <>
       <BreadCrumbs data={[{ title: 'Dashboard' }, { title: 'Payments' }]} />
       <Row>
-        <Col sm="12" md="4" lg="3">
+        <Col>
           <StatboxWrap isMarketPlaceTab>
             <CardBody>
               <div className="d-flex align-items-center justify-content-between">
                 <div className="my-auto">
                   <h3 className="fw-bolder">$1000</h3>
                   <CardText className="mb-0 stat-desc">
-                    {userData?.user_type === userTypes.client ? 'Released Payments' : 'Earnings'}
-                    <Info size={16} color={theme.infoIcon} id="earnings" className="ms-25" />
-                    <UncontrolledTooltip target="earnings">{earningsTooltipText()}</UncontrolledTooltip>
+                    {userData?.user_type === userTypes.client ? 'Paid' : 'Earned'}
+                    <Info size={16} color={theme.infoIcon} id="firstStat" className="ms-25" />
+                    <UncontrolledTooltip target="firstStat" placement="bottom">
+                      {firstStatCardTooltipText()}
+                    </UncontrolledTooltip>
                   </CardText>
                 </div>
                 <Avatar color="light-green" icon={<CheckSquare size={24} />} className="stat-avatar" />
@@ -447,16 +468,18 @@ const Payments = () => {
             </CardBody>
           </StatboxWrap>
         </Col>
-        <Col sm="12" md="4" lg="3">
+        <Col>
           <StatboxWrap isMarketPlaceTab>
             <CardBody>
               <div className="d-flex align-items-center justify-content-between">
                 <div className="my-auto">
                   <h3 className="fw-bolder">$500</h3>
                   <CardText className="mb-0 stat-desc">
-                    Upcoming Payment
-                    <Info size={16} color={theme.infoIcon} id="upcoming" className="ms-25" />
-                    <UncontrolledTooltip target="upcoming">{upcomingPaymentTooltipText()}</UncontrolledTooltip>
+                    {userData?.user_type === userTypes.client ? 'Deposited' : 'Upcoming'}
+                    <Info size={16} color={theme.infoIcon} id="secondStat" className="ms-25" />
+                    <UncontrolledTooltip target="secondStat" placement="bottom">
+                      {secondStatCardTooltipText()}
+                    </UncontrolledTooltip>
                   </CardText>
                 </div>
                 <Avatar color="light-blue" icon={<Calendar size={24} />} className="stat-avatar" />
@@ -464,6 +487,27 @@ const Payments = () => {
             </CardBody>
           </StatboxWrap>
         </Col>
+        <Col>
+          <StatboxWrap isMarketPlaceTab>
+            <CardBody>
+              <div className="d-flex align-items-center justify-content-between">
+                <div className="my-auto">
+                  <h3 className="fw-bolder">$1000</h3>
+                  <CardText className="mb-0 stat-desc">
+                    {userData?.user_type === userTypes.client ? 'Upcoming' : 'Future'}
+                    <Info size={16} color={theme.infoIcon} id="thirdStat" className="ms-25" />
+                    <UncontrolledTooltip target="thirdStat" placement="bottom">
+                      {thirdStatCardTooltipText()}
+                    </UncontrolledTooltip>
+                  </CardText>
+                </div>
+                <Avatar color="light-green" icon={<CheckSquare size={24} />} className="stat-avatar" />
+              </div>
+            </CardBody>
+          </StatboxWrap>
+        </Col>
+        <Col />
+        <Col />
       </Row>
       <p className="fw-bold font-medium-3 mt-1">Payment History</p>
       <TableContainer className="mt-3">
