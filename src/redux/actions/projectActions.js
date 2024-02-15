@@ -32,30 +32,35 @@ const getCardInfo =
     }
   };
 
+const serviceMap = {
+  ONGOING: getOngoingProjectListingService,
+  COMPLETED: getCompletedProjectListingService,
+  UPCOMING: getUpcomingProjectListingService,
+  DISPUTE: getDisutedProjectListingService,
+  TERMINATED: getTerminatedProjectListingService,
+  INVITED: getInvitedProjectListingService,
+};
+
 const getProjectListing =
   ({ data, metaData, onSuccess, onError }) =>
   async (dispatch) => {
+    const { project_filter, project_type } = data;
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
     try {
-      let res;
-      if (data?.project_filter === 'ONGOING') {
-        res = await getOngoingProjectListingService({ data, metaData });
-      } else if (data?.project_filter === 'COMPLETED') {
-        res = await getCompletedProjectListingService({ data, metaData });
-      } else if (data?.project_filter === 'UPCOMING') {
-        res = await getUpcomingProjectListingService({ data, metaData });
-      } else if (data?.project_filter === 'DISPUTED') {
-        res = await getDisutedProjectListingService({ data, metaData });
-      } else if (data?.project_filter === 'TERMINATED') {
-        res = await getTerminatedProjectListingService({ data, metaData });
-      } else if (data?.project_filter === 'INVITED') {
-        res = await getInvitedProjectListingService({ data, metaData });
+      if (project_filter in serviceMap) {
+        const res = await serviceMap[project_filter]({
+          data: { ...data, project_types: project_type ? [project_type] : [] },
+          metaData,
+        });
+        if (res) {
+          dispatch(storeSuccessData(res?.data?.data));
+          onSuccess();
+        }
+      } else {
+        throw new Error(`Invalid project filter: ${project_filter}`);
       }
-      // res = await getProjectListingService({ data, metaData });
-      dispatch(storeSuccessData(res?.data?.data));
-      onSuccess();
     } catch (error) {
       onError();
       errorHandler(error, getListErr);
