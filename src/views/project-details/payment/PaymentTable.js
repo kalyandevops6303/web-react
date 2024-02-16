@@ -222,6 +222,10 @@ const PaymentTable = () => {
   const showPaymentCalculation =
     user.user_type === userTypes.client && !isAllMilestonePaid && selectedPaymentId.length > 0;
 
+  if (listLoading) {
+    return <ComponentSpinner />;
+  }
+
   return (
     <>
       {makePaymentModal && (
@@ -232,9 +236,7 @@ const PaymentTable = () => {
         />
       )}
 
-      {listLoading ? (
-        <ComponentSpinner />
-      ) : (
+      {milestoneData?.length > 0 && (
         <Card className="" style={{ backgroundColor: 'transparent' }}>
           <div className="p-2 pb-0">
             <CardText className="fs-4 mb-0 fw-bold">Milestone Payment</CardText>
