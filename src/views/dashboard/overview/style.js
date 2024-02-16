@@ -164,6 +164,7 @@ const EarningAmount = styled.div`
 `;
 
 const ProjectWrapper = styled.div`
+  position: relative;
   @media (max-width: 768px) {
     min-width: 20rem;
   }
@@ -175,6 +176,12 @@ const ProjectWrapper = styled.div`
     > * {
       padding: 0;
     }
+  }
+  .team-invite {
+    margin-top: 4.45rem !important;
+  }
+  .max-height {
+    max-height: 40px !important;
   }
   .card-body {
     padding: 1.4rem 1rem 0.75rem;
@@ -376,8 +383,29 @@ const ProjectWrapper = styled.div`
     }
   }
 
+  .new-tag-relative-card {
+    position: relative;
+  }
+
   .expired-listing-text {
     color: ${theme.red} !important;
+  }
+`;
+
+const NewTagWrap = styled.div`
+  position: absolute;
+  right: 0;
+  border-radius: 0px 6px 0px 12px;
+  background: rgba(9, 54, 130, 0.08);
+
+  .red-dot {
+    width: 6px;
+    height: 6px;
+    background-color: ${theme.red};
+    border-radius: 50%;
+  }
+  p {
+    color: ${theme.newTagColor};
   }
 `;
 
@@ -573,4 +601,5 @@ export {
   DisputesLegend,
   DisputesChartContainer,
   InReviewButton,
+  NewTagWrap,
 };

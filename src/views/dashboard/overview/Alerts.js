@@ -14,7 +14,7 @@ import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { CustomBadge, Elevate } from '../../styled';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
-import { getAlertsNotifications } from '../../../redux/actions/notificationsActions';
+import { getAlertsNotifications, markNotificationAsRead } from '../../../redux/actions/notificationsActions';
 
 const Alerts = () => {
   const dispatch = useDispatch();
@@ -43,9 +43,7 @@ const Alerts = () => {
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
-    navigate(path, {
-      state: { isEditing: true },
-    });
+    navigate(path);
   };
 
   const getStatusShortName = (status) => {
@@ -73,7 +71,7 @@ const Alerts = () => {
     }
   };
 
-  const handleAlertClick = (path) => {
+  const handleAlertClick = (path, notificationId) => {
     // eslint-disable-next-line no-undef
     const url = new URL(`${window.location.protocol}//${window.location.host}${path}`);
     const params = url.searchParams;
@@ -87,10 +85,14 @@ const Alerts = () => {
         entity: switch_team_id ? 'TEAM' : 'TALENT',
         navigateTo: path?.split('?')[0],
         switchTeamId: switch_team_id,
+        notificationId,
       });
       setSwitchProfileModal(true);
     } else {
       navigate(path?.split('?')[0]);
+      if (notificationId) {
+        dispatch(markNotificationAsRead(notificationId));
+      }
     }
   };
 
@@ -213,7 +215,11 @@ const Alerts = () => {
 
           {notificationsData &&
             notificationsData?.data.map((item) => (
-              <Card onClick={() => handleAlertClick(item?.path)} key={item?._id} className="cursor-pointer card-inside">
+              <Card
+                onClick={() => handleAlertClick(item?.path, item?.status === 'UNREAD' ? item?._id : null)}
+                key={item?._id}
+                className="cursor-pointer card-inside"
+              >
                 <Elevate key={item?._id}>
                   <CardHeader className="d-flex">
                     <CardTitle tag="h4">{getStatusShortName(item?.title)}</CardTitle>
@@ -244,6 +250,7 @@ const Alerts = () => {
           entity={switchData?.entity}
           navigateTo={switchData?.navigateTo}
           switchTeamId={switchData?.switchTeamId}
+          notificationId={switchData?.notificationId}
           modal={switchProfileModal}
           toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
         />

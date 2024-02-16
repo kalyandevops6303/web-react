@@ -3,7 +3,8 @@ import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap
 import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
@@ -16,12 +17,25 @@ import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import NewTag from '../../@core/components/new-tag';
+import { updateCardStatus } from '../../redux/actions/dashboardActions';
+import { getReadType } from '../../utility/Utils';
 
-const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data, isPopoverOpen, isTeam }) => {
+const MarketPlaceProjectCard = ({
+  primaryFilter,
+  secondFilterState,
+  isSearchPage,
+  isExpanded,
+  data,
+  isPopoverOpen,
+  isTeam,
+}) => {
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
+  const [isNewTag, setIsTagNew] = useState(data?.is_read === false);
   const userData = useSelector(selectUserData);
+  const dispatch = useDispatch();
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
 
   const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
@@ -94,6 +108,24 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
     setShowModal(true);
   };
 
+  const updateCard = () => {
+    const onSuccess = () => {
+      setIsTagNew(false);
+    };
+    const postData = {
+      metadata: {},
+      type: getReadType({ primaryFilter, secondFilterState }),
+    };
+    if (primaryFilter === 'my_bids') {
+      postData.metadata.bid_id = data?.bids?._id;
+    } else {
+      postData.metadata.project_id = data?._id;
+    }
+    if (postData?.type && data?.is_read === false) {
+      dispatch(updateCardStatus({ data: postData, onSuccess }));
+    }
+  };
+
   return (
     <ProjectCardWrap>
       {relistConfirmationModal && (
@@ -121,6 +153,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
         />
       )}
       <Card onClick={handleShowProject} className="cursor-pointer">
+        {isNewTag && <NewTag />}
         <Elevate>
           <CardBody>
             <Row>
@@ -197,6 +230,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
       </Card>
       {showModal && (
         <ProjectModal
+          onUpdateCard={updateCard}
           data={data}
           modal={showModal}
           toggleModal={handleToggle}
@@ -222,6 +256,7 @@ const MarketPlaceProjectCard = ({ primaryFilter, isSearchPage, isExpanded, data,
 };
 
 MarketPlaceProjectCard.propTypes = {
+  secondFilterState: PropTypes.object,
   isExpanded: PropTypes.bool,
   data: PropTypes.object,
   isPopoverOpen: PropTypes.bool,
@@ -231,6 +266,7 @@ MarketPlaceProjectCard.propTypes = {
 };
 
 MarketPlaceProjectCard.defaultProps = {
+  secondFilterState: {},
   isExpanded: false,
   data: {},
   isPopoverOpen: false,

@@ -56,7 +56,7 @@ const CompleteProfileDetailsCta = {
     {
       keyToMatch: 'team_logo',
       label: 'Complete Your Profile',
-      path: '/create-team/profile-details',
+      path: `/${userProfileEdit.team}/profile-details`,
     },
     {
       keyToMatch: 'payment_account',
@@ -68,7 +68,7 @@ const CompleteProfileDetailsCta = {
     {
       keyToMatch: 'team_logo',
       label: 'Complete Your Profile',
-      path: '/create-club/account-details',
+      path: `/${userProfileEdit.club}/account-details`,
     },
   ],
 };

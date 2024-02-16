@@ -25,6 +25,8 @@ const getRecommendedTeamService = () => DataService.get(API.dashboard.recommende
 
 const getTeamInvitationService = () => DataService.get(API.dashboard.teamInvitaion);
 
+const getProjectInvitationService = () => DataService.get(API.dashboard.projectInvite);
+
 const recommendedProjectsTeamService = () => DataService.get(API.dashboard.recommendedProjectsTeam);
 
 const getMyTeamService = () => DataService.get(`${API.dashboard.getMyTeam}?page=1&page_size=100`);
@@ -63,6 +65,13 @@ const upcomingProjectsForTeamService = () => DataService.get(API.dashboard.upcom
 const getModalDataService = ({ project_id }) =>
   DataService.get(`${API.dashboard.getProjectDetails}?project_id=${project_id}`);
 
+const updateCardStatusService = ({ data, switch_team_id }) => {
+  if (switch_team_id) {
+    return DataService.post(`${API.dashboard.updateCardStatus}?team_id=${switch_team_id}`, data);
+  }
+  return DataService.post(API.dashboard.updateCardStatus, data);
+};
+
 export {
   alertService,
   getModalDataService,
@@ -92,4 +101,6 @@ export {
   activeProjectsForTeamService,
   upcomingProjectsForTeamService,
   totalReferralAmountService,
+  updateCardStatusService,
+  getProjectInvitationService,
 };

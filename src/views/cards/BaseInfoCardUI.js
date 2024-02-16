@@ -89,7 +89,7 @@ const BaseInfoUI = ({ data }) => {
       <div className="d-flex mb-2 align-items-center">
         <img
           className="market-place-card-photo me-75"
-          src={data?.client?.image_uri.length ? data?.client?.image_uri : defaultAvatar}
+          src={data?.client?.image_uri?.length ? data?.client?.image_uri : defaultAvatar}
           alt="avatar"
         />
         <div className="d-flex w-100 align-items-center">

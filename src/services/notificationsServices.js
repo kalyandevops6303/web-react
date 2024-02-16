@@ -11,4 +11,14 @@ const getAlertsNotificationsService = (priority, page, pageSize) =>
     priorities: priority,
   });
 
-export { getNotificationsService, getAlertsNotificationsService };
+const getNotificationsPollingService = () => DataService.get(API.notifications.polling);
+
+const markNotificationAsReadService = (notificationId) =>
+  DataService.put(`${API.notifications.markAsRead}?notification_id=${notificationId}`);
+
+export {
+  getNotificationsService,
+  getAlertsNotificationsService,
+  getNotificationsPollingService,
+  markNotificationAsReadService,
+};

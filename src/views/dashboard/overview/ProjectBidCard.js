@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../../modals/RelistSuccessModal';
 
-const ProjectBidCard = ({ data, className }) => {
+const ProjectBidCard = ({ accordionName, data, className }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        project_id: data._id,
+      },
+      type: accordionName,
+    };
+    dispatch(updateCardStatus({ data: postData }));
+  };
 
   const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
   const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
@@ -24,6 +38,9 @@ const ProjectBidCard = ({ data, className }) => {
 
   // eslint-disable-next-line no-unused-vars
   const viewDetails = () => {
+    if (data?.is_read === false) {
+      updateCard();
+    }
     navigate(`/project-details/${data._id}/bid`);
   };
 
@@ -60,7 +77,8 @@ const ProjectBidCard = ({ data, className }) => {
           projectRelistData={projectRelistData}
         />
       )}
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {data?.is_read === false && <NewTag />}
         <CardBody>
           <CardTitle className="active-project-title truncate-2 mb-1.5">{data?.name}</CardTitle>
           {data?.is_expired ? (
@@ -119,9 +137,11 @@ export default ProjectBidCard;
 ProjectBidCard.propTypes = {
   data: Proptypes.object,
   className: Proptypes.string,
+  accordionName: Proptypes.string,
 };
 
 ProjectBidCard.defaultProps = {
   data: {},
   className: '',
+  accordionName: '',
 };

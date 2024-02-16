@@ -15,7 +15,7 @@ import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { returnFormattedRating } from '../../utility/Utils';
-import { BidsReceivedWrapper } from './style';
+import { BidsReceivedWrapper, IconWrapper } from './style';
 
 const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
@@ -119,8 +119,8 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
 
   return (
     <div>
-      <div className="d-flex justify-content-end">
-        <div className="d-flex align-items-center gap-50">
+      <IconWrapper className="d-flex justify-content-end pt-50">
+        <div className="d-flex align-items-center gap-70">
           {data?.is_alma_mater && (
             <Badge className="alma-mater ms-50 bg-white">
               <img src={hat} alt="client-badge" className="bg-white" />
@@ -169,7 +169,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
             </div>
           ) : null}
         </div>
-      </div>
+      </IconWrapper>
       {!location.pathname.split('/').includes('my_listings') && (
         <div className="d-flex mb-25 align-items-center">
           {data?.bidder_details ? (

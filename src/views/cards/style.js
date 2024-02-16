@@ -2,6 +2,12 @@ import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 import { userTypes } from '../../utility/constants/Constant';
 
+const IconWrapper = styled.div`
+  .gap-70 {
+    gap: 0.8rem;
+  }
+`;
+
 const CardWrap = styled.div`
   .card-body {
     padding: 2.1rem 2.6rem 1.8rem 2.6rem;
@@ -443,4 +449,13 @@ const BidsReceivedWrapper = styled.div`
   }
 `;
 
-export { CardWrap, ProjectCardWrap, TeamCardWrap, UserCardWrap, ClientCardWrap, ResponsiveGrid, BidsReceivedWrapper };
+export {
+  CardWrap,
+  ProjectCardWrap,
+  TeamCardWrap,
+  UserCardWrap,
+  ClientCardWrap,
+  ResponsiveGrid,
+  BidsReceivedWrapper,
+  IconWrapper,
+};

@@ -92,6 +92,7 @@ const API = {
     // talent
     recommendedTeams: `${apiOnboardingEndpoint}/api/v1/talent/get-recommended-teams`,
     teamInvitaion: `${apiOnboardingEndpoint}/api/v1/talent/team-invite-new`,
+    projectInvite: `${apiOnboardingEndpoint}/api/v1/talent/team-project-invite`,
     getMyTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
     projectInvites: `${apiOnboardingEndpoint}/api/v1/user/alerts/invitations`,
     activeProjectsForTalent: `${apiOnboardingEndpoint}/api/v1/talent/active-projects`,
@@ -102,6 +103,7 @@ const API = {
     upcomingProjectsForClient: `${apiOnboardingEndpoint}/api/v1/client/upcoming-projects`,
     projectsBidsForClient: `${apiOnboardingEndpoint}/api/v1/client/open-listing`,
     recommendedTeamsForClient: `${apiOnboardingEndpoint}/api/v1/client/recommended-teams`,
+    updateCardStatus: `${apiOnboardingEndpoint}/api/v1/alert/mark-as-read`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,
@@ -197,6 +199,8 @@ const API = {
     alerts: `${apiOnboardingEndpoint}/api/v1/alerts`,
     subscribe: `${apiAuthEndpoint}/api/v1/user/subscribe`,
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
+    polling: `${apiAuthEndpoint}/api/v1/notifications/polling`,
+    markAsRead: `${apiAuthEndpoint}/api/v1/notifications/mark-as-read`,
   },
   createBid: {
     checkBid: `${apiCreateProjectEndpoint}/api/v1/bid/check`,
@@ -244,8 +248,14 @@ const API = {
     listRecomm: `${apiOnboardingEndpoint}/api/v1/my-teams/recommended`,
   },
   project: {
-    cardInfo: `${apiOnboardingEndpoint}/api/v1/projects/card-info`,
+    cardInfo: `${apiOnboardingEndpoint}/api/v1/projects-count`,
     projects: `${apiOnboardingEndpoint}/api/v1/projects`,
+    ongoingProjects: `${apiOnboardingEndpoint}/api/v1/ongoing-projects`,
+    upcomingProjects: `${apiOnboardingEndpoint}/api/v1/upcoming-projects`,
+    comletedProjects: `${apiOnboardingEndpoint}/api/v1/completed-projects`,
+    terminatedProjects: `${apiOnboardingEndpoint}/api/v1/terminated-projects`,
+    disputedProjects: `${apiOnboardingEndpoint}/api/v1/disputed-projects`,
+    invitedProjects: `${apiOnboardingEndpoint}/api/v1/invited-projects`,
     clientName: `${apiOnboardingEndpoint}/api/v1/projects/client-names`,
     teamName: `${apiOnboardingEndpoint}/api/v1/projects/team-names`,
   },

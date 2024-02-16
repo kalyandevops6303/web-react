@@ -4,16 +4,19 @@ import Proptypes from 'prop-types';
 import { Badge, Card, CardBody, CardText, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ProjectWrapper } from './style';
 import { CustomBadge } from '../../styled';
 import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const ActiveProjectCardForTeam = ({ data, className }) => {
+const ActiveProjectCardForTeam = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
+  const dispatch = useDispatch();
 
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
@@ -33,9 +36,22 @@ const ActiveProjectCardForTeam = ({ data, className }) => {
     setShowModal(true);
   };
 
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        project_id: data._id,
+      },
+      type: accordionName,
+    };
+    if (data?.is_read === false) {
+      dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'activeProjectsForTeam' }));
+    }
+  };
+
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {!data?.is_read && <NewTag />}
         <CardBody>
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">
@@ -151,6 +167,8 @@ const ActiveProjectCardForTeam = ({ data, className }) => {
       </Card>
       {(showModal || switchModal) && (
         <ProjectModalViews
+          cardData={data}
+          onUpdateCard={updateCard}
           isActiveProject
           project_id={data?._id}
           showModal={showModal}
@@ -168,9 +186,11 @@ export default ActiveProjectCardForTeam;
 ActiveProjectCardForTeam.propTypes = {
   data: Proptypes.object,
   className: Proptypes.string,
+  accordionName: Proptypes.string,
 };
 
 ActiveProjectCardForTeam.defaultProps = {
   data: {},
   className: '',
+  accordionName: '',
 };

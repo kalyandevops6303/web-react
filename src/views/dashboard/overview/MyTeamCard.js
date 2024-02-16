@@ -12,16 +12,19 @@ import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import { ProjectWrapper } from './style';
 import ProjectModal from '../../modals/ProjectModal';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
-import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const MyTeamCard = ({ data, className }) => {
+const MyTeamCard = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleToggle = () => {
     setShowModal(!showModal);
@@ -40,14 +43,28 @@ const MyTeamCard = ({ data, className }) => {
     }),
   );
 
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        team_id: data?._id,
+      },
+      type: accordionName,
+    };
+
+    dispatch(updateCardStatus({ data: postData }));
+  };
+
   const handleViewTeam = (id) => {
-    setItemFromSession('team_id', id);
+    if (data?.is_read === false) {
+      updateCard();
+    }
     navigate(`/profile/team/${id}`);
   };
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {!data?.is_read && <NewTag />}
         <CardBody>
           <div className="d-flex">
             <RatingBadge number="0" />
@@ -97,6 +114,7 @@ const MyTeamCard = ({ data, className }) => {
 };
 
 MyTeamCard.propTypes = {
+  accordionName: PropTypes.string,
   data: PropTypes.object,
   className: PropTypes.string,
 };

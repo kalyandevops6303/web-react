@@ -11,8 +11,9 @@ import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { getTeamId } from '../../utility/Utils';
+import { markNotificationAsRead } from '../../redux/actions/notificationsActions';
 
-const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleModal }) => {
+const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, notificationId, modal, toggleModal }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -24,6 +25,9 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleMod
   const onSuccess = () => {
     toggleModal();
     navigate(navigateTo);
+    if (notificationId) {
+      dispatch(markNotificationAsRead(notificationId));
+    }
   };
 
   const toggleOnSwitch = () => {
@@ -40,6 +44,9 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, modal, toggleMod
       dispatch(switchProfile({ data: selectSavedUserDetailsData, onSuccess, selected: false }));
     } else if (entity === 'TEAM' && switchTeamId === getTeamId()) {
       navigate(navigateTo);
+      if (notificationId) {
+        dispatch(markNotificationAsRead(notificationId));
+      }
     } else {
       const teamData = teams?.filter((team) => team._id === switchTeamId);
       if (teamData?.length > 0) {
@@ -94,6 +101,7 @@ SwitchConfirmModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   switchTeamId: Proptypes.string,
+  notificationId: Proptypes.string,
   entity: Proptypes.string,
   navigateTo: Proptypes.string,
 };
@@ -102,6 +110,7 @@ SwitchConfirmModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   switchTeamId: '',
+  notificationId: '',
   entity: '',
   navigateTo: '',
 };
