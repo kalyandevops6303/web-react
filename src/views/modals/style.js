@@ -217,6 +217,26 @@ const PrivacyPolicyModalWrapper = styled.div`
   }
 `;
 
+const PublicTeamMembersListingModalWrapper = styled.div`
+  .custom-card {
+    .card-body {
+      border-radius: 6px;
+      box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.06);
+
+      .reviews-count-text {
+        color: ${theme.bodyColor};
+      }
+
+      .message-icon-bg {
+        width: 42px;
+        height: 42px;
+        background-color: rgba(1, 133, 228, 0.12);
+        border-radius: 50%;
+      }
+    }
+  }
+`;
+
 export {
   RemoveMemberModalWrapper,
   MessageIconWrap,
@@ -226,4 +246,5 @@ export {
   MakePaymentModalWrapper,
   PrivacyPolicyModalWrapper,
   TerminateModalWrapper,
+  PublicTeamMembersListingModalWrapper,
 };

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Card, CardBody, CardHeader, CardText, CardTitle } from 'reactstrap';
 import { TeamSectionWrapper } from './style';
@@ -15,6 +16,7 @@ const TeamSection = ({ toggleModal }) => {
   const [hasMore, setHasMore] = useState(true);
 
   const dispatch = useDispatch();
+  const location = useLocation();
   const selectTeamMembersMetadata = useSelector((state) => state.dashboard.getMemberMetaData);
   const selectTeamMembercurrentPreview = useSelector((state) => state.dashboard.memberCurrentPreview);
   const savedUserDetails = useSelector(selectSavedUserData);
@@ -58,7 +60,9 @@ const TeamSection = ({ toggleModal }) => {
           </CardTitle>
           <CardText
             onClick={toggleModal}
-            className="cursor-pointer text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary"
+            className={`cursor-pointer card-text font-small-3 me-25 mb-0 text-primary ${
+              location.pathname.includes('profile') ? '' : 'text-decoration-underline'
+            }`}
           >
             View All
           </CardText>

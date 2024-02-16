@@ -24,6 +24,9 @@ import { getRequestStatusSuccess } from '../../redux/reducers/inviteTalent';
 import DetailsHeader from './overview/DetailsHeader';
 import DetailsCTAHeader from './overview/DetailsCTAHeader';
 import { DetailsHeaderSection, DetailsWrap } from './overview/style';
+import TeamSection from '../dashboard/overview/TeamSection';
+import PublicTeamMembersListingModal from '../modals/PublicTeamMembersListingModal';
+import ClubSection from '../dashboard/overview/ClubSection';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -36,6 +39,11 @@ const UserDetails = () => {
 
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
+  const [publicTeamMembersListingModal, setPublicTeamMembersListingModal] = useState(null);
+
+  const togglePublicTeamMembersListingModal = () => {
+    setPublicTeamMembersListingModal(!publicTeamMembersListingModal);
+  };
 
   const isEditable = userData?._id === param?.userId;
   useEffect(() => {
@@ -184,6 +192,8 @@ const UserDetails = () => {
             isEditable={userData?._id === param?.userId}
             isClubProfile={currentProfile.team_type === 'CLUB'}
           />
+          {isTeamView && <TeamSection toggleModal={togglePublicTeamMembersListingModal} />}
+          {isClubView && <ClubSection toggleModal={togglePublicTeamMembersListingModal} />}
         </Col>
         <Col lg="9">
           <DetailsHeaderSection>
@@ -292,6 +302,17 @@ const UserDetails = () => {
           data={currentProfile}
           onDecline={onDecline}
           onLoading={isStatusUpdating}
+        />
+      )}
+      {publicTeamMembersListingModal && (
+        <PublicTeamMembersListingModal
+          modal={publicTeamMembersListingModal}
+          toggleModal={togglePublicTeamMembersListingModal}
+          toggleInviteTeamMemberModal={() => {}}
+          setInviteTalentToTeamModal={() => {}}
+          onRemove={() => {}}
+          isAdmin
+          onClubInvite={() => {}}
         />
       )}
     </DetailsWrap>

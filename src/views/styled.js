@@ -273,6 +273,10 @@ const GrayBorderContainer = styled.div`
   .custom-header-margin {
     margin-top: -1.6rem;
   }
+
+  .members-count-text {
+    color: ${theme.headingTextColor};
+  }
 `;
 
 const InviteHeadContainer = styled.div`
