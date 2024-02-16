@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 
-export const TableContainer = styled.div`
+export const ClientTableContainer = styled.div`
   border-radius: 6px;
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
 
   .rdt_Table {
+    max-width: 97vw;
     border-radius: 6px;
     border-top: 1px solid ${theme.cardHeaderBorderColor};
     border-left: 1px solid ${theme.cardHeaderBorderColor};
@@ -75,6 +76,46 @@ export const TableContainer = styled.div`
           width: 24.5%;
         }
       }
+    }
+  }
+`;
+
+export const TableContainer = styled.div`
+  border-radius: 6px;
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+  .rdt_Table {
+    max-width: 97vw;
+    border-radius: 6px;
+    border-top: 1px solid ${theme.cardHeaderBorderColor};
+    border-left: 1px solid ${theme.cardHeaderBorderColor};
+    border-right: 1px solid ${theme.cardHeaderBorderColor};
+  }
+  .rdt_TableHeadRow {
+    border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid ${theme.cardHeaderBorderColor};
+    background: ${theme.tableHeaderColor};
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .rdt_TableRow {
+    border-bottom: 1px solid #c2c2c2;
+    padding: 1rem 0 !important;
+    color: ${theme.bodyColor};
+  }
+  .rdt_TableCell {
+    .avatar-logo {
+      min-width: 28px;
+    }
+    .name-ellipsis {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .extra-milestones {
+      border-radius: 17px;
+      border: 1px solid ${theme.navPillText};
     }
   }
 `;

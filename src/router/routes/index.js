@@ -39,7 +39,7 @@ import Clubs from '../../views/clubs';
 import ReferralAndReward from '../../views/ReferralAndReward';
 import CreateClub from '../../views/createClub';
 import ClubInvitation from '../../views/club-invitation';
-import Payments from '../../views/payments';
+import PaymentFullView from '../../views/paymentFullView';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -199,7 +199,7 @@ const Routes = [
   },
   {
     path: '/payments',
-    element: <Payments />,
+    element: <PaymentFullView />,
   },
 ];
 

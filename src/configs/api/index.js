@@ -268,6 +268,10 @@ const API = {
     listClubs: `${apiOnboardingEndpoint}/api/v1/clubs`,
     cardInfo: `${apiOnboardingEndpoint}/api/v1/clubs/card-info`,
   },
+  paymentFullView: {
+    paymentMetrics: `${apiOnboardingEndpoint}/api/v1/payment-metrics`,
+    paymentHistory: `${apiOnboardingEndpoint}/api/v1/payment-history`,
+  },
 };
 
 export default API;
