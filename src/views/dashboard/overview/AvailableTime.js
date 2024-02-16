@@ -17,12 +17,10 @@ const AvailableTime = () => {
 
   const handleEditClick = (e) => {
     e.stopPropagation();
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     if (userDetailsData.user_type === userTypes.team) {
-      navigate(`/create-team/profile-details`, {
-        state: { isEditing: true },
-      });
+      navigate(`/${userDetailsData?.user_type?.toLowerCase()}-profile-edit/profile-details`);
     } else {
-      setItemFromSession('backRouteForProfileEdit', location.pathname);
       navigate(`/${userDetailsData?.user_type?.toLowerCase()}-profile-edit/availability-details`);
     }
   };

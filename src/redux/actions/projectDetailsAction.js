@@ -24,6 +24,7 @@ import {
   extendDocValidityService,
   terminateProjectService,
   relistProjectService,
+  relistProjectByDateService,
 } from '../../services/projectDetailsServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
@@ -65,6 +66,9 @@ import {
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
+  relistProjectByDateFailure,
+  relistProjectByDateRequest,
+  relistProjectByDateSuccess,
   relistProjectFailure,
   relistProjectRequest,
   relistProjectSuccess,
@@ -436,6 +440,18 @@ const getBidMilestone =
     }
   };
 
+const relistProjectByDate = (projectId, startDate, endDate, onSuccess) => async (dispatch) => {
+  dispatch(relistProjectByDateRequest());
+  try {
+    const res = await relistProjectByDateService(projectId, startDate, endDate);
+    // ShowToastMessage(SUCCESS, res.data.data);
+    dispatch(relistProjectByDateSuccess(res.data.data));
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, relistProjectByDateFailure);
+  }
+};
+
 export {
   extendValidity,
   terminateProject,
@@ -460,4 +476,5 @@ export {
   getDocument,
   removeWorkerFromProjectTeam,
   getBidMilestone,
+  relistProjectByDate,
 };

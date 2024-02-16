@@ -642,6 +642,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
                   return (
                     <CardComponent
+                      primaryFilter={primaryFilter}
+                      secondFilterState={secondFilterState}
                       key={item?._id || item?.id}
                       data={item}
                       isPopoverOpen={popoverOpen}

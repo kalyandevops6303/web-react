@@ -22,7 +22,7 @@ import { useNavigate, useParams, useLocation } from 'react-router';
 import { debounce } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
-import { ChevronDown, Eye, MoreVertical, Paperclip, Search } from 'react-feather';
+import { ChevronDown, Eye, Info, MoreVertical, Paperclip, Search } from 'react-feather';
 import DataTable from 'react-data-table-component';
 import Rating from 'react-rating';
 import hat from '@src/assets/images/hat.png';
@@ -109,15 +109,21 @@ const ReceivedBids = ({ projectName }) => {
       selector: (row) => row.rating,
     },
     {
-      name: 'BID AMT',
+      name: (
+        <div className="d-flex align-items-center">
+          <p className="m-0">PROJECT COST</p>
+          <Info size={14} color={theme.infoIcon} id="cost-info" className="ms-25" />
+          <UncontrolledTooltip target="cost-info">Project cost includes Bid amount + Platform fee</UncontrolledTooltip>
+        </div>
+      ),
       sortable: false,
-      minWidth: '13%',
+      minWidth: '18%',
       selector: (row) => row.bid,
     },
     {
       name: 'ATTACHMENTS',
       sortable: false,
-      minWidth: '18%',
+      minWidth: '13%',
       selector: (row) => row.attachments,
     },
     {

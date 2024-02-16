@@ -45,6 +45,12 @@ const selectRecommendedTeamsLoading = createSelector(
 const selectTeamInvitation = createSelector(dashboardSelector, (dashboard) => dashboard.teamInvitation);
 const selectTeamInvitationLoading = createSelector(dashboardSelector, (dashboard) => dashboard.teamInvitationLoading);
 
+const selectProjectInvitation = createSelector(dashboardSelector, (dashboard) => dashboard.projectInvitation);
+const selectProjectInvitationLoading = createSelector(
+  dashboardSelector,
+  (dashboard) => dashboard.projectInvitationLoading,
+);
+
 const selectGetMyTeam = createSelector(dashboardSelector, (dashboard) => dashboard.getMyTeam);
 const selectGetMyTeamLoading = createSelector(dashboardSelector, (dashboard) => dashboard.getMyTeamLoading);
 
@@ -146,4 +152,6 @@ export {
   upcomingProjectsForTeamLoading,
   totalReferralAmount,
   totalReferralAmountLoading,
+  selectProjectInvitation,
+  selectProjectInvitationLoading,
 };

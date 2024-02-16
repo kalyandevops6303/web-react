@@ -109,6 +109,11 @@ const terminateProjectService = ({ project_id }) =>
 const relistProjectService = ({ project_id }) =>
   DataService.put(`${API.projectDetails.relistProject}?project_id=${project_id}`);
 
+const relistProjectByDateService = (projectId, startDate, endDate) =>
+  DataService.put(
+    `${API.projectDetails.relistProjectByDate}?project_id=${projectId}&start_date=${startDate}&end_date=${endDate}`,
+  );
+
 export {
   extendDocValidityService,
   extendPaymentValidityService,
@@ -136,4 +141,5 @@ export {
   getUnassignedRoleService,
   terminateProjectService,
   relistProjectService,
+  relistProjectByDateService,
 };

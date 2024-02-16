@@ -89,6 +89,7 @@ const ratingTagBg = 'rgba(70, 216, 213, 0.07)';
 const lightGreenBg = 'rgba(40, 199, 111, 0.10);';
 const lighGreenColor = '#28C76F';
 const badgeIconOrange = '#EF8C18';
+const newTagColor = '#093682';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -183,5 +184,6 @@ const theme = {
   lighGreenColor,
   lightGreenBg,
   badgeIconOrange,
+  newTagColor,
 };
 export default theme;
