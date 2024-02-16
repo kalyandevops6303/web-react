@@ -27,6 +27,7 @@ import { ResponsiveGrid } from '../../cards/style';
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
   const isTab = useIsTab();
+  const inputRef = useRef();
 
   const dispatch = useDispatch();
   const popoverRef = useRef(null);
@@ -65,8 +66,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     client_name: [],
     project_type: [],
     user_type: [],
-    invited_by: [invitedByOptions[0]],
-    invited_type: [typeOptions[0]],
+    invitation_by: [invitedByOptions[0]],
+    invitation_type: [typeOptions[0]],
     invitation_to: [invitedOptions[0]],
   });
 
@@ -107,6 +108,22 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     };
   }, []);
 
+  const handleReset = () => {
+    setSecondFilterState({
+      team_name: [],
+      client_name: [],
+      project_type: [],
+      user_type: [],
+      invitation_by: [invitedByOptions[0]],
+      invitation_type: [typeOptions[0]],
+      invitation_to: [invitedOptions[0]],
+    });
+    setSearchText('');
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+
   useEffect(() => {
     setHasMore(true);
     if (currentPreview.length === 0 || selectProjectData?.length === selectProjectMetaData?.total_records) {
@@ -121,7 +138,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       if (Array.isArray(secondFilterState[key])) {
         if (key === 'team_name' || key === 'client_name') {
           filterData[key] = secondFilterState[key][0]?.value;
-        } else if (key === 'invited_by' || key === 'invited_type' || key === 'invitation_to') {
+        } else if (key === 'invitation_by' || key === 'invitation_type' || key === 'invitation_to') {
           filterData[key] = secondFilterState[key][0]?.value;
         } else {
           filterData[key] = secondFilterState[key][0]?.value;
@@ -141,8 +158,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       }),
     );
   }, [secondFilterState, searchText, primaryFilter]);
-
-  const inputRef = useRef();
 
   const fetchMore = () => {
     const newMetaData = {
@@ -218,22 +233,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     });
   };
 
-  const handleReset = () => {
-    setSecondFilterState({
-      team_name: [],
-      client_name: [],
-      project_type: [],
-      user_type: [],
-      invited_by: [invitedByOptions[0]],
-      invited_type: [typeOptions[0]],
-      invitation_to: [invitedOptions[0]],
-    });
-    setSearchText('');
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-  };
-
   if (isCardLoading && !selectCardData) {
     return <div />;
   }
@@ -282,12 +281,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   classNamePrefix="select"
                   placeholder="Select type"
                   theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('invited_by', value)}
+                  onChange={(value) => onChangeFilter('invitation_by', value)}
                   value={
-                    secondFilterState.invited_by.length > 0
+                    secondFilterState.invitation_by.length > 0
                       ? {
-                          value: secondFilterState.invited_by[0].value,
-                          label: secondFilterState.invited_by[0].label,
+                          value: secondFilterState.invitation_by[0].value,
+                          label: secondFilterState.invitation_by[0].label,
                         }
                       : null
                   }
@@ -302,12 +301,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   classNamePrefix="select"
                   placeholder="Select type"
                   theme={selectThemeColors}
-                  onChange={(value) => onChangeFilter('invited_type', value)}
+                  onChange={(value) => onChangeFilter('invitation_type', value)}
                   value={
-                    secondFilterState.invited_type.length > 0
+                    secondFilterState.invitation_type.length > 0
                       ? {
-                          value: secondFilterState.invited_type[0].value,
-                          label: secondFilterState.invited_type[0].label,
+                          value: secondFilterState.invitation_type[0].value,
+                          label: secondFilterState.invitation_type[0].label,
                         }
                       : null
                   }
@@ -425,12 +424,13 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               const CardComponent = ProjectCard;
               return (
                 <CardComponent
+                  secondFilterState={secondFilterState}
                   key={item?._id || item?.id}
                   data={item}
                   isPopoverOpen={popoverOpen}
                   isExpanded={false}
                   primaryFilter={primaryFilter}
-                  secondaryFilterForInvitedType={secondFilterState.invited_type[0].value}
+                  secondaryFilterForInvitedType={secondFilterState.invitation_type[0].value}
                   isProjectWithTeam
                 />
               );

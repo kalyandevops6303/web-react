@@ -48,7 +48,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
 
   let profileToShowInRightSideOfCard;
   if (userData.user_type === userTypes.talent) {
-    profileToShowInRightSideOfCard = data?.invited_by;
+    profileToShowInRightSideOfCard = data?.invitation_by;
   } else if (userData.user_type === userTypes.team) {
     if (secondaryFilterForInvitedType === 'SENT') {
       profileToShowInRightSideOfCard = data?.invitation_to;
@@ -101,8 +101,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
 
   return (
     <div className="d-flex flex-column gap-1 mb-2">
-      <div className="d-flex align-items-center justify-content-end">
-        <div className="d-flex align-items-center gap-1">
+      <div className="d-flex align-items-center justify-content-end pt-50">
+        <div className="d-flex align-items-center gap-50">
           {profileToShowInRightSideOfCard?.is_alma_mater && (
             <Badge className="alma-mater ms-50 bg-white">
               <img src={hat} alt="client-badge" className="bg-white" />

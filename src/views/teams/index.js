@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Route, Routes, useMatch, useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
@@ -9,6 +9,7 @@ import PrimaryFilter from './overview/PrimaryFilter';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import { userTypes } from '../../utility/constants/Constant';
+import { clearData } from '../../redux/reducers/myTeams';
 
 const TeamsContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -21,8 +22,12 @@ const TeamsContainer = styled.div`
 const MyTeams = () => {
   const userDetailsData = useSelector(userData);
   const isTab = useIsTab();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMyTeamsTab') || 'teams');
+  const location = useLocation();
+
+  const filterFromUrl = location?.pathname?.split('/').pop();
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedMyTeamsTab') || filterFromUrl);
 
   const routesMatch =
     useMatch('/my-teams/teams') ||
@@ -48,6 +53,9 @@ const MyTeams = () => {
     }
 
     setItem('baseRoute', 'my-teams');
+
+    // Cleares data for project tab
+    return () => dispatch(clearData());
   }, []);
 
   // Secondary filters

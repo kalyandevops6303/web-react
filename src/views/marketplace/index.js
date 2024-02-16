@@ -13,6 +13,7 @@ import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import { userTypes } from '../../utility/constants/Constant';
+import { clearData } from '../../redux/reducers/marketPlace';
 
 const MarketPlaceContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -60,6 +61,9 @@ const MarketPlace = () => {
     dispatch(getProfilePercentage());
     dispatch(clearProjectData());
     setItem('baseRoute', 'marketplace');
+
+    // Clears data for marketplace
+    return () => dispatch(clearData());
   }, []);
 
   const handlePrimaryChangeFilter = (props) => {

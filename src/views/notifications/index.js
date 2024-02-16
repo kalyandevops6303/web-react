@@ -20,7 +20,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { setItem } from '../../utility/localStorageControl';
 import { ElevateShadow } from '../styled';
-import { getNotifications } from '../../redux/actions/notificationsActions';
+import { getNotifications, markNotificationAsRead } from '../../redux/actions/notificationsActions';
 
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
@@ -64,7 +64,7 @@ const Notifications = () => {
     dispatch(getNotifications({ priority: option.value, page: 1, pageSize: 10, oldData: [] }));
   };
 
-  const handleNotificationClick = (path) => {
+  const handleNotificationClick = (path, notificationId) => {
     // eslint-disable-next-line no-undef
     const url = new URL(`${window.location.protocol}//${window.location.host}${path}`);
     const params = url.searchParams;
@@ -74,10 +74,14 @@ const Notifications = () => {
         entity: switch_team_id ? 'TEAM' : 'TALENT',
         navigateTo: path?.split('?')[0],
         switchTeamId: switch_team_id,
+        notificationId,
       });
       setSwitchProfileModal(true);
     } else {
       navigate(path?.split('?')[0]);
+      if (notificationId) {
+        dispatch(markNotificationAsRead(notificationId));
+      }
     }
   };
 
@@ -130,7 +134,7 @@ const Notifications = () => {
         {notificationsData?.data?.length > 0 ? (
           notificationsData?.data?.map((item) => (
             <BorderCardContainer
-              onClick={() => handleNotificationClick(item?.path)}
+              onClick={() => handleNotificationClick(item?.path, item?.status === 'UNREAD' ? item?._id : null)}
               key={item?._id}
               priorityColor={priorities?.[item?.priority]}
             >
@@ -141,7 +145,7 @@ const Notifications = () => {
                       <div className="d-flex align-items-center">
                         <NotificationBadgeContainer priorityColor={priorities?.[item?.priority]}>
                           <div className="position-relative">
-                            <Badge pill color="danger" className="badge-up" />
+                            {item?.status === 'UNREAD' && <Badge pill color="danger" className="badge-up" />}
                             <Bell color={theme.white} size={18} />
                           </div>
                         </NotificationBadgeContainer>
@@ -170,6 +174,7 @@ const Notifications = () => {
             entity={switchData?.entity}
             navigateTo={switchData?.navigateTo}
             switchTeamId={switchData?.switchTeamId}
+            notificationId={switchData?.notificationId}
             modal={switchProfileModal}
             toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
           />

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bell, MessageSquare } from 'react-feather';
 import { CometChat } from '@cometchat-pro/chat';
 import NavbarSearch from './NavbarSearch';
@@ -14,17 +14,20 @@ import ShowToastMessage from '../../../components/toast';
 import { ERROR } from '../../../../utility/constants/ToastTypes';
 import { clearUnreadMsgCountData } from '../../../../redux/reducers/chat';
 import { clubStatus } from '../../../../utility/constants/Constant';
+import { getNotificationsPolling } from '../../../../redux/actions/notificationsActions';
+import { notificationsPolling } from '../../../../redux/selectors/notificationsSelectors';
 
 const NavbarUser = ({ setNavBarLoading }) => {
   const isTab = useIsTab();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isNotificationCount = useSelector((state) => state.notifications.notificationCount);
   const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const userDetailsData = useSelector(selectUserData);
-
   const unreadMsgCount = useSelector((state) => state.chat.unreadMsgCount);
+  const notificationsPollingData = useSelector(notificationsPolling);
 
   const isTabDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
 
@@ -43,6 +46,12 @@ const NavbarUser = ({ setNavBarLoading }) => {
     }
   };
 
+  useEffect(() => {
+    if (userDetailsData) {
+      dispatch(getNotificationsPolling());
+    }
+  }, [location]);
+
   return (
     <ul className="nav navbar-nav align-items-center ms-auto">
       <NavbarSearch />
@@ -59,7 +68,9 @@ const NavbarUser = ({ setNavBarLoading }) => {
           ) : (
             <NotificationIconContainer onClick={handleNotificaionClick}>
               <Link to="/notifications">
-                {isNotificationCount && <span className="notification-dot" />}
+                {(isNotificationCount || notificationsPollingData?.unread_notifications_count > 0) && (
+                  <span className="notification-dot" />
+                )}
                 <Bell size={20} color={theme.bodyColor} />
               </Link>
             </NotificationIconContainer>

@@ -1,4 +1,12 @@
-import { getCardService, getProjectListingService } from '../../services/projectServices';
+import {
+  getCardService,
+  getCompletedProjectListingService,
+  getDisutedProjectListingService,
+  getInvitedProjectListingService,
+  getOngoingProjectListingService,
+  getTerminatedProjectListingService,
+  getUpcomingProjectListingService,
+} from '../../services/projectServices';
 import {
   getCardInfoErr,
   getCardInfoReq,
@@ -24,16 +32,35 @@ const getCardInfo =
     }
   };
 
+const serviceMap = {
+  ONGOING: getOngoingProjectListingService,
+  COMPLETED: getCompletedProjectListingService,
+  UPCOMING: getUpcomingProjectListingService,
+  DISPUTE: getDisutedProjectListingService,
+  TERMINATED: getTerminatedProjectListingService,
+  INVITED: getInvitedProjectListingService,
+};
+
 const getProjectListing =
   ({ data, metaData, onSuccess, onError }) =>
   async (dispatch) => {
+    const { project_filter, project_type } = data;
     if (metaData?.page === 1) {
       dispatch(getListReq());
     }
     try {
-      const res = await getProjectListingService({ data, metaData });
-      dispatch(storeSuccessData(res?.data?.data));
-      onSuccess();
+      if (project_filter in serviceMap) {
+        const res = await serviceMap[project_filter]({
+          data: { ...data, project_types: project_type ? [project_type] : [] },
+          metaData,
+        });
+        if (res) {
+          dispatch(storeSuccessData(res?.data?.data));
+          onSuccess();
+        }
+      } else {
+        throw new Error(`Invalid project filter: ${project_filter}`);
+      }
     } catch (error) {
       onError();
       errorHandler(error, getListErr);

@@ -5,6 +5,7 @@ import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { User } from 'react-feather';
 import Profile from './Profile';
 import { TabsContainer } from '../Onboarding/style';
+import { userProfileEdit } from '../../utility/constants/Constant';
 
 const Tabs = ({ tabNames, active }) => {
   const location = useLocation();
@@ -13,7 +14,12 @@ const Tabs = ({ tabNames, active }) => {
     <TabsContainer className="pt-2">
       <Nav pills className="mb-2">
         <NavItem>
-          <NavLink active={location.pathname === '/create-team/profile-details'}>
+          <NavLink
+            active={
+              location.pathname === '/create-team/profile-details' ||
+              location.pathname === `/${userProfileEdit.team}/profile-details`
+            }
+          >
             <User className="font-medium-3 me-50" />
             <span className="fw-bold">Profile</span>
           </NavLink>
@@ -21,7 +27,8 @@ const Tabs = ({ tabNames, active }) => {
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId={tabNames.Profile}>
-          {location.pathname === '/create-team/profile-details' && <Profile />}
+          {(location.pathname === '/create-team/profile-details' ||
+            location.pathname === `/${userProfileEdit.team}/profile-details`) && <Profile />}
         </TabPane>
       </TabContent>
     </TabsContainer>

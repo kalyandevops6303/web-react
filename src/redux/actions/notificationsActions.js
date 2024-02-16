@@ -1,6 +1,21 @@
 import errorHandler from '../../utility/errorHandler';
-import { notificationsFailure, notificationsRequest, notificationsSuccess } from '../reducers/notifications';
-import { getNotificationsService, getAlertsNotificationsService } from '../../services/notificationsServices';
+import {
+  notificationsPollingFailure,
+  notificationsFailure,
+  notificationsPollingRequest,
+  notificationsPollingSuccess,
+  notificationsRequest,
+  notificationsSuccess,
+  markNotificationAsReadRequest,
+  markNotificationAsReadSuccess,
+  markNotificationAsReadFailure,
+} from '../reducers/notifications';
+import {
+  getNotificationsService,
+  getAlertsNotificationsService,
+  getNotificationsPollingService,
+  markNotificationAsReadService,
+} from '../../services/notificationsServices';
 
 const getNotifications =
   ({ priority, page, pageSize, oldData }) =>
@@ -30,4 +45,24 @@ const getAlertsNotifications =
     }
   };
 
-export { getNotifications, getAlertsNotifications };
+const getNotificationsPolling = () => async (dispatch) => {
+  dispatch(notificationsPollingRequest());
+  try {
+    const res = await getNotificationsPollingService();
+    dispatch(notificationsPollingSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, notificationsPollingFailure);
+  }
+};
+
+const markNotificationAsRead = (notificationId) => async (dispatch) => {
+  dispatch(markNotificationAsReadRequest());
+  try {
+    const res = await markNotificationAsReadService(notificationId);
+    dispatch(markNotificationAsReadSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, markNotificationAsReadFailure);
+  }
+};
+
+export { getNotifications, getAlertsNotifications, getNotificationsPolling, markNotificationAsRead };
