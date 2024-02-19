@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useState, memo } from 'react';
+import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
@@ -22,6 +23,25 @@ import MilestonePaymentListing from './payment/MilestonePaymentListing';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { truncateSentence } from '../../utility/Utils';
+import theme from '../../configs/themeVariables';
+
+const ProjectDetailsWrapper = styled.div`
+  .content-header-left {
+    margin-bottom: 0 !important;
+  }
+  .top-head {
+    position: relative;
+    .fixed-header {
+      top: 4rem;
+      left: 0;
+      position: fixed;
+      z-index: 20;
+      background-color: ${theme.bodyBgColor};
+      width: 100%;
+      padding: 1.5rem 2rem 0.8rem 1rem;
+    }
+  }
+`;
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -138,15 +158,19 @@ const ProjectDetails = () => {
   ];
 
   return (
-    <div>
-      <BreadCrumbs
-        data={
-          isInviteView
-            ? [{ title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) }]
-            : generalBreadcrumb
-        }
-      />
-      <Row>
+    <ProjectDetailsWrapper>
+      <div className="top-head">
+        <div className="fixed-header">
+          <BreadCrumbs
+            data={
+              isInviteView
+                ? [{ title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) }]
+                : generalBreadcrumb
+            }
+          />
+        </div>
+      </div>
+      <Row className="mt-3">
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
           <LeftSidebarProjectDetails />
@@ -175,7 +199,7 @@ const ProjectDetails = () => {
           </Routes>
         </Col>
       </Row>
-    </div>
+    </ProjectDetailsWrapper>
   );
 };
 

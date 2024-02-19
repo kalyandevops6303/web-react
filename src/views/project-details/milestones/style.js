@@ -41,6 +41,7 @@ const DocumentsWrapper = styled.div`
 
 const TabWrapper = styled.div`
   /* Style the tab */
+  margin-top: 5rem;
   .tab {
     overflow: hidden;
     display: flex;
@@ -136,6 +137,32 @@ const TabWrapper = styled.div`
   .raise-dispute-btn:focus {
     background: none !important;
   }
+  .milestone-tab {
+    margin-top: 4rem;
+  }
 `;
 
-export { UserNameWrapper, DocumentsWrapper, TabWrapper };
+const StickyHeader = styled.div`
+  .fixed-head {
+    z-index: 20;
+    margin-top: -5.6rem;
+    padding-top: 1rem;
+    position: fixed;
+    width: 74%;
+    background: ${theme.bodyBgColor};
+    padding-bottom: 0.8rem;
+    padding-left: 0;
+    .inner-head {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 1.6rem;
+      .back {
+        padding-top: 0.5rem;
+      }
+    }
+  }
+  .details-card {
+    margin-top: 3.6rem;
+  }
+`;
+export { UserNameWrapper, DocumentsWrapper, TabWrapper, StickyHeader };
