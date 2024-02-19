@@ -18,7 +18,7 @@ const UserNameRoleCompanyComp = ({ data }) => {
           <h6 className="mb-0 fw-bold">
             {data.first_name} {data.last_name}
           </h6>
-          <span className="font-small-2">{data?.role?.name || data?.company}</span>
+          <span className="font-small-2">{data?.role?.name || data?.company || data?.role}</span>
         </div>
       </div>
     </div>

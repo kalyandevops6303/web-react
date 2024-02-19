@@ -66,6 +66,7 @@ const API = {
     recentProjects: `${apiOnboardingEndpoint}/api/v1/users/completed-projects`,
     reviews: `${apiOnboardingEndpoint}/api/v1/users/reviews`,
     report: `${apiAuthEndpoint}/api/v1/user/report`,
+    publicTeamMembers: `${apiOnboardingEndpoint}/api/v1/team-members`,
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,

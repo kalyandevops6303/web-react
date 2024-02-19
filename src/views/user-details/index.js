@@ -24,9 +24,8 @@ import { getRequestStatusSuccess } from '../../redux/reducers/inviteTalent';
 import DetailsHeader from './overview/DetailsHeader';
 import DetailsCTAHeader from './overview/DetailsCTAHeader';
 import { DetailsHeaderSection, DetailsWrap } from './overview/style';
-import TeamSection from '../dashboard/overview/TeamSection';
 import PublicTeamMembersListingModal from '../modals/PublicTeamMembersListingModal';
-import ClubSection from '../dashboard/overview/ClubSection';
+import MembersListingCard from './overview/MembersListingCard';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -192,8 +191,14 @@ const UserDetails = () => {
             isEditable={userData?._id === param?.userId}
             isClubProfile={currentProfile.team_type === 'CLUB'}
           />
-          {isTeamView && <TeamSection toggleModal={togglePublicTeamMembersListingModal} />}
-          {isClubView && <ClubSection toggleModal={togglePublicTeamMembersListingModal} />}
+          {(isTeamView || isClubView) && (
+            <MembersListingCard
+              toggleModal={togglePublicTeamMembersListingModal}
+              teamId={param?.userId}
+              publicTeamMembersListingModal={publicTeamMembersListingModal}
+              isClubView={isClubView}
+            />
+          )}
         </Col>
         <Col lg="9">
           <DetailsHeaderSection>
@@ -308,11 +313,8 @@ const UserDetails = () => {
         <PublicTeamMembersListingModal
           modal={publicTeamMembersListingModal}
           toggleModal={togglePublicTeamMembersListingModal}
-          toggleInviteTeamMemberModal={() => {}}
-          setInviteTalentToTeamModal={() => {}}
-          onRemove={() => {}}
-          isAdmin
-          onClubInvite={() => {}}
+          teamId={param?.userId}
+          isClubView={isClubView}
         />
       )}
     </DetailsWrap>
