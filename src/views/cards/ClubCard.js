@@ -15,6 +15,7 @@ import theme from '../../configs/themeVariables';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import { userTypes } from '../../utility/constants/Constant';
 import { Elevate } from '../styled';
+import NewTag from '../../@core/components/new-tag';
 
 const ClubCard = ({ data, isSearchPage }) => {
   const dispatch = useDispatch();
@@ -69,6 +70,8 @@ const ClubCard = ({ data, isSearchPage }) => {
   return (
     <TeamCardWrap>
       <Card onClick={handleCard} className="cursor-pointer">
+        <NewTag />
+
         <Elevate>
           <CardBody>
             <div className="d-flex teamcard-flex-cloumn">

@@ -15,13 +15,12 @@ import TeamNoDataGif from '@src/assets/images/gifs/team_no_data.gif';
 import UpcomingProjectsEmptyGif from '@src/assets/images/emptyGif.gif';
 
 import TeamTalentCard from './TeamTalentCard';
-import TeamInvitationCard from './TeamInvitationCard';
 import { ProjectWrapper, ProjectsListingWrap } from './style';
 import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, calculateRemainingBidsCount } from '../../../utility/Utils';
 
 import {
   profilePercentage,
@@ -29,8 +28,6 @@ import {
   selectGetMyTeamLoading,
   selectRecommendedTeams,
   selectRecommendedTeamsLoading,
-  selectTeamInvitation,
-  selectTeamInvitationLoading,
   userData,
 } from '../../../redux/selectors/dashboardSelectors';
 import { getMyTeam, getRecommendedTeams, getTeamInvitation } from '../../../redux/actions/dashboardActions';
@@ -38,6 +35,9 @@ import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import MyTeamCard from './MyTeamCard';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
+import Tag from '../../../@core/components/tags';
+import { AccordionName } from './DashboardConstant';
+import ViewAllCard from './ExtraCardWithCount';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 
 const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }) => {
@@ -45,20 +45,17 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
   const location = useLocation();
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
-
   const dispatch = useDispatch();
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
-    navigate(path, {
-      state: { isEditing: true },
-    });
+    navigate(path);
   };
   return (
     <ProjectWrapper>
       <Card className="empty-card">
         <CardBody className="empty empty-h-25">
-          <div>
+          <div style={{ height: 'inherit' }}>
             {active && <img src={ActiveProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {recommended && <img src={UpcomingProjectsEmptyGif} className="empty-gif" alt="empty-gif" />}
             {payment && <img src={PaymentsEmptyGif} className="empty-gif" alt="empty-gif" />}
@@ -67,7 +64,7 @@ const Empty = ({ active, recommended, isTeam, payment, isEducationNotCompleted }
                 Lets get you <br /> started!
               </CardText>
             )}
-            {isTeam && <img src={TeamNoDataGif} className="empty-gif" alt="empty-gif" />}
+            {isTeam && <img src={TeamNoDataGif} className="empty-gif object-fit-contain" alt="empty-gif" />}
 
             {payment && (
               <CardText className="font-weight-normal get-started">
@@ -147,16 +144,22 @@ const TeamListing = () => {
   const toggle = (id) => (open === id ? setOpen(null) : setOpen(id));
 
   useEffect(() => {
-    if (open === '1') {
-      dispatch(getMyTeam());
-    }
-    if (open === '2') {
-      dispatch(getTeamInvitation());
-    }
-    if (open === '3') {
-      dispatch(getRecommendedTeams());
-    }
-  }, [open]);
+    // if (open === '1') {
+    //   dispatch(getMyTeam());
+    // }
+    // if (open === '2') {
+    //   dispatch(getTeamInvitation());
+    // }
+    // if (open === '3') {
+    //   dispatch(getRecommendedTeams());
+    // }
+
+    dispatch(getMyTeam());
+
+    dispatch(getTeamInvitation());
+
+    dispatch(getRecommendedTeams());
+  }, []);
 
   const settings = {
     dots: false,
@@ -170,9 +173,6 @@ const TeamListing = () => {
   const userDetailsData = useSelector(userData);
   const myTeam = useSelector(selectGetMyTeam);
   const isMyTeamLoading = useSelector(selectGetMyTeamLoading);
-
-  const teamInvitation = useSelector(selectTeamInvitation);
-  const isTeamInviteLoading = useSelector(selectTeamInvitationLoading);
 
   const recommendedTeams = useSelector(selectRecommendedTeams);
   const isRecommendedTeamsLoading = useSelector(selectRecommendedTeamsLoading);
@@ -197,7 +197,13 @@ const TeamListing = () => {
           <>
             <AccordionHeader targetId="1">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">My Teams</span>
+                <span className="d-flex align-items-center">
+                  My Teams
+                  <Tag
+                    hasNew={myTeam?.unreadCount > 0 ? myTeam?.unreadCount : false}
+                    count={myTeam?.metadata?.total_records}
+                  />
+                </span>
                 {myTeam?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta d-none">
                     View All
@@ -216,7 +222,13 @@ const TeamListing = () => {
                 <ProjectsListingWrap>
                   {myTeam?.data?.length > 0 && isTab ? (
                     myTeam?.data?.map((project) => (
-                      <MyTeamCard isRecommendedTeam key={project.id} data={project} recommended />
+                      <MyTeamCard
+                        accordionName={AccordionName.myTeam}
+                        isRecommendedTeam
+                        key={project.id}
+                        data={project}
+                        recommended
+                      />
                     ))
                   ) : myTeam?.data?.length > 0 ? (
                     <>
@@ -224,6 +236,7 @@ const TeamListing = () => {
                         <Slider {...settings}>
                           {myTeam?.data?.map((project, index) => (
                             <MyTeamCard
+                              accordionName={AccordionName.myTeam}
                               isRecommendedTeam
                               className={`slide-${index}`}
                               key={project.id}
@@ -231,11 +244,20 @@ const TeamListing = () => {
                               recommended
                             />
                           ))}
+                          {/* {myTeam?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.myTeam}
+                              height={120}
+                              onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
+                              count={calculateRemainingBidsCount(myTeam)}
+                            />
+                          )} */}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
                           {myTeam?.data?.map((project) => (
                             <MyTeamCard
+                              accordionName={AccordionName.myTeam}
                               isRecommendedTeam
                               className="custom-slider-project"
                               key={project.id}
@@ -264,12 +286,18 @@ const TeamListing = () => {
         )}
       </AccordionItem>
 
-      <AccordionItem>
+      {/* <AccordionItem>
         {userDetailsData?.user_type === userTypes.talent && (
           <>
             <AccordionHeader targetId="2">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Team Invites</span>
+                <span className="d-flex align-items-center">
+                  Team Invites
+                  <Tag
+                    hasNew={teamInvitation?.unreadCount > 0 ? teamInvitation?.unreadCount : false}
+                    count={teamInvitation?.metadata?.total_records}
+                  />
+                </span>
                 {teamInvitation?.data?.length > 0 && (
                   <CardText
                     onClick={() => {
@@ -294,7 +322,13 @@ const TeamListing = () => {
                 <ProjectsListingWrap>
                   {teamInvitation?.data?.length > 0 && isTab ? (
                     teamInvitation?.data?.map((project) => (
-                      <TeamInvitationCard isRecommendedTeam key={project.id} data={project} recommended />
+                      <TeamInvitationCard
+                        accordionName={AccordionName.teamInvitation}
+                        isRecommendedTeam
+                        key={project.id}
+                        data={project}
+                        recommended
+                      />
                     ))
                   ) : teamInvitation?.data?.length > 0 ? (
                     <>
@@ -302,6 +336,7 @@ const TeamListing = () => {
                         <Slider {...settings}>
                           {teamInvitation?.data?.map((project, index) => (
                             <TeamInvitationCard
+                              accordionName={AccordionName.teamInvitation}
                               isRecommendedTeam
                               className={`slide-${index}`}
                               key={project.id}
@@ -309,11 +344,25 @@ const TeamListing = () => {
                               recommended
                             />
                           ))}
+
+                          {teamInvitation?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.teamInvitation}
+                              height={230}
+                              width={225}
+                              onViewAll={() => {
+                                navigate('/projects/invited');
+                                dispatch(setActiveNavTab('projects'));
+                              }}
+                              count={calculateRemainingBidsCount(teamInvitation)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
                           {teamInvitation?.data?.map((project) => (
                             <TeamInvitationCard
+                              accordionName={AccordionName.teamInvitation}
                               isRecommendedTeam
                               className="custom-slider-project"
                               key={project.id}
@@ -340,14 +389,20 @@ const TeamListing = () => {
             </AccordionBody>
           </>
         )}
-      </AccordionItem>
+      </AccordionItem> */}
 
       <AccordionItem>
         {userDetailsData?.user_type === userTypes.talent && (
           <>
             <AccordionHeader targetId="3">
               <AccordionHeadStyle>
-                <span className="d-flex align-items-center">Recommended Teams</span>
+                <span className="d-flex align-items-center">
+                  Recommended Teams{' '}
+                  <Tag
+                    hasNew={recommendedTeams?.unreadCount > 0 ? recommendedTeams?.unreadCount : false}
+                    count={recommendedTeams?.metadata?.total_records}
+                  />
+                </span>
                 {recommendedTeams?.data?.length > 0 && (
                   <CardText onClick={(e) => handleViewAll(e, '/marketplace/teams')} className="view-all-cta">
                     View All
@@ -366,7 +421,12 @@ const TeamListing = () => {
                 <ProjectsListingWrap>
                   {recommendedTeams?.data?.length > 0 && isTab ? (
                     recommendedTeams?.data?.map((project) => (
-                      <TeamTalentCard isRecommendedTeam key={project.id} data={project} />
+                      <TeamTalentCard
+                        accordionName={AccordionName.recommendedTeams}
+                        isRecommendedTeam
+                        key={project.id}
+                        data={project}
+                      />
                     ))
                   ) : recommendedTeams?.data?.length > 0 ? (
                     <>
@@ -374,17 +434,28 @@ const TeamListing = () => {
                         <Slider {...settings}>
                           {recommendedTeams?.data?.map((project, index) => (
                             <TeamTalentCard
+                              accordionName={AccordionName.recommendedTeams}
                               isRecommendedTeam
                               className={`slide-${index}`}
                               key={project.id}
                               data={project}
                             />
                           ))}
+
+                          {recommendedTeams?.metadata?.total_records > 10 && (
+                            <ViewAllCard
+                              accordionName={AccordionName.recommendedTeams}
+                              height={220}
+                              onViewAll={(e) => handleViewAll(e, '/marketplace/teams')}
+                              count={calculateRemainingBidsCount(recommendedTeams)}
+                            />
+                          )}
                         </Slider>
                       ) : (
                         <div className="custom-slider-wrap">
                           {recommendedTeams?.data?.map((project) => (
                             <TeamTalentCard
+                              accordionName={AccordionName.recommendedTeams}
                               isRecommendedTeam
                               className="custom-slider-project"
                               key={project.id}

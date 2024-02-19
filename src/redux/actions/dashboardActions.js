@@ -25,6 +25,8 @@ import {
   recommendedProjectsTeamService,
   getModalDataService,
   totalReferralAmountService,
+  updateCardStatusService,
+  getProjectInvitationService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -95,11 +97,21 @@ import {
   totalReferralAmountRequest,
   totalReferralAmountSuccess,
   totalReferralAmountFailure,
+  updateCardStatusRequest,
+  updateCardStatusSuccess,
+  updateCardStatusFailure,
+  upcomingPaymentFailure,
+  upcomingPaymentRequest,
+  upcomingPaymentSuccess,
+  projectInvitationRequest,
+  projectInvitationSuccess,
+  projectInvitationFailure,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
 import { updateInvitationService, validateUrlService } from '../../services/inviteTeamMemberService';
 import { userTypes } from '../../utility/constants/Constant';
+import { upcomingPaymentsService } from '../../services/paymentDetailService';
 
 const getRecommendedProjects =
   ({ user_type }) =>
@@ -116,7 +128,9 @@ const getRecommendedProjects =
       if (user_type === userTypes.club) {
         res = await recommendedProjectsTeamService();
       }
-      dispatch(recommendedProjectsSuccess(res.data.data));
+      dispatch(
+        recommendedProjectsSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+      );
     } catch (error) {
       errorHandler(error, recommendedProjectsFailure);
     }
@@ -161,7 +175,9 @@ const getJoinRequest = (id) => async (dispatch) => {
   dispatch(joinRequestMemberRequest());
   try {
     const res = await getJoinRequestService({ talent_id: id });
-    dispatch(joinRequestMemberSuccess(res.data.data));
+    dispatch(
+      joinRequestMemberSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+    );
   } catch (error) {
     errorHandler(error, joinRequestMemberFailure);
   }
@@ -199,7 +215,7 @@ const getRecommendedTeams = () => async (dispatch) => {
   dispatch(recommendedTeamsRequest());
   try {
     const res = await getRecommendedTeamService();
-    dispatch(recommendedTeamsSuccess(res.data.data));
+    dispatch(recommendedTeamsSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }));
   } catch (error) {
     errorHandler(error, recommendedTeamsFailure);
   }
@@ -209,9 +225,20 @@ const getTeamInvitation = () => async (dispatch) => {
   dispatch(teamInvitationRequest());
   try {
     const res = await getTeamInvitationService();
-    dispatch(teamInvitationSuccess(res.data.data));
+    dispatch(teamInvitationSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }));
   } catch (error) {
     errorHandler(error, teamInvitationFailure);
+  }
+};
+const getProjectInvitation = () => async (dispatch) => {
+  dispatch(projectInvitationRequest());
+  try {
+    const res = await getProjectInvitationService();
+    dispatch(
+      projectInvitationSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+    );
+  } catch (error) {
+    errorHandler(error, projectInvitationFailure);
   }
 };
 
@@ -219,7 +246,7 @@ const getMyTeam = () => async (dispatch) => {
   dispatch(getMyTeamRequest());
   try {
     const res = await getMyTeamService();
-    dispatch(getMyTeamSuccess(res.data.data));
+    dispatch(getMyTeamSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }));
   } catch (error) {
     errorHandler(error, getMyTeamFailure);
   }
@@ -281,7 +308,9 @@ const getActiveProjectsForClient = () => async (dispatch) => {
   dispatch(activeProjectsForClientRequest());
   try {
     const res = await activeProjectsForClientService();
-    dispatch(activeProjectsForClientSuccess(res.data.data));
+    dispatch(
+      activeProjectsForClientSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+    );
   } catch (error) {
     errorHandler(error, activeProjectsForClientFailure);
   }
@@ -291,7 +320,12 @@ const getUpcomingProjectsForClient = () => async (dispatch) => {
   dispatch(upcomingProjectsForClientRequest());
   try {
     const res = await upcomingProjectsForClientService();
-    dispatch(upcomingProjectsForClientSuccess(res.data.data));
+    dispatch(
+      upcomingProjectsForClientSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.[0]?.is_overall_read || 0,
+      }),
+    );
   } catch (error) {
     errorHandler(error, upcomingProjectsForClientFailure);
   }
@@ -301,7 +335,9 @@ const getProjectsBidsForClient = () => async (dispatch) => {
   dispatch(projectsBidsForClientRequest());
   try {
     const res = await projectsBidsForClientService();
-    dispatch(projectsBidsForClientSuccess(res.data.data));
+    dispatch(
+      projectsBidsForClientSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+    );
   } catch (error) {
     errorHandler(error, projectsBidsForClientFailure);
   }
@@ -311,7 +347,12 @@ const getRecommendedTeamsForClient = () => async (dispatch) => {
   dispatch(recommendedTeamsForClientRequest());
   try {
     const res = await recommendedTeamsForClientService();
-    dispatch(recommendedTeamsForClientSuccess(res.data.data));
+    dispatch(
+      recommendedTeamsForClientSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.[0]?.is_overall_read || 0,
+      }),
+    );
   } catch (error) {
     errorHandler(error, recommendedTeamsForClientFailure);
   }
@@ -331,7 +372,9 @@ const getActiveProjectsForTalent = () => async (dispatch) => {
   dispatch(activeProjectsForTalentRequest());
   try {
     const res = await activeProjectsForTalentService();
-    dispatch(activeProjectsForTalentSuccess(res.data.data));
+    dispatch(
+      activeProjectsForTalentSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+    );
   } catch (error) {
     errorHandler(error, activeProjectsForTalentFailure);
   }
@@ -341,7 +384,12 @@ const getUpcomingProjectsForTalent = () => async (dispatch) => {
   dispatch(upcomingProjectsForTalentRequest());
   try {
     const res = await upcomingProjectsForTalentService();
-    dispatch(upcomingProjectsForTalentSuccess(res.data.data));
+    dispatch(
+      upcomingProjectsForTalentSuccess({
+        ...res.data.data,
+        unreadCount: res.data.data.data?.[0]?.is_overall_read || 0,
+      }),
+    );
   } catch (error) {
     errorHandler(error, upcomingProjectsForTalentFailure);
   }
@@ -351,7 +399,9 @@ const getActiveProjectsForTeam = () => async (dispatch) => {
   dispatch(activeProjectsForTeamRequest());
   try {
     const res = await activeProjectsForTeamService();
-    dispatch(activeProjectsForTeamSuccess(res.data.data));
+    dispatch(
+      activeProjectsForTeamSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+    );
   } catch (error) {
     errorHandler(error, activeProjectsForTeamFailure);
   }
@@ -361,7 +411,9 @@ const getUpcomingProjectsForTeam = () => async (dispatch) => {
   dispatch(upcomingProjectsForTeamRequest());
   try {
     const res = await upcomingProjectsForTeamService();
-    dispatch(upcomingProjectsForTeamSuccess(res.data.data));
+    dispatch(
+      upcomingProjectsForTeamSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }),
+    );
   } catch (error) {
     errorHandler(error, upcomingProjectsForTeamFailure);
   }
@@ -390,6 +442,30 @@ const getTotalReferralAmount = () => async (dispatch) => {
   }
 };
 
+const updateCardStatus =
+  ({ switch_team_id, data, id, type, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(updateCardStatusRequest());
+    try {
+      await updateCardStatusService({ data, switch_team_id });
+      dispatch(updateCardStatusSuccess({ type, id }));
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+      errorHandler(error, updateCardStatusFailure);
+    }
+  };
+
+const getDashboardUpcomingPayments = () => async (dispatch) => {
+  dispatch(upcomingPaymentRequest());
+  try {
+    const res = await upcomingPaymentsService();
+    dispatch(upcomingPaymentSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }));
+  } catch (error) {
+    errorHandler(error, upcomingPaymentFailure);
+  }
+};
 export {
   getModalData,
   getAlerts,
@@ -417,4 +493,7 @@ export {
   getActiveProjectsForTeam,
   getUpcomingProjectsForTeam,
   getTotalReferralAmount,
+  updateCardStatus,
+  getDashboardUpcomingPayments,
+  getProjectInvitation,
 };

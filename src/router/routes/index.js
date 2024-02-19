@@ -179,11 +179,19 @@ const Routes = [
     },
   },
   {
+    path: `/${userProfileEdit.team}/:section-details`,
+    element: <CreateTeam />,
+  },
+  {
     path: '/create-club/:section-details',
     element: <CreateClub />,
     meta: {
       layout: 'blank',
     },
+  },
+  {
+    path: `/${userProfileEdit.club}/:section-details`,
+    element: <CreateClub />,
   },
   {
     path: '/disputes/*',

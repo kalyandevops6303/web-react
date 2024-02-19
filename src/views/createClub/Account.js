@@ -43,6 +43,7 @@ import { setClubCreateDataAction, updateClub } from '../../redux/actions/clubAct
 import { getTeamById } from '../../services/teamServices';
 import { getProjectAreas, getSkills, getTools } from '../../redux/actions/staticActions';
 import { projectAreas, skillsList, toolsList } from '../../redux/selectors/staticSelectors';
+import { userProfileEdit } from '../../utility/constants/Constant';
 
 const Account = () => {
   const ProfileSchema = yup.object().shape({
@@ -199,16 +200,16 @@ const Account = () => {
 
   const onSubmit = (data) => {
     let otherIntitution;
-    if (!location.state?.isEditing) {
+    if (!location.pathname.includes('profile-edit')) {
       const selectedOptionValue = selectedOption?.value;
       const myInstitution = userDetailsData?.talent_info?.educational_institute
         .map((educationDetails) => educationDetails.institution)
         .map((institute) => institute._id);
 
-      otherIntitution = myInstitution.includes(selectedOptionValue);
+      otherIntitution = myInstitution?.includes(selectedOptionValue);
     }
 
-    if (!location.state?.isEditing && !otherIntitution) {
+    if (!location.pathname.includes('profile-edit') && !otherIntitution) {
       setEducationInstitutionModal(true);
     } else {
       const { clubName, clubTagline, clubIntroduction, interests, tools, skills, educationInstitution } = data;
@@ -218,7 +219,7 @@ const Account = () => {
 
       let reqData;
 
-      if (location?.state?.isEditing) {
+      if (location.pathname.includes('profile-edit')) {
         if (imageUrlRes) {
           reqData = {
             _id: userDetailsData._id,
@@ -268,9 +269,9 @@ const Account = () => {
       const removeEmpty = removeEmptyKeys(reqData);
       dispatch(setClubCreateDataAction(removeEmpty));
 
-      if (location?.state?.isEditing) {
+      if (location.pathname.includes('profile-edit')) {
         const onApiSuccess = () => {
-          navigate(`/create-club/profile-details`, { state: { isEditing: true } });
+          navigate(`/${userProfileEdit.club}/profile-details`);
         };
         dispatch(updateClub(removeEmptyKeys(removeEmpty), onApiSuccess));
       } else {
@@ -382,7 +383,7 @@ const Account = () => {
   };
 
   useEffect(() => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       getTeamDetails();
     } else {
       dispatch(setClubCreateDataAction(null));
@@ -430,7 +431,7 @@ const Account = () => {
   }, [clubCreateData]);
 
   useEffect(() => {
-    if (location?.state?.isEditing) {
+    if (location.pathname.includes('profile-edit')) {
       if (clubDetails) {
         if (clubDetails?.team_logo?.length > 0) {
           setSelectedImage(clubDetails.team_logo);
@@ -601,9 +602,9 @@ const Account = () => {
                     <Input
                       {...field}
                       placeholder="Enter your club's name"
-                      disabled={location?.state?.isEditing}
+                      disabled={location.pathname.includes('profile-edit')}
                       invalid={errors.clubName && true}
-                      className={`${location?.state?.isEditing ? 'disabled-input' : ''}`}
+                      className={`${location.pathname.includes('profile-edit') ? 'disabled-input' : ''}`}
                     />
                   )}
                 />
@@ -644,7 +645,7 @@ const Account = () => {
                       debounceTimeout={1000}
                       additional={{ page: 1 }}
                       loadOptions={loadEducationInstitutionOptions}
-                      isDisabled={location?.state?.isEditing}
+                      isDisabled={location.pathname.includes('profile-edit')}
                       reduceOptions={reduceGroupedOptions}
                       onChange={(selOption) => handleSelectChange(selOption, field)}
                       classNamePrefix="select"
@@ -783,7 +784,7 @@ const Account = () => {
           <div>
             <Button
               color="primary"
-              outline={location?.state?.isEditing}
+              outline={location.pathname.includes('profile-edit')}
               disabled={isImageUploading || !isValid || updateTeamIsLoading}
               type="submit"
             >

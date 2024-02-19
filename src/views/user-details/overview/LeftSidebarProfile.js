@@ -23,7 +23,7 @@ import { makeFavourite, removeFavourite } from '../../../redux/actions/profileAc
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { downloadFile, giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
-import { clubStatus, userTypes } from '../../../utility/constants/Constant';
+import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
 import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
 import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
@@ -40,6 +40,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const userData = useSelector(selectAuthUserData);
   const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
   const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
+  const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
+
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
@@ -58,18 +60,18 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   };
 
   const onEditClick = () => {
+    setItemFromSession('backRouteForProfileEdit', location.pathname);
     if (data.team_type === userTypes.team) {
-      navigate(`/create-team/profile-details`, {
-        state: { isEditing: true },
-      });
+      navigate(`/${userProfileEdit.team}/profile-details`);
     } else if (data.team_type === userTypes.club && data.club_status === clubStatus.ACCEPTED) {
-      navigate(`/create-club/account-details`, {
-        state: { isEditing: true },
-      });
+      if (isClubAdmin) {
+        navigate(`/${userProfileEdit.club}/account-details`);
+      } else {
+        ShowToastMessage(ERROR, 'Only an admin can edit the club profile');
+      }
     } else if (data.team_type === userTypes.club && data.club_status === clubStatus.IN_REVIEW) {
       ShowToastMessage(ERROR, 'Club is not verified yet');
     } else {
-      setItemFromSession('backRouteForProfileEdit', location.pathname);
       navigate(`/${data.user_type.toLowerCase()}-profile-edit/account-details`);
     }
   };

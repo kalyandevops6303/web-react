@@ -19,6 +19,9 @@ import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/Inv
 import { returnFormattedRating } from '../../../utility/Utils';
 import { clearModalData } from '../../../redux/reducers/createProject';
 import DeleteProjectModal from '../../modals/DeleteProjectModal';
+import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
+import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
+import RelistSuccessModal from '../../modals/RelistSuccessModal';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -29,10 +32,22 @@ const LeftSidebarProjectDetails = () => {
   const [inviteTalentToTeamModal, setInviteTalentToTeamModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState(null);
+
+  const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
+  const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
+  const [relistSuccessModal, setRelistSuccessModal] = useState(null);
+  const [projectRelistData, setProjectRelistData] = useState(null);
+
   const toggleModal = () => {
     setInviteModal(!inviteModal);
     dispatch(clearModalData());
   };
+
+  const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
+
+  const toggleRelistListingDetailsModal = () => setRelistListingDetailsModal(!relistListingDetailsModal);
+
+  const toggleRelistSuccessModal = () => setRelistSuccessModal(!relistSuccessModal);
 
   const projectDetailsData = useSelector(projectDetails);
 
@@ -41,7 +56,7 @@ const LeftSidebarProjectDetails = () => {
     IN_REVIEW: 'In Review',
     TERMINATED: 'Terminated',
     CLOSED: 'Closed',
-    LISTING_EXPIRED: 'Listing Expired',
+    LISTING_EXPIRED: 'Expired',
     ON_GOING: 'On Going',
     COMPLETED: 'COMPLETED',
     ACTIVE: 'Active',
@@ -68,6 +83,11 @@ const LeftSidebarProjectDetails = () => {
           ),
         ),
       );
+
+      setProjectRelistData({
+        id: projectDetailsData?._id,
+        name: projectDetailsData?.details?.name,
+      });
     }
   }, [projectDetailsData]);
 
@@ -101,6 +121,30 @@ const LeftSidebarProjectDetails = () => {
           workers={projectDetailsData?.worker_details}
         />
       )}
+      {relistConfirmationModal && (
+        <RelistConfirmationModal
+          modal={relistConfirmationModal}
+          toggleModal={toggleRelistConfirmationModal}
+          setRelistListingDetailsModal={setRelistListingDetailsModal}
+        />
+      )}
+      {relistListingDetailsModal && (
+        <RelistListingDetailsModal
+          modal={relistListingDetailsModal}
+          toggleModal={toggleRelistListingDetailsModal}
+          setRelistConfirmationModal={setRelistConfirmationModal}
+          setRelistSuccessModal={setRelistSuccessModal}
+          projectRelistData={projectRelistData}
+          setProjectRelistData={setProjectRelistData}
+        />
+      )}
+      {relistSuccessModal && (
+        <RelistSuccessModal
+          modal={relistSuccessModal}
+          toggleModal={toggleRelistSuccessModal}
+          projectRelistData={projectRelistData}
+        />
+      )}
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between status-head">
@@ -111,7 +155,7 @@ const LeftSidebarProjectDetails = () => {
             </CustomBadge>
 
             {projectDetailsData?.status === 'OPEN' && (
-              <CardText className="fw-bold days">
+              <CardText className="fw-bold days d-none">
                 {daysLeft === 0 ? 'Listing Expired' : `${daysLeft} Days left`}
               </CardText>
             )}
@@ -241,6 +285,12 @@ const LeftSidebarProjectDetails = () => {
             <CardText className="value">
               <ShowMoreLess content={projectDetailsData?.details?.description} maxLength={250} />
             </CardText>
+          </div>
+
+          <div className="d-flex mt-2 justify-content-center d-none">
+            <Button color="primary" onClick={() => setRelistConfirmationModal(true)}>
+              Re-list
+            </Button>
           </div>
 
           {userData?.user_type === userTypes.client && (

@@ -1,6 +1,6 @@
 /* eslint-disable no-else-return */
 import React, { useState } from 'react';
-import { CardText, CardTitle, Badge } from 'reactstrap';
+import { CardText, CardTitle, Badge, Button } from 'reactstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
@@ -15,8 +15,9 @@ import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { returnFormattedRating } from '../../utility/Utils';
+import { BidsReceivedWrapper, IconWrapper } from './style';
 
-const BaseInfoCard = ({ isSearchPage, data }) => {
+const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -104,10 +105,22 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
       }))
     : [];
 
+  const bidsReceivedAvatarGroup = data?.bid_profiles?.length
+    ? data?.bid_profiles?.map((bidder) => ({
+        user_id: bidder?.talent_id || bidder?.team_id,
+        user_type: userTypes.talent,
+        title: bidder?.team_name || `${bidder?.talent_first_name} ${bidder?.talent_last_name}`,
+        img: bidder?.team_logo || bidder?.talent_image_uri || defaultAvatar,
+        placement: 'bottom',
+        imgHeight: 33,
+        imgWidth: 33,
+      }))
+    : [];
+
   return (
     <div>
-      <div className="d-flex justify-content-end">
-        <div className="d-flex align-items-center gap-50">
+      <IconWrapper className="d-flex justify-content-end pt-50">
+        <div className="d-flex align-items-center gap-70">
           {data?.is_alma_mater && (
             <Badge className="alma-mater ms-50 bg-white">
               <img src={hat} alt="client-badge" className="bg-white" />
@@ -156,75 +169,77 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
             </div>
           ) : null}
         </div>
-      </div>
-      <div className="d-flex mb-25 align-items-center">
-        {data?.bidder_details ? (
-          <div>
-            {data?.bidder_details?.user_type === userTypes.talent && (
-              <img
-                className="market-place-card-photo me-75"
-                src={getImage()}
-                alt="avatar"
-                width={40}
-                height={50}
-                style={{ objectFit: 'cover' }}
-              />
-            )}
-          </div>
-        ) : (
-          <img
-            className="market-place-card-photo me-75"
-            src={getImage()}
-            alt="avatar"
-            width={40}
-            height={50}
-            style={{ objectFit: 'cover' }}
-          />
-        )}
-        <div className="d-flex w-100 align-items-center">
-          <div onClick={(e) => handleNavigate(e)} className="flex-grow-1">
-            <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-              {data?.bidder_details ? (
-                <span>
-                  {data?.bidder_details?.user_type === userTypes.team
-                    ? data?.bidder_details?.name
-                    : `${data?.bidder_details?.first_name} ${data?.bidder_details?.last_name}`}
-                </span>
-              ) : (
-                <span>
-                  {data?.client_details?.first_name}&nbsp;
-                  {data?.client_details?.last_name}
-                </span>
+      </IconWrapper>
+      {!location.pathname.split('/').includes('my_listings') && (
+        <div className="d-flex mb-25 align-items-center">
+          {data?.bidder_details ? (
+            <div>
+              {data?.bidder_details?.user_type === userTypes.talent && (
+                <img
+                  className="market-place-card-photo me-75"
+                  src={getImage()}
+                  alt="avatar"
+                  width={40}
+                  height={50}
+                  style={{ objectFit: 'cover' }}
+                />
               )}
-            </CardTitle>
-            {data?.bidder_details ? (
-              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                {data?.bidder_details?.role?.name}
-              </CardText>
-            ) : (
-              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                {clientDetails?.title ?? clientDetails?.company_name}
-              </CardText>
-            )}
-          </div>
-          <div className="d-flex flex-grow-1">
-            <RatingBadge
-              number={returnFormattedRating(
-                data?.bidder_details ? data?.bidder_details?.rating ?? 0 : clientDetails?.rating ?? 0,
-              )}
+            </div>
+          ) : (
+            <img
+              className="market-place-card-photo me-75"
+              src={getImage()}
+              alt="avatar"
+              width={40}
+              height={50}
+              style={{ objectFit: 'cover' }}
             />
-            {data?.bidder_details ? (
-              <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {data?.bidder_details?.projects_worked_on_count ?? 0} Projects
-              </CardText>
-            ) : (
-              <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {clientDetails?.project_listed_count ?? 0} Projects
-              </CardText>
-            )}
+          )}
+          <div className="d-flex w-100 align-items-center">
+            <div onClick={(e) => handleNavigate(e)} className="flex-grow-1">
+              <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
+                {data?.bidder_details ? (
+                  <span>
+                    {data?.bidder_details?.user_type === userTypes.team
+                      ? data?.bidder_details?.name
+                      : `${data?.bidder_details?.first_name} ${data?.bidder_details?.last_name}`}
+                  </span>
+                ) : (
+                  <span>
+                    {data?.client_details?.first_name}&nbsp;
+                    {data?.client_details?.last_name}
+                  </span>
+                )}
+              </CardTitle>
+              {data?.bidder_details ? (
+                <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+                  {data?.bidder_details?.role?.name}
+                </CardText>
+              ) : (
+                <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+                  {clientDetails?.title ?? clientDetails?.company_name}
+                </CardText>
+              )}
+            </div>
+            <div className="d-flex flex-grow-1">
+              <RatingBadge
+                number={returnFormattedRating(
+                  data?.bidder_details ? data?.bidder_details?.rating ?? 0 : clientDetails?.rating ?? 0,
+                )}
+              />
+              {data?.bidder_details ? (
+                <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                  {data?.bidder_details?.projects_worked_on_count ?? 0} Projects
+                </CardText>
+              ) : (
+                <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                  {clientDetails?.project_listed_count ?? 0} Projects
+                </CardText>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
       {data?.bidder_details && data?.bidder_details?.user_type === userTypes.team ? (
         <div className="mb-2">
           {avatarGroup?.length > 3 ? (
@@ -255,6 +270,42 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
           id={`tooltip-tools-project-${data?._id}`}
         />
       </div>
+      {location.pathname.split('/').includes('my_listings') && (
+        <BidsReceivedWrapper>
+          <p className="wrapper-title mb-50">Bids Received</p>
+          {bidsReceivedAvatarGroup?.length ? (
+            <div>
+              {bidsReceivedAvatarGroup?.length > 3 ? (
+                <AvatarGroup
+                  totalCount={data?.bid_profiles?.length || 0}
+                  size="sm"
+                  className="ms-25 mb-50"
+                  data={bidsReceivedAvatarGroup?.slice(0, 3)}
+                />
+              ) : (
+                <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
+              )}
+            </div>
+          ) : (
+            <p className="m-0">None</p>
+          )}
+          {data?.status === 'LISTING_EXPIRED' && (
+            <div className="d-flex justify-content-end relist-btn-wrapper">
+              <Button
+                color="primary"
+                outline
+                className="relist-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRelistConfirmationModal(true);
+                }}
+              >
+                Re-list
+              </Button>
+            </div>
+          )}
+        </BidsReceivedWrapper>
+      )}
     </div>
   );
 };
@@ -262,10 +313,12 @@ const BaseInfoCard = ({ isSearchPage, data }) => {
 BaseInfoCard.propTypes = {
   data: PropTypes.object,
   isSearchPage: PropTypes.bool,
+  setRelistConfirmationModal: PropTypes.func,
 };
 
 BaseInfoCard.defaultProps = {
   data: {},
   isSearchPage: false,
+  setRelistConfirmationModal: () => {},
 };
 export default BaseInfoCard;

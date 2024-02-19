@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState } from 'react';
 import Proptypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Card, CardBody, CardText, Spinner } from 'reactstrap';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -10,8 +10,11 @@ import { CustomBadge } from '../../styled';
 import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const ActiveProjectCardForTalent = ({ data, className }) => {
+const ActiveProjectCardForTalent = ({ accordionName, data, className }) => {
+  const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
 
@@ -32,9 +35,22 @@ const ActiveProjectCardForTalent = ({ data, className }) => {
     setShowModal(true);
   };
 
+  const updateCard = ({ switch_team_id }) => {
+    const postData = {
+      metadata: {
+        project_id: data._id,
+      },
+      type: accordionName,
+    };
+    if (data?.is_read === false) {
+      dispatch(updateCardStatus({ switch_team_id, id: data?._id, data: postData, type: 'activeProjectsForTalent' }));
+    }
+  };
+
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {!data?.is_read && <NewTag />}
         <CardBody>
           <CustomBadge>
             <Badge className={`${data?.status}`} color="badge">
@@ -93,6 +109,8 @@ const ActiveProjectCardForTalent = ({ data, className }) => {
       </Card>
       {(showModal || switchModal) && (
         <ProjectModalViews
+          cardData={data}
+          onUpdateCard={updateCard}
           isActiveProject
           project_id={data?._id}
           showModal={showModal}
@@ -110,9 +128,11 @@ export default ActiveProjectCardForTalent;
 ActiveProjectCardForTalent.propTypes = {
   data: Proptypes.object,
   className: Proptypes.string,
+  accordionName: Proptypes.string,
 };
 
 ActiveProjectCardForTalent.defaultProps = {
   data: {},
   className: '',
+  accordionName: '',
 };

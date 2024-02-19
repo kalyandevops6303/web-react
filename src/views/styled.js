@@ -55,12 +55,12 @@ const CustomBadge = styled.span`
     color: ${theme.orange};
   }
   .TERMINATED,
-  .REJECTED {
+  .REJECTED,
+  .LISTING_EXPIRED {
     background: ${theme.darkRedColor}1f;
     color: ${theme.darkRedColor};
   }
-  .CLOSED,
-  .LISTING_EXPIRED {
+  .CLOSED {
     background: ${theme.disabledGrayColor}1f;
     color: ${theme.disabledGrayColor};
   }

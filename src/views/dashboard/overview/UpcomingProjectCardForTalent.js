@@ -2,19 +2,35 @@
 import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import AvatarGroup from '@components/avatar-group';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Card, CardBody, CardText, Spinner } from 'reactstrap';
 import { ProjectWrapper } from './style';
 import DateTime from '../../../lib/date-time';
 import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
+import NewTag from '../../../@core/components/new-tag';
+import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 
-const UpcomingProjectCardForTalent = ({ data, className }) => {
+const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
   const [switchModal, setSwitchModal] = useState(false);
   const isModalLoading = useSelector((state) => state.dashboard.projectModalDataLoading);
   const projectModalId = useSelector((state) => state.dashboard.projectModalId);
+
+  const dispatch = useDispatch();
+
+  const updateCard = () => {
+    const postData = {
+      metadata: {
+        project_id: data._id,
+      },
+      type: accordionName,
+    };
+    if (data?.is_read === false) {
+      dispatch(updateCardStatus({ id: data?._id, data: postData, type: 'upcomingProjectsForTalent' }));
+    }
+  };
 
   const viewProject = () => {
     // navigate(`/project-details/${data._id}/bid`);
@@ -23,9 +39,10 @@ const UpcomingProjectCardForTalent = ({ data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design">
+      <Card className="card-app-design new-tag-relative-card">
+        {!data?.is_read && <NewTag />}
         <CardBody>
-          <p className="active-project-name truncate-2" style={{ height: '40px' }}>
+          <p className="active-project-name truncate-2 mt-50" style={{ height: '40px' }}>
             {data?.name}
           </p>
           <div className="client-badge px-1">
@@ -77,6 +94,8 @@ const UpcomingProjectCardForTalent = ({ data, className }) => {
       </Card>
       {(showModal || switchModal) && (
         <ProjectModalViews
+          cardData={data}
+          onUpdateCard={updateCard}
           isUpcomingProject
           project_id={data?._id}
           showModal={showModal}
@@ -92,11 +111,13 @@ const UpcomingProjectCardForTalent = ({ data, className }) => {
 export default UpcomingProjectCardForTalent;
 
 UpcomingProjectCardForTalent.propTypes = {
+  accordionName: Proptypes.string,
   data: Proptypes.object,
   className: Proptypes.string,
 };
 
 UpcomingProjectCardForTalent.defaultProps = {
+  accordionName: '',
   data: {},
   className: '',
 };

@@ -34,7 +34,18 @@ const getCardInfo =
   };
 
 const getListProjects =
-  ({ isMyListing, isRecommanded, isMyBids, metaData, onSuccess, onError, postData, searchText, isFavorite }) =>
+  ({
+    isMyListing,
+    isRecommanded,
+    isMyBids,
+    metaData,
+    onSuccess,
+    onError,
+    postData,
+    searchText,
+    isFavorite,
+    show_expired,
+  }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
       dispatch(getListReq());
@@ -54,6 +65,7 @@ const getListProjects =
             is_my_listings: isMyListing,
             is_recommended: isRecommanded,
             is_favourite: isFavorite,
+            show_expired,
           },
           searchText,
           metaData,
