@@ -4,9 +4,10 @@ import theme from '../../configs/themeVariables';
 export const ClientTableContainer = styled.div`
   border-radius: 6px;
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+  width: calc(100vw - 42px);
 
   .rdt_Table {
-    max-width: 97vw;
+    max-width: calc(100vw - 42px);
     border-radius: 6px;
     border-top: 1px solid ${theme.cardHeaderBorderColor};
     border-left: 1px solid ${theme.cardHeaderBorderColor};
@@ -65,8 +66,8 @@ export const ClientTableContainer = styled.div`
       margin-top: -2px;
 
       .empty-container {
-        width: 30%;
-        border-top: 2px solid ${theme.white};
+        min-width: 30%;
+        border-top: 3px solid ${theme.white};
       }
       .details-container {
         width: 64.8%;
@@ -83,9 +84,10 @@ export const ClientTableContainer = styled.div`
 export const TableContainer = styled.div`
   border-radius: 6px;
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+  width: calc(100vw - 42px);
 
   .rdt_Table {
-    max-width: 97vw;
+    max-width: calc(100vw - 42px);
     border-radius: 6px;
     border-top: 1px solid ${theme.cardHeaderBorderColor};
     border-left: 1px solid ${theme.cardHeaderBorderColor};
@@ -122,6 +124,7 @@ export const TableContainer = styled.div`
 
 export const ExpandRowDisabled = styled.div`
   background: ${theme.white};
-  width: 100%;
-  height: 10px;
+  margin-left: -3px;
+  width: 140%;
+  height: 100%;
 `;

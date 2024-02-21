@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Proptypes from 'prop-types';
 import DataTable from 'react-data-table-component';
-import { Badge } from 'reactstrap';
+import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { ChevronDown, ChevronUp } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -103,6 +103,7 @@ const PaymentHistory = () => {
       sortable: false,
       minWidth: '10%',
       selector: (row) => row.amount,
+      right: true,
     },
   ];
 
@@ -110,49 +111,49 @@ const PaymentHistory = () => {
     {
       name: 'Transaction ID',
       sortable: false,
-      maxWidth: '10%',
+      minWidth: '12%',
       selector: (row) => row.transaction_id,
     },
     {
       name: 'Project Name',
       sortable: false,
-      maxWidth: '20%',
+      minWidth: '18%',
       selector: (row) => row.project_name,
     },
     {
       name: 'Milestone',
       sortable: false,
-      maxWidth: '15%',
+      minWidth: '15%',
       selector: (row) => row.milestones,
     },
     {
       name: 'From',
       sortable: false,
-      maxWidth: '8%',
+      minWidth: '8%',
       selector: (row) => row.from,
     },
     {
       name: 'To',
       sortable: false,
-      maxWidth: '15%',
+      minWidth: '15%',
       selector: (row) => row.to,
     },
     {
       name: 'Status',
       sortable: false,
-      maxWidth: '10%',
+      minWidth: '10%',
       selector: (row) => row.status,
     },
     {
       name: 'Pay Type',
       sortable: false,
-      maxWidth: '10%',
+      minWidth: '10%',
       selector: (row) => row.pay_type,
     },
     {
       name: 'Total Cost',
       sortable: false,
-      maxWidth: '8%',
+      minWidth: '8%',
       selector: (row) => row.total_cost,
       right: true,
     },
@@ -160,7 +161,7 @@ const PaymentHistory = () => {
       name: '',
       // eslint-disable-next-line react/no-unstable-nested-components
       cell: (row) => (row.disabled ? <ExpandRowDisabled /> : null),
-      maxWidth: '4%',
+      minWidth: '4%',
     },
   ];
 
@@ -200,6 +201,7 @@ const PaymentHistory = () => {
       sortable: false,
       minWidth: '10%',
       selector: (row) => row.amount,
+      right: true,
     },
   ];
 
@@ -221,11 +223,23 @@ const PaymentHistory = () => {
       paymentHistoryDataset.push({
         transaction_id: (
           <div>
-            <p className="mb-0 fw-bolder font-small-4">#{item?.transaction_id}</p>
+            <p className="mb-0 fw-bolder font-small-4" id={`tooltip-${item?.transaction_id}`}>
+              #{item?.transaction_id}
+            </p>
             <p className="mb-0 font-small-2">{DateTime.fromMillis(item?.created_at).toFormat('dd MMM yy')}</p>
+            <UncontrolledTooltip target={`tooltip-${item?.transaction_id}`} autohide={false}>
+              {item?.transaction_id}
+            </UncontrolledTooltip>
           </div>
         ),
-        project_name: <p className="mb-0 font-small-4 name-ellipsis">{item?.project_name}</p>,
+        project_name: (
+          <>
+            <p className="mb-0 font-small-4 name-ellipsis" id={`project-${item?.transaction_id}`}>
+              {item?.project_name}
+            </p>
+            <UncontrolledTooltip target={`project-${item?.transaction_id}`}>{item?.project_name}</UncontrolledTooltip>
+          </>
+        ),
         milestone_seq: <p className="mb-0 font-small-4">Milestone #{item?.milestone?.seq}</p>,
         milestones: (
           <p className="mb-0 font-small-4">
