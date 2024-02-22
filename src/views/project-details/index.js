@@ -24,6 +24,7 @@ import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { truncateSentence } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
+import MilestoneDetails from './milestones/MilestoneDetails';
 
 const ProjectDetailsWrapper = styled.div`
   .content-header-left {
@@ -52,6 +53,7 @@ const ProjectDetails = () => {
   const [stepsArray, setStepsArray] = useState(steps);
   const [stepsArrayInvite, setStepsArrayInvite] = useState(InviteView);
   const [selectedMilestone, setSelectedMilestone] = useState(null);
+  const currentMilestone = useSelector((state) => state.milestone.milestoneData);
   const params = useParams();
 
   const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
@@ -141,6 +143,12 @@ const ProjectDetails = () => {
           title: 'Milestones',
           link: `/project-details/${params.projectId}/milestone`,
         };
+      case stepName.milestoneDetails.toLowerCase():
+        return {
+          title: 'Milestones',
+          link: `/project-details/${params.projectId}/milestone`,
+        };
+
       case stepName.payment.toLowerCase():
         return { title: 'Payment' };
       case stepName.rating.toLowerCase():
@@ -154,8 +162,10 @@ const ProjectDetails = () => {
     fromLocationPrimary(),
     { title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) },
     getLocationTernery(),
-    { title: selectedMilestone?.name || null },
+    { title: currentMilestone?.name || null },
   ];
+
+  const milestoneDetails = params?.['*'].includes('milestone-details');
 
   return (
     <ProjectDetailsWrapper>
@@ -177,7 +187,7 @@ const ProjectDetails = () => {
           {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>
         <Col lg="9">
-          {selectedMilestone === null && (
+          {!milestoneDetails && (
             <CustomStep
               steps={isInviteView ? stepsArrayInvite : stepsArray}
               currentStep={currentStep}
@@ -190,12 +200,19 @@ const ProjectDetails = () => {
               path="milestone"
               element={<Milestone selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />}
             />
+
             <Route path="payment" element={<PaymentTab />} />
             <Route path="team" element={<TeamView />} />
             <Route path="rating" element={<RatingView />} />
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
             <Route path="milestone/project-invitation/:inviteId" element={<BidMilestone />} />
             <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />
+            <Route
+              path="milestone-details/:milestoneId"
+              element={
+                <MilestoneDetails selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />
+              }
+            />
           </Routes>
         </Col>
       </Row>

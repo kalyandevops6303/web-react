@@ -2,6 +2,7 @@ import React from 'react';
 
 import { ChevronRight } from 'react-feather';
 import { Badge, Card, CardBody, CardText } from 'reactstrap';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
@@ -48,30 +49,52 @@ const getCompletedDate = (mile) => {
   return result;
 };
 
-const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
-  <div>
-    {milestonesData.map((mile, index) => (
-      <Card
-        className="cursor-pointer"
-        onClick={() => {
-          setSelectedMilestoneIndex(index);
-        }}
-        key={mile._id}
-      >
-        <CardBody className="py-1 basic-title">
-          <div className="d-flex align-items-center justify-content-between">
-            <CardText className="fw-bold mb-0">{mile.name}</CardText>
-            <div style={{ width: '60%' }} className="d-flex align-items-center justify-content-between">
-              <div className="me-2">
-                {mile.workers.length > 3 ? (
-                  <span className="d-flex avatars">
+const MilestoneListing = ({ milestonesData }) => {
+  const params = useParams();
+  const navigate = useNavigate();
+  return (
+    <div>
+      {milestonesData.map((mile, index) => (
+        <Card
+          className="cursor-pointer"
+          onClick={() => navigate(`/project-details/${params?.projectId}/milestone-details/${mile._id}`)}
+          key={mile._id}
+        >
+          <CardBody className="py-1 basic-title">
+            <div className="d-flex align-items-center justify-content-between">
+              <CardText className="fw-bold mb-0">{mile.name}</CardText>
+              <div style={{ width: '60%' }} className="d-flex align-items-center justify-content-between">
+                <div className="me-2">
+                  {mile.workers.length > 3 ? (
+                    <span className="d-flex avatars">
+                      <AvatarGroup
+                        totalCount={mile.workers.length}
+                        size="sm"
+                        className="mr-4"
+                        data={[
+                          // eslint-disable-next-line no-unsafe-optional-chaining
+                          ...mile?.workers?.slice(0, 3)?.map((worker) => ({
+                            user_id: worker?.user_id,
+                            user_type: userTypes.talent,
+                            title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
+                            img: worker.image_uri || defaultAvatar,
+                            placement: 'bottom',
+                            imgHeight: 33,
+                            imgWidth: 33,
+                            tooltipId: `tooltip-${worker?.first_name?.replace(
+                              /\s+/g,
+                              '-',
+                            )}-${worker?.last_name?.replace(/\s+/g, '-')}`,
+                          })),
+                        ]}
+                      />
+                    </span>
+                  ) : (
                     <AvatarGroup
-                      totalCount={mile.workers.length}
                       size="sm"
-                      className="mr-4"
                       data={[
                         // eslint-disable-next-line no-unsafe-optional-chaining
-                        ...mile?.workers?.slice(0, 3)?.map((worker) => ({
+                        ...mile?.workers?.map((worker) => ({
                           user_id: worker?.user_id,
                           user_type: userTypes.talent,
                           title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
@@ -86,55 +109,34 @@ const MilestoneListing = ({ setSelectedMilestoneIndex, milestonesData }) => (
                         })),
                       ]}
                     />
-                  </span>
-                ) : (
-                  <AvatarGroup
-                    size="sm"
-                    data={[
-                      // eslint-disable-next-line no-unsafe-optional-chaining
-                      ...mile?.workers?.map((worker) => ({
-                        user_id: worker?.user_id,
-                        user_type: userTypes.talent,
-                        title: `${worker?.first_name} ${worker?.last_name} ` || 'user',
-                        img: worker.image_uri || defaultAvatar,
-                        placement: 'bottom',
-                        imgHeight: 33,
-                        imgWidth: 33,
-                        tooltipId: `tooltip-${worker?.first_name?.replace(/\s+/g, '-')}-${worker?.last_name?.replace(
-                          /\s+/g,
-                          '-',
-                        )}`,
-                      })),
-                    ]}
-                  />
-                )}
-              </div>
+                  )}
+                </div>
 
-              <section className="d-flex align-items-center">
-                <Badge color={getTagSettings(mile.status).theme}>{getTagSettings(mile.status).text}</Badge>
-                <div className="ms-2">
-                  <CardText className="fw-normal mb-0 fs-6">Start Date</CardText>
-                  <CardText className="fw-bolder fs-5 mb-0">
-                    {mile.start_date ? formatDate(mile.start_date) : '-'}
-                  </CardText>
-                </div>
-                <div className="mx-2">
-                  <CardText className="fw-normal mb-0 fs-6">Completed</CardText>
-                  <CardText className="fw-bolder fs-5 mb-0">{getCompletedDate(mile)}</CardText>
-                </div>
-                <ChevronRight color="#B9B9C3" />
-              </section>
+                <section className="d-flex align-items-center">
+                  <Badge color={getTagSettings(mile.status).theme}>{getTagSettings(mile.status).text}</Badge>
+                  <div className="ms-2">
+                    <CardText className="fw-normal mb-0 fs-6">Start Date</CardText>
+                    <CardText className="fw-bolder fs-5 mb-0">
+                      {mile.start_date ? formatDate(mile.start_date) : '-'}
+                    </CardText>
+                  </div>
+                  <div className="mx-2">
+                    <CardText className="fw-normal mb-0 fs-6">Completed</CardText>
+                    <CardText className="fw-bolder fs-5 mb-0">{getCompletedDate(mile)}</CardText>
+                  </div>
+                  <ChevronRight color="#B9B9C3" />
+                </section>
+              </div>
             </div>
-          </div>
-        </CardBody>
-        <MilestoneInfo milestonesData={milestonesData} currentIndex={index} />
-      </Card>
-    ))}
-  </div>
-);
+          </CardBody>
+          <MilestoneInfo milestonesData={milestonesData} currentIndex={index} />
+        </Card>
+      ))}
+    </div>
+  );
+};
 
 MilestoneListing.propTypes = {
-  setSelectedMilestoneIndex: PropTypes.func.isRequired,
   milestonesData: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 

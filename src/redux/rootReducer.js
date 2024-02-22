@@ -28,6 +28,7 @@ import referralAndReward from './reducers/referralAndReward';
 import stripeDetails from './reducers/stripeDetails';
 import milestonePayment from './reducers/milestonePayment';
 import activeNavTab from './reducers/activeNavTab';
+import milestone from './reducers/milestone';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -57,6 +58,7 @@ const rootReducer = combineReducers({
   stripeDetails,
   milestonePayment,
   activeNavTab,
+  milestone,
 
   // Add more reducers if needed
 });

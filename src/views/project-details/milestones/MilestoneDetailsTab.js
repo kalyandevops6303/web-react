@@ -34,7 +34,7 @@ import ChangeRequestMilestoneModal from '../../modals/ChangeRequestMilestoneModa
 import AcceptMilestoneModal from '../../modals/AcceptMilestone';
 import { DocumentsWrapper } from './style';
 
-const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
+const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [saveModal, setSaveModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false);
@@ -77,7 +77,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           file_name: file.file_name || file.file.name,
         })),
       });
-      await fetchProjectMilestones();
+      // await fetchProjectMilestones();
       setSaveBtnText('Submitted');
     } catch (error) {
       errorHandler(error);
@@ -99,7 +99,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           file_name: file.file_name || file.file.name,
         })),
       });
-      await fetchProjectMilestones();
+      // await fetchProjectMilestones();
       setSubmitBtnText('Milestone submitted');
       ShowToastMessage(SUCCESS, 'Milestone submitted');
     } catch (error) {
@@ -115,7 +115,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     try {
       setRejectBtnText('Loading...');
       await rejectMilestoneService(selectedMilestone._id);
-      await fetchProjectMilestones();
+      // await fetchProjectMilestones();
       setRejectBtnText('Requested change');
     } catch (error) {
       errorHandler(error);
@@ -135,7 +135,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     try {
       setAcceptBtnText('Loading...');
       await transferFundService(payload);
-      await fetchProjectMilestones();
+      // await fetchProjectMilestones();
       setAcceptBtnText('Accepted');
       ShowToastMessage(SUCCESS, 'Milestone accepted');
     } catch (error) {
@@ -663,7 +663,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
 
 MilestoneDetailsTab.propTypes = {
   selectedMilestone: Proptypes.object.isRequired,
-  fetchProjectMilestones: Proptypes.func.isRequired,
+  // fetchProjectMilestones: Proptypes.func.isRequired,
   milestonesData: Proptypes.object.isRequired,
   setSelectedMilestoneIndex: Proptypes.func.isRequired,
 };

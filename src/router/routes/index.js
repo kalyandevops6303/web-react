@@ -29,7 +29,6 @@ import Disputes from '../../views/disputes';
 import CreateTeam from '../../views/createTeam';
 import ComingSoon from '../../views/auth/ComingSoon';
 import ProjectDetails from '../../views/project-details';
-import BidDetails from '../../views/project-details/BidDetails';
 import ContractView from '../../views/project-details/ContractView';
 import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
 import Chat from '../../views/chat';
@@ -84,10 +83,7 @@ const Routes = [
     path: '/project-details/:projectId/*',
     element: <ProjectDetails />,
   },
-  {
-    path: '/project-details/:projectId/:projectStep/:bidId',
-    element: <BidDetails />,
-  },
+
   {
     path: '/project-details/:projectId/:projectStep/doc/:docType/*',
     element: <ContractView />,
