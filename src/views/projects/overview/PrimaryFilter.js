@@ -20,10 +20,16 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   if (isLoading && !selectCardData) {
     return <ComponentSpinner />;
   }
+
+  const handlePrimaryCard = (filter) => {
+    if (!isLoadingSecondaryFilter) {
+      handlePrimaryChangeFilter(filter);
+    }
+  };
   return (
     <>
       <Row className="primary-row">
-        <Col onClick={() => handlePrimaryChangeFilter('ongoing')}>
+        <Col onClick={() => handlePrimaryCard('ongoing')}>
           <Statbox
             isActive={selected === 'ongoing'}
             isMarketPlaceTab
@@ -31,11 +37,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             desc="Ongoing"
             icon={<Layers height={20} />}
             color="light-info"
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
           />
         </Col>
         <>
-          <Col onClick={() => handlePrimaryChangeFilter('upcoming')}>
+          <Col onClick={() => handlePrimaryCard('upcoming')}>
             <Statbox
               isActive={selected === 'upcoming'}
               isMarketPlaceTab
@@ -43,13 +49,13 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
               desc="Upcoming"
               icon={<Calendar height={20} />}
               color="light-blue"
-              className="stat-box cursor-pointer"
+              className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
             />
           </Col>
-          <Col onClick={() => handlePrimaryChangeFilter('completed')}>
+          <Col onClick={() => handlePrimaryCard('completed')}>
             <Statbox
               isActive={selected === 'completed'}
-              className="stat-box cursor-pointer"
+              className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
               isMarketPlaceTab
               title={selectCardData?.completed || 0}
               desc="Completed"
@@ -59,10 +65,10 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           </Col>
         </>
         <>
-          <Col onClick={() => handlePrimaryChangeFilter('terminated')}>
+          <Col onClick={() => handlePrimaryCard('terminated')}>
             <Statbox
               isActive={selected === 'terminated'}
-              className="stat-box cursor-pointer"
+              className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
               isMarketPlaceTab
               title={selectCardData?.terminated || 0}
               desc="Terminated"
@@ -70,10 +76,10 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
               color="light-dark-red"
             />
           </Col>
-          <Col onClick={() => handlePrimaryChangeFilter('dispute')}>
+          <Col onClick={() => handlePrimaryCard('dispute')}>
             <Statbox
               isActive={selected === 'dispute'}
-              className="stat-box cursor-pointer"
+              className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
               isMarketPlaceTab
               title={selectCardData?.dispute || 0}
               desc="Disputed"
@@ -84,10 +90,10 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
         </>
       </Row>
       <Row>
-        <Col onClick={() => handlePrimaryChangeFilter('invited')}>
+        <Col onClick={() => handlePrimaryCard('invited')}>
           <Statbox
             isActive={selected === 'invited'}
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
             isMarketPlaceTab
             title={
               // eslint-disable-next-line no-nested-ternary

@@ -92,6 +92,7 @@ const errorHandler = (err, callBack) => {
     }
   } else {
     showErrorNotification('Please check your connection!');
+    dispatch(callBack(err));
   }
 };
 export default errorHandler;

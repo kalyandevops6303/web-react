@@ -9,9 +9,15 @@ const getListProjectService = ({ postData, searchText, metaData }) =>
     postData,
   );
 
-const getBidProjectService = ({ postData, searchText, metaData }) =>
+const getReceivedBidProjectService = ({ postData, searchText, metaData }) =>
   DataService.post(
-    `${API.marketplace.bidProjects}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+    `${API.marketplace.receivedBids}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+    postData,
+  );
+
+const getMyBidProjectService = ({ postData, searchText, metaData }) =>
+  DataService.post(
+    `${API.marketplace.myBids}?search_text=${searchText}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
     postData,
   );
 
@@ -37,7 +43,8 @@ export {
   getCardService,
   getListProjectService,
   getTeamsService,
-  getBidProjectService,
+  getReceivedBidProjectService,
+  getMyBidProjectService,
   getTalentsService,
   getClientsService,
 };

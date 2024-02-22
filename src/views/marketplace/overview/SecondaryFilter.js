@@ -63,7 +63,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const metaData = { page: 1, page_size: 10 };
   const [secondFilterState, setSecondFilterState] = useState({
-    statuses: [],
+    statuses: location?.state?.isOpenListing ? [{ label: 'Open', value: 'OPEN' }] : [],
     bid_statuses: [],
     project_types: [],
     skills: [],
@@ -184,6 +184,12 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       setSecondFilterState({
         ...secondFilterState,
         sort_by: [{ label: 'Recommended', value: 'RECOMMENDED' }],
+      });
+    }
+    if (location?.state?.isOpenListing) {
+      setSecondFilterState({
+        ...secondFilterState,
+        statuses: [{ label: 'Open', value: 'OPEN' }],
       });
     }
   }, [location]);

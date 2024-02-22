@@ -17,8 +17,9 @@ import { userTypes } from '../../utility/constants/Constant';
 import { returnFormattedRating } from '../../utility/Utils';
 import { BidsReceivedWrapper, IconWrapper } from './style';
 
-const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
+  const project = data?.project;
+  const [isFavorite, setIsFavorite] = useState(project?.is_favorite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
@@ -28,12 +29,12 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
   const handleLike = (e) => {
     e.stopPropagation();
     setIsFavorite(true);
-    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    dispatch(makeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
     setIsFavorite(false);
-    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    dispatch(removeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
   };
 
   const giveStrokeColor = (percentage) => {
@@ -70,43 +71,43 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
         secondary: fromLocationSecondary() || fromLocationSearch(),
       },
     };
-    if (data?.bidder_details) {
-      if (data?.bidder_details?.user_type === userTypes.team) {
-        navigate(`/profile/team/${data?.bidder_details?.team_id}`, { state });
+    if (data?.bidders) {
+      if (data?.bidders?.user_type === userTypes.team) {
+        navigate(`/profile/team/${data?.bidders?.team_id}`, { state });
       } else {
-        navigate(`/profile/talent/${data?.bidder_details?.user_id}`, { state });
+        navigate(`/profile/talent/${data?.bidders?.talent_id}`, { state });
       }
     } else {
-      navigate(`/profile/client/${data?.client_details?.user_id}`, { state });
+      navigate(`/profile/client/${data?.client_details?._id}`, { state });
     }
   };
 
   const getImage = () => {
-    if (data?.bidder_details) {
-      if (data?.bidder_details?.user_type === userTypes.team) {
-        return data?.bidder_details?.team_logo?.length ? data?.bidder_details?.team_logo : defaultAvatar;
+    if (data?.bidders) {
+      if (data?.bidders?.user_type === userTypes.team) {
+        return data?.bidders?.team_logo?.length ? data?.bidders?.team_logo : defaultAvatar;
       } else {
-        return data?.bidder_details?.image_uri?.length ? data?.bidder_details?.image_uri : defaultAvatar;
+        return data?.bidders?.talent_image_uri?.length ? data?.bidders?.talent_image_uri : defaultAvatar;
       }
     } else {
       return clientDetails?.image_uri?.length ? clientDetails?.image_uri : defaultAvatar;
     }
   };
 
-  const avatarGroup = data?.bidder_details?.workers?.length
-    ? data?.bidder_details?.workers?.map((worker) => ({
-        user_id: worker?.user_id,
-        user_type: userTypes.talent,
-        title: `${worker?.first_name} ${worker?.last_name}`,
-        img: worker?.image_uri?.length ? worker?.image_uri : defaultAvatar,
+  const avatarGroup = data?.bidders?.length
+    ? data?.bidders?.map((bidder) => ({
+        user_id: bidder?.talent_id || bidder?.team_id,
+        user_type: bidder?.team_id ? userTypes.team : userTypes.talent,
+        title: bidder?.team_name || `${bidder?.talent_first_name} ${bidder?.talent_last_name}`,
+        img: bidder?.team_logo || bidder?.talent_image_uri || defaultAvatar,
         placement: 'bottom',
         imgHeight: 33,
         imgWidth: 33,
       }))
     : [];
 
-  const bidsReceivedAvatarGroup = data?.bid_profiles?.length
-    ? data?.bid_profiles?.map((bidder) => ({
+  const bidsReceivedAvatarGroup = data?.bidders?.length
+    ? data?.bidders?.map((bidder) => ({
         user_id: bidder?.talent_id || bidder?.team_id,
         user_type: bidder?.team_id ? userTypes.team : userTypes.talent,
         title: bidder?.team_name || `${bidder?.talent_first_name} ${bidder?.talent_last_name}`,
@@ -121,7 +122,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
     <div>
       <IconWrapper className="d-flex justify-content-end pt-50">
         <div className="d-flex align-items-center gap-70">
-          {data?.is_alma_mater && (
+          {project?.is_alma_mater && (
             <Badge className="alma-mater ms-50 bg-white">
               <img src={hat} alt="client-badge" className="bg-white" />
             </Badge>
@@ -142,13 +143,13 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
             </div>
           )}
 
-          {data?.match_percentage ? (
+          {project?.match_percentage ? (
             <div className="circular-progressbar-container m-0">
               <CircularProgressbarWithChildren
-                value={data?.match_percentage}
+                value={project?.match_percentage}
                 styles={{
                   path: {
-                    stroke: giveStrokeColor(data?.match_percentage),
+                    stroke: giveStrokeColor(project?.match_percentage),
                     strokeLinecap: 'round',
                     transition: 'stroke-dashoffset 0.5s ease 0s',
                     transform: 'rotate(0turn)',
@@ -163,7 +164,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
                 }}
               >
                 <div className="d-flex justify-content-center align-items-center">
-                  <p className="percentage-text m-0">{data?.match_percentage}%</p>
+                  <p className="percentage-text m-0">{project?.match_percentage}%</p>
                 </div>
               </CircularProgressbarWithChildren>
             </div>
@@ -172,9 +173,9 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
       </IconWrapper>
       {!location.pathname.split('/').includes('my_listings') && (
         <div className="d-flex mb-25 align-items-center">
-          {data?.bidder_details ? (
+          {data?.bidders ? (
             <div>
-              {data?.bidder_details?.user_type === userTypes.talent && (
+              {data?.bidders?.user_type === userTypes.talent && (
                 <img
                   className="market-place-card-photo me-75"
                   src={getImage()}
@@ -198,53 +199,29 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
           <div className="d-flex w-100 align-items-center">
             <div onClick={(e) => handleNavigate(e)} className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-                {data?.bidder_details ? (
-                  <span>
-                    {data?.bidder_details?.user_type === userTypes.team
-                      ? data?.bidder_details?.name
-                      : `${data?.bidder_details?.first_name} ${data?.bidder_details?.last_name}`}
-                  </span>
-                ) : (
-                  <span>
-                    {data?.client_details?.first_name}&nbsp;
-                    {data?.client_details?.last_name}
-                  </span>
-                )}
+                <span>
+                  {clientDetails?.first_name}&nbsp;
+                  {clientDetails?.last_name}
+                </span>
               </CardTitle>
-              {data?.bidder_details ? (
-                <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                  {data?.bidder_details?.role?.name}
-                </CardText>
-              ) : (
-                <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
-                  {clientDetails?.title ?? clientDetails?.company_name}
-                </CardText>
-              )}
+              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+                {clientDetails?.title ?? clientDetails?.company_name}
+              </CardText>
             </div>
             <div className="d-flex flex-grow-1">
-              <RatingBadge
-                number={returnFormattedRating(
-                  data?.bidder_details ? data?.bidder_details?.rating ?? 0 : clientDetails?.rating ?? 0,
-                )}
-              />
-              {data?.bidder_details ? (
-                <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                  {data?.bidder_details?.projects_worked_on_count ?? 0} Projects
-                </CardText>
-              ) : (
-                <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                  {clientDetails?.project_listed_count ?? 0} Projects
-                </CardText>
-              )}
+              <RatingBadge number={returnFormattedRating(clientDetails?.rating || 0)} />
+              <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                {clientDetails?.project_listed_count ?? 0} Projects
+              </CardText>
             </div>
           </div>
         </div>
       )}
-      {data?.bidder_details && data?.bidder_details?.user_type === userTypes.team ? (
+      {data?.bidders && data?.bidders?.user_type === userTypes.team ? (
         <div className="mb-2">
           {avatarGroup?.length > 3 ? (
             <AvatarGroup
-              totalCount={data?.bidder_details?.workers?.length || 0}
+              totalCount={data?.bidders?.length || 0}
               size="sm"
               className="ms-25 mb-50"
               data={avatarGroup?.slice(0, 3)}
@@ -259,13 +236,13 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
       <div>
         <BadgeGroup
           title="Skills"
-          data={data?.proficiency?.skills}
+          data={project?.skills_required}
           color="light-blue"
           id={`tooltip-skills-project-${data?._id}`}
         />
         <BadgeGroup
           title="Tools"
-          data={data?.proficiency?.tools}
+          data={project?.tools_required}
           color="light-blue"
           id={`tooltip-tools-project-${data?._id}`}
         />
@@ -277,7 +254,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
             <div>
               {bidsReceivedAvatarGroup?.length > 3 ? (
                 <AvatarGroup
-                  totalCount={data?.bid_profiles?.length || 0}
+                  totalCount={data?.bidders?.length || 0}
                   size="sm"
                   className="ms-25 mb-50"
                   data={bidsReceivedAvatarGroup?.slice(0, 3)}
@@ -310,15 +287,15 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
   );
 };
 
-BaseInfoCard.propTypes = {
+BaseInfoMarketplaceCard.propTypes = {
   data: PropTypes.object,
   isSearchPage: PropTypes.bool,
   setRelistConfirmationModal: PropTypes.func,
 };
 
-BaseInfoCard.defaultProps = {
+BaseInfoMarketplaceCard.defaultProps = {
   data: {},
   isSearchPage: false,
   setRelistConfirmationModal: () => {},
 };
-export default BaseInfoCard;
+export default BaseInfoMarketplaceCard;

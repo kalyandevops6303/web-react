@@ -188,6 +188,8 @@ const API = {
     listProject: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects`,
     listTalents: `${apiOnboardingEndpoint}/api/v1/marketplace/list-talents`,
     bidProjects: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
+    receivedBids: `${apiOnboardingEndpoint}/api/v1/received-bids-projects`,
+    myBids: `${apiOnboardingEndpoint}/api/v1/my-bids-projects`,
     listTeams: `${apiOnboardingEndpoint}/api/v1/marketplace/list-teams`,
     listClients: `${apiOnboardingEndpoint}/api/v1/marketplace/list-clients`,
   },
