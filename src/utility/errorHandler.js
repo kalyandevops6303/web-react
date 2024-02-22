@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
+import { CometChat } from '@cometchat-pro/chat';
 import ShowToastMessage from '../@core/components/toast';
 import { switchProfile } from '../redux/actions/authActions';
 import { userDataSuccess } from '../redux/reducers/auth';
@@ -10,6 +11,7 @@ import { ERROR_CODES } from './constants/Constant';
 import { ERROR } from './constants/ToastTypes';
 import { getItem } from './localStorageControl';
 import { getItemFromSession, setItemFromSession } from './sessesionStorageControl';
+import { messaging } from '../configs/api/firebase';
 
 const { dispatch } = store;
 
@@ -43,6 +45,8 @@ const handleErrorCode = async (err, callBack) => {
         console.error(error);
       }
     }
+    await messaging.deleteToken();
+    await CometChat.logout();
     const teamId = getItemFromSession('team_id');
     const teamData = getItemFromSession('team_data');
     window.location.href = '/auth/login';
@@ -92,6 +96,7 @@ const errorHandler = (err, callBack) => {
     }
   } else {
     showErrorNotification('Please check your connection!');
+    dispatch(callBack(err));
   }
 };
 export default errorHandler;
