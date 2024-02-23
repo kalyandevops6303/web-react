@@ -53,6 +53,7 @@ const CustomBadge = styled.span`
   .DRAFT {
     background: ${theme.orange}1f;
     color: ${theme.orange};
+    // border: ${(props) => (props.bordered ? `1px solid ${theme.orange}` : 'none')};
   }
   .TERMINATED,
   .REJECTED,

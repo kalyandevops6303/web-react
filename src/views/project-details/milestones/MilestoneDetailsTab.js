@@ -313,7 +313,8 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
         />
       )}
       <Card className="gray-card pt-2">
-        <div className="mb-2">
+        <div className="mb-2 d-flex gap-1">
+          <CardText className="fs-5 fw-bold">Milestone {selectedMilestone?.seq}</CardText>
           <CustomBadge bordered>
             <Badge className={`${selectedMilestone?.status}`} color="badge">
               {statusEnum[selectedMilestone?.status]}
@@ -360,11 +361,11 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           </div> */}
         </div>
         <div className="white-card w-100">
-          <CardText className="fw-bolder fs-4 mb-1">Milestone Name</CardText>
+          <CardText className="fw-bold fs-4 mb-1">Milestone Name</CardText>
           <CardText className="fw-normal mb-3 fs-6">{selectedMilestone.name}</CardText>
           {selectedMilestone.description ? (
             <>
-              <CardText className="fw-bolder fs-4 mb-1">Description</CardText>
+              <CardText className="fw-bold fs-4 mb-1">Description</CardText>
               <CardText className="fw-normal mb-0 fs-6">{selectedMilestone.description}</CardText>
             </>
           ) : null}

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 import Proptypes from 'prop-types';
 import { Button } from 'reactstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import theme from '../../../configs/themeVariables';
@@ -11,11 +11,12 @@ import { BackButtonContainer, BackIconContainer } from '../../CreateProject/styl
 import { StickyHeader, TabWrapper } from './style';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
-import { clearData } from '../../../redux/reducers/milestone';
 import RaiseDisputeModal from '../../disputes/overview/RaiseDisputeModal';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import MarkMilestoneCompleteModal from '../../modals/MarkMilestoneCompleteModal';
 import FeedbackForCompleteModal from '../../modals/FeedbackForCompleteModal';
+import AcceptMilestoneModal from '../../modals/AcceptMilestone';
+import FeedbackForAcceptModal from '../../modals/FeedbackForAcceptModal';
 
 const MilestoneOverview = ({ setSelectedMilestoneIndex, selectedMilestone, fetchProjectMilestones }) => {
   const userData = useSelector(selectAuthUserData);
@@ -23,12 +24,13 @@ const MilestoneOverview = ({ setSelectedMilestoneIndex, selectedMilestone, fetch
 
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [markCompleteModal, setMarkCompleteModal] = useState(false);
+  const [feedbackAcceptModal, setFeedbackAcceptModal] = useState(false);
+  const [acceptModal, setAcceptModal] = useState(false);
   const [feedbackCompleteModal, setFeedbackCompleteModal] = useState(false);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const param = useParams();
-  useEffect(() => () => dispatch(clearData()), []);
+
   const handleBack = () => {
     navigate(`/project-details/${param?.projectId}/milestone`);
   };
@@ -37,7 +39,12 @@ const MilestoneOverview = ({ setSelectedMilestoneIndex, selectedMilestone, fetch
   };
 
   const onComplete = () => {
+    setMarkCompleteModal(false);
     setFeedbackCompleteModal(true);
+  };
+
+  const handleAccept = () => {
+    setAcceptModal(true);
   };
 
   return (
@@ -58,7 +65,7 @@ const MilestoneOverview = ({ setSelectedMilestoneIndex, selectedMilestone, fetch
                 Raise Dispute
               </Button>
               {userData?.user_type === userTypes.client ? (
-                <Button className="d-contents" color="primary">
+                <Button onClick={handleAccept} className="d-contents" color="primary">
                   Accept
                 </Button>
               ) : (
@@ -99,6 +106,26 @@ const MilestoneOverview = ({ setSelectedMilestoneIndex, selectedMilestone, fetch
           toggleModal={() => {
             setFeedbackCompleteModal(!feedbackCompleteModal);
             setMarkCompleteModal(false);
+          }}
+        />
+      )}
+      {acceptModal && (
+        <AcceptMilestoneModal
+          modal={acceptModal}
+          toggleModal={() => setAcceptModal(!acceptModal)}
+          // isLoading={isLoading}
+          onSuccess={() => {
+            setAcceptModal(false);
+            setFeedbackAcceptModal(true);
+          }}
+        />
+      )}
+      {feedbackAcceptModal && (
+        <FeedbackForAcceptModal
+          modal={feedbackAcceptModal}
+          toggleModal={() => {
+            setFeedbackAcceptModal(!feedbackAcceptModal);
+            setAcceptModal(false);
           }}
         />
       )}

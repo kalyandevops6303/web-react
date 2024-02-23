@@ -2,11 +2,11 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import '../custom-styles.scss';
-import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardSubtitle, Spinner } from 'reactstrap';
-import Notepad from '../../assets/images/youDidIt.gif';
+import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardSubtitle } from 'reactstrap';
+import Feedback from '../../assets/images/gifs/feedback_success.gif';
 import { AcceptModalWrapper } from './style';
 
-const AcceptMilestoneModal = ({ onSuccess, modal, toggleModal }) => {
+const FeedbackForAcceptModal = ({ modal, toggleModal, data }) => {
   const onClose = () => {
     toggleModal();
   };
@@ -19,20 +19,20 @@ const AcceptMilestoneModal = ({ onSuccess, modal, toggleModal }) => {
       <ModalBody>
         <AcceptModalWrapper>
           <div className="d-flex justify-content-between pr-1">
-            <img className="gif" src={Notepad} width={180} height={180} alt="gif" />
+            <img className="gif object-fit-contain" src={Feedback} width={250} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Are you sure you want to accept the milestone? </CardTitle>
+              <CardTitle className="modal-title-custom">Great Job!</CardTitle>
               <CardSubtitle className="mb-75 subtitle">
-                <b>Milestone 2:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                You have successfully accepted the <br /> milestone
+              </CardSubtitle>
+              <CardSubtitle className="subtitle mb-3">
+                <span className="fw-bold pe-50">Milestone: </span> {data?.name}
               </CardSubtitle>
             </div>
           </div>
           <div className="d-flex gap-1  justify-content-end">
             <Button disabled={isSignLoading || isLoading} outline color="primary" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button disabled={isSignLoading || isLoading} color="primary" onClick={onSuccess}>
-              {isSignLoading || isLoading ? <Spinner size="sm" /> : 'Agree & Sign'}
+              Close
             </Button>
           </div>
         </AcceptModalWrapper>
@@ -41,16 +41,16 @@ const AcceptMilestoneModal = ({ onSuccess, modal, toggleModal }) => {
   );
 };
 
-export default AcceptMilestoneModal;
+export default FeedbackForAcceptModal;
 
-AcceptMilestoneModal.propTypes = {
+FeedbackForAcceptModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  onSuccess: Proptypes.func,
+  data: Proptypes.object,
 };
 
-AcceptMilestoneModal.defaultProps = {
+FeedbackForAcceptModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  onSuccess: () => {},
+  data: {},
 };

@@ -2,6 +2,9 @@ import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 
 const AcceptModalWrapper = styled.div`
+  .object-fit-contain {
+    object-fit: contain;
+  }
   padding-bottom: 1.2rem;
   .gif {
     margin-left: 2rem;
