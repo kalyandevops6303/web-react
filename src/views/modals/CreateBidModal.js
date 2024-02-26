@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,12 +35,30 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
   };
 
   const onNextClick = () => {
+    if (selectedProject?.bidType) {
+      if (selectedProject?.bidType === selectedFlow) {
+        toggleModal();
+        return;
+        // eslint-disable-next-line no-else-return
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('selectedFlow', selectedProject?.bidType, selectedFlow);
+        return;
+      }
+    }
+
     if (selectedFlow === bidTypes.simple) {
       dispatch(createBid(selectedProject._id, bidTypes.simple, onSuccess));
     } else if (selectedFlow === bidTypes.advanced) {
       dispatch(createBid(selectedProject._id, bidTypes.advanced, onSuccess));
     }
   };
+
+  useEffect(() => {
+    if (selectedProject?.bidType) {
+      setSelectedFlow(selectedProject?.bidType);
+    }
+  }, [selectedProject]);
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
