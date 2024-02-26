@@ -15,6 +15,10 @@ import { messaging } from '../configs/api/firebase';
 
 const { dispatch } = store;
 
+// Inside your function where you want to access the user data:
+const currentState = store.getState();
+const userData = currentState.auth.savedUserData;
+
 const MIN_ERROR_INTERVAL_MS = 5000; // Minimum time between error notifications (in milliseconds)
 
 let lastErrorTime = 0; // Timestamp of the last error notification
@@ -34,6 +38,7 @@ const handleError = (err, callBack) => {
   showErrorNotification(err?.response?.data?.errorData?.message || 'Operation could not be completed');
 };
 
+const cometChatToken = getItem('cometChatToken');
 const fcmToken = getItem('fcmToken');
 const handleErrorCode = async (err, callBack) => {
   if (err?.response?.status === 401) {
@@ -46,7 +51,10 @@ const handleErrorCode = async (err, callBack) => {
       }
     }
     await messaging.deleteToken();
-    await CometChat.logout();
+    if (cometChatToken) {
+      CometChat.disconnect();
+      await CometChat.logout();
+    }
     const teamId = getItemFromSession('team_id');
     const teamData = getItemFromSession('team_data');
     window.location.href = '/auth/login';
@@ -66,7 +74,6 @@ const handleErrorCode = async (err, callBack) => {
     err?.response?.data?.errorData?.message === "You're no longer a team member"
   ) {
     const teamId = getItemFromSession('team_id');
-    const userData = getItem('savedUserData');
     if (teamId) {
       dispatch(removeTeamFromList(teamId));
       dispatch(switchProfile({ data: userData, onSuccess: () => {}, selected: false }));
