@@ -338,22 +338,18 @@ const getUserData = () => async (dispatch) => {
         }
         dispatch(userDataSuccess(userData));
         dispatch(getTeams({ onSuccess: () => {} }));
-        setItem('userData', userData);
       }
 
       // For getting the current user's details if we redirect directly to a team's page
       const userRes = await userDataService();
       const individualUserData = userRes.data.data;
 
-      setItem('savedUserData', individualUserData);
       dispatch(savedUserDataSuccess(individualUserData));
     } else {
       // User is visiting for the first time or doesn't have a team ID
       const userRes = await userDataService();
       const userData = userRes.data.data;
 
-      setItem('savedUserData', userData);
-      setItem('userData', userData);
       dispatch(userDataSuccess(userData));
       dispatch(getUserDataSuccess(userData.user_type));
 
