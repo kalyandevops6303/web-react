@@ -176,6 +176,18 @@ const MessageIconWrap = styled.div`
       margin: auto;
     }
   }
+  .trash-bg {
+    background-color: ${theme.red}1f;
+    border-radius: 50%;
+    height: 2.5rem;
+    width: 2.5rem;
+    display: flex;
+    margin-left: auto;
+    justify-content: center;
+    .mail-icon {
+      margin: auto;
+    }
+  }
 `;
 
 const MakePaymentModalWrapper = styled.div`

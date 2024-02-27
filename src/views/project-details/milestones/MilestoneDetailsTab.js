@@ -1,30 +1,42 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-confusing-arrow */
-import React, { useEffect, useState } from 'react';
-import { Badge, Button, Card, CardText, Col, Input, Label, Row, Spinner, UncontrolledTooltip } from 'reactstrap';
+import React, { useState } from 'react';
+import {
+  Badge,
+  Button,
+  Card,
+  CardText,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Row,
+  Spinner,
+  UncontrolledTooltip,
+} from 'reactstrap';
 import Avatar from '@components/avatar';
 import Proptypes from 'prop-types';
-import { Download, ExternalLink, Link, Plus, Upload } from 'react-feather';
+import { Download, ExternalLink, Link, Plus, Trash2, Upload } from 'react-feather';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { useSelector } from 'react-redux';
-
+import * as yup from 'yup';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RaiseDisputeModal from '../../disputes/overview/RaiseDisputeModal';
-import { formatDate, isFileValid, renderFilePreview, renderFileSize } from '../../../utility/Utils';
+import { formatDate, isFileValid, isUrlWithoutProtocol, renderFilePreview } from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import {
   milestoneFileUploadService,
   rejectMilestoneService,
   saveMilestoneService,
-  submitMilestoneService,
 } from '../../../services/projectMilestoneService';
 import { transferFundService } from '../../../services/paymentDetailService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../../utility/constants/ToastTypes';
-
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import { CustomBadge } from '../../styled';
@@ -32,7 +44,35 @@ import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors
 import SubmitMilestoneModal from '../../modals/SubmitMilestoneModal';
 import ChangeRequestMilestoneModal from '../../modals/ChangeRequestMilestoneModal';
 import AcceptMilestoneModal from '../../modals/AcceptMilestone';
-import { DocumentsWrapper } from './style';
+import theme from '../../../configs/themeVariables';
+import AutoResizeTextarea from '../../../@core/components/autoResizeTextArea';
+import { MessageIconWrap } from '../../modals/style';
+import { TableWrapper } from '../style';
+
+const MilestoneDetailsSchema = yup.object().shape({
+  documents: yup.array().of(
+    yup.object().shape({
+      fileData: yup.mixed().required('File is required'),
+      description: yup
+        .string()
+        .min(4, 'Description must be at least 4 characters')
+        .max(20, 'Description must be 500 characters or less')
+        .transform((value) => (value === '' ? undefined : value))
+        .optional(),
+    }),
+  ),
+  links: yup.array().of(
+    yup.object().shape({
+      link: yup.string().test('is-url', 'Please enter a valid URL', isUrlWithoutProtocol).nullable(),
+      description: yup
+        .string()
+        .min(4, 'Description must be at least 4 characters')
+        .max(20, 'Description must be 500 characters or less')
+        .transform((value) => (value === '' ? undefined : value))
+        .optional(),
+    }),
+  ),
+});
 
 const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
@@ -41,7 +81,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const [rejectModal, setRejectModal] = useState(false);
   const [acceptModal, setAcceptModal] = useState(false);
 
-  const [links, setLinks] = useState(selectedMilestone.links);
+  // const [links, setLinks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [submitBtnText, setSubmitBtnText] = useState('Submit');
   const [acceptBtnText, setAcceptBtnText] = useState('Accept');
@@ -50,29 +90,51 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const [rejectBtnText, setRejectBtnText] = useState('Request change');
 
   const [uploadingFiles, setUploadingFiles] = useState([]);
-  const [documents, setDocuments] = useState(
-    selectedMilestone.documents.map((doc) => ({
-      ...doc,
-      newId: `${doc.file_key.split('.')[0].split('/')[0]}-${doc.file_key.split('.')[0].split('/')[2]}`,
-    })),
-  );
-  const [isDownloading, setIsDownloading] = useState(false);
+  // const [documents, setDocuments] = useState([]);
+  // const [isDownloading, setIsDownloading] = useState(false);
 
   const userDataLocal = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
 
-  useEffect(() => {
-    setSaveBtnText('Submit');
-  }, [documents]);
+  const {
+    control,
+    formState: { errors },
+  } = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(MilestoneDetailsSchema),
+    defaultValues: {
+      documents: [],
+      links: [],
+    },
+  });
 
+  const {
+    fields: documentsFields,
+    append: documentsAppend,
+    remove: documentsRemove,
+  } = useFieldArray({
+    control,
+    name: 'documents',
+  });
+
+  const {
+    fields: linksFields,
+    append: linksAppend,
+    remove: linksRemove,
+  } = useFieldArray({
+    control,
+    name: 'links',
+  });
+
+  const allLinks = useWatch({ control, name: 'links' });
   // Submit
   const saveMilestone = async () => {
     setIsLoading(true);
     try {
       setSaveBtnText('Loading...');
       await saveMilestoneService(selectedMilestone._id, {
-        links,
-        documents: documents.map((file) => ({
+        links: linksFields?.map((item) => item.link),
+        documents: documentsFields?.fileData?.map((file) => ({
           file_key: file.file_key || file.uploadData.file_key,
           file_name: file.file_name || file.file.name,
         })),
@@ -92,13 +154,13 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     setIsLoading(true);
     try {
       setSubmitBtnText('Submitting...');
-      await submitMilestoneService(selectedMilestone._id, {
-        links,
-        documents: documents.map((file) => ({
-          file_key: file.file_key || file.uploadData.file_key,
-          file_name: file.file_name || file.file.name,
-        })),
-      });
+      // await submitMilestoneService(selectedMilestone._id, {
+      //   links,
+      //   documents: documents.map((file) => ({
+      //     file_key: file.file_key || file.uploadData.file_key,
+      //     file_name: file.file_name || file.file.name,
+      //   })),
+      // });
       // await fetchProjectMilestones();
       setSubmitBtnText('Milestone submitted');
       ShowToastMessage(SUCCESS, 'Milestone submitted');
@@ -167,7 +229,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     );
 
     const fetchUploadUrls = async () => {
-      const allFiles = [...documents, ...acceptedFiles];
+      const allFiles = [...documentsFields, ...acceptedFiles];
 
       if (allFiles?.length > 5) {
         ShowToastMessage(ERROR, 'Maximum 5 files allowed');
@@ -175,21 +237,36 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
         const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
         const promises = validFiles.map(async (file) => {
-          const response = await milestoneFileUploadService(file.name);
-          return {
-            id: uuidv4(),
-            file,
-            uploadData: response?.data?.data,
-            file_key: response?.data?.data?.file_key,
-            newId: `${response?.data?.data?.file_key.split('.')[0].split('/')[0]}-${
-              response?.data?.data?.file_key.split('.')[0].split('/')[2]
-            }`,
-          };
+          try {
+            const response = await milestoneFileUploadService({
+              file_name: file.name,
+              project_id: selectedMilestone?.project_id,
+              milestone_id: selectedMilestone._id,
+            });
+            return {
+              id: uuidv4(),
+              file,
+              uploadData: response?.data?.data,
+              file_key: response?.data?.data?.file_key,
+              newId: `${response?.data?.data?.file_key.split('.')[0].split('/')[0]}-${
+                response?.data?.data?.file_key.split('.')[0].split('/')[2]
+              }`,
+            };
+          } catch (error) {
+            errorHandler(error);
+            throw error;
+          }
         });
 
         const filesWithUrls = await Promise.all(promises);
-        setDocuments((oldFiles) => [...oldFiles, ...filesWithUrls]);
-
+        // setDocuments((oldFiles) => [...oldFiles, ...filesWithUrls]);
+        // eslint-disable-next-line array-callback-return
+        filesWithUrls?.map((doc) => {
+          documentsAppend({
+            fileData: doc,
+            description: undefined,
+          });
+        });
         filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
       }
     };
@@ -236,38 +313,29 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     }
   };
 
-  const handleDownloadFile = async (file) => {
-    try {
-      if (file?.download_url) {
-        setIsDownloading(true);
-        const response = await fetch(file.download_url);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file.file_name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-        setIsDownloading(false);
-      }
-    } catch (error) {
-      setIsDownloading(false);
-    }
-  };
+  // const handleDownloadFile = async (file) => {
+  //   try {
+  //     if (file?.download_url) {
+  //       setIsDownloading(true);
+  //       const response = await fetch(file.download_url);
+  //       const blob = await response.blob();
+  //       const url = window.URL.createObjectURL(blob);
+  //       const a = document.createElement('a');
+  //       a.href = url;
+  //       a.download = file.file_name;
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       a.remove();
+  //       window.URL.revokeObjectURL(url);
+  //       setIsDownloading(false);
+  //     }
+  //   } catch (error) {
+  //     setIsDownloading(false);
+  //   }
+  // };
 
-  const isClient = userDataLocal.user_type === userTypes.client;
-
-  // useEffect(() => {
-  //   const newDocs = documents.map((doc, index) => ({
-  //     ...doc,
-  //     newId: `${doc.file_key.split('.')[0].split('/')[0]}-${doc.file_key.split('.')[0].split('/')[2]}-${index}`,
-  //   }));
-
-  //   setDocuments(newDocs);
-  // }, [documents]);
-
+  const isEmptyLink = allLinks?.some((item) => item.link === '');
+  const hasError = errors?.documents?.length > 0 || errors?.links?.length > 0;
   return (
     <div>
       {raiseDisputeModal && (
@@ -343,24 +411,8 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
             <CardText className="fw-normal mb-0 fs-6">Cost</CardText>
             <CardText className="fw-bolder fs-5 mb-0">$ {selectedMilestone.estimated_cost}</CardText>
           </div>
-          {/* <div>
-            <CardText className="fw-normal mb-0 fs-6">Status</CardText>
-            <CardText className="fw-bolder fs-5 mb-0">
-              {selectedMilestone.status === 'IN_PROGRESS'
-                ? 'In Progress'
-                : selectedMilestone.status === 'CREATED'
-                ? 'Created'
-                : selectedMilestone.status === 'IN_REVIEW'
-                ? 'In Review'
-                : selectedMilestone.status === 'YET_TO_START'
-                ? 'Yet to Start'
-                : selectedMilestone.status === 'ON_GOING'
-                ? 'On Going'
-                : selectedMilestone.status}
-            </CardText>
-          </div> */}
         </div>
-        <div className="white-card w-100">
+        <div className="white-card w-100 mb-50">
           <CardText className="fw-bold fs-4 mb-1">Milestone Name</CardText>
           <CardText className="fw-normal mb-3 fs-6">{selectedMilestone.name}</CardText>
           {selectedMilestone.description ? (
@@ -369,190 +421,261 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
               <CardText className="fw-normal mb-0 fs-6">{selectedMilestone.description}</CardText>
             </>
           ) : null}
+          <div>
+            <CardText className="fw-bold fs-4 mb-1">Description</CardText>
+            <CardText className="fw-normal mb-0 fs-6">
+              Description DescriptionDescription Description DescriptionDescription Description v Description
+              Description Description
+            </CardText>
+          </div>
         </div>
         <hr className="my-2" />
-        <div className="white-card w-100">
-          <CardText className="fw-bolder fs-4 mb-1">Milestone Deliverables</CardText>
 
-          {documents.length > 0 && (
-            <Row
-              style={{ fontFamily: 'Montserrat' }}
-              className="d-flex mb-1 mx-0 px-1 fw-bolder align-items-center justify-content-between py-8 mt-2"
-            >
-              <Col sm="6" md="4" style={{ width: isClient ? '32%' : '25%' }}>
-                FILE NAME
-              </Col>
-              {userDataLocal.user_type !== userTypes.client && (
-                <Col sm="2" md="2" style={{ width: isClient ? '15%' : '15%' }}>
-                  STATUS
+        <div className="pb-2">
+          <CardText className="fs-4 mb-0 fw-bold">Submissions</CardText>
+        </div>
+        <Form className="w-100">
+          {(documentsFields.length > 0 || linksFields.length > 0) && (
+            <TableWrapper className="w-100 medium-shadow">
+              <Row className="w-100 header">
+                <Col sm="12" md="12" lg="3">
+                  <p className=" fw-bolder mb-0">FILE NAME </p>
                 </Col>
-              )}
-              <Col sm="2" md="2" style={{ width: isClient ? '24%' : '15%' }}>
-                SIZE
-              </Col>
-              <Col sm="2" md="2" style={{ width: isClient ? '30%' : '25%' }}>
-                UPLOADED ON
-              </Col>
-              <Col sm="1" md="1" className="pe-0" style={{ width: isClient ? '10%' : '15%' }}>
-                ACTION
-              </Col>
-            </Row>
-          )}
-          <DocumentsWrapper>
-            {documents.map((file) =>
-              isEditable ? (
-                <Row
-                  key={file.file_key}
-                  className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
-                >
-                  <Col className="d-flex" sm="6" md="4" lg="3">
-                    {renderFilePreview(file.file)}
-                    <span className="truncated-filename" id={file.newId}>
-                      {file?.file?.name ?? file.file_name}
+                <Col sm="12" md="12" lg="4">
+                  <p className=" fw-bolder mb-0">DESCRIPTION</p>
+                </Col>
+                <Col sm="12" md="12" lg="3">
+                  <p className=" fw-bolder mb-0">UPLOADED ON</p>
+                </Col>
+                <Col sm="12" md="12" lg="2">
+                  <p className=" fw-bolder mb-0">ACTION</p>
+                </Col>
+              </Row>
+              {documentsFields.map((file, index) => (
+                <Row key={file?.file_key} className="w-100 tbody border-bottom">
+                  <Col sm="12" md="12" lg="3" className="m-auto d-flex">
+                    {/* <p className="fw-bold ">Project bried.pdf</p> */}
+                    {renderFilePreview(file?.fileData?.file)}
+                    <span className="truncated-filename mt-25" id={file?.fileData?.newId}>
+                      {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
                     </span>
-                    <UncontrolledTooltip placement="bottom" target={file.newId}>
-                      {file?.file?.name ?? file.file_name}
+                    <UncontrolledTooltip placement="bottom" target={file?.fileData?.newId}>
+                      {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
                     </UncontrolledTooltip>
                   </Col>
-                  {userDataLocal.user_type !== userTypes.client && (
-                    <Col sm="2" md="2" lg="2">
-                      {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
-                    </Col>
-                  )}
-                  <Col sm="2" md="2" lg="2">
-                    {renderFileSize(file?.size ?? file.file.size)}
+                  <Col sm="12" md="12" lg="4">
+                    <Controller
+                      id={`documents[${index}].description`}
+                      name={`documents[${index}].description`}
+                      control={control}
+                      invalid={
+                        errors &&
+                        errors.documents &&
+                        errors.documents.length > 0 &&
+                        errors.documents[index] &&
+                        errors.documents[index].description &&
+                        true
+                      }
+                      render={({ field }) => (
+                        <AutoResizeTextarea
+                          {...field}
+                          type="textarea"
+                          rows="4"
+                          className="desc-input"
+                          placeholder="Enter description in 500 characters"
+                          invalid={
+                            errors &&
+                            errors.documents &&
+                            errors.documents.length > 0 &&
+                            errors.documents[index] &&
+                            errors.documents[index].description &&
+                            true
+                          }
+                        />
+                      )}
+                    />
+                    {errors &&
+                      errors.documents &&
+                      errors.documents.length > 0 &&
+                      errors.documents[index] &&
+                      errors.documents[index].description && (
+                        <FormFeedback>{errors.documents[index].description.message}</FormFeedback>
+                      )}{' '}
                   </Col>
-                  <Col sm="2" md="2" lg="3">
-                    {requiredFormattedDate}
+                  <Col sm="12" md="12" lg="3" className="m-auto">
+                    <p className="fw-normal m-auto"> {requiredFormattedDate}</p>
                   </Col>
-                  <Col sm="1" md="1" className="pe-0" lg="2">
-                    <Button
-                      color="flat-danger"
-                      className="btn-left-margin"
-                      disabled={uploadingFiles.includes(file)}
-                      onClick={() => {
-                        const uploadedDocuments = documents;
-                        const filteredData = uploadedDocuments.filter((item) => item.file_key !== file.file_key);
-                        setDocuments([...filteredData]);
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </Col>
-                </Row>
-              ) : (
-                <Row
-                  key={file.id}
-                  className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
-                >
-                  <Col className="d-flex" sm="6" md="4" lg="3">
-                    {renderFilePreview(file.file)}
-                    <span className="truncated-filename" id={file.newId}>
-                      {file?.file?.name ?? file.file_name}
-                    </span>
-                    <UncontrolledTooltip placement="bottom" target={file.newId}>
-                      {file?.file?.name ?? file.file_name}
-                    </UncontrolledTooltip>
-                  </Col>
-                  {userDataLocal.user_type !== userTypes.client && (
-                    <Col sm="6" md="2" lg="2">
-                      {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
-                    </Col>
-                  )}
-                  <Col sm="2" md="2" lg="2">
-                    {file?.size ? renderFileSize(file?.size) : null}
-                  </Col>
-                  <Col sm="2" md="2" lg="3">
-                    {requiredFormattedDate}
-                  </Col>
-                  <Col sm="1" md="1" className="pe-0" lg="1">
-                    {isDownloading ? (
+                  <Col sm="12" md="12" lg="2" className="m-auto">
+                    {uploadingFiles.some((obj) => obj.file_key === file?.fileData?.file_key) ? (
                       <Spinner size="sm" />
                     ) : (
-                      <Avatar
-                        onClick={() => handleDownloadFile(file)}
-                        color="light-primary"
-                        icon={<Download size="14" />}
-                        className=""
-                      />
+                      <div className="fw-bold m-auto d-flex gap-1">
+                        <MessageIconWrap>
+                          <span className="mail-bg">
+                            <Download size={20} className="mail-icon" color={theme.activeColor} />
+                          </span>
+                        </MessageIconWrap>
+                        <MessageIconWrap
+                          onClick={() => {
+                            documentsRemove(index);
+                          }}
+                        >
+                          <span className="trash-bg">
+                            <Trash2 size={20} className="mail-icon" color={theme.red} />
+                          </span>
+                        </MessageIconWrap>
+                      </div>
                     )}
                   </Col>
                 </Row>
-              ),
-            )}
-          </DocumentsWrapper>
-          {links.map((item, index) =>
-            isEditable ? (
-              <div
-                className="white-card d-flex mb-1 px-1 medium-shadow align-items-end justify-content-between py-16"
-                // eslint-disable-next-line react/no-array-index-key
-                key={`links-${index}`}
-              >
-                <div className="w-50">
-                  <Label>Link</Label>
-                  <Input
-                    value={item}
-                    onChange={(e) => {
-                      setLinks([...links.slice(0, index), e.target.value, ...links.slice(index + 1)]);
-                    }}
-                  />
-                </div>
-                <Button
-                  color="flat-danger"
-                  className="btn-left-margin me-2"
-                  onClick={() => {
-                    const uploadedLinks = links;
-                    const filtered = uploadedLinks.filter((i) => i !== item);
-                    setLinks([...filtered]);
-                  }}
-                >
-                  Remove
-                </Button>
-              </div>
-            ) : (
-              <div
-                className="white-card d-flex mb-1 medium-shadow align-items-center justify-content-between py-16"
-                // eslint-disable-next-line react/no-array-index-key
-                key={`links-${index}`}
-                style={{ paddingLeft: '25px', paddingRight: '50px' }}
-              >
-                <div className="d-flex">
-                  <Link size="18" className="me-1" />
-                  <p className="mb-0">{item}</p>
-                </div>
-                <Avatar
-                  onClick={() => handleLinkOpen(item)}
-                  color="light-primary"
-                  icon={<ExternalLink size="14" />}
-                  className="me-2"
-                />
-              </div>
-            ),
+              ))}
+
+              {linksFields.map((item, index) => (
+                <Row key={`links-${item?.id}`} className="w-100 tbody border-bottom">
+                  <Col sm="12" md="12" lg="3" className="m-auto d-flex">
+                    <Link size="22" className="m-auto me-1 " />
+                    <span className="w-100">
+                      <Controller
+                        id={`links[${index}].link`}
+                        name={`links[${index}].link`}
+                        control={control}
+                        invalid={
+                          errors &&
+                          errors.links &&
+                          errors.links.length > 0 &&
+                          errors.links[index] &&
+                          errors.links[index].link &&
+                          true
+                        }
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            rows="4"
+                            className="desc-input"
+                            placeholder="Add link here"
+                            invalid={
+                              errors &&
+                              errors.links &&
+                              errors.links.length > 0 &&
+                              errors.links[index] &&
+                              errors.links[index].link &&
+                              true
+                            }
+                          />
+                        )}
+                      />
+                      {errors &&
+                        errors.links &&
+                        errors.links.length > 0 &&
+                        errors.links[index] &&
+                        errors.links[index].link && (
+                          <FormFeedback>{errors.links[index].link.message}</FormFeedback>
+                        )}{' '}
+                    </span>
+                  </Col>
+
+                  <Col sm="12" md="12" lg="4">
+                    <Controller
+                      className="w-100"
+                      id={`links[${index}].description`}
+                      name={`links[${index}].description`}
+                      control={control}
+                      invalid={
+                        errors &&
+                        errors.links &&
+                        errors.links.length > 0 &&
+                        errors.links[index] &&
+                        errors.links[index].description &&
+                        true
+                      }
+                      render={({ field }) => (
+                        <AutoResizeTextarea
+                          {...field}
+                          type="textarea"
+                          rows="4"
+                          className="desc-input w-100"
+                          placeholder="Enter description in 500 characters"
+                          invalid={
+                            errors &&
+                            errors.links &&
+                            errors.links.length > 0 &&
+                            errors.links[index] &&
+                            errors.links[index].description &&
+                            true
+                          }
+                        />
+                      )}
+                    />
+                    {errors &&
+                      errors.links &&
+                      errors.links.length > 0 &&
+                      errors.links[index] &&
+                      errors.links[index].description && (
+                        <FormFeedback>{errors.links[index].description.message}</FormFeedback>
+                      )}
+                  </Col>
+                  <Col sm="12" md="12" lg="3" className="m-auto">
+                    <p className="fw-normal m-auto">10 Feb 2020, 05:30 PM</p>
+                  </Col>
+                  <Col sm="12" md="12" lg="2" className="m-auto">
+                    <div className="fw-bold m-auto d-flex gap-1">
+                      <MessageIconWrap
+                        onClick={() => {
+                          if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
+                            handleLinkOpen(allLinks?.[index]?.link);
+                          }
+                        }}
+                      >
+                        <span className="mail-bg">
+                          <ExternalLink
+                            size={20}
+                            className="mail-icon"
+                            color={
+                              allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
+                                ? theme.activeColor
+                                : `${theme.activeColor}5f`
+                            }
+                          />
+                        </span>
+                      </MessageIconWrap>
+                      <MessageIconWrap
+                        onClick={() => {
+                          linksRemove(index);
+                        }}
+                      >
+                        <span className="trash-bg">
+                          <Trash2 size={20} className="mail-icon" color={theme.red} />
+                        </span>
+                      </MessageIconWrap>
+                    </div>{' '}
+                  </Col>
+                </Row>
+              ))}
+            </TableWrapper>
           )}
-          {isEditable ? (
-            <div className="d-flex">
-              <div
-                onClick={() => setLinks([...links, ''])}
-                className="d-flex mt-1 fs-5 color-primary align-items-center cursor-pointer fw-bold me-2"
-              >
-                <Avatar color="light-primary" icon={<Plus size="14" />} className="me-1" />
-                Add Link
-              </div>
-              <div {...getRootProps({ className: 'dropzone' })}>
-                <input {...getInputProps()} />
-                <div className="d-flex fs-5 fw-bold color-primary align-items-center cursor-pointer mt-1">
-                  <Avatar color="light-primary" icon={<Upload size="14" />} className="me-1" />
-                  Add Document
-                </div>
-              </div>
+        </Form>
+
+        <div>
+          <div
+            onClick={() => {
+              linksAppend({ link: '', description: '', id: uuidv4() });
+            }}
+            className="d-flex mt-1 fs-5 color-primary align-items-center cursor-pointer fw-bold me-2"
+          >
+            <Avatar color="light-primary" icon={<Plus size="14" />} className="me-1" />
+            Add Link
+          </div>
+          <div {...getRootProps({ className: 'dropzone' })}>
+            <input {...getInputProps()} />
+            <div className="d-flex fs-5 fw-bold color-primary align-items-center cursor-pointer mt-1">
+              <Avatar color="light-primary" icon={<Upload size="14" />} className="me-1" />
+              Add Document
             </div>
-          ) : null}
+          </div>
         </div>
+
         <div className="w-100 mt-2 mb-2 d-flex justify-content-end">
           <div>
-            <Button className="me-2 raise-dispute-btn" onClick={() => setRaiseDisputeModal(true)}>
-              Raise Dispute
-            </Button>
             {userDataLocal.user_type === userTypes.client && selectedMilestone.status === 'IN_REVIEW' ? (
               <>
                 <Button
@@ -578,7 +701,9 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                 disabled={
                   uploadingFiles.length > 0 ||
                   isLoading ||
-                  [...documents, ...links].length === 0 ||
+                  isEmptyLink ||
+                  hasError ||
+                  [...documentsFields, ...allLinks].length === 0 ||
                   submitBtnText !== 'Submit' ||
                   !isPaymentDone(selectedMilestone)
                 }
@@ -596,7 +721,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                   uploadingFiles.length > 0 ||
                   isLoading ||
                   submitBtnText !== 'Milestone complete' ||
-                  [...documents, ...links].length === 0 ||
+                  [...documentsFields, ...allLinks].length === 0 ||
                   !isPaymentDone(selectedMilestone)
                 }
                 color="primary"

@@ -12,7 +12,7 @@ import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
-
+import PDFIcon from '../assets/images/pdfV2.svg';
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -293,11 +293,12 @@ export const isFileValid = (file) => {
 
 export const renderFilePreview = (file) => {
   if (file?.type?.startsWith('image')) {
-    return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
-    // eslint-disable-next-line
-  } else {
-    return <FileText size="18" className="me-75 mb-50" />;
+    return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="22" width="22" />;
   }
+  if (file?.name?.toLowerCase().endsWith('.pdf')) {
+    return <img className="rounded me-75" alt="pdf" src={PDFIcon} height="22" width="22" />;
+  }
+  return <FileText size="26" className="me-75 mb-25" />;
 };
 
 export const renderFileSize = (size) => {

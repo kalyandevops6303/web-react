@@ -1,6 +1,42 @@
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 
+const TableWrapper = styled.div`
+  border-radius: 6px;
+  border: 1px solid #ebe9f1;
+  background: #fff;
+  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+  .header {
+    color: ${theme.headingTextColor};
+    padding: 0.4rem;
+    margin: 0;
+    border-bottom: 1px solid #ebe9f1;
+    letter-spacing: 1px;
+    background: #f3f2f7;
+
+    font-family: Montserrat;
+    font-size: 12px;
+    font-style: normal;
+  }
+  .tbody {
+    padding: 1rem 0.4rem;
+    margin: 0;
+    .desc-input {
+      resize: none;
+      scrollbar-width: none;
+      padding: 0.5rem 0.6rem !important;
+    }
+  }
+  .border-bottom {
+    border-bottom: 1px solid ${theme.darkGreyBorderColor};
+  }
+  .truncated-filename {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
 const LeftSidebarProjectDetailsWrapper = styled.div`
   // header
   .status-head {
@@ -588,4 +624,5 @@ export {
   RatingsFormContainer,
   RatingTag,
   UserNameWrapper,
+  TableWrapper,
 };

@@ -36,8 +36,10 @@ const acceptMilestoneService = (milestone_id) =>
 const rejectMilestoneService = (milestone_id) =>
   DataService.put(`${API.projectMilestones.rejectMilestone}?milestone_id=${milestone_id}`);
 
-const milestoneFileUploadService = (filename) =>
-  DataService.get(`${API.projectMilestones.projectFileUpload}?filename=${filename}`);
+const milestoneFileUploadService = ({ file_name, project_id, milestone_id }) =>
+  DataService.get(
+    `${API.projectMilestones.projectFileUpload}?filename=${file_name}&project_id=${project_id}&milestone_id=${milestone_id}`,
+  );
 
 export {
   submitMilestoneService,
