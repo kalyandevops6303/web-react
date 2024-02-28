@@ -175,7 +175,11 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
         const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
         const promises = validFiles.map(async (file) => {
-          const response = await milestoneFileUploadService(file.name);
+          const response = await milestoneFileUploadService(
+            selectedMilestone?.project_id,
+            selectedMilestone?._id,
+            file.name,
+          );
           return {
             id: uuidv4(),
             file,
