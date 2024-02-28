@@ -106,6 +106,9 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
   try {
     const res = await loginService({ email: username, password });
     setItem('access_token', res.data.data.access_token);
+    setItem('access_token_expires', res.data.data.access_token_expires);
+    setItem('refresh_token', res.data.data.refresh_token);
+    setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     onSuccess(res.data.data);
     if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
       dispatch(loginSuccess(res.data.data));
@@ -131,6 +134,9 @@ const loginUserWithGoogle =
       }
 
       setItem('access_token', res.data.data.access_token);
+      setItem('access_token_expires', res.data.data.access_token_expires);
+      setItem('refresh_token', res.data.data.refresh_token);
+      setItem('refresh_token_expires', res.data.data.refresh_token_expires);
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(loginSuccess(res.data.data));
         dispatch(cometChatLogin(res.data.data.comet_chat_token));
@@ -164,6 +170,9 @@ const verifyEmail = (data) => async (dispatch) => {
   try {
     const res = await verifyEmailService(data);
     setItem('access_token', res.data.data.access_token);
+    setItem('access_token_expires', res.data.data.access_token_expires);
+    setItem('refresh_token', res.data.data.refresh_token);
+    setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     dispatch(verifyEmailSuccess());
   } catch (error) {
     errorHandler(error, verifyEmailFailure);
