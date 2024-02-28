@@ -69,7 +69,6 @@ const UserDetails = () => {
   const currentProfile = useSelector(selectCurrentProfile);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
-  // const userData = getItem('userData');
 
   const calculateAvailableHoursPerWeek = (availability) => {
     // Calculate weekday hours per week

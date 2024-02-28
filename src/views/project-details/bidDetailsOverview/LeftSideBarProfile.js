@@ -44,7 +44,6 @@ const LeftSidebarProfile = ({
   const location = useLocation();
   const param = useParams();
   const navigate = useNavigate();
-  const userData = getItem('userData');
   const teamId = getItem('teamId');
   const userDataSelector = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
@@ -418,7 +417,7 @@ const LeftSidebarProfile = ({
                 </div>
               </div>
             )}
-            {isTeamView && !teamId && userData?.user_type === userTypes.talent && (
+            {isTeamView && !teamId && userDataSelector?.user_type === userTypes.talent && (
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 <Button className="w-50" color="primary" onClick={handleJoinTeam}>
                   {inJoinTeamLoading ? <Spinner /> : 'Join Team'}

@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
+import { CometChat } from '@cometchat-pro/chat';
 import ShowToastMessage from '../@core/components/toast';
 import { switchProfile } from '../redux/actions/authActions';
 import { userDataSuccess } from '../redux/reducers/auth';
@@ -10,8 +11,13 @@ import { ERROR_CODES } from './constants/Constant';
 import { ERROR } from './constants/ToastTypes';
 import { getItem } from './localStorageControl';
 import { getItemFromSession, setItemFromSession } from './sessesionStorageControl';
+import { messaging } from '../configs/api/firebase';
 
 const { dispatch } = store;
+
+// Inside your function where you want to access the user data:
+const currentState = store.getState();
+const userData = currentState.auth.savedUserData;
 
 const MIN_ERROR_INTERVAL_MS = 5000; // Minimum time between error notifications (in milliseconds)
 
@@ -32,6 +38,7 @@ const handleError = (err, callBack) => {
   showErrorNotification(err?.response?.data?.errorData?.message || 'Operation could not be completed');
 };
 
+const cometChatToken = getItem('cometChatToken');
 const fcmToken = getItem('fcmToken');
 const handleErrorCode = async (err, callBack) => {
   if (err?.response?.status === 401) {
@@ -42,6 +49,11 @@ const handleErrorCode = async (err, callBack) => {
       } catch (error) {
         console.error(error);
       }
+    }
+    await messaging.deleteToken();
+    if (cometChatToken) {
+      CometChat.disconnect();
+      await CometChat.logout();
     }
     const teamId = getItemFromSession('team_id');
     const teamData = getItemFromSession('team_data');
@@ -62,7 +74,6 @@ const handleErrorCode = async (err, callBack) => {
     err?.response?.data?.errorData?.message === "You're no longer a team member"
   ) {
     const teamId = getItemFromSession('team_id');
-    const userData = getItem('savedUserData');
     if (teamId) {
       dispatch(removeTeamFromList(teamId));
       dispatch(switchProfile({ data: userData, onSuccess: () => {}, selected: false }));
