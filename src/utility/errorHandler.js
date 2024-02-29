@@ -15,10 +15,6 @@ import { messaging } from '../configs/api/firebase';
 
 const { dispatch } = store;
 
-// Inside your function where you want to access the user data:
-const currentState = store.getState();
-const userData = currentState.auth.savedUserData;
-
 const MIN_ERROR_INTERVAL_MS = 5000; // Minimum time between error notifications (in milliseconds)
 
 let lastErrorTime = 0; // Timestamp of the last error notification
@@ -75,11 +71,14 @@ const handleErrorCode = async (err, callBack) => {
   ) {
     const teamId = getItemFromSession('team_id');
     if (teamId) {
+      const currentState = store.getState();
+      const userData = currentState.auth.savedUserData;
       dispatch(removeTeamFromList(teamId));
       dispatch(switchProfile({ data: userData, onSuccess: () => {}, selected: false }));
       showErrorNotification("You're no longer a team member");
       dispatch(userDataSuccess(userData));
     }
+    handleError(err, callBack);
   } else {
     handleError(err, callBack);
   }
