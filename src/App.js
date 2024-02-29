@@ -40,6 +40,7 @@ const App = () => {
   const loginUser = async ({ cometToken, fcm }) => {
     await CometChat.login(cometToken);
     dispatch(cometloginSuccess());
+    setItem('cometChatToken', cometToken);
     console.log('LOGGED IN COMETCHAT');
     if (fcm) {
       await CometChat.callExtension('push-notification', 'POST', 'v2/tokens', {

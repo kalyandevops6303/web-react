@@ -11,11 +11,11 @@ import TeamCard from '../cards/TeamCard';
 
 import { Header } from '../styled';
 import theme from '../../configs/themeVariables';
-import ProjectCard from '../cards/MarketPlaceProjectCard';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { userTypes } from '../../utility/constants/Constant';
 import { setItem } from '../../utility/localStorageControl';
 import ClubCard from '../cards/ClubCard';
+import SearchProjectCard from '../cards/SearchProjectCard';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -284,7 +284,7 @@ const Search = () => {
                         : // eslint-disable-next-line no-nested-ternary
                         activeTab === userTypes.club
                         ? ClubCard
-                        : ProjectCard;
+                        : SearchProjectCard;
                     return (
                       <CardComponent
                         isSearchPage

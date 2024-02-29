@@ -83,7 +83,7 @@ function MilestonePaymentListing() {
         </div>
       ) : (
         <>
-          <h4 className="mb-1">Milestone Payment</h4>
+          {milestoneData?.length > 0 && <h4 className="mb-1">Milestone Payment</h4>}
           {milestoneData?.length > 0 &&
             milestoneData?.map((milestone) => (
               <MilestonePaymentBox
@@ -96,13 +96,15 @@ function MilestonePaymentListing() {
                 onSelect={handleMilestoneSelect}
               />
             ))}
-          <div className="d-flex justify-content-end">
-            {!isAllMilestonePaid ? (
-              <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={isDisabled()}>
-                Make Payment
-              </Button>
-            ) : null}
-          </div>
+          {milestoneData?.length > 0 && (
+            <div className="d-flex justify-content-end">
+              {!isAllMilestonePaid ? (
+                <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={isDisabled()}>
+                  Make Payment
+                </Button>
+              ) : null}
+            </div>
+          )}
         </>
       )}
     </div>

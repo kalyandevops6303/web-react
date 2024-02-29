@@ -5,6 +5,7 @@ import {
   getReviewService,
   getTalentService,
   makeFavService,
+  publicTeamMembersService,
   removeFavService,
   reportService,
 } from '../../services/profileServices';
@@ -23,6 +24,9 @@ import {
   getReviewRequest,
   getReviewSuccess,
   makeFavSuccess,
+  publicTeamMembersFailure,
+  publicTeamMembersRequest,
+  publicTeamMembersSuccess,
   removeFavSuccess,
   reportFailure,
   reportRequest,
@@ -117,4 +121,26 @@ const reportProfile = (data, onSuccess) => async (dispatch) => {
   }
 };
 
-export { getProfile, makeFavourite, removeFavourite, getRecentProjects, getReview, reportProfile };
+const getPublicTeamMembers =
+  ({ teamId, page, pageSize, oldData }) =>
+  async (dispatch) => {
+    if (page === 1) {
+      dispatch(publicTeamMembersRequest());
+    }
+    try {
+      const res = await publicTeamMembersService(teamId, page, pageSize);
+      dispatch(publicTeamMembersSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
+    } catch (error) {
+      errorHandler(error, publicTeamMembersFailure);
+    }
+  };
+
+export {
+  getProfile,
+  makeFavourite,
+  removeFavourite,
+  getRecentProjects,
+  getReview,
+  reportProfile,
+  getPublicTeamMembers,
+};
