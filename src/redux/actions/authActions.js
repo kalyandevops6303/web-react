@@ -304,7 +304,6 @@ const switchProfile =
   async (dispatch) => {
     try {
       dispatch(switchProfileSuccess(data));
-
       if (data?.user_type === 'TEAM' && data?.team_type === userTypes.club) {
         setItemFromSession('team_id', data?._id);
         dispatch(getClubAdminAccess());
