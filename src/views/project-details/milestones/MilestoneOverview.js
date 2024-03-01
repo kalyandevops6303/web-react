@@ -47,6 +47,27 @@ const MilestoneOverview = ({ setSelectedMilestoneIndex, selectedMilestone, fetch
     setAcceptModal(true);
   };
 
+  // const acceptMilestone = async () => {
+  //   setIsLoading(true);
+
+  //   const payload = {
+  //     milestone: selectedMilestone._id,
+  //   };
+
+  //   try {
+  //     setAcceptBtnText('Loading...');
+  //     await transferFundService(payload);
+  //     // await fetchProjectMilestones();
+  //     setAcceptBtnText('Accepted');
+  //     ShowToastMessage(SUCCESS, 'Milestone accepted');
+  //   } catch (error) {
+  //     errorHandler(error);
+  //     setAcceptBtnText('Accept');
+  //   }
+  //   setIsLoading(false);
+  //   setAcceptModal(false);
+  // };
+
   return (
     <TabWrapper>
       <StickyHeader>

@@ -1,6 +1,4 @@
 /* eslint-disable no-undef */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-confusing-arrow */
 import React, { useState } from 'react';
 import {
   Badge,
@@ -17,37 +15,33 @@ import {
 } from 'reactstrap';
 import Avatar from '@components/avatar';
 import Proptypes from 'prop-types';
+import toast from 'react-hot-toast';
 import { Download, ExternalLink, Link, Plus, Trash2, Upload } from 'react-feather';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { useSelector } from 'react-redux';
 import * as yup from 'yup';
-import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import RaiseDisputeModal from '../../disputes/overview/RaiseDisputeModal';
 import { formatDate, isFileValid, isUrlWithoutProtocol, renderFilePreview } from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
-import {
-  milestoneFileUploadService,
-  rejectMilestoneService,
-  saveMilestoneService,
-} from '../../../services/projectMilestoneService';
-import { transferFundService } from '../../../services/paymentDetailService';
+import { milestoneFileUploadService, submitMilestoneService } from '../../../services/projectMilestoneService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../../utility/constants/ToastTypes';
 import uuidv4 from '../../../lib/uuidv4';
+import DateTime from '../../../lib/date-time';
+
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import { CustomBadge } from '../../styled';
-import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import SubmitMilestoneModal from '../../modals/SubmitMilestoneModal';
-import ChangeRequestMilestoneModal from '../../modals/ChangeRequestMilestoneModal';
-import AcceptMilestoneModal from '../../modals/AcceptMilestone';
 import theme from '../../../configs/themeVariables';
 import AutoResizeTextarea from '../../../@core/components/autoResizeTextArea';
 import { MessageIconWrap } from '../../modals/style';
 import { TableWrapper } from '../style';
+import FeedbackForSubmitModal from '../../modals/FeedbackForSubmitModal';
+import RemoveArtifactsModal from '../../modals/RemoveArtifactsModal';
+import FeedbackRemoveArtifactsModal from '../../modals/FeedbackRemoveArtifacts';
 
 const MilestoneDetailsSchema = yup.object().shape({
   documents: yup.array().of(
@@ -74,27 +68,16 @@ const MilestoneDetailsSchema = yup.object().shape({
   ),
 });
 
-const MilestoneDetailsTab = ({ selectedMilestone }) => {
-  const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
-  const [saveModal, setSaveModal] = useState(false);
+const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const [submitModal, setSubmitModal] = useState(false);
-  const [rejectModal, setRejectModal] = useState(false);
-  const [acceptModal, setAcceptModal] = useState(false);
-
-  // const [links, setLinks] = useState([]);
+  const [submitFeedbackModal, setSubmitFeedbackModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteData, setDeleteData] = useState(false);
+  const [deleteFeedbackModal, setDeleteFeedbackModal] = useState(false);
   const [submitBtnText, setSubmitBtnText] = useState('Submit');
-  const [acceptBtnText, setAcceptBtnText] = useState('Accept');
-  // eslint-disable-next-line no-unused-vars
-  const [saveBtnText, setSaveBtnText] = useState('Submit');
-  const [rejectBtnText, setRejectBtnText] = useState('Request change');
-
   const [uploadingFiles, setUploadingFiles] = useState([]);
-  // const [documents, setDocuments] = useState([]);
-  // const [isDownloading, setIsDownloading] = useState(false);
-
   const userDataLocal = useSelector(selectAuthUserData);
-  const projectDetailsData = useSelector(projectDetails);
 
   const {
     control,
@@ -127,43 +110,27 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   });
 
   const allLinks = useWatch({ control, name: 'links' });
-  // Submit
-  const saveMilestone = async () => {
-    setIsLoading(true);
-    try {
-      setSaveBtnText('Loading...');
-      await saveMilestoneService(selectedMilestone._id, {
-        links: linksFields?.map((item) => item.link),
-        documents: documentsFields?.fileData?.map((file) => ({
-          file_key: file.file_key || file.uploadData.file_key,
-          file_name: file.file_name || file.file.name,
-        })),
-      });
-      // await fetchProjectMilestones();
-      setSaveBtnText('Submitted');
-    } catch (error) {
-      errorHandler(error);
-      setSaveBtnText('Submit');
-    }
-    setIsLoading(false);
-    setSaveModal(false);
-  };
+  const allDocuments = useWatch({ control, name: 'documents' });
 
-  // Final Milestone complete
-  const finalSubmitMilestone = async () => {
+  const onFinalSubmitMilestone = async () => {
     setIsLoading(true);
     try {
       setSubmitBtnText('Submitting...');
-      // await submitMilestoneService(selectedMilestone._id, {
-      //   links,
-      //   documents: documents.map((file) => ({
-      //     file_key: file.file_key || file.uploadData.file_key,
-      //     file_name: file.file_name || file.file.name,
-      //   })),
-      // });
-      // await fetchProjectMilestones();
+      await submitMilestoneService(selectedMilestone._id, {
+        links: allLinks.map((link) => ({
+          url: link?.link,
+          description: link?.description,
+        })),
+        documents: allDocuments.map((file) => ({
+          file_key: file?.fileData?.file_key || file?.fileData?.uploadData?.file_key,
+          file_name: file?.fileData?.file_name || file?.fileData?.file?.name,
+          description: file?.description,
+        })),
+      });
+      await fetchProjectMilestones();
       setSubmitBtnText('Milestone submitted');
       ShowToastMessage(SUCCESS, 'Milestone submitted');
+      setSubmitFeedbackModal(true);
     } catch (error) {
       errorHandler(error);
       setSubmitBtnText('Submit');
@@ -172,43 +139,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     setSubmitModal(false);
   };
 
-  const rejectMilestone = async () => {
-    setIsLoading(true);
-    try {
-      setRejectBtnText('Loading...');
-      await rejectMilestoneService(selectedMilestone._id);
-      // await fetchProjectMilestones();
-      setRejectBtnText('Requested change');
-    } catch (error) {
-      errorHandler(error);
-      setRejectBtnText('Request change');
-    }
-    setIsLoading(false);
-    setRejectModal(false);
-  };
-
-  const acceptMilestone = async () => {
-    setIsLoading(true);
-
-    const payload = {
-      milestone: selectedMilestone._id,
-    };
-
-    try {
-      setAcceptBtnText('Loading...');
-      await transferFundService(payload);
-      // await fetchProjectMilestones();
-      setAcceptBtnText('Accepted');
-      ShowToastMessage(SUCCESS, 'Milestone accepted');
-    } catch (error) {
-      errorHandler(error);
-      setAcceptBtnText('Accept');
-    }
-    setIsLoading(false);
-    setAcceptModal(false);
-  };
-
-  const handleUploadFile = async (file) => {
+  const handleUploadFile = async ({ file, onError }) => {
     try {
       setUploadingFiles((prevFiles) => [...prevFiles, file]);
 
@@ -218,6 +149,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
       });
     } catch (error) {
       ShowToastMessage(ERROR, 'Something went wrong. Please try uploading again.');
+      onError(error);
     } finally {
       setUploadingFiles((prevFiles) => prevFiles.filter((f) => f.file !== file.file));
     }
@@ -258,16 +190,22 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
           }
         });
 
+        const fileId = uuidv4();
         const filesWithUrls = await Promise.all(promises);
         // setDocuments((oldFiles) => [...oldFiles, ...filesWithUrls]);
         // eslint-disable-next-line array-callback-return
         filesWithUrls?.map((doc) => {
           documentsAppend({
+            id: fileId,
             fileData: doc,
             description: undefined,
+            time: DateTime.now().toFormat(`dd MMM yyyy, hh:mm a`),
           });
         });
-        filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
+        const onError = () => {
+          documentsRemove(fileId);
+        };
+        filesWithUrls.forEach((fileWithUrl) => handleUploadFile({ file: fileWithUrl, onError }));
       }
     };
     fetchUploadUrls();
@@ -283,12 +221,6 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   });
 
   const isEditable = userDataLocal.user_type !== userTypes.client && selectedMilestone.status === 'ON_GOING';
-
-  const formattedDate = new Date()
-    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-    .replace(',', '')
-    .split(' ');
-  const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
   const statusEnum = {
     OPEN: 'Open',
@@ -313,73 +245,70 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     }
   };
 
-  // const handleDownloadFile = async (file) => {
-  //   try {
-  //     if (file?.download_url) {
-  //       setIsDownloading(true);
-  //       const response = await fetch(file.download_url);
-  //       const blob = await response.blob();
-  //       const url = window.URL.createObjectURL(blob);
-  //       const a = document.createElement('a');
-  //       a.href = url;
-  //       a.download = file.file_name;
-  //       document.body.appendChild(a);
-  //       a.click();
-  //       a.remove();
-  //       window.URL.revokeObjectURL(url);
-  //       setIsDownloading(false);
-  //     }
-  //   } catch (error) {
-  //     setIsDownloading(false);
-  //   }
-  // };
-
   const isEmptyLink = allLinks?.some((item) => item.link === '');
   const hasError = errors?.documents?.length > 0 || errors?.links?.length > 0;
+
+  const handleRemove = ({ item, index }) => {
+    setDeleteData({ ...item, index });
+    setDeleteModal(true);
+  };
+
+  const onRemove = (data) => {
+    if (data?.link) {
+      linksRemove(data.index);
+    } else {
+      documentsRemove(data.index);
+    }
+    setSubmitFeedbackModal(false);
+  };
+
   return (
     <div>
-      {raiseDisputeModal && (
-        <RaiseDisputeModal
-          modal={raiseDisputeModal}
-          toggleModal={() => setRaiseDisputeModal(!raiseDisputeModal)}
-          primaryFilter="all"
-          projectDetail={{ label: projectDetailsData?.details?.name, value: projectDetailsData?._id }}
-        />
-      )}
-      {saveModal && (
-        <SubmitMilestoneModal
-          modal={saveModal}
-          toggleModal={() => setSaveModal(!saveModal)}
-          isFinalSubmit={false}
-          isLoading={isLoading}
-          onAccept={saveMilestone}
-        />
-      )}
       {submitModal && (
         <SubmitMilestoneModal
           modal={submitModal}
           toggleModal={() => setSubmitModal(!submitModal)}
           isFinalSubmit
           isLoading={isLoading}
-          onAccept={finalSubmitMilestone}
+          onSuccess={onFinalSubmitMilestone}
+          links={allLinks}
+          documents={allDocuments}
         />
       )}
-      {rejectModal && (
-        <ChangeRequestMilestoneModal
-          modal={rejectModal}
-          toggleModal={() => setRejectModal(!rejectModal)}
-          isLoading={isLoading}
-          onAccept={rejectMilestone}
+      {submitFeedbackModal && (
+        <FeedbackForSubmitModal
+          modal={submitFeedbackModal}
+          toggleModal={() => {
+            setSubmitFeedbackModal(!submitFeedbackModal);
+            documentsRemove();
+            linksRemove();
+          }}
+          links={allLinks}
+          documents={allDocuments}
         />
       )}
-      {acceptModal && (
-        <AcceptMilestoneModal
-          modal={acceptModal}
-          toggleModal={() => setAcceptModal(!acceptModal)}
-          isLoading={isLoading}
-          onAccept={acceptMilestone}
+      {deleteModal && (
+        <RemoveArtifactsModal
+          modal={deleteModal}
+          toggleModal={() => setDeleteModal(!deleteModal)}
+          onSuccess={() => {
+            setDeleteModal(false);
+            setDeleteFeedbackModal(true);
+          }}
+          data={deleteData}
         />
       )}
+      {deleteFeedbackModal && (
+        <FeedbackRemoveArtifactsModal
+          modal={deleteFeedbackModal}
+          toggleModal={() => {
+            setDeleteFeedbackModal(!deleteFeedbackModal);
+            onRemove(deleteData);
+          }}
+          data={deleteData}
+        />
+      )}
+
       <Card className="gray-card pt-2">
         <div className="mb-2 d-flex gap-1">
           <CardText className="fs-5 fw-bold">Milestone {selectedMilestone?.seq}</CardText>
@@ -421,68 +350,46 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
               <CardText className="fw-normal mb-0 fs-6">{selectedMilestone.description}</CardText>
             </>
           ) : null}
-          <div>
-            <CardText className="fw-bold fs-4 mb-1">Description</CardText>
-            <CardText className="fw-normal mb-0 fs-6">
-              Description DescriptionDescription Description DescriptionDescription Description v Description
-              Description Description
-            </CardText>
-          </div>
         </div>
         <hr className="my-2" />
-
-        <div className="pb-2">
-          <CardText className="fs-4 mb-0 fw-bold">Submissions</CardText>
-        </div>
-        <Form className="w-100">
-          {(documentsFields.length > 0 || linksFields.length > 0) && (
-            <TableWrapper className="w-100 medium-shadow">
-              <Row className="w-100 header">
-                <Col sm="12" md="12" lg="3">
-                  <p className=" fw-bolder mb-0">FILE NAME </p>
-                </Col>
-                <Col sm="12" md="12" lg="4">
-                  <p className=" fw-bolder mb-0">DESCRIPTION</p>
-                </Col>
-                <Col sm="12" md="12" lg="3">
-                  <p className=" fw-bolder mb-0">UPLOADED ON</p>
-                </Col>
-                <Col sm="12" md="12" lg="2">
-                  <p className=" fw-bolder mb-0">ACTION</p>
-                </Col>
-              </Row>
-              {documentsFields.map((file, index) => (
-                <Row key={file?.file_key} className="w-100 tbody border-bottom">
-                  <Col sm="12" md="12" lg="3" className="m-auto d-flex">
-                    {/* <p className="fw-bold ">Project bried.pdf</p> */}
-                    {renderFilePreview(file?.fileData?.file)}
-                    <span className="truncated-filename mt-25" id={file?.fileData?.newId}>
-                      {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
-                    </span>
-                    <UncontrolledTooltip placement="bottom" target={file?.fileData?.newId}>
-                      {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
-                    </UncontrolledTooltip>
-                  </Col>
-                  <Col sm="12" md="12" lg="4">
-                    <Controller
-                      id={`documents[${index}].description`}
-                      name={`documents[${index}].description`}
-                      control={control}
-                      invalid={
-                        errors &&
-                        errors.documents &&
-                        errors.documents.length > 0 &&
-                        errors.documents[index] &&
-                        errors.documents[index].description &&
-                        true
-                      }
-                      render={({ field }) => (
-                        <AutoResizeTextarea
-                          {...field}
-                          type="textarea"
-                          rows="4"
-                          className="desc-input"
-                          placeholder="Enter description in 500 characters"
+        {isEditable && (
+          <section className="w-100">
+            <div className="pb-2">
+              <CardText className="fs-4 mb-0 fw-bold">Submissions</CardText>
+            </div>
+            <Form className="w-100">
+              {(documentsFields.length > 0 || linksFields.length > 0) && (
+                <TableWrapper className="w-100 medium-shadow">
+                  <Row className="w-100 header">
+                    <Col sm="12" md="12" lg="3">
+                      <p className=" fw-bolder mb-0">FILE NAME </p>
+                    </Col>
+                    <Col sm="12" md="12" lg="4">
+                      <p className=" fw-bolder mb-0">DESCRIPTION</p>
+                    </Col>
+                    <Col sm="12" md="12" lg="3">
+                      <p className=" fw-bolder mb-0">UPLOADED ON</p>
+                    </Col>
+                    <Col sm="12" md="12" lg="2">
+                      <p className=" fw-bolder mb-0 ps-75">ACTION</p>
+                    </Col>
+                  </Row>
+                  {documentsFields.map((file, index) => (
+                    <Row key={file?.file_key} className="w-100 tbody border-bottom">
+                      <Col sm="12" md="12" lg="3" className="m-auto d-flex">
+                        {renderFilePreview(file?.fileData?.file)}
+                        <span className="truncated-filename mt-25" id={file?.fileData?.newId}>
+                          {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
+                        </span>
+                        <UncontrolledTooltip placement="bottom" target={file?.fileData?.newId}>
+                          {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
+                        </UncontrolledTooltip>
+                      </Col>
+                      <Col sm="12" md="12" lg="4">
+                        <Controller
+                          id={`documents[${index}].description`}
+                          name={`documents[${index}].description`}
+                          control={control}
                           invalid={
                             errors &&
                             errors.documents &&
@@ -491,68 +398,71 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                             errors.documents[index].description &&
                             true
                           }
+                          render={({ field }) => (
+                            <AutoResizeTextarea
+                              {...field}
+                              type="textarea"
+                              rows="4"
+                              className="desc-input"
+                              placeholder="Enter description in 500 characters"
+                              invalid={
+                                errors &&
+                                errors.documents &&
+                                errors.documents.length > 0 &&
+                                errors.documents[index] &&
+                                errors.documents[index].description &&
+                                true
+                              }
+                            />
+                          )}
                         />
-                      )}
-                    />
-                    {errors &&
-                      errors.documents &&
-                      errors.documents.length > 0 &&
-                      errors.documents[index] &&
-                      errors.documents[index].description && (
-                        <FormFeedback>{errors.documents[index].description.message}</FormFeedback>
-                      )}{' '}
-                  </Col>
-                  <Col sm="12" md="12" lg="3" className="m-auto">
-                    <p className="fw-normal m-auto"> {requiredFormattedDate}</p>
-                  </Col>
-                  <Col sm="12" md="12" lg="2" className="m-auto">
-                    {uploadingFiles.some((obj) => obj.file_key === file?.fileData?.file_key) ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <div className="fw-bold m-auto d-flex gap-1">
-                        <MessageIconWrap>
-                          <span className="mail-bg">
-                            <Download size={20} className="mail-icon" color={theme.activeColor} />
+                        {errors &&
+                          errors.documents &&
+                          errors.documents.length > 0 &&
+                          errors.documents[index] &&
+                          errors.documents[index].description && (
+                            <FormFeedback>{errors.documents[index].description.message}</FormFeedback>
+                          )}{' '}
+                      </Col>
+                      <Col sm="12" md="12" lg="3" className="m-auto">
+                        <p className="fw-normal m-auto"> {file?.time}</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="2" className="m-auto">
+                        {uploadingFiles.some((obj) => obj.file_key === file?.fileData?.file_key) ? (
+                          <span className="ps-3">
+                            <Spinner size="sm" />
                           </span>
-                        </MessageIconWrap>
-                        <MessageIconWrap
-                          onClick={() => {
-                            documentsRemove(index);
-                          }}
-                        >
-                          <span className="trash-bg">
-                            <Trash2 size={20} className="mail-icon" color={theme.red} />
-                          </span>
-                        </MessageIconWrap>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
-              ))}
+                        ) : (
+                          <div className="fw-bold m-auto d-flex gap-1">
+                            <MessageIconWrap onClick={() => downloadUploadedFile({ file: file?.fileData?.file })}>
+                              <span className="mail-bg">
+                                <Download size={20} className="mail-icon" color={theme.activeColor} />
+                              </span>
+                            </MessageIconWrap>
+                            <MessageIconWrap
+                              onClick={() => {
+                                handleRemove({ item: allDocuments?.[index], index });
+                              }}
+                            >
+                              <span className="trash-bg">
+                                <Trash2 size={20} className="mail-icon" color={theme.red} />
+                              </span>
+                            </MessageIconWrap>
+                          </div>
+                        )}
+                      </Col>
+                    </Row>
+                  ))}
 
-              {linksFields.map((item, index) => (
-                <Row key={`links-${item?.id}`} className="w-100 tbody border-bottom">
-                  <Col sm="12" md="12" lg="3" className="m-auto d-flex">
-                    <Link size="22" className="m-auto me-1 " />
-                    <span className="w-100">
-                      <Controller
-                        id={`links[${index}].link`}
-                        name={`links[${index}].link`}
-                        control={control}
-                        invalid={
-                          errors &&
-                          errors.links &&
-                          errors.links.length > 0 &&
-                          errors.links[index] &&
-                          errors.links[index].link &&
-                          true
-                        }
-                        render={({ field }) => (
-                          <Input
-                            {...field}
-                            rows="4"
-                            className="desc-input"
-                            placeholder="Add link here"
+                  {linksFields.map((item, index) => (
+                    <Row key={`links-${item?.id}`} className="w-100 tbody border-bottom">
+                      <Col sm="12" md="12" lg="3" className="m-auto d-flex">
+                        <Link size="22" className="m-auto me-1 " />
+                        <span className="w-100">
+                          <Controller
+                            id={`links[${index}].link`}
+                            name={`links[${index}].link`}
+                            control={control}
                             invalid={
                               errors &&
                               errors.links &&
@@ -561,40 +471,39 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                               errors.links[index].link &&
                               true
                             }
+                            render={({ field }) => (
+                              <Input
+                                {...field}
+                                rows="4"
+                                className="desc-input"
+                                placeholder="Add link here"
+                                invalid={
+                                  errors &&
+                                  errors.links &&
+                                  errors.links.length > 0 &&
+                                  errors.links[index] &&
+                                  errors.links[index].link &&
+                                  true
+                                }
+                              />
+                            )}
                           />
-                        )}
-                      />
-                      {errors &&
-                        errors.links &&
-                        errors.links.length > 0 &&
-                        errors.links[index] &&
-                        errors.links[index].link && (
-                          <FormFeedback>{errors.links[index].link.message}</FormFeedback>
-                        )}{' '}
-                    </span>
-                  </Col>
+                          {errors &&
+                            errors.links &&
+                            errors.links.length > 0 &&
+                            errors.links[index] &&
+                            errors.links[index].link && (
+                              <FormFeedback>{errors.links[index].link.message}</FormFeedback>
+                            )}{' '}
+                        </span>
+                      </Col>
 
-                  <Col sm="12" md="12" lg="4">
-                    <Controller
-                      className="w-100"
-                      id={`links[${index}].description`}
-                      name={`links[${index}].description`}
-                      control={control}
-                      invalid={
-                        errors &&
-                        errors.links &&
-                        errors.links.length > 0 &&
-                        errors.links[index] &&
-                        errors.links[index].description &&
-                        true
-                      }
-                      render={({ field }) => (
-                        <AutoResizeTextarea
-                          {...field}
-                          type="textarea"
-                          rows="4"
-                          className="desc-input w-100"
-                          placeholder="Enter description in 500 characters"
+                      <Col sm="12" md="12" lg="4">
+                        <Controller
+                          className="w-100"
+                          id={`links[${index}].description`}
+                          name={`links[${index}].description`}
+                          control={control}
                           invalid={
                             errors &&
                             errors.links &&
@@ -603,101 +512,116 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
                             errors.links[index].description &&
                             true
                           }
+                          render={({ field }) => (
+                            <AutoResizeTextarea
+                              {...field}
+                              type="textarea"
+                              rows="4"
+                              className="desc-input w-100"
+                              placeholder="Enter description in 500 characters"
+                              invalid={
+                                errors &&
+                                errors.links &&
+                                errors.links.length > 0 &&
+                                errors.links[index] &&
+                                errors.links[index].description &&
+                                true
+                              }
+                            />
+                          )}
                         />
-                      )}
-                    />
-                    {errors &&
-                      errors.links &&
-                      errors.links.length > 0 &&
-                      errors.links[index] &&
-                      errors.links[index].description && (
-                        <FormFeedback>{errors.links[index].description.message}</FormFeedback>
-                      )}
-                  </Col>
-                  <Col sm="12" md="12" lg="3" className="m-auto">
-                    <p className="fw-normal m-auto">10 Feb 2020, 05:30 PM</p>
-                  </Col>
-                  <Col sm="12" md="12" lg="2" className="m-auto">
-                    <div className="fw-bold m-auto d-flex gap-1">
-                      <MessageIconWrap
-                        onClick={() => {
-                          if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
-                            handleLinkOpen(allLinks?.[index]?.link);
-                          }
-                        }}
-                      >
-                        <span className="mail-bg">
-                          <ExternalLink
-                            size={20}
-                            className="mail-icon"
-                            color={
-                              allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
-                                ? theme.activeColor
-                                : `${theme.activeColor}5f`
-                            }
-                          />
-                        </span>
-                      </MessageIconWrap>
-                      <MessageIconWrap
-                        onClick={() => {
-                          linksRemove(index);
-                        }}
-                      >
-                        <span className="trash-bg">
-                          <Trash2 size={20} className="mail-icon" color={theme.red} />
-                        </span>
-                      </MessageIconWrap>
-                    </div>{' '}
-                  </Col>
-                </Row>
-              ))}
-            </TableWrapper>
-          )}
-        </Form>
+                        {errors &&
+                          errors.links &&
+                          errors.links.length > 0 &&
+                          errors.links[index] &&
+                          errors.links[index].description && (
+                            <FormFeedback>{errors.links[index].description.message}</FormFeedback>
+                          )}
+                      </Col>
+                      <Col sm="12" md="12" lg="3" className="m-auto">
+                        <p className="fw-normal m-auto">{item?.time}</p>
+                      </Col>
+                      <Col sm="12" md="12" lg="2" className="m-auto">
+                        <div className="fw-bold m-auto d-flex gap-1">
+                          <MessageIconWrap
+                            onClick={() => {
+                              if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
+                                handleLinkOpen(allLinks?.[index]?.link);
+                              }
+                            }}
+                          >
+                            <span className="mail-bg">
+                              <ExternalLink
+                                size={20}
+                                className="mail-icon"
+                                color={
+                                  allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
+                                    ? theme.activeColor
+                                    : `${theme.activeColor}5f`
+                                }
+                              />
+                            </span>
+                          </MessageIconWrap>
+                          <MessageIconWrap
+                            onClick={() => {
+                              if (allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]) {
+                                handleRemove({ item: allLinks?.[index], index });
+                              }
+                            }}
+                          >
+                            <span className="trash-bg">
+                              <Trash2
+                                size={20}
+                                className="mail-icon"
+                                color={
+                                  allLinks?.[index]?.link.length > 0 && !errors?.links?.[index]
+                                    ? theme.red
+                                    : `${theme.red}5f`
+                                }
+                              />
+                            </span>
+                          </MessageIconWrap>
+                        </div>
+                      </Col>
+                    </Row>
+                  ))}
+                </TableWrapper>
+              )}
+            </Form>
 
-        <div>
-          <div
-            onClick={() => {
-              linksAppend({ link: '', description: '', id: uuidv4() });
-            }}
-            className="d-flex mt-1 fs-5 color-primary align-items-center cursor-pointer fw-bold me-2"
-          >
-            <Avatar color="light-primary" icon={<Plus size="14" />} className="me-1" />
-            Add Link
-          </div>
-          <div {...getRootProps({ className: 'dropzone' })}>
-            <input {...getInputProps()} />
-            <div className="d-flex fs-5 fw-bold color-primary align-items-center cursor-pointer mt-1">
-              <Avatar color="light-primary" icon={<Upload size="14" />} className="me-1" />
-              Add Document
+            <div>
+              <div
+                onClick={() => {
+                  if (isEmptyLink) {
+                    toast.error('Please enter a link', {
+                      position: 'top-center', // Position the toast at the top center of the screen
+                    });
+                  } else {
+                    linksAppend({
+                      link: '',
+                      description: '',
+                      id: uuidv4(),
+                      time: DateTime.now().toFormat(`dd MMM yyyy, hh:mm a`),
+                    });
+                  }
+                }}
+                className="d-flex mt-1 fs-5 color-primary align-items-center cursor-pointer fw-bold me-2"
+              >
+                <Avatar color="light-primary" icon={<Plus size="14" />} className="me-1" />
+                Add Link
+              </div>
+              <div {...getRootProps({ className: 'dropzone' })}>
+                <input {...getInputProps()} />
+                <div className="d-flex fs-5 fw-bold color-primary align-items-center cursor-pointer mt-1">
+                  <Avatar color="light-primary" icon={<Upload size="14" />} className="me-1" />
+                  Add Document
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="w-100 mt-2 mb-2 d-flex justify-content-end">
-          <div>
-            {userDataLocal.user_type === userTypes.client && selectedMilestone.status === 'IN_REVIEW' ? (
-              <>
-                <Button
-                  onClick={() => acceptMilestone()}
-                  disabled={isLoading || acceptBtnText !== 'Accept'}
-                  color="primary"
-                  className=" me-2"
-                >
-                  {acceptBtnText}
-                </Button>
-                <Button
-                  onClick={() => setRejectModal(true)}
-                  disabled={isLoading || rejectBtnText !== 'Request change'}
-                  color="primary"
-                  className="d-none"
-                >
-                  {rejectBtnText}
-                </Button>
-              </>
-            ) : isEditable ? (
+            <div className="w-100 mt-2 mb-2 d-flex justify-content-end">
               <Button
-                onClick={() => finalSubmitMilestone()}
+                onClick={() => setSubmitModal(true)}
                 disabled={
                   uploadingFiles.length > 0 ||
                   isLoading ||
@@ -711,77 +635,9 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
               >
                 {submitBtnText}
               </Button>
-            ) : null}
-          </div>
-          <div className="d-none ms-2 d-flex justify-content-end">
-            {userDataLocal.user_type !== userTypes.client && isEditable && (
-              <Button
-                onClick={() => finalSubmitMilestone()}
-                disabled={
-                  uploadingFiles.length > 0 ||
-                  isLoading ||
-                  submitBtnText !== 'Milestone complete' ||
-                  [...documentsFields, ...allLinks].length === 0 ||
-                  !isPaymentDone(selectedMilestone)
-                }
-                color="primary"
-              >
-                {submitBtnText}
-              </Button>
-            )}
-          </div>
-        </div>
-        <div style={{ padding: '2rem' }} className="w-100 white-card medium-shadow">
-          <div className="pb-0">
-            <CardText className="fs-4 mb-0 fw-bold">Team Member(s)</CardText>
-          </div>
-          <Row className="mt-2 w-100">
-            <Col sm="12" md="12" lg="4">
-              <p className="content-header fw-bold mb-25">Team Member</p>
-            </Col>
-            <Col sm="12" md="12" lg="3">
-              <p className="content-header fw-bold mb-25">Designation</p>
-            </Col>
-            <Col sm="12" md="12" lg="2">
-              <p className="content-header fw-bold mb-25">Duration</p>
-            </Col>
-            <Col sm="12" md="12" lg="2">
-              <p className="content-header fw-bold mb-25">Amount</p>
-            </Col>
-          </Row>
-          <div className="w-100">
-            {selectedMilestone?.workers?.map((worker) => (
-              <Row className="mt-1 w-100" key={worker?.role}>
-                <Col sm="12" md="12" lg="4">
-                  <div className="d-flex align-items-center">
-                    <Avatar
-                      img={worker?.image_uri?.length > 0 ? worker?.image_uri : defaultAvatar}
-                      imgHeight="32"
-                      imgWidth="32"
-                      className="me-50"
-                    />
-                    {worker?.user_id ? (
-                      <p className="fw-bolder content-description m-0 ms-50">
-                        {worker?.first_name} {worker?.last_name}
-                      </p>
-                    ) : (
-                      <p className="fw-bolder to-be-assigned-text m-0 ms-50">To be assigned</p>
-                    )}
-                  </div>
-                </Col>
-                <Col sm="12" md="12" lg="3">
-                  <p className="fw-bold content-description">{worker?.role}</p>
-                </Col>
-                <Col sm="12" md="12" lg="2">
-                  <p className="fw-bold content-description">{worker?.number_of_weeks} week</p>
-                </Col>
-                <Col sm="12" md="12" lg="2">
-                  <p className="fw-bold content-description">${worker?.amount || 0}</p>
-                </Col>
-              </Row>
-            ))}
-          </div>
-        </div>
+            </div>
+          </section>
+        )}
       </Card>
     </div>
   );
@@ -789,7 +645,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
 
 MilestoneDetailsTab.propTypes = {
   selectedMilestone: Proptypes.object.isRequired,
-  // fetchProjectMilestones: Proptypes.func.isRequired,
+  fetchProjectMilestones: Proptypes.func.isRequired,
   milestonesData: Proptypes.object.isRequired,
   setSelectedMilestoneIndex: Proptypes.func.isRequired,
 };

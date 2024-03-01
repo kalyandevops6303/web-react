@@ -1,6 +1,18 @@
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 
+const ArtifactsModalWrap = styled.div`
+  max-height: 5rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  .truncated-filename {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
 const AcceptModalWrapper = styled.div`
   .object-fit-contain {
     object-fit: contain;
@@ -248,4 +260,5 @@ export {
   PrivacyPolicyModalWrapper,
   TerminateModalWrapper,
   RelistModalWrapper,
+  ArtifactsModalWrap,
 };
