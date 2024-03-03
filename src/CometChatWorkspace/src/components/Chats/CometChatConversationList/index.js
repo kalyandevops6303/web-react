@@ -4,15 +4,15 @@ import React from 'react';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { CometChat } from '@cometchat-pro/chat';
-import upperArrow from '../../../../../assets/images/chat/upperArrow.png';
-import lowerArrow from '../../../../../assets/images/chat/lowerArrow.png';
-import createIcon from '../../../../../assets/images/chat/createIcon.png';
+import upperArrow from './resources/upperArrow.png';
+import lowerArrow from './resources/lowerArrow.png';
+import createIcon from './resources/createIcon.png';
+
 import { ConversationListManager } from './controller';
 import { CometChatAvatar, CometChatBadgeCount } from '../../Shared';
 import { CometChatConfirmDialog, CometChatToastNotification } from '../../Shared';
 import { CometChatCreateGroup } from '../../Groups';
 import { CometChatConversationListItem } from '../';
-import profile_image from '../../../../../assets/images/chat/Avatar.png';
 import { CometChatContextProvider, CometChatContext } from '../../../util/CometChatContext';
 import * as enums from '../../../util/enums.js';
 import { UIKitSettings } from '../../../util/UIKitSettings';
@@ -41,8 +41,10 @@ import {
   chatCategoryContainer,
   thumbnailStyle,
   unReadMessageCountAddImageDiv,
+  chatsSearchCrossIcon,
 } from './style';
 
+import searchIcon from './resources/search-icon.png';
 import navigateIcon from './resources/back.svg';
 import { CometChatUserList } from '../../Users';
 
@@ -72,11 +74,13 @@ class CometChatConversationList extends React.Component {
       groupMessageCount: 0,
       decoratorMessage: Translator.translate('LOADING', props.lang),
       conversationToBeDeleted: null,
+      showSearchCross: false,
     };
 
     this.contextProviderRef = React.createRef();
     this.chatListRef = React.createRef();
     this.toastRef = React.createRef();
+    this.searchInputRef = React.createRef();
 
     CometChat.getLoggedinUser()
       .then((user) => (this.loggedInUser = user))
@@ -906,7 +910,19 @@ class CometChatConversationList extends React.Component {
     let conversations = [...this.state.conversationlist];
     this.setState({
       decoratorMessage: Translator.translate('LOADING', this.props.lang),
+      showDirectChat: true,
+      showProjectChat: true,
+      showGroupChat: true,
     });
+    if (e.target.value !== '') {
+      this.setState({
+        showSearchCross: true,
+      });
+    } else {
+      this.setState({
+        showSearchCross: false,
+      });
+    }
     setTimeout(() => {
       const filteredConversations = conversations.filter((conversation) =>
         conversation.conversationWith.name.toLowerCase().includes(e.target.value.toLowerCase()),
@@ -1023,25 +1039,26 @@ class CometChatConversationList extends React.Component {
   };
 
   onDeleteConfirm = (e) => {
-    const optionSelected = e.target.value;
-
     this.setState({ showConfirmDialog: false });
-    if (optionSelected === 'yes') {
-      const conversation = this.state.conversationToBeDeleted;
-      const conversationWith =
-        conversation.conversationType === CometChat.RECEIVER_TYPE.GROUP
-          ? conversation?.conversationWith?.guid
-          : conversation?.conversationWith?.uid;
-      CometChat.deleteConversation(conversationWith, conversation.conversationType)
-        .then((deletedConversation) => {
+    const conversation = this.state.conversationToBeDeleted;
+    // const conversationWith =
+    //   conversation.conversationType === CometChat.RECEIVER_TYPE.GROUP
+    //     ? conversation?.conversationWith?.guid
+    //     : conversation?.conversationWith?.uid;
+    if (conversation.conversationType === CometChat.RECEIVER_TYPE.GROUP) {
+      // delete the group
+      CometChat.deleteGroup(conversation?.conversationWith?.guid)
+        .then(() => {
           this.conversationDeleted(conversation);
         })
         .catch((error) => this.toastRef.setError('SOMETHING_WRONG'));
     } else {
-      this.setState({
-        showConfirmDialog: false,
-        conversationToBeDeleted: null,
-      });
+      // delete the personal convo
+      CometChat.deleteConversation(conversation?.conversationWith?.uid, conversation.conversationType)
+        .then((deletedConversation) => {
+          this.conversationDeleted(conversation);
+        })
+        .catch((error) => this.toastRef.setError('SOMETHING_WRONG'));
     }
   };
 
@@ -1068,6 +1085,16 @@ class CometChatConversationList extends React.Component {
         conversationToBeDeleted: null,
       });
     }
+  };
+
+  clearSearchInput = () => {
+    this.searchInputRef.current.value = '';
+    this.searchConversation({ target: this.searchInputRef.current });
+    this.setState({
+      showDirectChat: true,
+      showProjectChat: false,
+      showGroupChat: false,
+    });
   };
 
   createGroupHandler = (flag) => {
@@ -1202,7 +1229,20 @@ class CometChatConversationList extends React.Component {
       showConfirmDialog = (
         <CometChatConfirmDialog
           {...this.props}
-          onClick={this.onDeleteConfirm}
+          // type={'member'}
+          title={
+            this.state.conversationToBeDeleted.conversationType === CometChat.RECEIVER_TYPE.GROUP
+              ? 'Delete Group'
+              : 'Delete Chat'
+          }
+          description={`Are you sure you want to delete the ${
+            this.state.conversationToBeDeleted.conversationType === CometChat.RECEIVER_TYPE.GROUP ? 'group' : 'chat'
+          } permanently?`}
+          note="The complete chat data including the attachments will be lost"
+          onConfirm={this.onDeleteConfirm}
+          onCancel={() => {
+            this.setState({ showConfirmDialog: false, conversationToBeDeleted: null });
+          }}
           message={Translator.translate('DELETE_CONFIRM', this.getContext().language)}
           confirmButtonText={Translator.translate('DELETE', this.getContext().language)}
           cancelButtonText={Translator.translate('CANCEL', this.getContext().language)}
@@ -1232,14 +1272,26 @@ class CometChatConversationList extends React.Component {
                   {this.loggedInUser !== null ? <CometChatAvatar user={this.loggedInUser} /> : null}
                 </div>
                 {this.state.enableSearchConversation ? (
-                  <div css={chatsHeaderContanier()} className="container px-0">
+                  <div css={chatsHeaderContanier()} className="container">
                     <input
-                      placeholder="Search or start a new chat"
+                      placeholder="Search for a chat"
                       css={chatsHeaderSearch()}
                       onChange={this.searchConversation}
                       className="main"
+                      ref={this.searchInputRef}
                     ></input>
-                    <span css={chatsHeaderSearchIcon()} className="searchicon"></span>
+                    <span css={chatsHeaderSearchIcon()} className="search__icon">
+                      <img src={searchIcon} />
+                    </span>
+                    {this.state.showSearchCross && (
+                      <span
+                        css={chatsSearchCrossIcon()}
+                        className="search__cross__icon"
+                        onClick={this.clearSearchInput}
+                      >
+                        &times;
+                      </span>
+                    )}
                   </div>
                 ) : null}
               </div>
@@ -1256,7 +1308,7 @@ class CometChatConversationList extends React.Component {
                     <p css={chatCategory()}>Direct Chat</p>
                   </div>
                   <div css={unReadMessageCountAddImageDiv()}>
-                    <CometChatBadgeCount count={this.state.dmMessageCount} />
+                    <CometChatBadgeCount mt={'15px'} count={this.state.dmMessageCount} />
                     <img
                       onClick={() => this.setState({ showDirectMessageModal: !this.state.showDirectMessageModal })}
                       css={createIconCss()}
@@ -1282,14 +1334,17 @@ class CometChatConversationList extends React.Component {
                   </div>
                 ) : null}
               </div>
-              <div>
-                <div css={chatCategoryContainer()}>
+              <div className="project__chat__container">
+                <div className="chat__category__container" css={chatCategoryContainer()}>
                   <div
+                    className="chat__category"
                     onClick={() => this.setState({ showProjectChat: !this.state.showProjectChat })}
                     css={arrowImageContainer()}
                   >
                     <img css={upperArrowImage()} src={!this.state.showProjectChat ? upperArrow : lowerArrow} />
-                    <p css={chatCategory()}>Project Chat</p>
+                    <p className="chat__category__name" css={chatCategory()}>
+                      Project Chat
+                    </p>
                   </div>
                   <div>
                     <CometChatBadgeCount mt={'15px'} mr={'60px'} count={this.state.projectMessageCount} />

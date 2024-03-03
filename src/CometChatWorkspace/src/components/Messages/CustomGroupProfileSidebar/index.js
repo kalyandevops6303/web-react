@@ -1,29 +1,32 @@
 import React from 'react';
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import { jsx } from '@emotion/react';
+import { IoPencil } from 'react-icons/io5';
+import { FaCheck } from 'react-icons/fa6';
 import { CometChat } from '@cometchat-pro/chat';
-import closeIcon from '../../../../../assets/images/chat/closeIcon.png';
+import closeIcon from './resources/closeIcon.png';
 import { CometChatBackdrop } from '../../Shared';
+import loadingIcon from './resources/loading.png';
 import {
-  container,
-  closeImg,
-  closeImgDiv,
-  avatarPresenceDiv,
-  chatThumbnailDiv,
-  aboutDiv,
-  aboutHeader,
-  aboutDescription,
-  mediaInfoHeader,
-  optionHeader,
-  labelImage,
-  infoStyle,
-  editBtn,
-  endLine,
-  mediaHeader,
-  mediaList,
-  mediaFile,
-  attachedFilesStyle,
-  eachAttachedFileDiv,
-  groupMemberHeader,
-  createIconStyle,
+  aboutContainerStyle,
+  aboutNameContainerStyle,
+  aboutNameIconStyle,
+  aboutNameStyle,
+  avatarInputStyle,
+  avatarMainWrapperStyle,
+  avatarOverlayStyle,
+  chatThumbnailContainerStyle,
+  chatThumbnailStyle,
+  closeImgContainerStyle,
+  closeImgStyle,
+  containerStyle,
+  endLineStyle,
+  groupProfileBodyStyle,
+  sectionHeaderContainerStyle,
+  sectionHeaderContentStyle,
+  sectionHeaderOptionContainerStyle,
+  sectionHeaderOptionStyle,
 } from './style';
 import PropTypes from 'prop-types';
 import * as enums from '../../../util/enums';
@@ -34,7 +37,7 @@ import pdf from './resources/pdf.png';
 import { theme } from '../../../resources/theme';
 import { CometChatContext } from '../../../util/CometChatContext';
 // import download from "./resources/download.png"
-import createIcon from '../../../../../assets/images/chat/createIcon.png';
+import createIcon from './resources/createIcon.png';
 import { CometChatGroupDetails } from '../../Groups';
 import Translator from '../../../resources/localization/translator';
 import { CometChatSharedMediaView } from '../../Shared/CometChatSharedMediaView';
@@ -68,8 +71,14 @@ class CustomGroupProfileSidebar extends React.Component {
       enableSendingOneOnOneMessage: false,
       enableSendingGroupMessage: false,
       enableHideDeletedMessages: false,
+      isHovered: false,
+      isAvatarLoading: false,
+      groupAvatarSrc: this.props.data.avatar.props.group.icon,
+      isNameEditOn: false,
+      groupName: this.props.data.avatar.props.group.name,
     };
 
+    this.fileInputRef = React.createRef();
     this.contextProviderRef = React.createRef();
     this.composerRef = React.createRef();
     this.messageListRef = React.createRef();
@@ -648,8 +657,8 @@ class CustomGroupProfileSidebar extends React.Component {
   };
 
   /*
-	Updating parent message of threaded conversation, when the message is edited or deleted
-	*/
+  Updating parent message of threaded conversation, when the message is edited or deleted
+  */
   updateParentThreadedMessage = (message, action) => {
     if (this.state.threadmessageview === false || message.id !== this.state.threadmessageparent.id) {
       return false;
@@ -698,8 +707,8 @@ class CustomGroupProfileSidebar extends React.Component {
 
   videoCall = () => {
     /*
-		Direct calling for groups
-		*/
+    Direct calling for groups
+    */
     if (this.getContext().type === CometChat.RECEIVER_TYPE.GROUP) {
       const sessionID =
         this.getContext().type === CometChat.ACTION_TYPE.TYPE_GROUP ? this.getContext().item.guid : null;
@@ -712,8 +721,8 @@ class CustomGroupProfileSidebar extends React.Component {
     }
 
     /*
-		Default calling for one-on-one
-		*/
+    Default calling for one-on-one
+    */
     const { receiverId, receiverType } = this.getReceiverDetails();
     const call = new CometChat.Call(receiverId, CometChat.CALL_TYPE.VIDEO, receiverType);
     CometChat.initiateCall(call)
@@ -1000,80 +1009,212 @@ class CustomGroupProfileSidebar extends React.Component {
       this.composerRef.toggleEmojiPicker();
     }
   };
+  handleMouseEnter = () => {
+    this.setState({ isHovered: true });
+  };
+
+  handleMouseLeave = () => {
+    this.setState({ isHovered: false });
+  };
+
+  // Function to handle file input changes and update the group icon
+
+  handleFileInputChange = async (event) => {
+    const file = event.target.files[0];
+    const { guid } = this.props.data.avatar.props.group;
+    this.setState({ isAvatarLoading: true });
+
+    const baseHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+
+    try {
+      // Step 1: GET the upload URL using the filename from the uploaded file
+      const response = await fetch(`https://test-api.trumio.ai:2443/api/v1/chat/group-icon?filename=${file.name}`, {
+        method: 'GET',
+        headers: {
+          ...baseHeaders,
+          'x-ms-blob-type': 'BlockBlob',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      const { upload_url, file_url } = responseData.data;
+
+      // Step 2: Upload the file to the received upload URL
+      const uploadResponse = await fetch(upload_url, {
+        method: 'PUT',
+        headers: {
+          'x-ms-blob-type': 'BlockBlob',
+          'Content-Type': file.type,
+        },
+        body: file,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error(`Error uploading the file: ${uploadResponse.status} ${uploadResponse.statusText}`);
+      }
+
+      // Step 3: Update the group icon using the received file URL
+      let group = new CometChat.Group(guid);
+      group.setIcon(file_url);
+      CometChat.updateGroup(group).then(
+        (group) => {
+          console.log('Group avatar updated successfully');
+          this.setState({
+            isAvatarLoading: false,
+            groupAvatarSrc: file_url,
+          });
+        },
+        (error) => {
+          console.log('Group avatar update failed', error);
+        },
+      );
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  turnOnNameEdit = () => {
+    this.setState({
+      isNameEditOn: true,
+    });
+  };
+
+  saveName = () => {
+    this.setState({
+      isNameEditOn: false,
+    });
+    const { guid } = this.props.data.avatar.props.group;
+    let group = new CometChat.Group(guid, this.state.groupName);
+    CometChat.updateGroup(group).then(
+      (group) => {
+        console.log('Group name updated successfully');
+      },
+      (error) => {
+        console.log('Group name update failed', error);
+        this.setState({
+          isNameEditOn: true,
+        });
+      },
+    );
+  };
 
   render() {
-    const attachedFiles = [
-      { name: 'Vendors', fileType: file },
-      { name: 'Invoice.pdf', fileType: pdf },
-    ];
+    // console.log(this.props.data)
     return (
       <React.Fragment>
-        <CometChatBackdrop style={{ zIndex: -1 }} show={true} clicked={this.props.closePopup} />
-        <div style={container()}>
-          <div style={closeImgDiv()}>
-            <img onClick={() => this.props.closePopup()} style={closeImg()} src={closeIcon} />
+        {/* <CometChatBackdrop style={{ zIndex: -1 }} show={true} clicked={this.props.closePopup} /> */}
+        <div className="group__profile__sidebar" css={containerStyle()}>
+          <div css={closeImgContainerStyle()}>
+            <img onClick={() => this.props.closePopup()} css={closeImgStyle()} src={closeIcon} />
           </div>
-          <div style={avatarPresenceDiv()}>
-            <div style={chatThumbnailDiv()} className="chat__thumbnail">
-              {this.props.data.avatar}
-              {/* {this.props.data.presence} */}
-              <a style={editBtn()} href="#">
-                Edit
-              </a>
-            </div>
-          </div>
-          <div style={aboutDiv()}>
-            <p style={aboutHeader()}>GROUP NAME</p>
-            <p style={aboutDescription()}>{this.props.data.avatar.props.group.name}</p>
-          </div>
-          <hr style={endLine()} />
-
-          <div>
-            <CometChatSharedMediaView
-              containerHeight="225px"
-              theme={this.props.theme}
-              lang={this.context.language}
-              // lang={this.context.language}
-            />
-            {/* <div style={mediaHeader()}>
-							<p style={mediaInfoHeader()}>MEDIA</p>
-							<p><a style={editBtn()} href="#">View All</a></p>
-						</div>
-						<div style={mediaList()}>
-							{[1,2,3,4].map(data=>
-							<div>
-								<img style={mediaFile()} src={dummyMedia} />
-							</div>)}
-						</div> */}
-          </div>
-          <hr style={endLine()} />
-          {/* <div >
-						<p style={optionHeader()}>ATTACHED FILE</p>
-						{attachedFiles.map(data=>
-						<div style={eachAttachedFileDiv()}>
-							<label style={labelImage()}><img style={attachedFilesStyle()} src={data.fileType} /> <span style={infoStyle()}>{data.name}</span></label>
-							<img style={attachedFilesStyle()} src={download}/>
-						</div>
-						)}
-					</div> */}
-          {/* <hr style={endLine()}/> */}
-          <div>
-            <div style={groupMemberHeader()}>
-              <p style={optionHeader()}>GROUP MEMBER</p>
-              <p style={optionHeader()}>
+          <div className="custom__group__profile__body" css={groupProfileBodyStyle()}>
+            <div className="avatar__container" css={avatarMainWrapperStyle()}>
+              <div
+                css={chatThumbnailContainerStyle()}
+                className="chat__thumbnail"
+                onMouseEnter={this.handleMouseEnter}
+                onMouseLeave={this.handleMouseLeave}
+                onClick={() => this.fileInputRef.current.click()}
+              >
                 <img
-                  onClick={() => this.setState({ addMember: !this.state.addMember })}
-                  style={createIconStyle()}
-                  src={createIcon}
+                  css={chatThumbnailStyle()}
+                  src={this.state.isAvatarLoading ? loadingIcon : this.state.groupAvatarSrc}
+                  alt="Group Icon"
                 />
-              </p>
+                {this.state.isHovered && <div css={avatarOverlayStyle()}>CHANGE GROUP PHOTO</div>}
+
+                {/* Hidden file input element */}
+                <input
+                  type="file"
+                  css={avatarInputStyle()}
+                  ref={this.fileInputRef}
+                  onChange={this.handleFileInputChange}
+                />
+              </div>
             </div>
-            <CometChatGroupDetails
-              lang={this.props.lang}
-              addMember={this.state.addMember}
-              setAddMember={() => this.setState({ addMember: false })}
-              actionGenerated={this.actionHandler}
-            />
+
+            <div className="about__group" css={aboutContainerStyle()}>
+              <div className="about__header__container" css={sectionHeaderContainerStyle()}>
+                <p className="about__header" css={sectionHeaderContentStyle()}>
+                  GROUP NAME
+                </p>
+              </div>
+              <div className="about__name__container" css={aboutNameContainerStyle()}>
+                {/* <p className="about__content" css={aboutDescriptionStyle()}>
+                  {this.props.data.avatar.props.group.name}
+                </p> */}
+                <input
+                  className="about__name"
+                  css={aboutNameStyle()}
+                  defaultValue={this.state.groupName}
+                  disabled={!this.state.isNameEditOn}
+                  onChange={(e) => {
+                    this.setState({
+                      groupName: e.target.value,
+                    });
+                  }}
+                />
+
+                {this.state.isNameEditOn ? (
+                  <FaCheck
+                    className="about__name__icon"
+                    css={aboutNameIconStyle()}
+                    color="#0185E4"
+                    onClick={this.saveName}
+                  />
+                ) : (
+                  <IoPencil
+                    className="about__name__icon"
+                    css={aboutNameIconStyle()}
+                    color="#0185E4"
+                    onClick={this.turnOnNameEdit}
+                  />
+                )}
+              </div>
+            </div>
+
+            <hr css={endLineStyle()} />
+
+            <div className="group__shared__media">
+              <CometChatSharedMediaView
+                containerHeight="225px"
+                theme={this.props.theme}
+                lang={this.context.language}
+                // lang={this.context.language}
+              />
+            </div>
+
+            <hr css={endLineStyle()} />
+
+            <div className="group__member__list">
+              <div className="group__member__list__header" css={sectionHeaderContainerStyle()}>
+                <p className="header__content" css={sectionHeaderContentStyle()}>
+                  GROUP MEMBER
+                </p>
+                <p className="header__options__container" css={sectionHeaderOptionContainerStyle()}>
+                  <img
+                    className="header__option"
+                    onClick={() => this.setState({ addMember: !this.state.addMember })}
+                    css={sectionHeaderOptionStyle()}
+                    src={createIcon}
+                  />
+                </p>
+              </div>
+              <CometChatGroupDetails
+                lang={this.props.lang}
+                addMember={this.state.addMember}
+                setAddMember={() => this.setState({ addMember: false })}
+                actionGenerated={this.actionHandler}
+                closePopup={this.props.closePopup}
+              />
+            </div>
           </div>
         </div>
       </React.Fragment>

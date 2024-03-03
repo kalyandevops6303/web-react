@@ -13,9 +13,9 @@ const Chat = () => {
   return (
     <TrumioChat
       style={{
-        width: '100vw',
+        // width: '100vw',
         height: 'calc(100vh - 128px)',
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
       }}
       authToken={authToken}
       targetId={location?.state?.targetId || null}

@@ -1,34 +1,54 @@
 export const modalWrapperStyle = (context) => {
   return {
-    position: 'absolute',
     // width:"280px",
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'column',
     zIndex: 100,
     backgroundColor: 'white',
-    height: '100%',
     borderRadius: '5px',
+    height: '100%',
+    width: '100%',
   };
 };
 
 export const closeBtn = (img, context) => {
   return {
-    height: '20px',
-    width: '20px',
-    cursor: 'pointer',
-    margin: '5px 5px 0px 0px',
+    '&&': {
+      height: '20px',
+      width: '20px',
+      margin: '5px 5px 0px 0px',
+      cursor: 'pointer',
+    },
   };
 };
 export const closeImgDiv = () => {
   return {
     textAlign: 'right',
+    padding: '14px 14px 0 0',
   };
 };
 export const modalBodyStyle = () => {
   return {
-    padding: '0px 16px 10px 24px',
-    // overflowY:"auto",
+    // padding: '0 0 16px 0',
     position: 'relative',
-    height: '100%',
-    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    overflowY: 'auto',
+    '::-webkit-scrollbar': {
+      width: '4px',
+      height: '4px',
+    },
+    '::-webkit-scrollbar-track': {
+      background: '#ffffff00',
+    },
+    '::-webkit-scrollbar-thumb': {
+      background: '#ccc',
+      '&:hover': {
+        background: '#aaa',
+      },
+    },
   };
 };
 
@@ -44,11 +64,12 @@ export const modalErrorStyle = (context) => {
 
 export const modalTableStyle = (props) => {
   return {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
     borderCollapse: 'collapse',
     margin: '0',
     padding: '0',
-    width: '100%',
-    height: '94%',
     tr: {
       display: 'table',
       width: '100%',
@@ -60,10 +81,11 @@ export const modalTableStyle = (props) => {
 export const tableCaptionStyle = () => {
   return {
     color: '#5E5873',
-    fontSize: '14px',
-    marginBottom: '15px',
-    fontWeight: 'bold',
-    textAlign: 'left',
+    fontSize: '12px',
+    fontWeight: '500',
+    lineHeight: '23px',
+    letterSpacing: '0.6px',
+    padding: '0 25px',
   };
 };
 
@@ -71,24 +93,9 @@ export const tableBodyStyle = () => {
   return {
     // height: "calc(100% - 40px)",
     overflow: 'hidden',
-    display: 'block',
-    tr: {
-      td: {
-        padding: '8px 0',
-        fontSize: '14px',
-        input: {
-          width: '100%',
-          border: 'none',
-          padding: '8px 16px',
-          fontSize: '14px',
-          outline: 'none',
-        },
-        select: {
-          outline: 'none',
-          padding: '8px 16px',
-        },
-      },
-    },
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '0 25px',
   };
 };
 
@@ -104,25 +111,27 @@ export const tableFootStyle = (context, state, img) => {
   const textMargin = state.creatingGroup ? { marginRight: '24px' } : {};
 
   return {
-    display: 'inline-block',
-    button: {
-      cursor: 'pointer',
-      padding: '8px 16px',
-      backgroundColor: `${context.theme.primaryColor}`,
-      borderRadius: '5px',
-      color: `${context.theme.color.white}`,
-      fontSize: '14px',
-      outline: '0',
-      border: '0',
-      ...loadingState,
-      span: {
-        ...textMargin,
+    '&&': {
+      display: 'inline-block',
+      button: {
+        cursor: 'pointer',
+        padding: '8px 16px',
+        backgroundColor: `${context.theme.primaryColor}`,
+        borderRadius: '5px',
+        color: `${context.theme.color.white}`,
+        fontSize: '14px',
+        outline: '0',
+        border: '0',
+        ...loadingState,
+        span: {
+          ...textMargin,
+        },
       },
-    },
-    tr: {
-      border: 'none',
-      td: {
-        textAlign: 'center',
+      tr: {
+        border: 'none',
+        td: {
+          textAlign: 'center',
+        },
       },
     },
   };
@@ -130,59 +139,73 @@ export const tableFootStyle = (context, state, img) => {
 
 export const inputStyle = (context) => {
   return {
-    display: 'block',
-    width: '100%',
-    border: '1px solid #D8D6DE !important',
-    // boxShadow: "rgba(20, 20, 20, 0.04) 0 0 0 1px inset",
-    borderRadius: '8px',
-    backgroundColor: `white`,
-    color: '#5E5873',
-    fontSize: '14px',
-    '::placeholder': {
-      color: '#B9B9C3',
-      fontSize: '14px',
+    '&&': {
+      outline: 'none',
+      borderColor: '#D8D6DE',
+      borderStyle: 'solid',
+      borderWidth: '1px',
+      margin: '10px 0',
+      borderRadius: '6px',
+      backgroundColor: `white`,
+      color: '#5E5873',
+      fontWeight: '400',
+      padding: '8px 14px',
+      fontSize: '12px',
+      '::placeholder': {
+        color: '#B9B9C3',
+        fontSize: '12px',
+        fontWeight: '400',
+      },
     },
   };
 };
 export const createGroupButton = (context) => {
   return {
-    backgroundColor: '#0065C1',
-    border: '0px',
-    color: 'white',
-    height: '30px',
-    borderRadius: '5px',
-    marginLeft: '20px',
-    cursor: 'pointer',
+    '&&': {
+      backgroundColor: '#0065C1',
+      border: '0px',
+      color: 'white',
+      fontSize: '14px',
+      fontWeight: 500,
+      letterSpacing: '0.4px',
+      borderRadius: '5px',
+      marginLeft: '20px',
+      cursor: 'pointer',
+      padding: '10px 22px',
+    },
   };
 };
 export const closeCreateGroupPopupButton = (context) => {
   return {
-    backgroundColor: 'white',
-    border: '0px',
-    color: '#0185E4',
-    height: '30px',
-    borderRadius: '5px',
-    marginLeft: '50px',
-    cursor: 'pointer',
+    '&&': {
+      backgroundColor: 'white',
+      border: 'none',
+      color: '#0185E4',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: 500,
+      letterSpacing: '0.4px',
+    },
   };
 };
 export const btnDiv = (context) => {
   return {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    paddingLeft: '16px',
-    paddingRight: '16px',
-    marginTop: '-20px',
+    '&&': {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      padding: '10px 25px 10px 25px',
+    },
   };
 };
 export const endLine = (props) => {
   return {
-    border: 0,
-    clear: 'both',
-    display: 'block',
-    width: '100%',
-    backgroundColor: '#D8D6DE',
-    height: '1px',
+    '&&': {
+      margin: '16px 25px',
+      border: 0,
+      backgroundColor: '#D8D6DE',
+      height: '1px',
+    },
   };
 };
 export const groupIconImg = (props) => {
@@ -193,34 +216,73 @@ export const groupIconImg = (props) => {
     cursor: 'pointer',
   };
 };
+
+export const avatarInputStyle = () => {
+  return {
+    display: 'none',
+  };
+};
+
 export const uploadIconImg = (props) => {
   return {
     position: 'relative',
     height: '25px',
     width: '25px',
     borderRadius: '50%',
-    marginLeft: '-27px',
-    marginTop: '45px',
+    left: '-32px',
+    top: '48px',
     cursor: 'pointer',
   };
 };
-export const groupIconImgContainer = (props) => {
+export const groupIconContainer = (props) => {
   return {
-    display: 'flex !important',
+    display: 'flex',
     justifyContent: 'center',
+    padding: '16px',
   };
 };
+
+export const groupIconStyle = (props) => {
+  return {
+    display: 'flex',
+  };
+};
+
 export const groupNameHeader = (props) => {
   return {
-    marginTop: '-30px',
     color: '#B9B9C3',
     fontSize: '12px',
+    fontWeight: '500',
+    lineHeight: '23px',
+    letterSpacing: '0.6px',
+    textTransform: 'uppercase',
   };
 };
 export const selectMemeberHeader = (props) => {
   return {
-    marginTop: '-10px',
-    color: '#B9B9C3',
-    fontSize: '12px',
+    '&&': {
+      marginTop: '-10px',
+      color: '#B9B9C3',
+      fontSize: '12px',
+    },
+  };
+};
+
+export const lowerBodyStyle = (props) => {
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+  };
+};
+
+export const footerStyle = () => {
+  return {
+    '&&': {
+      position: 'sticky',
+      bottom: 0,
+      backgroundColor: 'white',
+      padding: '0 0 16px 0',
+    },
   };
 };
