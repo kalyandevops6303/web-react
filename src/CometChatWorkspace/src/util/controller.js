@@ -1,13 +1,11 @@
-/* eslint-disable no-shadow */
 import { CometChat } from '@cometchat-pro/chat';
 
 export class CometChatManager {
   loggedInUser;
-
   isUserLoggedIn;
 
   getLoggedInUser() {
-    const timerCounter = 10000;
+    let timerCounter = 10000;
     let timer = 0;
 
     return new Promise((resolve, reject) => {
@@ -25,6 +23,7 @@ export class CometChatManager {
             resolve(user);
           },
           (error) => {
+            console.log(error);
             reject(error);
           },
         );
@@ -35,7 +34,7 @@ export class CometChatManager {
   }
 
   static blockUsers = (userList) => {
-    const promise = new Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
       CometChat.blockUsers(userList).then(
         (list) => resolve(list),
         (error) => reject(error),
@@ -46,7 +45,7 @@ export class CometChatManager {
   };
 
   static unblockUsers = (userList) => {
-    const promise = new Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
       CometChat.unblockUsers(userList).then(
         (list) => resolve(list),
         (error) => reject(error),
@@ -57,7 +56,7 @@ export class CometChatManager {
   };
 
   static call = (receiverID, receiverType, callType) => {
-    const promise = new Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
       const call = new CometChat.Call(receiverID, callType, receiverType);
       CometChat.initiateCall(call).then(
         (call) => resolve(call),
@@ -69,7 +68,7 @@ export class CometChatManager {
   };
 
   static audioCall = (receiverID, receiverType, callType) => {
-    const promise = new Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
       const call = new CometChat.Call(receiverID, callType, receiverType);
       CometChat.initiateCall(call).then(
         (call) => resolve(call),
@@ -81,7 +80,7 @@ export class CometChatManager {
   };
 
   static videoCall = (receiverID, receiverType, callType) => {
-    const promise = new Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
       const call = new CometChat.Call(receiverID, callType, receiverType);
       CometChat.initiateCall(call).then(
         (call) => resolve(call),
@@ -93,7 +92,7 @@ export class CometChatManager {
   };
 
   static acceptCall = (sessionId) => {
-    const promise = new Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
       CometChat.acceptCall(sessionId).then(
         (call) => resolve(call),
         (error) => reject(error),
@@ -104,7 +103,7 @@ export class CometChatManager {
   };
 
   static rejectCall = (sessionId, rejectStatus) => {
-    const promise = new Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
       CometChat.rejectCall(sessionId, rejectStatus).then(
         (call) => resolve(call),
         (error) => reject(error),

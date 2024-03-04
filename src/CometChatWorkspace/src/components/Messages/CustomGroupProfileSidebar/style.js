@@ -1,196 +1,196 @@
-export const container = () => {
-	return {
-		backgroundColor:"white",
-		height:"100%",
-		width:"100%",
-		zIndex:10,
-		padding:"15px",
-		borderRadius:"5px",
-	}
-};
-export const closeImg=()=>
-{
-	return {
-		height:"20px",
-		width:"20px",
-		cursor:"pointer"
-	}
-}
-export const closeImgDiv=()=>
-{
-	return {
-		textAlign:"right"
-	}
-}
-export const editBtn=()=>
-{
-	return {
-		color:"#0185E4",
-	}
-}
-export const avatarPresenceDiv=()=>
-{
-	return {
-		display:"flex",
-		justifyContent:"center",
-		textAlign:"center",
-		marginTop:"-20px"
-	}
-}
-export const chatThumbnailDiv=()=>
-{
-	return {
-		width:"80px",
-		height:"80px",
-		borderRadius:"50%",
-	}
-
-}
-export const profileNameDiv=()=>
-{
-	return {
-		textAlign:"center"
-	}
-
-}
-export const groupMemberHeader=()=>
-{
-	return {
-		display:"flex",
-		justifyContent:"space-between",
-		lineHeight: "5px"
-	}
-
-}
-export const profileName=()=>
-{
-	return {
-		color:"#5E5873",
-		lineHeight:"10px",
-		marginTop:"20px",
-		fontWeight:500
-	}
-
-}
-export const profileDesignation=()=>
-{
-	return {
-		color:"#6E6B7B",
-		lineHeight:"0px",
-		fontWeight:400,
-		fontSize:"14px",
-	}
-
-}
-export const aboutDiv=()=>
-{
-	return {
-		marginTop:"35px"
-	}
-}
-export const aboutHeader=()=>
-{
-	return {
-		color:"#B9B9C3",
-		fontWeight:500,
-		fontSize:"12px",
-		lineHeight:"0px"
-	}
-}
-export const aboutDescription=()=>
-{
-	return {
-		color:"#6E6B7B",
-		fontSize:"14px",
-		marginBottom:"18px"
-	}
-}
-export const endLine = (props) => {
-	return {
-		border: 0,
-		clear:"both",
-		display:"block",
-		width: "100%",               
-		backgroundColor:"#D8D6DE",
-		height: "1px"
-	};
+export const containerStyle = () => {
+  return {
+    '&&': {
+      position: 'relative',
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundColor: '#fff',
+      height: '100%',
+      width: '100%',
+      zIndex: 10,
+      borderRadius: '5px',
+      overflowY: 'scroll',
+      '::-webkit-scrollbar': {
+        width: '4px',
+        height: '4px',
+      },
+      '::-webkit-scrollbar-track': {
+        background: '#ffffff00',
+      },
+      '::-webkit-scrollbar-thumb': {
+        background: '#ccc',
+        '&:hover': {
+          background: '#aaa',
+        },
+      },
+    },
+  };
 };
 
-export const mediaHeader=()=>
-{
-	return {
-		fontSize:"14px",
-		display:"flex",
-		justifyContent:"space-between",
-		lineHeight: "5px"
-	}
-}
-export const mediaList=()=>
-{
-	return {
-		display:"flex",
-		flexDirection:"row",
-		justifyContent:"flex-start",
-		columnGap:"20px"
-	}
-}
-export const mediaFile=()=>
-{
-	return {
-		height:"50px",
-		width:"50px"
-	}
-}
-export const mediaInfoHeader=()=>
-{
-	return {
-		color:"#B9B9C3",
-		fontWeight:500,
-		fontSize:"12px"
-	}
-}
-export const labelImage=()=>
-{
-	return {
-		display:"block",
-		marginBottom:"10px",
-	}
-}
-export const attachedFilesStyle=()=>
-{
-	return {
-		height:"20px",
-		width:"20px"
-	}
-}
-export const createIconStyle=()=>
-{
-	return {
-		height:"20px",
-		width:"20px",
-		marginTop:"-7px"
-	}
-}
+export const closeImgStyle = () => {
+  return {
+    height: '18px',
+    width: '18px',
+    cursor: 'pointer',
+  };
+};
 
-export const eachAttachedFileDiv=()=>
-{
-	return {
-		display:"flex",
-		justifyContent:"space-between"
-	}
-}
-export const infoStyle=()=>
-{
-	return {
-		color:"#6E6B7B",
-		marginLeft:"10px"
-	}
-}
-export const optionHeader=()=>
-{
-	return {
-		color:"#B9B9C3",
-		fontWeight:500,
-		fontSize:"12px"
-	}
-}
+export const closeImgContainerStyle = () => {
+  return {
+    textAlign: 'right',
+    padding: '13px',
+  };
+};
+
+export const groupProfileBodyStyle = () => {
+  return {
+    padding: '25px',
+  };
+};
+
+export const avatarMainWrapperStyle = () => {
+  return {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+};
+export const chatThumbnailContainerStyle = () => {
+  return {
+    '&&': {
+      width: '80px',
+      height: '80px',
+      borderRadius: '50%',
+      cursor: 'pointer',
+      position: 'relative',
+      overflow: 'hidden',
+    },
+  };
+};
+
+export const chatThumbnailStyle = () => {
+  return {
+    '&&': {
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      objectFit: 'cover',
+      overflow: 'hidden',
+    },
+  };
+};
+
+export const avatarOverlayStyle = () => {
+  return {
+    '&&': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      height: '100%',
+      width: '100%',
+      padding: '2px',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      color: 'white',
+      fontSize: '10px',
+      display: 'flex',
+      alignItems: 'center',
+      textAlign: 'center',
+    },
+  };
+};
+
+export const avatarInputStyle = () => {
+  return {
+    display: 'none',
+  };
+};
+
+export const sectionHeaderContainerStyle = () => {
+  return {
+    '&&': {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+  };
+};
+
+export const sectionHeaderContentStyle = () => {
+  return {
+    '&&': {
+      color: '#B9B9C3',
+      fontWeight: 500,
+      fontSize: '12px',
+      lineHeight: '23px',
+      letterSpacing: '0.6px',
+      textTransform: 'uppercase',
+      margin: 0,
+    },
+  };
+};
+
+export const sectionHeaderOptionContainerStyle = () => {
+  return {};
+};
+
+export const sectionHeaderOptionStyle = () => {
+  return {
+    '&&': {
+      width: '24px',
+      height: '24px',
+      objectFit: 'cover',
+      cursor: 'pointer',
+    },
+  };
+};
+
+export const aboutContainerStyle = () => {
+  return {
+    '&&': {
+      margin: '20px 0',
+    },
+  };
+};
+
+export const aboutNameContainerStyle = () => {
+  return {
+    '&&': {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      margin: 0,
+    },
+  };
+};
+
+export const aboutNameStyle = () => {
+  return {
+    '&&': {
+      color: '#5E5873',
+      fontSize: '15px',
+      fontWeight: 500,
+      lineHeight: '24px',
+      border: 'none',
+      outline: 'none',
+      flexGrow: 1,
+      backgroundColor: 'transparent',
+    },
+  };
+};
+
+export const aboutNameIconStyle = () => {
+  return {
+    cursor: 'pointer',
+  };
+};
+
+export const endLineStyle = (props) => {
+  return {
+    border: 'none',
+    width: '100%',
+    backgroundColor: '#D8D6DE',
+    height: '1px',
+    margin: '14px 0',
+  };
+};

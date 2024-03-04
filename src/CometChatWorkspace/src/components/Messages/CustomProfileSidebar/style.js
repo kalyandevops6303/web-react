@@ -1,132 +1,166 @@
-export const container = () => {
-	return {
-		backgroundColor:"white",
-		height:"100%",
-		width:"100%",
-		zIndex:10,
-		padding:"15px",
-		borderRadius:"5px"
-	}
+export const containerStyle = () => {
+  return {
+    backgroundColor: 'white',
+    height: '100%',
+    width: '100%',
+    zIndex: 100,
+    borderRadius: '5px',
+  };
 };
-export const closeImg=()=>
-{
-	return {
-		height:"20px",
-		width:"20px",
-		cursor:"pointer"
-	}
-}
-export const closeImgDiv=()=>
-{
-	return {
-		textAlign:"right"
-	}
-}
-export const avatarPresenceDiv=()=>
-{
-	return {
-		display:"flex",
-		justifyContent:"center",
-		textAlign:"center",
-		marginTop:"10px"
-	}
-}
-export const chatThumbnailDiv=()=>
-{
-	return {
-		width:"80px",
-		height:"80px",
-		borderRadius:"50%"
-	}
 
-}
-export const profileNameDiv=()=>
-{
-	return {
-		textAlign:"center"
-	}
+export const bodyStyle = () => {
+  return {
+    padding: '0 23px',
+  };
+};
 
-}
-export const profileName=()=>
-{
-	return {
-		color:"#5E5873",
-		lineHeight:"10px",
-		marginTop:"20px",
-		fontWeight:500
-	}
+export const closeImgStyle = () => {
+  return {
+    height: '18px',
+    width: '18px',
+    cursor: 'pointer',
+  };
+};
+export const closeImgContainerStyle = () => {
+  return {
+    textAlign: 'right',
+    padding: '13px',
+  };
+};
+export const mainInfoStyle = () => {
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: '10px',
+  };
+};
+export const chatThumbnailContainerStyle = () => {
+  return {
+    width: '80px',
+    height: '80px',
+    borderRadius: '50%',
+    alignSelf: 'center',
+  };
+};
+export const profileNameContainerStyle = () => {
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  };
+};
+export const profileNameStyle = () => {
+  return {
+    color: '#5E5873',
+    fontSize: '18px',
+    fontWeight: 500,
+    marginTop: '15px',
+  };
+};
+export const profileDesignationStyle = () => {
+  return {
+    color: '#6E6B7B',
+    fontWeight: 400,
+    fontSize: '14px',
+    lineHeight: '21px',
+  };
+};
+export const aboutContainerStyle = () => {
+  return {
+    marginTop: '40px',
+  };
+};
+export const sectionHeaderStyle = () => {
+  return {
+    color: '#B9B9C3',
+    fontWeight: 500,
+    fontSize: '12px',
+    lineHeight: '23px',
+    letterSpacing: '0.6px',
+    textTransform: 'uppercase',
+    margin: '4px 0',
+  };
+};
+export const aboutDescriptionStyle = () => {
+  return {
+    color: '#6E6B7B',
+    fontSize: '14px',
+    fontWeight: 400,
+    lineHeight: '21px',
+  };
+};
+export const personalInfoContainerStyle = () => {
+  return {};
+};
 
-}
-export const profileDesignation=()=>
-{
-	return {
-		color:"#6E6B7B",
-		lineHeight:"0px",
-		fontWeight:400,
-		fontSize:"14px"
-	}
+export const emailItemStyle = () => {
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none',
+    margin: '5px 0',
+    ':hover': {
+      textDecoration: 'underline',
+    },
+  };
+};
 
-}
-export const aboutDiv=()=>
-{
-	return {
-		marginTop:"50px"
-	}
-}
-export const aboutHeader=()=>
-{
-	return {
-		color:"#B9B9C3",
-		fontWeight:500,
-		fontSize:"12px"
-	}
-}
-export const aboutDescription=()=>
-{
-	return {
-		color:"#6E6B7B",
-		fontSize:"14px"
-	}
-}
-export const personalInfoDiv=()=>
-{
-	return {
-		marginTop:"30px"
-	}
-}
-export const personalInfoHeader=()=>
-{
-	return {
-		color:"#B9B9C3",
-		fontWeight:500,
-		fontSize:"12px"
-	}
-}
-export const labelImage=()=>
-{
-	return {
-		display:"block",
-		marginBottom:"8px"
-	}
-}
-export const infoStyle=()=>
-{
-	return {
-		color:"#6E6B7B",
-		marginLeft:"10px"
-	}
-}
-export const optionDiv=()=>
-{
-	return {
-		marginTop:"30px"
-	}
-}
-export const optionHeader=()=>
-{
-	return {
-		color:"#B9B9C3",
-		fontWeight:500,
-		fontSize:"12px"
-	}
-}
+export const infoItemStyle = () => {
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    margin: '5px 0',
+  };
+};
+
+export const infoWarnStyle = () => {
+  return {
+    cursor: 'pointer',
+    color: '#EA5455',
+  };
+};
+
+export const warnContentStyle = () => {
+  return {
+    color: '#EA5455',
+  };
+};
+
+export const infoItemIconStyle = () => {
+  return {
+    width: '18px',
+    height: '18px',
+  };
+};
+
+export const infoItemContentStyle = () => {
+  return {
+    color: '#6E6B7B',
+    margin: '0 15px',
+    fontSize: '14px',
+    fontWeight: 400,
+    lineHeight: '21px',
+  };
+};
+
+export const emailItemContentStyle = () => {
+  return {
+    color: '#0185E4',
+  };
+};
+
+export const optionsStyle = () => {
+  return {
+    marginTop: '30px',
+  };
+};
+
+export const endLineStyle = (props) => {
+  return {
+    border: 'none',
+    width: '100%',
+    backgroundColor: '#D8D6DE',
+    height: '1px',
+    margin: '14px 0',
+  };
+};
