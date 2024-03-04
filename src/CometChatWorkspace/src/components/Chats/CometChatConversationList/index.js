@@ -1041,10 +1041,6 @@ class CometChatConversationList extends React.Component {
   onDeleteConfirm = (e) => {
     this.setState({ showConfirmDialog: false });
     const conversation = this.state.conversationToBeDeleted;
-    // const conversationWith =
-    //   conversation.conversationType === CometChat.RECEIVER_TYPE.GROUP
-    //     ? conversation?.conversationWith?.guid
-    //     : conversation?.conversationWith?.uid;
     if (conversation.conversationType === CometChat.RECEIVER_TYPE.GROUP) {
       // delete the group
       CometChat.deleteGroup(conversation?.conversationWith?.guid)

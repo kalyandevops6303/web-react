@@ -1,27 +1,19 @@
 export const messageContainerStyle = () => {
   return {
     alignSelf: 'flex-start',
-    // marginBottom: "16px",
-    // paddingLeft: "16px",
-    // paddingRight: "16px",
     padding: '5px 16px',
     width: '100%',
-    // maxWidth: "65%",
     clear: 'both',
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     flexShrink: '0',
-    // ":hover": {
-    // 	backgroundColor: "rgba(0, 0, 0, 0.1)"
-    // }
   };
 };
 
 export const messageWrapperStyle = () => {
   return {
     width: '100%',
-    // width: "auto",
     flex: '1 1',
     alignSelf: 'flex-start',
     display: 'flex',
@@ -74,7 +66,6 @@ export const nameStyle = (context) => {
     fontSize: '15px',
     fontWeight: '800',
     fontStyle: 'bold',
-    // color: `${context.theme.color.messageText}`,
     color: `${context.userColor || context.theme.color.messageText}`,
     cursor: 'default',
   };
@@ -86,8 +77,6 @@ export const messageTxtContainerStyle = () => {
     flex: '1 1',
     display: 'flex',
     alignSelf: 'flex-start',
-    // boxShadow: "2px 7px 20px -9px rgba(150,170,180,0.5)",
-    // cursor: "default",
   };
 };
 
@@ -95,9 +84,6 @@ export const messageTxtWrapperStyle = (context) => {
   return {
     display: 'inline-block',
     borderRadius: '5px',
-    // background: "#fff",
-    // backgroundColor: `${context.theme.backgroundColor.secondary}`,
-    // padding: "8px 5px",
     padding: '0 5px',
     width: 'auto',
   };
@@ -187,10 +173,8 @@ export const messageTxtStyle = (showVariation, count, context) => {
 
 export const messageInfoWrapperStyle = () => {
   return {
-    // alignSelf: "flex-start",
     padding: '10px 10px',
     display: 'flex',
-    // justifyContent: "flex-end",
     justifyContent: 'space-between',
     alignItems: 'center',
     height: '25px',

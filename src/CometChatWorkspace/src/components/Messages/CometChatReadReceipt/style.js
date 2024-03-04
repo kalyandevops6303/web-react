@@ -8,7 +8,6 @@ export const msgTimestampStyle = (context, props, loggedInUser) => {
     lineHeight: '18px',
     textAlign: 'right',
     textTransform: 'lowercase',
-    // color: `${context.theme.color.search}`,
     color: '#616161',
   };
 };

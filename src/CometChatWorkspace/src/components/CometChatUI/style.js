@@ -8,11 +8,9 @@ export const unifiedStyle = (props) => {
     maxWidth: '1500px',
     marginLeft: 'auto',
     marginRight: 'auto',
-    // padding: '30px 24px 30px 24px',
     boxSizing: 'border-box',
     backgroundColor: '#F8F8F8',
     fontFamily: `${props.theme.fontFamily}`,
-    // border: `1px solid ${props.theme.borderColor.primary}`,
     position: 'relative',
     '*': {
       boxSizing: 'border-box',
@@ -58,7 +56,6 @@ export const unifiedSidebarStyle = (state, props) => {
     display: 'flex',
     flexDirection: 'column',
     '> .contacts, .chats, .groups, .userinfo': {
-      // height: "calc(100% - 64px)",
       height: '100%',
     },
     [`@media ${mq[0]}`]: {

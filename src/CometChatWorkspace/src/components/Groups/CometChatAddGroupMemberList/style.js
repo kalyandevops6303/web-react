@@ -99,8 +99,6 @@ export const modalSearchStyle = () => {
   return {
     border: '1px solid #D8D6DE',
     borderRadius: '5px',
-    // boxShadow: 'rgba(20, 20, 20, 0.04) 0 0 0 1px inset',
-    // backgroundColor: 'rgba(20, 20, 20, 0.04)',
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -118,8 +116,6 @@ export const searchIconStyle = (img, context) => {
 
 export const searchInputStyle = () => {
   return {
-    // width: 'calc(100% - 30px)',
-    // height: '100%',
     padding: '8px 34px 8 14px',
     fontSize: '12px',
     fontWeight: 400,
@@ -128,7 +124,6 @@ export const searchInputStyle = () => {
     border: 'none',
     backgroundColor: 'transparent',
     flexGrow: 1,
-    // color: '#B9B9C3',
   };
 };
 

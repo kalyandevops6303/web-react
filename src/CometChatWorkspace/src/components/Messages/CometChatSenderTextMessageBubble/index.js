@@ -281,31 +281,6 @@ class CometChatSenderTextMessageBubble extends React.Component {
     }
 
     return (
-      // <div
-      // 	css={messageContainerStyle()}
-      // 	className='sender__message__container message__text'
-      // 	onMouseEnter={this.handleMouseHover}
-      // 	onMouseLeave={this.handleMouseHover}
-      // >
-      // 	{toolTipView}
-      // 	<div
-      // 		css={messageWrapperStyle()}
-      // 		className='message__wrapper'
-      // 		ref={this.messageTextRef}
-      // 	>
-      // 		{messageText}
-      // 	</div>
-
-      // 	{messageReactions}
-
-      // 	<div css={messageInfoWrapperStyle()} className='message__info__wrapper'>
-      // 		<CometChatThreadedMessageReplyCount
-      // 			message={this.props.message}
-      // 			actionGenerated={this.props.actionGenerated}
-      // 		/>
-      // 		<CometChatReadReceipt message={this.props.message} />
-      // 	</div>
-      // </div>
       <div
         css={messageContainerStyle()}
         className="sender__message__container message__text"

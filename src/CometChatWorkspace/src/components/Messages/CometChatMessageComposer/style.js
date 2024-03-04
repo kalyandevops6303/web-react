@@ -6,7 +6,6 @@ export const chatComposerStyle = (context) => {
     order: '3',
     position: 'relative',
     flex: 'none',
-    // minHeight: "105px",
   };
 };
 
@@ -66,7 +65,6 @@ export const composerInputStyle = () => {
     position: 'relative',
     zIndex: '2',
     padding: '0',
-    // minHeight: "85px",
   };
 };
 
@@ -87,10 +85,8 @@ export const inputInnerStyle = (props, state, context) => {
     border: `1px solid ${context.theme.borderColor.primary}`,
     backgroundColor: `${context.theme.backgroundColor.white}`,
     display: 'flex',
-    // flexDirection: "column",
     flexDirection: 'row',
     width: '100%',
-    // minHeight: "85px",
     ...borderRadiusVal,
   };
 };

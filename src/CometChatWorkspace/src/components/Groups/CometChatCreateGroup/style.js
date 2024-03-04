@@ -1,6 +1,5 @@
 export const modalWrapperStyle = (context) => {
   return {
-    // width:"280px",
     position: 'absolute',
     display: 'flex',
     flexDirection: 'column',
@@ -30,7 +29,6 @@ export const closeImgDiv = () => {
 };
 export const modalBodyStyle = () => {
   return {
-    // padding: '0 0 16px 0',
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
@@ -91,7 +89,6 @@ export const tableCaptionStyle = () => {
 
 export const tableBodyStyle = () => {
   return {
-    // height: "calc(100% - 40px)",
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',

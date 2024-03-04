@@ -2,7 +2,6 @@ export const listItem = (props) => {
   const selectedState =
     props.selectedConversation && props.selectedConversation.conversationId === props.conversation.conversationId
       ? {
-          // backgroundColor: `${props.theme.backgroundColor.primary}`,
           background: 'linear-gradient(47deg, #2196F3 0%, #84C8FF 100%) !important',
         }
       : {};
@@ -18,7 +17,6 @@ export const listItem = (props) => {
       position: 'relative',
       ...selectedState,
       '&:hover': {
-        // backgroundColor: `${props.theme.backgroundColor.primary}`,
         background: 'linear-gradient(47deg, #2196F3 0%, #84C8FF 100%) !important',
         '.item__details__name , .item__details__last-message, .item__details__timestamp ': {
           color: 'white',
@@ -78,7 +76,6 @@ export const itemNameStyle = (props) => {
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
       lineHeight: '22px',
-      // color: `${props.theme.color.primary}`,
       color: '#5E5873',
     },
   };
@@ -95,7 +92,6 @@ export const itemLastMsgStyle = (props) => {
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
       lineHeight: '20px',
-      // color: `${props.theme.color.helpText}`,
       color: '#B9B9C3',
     },
   };

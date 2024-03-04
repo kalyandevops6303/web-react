@@ -1,7 +1,6 @@
 export const chatListStyle = (context) => {
   return {
     backgroundColor: `${context.theme.backgroundColor.white}`,
-    // background: "url('/images/background-image.png'), lightgray 0px 0px / 100% 100% no-repeat",
     zIndex: '1',
     width: '100%',
     flex: '1 1 0',
@@ -24,8 +23,6 @@ export const listWrapperStyle = () => {
     width: '100%',
     zIndex: '100',
     paddingTop: '16px',
-    // paddingLeft: "5px",
-    // paddingRight: "5px",
     '::-webkit-scrollbar': {
       width: '4px',
       height: '4px',
@@ -62,8 +59,6 @@ export const messageDateStyle = (context) => {
     fontStyle: 'normal',
     fontWeight: '600',
     lineHeight: '18px',
-    // backgroundColor: `${context.theme.backgroundColor.secondary}`,
-    // color: `${context.theme.color.primary}`,
     borderRadius: '10px',
   };
 };

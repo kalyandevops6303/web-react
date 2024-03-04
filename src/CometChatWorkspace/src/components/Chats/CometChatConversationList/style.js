@@ -2,8 +2,8 @@ export const chatsWrapperStyle = (props, theme) => {
   const borderStyle =
     props._parent === ''
       ? {
-          border: `1px solid ${theme.borderColor.primary}`,
-        }
+        border: `1px solid ${theme.borderColor.primary}`,
+      }
       : {};
 
   return {
@@ -72,25 +72,6 @@ export const chatsHeaderSearchIcon = () => {
     top: '13px',
     display: 'flex',
     alignItems: 'center',
-    // height: '12px',
-    // width: '12px',
-    // background: 'transparent',
-    // border: '2px solid #B9B9C3',
-    // marginTop: '2px',
-    // top: '50%',
-    // transform: 'translateY(-50%)',
-    // verticalAlign: 'center',
-    // borderRadius: '100%',
-    // '::after': {
-    //   content: '""',
-    //   position: 'absolute',
-    //   background: '#B9B9C3',
-    //   height: '6px',
-    //   width: '2px',
-    //   bottom: '-5px',
-    //   right: '-3px',
-    //   transform: 'rotate(-45deg)',
-    // },
   };
 };
 
@@ -107,15 +88,6 @@ export const chatsSearchCrossIcon = () => {
   };
 };
 
-// export const chatsProfileImage=()=>
-// {
-// 	return {
-// 		width:"30px",
-// 		height:"30px",
-// 		borderRadius:"50%",
-// 		marginRight:"10px"
-// 		}
-// }
 export const thumbnailStyle = () => {
   return {
     display: 'inline-block',
@@ -124,6 +96,7 @@ export const thumbnailStyle = () => {
     flexShrink: '0',
   };
 };
+
 export const chatsHeaderContanier = () => {
   return {
     '&&': {
@@ -207,9 +180,9 @@ export const chatsHeaderTitleStyle = (props) => {
   const alignment =
     props.hasOwnProperty('enableCloseMenu') && props.enableCloseMenu.length > 0
       ? {
-          width: '33%',
-          textAlign: 'center',
-        }
+        width: '33%',
+        textAlign: 'center',
+      }
       : {};
 
   return {
