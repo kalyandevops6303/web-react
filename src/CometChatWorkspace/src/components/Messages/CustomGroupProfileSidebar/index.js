@@ -2,8 +2,7 @@ import React from 'react';
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { IoPencil } from 'react-icons/io5';
-import { FaCheck } from 'react-icons/fa6';
+import { Edit2, Check } from 'react-feather';
 import { CometChat } from '@cometchat-pro/chat';
 import closeIcon from './resources/closeIcon.png';
 import { CometChatBackdrop } from '../../Shared';
@@ -1163,16 +1162,18 @@ class CustomGroupProfileSidebar extends React.Component {
                 />
 
                 {this.state.isNameEditOn ? (
-                  <FaCheck
+                  <Check
                     className="about__name__icon"
                     css={aboutNameIconStyle()}
+                    size={16}
                     color="#0185E4"
                     onClick={this.saveName}
                   />
                 ) : (
-                  <IoPencil
+                  <Edit2
                     className="about__name__icon"
                     css={aboutNameIconStyle()}
+                    size={16}
                     color="#0185E4"
                     onClick={this.turnOnNameEdit}
                   />
