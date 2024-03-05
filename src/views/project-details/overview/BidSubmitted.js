@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import PdfIcon from '@src/assets/images/PDF.svg';
-
-import { AccordionBody, AccordionHeader, AccordionItem, CardText } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { AccordionBody, AccordionHeader, AccordionItem, CardText, Spinner } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { FileText } from 'react-feather';
 import { DateTime } from 'luxon';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
@@ -10,10 +9,16 @@ import theme from '../../../configs/themeVariables';
 import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
 import { downloadFile } from '../../../utility/Utils';
+import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 
 const BidSubmitted = () => {
+  const dispatch = useDispatch();
+
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const [bidModal, setBidModal] = useState(false);
+  const [selectedFileKey, setSelectedFileKey] = useState(null);
   const toggleBidModal = () => setBidModal(!bidModal);
 
   const timelineEntries = {};
@@ -64,6 +69,10 @@ const BidSubmitted = () => {
     },
   ].filter((item) => item.isVisible);
 
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
+  };
+
   const bidUpdatesDataSet = [];
   bidUpdates?.map((item) =>
     bidUpdatesDataSet.push({
@@ -103,16 +112,31 @@ const BidSubmitted = () => {
                   </span>
                 </div>
                 {bidInfo?.documents?.map((doc) => (
-                  <span
-                    onClick={() => downloadFile({ data: doc })}
-                    key={doc?.created_at}
-                    className="text-decoration-none cursor-pointer"
-                    style={{ color: theme.activeColor }}
-                  >
-                    <div className="d-flex gap-25 align-items-center">
-                      <img src={PdfIcon} alt="pdficon" /> <h6 className="mb-0">{doc?.file_name}</h6>
-                    </div>
-                  </span>
+                  <div key={doc?.file_key}>
+                    {downloadUrlIsLoading && selectedFileKey === doc?.file_key ? (
+                      <div className="d-flex align-items-center justify-content-between">
+                        <Spinner color="primary" />
+                      </div>
+                    ) : (
+                      <div
+                        className="d-flex align-items-center mb-75 cursor-pointer"
+                        style={{ color: theme.activeColor }}
+                        onClick={() => {
+                          setSelectedFileKey(doc?.file_key);
+                          dispatch(
+                            getDownloadUrl({
+                              fileKey: doc?.file_key,
+                              onSuccess: onDownloadResumeUrlSuccess,
+                              fileName: doc?.file_name,
+                            }),
+                          );
+                        }}
+                      >
+                        <FileText size="18" className="me-50" />
+                        <p className="mb-0 fw-bold">{doc?.file_name}</p>
+                      </div>
+                    )}
+                  </div>
                 ))}
               </>
             )}

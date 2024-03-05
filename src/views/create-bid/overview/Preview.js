@@ -13,6 +13,7 @@ import {
   CardText,
   Col,
   Row,
+  Spinner,
   UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
@@ -29,6 +30,9 @@ import { bidDetails, bidDetailsLoading } from '../../../redux/selectors/createBi
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { userTypes } from '../../../utility/constants/Constant';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
+import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
+import { downloadFile } from '../../../utility/Utils';
 
 const Preview = () => {
   const dispatch = useDispatch();
@@ -36,9 +40,11 @@ const Preview = () => {
   const navigate = useNavigate();
 
   const [bidSubmittedModal, setBidSubmittedModal] = useState(null);
+  const [selectedFileKey, setSelectedFileKey] = useState(null);
 
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const bidDetailsData = useSelector(bidDetails);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
   const toggleBidSubmittedModal = () => {
     setBidSubmittedModal(!bidSubmittedModal);
@@ -64,6 +70,10 @@ const Preview = () => {
     return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
   };
 
+  const onDownloadFileUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
+  };
+
   const fileList = () => (
     <div className="custom-card mb-1">
       <Card className="p-1 px-2">
@@ -78,8 +88,31 @@ const Preview = () => {
             }
           >
             <Col sm="6" md="6" lg="8">
-              {renderFilePreview()}
-              {file.file_name}
+              <div
+                className="d-flex cursor-pointer"
+                style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                onClick={() => {
+                  setSelectedFileKey(file?.file_key);
+                  dispatch(
+                    getDownloadUrl({
+                      fileKey: file?.file_key,
+                      onSuccess: onDownloadFileUrlSuccess,
+                      fileName: file?.file_name,
+                    }),
+                  );
+                }}
+              >
+                {downloadUrlIsLoading && selectedFileKey === file?.file_key ? (
+                  <div className="d-flex align-items-center justify-content-center w-100">
+                    <Spinner color="primary" />
+                  </div>
+                ) : (
+                  <>
+                    {renderFilePreview()}
+                    {file.file_name}
+                  </>
+                )}
+              </div>
             </Col>
             <Col sm="2" md="4" lg="2">
               {renderFileSize(file.size)}

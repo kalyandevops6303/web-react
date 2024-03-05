@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
-import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, UncontrolledTooltip } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
@@ -20,12 +20,16 @@ import { ActionButtonWrapper, DownloadIconContainer, LeftSidebarProfileWrapper }
 import BadgeGroup from '../../../@core/components/badge-group';
 import theme from '../../../configs/themeVariables';
 import { makeFavourite, removeFavourite } from '../../../redux/actions/profileActions';
-import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
+import { downloadUrlLoading, profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { downloadFile, giveProgressBarColorClassName, returnFormattedRating } from '../../../utility/Utils';
 import { CustomBadge } from '../../styled';
 import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
-import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
+import {
+  getDownloadUrl,
+  getProfilePercentage,
+  getTeamProfilePercentage,
+} from '../../../redux/actions/dashboardActions';
 import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -46,6 +50,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const [reportModal, setReportModal] = useState(false);
   const toggleReportModal = () => setReportModal(!reportModal);
@@ -80,6 +85,10 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     navigate(`/chat`, {
       state: { targetId: param?.userId },
     });
+  };
+
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
   };
 
   useEffect(() => {
@@ -241,14 +250,28 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                 {data?.resume?.file_name && (
                   <div
                     onClick={() =>
-                      downloadFile({ data: data?.resume, file_name: `${data?.first_name} ${data?.last_name}` })
+                      dispatch(
+                        getDownloadUrl({
+                          fileKey: data?.resume?.file_key,
+                          onSuccess: onDownloadResumeUrlSuccess,
+                          fileName: `${data?.first_name} ${data?.last_name}`,
+                        }),
+                      )
                     }
                     className="d-flex my-1 align-items-center cursor-pointer"
                   >
-                    <DownloadIconContainer>
-                      <Download size={18} color={theme.activeNavPillText} />
-                    </DownloadIconContainer>
-                    <h6 className="mb-0 ms-50 text-primary ">Download resume</h6>
+                    {downloadUrlIsLoading ? (
+                      <div className="d-flex align-items-center justify-content-center w-100">
+                        <Spinner color="primary" />
+                      </div>
+                    ) : (
+                      <>
+                        <DownloadIconContainer>
+                          <Download size={18} color={theme.activeNavPillText} />
+                        </DownloadIconContainer>
+                        <h6 className="mb-0 ms-50 text-primary ">Download resume</h6>
+                      </>
+                    )}
                   </div>
                 )}
 

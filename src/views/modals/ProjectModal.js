@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
 import { ChevronRight, FileText } from 'react-feather';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import {
   Modal,
@@ -33,8 +33,9 @@ import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
-import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { downloadFile } from '../../utility/Utils';
+import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -95,6 +96,9 @@ const ProjectModal = ({
   const selectUserDetailsData = useSelector(selectUserData);
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
   const profilePercentageData = useSelector(profilePercentage);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+
+  const [selectedFileKey, setSelectedFileKey] = useState(null);
 
   const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
 
@@ -192,6 +196,10 @@ const ProjectModal = ({
     } else {
       navigate(`/project-details/${data?._id}/bid`);
     }
+  };
+
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
   };
 
   const showCreateBidButton =
@@ -358,10 +366,27 @@ const ProjectModal = ({
                       <span
                         className="cursor-pointer"
                         style={{ color: theme.activeColor }}
-                        onClick={() => downloadFile({ data: document })}
+                        onClick={() => {
+                          setSelectedFileKey(document?.file_key);
+                          dispatch(
+                            getDownloadUrl({
+                              fileKey: document?.file_key,
+                              onSuccess: onDownloadResumeUrlSuccess,
+                              fileName: document?.file_name,
+                            }),
+                          );
+                        }}
                       >
-                        <FileText size="18" className="me-75" />
-                        {document?.file_name}
+                        {downloadUrlIsLoading && selectedFileKey === document?.file_key ? (
+                          <div className="d-flex align-items-center justify-content-start">
+                            <Spinner color="primary" />
+                          </div>
+                        ) : (
+                          <>
+                            <FileText size="18" className="me-75" />
+                            {document?.file_name}
+                          </>
+                        )}
                       </span>
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">

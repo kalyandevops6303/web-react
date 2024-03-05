@@ -7,11 +7,17 @@ import Avatar from '@components/avatar';
 import Proptypes from 'prop-types';
 import { Download, ExternalLink, Link, Plus, Upload } from 'react-feather';
 import { useDropzone } from 'react-dropzone';
-import { useSelector } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import RaiseDisputeModal from '../../disputes/overview/RaiseDisputeModal';
-import { formatDate, isFileValid, renderFilePreview, renderFileSize } from '../../../utility/Utils';
+import {
+  downloadFile,
+  downloadUploadedFile,
+  formatDate,
+  isFileValid,
+  renderFilePreview,
+  renderFileSize,
+} from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import {
@@ -24,7 +30,6 @@ import { transferFundService } from '../../../services/paymentDetailService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../../utility/constants/ToastTypes';
-
 import uuidv4 from '../../../lib/uuidv4';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import { CustomBadge } from '../../styled';
@@ -33,8 +38,13 @@ import SubmitMilestoneModal from '../../modals/SubmitMilestoneModal';
 import ChangeRequestMilestoneModal from '../../modals/ChangeRequestMilestoneModal';
 import AcceptMilestoneModal from '../../modals/AcceptMilestone';
 import { DocumentsWrapper } from './style';
+import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
+import theme from '../../../configs/themeVariables';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 
 const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
+  const dispatch = useDispatch();
+
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [saveModal, setSaveModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false);
@@ -54,12 +64,14 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     selectedMilestone.documents.map((doc) => ({
       ...doc,
       newId: `${doc.file_key.split('.')[0].split('/')[0]}-${doc.file_key.split('.')[0].split('/')[2]}`,
+      isUploaded: true,
     })),
   );
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [selectedFileKey, setSelectedFileKey] = useState(null);
 
   const userDataLocal = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
   useEffect(() => {
     setSaveBtnText('Submit');
@@ -175,7 +187,11 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
         const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
         const promises = validFiles.map(async (file) => {
-          const response = await milestoneFileUploadService(file.name);
+          const response = await milestoneFileUploadService(
+            selectedMilestone?.project_id,
+            selectedMilestone?._id,
+            file.name,
+          );
           return {
             id: uuidv4(),
             file,
@@ -184,6 +200,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
             newId: `${response?.data?.data?.file_key.split('.')[0].split('/')[0]}-${
               response?.data?.data?.file_key.split('.')[0].split('/')[2]
             }`,
+            isUploaded: false,
           };
         });
 
@@ -236,27 +253,6 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     }
   };
 
-  const handleDownloadFile = async (file) => {
-    try {
-      if (file?.download_url) {
-        setIsDownloading(true);
-        const response = await fetch(file.download_url);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file.file_name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-        setIsDownloading(false);
-      }
-    } catch (error) {
-      setIsDownloading(false);
-    }
-  };
-
   const isClient = userDataLocal.user_type === userTypes.client;
 
   // useEffect(() => {
@@ -267,6 +263,25 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
 
   //   setDocuments(newDocs);
   // }, [documents]);
+
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
+  };
+
+  const downloadSelectedFile = (file) => {
+    if (file.isUploaded) {
+      setSelectedFileKey(file?.uploadData?.file_key || file?.file_key);
+      dispatch(
+        getDownloadUrl({
+          fileKey: file?.file_key,
+          onSuccess: onDownloadResumeUrlSuccess,
+          fileName: file?.file_name,
+        }),
+      );
+    } else {
+      downloadUploadedFile({ file: file.file });
+    }
+  };
 
   return (
     <div>
@@ -405,10 +420,24 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                   className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
                 >
                   <Col className="d-flex" sm="6" md="4" lg="3">
-                    {renderFilePreview(file.file)}
-                    <span className="truncated-filename" id={file.newId}>
-                      {file?.file?.name ?? file.file_name}
-                    </span>
+                    <div
+                      className="d-flex cursor-pointer"
+                      style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                      onClick={() => downloadSelectedFile(file)}
+                    >
+                      {downloadUrlIsLoading && selectedFileKey === file?.uploadData?.file_key ? (
+                        <div className="d-flex align-items-center justify-content-center w-100">
+                          <Spinner color="primary" />
+                        </div>
+                      ) : (
+                        <>
+                          {renderFilePreview(file.file)}
+                          <span className="truncated-filename" id={file.newId}>
+                            {file?.file?.name ?? file.file_name}
+                          </span>
+                        </>
+                      )}
+                    </div>
                     <UncontrolledTooltip placement="bottom" target={file.newId}>
                       {file?.file?.name ?? file.file_name}
                     </UncontrolledTooltip>
@@ -441,7 +470,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                 </Row>
               ) : (
                 <Row
-                  key={file.id}
+                  key={file.file_key}
                   className="white-card d-flex mb-1 mx-0 px-1 medium-shadow align-items-center justify-content-between py-16"
                 >
                   <Col className="d-flex" sm="6" md="4" lg="3">
@@ -465,11 +494,11 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                     {requiredFormattedDate}
                   </Col>
                   <Col sm="1" md="1" className="pe-0" lg="1">
-                    {isDownloading ? (
-                      <Spinner size="sm" />
+                    {downloadUrlIsLoading && selectedFileKey === file?.file_key ? (
+                      <Spinner color="primary" />
                     ) : (
                       <Avatar
-                        onClick={() => handleDownloadFile(file)}
+                        onClick={() => downloadSelectedFile(file)}
                         color="light-primary"
                         icon={<Download size="14" />}
                         className=""

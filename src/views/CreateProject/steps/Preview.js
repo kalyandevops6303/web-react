@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
 import { TagsContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat } from '../../../utility/Utils';
+import { convertTo12HourFormat, downloadUploadedFile } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
@@ -73,8 +73,14 @@ const Preview = ({
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
             <Col sm="6" md="6" lg="6">
-              {renderFilePreview(file.file)}
-              {file.file.name}
+              <div
+                className="d-flex cursor-pointer"
+                style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                onClick={() => downloadUploadedFile({ file: file.file })}
+              >
+                {renderFilePreview(file.file)}
+                {file.file.name}
+              </div>
             </Col>
             <Col sm="2" md="2" lg="4">
               {renderFileSize(file.file.size)}

@@ -36,13 +36,15 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
-import { formatDateWithDash } from '../../../utility/Utils';
+import { downloadFile, downloadUploadedFile, formatDateWithDash } from '../../../utility/Utils';
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import { bidDetailsLoading, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
 import { milestoneFileUploadService, milestoneFileUploadToAzureService } from '../../../services/createBidServices';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
+import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 
 const VariableSimpleMilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -129,11 +131,13 @@ const VariableSimpleMilestoneView = () => {
   const setMilestonesIsLoading = useSelector(setMilestonesLoading);
   const selectUserDetailsData = useSelector(selectUserData);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
   const [allWorkers, setAllWorkers] = useState([]);
+  const [selectedFileKey, setSelectedFileKey] = useState(null);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
 
@@ -340,7 +344,7 @@ const VariableSimpleMilestoneView = () => {
 
         const promises = validFiles.map(async (file) => {
           const response = await milestoneFileUploadService(file.name);
-          return { id: uuidv4(), file, uploadData: response?.data?.data };
+          return { id: uuidv4(), file, uploadData: response?.data?.data, isUploaded: false };
         });
 
         const filesWithUrls = await Promise.all(promises);
@@ -386,6 +390,25 @@ const VariableSimpleMilestoneView = () => {
     return `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
   };
 
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
+  };
+
+  const downloadSelectedFile = (file) => {
+    if (file.isUploaded) {
+      setSelectedFileKey(file?.uploadData?.file_key);
+      dispatch(
+        getDownloadUrl({
+          fileKey: file?.uploadData?.file_key,
+          onSuccess: onDownloadResumeUrlSuccess,
+          fileName: file.file.name || file?.file?.file_name,
+        }),
+      );
+    } else {
+      downloadUploadedFile({ file: file.file });
+    }
+  };
+
   const fileList = () => (
     <div className="custom-card mb-1">
       <Card className="p-1">
@@ -395,8 +418,22 @@ const VariableSimpleMilestoneView = () => {
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
             <Col sm="6" md="4" lg="4">
-              {renderFilePreview()}
-              {file?.file?.name || file?.file?.file_name}
+              <div
+                className="d-flex cursor-pointer"
+                style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                onClick={() => downloadSelectedFile(file)}
+              >
+                {downloadUrlIsLoading && selectedFileKey === file?.uploadData?.file_key ? (
+                  <div className="d-flex align-items-center justify-content-center w-100">
+                    <Spinner color="primary" />
+                  </div>
+                ) : (
+                  <>
+                    {renderFilePreview()}
+                    {file?.file?.name || file?.file?.file_name}
+                  </>
+                )}
+              </div>
             </Col>
             <Col sm="6" md="2" lg="2">
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
@@ -462,6 +499,7 @@ const VariableSimpleMilestoneView = () => {
           uploadData: {
             file_key: file?.file_key,
           },
+          isUploaded: true,
         }));
         setFiles(reqFiles);
       }

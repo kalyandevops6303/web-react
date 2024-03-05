@@ -27,6 +27,7 @@ import {
   totalReferralAmountService,
   updateCardStatusService,
   getProjectInvitationService,
+  downloadUrlService,
 } from '../../services/dashboardServices'; // You need to import the relevant services
 
 import {
@@ -106,6 +107,9 @@ import {
   projectInvitationRequest,
   projectInvitationSuccess,
   projectInvitationFailure,
+  downloadUrlSuccess,
+  downloadUrlFailure,
+  downloadUrlRequest,
 } from '../reducers/dashboard';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../utility/constants/ToastTypes';
@@ -466,6 +470,20 @@ const getDashboardUpcomingPayments = () => async (dispatch) => {
     errorHandler(error, upcomingPaymentFailure);
   }
 };
+
+const getDownloadUrl =
+  ({ fileKey, fileName, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(downloadUrlRequest());
+    try {
+      const res = await downloadUrlService(fileKey);
+      dispatch(downloadUrlSuccess(res.data.data));
+      onSuccess({ download_url: res.data.data, file_name: fileName });
+    } catch (error) {
+      errorHandler(error, downloadUrlFailure);
+    }
+  };
+
 export {
   getModalData,
   getAlerts,
@@ -496,4 +514,5 @@ export {
   updateCardStatus,
   getDashboardUpcomingPayments,
   getProjectInvitation,
+  getDownloadUrl,
 };
