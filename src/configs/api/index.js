@@ -105,6 +105,9 @@ const API = {
     projectsBidsForClient: `${apiOnboardingEndpoint}/api/v1/client/open-listing`,
     recommendedTeamsForClient: `${apiOnboardingEndpoint}/api/v1/client/recommended-teams`,
     updateCardStatus: `${apiOnboardingEndpoint}/api/v1/alert/mark-as-read`,
+
+    // files
+    downloadUrl: `${apiCreateProjectEndpoint}/api/v1/download/url`,
   },
   createProject: {
     createProject: `${apiCreateProjectEndpoint}/api/v1/project/create`,

@@ -51,6 +51,7 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { downloadUploadedFile } from '../../../utility/Utils';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -543,8 +544,14 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
             <Col sm="6" md="4" lg="4">
-              {renderFilePreview(file.file)}
-              {file.file.name}
+              <div
+                className="d-flex cursor-pointer"
+                style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                onClick={() => downloadUploadedFile({ file: file.file })}
+              >
+                {renderFilePreview(file.file)}
+                {file.file.name}
+              </div>
             </Col>
             <Col sm="6" md="2" lg="2">
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}

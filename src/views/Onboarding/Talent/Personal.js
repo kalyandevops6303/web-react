@@ -44,7 +44,12 @@ import {
   userDetailsLoading,
 } from '../../../redux/selectors/talentOnboardingSelectors';
 import { countriesService, languagesService, talentRolesService } from '../../../services/staticServices';
-import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import {
+  downloadFile,
+  downloadUploadedFile,
+  removeEmptyKeys,
+  returnFilteredDropdownOptions,
+} from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -52,6 +57,8 @@ import { ERROR } from '../../../utility/constants/ToastTypes';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import uuidv4 from '../../../lib/uuidv4';
 import { resumeUploadService } from '../../../services/talentOnboardingServices';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
+import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -175,6 +182,7 @@ const Personal = () => {
   const userDetailsData = useSelector(userDetails);
   const languagesData = useSelector(languages);
   const languagesIsLoading = useSelector(languagesLoading);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
@@ -213,6 +221,7 @@ const Personal = () => {
         id: uuidv4(),
         file,
         uploadData: response?.data?.data,
+        isUploaded: false,
       };
 
       setFiles([fileWithUrl]);
@@ -240,6 +249,24 @@ const Personal = () => {
     .split(' ');
   const requiredFormattedDate = `${formattedDate[1]} ${formattedDate[0]} ${formattedDate[2]}`;
 
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
+  };
+
+  const downloadResume = (file) => {
+    if (file.isUploaded) {
+      dispatch(
+        getDownloadUrl({
+          fileKey: file?.uploadData?.file_key,
+          onSuccess: onDownloadResumeUrlSuccess,
+          fileName: file.file.name,
+        }),
+      );
+    } else {
+      downloadUploadedFile({ file: file.file });
+    }
+  };
+
   const fileList = () => (
     <div className="custom-card mb-1">
       <Card className="p-1">
@@ -249,8 +276,22 @@ const Personal = () => {
             className={index !== files.length - 1 ? 'd-flex align-items-center mb-1' : 'd-flex align-items-center'}
           >
             <Col sm="6" md="4" lg="4">
-              <FileText size="18" className="me-75 mb-50" />
-              {file.file.name}
+              <div
+                className="d-flex cursor-pointer"
+                style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                onClick={() => downloadResume(file)}
+              >
+                {downloadUrlIsLoading ? (
+                  <div className="d-flex align-items-center justify-content-center w-100">
+                    <Spinner color="primary" />
+                  </div>
+                ) : (
+                  <>
+                    <FileText size="18" className="me-75 mb-50" />
+                    <p className="mb-0">{file.file.name}</p>
+                  </>
+                )}
+              </div>
             </Col>
             <Col sm="6" md="2" lg="2">
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
@@ -500,6 +541,7 @@ const Personal = () => {
             uploadData: {
               file_key: res?.talent_info?.resume?.file_key,
             },
+            isUploaded: true,
           },
         ]);
       }
@@ -742,6 +784,7 @@ const Personal = () => {
                           {...field}
                           id="resume"
                           type="file"
+                          max={1}
                           accept="application/pdf"
                           style={{ display: 'none' }}
                           onChange={(e) => {

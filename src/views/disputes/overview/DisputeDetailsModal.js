@@ -26,6 +26,9 @@ import { UploadIconContainer } from '../../Onboarding/style';
 import { disputeReplyFileUploadService, disputeReplyFileUploadToAzureService } from '../../../services/disputeServices';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import DisputeClosedModal from './DisputeClosedModal';
+import { downloadFile, downloadUploadedFile } from '../../../utility/Utils';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
+import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 
 const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilter }) => {
   const ResponseSchema = yup.object().shape({
@@ -50,6 +53,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
 
   const replyOnDisputeIsLoading = useSelector(replyOnDisputeLoading);
   const disputeRepliesData = useSelector(disputeReplies);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
   const {
     dispute_number,
@@ -69,6 +73,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
   const [updatedTimelineData, setUpdatedTimelineData] = useState([]);
   const [isReplyBoxPresent, setIsReplyBoxPresent] = useState(false);
   const [disputeClosedModal, setDisputeClosedModal] = useState(null);
+  const [selectedFileKey, setSelectedFileKey] = useState(null);
   const filesRef = useRef();
 
   const toggleDisputeClosedModal = () => {
@@ -187,7 +192,11 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
               : 'd-flex align-items-center justify-content-between'
           }
         >
-          <div>
+          <div
+            className="d-flex cursor-pointer"
+            style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+            onClick={() => downloadUploadedFile({ file: file.file })}
+          >
             <FileText size="18" className="me-75 mb-50" />
             {file.file.name}
           </div>
@@ -205,6 +214,10 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
       ))}
     </>
   );
+
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
+  };
 
   useEffect(() => {
     dispatch(getDisputeReplies(_id, 1, 10, []));
@@ -240,16 +253,32 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
           {reply?.documents?.length > 0 && (
             <div>
               {reply?.documents?.map((document) => (
-                <a
-                  href={document.download_url}
-                  key={document.download_url}
-                  className="mb-50 d-flex cursor-pointer"
-                  target="_blank"
-                  rel="noreferrer"
+                <div
+                  key={document.file_key}
+                  className="d-flex cursor-pointer"
+                  style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                  onClick={() => {
+                    setSelectedFileKey(document?.file_key);
+                    dispatch(
+                      getDownloadUrl({
+                        fileKey: document?.file_key,
+                        onSuccess: onDownloadResumeUrlSuccess,
+                        fileName: document.file_name,
+                      }),
+                    );
+                  }}
                 >
-                  <FileText size="18" className="me-75 mb-50" />
-                  <p className="mb-0">{document.file_name}</p>
-                </a>
+                  {downloadUrlIsLoading && selectedFileKey === document?.file_key ? (
+                    <div className="d-flex align-items-center justify-content-start">
+                      <Spinner color="primary" />
+                    </div>
+                  ) : (
+                    <>
+                      <FileText size="18" className="me-75 mb-50" />
+                      <p className="mb-0">{document.file_name}</p>
+                    </>
+                  )}
+                </div>
               ))}
             </div>
           )}
