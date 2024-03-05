@@ -557,3 +557,71 @@ export const downloadUploadedFile = async ({ file }) => {
     toast.error('Error downloading file');
   }
 };
+
+export const getModifiedProjectResponse = ({ data }) => {
+  const project = data?.project;
+  return {
+    _id: project?._id,
+    created_at: project?.posted_date,
+    status: project?.status,
+    has_bid: project?.has_bid,
+    nda: {
+      is_nda: project?.has_nda,
+      nda_link: '',
+      is_signed_by_talent: false,
+    },
+    proficiency: {
+      skills: project?.skills_required,
+      tools: project?.tools_required,
+    },
+    listing_details: {
+      start_date: '',
+      end_date: '',
+      start_date_epoch: project?.listing_start_date,
+      end_date_epoch: project?.listing_end_date,
+    },
+    pay_type: {
+      currency: {
+        _id: '',
+        name: project?.currency_name,
+        code: project?.currency_symbol,
+      },
+      variable_cost: project?.pay_type === 'Variable',
+      fixed_cost: project?.total_cost,
+    },
+    details: {
+      name: project?.name,
+      description: project?.description,
+      expected_duration: {
+        duration: project?.duration,
+        duration_type: project?.duration_type,
+      },
+      documents: project?.documents,
+    },
+    availability: {
+      timezone: {
+        _id: '',
+        name: '',
+        abbreviation: project?.timezone_abbr,
+      },
+      time_overlap: project?.time_overlap,
+      weekdays_avl: {
+        start_time: project?.weekday_start_time,
+        end_time: project?.weekday_end_time,
+        days: project?.weekdays_avl,
+      },
+      weekends_avl: {
+        start_time: project?.weekend_start_time,
+        end_time: project?.weekend_end_time,
+        days: project?.weekends_avl,
+      },
+    },
+    client_details: { user_id: data?.client?._id },
+    bidders: data?.bidders,
+    bids: {
+      _id: data?.bid,
+      status: data?.bid?.status,
+    },
+    is_favorite: data?.project?.is_favourite,
+  };
+};

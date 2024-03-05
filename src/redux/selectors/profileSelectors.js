@@ -9,3 +9,7 @@ export const selectLoading = createSelector(profileSelector, (profile) => profil
 export const selectError = createSelector(profileSelector, (profile) => profile.error);
 
 export const reportLoading = createSelector(profileSelector, (profile) => profile.reportLoading);
+
+export const publicTeamMembers = createSelector(profileSelector, (profile) => profile.publicTeamMembers);
+
+export const publicTeamMembersLoading = createSelector(profileSelector, (profile) => profile.publicTeamMembersLoading);

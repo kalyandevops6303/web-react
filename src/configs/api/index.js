@@ -66,6 +66,7 @@ const API = {
     recentProjects: `${apiOnboardingEndpoint}/api/v1/users/completed-projects`,
     reviews: `${apiOnboardingEndpoint}/api/v1/users/reviews`,
     report: `${apiAuthEndpoint}/api/v1/user/report`,
+    publicTeamMembers: `${apiOnboardingEndpoint}/api/v1/team-members`,
   },
   dashboard: {
     userData: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -191,6 +192,8 @@ const API = {
     listProject: `${apiOnboardingEndpoint}/api/v1/marketplace/list-projects`,
     listTalents: `${apiOnboardingEndpoint}/api/v1/marketplace/list-talents`,
     bidProjects: `${apiOnboardingEndpoint}/api/v1/marketplace/list-bid-projects`,
+    receivedBids: `${apiOnboardingEndpoint}/api/v1/received-bids-projects`,
+    myBids: `${apiOnboardingEndpoint}/api/v1/my-bids-projects`,
     listTeams: `${apiOnboardingEndpoint}/api/v1/marketplace/list-teams`,
     listClients: `${apiOnboardingEndpoint}/api/v1/marketplace/list-clients`,
   },
@@ -281,6 +284,10 @@ const API = {
   clubs: {
     listClubs: `${apiOnboardingEndpoint}/api/v1/clubs`,
     cardInfo: `${apiOnboardingEndpoint}/api/v1/clubs/card-info`,
+  },
+  paymentFullView: {
+    paymentMetrics: `${apiOnboardingEndpoint}/api/v1/payment-metrics`,
+    paymentHistory: `${apiOnboardingEndpoint}/api/v1/payment-history`,
   },
 };
 

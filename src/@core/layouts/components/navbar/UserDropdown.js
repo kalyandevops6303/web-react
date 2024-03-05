@@ -72,7 +72,11 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
     // CometChat logout
     await messaging.deleteToken();
-    await CometChat.logout();
+    const cometChatToken = getItem('cometChatToken');
+    if (cometChatToken) {
+      CometChat.disconnect();
+      await CometChat.logout();
+    }
   };
 
   const LineWrapper = styled.div`

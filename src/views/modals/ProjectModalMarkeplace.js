@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
 import { ChevronRight, FileText } from 'react-feather';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Proptypes from 'prop-types';
 import {
   Modal,
@@ -33,9 +33,8 @@ import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
-import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
+import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { downloadFile } from '../../utility/Utils';
-import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -83,6 +82,7 @@ const ProjectModal = ({
   toggleModal,
   data,
   setCreateBidModal,
+  setSelectedProject,
   toggleCompleteProfileModal,
   setSwitchProfileModal,
   setRelistConfirmationModal,
@@ -90,16 +90,14 @@ const ProjectModal = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const project = data?.project;
 
   const checkBidLoadingIsLoading = useSelector(checkBidLoading);
   const selectUserDetailsData = useSelector(selectUserData);
   const selectSavedUserDetailsData = useSelector(selectSavedUserData);
   const profilePercentageData = useSelector(profilePercentage);
-  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
-  const [selectedFileKey, setSelectedFileKey] = useState(null);
-
-  const expextedDuration = data?.details ? data?.details?.expected_duration : data?.expected_duration;
+  const expectedDuration = project?.duration;
 
   useEffect(() => {
     if (onUpdateCard) {
@@ -154,6 +152,7 @@ const ProjectModal = ({
     ) {
       toggleCompleteProfileModal();
     } else {
+      setSelectedProject(data);
       dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
     }
   };
@@ -196,17 +195,13 @@ const ProjectModal = ({
     }
   };
 
-  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
-    downloadFile({ data: { download_url }, file_name });
-  };
-
   const showCreateBidButton =
     selectUserDetailsData?.team_members?.map((member) => member?.user_id)?.includes(selectSavedUserDetailsData?._id) &&
     selectUserDetailsData?.team_members?.find((member) => member?.user_id === selectSavedUserDetailsData?._id)
       ?.member_type === 'ADMIN';
 
-  const bidsReceivedAvatarGroup = data?.bidders?.length
-    ? data?.bidders?.map((bidder) => ({
+  const bidsReceivedAvatarGroup = data?.bid_profiles?.length
+    ? data?.bid_profiles?.map((bidder) => ({
         user_id: bidder?.talent_id || bidder?.team_id,
         user_type: userTypes.talent,
         title: bidder?.team_name || `${bidder?.talent_first_name} ${bidder?.talent_last_name}`,
@@ -216,6 +211,7 @@ const ProjectModal = ({
         imgWidth: 33,
       }))
     : [];
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -243,8 +239,8 @@ const ProjectModal = ({
                 <Col lg="3">
                   <div>
                     <CardTitle className="mb-25 fw-bolder">
-                      {expextedDuration?.duration}
-                      {expextedDuration?.duration_type?.charAt(0)?.toLowerCase()}
+                      {expectedDuration?.duration}
+                      {expectedDuration?.duration_type?.charAt(0)?.toLowerCase()}
                     </CardTitle>
                     <CardText className="project-name">Expected Duration</CardText>
                   </div>
@@ -308,15 +304,13 @@ const ProjectModal = ({
                     <CardText className="project-name">Minimum Overlap</CardText>
                   </div>
                 </Col>
-                {(location.pathname.split('/').includes('my_listings') ||
-                  (location.pathname.split('/').includes('my_bids') &&
-                    selectUserDetailsData?.user_type === userTypes.client)) && (
+                {location.pathname.split('/').includes('my_listings') && (
                   <Col lg="4">
                     {bidsReceivedAvatarGroup?.length ? (
                       <div>
                         {bidsReceivedAvatarGroup?.length > 3 ? (
                           <AvatarGroup
-                            totalCount={data?.bidders?.length || 0}
+                            totalCount={data?.bid_profiles?.length || 0}
                             size="sm"
                             className="ms-25 mb-50"
                             data={bidsReceivedAvatarGroup?.slice(0, 3)}
@@ -365,27 +359,10 @@ const ProjectModal = ({
                       <span
                         className="cursor-pointer"
                         style={{ color: theme.activeColor }}
-                        onClick={() => {
-                          setSelectedFileKey(document?.file_key);
-                          dispatch(
-                            getDownloadUrl({
-                              fileKey: document?.file_key,
-                              onSuccess: onDownloadResumeUrlSuccess,
-                              fileName: document?.file_name,
-                            }),
-                          );
-                        }}
+                        onClick={() => downloadFile({ data: document })}
                       >
-                        {downloadUrlIsLoading && selectedFileKey === document?.file_key ? (
-                          <div className="d-flex align-items-center justify-content-start">
-                            <Spinner color="primary" />
-                          </div>
-                        ) : (
-                          <>
-                            <FileText size="18" className="me-75" />
-                            {document?.file_name}
-                          </>
-                        )}
+                        <FileText size="18" className="me-75" />
+                        {document?.file_name}
                       </span>
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
@@ -399,6 +376,7 @@ const ProjectModal = ({
               </CardBody>
             </Card>
           )}
+
           <Card>
             <CardHeader>
               <CardTitle className="mb-0 d-flex justify-content-between w-100">
@@ -410,6 +388,7 @@ const ProjectModal = ({
               <BadgeGroup title="Tools" data={data?.proficiency?.tools} color="light-blue" gapWrap />
             </CardBody>
           </Card>
+
           {selectUserDetailsData?._id === data?.client_details?.user_id ||
           data?.has_bid ||
           isViewable ||
@@ -484,6 +463,7 @@ ProjectModal.propTypes = {
   toggleModal: Proptypes.func,
   data: Proptypes.object,
   setCreateBidModal: Proptypes.func,
+  setSelectedProject: Proptypes.func,
   toggleCompleteProfileModal: Proptypes.func,
   setSwitchProfileModal: Proptypes.func,
   isActiveProject: Proptypes.bool,
@@ -498,6 +478,7 @@ ProjectModal.defaultProps = {
   toggleModal: () => {},
   data: {},
   setCreateBidModal: () => {},
+  setSelectedProject: () => {},
   toggleCompleteProfileModal: () => {},
   setSwitchProfileModal: () => {},
   isActiveProject: false,
