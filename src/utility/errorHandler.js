@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-undef */
+import { CometChat } from '@cometchat-pro/chat';
 import ShowToastMessage from '../@core/components/toast';
 import { switchProfile } from '../redux/actions/authActions';
 import { userDataSuccess } from '../redux/reducers/auth';
@@ -10,6 +11,7 @@ import { ERROR_CODES } from './constants/Constant';
 import { ERROR } from './constants/ToastTypes';
 import { getItem } from './localStorageControl';
 import { getItemFromSession, setItemFromSession } from './sessesionStorageControl';
+import { messaging } from '../configs/api/firebase';
 
 const { dispatch } = store;
 
@@ -32,6 +34,7 @@ const handleError = (err, callBack) => {
   showErrorNotification(err?.response?.data?.errorData?.message || 'Operation could not be completed');
 };
 
+const cometChatToken = getItem('cometChatToken');
 const fcmToken = getItem('fcmToken');
 const handleErrorCode = async (err, callBack) => {
   if (err?.response?.status === 401) {
@@ -42,6 +45,11 @@ const handleErrorCode = async (err, callBack) => {
       } catch (error) {
         console.error(error);
       }
+    }
+    await messaging.deleteToken();
+    if (cometChatToken) {
+      CometChat.disconnect();
+      await CometChat.logout();
     }
     const teamId = getItemFromSession('team_id');
     const teamData = getItemFromSession('team_data');
@@ -62,13 +70,15 @@ const handleErrorCode = async (err, callBack) => {
     err?.response?.data?.errorData?.message === "You're no longer a team member"
   ) {
     const teamId = getItemFromSession('team_id');
-    const userData = getItem('savedUserData');
     if (teamId) {
+      const currentState = store.getState();
+      const userData = currentState.auth.savedUserData;
       dispatch(removeTeamFromList(teamId));
       dispatch(switchProfile({ data: userData, onSuccess: () => {}, selected: false }));
       showErrorNotification("You're no longer a team member");
       dispatch(userDataSuccess(userData));
     }
+    handleError(err, callBack);
   } else {
     handleError(err, callBack);
   }
@@ -92,6 +102,7 @@ const errorHandler = (err, callBack) => {
     }
   } else {
     showErrorNotification('Please check your connection!');
+    dispatch(callBack(err));
   }
 };
 export default errorHandler;

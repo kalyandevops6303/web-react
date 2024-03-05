@@ -107,6 +107,67 @@ const Listing = ({ stepper, setListingDetails }) => {
                       <Input
                         type="radio"
                         {...field}
+                        id="enter-duration"
+                        checked={field.value === 'enter-duration'}
+                        onChange={async (e) => {
+                          clearErrors('startDate');
+                          clearErrors('endDate');
+                          resetField('startDate');
+                          resetField('endDate');
+
+                          const isChecked = e.target.checked;
+                          const value = 'enter-duration';
+
+                          if (isChecked) {
+                            field.onChange(value);
+                          } else {
+                            field.onChange('');
+                          }
+                        }}
+                      />
+                      <Label for="enter-duration" className="form-check-label fw-bold">
+                        <h5 className="m-0">List in marketplace immediately</h5>
+                      </Label>
+                    </div>
+                  </div>
+                )}
+              />
+            </Row>
+            <Row className="d-flex align-items-center">
+              <Col sm="12" md="12" lg="7" className="d-flex align-items-center ps-3">
+                <h5 className="fw-light m-0">De-list After</h5>
+                <Col sm="6" md="4" lg="3" className="mx-1">
+                  <Controller
+                    id="duration"
+                    name="duration"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        disabled={watch('listingOption') !== 'enter-duration'}
+                        type="number"
+                        min={0}
+                        onWheel={(e) => e.target.blur()}
+                        placeholder="number of"
+                        invalid={errors.duration && true}
+                      />
+                    )}
+                  />
+                </Col>
+                <h5 className="fw-light m-0">Days</h5>
+              </Col>
+              {errors.duration && <FormFeedback>{errors.duration.message}</FormFeedback>}
+            </Row>
+            <Row className="mb-1 mt-2">
+              <Controller
+                control={control}
+                name="listingOption"
+                render={({ field }) => (
+                  <div className="demo-inline-spacing mx-25">
+                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
+                      <Input
+                        type="radio"
+                        {...field}
                         id="select-duration"
                         checked={field.value === 'select-duration'}
                         onChange={async (e) => {
@@ -124,17 +185,17 @@ const Listing = ({ stepper, setListingDetails }) => {
                         }}
                       />
                       <Label for="select-duration" className="form-check-label fw-bold">
-                        <h5 className="m-0">Select dates</h5>
+                        <h5 className="m-0">Select custom listing duration</h5>
                       </Label>
                     </div>
                   </div>
                 )}
               />
             </Row>
-            <Row>
+            <Row className="mb-1">
               <Col sm="12" md="6" lg="4" className="ps-3">
                 <Label className="form-label" for="startDate">
-                  Start Date<span className="label-asterisk">*</span>
+                  Listing Start Date<span className="label-asterisk">*</span>
                 </Label>
                 <Controller
                   control={control}
@@ -159,7 +220,7 @@ const Listing = ({ stepper, setListingDetails }) => {
               </Col>
               <Col sm="12" md="6" lg="4" className="ps-3">
                 <Label className="form-label" for="endDate">
-                  End Date<span className="label-asterisk">*</span>
+                  Listing End Date<span className="label-asterisk">*</span>
                 </Label>
                 <Controller
                   control={control}
@@ -186,67 +247,6 @@ const Listing = ({ stepper, setListingDetails }) => {
                 />
                 {errors.endDate && <FormFeedback>{errors.endDate.message}</FormFeedback>}
               </Col>
-            </Row>
-            <Row className="mb-1 mt-2">
-              <Controller
-                control={control}
-                name="listingOption"
-                render={({ field }) => (
-                  <div className="demo-inline-spacing mx-25">
-                    <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
-                      <Input
-                        type="radio"
-                        {...field}
-                        id="enter-duration"
-                        checked={field.value === 'enter-duration'}
-                        onChange={async (e) => {
-                          clearErrors('startDate');
-                          clearErrors('endDate');
-                          resetField('startDate');
-                          resetField('endDate');
-
-                          const isChecked = e.target.checked;
-                          const value = 'enter-duration';
-
-                          if (isChecked) {
-                            field.onChange(value);
-                          } else {
-                            field.onChange('');
-                          }
-                        }}
-                      />
-                      <Label for="enter-duration" className="form-check-label fw-bold">
-                        <h5 className="m-0">Enter duration</h5>
-                      </Label>
-                    </div>
-                  </div>
-                )}
-              />
-            </Row>
-            <Row className="d-flex align-items-center">
-              <Col sm="12" md="12" lg="8" className="d-flex align-items-center ps-3">
-                <h5 className="fw-light m-0">Ends after</h5>
-                <Col sm="2" md="2" lg="2" className="mx-1">
-                  <Controller
-                    id="duration"
-                    name="duration"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        disabled={watch('listingOption') !== 'enter-duration'}
-                        type="number"
-                        min={0}
-                        onWheel={(e) => e.target.blur()}
-                        placeholder="number of"
-                        invalid={errors.duration && true}
-                      />
-                    )}
-                  />
-                </Col>
-                <h5 className="fw-light m-0">Days</h5>
-              </Col>
-              {errors.duration && <FormFeedback>{errors.duration.message}</FormFeedback>}
             </Row>
             {errors.listingOption && <FormFeedback>{errors.listingOption.message}</FormFeedback>}
           </CardBody>

@@ -1,6 +1,10 @@
 import axios from 'axios';
-import { getItem } from '../../utility/localStorageControl';
+import { getItem, setItem } from '../../utility/localStorageControl';
 import { getTeamId } from '../../utility/Utils';
+// eslint-disable-next-line import/no-cycle
+import errorHandler from '../../utility/errorHandler';
+
+const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
 
 const authHeader = () => ({
   Authorization: `Bearer ${getItem('access_token')}`,
@@ -103,5 +107,46 @@ class DataService {
     });
   }
 }
+
+let refreshTokenRequest;
+
+const resetRefreshTokenRequest = () => {
+  refreshTokenRequest = null;
+};
+const makeActualAuthenticationRequest = () => {
+  const refreshToken = getItem('refresh_token');
+  const response = axios.post(`${apiAuthEndpoint}/api/v1/auth/refresh`, {
+    refresh_token: refreshToken,
+  });
+  return response;
+};
+const getRefreshToken = () => {
+  if (!refreshTokenRequest) {
+    refreshTokenRequest = makeActualAuthenticationRequest();
+    refreshTokenRequest.then(resetRefreshTokenRequest).catch((err) => errorHandler(err));
+  }
+  return refreshTokenRequest;
+};
+
+client.interceptors.request.use(async (req) => {
+  const accessToken = getItem('access_token');
+  const accessTokenExpiry = getItem('access_token_expires');
+  const refreshTokenExpiry = getItem('refresh_token_expires');
+  if (accessToken) {
+    if (refreshTokenExpiry > new Date().valueOf()) {
+      if (accessTokenExpiry < new Date().valueOf()) {
+        await getRefreshToken().then((res) => {
+          setItem('access_token', res.data.data.access_token);
+          setItem('access_token_expires', res.data.data.access_token_expiry);
+          req.headers.Authorization = `Bearer ${res.data.data.access_token}`;
+        });
+      }
+    } else {
+      req.headers.Authorization = `Bearer ${accessToken}`;
+    }
+  }
+
+  return req;
+});
 
 export default DataService;

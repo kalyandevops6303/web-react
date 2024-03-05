@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react';
-// ** Third Party Components
 import classNames from 'classnames';
 import { Info } from 'react-feather';
-
-// ** Custom Components
-
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-// ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, CardText, ButtonGroup, Button, UncontrolledTooltip } from 'reactstrap';
 import DateTime from '../../../lib/date-time';
 import round from '../../../lib/round';
@@ -27,6 +23,7 @@ const EarningCard = () => {
 
   const userDetailsData = useSelector(userData);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const onSuccess = (data) => {
     const currentMonth = {
@@ -59,12 +56,19 @@ const EarningCard = () => {
     }
   };
 
+  const onViewAllClick = () => {
+    navigate('/payments');
+  };
+
   return (
     <EarningCardWrapper>
       <Card className="card-payment">
         <CardHeader className="earning-head">
           <CardTitle tag="h4">{userDetailsData?.user_type === userTypes.client ? 'Payments' : 'Earnings'}</CardTitle>
-          <CardText className="d-none text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary">
+          <CardText
+            className="text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary cursor-pointer"
+            onClick={onViewAllClick}
+          >
             View All
           </CardText>
         </CardHeader>

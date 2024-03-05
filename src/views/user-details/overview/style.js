@@ -34,6 +34,12 @@ const StatboxWrap = styled(Card)`
     font-size: 13px;
   }
 
+  .bg-light-orange {
+    background: ${theme.badgeIconOrange}1f; // light-orange
+    svg {
+      color: ${theme.badgeIconOrange}; // orange
+    }
+  }
   .bg-light-turquoise {
     background: ${theme.turquoiseColor}1f; // light-turquoise
     svg {

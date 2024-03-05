@@ -11,6 +11,7 @@ import {
 } from '../../services/paymentDetailService';
 import errorHandler from '../../utility/errorHandler';
 import {
+  milestoneListFailure,
   milestoneListRequest,
   milestoneListSuccess,
   milestonePaymentFailure,
@@ -34,7 +35,7 @@ const getMilestonePaymentListing = (project_id, onSuccess) => async (dispatch) =
     dispatch(milestoneListSuccess(res.data.data));
     onSuccess(res.data.data);
   } catch (error) {
-    errorHandler(error, milestonePaymentFailure);
+    errorHandler(error, milestoneListFailure);
   }
 };
 
