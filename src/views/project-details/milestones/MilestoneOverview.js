@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { ArrowLeft } from 'react-feather';
-import Proptypes from 'prop-types';
 import { Button } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import theme from '../../../configs/themeVariables';
-import MilestoneDetailsTab from './MilestoneDetailsTab';
 import { BackButtonContainer, BackIconContainer } from '../../CreateProject/style';
 import { StickyHeader, TabWrapper } from './style';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
@@ -18,7 +16,7 @@ import FeedbackForCompleteModal from '../../modals/FeedbackForCompleteModal';
 import AcceptMilestoneModal from '../../modals/AcceptMilestone';
 import FeedbackForAcceptModal from '../../modals/FeedbackForAcceptModal';
 
-const MilestoneOverview = ({ setSelectedMilestoneIndex, selectedMilestone, fetchProjectMilestones }) => {
+const MilestoneOverview = () => {
   const userData = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
 
@@ -99,13 +97,6 @@ const MilestoneOverview = ({ setSelectedMilestoneIndex, selectedMilestone, fetch
         </div>
       </StickyHeader>
 
-      {selectedMilestone && (
-        <MilestoneDetailsTab
-          setSelectedMilestoneIndex={setSelectedMilestoneIndex}
-          fetchProjectMilestones={fetchProjectMilestones}
-          selectedMilestone={selectedMilestone}
-        />
-      )}
       {raiseDisputeModal && (
         <RaiseDisputeModal
           modal={raiseDisputeModal}
@@ -154,10 +145,6 @@ const MilestoneOverview = ({ setSelectedMilestoneIndex, selectedMilestone, fetch
   );
 };
 
-MilestoneOverview.propTypes = {
-  selectedMilestone: Proptypes.object.isRequired,
-  fetchProjectMilestones: Proptypes.func.isRequired,
-  setSelectedMilestoneIndex: Proptypes.func.isRequired,
-};
+MilestoneOverview.propTypes = {};
 
 export default MilestoneOverview;

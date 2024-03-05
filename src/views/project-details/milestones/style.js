@@ -165,4 +165,20 @@ const StickyHeader = styled.div`
     margin-top: 3.6rem;
   }
 `;
-export { UserNameWrapper, DocumentsWrapper, TabWrapper, StickyHeader };
+const MilestoneAccordionWrap = styled.div`
+  .accordion-header {
+    padding: 0.5rem 1.2rem;
+  }
+  .accordion-title {
+    font-size: 1.125rem;
+  }
+  .accordion-body {
+    color: inherit;
+    padding: 0rem 2rem 2rem 2rem;
+  }
+  .scroll-wrap {
+    overflow-y: auto;
+    max-height: 400px;
+  }
+`;
+export { UserNameWrapper, DocumentsWrapper, TabWrapper, StickyHeader, MilestoneAccordionWrap };

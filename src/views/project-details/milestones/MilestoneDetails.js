@@ -5,6 +5,9 @@ import MilestoneOverview from './MilestoneOverview';
 import { getMilestoneDetail } from '../../../redux/actions/milestoneActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { clearData } from '../../../redux/reducers/milestone';
+import MilestoneDetailsTab from './MilestoneDetailsTab';
+import { TabWrapper } from './style';
+import SubmissionHistory from './SubmissionHistory';
 
 const MilestoneDetails = () => {
   const param = useParams();
@@ -21,7 +24,21 @@ const MilestoneDetails = () => {
   if (isLoading) {
     return <ComponentSpinner />;
   }
-  return <MilestoneOverview selectedMilestone={currentMilestone} />;
+  return (
+    <div style={{ minHeight: '75rem' }}>
+      <MilestoneOverview selectedMilestone={currentMilestone} />
+      <TabWrapper>
+        {currentMilestone && (
+          <MilestoneDetailsTab
+            // setSelectedMilestoneIndex={setSelectedMilestoneIndex}
+            // fetchProjectMilestones={fetchProjectMilestones}
+            selectedMilestone={currentMilestone}
+          />
+        )}
+      </TabWrapper>
+      <SubmissionHistory selectedMilestone={currentMilestone} />
+    </div>
+  );
 };
 
 export default MilestoneDetails;

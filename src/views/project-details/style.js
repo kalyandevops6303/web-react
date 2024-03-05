@@ -13,7 +13,6 @@ const TableWrapper = styled.div`
     border-bottom: 1px solid #ebe9f1;
     letter-spacing: 1px;
     background: #f3f2f7;
-
     font-family: Montserrat;
     font-size: 12px;
     font-style: normal;
@@ -35,6 +34,74 @@ const TableWrapper = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    -webkit-line-clamp: 2; /* Number of lines to show */
+  }
+`;
+
+const SubmissionHistoryWrapper = styled.div`
+  border-radius: 6px;
+  border: 1px solid #ebe9f1;
+  background: #fff;
+  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+  .header {
+    color: ${theme.headingTextColor};
+    padding: 0.4rem;
+    margin: 0;
+    border-bottom: 1px solid #ebe9f1;
+    letter-spacing: 1px;
+    background: #f3f2f7;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-style: normal;
+  }
+  .tbody {
+    padding: 1rem 0.4rem;
+    margin: 0;
+    .desc-input {
+      resize: none;
+      scrollbar-width: none;
+      padding: 0.5rem 0.6rem !important;
+    }
+  }
+  .border-bottom {
+    border-bottom: 1px solid ${theme.darkGreyBorderColor};
+  }
+  .truncated-filename {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2; /* Number of lines to show */
+  }
+  .table-row {
+    padding: 0.2rem;
+    .table-cell {
+      padding: 0.4rem 0.8rem;
+    }
+    .table-cell-td {
+      padding: 0.8rem;
+      min-height: 4rem;
+    }
+
+    .cell-file-name {
+      width: 20%;
+    }
+
+    .cell-description {
+      width: 24%;
+    }
+
+    .cell-submitted-by {
+      width: 16%;
+    }
+
+    .cell-submitted-on {
+      width: 24%;
+    }
+
+    .cell-action {
+      width: 14%;
+    }
   }
 `;
 const LeftSidebarProjectDetailsWrapper = styled.div`
@@ -625,4 +692,5 @@ export {
   RatingTag,
   UserNameWrapper,
   TableWrapper,
+  SubmissionHistoryWrapper,
 };

@@ -1,6 +1,13 @@
 import errorHandler from '../../utility/errorHandler';
-import { milestoneDetailFailure, milestoneDetailRequest, milestoneDetailSuccess } from '../reducers/milestone';
-import { milestoneDetailService } from '../../services/projectMilestoneService';
+import {
+  milestoneDetailFailure,
+  milestoneDetailRequest,
+  milestoneDetailSuccess,
+  submissionHistoryFailure,
+  submissionHistoryRequest,
+  submissionHistorySuccess,
+} from '../reducers/milestone';
+import { getSubmissionHistoryService, milestoneDetailService } from '../../services/projectMilestoneService';
 
 const getMilestoneDetail =
   ({ projectId }) =>
@@ -14,5 +21,18 @@ const getMilestoneDetail =
     }
   };
 
-// eslint-disable-next-line import/prefer-default-export
-export { getMilestoneDetail };
+const getSubmissionHistory =
+  ({ milestoneId, metaData }) =>
+  async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(submissionHistoryRequest());
+    }
+    try {
+      const res = await getSubmissionHistoryService({ milestoneId, metaData });
+      dispatch(submissionHistorySuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, submissionHistoryFailure);
+    }
+  };
+
+export { getMilestoneDetail, getSubmissionHistory };

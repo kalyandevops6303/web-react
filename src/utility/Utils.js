@@ -298,7 +298,7 @@ export const renderFilePreview = (file) => {
   if (file?.name?.toLowerCase().endsWith('.pdf')) {
     return <img className="rounded me-75" alt="pdf" src={PDFIcon} height="22" width="22" />;
   }
-  return <FileText size="26" className="me-75 mb-25" />;
+  return <FileText size="20" className="me-75 mb-25" />;
 };
 
 export const renderFileSize = (size) => {
@@ -565,4 +565,14 @@ export const getReadType = ({ primaryFilter, secondFilterState, userType }) => {
   }
 
   return '';
+};
+
+export const handleLinkOpen = (URL) => {
+  if (URL && (URL.startsWith('http://') || URL.startsWith('https://'))) {
+    // eslint-disable-next-line no-undef
+    window.open(URL, '_blank');
+  } else {
+    // eslint-disable-next-line no-undef
+    window.open(`https://${URL}`, '_blank');
+  }
 };

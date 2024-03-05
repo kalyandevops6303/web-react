@@ -41,6 +41,11 @@ const milestoneFileUploadService = ({ file_name, project_id, milestone_id }) =>
     `${API.projectMilestones.projectFileUpload}?filename=${file_name}&project_id=${project_id}&milestone_id=${milestone_id}`,
   );
 
+const getSubmissionHistoryService = ({ metaData, milestoneId }) =>
+  DataService.get(
+    `${API.projectMilestones.getSubmissionHistory}?milestone_id=${milestoneId}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+  );
+
 export {
   submitMilestoneService,
   rejectMilestoneService,
@@ -51,4 +56,5 @@ export {
   milestoneTransactionsServiceForClient,
   milestoneTransactionsServiceForTeam,
   milestoneDetailService,
+  getSubmissionHistoryService,
 };
