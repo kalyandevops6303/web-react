@@ -649,6 +649,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
+      {!isLoading && (
+        <p className="font-medium-1 fw-bolder">
+          Search Results Found{' '}
+          {selectMarkeMetaData?.total_records < 10
+            ? `0${selectMarkeMetaData?.total_records}`
+            : selectMarkeMetaData?.total_records}
+        </p>
+      )}
+
       {isLoading ? (
         <ComponentSpinner />
       ) : (
