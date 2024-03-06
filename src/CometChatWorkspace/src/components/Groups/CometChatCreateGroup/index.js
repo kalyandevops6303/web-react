@@ -25,12 +25,17 @@ import {
   closeCreateGroupPopupButton,
   endLine,
   groupIconImg,
-  groupIconImgContainer,
   uploadIconImg,
   groupNameHeader,
+  selectMemeberHeader,
   btnDiv,
   closeBtn,
   closeImgDiv,
+  lowerBodyStyle,
+  groupIconContainer,
+  groupIconStyle,
+  avatarInputStyle,
+  footerStyle,
 } from './style';
 
 import creatingIcon from './resources/creating.svg';
@@ -41,6 +46,9 @@ class CometChatCreateGroup extends React.Component {
 
   constructor(props) {
     super(props);
+    // CometChat.getLoggedinUser()
+    //   .then((user) => (this.loggedInUser = user))
+    //   .catch((error) => this.errorHandler('SOMETHING_WRONG'));
 
     this.state = {
       errorMessage: '',
@@ -53,7 +61,11 @@ class CometChatCreateGroup extends React.Component {
       // enablePasswordGroup: false,
       enablePrivateGroup: true,
       selectedUsers: [],
+      groupAvatarSrc: undefined,
+      isAvatarLoading: false,
     };
+
+    this.fileInputRef = React.createRef();
   }
 
   componentDidMount() {
@@ -149,6 +161,74 @@ class CometChatCreateGroup extends React.Component {
         selectedUsers: [...selectedUsers, user.uid],
       });
     }
+    // console.log('selected users', this.state.selectedUsers);
+  };
+
+  // Function to handle file input changes and update the group icon
+
+  handleFileInputChange = async (event) => {
+    const file = event.target.files[0];
+    // const { guid } = this.props.data.avatar.props.group;
+    this.setState({ isAvatarLoading: true });
+
+    const baseHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+
+    try {
+      // Step 1: GET the upload URL using the filename from the uploaded file
+      const response = await fetch(`https://test-api.trumio.ai:2443/api/v1/chat/group-icon?filename=${file.name}`, {
+        method: 'GET',
+        headers: {
+          ...baseHeaders,
+          'x-ms-blob-type': 'BlockBlob',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      const { upload_url, file_url } = responseData.data;
+
+      // Step 2: Upload the file to the received upload URL
+      const uploadResponse = await fetch(upload_url, {
+        method: 'PUT',
+        headers: {
+          'x-ms-blob-type': 'BlockBlob',
+          'Content-Type': file.type,
+        },
+        body: file,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error(`Error uploading the file: ${uploadResponse.status} ${uploadResponse.statusText}`);
+      }
+
+      // Step 3: Update the group icon using the received file URL
+      // let group = new CometChat.Group(guid);
+      // group.setIcon(file_url);
+      // CometChat.updateGroup(group).then(
+      //   (group) => {
+      //     console.log('Group avatar updated successfully');
+      //     this.setState({
+      //       isAvatarLoading: false,
+      //       groupAvatarSrc: file_url,
+      //     });
+      //   },
+      //   (error) => {
+      //     console.log('Group avatar update failed', error);
+      //   },
+      // );
+      this.setState({
+        isAvatarLoading: false,
+        groupAvatarSrc: file_url,
+      });
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   validate = () => {
@@ -211,7 +291,7 @@ class CometChatCreateGroup extends React.Component {
         break;
     }
 
-    const group = new CometChat.Group(guid, name, type, password);
+    const group = new CometChat.Group(guid, name, type, password, this.state.groupAvatarSrc);
     group.setMetadata({ category: 'custom_group' });
     const createGroupMembersObjArray = (users) => {
       const members = [];
@@ -221,8 +301,10 @@ class CometChatCreateGroup extends React.Component {
       return members;
     };
     const members = createGroupMembersObjArray(this.state.selectedUsers);
+    // console.log("Group members object array", GroupMembers());
     CometChat.createGroupWithMembers(group, members, [])
       .then((newGroupObj) => {
+        console.log('Group created successfully:', newGroupObj);
         this.setState({ creatingGroup: false });
 
         if (typeof newGroupObj === 'object' && Object.keys(newGroupObj).length) {
@@ -356,69 +438,82 @@ class CometChatCreateGroup extends React.Component {
         <CometChatBackdrop show={true} clicked={this.props.close} />
         <div css={modalWrapperStyle(this.context)} className="modal__creategroup">
           <div css={closeImgDiv()}>
-            <img css={closeBtn()} onClick={() => this.props.close()} src={closeIcon} />
+            <img
+              className="modal__creategroup__closebtn"
+              css={closeBtn()}
+              onClick={() => this.props.close()}
+              src={closeIcon}
+            />
           </div>
           <div css={modalBodyStyle()} className="modal__body">
-            <table css={modalTableStyle(this.props)}>
-              <caption css={tableCaptionStyle()} className="modal__title">
+            <div css={modalTableStyle(this.props)}>
+              <div css={tableCaptionStyle()} className="modal__title">
                 {' '}
                 {Translator.translate('Create New Group', this.context.language)}{' '}
-              </caption>
-              <tbody css={tableBodyStyle()} className="modal__search">
-                <tr css={groupIconImgContainer()}>
-                  <img css={groupIconImg()} src={groupIcon} />
-                  <img css={uploadIconImg()} src={uploadImage} />
-                </tr>
-                <tr>
-                  <td>
-                    <div css={modalErrorStyle(this.context)}>{this.state.errorMessage}</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <p css={groupNameHeader()}>GROUP NAME</p>
+              </div>
+              <div css={tableBodyStyle()} className="modal__search">
+                <div className="upload__avatar__container" css={groupIconContainer()}>
+                  <div
+                    className="upload__avatar"
+                    css={groupIconStyle()}
+                    onClick={() => this.fileInputRef.current.click()}
+                  >
+                    {/* add a loading effect */}
+                    <img css={groupIconImg()} src={this.state.groupAvatarSrc || groupIcon} />
+                    <img css={uploadIconImg()} src={uploadImage} />
                     <input
-                      autoComplete="off"
-                      css={inputStyle(this.props)}
-                      className="search__input"
-                      placeholder={Translator.translate('Research & Development', this.context.language)}
-                      type="text"
-                      tabIndex="1"
-                      onChange={this.nameChangeHandler}
-                      value={this.state.name}
+                      type="file"
+                      css={avatarInputStyle()}
+                      ref={this.fileInputRef}
+                      onChange={this.handleFileInputChange}
                     />
-                  </td>
-                </tr>
-                {/* {groupTypeSelect} */}
-                {/* {password} */}
-                {/* <hr css={endLine()} />
-								<tr>
-									<td>
-										<p css={selectMemeberHeader()} >SELECT GROUP MEMBERS</p>
-									</td>
-								</tr> */}
-              </tbody>
+                  </div>
+                </div>
+                <div>
+                  <div css={modalErrorStyle(this.context)}>{this.state.errorMessage}</div>
+                </div>
+                <div>
+                  <p css={groupNameHeader()}>GROUP NAME</p>
+                </div>
+
+                <input
+                  autoComplete="off"
+                  css={inputStyle(this.props)}
+                  className="search__input"
+                  placeholder={Translator.translate('Research & Development', this.context.language)}
+                  type="text"
+                  tabIndex="1"
+                  onChange={this.nameChangeHandler}
+                  value={this.state.name}
+                />
+              </div>
               <hr css={endLine()} />
-              <CometChatUserList type={'group'} onItemClick={this.handleUserItemClick} />
-              <div css={btnDiv()}>
-                {/* <tfoot
-									css={tableFootStyle(this.context, this.state, creatingIcon)}
-								> */}
-                {/* <tr className='creategroup'>
+              <div css={lowerBodyStyle()} className="lower__body">
+                <CometChatUserList type={'group'} onItemClick={this.handleUserItemClick} />
+              </div>
+              <div className="create__group__footer" css={footerStyle()}>
+                <hr css={endLine()} />
+                <div css={btnDiv()}>
+                  <button onClick={() => this.props.close()} css={closeCreateGroupPopupButton()}>
+                    Close
+                  </button>
+                  {/* </td>
 										<td> */}
-                <button onClick={() => this.props.close()} css={closeCreateGroupPopupButton()}>
-                  Close
-                </button>
-                {/* </td>
-										<td> */}
-                <button type="button" tabIndex="4" css={createGroupButton()} onClick={this.createGroup}>
-                  <span>{createText}</span>
-                </button>
-                {/* </td>
+                  <button
+                    className="create__group__button"
+                    type="button"
+                    tabIndex="4"
+                    css={createGroupButton()}
+                    onClick={this.createGroup}
+                  >
+                    <span>{createText}</span>
+                  </button>
+                  {/* </td>
 									</tr>
 								</tfoot> */}
+                </div>
               </div>
-            </table>
+            </div>
           </div>
         </div>
       </React.Fragment>

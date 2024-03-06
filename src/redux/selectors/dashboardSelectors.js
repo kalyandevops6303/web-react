@@ -111,6 +111,9 @@ const totalReferralAmountLoading = createSelector(
   (dashboard) => dashboard.totalReferralAmountLoading,
 );
 
+const downloadUrl = createSelector(dashboardSelector, (dashboard) => dashboard.downloadUrl);
+const downloadUrlLoading = createSelector(dashboardSelector, (dashboard) => dashboard.downloadUrlLoading);
+
 export {
   userData,
   userDataLoading,
@@ -154,4 +157,6 @@ export {
   totalReferralAmountLoading,
   selectProjectInvitation,
   selectProjectInvitationLoading,
+  downloadUrl,
+  downloadUrlLoading,
 };

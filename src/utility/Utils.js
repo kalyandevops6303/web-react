@@ -525,6 +525,39 @@ export const getReadType = ({ primaryFilter, secondFilterState, userType }) => {
   return '';
 };
 
+export const downloadUploadedFile = async ({ file }) => {
+  toast.loading('Downloading file...');
+  try {
+    // Convert the binary file data into a Blob
+    const blob = new Blob([file]);
+    // Create a URL for the Blob
+    // eslint-disable-next-line no-undef
+    const url = window.URL.createObjectURL(blob);
+    // Create an anchor element
+    // eslint-disable-next-line no-undef
+    const a = document.createElement('a');
+    // Set the href to the Blob URL
+    a.href = url;
+    // Set the download attribute to the file name
+    a.download = file?.name || 'document';
+    // Append the anchor to the body
+    // eslint-disable-next-line no-undef
+    document.body.appendChild(a);
+    // Click the anchor to start the download
+    a.click();
+    // Remove the anchor from the body
+    a.remove();
+    // Revoke the URL to free up memory
+    // eslint-disable-next-line no-undef
+    window.URL.revokeObjectURL(url);
+    toast.dismiss();
+  } catch (error) {
+    // Handle any errors
+    console.error('Error downloading file:', error);
+    toast.error('Error downloading file');
+  }
+};
+
 export const getModifiedProjectResponse = ({ data }) => {
   const project = data?.project;
   return {

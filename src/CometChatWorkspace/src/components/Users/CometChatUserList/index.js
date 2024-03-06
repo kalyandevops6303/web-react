@@ -4,7 +4,7 @@ import React from 'react';
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { CometChat } from '@cometchat-pro/chat';
-import closeIcon from '../../../../../assets/images/chat/closeIcon.png';
+import closeIcon from './resources/closeIcon.png';
 import { UserListManager } from './controller';
 
 import { CometChatUserListItem } from '../../Users';
@@ -174,6 +174,7 @@ class CometChatUserList extends React.PureComponent {
 
     let val = e.target.value;
     this.UserListManager = new UserListManager(this.getContext(), val);
+    // console.log(this.UserListManager);
     this.UserListManager.initializeUsersRequest()
       .then((response) => {
         this.timeout = setTimeout(() => {

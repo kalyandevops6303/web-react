@@ -1,31 +1,41 @@
 import React from 'react';
-import closeIcon from '../../../../../assets/images/chat/closeIcon.png';
-import Email from '../../../../../assets/images/chat/Email.png';
-import Phone from '../../../../../assets/images/chat/Phone.png';
-import Clock from '../../../../../assets/images/chat/Clock.png';
-import block from '../../../../../assets/images/chat/block.png';
-import media from '../../../../../assets/images/chat/media.png';
-import deleteIcon from '../../../../../assets/images/chat/deleteIcon.png';
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import { jsx } from '@emotion/react';
+import closeIcon from './resources/closeIcon.png';
+import Phone from './resources/Phone.png';
+import Email from './resources/Email.png';
+import Clock from './resources/Clock.png';
+import block from './resources/block.png';
+import media from './resources/media.png';
+import deleteIcon from './resources/deleteIcon.png';
+import { CometChat } from '@cometchat-pro/chat';
 import { CometChatBackdrop } from '../../Shared';
 import {
-  container,
-  closeImg,
-  closeImgDiv,
-  avatarPresenceDiv,
-  chatThumbnailDiv,
-  profileNameDiv,
-  profileName,
-  profileDesignation,
-  aboutDiv,
-  aboutHeader,
-  aboutDescription,
-  personalInfoDiv,
-  personalInfoHeader,
-  optionHeader,
-  labelImage,
-  infoStyle,
-  optionDiv,
+  containerStyle,
+  closeImgStyle,
+  closeImgContainerStyle,
+  chatThumbnailContainerStyle,
+  profileNameStyle,
+  profileDesignationStyle,
+  aboutContainerStyle,
+  aboutDescriptionStyle,
+  personalInfoContainerStyle,
+  infoItemStyle,
+  infoItemContentStyle,
+  mainInfoStyle,
+  optionsStyle,
+  profileNameContainerStyle,
+  sectionHeaderStyle,
+  infoItemIconStyle,
+  bodyStyle,
+  emailItemStyle,
+  infoWarnStyle,
+  warnContentStyle,
+  emailItemContentStyle,
+  endLineStyle,
 } from './style';
+import { CometChatSharedMediaView } from '../../Shared/CometChatSharedMediaView';
 class CustomProfileSidebar extends React.Component {
   item;
   // static contextType = CometChatContext;
@@ -33,57 +43,160 @@ class CustomProfileSidebar extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      user: null,
+    };
   }
 
+  componentDidMount() {
+    const uid = this.props.data.avatar.props.user.uid;
+    CometChat.getUser(uid).then(
+      (user) => {
+        console.log('User details fetched for user:', user);
+        this.setState({ user });
+      },
+      (error) => {
+        console.log('User details fetching failed with error:', error);
+      },
+    );
+  }
+
+  toggleBlock = () => {
+    const { blockedByMe, hasBlockedMe, uid } = this.state.user;
+
+    this.setState({
+      user: {
+        ...this.state.user,
+        blockedByMe: !blockedByMe,
+      },
+    });
+
+    if (blockedByMe) {
+      // unblock
+      CometChat.unblockUsers([uid]).then(
+        () => {
+          console.log('User unblocked');
+        },
+        (error) => {
+          console.log('Error unblocking user', error);
+          this.setState({
+            user: {
+              ...this.state.user,
+              blockedByMe,
+            },
+          });
+        },
+      );
+    } else {
+      // block
+      CometChat.blockUsers([uid]).then(
+        () => {
+          console.log('User blocked');
+        },
+        (error) => {
+          console.log('Error blocking user', error);
+          this.setState({
+            user: {
+              ...this.state.user,
+              blockedByMe,
+            },
+          });
+        },
+      );
+    }
+  };
+
   render() {
+    if (!this.state.user) {
+      return null;
+    }
+    const { metadata } = this.state.user;
+    const about = metadata?.about || 'Not Available';
+    const role = metadata?.title || 'Not Available';
+    const email = metadata?.email || 'Not Available';
+    const contactNumber = metadata?.contactNumber || 'Not Available';
+    const weekdaysAvailability = metadata?.availability?.weekdays_avl;
+    const weekdays = weekdaysAvailability?.days?.map((day) => day.substring(0, 3)).join(', ') || 'Not Available';
+    const startTime = weekdaysAvailability?.start_time;
+    const endTime = weekdaysAvailability?.end_time;
+
+    const workingHours = weekdaysAvailability ? `${weekdays} ${startTime}AM - ${endTime}PM` : 'Not Available';
+
     return (
       <React.Fragment>
-        <CometChatBackdrop style={{ zIndex: -1 }} show={true} clicked={this.props.closePopup} />
-        <div style={container()}>
-          <div style={closeImgDiv()}>
-            <img onClick={() => this.props.closePopup()} style={closeImg()} src={closeIcon} />
+        {/* <CometChatBackdrop css={{ zIndex: -1 }} show={true} clicked={this.props.closePopup} /> */}
+        <div className="custom__profile__sidebar" css={containerStyle()}>
+          <div className="cross" css={closeImgContainerStyle()}>
+            <img onClick={() => this.props.closePopup()} css={closeImgStyle()} src={closeIcon} />
           </div>
-          <div style={avatarPresenceDiv()}>
-            <div style={chatThumbnailDiv()} className="chat__thumbnail">
-              {this.props.data.avatar}
-              {this.props.data.presence}
+          <div className="custom__profile__sidebar__body" css={bodyStyle()}>
+            <div className="main__info" css={mainInfoStyle()}>
+              <div css={chatThumbnailContainerStyle()} className="chat__thumbnail">
+                {this.props.data.avatar}
+                {this.props.data.presence}
+              </div>
+              <div className="profile__name" css={profileNameContainerStyle()}>
+                <h3 className="profile__name_content" css={profileNameStyle()}>
+                  {this.props.data.avatar.props.user.name}
+                </h3>
+                <p className="profile__role" css={profileDesignationStyle()}>
+                  {role}
+                </p>
+              </div>
             </div>
-          </div>
-          <div style={profileNameDiv()}>
-            <h3 style={profileName()}>{this.props.data.avatar.props.user.name}</h3>
-            <p style={profileDesignation()}>UI/UX Designer</p>
-          </div>
-          <div style={aboutDiv()}>
-            <p style={aboutHeader()}>ABOUT</p>
-            <p style={aboutDescription()}>
-              While most people enjoy casino gambling, sports betting, lottery and bingo playing for the fun and
-              excitement it provides, others may experience gambling
-            </p>
-          </div>
-          <div style={personalInfoDiv()}>
-            <p style={personalInfoHeader()}>PERSONAL INFORMATION</p>
-            <label style={labelImage()}>
-              <img src={Email} /> <span style={infoStyle()}>carrie@gmail.com</span>
-            </label>
-            <label style={labelImage()}>
-              <img src={Phone} /> <span style={infoStyle()}>+1(123) 456 - 7890</span>
-            </label>
-            <label style={labelImage()}>
-              <img src={Clock} /> <span style={infoStyle()}>Mon - Fri 10AM - 8PM</span>
-            </label>
-          </div>
-          <div style={optionDiv()}>
-            <p style={optionHeader()}>OPTIONS</p>
-            <label style={labelImage()}>
-              <img src={media} /> <span style={infoStyle()}>Shared Media</span>
-            </label>
-            <label style={labelImage()}>
-              <img src={deleteIcon} /> <span style={infoStyle()}>Delete Contact</span>
-            </label>
-            <label style={labelImage()}>
-              <img src={block} /> <span style={infoStyle()}>Block Contact</span>
-            </label>
+
+            <div className="profile__about" css={aboutContainerStyle()}>
+              <p className="about__header" css={sectionHeaderStyle()}>
+                ABOUT
+              </p>
+              <p className="about__description" css={aboutDescriptionStyle()}>
+                {about}
+              </p>
+            </div>
+
+            <hr css={endLineStyle()} />
+
+            <div className="user__shared__media">
+              <CometChatSharedMediaView containerHeight="225px" theme={this.props.theme} lang={this.context.language} />
+            </div>
+
+            <hr css={endLineStyle()} />
+
+            <div className="profile__personal__info" css={personalInfoContainerStyle()}>
+              <p className="personal__info__header" css={sectionHeaderStyle()}>
+                PERSONAL INFORMATION
+              </p>
+              <a className="personal__info__item" css={emailItemStyle()} href={'mailto:' + email || '#'}>
+                <img css={infoItemIconStyle()} src={Email} />{' '}
+                <span css={[infoItemContentStyle(), emailItemContentStyle()]}>{email}</span>
+              </a>
+              <div className="personal__info__item" css={infoItemStyle()}>
+                <img css={infoItemIconStyle()} src={Phone} /> <span css={infoItemContentStyle()}>{contactNumber}</span>
+              </div>
+              <div className="personal__info__item" css={infoItemStyle()}>
+                <img css={infoItemIconStyle()} src={Clock} /> <span css={infoItemContentStyle()}>{workingHours}</span>
+              </div>
+            </div>
+
+            <hr css={endLineStyle()} />
+
+            <div className="profile__options" css={optionsStyle()}>
+              {/* <p className="options__header" css={sectionHeaderStyle()}>
+                OPTIONS
+              </p> */}
+              {/* <div className="options__item" css={infoItemStyle()}>
+                <img css={infoItemIconStyle()} src={media} /> <span css={infoItemContentStyle()}>Shared Media</span>
+              </div> */}
+              {/* <div className="options__item" css={infoItemStyle()}>
+                <img css={infoItemIconStyle()} src={deleteIcon} /> <span css={infoItemContentStyle()}>Delete Contact</span>
+              </div> */}
+              <div onClick={this.toggleBlock} className="options__item" css={[infoItemStyle(), infoWarnStyle()]}>
+                <img css={[infoItemIconStyle()]} src={block} />{' '}
+                <span css={[infoItemContentStyle(), warnContentStyle()]}>
+                  {this.state.user.blockedByMe ? 'Unblock' : 'Block'}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </React.Fragment>
