@@ -10,6 +10,7 @@ import AvatarGroup from '@components/avatar-group';
 import { formatDate } from '../../../utility/Utils';
 import MilestoneInfo from './MilestoneInfo';
 import { userTypes } from '../../../utility/constants/Constant';
+import { CustomBadge } from '../../styled';
 
 const getTagSettings = (tag) => {
   if (tag === 'COMPLETED') {
@@ -113,7 +114,11 @@ const MilestoneListing = ({ milestonesData }) => {
                 </div>
 
                 <section className="d-flex align-items-center">
-                  <Badge color={getTagSettings(mile.status).theme}>{getTagSettings(mile.status).text}</Badge>
+                  <CustomBadge>
+                    <Badge color="badge" className={`${mile?.status}`}>
+                      {getTagSettings(mile.status).text}
+                    </Badge>
+                  </CustomBadge>
                   <div className="ms-2">
                     <CardText className="fw-normal mb-0 fs-6">Start Date</CardText>
                     <CardText className="fw-bolder fs-5 mb-0">

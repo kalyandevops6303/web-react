@@ -4,8 +4,8 @@ import DataService from '../configs/dataService/dataService';
 const projectMilestonesService = (projectId) =>
   DataService.get(`${API.projectMilestones.getProjectMilestones}?project_id=${projectId}`);
 
-const milestoneDetailService = (projectId) =>
-  DataService.get(`${API.projectMilestones.getProjectMilestones}?project_id=${projectId}`);
+const milestoneDetailService = (milestoneId) =>
+  DataService.get(`${API.projectMilestones.getSingleMilestone}?milestone_id=${milestoneId}`);
 
 const milestoneTransactionsServiceForTeam = (projectId, milestoneId) => {
   let QUERY = `${API.projectMilestones.getProjectTransactionsForTalent}?project_id=${projectId}`;
@@ -27,7 +27,7 @@ const milestoneTransactionsServiceForClient = (projectId, milestoneId) => {
 const saveMilestoneService = (milestone_id, data) =>
   DataService.put(`${API.projectMilestones.saveMilestone}?milestone_id=${milestone_id}`, data);
 
-const submitMilestoneService = (milestone_id, data) =>
+const submitMilestoneService = ({ milestone_id, data }) =>
   DataService.put(`${API.projectMilestones.submitMilestone}?milestone_id=${milestone_id}`, data);
 
 const acceptMilestoneService = (milestone_id) =>
@@ -46,7 +46,11 @@ const getSubmissionHistoryService = ({ metaData, milestoneId }) =>
     `${API.projectMilestones.getSubmissionHistory}?milestone_id=${milestoneId}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
   );
 
+const markCompelteService = (milestone_id) =>
+  DataService.put(`${API.projectMilestones.markComplete}?milestone_id=${milestone_id}`);
+
 export {
+  markCompelteService,
   submitMilestoneService,
   rejectMilestoneService,
   projectMilestonesService,

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { Button } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-
+import Proptypes from 'prop-types';
 import theme from '../../../configs/themeVariables';
 import { BackButtonContainer, BackIconContainer } from '../../CreateProject/style';
 import { StickyHeader, TabWrapper } from './style';
@@ -15,17 +15,18 @@ import MarkMilestoneCompleteModal from '../../modals/MarkMilestoneCompleteModal'
 import FeedbackForCompleteModal from '../../modals/FeedbackForCompleteModal';
 import AcceptMilestoneModal from '../../modals/AcceptMilestone';
 import FeedbackForAcceptModal from '../../modals/FeedbackForAcceptModal';
+import { accpetMilestone, markComplete } from '../../../redux/actions/milestoneActions';
 
-const MilestoneOverview = () => {
+const MilestoneOverview = ({ selectedMilestone }) => {
   const userData = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
-
+  const dispatch = useDispatch();
   const [raiseDisputeModal, setRaiseDisputeModal] = useState(null);
   const [markCompleteModal, setMarkCompleteModal] = useState(false);
   const [feedbackAcceptModal, setFeedbackAcceptModal] = useState(false);
   const [acceptModal, setAcceptModal] = useState(false);
   const [feedbackCompleteModal, setFeedbackCompleteModal] = useState(false);
-
+  const submissionHistory = useSelector((state) => state.milestone.submissionHistory);
   const navigate = useNavigate();
   const param = useParams();
 
@@ -37,34 +38,26 @@ const MilestoneOverview = () => {
   };
 
   const onComplete = () => {
-    setMarkCompleteModal(false);
-    setFeedbackCompleteModal(true);
+    const onSuccess = () => {
+      setMarkCompleteModal(false);
+      setFeedbackCompleteModal(true);
+    };
+
+    dispatch(markComplete({ milestoneId: param.milestoneId, onSuccess }));
   };
 
   const handleAccept = () => {
     setAcceptModal(true);
   };
 
-  // const acceptMilestone = async () => {
-  //   setIsLoading(true);
+  const onAccept = () => {
+    const onSuccess = () => {
+      setAcceptModal(false);
+      setFeedbackAcceptModal(true);
+    };
 
-  //   const payload = {
-  //     milestone: selectedMilestone._id,
-  //   };
-
-  //   try {
-  //     setAcceptBtnText('Loading...');
-  //     await transferFundService(payload);
-  //     // await fetchProjectMilestones();
-  //     setAcceptBtnText('Accepted');
-  //     ShowToastMessage(SUCCESS, 'Milestone accepted');
-  //   } catch (error) {
-  //     errorHandler(error);
-  //     setAcceptBtnText('Accept');
-  //   }
-  //   setIsLoading(false);
-  //   setAcceptModal(false);
-  // };
+    dispatch(accpetMilestone({ milestoneId: param.milestoneId, onSuccess }));
+  };
 
   return (
     <TabWrapper>
@@ -83,12 +76,18 @@ const MilestoneOverview = () => {
               <Button onClick={handleDispute} className="me-2 raise-dispute-btn">
                 Raise Dispute
               </Button>
-              {userData?.user_type === userTypes.client ? (
+              {selectedMilestone?.status === 'IN_REVIEW' && userData?.user_type === userTypes.client && (
                 <Button onClick={handleAccept} className="d-contents" color="primary">
                   Accept
                 </Button>
-              ) : (
-                <Button onClick={() => setMarkCompleteModal(true)} className="d-contents" color="primary">
+              )}
+              {selectedMilestone?.status === 'ON_GOING' && userData?.user_type !== userTypes.client && (
+                <Button
+                  disabled={submissionHistory?.data?.length === 0}
+                  onClick={() => setMarkCompleteModal(true)}
+                  className="d-contents"
+                  color="primary"
+                >
                   Mark as complete
                 </Button>
               )}
@@ -107,6 +106,7 @@ const MilestoneOverview = () => {
       )}
       {markCompleteModal && (
         <MarkMilestoneCompleteModal
+          data={selectedMilestone}
           modal={markCompleteModal}
           toggleModal={() => setMarkCompleteModal(!markCompleteModal)}
           onSuccess={onComplete}
@@ -114,26 +114,27 @@ const MilestoneOverview = () => {
       )}
       {feedbackCompleteModal && (
         <FeedbackForCompleteModal
+          data={selectedMilestone}
           modal={feedbackCompleteModal}
           toggleModal={() => {
             setFeedbackCompleteModal(!feedbackCompleteModal);
             setMarkCompleteModal(false);
           }}
+          projectName={projectDetailsData?.details?.name}
         />
       )}
       {acceptModal && (
         <AcceptMilestoneModal
+          data={selectedMilestone}
           modal={acceptModal}
           toggleModal={() => setAcceptModal(!acceptModal)}
           // isLoading={isLoading}
-          onSuccess={() => {
-            setAcceptModal(false);
-            setFeedbackAcceptModal(true);
-          }}
+          onSuccess={onAccept}
         />
       )}
       {feedbackAcceptModal && (
         <FeedbackForAcceptModal
+          data={selectedMilestone}
           modal={feedbackAcceptModal}
           toggleModal={() => {
             setFeedbackAcceptModal(!feedbackAcceptModal);
@@ -145,6 +146,11 @@ const MilestoneOverview = () => {
   );
 };
 
-MilestoneOverview.propTypes = {};
+MilestoneOverview.propTypes = {
+  selectedMilestone: Proptypes.object,
+};
 
+MilestoneOverview.defaultProps = {
+  selectedMilestone: {},
+};
 export default MilestoneOverview;

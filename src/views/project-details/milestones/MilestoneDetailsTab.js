@@ -20,12 +20,12 @@ import { Download, ExternalLink, Link, Plus, Trash2, Upload } from 'react-feathe
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import { formatDate, isFileValid, isUrlWithoutProtocol, renderFilePreview } from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
-import { milestoneFileUploadService, submitMilestoneService } from '../../../services/projectMilestoneService';
+import { milestoneFileUploadService } from '../../../services/projectMilestoneService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../../utility/constants/ToastTypes';
@@ -42,6 +42,7 @@ import { TableWrapper } from '../style';
 import FeedbackForSubmitModal from '../../modals/FeedbackForSubmitModal';
 import RemoveArtifactsModal from '../../modals/RemoveArtifactsModal';
 import FeedbackRemoveArtifactsModal from '../../modals/FeedbackRemoveArtifacts';
+import { submitMilstone } from '../../../redux/actions/milestoneActions';
 
 const MilestoneDetailsSchema = yup.object().shape({
   documents: yup.array().of(
@@ -50,7 +51,7 @@ const MilestoneDetailsSchema = yup.object().shape({
       description: yup
         .string()
         .min(4, 'Description must be at least 4 characters')
-        .max(20, 'Description must be 500 characters or less')
+        .max(100, 'Description must be 100 characters or less')
         .transform((value) => (value === '' ? undefined : value))
         .optional(),
     }),
@@ -61,24 +62,23 @@ const MilestoneDetailsSchema = yup.object().shape({
       description: yup
         .string()
         .min(4, 'Description must be at least 4 characters')
-        .max(20, 'Description must be 500 characters or less')
+        .max(100, 'Description must be 100 characters or less')
         .transform((value) => (value === '' ? undefined : value))
         .optional(),
     }),
   ),
 });
 
-const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
+const MilestoneDetailsTab = ({ selectedMilestone }) => {
   const [submitModal, setSubmitModal] = useState(false);
   const [submitFeedbackModal, setSubmitFeedbackModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteData, setDeleteData] = useState(false);
   const [deleteFeedbackModal, setDeleteFeedbackModal] = useState(false);
-  const [submitBtnText, setSubmitBtnText] = useState('Submit');
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const userDataLocal = useSelector(selectAuthUserData);
-
+  const isMilestoneSubmitting = useSelector((state) => state.milestone.isMilestoneSubmitting);
   const {
     control,
     formState: { errors },
@@ -113,10 +113,8 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
   const allDocuments = useWatch({ control, name: 'documents' });
 
   const onFinalSubmitMilestone = async () => {
-    setIsLoading(true);
     try {
-      setSubmitBtnText('Submitting...');
-      await submitMilestoneService(selectedMilestone._id, {
+      const postData = {
         links: allLinks.map((link) => ({
           url: link?.link,
           description: link?.description,
@@ -126,17 +124,17 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           file_name: file?.fileData?.file_name || file?.fileData?.file?.name,
           description: file?.description,
         })),
-      });
-      await fetchProjectMilestones();
-      setSubmitBtnText('Milestone submitted');
-      ShowToastMessage(SUCCESS, 'Milestone submitted');
-      setSubmitFeedbackModal(true);
+      };
+      const onSuccess = () => {
+        ShowToastMessage(SUCCESS, 'Milestone submitted');
+        setSubmitFeedbackModal(true);
+        setSubmitModal(false);
+      };
+      dispatch(submitMilstone({ milestone_id: selectedMilestone._id, data: postData, onSuccess }));
     } catch (error) {
       errorHandler(error);
-      setSubmitBtnText('Submit');
+      setSubmitModal(false);
     }
-    setIsLoading(false);
-    setSubmitModal(false);
   };
 
   const handleUploadFile = async ({ file, onError }) => {
@@ -220,7 +218,9 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
     onDrop,
   });
 
-  const isEditable = userDataLocal.user_type !== userTypes.client && selectedMilestone.status === 'ON_GOING';
+  const isEditable =
+    userDataLocal.user_type !== userTypes.client &&
+    (selectedMilestone.status === 'ON_GOING' || selectedMilestone.status === 'IN_REVIEW');
 
   const statusEnum = {
     OPEN: 'Open',
@@ -269,7 +269,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
           modal={submitModal}
           toggleModal={() => setSubmitModal(!submitModal)}
           isFinalSubmit
-          isLoading={isLoading}
+          isLoading={isMilestoneSubmitting}
           onSuccess={onFinalSubmitMilestone}
           links={allLinks}
           documents={allDocuments}
@@ -404,7 +404,7 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                               type="textarea"
                               rows="4"
                               className="desc-input"
-                              placeholder="Enter description in 500 characters"
+                              placeholder="Add short description (optional)"
                               invalid={
                                 errors &&
                                 errors.documents &&
@@ -624,16 +624,15 @@ const MilestoneDetailsTab = ({ selectedMilestone, fetchProjectMilestones }) => {
                 onClick={() => setSubmitModal(true)}
                 disabled={
                   uploadingFiles.length > 0 ||
-                  isLoading ||
+                  isMilestoneSubmitting ||
                   isEmptyLink ||
                   hasError ||
                   [...documentsFields, ...allLinks].length === 0 ||
-                  submitBtnText !== 'Submit' ||
                   !isPaymentDone(selectedMilestone)
                 }
                 color="primary"
               >
-                {submitBtnText}
+                Submit
               </Button>
             </div>
           </section>

@@ -15,7 +15,7 @@ const MilestoneDetails = () => {
   const currentMilestone = useSelector((state) => state.milestone.milestoneData);
   const isLoading = useSelector((state) => state.milestone.loading);
   useEffect(() => {
-    dispatch(getMilestoneDetail({ projectId: param?.projectId }));
+    dispatch(getMilestoneDetail({ milestoneId: param?.milestoneId }));
 
     return () => {
       dispatch(clearData());
@@ -27,15 +27,7 @@ const MilestoneDetails = () => {
   return (
     <div style={{ minHeight: '75rem' }}>
       <MilestoneOverview selectedMilestone={currentMilestone} />
-      <TabWrapper>
-        {currentMilestone && (
-          <MilestoneDetailsTab
-            // setSelectedMilestoneIndex={setSelectedMilestoneIndex}
-            // fetchProjectMilestones={fetchProjectMilestones}
-            selectedMilestone={currentMilestone}
-          />
-        )}
-      </TabWrapper>
+      <TabWrapper>{currentMilestone && <MilestoneDetailsTab selectedMilestone={currentMilestone} />}</TabWrapper>
       <SubmissionHistory selectedMilestone={currentMilestone} />
     </div>
   );

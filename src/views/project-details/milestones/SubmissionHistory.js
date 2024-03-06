@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Download, ExternalLink, Link, MessageSquare } from 'react-feather';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateTime } from 'luxon';
+import Proptypes from 'prop-types';
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem, UncontrolledTooltip } from 'reactstrap';
 import Avatar from '@components/avatar';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -15,8 +15,11 @@ import { getSubmissionHistory } from '../../../redux/actions/milestoneActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { clearHistory } from '../../../redux/reducers/milestone';
 import { MilestoneAccordionWrap } from './style';
+import DateTime from '../../../lib/date-time';
+import Empty from './NoDataComp';
+import { userTypes } from '../../../utility/constants/Constant';
 
-const SubmissionHistory = () => {
+const SubmissionHistory = ({ selectedMilestone }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(0);
@@ -86,105 +89,110 @@ const SubmissionHistory = () => {
                   next={fetchMore}
                   hasMore={hasMore}
                   endMessage={
-                    <div className="d-flex justify-content-center mt-1">
-                      {subHistory?.length > 0 ? <span>You have seen it all!</span> : <span>No data</span>}
-                    </div>
+                    <div className="d-flex justify-content-center ">{subHistory?.length === 0 ? <Empty /> : ''}</div>
                   }
                   scrollableTarget="scrollDivForSubmissionHistory"
                   loader={
                     subHistory?.length > 0 && <div className="d-flex justify-content-center mt-1">Loading...</div>
                   }
                 >
-                  <SubmissionHistoryWrapper className="w-100 medium-shadow overflow-auto">
-                    <table className="w-100">
-                      <tr className="w-100 header table-row">
-                        <td className="table-cell cell-file-name">
-                          <p className="fw-bolder mb-0">FILE NAME</p>
-                        </td>
-                        <td className="table-cell cell-description">
-                          <p className="fw-bolder mb-0">DESCRIPTION</p>
-                        </td>
-                        <td className="table-cell cell-submitted-by">
-                          <p className="fw-bolder mb-0">SUBMITTED BY</p>
-                        </td>
-                        <td className="table-cell cell-submitted-on">
-                          <p className="fw-bolder mb-0">SUBMITTED ON</p>
-                        </td>
-                        <td className="table-cell cell-action">
-                          <p className="fw-bolder mb-0 ps-75">ACTION</p>
-                        </td>
-                      </tr>
-                      {subHistory.map((file) => (
-                        <tr key={file?._id} className="w-100 border-bottom table-row">
-                          <td className="table-cell-td cell-file-name">
-                            <div className="m-auto d-flex align-items-center">
-                              {file?.url ? (
-                                <Link size="20" className="me-75" />
-                              ) : (
-                                renderFilePreview({ name: file?.file_name })
-                              )}
-                              <span
-                                style={{ width: '11rem' }}
-                                className="truncated-filename mt-25"
-                                id={`tooltip-${file?._id}`}
-                              >
-                                {file?.file_name ?? file?.url}
-                              </span>
-                              <UncontrolledTooltip placement="bottom" target={`tooltip-${file?._id}`}>
-                                {file?.file_name ?? file?.url}
-                              </UncontrolledTooltip>
-                            </div>
+                  {subHistory?.length === 0 ? (
+                    <Empty message="No Submission found!" />
+                  ) : (
+                    <SubmissionHistoryWrapper className="w-100 medium-shadow overflow-auto">
+                      <table className="w-100">
+                        <tr className="w-100 header table-row">
+                          <td className="table-cell cell-file-name">
+                            <p className="fw-bolder mb-0">FILE NAME</p>
                           </td>
-
-                          <td className="m-auto table-cell-td cell-description">
-                            <p className="fw-normal m-auto">{file?.description}</p>
+                          <td className="table-cell cell-description">
+                            <p className="fw-bolder mb-0">DESCRIPTION</p>
                           </td>
-                          <td className="table-cell-td cell-submitted-by">
-                            <div className="d-flex justify-content-center">
-                              <Avatar
-                                onClick={() => navigate(`/profile/TALENT/${file?.talent_details?.user_id}`)}
-                                img={file?.talent_details?.image_uri || defaultAvatar}
-                                imgHeight="32"
-                                imgWidth="32"
-                                id={`tooltip-username-${file?._id}`}
-                              />
-                              <UncontrolledTooltip placement="bottom" target={`tooltip-username-${file?._id}`}>
-                                {file?.talent_details?.full_name}
-                              </UncontrolledTooltip>
-                            </div>
+                          {selectedMilestone?.milestone_by?.entity === userTypes.team && (
+                            <td className="table-cell cell-submitted-by">
+                              <p className="fw-bolder mb-0">SUBMITTED BY</p>
+                            </td>
+                          )}
+                          <td className="table-cell cell-submitted-on">
+                            <p className="fw-bolder mb-0">SUBMITTED ON</p>
                           </td>
-                          <td className="table-cell-td cell-submitted-on m-auto">
-                            <p className="fw-normal m-auto">
-                              {' '}
-                              {DateTime?.fromMillis(file?.created_at).toFormat(`dd MMM yyyy, hh:mm a`)}
-                            </p>
-                          </td>
-                          <td className="m-auto table-cell-td cell-action">
-                            <div className="fw-bold m-auto d-flex gap-1">
-                              {file?.url ? (
-                                <MessageIconWrap onClick={() => handleLinkOpen(file?.url)}>
-                                  <span className="mail-bg">
-                                    <ExternalLink size={20} className="mail-icon" color={theme.activeColor} />
-                                  </span>
-                                </MessageIconWrap>
-                              ) : (
-                                <MessageIconWrap onClick={() => downloadUploadedFile({ file: file?.fileData?.file })}>
-                                  <span className="mail-bg">
-                                    <Download size={20} className="mail-icon" color={theme.activeColor} />
-                                  </span>
-                                </MessageIconWrap>
-                              )}
-                              <MessageIconWrap>
-                                <span className="mail-bg">
-                                  <MessageSquare size={20} className="mail-icon" color={theme.activeColor} />
-                                </span>
-                              </MessageIconWrap>
-                            </div>
+                          <td className="table-cell cell-action">
+                            <p className="fw-bolder mb-0 ps-75">ACTION</p>
                           </td>
                         </tr>
-                      ))}
-                    </table>
-                  </SubmissionHistoryWrapper>
+                        {subHistory.map((file) => (
+                          <tr key={file?._id} className="w-100 border-bottom table-row">
+                            <td className="table-cell-td cell-file-name">
+                              <div className="m-auto d-flex align-items-center">
+                                {file?.url ? (
+                                  <Link size="20" className="me-75" />
+                                ) : (
+                                  renderFilePreview({ name: file?.file_name })
+                                )}
+                                <span
+                                  style={{ width: '11rem' }}
+                                  className="truncated-filename mt-25"
+                                  id={`tooltip-${file?._id}`}
+                                >
+                                  {file?.file_name ?? file?.url}
+                                </span>
+                                <UncontrolledTooltip placement="bottom" target={`tooltip-${file?._id}`}>
+                                  {file?.file_name ?? file?.url}
+                                </UncontrolledTooltip>
+                              </div>
+                            </td>
+
+                            <td className="m-auto table-cell-td cell-description">
+                              <p className="fw-normal m-auto">{file?.description}</p>
+                            </td>
+                            {selectedMilestone?.milestone_by?.entity === userTypes.team && (
+                              <td className="table-cell-td cell-submitted-by">
+                                <div className="d-flex justify-content-center">
+                                  <Avatar
+                                    onClick={() => navigate(`/profile/TALENT/${file?.talent_details?.user_id}`)}
+                                    img={file?.talent_details?.image_uri || defaultAvatar}
+                                    imgHeight="32"
+                                    imgWidth="32"
+                                    id={`tooltip-username-${file?._id}`}
+                                  />
+                                  <UncontrolledTooltip placement="bottom" target={`tooltip-username-${file?._id}`}>
+                                    {file?.talent_details?.full_name || 'Data unavailble'}
+                                  </UncontrolledTooltip>
+                                </div>
+                              </td>
+                            )}
+                            <td className="table-cell-td cell-submitted-on m-auto">
+                              <p className="fw-normal m-auto">
+                                {DateTime?.fromMillis(file?.created_at).toFormat(`dd MMM yyyy, hh:mm a`)}
+                              </p>
+                            </td>
+                            <td className="m-auto table-cell-td cell-action">
+                              <div className="fw-bold m-auto d-flex gap-1">
+                                {file?.url ? (
+                                  <MessageIconWrap onClick={() => handleLinkOpen(file?.url)}>
+                                    <span className="mail-bg">
+                                      <ExternalLink size={20} className="mail-icon" color={theme.activeColor} />
+                                    </span>
+                                  </MessageIconWrap>
+                                ) : (
+                                  <MessageIconWrap onClick={() => downloadUploadedFile({ file: file?.fileData?.file })}>
+                                    <span className="mail-bg">
+                                      <Download size={20} className="mail-icon" color={theme.activeColor} />
+                                    </span>
+                                  </MessageIconWrap>
+                                )}
+                                <MessageIconWrap>
+                                  <span className="mail-bg">
+                                    <MessageSquare size={20} className="mail-icon" color={theme.activeColor} />
+                                  </span>
+                                </MessageIconWrap>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </table>
+                    </SubmissionHistoryWrapper>
+                  )}
                 </InfiniteScroll>
               </div>
             )}
@@ -195,4 +203,10 @@ const SubmissionHistory = () => {
   );
 };
 
+SubmissionHistory.propTypes = {
+  selectedMilestone: Proptypes.object,
+};
+SubmissionHistory.defaultProps = {
+  selectedMilestone: {},
+};
 export default SubmissionHistory;

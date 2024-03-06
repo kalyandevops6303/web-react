@@ -5,6 +5,11 @@ const initialState = {
   loading: false,
   submissionHistory: [],
   submissionHistoryLoading: false,
+  submissionHistoryCurrentPreview: null,
+  submissionHistoryMetadata: null,
+  isMilestoneSubmitting: false,
+  isMilestoneAccepting: false,
+  isMilestoneMarking: false,
   error: null,
 };
 
@@ -12,6 +17,51 @@ const milestoneSlice = createSlice({
   name: 'milestoneData',
   initialState,
   reducers: {
+    submitMilestoneRequest: (state) => ({
+      ...state,
+      isMilestoneSubmitting: true,
+      error: null,
+    }),
+    submitMilestoneSuccess: (state) => ({
+      ...state,
+      isMilestoneSubmitting: false,
+    }),
+    submitMilestoneFailure: (state, action) => ({
+      ...state,
+      isMilestoneSubmitting: false,
+      error: action.payload,
+    }),
+
+    acceptMilestoneRequest: (state) => ({
+      ...state,
+      isMilestoneAccepting: true,
+      error: null,
+    }),
+    acceptMilestoneSuccess: (state) => ({
+      ...state,
+      isMilestoneAccepting: false,
+    }),
+    acceptMilestoneFailure: (state, action) => ({
+      ...state,
+      isMilestoneAccepting: false,
+      error: action.payload,
+    }),
+
+    markCompelteRequest: (state) => ({
+      ...state,
+      isMilestoneMarking: true,
+      error: null,
+    }),
+    markCompelteSuccess: (state) => ({
+      ...state,
+      isMilestoneMarking: false,
+    }),
+    markCompelteFailure: (state, action) => ({
+      ...state,
+      isMilestoneMarking: false,
+      error: action.payload,
+    }),
+
     milestoneDetailRequest: (state) => ({
       ...state,
       loading: true,
@@ -73,6 +123,15 @@ export const {
   submissionHistoryRequest,
   submissionHistoryFailure,
   submissionHistorySuccess,
+  submitMilestoneFailure,
+  submitMilestoneRequest,
+  submitMilestoneSuccess,
+  acceptMilestoneFailure,
+  acceptMilestoneRequest,
+  acceptMilestoneSuccess,
+  markCompelteFailure,
+  markCompelteRequest,
+  markCompelteSuccess,
 } = milestoneSlice.actions;
 
 export default milestoneSlice.reducer;

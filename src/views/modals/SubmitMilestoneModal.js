@@ -1,6 +1,5 @@
 import React from 'react';
 import Proptypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import '../custom-styles.scss';
 import {
   Button,
@@ -19,15 +18,13 @@ import Notepad from '../../assets/images/youDidIt.gif';
 import { AcceptModalWrapper, ArtifactsModalWrap } from './style';
 import { renderFilePreview } from '../../utility/Utils';
 
-const SubmitMilestoneModal = ({ onSuccess, modal, toggleModal, links, documents }) => {
+const SubmitMilestoneModal = ({ isLoading, onSuccess, modal, toggleModal, links, documents }) => {
   const onClose = () => {
     toggleModal();
   };
-  const isLoading = useSelector((state) => state.projectDetails.sendDocumentLoading);
-  const isSignLoading = useSelector((state) => state.projectDetails.signContractByTalentLoading);
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={isSignLoading || isLoading ? null : onClose} />
+      <ModalHeader toggle={isLoading ? null : onClose} />
       <ModalBody>
         <AcceptModalWrapper>
           <div className="d-flex justify-content-between pr-1">
@@ -68,11 +65,11 @@ const SubmitMilestoneModal = ({ onSuccess, modal, toggleModal, links, documents 
             </div>
           </div>
           <div className="d-flex gap-1  justify-content-end">
-            <Button disabled={isSignLoading || isLoading} outline color="primary" onClick={onClose}>
+            <Button disabled={isLoading} outline color="primary" onClick={onClose}>
               Cancel
             </Button>
-            <Button disabled={isSignLoading || isLoading} color="primary" onClick={onSuccess}>
-              {isSignLoading || isLoading ? <Spinner size="sm" /> : 'Submit'}
+            <Button disabled={isLoading} color="primary" onClick={onSuccess}>
+              {isLoading ? <Spinner size="sm" /> : 'Submit'}
             </Button>
           </div>
         </AcceptModalWrapper>
@@ -89,6 +86,7 @@ SubmitMilestoneModal.propTypes = {
   onSuccess: Proptypes.func,
   links: Proptypes.array,
   documents: Proptypes.array,
+  isLoading: Proptypes.bool,
 };
 
 SubmitMilestoneModal.defaultProps = {
@@ -97,4 +95,5 @@ SubmitMilestoneModal.defaultProps = {
   onSuccess: () => {},
   links: [],
   documents: [],
+  isLoading: false,
 };

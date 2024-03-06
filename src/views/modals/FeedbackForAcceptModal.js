@@ -26,7 +26,7 @@ const FeedbackForAcceptModal = ({ modal, toggleModal, data }) => {
                 You have successfully accepted the <br /> milestone
               </CardSubtitle>
               <CardSubtitle className="subtitle mb-3">
-                <span className="fw-bold pe-50">Milestone: </span> {data?.name}
+                <b>Milestone {data?.seq}:</b> {data?.description}
               </CardSubtitle>
             </div>
           </div>
