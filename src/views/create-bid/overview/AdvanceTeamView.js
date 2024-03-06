@@ -97,6 +97,7 @@ const AdvanceTeamView = () => {
   const setWorkersIsLoading = useSelector(setWorkersLoading);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
 
+  const [bidData, setBidData] = useState(null);
   const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
   const [createBidModal, setCreateBidModal] = useState(null);
   const [recommendedRolesOptions, setRecommendedRolesOptions] = useState(null);
@@ -244,6 +245,7 @@ const AdvanceTeamView = () => {
 
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
+      setBidData(res);
       if (res?.workers?.length > 0) {
         const data = res?.workers?.map((worker) => {
           if (worker?.user_id?.length > 0) {
@@ -303,15 +305,17 @@ const AdvanceTeamView = () => {
           <Card className="mt-2">
             <CardHeader className="py-75 d-flex justify-content-between align-items-center">
               <h4 className="m-0 mt-75">Roles & Efforts</h4>
-              <ChangeBidTypeButton
-                className="d-flex align-items-center cursor-pointer"
-                onClick={toggleChangeBidTypeConfirmationModal}
-              >
-                <div className="change-bid-type-icon">
-                  <Edit size={16} color={theme.activeNavPillText} />
-                </div>
-                <p className="mb-0 fw-bold ms-50">Change Bid Type</p>
-              </ChangeBidTypeButton>
+              {bidData?.is_bid_type_changeable && (
+                <ChangeBidTypeButton
+                  className="d-flex align-items-center cursor-pointer"
+                  onClick={toggleChangeBidTypeConfirmationModal}
+                >
+                  <div className="change-bid-type-icon">
+                    <Edit size={16} color={theme.activeNavPillText} />
+                  </div>
+                  <p className="mb-0 fw-bold ms-50">Change Bid Type</p>
+                </ChangeBidTypeButton>
+              )}
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>

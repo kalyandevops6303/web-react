@@ -24,6 +24,9 @@ const milestoneFileUploadToAzureService = (url, data, headers) => DataService.pu
 
 const submitBidService = (bidId) => DataService.put(`${API.createBid.submitBid}?bid_id=${bidId}`);
 
+const changeBidTypeService = (bidId, bidType) =>
+  DataService.put(`${API.createBid.changeBidType}?bid_id=${bidId}&bid_type=${bidType}`);
+
 export {
   checkBidService,
   createBidService,
@@ -35,4 +38,5 @@ export {
   milestoneFileUploadService,
   milestoneFileUploadToAzureService,
   submitBidService,
+  changeBidTypeService,
 };

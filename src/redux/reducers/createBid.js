@@ -13,6 +13,7 @@ const initialState = {
   setWorkersLoading: false,
   setMilestonesLoading: false,
   submitBidLoading: false,
+  changeBidTypeLoading: false,
   error: null,
 };
 
@@ -143,6 +144,21 @@ const createBid = createSlice({
       submitBidLoading: false,
       error: action.payload,
     }),
+
+    changeBidTypeRequest: (state) => ({
+      ...state,
+      changeBidTypeLoading: true,
+      error: null,
+    }),
+    changeBidTypeSuccess: (state) => ({
+      ...state,
+      changeBidTypeLoading: false,
+    }),
+    changeBidTypeFailure: (state, action) => ({
+      ...state,
+      changeBidTypeLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -171,6 +187,9 @@ export const {
   submitBidRequest,
   submitBidSuccess,
   submitBidFailure,
+  changeBidTypeRequest,
+  changeBidTypeSuccess,
+  changeBidTypeFailure,
 } = createBid.actions;
 
 export default createBid.reducer;

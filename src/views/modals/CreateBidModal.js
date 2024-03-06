@@ -1,20 +1,23 @@
+/* eslint-disable no-lonely-if */
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Modal, ModalHeader, ModalBody, Input, Row, Col, Button, Spinner } from 'reactstrap';
 import { CreateBidRadioOption } from '../styled';
-import { createBid } from '../../redux/actions/createBidActions';
+import { createBid, saveChangeBidType } from '../../redux/actions/createBidActions';
 import { bidTypes, userTypes } from '../../utility/constants/Constant';
-import { createBidLoading } from '../../redux/selectors/createBidSelectors';
+import { changeBidTypeLoading, createBidLoading } from '../../redux/selectors/createBidSelectors';
 
 const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const params = useParams();
 
   const createBidLoadingIsLoading = useSelector(createBidLoading);
+  const changeBidTypeIsLoading = useSelector(changeBidTypeLoading);
 
   const [selectedFlow, setSelectedFlow] = useState('');
 
@@ -38,19 +41,19 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
     if (selectedProject?.bidType) {
       if (selectedProject?.bidType === selectedFlow) {
         toggleModal();
-        return;
-        // eslint-disable-next-line no-else-return
       } else {
-        // eslint-disable-next-line no-console
-        console.log('selectedFlow', selectedProject?.bidType, selectedFlow);
-        return;
+        if (selectedFlow === bidTypes.simple) {
+          dispatch(saveChangeBidType(params.bidId, bidTypes.simple, onSuccess));
+        } else if (selectedFlow === bidTypes.advanced) {
+          dispatch(saveChangeBidType(params.bidId, bidTypes.advanced, onSuccess));
+        }
       }
-    }
-
-    if (selectedFlow === bidTypes.simple) {
-      dispatch(createBid(selectedProject._id, bidTypes.simple, onSuccess));
-    } else if (selectedFlow === bidTypes.advanced) {
-      dispatch(createBid(selectedProject._id, bidTypes.advanced, onSuccess));
+    } else {
+      if (selectedFlow === bidTypes.simple) {
+        dispatch(createBid(selectedProject._id, bidTypes.simple, onSuccess));
+      } else if (selectedFlow === bidTypes.advanced) {
+        dispatch(createBid(selectedProject._id, bidTypes.advanced, onSuccess));
+      }
     }
   };
 
@@ -62,7 +65,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={createBidLoadingIsLoading ? null : toggleModal} />
+      <ModalHeader toggle={createBidLoadingIsLoading || changeBidTypeIsLoading ? null : toggleModal} />
       <ModalBody className="pt-0 pb-2">
         <p className="font-large-1 text-center">Create Bid</p>
         <p className="font-medium-2 fw-bold mt-3 ms-50">Select one :</p>
@@ -72,7 +75,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
               className="cursor-pointer d-flex"
               active={selectedFlow === bidTypes.simple}
               onClick={() => {
-                !createBidLoadingIsLoading && setSelectedFlow(bidTypes.simple);
+                !createBidLoadingIsLoading && !changeBidTypeIsLoading && setSelectedFlow(bidTypes.simple);
               }}
             >
               <div className="form-check form-check-inline checkbox-custom-margin">
@@ -80,7 +83,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
                   type="radio"
                   id="simple"
                   checked={selectedFlow === bidTypes.simple}
-                  disabled={createBidLoadingIsLoading}
+                  disabled={createBidLoadingIsLoading || changeBidTypeIsLoading}
                 />
                 <div className="label">
                   <p className="fw-bolder mb-50">
@@ -98,7 +101,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
               className="cursor-pointer d-flex"
               active={selectedFlow === bidTypes.advanced}
               onClick={() => {
-                !createBidLoadingIsLoading && setSelectedFlow(bidTypes.advanced);
+                !createBidLoadingIsLoading && !changeBidTypeIsLoading && setSelectedFlow(bidTypes.advanced);
               }}
             >
               <div className="form-check form-check-inline checkbox-custom-margin">
@@ -106,7 +109,7 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
                   type="radio"
                   id="advance"
                   checked={selectedFlow === bidTypes.advanced}
-                  disabled={createBidLoadingIsLoading}
+                  disabled={createBidLoadingIsLoading || changeBidTypeIsLoading}
                 />
                 <div className="label">
                   <p className="fw-bolder mb-50">
@@ -123,8 +126,13 @@ const CreateBidModal = ({ modal, toggleModal, selectedProject }) => {
         </Row>
         {selectedFlow !== '' && (
           <div className="d-flex justify-content-end align-items-center mt-1 mb-50">
-            <Button color="primary" onClick={onNextClick} className="me-50" disabled={createBidLoadingIsLoading}>
-              {createBidLoadingIsLoading ? <Spinner size="sm" /> : 'Next'}
+            <Button
+              color="primary"
+              onClick={onNextClick}
+              className="me-50"
+              disabled={createBidLoadingIsLoading || changeBidTypeIsLoading}
+            >
+              {createBidLoadingIsLoading || changeBidTypeIsLoading ? <Spinner size="sm" /> : 'Next'}
             </Button>
           </div>
         )}

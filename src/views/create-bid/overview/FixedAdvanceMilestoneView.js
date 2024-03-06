@@ -175,6 +175,7 @@ const FixedAdvanceMilestoneView = () => {
   const [open, setOpen] = useState(1);
   const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
   const [createBidModal, setCreateBidModal] = useState(null);
+  const [bidData, setBidData] = useState(null);
 
   const toggle = (id) => {
     if (open === id) {
@@ -547,6 +548,7 @@ const FixedAdvanceMilestoneView = () => {
 
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
+      setBidData(res);
       if (res?.project_start_date > 0) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
       }
@@ -710,7 +712,9 @@ const FixedAdvanceMilestoneView = () => {
                         <Label className="form-label m-0">Total Hours</Label>
                         <p className="fw-bold font-medium-1 text-end mt-50 mb-0">{totalHours}h</p>
                       </div>
-                      <div className="me-3 custom-cost-margin">
+                      <div
+                        className={bidData?.is_bid_type_changeable ? 'me-3 custom-cost-margin' : 'custom-cost-margin'}
+                      >
                         <div className="d-flex align-items-center m-0">
                           <Label className="form-label m-0">Fixed Cost</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
@@ -731,22 +735,24 @@ const FixedAdvanceMilestoneView = () => {
                           </p>
                         )}
                       </div>
-                      <div>
-                        <Label className="form-label m-0">Bid Type</Label>
-                        <div className="d-flex align-items-center custom-cost-margin">
-                          <p className="fw-bold font-medium-1 mb-0 mt-25">
-                            {capitalize(params.bidType.split('-')[1])} Flow
-                          </p>
-                          <ChangeBidTypeButton
-                            className="d-flex align-items-center cursor-pointer ms-1"
-                            onClick={toggleChangeBidTypeConfirmationModal}
-                          >
-                            <div className="change-bid-type-icon">
-                              <Edit size={16} color={theme.activeNavPillText} />
-                            </div>
-                          </ChangeBidTypeButton>
+                      {bidData?.is_bid_type_changeable && (
+                        <div>
+                          <Label className="form-label m-0">Bid Type</Label>
+                          <div className="d-flex align-items-center custom-cost-margin">
+                            <p className="fw-bold font-medium-1 mb-0 mt-25">
+                              {capitalize(params.bidType.split('-')[1])} Flow
+                            </p>
+                            <ChangeBidTypeButton
+                              className="d-flex align-items-center cursor-pointer ms-1"
+                              onClick={toggleChangeBidTypeConfirmationModal}
+                            >
+                              <div className="change-bid-type-icon">
+                                <Edit size={16} color={theme.activeNavPillText} />
+                              </div>
+                            </ChangeBidTypeButton>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </Col>
                   </Row>
                 </CardBody>

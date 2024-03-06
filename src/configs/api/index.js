@@ -215,6 +215,7 @@ const API = {
     setMilestones: `${apiCreateProjectEndpoint}/api/v1/bid/set-milestones`,
     milestoneFileUpload: `${apiCreateProjectEndpoint}/api/v1/bid/file`,
     submitBid: `${apiCreateProjectEndpoint}/api/v1/bid/submit`,
+    changeBidType: `${apiCreateProjectEndpoint}/api/v1/bid-type`,
   },
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
