@@ -2,8 +2,8 @@ export const chatsWrapperStyle = (props, theme) => {
   const borderStyle =
     props._parent === ''
       ? {
-          border: `1px solid ${theme.borderColor.primary}`,
-        }
+        border: `1px solid ${theme.borderColor.primary}`,
+      }
       : {};
 
   return {
@@ -33,11 +33,13 @@ export const chatsWrapperStyle = (props, theme) => {
 
 export const chatsHeaderStyle = (theme) => {
   return {
-    padding: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: `1px solid ${theme.borderColor.primary}`,
-    height: '69px',
+    '&&': {
+      padding: '16px',
+      display: 'flex',
+      alignItems: 'center',
+      borderBottom: `1px solid ${theme.borderColor.primary}`,
+      height: '69px',
+    },
   };
 };
 export const chatsHeaderSearch = () => {
@@ -62,37 +64,30 @@ export const chatsHeaderSearch = () => {
     },
   };
 };
+
 export const chatsHeaderSearchIcon = () => {
   return {
     position: 'absolute',
-    height: '12px',
-    width: '12px',
-    background: 'transparent',
-    border: '2px solid #B9B9C3',
     left: '10px',
-    top: '12px',
-    borderRadius: '100%',
-    '::after': {
-      content: '""',
-      position: 'absolute',
-      background: '#B9B9C3',
-      height: '6px',
-      width: '2px',
-      bottom: '-5px',
-      right: '-3px',
-      transform: 'rotate(-45deg)',
-    },
+    top: '13px',
+    display: 'flex',
+    alignItems: 'center',
   };
 };
-// export const chatsProfileImage=()=>
-// {
-// 	return {
-// 		width:"30px",
-// 		height:"30px",
-// 		borderRadius:"50%",
-// 		marginRight:"10px"
-// 		}
-// }
+
+export const chatsSearchCrossIcon = () => {
+  return {
+    position: 'absolute',
+    fontSize: '24px',
+    color: '#B9B9C3',
+    background: 'transparent',
+    right: '10px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    cursor: 'pointer',
+  };
+};
+
 export const thumbnailStyle = () => {
   return {
     display: 'inline-block',
@@ -101,19 +96,22 @@ export const thumbnailStyle = () => {
     flexShrink: '0',
   };
 };
+
 export const chatsHeaderContanier = () => {
   return {
-    position: 'relative',
-    width: '100%',
-    marginLeft: '10px',
+    '&&': {
+      position: 'relative',
+      width: '100%',
+      marginLeft: '10px',
+      padding: 0,
+      marginRight: 0,
+    },
   };
 };
 export const upperArrowImage = () => {
   return {
     height: '20px',
     width: '20px',
-    marginLeft: '20px',
-    // marginTop: '16px',
     marginRight: '5px',
   };
 };
@@ -128,26 +126,27 @@ export const chatCategoryContainer = () => {
     display: 'flex',
     justifyContent: 'space-between',
     position: 'sticky',
+    padding: '16px 18px',
     top: 0,
     zIndex: 2,
     backgroundColor: 'white',
-    marginTop: '1rem',
   };
 };
 export const createIconCss = () => {
   return {
     height: '20px',
     width: '20px',
-    marginLeft: '20px',
-    // marginTop: '16px',
-    marginRight: '20px',
     cursor: 'pointer',
   };
 };
 export const chatCategory = () => {
   return {
-    color: '#2196F3',
-    fontWeight: 600,
+    '&&': {
+      color: '#2196F3',
+      fontWeight: 500,
+      fontSize: '18px',
+      margin: 0,
+    },
   };
 };
 export const unReadMessageCountAddImageDiv = () => {
@@ -159,8 +158,6 @@ export const chatsHeaderDiv = () => {
   return {
     display: 'flex',
     width: '100%',
-    alignItems: 'center',
-    gap: '0 1rem',
   };
 };
 export const chatsHeaderCloseStyle = (img, theme) => {
@@ -183,9 +180,9 @@ export const chatsHeaderTitleStyle = (props) => {
   const alignment =
     props.hasOwnProperty('enableCloseMenu') && props.enableCloseMenu.length > 0
       ? {
-          width: '33%',
-          textAlign: 'center',
-        }
+        width: '33%',
+        textAlign: 'center',
+      }
       : {};
 
   return {

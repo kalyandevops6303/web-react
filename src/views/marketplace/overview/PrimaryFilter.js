@@ -14,6 +14,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
   const dispatch = useDispatch();
   const selectCardData = useSelector((state) => state.marketPlace.cardData);
   const isLoading = useSelector((state) => state?.marketPlace?.cardInfoLoading);
+  const isSecondaryLoading = useSelector((state) => state.marketPlace.loading);
 
   const userData = useSelector(selectAuthUserData);
   const userType = userData?.user_type;
@@ -25,9 +26,15 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
     return <ComponentSpinner />;
   }
 
+  const handlePrimaryCard = (filter) => {
+    if (!isSecondaryLoading) {
+      handlePrimaryChangeFilter(filter);
+    }
+  };
+
   return (
     <Row className="primary-row">
-      <Col onClick={() => handlePrimaryChangeFilter('all_listings')}>
+      <Col onClick={() => handlePrimaryCard('all_listings')}>
         <Statbox
           isActive={selected === 'all_listings'}
           isMarketPlaceTab
@@ -35,11 +42,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
           desc="All Listings"
           icon={<img src={MoneyIcon} height={22} alt="money" />}
           color="light-warning"
-          className="stat-box cursor-pointer"
+          className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}
         />
       </Col>
       {userType === userTypes.client ? (
-        <Col onClick={() => handlePrimaryChangeFilter('my_listings')}>
+        <Col onClick={() => handlePrimaryCard('my_listings')}>
           <Statbox
             isActive={selected === 'my_listings'}
             isMarketPlaceTab
@@ -47,11 +54,11 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
             desc="My Listings"
             icon={<ThumbsUp height={20} />}
             color="light-turquoise"
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}
           />
         </Col>
       ) : (
-        <Col onClick={() => handlePrimaryChangeFilter('my_bids')}>
+        <Col onClick={() => handlePrimaryCard('my_bids')}>
           <Statbox
             isActive={selected === 'my_bids'}
             isMarketPlaceTab
@@ -59,12 +66,12 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
             desc="My Bids"
             icon={<ThumbsUp height={20} />}
             color="light-turquoise"
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}
           />
         </Col>
       )}
       {userType === userTypes.client ? (
-        <Col onClick={() => handlePrimaryChangeFilter('my_bids')}>
+        <Col onClick={() => handlePrimaryCard('my_bids')}>
           <Statbox
             isActive={selected === 'my_bids'}
             isMarketPlaceTab
@@ -72,16 +79,16 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
             desc="Bid Received"
             icon={<File height={20} />}
             color="light-primary"
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}
           />
         </Col>
       ) : null}
 
       {(userType === userTypes.client || userType === userTypes.team) && (
-        <Col onClick={() => handlePrimaryChangeFilter('talents')}>
+        <Col onClick={() => handlePrimaryCard('talents')}>
           <Statbox
             isActive={selected === 'talents'}
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}
             isMarketPlaceTab
             title={selectCardData?.talents ?? 0}
             desc="Talent"
@@ -91,10 +98,10 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
         </Col>
       )}
       {(userType === userTypes.client || userType === userTypes.talent) && (
-        <Col onClick={() => handlePrimaryChangeFilter('teams')}>
+        <Col onClick={() => handlePrimaryCard('teams')}>
           <Statbox
             isActive={selected === 'teams'}
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}
             isMarketPlaceTab
             title={selectCardData?.teams ?? 0}
             desc="Teams"
@@ -106,10 +113,10 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
 
       {(userType === userTypes.talent || userType === userTypes.team) && (
         <>
-          <Col onClick={() => handlePrimaryChangeFilter('clients')}>
+          <Col onClick={() => handlePrimaryCard('clients')}>
             <Statbox
               isActive={selected === 'clients'}
-              className="stat-box cursor-pointer"
+              className={`stat-box ${isSecondaryLoading ? '' : ' cursor-pointer'}`}
               isMarketPlaceTab
               title={selectCardData?.clients ?? 0}
               desc="Clients"

@@ -1,4 +1,5 @@
 import API from '../configs/api';
+// eslint-disable-next-line import/no-cycle
 import DataService from '../configs/dataService/dataService';
 
 const userDataService = () => DataService.get(API.dashboard.userData);
@@ -72,6 +73,8 @@ const updateCardStatusService = ({ data, switch_team_id }) => {
   return DataService.post(API.dashboard.updateCardStatus, data);
 };
 
+const downloadUrlService = (fileKey) => DataService.get(`${API.dashboard.downloadUrl}?file_key=${fileKey}`);
+
 export {
   alertService,
   getModalDataService,
@@ -103,4 +106,5 @@ export {
   totalReferralAmountService,
   updateCardStatusService,
   getProjectInvitationService,
+  downloadUrlService,
 };

@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 import { CometChat } from '@cometchat-pro/chat';
 
 import { AddMembersManager } from './controller';
-import closeIcon from '../../../../../assets/images/chat/closeIcon.png';
+import closeIcon from './resources/closeIcon.png';
+import whiteCloseIcon from './resources/whiteCloseIcon.png';
 import { CometChatAddGroupMemberListItem } from '../';
 import { CometChatBackdrop } from '../../Shared';
 
@@ -22,17 +23,22 @@ import {
   modalBodyStyle,
   modalCaptionStyle,
   modalSearchStyle,
-  searchButtonStyle,
   searchInputStyle,
   modalListStyle,
   modalFootStyle,
   contactMsgStyle,
   contactMsgTxtStyle,
   modalErrorStyle,
+  selectedUserItemStyle,
+  selectedUsersContainerStyle,
+  selectedUserNameStyle,
+  removeSelectionIconStyle,
+  searchIconStyle,
+  closeIconContainerStyle,
 } from './style';
 
 import addingIcon from './resources/adding.svg';
-import searchIcon from './resources/search.svg';
+import searchIcon from './resources/search.png';
 import clearIcon from './resources/close.svg';
 
 class CometChatAddGroupMemberList extends React.Component {
@@ -202,11 +208,15 @@ class CometChatAddGroupMemberList extends React.Component {
   };
 
   render() {
+    // console.log(this.state.membersToAdd)
     const createText = this.state.addingMembers
       ? Translator.translate('ADDING', this.context.language)
       : Translator.translate('ADD', this.context.language);
     let addGroupMemberBtn = (
-      <div css={modalFootStyle(this.props, this.state, addingIcon, this.context)} className="modal__addmembers">
+      <div
+        css={modalFootStyle(this.props, this.state, addingIcon, this.context)}
+        className="modal__addmembers__addbutton"
+      >
         <button type="button" onClick={this.updateMembers}>
           <span>{createText}</span>
         </button>
@@ -242,27 +252,52 @@ class CometChatAddGroupMemberList extends React.Component {
             firstLetter={firstLetter}
             user={user}
             changed={this.membersUpdated}
+            checked={this.state.membersToAdd.findIndex((member) => member.uid === user.uid) > -1}
           />
         </React.Fragment>
       );
     });
 
+    const topActions = this.state.membersToAdd.map((user) => (
+      <div css={selectedUserItemStyle()} className="modal__selected__useritem" key={user.uid}>
+        <div css={selectedUserNameStyle()} className="selected__username">
+          {/* {console.log(user)} */}
+          {user.name}
+        </div>
+        <img
+          onClick={() => {
+            this.membersUpdated(user, false);
+          }}
+          css={removeSelectionIconStyle()}
+          className="remove__selection"
+          src={whiteCloseIcon}
+        />
+      </div>
+    ));
+
     return (
       <React.Fragment>
         <CometChatBackdrop show={true} clicked={this.props.close} />
         <div css={modalWrapperStyle(this.context)} className="modal__addmembers">
-          <span className="modal__close" title={Translator.translate('CLOSE', this.context.language)}>
-            <img css={modalCloseStyle(clearIcon, this.context)} onClick={() => this.props.close()} src={closeIcon} />
-          </span>
+          <div
+            css={closeIconContainerStyle()}
+            className="modal__close"
+            onClick={() => this.props.close()}
+            title={Translator.translate('CLOSE', this.context.language)}
+          >
+            <img css={modalCloseStyle(clearIcon, this.context)} src={closeIcon} />
+          </div>
           <div css={modalBodyStyle()} className="modal__body">
             <div css={modalCaptionStyle(Translator.getDirection(this.context.language))} className="modal__title">
               {Translator.translate('USERS', this.context.language)}
             </div>
-            <div css={modalErrorStyle(this.context)} className="modal__error">
-              {this.state.errorMessage}
-            </div>
+            {this.state.errorMessage && (
+              <div css={modalErrorStyle(this.context)} className="modal__error">
+                {this.state.errorMessage}
+              </div>
+            )}
             <div css={modalSearchStyle()} className="modal__search">
-              <button type="button" className="search__button" css={searchButtonStyle(searchIcon, this.context)} />
+              <img type="button" src={searchIcon} className="search__icon" css={searchIconStyle()} />
               <input
                 type="text"
                 autoComplete="off"
@@ -273,6 +308,11 @@ class CometChatAddGroupMemberList extends React.Component {
               />
             </div>
             {messageContainer}
+            <div>
+              <div css={selectedUsersContainerStyle()} className="modal__selectedusers">
+                {topActions}
+              </div>
+            </div>
             <div css={modalListStyle(this.context)} onScroll={this.handleScroll} className="modal__content">
               {users}
             </div>

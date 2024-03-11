@@ -1,9 +1,10 @@
 import errorHandler from '../../utility/errorHandler';
 import {
-  getBidProjectService,
   getCardService,
   getClientsService,
   getListProjectService,
+  getMyBidProjectService,
+  getReceivedBidProjectService,
   getTalentsService,
   getTeamsService,
 } from '../../services/marketPlaceServices';
@@ -18,6 +19,7 @@ import {
   getUsersSuccess,
 } from '../reducers/marketPlace';
 import { makeFavService, makeProjectFavService, removeFavService } from '../../services/profileServices';
+import { userTypes } from '../../utility/constants/Constant';
 
 const getCardInfo =
   ({ onSuccess, onError }) =>
@@ -42,6 +44,7 @@ const getListProjects =
     onSuccess,
     onError,
     postData,
+    userType,
     searchText,
     isFavorite,
     show_expired,
@@ -51,9 +54,16 @@ const getListProjects =
       dispatch(getListReq());
     }
     let res;
+    const isReceivedBid = isMyBids && userType === userTypes.client;
     try {
-      if (isMyBids) {
-        res = await getBidProjectService({
+      if (isReceivedBid) {
+        res = await getReceivedBidProjectService({
+          postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
+          searchText,
+          metaData,
+        });
+      } else if (isMyBids) {
+        res = await getMyBidProjectService({
           postData: { ...postData, is_recommended: isRecommanded, is_favourite: isFavorite },
           searchText,
           metaData,

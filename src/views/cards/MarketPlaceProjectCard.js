@@ -12,14 +12,15 @@ import ProjectModal from '../modals/ProjectModal';
 import RelistConfirmationModal from '../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../modals/RelistSuccessModal';
-import BaseInfoUI from './BaseInfoCard';
 import CreateBidModal from '../modals/CreateBidModal';
 import CompleteProfileModal from '../modals/CompleteProfileModal';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
-import { getReadType } from '../../utility/Utils';
+import { getModifiedProjectResponse, getReadType } from '../../utility/Utils';
+import BaseInfoForBidReceived from './BaseInfoForBidReceived';
+import BaseInfoMarketplaceCard from './BaseInfoMarketplaceCard';
 
 const MarketPlaceProjectCard = ({
   primaryFilter,
@@ -30,10 +31,11 @@ const MarketPlaceProjectCard = ({
   isPopoverOpen,
   isTeam,
 }) => {
+  const project = data?.project;
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
-  const [isNewTag, setIsTagNew] = useState(data?.is_read === false);
+  const [isNewTag, setIsTagNew] = useState(project?.is_read === false);
   const userData = useSelector(selectUserData);
   const dispatch = useDispatch();
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
@@ -87,13 +89,12 @@ const MarketPlaceProjectCard = ({
     }
 
     setProjectRelistData({
-      id: data?._id,
-      name: data?.details?.name ?? data?.name,
+      id: project?._id,
+      name: project?.details?.name ?? project?.name,
     });
   }, []);
 
   const [createBidModal, setCreateBidModal] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
 
   const toggleCreateBidModal = () => {
     setCreateBidModal(!createBidModal);
@@ -116,12 +117,12 @@ const MarketPlaceProjectCard = ({
       metadata: {},
       type: getReadType({ primaryFilter, secondFilterState }),
     };
-    if (primaryFilter === 'my_bids') {
-      postData.metadata.bid_id = data?.bids?._id;
+    if (primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client) {
+      postData.metadata.bid_id = data?.bid?._id;
     } else {
-      postData.metadata.project_id = data?._id;
+      postData.metadata.project_id = project?._id;
     }
-    if (postData?.type && data?.is_read === false) {
+    if (postData?.type && isNewTag) {
       dispatch(updateCardStatus({ data: postData, onSuccess }));
     }
   };
@@ -163,51 +164,49 @@ const MarketPlaceProjectCard = ({
                     <Badge
                       className={`${
                         primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
-                          ? data?.bid_status
-                          : data?.status
+                          ? data?.bid?.status
+                          : project?.status
                       } truncate-1`}
                       color="badge"
                     >
                       {primaryFilter === 'my_bids' && userData?.user_type !== userTypes.client
-                        ? statusEnum[data?.bid_status]
-                        : statusEnum[data?.status]}
+                        ? statusEnum[data?.bid?.status]
+                        : statusEnum[project?.status]}
                     </Badge>
                   </CustomBadge>
                 </div>
                 <CardTitle className="d-flex align-items-center">
-                  <span className="cursor-pointer">{data?.details?.name ?? data?.name}</span>
+                  <span className="cursor-pointer">{project?.details?.name ?? project?.name}</span>
                 </CardTitle>
                 <div className="d-flex flex-wrap project-stats">
                   <CardText className="project">
-                    {data?.pay_type?.variable_cost ? (
-                      <>Variable Price&nbsp;</>
-                    ) : (
-                      <>
-                        Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
-                      </>
-                    )}
+                    <>
+                      {project?.pay_type} Price &nbsp;
+                      {project?.total_cost > 0 ? `${project?.total_cost} ${project?.currency_symbol}` : ''}
+                    </>
                   </CardText>
                   {/* <CardText className=" project mb-1">{`Assigned Date - ${
                   data?.total_estimated_cost
                 }$ | ${DateTime?.fromMillis(data?.assigned_date ?? 0).toFormat('dd-MM-yy')}`}</CardText> */}
                   <CardText className="project d-flex align-items-center">
                     <img src={Mpin} alt="Mpin" className="mpin" />
-                    {data?.client?.office_address?.country?.name ||
-                      data?.client_details?.office_address?.country?.name ||
+                    {project?.client?.office_address?.country?.name ||
+                      project?.client_details?.office_address?.country?.name ||
+                      data?.client?.country_name ||
                       'Location'}
                   </CardText>
                   <CardText className=" mb-1">
-                    {`Posted ${data?.created_at ? DateTime?.fromMillis(data?.created_at)?.toRelative() : '-'}`}
+                    {`Posted ${project?.posted_date ? DateTime?.fromMillis(project?.posted_date)?.toRelative() : '-'}`}
                   </CardText>
                 </div>
 
                 {!showFullText ? (
                   <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
-                    {data?.details?.description ?? data?.description}
+                    {project?.details?.description ?? project?.description}
                   </div>
                 ) : (
                   <div className="my-div" ref={divRef}>
-                    {data?.details?.description ?? data?.description}
+                    {project?.details?.description ?? project?.description}
                   </div>
                 )}
 
@@ -218,11 +217,19 @@ const MarketPlaceProjectCard = ({
                 )}
               </Col>
               <Col lg="4">
-                <BaseInfoUI
-                  isSearchPage={isSearchPage}
-                  data={data}
-                  setRelistConfirmationModal={setRelistConfirmationModal}
-                />
+                {primaryFilter === 'my_bids' && userData?.user_type === userTypes.client ? (
+                  <BaseInfoForBidReceived
+                    isSearchPage={isSearchPage}
+                    data={data}
+                    setRelistConfirmationModal={setRelistConfirmationModal}
+                  />
+                ) : (
+                  <BaseInfoMarketplaceCard
+                    isSearchPage={isSearchPage}
+                    data={data}
+                    setRelistConfirmationModal={setRelistConfirmationModal}
+                  />
+                )}
               </Col>
             </Row>
           </CardBody>
@@ -231,18 +238,21 @@ const MarketPlaceProjectCard = ({
       {showModal && (
         <ProjectModal
           onUpdateCard={updateCard}
-          data={data}
+          data={getModifiedProjectResponse({ data })}
           modal={showModal}
           toggleModal={handleToggle}
           setCreateBidModal={setCreateBidModal}
-          setSelectedProject={setSelectedProject}
           toggleCompleteProfileModal={toggleCompleteProfileModal}
           isMyTeam={isTeam}
           setRelistConfirmationModal={setRelistConfirmationModal}
         />
       )}
       {createBidModal && (
-        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={selectedProject} />
+        <CreateBidModal
+          modal={createBidModal}
+          toggleModal={toggleCreateBidModal}
+          selectedProject={getModifiedProjectResponse({ data })}
+        />
       )}
       {completeProfileModal && (
         <CompleteProfileModal

@@ -6,6 +6,8 @@ const initialState = {
   userReview: [],
   isLoading: false,
   reportLoading: false,
+  publicTeamMembers: null,
+  publicTeamMembersLoading: false,
   error: null,
 };
 
@@ -98,6 +100,26 @@ const profileSlice = createSlice({
       reportLoading: false,
     }),
 
+    publicTeamMembersRequest: (state) => ({
+      ...state,
+      publicTeamMembersLoading: true,
+      error: null,
+    }),
+    publicTeamMembersSuccess: (state, action) => ({
+      ...state,
+      publicTeamMembersLoading: false,
+      publicTeamMembers: action.payload,
+    }),
+    publicTeamMembersFailure: (state) => ({
+      ...state,
+      publicTeamMembersLoading: false,
+    }),
+
+    clearPublicTeamMembers: (state) => ({
+      ...state,
+      publicTeamMembers: null,
+    }),
+
     clearData: (state) => ({
       ...state,
       userProfile: {},
@@ -123,6 +145,10 @@ export const {
   reportRequest,
   reportSuccess,
   reportFailure,
+  publicTeamMembersRequest,
+  publicTeamMembersSuccess,
+  publicTeamMembersFailure,
+  clearPublicTeamMembers,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

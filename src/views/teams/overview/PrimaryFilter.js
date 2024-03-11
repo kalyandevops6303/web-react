@@ -42,10 +42,16 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
     return <ComponentSpinner />;
   }
 
+  const handlePrimaryCard = (filter) => {
+    if (!isLoadingSecondaryFilter) {
+      handlePrimaryChangeFilter(filter);
+    }
+  };
+
   return (
     <Row className="primary-row">
       {userType !== userTypes.team && (
-        <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.TEAMS)}>
+        <Col onClick={() => handlePrimaryCard(PATH_NAMES.TEAMS)}>
           <Statbox
             isActive={selected === PATH_NAMES.TEAMS}
             isMarketPlaceTab
@@ -53,12 +59,12 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             desc={TAB_NAMES.TEAMS}
             icon={<Users height={20} />}
             color="light-turquoise"
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
           />
         </Col>
       )}
       {userType !== userTypes.talent && (
-        <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.TALENTS)}>
+        <Col onClick={() => handlePrimaryCard(PATH_NAMES.TALENTS)}>
           <Statbox
             isActive={selected === PATH_NAMES.TALENTS}
             isMarketPlaceTab
@@ -66,13 +72,13 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             desc={TAB_NAMES.TALENTS}
             icon={<Users height={20} />}
             color="light-turquoise"
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
           />
         </Col>
       )}
 
       {userType !== userTypes.client && (
-        <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.CLIENTS)}>
+        <Col onClick={() => handlePrimaryCard(PATH_NAMES.CLIENTS)}>
           <Statbox
             isActive={selected === PATH_NAMES.CLIENTS}
             isMarketPlaceTab
@@ -80,12 +86,12 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             desc={TAB_NAMES.CLIENTS}
             icon={<Users height={20} />}
             color="light-turquoise"
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
           />
         </Col>
       )}
 
-      <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.RECOMMENDATION)}>
+      <Col onClick={() => handlePrimaryCard(PATH_NAMES.RECOMMENDATION)}>
         <Statbox
           isActive={selected === PATH_NAMES.RECOMMENDATION}
           isMarketPlaceTab
@@ -104,10 +110,10 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
       </Col>
 
       {userType !== userTypes.client ? (
-        <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.JOIN_REQ)}>
+        <Col onClick={() => handlePrimaryCard(PATH_NAMES.JOIN_REQ)}>
           <Statbox
             isActive={selected === PATH_NAMES.JOIN_REQ}
-            className="stat-box cursor-pointer"
+            className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
             isMarketPlaceTab
             title={
               selected === PATH_NAMES.JOIN_REQ && isLoadingSecondaryFilter
@@ -122,7 +128,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
           />
         </Col>
       ) : null}
-      <Col onClick={() => handlePrimaryChangeFilter(PATH_NAMES.FAV)}>
+      <Col onClick={() => handlePrimaryCard(PATH_NAMES.FAV)}>
         <Statbox
           isActive={selected === PATH_NAMES.FAV}
           className="stat-box cursor-pointer"

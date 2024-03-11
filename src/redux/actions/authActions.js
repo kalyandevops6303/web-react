@@ -106,6 +106,9 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
   try {
     const res = await loginService({ email: username, password });
     setItem('access_token', res.data.data.access_token);
+    setItem('access_token_expires', res.data.data.access_token_expires);
+    setItem('refresh_token', res.data.data.refresh_token);
+    setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     onSuccess(res.data.data);
     if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
       dispatch(loginSuccess(res.data.data));
@@ -131,6 +134,9 @@ const loginUserWithGoogle =
       }
 
       setItem('access_token', res.data.data.access_token);
+      setItem('access_token_expires', res.data.data.access_token_expires);
+      setItem('refresh_token', res.data.data.refresh_token);
+      setItem('refresh_token_expires', res.data.data.refresh_token_expires);
       if (res.data?.data?.checkpoint === checkPoints.COMPLETE) {
         dispatch(loginSuccess(res.data.data));
         dispatch(cometChatLogin(res.data.data.comet_chat_token));
@@ -164,6 +170,9 @@ const verifyEmail = (data) => async (dispatch) => {
   try {
     const res = await verifyEmailService(data);
     setItem('access_token', res.data.data.access_token);
+    setItem('access_token_expires', res.data.data.access_token_expires);
+    setItem('refresh_token', res.data.data.refresh_token);
+    setItem('refresh_token_expires', res.data.data.refresh_token_expires);
     dispatch(verifyEmailSuccess());
   } catch (error) {
     errorHandler(error, verifyEmailFailure);
@@ -295,7 +304,6 @@ const switchProfile =
   async (dispatch) => {
     try {
       dispatch(switchProfileSuccess(data));
-
       if (data?.user_type === 'TEAM' && data?.team_type === userTypes.club) {
         setItemFromSession('team_id', data?._id);
         dispatch(getClubAdminAccess());
@@ -338,22 +346,18 @@ const getUserData = () => async (dispatch) => {
         }
         dispatch(userDataSuccess(userData));
         dispatch(getTeams({ onSuccess: () => {} }));
-        setItem('userData', userData);
       }
 
       // For getting the current user's details if we redirect directly to a team's page
       const userRes = await userDataService();
       const individualUserData = userRes.data.data;
 
-      setItem('savedUserData', individualUserData);
       dispatch(savedUserDataSuccess(individualUserData));
     } else {
       // User is visiting for the first time or doesn't have a team ID
       const userRes = await userDataService();
       const userData = userRes.data.data;
 
-      setItem('savedUserData', userData);
-      setItem('userData', userData);
       dispatch(userDataSuccess(userData));
       dispatch(getUserDataSuccess(userData.user_type));
 

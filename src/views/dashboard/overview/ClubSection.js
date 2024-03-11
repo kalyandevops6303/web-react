@@ -54,7 +54,7 @@ const ClubSection = ({ toggleModal }) => {
           </CardTitle>
           <CardText
             onClick={!isDisabled && toggleModal}
-            className={` text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary ${
+            className={`text-decoration-underline card-text font-small-3 me-25 mb-0 text-primary ${
               isDisabled ? 'text-muted cursor-not-allowed' : 'cursor-pointer'
             }`}
           >

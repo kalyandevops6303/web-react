@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft, Info } from 'react-feather';
+import { ChevronLeft, FileText, Info } from 'react-feather';
 import {
   AccordionBody,
   AccordionHeader,
@@ -17,6 +17,7 @@ import {
   CardTitle,
   Col,
   Row,
+  Spinner,
   UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
@@ -25,7 +26,6 @@ import Avatar from '@components/avatar';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { DateTime } from 'luxon';
-import PdfIcon from '@src/assets/images/pdfimg.png';
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 import { BidDetailsWrap } from './style';
@@ -39,6 +39,8 @@ import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { getItem } from '../../utility/localStorageControl';
 import { AccordionBodyContent, AccordionTableHeader } from '../create-bid/style';
 import ShowMoreLess from '../../@core/components/show-more-less-comp';
+import { getDownloadUrl } from '../../redux/actions/dashboardActions';
+import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
 
 const BidDetails = () => {
   const dispatch = useDispatch();
@@ -47,6 +49,7 @@ const BidDetails = () => {
   const param = useParams();
   const [acceptBidModal, setAcceptBidModal] = useState(false);
   const [rejectBidModal, setRejectBidModal] = useState(false);
+  const [selectedFileKey, setSelectedFileKey] = useState(null);
 
   const [bidStatus, setBidStatus] = useState('');
   const [isBidStatusUpating, setIsBidStatusUpating] = useState(false);
@@ -64,6 +67,7 @@ const BidDetails = () => {
   };
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
   const isLoading = useSelector((state) => state.projectDetails.getBidInfoLoading);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
   const bidView = location?.pathname?.split('/')?.slice(0, -1)?.join('/');
 
   useEffect(() => {
@@ -113,6 +117,10 @@ const BidDetails = () => {
     });
 
     return filteredArray;
+  };
+
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
   };
 
   const BidDetailsHeaderSection = styled.div`
@@ -512,17 +520,32 @@ const BidDetails = () => {
           </Card>
           <Card>
             {bidInfo?.documents?.map((item) => (
-              <a
-                key={item?.created_at}
-                className="text-decoration-none "
-                style={{ color: theme.activeColor }}
-                onClick={() => downloadFile({ data: item })}
-                rel="noopener noreferrer"
-              >
-                <CardBody className="d-flex align-items-center">
-                  <img src={PdfIcon} alt="pdficon" />
-                  <div className="d-flex justify-content-between w-100 ms-1 font-weight-bold">
-                    <CardText className="mb-0">{item?.file_name}</CardText>
+              <div key={item?.file_key}>
+                <CardBody className="d-flex align-items-center w-100">
+                  {downloadUrlIsLoading && selectedFileKey === item?.file_key ? (
+                    <div className="d-flex align-items-center justify-content-between">
+                      <Spinner color="primary" />
+                    </div>
+                  ) : (
+                    <div
+                      className="d-flex align-items-center w-100 cursor-pointer"
+                      style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                      onClick={() => {
+                        setSelectedFileKey(item?.file_key);
+                        dispatch(
+                          getDownloadUrl({
+                            fileKey: item?.file_key,
+                            onSuccess: onDownloadResumeUrlSuccess,
+                            fileName: item?.file_name,
+                          }),
+                        );
+                      }}
+                    >
+                      <FileText size="18" className="me-75" />
+                      <CardText className="mb-0">{item?.file_name}</CardText>
+                    </div>
+                  )}
+                  <div className="d-flex justify-content-end w-100 ms-1 font-weight-bold">
                     <div className="d-flex gap-4">
                       <CardText className="mb-0">{formatFileSize(item?.size)}</CardText>
                       <CardText className="mb-0">
@@ -531,7 +554,7 @@ const BidDetails = () => {
                     </div>
                   </div>
                 </CardBody>
-              </a>
+              </div>
             ))}
           </Card>
         </Col>

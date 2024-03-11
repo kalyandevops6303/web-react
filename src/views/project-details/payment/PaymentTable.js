@@ -108,47 +108,16 @@ const PaymentTable = () => {
     }
   }, [projectDetailsData?._id]);
 
-  useEffect(() => {
-    if (milestoneData?.length > 1) {
-      setSelectedPaymentData([milestoneData[0], milestoneData[1]]);
-      setSelectedPaymentId([milestoneData[0]._id, milestoneData[1]._id]);
-    }
-    if (milestoneData?.length === 1) {
-      setSelectedPaymentData([milestoneData[0]]);
-      setSelectedPaymentId([milestoneData[0]._id]);
-    }
-  }, [milestoneData]);
-
   const handlePaymentSelect = (e) => {
     const id = e.target.name;
     const isExisting = selectedPaymentData.find((item) => item._id === id);
-
-    // Check if the clicked item is within the first two values of milestoneData
-    const isFirstTwo = milestoneData.slice(0, 2).some((item) => item._id === id);
-
-    // If the clicked item is not in the first two values of milestoneData and
-    // there are already 2 items selected, allow selection/deselection
-    if (!isFirstTwo && selectedPaymentData.length >= 2) {
-      // If the clicked item is already selected, remove it
-      if (isExisting) {
-        const newArray = selectedPaymentData.filter((item) => item._id !== id);
-        const newData = selectedPaymentId.filter((item) => item !== id);
-        setSelectedPaymentData(newArray);
-        setSelectedPaymentId(newData);
-      } else {
-        // If not selected, add it
-        const selectedTransaction = milestoneData.find((item) => item._id === id);
-        setSelectedPaymentData((prev) => [...prev, selectedTransaction]);
-        setSelectedPaymentId((prev) => [...prev, id]);
-      }
-    } else if (isFirstTwo) {
-      // If the clicked item is in the first two values of milestoneData
-      // If the clicked item is already selected, return to prevent deselection
-      if (isExisting) {
-        return;
-      }
-
-      // Add the clicked item to selectedPaymentData
+    if (isExisting) {
+      const newArray = selectedPaymentData.filter((item) => item._id !== id);
+      const newData = selectedPaymentId.filter((item) => item !== id);
+      setSelectedPaymentData(newArray);
+      setSelectedPaymentId(newData);
+    }
+    if (!isExisting) {
       const selectedTransaction = milestoneData.find((item) => item._id === id);
       setSelectedPaymentData((prev) => [...prev, selectedTransaction]);
       setSelectedPaymentId((prev) => [...prev, id]);
@@ -222,6 +191,10 @@ const PaymentTable = () => {
   const showPaymentCalculation =
     user.user_type === userTypes.client && !isAllMilestonePaid && selectedPaymentId.length > 0;
 
+  if (listLoading) {
+    return <ComponentSpinner />;
+  }
+
   return (
     <>
       {makePaymentModal && (
@@ -232,9 +205,7 @@ const PaymentTable = () => {
         />
       )}
 
-      {listLoading ? (
-        <ComponentSpinner />
-      ) : (
+      {milestoneData?.length > 0 && (
         <Card className="" style={{ backgroundColor: 'transparent' }}>
           <div className="p-2 pb-0">
             <CardText className="fs-4 mb-0 fw-bold">Milestone Payment</CardText>

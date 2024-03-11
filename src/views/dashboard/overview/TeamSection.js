@@ -17,6 +17,7 @@ const TeamSection = ({ toggleModal }) => {
   const dispatch = useDispatch();
   const selectTeamMembersMetadata = useSelector((state) => state.dashboard.getMemberMetaData);
   const selectTeamMembercurrentPreview = useSelector((state) => state.dashboard.memberCurrentPreview);
+  const isLoading = useSelector((state) => state.dashboard.getTeamMemberLoading);
   const savedUserDetails = useSelector(selectSavedUserData);
 
   const metadata = { page: 1, page_size: 10 };
@@ -75,7 +76,7 @@ const TeamSection = ({ toggleModal }) => {
                 </div>
               }
               scrollableTarget="scrollableDivTeamMember"
-              loader={<div className="d-flex justify-content-center">Loading...</div>}
+              loader={<div className="d-flex justify-content-center">{isLoading && <>Loading...</>}</div>}
             >
               {teamMembers?.map((user) => (
                 <UserNameRoleCompanyComp key={user?._id} data={user} />

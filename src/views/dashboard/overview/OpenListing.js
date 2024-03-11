@@ -183,6 +183,11 @@ const OpenListing = () => {
     navigate(path, { state: { isRecommended: true } });
     dispatch(setActiveNavTab('marketplace'));
   };
+
+  const handleReceivedBids = () => {
+    navigate('/marketplace/my_bids', { state: { isOpenListing: true } });
+  };
+
   const [isSliderLoading, setIsSliderLoading] = useState(false);
   useEffect(() => {
     setIsSliderLoading(true);
@@ -208,7 +213,7 @@ const OpenListing = () => {
                   />
                 </span>
                 {projectsBidsForClientData?.data?.length > 0 && (
-                  <CardText onClick={(e) => handleViewAll(e, '/marketplace/my_bids')} className="view-all-cta">
+                  <CardText onClick={handleReceivedBids} className="view-all-cta">
                     View All
                   </CardText>
                 )}

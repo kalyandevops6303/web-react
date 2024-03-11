@@ -96,7 +96,7 @@ const projectDetails = createSlice({
 
     getBidInfoFailure: (state, action) => ({
       ...state,
-      getReceivedBidsLoading: false,
+      getBidInfoLoading: false,
       errorBidInfo: action.payload,
     }),
     getUnassignedRoleRequest: (state) => ({

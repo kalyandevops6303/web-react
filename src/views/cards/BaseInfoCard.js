@@ -108,7 +108,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
   const bidsReceivedAvatarGroup = data?.bid_profiles?.length
     ? data?.bid_profiles?.map((bidder) => ({
         user_id: bidder?.talent_id || bidder?.team_id,
-        user_type: userTypes.talent,
+        user_type: bidder?.team_id ? userTypes.team : userTypes.talent,
         title: bidder?.team_name || `${bidder?.talent_first_name} ${bidder?.talent_last_name}`,
         img: bidder?.team_logo || bidder?.talent_image_uri || defaultAvatar,
         placement: 'bottom',

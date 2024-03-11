@@ -24,6 +24,8 @@ import { getRequestStatusSuccess } from '../../redux/reducers/inviteTalent';
 import DetailsHeader from './overview/DetailsHeader';
 import DetailsCTAHeader from './overview/DetailsCTAHeader';
 import { DetailsHeaderSection, DetailsWrap } from './overview/style';
+import PublicTeamMembersListingModal from '../modals/PublicTeamMembersListingModal';
+import MembersListingCard from './overview/MembersListingCard';
 
 const UserDetails = () => {
   const dispatch = useDispatch();
@@ -36,6 +38,11 @@ const UserDetails = () => {
 
   const [isStatusUpdating, setIsStatusUpdating] = useState(false);
   const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
+  const [publicTeamMembersListingModal, setPublicTeamMembersListingModal] = useState(null);
+
+  const togglePublicTeamMembersListingModal = () => {
+    setPublicTeamMembersListingModal(!publicTeamMembersListingModal);
+  };
 
   const isEditable = userData?._id === param?.userId;
   useEffect(() => {
@@ -62,7 +69,6 @@ const UserDetails = () => {
   const currentProfile = useSelector(selectCurrentProfile);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
-  // const userData = getItem('userData');
 
   const calculateAvailableHoursPerWeek = (availability) => {
     // Calculate weekday hours per week
@@ -184,6 +190,14 @@ const UserDetails = () => {
             isEditable={userData?._id === param?.userId}
             isClubProfile={currentProfile.team_type === 'CLUB'}
           />
+          {(isTeamView || isClubView) && (
+            <MembersListingCard
+              toggleModal={togglePublicTeamMembersListingModal}
+              teamId={param?.userId}
+              publicTeamMembersListingModal={publicTeamMembersListingModal}
+              isClubView={isClubView}
+            />
+          )}
         </Col>
         <Col lg="9">
           <DetailsHeaderSection>
@@ -292,6 +306,14 @@ const UserDetails = () => {
           data={currentProfile}
           onDecline={onDecline}
           onLoading={isStatusUpdating}
+        />
+      )}
+      {publicTeamMembersListingModal && (
+        <PublicTeamMembersListingModal
+          modal={publicTeamMembersListingModal}
+          toggleModal={togglePublicTeamMembersListingModal}
+          teamId={param?.userId}
+          isClubView={isClubView}
         />
       )}
     </DetailsWrap>

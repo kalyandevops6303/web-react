@@ -14,7 +14,7 @@ import * as enums from '../../util/enums.js';
 import { theme } from '../../resources/theme';
 import Translator from '../../resources/localization/translator';
 
-import { unifiedStyle, unifiedSidebarStyle, unifiedMainStyle } from './style';
+import { unifiedStyle, unifiedSidebarStyle, unifiedMainStyle, profileSidebarContainerStyle } from './style';
 import { CustomGroupProfileSidebar } from '../Messages/CustomGroupProfileSidebar';
 
 class CometChatUI extends React.Component {
@@ -137,7 +137,7 @@ class CometChatUI extends React.Component {
         >
           <div css={unifiedSidebarStyle(this.state, this.props)} className="unified__sidebar">
             {this.state.showProfileSideBar ? (
-              <div style={{ overflow: 'auto' }}>
+              <div className="profile__sidebar__container" css={profileSidebarContainerStyle()}>
                 {this.state.avatar.props.group.guid === undefined ? (
                   <CustomProfileSidebar
                     lang={this.props.lang}

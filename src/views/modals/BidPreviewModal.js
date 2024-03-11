@@ -1,7 +1,7 @@
 /* eslint-disable no-confusing-arrow */
-import React from 'react';
+import React, { useState } from 'react';
 import Proptypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import '../custom-styles.scss';
 import { DateTime } from 'luxon';
@@ -20,27 +20,33 @@ import {
   AccordionItem,
   AccordionHeader,
   AccordionBody,
+  Spinner,
 } from 'reactstrap';
-import PdfIcon from '@src/assets/images/pdfimg.png';
 import Avatar from '@components/avatar';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { Info } from 'react-feather';
+import { FileText, Info } from 'react-feather';
 import { downloadFile, formatFileSize } from '../../utility/Utils';
 import { BidDetailsWrap } from '../project-details/style';
 import { userTypes } from '../../utility/constants/Constant';
 import theme from '../../configs/themeVariables';
 import { AccordionBodyContent, AccordionTableHeader } from '../create-bid/style';
 import ShowMoreLess from '../../@core/components/show-more-less-comp';
+import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
+import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 
 const BidPreviewModal = ({ modal, toggleModal }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onClose = () => {
     toggleModal();
   };
 
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+
+  const [selectedFileKey, setSelectedFileKey] = useState(null);
 
   const onEditBidClick = () => {
     if (bidInfo?.bid_by?.entity === userTypes.talent) {
@@ -70,6 +76,10 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
     });
 
     return filteredArray;
+  };
+
+  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
   };
 
   return (
@@ -296,27 +306,51 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
               </Card>
             </CardBody>
           </Card>
-          <Card>
-            {bidInfo?.documents?.map((item) => (
-              <span
-                key={item?.created_at}
-                className="text-decoration-none cursor-pointer"
-                onClick={() => downloadFile({ data: item })}
-                style={{ color: theme.activeColor }}
+          <Card className="px-1 py-1">
+            {bidInfo?.documents?.map((document, index) => (
+              <Row
+                key={document.file_key}
+                className={
+                  // eslint-disable-next-line no-unsafe-optional-chaining
+                  index !== bidInfo?.documents?.length - 1
+                    ? 'd-flex align-items-center mb-1'
+                    : 'd-flex align-items-center'
+                }
               >
-                <CardBody className="d-flex align-items-center">
-                  <img src={PdfIcon} alt="pdficon" />
-                  <div className="d-flex justify-content-between w-100 ms-1 font-weight-bold">
-                    <CardText className="mb-0">{item?.file_name}</CardText>
-                    <div className="d-flex gap-4">
-                      <CardText className="mb-0">{formatFileSize(item?.size)}</CardText>
-                      <CardText className="mb-0">
-                        {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
-                      </CardText>
-                    </div>
-                  </div>
-                </CardBody>
-              </span>
+                <Col sm="6" md="6" lg="8">
+                  <span
+                    className="cursor-pointer"
+                    style={{ color: theme.activeColor }}
+                    onClick={() => {
+                      setSelectedFileKey(document?.file_key);
+                      dispatch(
+                        getDownloadUrl({
+                          fileKey: document?.file_key,
+                          onSuccess: onDownloadResumeUrlSuccess,
+                          fileName: document?.file_name,
+                        }),
+                      );
+                    }}
+                  >
+                    {downloadUrlIsLoading && selectedFileKey === document?.file_key ? (
+                      <div className="d-flex align-items-center justify-content-start">
+                        <Spinner color="primary" />
+                      </div>
+                    ) : (
+                      <>
+                        <FileText size="18" className="me-75" />
+                        {document?.file_name}
+                      </>
+                    )}
+                  </span>
+                </Col>
+                <Col sm="6" md="6" lg="2" className="text-end">
+                  {formatFileSize(document?.size)}
+                </Col>
+                <Col sm="6" md="6" lg="2" className="text-end">
+                  {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')}
+                </Col>
+              </Row>
             ))}
           </Card>
         </BidDetailsWrap>
