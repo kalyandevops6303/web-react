@@ -1,4 +1,5 @@
 import API from '../configs/api';
+// eslint-disable-next-line import/no-cycle
 import DataService from '../configs/dataService/dataService';
 
 const userDataService = () => DataService.get(API.dashboard.userData);
