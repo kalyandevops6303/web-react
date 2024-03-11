@@ -88,9 +88,6 @@ const SubmissionHistory = ({ selectedMilestone }) => {
                   dataLength={subHistory?.length}
                   next={fetchMore}
                   hasMore={hasMore}
-                  endMessage={
-                    <div className="d-flex justify-content-center ">{subHistory?.length === 0 ? <Empty /> : ''}</div>
-                  }
                   scrollableTarget="scrollDivForSubmissionHistory"
                   loader={
                     subHistory?.length > 0 && <div className="d-flex justify-content-center mt-1">Loading...</div>

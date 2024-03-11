@@ -178,7 +178,7 @@ const MilestoneAccordionWrap = styled.div`
   }
   .scroll-wrap {
     overflow-y: auto;
-    max-height: 400px;
+    max-height: 450px;
   }
 `;
 export { UserNameWrapper, DocumentsWrapper, TabWrapper, StickyHeader, MilestoneAccordionWrap };

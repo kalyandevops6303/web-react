@@ -8,6 +8,7 @@ import { clearData } from '../../../redux/reducers/milestone';
 import MilestoneDetailsTab from './MilestoneDetailsTab';
 import { TabWrapper } from './style';
 import SubmissionHistory from './SubmissionHistory';
+import TeamMembers from './TeamMembers';
 
 const MilestoneDetails = () => {
   const param = useParams();
@@ -29,6 +30,7 @@ const MilestoneDetails = () => {
       <MilestoneOverview selectedMilestone={currentMilestone} />
       <TabWrapper>{currentMilestone && <MilestoneDetailsTab selectedMilestone={currentMilestone} />}</TabWrapper>
       <SubmissionHistory selectedMilestone={currentMilestone} />
+      <TeamMembers selectedMilestone={currentMilestone} />
     </div>
   );
 };
