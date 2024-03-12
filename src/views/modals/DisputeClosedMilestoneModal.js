@@ -1,15 +1,15 @@
 import React from 'react';
-import '../../custom-styles.scss';
+import '../custom-styles.scss';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Button, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
-import DisputeClosedGif from '../../../assets/images/disputeClosed.gif';
-import { DisputeClosedModalContainer } from '../style';
-import { getAllDisputes, getDisputesCount, resolveDisputeApi } from '../../../redux/actions/disputeActions';
-import { resolveDisputeLoading } from '../../../redux/selectors/disputeSelectors';
-import { disputeStatuses } from '../../../utility/constants/Constant';
+import DisputeClosedGif from '../../assets/images/disputeClosed.gif';
+import { getAllDisputes, getDisputesCount, resolveDisputeApi } from '../../redux/actions/disputeActions';
+import { resolveDisputeLoading } from '../../redux/selectors/disputeSelectors';
+import { disputeStatuses } from '../../utility/constants/Constant';
+import { DisputeClosedModalContainer } from '../disputes/style';
 
 const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetailsModal, primaryFilter, onClose }) => {
   const dispatch = useDispatch();

@@ -17,7 +17,7 @@ import { raiseDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 import { disputeStatuses } from '../../../utility/constants/Constant';
 import ShowToastMessage from '../../../@core/components/toast';
 
-const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail }) => {
+const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail, fetchMilestoneDisutes }) => {
   const DisputeSchema = yup.object().shape({
     projectName: yup
       .object()
@@ -57,13 +57,16 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail })
   const raiseDisputeIsLoading = useSelector(raiseDisputeLoading);
 
   const onSuccess = () => {
-    ShowToastMessage('success', `Disputed Raised Successfully`);
+    ShowToastMessage('success', `Dispute Raised Successfully`);
     if (primaryFilter === 'all') {
       dispatch(getAllDisputes(null, 1, 10, []));
     } else if (primaryFilter === 'open') {
       dispatch(getAllDisputes(disputeStatuses.open, 1, 10, []));
     } else if (primaryFilter === 'resolved') {
       dispatch(getAllDisputes(disputeStatuses.resolved, 1, 10, []));
+    }
+    if (fetchMilestoneDisutes) {
+      fetchMilestoneDisutes();
     }
     dispatch(getDisputesCount());
     toggleModal();
@@ -229,6 +232,7 @@ RaiseDisputeModal.propTypes = {
   toggleModal: Proptypes.func,
   primaryFilter: Proptypes.string,
   projectDetail: Proptypes.object,
+  fetchMilestoneDisutes: Proptypes.func,
 };
 
 RaiseDisputeModal.defaultProps = {
@@ -236,4 +240,5 @@ RaiseDisputeModal.defaultProps = {
   toggleModal: () => {},
   primaryFilter: '',
   projectDetail: null,
+  fetchMilestoneDisutes: () => {},
 };

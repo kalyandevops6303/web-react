@@ -6,11 +6,13 @@ import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardSubtitle, Spinner
 import Notepad from '../../assets/images/youDidIt.gif';
 import { AcceptModalWrapper } from './style';
 
-const AcceptMilestoneModal = ({ data, onSuccess, modal, toggleModal }) => {
+const MarkMilestoneCompleteModal = ({ data, onSuccess, modal, toggleModal }) => {
   const onClose = () => {
     toggleModal();
   };
-  const isLoading = useSelector((state) => state.milestone.isMilestoneAccepting);
+
+  const isLoading = useSelector((state) => state.milestone.isMilestoneMarking);
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={isLoading ? null : onClose} />
@@ -19,7 +21,9 @@ const AcceptMilestoneModal = ({ data, onSuccess, modal, toggleModal }) => {
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" src={Notepad} width={180} height={180} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Are you sure you want to accept the milestone? </CardTitle>
+              <CardTitle className="mb-1 modal-title-custom">
+                Are you sure you want to mark the milestone as complete?
+              </CardTitle>
               <CardSubtitle className="mb-75 subtitle">
                 <b>Milestone {data?.seq}:</b> {data?.description}
               </CardSubtitle>
@@ -30,7 +34,7 @@ const AcceptMilestoneModal = ({ data, onSuccess, modal, toggleModal }) => {
               Cancel
             </Button>
             <Button disabled={isLoading} color="primary" onClick={onSuccess}>
-              {isLoading ? <Spinner size="sm" /> : 'Accept'}
+              {isLoading ? <Spinner size="sm" /> : 'Mark as complete'}
             </Button>
           </div>
         </AcceptModalWrapper>
@@ -39,16 +43,16 @@ const AcceptMilestoneModal = ({ data, onSuccess, modal, toggleModal }) => {
   );
 };
 
-export default AcceptMilestoneModal;
+export default MarkMilestoneCompleteModal;
 
-AcceptMilestoneModal.propTypes = {
+MarkMilestoneCompleteModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
   onSuccess: Proptypes.func,
   data: Proptypes.object,
 };
 
-AcceptMilestoneModal.defaultProps = {
+MarkMilestoneCompleteModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   onSuccess: () => {},

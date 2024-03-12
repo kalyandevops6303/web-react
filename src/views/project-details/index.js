@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useState, memo } from 'react';
+import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
@@ -22,6 +23,26 @@ import MilestonePaymentListing from './payment/MilestonePaymentListing';
 import { userData } from '../../redux/selectors/dashboardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import { truncateSentence } from '../../utility/Utils';
+import theme from '../../configs/themeVariables';
+import MilestoneDetails from './milestones/MilestoneDetails';
+
+const ProjectDetailsWrapper = styled.div`
+  .content-header-left {
+    margin-bottom: 0 !important;
+  }
+  .top-head {
+    position: relative;
+    .fixed-header {
+      top: 4rem;
+      left: 0;
+      position: fixed;
+      z-index: 20;
+      background-color: ${theme.bodyBgColor};
+      width: 100%;
+      padding: 1.5rem 2rem 0.8rem 1rem;
+    }
+  }
+`;
 
 const ProjectDetails = () => {
   const location = useLocation();
@@ -32,6 +53,7 @@ const ProjectDetails = () => {
   const [stepsArray, setStepsArray] = useState(steps);
   const [stepsArrayInvite, setStepsArrayInvite] = useState(InviteView);
   const [selectedMilestone, setSelectedMilestone] = useState(null);
+  const currentMilestone = useSelector((state) => state.milestone.milestoneData);
   const params = useParams();
 
   const isMilestoneTab = location.pathname?.split('/')[3] === 'milestone';
@@ -121,6 +143,12 @@ const ProjectDetails = () => {
           title: 'Milestones',
           link: `/project-details/${params.projectId}/milestone`,
         };
+      case stepName.milestoneDetails.toLowerCase():
+        return {
+          title: 'Milestones',
+          link: `/project-details/${params.projectId}/milestone`,
+        };
+
       case stepName.payment.toLowerCase():
         return { title: 'Payment' };
       case stepName.rating.toLowerCase():
@@ -134,26 +162,32 @@ const ProjectDetails = () => {
     fromLocationPrimary(),
     { title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) },
     getLocationTernery(),
-    { title: selectedMilestone?.name || null },
+    { title: currentMilestone?.name || null },
   ];
 
+  const milestoneDetails = params?.['*'].includes('milestone-details');
+
   return (
-    <div>
-      <BreadCrumbs
-        data={
-          isInviteView
-            ? [{ title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) }]
-            : generalBreadcrumb
-        }
-      />
-      <Row>
+    <ProjectDetailsWrapper>
+      <div className="top-head">
+        <div className="fixed-header">
+          <BreadCrumbs
+            data={
+              isInviteView
+                ? [{ title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) }]
+                : generalBreadcrumb
+            }
+          />
+        </div>
+      </div>
+      <Row className="mt-3">
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
           <LeftSidebarProjectDetails />
           {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>
         <Col lg="9">
-          {selectedMilestone === null && (
+          {!milestoneDetails && (
             <CustomStep
               steps={isInviteView ? stepsArrayInvite : stepsArray}
               currentStep={currentStep}
@@ -166,16 +200,23 @@ const ProjectDetails = () => {
               path="milestone"
               element={<Milestone selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />}
             />
+
             <Route path="payment" element={<PaymentTab />} />
             <Route path="team" element={<TeamView />} />
             <Route path="rating" element={<RatingView />} />
             <Route path="project/project-invitation/:inviteId" element={<InvitationView />} />
             <Route path="milestone/project-invitation/:inviteId" element={<BidMilestone />} />
             <Route path="project/project-invitation-by-client/:inviteId" element={<InvitationView />} />
+            <Route
+              path="milestone-details/:milestoneId"
+              element={
+                <MilestoneDetails selectedMilestone={selectedMilestone} setSelectedMilestone={setSelectedMilestone} />
+              }
+            />
           </Routes>
         </Col>
       </Row>
-    </div>
+    </ProjectDetailsWrapper>
   );
 };
 

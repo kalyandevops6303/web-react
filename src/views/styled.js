@@ -36,41 +36,55 @@ const CustomBadge = styled.span`
   .ACTIVE {
     background: ${theme.lightBlueBgColor} !important;
     color: ${theme.lightBlueColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.lightBlueColor}` : 'none')};
   }
   .OPEN {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.lighGreenColor}` : 'none')};
   }
   .COMPLETED,
   .ACCEPTED,
+  .CREATED,
   .YET_TO_START {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.lighGreenColor}` : 'none')};
   }
-  .IN_REVIEW,
   .ON_GOING,
   .REVIEWED,
+  .IN_PROGRESS,
   .DRAFT {
+    background: ${theme.orangeColor}1f;
+    color: ${theme.orangeColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.orangeColor}` : 'none')};
+  }
+  .IN_REVIEW {
     background: ${theme.orange}1f;
     color: ${theme.orange};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.orange}` : 'none')};
   }
   .TERMINATED,
   .REJECTED,
   .LISTING_EXPIRED {
     background: ${theme.darkRedColor}1f;
     color: ${theme.darkRedColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.darkRedColor}` : 'none')};
   }
   .CLOSED {
     background: ${theme.disabledGrayColor}1f;
     color: ${theme.disabledGrayColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.disabledGrayColor}` : 'none')};
   }
   .OPEN_PROJECT {
     background: ${theme.lightGreenBg}1f !important;
     color: ${theme.lighGreenColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.lighGreenColor}` : 'none')};
   }
   .INVITED {
     color: ${theme.purpleColor};
     background: ${theme.purpleColor}1f !important;
+    border: ${(props) => (props.bordered ? `1px solid ${theme.purpleColor}` : 'none')};
   }
 `;
 

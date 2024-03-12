@@ -1,5 +1,6 @@
 import React from 'react';
 import Proptypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import '../custom-styles.scss';
 import {
   Button,
@@ -8,31 +9,33 @@ import {
   ModalBody,
   CardTitle,
   CardSubtitle,
-  Spinner,
+  Row,
   Col,
   UncontrolledTooltip,
-  Row,
 } from 'reactstrap';
 import { Link } from 'react-feather';
-import Notepad from '../../assets/images/youDidIt.gif';
+import Feedback from '../../assets/images/gifs/feedback_success.gif';
 import { AcceptModalWrapper, ArtifactsModalWrap } from './style';
 import { renderFilePreview } from '../../utility/Utils';
 
-const SubmitMilestoneModal = ({ isLoading, onSuccess, modal, toggleModal, links, documents }) => {
+const FeedbackForSubmitModal = ({ modal, toggleModal, links, documents }) => {
   const onClose = () => {
     toggleModal();
   };
+  const isLoading = useSelector((state) => state.projectDetails.sendDocumentLoading);
+  const isSignLoading = useSelector((state) => state.projectDetails.signContractByTalentLoading);
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={isLoading ? null : onClose} />
+      <ModalHeader toggle={isSignLoading || isLoading ? null : onClose} />
       <ModalBody>
         <AcceptModalWrapper>
           <div className="d-flex justify-content-between pr-1">
-            <img className="gif" src={Notepad} width={180} height={180} alt="gif" />
+            <img className="gif object-fit-contain" src={Feedback} width={220} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Are you sure you want to make this submission? </CardTitle>
+              <CardTitle className="modal-title-custom">Great Job!</CardTitle>
               <CardSubtitle className="mb-1 subtitle">
-                Only after submission client will receive <br /> these files.{' '}
+                You have successfully completed a milestone submission{' '}
               </CardSubtitle>
               <ArtifactsModalWrap className="mb-2 modal-artifacts">
                 {documents?.map((file) => (
@@ -65,11 +68,8 @@ const SubmitMilestoneModal = ({ isLoading, onSuccess, modal, toggleModal, links,
             </div>
           </div>
           <div className="d-flex gap-1  justify-content-end">
-            <Button disabled={isLoading} outline color="primary" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button disabled={isLoading} color="primary" onClick={onSuccess}>
-              {isLoading ? <Spinner size="sm" /> : 'Submit'}
+            <Button disabled={isSignLoading || isLoading} outline color="primary" onClick={onClose}>
+              Close
             </Button>
           </div>
         </AcceptModalWrapper>
@@ -78,22 +78,18 @@ const SubmitMilestoneModal = ({ isLoading, onSuccess, modal, toggleModal, links,
   );
 };
 
-export default SubmitMilestoneModal;
+export default FeedbackForSubmitModal;
 
-SubmitMilestoneModal.propTypes = {
+FeedbackForSubmitModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  onSuccess: Proptypes.func,
   links: Proptypes.array,
   documents: Proptypes.array,
-  isLoading: Proptypes.bool,
 };
 
-SubmitMilestoneModal.defaultProps = {
+FeedbackForSubmitModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
-  onSuccess: () => {},
   links: [],
   documents: [],
-  isLoading: false,
 };

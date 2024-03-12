@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
-import '../../custom-styles.scss';
+import '../custom-styles.scss';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,27 +10,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FileText, Upload } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { DisputeDetailsContainer, RepliesContainer } from '../style';
-import theme from '../../../configs/themeVariables';
-import DisputesTimeline from '../../../@core/components/disputes-timeline';
-import ShowToastMessage from '../../../@core/components/toast';
-import { ERROR } from '../../../utility/constants/ToastTypes';
-import { disputeStatusEnum, disputeStatuses, maxFileSize } from '../../../utility/constants/Constant';
-import DateTime from '../../../lib/date-time';
-import InfiniteScroll from '../../../lib/infinite-scroll';
-import useDropzone from '../../../lib/react-dropzone';
-import uuidv4 from '../../../lib/uuidv4';
-import { getDisputeReplies, replyOnDisputeApi } from '../../../redux/actions/disputeActions';
-import { disputeReplies, replyOnDisputeLoading } from '../../../redux/selectors/disputeSelectors';
-import { UploadIconContainer } from '../../Onboarding/style';
-import { disputeReplyFileUploadService, disputeReplyFileUploadToAzureService } from '../../../services/disputeServices';
-import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import DisputeClosedModal from './DisputeClosedModal';
-import { downloadFile, downloadUploadedFile } from '../../../utility/Utils';
-import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
-import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
+import theme from '../../configs/themeVariables';
+import DisputesTimeline from '../../@core/components/disputes-timeline';
+import { UploadIconContainer } from '../Onboarding/style';
+import ShowToastMessage from '../../@core/components/toast';
+import { ERROR } from '../../utility/constants/ToastTypes';
+import { disputeStatusEnum, disputeStatuses, maxFileSize } from '../../utility/constants/Constant';
+import DateTime from '../../lib/date-time';
+import InfiniteScroll from '../../lib/infinite-scroll';
+import useDropzone from '../../lib/react-dropzone';
+import uuidv4 from '../../lib/uuidv4';
+import { getDisputeReplies, replyOnDisputeApi } from '../../redux/actions/disputeActions';
+import { disputeReplies, replyOnDisputeLoading } from '../../redux/selectors/disputeSelectors';
+import { disputeReplyFileUploadService, disputeReplyFileUploadToAzureService } from '../../services/disputeServices';
+import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { DisputeDetailsContainer, RepliesContainer } from '../disputes/style';
 
-const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilter, onClose }) => {
+const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute }) => {
   const ResponseSchema = yup.object().shape({
     response: yup
       .string()
@@ -53,7 +49,6 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
 
   const replyOnDisputeIsLoading = useSelector(replyOnDisputeLoading);
   const disputeRepliesData = useSelector(disputeReplies);
-  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
   const {
     dispute_number,
@@ -72,13 +67,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [updatedTimelineData, setUpdatedTimelineData] = useState([]);
   const [isReplyBoxPresent, setIsReplyBoxPresent] = useState(false);
-  const [disputeClosedModal, setDisputeClosedModal] = useState(null);
-  const [selectedFileKey, setSelectedFileKey] = useState(null);
   const filesRef = useRef();
-
-  const toggleDisputeClosedModal = () => {
-    setDisputeClosedModal(!disputeClosedModal);
-  };
 
   const onCancelClick = () => {
     setIsReplyBoxPresent(false);
@@ -192,11 +181,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
               : 'd-flex align-items-center justify-content-between'
           }
         >
-          <div
-            className="d-flex cursor-pointer"
-            style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
-            onClick={() => downloadUploadedFile({ file: file.file })}
-          >
+          <div>
             <FileText size="18" className="me-75 mb-50" />
             {file.file.name}
           </div>
@@ -214,10 +199,6 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
       ))}
     </>
   );
-
-  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
-    downloadFile({ data: { download_url }, file_name });
-  };
 
   useEffect(() => {
     dispatch(getDisputeReplies(_id, 1, 10, []));
@@ -253,32 +234,16 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
           {reply?.documents?.length > 0 && (
             <div>
               {reply?.documents?.map((document) => (
-                <div
-                  key={document.file_key}
-                  className="d-flex cursor-pointer"
-                  style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
-                  onClick={() => {
-                    setSelectedFileKey(document?.file_key);
-                    dispatch(
-                      getDownloadUrl({
-                        fileKey: document?.file_key,
-                        onSuccess: onDownloadResumeUrlSuccess,
-                        fileName: document.file_name,
-                      }),
-                    );
-                  }}
+                <a
+                  href={document.download_url}
+                  key={document.download_url}
+                  className="mb-50 d-flex cursor-pointer"
+                  target="_blank"
+                  rel="noreferrer"
                 >
-                  {downloadUrlIsLoading && selectedFileKey === document?.file_key ? (
-                    <div className="d-flex align-items-center justify-content-start">
-                      <Spinner color="primary" />
-                    </div>
-                  ) : (
-                    <>
-                      <FileText size="18" className="me-75 mb-50" />
-                      <p className="mb-0">{document.file_name}</p>
-                    </>
-                  )}
-                </div>
+                  <FileText size="18" className="me-75 mb-50" />
+                  <p className="mb-0">{document.file_name}</p>
+                </a>
               ))}
             </div>
           )}
@@ -380,16 +345,6 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
 
   return (
     <Modal isOpen={modal} contentClassName="listing-team-members-modal-style" className="modal-dialog-centered">
-      {disputeClosedModal && (
-        <DisputeClosedModal
-          modal={disputeClosedModal}
-          toggleModal={toggleDisputeClosedModal}
-          selectedDispute={selectedDispute}
-          toggleDetailsModal={toggleModal}
-          primaryFilter={primaryFilter}
-          onClose={onClose}
-        />
-      )}
       <ModalHeader toggle={toggleModal} />
       <ModalBody className="pt-0 px-5">
         <DisputeDetailsContainer>
@@ -411,10 +366,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
           </div>
           {status !== disputeStatuses.resolved && (
             <div className="d-flex justify-content-end align-items-center mt-2">
-              <p
-                className="text-decoration-underline fw-bold blue-btn mb-0 me-3 cursor-pointer"
-                onClick={() => setDisputeClosedModal(true)}
-              >
+              <p className="text-decoration-underline fw-bold blue-btn mb-0 me-3 cursor-pointer" onClick={onDispute}>
                 Dispute Resolved
               </p>
               <p
@@ -531,7 +483,7 @@ DisputeDetailsModal.propTypes = {
   toggleModal: Proptypes.func,
   selectedDispute: Proptypes.object,
   primaryFilter: Proptypes.string,
-  onClose: Proptypes.func,
+  onDispute: Proptypes.func,
 };
 
 DisputeDetailsModal.defaultProps = {
@@ -539,5 +491,5 @@ DisputeDetailsModal.defaultProps = {
   toggleModal: () => {},
   selectedDispute: {},
   primaryFilter: '',
-  onClose: () => {},
+  onDispute: () => {},
 };

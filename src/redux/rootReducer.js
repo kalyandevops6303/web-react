@@ -29,6 +29,7 @@ import stripeDetails from './reducers/stripeDetails';
 import milestonePayment from './reducers/milestonePayment';
 import activeNavTab from './reducers/activeNavTab';
 import paymentFullView from './reducers/paymentFullView';
+import milestone from './reducers/milestone';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -59,6 +60,8 @@ const rootReducer = combineReducers({
   milestonePayment,
   activeNavTab,
   paymentFullView,
+  milestone,
+
   // Add more reducers if needed
 });
 

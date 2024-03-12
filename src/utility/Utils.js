@@ -12,7 +12,7 @@ import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
-
+import PDFIcon from '../assets/images/pdfV2.svg';
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -293,11 +293,12 @@ export const isFileValid = (file) => {
 
 export const renderFilePreview = (file) => {
   if (file?.type?.startsWith('image')) {
-    return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
-    // eslint-disable-next-line
-  } else {
-    return <FileText size="18" className="me-75 mb-50" />;
+    return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="22" width="22" />;
   }
+  if (file?.name?.toLowerCase().endsWith('.pdf')) {
+    return <img className="rounded me-75" alt="pdf" src={PDFIcon} height="22" width="22" />;
+  }
+  return <FileText size="20" className="me-75 mb-25" />;
 };
 
 export const renderFileSize = (size) => {
@@ -435,6 +436,47 @@ export const downloadFile = async ({ data, file_name }) => {
     toast.dismiss();
   }
 };
+export const downloadUploadedFile = async ({ file }) => {
+  toast.loading('Downloading file...');
+
+  try {
+    // Convert the binary file data into a Blob
+    const blob = new Blob([file]);
+
+    // Create a URL for the Blob
+    // eslint-disable-next-line no-undef
+    const url = window.URL.createObjectURL(blob);
+
+    // Create an anchor element
+    // eslint-disable-next-line no-undef
+    const a = document.createElement('a');
+
+    // Set the href to the Blob URL
+    a.href = url;
+
+    // Set the download attribute to the file name
+    a.download = file?.name || 'document';
+
+    // Append the anchor to the body
+    // eslint-disable-next-line no-undef
+    document.body.appendChild(a);
+
+    // Click the anchor to start the download
+    a.click();
+
+    // Remove the anchor from the body
+    a.remove();
+
+    // Revoke the URL to free up memory
+    // eslint-disable-next-line no-undef
+    window.URL.revokeObjectURL(url);
+    toast.dismiss();
+  } catch (error) {
+    // Handle any errors
+    console.error('Error downloading file:', error);
+    toast.error('Error downloading file');
+  }
+};
 
 export const truncateSentence = ({ sentence, maxCharacters }) => {
   // Check if the sentence exceeds the maximum number of characters
@@ -525,39 +567,6 @@ export const getReadType = ({ primaryFilter, secondFilterState, userType }) => {
   return '';
 };
 
-export const downloadUploadedFile = async ({ file }) => {
-  toast.loading('Downloading file...');
-  try {
-    // Convert the binary file data into a Blob
-    const blob = new Blob([file]);
-    // Create a URL for the Blob
-    // eslint-disable-next-line no-undef
-    const url = window.URL.createObjectURL(blob);
-    // Create an anchor element
-    // eslint-disable-next-line no-undef
-    const a = document.createElement('a');
-    // Set the href to the Blob URL
-    a.href = url;
-    // Set the download attribute to the file name
-    a.download = file?.name || 'document';
-    // Append the anchor to the body
-    // eslint-disable-next-line no-undef
-    document.body.appendChild(a);
-    // Click the anchor to start the download
-    a.click();
-    // Remove the anchor from the body
-    a.remove();
-    // Revoke the URL to free up memory
-    // eslint-disable-next-line no-undef
-    window.URL.revokeObjectURL(url);
-    toast.dismiss();
-  } catch (error) {
-    // Handle any errors
-    console.error('Error downloading file:', error);
-    toast.error('Error downloading file');
-  }
-};
-
 export const getModifiedProjectResponse = ({ data }) => {
   const project = data?.project;
   return {
@@ -624,4 +633,13 @@ export const getModifiedProjectResponse = ({ data }) => {
     },
     is_favorite: data?.project?.is_favourite,
   };
+};
+export const handleLinkOpen = (URL) => {
+  if (URL && (URL.startsWith('http://') || URL.startsWith('https://'))) {
+    // eslint-disable-next-line no-undef
+    window.open(URL, '_blank');
+  } else {
+    // eslint-disable-next-line no-undef
+    window.open(`https://${URL}`, '_blank');
+  }
 };
