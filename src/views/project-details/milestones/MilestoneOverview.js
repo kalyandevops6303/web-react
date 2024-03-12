@@ -15,7 +15,7 @@ import MarkMilestoneCompleteModal from '../../modals/MarkMilestoneCompleteModal'
 import FeedbackForCompleteModal from '../../modals/FeedbackForCompleteModal';
 import AcceptMilestoneModal from '../../modals/AcceptMilestone';
 import FeedbackForAcceptModal from '../../modals/FeedbackForAcceptModal';
-import { accpetMilestone, markComplete } from '../../../redux/actions/milestoneActions';
+import { accpetMilestone, getMilestoneDisputes, markComplete } from '../../../redux/actions/milestoneActions';
 
 const MilestoneOverview = ({ selectedMilestone }) => {
   const userData = useSelector(selectAuthUserData);
@@ -59,6 +59,16 @@ const MilestoneOverview = ({ selectedMilestone }) => {
     dispatch(accpetMilestone({ milestoneId: param.milestoneId, onSuccess }));
   };
 
+  const onDisputeSuccess = () => {
+    dispatch(
+      getMilestoneDisputes({
+        milestoneId: param?.milestoneId,
+        projectId: param?.projectId,
+        metaData: { page: 1, page_size: 10 },
+      }),
+    );
+  };
+
   return (
     <TabWrapper>
       <StickyHeader>
@@ -99,6 +109,7 @@ const MilestoneOverview = ({ selectedMilestone }) => {
       {raiseDisputeModal && (
         <RaiseDisputeModal
           modal={raiseDisputeModal}
+          fetchMilestoneDisutes={onDisputeSuccess}
           toggleModal={() => setRaiseDisputeModal(!raiseDisputeModal)}
           primaryFilter="all"
           projectDetail={{ label: projectDetailsData?.details?.name, value: projectDetailsData?._id }}

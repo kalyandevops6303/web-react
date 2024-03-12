@@ -46,6 +46,11 @@ const getSubmissionHistoryService = ({ metaData, milestoneId }) =>
     `${API.projectMilestones.getSubmissionHistory}?milestone_id=${milestoneId}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
   );
 
+const getMilestoneDisputesService = ({ metaData, milestoneId, projectId }) =>
+  DataService.get(
+    `${API.projectMilestones.getDisputes}?project_id=${projectId}&milestone_id=${milestoneId}&page=${metaData?.page}&page_size=${metaData?.page_size}`,
+  );
+
 const markCompelteService = (milestone_id) =>
   DataService.put(`${API.projectMilestones.markComplete}?milestone_id=${milestone_id}`);
 
@@ -61,4 +66,5 @@ export {
   milestoneTransactionsServiceForTeam,
   milestoneDetailService,
   getSubmissionHistoryService,
+  getMilestoneDisputesService,
 };

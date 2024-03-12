@@ -10,6 +10,11 @@ const initialState = {
   isMilestoneSubmitting: false,
   isMilestoneAccepting: false,
   isMilestoneMarking: false,
+  milestoneDisputeLoading: false,
+  milestoneDispute: [],
+  milestoneDisputeCurrentPreview: null,
+  milestoneDisputeMetadata: null,
+  isMilestoneDisputeLoading: false,
   error: null,
 };
 
@@ -97,6 +102,27 @@ const milestoneSlice = createSlice({
       submissionHistoryLoading: false,
       error: action.payload,
     }),
+
+    milestoneDisputeRequest: (state) => ({
+      ...state,
+      isMilestoneDisputeLoading: true,
+      error: null,
+    }),
+    milestoneDisputeSuccess: (state, action) => ({
+      ...state,
+      milestoneDisputeCurrentPreview: action.payload.data,
+      milestoneDispute:
+        action.payload.metadata.current_page === 1
+          ? action.payload.data
+          : [...state.milestoneDispute, ...action.payload.data],
+      milestoneDisputeMetadata: action.payload.metadata,
+      isMilestoneDisputeLoading: false,
+    }),
+    milestoneDisputeFailure: (state, action) => ({
+      ...state,
+      isMilestoneDisputeLoading: false,
+      error: action.payload,
+    }),
     clearData: (state) => ({
       ...state,
       milestoneData: null,
@@ -111,12 +137,21 @@ const milestoneSlice = createSlice({
       submissionHistoryCurrentPreview: null,
       submissionHistoryMetadata: null,
     }),
+    clearDispute: (state) => ({
+      ...state,
+      milestoneDispute: [],
+      isMilestoneDisputeLoading: false,
+      error: null,
+      milestoneDisputeCurrentPreview: null,
+      milestoneDisputeMetadata: null,
+    }),
   },
 });
 
 export const {
   clearData,
   clearHistory,
+  clearDispute,
   milestoneDetailFailure,
   milestoneDetailRequest,
   milestoneDetailSuccess,
@@ -132,6 +167,9 @@ export const {
   markCompelteFailure,
   markCompelteRequest,
   markCompelteSuccess,
+  milestoneDisputeFailure,
+  milestoneDisputeRequest,
+  milestoneDisputeSuccess,
 } = milestoneSlice.actions;
 
 export default milestoneSlice.reducer;

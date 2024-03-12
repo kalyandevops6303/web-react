@@ -9,6 +9,7 @@ import MilestoneDetailsTab from './MilestoneDetailsTab';
 import { TabWrapper } from './style';
 import SubmissionHistory from './SubmissionHistory';
 import TeamMembers from './TeamMembers';
+import Disputes from './Disputes';
 
 const MilestoneDetails = () => {
   const param = useParams();
@@ -31,6 +32,7 @@ const MilestoneDetails = () => {
       <TabWrapper>{currentMilestone && <MilestoneDetailsTab selectedMilestone={currentMilestone} />}</TabWrapper>
       <SubmissionHistory selectedMilestone={currentMilestone} />
       <TeamMembers selectedMilestone={currentMilestone} />
+      <Disputes selectedMilestone={currentMilestone} />
     </div>
   );
 };

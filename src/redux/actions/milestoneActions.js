@@ -9,6 +9,9 @@ import {
   milestoneDetailFailure,
   milestoneDetailRequest,
   milestoneDetailSuccess,
+  milestoneDisputeFailure,
+  milestoneDisputeRequest,
+  milestoneDisputeSuccess,
   submissionHistoryFailure,
   submissionHistoryRequest,
   submissionHistorySuccess,
@@ -17,6 +20,7 @@ import {
   submitMilestoneSuccess,
 } from '../reducers/milestone';
 import {
+  getMilestoneDisputesService,
   getSubmissionHistoryService,
   markCompelteService,
   milestoneDetailService,
@@ -46,6 +50,20 @@ const getSubmissionHistory =
       dispatch(submissionHistorySuccess(res.data.data));
     } catch (error) {
       errorHandler(error, submissionHistoryFailure);
+    }
+  };
+
+const getMilestoneDisputes =
+  ({ milestoneId, metaData, projectId }) =>
+  async (dispatch) => {
+    if (metaData?.page === 1) {
+      dispatch(milestoneDisputeRequest());
+    }
+    try {
+      const res = await getMilestoneDisputesService({ milestoneId, metaData, projectId });
+      dispatch(milestoneDisputeSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, milestoneDisputeFailure);
     }
   };
 const submitMilstone =
@@ -90,4 +108,11 @@ const markComplete =
     }
   };
 
-export { getMilestoneDetail, submitMilstone, markComplete, getSubmissionHistory, accpetMilestone };
+export {
+  getMilestoneDetail,
+  getMilestoneDisputes,
+  submitMilstone,
+  markComplete,
+  getSubmissionHistory,
+  accpetMilestone,
+};

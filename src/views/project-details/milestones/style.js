@@ -166,19 +166,48 @@ const StickyHeader = styled.div`
   }
 `;
 const MilestoneAccordionWrap = styled.div`
+  .accordion {
+    box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.06);
+    border-radius: 0.375rem;
+  }
+  .accordion-button {
+    background: ${theme.headerBackground};
+  }
   .accordion-header {
     padding: 0.5rem 1.2rem;
+    border-radius: 0.375rem;
+
+    background: ${theme.headerBackground};
   }
   .accordion-title {
     font-size: 1.125rem;
   }
   .accordion-body {
+    border-radius: 0.375rem;
+
+    background: ${theme.headerBackground};
     color: inherit;
     padding: 0rem 2rem 2rem 2rem;
   }
   .scroll-wrap {
     overflow-y: auto;
-    max-height: 450px;
+    max-height: 420px;
+  }
+
+  .dispute-card {
+    margin-left: -0.2rem;
+    box-shadow: 0 4px 16px 0 rgba(34, 41, 47, 0.1);
+  }
+  .team-member-card {
+    margin-left: -0.2rem;
+    box-shadow: 0 4px 16px 0 rgba(34, 41, 47, 0.1);
+  }
+  .team-member-info {
+    background: ${theme.infoBannerBg};
+    p {
+      color: ${theme.activeNavPillText};
+    }
+    border-radius: 0.375rem;
   }
 `;
 export { UserNameWrapper, DocumentsWrapper, TabWrapper, StickyHeader, MilestoneAccordionWrap };

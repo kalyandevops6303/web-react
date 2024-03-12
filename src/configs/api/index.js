@@ -160,6 +160,7 @@ const API = {
     getSubmissionHistory: `${apiCreateProjectEndpoint}/api/v1/project/milestones/artifacts`,
     markComplete: `${apiCreateProjectEndpoint}/api/v1/project/milestones/complete`,
     getSingleMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestone`,
+    getDisputes: `${apiCreateProjectEndpoint}/api/v1/project/disputes`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
