@@ -31,7 +31,6 @@ import {
 } from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
-import { milestoneFileUploadService } from '../../../services/projectMilestoneService';
 import errorHandler from '../../../utility/errorHandler';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR, SUCCESS } from '../../../utility/constants/ToastTypes';
@@ -49,6 +48,7 @@ import FeedbackForSubmitModal from '../../modals/FeedbackForSubmitModal';
 import RemoveArtifactsModal from '../../modals/RemoveArtifactsModal';
 import FeedbackRemoveArtifactsModal from '../../modals/FeedbackRemoveArtifacts';
 import { submitMilstone } from '../../../redux/actions/milestoneActions';
+import { milestoneSubmissionFileUploadService } from '../../../services/projectMilestoneService';
 
 const MilestoneDetailsSchema = yup.object().shape({
   documents: yup.array().of(
@@ -174,7 +174,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
 
         const promises = validFiles.map(async (file) => {
           try {
-            const response = await milestoneFileUploadService({
+            const response = await milestoneSubmissionFileUploadService({
               file_name: file.name,
               project_id: selectedMilestone?.project_id,
               milestone_id: selectedMilestone._id,
