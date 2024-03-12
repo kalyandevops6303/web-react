@@ -36,9 +36,9 @@ const acceptMilestoneService = (milestone_id) =>
 const rejectMilestoneService = (milestone_id) =>
   DataService.put(`${API.projectMilestones.rejectMilestone}?milestone_id=${milestone_id}`);
 
-const milestoneFileUploadService = (projectId, milestoneId, filename) =>
+const milestoneFileUploadService = ({ project_id, milestone_id, file_name }) =>
   DataService.get(
-    `${API.projectMilestones.projectFileUpload}?project_id=${projectId}&milestone_id=${milestoneId}&filename=${filename}`,
+    `${API.projectMilestones.projectFileUpload}?project_id=${project_id}&milestone_id=${milestone_id}&filename=${file_name}`,
   );
 
 const getSubmissionHistoryService = ({ metaData, milestoneId }) =>

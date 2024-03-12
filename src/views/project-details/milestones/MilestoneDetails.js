@@ -10,6 +10,7 @@ import { TabWrapper } from './style';
 import SubmissionHistory from './SubmissionHistory';
 import TeamMembers from './TeamMembers';
 import Disputes from './Disputes';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const MilestoneDetails = () => {
   const param = useParams();
@@ -31,7 +32,9 @@ const MilestoneDetails = () => {
       <MilestoneOverview selectedMilestone={currentMilestone} />
       <TabWrapper>{currentMilestone && <MilestoneDetailsTab selectedMilestone={currentMilestone} />}</TabWrapper>
       <SubmissionHistory selectedMilestone={currentMilestone} />
-      <TeamMembers selectedMilestone={currentMilestone} />
+      {currentMilestone?.milestone_by?.entity === userTypes.team && (
+        <TeamMembers selectedMilestone={currentMilestone} />
+      )}
       <Disputes selectedMilestone={currentMilestone} />
     </div>
   );

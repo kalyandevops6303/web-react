@@ -22,7 +22,13 @@ import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
-import { formatDate, isFileValid, isUrlWithoutProtocol, renderFilePreview } from '../../../utility/Utils';
+import {
+  downloadUploadedFile,
+  formatDate,
+  isFileValid,
+  isUrlWithoutProtocol,
+  renderFilePreview,
+} from '../../../utility/Utils';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { milestoneFileUploadService } from '../../../services/projectMilestoneService';

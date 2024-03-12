@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { SubmissionHistoryWrapper } from '../style';
-import { downloadUploadedFile, handleLinkOpen, renderFilePreview } from '../../../utility/Utils';
+import { downloadFile, handleLinkOpen, renderFilePreview } from '../../../utility/Utils';
 import { MessageIconWrap } from '../../modals/style';
 import theme from '../../../configs/themeVariables';
 import { getSubmissionHistory } from '../../../redux/actions/milestoneActions';
@@ -18,6 +18,7 @@ import { MilestoneAccordionWrap } from './style';
 import DateTime from '../../../lib/date-time';
 import Empty from './NoDataComp';
 import { userTypes } from '../../../utility/constants/Constant';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 
 const SubmissionHistory = ({ selectedMilestone }) => {
   const dispatch = useDispatch();
@@ -70,6 +71,10 @@ const SubmissionHistory = ({ selectedMilestone }) => {
         milestoneId: param?.milestoneId,
       }),
     );
+  };
+
+  const onDownloadURL = ({ download_url, file_name }) => {
+    downloadFile({ data: { download_url }, file_name });
   };
 
   return (
@@ -172,7 +177,17 @@ const SubmissionHistory = ({ selectedMilestone }) => {
                                     </span>
                                   </MessageIconWrap>
                                 ) : (
-                                  <MessageIconWrap onClick={() => downloadUploadedFile({ file: file?.fileData?.file })}>
+                                  <MessageIconWrap
+                                    onClick={() =>
+                                      dispatch(
+                                        getDownloadUrl({
+                                          fileKey: file?.file_key,
+                                          onSuccess: onDownloadURL,
+                                          fileName: file?.file_name,
+                                        }),
+                                      )
+                                    }
+                                  >
                                     <span className="mail-bg">
                                       <Download size={20} className="mail-icon" color={theme.activeColor} />
                                     </span>
