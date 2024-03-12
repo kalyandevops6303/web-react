@@ -13,13 +13,16 @@ import { getMilestoneDisputes } from '../../../redux/actions/milestoneActions';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { acceptDisputeApi } from '../../../redux/actions/disputeActions';
 import { clearDisputeReplies } from '../../../redux/reducers/dispute';
-import DisputeDetailsModal from '../../disputes/overview/DisputeDetailsModal';
+import DisputeDetailsModal from '../../modals/DisputeDetailsMilestoneModal';
+import DisputeClosedModal from '../../modals/DisputeClosedMilestoneModal';
 
 const Disputes = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(0);
   const [selectedDispute, setSelectedDispute] = useState(null);
   const [disputeDetailsModal, setDisputeDetailsModal] = useState(null);
+  const [disputeClosedModal, setDisputeClosedModal] = useState(null);
+
   const selectUserDetails = useSelector(selectUserData);
 
   const [hasMore, setHasMore] = useState(true);
@@ -96,6 +99,15 @@ const Disputes = () => {
     }
   };
 
+  const toggleDisputeClosedModal = () => {
+    setDisputeClosedModal(!disputeClosedModal);
+  };
+
+  const handleDispute = () => {
+    setDisputeDetailsModal(false);
+    setDisputeClosedModal(true);
+  };
+
   return (
     <MilestoneAccordionWrap className="mt-2 mb-5">
       <Accordion className="accordion-margin gray-card" open={open} toggle={toggle}>
@@ -166,6 +178,14 @@ const Disputes = () => {
         <DisputeDetailsModal
           modal={disputeDetailsModal}
           toggleModal={toggleDisputeDetailsModal}
+          selectedDispute={selectedDispute}
+          onDispute={handleDispute}
+        />
+      )}
+      {disputeClosedModal && (
+        <DisputeClosedModal
+          modal={disputeClosedModal}
+          toggleModal={toggleDisputeClosedModal}
           selectedDispute={selectedDispute}
           onClose={() =>
             dispatch(
