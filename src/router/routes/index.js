@@ -39,6 +39,7 @@ import ReferralAndReward from '../../views/ReferralAndReward';
 import CreateClub from '../../views/createClub';
 import ClubInvitation from '../../views/club-invitation';
 import PaymentFullView from '../../views/paymentFullView';
+import BidDetails from '../../views/project-details/BidDetails';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -82,6 +83,10 @@ const Routes = [
   {
     path: '/project-details/:projectId/*',
     element: <ProjectDetails />,
+  },
+  {
+    path: '/project-details/:projectId/bid/:bidId',
+    element: <BidDetails />,
   },
 
   {
