@@ -5,9 +5,7 @@ import { useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
 import { Route, Routes, useLocation, useParams } from 'react-router-dom';
-
 import LeftSidebarProjectDetails from './overview/LeftSidebarProjectDetails';
-import CustomStep from '../../@core/components/custom-stepper';
 import { InviteView, stepName, steps } from './overview/constants';
 import BidView from './overview/BidView';
 import TeamView from './overview/TeamView';
@@ -25,6 +23,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import { truncateSentence } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import MilestoneDetails from './milestones/MilestoneDetails';
+import ProjectDetailsNavbar from './overview/ProjectDetailsNavbar';
 
 const ProjectDetailsWrapper = styled.div`
   .content-header-left {
@@ -188,7 +187,7 @@ const ProjectDetails = () => {
         </Col>
         <Col lg="9">
           {!milestoneDetails && (
-            <CustomStep
+            <ProjectDetailsNavbar
               steps={isInviteView ? stepsArrayInvite : stepsArray}
               currentStep={currentStep}
               onChangeStep={changeStep}
