@@ -235,7 +235,9 @@ const BidWrapper = styled.div`
     background: ${theme.red};
     align-self: flex-start;
   }
-
+  .color-red {
+    color: ${theme.red};
+  }
   .meta-data {
     display: flex;
     flex-direction: column;

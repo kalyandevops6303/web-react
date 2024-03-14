@@ -1,188 +1,163 @@
-import React, { useState } from 'react';
-import { AccordionBody, AccordionHeader, AccordionItem, CardText, Spinner } from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAccordion } from 'reactstrap';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { FileText } from 'react-feather';
 import { DateTime } from 'luxon';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import theme from '../../../configs/themeVariables';
 import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
-import { downloadFile } from '../../../utility/Utils';
-import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
-import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
+import Empty from './Empty';
+import { getBidDetails } from '../../../redux/actions/projectDetailsAction';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const BidSubmitted = () => {
   const dispatch = useDispatch();
-
+  const userData = useSelector(selectUserData);
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
-  const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+  const loading = useSelector((state) => state.projectDetails.getBidInfoLoading);
   const [bidModal, setBidModal] = useState(false);
-  const [selectedFileKey, setSelectedFileKey] = useState(null);
   const toggleBidModal = () => setBidModal(!bidModal);
-
-  const timelineEntries = {};
-  bidInfo?.timeline?.forEach((entry) => {
-    timelineEntries[entry.action] = {
-      time: entry.time,
-      name: entry?.name,
-      role: entry?.role,
-      image_uri: entry?.image_uri,
-    };
-  });
-
-  const bidUpdates = [
-    {
-      status: 'Bid Closed',
-      color: theme.red,
-      isVisible: bidInfo?.status === 'REJECTED',
-      time: timelineEntries?.['Bid Rejected']?.time || '',
-    },
-    {
-      status: 'Bid Accepted',
-      color: theme.succesGreenBg,
-      isVisible: bidInfo?.status === 'ACCEPTED',
-      time: timelineEntries?.['Bid Accepted']?.time || '',
-    },
-    {
-      status: 'Bid Reviewed',
-      color: theme.orangeColor,
-      isVisible: bidInfo?.status === 'REVIEWED' || bidInfo?.status === 'ACCEPTED' || bidInfo?.status === 'REJECTED',
-      time: timelineEntries?.['Bid Reviewed']?.time || '',
-      user_details: {
-        name: timelineEntries?.['Bid Reviewed']?.name || 'Client',
-        org_name: timelineEntries?.['Bid Reviewed']?.role || 'Organisation',
-        img: timelineEntries?.['Bid Reviewed']?.image_uri,
-      },
-    },
-    {
-      status: 'Bid Submitted',
-      color: theme.purpleTimelimeColor,
-      isVisible: true,
-      time: timelineEntries?.['Bid Submitted']?.time || '',
-      bid_details: {
-        duration: '5w',
-        total_hours: '225h',
-        talent_cost: '$1400',
-        file: '',
-      },
-    },
-  ].filter((item) => item.isVisible);
-
-  const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
-    downloadFile({ data: { download_url }, file_name });
+  const [open, setOpen] = useState(null);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
+  const status = {
+    BID_UPDATED: 'BID_UPDATED',
+    BID_REVIEWED: 'BID_REVIEWED',
+    BID_ACCEPTED: 'BID_ACCEPTED',
+    BID_SUBMITTED: 'BID_SUBMITTED',
+    BID_CHANGE_ACCPETED: 'BID_CHANGE_ACCPETED',
+    BID_CHANGE_REJECTED: 'BID_CHANGE_REJECTED',
+    BID_CHANGE_REQUEST: 'BID_CHANGE_REQUEST',
   };
 
+  const getStatusColor = (bid_action) => {
+    switch (bid_action) {
+      case status.BID_UPDATED:
+        return theme.purpleTimelimeColor;
+      case status.BID_REVIEWED:
+        return theme.orangeColor;
+      case status.BID_ACCEPTED:
+        return theme.timelineSuccessColor;
+      case status.BID_SUBMITTED:
+        return theme.purpleTimelimeColor;
+      case status.BID_CHANGE_ACCPETED:
+        return theme.timelineSuccessColor;
+      case status.BID_CHANGE_REJECTED:
+        return theme.red;
+      default:
+        return theme.purpleTimelimeColor; // Default color if status is not recognized
+    }
+  };
+
+  const getBidAction = (bid_action) => {
+    switch (bid_action) {
+      case status.BID_UPDATED:
+        return 'Bid Updated';
+      case status.BID_REVIEWED:
+        return 'Bid Reviewed';
+      case status.BID_ACCEPTED:
+        return 'Bid Accepted';
+      case status.BID_SUBMITTED:
+        return 'Bid Submitted';
+      case status.BID_CHANGE_REQUEST:
+        return 'Bid change Request';
+      case status.BID_CHANGE_ACCPETED:
+        return 'Bid change Accepted';
+      case status.BID_CHANGE_REJECTED:
+        return 'Bid change Rejected';
+      default:
+        return '';
+    }
+  };
+  const param = useParams();
+
+  useEffect(() => {
+    if (open === 1) {
+      dispatch(getBidDetails({ project_id: param?.projectId }));
+    }
+    // }
+  }, [open]);
+
   const bidUpdatesDataSet = [];
-  bidUpdates?.map((item) =>
+  bidInfo?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
-      color: item.color,
+      color: getStatusColor(item?.bid_action),
       customContent: (
         <div className="d-flex justify-content-between mb-1">
           <div>
-            <h6 className="mb-25">{item.status}</h6>
+            <h6 className={`mb-25 ${item?.bid_action === status.BID_CHANGE_REJECTED ? 'color-red' : ''}`}>
+              {getBidAction(item?.bid_action)}
+            </h6>
             <span className="d-block mb-1">
-              {item?.time ? DateTime.fromMillis(item?.time).toFormat('MMM dd, yy') : '-'}
+              {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
             </span>
-            {item.user_details && (
-              <NameInfo img={item?.user_details?.img} name={item.user_details.name} info={item.user_details.org_name} />
-            )}
-
-            {item.bid_details && (
-              <>
-                <div className="d-flex gap-1 mb-75">
-                  <span className="d-flex align-items-center gap-25">
-                    <h6 className="mb-0">Duration: </h6>
-                    <span className="">
-                      {bidInfo?.total_estimated_duration?.duration}
-                      {bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
-                    </span>
-                  </span>
-                  {bidInfo?.total_numbers_of_hours ? (
-                    <span className="d-flex align-items-center gap-25">
-                      <h6 className="mb-0">Total Hours: </h6>
-                      <span className="">{bidInfo?.total_numbers_of_hours}h</span>
-                    </span>
-                  ) : (
-                    ''
-                  )}
-                  <span className="d-flex align-items-center gap-25">
-                    <h6 className="mb-0">Total Cost: </h6>
-                    <span className="">${bidInfo?.total_estimated_cost}</span>
-                  </span>
-                </div>
-                {bidInfo?.documents?.map((doc) => (
-                  <div key={doc?.file_key}>
-                    {downloadUrlIsLoading && selectedFileKey === doc?.file_key ? (
-                      <div className="d-flex align-items-center justify-content-between">
-                        <Spinner color="primary" />
-                      </div>
-                    ) : (
-                      <div
-                        className="d-flex align-items-center mb-75 cursor-pointer"
-                        style={{ color: theme.activeColor }}
-                        onClick={() => {
-                          setSelectedFileKey(doc?.file_key);
-                          dispatch(
-                            getDownloadUrl({
-                              fileKey: doc?.file_key,
-                              onSuccess: onDownloadResumeUrlSuccess,
-                              fileName: doc?.file_name,
-                            }),
-                          );
-                        }}
-                      >
-                        <FileText size="18" className="me-50" />
-                        <p className="mb-0 fw-bold">{doc?.file_name}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </>
-            )}
+            <NameInfo name={item?.entity?.name} info={item?.entity?.role} img={item?.entity?.image} />
+            {item?.change_request && <CardText className="mt-1">{item?.change_request}</CardText>}{' '}
           </div>
           <div className="meta-data">
-            <span className="time">{item?.time ? DateTime?.fromMillis(item?.time)?.toRelative() : '-'}</span>
-            {item.status === 'Bid Submitted' && (
-              <span className="card-cta" onClick={toggleBidModal}>
-                View Bid
-              </span>
+            <span className="time ms-auto">
+              {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
+            </span>
+            {(item?.bid_action === status.BID_UPDATED || item?.bid_action === status.BID_SUBMITTED) && (
+              <span className="card-cta">View Bid</span>
             )}
           </div>
         </div>
       ),
     }),
   );
-  return (
-    <AccordionItem>
-      <AccordionHeader targetId="1">
-        <AccordionHeadStyle>
-          <span className="title-head">Bid Submitted</span>
 
-          <div className="d-flex gap-1 aling-items-center">
-            <CardText className="d-none view-all-cta">Give rating</CardText>
+  return (
+    <UncontrolledAccordion onClick={() => toggle(1)} className="accordion-timeline" defaultOpen="0">
+      <AccordionItem>
+        <AccordionHeader targetId="1">
+          <AccordionHeadStyle>
+            <span className="title-head">
+              {userData?.user_type === userTypes.client ? 'Accpeted Bid' : 'Bid Submitted'}{' '}
+            </span>
 
             <div className="d-flex gap-1 aling-items-center">
-              <div>
-                <span className="key">Duration</span>
-                <CardText className="value text-end">
-                  {bidInfo?.total_estimated_duration?.duration}
-                  {bidInfo?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
-                </CardText>
-              </div>
-              <div className="me-1">
-                <span className="key">Talent Cost</span>
-                <CardText className="value text-end">${bidInfo?.total_estimated_cost}</CardText>
+              <CardText className="d-none view-all-cta">Give rating</CardText>
+
+              <div className="d-flex gap-1 aling-items-center">
+                <div>
+                  <span className="key">Duration</span>
+                  <CardText className="value text-end">
+                    {bidInfo?.duration}
+                    {bidInfo?.duration_type?.charAt(0).toLowerCase()}
+                  </CardText>
+                </div>
+                <div className="">
+                  <span className="key">Talent Cost</span>
+                  <CardText className="value text-end">${bidInfo?.talent_cost}</CardText>
+                </div>
+                <div className="me-1">
+                  <span className="key">Updated at</span>
+                  <CardText className="value text-end">Time</CardText>
+                </div>
               </div>
             </div>
-          </div>
-        </AccordionHeadStyle>
-      </AccordionHeader>
-      <AccordionBody accordionId="1" className="accordion-status-body">
-        <Timeline data={bidUpdatesDataSet} />
-      </AccordionBody>
-      {bidModal && <BidPreviewModal modal={bidModal} toggleModal={toggleBidModal} />}
-    </AccordionItem>
+          </AccordionHeadStyle>
+        </AccordionHeader>
+        {loading ? (
+          <ComponentSpinner />
+        ) : (
+          <AccordionBody accordionId="1" className="accordion-status-body">
+            {bidInfo?.timeline ? <Timeline data={bidUpdatesDataSet} /> : <Empty message="No data found" />}
+          </AccordionBody>
+        )}
+        {bidModal && <BidPreviewModal modal={bidModal} toggleModal={toggleBidModal} />}
+      </AccordionItem>
+    </UncontrolledAccordion>
   );
 };
 export default BidSubmitted;

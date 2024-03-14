@@ -92,6 +92,7 @@ import {
   updateContractRequest,
   updateContractSuccess,
 } from '../reducers/projectDetails';
+import BidData from '../../views/project-details/overview/BidData';
 
 const getProjectDetails = (projectId) => async (dispatch) => {
   dispatch(projectDetailsRequest());
@@ -159,13 +160,13 @@ const getBidDetails =
   async (dispatch) => {
     dispatch(getBidInfoRequest());
     try {
-      let res;
       if (bid_id) {
-        res = await getBidDetailsService({ bid_id });
+        await getBidDetailsService({ bid_id });
       } else {
-        res = await getCommonBidDetailsService({ project_id });
+        await getCommonBidDetailsService({ project_id });
       }
-      dispatch(getBidInfoSuccess(res.data.data));
+      // dispatch(getBidInfoSuccess(res.data.data));
+      dispatch(getBidInfoSuccess(BidData));
     } catch (error) {
       // errorHandler(error, getBidInfoFailure);
       dispatch(getBidInfoFailure(error));
@@ -260,16 +261,16 @@ const checkDocumentActivated =
       let resNDA;
       const getContract = async () => {
         resContract = await checkDocumentActivatedService({ project_id, doc_type: 'CONTRACT' });
-        if (resContract.data.data.show_document) {
-          dispatch(getDocumentTimeline({ project_id, doc_type: 'CONTRACT' }));
-        }
+        // if (resContract.data.data.show_document) {
+        //   dispatch(getDocumentTimeline({ project_id, doc_type: 'CONTRACT' }));
+        // }
         dispatch(checkDocumentActivatedSuccess({ isContract: resContract.data.data }));
       };
       if (isNDA) {
         resNDA = await checkDocumentActivatedService({ project_id, doc_type: 'NDA' });
-        if (resNDA.data.data.show_document) {
-          dispatch(getDocumentTimeline({ project_id, doc_type: 'NDA' }));
-        }
+        // if (resNDA.data.data.show_document) {
+        //   dispatch(getDocumentTimeline({ project_id, doc_type: 'NDA' }));
+        // }
         dispatch(checkDocumentActivatedSuccess({ isNDA: resNDA.data.data }));
 
         if (resNDA.data.data.is_signed) {

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import { AccordionBody, AccordionHeader, AccordionItem, CardText } from 'reactstrap';
 import { useSelector } from 'react-redux';
@@ -8,11 +9,14 @@ import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
 import { selectIsNDA, selectNDATimeline } from '../../../redux/selectors/projectDetailsSelectors';
 import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
 const NDATimeline = () => {
   const navigate = useNavigate();
   const isContract = useSelector(selectIsNDA);
   const contractTimeline = useSelector(selectNDATimeline);
+
+  const loading = useSelector((state) => state?.projectDetails?.getDocumentTimelineLoading);
   const bidUpdatesDataSet = [];
   contractTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
@@ -40,6 +44,7 @@ const NDATimeline = () => {
       ),
     }),
   );
+
   const handleContract = () => {
     navigate('doc/nda');
   };
@@ -98,12 +103,17 @@ const NDATimeline = () => {
           )}
         </AccordionHeadStyle>
       </AccordionHeader>
-      {bidUpdatesDataSet?.length > 0 && (
+
+      {loading ? (
+        <ComponentSpinner />
+      ) : bidUpdatesDataSet?.length > 0 ? (
         <AccordionBody accordionId="1" className="accordion-status-body">
           <div style={{ maxHeight: '27rem', overflowY: 'auto' }} className="pt-50 pe-50">
             <Timeline data={bidUpdatesDataSet} />
           </div>
         </AccordionBody>
+      ) : (
+        <span className="d-flex justify-content-center">No data</span>
       )}
     </AccordionItem>
   );

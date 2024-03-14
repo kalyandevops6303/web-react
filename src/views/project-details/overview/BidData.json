@@ -1,0 +1,100 @@
+{
+  "bid_status": "IN_REVIEW",
+  "duration": 1,
+  "talent_cost": 100,
+  "updated_date": 123,
+  "is_bid_editable": true,
+  "timeline": [
+    {
+      "change_request_status": "PENDING",
+      "created_at": 123,
+      "change_request": "",
+      "bid_action": "BID_SUBMITTED",
+      "entity": {
+        "name": "entity_name",
+        "role": "role",
+        "entity_type": "TALENT",
+        "image": "",
+        "entity_id": 123
+      }
+    },
+    {
+      "change_request_status": "PENDING",
+      "created_at": 123,
+      "change_request": "Can you please add a PM role and dev stack document as deliverables",
+      "bid_action": "BID_REVIEWED",
+      "entity": {
+        "name": "entity_name",
+        "role": "role",
+        "entity_type": "TALENT",
+        "image": "",
+        "entity_id": 123
+      }
+    },
+    {
+      "change_request_status": "PENDING",
+      "created_at": 123,
+      "change_request": "",
+      "bid_action": "BID_UPDATED",
+      "entity": {
+        "name": "entity_name",
+        "role": "role",
+        "entity_type": "TALENT",
+        "image": "",
+        "entity_id": 123
+      }
+    },
+    {
+      "change_request_status": "PENDING",
+      "created_at": 123,
+      "change_request": "",
+      "bid_action": "BID_ACCEPTED",
+      "entity": {
+        "name": "entity_name",
+        "role": "role",
+        "entity_type": "TALENT",
+        "image": "",
+        "entity_id": 123
+      }
+    },
+    {
+      "change_request_status": "PENDING",
+      "created_at": 123,
+      "change_request": "Change request message",
+      "bid_action": "BID_CHANGE_REQUEST",
+      "entity": {
+        "name": "entity_name",
+        "role": "role",
+        "entity_type": "TALENT",
+        "image": "",
+        "entity_id": 123
+      }
+    },
+    {
+      "change_request_status": "PENDING",
+      "created_at": 123,
+      "change_request": "Change request message",
+      "bid_action": "BID_CHANGE_REJECTED",
+      "entity": {
+        "name": "entity_name",
+        "role": "role",
+        "entity_type": "TALENT",
+        "image": "",
+        "entity_id": 123
+      }
+    },
+    {
+      "change_request_status": "PENDING",
+      "created_at": 123,
+      "change_request": "",
+      "bid_action": "BID_CHANGE_ACCPETED",
+      "entity": {
+        "name": "entity_name",
+        "role": "role",
+        "entity_type": "TALENT",
+        "image": "",
+        "entity_id": 123
+      }
+    }
+  ]
+}

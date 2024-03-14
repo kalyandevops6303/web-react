@@ -1,8 +1,9 @@
-import React from 'react';
-import { AccordionBody, AccordionHeader, AccordionItem, CardText } from 'reactstrap';
-import { useSelector } from 'react-redux';
+/* eslint-disable no-nested-ternary */
+import React, { useEffect, useState } from 'react';
+import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAccordion } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
@@ -14,14 +15,33 @@ import {
 import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
+import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { getDocumentTimeline } from '../../../redux/actions/projectDetailsAction';
 
 const ContractTimeline = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const param = useParams();
+  const loading = useSelector((state) => state?.projectDetails?.getDocumentTimelineLoading);
   const isContract = useSelector(selectIsContract);
   const contractTimeline = useSelector(selectContractTimeline);
   const projectDetailsData = useSelector(projectDetails);
   const userType = useSelector(selectUserType);
   const bidUpdatesDataSet = [];
+  const [open, setOpen] = useState(null);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
+  useEffect(() => {
+    if (open === 1) {
+      dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
+    }
+  }, [open]);
+
   contractTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
       color: getTimeLineDotColor(item?.status),
@@ -60,79 +80,87 @@ const ContractTimeline = () => {
     navigate(`/project-details/${projectDetailsData?._id}/payment`);
   };
   return (
-    <AccordionItem>
-      <AccordionHeader targetId="1">
-        <AccordionHeadStyle>
-          {/* <span className="title-head">Contract</span> */}
-          <span className="d-flex title-head">
-            Contract
-            {isContract?.is_contract_terminated === false ? (
-              <span> {!isContract?.is_signed ? <span className="indicator" /> : ''}</span>
-            ) : (
-              ''
-            )}
-          </span>
+    <UncontrolledAccordion onClick={() => toggle(1)} className="accordion-timeline" defaultOpen="0">
+      <AccordionItem>
+        <AccordionHeader targetId="1">
+          <AccordionHeadStyle>
+            {/* <span className="title-head">Contract</span> */}
+            <span className="d-flex title-head">
+              Contract
+              {isContract?.is_contract_terminated === false ? (
+                <span> {!isContract?.is_signed ? <span className="indicator" /> : ''}</span>
+              ) : (
+                ''
+              )}
+            </span>
 
-          {isContract?.is_contract_terminated === false ? (
-            <div>
-              {isContract?.is_signed ? (
-                <div className="d-flex gap-1 aling-items-center">
-                  {userType === userTypes.client && isContract?.is_documents_signed && !isContract?.is_payment_made && (
-                    <CardText className="view-card-cta" onClick={handlePayement}>
-                      Make payment
-                    </CardText>
-                  )}
-                  {projectDetailsData?.status === 'COMPLETED' ? (
-                    <CardText className="view-card-cta" onClick={handleRating}>
-                      Give rating
-                    </CardText>
-                  ) : (
-                    <CardText onClick={handleContract} className="view-card-cta">
-                      View
-                    </CardText>
-                  )}
-                  {/* <CardText className="d-none view-all-cta">Give rating</CardText> */}
+            {isContract?.is_contract_terminated === false ? (
+              <div>
+                {isContract?.is_signed ? (
                   <div className="d-flex gap-1 aling-items-center">
-                    <div className="me-1">
-                      <span className="key">Updated at</span>
-                      <CardText className="value">
-                        {contractTimeline?.updated_at
-                          ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
-                          : '-'}
+                    {userType === userTypes.client &&
+                      isContract?.is_documents_signed &&
+                      !isContract?.is_payment_made && (
+                        <CardText className="view-card-cta" onClick={handlePayement}>
+                          Make payment
+                        </CardText>
+                      )}
+                    {projectDetailsData?.status === 'COMPLETED' ? (
+                      <CardText className="view-card-cta" onClick={handleRating}>
+                        Give rating
                       </CardText>
+                    ) : (
+                      <CardText onClick={handleContract} className="view-card-cta">
+                        View
+                      </CardText>
+                    )}
+                    {/* <CardText className="d-none view-all-cta">Give rating</CardText> */}
+                    <div className="d-flex gap-1 aling-items-center">
+                      <div className="me-1">
+                        <span className="key">Updated at</span>
+                        <CardText className="value">
+                          {contractTimeline?.updated_at
+                            ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
+                            : '-'}
+                        </CardText>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="p-75 d-flex gap-50 align-items-center">
-                  <span onClick={handleContract} className="card-cta">
-                    Sign contract
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="d-flex gap-1 aling-items-center">
-              <div className="me-1">
-                <span className="key">Terminated at</span>
-                <CardText className="value">
-                  {isContract?.contract_terminated_at
-                    ? DateTime.fromMillis(isContract?.contract_terminated_at).toFormat('MMM dd, yy')
-                    : '-'}
-                </CardText>
+                ) : (
+                  <div className="p-75 d-flex gap-50 align-items-center">
+                    <span onClick={handleContract} className="card-cta">
+                      Sign contract
+                    </span>
+                  </div>
+                )}
               </div>
+            ) : (
+              <div className="d-flex gap-1 aling-items-center">
+                <div className="me-1">
+                  <span className="key">Terminated at</span>
+                  <CardText className="value">
+                    {isContract?.contract_terminated_at
+                      ? DateTime.fromMillis(isContract?.contract_terminated_at).toFormat('MMM dd, yy')
+                      : '-'}
+                  </CardText>
+                </div>
+              </div>
+            )}
+          </AccordionHeadStyle>
+        </AccordionHeader>
+        {loading ? (
+          <ComponentSpinner />
+        ) : bidUpdatesDataSet?.length > 0 ? (
+          <AccordionBody accordionId="1" className="accordion-status-body">
+            <div style={{ maxHeight: '27rem', overflowY: 'auto' }} className="pt-50 pe-50">
+              <Timeline data={bidUpdatesDataSet} />
             </div>
-          )}
-        </AccordionHeadStyle>
-      </AccordionHeader>
-      {bidUpdatesDataSet?.length > 0 && (
-        <AccordionBody accordionId="1" className="accordion-status-body">
-          <div style={{ maxHeight: '27rem', overflowY: 'auto' }} className="pt-50 pe-50">
-            <Timeline data={bidUpdatesDataSet} />
-          </div>
-        </AccordionBody>
-      )}
-    </AccordionItem>
+          </AccordionBody>
+        ) : (
+          <span className="d-flex justify-content-center">No data</span>
+        )}
+      </AccordionItem>
+    </UncontrolledAccordion>
   );
 };
 export default ContractTimeline;
