@@ -292,3 +292,4 @@ const API = {
 };
 
 export default API;
+export { apiAuthEndpoint };
