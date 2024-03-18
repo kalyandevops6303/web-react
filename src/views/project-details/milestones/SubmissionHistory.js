@@ -82,7 +82,7 @@ const SubmissionHistory = ({ selectedMilestone }) => {
         milestoneData: {
           uid: file?._id,
           milestone: {
-            title: file?.name || '',
+            title: selectedMilestone?.name || '',
             projectGroupId: param?.projectId || '',
             url: `/project-details/${param?.projectId}/milestone-details/${param?.milestoneId}`,
           },
@@ -90,7 +90,7 @@ const SubmissionHistory = ({ selectedMilestone }) => {
             type: file?.type,
             fileKey: file?.file_key || '',
             fileName: file?.file_name || '',
-            fileSize: file?.size,
+            fileSize: file?.size || '',
             urlName: file?.url ? file?.description : '',
             url: file?.url || '',
           },
