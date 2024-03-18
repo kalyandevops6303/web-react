@@ -55,6 +55,7 @@ class CometChatUI extends React.Component {
   itemClicked = (item, type) => {
     if (type === 'user' || item.guid != this.props.milestoneAttachment?.milestone?.projectGroupId) {
       this.props.cancelMilestoneInput();
+      this.props.disableMilestoneMessageId();
     }
     this.contextProviderRef?.setTypeAndItem(type, item);
     this.toggleSideBar();
