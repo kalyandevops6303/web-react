@@ -76,7 +76,28 @@ const SubmissionHistory = ({ selectedMilestone }) => {
   const onDownloadURL = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
   };
-
+  const handleChat = ({ file }) => {
+    navigate('/chat', {
+      state: {
+        milestoneData: {
+          uid: file?._id,
+          milestone: {
+            title: file?.name || '',
+            projectGroupId: param?.projectId || '',
+            url: `/project-details/${param?.projectId}/milestone-details/${param?.milestoneId}`,
+          },
+          artifact: {
+            type: file?.type,
+            fileKey: file?.file_key || '',
+            fileName: file?.file_name || '',
+            fileSize: file?.size,
+            urlName: file?.url ? file?.description : '',
+            url: file?.url || '',
+          },
+        },
+      },
+    });
+  };
   return (
     <MilestoneAccordionWrap>
       <Accordion className="accordion-margin" open={open} toggle={toggle}>
@@ -193,7 +214,7 @@ const SubmissionHistory = ({ selectedMilestone }) => {
                                     </span>
                                   </MessageIconWrap>
                                 )}
-                                <MessageIconWrap>
+                                <MessageIconWrap onClick={() => handleChat({ file })}>
                                   <span className="mail-bg">
                                     <MessageSquare size={20} className="mail-icon" color={theme.activeColor} />
                                   </span>
