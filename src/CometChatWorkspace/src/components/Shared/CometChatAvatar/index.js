@@ -10,6 +10,7 @@ import { theme } from '../../../resources/theme';
 import { imgStyle } from './style';
 
 import srcIcon from './resources/1px.png';
+import { generateAvatar } from '../../../util/HelperFunctions';
 
 class CometChatAvatar extends React.Component {
   constructor(props) {
@@ -48,7 +49,7 @@ class CometChatAvatar extends React.Component {
         const uid = this.props.user.uid;
         const char = this.props.user.name.charAt(0).toUpperCase();
 
-        const avatarImage = this.generateAvatar(uid, char);
+        const avatarImage = generateAvatar(uid, char);
         this.getImage(avatarImage);
       }
     } else if (Object.keys(this.props.group).length) {
@@ -59,7 +60,7 @@ class CometChatAvatar extends React.Component {
         const guid = this.props.group.guid;
         const char = this.props.group.name.charAt(0).toUpperCase();
 
-        const avatarImage = this.generateAvatar(guid, char);
+        const avatarImage = generateAvatar(guid, char);
         this.getImage(avatarImage);
       }
     }
@@ -73,41 +74,6 @@ class CometChatAvatar extends React.Component {
         this.setState({ avatarImage: image });
       }
     };
-  };
-
-  generateAvatar = (generator, data) => {
-    const stringToColour = function (str) {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
-      }
-
-      let colour = '#';
-      for (let i = 0; i < 3; i++) {
-        let value = (hash >> (i * 8)) & 0xff;
-        colour += ('00' + value.toString(16)).substr(-2);
-      }
-      return colour;
-    };
-
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-
-    canvas.width = 200;
-    canvas.height = 200;
-
-    // Draw background
-    context.fillStyle = stringToColour(generator);
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw text
-    context.font = "bold 100px 'Inter', sans-serif";
-    context.fillStyle = 'white'; //foregroundColor;
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(data, canvas.width / 2, canvas.height / 2);
-
-    return canvas.toDataURL('image/png');
   };
 
   render() {

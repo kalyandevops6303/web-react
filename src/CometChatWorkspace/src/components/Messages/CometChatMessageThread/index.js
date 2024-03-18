@@ -373,7 +373,12 @@ class CometChatMessageThread extends React.PureComponent {
     switch (message.type) {
       case CometChat.MESSAGE_TYPE.TEXT:
         component = (
-          <CometChatSenderTextMessageBubble key={message.id} message={message} actionGenerated={this.actionHandler} />
+          <CometChatSenderTextMessageBubble
+            key={message.id}
+            message={message}
+            fileCharLimit={15}
+            actionGenerated={this.actionHandler}
+          />
         );
         break;
       case CometChat.MESSAGE_TYPE.IMAGE:
@@ -410,7 +415,12 @@ class CometChatMessageThread extends React.PureComponent {
       case 'message':
       case CometChat.MESSAGE_TYPE.TEXT:
         component = (
-          <CometChatReceiverTextMessageBubble key={message.id} message={message} actionGenerated={this.actionHandler} />
+          <CometChatReceiverTextMessageBubble
+            key={message.id}
+            message={message}
+            fileCharLimit={15}
+            actionGenerated={this.actionHandler}
+          />
         );
         break;
       case CometChat.MESSAGE_TYPE.IMAGE:
