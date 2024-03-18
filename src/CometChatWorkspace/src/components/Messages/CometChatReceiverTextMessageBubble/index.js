@@ -22,7 +22,7 @@ import * as enums from '../../../util/enums.js';
 
 import Translator from '../../../resources/localization/translator';
 import { theme } from '../../../resources/theme';
-import { getUserColor } from '../../../util/HelperFunctions';
+import { convertFileSize, getFileIcon, getUserColor } from '../../../util/HelperFunctions';
 
 import {
   messageContainerStyle,
@@ -38,6 +38,16 @@ import {
   messageReactionsWrapperStyle,
   messageContentWrapperStyle,
   messageInfoPartContainerStyle,
+  milestoneContainerStyle,
+  milestoneHeaderStyle,
+  milestoneTitleStyle,
+  milestoneBodyStyle,
+  milestoneAttachmentTileStyle,
+  milestoneAttachmentTileAvatarContainerStyle,
+  milestoneAttachmentTileAvatarStyle,
+  milestoneAttachmentTileBodyStyle,
+  milestoneAttachmentFileNameStyle,
+  milestoneAttachmentFileSizeStyle,
 } from './style';
 
 class CometChatReceiverTextMessageBubble extends React.Component {
@@ -235,6 +245,10 @@ class CometChatReceiverTextMessageBubble extends React.Component {
     }
   };
 
+  navigateToMilestonePage = () => {
+    window.open(this.props.message?.metadata?.milestoneAttachment?.milestone?.url, '_blank');
+  };
+
   render() {
     let avatar = null,
       name = null;
@@ -282,12 +296,67 @@ class CometChatReceiverTextMessageBubble extends React.Component {
       toolTipView = <CometChatMessageActions message={this.props.message} actionGenerated={this.actionHandler} />;
     }
 
+    let milestoneMessageComponent = (
+      <div>
+        <div onClick={this.navigateToMilestonePage} css={milestoneContainerStyle()} className="milestone__container">
+          <div css={milestoneHeaderStyle()} className="milestone__header">
+            <div css={milestoneTitleStyle()} className="milestone__title">
+              {this.props.message?.metadata?.milestoneAttachment?.milestone?.title || 'Err'}
+            </div>
+          </div>
+          <div css={milestoneBodyStyle()} className="milestone__body">
+            <div css={milestoneAttachmentTileStyle()} className="attachment__tile">
+              {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS' && (
+                <div css={milestoneAttachmentTileAvatarContainerStyle()} className="attachment__tile__avatar">
+                  <img
+                    css={milestoneAttachmentTileAvatarStyle()}
+                    src={getFileIcon(this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName)}
+                  />
+                </div>
+              )}
+              <div css={milestoneAttachmentTileBodyStyle()} className="attachment__tile__body">
+                {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS' && (
+                  <div css={milestoneAttachmentFileNameStyle()} className="attachment__filename">
+                    {(this.props.fileCharLimit &&
+                    this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName.length >
+                      this.props.fileCharLimit
+                      ? this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName.slice(
+                          0,
+                          this.props.fileCharLimit,
+                        ) + '...'
+                      : this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName) ||
+                      'Error fetching this message'}
+                  </div>
+                )}
+                {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'LINKS' && (
+                  <div
+                    onClick={() => {
+                      window.open(this.props.message?.metadata?.milestoneAttachment?.artifact?.url, '_blank');
+                    }}
+                    css={milestoneAttachmentFileNameStyle()}
+                    className="attachment__filename"
+                  >
+                    {this.props.message?.metadata?.milestoneAttachment?.artifact?.urlName}
+                  </div>
+                )}
+                <div css={milestoneAttachmentFileSizeStyle()} className="attachment__filesize">
+                  {convertFileSize(this.props.message?.metadata?.milestoneAttachment?.artifact?.fileSize)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {messageText}
+      </div>
+    );
+
     return (
       <div
         css={messageContainerStyle()}
         className="receiver__message__container message__text"
         onMouseEnter={this.handleMouseHover}
         onMouseLeave={this.handleMouseHover}
+        ref={this.props.messageComp}
       >
         <div css={messageWrapperStyle()} className="message__wrapper">
           {avatar}
@@ -295,9 +364,17 @@ class CometChatReceiverTextMessageBubble extends React.Component {
             <div css={messageContentWrapperStyle()} className="message__content__wrapper">
               {name}
               {toolTipView}
-              <div css={messageTxtContainerStyle()} className="message__text__container">
+              {/* <div css={messageTxtContainerStyle()} className="message__text__container">
                 {messageText}
-              </div>
+              </div> */}
+
+              {this.props.message?.metadata?.milestoneAttachment ? (
+                milestoneMessageComponent
+              ) : (
+                <div css={messageTxtContainerStyle()} className="message__text__container">
+                  {messageText}
+                </div>
+              )}
             </div>
             <div css={messageInfoWrapperStyle()} className="message__info__wrapper">
               <div css={messageInfoPartContainerStyle()}>

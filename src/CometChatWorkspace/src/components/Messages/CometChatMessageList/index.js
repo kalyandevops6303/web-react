@@ -69,6 +69,7 @@ class CometChatMessageList extends React.PureComponent {
     };
 
     this.messagesEnd = React.createRef();
+    this.milestoneComp = React.createRef();
   }
 
   componentDidMount() {
@@ -95,6 +96,14 @@ class CometChatMessageList extends React.PureComponent {
         this.context.item,
         this.context.type,
         this.props.parentMessageId,
+      );
+    } else if (this.props.milestoneMessageId) {
+      this.MessageListManager = new MessageListManager(
+        this.context,
+        this.context.item,
+        this.context.type,
+        null,
+        this.props.milestoneMessageId,
       );
     } else {
       this.MessageListManager = new MessageListManager(this.context, this.context.item, this.context.type);
@@ -183,6 +192,7 @@ class CometChatMessageList extends React.PureComponent {
   messageHandler = (item, actionGenerated = enums.ACTIONS['MESSAGES_FETCHED']) => {
     this.fetchMessages()
       .then((messageList) => {
+        // console.log(messageList)
         if (messageList.length === 0) {
           this.setState({ decoratorMessage: 'NO_MESSAGES_FOUND' });
         } else {
@@ -218,6 +228,60 @@ class CometChatMessageList extends React.PureComponent {
             item.guid === this.context.item.guid)
         ) {
           this.props.actionGenerated(actionGenerated, messageList);
+        }
+      })
+      .catch((error) => {
+        if (this.props.messages.length === 0) {
+          this.setState({ decoratorMessage: 'SOMETHING_WRONG' });
+        }
+
+        if (error && error.hasOwnProperty('code') && error.code === 'ERR_GUID_NOT_FOUND') {
+          //this.context.setDeletedGroupId(this.context.item.guid);
+        }
+      });
+  };
+
+  fetchNextMessages = (item) => {
+    this.MessageListManager?.fetchNextMessages()
+      .then((messageList) => {
+        if (messageList.length === 0) {
+          this.setState({ decoratorMessage: 'NO_MESSAGES_FOUND' });
+        } else {
+          this.setState({ decoratorMessage: '' });
+        }
+
+        //updating messagecount variable
+        this.messageCount = messageList.length;
+
+        messageList.forEach((message) => {
+          //if the sender of the message is not the loggedin user
+          if (message.getSender().getUid() !== this.state.loggedInUser?.uid) {
+            //mark the message as delivered
+            this.markMessageAsDelivered(message);
+
+            //mark the message as read
+            if (message.hasOwnProperty('readAt') === false) {
+              CometChat.markAsRead(message).catch((error) => {});
+              this.props.actionGenerated(enums.ACTIONS['MESSAGE_READ'], message);
+            }
+          }
+        });
+
+        // this.lastScrollTop = this.messagesEnd.clientHeight;
+
+        try {
+          this.milestoneComp.current.scrollIntoView();
+        } catch (error) {
+          // console.log(error)
+        }
+
+        //abort(don't return messagelist), when the chat window changes
+        if (
+          item.hasOwnProperty('guid') &&
+          this.context.item.hasOwnProperty('guid') &&
+          item.guid === this.context.item.guid
+        ) {
+          this.props.actionGenerated('NEXT_MESSAGES_FETCHED', messageList);
         }
       })
       .catch((error) => {
@@ -610,6 +674,9 @@ class CometChatMessageList extends React.PureComponent {
 
     if (this.lastScrollTop - clientHeight <= 1) {
       this.props.actionGenerated(enums.ACTIONS['CLEAR_UNREAD_MESSAGES']);
+      if (this.props.milestoneMessageId) {
+        this.fetchNextMessages(this.context.item);
+      }
     }
 
     const top = Math.round(scrollTop) === 0;
@@ -632,6 +699,7 @@ class CometChatMessageList extends React.PureComponent {
               key={messageKey}
               message={message}
               actionGenerated={this.props.actionGenerated}
+              messageComp={message.id == this.props.milestoneMessageId ? this.milestoneComp : null}
             />
           );
           break;
@@ -693,6 +761,7 @@ class CometChatMessageList extends React.PureComponent {
               key={messageKey}
               message={message}
               actionGenerated={this.props.actionGenerated}
+              messageComp={message.id == this.props.milestoneMessageId ? this.milestoneComp : null}
             />
           ) : null;
           break;

@@ -3,8 +3,7 @@ import { getItem, setItem } from '../../utility/localStorageControl';
 import { getTeamId } from '../../utility/Utils';
 // eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
-
-const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
+import { apiAuthEndpoint } from '../api';
 
 const authHeader = () => ({
   Authorization: `Bearer ${getItem('access_token')}`,

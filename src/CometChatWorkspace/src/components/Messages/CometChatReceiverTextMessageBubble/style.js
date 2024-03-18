@@ -1,19 +1,27 @@
 export const messageContainerStyle = () => {
   return {
     alignSelf: 'flex-start',
+    // marginBottom: "16px",
+    // paddingLeft: "16px",
+    // paddingRight: "16px",
     padding: '5px 16px',
     width: '100%',
+    // maxWidth: "65%",
     clear: 'both',
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     flexShrink: '0',
+    // ":hover": {
+    // 	backgroundColor: "rgba(0, 0, 0, 0.1)"
+    // }
   };
 };
 
 export const messageWrapperStyle = () => {
   return {
     width: '100%',
+    // width: "auto",
     flex: '1 1',
     alignSelf: 'flex-start',
     display: 'flex',
@@ -66,6 +74,7 @@ export const nameStyle = (context) => {
     fontSize: '15px',
     fontWeight: '800',
     fontStyle: 'bold',
+    // color: `${context.theme.color.messageText}`,
     color: `${context.userColor || context.theme.color.messageText}`,
     cursor: 'default',
   };
@@ -77,6 +86,8 @@ export const messageTxtContainerStyle = () => {
     flex: '1 1',
     display: 'flex',
     alignSelf: 'flex-start',
+    // boxShadow: "2px 7px 20px -9px rgba(150,170,180,0.5)",
+    // cursor: "default",
   };
 };
 
@@ -84,6 +95,9 @@ export const messageTxtWrapperStyle = (context) => {
   return {
     display: 'inline-block',
     borderRadius: '5px',
+    // background: "#fff",
+    // backgroundColor: `${context.theme.backgroundColor.secondary}`,
+    // padding: "8px 5px",
     padding: '0 5px',
     width: 'auto',
   };
@@ -173,8 +187,10 @@ export const messageTxtStyle = (showVariation, count, context) => {
 
 export const messageInfoWrapperStyle = () => {
   return {
+    // alignSelf: "flex-start",
     padding: '10px 10px',
     display: 'flex',
+    // justifyContent: "flex-end",
     justifyContent: 'space-between',
     alignItems: 'center',
     height: '25px',
@@ -196,5 +212,97 @@ export const messageReactionsWrapperStyle = () => {
     flexWrap: 'wrap',
     justifyContent: 'flex-end',
     minHeight: '36px',
+  };
+};
+
+export const milestoneContainerStyle = () => {
+  return {
+    borderRadius: '5px',
+    backgroundColor: `#84CCFF1F`,
+    width: '95%',
+    // maxWidth: '330px',
+    height: '130px',
+    margin: '13px',
+    cursor: 'pointer',
+  };
+};
+
+export const milestoneHeaderStyle = () => {
+  return {
+    padding: '10px 20px',
+    position: 'relative',
+  };
+};
+
+export const milestoneTitleStyle = () => {
+  return {
+    color: '#616161',
+    fontSize: '12px',
+    fontWeight: 500,
+    lineHeight: '18px',
+  };
+};
+
+export const milestoneDownloadIconStyle = () => {
+  return {};
+};
+
+export const milestoneBodyStyle = () => {
+  return {
+    padding: '10px 20px',
+  };
+};
+
+export const milestoneAttachmentTileStyle = () => {
+  return {
+    borderRadius: '5px',
+    backgroundColor: '#fff',
+    padding: '10px',
+    display: 'flex',
+  };
+};
+
+export const milestoneAttachmentTileAvatarContainerStyle = () => {
+  return {
+    backgroundColor: '#0185E41F',
+    height: '42px',
+    width: '42px',
+    borderRadius: '21px',
+    marginRight: '5px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+};
+
+export const milestoneAttachmentTileAvatarStyle = () => {
+  return {
+    height: '24px',
+  };
+};
+
+export const milestoneAttachmentTileBodyStyle = () => {
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  };
+};
+
+export const milestoneAttachmentFileNameStyle = () => {
+  return {
+    color: '#5E5873',
+    fontSize: '12px',
+    fontWeight: 500,
+    lineHeight: '16px',
+  };
+};
+
+export const milestoneAttachmentFileSizeStyle = () => {
+  return {
+    color: '#B9B9C3',
+    fontSize: '10px',
+    fontWeight: 500,
+    lineHeight: '12px',
   };
 };

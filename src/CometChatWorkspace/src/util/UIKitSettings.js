@@ -96,7 +96,7 @@ export class UIKitSettings {
     this.sendFiles = true;
     this.sendPhotoVideos = true;
     this.sendVoiceNotes = true;
-    this.sendLiveReaction = true;
+    this.sendLiveReaction = false;
 
     this.sendMessageReaction = true;
     this.collaborativeWhiteboard = true;

@@ -27,6 +27,13 @@ import activeIcon from './resources/checked.png';
 const CometChatAddGroupMemberListItem = (props) => {
   const { groupMembers, theme } = useContext(CometChatContext);
 
+  // const [checked, setChecked] = useState(() => {
+  //   const found = groupMembers.find((member) => member.uid === props.user.uid);
+  //   const value = found ? true : false;
+
+  //   return value;
+  // });
+
   const handleCheck = (event) => {
     const value = props.checked === true ? false : true;
     props.changed(props.user, value);

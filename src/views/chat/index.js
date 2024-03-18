@@ -18,6 +18,7 @@ const Chat = () => {
       authToken={authToken}
       targetId={location?.state?.targetId || null}
       targetType={location?.state?.targetType || 'user'}
+      milestoneAttachment={location?.state?.milestoneData}
     />
   );
 };

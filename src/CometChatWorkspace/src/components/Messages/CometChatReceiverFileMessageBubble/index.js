@@ -35,25 +35,9 @@ import {
   messageTitleStyle,
 } from './style';
 
-// File Types
-import psdFileIcon from './resources/file-types/psdFile.png';
-import svgFileIcon from './resources/file-types/svgFile.png';
-import txtFileIcon from './resources/file-types/txtFile.png';
-import xlsFileIcon from './resources/file-types/xlsFile.png';
-import zipFileIcon from './resources/file-types/zipFile.png';
-import aiFileIcon from './resources/file-types/aiFile.png';
-import aviFileIcon from './resources/file-types/aviFile.png';
-import mkvFileIcon from './resources/file-types/mkvFile.png';
-import mp3FileIcon from './resources/file-types/mp3File.png';
-import pdfFileIcon from './resources/file-types/pdfFile.png';
-import pptFileIcon from './resources/file-types/pptFile.png';
-import docFileIcon from './resources/file-types/docFile.png';
-import gifFileIcon from './resources/file-types/gifFile.png';
-import jpgFileIcon from './resources/file-types/jpgFile.png';
-
 import downloadIcon from './resources/download.png';
 import fileIcon from './resources/file-upload.svg';
-import { getUserColor } from '../../../util/HelperFunctions';
+import { getFileIcon, getUserColor } from '../../../util/HelperFunctions';
 
 class CometChatReceiverFileMessageBubble extends React.Component {
   static contextType = CometChatContext;
@@ -84,44 +68,6 @@ class CometChatReceiverFileMessageBubble extends React.Component {
     return {
       isHovering: !state.isHovering,
     };
-  };
-
-  getFileIcon = (fileName) => {
-    let ext = fileName.split('.');
-    ext = ext[ext.length - 1];
-
-    ext = ext.toLowerCase();
-
-    switch (ext) {
-      case 'psd':
-        return psdFileIcon;
-      case 'svg':
-        return svgFileIcon;
-      case 'txt':
-        return txtFileIcon;
-      case 'xls':
-        return xlsFileIcon;
-      case 'zip':
-        return zipFileIcon;
-      case 'ai':
-        return aiFileIcon;
-      case 'avi':
-        return aviFileIcon;
-      case 'mkv':
-        return mkvFileIcon;
-      case 'mp3':
-        return mp3FileIcon;
-      case 'pdf':
-        return pdfFileIcon;
-      case 'ppt':
-        return pptFileIcon;
-      case 'jpg':
-        return jpgFileIcon;
-      case 'gif':
-        return gifFileIcon;
-      default:
-        return docFileIcon;
-    }
   };
 
   render() {
@@ -175,7 +121,7 @@ class CometChatReceiverFileMessageBubble extends React.Component {
       >
         <div css={fileTypeIconContainerStyle()} className="filetype__icon__container">
           <img
-            src={this.getFileIcon(this.props.message.data.attachments[0].name)}
+            src={getFileIcon(this.props.message.data.attachments[0].name)}
             className="filetype__icon"
             css={fileIconStyle()}
           />

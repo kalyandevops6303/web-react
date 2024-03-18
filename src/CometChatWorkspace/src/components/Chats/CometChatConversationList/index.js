@@ -66,7 +66,6 @@ class CometChatConversationList extends React.Component {
       showGroupChat: false,
       enableSearchConversation: false,
       conversationlist: [],
-      onItemClick: null,
       hideGroupActionMessages: false,
       showConfirmDialog: false,
       dmMessageCount: 0,
@@ -75,6 +74,8 @@ class CometChatConversationList extends React.Component {
       decoratorMessage: Translator.translate('LOADING', props.lang),
       conversationToBeDeleted: null,
       showSearchCross: false,
+      selectedConversationWith: null,
+      selectedConversationType: null,
     };
 
     this.contextProviderRef = React.createRef();
@@ -116,56 +117,31 @@ class CometChatConversationList extends React.Component {
 
     if (this.props.targetId) {
       if (this.props.targetType === CometChat.RECEIVER_TYPE.USER) {
-        CometChat.getConversation(this.props.targetId, this.props.targetType)
-          .then((targetItem) => {
-            if (targetItem) {
-              this.props.onItemClick(targetItem.conversationWith, targetItem.conversationType);
-            } else {
-              CometChat.getUser(this.props.targetId)
-                .then((user) => {
-                  this.props.onItemClick(user, this.props.targetType);
-                })
-                .catch((error) => {
-                  console.error('Error fetching user details:', error);
-                });
-            }
+        CometChat.getUser(this.props.targetId)
+          .then((user) => {
+            this.props.onItemClick(user, CometChat.RECEIVER_TYPE.USER);
+            this.setState({
+              selectedConversationWith: user,
+              selectedConversationType: CometChat.RECEIVER_TYPE.USER,
+            });
           })
           .catch((error) => {
-            console.error('Error fetching conversation:', error);
-
-            CometChat.getUser(this.props.targetId)
-              .then((user) => {
-                this.props.onItemClick(user, this.props.targetType);
-              })
-              .catch((err) => {
-                console.error('Error fetching user details:', err);
-              });
+            console.error('Error fetching user details:', error);
           });
       } else if (this.props.targetType === CometChat.RECEIVER_TYPE.GROUP) {
-        CometChat.getConversation(this.props.targetId, this.props.targetType)
-          .then((targetItem) => {
-            if (targetItem) {
-              this.props.onItemClick(targetItem.conversationWith, targetItem.conversationType);
-            } else {
-              CometChat.getGroup(this.props.targetId)
-                .then((group) => {
-                  this.props.onItemClick(group, this.props.targetType);
-                })
-                .catch((error) => {
-                  console.error('Error fetching group details:', error);
-                });
-            }
+        CometChat.getGroup(this.props.targetId)
+          .then((group) => {
+            this.props.onItemClick(group, CometChat.RECEIVER_TYPE.GROUP);
+            const sidebarCategoryState =
+              group.metadata?.category === 'project_group' ? { showProjectChat: true } : { showGroupChat: true };
+            this.setState({
+              selectedConversationWith: group,
+              selectedConversationType: CometChat.RECEIVER_TYPE.GROUP,
+              ...sidebarCategoryState,
+            });
           })
           .catch((error) => {
-            console.error('Error fetching conversation:', error);
-
-            CometChat.getGroup(this.props.targetId)
-              .then((group) => {
-                this.props.onItemClick(group, this.props.targetType);
-              })
-              .catch((err) => {
-                console.error('Error fetching group details:', err);
-              });
+            console.error('Error fetching group details:', error);
           });
       }
     }
@@ -896,7 +872,11 @@ class CometChatConversationList extends React.Component {
   //click handler
   handleClick = (conversation) => {
     if (!this.props.onItemClick) return;
-    this.props.onItemClick(conversation.conversationWith, conversation.conversationType);
+    this.props.onItemClick(conversation?.conversationWith, conversation?.conversationType);
+    this.setState({
+      selectedConversationWith: conversation?.conversationWith,
+      selectedConversationType: conversation?.conversationType,
+    });
   };
 
   handleMenuClose = () => {
@@ -981,7 +961,7 @@ class CometChatConversationList extends React.Component {
         [...conversations, ...conversationList].forEach((conversation, key) => {
           if (
             conversation.conversationType === 'group' &&
-            conversation.conversationWith.metadata.category === 'project_group'
+            conversation.conversationWith?.metadata?.category === 'project_group'
           ) {
             totalProjectMessageCount += conversation.unreadMessageCount;
           }
@@ -990,7 +970,7 @@ class CometChatConversationList extends React.Component {
         [...conversations, ...conversationList].forEach((conversation, key) => {
           if (
             conversation.conversationType === 'group' &&
-            conversation.conversationWith.metadata.category === 'custom_group'
+            conversation.conversationWith?.metadata?.category === 'custom_group'
           ) {
             totalGroupMessageCount += conversation.unreadMessageCount;
           }
@@ -1041,6 +1021,10 @@ class CometChatConversationList extends React.Component {
   onDeleteConfirm = (e) => {
     this.setState({ showConfirmDialog: false });
     const conversation = this.state.conversationToBeDeleted;
+    // const conversationWith =
+    //   conversation.conversationType === CometChat.RECEIVER_TYPE.GROUP
+    //     ? conversation?.conversationWith?.guid
+    //     : conversation?.conversationWith?.uid;
     if (conversation.conversationType === CometChat.RECEIVER_TYPE.GROUP) {
       // delete the group
       CometChat.deleteGroup(conversation?.conversationWith?.guid)
@@ -1151,6 +1135,7 @@ class CometChatConversationList extends React.Component {
               loggedInUser={this.loggedInUser}
               handleClick={this.handleClick}
               actionGenerated={this.actionHandler}
+              active={conversation.conversationWith?.uid === this.state.selectedConversationWith?.uid}
             />
           );
         }
@@ -1171,6 +1156,7 @@ class CometChatConversationList extends React.Component {
               loggedInUser={this.loggedInUser}
               handleClick={this.handleClick}
               actionGenerated={this.actionHandler}
+              active={conversation.conversationWith?.guid === this.state.selectedConversationWith?.guid}
             />
           );
         }
@@ -1191,6 +1177,7 @@ class CometChatConversationList extends React.Component {
               loggedInUser={this.loggedInUser}
               handleClick={this.handleClick}
               actionGenerated={this.actionHandler}
+              active={conversation.conversationWith?.guid === this.state.selectedConversationWith?.guid}
             />
           );
         }
@@ -1250,7 +1237,13 @@ class CometChatConversationList extends React.Component {
         {this.state.showDirectMessageModal ? (
           <CometChatUserList
             close={() => this.setState({ showDirectMessageModal: false })}
-            onItemClick={(item, type) => this.props.actionGenerated(enums.ACTIONS['ITEM_CLICKED'], type, item)}
+            onItemClick={(item, type) => {
+              this.props.actionGenerated(enums.ACTIONS['ITEM_CLICKED'], type, item);
+              this.setState({
+                selectedConversationWith: null,
+                selectedConversationType: null,
+              });
+            }}
           />
         ) : (
           <div css={chatsWrapperStyle(this.props, theme)} className="chats">
@@ -1300,7 +1293,7 @@ class CometChatConversationList extends React.Component {
                     onClick={() => this.setState({ showDirectChat: !this.state.showDirectChat })}
                     css={arrowImageContainer()}
                   >
-                    <img css={upperArrowImage()} src={!this.state.showDirectChat ? upperArrow : lowerArrow} />
+                    <img css={upperArrowImage()} src={!this.state.showDirectChat ? lowerArrow : upperArrow} />
                     <p css={chatCategory()}>Direct Chat</p>
                   </div>
                   <div css={unReadMessageCountAddImageDiv()}>
@@ -1337,7 +1330,7 @@ class CometChatConversationList extends React.Component {
                     onClick={() => this.setState({ showProjectChat: !this.state.showProjectChat })}
                     css={arrowImageContainer()}
                   >
-                    <img css={upperArrowImage()} src={!this.state.showProjectChat ? upperArrow : lowerArrow} />
+                    <img css={upperArrowImage()} src={!this.state.showProjectChat ? lowerArrow : upperArrow} />
                     <p className="chat__category__name" css={chatCategory()}>
                       Project Chat
                     </p>
@@ -1370,7 +1363,7 @@ class CometChatConversationList extends React.Component {
                     onClick={() => this.setState({ showGroupChat: !this.state.showGroupChat })}
                     css={arrowImageContainer()}
                   >
-                    <img css={upperArrowImage()} src={!this.state.showGroupChat ? upperArrow : lowerArrow} />
+                    <img css={upperArrowImage()} src={!this.state.showGroupChat ? lowerArrow : upperArrow} />
                     <p css={chatCategory()}>Group Chat</p>
                   </div>
                   <div css={unReadMessageCountAddImageDiv()}>
