@@ -211,7 +211,7 @@ class CometChatMessageList extends React.PureComponent {
 
             //mark the message as read
             if (message.hasOwnProperty('readAt') === false) {
-              CometChat.markAsRead(message).catch((error) => { });
+              CometChat.markAsRead(message).catch((error) => {});
               this.props.actionGenerated(enums.ACTIONS['MESSAGE_READ'], message);
             }
           }
@@ -262,7 +262,7 @@ class CometChatMessageList extends React.PureComponent {
 
             //mark the message as read
             if (message.hasOwnProperty('readAt') === false) {
-              CometChat.markAsRead(message).catch((error) => { });
+              CometChat.markAsRead(message).catch((error) => {});
               this.props.actionGenerated(enums.ACTIONS['MESSAGE_READ'], message);
             }
           }
@@ -478,13 +478,13 @@ class CometChatMessageList extends React.PureComponent {
   //mark the message as delivered
   markMessageAsDelivered = (message) => {
     if (message.sender?.uid !== this.state.loggedInUser?.uid && message.hasOwnProperty('deliveredAt') === false) {
-      CometChat.markAsDelivered(message).catch((error) => { });
+      CometChat.markAsDelivered(message).catch((error) => {});
     }
   };
 
   markMessageAsRead = (message, type) => {
     if (message.hasOwnProperty('readAt') === false) {
-      CometChat.markAsRead(message).catch((error) => { });
+      CometChat.markAsRead(message).catch((error) => {});
     }
   };
 
