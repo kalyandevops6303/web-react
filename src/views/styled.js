@@ -72,6 +72,16 @@ const CustomBadge = styled.span`
     color: ${theme.purpleColor};
     background: ${theme.purpleColor}1f !important;
   }
+  .UPDATED {
+    color: ${theme.purpleColor};
+    background: ${theme.purpleColor}1f !important;
+  }
+  .rounded-corner {
+    border-radius: 1.0625rem;
+    margin: 2px;
+    padding-right: 8px;
+    padding-left: 8px;
+  }
 `;
 
 const FormWrapper = styled.div`

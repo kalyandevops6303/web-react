@@ -205,20 +205,25 @@ const ReceivedBids = ({ projectName }) => {
         </div>
       ),
       status: (
-        <CustomBadge>
-          <Badge className={`${item?.status} truncate-1`} color="badge">
-            {item.status}
-          </Badge>
-        </CustomBadge>
+        <div className="position-relative">
+          <CustomBadge>
+            <Badge className={`${item?.status} truncate-1 rounded-corner`} color="badge">
+              {item.status}
+            </Badge>
+          </CustomBadge>
+          {item?.status === 'UPDATED' && <div className="red-dot" />}
+        </div>
       ),
       action: (
         <div className="d-flex gap-1">
-          <Eye
-            className="cursor-pointer"
-            onClick={() => handleRedirectTobidDetails(item)}
-            size={22}
-            color={theme.bodyColor}
-          />
+          {item?.status !== 'ACCEPTED' && (
+            <Eye
+              className="cursor-pointer"
+              onClick={() => handleRedirectTobidDetails(item)}
+              size={22}
+              color={theme.bodyColor}
+            />
+          )}
           <MoreVertical className="d-none" size={18} color={theme.bodyColor} />
         </div>
       ),

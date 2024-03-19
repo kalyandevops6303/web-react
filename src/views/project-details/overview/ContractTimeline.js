@@ -80,9 +80,9 @@ const ContractTimeline = () => {
     navigate(`/project-details/${projectDetailsData?._id}/payment`);
   };
   return (
-    <UncontrolledAccordion onClick={() => toggle(1)} className="accordion-timeline" defaultOpen="0">
+    <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
       <AccordionItem>
-        <AccordionHeader targetId="1">
+        <AccordionHeader onClick={() => toggle(1)} targetId="1">
           <AccordionHeadStyle>
             {/* <span className="title-head">Contract</span> */}
             <span className="d-flex title-head">
@@ -156,9 +156,7 @@ const ContractTimeline = () => {
               <Timeline data={bidUpdatesDataSet} />
             </div>
           </AccordionBody>
-        ) : (
-          <span className="d-flex justify-content-center">No data</span>
-        )}
+        ) : null}
       </AccordionItem>
     </UncontrolledAccordion>
   );

@@ -21,6 +21,7 @@ import {
   AccordionHeader,
   AccordionBody,
   Spinner,
+  Button,
 } from 'reactstrap';
 import Avatar from '@components/avatar';
 import AvatarGroup from '@components/avatar-group';
@@ -34,16 +35,138 @@ import { AccordionBodyContent, AccordionTableHeader } from '../create-bid/style'
 import ShowMoreLess from '../../@core/components/show-more-less-comp';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
-const BidPreviewModal = ({ modal, toggleModal }) => {
+const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleModal }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userData = useSelector(selectUserData);
 
   const onClose = () => {
     toggleModal();
   };
 
-  const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  // const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+
+  const bidInfo = {
+    _id: '65c1fb1be7bfc628ebd045bf',
+    created_at: 1707211547683,
+    updated_at: 1707211839240,
+    is_deleted: false,
+    project_id: '65c1fab6e7bfc628ebd045af',
+    total_numbers_of_hours: 0,
+    bid_type: 'SIMPLE',
+    project_type: 'VARIABLE',
+    payment_validity: 1707868799999,
+    payment_validity_extended_by: 0,
+    bid_validity: 1709855999999,
+    is_bid_editable: true,
+    workers: [
+      {
+        role: 'API Product Manager',
+        first_name: 'Jack',
+        last_name: 'jones',
+        user_id: '64d60539e127974f873d31d8',
+        hourly_rate: 0,
+        number_of_weeks: 0,
+        hours_per_week: 0,
+        accepted_date: 1707211563526,
+      },
+    ],
+    is_documents_sent: true,
+    total_estimated_duration: {
+      duration: 1,
+      duration_type: 'WEEK',
+    },
+    is_documents_signed: true,
+    documents: [],
+    links: [],
+    timeline: [
+      {
+        action: 'Bid Submitted',
+        time: 1707211596283,
+        name: '',
+        image_uri: '',
+        role: '',
+      },
+      {
+        action: 'Bid Reviewed',
+        time: 1707211634916,
+        name: 'Vighnesh Client',
+        image_uri:
+          'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e843f347a11f69d95a8f7b/b9f4953a-9e96-4d46-9249-de6adc20754e.jpg',
+        role: 'Client of Jack org',
+      },
+      {
+        action: 'Bid Accepted',
+        time: 1707211640543,
+        name: '',
+        image_uri: '',
+        role: '',
+      },
+    ],
+    is_payment_made: true,
+    status: 'ACCEPTED',
+    documents_validity: 1707868799999,
+    documents_validity_extended_by: 0,
+    deleted_by: '',
+    bid_by: {
+      entity: 'TEAM',
+      entity_id: '655f2d5d14a117f701d458ea',
+      team_member_id: '64d60539e127974f873d31d8',
+    },
+    project_start_date: 1707177600000,
+    total_estimated_cost: 50,
+    is_bid_type_changeable: false,
+    milestones: [
+      {
+        _id: '65c1fb43e7bfc628ebd045c7',
+        created_at: 1707211587357,
+        updated_at: 1707211896953,
+        is_deleted: false,
+        project_id: '65c1fab6e7bfc628ebd045af',
+        end_date: 0,
+        start_date: 1707211730286,
+        deliverables: ['1234'],
+        payment_status: 'PAID',
+        numbers_of_hours: 0,
+        workers: [
+          {
+            role: 'API Product Manager',
+            first_name: 'Jack',
+            last_name: 'jones',
+            user_id: '64d60539e127974f873d31d8',
+            hourly_rate: 0,
+            number_of_weeks: 1,
+            hours_per_week: 0,
+            accepted_date: 1707211563526,
+            image_uri:
+              'https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64d60539e127974f873d31d8/10dd35a9-f89d-4c55-8008-832935c71055.png',
+            amount: 50,
+          },
+        ],
+        seq: 1,
+        documents: [],
+        bid_id: '65c1fb1be7bfc628ebd045bf',
+        estimated_duration: {
+          duration: 1,
+          duration_type: 'WEEK',
+        },
+        estimated_cost: 50,
+        links: ['www.google.com'],
+        name: 'milestone 1',
+        status: 'IN_REVIEW',
+        description: '',
+        deleted_by: '',
+        milestone_by: {
+          entity: 'TEAM',
+          entity_id: '655f2d5d14a117f701d458ea',
+          team_member_id: '64d60539e127974f873d31d8',
+        },
+      },
+    ],
+  };
+
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
   const [selectedFileKey, setSelectedFileKey] = useState(null);
@@ -87,9 +210,27 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
       <ModalHeader toggle={onClose} className="py-0 pt-50" />
       <ModalBody className="pt-0">
         <BidDetailsWrap>
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between align-items-center">
             <p className="font-medium-3 fw-bold">Bid Submitted Preview</p>
-            {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'REJECTED' && (
+            {/* {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'REJECTED' && (
+              <p className="edit-bid-btn mt-1 cursor-pointer" onClick={onEditBidClick}>
+                Edit Bid
+              </p>
+            )} */}
+
+            {/* {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'REJECTED' && ( */}
+            {userData?.user_type === userTypes.client && selectedTimeline?.change_request_status === 'PENDING' && (
+              <div className="d-flex justify-content-end mb-2">
+                <Button onClick={onReject} color="flat-danger" className="me-2">
+                  Reject
+                </Button>
+                <Button onClick={onAccept} color="primary" type="submit">
+                  Accept Change
+                </Button>
+              </div>
+            )}
+
+            {userData?.user_type !== userTypes.client && bidInfo?.is_bid_editable && (
               <p className="edit-bid-btn mt-1 cursor-pointer" onClick={onEditBidClick}>
                 Edit Bid
               </p>
@@ -354,6 +495,11 @@ const BidPreviewModal = ({ modal, toggleModal }) => {
             ))}
           </Card>
         </BidDetailsWrap>
+        <div className="d-flex justify-content-end py-1">
+          <Button onClick={toggleModal} color="primary">
+            Close
+          </Button>
+        </div>
       </ModalBody>
     </Modal>
   );
@@ -364,9 +510,15 @@ export default BidPreviewModal;
 BidPreviewModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
+  selectedTimeline: Proptypes.object,
+  onReject: Proptypes.func,
+  onAccept: Proptypes.func,
 };
 
 BidPreviewModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
+  selectedTimeline: {},
+  onReject: () => {},
+  onAccept: () => {},
 };

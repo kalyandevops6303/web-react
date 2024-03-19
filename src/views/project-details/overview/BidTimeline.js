@@ -103,10 +103,10 @@ const BidTimeline = () => {
               </CardBody>
             </Card>
           ) : ndaData?.show_document ? (
-            <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
-              <NDATimeline />
-            </UncontrolledAccordion>
+            // <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
+            <NDATimeline />
           ) : (
+            // </UncontrolledAccordion>
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">

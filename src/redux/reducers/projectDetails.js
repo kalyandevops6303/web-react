@@ -196,6 +196,51 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
+    requestChangeRequest: (state) => ({
+      ...state,
+      requestChangeLoading: true,
+      error: null,
+    }),
+    requestChangeSuccess: (state) => ({
+      ...state,
+      requestChangeLoading: false,
+    }),
+    requestChangeFailure: (state, action) => ({
+      ...state,
+      requestChangeLoading: false,
+      error: action.payload,
+    }),
+
+    rejectBidChangeRequest: (state) => ({
+      ...state,
+      rejectBidChangeLoading: true,
+      error: null,
+    }),
+    rejectBidChangeSuccess: (state) => ({
+      ...state,
+      rejectBidChangeLoading: false,
+    }),
+    rejectBidChangeFailure: (state, action) => ({
+      ...state,
+      rejectBidChangeLoading: false,
+      error: action.payload,
+    }),
+
+    accpetBidChangeRequest: (state) => ({
+      ...state,
+      accpetBidChangeLoading: true,
+      error: null,
+    }),
+    accpetBidChangeSuccess: (state) => ({
+      ...state,
+      accpetBidChangeLoading: false,
+    }),
+    accpetBidChangeFailure: (state, action) => ({
+      ...state,
+      accpetBidChangeLoading: false,
+      error: action.payload,
+    }),
+
     sendDocumentRequest: (state) => ({
       ...state,
       sendDocumentLoading: true,
@@ -483,6 +528,15 @@ export const {
   relistProjectByDateRequest,
   relistProjectByDateSuccess,
   relistProjectByDateFailure,
+  requestChangeRequest,
+  requestChangeSuccess,
+  requestChangeFailure,
+  rejectBidChangeRequest,
+  rejectBidChangeSuccess,
+  rejectBidChangeFailure,
+  acceptBidChangeRequest,
+  acceptBidChangeSuccess,
+  acceptBidChangeFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

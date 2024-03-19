@@ -1,4 +1,5 @@
 import API from '../configs/api';
+// eslint-disable-next-line import/no-cycle
 import DataService from '../configs/dataService/dataService';
 
 const projectDetailsService = (projectId) =>
@@ -114,6 +115,15 @@ const relistProjectByDateService = (projectId, startDate, endDate) =>
     `${API.projectDetails.relistProjectByDate}?project_id=${projectId}&start_date=${startDate}&end_date=${endDate}`,
   );
 
+const requestChangeService = ({ project_id }) =>
+  DataService.post(`${API.projectDetails.requestChange}?project_id=${project_id}`);
+
+const rejectBidChangeService = ({ project_id }) =>
+  DataService.post(`${API.projectDetails.rejectBidChange}?project_id=${project_id}`);
+
+const acceptBidChangeService = ({ project_id }) =>
+  DataService.post(`${API.projectDetails.acceptBidChange}?project_id=${project_id}`);
+
 export {
   extendDocValidityService,
   extendPaymentValidityService,
@@ -142,4 +152,7 @@ export {
   terminateProjectService,
   relistProjectService,
   relistProjectByDateService,
+  requestChangeService,
+  rejectBidChangeService,
+  acceptBidChangeService,
 };

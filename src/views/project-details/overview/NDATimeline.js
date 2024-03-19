@@ -1,22 +1,38 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react';
-import { AccordionBody, AccordionHeader, AccordionItem, CardText } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAccordion } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
 import { selectIsNDA, selectNDATimeline } from '../../../redux/selectors/projectDetailsSelectors';
 import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { getDocumentTimeline } from '../../../redux/actions/projectDetailsAction';
 
 const NDATimeline = () => {
   const navigate = useNavigate();
   const isContract = useSelector(selectIsNDA);
   const contractTimeline = useSelector(selectNDATimeline);
-
+  const dispatch = useDispatch();
+  const param = useParams();
   const loading = useSelector((state) => state?.projectDetails?.getDocumentTimelineLoading);
+  const [open, setOpen] = useState(null);
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
+  useEffect(() => {
+    if (open === 1) {
+      dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'NDA' }));
+    }
+  }, [open]);
+
   const bidUpdatesDataSet = [];
   contractTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
@@ -49,73 +65,73 @@ const NDATimeline = () => {
     navigate('doc/nda');
   };
   return (
-    <AccordionItem>
-      <AccordionHeader targetId="1">
-        <AccordionHeadStyle>
-          <span className="d-flex title-head">
-            NDA
+    <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
+      <AccordionItem>
+        <AccordionHeader targetId="1">
+          <AccordionHeadStyle onClick={() => toggle(1)}>
+            <span className="d-flex title-head">
+              NDA
+              {isContract?.is_contract_terminated === false ? (
+                <span> {!isContract?.is_signed ? <span className="indicator" /> : ''}</span>
+              ) : (
+                ''
+              )}
+            </span>
+
             {isContract?.is_contract_terminated === false ? (
-              <span> {!isContract?.is_signed ? <span className="indicator" /> : ''}</span>
-            ) : (
-              ''
-            )}
-          </span>
-
-          {isContract?.is_contract_terminated === false ? (
-            <div>
-              {isContract?.is_signed ? (
-                <div className="d-flex gap-1 aling-items-center">
-                  <CardText className="d-none view-card-cta">Give rating</CardText>
-                  <CardText onClick={handleContract} className="view-card-cta">
-                    View
-                  </CardText>
-
+              <div>
+                {isContract?.is_signed ? (
                   <div className="d-flex gap-1 aling-items-center">
-                    <div className="me-1">
-                      <span className="key">Updated at</span>
-                      <CardText className="value">
-                        {contractTimeline?.updated_at
-                          ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
-                          : '-'}
-                      </CardText>
+                    <CardText className="d-none view-card-cta">Give rating</CardText>
+                    <CardText onClick={handleContract} className="view-card-cta">
+                      View
+                    </CardText>
+
+                    <div className="d-flex gap-1 aling-items-center">
+                      <div className="me-1">
+                        <span className="key">Updated at</span>
+                        <CardText className="value">
+                          {contractTimeline?.updated_at
+                            ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
+                            : '-'}
+                        </CardText>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="p-75 d-flex gap-50 align-items-center">
-                  <span onClick={handleContract} className="card-cta">
-                    Sign NDA
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="d-flex gap-1 aling-items-center">
-              <div className="me-1">
-                <span className="key">Updated at</span>
-                <CardText className="value">
-                  {contractTimeline?.updated_at
-                    ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
-                    : '-'}
-                </CardText>
+                ) : (
+                  <div className="p-75 d-flex gap-50 align-items-center">
+                    <span onClick={handleContract} className="card-cta">
+                      Sign NDA
+                    </span>
+                  </div>
+                )}
               </div>
-            </div>
-          )}
-        </AccordionHeadStyle>
-      </AccordionHeader>
+            ) : (
+              <div className="d-flex gap-1 aling-items-center">
+                <div className="me-1">
+                  <span className="key">Updated at</span>
+                  <CardText className="value">
+                    {contractTimeline?.updated_at
+                      ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
+                      : '-'}
+                  </CardText>
+                </div>
+              </div>
+            )}
+          </AccordionHeadStyle>
+        </AccordionHeader>
 
-      {loading ? (
-        <ComponentSpinner />
-      ) : bidUpdatesDataSet?.length > 0 ? (
-        <AccordionBody accordionId="1" className="accordion-status-body">
-          <div style={{ maxHeight: '27rem', overflowY: 'auto' }} className="pt-50 pe-50">
-            <Timeline data={bidUpdatesDataSet} />
-          </div>
-        </AccordionBody>
-      ) : (
-        <span className="d-flex justify-content-center">No data</span>
-      )}
-    </AccordionItem>
+        {loading ? (
+          <ComponentSpinner />
+        ) : bidUpdatesDataSet?.length > 0 ? (
+          <AccordionBody accordionId="1" className="accordion-status-body">
+            <div style={{ maxHeight: '27rem', overflowY: 'auto' }} className="pt-50 pe-50">
+              <Timeline data={bidUpdatesDataSet} />
+            </div>
+          </AccordionBody>
+        ) : null}
+      </AccordionItem>
+    </UncontrolledAccordion>
   );
 };
 export default NDATimeline;

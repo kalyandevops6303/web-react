@@ -228,6 +228,12 @@ const BidWrapper = styled.div`
     cursor: pointer;
     font-weight: 500;
   }
+  .card-cta-disabled {
+    text-decoration: underline;
+    color: ${theme.activeNavPillText}4f;
+    cursor: pointer;
+    font-weight: 500;
+  }
   .indicator {
     height: 0.5rem;
     width: 0.5rem;
@@ -338,6 +344,16 @@ const BidWrapper = styled.div`
     height: 1.7rem;
     width: 1.7rem;
     padding: 0.3rem;
+  }
+  .red-dot {
+    width: 8px;
+    height: 8px;
+    background-color: ${theme.red};
+    border-radius: 50%;
+    outline: 2px solid white;
+    position: absolute;
+    top: 0px;
+    right: 0px;
   }
 `;
 

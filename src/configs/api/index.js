@@ -137,6 +137,10 @@ const API = {
     terminateProject: `${apiCreateProjectEndpoint}/api/v1/project/termination`,
     relistProject: `${apiCreateProjectEndpoint}/api/v1/project/relisting`,
     relistProjectByDate: `${apiCreateProjectEndpoint}/api/v1/project/relist-by-date`,
+    requestChange: `${apiCreateProjectEndpoint}/api/v1/project/request-change`,
+    rejectBidChange: `${apiCreateProjectEndpoint}/api/v1/bid/selection/reject-bid`,
+    acceptBidChange: `${apiCreateProjectEndpoint}/api/v1/bid/selection/accept-bid`,
+
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,

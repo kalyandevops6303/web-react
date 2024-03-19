@@ -25,10 +25,16 @@ import {
   terminateProjectService,
   relistProjectService,
   relistProjectByDateService,
+  requestChangeService,
+  rejectBidChangeService,
+  acceptBidChangeService,
 } from '../../services/projectDetailsServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
+  acceptBidChangeFailure,
+  acceptBidChangeRequest,
+  acceptBidChangeSuccess,
   checkDocumentActivatedFailure,
   checkDocumentActivatedRequest,
   checkDocumentActivatedSuccess,
@@ -66,6 +72,9 @@ import {
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
+  rejectBidChangeFailure,
+  rejectBidChangeRequest,
+  rejectBidChangeSuccess,
   relistProjectByDateFailure,
   relistProjectByDateRequest,
   relistProjectByDateSuccess,
@@ -76,6 +85,9 @@ import {
   removeWorkerFailure,
   removeWorkerRequest,
   removeWorkerSuccess,
+  requestChangeFailure,
+  requestChangeRequest,
+  requestChangeSuccess,
   sendDocumentFailure,
   sendDocumentRequest,
   sendDocumentSuccess,
@@ -171,6 +183,42 @@ const getBidDetails =
       // errorHandler(error, getBidInfoFailure);
       dispatch(getBidInfoFailure(error));
       console.error(error);
+    }
+  };
+
+const requestChange =
+  ({ id }) =>
+  async (dispatch) => {
+    dispatch(requestChangeRequest());
+    try {
+      await requestChangeService({ project_id: id });
+      dispatch(requestChangeSuccess());
+    } catch (error) {
+      errorHandler(error, requestChangeFailure);
+    }
+  };
+
+const rejectBidChange =
+  ({ id }) =>
+  async (dispatch) => {
+    dispatch(rejectBidChangeRequest());
+    try {
+      await rejectBidChangeService({ project_id: id });
+      dispatch(rejectBidChangeSuccess());
+    } catch (error) {
+      errorHandler(error, rejectBidChangeFailure);
+    }
+  };
+
+const acceptBidChange =
+  ({ id }) =>
+  async (dispatch) => {
+    dispatch(acceptBidChangeRequest());
+    try {
+      await acceptBidChangeService({ project_id: id });
+      dispatch(acceptBidChangeSuccess());
+    } catch (error) {
+      errorHandler(error, acceptBidChangeFailure);
     }
   };
 
@@ -478,4 +526,7 @@ export {
   removeWorkerFromProjectTeam,
   getBidMilestone,
   relistProjectByDate,
+  requestChange,
+  rejectBidChange,
+  acceptBidChange,
 };

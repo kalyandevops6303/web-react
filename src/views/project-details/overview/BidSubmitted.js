@@ -13,15 +13,26 @@ import { getBidDetails } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
+import BidChangeRequestModal from '../../modals/BidChangeRequestModal';
+import AcceptBidModal from '../../modals/AcceptBidModal';
+import RejectBidChangeModal from '../../modals/RejectBidChangeModal';
 
 const BidSubmitted = () => {
   const dispatch = useDispatch();
   const userData = useSelector(selectUserData);
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
   const loading = useSelector((state) => state.projectDetails.getBidInfoLoading);
+  const [open, setOpen] = useState(null);
+  const [bidRequestModal, setBidRequestModal] = useState(false);
+  const [acceptBidModal, setAcceptBidModal] = useState(false);
+  const [rejectBidModal, setRejectBidModal] = useState(false);
   const [bidModal, setBidModal] = useState(false);
   const toggleBidModal = () => setBidModal(!bidModal);
-  const [open, setOpen] = useState(null);
+  const toggleAccepetModal = () => setAcceptBidModal(!acceptBidModal);
+  const toggleRejectBidModal = () => setRejectBidModal(!rejectBidModal);
+
+  const [selectedTimeline, setSelectedTimeline] = useState();
+
   const toggle = (id) => {
     if (open === id) {
       setOpen();
@@ -84,8 +95,12 @@ const BidSubmitted = () => {
     if (open === 1) {
       dispatch(getBidDetails({ project_id: param?.projectId }));
     }
-    // }
   }, [open]);
+
+  const handleViewBid = (item) => {
+    toggleBidModal();
+    setSelectedTimeline(item);
+  };
 
   const bidUpdatesDataSet = [];
   bidInfo?.timeline?.map((item) =>
@@ -108,7 +123,9 @@ const BidSubmitted = () => {
               {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
             </span>
             {(item?.bid_action === status.BID_UPDATED || item?.bid_action === status.BID_SUBMITTED) && (
-              <span className="card-cta">View Bid</span>
+              <CardText onClick={() => handleViewBid(item)} className="card-cta">
+                View Bid
+              </CardText>
             )}
           </div>
         </div>
@@ -116,10 +133,26 @@ const BidSubmitted = () => {
     }),
   );
 
+  const handleCancel = () => {
+    setBidRequestModal(false);
+  };
+  const handleBidChangeRequest = () => {
+    setBidRequestModal(true);
+  };
+
+  const handleReject = () => {
+    setBidModal(false);
+    setRejectBidModal(true);
+  };
+  const handleAccept = () => {
+    setBidModal(false);
+    setAcceptBidModal(true);
+  };
+
   return (
-    <UncontrolledAccordion onClick={() => toggle(1)} className="accordion-timeline" defaultOpen="0">
+    <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
       <AccordionItem>
-        <AccordionHeader targetId="1">
+        <AccordionHeader onClick={() => toggle(1)} targetId="1">
           <AccordionHeadStyle>
             <span className="title-head">
               {userData?.user_type === userTypes.client ? 'Accpeted Bid' : 'Bid Submitted'}{' '}
@@ -148,15 +181,30 @@ const BidSubmitted = () => {
             </div>
           </AccordionHeadStyle>
         </AccordionHeader>
+
         {loading ? (
           <ComponentSpinner />
         ) : (
           <AccordionBody accordionId="1" className="accordion-status-body">
+            <div className={`d-flex justify-content-end mb-2 card-cta${bidInfo?.is_bid_editable ? '' : '-disabled'} `}>
+              <CardText onClick={handleBidChangeRequest}>Bid Change Request</CardText>
+            </div>
             {bidInfo?.timeline ? <Timeline data={bidUpdatesDataSet} /> : <Empty message="No data found" />}
           </AccordionBody>
         )}
-        {bidModal && <BidPreviewModal modal={bidModal} toggleModal={toggleBidModal} />}
+        {bidModal && (
+          <BidPreviewModal
+            onReject={handleReject}
+            onAccept={handleAccept}
+            selectedTimeline={selectedTimeline}
+            modal={bidModal}
+            toggleModal={toggleBidModal}
+          />
+        )}
       </AccordionItem>
+      {bidRequestModal && <BidChangeRequestModal modal={bidRequestModal} toggleModal={handleCancel} />}
+      {acceptBidModal && <AcceptBidModal modal={acceptBidModal} toggleModal={toggleAccepetModal} />}
+      {rejectBidModal && <RejectBidChangeModal modal={rejectBidModal} toggleModal={toggleRejectBidModal} />}
     </UncontrolledAccordion>
   );
 };
