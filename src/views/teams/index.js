@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Route, Routes, useMatch, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -6,10 +7,10 @@ import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
-import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import { userTypes } from '../../utility/constants/Constant';
 import { clearData } from '../../redux/reducers/myTeams';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 
 const TeamsContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -19,8 +20,19 @@ const TeamsContainer = styled.div`
   }
 `;
 
+const SecondComp = ({ primaryFilter }) => {
+  const userData = useSelector(selectAuthUserData);
+  return <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
+};
+SecondComp.propTypes = {
+  primaryFilter: PropTypes.string,
+};
+SecondComp.defaultProps = {
+  primaryFilter: '',
+};
+
 const MyTeams = () => {
-  const userDetailsData = useSelector(userData);
+  const userData = useSelector(selectAuthUserData);
   const isTab = useIsTab();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,10 +53,10 @@ const MyTeams = () => {
     // eslint-disable-next-line no-undef
     window.scrollTo(0, 0);
 
-    if (userDetailsData?.user_type === userTypes.talent && primaryFilter === 'talents') {
+    if (userData?.user_type === userTypes.talent && primaryFilter === 'talents') {
       setPrimaryFilter('teams');
       setItem('selectedMyTeamsTab', 'teams');
-    } else if (userDetailsData?.user_type === userTypes.team && primaryFilter === 'teams') {
+    } else if (userData?.user_type === userTypes.team && primaryFilter === 'teams') {
       setPrimaryFilter('talents');
       setItem('selectedMyTeamsTab', 'talents');
     } else if (primaryFilter !== routesMatch?.pathname?.split('/')?.[2]) {
@@ -66,9 +78,6 @@ const MyTeams = () => {
     setItem('selectedMyTeamsTab', props);
   };
 
-  // eslint-disable-next-line react/no-unstable-nested-components
-  const SecondComp = () => <SecondaryFilters userType={userDetailsData?.user_type} primaryFilter={primaryFilter} />;
-
   const primaryEnum = {
     teams: 'Teams',
     clients: 'Clients',
@@ -87,7 +96,7 @@ const MyTeams = () => {
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}
         isTab={isTab}
-        userType={userDetailsData?.user_type}
+        userType={userData?.user_type}
       />
       <Routes>
         <Route path="teams" element={<SecondComp primaryFilter={primaryFilter} />} />

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useMatch, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
-import { userData } from '../../redux/selectors/dashboardSelectors';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import { clearData } from '../../redux/reducers/clubs';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 
 const ClubContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -18,12 +19,25 @@ const ClubContainer = styled.div`
   }
 `;
 
+const SecondComp = ({ primaryFilter }) => {
+  const userData = useSelector(selectAuthUserData);
+  return <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
+};
+SecondComp.propTypes = {
+  primaryFilter: PropTypes.string,
+};
+SecondComp.defaultProps = {
+  primaryFilter: '',
+};
+
 const Clubs = () => {
-  const userDetailsData = useSelector(userData);
+  const userData = useSelector(selectAuthUserData);
   const dispatch = useDispatch();
+  const location = useLocation();
   const isTab = useIsTab();
   const navigate = useNavigate();
-  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedClubsTab') && 'my_clubs');
+  const filterFromUrl = location?.pathname?.split('/').pop();
+  const [primaryFilter, setPrimaryFilter] = useState(getItem('selectedClubsTab') || filterFromUrl);
 
   const routesMatch = useMatch('/clubs/all_clubs') || useMatch('/clubs/my_clubs') || useMatch('/clubs/favourites');
 
@@ -46,9 +60,6 @@ const Clubs = () => {
     setItem('selectedClubsTab', props);
   };
 
-  // eslint-disable-next-line react/no-unstable-nested-components
-  const SecondComp = () => <SecondaryFilters userType={userDetailsData?.user_type} primaryFilter={primaryFilter} />;
-
   const primaryEnum = {
     my_clubs: 'My Clubs',
     all_clubs: 'All Clubs',
@@ -64,7 +75,7 @@ const Clubs = () => {
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}
         isTab={isTab}
-        userType={userDetailsData?.user_type}
+        userType={userData?.user_type}
       />
       <Routes>
         <Route path="all_clubs" element={<SecondComp primaryFilter={primaryFilter} />} />
