@@ -190,12 +190,12 @@ const ReceivedBids = ({ projectName }) => {
         <>
           <Rating
             className="mb-25"
-            initialRating={0}
+            initialRating={item?.rating || 0}
             emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
             fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
             readonly
           />
-          <div className="table-user-sub">0 Projects</div>
+          <div className="table-user-sub">{item?.projects_worked_on_count || 0} Projects</div>
         </>
       ),
       bid: `$${item?.total_estimated_cost}`,

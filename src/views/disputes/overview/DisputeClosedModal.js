@@ -11,7 +11,7 @@ import { getAllDisputes, getDisputesCount, resolveDisputeApi } from '../../../re
 import { resolveDisputeLoading } from '../../../redux/selectors/disputeSelectors';
 import { disputeStatuses } from '../../../utility/constants/Constant';
 
-const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetailsModal, primaryFilter }) => {
+const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetailsModal, primaryFilter, onClose }) => {
   const dispatch = useDispatch();
 
   const { _id, dispute_type, created_by, description } = selectedDispute;
@@ -25,6 +25,9 @@ const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetails
       dispatch(getAllDisputes(disputeStatuses.open, 1, 10, []));
     } else if (primaryFilter === 'resolved') {
       dispatch(getAllDisputes(disputeStatuses.resolved, 1, 10, []));
+    }
+    if (onClose) {
+      onClose();
     }
     dispatch(getDisputesCount());
     toggleModal();
@@ -81,6 +84,7 @@ DisputeClosedModal.propTypes = {
   selectedDispute: Proptypes.object,
   toggleDetailsModal: Proptypes.func,
   primaryFilter: Proptypes.string,
+  onClose: Proptypes.func,
 };
 
 DisputeClosedModal.defaultProps = {
@@ -89,4 +93,5 @@ DisputeClosedModal.defaultProps = {
   selectedDispute: {},
   toggleDetailsModal: () => {},
   primaryFilter: '',
+  onClose: () => {},
 };

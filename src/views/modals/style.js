@@ -1,7 +1,22 @@
 import styled from 'styled-components';
 import theme from '../../configs/themeVariables';
 
+const ArtifactsModalWrap = styled.div`
+  max-height: 5rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  .truncated-filename {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
 const AcceptModalWrapper = styled.div`
+  .object-fit-contain {
+    object-fit: contain;
+  }
   padding-bottom: 1.2rem;
   .gif {
     margin-left: 2rem;
@@ -173,6 +188,18 @@ const MessageIconWrap = styled.div`
       margin: auto;
     }
   }
+  .trash-bg {
+    background-color: ${theme.red}1f;
+    border-radius: 50%;
+    height: 2.5rem;
+    width: 2.5rem;
+    display: flex;
+    margin-left: auto;
+    justify-content: center;
+    .mail-icon {
+      margin: auto;
+    }
+  }
 `;
 
 const MakePaymentModalWrapper = styled.div`
@@ -254,4 +281,5 @@ export {
   TerminateModalWrapper,
   PublicTeamMembersListingModalWrapper,
   RelistModalWrapper,
+  ArtifactsModalWrap,
 };

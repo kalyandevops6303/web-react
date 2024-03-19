@@ -312,6 +312,26 @@ const MilestoneSectionWrapper = styled.div`
   .overflow-wrap-anywhere {
     overflow-wrap: anywhere;
   }
+
+  .custom-cost-margin {
+    margin-top: 2px;
+  }
+
+  .input-group-disabled {
+    background-color: ${theme.inputDisabledBg} !important;
+
+    span {
+      background-color: ${theme.inputDisabledBg} !important;
+    }
+
+    .form-control:disabled {
+      background-color: ${theme.inputDisabledBg} !important;
+    }
+
+    .form-control[readonly] {
+      opacity: 1 !important;
+    }
+  }
 `;
 
 const PreviewSectionWrapper = styled.div`
@@ -442,6 +462,41 @@ const AccordionBodyContent = styled.div`
   }
 `;
 
+const ChangeBidTypeConfirmationModalWrapper = styled.div`
+  .modal-custom-heading {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .modal-custom-sub-heading {
+    font-size: 18px;
+    line-height: 29.124px;
+  }
+
+  .notepad-gif {
+    margin-left: -10px;
+    margin-top: -10px;
+    margin-bottom: -20px;
+  }
+`;
+
+const ChangeBidTypeButton = styled.div`
+  .change-bid-type-icon {
+    background: rgba(1, 133, 228, 0.12);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  p {
+    font-size: 16px;
+    color: ${theme.activeNavPillText};
+  }
+`;
+
 export {
   LeftSidebarProjectDetailsWrapper,
   ProgressBarWrapper,
@@ -451,4 +506,6 @@ export {
   InfoContainer,
   AccordionTableHeader,
   AccordionBodyContent,
+  ChangeBidTypeConfirmationModalWrapper,
+  ChangeBidTypeButton,
 };

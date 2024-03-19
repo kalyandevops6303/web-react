@@ -53,7 +53,11 @@ class CometChatUI extends React.Component {
   };
 
   itemClicked = (item, type) => {
-    this.contextProviderRef.setTypeAndItem(type, item);
+    if (type === 'user' || item.guid != this.props.milestoneAttachment?.milestone?.projectGroupId) {
+      this.props.cancelMilestoneInput();
+      this.props.disableMilestoneMessageId();
+    }
+    this.contextProviderRef?.setTypeAndItem(type, item);
     this.toggleSideBar();
   };
 
@@ -78,8 +82,8 @@ class CometChatUI extends React.Component {
   };
 
   /**
-	 If the logged in user is banned, kicked or scope changed, update the chat window accordingly
-	 */
+   If the logged in user is banned, kicked or scope changed, update the chat window accordingly
+   */
   groupUpdated = (key, message, group, options) => {
     switch (key) {
       case enums.GROUP_MEMBER_BANNED:
@@ -120,6 +124,10 @@ class CometChatUI extends React.Component {
         lang={this.props.lang}
         _parent="unified"
         actionGenerated={this.actionHandler}
+        enableMilestoneInput={this.props.enableMilestoneInput}
+        cancelMilestoneInput={this.props.cancelMilestoneInput}
+        milestoneAttachment={this.props.milestoneAttachment} // use it here to open the specific project chat and pass it ahead
+        milestoneMessageId={this.props.milestoneMessageId}
       />
     );
 

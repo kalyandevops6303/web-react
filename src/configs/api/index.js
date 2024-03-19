@@ -161,6 +161,10 @@ const API = {
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/milestone/file`,
     saveMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestones/update`,
     rejectMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestone/reject`,
+    getSubmissionHistory: `${apiCreateProjectEndpoint}/api/v1/project/milestones/artifacts`,
+    markComplete: `${apiCreateProjectEndpoint}/api/v1/project/milestones/complete`,
+    getSingleMilestone: `${apiCreateProjectEndpoint}/api/v1/project/milestone`,
+    getDisputes: `${apiCreateProjectEndpoint}/api/v1/project/disputes`,
   },
   inviteTeamMember: {
     bestTalents: `${apiAuthEndpoint}/api/v1/team/best-talents`,
@@ -218,6 +222,7 @@ const API = {
     setMilestones: `${apiCreateProjectEndpoint}/api/v1/bid/set-milestones`,
     milestoneFileUpload: `${apiCreateProjectEndpoint}/api/v1/bid/file`,
     submitBid: `${apiCreateProjectEndpoint}/api/v1/bid/submit`,
+    changeBidType: `${apiCreateProjectEndpoint}/api/v1/bid-type`,
   },
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,

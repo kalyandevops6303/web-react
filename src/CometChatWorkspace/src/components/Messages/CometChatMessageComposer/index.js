@@ -36,6 +36,20 @@ import {
   sendButtonStyle,
   reactionBtnStyle,
   stickerBtnStyle,
+  inputButtonContainerStyle,
+  newSendButtonStyle,
+  newSendButtonContainerStyle,
+  milestoneContainerStyle,
+  milestoneHeaderStyle,
+  milestoneTitleStyle,
+  milestoneCloseIconStyle,
+  milestoneBodyStyle,
+  milestoneAttachmentTileStyle,
+  milestoneAttachmentTileAvatarStyle,
+  milestoneAttachmentTileBodyStyle,
+  milestoneAttachmentFileNameStyle,
+  milestoneAttachmentFileSizeStyle,
+  milestoneAttachmentTileAvatarContainerStyle,
 } from './style';
 
 import roundedPlus from './resources/add-circle-filled.svg';
@@ -43,9 +57,10 @@ import videoIcon from './resources/video-file.svg';
 import audioIcon from './resources/audio-headphones.svg';
 // import docIcon from './resources/file-upload.svg';
 import attachIcon from './resources/paperclip.png';
+import chevronRightIcon from './resources/chevron-right.png';
 // import imageIcon from './resources/image.svg';
 import imageIcon from './resources/image-icon.png';
-import insertEmoticon from './resources/emoji.svg';
+import insertEmoticon from './resources/emoji.png';
 import sendBlue from './resources/send-message.svg';
 import pollIcon from './resources/polls.svg';
 import stickerIcon from './resources/stickers.svg';
@@ -53,6 +68,8 @@ import closeIcon from './resources/close.svg';
 import documentIcon from './resources/collaborative-document.svg';
 import whiteboardIcon from './resources/collaborative-whiteboard.svg';
 import heartIcon from './resources/heart.png';
+import { X } from 'react-feather';
+import { convertFileSize, getFileIcon } from '../../../util/HelperFunctions.js';
 
 class CometChatMessageComposer extends React.PureComponent {
   static contextType = CometChatContext;
@@ -619,6 +636,13 @@ class CometChatMessageComposer extends React.PureComponent {
     let textMessage = new CometChat.TextMessage(receiverId, messageInput, receiverType);
     if (this.props.parentMessageId) {
       textMessage.setParentMessageId(this.props.parentMessageId);
+    } else if (this.props.enableMilestoneInput && this.props.milestoneAttachment?.uid) {
+      textMessage.setTags(['type-milestone', `submissionid-${this.props.milestoneAttachment.uid}`]);
+      // add the additional info
+      textMessage.setMetadata({
+        milestoneAttachment: this.props.milestoneAttachment,
+      });
+      this.props.cancelMilestoneInput();
     }
     textMessage.setSender(this.loggedInUser);
     textMessage.setReceiver(this.context.type);
@@ -1143,7 +1167,7 @@ class CometChatMessageComposer extends React.PureComponent {
           this.setState({ messageToReact: '' });
         }}
       >
-        <i></i>
+        <img src={insertEmoticon} />
       </div>
     );
 
@@ -1159,7 +1183,7 @@ class CometChatMessageComposer extends React.PureComponent {
       </div>
     );
 
-    const sendMessageText = Translator.translate('SEND_MESSAGE', this.context.language);
+    const sendMessageText = Translator.translate('Send', this.context.language);
     let sendBtn = (
       <div
         title={sendMessageText}
@@ -1224,7 +1248,7 @@ class CometChatMessageComposer extends React.PureComponent {
           onClick={this.toggleFilePicker}
           title={attachText}
         >
-          <i></i>
+          <img src={this.state.showFilePicker ? chevronRightIcon : attachIcon} />
         </div>
         <div
           css={filePickerStyle(this.state)}
@@ -1337,34 +1361,85 @@ class CometChatMessageComposer extends React.PureComponent {
       emojiViewer = <CometChatEmojiKeyboard onClick={this.emojiClicked} />;
     }
 
+    let milestoneInput = (
+      <div css={milestoneContainerStyle()} className="milestone__container">
+        <div css={milestoneHeaderStyle()} className="milestone__header">
+          <div css={milestoneTitleStyle()} className="milestone__title">
+            {this.props.milestoneAttachment?.milestone?.title}
+          </div>
+          <span
+            onClick={this.props.cancelMilestoneInput}
+            css={milestoneCloseIconStyle()}
+            className="milestone__close__icon"
+          >
+            <X color="white" size={16} />
+          </span>
+        </div>
+        <div css={milestoneBodyStyle()} className="milestone__body">
+          <div css={milestoneAttachmentTileStyle()} className="attachment__tile">
+            {this.props.milestoneAttachment?.artifact.type === 'DOCUMENTS' && (
+              <div css={milestoneAttachmentTileAvatarContainerStyle()} className="attachment__tile__avatar">
+                <img css={milestoneAttachmentTileAvatarStyle()} src={getFileIcon('abc.pdf')} />
+              </div>
+            )}
+            <div css={milestoneAttachmentTileBodyStyle()} className="attachment__tile__body">
+              <div css={milestoneAttachmentFileNameStyle()} className="attachment__filename">
+                {this.props.milestoneAttachment?.artifact.type === 'DOCUMENTS' &&
+                  this.props.milestoneAttachment?.artifact?.fileName}
+                {this.props.milestoneAttachment?.artifact.type === 'LINKS' &&
+                  this.props.milestoneAttachment?.artifact?.urlName}
+              </div>
+              <div css={milestoneAttachmentFileSizeStyle()} className="attachment__filesize">
+                {this.props.milestoneAttachment?.artifact.type === 'DOCUMENTS' &&
+                  convertFileSize(this.props.milestoneAttachment?.artifact?.fileSize)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    let sendBtnNew = (
+      <button onClick={this.sendTextMessage} css={newSendButtonStyle()} className="new__send-button">
+        {sendMessageText}
+      </button>
+    );
+
     return (
       <div css={chatComposerStyle(this.context)} className="chat__composer">
         {editPreview}
         {smartReplyPreview}
         {stickerViewer}
         {emojiViewer}
-        <div css={composerInputStyle()} className="composer__input">
-          <div tabIndex="-1" css={inputInnerStyle(this.props, this.state, this.context)} className="input__inner">
-            <div
-              css={messageInputStyle(disabledState)}
-              className="input__message-input"
-              contentEditable="true"
-              placeholder={Translator.translate('ENTER_YOUR_MESSAGE_HERE', this.context.language)}
-              dir={Translator.getDirection(this.context.language)}
-              onInput={this.changeHandler}
-              onBlur={(event) => this.endTyping(event)}
-              onKeyDown={this.sendMessageOnEnter}
-              ref={this.messageInputRef}
-            ></div>
-            <div css={inputStickyStyle(disabledState, attach, this.context)} className="input__sticky">
-              {attach}
-              <div css={stickyButtonStyle(this.state)} className="input__sticky__buttons">
-                {stickerBtn}
-                {emojiBtn}
-                {sendBtn}
-                {liveReactionBtn}
+        <div css={inputButtonContainerStyle()} className="input__button__container">
+          <div css={composerInputStyle(this.props, this.state, this.context)} className="composer__input">
+            <div tabIndex="-1" css={inputInnerStyle()} className="input__inner">
+              <div
+                css={messageInputStyle(disabledState)}
+                className="input__message-input"
+                contentEditable="true"
+                placeholder={Translator.translate('ENTER_YOUR_MESSAGE_HERE', this.context.language)}
+                dir={Translator.getDirection(this.context.language)}
+                onInput={this.changeHandler}
+                onBlur={(event) => this.endTyping(event)}
+                onKeyDown={this.sendMessageOnEnter}
+                ref={this.messageInputRef}
+                rows={1}
+              ></div>
+              <div css={inputStickyStyle(disabledState, attach, this.context)} className="input__sticky">
+                {!this.props.enableMilestoneInput && attach}
+                <div css={stickyButtonStyle(this.state)} className="input__sticky__buttons">
+                  {stickerBtn}
+                  {emojiBtn}
+                  {/* {sendBtn} */}
+                  {liveReactionBtn}
+                </div>
               </div>
             </div>
+            {this.props.enableMilestoneInput && milestoneInput}
+          </div>
+          <div css={newSendButtonContainerStyle()} className="new__send-button-container">
+            {sendBtnNew}
           </div>
         </div>
         {createPoll}

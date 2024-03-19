@@ -23,8 +23,8 @@ const Disputes = ({ handleRaiseDispute }) => {
 
   useEffect(() => {
     const data = [
-      { title: 'Resolved', value: disputesCountData?.resolved_disputes, color: theme.green },
-      { title: 'Open', value: disputesCountData?.open_disputes, color: theme.openDisputesChartColor },
+      { title: 'Resolved', value: disputesCountData?.resolved_disputes || 0, color: theme.green },
+      { title: 'Open', value: disputesCountData?.open_disputes || 0, color: theme.openDisputesChartColor },
     ];
 
     setChartData(data);

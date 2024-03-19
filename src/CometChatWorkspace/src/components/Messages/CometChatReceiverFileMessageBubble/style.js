@@ -110,6 +110,36 @@ export const messageFileWrapperStyle = (context) => {
   };
 };
 
+// export const messageFileWrapperStyle = (context) => {
+//   return {
+//     display: 'inline-block',
+//     borderRadius: '12px',
+//     color: `${context.theme.color.secondary}`,
+//     backgroundColor: `${context.theme.backgroundColor.secondary}`,
+//     padding: '8px 16px',
+//     alignSelf: 'flex-start',
+//     width: 'auto',
+//     '> a': {
+//       background: '0 0',
+//       textDecoration: 'none',
+//       backgroundColor: 'transparent',
+//       color: `${context.theme.color.primary}`,
+//       width: 'auto',
+//       fontSize: '14px',
+//       display: 'flex',
+//       alignItems: 'center',
+//       justifyContent: 'center',
+//       '&:visited, &:active, &:hover': {
+//         color: `${context.theme.color.primary}`,
+//         textDecoration: 'none',
+//       },
+//       label: {
+//         cursor: 'pointer',
+//       },
+//     },
+//   };
+// };
+
 export const messageTitleStyle = (img, context) => {
   return {
     color: '#616161',

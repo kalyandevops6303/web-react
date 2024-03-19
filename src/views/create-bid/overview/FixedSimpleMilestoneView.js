@@ -29,8 +29,8 @@ import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ChevronLeft, ChevronRight, FileText, Info, Plus, Upload } from 'react-feather';
-import { MilestoneSectionWrapper } from '../style';
+import { ChevronLeft, ChevronRight, Edit, FileText, Info, Plus, Upload } from 'react-feather';
+import { ChangeBidTypeButton, MilestoneSectionWrapper } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -41,11 +41,14 @@ import { downloadFile, downloadUploadedFile, formatDateWithDash } from '../../..
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import { bidDetailsLoading, projectDetails, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
+import capitalize from '../../../lib/capitalize';
 import { milestoneFileUploadService, milestoneFileUploadToAzureService } from '../../../services/createBidServices';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
+import ChangeBidTypeConfirmationModal from '../../modals/ChangeBidTypeConfirmationModal';
+import CreateBidModal from '../../modals/CreateBidModal';
 
 const FixedSimpleMilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -142,14 +145,25 @@ const FixedSimpleMilestoneView = () => {
   const [selectedFileKey, setSelectedFileKey] = useState(null);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
-
   const [open, setOpen] = useState(1);
+  const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
+  const [createBidModal, setCreateBidModal] = useState(null);
+  const [bidData, setBidData] = useState(null);
+
   const toggle = (id) => {
     if (open === id) {
       setOpen();
     } else {
       setOpen(id);
     }
+  };
+
+  const toggleChangeBidTypeConfirmationModal = () => {
+    setChangeBidTypeConfirmationModal(!changeBidTypeConfirmationModal);
+  };
+
+  const toggleCreateBidModal = () => {
+    setCreateBidModal(!createBidModal);
   };
 
   const calculateTotalValues = () => {
@@ -468,6 +482,7 @@ const FixedSimpleMilestoneView = () => {
 
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
+      setBidData(res);
       if (res?.project_start_date > 0) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
       }
@@ -523,6 +538,24 @@ const FixedSimpleMilestoneView = () => {
 
   return (
     <MilestoneSectionWrapper className="mt-2">
+      {changeBidTypeConfirmationModal && (
+        <ChangeBidTypeConfirmationModal
+          modal={changeBidTypeConfirmationModal}
+          toggleModal={toggleChangeBidTypeConfirmationModal}
+          toggleCreateBidModal={toggleCreateBidModal}
+        />
+      )}
+      {createBidModal && (
+        <CreateBidModal
+          modal={createBidModal}
+          toggleModal={toggleCreateBidModal}
+          selectedProject={{
+            _id: params.projectId,
+            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
+            bidType: params.bidType.split('-')[1].toUpperCase(),
+          }}
+        />
+      )}
       {bidDetailsIsLoading ? (
         <ComponentSpinner className="mt-5" />
       ) : (
@@ -581,14 +614,16 @@ const FixedSimpleMilestoneView = () => {
                         {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
                       </div>
                     </Col>
-                    <Col sm="12" md="12" lg="4" className="d-flex justify-content-end me-1">
-                      <div className="me-5">
-                        <Label className="form-label">Estimated Duration</Label>
-                        <p className="fw-bold font-medium-1 text-end mt-50">{totalDuration}w</p>
+                    <Col sm="12" md="12" lg="8" className="d-flex justify-content-end me-1">
+                      <div className="me-4">
+                        <Label className="form-label m-0">Estimated Duration</Label>
+                        <p className="fw-bold font-medium-1 text-end mt-50 mb-0">{totalDuration}w</p>
                       </div>
-                      <div>
+                      <div
+                        className={bidData?.is_bid_type_changeable ? 'me-4 custom-cost-margin' : 'custom-cost-margin'}
+                      >
                         <div className="d-flex align-items-center m-0">
-                          <Label className="form-label">Fixed Cost</Label>
+                          <Label className="form-label m-0">Fixed Cost</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
                           <UncontrolledTooltip placement="top" target="fixed-info">
                             <p className="m-0">Predetermined project cost fixed by the client</p>
@@ -607,6 +642,24 @@ const FixedSimpleMilestoneView = () => {
                           </p>
                         )}
                       </div>
+                      {bidData?.is_bid_type_changeable && (
+                        <div>
+                          <Label className="form-label m-0">Bid Type</Label>
+                          <div className="d-flex align-items-center custom-cost-margin">
+                            <p className="fw-bold font-medium-1 mb-0 mt-25">
+                              {capitalize(params.bidType.split('-')[1])} Flow
+                            </p>
+                            <ChangeBidTypeButton
+                              className="d-flex align-items-center cursor-pointer ms-1"
+                              onClick={toggleChangeBidTypeConfirmationModal}
+                            >
+                              <div className="change-bid-type-icon">
+                                <Edit size={16} color={theme.activeNavPillText} />
+                              </div>
+                            </ChangeBidTypeButton>
+                          </div>
+                        </div>
+                      )}
                     </Col>
                   </Row>
                 </CardBody>
