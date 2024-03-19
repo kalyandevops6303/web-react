@@ -91,7 +91,7 @@ const SubmissionHistory = ({ selectedMilestone }) => {
             fileKey: file?.file_key || '',
             fileName: file?.file_name || '',
             fileSize: file?.size || '',
-            urlName: file?.url ? file?.description : '',
+            urlName: file?.url || '',
             url: file?.url || '',
           },
         },
