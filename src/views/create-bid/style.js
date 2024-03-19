@@ -316,6 +316,22 @@ const MilestoneSectionWrapper = styled.div`
   .custom-cost-margin {
     margin-top: 2px;
   }
+
+  .input-group-disabled {
+    background-color: ${theme.inputDisabledBg} !important;
+
+    span {
+      background-color: ${theme.inputDisabledBg} !important;
+    }
+
+    .form-control:disabled {
+      background-color: ${theme.inputDisabledBg} !important;
+    }
+
+    .form-control[readonly] {
+      opacity: 1 !important;
+    }
+  }
 `;
 
 const PreviewSectionWrapper = styled.div`

@@ -73,6 +73,7 @@ const AdvanceTeamView = () => {
     watch,
     setValue,
     getValues,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -267,6 +268,7 @@ const AdvanceTeamView = () => {
         });
 
         setValue('projectRolesDetails', data, { shouldValidate: true });
+        trigger();
       }
     }
   };
@@ -375,7 +377,7 @@ const AdvanceTeamView = () => {
 
               {fields.map((item, index) => (
                 <>
-                  <Row key={item.id} className="mb-1 d-flex align-items-center">
+                  <Row key={item.id} className="mb-1 d-flex align-items-top">
                     <Col sm="12" md="5" lg="3">
                       <Controller
                         id={`projectRolesDetails.${index}.role`}
