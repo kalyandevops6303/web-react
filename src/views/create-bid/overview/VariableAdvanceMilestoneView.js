@@ -577,6 +577,7 @@ const VariableAdvanceMilestoneView = () => {
         }));
 
         setValue('milestones', reqData, { shouldValidate: true });
+        trigger('milestones');
       } else if (res?.workers?.length > 0) {
         const reqData = [
           {
@@ -879,7 +880,7 @@ const VariableAdvanceMilestoneView = () => {
                                       render={() => (
                                         <div>
                                           {milestone.workers.map((worker, workerIndex) => (
-                                            <Row className="mb-1 d-flex align-items-center" key={worker.role}>
+                                            <Row className="mb-1 d-flex align-items-top" key={worker.role}>
                                               <Col sm="12" md="6" lg="5">
                                                 <Controller
                                                   id={`milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`}
@@ -964,9 +965,20 @@ const VariableAdvanceMilestoneView = () => {
                                                         const isInteger = Number.isInteger(+durationValue);
 
                                                         return (
-                                                          <InputGroup className="input-group-merge">
+                                                          <InputGroup
+                                                            className={`input-group-merge ${
+                                                              !milestonesFields[milestoneIndex].workers[workerIndex]
+                                                                .isChecked
+                                                                ? 'input-group-disabled'
+                                                                : ''
+                                                            }`}
+                                                          >
                                                             <Input
                                                               {...field}
+                                                              disabled={
+                                                                !milestonesFields[milestoneIndex].workers[workerIndex]
+                                                                  .isChecked
+                                                              }
                                                               placeholder="0w"
                                                               type="number"
                                                               min={0}
@@ -1027,9 +1039,20 @@ const VariableAdvanceMilestoneView = () => {
                                                         true
                                                       }
                                                       render={({ field }) => (
-                                                        <InputGroup className="input-group-merge">
+                                                        <InputGroup
+                                                          className={`input-group-merge ${
+                                                            !milestonesFields[milestoneIndex].workers[workerIndex]
+                                                              .isChecked
+                                                              ? 'input-group-disabled'
+                                                              : ''
+                                                          }`}
+                                                        >
                                                           <Input
                                                             {...field}
+                                                            disabled={
+                                                              !milestonesFields[milestoneIndex].workers[workerIndex]
+                                                                .isChecked
+                                                            }
                                                             placeholder="0h"
                                                             type="number"
                                                             min={0}
