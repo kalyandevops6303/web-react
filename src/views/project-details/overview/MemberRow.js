@@ -52,12 +52,14 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
 
               <div className="me-4">
                 <Rating
-                  initialRating={3}
+                  initialRating={data?.rating || 0}
                   emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
                   fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
                   readonly
                 />
-                <CardText className="mt-25 font-small-3 project-count">0 Projects</CardText>
+                <CardText className="mt-25 font-small-3 project-count">
+                  {data?.projects_worked_on_count || 0} Projects
+                </CardText>
               </div>
 
               <div className="me-2">
