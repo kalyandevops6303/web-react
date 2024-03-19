@@ -52,6 +52,10 @@ function TrumioChat({ authToken, targetId, targetType = 'user', style, milestone
     // Ensures that the CometChat is initialised and the user is loggedIn before fetching the messages
     await CometChat.getLoggedinUser();
     if (milestoneAttachment) {
+      if(milestoneAttachment?.artifact?.urlName==='' && milestoneAttachment?.artifact?.url!=='') {
+        milestoneAttachment.artifact.urlName = milestoneAttachment?.artifact?.url;
+      }
+
       let isMilestoneAttachmentAlreadyLogged = await isMilestoneSubmissionExists(
         milestoneAttachment.uid,
         milestoneAttachment.milestone.projectGroupId,
