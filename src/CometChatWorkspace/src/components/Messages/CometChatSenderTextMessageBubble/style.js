@@ -230,7 +230,6 @@ export const milestoneContainerStyle = () => {
     // maxWidth: '330px',
     height: '130px',
     margin: '13px',
-    cursor: 'pointer',
   };
 };
 
@@ -238,6 +237,7 @@ export const milestoneHeaderStyle = () => {
   return {
     padding: '10px 20px',
     position: 'relative',
+    cursor: 'pointer',
   };
 };
 
@@ -266,6 +266,7 @@ export const milestoneAttachmentTileStyle = () => {
     backgroundColor: '#fff',
     padding: '10px',
     display: 'flex',
+    cursor: 'pointer',
   };
 };
 

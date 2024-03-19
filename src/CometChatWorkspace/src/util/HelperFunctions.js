@@ -68,6 +68,9 @@ export const getFileIcon = (fileName) => {
 };
 
 export const convertFileSize = (fileSizeBytes) => {
+  if(!fileSizeBytes) {
+    return '';
+  }
   // Define suffixes for different file sizes
   const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
 
@@ -79,7 +82,13 @@ export const convertFileSize = (fileSizeBytes) => {
   }
 
   // Format the file size with the appropriate suffix
-  return (fileSizeBytes?.toFixed(2) || '0') + ' ' + suffixes[suffixIndex];
+  let res = '';
+  try {
+    res = (fileSizeBytes?.toFixed(2) || '0') + ' ' + suffixes[suffixIndex];
+  } catch (error) {
+    res = '0 B';
+  }
+  return res;
 };
 
 export const generateAvatar = (generator, data) => {
@@ -115,4 +124,45 @@ const stringToColour = function (str) {
     colour += ('00' + value.toString(16)).substr(-2);
   }
   return colour;
+};
+
+export const downloadFile = async ({ data, file_name }) => {
+  // Replace 'your_file_url' with the actual URL of the file you want to download
+  const fileUrl = data?.download_url;
+  try {
+    // Fetch the file using the URL
+    const response = await fetch(fileUrl);
+    const blob = await response.blob();
+    // Create a blob URL for the file
+    const blobUrl = URL.createObjectURL(blob);
+    // Create a hidden anchor element
+    // eslint-disable-next-line no-undef
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    // Set the href attribute to the blob URL
+    a.href = blobUrl;
+    // Set the download attribute with the extracted file name
+    a.download = file_name || data?.file_name;
+    // Append the anchor element to the document
+    // eslint-disable-next-line no-undef
+    document.body.appendChild(a);
+    // Trigger a click on the anchor element to start the download
+    a.click();
+    // Remove the anchor element and revoke the blob URL from the document
+    // eslint-disable-next-line no-undef
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Error downloading the file:', error);
+  }
+};
+
+export const handleLinkOpen = (URL) => {
+  if (URL && (URL.startsWith('http://') || URL.startsWith('https://'))) {
+    // eslint-disable-next-line no-undef
+    window.open(URL, '_blank');
+  } else {
+    // eslint-disable-next-line no-undef
+    window.open(`https://${URL}`, '_blank');
+  }
 };
