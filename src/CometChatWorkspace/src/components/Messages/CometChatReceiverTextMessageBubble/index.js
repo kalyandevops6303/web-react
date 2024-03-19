@@ -247,9 +247,9 @@ class CometChatReceiverTextMessageBubble extends React.Component {
     }
   };
 
-  navigateToMilestonePage = () => {
-    window.open(this.props.message?.metadata?.milestoneAttachment?.milestone?.url, '_blank');
-  };
+  // navigateToMilestonePage = () => {
+  //   window.open(this.props.message?.metadata?.milestoneAttachment?.milestone?.url, '_blank');
+  // };
 
   handleMilestoneFileClick = async () => {
     this.setState({
@@ -336,7 +336,7 @@ class CometChatReceiverTextMessageBubble extends React.Component {
     let milestoneMessageComponent = (
       <div>
         <div css={milestoneContainerStyle()} className="milestone__container">
-          <div onClick={this.navigateToMilestonePage} css={milestoneHeaderStyle()} className="milestone__header">
+          <div css={milestoneHeaderStyle()} className="milestone__header">
             <div css={milestoneTitleStyle()} className="milestone__title">
               {this.props.message?.metadata?.milestoneAttachment?.milestone?.title || 'Err'}
             </div>
