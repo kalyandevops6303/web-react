@@ -247,7 +247,7 @@ class CometChatSenderTextMessageBubble extends React.Component {
   };
 
   navigateToMilestonePage = () => {
-    handleLinkOpen(this.props.message?.metadata?.milestoneAttachment?.milestone?.url);
+    window.open(this.props.message?.metadata?.milestoneAttachment?.milestone?.url, '_blank');
   };
 
   handleMilestoneFileClick = async () => {
