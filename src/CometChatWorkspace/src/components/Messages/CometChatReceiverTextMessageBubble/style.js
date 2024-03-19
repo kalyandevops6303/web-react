@@ -230,7 +230,6 @@ export const milestoneHeaderStyle = () => {
   return {
     padding: '10px 20px',
     position: 'relative',
-    cursor: 'pointer',
   };
 };
 
