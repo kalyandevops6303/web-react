@@ -10,16 +10,16 @@ import LeftSidebarProfile from './overview/LeftSidebarProfile';
 import UserBio from './overview/UserBio';
 import RecentProjects from './overview/RecentProjects';
 import Reviews from './overview/Reviews';
-import { getProfile } from '../../redux/actions/profileActions';
+import { getProfile, getPublicTeamMembers, getRecentProjects, getReview } from '../../redux/actions/profileActions';
 import { selectCurrentProfile, selectError, selectLoading } from '../../redux/selectors/profileSelectors';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { clearData, makeTeamMemberSuccess } from '../../redux/reducers/profile';
 import Error from '../Error';
 import { userTypes } from '../../utility/constants/Constant';
-import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import { selectAuthUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import AcceptClubInviationModal from '../modals/AcceptClubInviationModal';
 import DeclineClubInvitaionModal from '../modals/DeclineClubInvitationModal';
-import { updateInvitation } from '../../redux/actions/dashboardActions';
+import { getProfilePercentage, getTeamProfilePercentage, updateInvitation } from '../../redux/actions/dashboardActions';
 import { getRequestStatusSuccess } from '../../redux/reducers/inviteTalent';
 import DetailsHeader from './overview/DetailsHeader';
 import DetailsCTAHeader from './overview/DetailsCTAHeader';
@@ -31,6 +31,7 @@ const UserDetails = () => {
   const dispatch = useDispatch();
   const param = useParams();
   const userData = useSelector(selectAuthUserData);
+  const userDataSelector = useSelector(selectUserData);
   const requestStatusData = useSelector((state) => state.inviteTalent.getRequestStatus);
 
   const [acceptInvitationModal, setAcceptInvitationModal] = useState(null);
@@ -44,6 +45,12 @@ const UserDetails = () => {
     setPublicTeamMembersListingModal(!publicTeamMembersListingModal);
   };
 
+  const isClient = param?.userType.toUpperCase() === userTypes.client;
+  const isTalentView = param?.userType.toUpperCase() === userTypes.talent;
+  const isTeamView = param?.userType.toUpperCase() === userTypes.team;
+  const isClubView = param?.userType.toUpperCase() === userTypes.club;
+  const showProfilePercent = param?.userId === userDataSelector?._id;
+
   const isEditable = userData?._id === param?.userId;
   useEffect(() => {
     dispatch(clearData());
@@ -51,6 +58,8 @@ const UserDetails = () => {
 
     // eslint-disable-next-line no-undef
     window?.scrollTo(0, 0);
+
+    // to fetch entity's profile data
     dispatch(
       getProfile({
         id: param?.userId,
@@ -59,12 +68,40 @@ const UserDetails = () => {
         currentUserType: userData?.user_type,
       }),
     );
-  }, []);
 
-  const isClient = param?.userType.toUpperCase() === userTypes.client;
-  const isTalentView = param?.userType.toUpperCase() === userTypes.talent;
-  const isTeamView = param?.userType.toUpperCase() === userTypes.team;
-  const isClubView = param?.userType.toUpperCase() === userTypes.club;
+    // to fetch entity's recent projects data
+    dispatch(
+      getRecentProjects({
+        user_id: param?.userId,
+        entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+        metadata: { page: 1, page_size: 10 },
+      }),
+    );
+
+    // to fetch entity's reviews data
+    dispatch(
+      getReview({
+        user_id: param?.userId,
+        entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
+        metadata: { page: 1, page_size: 10 },
+      }),
+    );
+
+    // to fetch entity's profile percentage data if showProfilePercent is true
+    if (showProfilePercent) {
+      if (isTalentView || isClient) {
+        dispatch(getProfilePercentage());
+      }
+      if (isTeamView || isClubView) {
+        dispatch(getTeamProfilePercentage());
+      }
+    }
+
+    // to fetch TEAM/CLUB members list data
+    if (isTeamView || isClubView) {
+      dispatch(getPublicTeamMembers({ teamId: param?.userId, page: 1, pageSize: 10, oldData: [] }));
+    }
+  }, []);
 
   const currentProfile = useSelector(selectCurrentProfile);
   const loading = useSelector(selectLoading);

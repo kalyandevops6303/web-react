@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -14,10 +14,6 @@ const MembersListingCard = ({ toggleModal, teamId, publicTeamMembersListingModal
 
   const publicTeamMembersData = useSelector(publicTeamMembers);
   const publicTeamMembersIsLoading = useSelector(publicTeamMembersLoading);
-
-  useEffect(() => {
-    dispatch(getPublicTeamMembers({ teamId, page: 1, pageSize: 10, oldData: [] }));
-  }, []);
 
   const loadNewMembers = () => {
     dispatch(

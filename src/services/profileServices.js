@@ -30,7 +30,7 @@ const getReviewService = ({ user_id, entity, metadata }) =>
 const reportService = (data) => DataService.post(`${API.profile.report}`, data);
 
 const publicTeamMembersService = (teamId, page, pageSize) =>
-  DataService.get(`${API.profile.publicTeamMembers}?team_id=${teamId}&page=${page}&page_size=${pageSize}`);
+  DataService.get(`${API.profile.publicTeamMembers}?global_team_id=${teamId}&page=${page}&page_size=${pageSize}`);
 
 export {
   makeFavTeamService,

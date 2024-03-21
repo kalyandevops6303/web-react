@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -11,9 +11,7 @@ import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
 import DribbleIcon from '@src/assets/images/dribble.png';
 import BehanceIcon from '@src/assets/images/behance.png';
-
 import Avatar from '@components/avatar';
-
 import Rating from 'react-rating';
 import { Download, GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
 import { ActionButtonWrapper, DownloadIconContainer, LeftSidebarProfileWrapper } from './style';
@@ -25,11 +23,7 @@ import { downloadFile, giveProgressBarColorClassName, returnFormattedRating } fr
 import { CustomBadge } from '../../styled';
 import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
-import {
-  getDownloadUrl,
-  getProfilePercentage,
-  getTeamProfilePercentage,
-} from '../../../redux/actions/dashboardActions';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -90,17 +84,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const onDownloadResumeUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
   };
-
-  useEffect(() => {
-    if (showProfilePercent) {
-      if (isTalentView || isClient) {
-        dispatch(getProfilePercentage());
-      }
-      if (isTeamView) {
-        dispatch(getTeamProfilePercentage());
-      }
-    }
-  }, []);
 
   return (
     <LeftSidebarProfileWrapper>
