@@ -88,7 +88,7 @@ const InviteTeamMemberModal = ({
   const isTeamMemberForInviteLoading = useSelector(teamMemberForInviteLoading);
 
   const [activeTab, setTabActive] = useState(tabNames.favourite);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(null);
   const userData = useSelector(selectUserData);
 
   const toggleTabs = (tab) => {
@@ -149,17 +149,30 @@ const InviteTeamMemberModal = ({
   };
 
   useEffect(() => {
-    let delayDebounceFn = null;
-
-    delayDebounceFn = setTimeout(() => {
-      dispatch(getBestTalents(projectId, searchValue, 1, 10, []));
+    if (activeTab === tabNames.favourite) {
       dispatch(getFavoriteTalents(projectId, searchValue, 1, 10, []));
-      dispatch(getAlmaMaterTalents(projectId, searchValue, 1, 10, []));
-      if (userData?.user_type !== userTypes.client && projectId) {
-        dispatch(getTeamMemberForInvite(projectId, searchValue, 1, 10, []));
-      }
-    }, 500);
+    }
+  }, []);
 
+  useEffect(() => {
+    let delayDebounceFn = null;
+    if (searchValue !== null) {
+      delayDebounceFn = setTimeout(() => {
+        if (activeTab === tabNames.favourite) {
+          dispatch(getFavoriteTalents(projectId, searchValue, 1, 10, []));
+        }
+        if (activeTab === tabNames.recommended) {
+          dispatch(getBestTalents(projectId, searchValue, 1, 10, []));
+        }
+        if (activeTab === tabNames.almaMater) {
+          dispatch(getAlmaMaterTalents(projectId, searchValue, 1, 10, []));
+        }
+
+        if (userData?.user_type !== userTypes.client && projectId && activeTab === tabNames.teamMember) {
+          dispatch(getTeamMemberForInvite(projectId, searchValue, 1, 10, []));
+        }
+      }, 500);
+    }
     return () => clearTimeout(delayDebounceFn);
   }, [searchValue]);
 
@@ -302,6 +315,7 @@ const InviteTeamMemberModal = ({
                     active={activeTab === tabNames.favourite}
                     onClick={() => {
                       toggleTabs(tabNames.favourite);
+                      dispatch(getFavoriteTalents(projectId, searchValue, 1, 10, []));
                     }}
                   >
                     Favorite Talent
@@ -312,6 +326,7 @@ const InviteTeamMemberModal = ({
                     active={activeTab === tabNames.recommended}
                     onClick={() => {
                       toggleTabs(tabNames.recommended);
+                      dispatch(getBestTalents(projectId, searchValue, 1, 10, []));
                     }}
                   >
                     Recommended Talent
@@ -322,6 +337,7 @@ const InviteTeamMemberModal = ({
                     active={activeTab === tabNames.almaMater}
                     onClick={() => {
                       toggleTabs(tabNames.almaMater);
+                      dispatch(getAlmaMaterTalents(projectId, searchValue, 1, 10, []));
                     }}
                   >
                     Alma Mater
@@ -334,6 +350,13 @@ const InviteTeamMemberModal = ({
                       active={activeTab === tabNames.teamMember}
                       onClick={() => {
                         toggleTabs(tabNames.teamMember);
+                        if (
+                          userData?.user_type !== userTypes.client &&
+                          projectId &&
+                          activeTab === tabNames.teamMember
+                        ) {
+                          dispatch(getTeamMemberForInvite(projectId, searchValue, 1, 10, []));
+                        }
                       }}
                     >
                       Team Member

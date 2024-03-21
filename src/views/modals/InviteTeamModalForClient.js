@@ -75,7 +75,7 @@ const InviteTeamModalForClient = ({
   const isFavoriteTeamsLoading = useSelector(favoriteTeamsLoading);
 
   const [activeTab, setTabActive] = useState(tabNames.favourite);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(null);
 
   const toggleTabs = (tab) => {
     if (activeTab !== tab) {
@@ -121,16 +121,24 @@ const InviteTeamModalForClient = ({
       ),
     );
   };
-
+  useEffect(() => {
+    dispatch(getFavoriteTeams(param?.projectId, searchValue, 1, 10, []));
+  }, []);
   useEffect(() => {
     let delayDebounceFn = null;
-
-    delayDebounceFn = setTimeout(() => {
-      dispatch(getBestTalents(param?.projectId, searchValue, 1, 10, []));
-      dispatch(getFavoriteTeams(param?.projectId, searchValue, 1, 10, []));
-      dispatch(getAlmaMaterTalents(param?.projectId, searchValue, 1, 10, []));
-    }, 500);
-
+    if (searchValue !== null) {
+      delayDebounceFn = setTimeout(() => {
+        if (activeTab === tabNames.favourite) {
+          dispatch(getFavoriteTeams(param?.projectId, searchValue, 1, 10, []));
+        }
+        if (activeTab === tabNames.recommended) {
+          dispatch(getBestTalents(param?.projectId, searchValue, 1, 10, []));
+        }
+        if (activeTab === tabNames.almaMater) {
+          dispatch(getAlmaMaterTalents(param?.projectId, searchValue, 1, 10, []));
+        }
+      }, 500);
+    }
     return () => clearTimeout(delayDebounceFn);
   }, [searchValue]);
 
@@ -268,6 +276,7 @@ const InviteTeamModalForClient = ({
                     active={activeTab === tabNames.favourite}
                     onClick={() => {
                       toggleTabs(tabNames.favourite);
+                      dispatch(getFavoriteTeams(param?.projectId, searchValue, 1, 10, []));
                     }}
                   >
                     Favorite Teams
@@ -278,6 +287,7 @@ const InviteTeamModalForClient = ({
                     active={activeTab === tabNames.recommended}
                     onClick={() => {
                       toggleTabs(tabNames.recommended);
+                      dispatch(getBestTalents(param?.projectId, searchValue, 1, 10, []));
                     }}
                   >
                     Recommended Talent
@@ -288,6 +298,7 @@ const InviteTeamModalForClient = ({
                     active={activeTab === tabNames.almaMater}
                     onClick={() => {
                       toggleTabs(tabNames.almaMater);
+                      dispatch(getAlmaMaterTalents(param?.projectId, searchValue, 1, 10, []));
                     }}
                   >
                     Alma Mater
