@@ -34,12 +34,13 @@ const Alerts = () => {
 
   useEffect(() => {
     dispatch(getAlertsNotifications({ priority: [1, 2], page: 1, pageSize: 4, oldData: [] }));
+
     if (userDetailsData?.user_type === userTypes.team && getTeamId('team_id')) {
       dispatch(getTeamProfilePercentage());
     } else {
       dispatch(getProfilePercentage());
     }
-  }, [userDetailsData]);
+  }, []);
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
