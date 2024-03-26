@@ -22,7 +22,8 @@ import * as enums from '../../../util/enums.js';
 
 import Translator from '../../../resources/localization/translator';
 import { theme } from '../../../resources/theme';
-import { getUserColor } from '../../../util/HelperFunctions';
+import { convertFileSize, downloadFile, getFileIcon, getUserColor, handleLinkOpen } from '../../../util/HelperFunctions';
+import { downloadUrlService } from '../../../../../services/dashboardServices.js';
 
 import {
   messageContainerStyle,
@@ -38,6 +39,16 @@ import {
   messageReactionsWrapperStyle,
   messageContentWrapperStyle,
   messageInfoPartContainerStyle,
+  milestoneContainerStyle,
+  milestoneHeaderStyle,
+  milestoneTitleStyle,
+  milestoneBodyStyle,
+  milestoneAttachmentTileStyle,
+  milestoneAttachmentTileAvatarContainerStyle,
+  milestoneAttachmentTileAvatarStyle,
+  milestoneAttachmentTileBodyStyle,
+  milestoneAttachmentFileNameStyle,
+  milestoneAttachmentFileSizeStyle,
 } from './style';
 
 class CometChatSenderTextMessageBubble extends React.Component {
@@ -52,6 +63,7 @@ class CometChatSenderTextMessageBubble extends React.Component {
       translatedMessage: '',
       isHovering: false,
       enableLargerSizeEmojis: false,
+      isMilestoneFileLoading: false,
     };
   }
 
@@ -234,6 +246,45 @@ class CometChatSenderTextMessageBubble extends React.Component {
     }
   };
 
+  // navigateToMilestonePage = () => {
+  //   window.open(this.props.message?.metadata?.milestoneAttachment?.milestone?.url, '_blank');
+  // };
+
+  handleMilestoneFileClick = async () => {
+    this.setState({
+      isMilestoneFileLoading: true,
+    });
+    console.log("Start Downloading...")
+    const res = await downloadUrlService(this.props.message?.metadata?.milestoneAttachment?.artifact?.fileKey);
+    await downloadFile({ data: { download_url: res.data.data }, file_name: this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName });
+    this.setState({
+      isMilestoneFileLoading: false,
+    });
+    console.log("Downloaded");
+  }
+
+  handleMilestoneLinkClick = () => {
+    handleLinkOpen(this.props.message?.metadata?.milestoneAttachment?.artifact?.url);
+  }
+
+  handleMilestoneTileClick = () => {
+    try {
+      if (this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS') {
+        this.handleMilestoneFileClick();
+        console.log("Docs")
+      } else if (this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'LINKS') {
+        this.handleMilestoneLinkClick();
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error(error);
+      this.setState({
+        isMilestoneFileLoading: false,
+      });
+    }
+  }
+
   render() {
     let avatar = null,
       name = null;
@@ -280,12 +331,91 @@ class CometChatSenderTextMessageBubble extends React.Component {
       toolTipView = <CometChatMessageActions message={this.props.message} actionGenerated={this.actionHandler} />;
     }
 
+    let milestoneMessageComponent = (
+      <div>
+        <div css={milestoneContainerStyle()} className="milestone__container">
+          <div css={milestoneHeaderStyle()} className="milestone__header">
+            <div css={milestoneTitleStyle()} className="milestone__title">
+              {this.props.message?.metadata?.milestoneAttachment?.milestone?.title || 'Err'}
+            </div>
+          </div>
+          <div css={milestoneBodyStyle()} className="milestone__body">
+            <div onClick={this.handleMilestoneTileClick} css={milestoneAttachmentTileStyle()} className="attachment__tile">
+              {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS' && (
+                <div css={milestoneAttachmentTileAvatarContainerStyle()} className="attachment__tile__avatar">
+                  <img
+                    css={milestoneAttachmentTileAvatarStyle()}
+                    src={getFileIcon(this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName)}
+                  />
+                </div>
+              )}
+              <div css={milestoneAttachmentTileBodyStyle()} className="attachment__tile__body">
+                {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS' && (
+                  <div css={milestoneAttachmentFileNameStyle()} className="attachment__filename">
+                    {
+                      this.state.isMilestoneFileLoading ? 'Downloading...' : (
+                        (this.props.fileCharLimit &&
+                          (this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName.length >
+                            this.props.fileCharLimit)) ? (this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName
+                              .slice(0, this.props.fileCharLimit) + '...') : (this.props.message?.metadata?.milestoneAttachment?.artifact?.fileName))
+                    }
+                  </div>
+                )}
+                {this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'LINKS' && (
+                  <div
+                    css={milestoneAttachmentFileNameStyle()}
+                    className="attachment__filename"
+                  >
+                    {this.props.message?.metadata?.milestoneAttachment?.artifact?.urlName}
+                  </div>
+                )}
+                {
+                  this.props.message?.metadata?.milestoneAttachment?.artifact?.type === 'DOCUMENTS' && (
+                    <div css={milestoneAttachmentFileSizeStyle()} className="attachment__filesize">
+                      {convertFileSize(this.props.message?.metadata?.milestoneAttachment?.artifact?.fileSize)}
+                    </div>
+                  )
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+        {messageText}
+      </div>
+    );
+
     return (
+      // <div
+      // 	css={messageContainerStyle()}
+      // 	className='sender__message__container message__text'
+      // 	onMouseEnter={this.handleMouseHover}
+      // 	onMouseLeave={this.handleMouseHover}
+      // >
+      // 	{toolTipView}
+      // 	<div
+      // 		css={messageWrapperStyle()}
+      // 		className='message__wrapper'
+      // 		ref={this.messageTextRef}
+      // 	>
+      // 		{messageText}
+      // 	</div>
+
+      // 	{messageReactions}
+
+      // 	<div css={messageInfoWrapperStyle()} className='message__info__wrapper'>
+      // 		<CometChatThreadedMessageReplyCount
+      // 			message={this.props.message}
+      // 			actionGenerated={this.props.actionGenerated}
+      // 		/>
+      // 		<CometChatReadReceipt message={this.props.message} />
+      // 	</div>
+      // </div>
       <div
         css={messageContainerStyle()}
         className="sender__message__container message__text"
         onMouseEnter={this.handleMouseHover}
         onMouseLeave={this.handleMouseHover}
+        ref={this.props.messageComp}
       >
         <div css={messageWrapperStyle()} className="message__wrapper">
           {avatar}
@@ -293,9 +423,16 @@ class CometChatSenderTextMessageBubble extends React.Component {
             <div css={messageContentWrapperStyle()} className="message__content__wrapper">
               {name}
               {toolTipView}
-              <div css={messageTxtContainerStyle()} className="message__text__container">
+              {/* <div css={messageTxtContainerStyle()} className="message__text__container">
                 {messageText}
-              </div>
+              </div> */}
+              {this.props.message?.metadata?.milestoneAttachment ? (
+                milestoneMessageComponent
+              ) : (
+                <div css={messageTxtContainerStyle()} className="message__text__container">
+                  {messageText}
+                </div>
+              )}
             </div>
 
             <div css={messageInfoWrapperStyle()} className="message__info__wrapper">
@@ -318,7 +455,7 @@ class CometChatSenderTextMessageBubble extends React.Component {
 // Specifies the default values for props:
 CometChatSenderTextMessageBubble.defaultProps = {
   theme: theme,
-  actionGenerated: () => {},
+  actionGenerated: () => { },
 };
 
 CometChatSenderTextMessageBubble.propTypes = {

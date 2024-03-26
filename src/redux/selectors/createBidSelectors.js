@@ -25,3 +25,5 @@ export const setWorkersLoading = createSelector(createBidSelector, (createBid) =
 export const setMilestonesLoading = createSelector(createBidSelector, (createBid) => createBid.setMilestonesLoading);
 
 export const submitBidLoading = createSelector(createBidSelector, (createBid) => createBid.submitBidLoading);
+
+export const changeBidTypeLoading = createSelector(createBidSelector, (createBid) => createBid.changeBidTypeLoading);

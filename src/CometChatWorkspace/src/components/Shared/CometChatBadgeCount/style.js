@@ -1,16 +1,4 @@
 export const badgeStyle = (props) => {
-  let style = {};
-  if (props.mt !== undefined) {
-    style = {
-      marginTop: props.mt,
-    };
-  }
-  if (props.mr !== undefined) {
-    style = {
-      ...style,
-      marginRight: props.mr,
-    };
-  }
   return {
     display: 'block',
     fontSize: '12px',
@@ -25,6 +13,6 @@ export const badgeStyle = (props) => {
     padding: '1.5px',
     opacity: '1',
     transition: 'opacity .1s',
-    ...style,
+    marginRight: '5px',
   };
 };

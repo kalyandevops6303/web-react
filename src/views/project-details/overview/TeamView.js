@@ -134,7 +134,9 @@ const InvitedMemberComponent = () => {
                             fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
                             readonly
                           />
-                          <CardText className="mt-25 font-small-3 project-count">0 Projects</CardText>
+                          <CardText className="mt-25 font-small-3 project-count">
+                            {data?.send_to?.projects_worked_on_count || 0} Projects
+                          </CardText>
                         </div>
 
                         <div style={{ flex: '2' }} className="me-2">

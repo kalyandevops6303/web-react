@@ -40,6 +40,7 @@ import createIcon from './resources/createIcon.png';
 import { CometChatGroupDetails } from '../../Groups';
 import Translator from '../../../resources/localization/translator';
 import { CometChatSharedMediaView } from '../../Shared/CometChatSharedMediaView';
+import { generateAvatar } from '../../../util/HelperFunctions';
 
 class CustomGroupProfileSidebar extends React.Component {
   static contextType = CometChatContext;
@@ -72,7 +73,7 @@ class CustomGroupProfileSidebar extends React.Component {
       enableHideDeletedMessages: false,
       isHovered: false,
       isAvatarLoading: false,
-      groupAvatarSrc: this.props.data.avatar.props.group.icon,
+      groupAvatarSrc: null,
       isNameEditOn: false,
       groupName: this.props.data.avatar.props.group.name,
     };
@@ -97,6 +98,14 @@ class CustomGroupProfileSidebar extends React.Component {
     this.enableSendingOneOnOneMessage();
     this.enableSendingGroupMessage();
     this.enableHideDeletedMessages();
+
+    // generate avatar
+    const char = this.props.data.avatar.props.group.name.charAt(0).toUpperCase();
+    const avatarImage = generateAvatar(this.props.data.avatar.props.group.guid, char);
+
+    this.setState({
+      groupAvatarSrc: avatarImage,
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {

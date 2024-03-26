@@ -41,6 +41,7 @@ const DocumentsWrapper = styled.div`
 
 const TabWrapper = styled.div`
   /* Style the tab */
+  margin-top: 5rem;
   .tab {
     overflow: hidden;
     display: flex;
@@ -136,6 +137,77 @@ const TabWrapper = styled.div`
   .raise-dispute-btn:focus {
     background: none !important;
   }
+  .milestone-tab {
+    margin-top: 4rem;
+  }
 `;
 
-export { UserNameWrapper, DocumentsWrapper, TabWrapper };
+const StickyHeader = styled.div`
+  .fixed-head {
+    z-index: 20;
+    margin-top: -5.6rem;
+    padding-top: 1rem;
+    position: fixed;
+    width: 74%;
+    background: ${theme.bodyBgColor};
+    padding-bottom: 0.8rem;
+    padding-left: 0;
+    .inner-head {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 1.6rem;
+      .back {
+        padding-top: 0.5rem;
+      }
+    }
+  }
+  .details-card {
+    margin-top: 3.6rem;
+  }
+`;
+const MilestoneAccordionWrap = styled.div`
+  .accordion {
+    box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.06);
+    border-radius: 0.375rem;
+  }
+  .accordion-button {
+    background: ${theme.headerBackground};
+  }
+  .accordion-header {
+    padding: 0.5rem 1.2rem;
+    border-radius: 0.375rem;
+
+    background: ${theme.headerBackground};
+  }
+  .accordion-title {
+    font-size: 1.125rem;
+  }
+  .accordion-body {
+    border-radius: 0.375rem;
+
+    background: ${theme.headerBackground};
+    color: inherit;
+    padding: 0rem 2rem 2rem 2rem;
+  }
+  .scroll-wrap {
+    overflow-y: auto;
+    max-height: 420px;
+  }
+
+  .dispute-card {
+    margin-left: -0.2rem;
+    box-shadow: 0 4px 16px 0 rgba(34, 41, 47, 0.1);
+  }
+  .team-member-card {
+    margin-left: -0.2rem;
+    box-shadow: 0 4px 16px 0 rgba(34, 41, 47, 0.1);
+  }
+  .team-member-info {
+    background: ${theme.infoBannerBg};
+    p {
+      color: ${theme.activeNavPillText};
+    }
+    border-radius: 0.375rem;
+  }
+`;
+export { UserNameWrapper, DocumentsWrapper, TabWrapper, StickyHeader, MilestoneAccordionWrap };

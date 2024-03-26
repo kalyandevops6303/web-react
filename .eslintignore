@@ -4,4 +4,4 @@ build/
 public
 src/serviceWorker.js
 components
-src/CometChatWorkspace
+CometChatWorkspace

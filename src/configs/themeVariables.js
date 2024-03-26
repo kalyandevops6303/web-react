@@ -90,6 +90,8 @@ const lightGreenBg = 'rgba(40, 199, 111, 0.10);';
 const lighGreenColor = '#28C76F';
 const badgeIconOrange = '#EF8C18';
 const newTagColor = '#093682';
+const darkGreyBorderColor = '#C2C2C2';
+const inputDisabledBg = '#efefef';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -185,5 +187,7 @@ const theme = {
   lightGreenBg,
   badgeIconOrange,
   newTagColor,
+  darkGreyBorderColor,
+  inputDisabledBg,
 };
 export default theme;

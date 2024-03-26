@@ -278,11 +278,12 @@ const UserDropdown = ({ setNavBarLoading }) => {
                 {savedUserDetails?._id === userDetailsData?._id && <Check className="m-auto ms-3 me-0" size={14} />}
               </DropdownItem>
             )}
-            {teams?.map((team) => (
+            {teams?.map((team, index) => (
               <DropdownItem
                 className={`d-flex justify-content-between ${userDetailsData?._id === team?._id ? 'isActive' : ''}`} // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
                 onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
                 disabled={team?.club_status === clubStatus.DECLINED}
+                key={index}
               >
                 <section className="user-info-avatar d-flex align-items-center">
                   <Avatar img={team?.team_logo || avatar7} imgHeight="40" imgWidth="40" />

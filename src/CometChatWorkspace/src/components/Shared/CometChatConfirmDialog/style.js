@@ -89,6 +89,11 @@ export const confirmDialogContentNoteStyle = () => {
   };
 };
 
+// export const alertMessageStyle = () => {
+// 	return {
+// 		textAlign: "center",
+// 	};
+// };
 
 export const alertButtonStyle = (props) => {
   return {

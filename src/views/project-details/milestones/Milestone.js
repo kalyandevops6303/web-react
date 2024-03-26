@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import Proptypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 
 import MilestoneListing from './MilestoneListing';
-import MilestoneOverview from './MilestoneOverview';
 import { projectMilestonesService } from '../../../services/projectMilestoneService';
 import errorHandler from '../../../utility/errorHandler';
-import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 
-const Milestone = ({ setSelectedMilestone }) => {
-  const [selectedMilestoneIndex, setSelectedMilestoneIndex] = useState(null);
+const Milestone = () => {
   const [loading, setLoading] = useState(false);
-  const projectDetailsData = useSelector(projectDetails);
+  const param = useParams();
   const [milestonesData, setMilestonesData] = useState([]);
 
   const fetchProjectMilestones = async () => {
     setLoading(true);
     try {
-      const data = await projectMilestonesService(projectDetailsData._id).then((res) => res.data.data);
+      const data = await projectMilestonesService(param.projectId).then((res) => res.data.data);
       setMilestonesData(data);
       setLoading(false);
     } catch (error) {
@@ -28,36 +24,12 @@ const Milestone = ({ setSelectedMilestone }) => {
   };
 
   useEffect(() => {
-    setSelectedMilestone(selectedMilestoneIndex === null ? null : milestonesData[selectedMilestoneIndex]);
-  }, [selectedMilestoneIndex]);
+    fetchProjectMilestones();
+  }, []);
 
-  useEffect(() => {
-    if (projectDetailsData?._id && selectedMilestoneIndex === null) {
-      fetchProjectMilestones();
-    }
-  }, [projectDetailsData?._id, selectedMilestoneIndex]);
+  if (loading) return <ComponentSpinner />;
 
-  if (loading && typeof selectedMilestoneIndex !== 'number') return <ComponentSpinner />;
-
-  return (
-    <div>
-      {typeof selectedMilestoneIndex === 'number' ? (
-        <MilestoneOverview
-          fetchProjectMilestones={fetchProjectMilestones}
-          selectedMilestone={milestonesData[selectedMilestoneIndex]}
-          selectedMilestoneIndex={selectedMilestoneIndex}
-          setSelectedMilestoneIndex={setSelectedMilestoneIndex}
-          setSelectedMilestone={setSelectedMilestone}
-        />
-      ) : (
-        <MilestoneListing milestonesData={milestonesData} setSelectedMilestoneIndex={setSelectedMilestoneIndex} />
-      )}
-    </div>
-  );
-};
-
-Milestone.propTypes = {
-  setSelectedMilestone: Proptypes.func.isRequired,
+  return <MilestoneListing milestonesData={milestonesData} />;
 };
 
 export default Milestone;
