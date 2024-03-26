@@ -11,7 +11,7 @@ import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 
-const BaseInfoUI = ({ data }) => {
+const BaseInfoUI = ({ data, hideUserInfo }) => {
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
 
@@ -86,25 +86,29 @@ const BaseInfoUI = ({ data }) => {
           )}
         </div>
       </div>
-      <div className="d-flex mb-2 align-items-center">
-        <img
-          className="market-place-card-photo me-75"
-          src={data?.client?.image_uri?.length ? data?.client?.image_uri : defaultAvatar}
-          alt="avatar"
-        />
-        <div className="d-flex w-100 align-items-center">
-          <div className="flex-grow-1">
-            <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-              {data?.client?.first_name} {data?.client?.last_name}
-            </CardTitle>
-            <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
-          </div>
-          <div className="d-flex flex-grow-1">
-            <RatingBadge number={Math.round(data?.invitations_to?.rating ?? data?.client?.rating)} />
-            <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+      {!hideUserInfo && (
+        <div className="d-flex mb-2 align-items-center">
+          <img
+            className="market-place-card-photo me-75"
+            src={data?.client?.image_uri?.length ? data?.client?.image_uri : defaultAvatar}
+            alt="avatar"
+          />
+          <div className="d-flex w-100 align-items-center">
+            <div className="flex-grow-1">
+              <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
+                {data?.client?.first_name} {data?.client?.last_name}
+              </CardTitle>
+              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
+            </div>
+            <div className="d-flex flex-grow-1">
+              <RatingBadge number={Math.round(data?.invitations_to?.rating ?? data?.client?.rating)} />
+              <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                {data?.client?.projects_worked_on_count || 0} Projects
+              </CardText>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div>
         <BadgeGroup
           title="Skills"
@@ -125,9 +129,11 @@ const BaseInfoUI = ({ data }) => {
 
 BaseInfoUI.propTypes = {
   data: PropTypes.object,
+  hideUserInfo: PropTypes.bool,
 };
 
 BaseInfoUI.defaultProps = {
   data: {},
+  hideUserInfo: false,
 };
 export default BaseInfoUI;

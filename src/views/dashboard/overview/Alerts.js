@@ -222,7 +222,9 @@ const Alerts = () => {
               >
                 <Elevate key={item?._id}>
                   <CardHeader className="d-flex">
-                    <CardTitle tag="h4">{getStatusShortName(item?.title)}</CardTitle>
+                    <CardTitle className="w-65" tag="h4">
+                      {getStatusShortName(item?.title)}
+                    </CardTitle>
                     <p className="relative-time font-small-2 fw-light m-0 ms-50">
                       {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : ''}
                     </p>
