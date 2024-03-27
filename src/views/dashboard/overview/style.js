@@ -125,7 +125,7 @@ const AlertCardWrapper = styled(CardWrapper)`
     margin: auto;
   }
   .w-65 {
-    width: 70%;
+    width: 65%;
   }
 `;
 
