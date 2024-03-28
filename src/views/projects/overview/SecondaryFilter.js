@@ -22,6 +22,7 @@ import { userTypes } from '../../../utility/constants/Constant';
 import { clearData } from '../../../redux/reducers/project';
 import theme from '../../../configs/themeVariables';
 import { ResponsiveGrid } from '../../cards/style';
+import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 
 // eslint-disable-next-line react/prop-types
 const SecondaryFilters = ({ primaryFilter, userType }) => {
@@ -401,14 +402,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && (
-        <p className="font-medium-1 fw-bolder">
-          Search Results Found{' '}
-          {selectProjectMetaData?.total_records < 10
-            ? `0${selectProjectMetaData?.total_records}`
-            : selectProjectMetaData?.total_records}
-        </p>
-      )}
+      {!isLoading && <SearchResultsCount metaData={selectProjectMetaData} />}
 
       {isLoading ? (
         <ComponentSpinner />

@@ -14,6 +14,8 @@ import { userTypes } from '../../utility/constants/Constant';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
+  favUnfavError,
+  favUnfavReq,
   getProfileFailure,
   getProfileRequest,
   getProfileSuccess,
@@ -65,19 +67,21 @@ const getProfile =
 // eslint-disable-next-line import/prefer-default-export
 
 const makeFavourite = (id, user_type) => async (dispatch) => {
+  dispatch(favUnfavReq());
   try {
     await makeFavService(id, user_type);
     dispatch(makeFavSuccess(id));
   } catch (error) {
-    errorHandler(error);
+    errorHandler(error, favUnfavError);
   }
 };
 const removeFavourite = (id) => async (dispatch) => {
+  dispatch(favUnfavReq());
   try {
     await removeFavService({ user_id: id });
     dispatch(removeFavSuccess(id));
   } catch (error) {
-    errorHandler(error);
+    errorHandler(error, favUnfavError);
   }
 };
 

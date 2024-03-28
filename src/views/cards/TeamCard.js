@@ -19,11 +19,13 @@ import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { getReadType } from '../../utility/Utils';
 import { selectUserType } from '../../redux/selectors/authSelectors';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userType = useSelector(selectUserType);
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const users = [];
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
@@ -41,20 +43,24 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(
-      makeFav({
-        user_id: data?._id,
-        user_type: data?.user_type,
-        onSuccess: () => {},
-        onError: () => setIsFavorite(false),
-      }),
-    );
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(true);
+      dispatch(
+        makeFav({
+          user_id: data?._id,
+          user_type: data?.user_type,
+          onSuccess: () => {},
+          onError: () => setIsFavorite(false),
+        }),
+      );
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ team_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(false);
+      dispatch(removeFav({ team_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const giveStrokeColor = (percentage) => {

@@ -7,7 +7,7 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
 import AvatarGroup from '@components/avatar-group';
 import { Heart } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
@@ -16,6 +16,7 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { returnFormattedRating } from '../../utility/Utils';
 import { BidsReceivedWrapper, IconWrapper } from './style';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
   const project = data?.project;
@@ -23,18 +24,23 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const location = useLocation();
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(makeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(true);
+      dispatch(makeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(false);
+      dispatch(removeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const giveStrokeColor = (percentage) => {

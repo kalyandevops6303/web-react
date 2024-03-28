@@ -51,10 +51,10 @@ const LeftSidebarProfile = ({
   const showProfilePercent = param?.userId === userDataSelector?._id;
   const inJoinTeamLoading = useSelector((state) => state.inviteTalent.inviteTalentsLoading);
   const handleLike = () => {
-    dispatch(makeFavourite(data?.user_id || data?.team_id, data?.user_type));
+    dispatch(makeFavourite({ id: data?.user_id || data?.team_id, user_type: data?.user_type }));
   };
   const handleUnLike = () => {
-    dispatch(removeFavourite(data?.user_id || data?.team_id));
+    dispatch(removeFavourite({ id: data?.user_id || data?.team_id }));
   };
 
   const onEditClick = () => {

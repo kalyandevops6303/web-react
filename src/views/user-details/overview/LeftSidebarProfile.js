@@ -45,7 +45,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
   const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
-
+  const favUnfavLoading = useSelector((state) => state.currentProfile.favUnfavLoading);
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
@@ -123,10 +123,10 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   className="cursor-pointer d-flex ms-auto heart"
                   fill={theme.red}
                   stroke={theme.red}
-                  onClick={handleUnLike}
+                  onClick={favUnfavLoading ? null : handleUnLike}
                 />
               ) : (
-                <Heart className="cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
+                <Heart className="cursor-pointer d-flex ms-auto heart" onClick={favUnfavLoading ? null : handleLike} />
               ))}
           </div>
 

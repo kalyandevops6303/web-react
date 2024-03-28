@@ -4,26 +4,32 @@ import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
 import { Heart } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import BadgeGroup from '../../@core/components/badge-group';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const BaseInfoUI = ({ data, hideUserInfo }) => {
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(true);
+      dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(false);
+      dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const giveStrokeColor = (percentage) => {

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Calendar, CheckSquare, FileMinus, Layers, UserX } from 'react-feather';
+import { Calendar, CheckSquare, FileMinus, Layers, UserPlus, UserX } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
@@ -96,7 +96,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             isMarketPlaceTab
             title={selectCardData?.invited || 0}
             desc="Invited"
-            icon={<UserX height={20} />}
+            icon={<UserPlus height={20} />}
             color="light-red"
           />
         </Col>

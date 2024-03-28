@@ -551,10 +551,10 @@ const FixedAdvanceMilestoneView = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <>
-                    {renderFilePreview()}
-                    {file?.file?.name || file?.file?.file_name}
-                  </>
+                  <div className="d-flex align-items-center">
+                    <span>{renderFilePreview()}</span>
+                    <span>{file?.file?.name || file?.file?.file_name}</span>
+                  </div>
                 )}
               </div>
             </Col>

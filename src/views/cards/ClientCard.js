@@ -4,7 +4,7 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Heart, MapPin } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import Avatar from '@components/avatar';
 import hat from '@src/assets/images/hat.svg';
@@ -16,6 +16,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import TextToolTip from './TextToolTip';
 import { Elevate } from '../styled';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const giveStrokeColor = (percentage) => {
   if (percentage <= 40) {
@@ -29,6 +30,7 @@ const giveStrokeColor = (percentage) => {
 };
 const ClientCard = ({ isSearchPage, data, userType }) => {
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -56,20 +58,24 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(
-      makeFav({
-        user_id: data?.user_id,
-        user_type: data?.user_type,
-        onSuccess: () => {},
-        onError: () => setIsFavorite(false),
-      }),
-    );
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(true);
+      dispatch(
+        makeFav({
+          user_id: data?.user_id,
+          user_type: data?.user_type,
+          onSuccess: () => {},
+          onError: () => setIsFavorite(false),
+        }),
+      );
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(false);
+      dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const handleCard = () => {

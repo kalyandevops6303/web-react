@@ -1,7 +1,7 @@
 import { Card, CardBody, CardText, CardTitle, Badge } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import AvatarGroup from '@components/avatar-group';
 import hat from '@src/assets/images/hat.svg';
@@ -16,11 +16,14 @@ import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import { userTypes } from '../../utility/constants/Constant';
 import { Elevate } from '../styled';
 import NewTag from '../../@core/components/new-tag';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const ClubCard = ({ data, isSearchPage }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const users = [];
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
+
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
   data?.team_members?.map((user) =>
     users.push({
@@ -36,20 +39,24 @@ const ClubCard = ({ data, isSearchPage }) => {
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(
-      makeFav({
-        user_id: data?._id,
-        user_type: 'TEAM',
-        onSuccess: () => {},
-        onError: () => setIsFavorite(false),
-      }),
-    );
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(true);
+      dispatch(
+        makeFav({
+          user_id: data?._id,
+          user_type: 'TEAM',
+          onSuccess: () => {},
+          onError: () => setIsFavorite(false),
+        }),
+      );
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ team_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (isFavUnfavLoading === false) {
+      setIsFavorite(false);
+      dispatch(removeFav({ team_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const giveStrokeColor = (percentage) => {
