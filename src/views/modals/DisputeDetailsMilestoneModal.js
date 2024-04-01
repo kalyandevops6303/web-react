@@ -367,7 +367,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute })
           {status !== disputeStatuses.resolved && (
             <div className="d-flex justify-content-end align-items-center mt-2">
               <p className="text-decoration-underline fw-bold blue-btn mb-0 me-3 cursor-pointer" onClick={onDispute}>
-                Dispute Resolved
+                Resolve Dispute
               </p>
               <p
                 className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"

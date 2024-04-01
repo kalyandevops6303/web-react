@@ -28,7 +28,7 @@ const ConfirmContractModal = ({ docType, modalData, onAccept, modal, toggleModal
               </CardSubtitle>
 
               <CardText className="desc fw-light">
-                Are you sure you want to sign the {isContractView ? 'contract' : 'NDA'}
+                Are you sure you want to sign the {isContractView ? 'contract' : 'NDA'}?
               </CardText>
               <section className="d-flex gap-2 stats">
                 <div style={{ minWidth: '10rem' }}>

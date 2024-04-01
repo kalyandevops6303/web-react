@@ -35,6 +35,8 @@ import {
   extendValidityFailure,
   extendValidityRequest,
   extendValiditySuccess,
+  favUnfavError,
+  favUnfavReq,
   getBidInfoFailure,
   getBidInfoRequest,
   getBidInfoSuccess,
@@ -409,22 +411,28 @@ const updateContract =
     }
   };
 
-const makeFavourite = (id, user_type) => async (dispatch) => {
-  try {
-    await makeFavService(id, user_type);
-    dispatch(makeFavSuccess());
-  } catch (error) {
-    errorHandler(error);
-  }
-};
-const removeFavourite = (id) => async (dispatch) => {
-  try {
-    await removeFavService({ user_id: id });
-    dispatch(removeFavSuccess());
-  } catch (error) {
-    errorHandler(error);
-  }
-};
+const makeFavourite =
+  ({ id, user_type }) =>
+  async (dispatch) => {
+    dispatch(favUnfavReq());
+    try {
+      await makeFavService(id, user_type);
+      dispatch(makeFavSuccess());
+    } catch (error) {
+      errorHandler(error, favUnfavError);
+    }
+  };
+const removeFavourite =
+  ({ id }) =>
+  async (dispatch) => {
+    dispatch(favUnfavReq());
+    try {
+      await removeFavService({ user_id: id });
+      dispatch(removeFavSuccess());
+    } catch (error) {
+      errorHandler(error, favUnfavError);
+    }
+  };
 
 const getBidMilestone =
   ({ project_id, entity_id, onSuccess, onError }) =>

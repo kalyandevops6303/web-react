@@ -6,28 +6,34 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
 import AvatarGroup from '@components/avatar-group';
 import { Heart } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import theme from '../../configs/themeVariables';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { BidsReceivedWrapper, IconWrapper } from './style';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
   const project = data?.project;
   const [isFavorite, setIsFavorite] = useState(project?.is_favorite);
   const dispatch = useDispatch();
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(makeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    if (!isFavUnfavLoading) {
+      setIsFavorite(true);
+      dispatch(makeFav({ project_id: project?._id, onError: () => setIsFavorite(false) }));
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (!isFavUnfavLoading) {
+      setIsFavorite(false);
+      dispatch(removeFav({ project_id: project?._id, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const giveStrokeColor = (percentage) => {

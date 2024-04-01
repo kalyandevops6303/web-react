@@ -415,7 +415,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
                 className="text-decoration-underline fw-bold blue-btn mb-0 me-3 cursor-pointer"
                 onClick={() => setDisputeClosedModal(true)}
               >
-                Dispute Resolved
+                Resolve Dispute
               </p>
               <p
                 className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"

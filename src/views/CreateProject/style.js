@@ -217,6 +217,7 @@ export const RequirementsFormContainer = styled.div`
 `;
 
 export const DropzoneContainer = styled.div`
+  cursor: pointer;
   border: 2px dashed ${theme.inputBorder};
   margin-top: 4px;
 

@@ -43,6 +43,7 @@ import TeamCard from '../../cards/TeamCard';
 import ClientCard from '../../cards/ClientCard';
 import TalentCard from '../../cards/TalentCard';
 import { ResponsiveGrid } from '../../cards/style';
+import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -649,14 +650,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && (
-        <p className="font-medium-1 fw-bolder">
-          Search Results Found{' '}
-          {selectMarkeMetaData?.total_records < 10
-            ? `0${selectMarkeMetaData?.total_records}`
-            : selectMarkeMetaData?.total_records}
-        </p>
-      )}
+      {!isLoading && <SearchResultsCount metaData={selectMarkeMetaData} />}
 
       {isLoading ? (
         <ComponentSpinner />

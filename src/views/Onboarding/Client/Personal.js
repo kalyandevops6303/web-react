@@ -139,13 +139,10 @@ const Personal = () => {
     return true;
   };
 
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (file && isFileValid(file)) {
-      const thumbnail = URL.createObjectURL(file);
-      setSelectedImage(file);
-      setSelectedImagePreview(thumbnail);
-    }
+  const fetchFile = async (file) => {
+    const thumbnail = URL.createObjectURL(file);
+    setSelectedImage(file);
+    setSelectedImagePreview(thumbnail);
 
     try {
       setIsImageUploading(true);
@@ -154,6 +151,15 @@ const Personal = () => {
     } catch (error) {
       setIsImageUploading(false);
       setImageUrlRes(null);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && isFileValid(file)) {
+      fetchFile(file);
+    } else {
+      e.target.value = '';
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Calendar, CheckSquare, FileMinus, Layers, UserX } from 'react-feather';
+import { Calendar, CheckSquare, FileMinus, Layers, UserPlus, UserX } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
@@ -12,7 +12,6 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const selectCardData = useSelector((state) => state.project.cardData);
   const isLoading = useSelector((state) => state?.project?.cardInfoLoading);
   const isLoadingSecondaryFilter = useSelector((state) => state?.project?.loading);
-  const selectProjectMetaData = useSelector((state) => state?.project?.metaData);
   useEffect(() => {
     dispatch(getCardInfo({ userType, onSuccess: () => {}, onError: () => {} }));
   }, []);
@@ -95,16 +94,9 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             isActive={selected === 'invited'}
             className={`stat-box ${isLoadingSecondaryFilter ? '' : ' cursor-pointer'}`}
             isMarketPlaceTab
-            title={
-              // eslint-disable-next-line no-nested-ternary
-              selected === 'invited' && isLoadingSecondaryFilter
-                ? selectCardData?.invited
-                : selected === 'invited'
-                ? selectProjectMetaData?.total_records
-                : selectCardData?.invited
-            }
+            title={selectCardData?.invited || 0}
             desc="Invited"
-            icon={<UserX height={20} />}
+            icon={<UserPlus height={20} />}
             color="light-red"
           />
         </Col>

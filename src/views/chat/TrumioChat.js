@@ -1,4 +1,7 @@
-/* eslint-disable no-console */
+/* eslint-disable radix */
+/* eslint-disable prefer-const */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-use-before-define */
 import React, { useEffect, useState } from 'react';
 import { CometChat } from '@cometchat-pro/chat';
 import PropTypes from 'prop-types';
@@ -28,9 +31,9 @@ function TrumioChat({ authToken, targetId, targetType = 'user', style, milestone
       await handleMilestoneAttachment();
       setLoader(false);
     } catch (error) {
-      console.log('Virgil Error');
+      console.error('Virgil Error');
     }
-  }
+  };
 
   const cancelMilestoneInput = () => {
     setEnableMilestoneInput(false);
@@ -52,7 +55,7 @@ function TrumioChat({ authToken, targetId, targetType = 'user', style, milestone
     // Ensures that the CometChat is initialised and the user is loggedIn before fetching the messages
     await CometChat.getLoggedinUser();
     if (milestoneAttachment) {
-      if(milestoneAttachment?.artifact?.urlName==='' && milestoneAttachment?.artifact?.url!=='') {
+      if (milestoneAttachment?.artifact?.urlName === '' && milestoneAttachment?.artifact?.url !== '') {
         milestoneAttachment.artifact.urlName = milestoneAttachment?.artifact?.url;
       }
 
@@ -85,8 +88,6 @@ function TrumioChat({ authToken, targetId, targetType = 'user', style, milestone
       res = false;
     }
 
-    // console.log(milestoneMessageList, res);
-    console.log(milestoneMessageList);
     return res;
   };
 

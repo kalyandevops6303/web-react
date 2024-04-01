@@ -214,24 +214,26 @@ const Personal = () => {
   };
 
   const fetchUploadUrl = async (file) => {
-    if (isFileValid(file)) {
-      const response = await resumeUploadService(file.name);
+    const response = await resumeUploadService(file.name);
 
-      const fileWithUrl = {
-        id: uuidv4(),
-        file,
-        uploadData: response?.data?.data,
-        isUploaded: false,
-      };
+    const fileWithUrl = {
+      id: uuidv4(),
+      file,
+      uploadData: response?.data?.data,
+      isUploaded: false,
+    };
 
-      setFiles([fileWithUrl]);
+    setFiles([fileWithUrl]);
 
-      handleUploadFile(fileWithUrl);
-    }
+    handleUploadFile(fileWithUrl);
   };
 
   const handleFileChange = (e) => {
-    fetchUploadUrl(e.target.files[0]);
+    if (isFileValid(e.target.files[0])) {
+      fetchUploadUrl(e.target.files[0]);
+    } else {
+      e.target.value = '';
+    }
   };
 
   const renderFileSize = (size) => {

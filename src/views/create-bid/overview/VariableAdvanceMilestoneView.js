@@ -545,10 +545,10 @@ const VariableAdvanceMilestoneView = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <>
-                    {renderFilePreview()}
-                    {file?.file?.name || file?.file?.file_name}
-                  </>
+                  <div className="d-flex align-items-center">
+                    <span>{renderFilePreview()}</span>
+                    <span>{file?.file?.name || file?.file?.file_name}</span>
+                  </div>
                 )}
               </div>
             </Col>
@@ -1302,9 +1302,9 @@ const VariableAdvanceMilestoneView = () => {
               </Row>
             </CardBody>
           </Card>
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center mb-4">
             <div
-              className="d-flex align-items-center upload-button cursor-pointer"
+              className="d-flex align-items-center upload-button cursor-pointer mb-50"
               onClick={() => {
                 if (selectUserDetailsData?.user_type === userTypes.team) {
                   navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`);

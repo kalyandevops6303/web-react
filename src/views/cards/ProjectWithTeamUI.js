@@ -13,23 +13,29 @@ import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data }) => {
   const userData = useSelector(selectAuthUserData);
   const dispatch = useDispatch();
   const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const navigate = useNavigate();
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    if (isFavUnfavLoading) {
+      setIsFavorite(true);
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false) }));
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (isFavUnfavLoading) {
+      setIsFavorite(false);
+      dispatch(removeFav({ project_id: data?._id, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const handleClientNavigate = (e) => {

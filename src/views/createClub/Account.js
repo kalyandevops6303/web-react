@@ -141,23 +141,27 @@ const Account = () => {
     return true;
   };
 
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
+  const fetchFile = async (file) => {
+    const thumbnail = URL.createObjectURL(file);
+    setSelectedImage(file);
+    setSelectedImagePreview(thumbnail);
 
+    try {
+      setIsImageUploading(true);
+      const res = await profileImageUploadService(file.name);
+      setImageUrlRes(res?.data?.data);
+    } catch (error) {
+      setIsImageUploading(false);
+      setImageUrlRes(null);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
     if (file && isFileValid(file)) {
-      const thumbnail = URL.createObjectURL(file);
-
-      setSelectedImage(file);
-      setSelectedImagePreview(thumbnail);
-
-      try {
-        setIsImageUploading(true);
-        const res = await profileImageUploadService(file.name);
-        setImageUrlRes(res?.data?.data);
-      } catch (error) {
-        setIsImageUploading(false);
-        setImageUrlRes(null);
-      }
+      fetchFile(file);
+    } else {
+      e.target.value = '';
     }
   };
 
