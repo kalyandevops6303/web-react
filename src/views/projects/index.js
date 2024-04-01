@@ -21,14 +21,14 @@ const ProjectContainer = styled.div`
   }
 `;
 
-const SecondComp = ({ primaryFilter }) => {
+const SecondaryFiltersWrapper = ({ primaryFilter }) => {
   const userData = useSelector(selectAuthUserData);
   return <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
 };
-SecondComp.propTypes = {
+SecondaryFiltersWrapper.propTypes = {
   primaryFilter: PropTypes.string,
 };
-SecondComp.defaultProps = {
+SecondaryFiltersWrapper.defaultProps = {
   primaryFilter: '',
 };
 
@@ -89,12 +89,12 @@ const Projects = () => {
       />
 
       <Routes>
-        <Route path="ongoing" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="upcoming" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="completed" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="terminated" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="dispute" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="invited" element={<SecondComp primaryFilter={primaryFilter} />} />
+        <Route path="ongoing" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="upcoming" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="completed" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="terminated" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="dispute" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="invited" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
       </Routes>
     </ProjectContainer>
   );

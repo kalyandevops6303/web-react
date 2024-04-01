@@ -19,14 +19,14 @@ const ClubContainer = styled.div`
   }
 `;
 
-const SecondComp = ({ primaryFilter }) => {
+const SecondaryFiltersWrapper = ({ primaryFilter }) => {
   const userData = useSelector(selectAuthUserData);
   return <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
 };
-SecondComp.propTypes = {
+SecondaryFiltersWrapper.propTypes = {
   primaryFilter: PropTypes.string,
 };
-SecondComp.defaultProps = {
+SecondaryFiltersWrapper.defaultProps = {
   primaryFilter: '',
 };
 
@@ -78,9 +78,9 @@ const Clubs = () => {
         userType={userData?.user_type}
       />
       <Routes>
-        <Route path="all_clubs" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="my_clubs" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="favourites" element={<SecondComp primaryFilter={primaryFilter} />} />
+        <Route path="all_clubs" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="my_clubs" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="favourites" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
       </Routes>
     </ClubContainer>
   );

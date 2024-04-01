@@ -20,14 +20,14 @@ const TeamsContainer = styled.div`
   }
 `;
 
-const SecondComp = ({ primaryFilter }) => {
+const SecondaryFiltersWrapper = ({ primaryFilter }) => {
   const userData = useSelector(selectAuthUserData);
   return <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
 };
-SecondComp.propTypes = {
+SecondaryFiltersWrapper.propTypes = {
   primaryFilter: PropTypes.string,
 };
-SecondComp.defaultProps = {
+SecondaryFiltersWrapper.defaultProps = {
   primaryFilter: '',
 };
 
@@ -99,12 +99,12 @@ const MyTeams = () => {
         userType={userData?.user_type}
       />
       <Routes>
-        <Route path="teams" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="clients" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="talents" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="join_requests" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="favourites" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="recommendation" element={<SecondComp primaryFilter={primaryFilter} />} />
+        <Route path="teams" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="clients" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="talents" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="join_requests" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="favourites" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="recommendation" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
       </Routes>
     </TeamsContainer>
   );
