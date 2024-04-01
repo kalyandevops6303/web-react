@@ -56,6 +56,9 @@ const AcceptModalWrapper = styled.div`
       font-weight: 500;
     }
   }
+  .word-break {
+    word-break: break-word;
+  }
 `;
 
 const DeleteModalWrapper = styled.div`
