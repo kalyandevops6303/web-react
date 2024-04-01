@@ -31,8 +31,7 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
                 <div className="label">
                   <p className="fw-bolder mb-50">Club</p>
                   <p className="fw-light mb-0">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore
+                    A student led entity within a college focused on a specific domain interested in project work.
                   </p>
                 </div>
               </div>
@@ -52,8 +51,7 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
                 <div className="label">
                   <p className="fw-bolder mb-50">Team</p>
                   <p className="fw-light mb-0">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore{' '}
+                    A network of global talent who work together on projects in one or more areas of interest.
                   </p>
                 </div>
               </div>
