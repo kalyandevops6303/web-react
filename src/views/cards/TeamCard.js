@@ -43,13 +43,12 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
 
   const handleLike = (e) => {
     e.stopPropagation();
-    if (isFavUnfavLoading === false) {
+    if (!isFavUnfavLoading) {
       setIsFavorite(true);
       dispatch(
         makeFav({
           user_id: data?._id,
           user_type: data?.user_type,
-          onSuccess: () => {},
           onError: () => setIsFavorite(false),
         }),
       );
@@ -57,9 +56,9 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    if (isFavUnfavLoading === false) {
+    if (!isFavUnfavLoading) {
       setIsFavorite(false);
-      dispatch(removeFav({ team_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+      dispatch(removeFav({ team_id: data?._id, onError: () => setIsFavorite(true) }));
     }
   };
 

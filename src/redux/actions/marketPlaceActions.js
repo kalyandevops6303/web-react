@@ -137,10 +137,14 @@ const makeFav =
       } else {
         await makeFavService(user_id, user_type);
       }
-      onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      }
       dispatch(favUnfavSuccess());
     } catch (error) {
-      onError();
+      if (onError) {
+        onError();
+      }
       errorHandler(error, favUnfavError);
     }
   };
@@ -160,9 +164,13 @@ const removeFav =
       }
       await removeFavService(data);
       dispatch(favUnfavSuccess());
-      onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
-      onError();
+      if (onError) {
+        onError();
+      }
       errorHandler(error, favUnfavError);
     }
   };

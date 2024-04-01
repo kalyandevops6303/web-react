@@ -27,14 +27,14 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
     e.stopPropagation();
     if (isFavUnfavLoading) {
       setIsFavorite(true);
-      dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false) }));
     }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
     if (isFavUnfavLoading) {
       setIsFavorite(false);
-      dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+      dispatch(removeFav({ project_id: data?._id, onError: () => setIsFavorite(true) }));
     }
   };
 

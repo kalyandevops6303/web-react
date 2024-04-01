@@ -48,13 +48,12 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
 
   const handleLike = (e) => {
     e.stopPropagation();
-    if (isFavUnfavLoading === false) {
+    if (!isFavUnfavLoading) {
       setIsFavorite(true);
       dispatch(
         makeFav({
           user_id: data?.user_id,
           user_type: data?.user_type,
-          onSuccess: () => {},
           onError: () => setIsFavorite(false),
         }),
       );
@@ -62,9 +61,9 @@ function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    if (isFavUnfavLoading === false) {
+    if (!isFavUnfavLoading) {
       setIsFavorite(false);
-      dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+      dispatch(removeFav({ user_id: data?.user_id, onError: () => setIsFavorite(true) }));
     }
   };
   const giveStrokeColor = (percentage) => {
