@@ -40,7 +40,7 @@ const Alerts = () => {
     } else {
       dispatch(getProfilePercentage());
     }
-  }, []);
+  }, [userDetailsData?.user_type]);
 
   const onAddDetailsClick = (path) => {
     setItemFromSession('backRouteForProfileEdit', location.pathname);
