@@ -578,7 +578,7 @@ const FixedSimpleMilestoneView = () => {
                   </p>
                 </div>
               )}
-              <div className="d-none fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
+              <div className="fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
                 <Info size={18} color={theme.activeNavPillText} className="me-50" />
                 <p className="font-medium-1 m-0 info">
                   <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed price will be equally
