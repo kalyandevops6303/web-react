@@ -18,8 +18,6 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
     }
   };
 
-  const teamDefinition = 'A network of global talent who work together on projects in one or more areas of interest.';
-
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={toggleModal} />
@@ -58,7 +56,9 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
                 <Input type="radio" id="advance" checked={selectedGroup === 'TEAM'} />
                 <div className="label">
                   <p className="fw-bolder mb-50">Team</p>
-                  <p className="fw-light mb-0">{teamDefinition}</p>
+                  <p className="fw-light mb-0">
+                    A network of global talent who work together on projects in one or more areas of interest.
+                  </p>
                 </div>
               </div>
             </CreateBidRadioOption>
