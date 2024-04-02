@@ -750,7 +750,7 @@ const Step3 = ({ setStep }) => {
                       <p className="m-0">
                         {!isUsPerson
                           ? 'National security number(NSN); Government recognized unique national security number eg PAN card, Aadhar card etc'
-                          : 'Social security number(SSN)'}
+                          : 'Enter Social Security Number(SSN)'}
                       </p>
                     </div>
                   </UncontrolledTooltip>

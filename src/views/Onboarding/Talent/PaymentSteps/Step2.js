@@ -277,7 +277,7 @@ const Step2 = ({ setStep }) => {
                     <p className="m-0">
                       {taxUserType === 'NON_US'
                         ? 'National security number(NSN); Government recognized unique national security number eg PAN card, Aadhar card etc'
-                        : 'Social security number(SSN)'}
+                        : 'Enter Social Security Number(SSN)'}
                     </p>
                   </div>
                 </UncontrolledTooltip>
