@@ -717,7 +717,7 @@ const Step3 = ({ setStep }) => {
 
               <h4 className="mt-3 mb-2">Do you have a US Taxpayer Identification number?</h4>
               <div className="d-flex gap-3">
-                <div className="d-flex gap-50">
+                <div className="d-flex gap-50 form-check">
                   <Input
                     type="radio"
                     name="option2"
@@ -727,7 +727,7 @@ const Step3 = ({ setStep }) => {
                   />
                   <Label className="fs-6">No</Label>
                 </div>
-                <div className="d-flex gap-50">
+                <div className="d-flex gap-50 form-check">
                   <Input
                     type="radio"
                     name="option1"

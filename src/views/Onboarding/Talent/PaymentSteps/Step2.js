@@ -195,7 +195,7 @@ const Step2 = ({ setStep }) => {
               Your taxpayer identification information will be included as Trumio W-9 or W-8 series substitute from.
             </h5>
             <div className="d-flex w-75 mb-2">
-              <Col className="d-flex gap-50">
+              <Col className="d-flex gap-50 form-check">
                 <Input
                   type="radio"
                   checked={taxUserType === 'NON_US'}
@@ -204,7 +204,7 @@ const Step2 = ({ setStep }) => {
                 />
                 <div>I am not a US person</div>
               </Col>
-              <Col className="d-flex gap-50">
+              <Col className="d-flex gap-50 form-check">
                 <Input
                   type="radio"
                   checked={taxUserType === 'US'}
