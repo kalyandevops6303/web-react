@@ -373,6 +373,21 @@ const ElevateShadow = styled(Elevate)`
   }
 `;
 
+const CircularBackButtonContainer = styled.div`
+  .back-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: ${theme.activeNavPillText};
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+  }
+  p {
+    color: ${theme.activeNavPillText};
+  }
+`;
+
 export {
   ElevateShadow,
   CardWrapper,
@@ -388,4 +403,5 @@ export {
   TeamCreatedModalImageWrapper,
   TeamCreatedModalLogoImg,
   Elevate,
+  CircularBackButtonContainer,
 };

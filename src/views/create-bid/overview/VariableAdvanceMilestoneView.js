@@ -778,7 +778,7 @@ const VariableAdvanceMilestoneView = () => {
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">{milestoneHours}h</p>
                                 </div>
                                 <div>
-                                  <Label className="fw-normal form-label">Talent Cost</Label>
+                                  <Label className="fw-normal form-label">Talent Amount</Label>
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">$ {milestoneCost}</p>
                                 </div>
                               </Col>

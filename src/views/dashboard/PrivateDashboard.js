@@ -140,7 +140,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModalInfoText('create team');
       setCompleteProfileModal(true);
     } else {
-      navigate('/create-team/profile-details');
+      setOptionsModal(true);
     }
   };
 

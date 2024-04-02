@@ -15,7 +15,7 @@ const CertificationUS = ({ onConfirm, isConfirmed }) => {
       <hr className="m-0 card-header-border" />
       <CardBody>
         <h5>Under penalties of perjury, I certify that:</h5>
-        <p className="mt-3">
+        <p className="mt-2">
           <ul>
             <li>
               The number shown on this form is my correct taxpayer identification number (or I am waiting for a number

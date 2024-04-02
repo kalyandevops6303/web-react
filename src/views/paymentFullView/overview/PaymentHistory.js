@@ -322,7 +322,7 @@ const PaymentHistory = () => {
               <p className="m-0">Milestone #{milestone?.seq}</p>
               <div className="d-flex justify-content-between additional-details">
                 <div>
-                  <p className="mb-50">Talent Cost</p>
+                  <p className="mb-50">Talent Amount</p>
                   <p className="m-0">Platform Fee</p>
                 </div>
                 <div className="text-end">
