@@ -22,10 +22,10 @@ import {
   UncontrolledTooltip,
 } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Camera, ChevronLeft, ChevronRight, Info, UserPlus } from 'react-feather';
+import { Camera, ChevronRight, Info, UserPlus } from 'react-feather';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
-import { AccountImageContainer, ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
+import { AccountImageContainer, ProfileFormContainer } from '../Onboarding/style';
 import theme from '../../configs/themeVariables';
 import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import {
@@ -373,10 +373,6 @@ const Account = () => {
     } catch (error) {
       return { options: [] };
     }
-  };
-
-  const onBackClick = () => {
-    navigate('/dashboard');
   };
 
   const getTeamDetails = async () => {
@@ -777,14 +773,7 @@ const Account = () => {
             </Row>
           </CardBody>
         </Card>
-
-        <div className="d-flex justify-content-between align-items-center pb-2 mt-1">
-          <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
-            <UploadIconContainer>
-              <ChevronLeft size={18} color={theme.activeNavPillText} />
-            </UploadIconContainer>
-            <h5 className="fw-bold">Back</h5>
-          </div>
+        <div className="d-flex justify-content-end align-items-center pb-2 mt-1">
           <div>
             <Button
               color="primary"
