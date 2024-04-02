@@ -701,8 +701,8 @@ const FixedAdvanceMilestoneView = () => {
                 <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
                   <Info size={18} color={theme.red} className="me-50" />
                   <p className="font-medium-1 m-0 error">
-                    <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of
-                    the project. Please adjust your cost in order to submit the bid
+                    <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price of the
+                    project. Please adjust your price in order to submit the bid
                   </p>
                 </div>
               )}
