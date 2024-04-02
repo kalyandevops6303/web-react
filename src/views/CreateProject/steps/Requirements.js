@@ -217,10 +217,10 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       then: () =>
         yup
           .number()
-          .min(1, 'Fixed cost is required')
-          .integer('Fixed cost must be an integer')
+          .min(1, 'Fixed amount is required')
+          .integer('Fixed amount must be an integer')
           .typeError('Please enter a number')
-          .required('Fixed cost is required'),
+          .required('Fixed amount is required'),
     }),
     nda: yup.string().required('NDA is required'),
   });
@@ -1650,7 +1650,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                               }}
                             />
                             <Label for="variable-price" className="form-check-label">
-                              Variable cost
+                              Variable price
                             </Label>
                           </div>
                           <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
@@ -1671,7 +1671,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                               }}
                             />
                             <Label for="fixed-price" className="form-check-label">
-                              Fixed cost
+                              Fixed price
                             </Label>
                           </div>
                         </div>
@@ -1682,7 +1682,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   {projectPayType === 'fixed-price' && (
                     <Col sm="12" md="6" lg="3">
                       <Label className="form-label" for="projectFixedCost">
-                        Fixed Cost{`${watch('currencyType') ? ` in ${watch('currencyType')?.value?.code}` : ''}`}
+                        Fixed Price{`${watch('currencyType') ? ` in ${watch('currencyType')?.value?.code}` : ''}`}
                         <span className="label-asterisk me-50">*</span>
                       </Label>
                       <Controller

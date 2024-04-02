@@ -171,7 +171,7 @@ const BidSubmitted = () => {
                 </CardText>
               </div>
               <div className="me-1">
-                <span className="key">Talent Cost</span>
+                <span className="key">Talent Amount</span>
                 <CardText className="value text-end">${bidInfo?.total_estimated_cost}</CardText>
               </div>
             </div>

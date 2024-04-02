@@ -64,7 +64,7 @@ const VariableSimpleMilestoneView = () => {
           .number()
           .min(1, 'Cost must be at least 1')
           .typeError('Please enter a number')
-          .required('Talent cost is required')
+          .required('Talent amount is required')
           .integer('Cost must be an integer'),
         name: yup
           .string()
@@ -699,7 +699,7 @@ const VariableSimpleMilestoneView = () => {
                               <Col sm="12" md="12" lg="4">
                                 <div>
                                   <Label className="fw-normal form-label me-2" for="talentCost">
-                                    Talent Cost<span className="label-asterisk me-50">*</span>
+                                    Talent Amount<span className="label-asterisk me-50">*</span>
                                   </Label>
                                   <Controller
                                     id={`milestones[${milestoneIndex}].talentCost`}

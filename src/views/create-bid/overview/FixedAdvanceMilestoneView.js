@@ -402,7 +402,7 @@ const FixedAdvanceMilestoneView = () => {
     if (!allMilestonesValid) {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     } else if (totalCost > projectDetailsData?.pay_type?.fixed_cost) {
-      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed cost.');
+      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed price.');
     } else if (allMilestonesValid && totalCost <= projectDetailsData?.pay_type?.fixed_cost) {
       milestonesAppend({
         milestoneId: uuidv4(),
@@ -709,7 +709,7 @@ const FixedAdvanceMilestoneView = () => {
               <div className="d-none fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
                 <Info size={18} color={theme.activeNavPillText} className="me-50" />
                 <p className="font-medium-1 m-0 info">
-                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
+                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed price will be equally
                   distributed between each talent
                 </p>
               </div>
@@ -755,10 +755,10 @@ const FixedAdvanceMilestoneView = () => {
                         className={bidData?.is_bid_type_changeable ? 'me-3 custom-cost-margin' : 'custom-cost-margin'}
                       >
                         <div className="d-flex align-items-center m-0">
-                          <Label className="form-label m-0">Fixed Cost</Label>
+                          <Label className="form-label m-0">Fixed Price</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
                           <UncontrolledTooltip placement="top" target="fixed-info">
-                            Predetermined project cost fixed by the client
+                            Predetermined project price fixed by the client
                           </UncontrolledTooltip>
                         </div>
                         <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
@@ -819,7 +819,7 @@ const FixedAdvanceMilestoneView = () => {
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">{milestoneHours}h</p>
                                 </div>
                                 <div>
-                                  <Label className="fw-normal form-label">Talent Cost</Label>
+                                  <Label className="fw-normal form-label">Talent Amount</Label>
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">$ {milestoneCost}</p>
                                 </div>
                               </Col>
