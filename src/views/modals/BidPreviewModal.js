@@ -51,8 +51,7 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
     toggleModal();
   };
 
-  // const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
-  const bidInfo = snapshotData;
+  const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
   const [selectedFileKey, setSelectedFileKey] = useState(null);
@@ -110,7 +109,7 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
             )} */}
 
               {/* {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'REJECTED' && ( */}
-              {!isLoading && userData?.user_type === userTypes.client && bidInfo?.status === 'DRAFT' && (
+              {!isLoading && userData?.user_type === userTypes.client && snapshotData?.status === 'DRAFT' && (
                 <div className="d-flex justify-content-end mb-2">
                   <Button onClick={onReject} color="flat-danger" className="me-2">
                     Reject
@@ -136,9 +135,9 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
                   <CardBody className="main-card-body bid-eta">
                     <div>
                       <CardText className="value">
-                        {bidInfo?.bid?.total_estimated_duration?.duration}
-                        {bidInfo?.bid?.total_estimated_duration?.duration_type &&
-                          bidInfo?.bid?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
+                        {snapshotData?.bid?.total_estimated_duration?.duration}
+                        {snapshotData?.bid?.total_estimated_duration?.duration_type &&
+                          snapshotData?.bid?.total_estimated_duration?.duration_type.charAt(0).toLowerCase()}
                       </CardText>
                       <div className="d-flex align-items-center m-0">
                         <CardText className="key mb-0">Estimated Duration</CardText>
@@ -149,7 +148,7 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
                       </div>
                     </div>
                     <div>
-                      <CardText className="value">${bidInfo?.bid?.total_estimated_cost}</CardText>
+                      <CardText className="value">${snapshotData?.bid?.total_estimated_cost}</CardText>
                       <div className="d-flex align-items-center m-0">
                         <CardText className="key mb-0">Total Bid Amount</CardText>
                         <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
@@ -187,7 +186,7 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
                         </AccordionTableHeader>
                         <div className="custom-milestone-accordion">
                           <UncontrolledAccordion>
-                            {bidInfo?.bid?.milestones?.map((milestone, index) => (
+                            {snapshotData?.bid?.milestones?.map((milestone, index) => (
                               <AccordionItem className="py-0" key={milestone._id}>
                                 <AccordionHeader targetId={index + 1} className="p-0">
                                   <Row className="p-0 w-100">

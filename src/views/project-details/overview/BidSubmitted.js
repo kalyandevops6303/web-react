@@ -22,7 +22,7 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import BidChangeRequestModal from '../../modals/BidChangeRequestModal';
-import AcceptBidModal from '../../modals/AccpetBidModal';
+import AcceptBidModal from '../../modals/AcceptBidModal';
 import RejectBidChangeModal from '../../modals/RejectBidChangeModal';
 
 const BidSubmitted = () => {
@@ -149,7 +149,8 @@ const BidSubmitted = () => {
           <div className="meta-data">
             <span className="time ms-auto">{item?.time ? DateTime?.fromMillis(item?.time)?.toRelative() : '-'}</span>
 
-            {item?.can_edit ? (
+            {item?.can_edit &&
+            (item?.action === status.BID_CHANGE_REQUEST || item?.action === status.BID_CHANGE_REJECTED) ? (
               <CardText className="card-cta" onClick={onEditBidClick}>
                 Edit Bid
               </CardText>

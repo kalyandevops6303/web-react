@@ -32,7 +32,7 @@ import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
 import { userTypes } from '../../utility/constants/Constant';
 import { downloadFile, formatFileSize, truncateSentence } from '../../utility/Utils';
-import AcceptBidModal from '../modals/AccpetBidModal';
+import AcceptBidModal from '../modals/AcceptBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';

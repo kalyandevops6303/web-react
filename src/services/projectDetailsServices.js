@@ -28,7 +28,7 @@ const getBidTimelineService = ({ project_id }) =>
   DataService.get(`${API.projectDetails.getBidTimeline}?project_id=${project_id}`);
 
 const getBidSnapshotService = ({ snapshot_id }) =>
-  DataService.get(`${API.projectDetails.getBidSnapshot}?snapshot_id=${snapshot_id}`);
+  DataService.get(`${API.projectDetails.getBidSnapshot}?bid_snapshot_id=${snapshot_id}`);
 const getCommonBidDetailsService = ({ project_id, entity_id }) =>
   DataService.get(`${API.projectDetails.commonBidInfo}?project_id=${project_id}&entity_id=${entity_id}`);
 

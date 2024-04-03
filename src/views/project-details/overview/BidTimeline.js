@@ -21,7 +21,7 @@ import {
 import ContractTimeline from './ContractTimeline';
 import NDATimeline from './NDATimeline';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-// import { clearDocstate } from '../../../redux/reducers/projectDetails';
+import { clearDocstate } from '../../../redux/reducers/projectDetails';
 
 const BidTimelineWrapper = styled.div`
   .indicator {
@@ -51,6 +51,9 @@ const BidTimeline = () => {
 
   useEffect(() => {
     dispatch(getBidDetails({ project_id: param?.projectId }));
+    return () => {
+      dispatch(clearDocstate());
+    };
   }, []);
 
   const handleDoc = ({ type }) => {
