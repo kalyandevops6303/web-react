@@ -93,7 +93,7 @@ const Listing = ({ stepper, setListingDetails }) => {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
-            <h4 className="m-0 mt-1">Listing Details</h4>
+            <h4 className="m-0 mt-1">Project Listing Details</h4>
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
