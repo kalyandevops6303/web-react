@@ -372,7 +372,7 @@ const Step3 = ({ setStep }) => {
               Your Taxpayer information will be included in a Trumio W-8 substitute form. Complete this form if you are
               a non US person resident outside the US.
             </h5>
-            <div className="w-50 mt-1">
+            <div className="mt-1">
               <h4 className="mt-3 mb-1 text-muted">PART I INFORMATION COLLECTION</h4>
               <Row className="mb-1 mt-1">
                 <Col sm="12" md="12" lg="6">
@@ -390,7 +390,7 @@ const Step3 = ({ setStep }) => {
                   {errors.fullName ? (
                     <FormFeedback>{errors.fullName.message}</FormFeedback>
                   ) : (
-                    <Label>Name of individual who is the beneficial owner</Label>
+                    <Label className="font-small-1">Name of individual who is the beneficial owner</Label>
                   )}
                 </Col>
                 <Col sm="12" md="12" lg="6">
@@ -534,7 +534,7 @@ const Step3 = ({ setStep }) => {
                     )}
                   />
                   {errors.pCity && <FormFeedback>{errors.pCity.label?.message}</FormFeedback>}
-                  <Label>NOTE : Do not use a P.O. box or in-care-of address</Label>
+                  <Label className="mt-50 font-small-1">NOTE : Do not use a P.O. box or in-care-of address</Label>
                 </Col>
                 <Col sm="6" md="6" lg="6">
                   <Label className="form-label" for="pZipCode">
@@ -690,7 +690,7 @@ const Step3 = ({ setStep }) => {
                     )}
                   />
                   {errors.mCity && <FormFeedback>{errors.mCity.label?.message}</FormFeedback>}
-                  <Label>NOTE : Do not use a P.O. box or in-care-of address</Label>
+                  <Label className="mt-50 font-small-1">NOTE : Do not use a P.O. box or in-care-of address</Label>
                 </Col>
                 <Col sm="6" md="6" lg="6">
                   <Label className="form-label" for="mZipCode">
@@ -717,7 +717,7 @@ const Step3 = ({ setStep }) => {
 
               <h4 className="mt-3 mb-2">Do you have a US Taxpayer Identification number?</h4>
               <div className="d-flex gap-3">
-                <div className="d-flex gap-50">
+                <div className="d-flex gap-50 form-check">
                   <Input
                     type="radio"
                     name="option2"
@@ -727,7 +727,7 @@ const Step3 = ({ setStep }) => {
                   />
                   <Label className="fs-6">No</Label>
                 </div>
-                <div className="d-flex gap-50">
+                <div className="d-flex gap-50 form-check">
                   <Input
                     type="radio"
                     name="option1"
@@ -750,7 +750,7 @@ const Step3 = ({ setStep }) => {
                       <p className="m-0">
                         {!isUsPerson
                           ? 'National security number(NSN); Government recognized unique national security number eg PAN card, Aadhar card etc'
-                          : 'Social security number(SSN)'}
+                          : 'Enter Social Security Number(SSN)'}
                       </p>
                     </div>
                   </UncontrolledTooltip>

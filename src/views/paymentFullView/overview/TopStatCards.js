@@ -89,7 +89,7 @@ const TopStatCards = () => {
                   {userData?.user_type === userTypes.client ? 'Paid' : 'Earned'}
                   <Info size={16} color={theme.infoIcon} id="firstStat" className="ms-25" />
                   <UncontrolledTooltip target="firstStat" placement="bottom">
-                    {firstStatCardTooltipText()}
+                    <p className="mb-0 text-start">{firstStatCardTooltipText()}</p>
                   </UncontrolledTooltip>
                 </CardText>
               </div>
@@ -108,7 +108,7 @@ const TopStatCards = () => {
                   {userData?.user_type === userTypes.client ? 'Deposited' : 'Upcoming'}
                   <Info size={16} color={theme.infoIcon} id="secondStat" className="ms-25" />
                   <UncontrolledTooltip target="secondStat" placement="bottom">
-                    {secondStatCardTooltipText()}
+                    <p className="mb-0 text-start">{secondStatCardTooltipText()}</p>
                   </UncontrolledTooltip>
                 </CardText>
               </div>
@@ -137,7 +137,7 @@ const TopStatCards = () => {
                   {userData?.user_type === userTypes.client ? 'Upcoming' : 'Future'}
                   <Info size={16} color={theme.infoIcon} id="thirdStat" className="ms-25" />
                   <UncontrolledTooltip target="thirdStat" placement="bottom">
-                    {thirdStatCardTooltipText()}
+                    <p className="mb-0 text-start">{thirdStatCardTooltipText()}</p>
                   </UncontrolledTooltip>
                 </CardText>
               </div>
