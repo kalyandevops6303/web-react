@@ -672,7 +672,7 @@ const Personal = () => {
                   <Row>
                     <Col sm="6" md="6" lg="6">
                       <Label className="form-label" for="houseNumber">
-                        Suite
+                        House Number
                       </Label>
                       <Controller
                         id="houseNumber"
@@ -681,7 +681,7 @@ const Personal = () => {
                         render={({ field }) => (
                           <Input
                             {...field}
-                            placeholder="Enter suite number"
+                            placeholder="Enter house number"
                             invalid={errors.houseNumber && true}
                             autoComplete="none"
                           />
