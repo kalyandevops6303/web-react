@@ -747,10 +747,10 @@ const Step3 = ({ setStep }) => {
                   <Info size={18} color={theme.infoIcon} id="security-number" />
                   <UncontrolledTooltip placement="right" target="security-number">
                     <div className="d-flex flex-column align-items-start">
-                      <p className="m-0">
+                      <p className="m-0 text-start">
                         {!isUsPerson
                           ? 'National security number(NSN); Government recognized unique national security number eg PAN card, Aadhar card etc'
-                          : 'Enter Social Security Number(SSN)'}
+                          : 'Enter Social Security Number (SSN) eg gov ID#'}
                       </p>
                     </div>
                   </UncontrolledTooltip>
