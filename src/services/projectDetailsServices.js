@@ -24,6 +24,11 @@ const getReceivedBidsService = ({ project_id, metadata, search_text, bid_status 
 
 const getBidDetailsService = ({ bid_id }) => DataService.put(`${API.projectDetails.getBidReview}?bid_id=${bid_id}`);
 
+const getBidTimelineService = ({ project_id }) =>
+  DataService.get(`${API.projectDetails.getBidTimeline}?project_id=${project_id}`);
+
+const getBidSnapshotService = ({ snapshot_id }) =>
+  DataService.get(`${API.projectDetails.getBidSnapshot}?snapshot_id=${snapshot_id}`);
 const getCommonBidDetailsService = ({ project_id, entity_id }) =>
   DataService.get(`${API.projectDetails.commonBidInfo}?project_id=${project_id}&entity_id=${entity_id}`);
 
@@ -115,14 +120,14 @@ const relistProjectByDateService = (projectId, startDate, endDate) =>
     `${API.projectDetails.relistProjectByDate}?project_id=${projectId}&start_date=${startDate}&end_date=${endDate}`,
   );
 
-const requestChangeService = ({ project_id }) =>
-  DataService.post(`${API.projectDetails.requestChange}?project_id=${project_id}`);
+const requestChangeService = ({ bid_id, description }) =>
+  DataService.post(`${API.projectDetails.requestChange}`, { bid_id, description });
 
-const rejectBidChangeService = ({ project_id }) =>
-  DataService.post(`${API.projectDetails.rejectBidChange}?project_id=${project_id}`);
+const rejectBidChangeService = ({ snapshot_id, description }) =>
+  DataService.put(`${API.projectDetails.rejectBidChange}?bid_snapshot_id=${snapshot_id}`, { description });
 
-const acceptBidChangeService = ({ project_id }) =>
-  DataService.post(`${API.projectDetails.acceptBidChange}?project_id=${project_id}`);
+const acceptBidChangeService = ({ snapshot_id }) =>
+  DataService.put(`${API.projectDetails.acceptBidChange}?bid_snapshot_id=${snapshot_id}`);
 
 export {
   extendDocValidityService,
@@ -155,4 +160,6 @@ export {
   requestChangeService,
   rejectBidChangeService,
   acceptBidChangeService,
+  getBidTimelineService,
+  getBidSnapshotService,
 };

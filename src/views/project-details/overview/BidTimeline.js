@@ -11,7 +11,7 @@ import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ReceivedBids from './ReceivedBids';
 import BidSubmitted from './BidSubmitted';
-import { checkDocumentActivated } from '../../../redux/actions/projectDetailsAction';
+import { getBidDetails } from '../../../redux/actions/projectDetailsAction';
 import {
   projectDetails,
   projectDetailsLoading,
@@ -21,7 +21,7 @@ import {
 import ContractTimeline from './ContractTimeline';
 import NDATimeline from './NDATimeline';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { clearDocstate } from '../../../redux/reducers/projectDetails';
+// import { clearDocstate } from '../../../redux/reducers/projectDetails';
 
 const BidTimelineWrapper = styled.div`
   .indicator {
@@ -31,6 +31,9 @@ const BidTimelineWrapper = styled.div`
     border-radius: 50%;
     background: ${theme.red};
     align-self: flex-start;
+  }
+  .word-wrap {
+    word-break: break-word;
   }
 `;
 
@@ -47,22 +50,9 @@ const BidTimeline = () => {
   const userType = useSelector(selectUserType);
 
   useEffect(() => {
-    dispatch(
-      checkDocumentActivated({
-        isNDA: projectDetailsData?.nda?.is_nda,
-        project_id: param.projectId,
-      }),
-    );
-    return () => {
-      dispatch(clearDocstate());
-    };
-  }, [projectDetailsData]);
+    dispatch(getBidDetails({ project_id: param?.projectId }));
+  }, []);
 
-  // useEffect(() => {
-  //   // if (userType !== userTypes.client) {
-  //   dispatch(getBidDetails({ project_id: param?.projectId }));
-  //   // }
-  // }, []);
   const handleDoc = ({ type }) => {
     navigate(`doc/${type}`);
   };
@@ -210,7 +200,6 @@ const BidTimeline = () => {
   if (isDocLoading || isLoading) {
     return <ComponentSpinner />;
   }
-
   return (
     <BidTimelineWrapper>
       <div>
@@ -218,6 +207,7 @@ const BidTimeline = () => {
           // If contractData is true...
           (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && ndaData)) && (
             // If projectDetailsData?.nda?.is_nda is true, check ndaData before rendering Timeline.
+            // {console.log(contractData)}
             <Timeline data={bidStageWithOrder} />
           )}
       </div>

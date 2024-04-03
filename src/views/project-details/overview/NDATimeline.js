@@ -19,6 +19,7 @@ const NDATimeline = () => {
   const dispatch = useDispatch();
   const param = useParams();
   const loading = useSelector((state) => state?.projectDetails?.getDocumentTimelineLoading);
+  const docType = useSelector((state) => state?.projectDetails?.documentType?.doc_type);
   const [open, setOpen] = useState(null);
   const toggle = (id) => {
     if (open === id) {
@@ -91,8 +92,8 @@ const NDATimeline = () => {
                       <div className="me-1">
                         <span className="key">Updated at</span>
                         <CardText className="value">
-                          {contractTimeline?.updated_at
-                            ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
+                          {isContract?.updated_at
+                            ? DateTime.fromMillis(isContract?.updated_at).toFormat('MMM dd, yy')
                             : '-'}
                         </CardText>
                       </div>
@@ -111,9 +112,7 @@ const NDATimeline = () => {
                 <div className="me-1">
                   <span className="key">Updated at</span>
                   <CardText className="value">
-                    {contractTimeline?.updated_at
-                      ? DateTime.fromMillis(contractTimeline?.updated_at).toFormat('MMM dd, yy')
-                      : '-'}
+                    {isContract?.updated_at ? DateTime.fromMillis(isContract?.updated_at).toFormat('MMM dd, yy') : '-'}
                   </CardText>
                 </div>
               </div>
@@ -121,7 +120,7 @@ const NDATimeline = () => {
           </AccordionHeadStyle>
         </AccordionHeader>
 
-        {loading ? (
+        {loading && docType === 'NDA' ? (
           <ComponentSpinner />
         ) : bidUpdatesDataSet?.length > 0 ? (
           <AccordionBody accordionId="1" className="accordion-status-body">

@@ -1,6 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { Info } from 'react-feather';
 import '../custom-styles.scss';
 import * as yup from 'yup';
@@ -12,11 +13,13 @@ import theme from '../../configs/themeVariables';
 import { requestChange } from '../../redux/actions/projectDetailsAction';
 
 const BidChangeRequestModal = ({ modal, toggleModal }) => {
+  const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
+  const param = useParams();
   const DisputeSchema = yup.object().shape({
     changeRequest: yup
       .string()
-      .min(100, 'Change request must be at least 100 characters')
-      .max(2000, 'Change request must be 500 characters or less')
+      .min(50, 'Change request must be at least 50 characters')
+      .max(500, 'Change request must be 500 characters or less')
       .required('Change request is required'),
   });
 
@@ -34,23 +37,24 @@ const BidChangeRequestModal = ({ modal, toggleModal }) => {
 
   const loading = useSelector((state) => state.projectDetails.requestChangeLoading);
 
-  //   const onSuccess = () => {
-  //     toggleModal();
-  //   };
+  const onSuccess = () => {
+    toggleModal();
+  };
 
-  const onSubmit = () => {
-    // const { projectName, disputeType, disputeDetails } = data;
-    // const reqData = {
-    //   project_id: projectName.value,
-    //   dispute_type: disputeType.value,
-    //   description: disputeDetails,
-    // };
-    dispatch(requestChange({ id: 123 }));
+  const onSubmit = (values) => {
+    dispatch(
+      requestChange({
+        bid_id: bidInfo?._id,
+        description: values.changeRequest,
+        project_id: param?.projectId,
+        onSuccess,
+      }),
+    );
   };
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered">
-      <ModalHeader toggle={toggleModal} />
+      <ModalHeader toggle={loading ? null : toggleModal} />
       <ModalBody className="pt-0 px-5">
         <h2 className="font-large-1 text-center mb-2">Bid Change Request</h2>
         <p className="mb-75">Tell us in detail why you are raising this dispute</p>

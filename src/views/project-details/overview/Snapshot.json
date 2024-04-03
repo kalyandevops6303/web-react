@@ -1,0 +1,142 @@
+{
+  "_id": "660a4b8f7274701cee17947b",
+  "bid_id": "65c1fb1be7bfc628ebd045bf",
+  "created_at": 1711950732701,
+  "updated_at": 1711950732701,
+  "is_deleted": false,
+  "is_modified_by": "64d60539e127974f873d31d8",
+  "status": "DRAFT",
+  "bid_change_request_id": "",
+  "bid": {
+    "_id": "65c1fb1be7bfc628ebd045bf",
+    "created_at": 1707211547683,
+    "updated_at": 1707211839240,
+    "is_deleted": false,
+    "project_id": "65c1fab6e7bfc628ebd045af",
+    "total_numbers_of_hours": 0,
+    "bid_type": "SIMPLE",
+    "project_type": "VARIABLE",
+    "payment_validity": 1707868799999,
+    "payment_validity_extended_by": 0,
+    "bid_validity": 1709855999999,
+    "workers": [
+      {
+        "role": "API Product Manager",
+        "first_name": "Jack",
+        "last_name": "jones",
+        "user_id": "64d60539e127974f873d31d8",
+        "hourly_rate": 0,
+        "number_of_weeks": 0,
+        "hours_per_week": 0,
+        "accepted_date": 1707211563526
+      }
+    ],
+    "is_documents_sent": true,
+    "total_estimated_duration": {
+      "duration": 1,
+      "duration_type": "WEEK"
+    },
+    "is_documents_signed": true,
+    "documents": [],
+    "links": [],
+    "timeline": [
+      {
+        "action": "BID_SUBMITTED",
+        "time": 1707211596283,
+        "snapshot_id": "",
+        "description": "",
+        "by_entity": {
+          "entity_id": "655f2d5d14a117f701d458ea",
+          "entity": "TEAM",
+          "name": "Sky black squad",
+          "role": "",
+          "image": "https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64d60539e127974f873d31d8/69dd39ff-618f-4f17-a40b-28bddea2ba38.jpg"
+        }
+      },
+      {
+        "action": "BID_REVIEWED",
+        "time": 1707211634916,
+        "snapshot_id": "",
+        "description": "",
+        "by_entity": {
+          "entity_id": "64e843f347a11f69d95a8f7b",
+          "entity": "CLIENT",
+          "name": "Vighnesh Client",
+          "role": "Client Jack org",
+          "image": "https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e843f347a11f69d95a8f7b/b9f4953a-9e96-4d46-9249-de6adc20754e.jpg"
+        }
+      },
+      {
+        "action": "BID_ACCEPTED",
+        "time": 1707211640543,
+        "snapshot_id": "",
+        "description": "",
+        "by_entity": {
+          "entity_id": "64e843f347a11f69d95a8f7b",
+          "entity": "CLIENT",
+          "name": "Vighnesh Client",
+          "role": "Client Jack org",
+          "image": "https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e843f347a11f69d95a8f7b/b9f4953a-9e96-4d46-9249-de6adc20754e.jpg"
+        }
+      }
+    ],
+    "is_payment_made": true,
+    "status": "ACCEPTED",
+    "documents_validity": 1707868799999,
+    "documents_validity_extended_by": 0,
+    "deleted_by": "",
+    "bid_by": {
+      "entity": "TEAM",
+      "entity_id": "655f2d5d14a117f701d458ea",
+      "team_member_id": "64d60539e127974f873d31d8"
+    },
+    "project_start_date": 1707177600000,
+    "total_estimated_cost": 50,
+    "is_bid_type_changeable": false,
+    "bid_submitted_count": 1,
+    "milestones": [
+      {
+        "_id": "65c1fb43e7bfc628ebd045c7",
+        "created_at": 1707211587357,
+        "updated_at": 1707211896953,
+        "is_deleted": false,
+        "project_id": "65c1fab6e7bfc628ebd045af",
+        "end_date": 0,
+        "start_date": 1707211730286,
+        "deliverables": ["1234"],
+        "payment_status": "PAID",
+        "numbers_of_hours": 0,
+        "workers": [
+          {
+            "role": "API Product Manager",
+            "first_name": "Jack",
+            "last_name": "jones",
+            "user_id": "64d60539e127974f873d31d8",
+            "hourly_rate": 0,
+            "number_of_weeks": 1,
+            "hours_per_week": 0,
+            "accepted_date": 1707211563526
+          }
+        ],
+        "seq": 1,
+        "documents": [],
+        "bid_id": "65c1fb1be7bfc628ebd045bf",
+        "estimated_duration": {
+          "duration": 1,
+          "duration_type": "WEEK"
+        },
+        "estimated_cost": 50,
+        "links": ["www.google.com"],
+        "name": "milestone 1",
+        "status": "IN_REVIEW",
+        "description": "",
+        "deleted_by": "",
+        "milestone_by": {
+          "entity": "TEAM",
+          "entity_id": "655f2d5d14a117f701d458ea",
+          "team_member_id": "64d60539e127974f873d31d8"
+        }
+      }
+    ]
+  }
+}

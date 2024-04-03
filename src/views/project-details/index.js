@@ -29,6 +29,7 @@ const ProjectDetails = () => {
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
   const user = useSelector(userData);
+
   const [stepsArray, setStepsArray] = useState(steps);
   const [stepsArrayInvite, setStepsArrayInvite] = useState(InviteView);
   const [selectedMilestone, setSelectedMilestone] = useState(null);
@@ -107,6 +108,20 @@ const ProjectDetails = () => {
         return '';
     }
   };
+
+  // useEffect(() => {
+  //   if (projectDetailsData) {
+  //     dispatch(
+  //       checkDocumentActivated({
+  //         isNDA: projectDetailsData?.nda?.is_nda,
+  //         project_id: params.projectId,
+  //       }),
+  //     );
+  //   }
+  //   return () => {
+  //     dispatch(clearDocstate());
+  //   };
+  // }, []);
 
   const getLocationTernery = () => {
     const lowercasedStep = currentStep.toLowerCase();

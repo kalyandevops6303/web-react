@@ -99,6 +99,25 @@ const projectDetails = createSlice({
       getBidInfoLoading: false,
       errorBidInfo: action.payload,
     }),
+
+    getBidTimelineRequest: (state) => ({
+      ...state,
+      getBidTimelineLoading: true,
+      errorBidTimeline: null,
+    }),
+    getBidTimelineSuccess: (state, action) => ({
+      ...state,
+      getBidTimelineLoading: false,
+      bidTimeline: action.payload,
+      errorBidTimeline: null,
+    }),
+
+    getBidTimelineFailure: (state, action) => ({
+      ...state,
+      getBidTimelineLoading: false,
+      errorBidTimeline: action.payload,
+    }),
+
     getUnassignedRoleRequest: (state) => ({
       ...state,
       getUnassignedRoleLoading: true,
@@ -180,19 +199,41 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
-    getDocumentTimelineRequest: (state) => ({
+    getDocumentTimelineRequest: (state, action) => ({
       ...state,
       getDocumentTimelineLoading: true,
+      documentType: action.payload,
       error: null,
     }),
     getDocumentTimelineSuccess: (state, action) => ({
       ...state,
       getDocumentTimelineLoading: false,
+      documentType: '',
       ...action.payload,
     }),
     getDocumentTimelineFailure: (state, action) => ({
       ...state,
       getDocumentTimelineLoading: false,
+      documentType: '',
+      error: action.payload,
+    }),
+
+    getbidSnapshotRequest: (state) => ({
+      ...state,
+      getbidSnapshotLoading: true,
+      snapshotData: null,
+      error: null,
+    }),
+    getbidSnapshotSuccess: (state, action) => ({
+      ...state,
+      getbidSnapshotLoading: false,
+      snapshotData: action.payload,
+      ...action.payload,
+    }),
+    getbidSnapshotFailure: (state, action) => ({
+      ...state,
+      getbidSnapshotLoading: false,
+      snapshotData: null,
       error: action.payload,
     }),
 
@@ -226,18 +267,18 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
-    accpetBidChangeRequest: (state) => ({
+    acceptBidChangeRequest: (state) => ({
       ...state,
-      accpetBidChangeLoading: true,
+      acceptBidChangeLoading: true,
       error: null,
     }),
-    accpetBidChangeSuccess: (state) => ({
+    acceptBidChangeSuccess: (state) => ({
       ...state,
-      accpetBidChangeLoading: false,
+      acceptBidChangeLoading: false,
     }),
-    accpetBidChangeFailure: (state, action) => ({
+    acceptBidChangeFailure: (state, action) => ({
       ...state,
-      accpetBidChangeLoading: false,
+      acceptBidChangeLoading: false,
       error: action.payload,
     }),
 
@@ -497,6 +538,9 @@ export const {
   getBidInfoRequest,
   getBidInfoSuccess,
   getBidInfoFailure,
+  getBidTimelineRequest,
+  getBidTimelineSuccess,
+  getBidTimelineFailure,
   getReceivedBidsRequest,
   getReceivedBidsSuccess,
   getReceivedBidsFailure,
@@ -537,6 +581,9 @@ export const {
   acceptBidChangeRequest,
   acceptBidChangeSuccess,
   acceptBidChangeFailure,
+  getbidSnapshotRequest,
+  getbidSnapshotSuccess,
+  getbidSnapshotFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

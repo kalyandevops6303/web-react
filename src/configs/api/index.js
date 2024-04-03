@@ -137,10 +137,11 @@ const API = {
     terminateProject: `${apiCreateProjectEndpoint}/api/v1/project/termination`,
     relistProject: `${apiCreateProjectEndpoint}/api/v1/project/relisting`,
     relistProjectByDate: `${apiCreateProjectEndpoint}/api/v1/project/relist-by-date`,
-    requestChange: `${apiCreateProjectEndpoint}/api/v1/project/request-change`,
-    rejectBidChange: `${apiCreateProjectEndpoint}/api/v1/bid/selection/reject-bid`,
-    acceptBidChange: `${apiCreateProjectEndpoint}/api/v1/bid/selection/accept-bid`,
-
+    requestChange: `${apiCreateProjectEndpoint}/api/v1/request-bid-changes`,
+    rejectBidChange: `${apiCreateProjectEndpoint}/api/v1/reject-bid-changes`,
+    acceptBidChange: `${apiCreateProjectEndpoint}/api/v1/accept-bid-changes`,
+    getBidTimeline: `${apiCreateProjectEndpoint}/api/v1/bid-timeline`,
+    getBidSnapshot: `${apiCreateProjectEndpoint}/api/v1/bid-snapshot`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
@@ -151,6 +152,7 @@ const API = {
     updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
     extendDocValidity: `${apiCreateProjectEndpoint}/api/v1/project/documents-validity-extension`,
     extendPaymentValidity: `${apiCreateProjectEndpoint}/api/v1/project/payment-validity-extension`,
+
     // invite get
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,

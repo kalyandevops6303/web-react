@@ -189,6 +189,10 @@ const BidDetailsWrap = styled.div`
       border-bottom: 1px solid ${theme.cardHeaderBorderColor};
     }
   }
+
+  .min-height-400 {
+    min-height: 400px;
+  }
 `;
 const BidWrapper = styled.div`
   .basic-title {
@@ -231,7 +235,6 @@ const BidWrapper = styled.div`
   .card-cta-disabled {
     text-decoration: underline;
     color: ${theme.activeNavPillText}4f;
-    cursor: pointer;
     font-weight: 500;
   }
   .indicator {
@@ -245,6 +248,7 @@ const BidWrapper = styled.div`
     color: ${theme.red};
   }
   .meta-data {
+    width: 20%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -255,6 +259,9 @@ const BidWrapper = styled.div`
     .card-cta {
       text-align: right;
     }
+  }
+  .timeline-single-item {
+    width: 80%;
   }
 
   // Accordion

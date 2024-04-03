@@ -1,27 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAccordion } from 'reactstrap';
-import { useParams } from 'react-router-dom';
+import {
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
+  Card,
+  CardBody,
+  CardText,
+  UncontrolledAccordion,
+} from 'reactstrap';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateTime } from 'luxon';
+import DateTime from '../../../lib/date-time';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import theme from '../../../configs/themeVariables';
 import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
 import Empty from './Empty';
-import { getBidDetails } from '../../../redux/actions/projectDetailsAction';
+import { acceptBidChange, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import BidChangeRequestModal from '../../modals/BidChangeRequestModal';
-import AcceptBidModal from '../../modals/AcceptBidModal';
+import AcceptBidModal from '../../modals/AccpetBidModal';
 import RejectBidChangeModal from '../../modals/RejectBidChangeModal';
 
 const BidSubmitted = () => {
   const dispatch = useDispatch();
   const userData = useSelector(selectUserData);
+  const param = useParams();
   const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
   const loading = useSelector((state) => state.projectDetails.getBidInfoLoading);
+  const bidTimeline = useSelector((state) => state.projectDetails.bidTimeline);
+  const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
+  const isBidAccepting = useSelector((state) => state.projectDetails.acceptBidChangeLoading);
   const [open, setOpen] = useState(null);
   const [bidRequestModal, setBidRequestModal] = useState(false);
   const [acceptBidModal, setAcceptBidModal] = useState(false);
@@ -30,6 +42,7 @@ const BidSubmitted = () => {
   const toggleBidModal = () => setBidModal(!bidModal);
   const toggleAccepetModal = () => setAcceptBidModal(!acceptBidModal);
   const toggleRejectBidModal = () => setRejectBidModal(!rejectBidModal);
+  const navigate = useNavigate();
 
   const [selectedTimeline, setSelectedTimeline] = useState();
 
@@ -45,13 +58,13 @@ const BidSubmitted = () => {
     BID_REVIEWED: 'BID_REVIEWED',
     BID_ACCEPTED: 'BID_ACCEPTED',
     BID_SUBMITTED: 'BID_SUBMITTED',
-    BID_CHANGE_ACCPETED: 'BID_CHANGE_ACCPETED',
+    BID_CHANGE_ACCPETED: 'BID_CHANGE_ACCEPTED',
     BID_CHANGE_REJECTED: 'BID_CHANGE_REJECTED',
     BID_CHANGE_REQUEST: 'BID_CHANGE_REQUEST',
   };
 
-  const getStatusColor = (bid_action) => {
-    switch (bid_action) {
+  const getStatusColor = (action) => {
+    switch (action) {
       case status.BID_UPDATED:
         return theme.purpleTimelimeColor;
       case status.BID_REVIEWED:
@@ -69,8 +82,8 @@ const BidSubmitted = () => {
     }
   };
 
-  const getBidAction = (bid_action) => {
-    switch (bid_action) {
+  const getBidAction = (action) => {
+    switch (action) {
       case status.BID_UPDATED:
         return 'Bid Updated';
       case status.BID_REVIEWED:
@@ -89,11 +102,10 @@ const BidSubmitted = () => {
         return '';
     }
   };
-  const param = useParams();
 
   useEffect(() => {
     if (open === 1) {
-      dispatch(getBidDetails({ project_id: param?.projectId }));
+      dispatch(getBidTimeline({ project_id: param?.projectId }));
     }
   }, [open]);
 
@@ -102,30 +114,51 @@ const BidSubmitted = () => {
     setSelectedTimeline(item);
   };
 
+  const onEditBidClick = () => {
+    if (bidInfo?.bid_by?.entity === userTypes.talent) {
+      navigate(
+        `/create-bid/${bidInfo?.project_id}/${bidInfo?.project_type.toLowerCase()}-${bidInfo?.bid_type.toLowerCase()}/${
+          bidInfo?._id
+        }/milestone`,
+      );
+    } else {
+      navigate(
+        `/create-bid/${bidInfo?.project_id}/${bidInfo?.project_type.toLowerCase()}-${bidInfo?.bid_type.toLowerCase()}/${
+          bidInfo?._id
+        }/team`,
+      );
+    }
+  };
+
   const bidUpdatesDataSet = [];
-  bidInfo?.timeline?.map((item) =>
+  bidTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
-      color: getStatusColor(item?.bid_action),
+      color: getStatusColor(item?.action),
       customContent: (
         <div className="d-flex justify-content-between mb-1">
-          <div>
-            <h6 className={`mb-25 ${item?.bid_action === status.BID_CHANGE_REJECTED ? 'color-red' : ''}`}>
-              {getBidAction(item?.bid_action)}
+          <div className="timeline-single-item">
+            <h6 className={`mb-25 ${item?.action === status.BID_CHANGE_REJECTED ? 'color-red' : ''}`}>
+              {getBidAction(item?.action)}
             </h6>
             <span className="d-block mb-1">
-              {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
+              {item?.time ? DateTime.fromMillis(item?.time).toFormat('MMM dd, yy') : '-'}
             </span>
-            <NameInfo name={item?.entity?.name} info={item?.entity?.role} img={item?.entity?.image} />
-            {item?.change_request && <CardText className="mt-1">{item?.change_request}</CardText>}{' '}
+            <NameInfo name={item?.by_entity?.name} info={item?.by_entity?.role} img={item?.by_entity?.image} />
+            {item?.description && <CardText className="mt-1 word-wrap">{item?.description}</CardText>}{' '}
           </div>
           <div className="meta-data">
-            <span className="time ms-auto">
-              {item?.created_at ? DateTime?.fromMillis(item?.created_at)?.toRelative() : '-'}
-            </span>
-            {(item?.bid_action === status.BID_UPDATED || item?.bid_action === status.BID_SUBMITTED) && (
-              <CardText onClick={() => handleViewBid(item)} className="card-cta">
-                View Bid
+            <span className="time ms-auto">{item?.time ? DateTime?.fromMillis(item?.time)?.toRelative() : '-'}</span>
+
+            {item?.can_edit ? (
+              <CardText className="card-cta" onClick={onEditBidClick}>
+                Edit Bid
               </CardText>
+            ) : (
+              (item?.action === status.BID_UPDATED || item?.action === status.BID_SUBMITTED) && (
+                <CardText onClick={() => handleViewBid(item)} className="card-cta">
+                  View Bid
+                </CardText>
+              )
             )}
           </div>
         </div>
@@ -135,6 +168,7 @@ const BidSubmitted = () => {
 
   const handleCancel = () => {
     setBidRequestModal(false);
+    setAcceptBidModal(false);
   };
   const handleBidChangeRequest = () => {
     setBidRequestModal(true);
@@ -148,64 +182,135 @@ const BidSubmitted = () => {
     setBidModal(false);
     setAcceptBidModal(true);
   };
+  const onAcceptSuccess = () => {
+    toggleAccepetModal();
+  };
+  const onAccept = () => {
+    dispatch(
+      acceptBidChange({
+        snapshot_id: selectedTimeline?.snapshot_id,
+        project_id: param?.projectId,
+        onSuccess: onAcceptSuccess,
+      }),
+    );
+  };
 
-  return (
-    <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
-      <AccordionItem>
-        <AccordionHeader onClick={() => toggle(1)} targetId="1">
-          <AccordionHeadStyle>
-            <span className="title-head">
-              {userData?.user_type === userTypes.client ? 'Accpeted Bid' : 'Bid Submitted'}{' '}
-            </span>
-
-            <div className="d-flex gap-1 aling-items-center">
-              <CardText className="d-none view-all-cta">Give rating</CardText>
+  const BidTimelineAccordion = (
+    <div>
+      <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
+        <AccordionItem>
+          <AccordionHeader onClick={() => toggle(1)} targetId="1">
+            <AccordionHeadStyle>
+              <span className="title-head">
+                {userData?.user_type === userTypes.client ? 'Accepted Bid' : 'Bid Submitted'}
+              </span>
 
               <div className="d-flex gap-1 aling-items-center">
-                <div>
-                  <span className="key">Duration</span>
-                  <CardText className="value text-end">
-                    {bidInfo?.duration}
-                    {bidInfo?.duration_type?.charAt(0).toLowerCase()}
-                  </CardText>
-                </div>
-                <div className="">
-                  <span className="key">Talent Cost</span>
-                  <CardText className="value text-end">${bidInfo?.talent_cost}</CardText>
-                </div>
-                <div className="me-1">
-                  <span className="key">Updated at</span>
-                  <CardText className="value text-end">Time</CardText>
+                <CardText className="d-none view-all-cta">Give rating</CardText>
+
+                <div className="d-flex gap-1 aling-items-center">
+                  <div>
+                    <span className="key">Duration</span>
+                    <CardText className="value text-end">
+                      {bidInfo?.total_estimated_duration?.duration}
+                      {bidInfo?.total_estimated_duration?.duration_type?.charAt(0).toLowerCase()}
+                    </CardText>
+                  </div>
+                  <div className="">
+                    <span className="key">Talent Cost</span>
+                    <CardText className="value text-end">${bidInfo?.total_estimated_cost}</CardText>
+                  </div>
+                  <div className="me-1">
+                    <span className="key">Updated at</span>
+
+                    <CardText className="value text-end">
+                      {bidInfo?.updated_at ? DateTime.fromMillis(bidInfo?.updated_at).toFormat('MMM dd, yy') : ''}
+                    </CardText>
+                  </div>
                 </div>
               </div>
-            </div>
-          </AccordionHeadStyle>
-        </AccordionHeader>
+            </AccordionHeadStyle>
+          </AccordionHeader>
 
-        {loading ? (
-          <ComponentSpinner />
-        ) : (
-          <AccordionBody accordionId="1" className="accordion-status-body">
-            <div className={`d-flex justify-content-end mb-2 card-cta${bidInfo?.is_bid_editable ? '' : '-disabled'} `}>
-              <CardText onClick={handleBidChangeRequest}>Bid Change Request</CardText>
-            </div>
-            {bidInfo?.timeline ? <Timeline data={bidUpdatesDataSet} /> : <Empty message="No data found" />}
-          </AccordionBody>
-        )}
-        {bidModal && (
-          <BidPreviewModal
-            onReject={handleReject}
-            onAccept={handleAccept}
-            selectedTimeline={selectedTimeline}
-            modal={bidModal}
-            toggleModal={toggleBidModal}
+          {loading || bidTimelineLoading ? (
+            <ComponentSpinner />
+          ) : (
+            <AccordionBody accordionId="1" className="accordion-status-body">
+              {userData?.user_type === userTypes.client && (
+                <div
+                  className={`d-flex justify-content-end mb-2 card-cta${
+                    bidTimeline?.can_request_changes ? '' : '-disabled'
+                  } `}
+                >
+                  <CardText onClick={bidTimeline?.can_request_changes ? handleBidChangeRequest : null}>
+                    Bid Change Request
+                  </CardText>
+                </div>
+              )}
+              {bidTimeline?.timeline ? <Timeline data={bidUpdatesDataSet} /> : <Empty message="No data found" />}
+            </AccordionBody>
+          )}
+          {bidModal && (
+            <BidPreviewModal
+              onReject={handleReject}
+              onAccept={handleAccept}
+              selectedTimeline={selectedTimeline}
+              modal={bidModal}
+              toggleModal={toggleBidModal}
+            />
+          )}
+        </AccordionItem>
+        {bidRequestModal && <BidChangeRequestModal modal={bidRequestModal} toggleModal={handleCancel} />}
+        {/* {acceptBidModal && (
+          <AcceptBidModal selectedTimeline={selectedTimeline} modal={acceptBidModal} toggleModal={toggleAccepetModal} />
+        )} */}
+
+        {acceptBidModal && (
+          <AcceptBidModal
+            modalData={{
+              name: bidInfo?.bid_by?.name,
+              role: bidInfo?.bid_by?.user_type === userTypes.team ? 'Team Name' : bidInfo?.bid_by?.role,
+              value: bidInfo?.total_estimated_cost,
+            }}
+            modal={acceptBidModal}
+            toggleModal={handleCancel}
+            data={bidInfo}
+            onAccept={onAccept}
+            isLoading={isBidAccepting}
           />
         )}
-      </AccordionItem>
-      {bidRequestModal && <BidChangeRequestModal modal={bidRequestModal} toggleModal={handleCancel} />}
-      {acceptBidModal && <AcceptBidModal modal={acceptBidModal} toggleModal={toggleAccepetModal} />}
-      {rejectBidModal && <RejectBidChangeModal modal={rejectBidModal} toggleModal={toggleRejectBidModal} />}
-    </UncontrolledAccordion>
+        {rejectBidModal && (
+          <RejectBidChangeModal
+            selectedTimeline={selectedTimeline}
+            modal={rejectBidModal}
+            toggleModal={toggleRejectBidModal}
+          />
+        )}
+      </UncontrolledAccordion>
+    </div>
+  );
+
+  return (
+    <div>
+      {userData?.user_type !== userTypes.client && BidTimelineAccordion}
+
+      {/* For Client if accepted bid is not present it will show disabled card  */}
+      {userData?.user_type === userTypes.client && (
+        <div>
+          {bidInfo?.status === 'ACCEPTED' ? (
+            BidTimelineAccordion
+          ) : (
+            <Card>
+              <CardBody className="basic-title">
+                <div className="d-flex justify-content-between">
+                  <CardText className="d-flex fw-bold mb-0 disabled-color">Accepted Bid</CardText>
+                </div>
+              </CardBody>
+            </Card>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 export default BidSubmitted;

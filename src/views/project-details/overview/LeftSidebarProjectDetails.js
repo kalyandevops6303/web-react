@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.svg';
 import Avatar from '@components/avatar';
@@ -26,6 +26,7 @@ import RelistSuccessModal from '../../modals/RelistSuccessModal';
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const params = useParams();
   const userData = useSelector(selectUserData);
   const [inviteModal, setInviteModal] = useState(false);
@@ -63,9 +64,10 @@ const LeftSidebarProjectDetails = () => {
   };
 
   const isLoading = useSelector(projectDetailsLoading);
+  const isBidView = location.pathname.startsWith('/project-details/') && location.pathname.endsWith('/bid');
 
   useEffect(() => {
-    dispatch(getProjectDetails(params.projectId));
+    dispatch(getProjectDetails({ projectId: params.projectId, isBidView }));
   }, []);
 
   const [daysLeft, setDaysLeft] = useState(0);
