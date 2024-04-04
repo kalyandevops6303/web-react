@@ -273,6 +273,19 @@ const RelistModalWrapper = styled.div`
   }
 `;
 
+const ViewFilesModalWrapper = styled.div`
+  .modal-header,
+  .modal-body {
+    background-color: #f8f8f8 !important;
+    border-radius: 6px;
+  }
+
+  .white-container {
+    background-color: #ffffff;
+    border-radius: 6px;
+  }
+`;
+
 export {
   RemoveMemberModalWrapper,
   MessageIconWrap,
@@ -285,4 +298,5 @@ export {
   PublicTeamMembersListingModalWrapper,
   RelistModalWrapper,
   ArtifactsModalWrap,
+  ViewFilesModalWrapper,
 };

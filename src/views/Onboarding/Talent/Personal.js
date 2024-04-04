@@ -48,6 +48,7 @@ import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
+  getFileSize,
   returnFilteredDropdownOptions,
 } from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
@@ -236,15 +237,6 @@ const Personal = () => {
     }
   };
 
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-    }
-  };
-
   const formattedDate = new Date()
     .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
     .replace(',', '')
@@ -299,7 +291,7 @@ const Personal = () => {
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate}
