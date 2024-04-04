@@ -208,6 +208,8 @@ const Listing = ({ stepper, setListingDetails }) => {
                       placeholder="Select start date"
                       options={{
                         minDate: 'today',
+                        // eslint-disable-next-line no-unsafe-optional-chaining
+                        maxDate: new Date().setMonth(new Date()?.getMonth() + 3),
                         dateFormat: 'M d, Y',
                       }}
                       className={classNames('form-control', {
@@ -232,7 +234,9 @@ const Listing = ({ stepper, setListingDetails }) => {
                       disabled={watch('listingOption') !== 'select-duration'}
                       placeholder="Select end date"
                       options={{
-                        minDate: watch('startDate') ? watch('startDate')[0] : 'today',
+                        minDate: watch('startDate')
+                          ? new Date(watch('startDate')[0]).setDate(watch('startDate')[0].getDate() + 1)
+                          : 'today',
                         maxDate: watch('startDate')
                           ? // eslint-disable-next-line no-unsafe-optional-chaining
                             new Date(watch('startDate')[0]).setMonth(watch('startDate')[0]?.getMonth() + 3)

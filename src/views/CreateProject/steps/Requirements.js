@@ -68,7 +68,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           yup
             .number()
             .min(1, 'Expected duration should be at least 1 week')
-            .max(52, 'Expected duration cannot be greater than 52 weeks')
+            .max(12, 'Expected duration cannot be greater than 12 weeks')
             .integer('Expected duration should be a number')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
@@ -231,6 +231,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     watch,
     setValue,
     clearErrors,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -262,6 +263,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   useEffect(() => {
     clearErrors('expectedDuration');
+    if (watch('expectedDuration') >= 0) {
+      trigger('expectedDuration');
+    }
   }, [watch('expectedDurationPeriod')]);
 
   const loadSkillsOptions = async (search) => {
