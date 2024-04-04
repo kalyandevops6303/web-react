@@ -137,8 +137,8 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
             />
           </AccountCreatedImageContainer>
           <div className="ms-2">
-            <p className="font-large-1 text-center mb-3">Well Done!</p>
-            <p className="w-75">You have completed bidding for this project. Good Luck!</p>
+            <p className="modal-heading text-center mb-3">Well Done!</p>
+            <p className="w-75 modal-text">You have completed bidding for this project. Good Luck!</p>
           </div>
         </div>
         <div className="d-flex justify-content-end align-items-center mt-2 mb-2 pe-1">

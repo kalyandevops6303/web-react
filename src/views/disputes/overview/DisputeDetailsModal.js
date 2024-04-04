@@ -322,7 +322,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
         customContent: (
           <div>
             <div className="d-flex justify-content-between mb-25">
-              <p className="fw-bold mb-0">Dispute Raised</p>
+              <p className="fw-bold modal-heading mb-0">Dispute Raised</p>
               <p className="font-small-3 mb-0">{DateTime?.fromMillis(created_at)?.toRelative()}</p>
             </div>
             <p>{DateTime.fromMillis(created_at).toFormat('MMM dd, yy')}</p>
@@ -341,7 +341,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
               </div>
             </div>
             <p className="fw-bold mt-1 mb-75">{dispute_type?.name}</p>
-            <p className="font-medium-1" style={{ wordWrap: 'break-word' }}>
+            <p className="modal-text" style={{ wordWrap: 'break-word' }}>
               {description || ''}
             </p>
           </div>

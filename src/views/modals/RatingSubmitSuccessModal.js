@@ -18,8 +18,8 @@ const RatingSubmitSuccessModal = ({ modal, toggleModal, data }) => {
         <div className="d-flex align-items-center">
           <img src={ThankYouGif} alt="closed" height={217} width={217} className="me-2" />
           <div className="w-100">
-            <h2 className="font-large-1 mb-1">Thank You!</h2>
-            <p className="font-medium-3 fw-bold">Your input is valuable to us.</p>
+            <h2 className="modal-heading mb-1">Thank You!</h2>
+            <p className="modal-text fw-bold">Your input is valuable to us.</p>
             <Rating
               readonly
               initialRating={rating}

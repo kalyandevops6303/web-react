@@ -21,10 +21,10 @@ const MarkMilestoneCompleteModal = ({ data, onSuccess, modal, toggleModal }) => 
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" src={Notepad} width={180} height={180} alt="gif" />
             <div className="content-side">
-              <CardTitle className="mb-1 modal-title-custom">
+              <CardTitle className="mb-1 modal-heading">
                 Are you sure you want to mark the milestone as complete?
               </CardTitle>
-              <CardSubtitle className="mb-75 subtitle">
+              <CardSubtitle className="mb-75 modal-text">
                 <b>Milestone {data?.seq}:</b> {data?.description}
               </CardSubtitle>
             </div>

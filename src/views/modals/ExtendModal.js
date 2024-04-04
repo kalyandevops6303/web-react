@@ -33,8 +33,8 @@ const ExtendModal = ({ modal, toggleModal, onExtend, validityType, projectDetail
           <div className="d-flex align-items-center px-50 py-0">
             <img src={SwitchGif} alt="complete-profile" width={170} height={170} />
             <div className="pe-1 ms-3">
-              <h2 className="fw-bold title">Extend validity</h2>
-              <p className="fw-normal mt-1 sub-title">
+              <h2 className="fw-bold modal-heading">Extend validity</h2>
+              <p className="fw-normal mt-1 modal-text">
                 {validityType === 'DOCUMENT'
                   ? projectDetails?.nda?.is_nda
                     ? 'NDA and Contract'

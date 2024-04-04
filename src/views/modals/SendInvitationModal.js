@@ -37,8 +37,8 @@ const SendInvitationModal = ({
       <ModalHeader toggle={createTeamView ? redirectToDashboard : toggleModal} />
       <ModalBody>
         <div className="px-3">
-          <h2 className="fw-bold font-large-1 text-center mb-3">Send Invitation</h2>
-          <p className="mb-2">{description}</p>
+          <h2 className="fw-bold modal-heading text-center mb-3">Send Invitation</h2>
+          <p className="mb-2 modal-text">{description}</p>
           <InviteUsersListContainer>
             {selectedTalents.map((talent) => (
               <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center mb-2 w-100 mx-0">

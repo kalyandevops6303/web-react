@@ -32,8 +32,8 @@ const TerminateContractModal = ({ project_id, docType, modalData, modal, toggleM
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
             <div>
-              <CardTitle className="modal-title-custom">Early termination</CardTitle>
-              <CardSubtitle className="mb-75 fw-bold subtitle">
+              <CardTitle className="modal-heading">Early termination</CardTitle>
+              <CardSubtitle className="mb-75 fw-bold modal-text">
                 Terminate {isContractView ? 'Contract' : 'NDA'}
               </CardSubtitle>
 

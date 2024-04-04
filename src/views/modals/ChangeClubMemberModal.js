@@ -49,8 +49,8 @@ const ChangeClubMemberModal = ({ modal, toggleModal, memberType }) => {
         <div className="d-flex align-items-center">
           <img src={SwitchMember} alt="great-job" width={120} height={120} className="me-4" />
           <div className="w-100">
-            <h2 className="fw-bold font-large-1 mb-1">Change Membership</h2>
-            <p className="fw-light font-medium-3 mt-75">
+            <h2 className="fw-bold modal-heading mb-1">Change Membership</h2>
+            <p className="fw-light modal-text mt-75">
               You are about to change the role type to <span className="text-primary fw-bolder">{member}.</span>
             </p>
             <InviteUsersListContainer>

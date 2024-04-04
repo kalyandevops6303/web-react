@@ -18,12 +18,12 @@ const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleMod
           <div className="d-flex justify-content-between pr-1">
             <img className="gif m-auto" src={DeleteGif} width={160} height={160} alt="gif" />
             <div style={{ width: '60%' }}>
-              <CardTitle className="modal-title-custom">
+              <CardTitle className="modal-heading">
                 {isClubInvitation ? 'Club Invitation Request' : title}
               </CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">Decline request</CardSubtitle>
 
-              <CardText className="desc fw-light w-76">You are declining this request from</CardText>
+              <CardText className="modal-text fw-light w-76">You are declining this request from</CardText>
               <section className="d-flex gap-2 stats">
                 <div>
                   <CardText className="value mb-25">

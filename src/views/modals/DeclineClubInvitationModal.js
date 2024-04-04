@@ -24,9 +24,9 @@ const DeclineClubInvitaionModal = ({ modal, toggleModal, data, onDecline, onLoad
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
             <div className="me-4">
-              <CardTitle className="modal-title-custom">Tough Call</CardTitle>
+              <CardTitle className="modal-heading">Tough Call</CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">Decline Invitation</CardSubtitle>
-              <CardText className="desc fw-light w-76">
+              <CardText className="modal-text fw-light w-76">
                 You are about to decline the invitation for the below club
               </CardText>
 

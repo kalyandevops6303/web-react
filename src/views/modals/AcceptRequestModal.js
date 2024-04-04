@@ -18,13 +18,13 @@ const AcceptRequestModal = ({ title, isLoading, data, onAccept, modal, toggleMod
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" style={{ margin: 'auto' }} src={AcceptGif} width={160} height={160} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">
+              <CardTitle className="modal-heading">
                 {isClubInvitation ? 'Club Invitation Request' : title}
               </CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">Accept request</CardSubtitle>
 
               {isClubInvitation ? (
-                <CardText className="desc fw-light">By accepting this request you will be added to the club</CardText>
+                <CardText className="modal-text fw-light">By accepting this request you will be added to the club</CardText>
               ) : (
                 <CardText className="desc fw-light">
                   {`By accepting this request ${

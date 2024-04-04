@@ -18,8 +18,8 @@ const FeedbackForCompleteModal = ({ modal, toggleModal, data, projectName }) => 
           <div className="d-flex justify-content-between pr-1">
             <img className="gif object-fit-contain" src={Feedback} width={220} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Great Job!</CardTitle>
-              <CardSubtitle className="mb-75 subtitle">
+              <CardTitle className="modal-heading">Great Job!</CardTitle>
+              <CardSubtitle className="mb-75 modal-text">
                 You have successfully completed the <br /> milestone
               </CardSubtitle>
               <CardSubtitle className="subtitle mb-25">

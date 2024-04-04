@@ -30,8 +30,8 @@ const SubmitMilestoneModal = ({ isLoading, onSuccess, modal, toggleModal, links,
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" src={Notepad} width={180} height={180} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Are you sure you want to make this submission? </CardTitle>
-              <CardSubtitle className="mb-1 subtitle">
+              <CardTitle className="modal-heading">Are you sure you want to make this submission? </CardTitle>
+              <CardSubtitle className="mb-1 modal-text">
                 Only after submission client will receive <br /> these files.{' '}
               </CardSubtitle>
               <ArtifactsModalWrap className="mb-2 modal-artifacts">
