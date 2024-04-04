@@ -48,6 +48,7 @@ import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
+  renderFileSize,
   returnFilteredDropdownOptions,
 } from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
@@ -233,15 +234,6 @@ const Personal = () => {
       fetchUploadUrl(e.target.files[0]);
     } else {
       e.target.value = '';
-    }
-  };
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
     }
   };
 

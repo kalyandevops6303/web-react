@@ -8,7 +8,7 @@ import DateTime from '../../lib/date-time';
 import { ViewFilesModalWrapper } from './style';
 import theme from '../../configs/themeVariables';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
-import { downloadFile } from '../../utility/Utils';
+import { downloadFile, renderFileSize } from '../../utility/Utils';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
 
 const ViewFilesModal = ({ modal, toggleModal, documents, modalTitle }) => {
@@ -20,15 +20,6 @@ const ViewFilesModal = ({ modal, toggleModal, documents, modalTitle }) => {
 
   const onDownloadFileUrlSuccess = ({ download_url, file_name }) => {
     downloadFile({ data: { download_url }, file_name });
-  };
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-    }
   };
 
   return (

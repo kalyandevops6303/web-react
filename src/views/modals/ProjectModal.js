@@ -34,7 +34,7 @@ import { selectSavedUserData, selectUserData } from '../../redux/selectors/authS
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { downloadFile } from '../../utility/Utils';
+import { downloadFile, renderFileSize } from '../../utility/Utils';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 
 const ViewProjectDetailModalWrap = styled.div`
@@ -155,15 +155,6 @@ const ProjectModal = ({
       toggleCompleteProfileModal();
     } else {
       dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
-    }
-  };
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
     }
   };
 
