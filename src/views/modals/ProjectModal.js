@@ -34,7 +34,7 @@ import { selectSavedUserData, selectUserData } from '../../redux/selectors/authS
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { downloadFile, renderFileSize } from '../../utility/Utils';
+import { downloadFile, getFileSize } from '../../utility/Utils';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 
 const ViewProjectDetailModalWrap = styled.div`
@@ -380,7 +380,7 @@ const ProjectModal = ({
                       </span>
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {renderFileSize(document?.size)}
+                      {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
                       {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')}

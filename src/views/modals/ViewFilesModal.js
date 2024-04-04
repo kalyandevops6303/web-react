@@ -8,7 +8,7 @@ import DateTime from '../../lib/date-time';
 import { ViewFilesModalWrapper } from './style';
 import theme from '../../configs/themeVariables';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
-import { downloadFile, renderFileSize } from '../../utility/Utils';
+import { downloadFile, getFileSize } from '../../utility/Utils';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
 
 const ViewFilesModal = ({ modal, toggleModal, documents, modalTitle }) => {
@@ -66,7 +66,7 @@ const ViewFilesModal = ({ modal, toggleModal, documents, modalTitle }) => {
                       </span>
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {renderFileSize(document?.size)}
+                      {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
                       {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')}

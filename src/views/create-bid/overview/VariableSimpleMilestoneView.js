@@ -36,7 +36,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
-import { downloadFile, downloadUploadedFile, formatDateWithDash, renderFileSize } from '../../../utility/Utils';
+import { downloadFile, downloadUploadedFile, formatDateWithDash, getFileSize } from '../../../utility/Utils';
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import { bidDetailsLoading, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
@@ -444,7 +444,7 @@ const VariableSimpleMilestoneView = () => {
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate(file?.file?.created_at)}

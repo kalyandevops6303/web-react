@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
 import { TagsContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat, downloadUploadedFile, renderFileSize } from '../../../utility/Utils';
+import { convertTo12HourFormat, downloadUploadedFile, getFileSize } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
@@ -74,7 +74,7 @@ const Preview = ({
               </div>
             </Col>
             <Col sm="2" md="2" lg="4">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {renderFormattedDate(new Date())}

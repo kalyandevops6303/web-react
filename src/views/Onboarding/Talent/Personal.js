@@ -48,7 +48,7 @@ import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
-  renderFileSize,
+  getFileSize,
   returnFilteredDropdownOptions,
 } from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
@@ -291,7 +291,7 @@ const Personal = () => {
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate}
