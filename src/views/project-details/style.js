@@ -177,6 +177,10 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
       font-weight: 300;
     }
   }
+
+  .attachments {
+    color: ${theme.activeColor};
+  }
 `;
 
 const BidDetailsWrap = styled.div`

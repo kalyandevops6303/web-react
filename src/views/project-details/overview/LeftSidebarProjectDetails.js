@@ -24,7 +24,6 @@ import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../../modals/RelistSuccessModal';
 import ViewFilesModal from '../../modals/ViewFilesModal';
-import theme from '../../../configs/themeVariables';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -285,9 +284,8 @@ const LeftSidebarProjectDetails = () => {
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (
               <div
-                className="d-flex align-items-center cursor-pointer"
+                className="d-flex align-items-center cursor-pointer attachments"
                 onClick={() => setViewFilesModal(true)}
-                style={{ color: theme.activeColor }}
               >
                 <Paperclip size={14} />
                 <span className="ms-25">{projectDetailsData?.details?.documents?.length}</span>

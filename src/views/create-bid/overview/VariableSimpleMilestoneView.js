@@ -564,7 +564,7 @@ const VariableSimpleMilestoneView = () => {
             </CardHeader>
             <CardBody className="pt-2 pb-0">
               <Card className="white-card-bg">
-                {selectUserDetailsData.user_type === userTypes.team && (
+                {selectUserDetailsData?.user_type === userTypes.team && (
                   <InfoContainer>
                     <Info style={{ marginRight: '5px' }} />
                     Variable Price: The variable cost will be equally distributed between each talent
