@@ -7,14 +7,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
-import { selectIsNDA, selectNDATimeline } from '../../../redux/selectors/projectDetailsSelectors';
+import { selectNDAData, selectNDATimeline } from '../../../redux/selectors/projectDetailsSelectors';
 import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { getDocumentTimeline } from '../../../redux/actions/projectDetailsAction';
 
 const NDATimeline = () => {
   const navigate = useNavigate();
-  const isContract = useSelector(selectIsNDA);
+  const ndaData = useSelector(selectNDAData);
   const contractTimeline = useSelector(selectNDATimeline);
   const dispatch = useDispatch();
   const param = useParams();
@@ -72,16 +72,16 @@ const NDATimeline = () => {
           <AccordionHeadStyle onClick={() => toggle(1)}>
             <span className="d-flex title-head">
               NDA
-              {isContract?.is_contract_terminated === false ? (
-                <span> {!isContract?.is_signed ? <span className="indicator" /> : ''}</span>
+              {ndaData?.is_contract_terminated === false ? (
+                <span> {!ndaData?.is_signed ? <span className="indicator" /> : ''}</span>
               ) : (
                 ''
               )}
             </span>
 
-            {isContract?.is_contract_terminated === false ? (
+            {ndaData?.is_contract_terminated === false ? (
               <div>
-                {isContract?.is_signed ? (
+                {ndaData?.is_signed ? (
                   <div className="d-flex gap-1 aling-items-center">
                     <CardText className="d-none view-card-cta">Give rating</CardText>
                     <CardText onClick={handleContract} className="view-card-cta">
@@ -92,9 +92,7 @@ const NDATimeline = () => {
                       <div className="me-1">
                         <span className="key">Updated at</span>
                         <CardText className="value">
-                          {isContract?.updated_at
-                            ? DateTime.fromMillis(isContract?.updated_at).toFormat('MMM dd, yy')
-                            : '-'}
+                          {ndaData?.updated_at ? DateTime.fromMillis(ndaData?.updated_at).toFormat('MMM dd, yy') : '-'}
                         </CardText>
                       </div>
                     </div>
@@ -112,7 +110,7 @@ const NDATimeline = () => {
                 <div className="me-1">
                   <span className="key">Updated at</span>
                   <CardText className="value">
-                    {isContract?.updated_at ? DateTime.fromMillis(isContract?.updated_at).toFormat('MMM dd, yy') : '-'}
+                    {ndaData?.updated_at ? DateTime.fromMillis(ndaData?.updated_at).toFormat('MMM dd, yy') : '-'}
                   </CardText>
                 </div>
               </div>

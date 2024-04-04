@@ -248,7 +248,9 @@ const BidSubmitted = () => {
                   </CardText>
                 </div>
               )}
-              {bidTimeline?.timeline ? <Timeline data={bidUpdatesDataSet} /> : <Empty message="No data found" />}
+              <div style={{ maxHeight: '40rem', overflowY: 'auto', paddingRight: '0.5rem', paddingTop: '0.5rem' }}>
+                {bidTimeline?.timeline ? <Timeline data={bidUpdatesDataSet} /> : <Empty message="No data found" />}
+              </div>
             </AccordionBody>
           )}
           {bidModal && (

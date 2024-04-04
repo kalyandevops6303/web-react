@@ -6,8 +6,8 @@ const initialState = {
   getTeamMember: [],
   getTeamMemberLoading: false,
   receivedBids: [],
-  isNDA: null,
-  isContract: null,
+  ndaData: null,
+  contractData: null,
   getReceivedBidsLoading: false,
   removeWorkerLoading: false,
   ndaTimeline: null,
@@ -176,8 +176,8 @@ const projectDetails = createSlice({
 
     clearDocstate: (state) => ({
       ...state,
-      isNDA: null,
-      isContract: null,
+      ndaData: null,
+      contractData: null,
       ndaTimeline: null,
       contractTimeline: null,
     }),

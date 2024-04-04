@@ -15,8 +15,8 @@ import { getBidDetails } from '../../../redux/actions/projectDetailsAction';
 import {
   projectDetails,
   projectDetailsLoading,
-  selectIsContract,
-  selectIsNDA,
+  selectContractData,
+  selectNDAData,
 } from '../../../redux/selectors/projectDetailsSelectors';
 import ContractTimeline from './ContractTimeline';
 import NDATimeline from './NDATimeline';
@@ -41,8 +41,8 @@ const BidTimeline = () => {
   const param = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const contractData = useSelector(selectIsContract);
-  const ndaData = useSelector(selectIsNDA);
+  const contractData = useSelector(selectContractData);
+  const ndaData = useSelector(selectNDAData);
   const projectDetailsData = useSelector(projectDetails);
   const isDocLoading = useSelector((state) => state.projectDetails.checkDocumentActivatedLoading);
   const isLoading = useSelector(projectDetailsLoading);

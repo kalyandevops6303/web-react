@@ -9,8 +9,8 @@ import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
 import {
   projectDetails,
+  selectContractData,
   selectContractTimeline,
-  selectIsContract,
 } from '../../../redux/selectors/projectDetailsSelectors';
 import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 import { selectUserType } from '../../../redux/selectors/authSelectors';
@@ -25,7 +25,7 @@ const ContractTimeline = () => {
   const loading = useSelector((state) => state?.projectDetails?.getDocumentTimelineLoading);
   const docType = useSelector((state) => state?.projectDetails?.documentType?.doc_type);
 
-  const isContract = useSelector(selectIsContract);
+  const contractData = useSelector(selectContractData);
   const contractTimeline = useSelector(selectContractTimeline);
   const projectDetailsData = useSelector(projectDetails);
   const userType = useSelector(selectUserType);
@@ -89,20 +89,20 @@ const ContractTimeline = () => {
             {/* <span className="title-head">Contract</span> */}
             <span className="d-flex title-head">
               Contract
-              {isContract?.is_contract_terminated === false ? (
-                <span> {!isContract?.is_signed ? <span className="indicator" /> : ''}</span>
+              {contractData?.is_contract_terminated === false ? (
+                <span> {!contractData?.is_signed ? <span className="indicator" /> : ''}</span>
               ) : (
                 ''
               )}
             </span>
 
-            {isContract?.is_contract_terminated === false ? (
+            {contractData?.is_contract_terminated === false ? (
               <div>
-                {isContract?.is_signed ? (
+                {contractData?.is_signed ? (
                   <div className="d-flex gap-1 aling-items-center">
                     {userType === userTypes.client &&
-                      isContract?.is_documents_signed &&
-                      !isContract?.is_payment_made && (
+                      contractData?.is_documents_signed &&
+                      !contractData?.is_payment_made && (
                         <CardText className="view-card-cta" onClick={handlePayement}>
                           Make payment
                         </CardText>
@@ -121,8 +121,8 @@ const ContractTimeline = () => {
                       <div className="me-1">
                         <span className="key">Updated at</span>
                         <CardText className="value">
-                          {isContract?.updated_at
-                            ? DateTime.fromMillis(isContract?.updated_at).toFormat('MMM dd, yy')
+                          {contractData?.updated_at
+                            ? DateTime.fromMillis(contractData?.updated_at).toFormat('MMM dd, yy')
                             : '-'}
                         </CardText>
                       </div>
@@ -141,8 +141,8 @@ const ContractTimeline = () => {
                 <div className="me-1">
                   <span className="key">Terminated at</span>
                   <CardText className="value">
-                    {isContract?.contract_terminated_at
-                      ? DateTime.fromMillis(isContract?.contract_terminated_at).toFormat('MMM dd, yy')
+                    {contractData?.contract_terminated_at
+                      ? DateTime.fromMillis(contractData?.contract_terminated_at).toFormat('MMM dd, yy')
                       : '-'}
                   </CardText>
                 </div>

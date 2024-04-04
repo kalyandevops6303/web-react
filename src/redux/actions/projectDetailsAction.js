@@ -194,22 +194,24 @@ const checkDocumentActivated =
         dispatch(checkDocumentActivatedRequest());
 
         resContract = await checkDocumentActivatedService({ project_id, doc_type: 'CONTRACT' });
+        // These lines can be uncommented if timeline to be opened directly
         // if (resContract.data.data.show_document) {
         //   dispatch(getDocumentTimeline({ project_id, doc_type: 'CONTRACT' }));
         // }
-        dispatch(checkDocumentActivatedSuccess({ isContract: resContract.data.data }));
+        dispatch(checkDocumentActivatedSuccess({ contractData: resContract.data.data }));
       };
       if (isNDA) {
         resNDA = await checkDocumentActivatedService({ project_id, doc_type: 'NDA' });
+        // These lines can be uncommented if timeline to be opened directly
         // if (resNDA.data.data.show_document) {
         //   dispatch(getDocumentTimeline({ project_id, doc_type: 'NDA' }));
         // }
-        dispatch(checkDocumentActivatedSuccess({ isNDA: resNDA.data.data }));
+        dispatch(checkDocumentActivatedSuccess({ ndaData: resNDA.data.data }));
 
         if (resNDA.data.data.is_signed) {
           await getContract();
         } else {
-          dispatch(checkDocumentActivatedSuccess({ isContract: { show_document: false, is_signed: false } }));
+          dispatch(checkDocumentActivatedSuccess({ contractData: { show_document: false, is_signed: false } }));
         }
       } else {
         await getContract();

@@ -39,6 +39,7 @@ import theme from '../../../configs/themeVariables';
 import { getReceivedBids } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { CustomBadge } from '../../styled';
+import round from '../../../lib/round';
 
 const TableWrapper = styled.div`
   .rdt_TableHeadRow {
@@ -198,7 +199,7 @@ const ReceivedBids = ({ projectName }) => {
           <div className="table-user-sub">0 Projects</div>
         </>
       ),
-      bid: `$${item?.total_estimated_cost}`,
+      bid: `$${round(item?.total_estimated_cost, 2)}`,
       attachments: (
         <div>
           <Paperclip size={18} color={theme.bodyColor} /> <span>{item?.documents_count}</span>
@@ -232,6 +233,7 @@ const ReceivedBids = ({ projectName }) => {
 
   const statusOption = [
     { label: 'New', value: 'NEW' },
+    { label: 'Updated', value: 'UPDATED' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
     { label: 'Rejected', value: 'REJECTED' },
