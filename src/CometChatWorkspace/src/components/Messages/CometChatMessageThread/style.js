@@ -113,6 +113,7 @@ export const parentMessageStyle = (message) => {
     alignItems: 'center',
     ...alignment,
     '.sender__message__container, .receiver__message__container': {
+      width: '100%',
       maxWidth: '100%',
       '&:hover': {
         '.message__actions': {
@@ -123,6 +124,9 @@ export const parentMessageStyle = (message) => {
     '.replycount': {
       display: 'none',
     },
+    '.message__wrapper, .message__file__wrapper': {
+      width: '100%'
+    }
   };
 };
 
