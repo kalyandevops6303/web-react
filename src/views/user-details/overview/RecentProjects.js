@@ -20,16 +20,6 @@ const RecentProjects = () => {
   const metadata = { page: 1, page_size: 10 };
 
   useEffect(() => {
-    dispatch(
-      getRecentProjects({
-        user_id: param?.userId,
-        entity: param?.userType === 'CLUB' ? 'TEAM' : param?.userType.toUpperCase(),
-        metadata,
-      }),
-    );
-  }, []);
-
-  useEffect(() => {
     setHasMore(true);
     if (
       recentProjectCurrentPreview?.length === 0 ||

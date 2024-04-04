@@ -172,10 +172,10 @@ const Preview = () => {
               <div>
                 <CardText className="value mb-25">${bidDetailsData?.total_estimated_cost}</CardText>
                 <div className="d-flex align-items-center">
-                  <CardText className="key m-0">Talent Cost</CardText>
+                  <CardText className="key m-0">Talent Amount</CardText>
                   <Info size={14} color={theme.infoIcon} id="cost-info" className="ms-50" />
                   <UncontrolledTooltip placement="right" target="cost-info">
-                    <p className="m-0">Talent cost is the full fee paid to the talent</p>
+                    <p className="m-0">Talent amount is the full fee paid to the talent</p>
                   </UncontrolledTooltip>
                 </div>
               </div>

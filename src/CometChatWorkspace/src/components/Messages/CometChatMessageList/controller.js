@@ -14,10 +14,11 @@ export class MessageListManager {
   groupListenerId = 'group_' + new Date().getTime();
   callListenerId = 'call_' + new Date().getTime();
 
-  constructor(context, item, type, parentMessageId) {
+  constructor(context, item, type, parentMessageId, milestoneMessageId) {
     this.item = item;
     this.type = type;
     this.parentMessageId = parentMessageId;
+    this.milestoneMessageId = milestoneMessageId;
     this.context = context;
   }
 
@@ -66,6 +67,25 @@ export class MessageListManager {
                 .hideDeletedMessages(hideDeletedMessages)
                 .setLimit(this.limit)
                 .build();
+            } else if (this.milestoneMessageId) {
+              this.messageRequest = new CometChat.MessagesRequestBuilder()
+                .setGUID(this.item.guid)
+                .setMessageId(this.milestoneMessageId)
+                .hideReplies(true)
+                .setCategories(categories)
+                .setTypes(types)
+                .hideDeletedMessages(hideDeletedMessages)
+                .setLimit(this.limit)
+                .build();
+              this.messageRequestNext = new CometChat.MessagesRequestBuilder()
+                .setGUID(this.item.guid)
+                .setMessageId(this.milestoneMessageId - 1)
+                .hideReplies(true)
+                .setCategories(categories)
+                .setTypes(types)
+                .hideDeletedMessages(hideDeletedMessages)
+                .setLimit(this.limit)
+                .build();
             } else {
               this.messageRequest = new CometChat.MessagesRequestBuilder()
                 .setGUID(this.item.guid)
@@ -84,6 +104,10 @@ export class MessageListManager {
 
   fetchPreviousMessages() {
     return this.messageRequest.fetchPrevious();
+  }
+
+  fetchNextMessages() {
+    return this.messageRequestNext.fetchNext();
   }
 
   attachListeners(callback) {

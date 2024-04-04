@@ -30,7 +30,7 @@ import { downloadFile, downloadUploadedFile } from '../../../utility/Utils';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 
-const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilter }) => {
+const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilter, onClose }) => {
   const ResponseSchema = yup.object().shape({
     response: yup
       .string()
@@ -387,6 +387,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
           selectedDispute={selectedDispute}
           toggleDetailsModal={toggleModal}
           primaryFilter={primaryFilter}
+          onClose={onClose}
         />
       )}
       <ModalHeader toggle={toggleModal} />
@@ -414,7 +415,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
                 className="text-decoration-underline fw-bold blue-btn mb-0 me-3 cursor-pointer"
                 onClick={() => setDisputeClosedModal(true)}
               >
-                Dispute Resolved
+                Resolve Dispute
               </p>
               <p
                 className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"
@@ -530,6 +531,7 @@ DisputeDetailsModal.propTypes = {
   toggleModal: Proptypes.func,
   selectedDispute: Proptypes.object,
   primaryFilter: Proptypes.string,
+  onClose: Proptypes.func,
 };
 
 DisputeDetailsModal.defaultProps = {
@@ -537,4 +539,5 @@ DisputeDetailsModal.defaultProps = {
   toggleModal: () => {},
   selectedDispute: {},
   primaryFilter: '',
+  onClose: () => {},
 };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { useNavigate } from 'react-router';
-import { Modal, ModalHeader, ModalBody, Input, Row, Col } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, Input, Row, Col, Button } from 'reactstrap';
 import { CreateBidRadioOption } from '../styled';
 
 const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
@@ -10,10 +10,18 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
 
   const [selectedGroup, setSelectedGroup] = useState('');
 
+  const onNextClick = () => {
+    if (selectedGroup === 'CLUB') {
+      navigate('/create-club/account-details');
+    } else if (selectedGroup === 'TEAM') {
+      navigate('/create-team/profile-details');
+    }
+  };
+
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={toggleModal} />
-      <ModalBody className="pt-0 pb-3">
+      <ModalBody className="pt-0 pb-2">
         <p className="font-large-1 text-center">Create </p>
         <p className="font-medium-2 fw-bold mt-3 ms-50">Select group type -</p>
         <Row className="mt-2 px-50">
@@ -23,7 +31,6 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
               active={selectedGroup === 'CLUB'}
               onClick={() => {
                 setSelectedGroup('CLUB');
-                navigate('/create-club/account-details');
               }}
             >
               <div className="form-check form-check-inline checkbox-custom-margin">
@@ -31,8 +38,7 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
                 <div className="label">
                   <p className="fw-bolder mb-50">Club</p>
                   <p className="fw-light mb-0">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore
+                    A student led entity within a college focused on a specific domain interested in project work.
                   </p>
                 </div>
               </div>
@@ -44,7 +50,6 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
               active={selectedGroup === 'TEAM'}
               onClick={() => {
                 setSelectedGroup('TEAM');
-                navigate('/create-team/profile-details');
               }}
             >
               <div className="form-check form-check-inline checkbox-custom-margin">
@@ -52,14 +57,20 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
                 <div className="label">
                   <p className="fw-bolder mb-50">Team</p>
                   <p className="fw-light mb-0">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore{' '}
+                    A network of global talent who work together on projects in one or more areas of interest.
                   </p>
                 </div>
               </div>
             </CreateBidRadioOption>
           </Col>
         </Row>
+        {selectedGroup !== '' && (
+          <div className="d-flex justify-content-end align-items-center mt-2 mb-50">
+            <Button color="primary" onClick={onNextClick} className="me-50">
+              Next
+            </Button>
+          </div>
+        )}
       </ModalBody>
     </Modal>
   );

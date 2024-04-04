@@ -7,6 +7,7 @@ const stepName = {
   payment: 'Payment',
   rating: 'Rating',
   project: 'Project',
+  milestoneDetails: 'Milestone-Details',
 };
 
 const steps = [

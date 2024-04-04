@@ -87,7 +87,6 @@ const Project = ({ accordionName, open, data, className }) => {
   };
 
   const [createBidModal, setCreateBidModal] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
 
   const toggleCreateBidModal = () => {
@@ -203,13 +202,12 @@ const Project = ({ accordionName, open, data, className }) => {
           modal={showModal}
           toggleModal={handleToggle}
           setCreateBidModal={setCreateBidModal}
-          setSelectedProject={setSelectedProject}
           toggleCompleteProfileModal={toggleCompleteProfileModal}
           isMyTeam={false}
         />
       )}
       {createBidModal && (
-        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={selectedProject} />
+        <CreateBidModal modal={createBidModal} toggleModal={toggleCreateBidModal} selectedProject={data} />
       )}
       {completeProfileModal && (
         <CompleteProfileModal

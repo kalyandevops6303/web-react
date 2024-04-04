@@ -464,6 +464,16 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
+    favUnfavReq: (state) => ({
+      ...state,
+      favUnfavLoading: true,
+    }),
+
+    favUnfavError: (state) => ({
+      ...state,
+      favUnfavLoading: false,
+    }),
+
     makeFavSuccess: (state) => ({
       ...state,
       bidInfo: {
@@ -506,6 +516,8 @@ const projectDetails = createSlice({
 export const {
   clearDocstate,
   makeFavSuccess,
+  favUnfavReq,
+  favUnfavError,
   removeFavSuccess,
   getInvitedMemberFailure,
   getInvitedMemberRequest,

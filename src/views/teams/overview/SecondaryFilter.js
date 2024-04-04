@@ -33,6 +33,7 @@ import ClientCard from '../../cards/ClientCard';
 import { skillsService, toolsService } from '../../../services/staticServices';
 import capitalize from '../../../lib/capitalize';
 import { ResponsiveGrid } from '../../cards/style';
+import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const statusOptions = [
@@ -603,6 +604,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           </Row>
         </SecondaryFiltersWrap>
       </FormWrapper>
+
+      {!isLoading && <SearchResultsCount metaData={selectMyTeamMetaData} />}
 
       {isLoading ? (
         <ComponentSpinner />

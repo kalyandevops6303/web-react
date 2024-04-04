@@ -1,35 +1,74 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import '../custom-styles.scss';
-import { Button, Modal, ModalHeader, ModalBody, CardTitle, CardText, CardSubtitle, Spinner } from 'reactstrap';
-import AcceptGif from '../../assets/images/gifs/submit_milestone.gif';
-import { AcceptModalWrapper } from './style';
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  CardTitle,
+  CardSubtitle,
+  Spinner,
+  Col,
+  UncontrolledTooltip,
+  Row,
+} from 'reactstrap';
+import { Link } from 'react-feather';
+import Notepad from '../../assets/images/youDidIt.gif';
+import { AcceptModalWrapper, ArtifactsModalWrap } from './style';
+import { renderFilePreview } from '../../utility/Utils';
 
-const SubmitMilestoneModal = ({ isFinalSubmit, isLoading, onAccept, modal, toggleModal }) => {
+const SubmitMilestoneModal = ({ isLoading, onSuccess, modal, toggleModal, links, documents }) => {
   const onClose = () => {
     toggleModal();
   };
-
   return (
-    <Modal isOpen={modal} contentClassName="delete-modal" className="modal-dialog-centered modal-lg">
+    <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={isLoading ? null : onClose} />
       <ModalBody>
         <AcceptModalWrapper>
           <div className="d-flex justify-content-between pr-1">
-            <img className="gif" src={AcceptGif} width={150} height={150} alt="gif" />
+            <img className="gif" src={Notepad} width={180} height={180} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">
-                {isFinalSubmit ? 'Final' : 'Interim'} milestone submission!
-              </CardTitle>
-              <CardSubtitle className="mb-75 fw-bold subtitle">Are you sure you want to submit?</CardSubtitle>
-              <CardText className="desc fw-light">Cancel if you want to make some changes.</CardText>
+              <CardTitle className="modal-title-custom">Are you sure you want to make this submission? </CardTitle>
+              <CardSubtitle className="mb-1 subtitle">
+                Only after submission client will receive <br /> these files.{' '}
+              </CardSubtitle>
+              <ArtifactsModalWrap className="mb-2 modal-artifacts">
+                {documents?.map((file) => (
+                  <Row key={`document-${file?.file_key}`} className="m-0 mb-75 ">
+                    <Col className="d-flex">
+                      {renderFilePreview(file?.fileData?.file)}
+                      <span className="truncated-filename mt-25 fw-bold" id={`document-${file?.fileData?.newId}`}>
+                        {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
+                      </span>
+                      <UncontrolledTooltip placement="bottom" target={`document-${file?.fileData?.newId}`}>
+                        {file?.fileData?.file?.name ?? file?.fileData?.file?.file_name}
+                      </UncontrolledTooltip>
+                    </Col>
+                  </Row>
+                ))}
+                {links?.map((file) => (
+                  <Row key={`links-${file?.id}`} className="w-100 m-0 mb-75">
+                    <Col className="d-flex">
+                      <Link size="22" className="me-75" />
+                      <span className="truncated-filename mt-25 fw-bold" id={`links-${file?.id}`}>
+                        {file?.link}
+                      </span>
+                      <UncontrolledTooltip placement="bottom" target={`links-${file?.id}`}>
+                        {file?.link}
+                      </UncontrolledTooltip>
+                    </Col>
+                  </Row>
+                ))}
+              </ArtifactsModalWrap>
             </div>
           </div>
-          <div className="d-flex gap-1 mt-3 justify-content-end">
+          <div className="d-flex gap-1  justify-content-end">
             <Button disabled={isLoading} outline color="primary" onClick={onClose}>
               Cancel
             </Button>
-            <Button color="primary" onClick={onAccept}>
+            <Button disabled={isLoading} color="primary" onClick={onSuccess}>
               {isLoading ? <Spinner size="sm" /> : 'Submit'}
             </Button>
           </div>
@@ -44,15 +83,17 @@ export default SubmitMilestoneModal;
 SubmitMilestoneModal.propTypes = {
   modal: Proptypes.bool,
   toggleModal: Proptypes.func,
-  onAccept: Proptypes.func,
+  onSuccess: Proptypes.func,
+  links: Proptypes.array,
+  documents: Proptypes.array,
   isLoading: Proptypes.bool,
-  isFinalSubmit: Proptypes.bool,
 };
 
 SubmitMilestoneModal.defaultProps = {
   modal: false,
-  isLoading: false,
-  isFinalSubmit: false,
   toggleModal: () => {},
-  onAccept: () => {},
+  onSuccess: () => {},
+  links: [],
+  documents: [],
+  isLoading: false,
 };

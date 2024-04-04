@@ -11,11 +11,13 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import DateTime from '../../../lib/date-time';
+import Round from '../../../lib/round';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import theme from '../../../configs/themeVariables';
 import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
+
 import Empty from './Empty';
 import { acceptBidChange, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -215,8 +217,8 @@ const BidSubmitted = () => {
                     </CardText>
                   </div>
                   <div className="">
-                    <span className="key">Talent Cost</span>
-                    <CardText className="value text-end">${bidInfo?.total_estimated_cost}</CardText>
+                    <span className="key">Talent Amount</span>
+                    <CardText className="value text-end">${Round(bidInfo?.total_estimated_cost || 0, 2)}</CardText>
                   </div>
                   <div className="me-1">
                     <span className="key">Updated at</span>

@@ -3,6 +3,7 @@
 /* eslint-disable no-else-return */
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import DataTable from 'react-data-table-component';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
@@ -19,9 +20,11 @@ import { getPaymentHistory } from '../../../redux/actions/paymentFullViewActions
 import { paymentHistory, paymentHistoryLoading } from '../../../redux/selectors/paymentFullViewSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import capitalize from '../../../lib/capitalize';
+import { setItem } from '../../../utility/localStorageControl';
 
 const PaymentHistory = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const userData = useSelector(selectUserData);
   const paymentHistoryData = useSelector(paymentHistory);
@@ -257,7 +260,13 @@ const PaymentHistory = () => {
             {typeof item?.to === 'string' ? (
               <p className="mb-0 font-small-4">{item?.to}</p>
             ) : (
-              <div className="d-flex align-items-center">
+              <div
+                className="d-flex align-items-center cursor-pointer"
+                onClick={() => {
+                  setItem('baseRoute', 'payments');
+                  navigate(`/profile/talent/${item?.to?.user_id}`);
+                }}
+              >
                 <Avatar
                   img={item?.to?.image_uri || defaultAvatar}
                   imgHeight="28"
@@ -322,7 +331,7 @@ const PaymentHistory = () => {
               <p className="m-0">Milestone #{milestone?.seq}</p>
               <div className="d-flex justify-content-between additional-details">
                 <div>
-                  <p className="mb-50">Talent Cost</p>
+                  <p className="mb-50">Talent Amount</p>
                   <p className="m-0">Platform Fee</p>
                 </div>
                 <div className="text-end">

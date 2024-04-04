@@ -276,6 +276,9 @@ class CometChatMessages extends React.PureComponent {
 
   actionHandler = (action, messages, key, group, options) => {
     switch (action) {
+      case 'NEXT_MESSAGES_FETCHED':
+        this.appendMessagesJumpingToMilestoneMessage(messages);
+        break;
       case enums.ACTIONS['CUSTOM_MESSAGE_RECEIVED']:
       case enums.ACTIONS['MESSAGE_RECEIVED']:
         {
@@ -656,8 +659,8 @@ class CometChatMessages extends React.PureComponent {
   };
 
   /*
-	Updating parent message of threaded conversation, when the message is edited or deleted
-	*/
+  Updating parent message of threaded conversation, when the message is edited or deleted
+  */
   updateParentThreadedMessage = (message, action) => {
     if (this.state.threadmessageview === false || message.id !== this.state.threadmessageparent.id) {
       return false;
@@ -706,8 +709,8 @@ class CometChatMessages extends React.PureComponent {
 
   videoCall = () => {
     /*
-		Direct calling for groups
-		*/
+    Direct calling for groups
+    */
     if (this.getContext().type === CometChat.RECEIVER_TYPE.GROUP) {
       const sessionID =
         this.getContext().type === CometChat.ACTION_TYPE.TYPE_GROUP ? this.getContext().item.guid : null;
@@ -720,8 +723,8 @@ class CometChatMessages extends React.PureComponent {
     }
 
     /*
-		Default calling for one-on-one
-		*/
+    Default calling for one-on-one
+    */
     const { receiverId, receiverType } = this.getReceiverDetails();
     const call = new CometChat.Call(receiverId, CometChat.CALL_TYPE.VIDEO, receiverType);
     CometChat.initiateCall(call)
@@ -933,6 +936,11 @@ class CometChatMessages extends React.PureComponent {
     this.setState({ messageList: messages, scrollToBottom: true });
   };
 
+  appendMessagesJumpingToMilestoneMessage = (messages) => {
+    let updatedMessageList = [...this.state.messageList, ...messages];
+    this.setState({ messageList: updatedMessageList, scrollToBottom: false });
+  };
+
   //message status is updated
   updateMessages = (messages) => {
     this.setState({ messageList: messages, scrollToBottom: false });
@@ -1042,6 +1050,7 @@ class CometChatMessages extends React.PureComponent {
         messages={this.state.messageList}
         scrollToBottom={this.state.scrollToBottom}
         actionGenerated={this.actionHandler}
+        milestoneMessageId={this.props.milestoneMessageId}
       />
     );
     let messageComposer = (
@@ -1054,6 +1063,9 @@ class CometChatMessages extends React.PureComponent {
         reaction={this.reactionName}
         messageToReact={this.state.messageToReact}
         actionGenerated={this.actionHandler}
+        enableMilestoneInput={this.props.enableMilestoneInput}
+        cancelMilestoneInput={this.props.cancelMilestoneInput}
+        milestoneAttachment={this.props.milestoneAttachment}
       />
     );
 
@@ -1118,8 +1130,8 @@ class CometChatMessages extends React.PureComponent {
     }
 
     /*
-		If used as a standalone component
-		*/
+    If used as a standalone component
+    */
     let incomingCallView = null;
     let incomingDirectCallView = null;
     if (this.props._parent.trim().length === 0) {
@@ -1225,8 +1237,8 @@ class CometChatMessages extends React.PureComponent {
 
     let messageWrapper = messageComponent;
     /*
-		If used as a standalone component
-		**/
+    If used as a standalone component
+    **/
     if (this.props._parent.trim().length === 0) {
       messageWrapper = (
         <CometChatContextProvider

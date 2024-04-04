@@ -29,6 +29,8 @@ import stripeDetails from './reducers/stripeDetails';
 import milestonePayment from './reducers/milestonePayment';
 import activeNavTab from './reducers/activeNavTab';
 import paymentFullView from './reducers/paymentFullView';
+import milestone from './reducers/milestone';
+import favUnfav from './reducers/favUnfav';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -59,6 +61,9 @@ const rootReducer = combineReducers({
   milestonePayment,
   activeNavTab,
   paymentFullView,
+  milestone,
+  favUnfav,
+
   // Add more reducers if needed
 });
 
@@ -66,7 +71,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'notifications'],
+  whitelist: ['notifications'],
 };
 
 export default persistReducer(persistConfig, rootReducer);

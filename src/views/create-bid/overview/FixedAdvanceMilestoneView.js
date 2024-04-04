@@ -30,8 +30,8 @@ import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ChevronLeft, ChevronRight, FileText, Info, Plus, Upload } from 'react-feather';
-import { MilestoneSectionWrapper } from '../style';
+import { ChevronLeft, ChevronRight, Edit, FileText, Info, Plus, Upload } from 'react-feather';
+import { ChangeBidTypeButton, MilestoneSectionWrapper } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -47,6 +47,9 @@ import { selectUserData } from '../../../redux/selectors/authSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
+import ChangeBidTypeConfirmationModal from '../../modals/ChangeBidTypeConfirmationModal';
+import CreateBidModal from '../../modals/CreateBidModal';
+import capitalize from '../../../lib/capitalize';
 
 const FixedAdvanceMilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -173,14 +176,25 @@ const FixedAdvanceMilestoneView = () => {
   const [selectedFileKey, setSelectedFileKey] = useState(null);
   const filesRef = useRef();
   const allMilestones = useWatch({ control, name: 'milestones' });
-
   const [open, setOpen] = useState(1);
+  const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
+  const [createBidModal, setCreateBidModal] = useState(null);
+  const [bidData, setBidData] = useState(null);
+
   const toggle = (id) => {
     if (open === id) {
       setOpen();
     } else {
       setOpen(id);
     }
+  };
+
+  const toggleChangeBidTypeConfirmationModal = () => {
+    setChangeBidTypeConfirmationModal(!changeBidTypeConfirmationModal);
+  };
+
+  const toggleCreateBidModal = () => {
+    setCreateBidModal(!createBidModal);
   };
 
   const calculateMilestoneValues = (milestoneIndex) => {
@@ -388,7 +402,7 @@ const FixedAdvanceMilestoneView = () => {
     if (!allMilestonesValid) {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     } else if (totalCost > projectDetailsData?.pay_type?.fixed_cost) {
-      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed cost.');
+      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed price.');
     } else if (allMilestonesValid && totalCost <= projectDetailsData?.pay_type?.fixed_cost) {
       milestonesAppend({
         milestoneId: uuidv4(),
@@ -537,10 +551,10 @@ const FixedAdvanceMilestoneView = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <>
-                    {renderFilePreview()}
-                    {file?.file?.name || file?.file?.file_name}
-                  </>
+                  <div className="d-flex align-items-center">
+                    <span>{renderFilePreview()}</span>
+                    <span>{file?.file?.name || file?.file?.file_name}</span>
+                  </div>
                 )}
               </div>
             </Col>
@@ -571,6 +585,7 @@ const FixedAdvanceMilestoneView = () => {
 
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
+      setBidData(res);
       if (res?.project_start_date > 0) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
       }
@@ -605,6 +620,7 @@ const FixedAdvanceMilestoneView = () => {
         }));
 
         setValue('milestones', reqData, { shouldValidate: true });
+        trigger('milestones');
       } else if (res?.workers?.length > 0) {
         const reqData = [
           {
@@ -650,6 +666,24 @@ const FixedAdvanceMilestoneView = () => {
 
   return (
     <MilestoneSectionWrapper className="mt-2">
+      {changeBidTypeConfirmationModal && (
+        <ChangeBidTypeConfirmationModal
+          modal={changeBidTypeConfirmationModal}
+          toggleModal={toggleChangeBidTypeConfirmationModal}
+          toggleCreateBidModal={toggleCreateBidModal}
+        />
+      )}
+      {createBidModal && (
+        <CreateBidModal
+          modal={createBidModal}
+          toggleModal={toggleCreateBidModal}
+          selectedProject={{
+            _id: params.projectId,
+            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
+            bidType: params.bidType.split('-')[1].toUpperCase(),
+          }}
+        />
+      )}
       {bidDetailsIsLoading ? (
         <ComponentSpinner className="mt-5" />
       ) : (
@@ -667,15 +701,15 @@ const FixedAdvanceMilestoneView = () => {
                 <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
                   <Info size={18} color={theme.red} className="me-50" />
                   <p className="font-medium-1 m-0 error">
-                    <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of
-                    the project. Please adjust your cost in order to submit the bid
+                    <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price of the
+                    project. Please adjust your price in order to submit the bid
                   </p>
                 </div>
               )}
               <div className="d-none fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
                 <Info size={18} color={theme.activeNavPillText} className="me-50" />
                 <p className="font-medium-1 m-0 info">
-                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
+                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed price will be equally
                   distributed between each talent
                 </p>
               </div>
@@ -708,25 +742,23 @@ const FixedAdvanceMilestoneView = () => {
                         {errors.estimatedStartDate && <FormFeedback>{errors.estimatedStartDate.message}</FormFeedback>}
                       </div>
                     </Col>
-                    <Col sm="12" md="12" lg="4" className="d-flex justify-content-between me-1">
-                      <div>
-                        <Label className="form-label">Total Duration</Label>
+                    <Col sm="12" md="12" lg="8" className="d-flex justify-content-end me-2">
+                      <div className="me-3">
+                        <Label className="form-label m-0">Total Duration</Label>
                         <p className="fw-bold font-medium-1 text-end mt-50 mb-0">{totalDuration}w</p>
                       </div>
-                      <div>
-                        <Label className="form-label">Total Hours</Label>
+                      <div className="me-3">
+                        <Label className="form-label m-0">Total Hours</Label>
                         <p className="fw-bold font-medium-1 text-end mt-50 mb-0">{totalHours}h</p>
                       </div>
-                      {/* <div>
-                        <Label className="form-label me-2">Total Cost</Label>
-                        <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">$ {totalCost}</p>
-                      </div> */}
-                      <div>
+                      <div
+                        className={bidData?.is_bid_type_changeable ? 'me-3 custom-cost-margin' : 'custom-cost-margin'}
+                      >
                         <div className="d-flex align-items-center m-0">
-                          <Label className="form-label">Fixed Cost</Label>
+                          <Label className="form-label m-0">Fixed Price</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
                           <UncontrolledTooltip placement="top" target="fixed-info">
-                            Predetermined project cost fixed by the client
+                            Predetermined project price fixed by the client
                           </UncontrolledTooltip>
                         </div>
                         <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
@@ -742,6 +774,24 @@ const FixedAdvanceMilestoneView = () => {
                           </p>
                         )}
                       </div>
+                      {bidData?.is_bid_type_changeable && (
+                        <div>
+                          <Label className="form-label m-0">Bid Type</Label>
+                          <div className="d-flex align-items-center custom-cost-margin">
+                            <p className="fw-bold font-medium-1 mb-0 mt-25">
+                              {capitalize(params.bidType.split('-')[1])} Flow
+                            </p>
+                            <ChangeBidTypeButton
+                              className="d-flex align-items-center cursor-pointer ms-1"
+                              onClick={toggleChangeBidTypeConfirmationModal}
+                            >
+                              <div className="change-bid-type-icon">
+                                <Edit size={16} color={theme.activeNavPillText} />
+                              </div>
+                            </ChangeBidTypeButton>
+                          </div>
+                        </div>
+                      )}
                     </Col>
                   </Row>
                 </CardBody>
@@ -769,7 +819,7 @@ const FixedAdvanceMilestoneView = () => {
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">{milestoneHours}h</p>
                                 </div>
                                 <div>
-                                  <Label className="fw-normal form-label">Talent Cost</Label>
+                                  <Label className="fw-normal form-label">Talent Amount</Label>
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">$ {milestoneCost}</p>
                                 </div>
                               </Col>
@@ -905,7 +955,7 @@ const FixedAdvanceMilestoneView = () => {
                                       render={() => (
                                         <div>
                                           {milestone.workers.map((worker, workerIndex) => (
-                                            <Row className="mb-1 d-flex align-items-center" key={worker.role}>
+                                            <Row className="mb-1 d-flex align-items-top" key={worker.role}>
                                               <Col sm="12" md="6" lg="5">
                                                 <Controller
                                                   id={`milestones[${milestoneIndex}].workers[${workerIndex}].isChecked`}
@@ -990,9 +1040,20 @@ const FixedAdvanceMilestoneView = () => {
                                                         const isInteger = Number.isInteger(+durationValue);
 
                                                         return (
-                                                          <InputGroup className="input-group-merge">
+                                                          <InputGroup
+                                                            className={`input-group-merge ${
+                                                              !milestonesFields[milestoneIndex].workers[workerIndex]
+                                                                .isChecked
+                                                                ? 'input-group-disabled'
+                                                                : ''
+                                                            }`}
+                                                          >
                                                             <Input
                                                               {...field}
+                                                              disabled={
+                                                                !milestonesFields[milestoneIndex].workers[workerIndex]
+                                                                  .isChecked
+                                                              }
                                                               placeholder="0w"
                                                               type="number"
                                                               min={0}
@@ -1053,9 +1114,20 @@ const FixedAdvanceMilestoneView = () => {
                                                         true
                                                       }
                                                       render={({ field }) => (
-                                                        <InputGroup className="input-group-merge">
+                                                        <InputGroup
+                                                          className={`input-group-merge ${
+                                                            !milestonesFields[milestoneIndex].workers[workerIndex]
+                                                              .isChecked
+                                                              ? 'input-group-disabled'
+                                                              : ''
+                                                          }`}
+                                                        >
                                                           <Input
                                                             {...field}
+                                                            disabled={
+                                                              !milestonesFields[milestoneIndex].workers[workerIndex]
+                                                                .isChecked
+                                                            }
                                                             placeholder="0h"
                                                             type="number"
                                                             min={0}
@@ -1267,9 +1339,9 @@ const FixedAdvanceMilestoneView = () => {
               </Row>
             </CardBody>
           </Card>
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center mb-4">
             <div
-              className="d-flex align-items-center upload-button cursor-pointer"
+              className="d-flex align-items-center upload-button cursor-pointer mb-50"
               onClick={() => {
                 if (selectUserDetailsData?.user_type === userTypes.team) {
                   navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`);

@@ -46,18 +46,22 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
                   {!withReview && <span className="mb-50 font-small-2 role">{data.role}</span>}
                 </div>
               </div>
-              <CardText className="fw-bold m-auto me-4">{withReview ? data?.role?.name : 'Team Member'}</CardText>
-              {withReview && (
-                <div className="me-4">
-                  <Rating
-                    initialRating={3}
-                    emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
-                    fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
-                    readonly
-                  />
-                  <CardText className="mt-25 font-small-3 project-count">0 Projects</CardText>
-                </div>
-              )}
+              <CardText className="d-none fw-bold m-auto me-4">
+                {withReview ? data?.role?.name : 'Team Member'}
+              </CardText>
+
+              <div className="me-4">
+                <Rating
+                  initialRating={data?.rating || 0}
+                  emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
+                  fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
+                  readonly
+                />
+                <CardText className="mt-25 font-small-3 project-count">
+                  {data?.projects_worked_on_count || 0} Projects
+                </CardText>
+              </div>
+
               <div className="me-2">
                 <span className="key">Accepted on</span>
                 <CardText className="value">
@@ -74,7 +78,6 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
                 <Mail size={20} className="mail-icon" color={theme.activeColor} />
               </span>
             )}
-
             {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') &&
               hasDeleleteAccess &&
               teamId && (

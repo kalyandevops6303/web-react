@@ -6,10 +6,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Badge, Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Row, Spinner } from 'reactstrap';
 import Select from 'react-select';
 import classNames from 'classnames';
-import { ChevronLeft, ChevronRight, Copy, Minus, Plus, Trash2 } from 'react-feather';
+import { ChevronLeft, ChevronRight, Copy, Edit, Minus, Plus, Trash2 } from 'react-feather';
 import { useNavigate, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { TeamSectionWrapper } from '../style';
+import { ChangeBidTypeButton, TeamSectionWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
 import { selectThemeColors } from '../../../utility/Utils';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -24,6 +24,8 @@ import {
   setWorkersLoading,
 } from '../../../redux/selectors/createBidSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import ChangeBidTypeConfirmationModal from '../../modals/ChangeBidTypeConfirmationModal';
+import CreateBidModal from '../../modals/CreateBidModal';
 
 const SimpleTeamView = () => {
   const EducationalSchema = yup.object().shape({
@@ -74,6 +76,9 @@ const SimpleTeamView = () => {
   const setWorkersIsLoading = useSelector(setWorkersLoading);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
 
+  const [bidData, setBidData] = useState(null);
+  const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
+  const [createBidModal, setCreateBidModal] = useState(null);
   const [recommendedRolesOptions, setRecommendedRolesOptions] = useState(null);
   const [allTeamMembersOptions, setAllTeamMembersOptions] = useState(null);
   const [fieldErrors, setFieldErrors] = useState(
@@ -85,6 +90,14 @@ const SimpleTeamView = () => {
       }
     }),
   );
+
+  const toggleChangeBidTypeConfirmationModal = () => {
+    setChangeBidTypeConfirmationModal(!changeBidTypeConfirmationModal);
+  };
+
+  const toggleCreateBidModal = () => {
+    setCreateBidModal(!createBidModal);
+  };
 
   const removeUndefinedKeysFromArray = (array) =>
     array.map((obj) =>
@@ -210,6 +223,7 @@ const SimpleTeamView = () => {
 
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
+      setBidData(res);
       if (res?.workers?.length > 0) {
         const data = res?.workers?.map((worker) => {
           if (worker?.user_id?.length > 0) {
@@ -242,13 +256,42 @@ const SimpleTeamView = () => {
 
   return (
     <TeamSectionWrapper>
+      {changeBidTypeConfirmationModal && (
+        <ChangeBidTypeConfirmationModal
+          modal={changeBidTypeConfirmationModal}
+          toggleModal={toggleChangeBidTypeConfirmationModal}
+          toggleCreateBidModal={toggleCreateBidModal}
+        />
+      )}
+      {createBidModal && (
+        <CreateBidModal
+          modal={createBidModal}
+          toggleModal={toggleCreateBidModal}
+          selectedProject={{
+            _id: params.projectId,
+            pay_type: { variable_cost: params.bidType.split('-')[0] === 'variable' },
+            bidType: params.bidType.split('-')[1].toUpperCase(),
+          }}
+        />
+      )}
       {bidDetailsIsLoading || rolesIsLoading ? (
         <ComponentSpinner className="mt-5" />
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Card className="mt-2">
-            <CardHeader className="py-75">
+            <CardHeader className="py-75 d-flex justify-content-between align-items-center">
               <h4 className="m-0 mt-75">Roles</h4>
+              {bidData?.is_bid_type_changeable && (
+                <ChangeBidTypeButton
+                  className="d-flex align-items-center cursor-pointer"
+                  onClick={toggleChangeBidTypeConfirmationModal}
+                >
+                  <div className="change-bid-type-icon">
+                    <Edit size={16} color={theme.activeNavPillText} />
+                  </div>
+                  <p className="mb-0 fw-bold ms-50">Change Bid Type</p>
+                </ChangeBidTypeButton>
+              )}
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>

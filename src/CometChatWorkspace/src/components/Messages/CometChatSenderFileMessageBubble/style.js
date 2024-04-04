@@ -80,6 +80,10 @@ export const messageReactionsWrapperStyle = () => {
 export const iconStyle = () => {
   return {
     height: '24px',
+    // display: 'inline-block',
+    // mask: `url(${img}) center center no-repeat`,
+    // backgroundColor: `${context.theme.color.white}`,
+    // flexShrink: '0',
   };
 };
 

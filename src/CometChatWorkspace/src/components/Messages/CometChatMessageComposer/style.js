@@ -6,6 +6,7 @@ export const chatComposerStyle = (context) => {
     order: '3',
     position: 'relative',
     flex: 'none',
+    // minHeight: "105px",
   };
 };
 
@@ -56,19 +57,14 @@ export const previewCloseStyle = (img, context) => {
   };
 };
 
-export const composerInputStyle = () => {
+export const inputButtonContainerStyle = () => {
   return {
     display: 'flex',
-    width: '100%',
     flexDirection: 'row',
-    alignItems: 'flex-end',
-    position: 'relative',
-    zIndex: '2',
-    padding: '0',
   };
 };
 
-export const inputInnerStyle = (props, state, context) => {
+export const composerInputStyle = (props, state, context) => {
   const borderRadiusVal =
     state.emojiViewer || state.stickerViewer
       ? {
@@ -79,15 +75,30 @@ export const inputInnerStyle = (props, state, context) => {
         };
 
   return {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    position: 'relative',
+    zIndex: '2',
+    padding: '0',
+    // minHeight: "85px",
+    border: `1px solid ${context.theme.borderColor.primary}`,
+    backgroundColor: `${context.theme.backgroundColor.white}`,
+    overflow: 'hidden',
+    ...borderRadiusVal,
+  };
+};
+
+export const inputInnerStyle = () => {
+  return {
     flex: '1 1 auto',
     position: 'relative',
     outline: 'none',
-    border: `1px solid ${context.theme.borderColor.primary}`,
-    backgroundColor: `${context.theme.backgroundColor.white}`,
     display: 'flex',
+    // flexDirection: "column",
     flexDirection: 'row',
     width: '100%',
-    ...borderRadiusVal,
+    // minHeight: "85px",
   };
 };
 
@@ -101,10 +112,10 @@ export const messageInputStyle = (disabled) => {
 
   return {
     width: '100%',
-    fontSize: '15px',
-    lineHeight: '20px',
+    fontSize: '12px',
+    lineHeight: '24px',
     fontWeight: '400',
-    padding: '16px',
+    padding: '10px',
     outline: 'none',
     overflowX: 'hidden',
     overflowY: 'auto',
@@ -112,7 +123,8 @@ export const messageInputStyle = (disabled) => {
     whiteSpace: 'pre-wrap',
     wordWrap: 'break-word',
     zIndex: '1',
-    minHeight: '50px',
+    // minHeight: '30px',
+    height: 'auto',
     maxHeight: '100px',
     userSelect: 'text',
     ...disabledState,
@@ -140,10 +152,10 @@ export const inputStickyStyle = (disabled, attachments, context) => {
       : {};
 
   return {
-    padding: '8px 16px',
+    padding: '10px 20px',
     // height: "40px",
     borderTop: `1px solid ${context.theme.borderColor.primary}`,
-    backgroundColor: `${context.theme.backgroundColor.grey}`,
+    // backgroundColor: `${context.theme.backgroundColor.grey}`,
     display: 'flex',
     justifyContent: 'space-between',
     ...flexDirectionProp,
@@ -187,7 +199,7 @@ export const filePickerStyle = (state) => {
     alignItems: 'center',
     zIndex: '1',
     opacity: '0',
-    transition: 'width 0.5s linear',
+    transition: 'width 0.2s ease',
     ...active,
   };
 };
@@ -229,13 +241,11 @@ export const stickyAttachButtonStyle = (img, context) => {
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
-    width: '24px',
-    i: {
-      width: '24px',
-      height: '24px',
+    width: '18px',
+    img: {
+      width: '18px',
+      height: '18px',
       display: 'inline-block',
-      mask: `url(${img}) center center no-repeat`,
-      backgroundColor: `${context.theme.secondaryTextColor}`,
     },
   };
 };
@@ -261,37 +271,57 @@ export const stickyButtonStyle = (state) => {
 
 export const emojiButtonStyle = (img, context) => {
   return {
-    height: '24px',
+    height: '18px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 0 0 16px',
-    i: {
-      width: '24px',
-      height: '24px',
+    img: {
+      width: '18px',
+      height: '18px',
       display: 'inline-block',
-      mask: `url(${img}) center center no-repeat`,
-      backgroundColor: `${context.theme.secondaryTextColor}`,
     },
   };
 };
 
 export const sendButtonStyle = (img, context) => {
   return {
-    height: '24px',
+    height: '18px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 0 0 16px',
     i: {
-      width: '24px',
-      height: '24px',
+      width: '18px',
+      height: '18px',
       display: 'inline-block',
       mask: `url(${img}) center center no-repeat`,
       backgroundColor: `${context.theme.primaryColor}`,
     },
+  };
+};
+
+export const newSendButtonStyle = () => {
+  return {
+    border: 'none',
+    borderRadius: '4px',
+    backgroundColor: '#0185E4',
+    color: '#fff',
+    padding: '12px 24px',
+    fontSize: '14px',
+    fontWeight: 500,
+    letterSpacing: '0.4px',
+    marginLeft: '14px',
+    cursor: 'pointer',
+  };
+};
+
+export const newSendButtonContainerStyle = () => {
+  return {
+    alignSelf: 'flex-start',
+    padding: '2px 0',
   };
 };
 
@@ -315,11 +345,114 @@ export const stickerBtnStyle = (img, context) => {
     justifyContent: 'center',
     margin: '0 0 0 16px',
     i: {
-      width: '24px',
-      height: '24px',
+      width: '18px',
+      height: '18px',
       display: 'inline-block',
       mask: `url(${img}) center center no-repeat`,
       backgroundColor: `${context.theme.secondaryTextColor}`,
     },
+  };
+};
+
+export const milestoneContainerStyle = () => {
+  return {
+    borderRadius: '5px',
+    backgroundColor: `#84CCFF1F`,
+    width: '100%',
+    maxWidth: '330px',
+    height: '130px',
+    margin: '13px',
+  };
+};
+
+export const milestoneHeaderStyle = () => {
+  return {
+    padding: '10px 20px',
+    position: 'relative',
+  };
+};
+
+export const milestoneTitleStyle = () => {
+  return {
+    color: '#616161',
+    fontSize: '12px',
+    fontWeight: 500,
+    lineHeight: '18px',
+  };
+};
+
+export const milestoneCloseIconStyle = () => {
+  return {
+    position: 'absolute',
+    backgroundColor: '#21212166',
+    height: '24px',
+    width: '24px',
+    borderRadius: '12px',
+    right: '-9px',
+    top: '-9px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer',
+  };
+};
+
+export const milestoneBodyStyle = () => {
+  return {
+    padding: '10px 20px',
+  };
+};
+
+export const milestoneAttachmentTileStyle = () => {
+  return {
+    borderRadius: '5px',
+    backgroundColor: '#fff',
+    padding: '10px',
+    display: 'flex',
+  };
+};
+
+export const milestoneAttachmentTileAvatarContainerStyle = () => {
+  return {
+    backgroundColor: '#0185E41F',
+    height: '42px',
+    width: '42px',
+    borderRadius: '21px',
+    marginRight: '5px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+};
+
+export const milestoneAttachmentTileAvatarStyle = () => {
+  return {
+    height: '24px',
+  };
+};
+
+export const milestoneAttachmentTileBodyStyle = () => {
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  };
+};
+
+export const milestoneAttachmentFileNameStyle = () => {
+  return {
+    color: '#5E5873',
+    fontSize: '12px',
+    fontWeight: 500,
+    lineHeight: '16px',
+  };
+};
+
+export const milestoneAttachmentFileSizeStyle = () => {
+  return {
+    color: '#B9B9C3',
+    fontSize: '10px',
+    fontWeight: 500,
+    lineHeight: '12px',
   };
 };

@@ -1,6 +1,7 @@
 import ShowToastMessage from '../../@core/components/toast';
 import {
   bidDetailsService,
+  changeBidTypeService,
   checkBidService,
   createBidService,
   projectDetailsService,
@@ -15,6 +16,9 @@ import {
   bidDetailsFailure,
   bidDetailsRequest,
   bidDetailsSuccess,
+  changeBidTypeFailure,
+  changeBidTypeRequest,
+  changeBidTypeSuccess,
   checkBidFailure,
   checkBidRequest,
   checkBidSuccess,
@@ -129,6 +133,18 @@ const saveSubmitBid = (bidId, onSuccess) => async (dispatch) => {
   }
 };
 
+const saveChangeBidType = (bidId, bidType, onSuccess) => async (dispatch) => {
+  dispatch(changeBidTypeRequest());
+  try {
+    const res = await changeBidTypeService(bidId, bidType);
+    dispatch(changeBidTypeSuccess(res.data.data));
+    ShowToastMessage(SUCCESS, res.data.data.message);
+    onSuccess(res.data.data);
+  } catch (error) {
+    errorHandler(error, changeBidTypeFailure);
+  }
+};
+
 export {
   getCheckBid,
   createBid,
@@ -138,4 +154,5 @@ export {
   saveSetWorkers,
   saveSetMilestones,
   saveSubmitBid,
+  saveChangeBidType,
 };

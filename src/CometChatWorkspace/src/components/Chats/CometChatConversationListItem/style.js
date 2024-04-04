@@ -1,10 +1,16 @@
 export const listItem = (props) => {
-  const selectedState =
-    props.selectedConversation && props.selectedConversation.conversationId === props.conversation.conversationId
-      ? {
-          background: 'linear-gradient(47deg, #2196F3 0%, #84C8FF 100%) !important',
-        }
-      : {};
+  const selectedStateStyles = {
+    // backgroundColor: `${props.theme.backgroundColor.primary}`,
+    background: 'linear-gradient(47deg, #2196F3 0%, #84C8FF 100%) !important',
+    '.item__details__name , .item__details__last-message, .item__details__timestamp ': {
+      color: 'white',
+    },
+    '.list__item__thumbnail': {
+      border: '2px solid white',
+      borderRadius: '50%',
+    },
+  };
+  const selectedState = props.active ? selectedStateStyles : {};
 
   return {
     '&&': {
@@ -16,16 +22,7 @@ export const listItem = (props) => {
       padding: '8px 16px',
       position: 'relative',
       ...selectedState,
-      '&:hover': {
-        background: 'linear-gradient(47deg, #2196F3 0%, #84C8FF 100%) !important',
-        '.item__details__name , .item__details__last-message, .item__details__timestamp ': {
-          color: 'white',
-        },
-        '.list__item__thumbnail': {
-          border: '2px solid white',
-          borderRadius: '50%',
-        },
-      },
+      '&:hover': selectedStateStyles,
     },
   };
 };
@@ -62,6 +59,9 @@ export const itemRowStyle = () => {
       justifyContent: 'space-between',
       alignItems: 'baseline',
     },
+    '.unread-count': {
+      marginRight: '25px',
+    },
   };
 };
 
@@ -76,6 +76,7 @@ export const itemNameStyle = (props) => {
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
       lineHeight: '22px',
+      // color: `${props.theme.color.primary}`,
       color: '#5E5873',
     },
   };
@@ -92,6 +93,7 @@ export const itemLastMsgStyle = (props) => {
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
       lineHeight: '20px',
+      // color: `${props.theme.color.helpText}`,
       color: '#B9B9C3',
     },
   };

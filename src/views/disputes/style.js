@@ -75,3 +75,8 @@ export const RepliesContainer = styled.div`
   max-height: 400px;
   overflow-y: auto;
 `;
+export const DisputeWrapper = styled.div`
+  .min-height-3rem {
+    min-height: 3rem;
+  }
+`;

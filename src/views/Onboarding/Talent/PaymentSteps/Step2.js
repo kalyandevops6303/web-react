@@ -195,7 +195,7 @@ const Step2 = ({ setStep }) => {
               Your taxpayer identification information will be included as Trumio W-9 or W-8 series substitute from.
             </h5>
             <div className="d-flex w-75 mb-2">
-              <Col className="d-flex gap-50">
+              <Col className="d-flex gap-50 form-check">
                 <Input
                   type="radio"
                   checked={taxUserType === 'NON_US'}
@@ -204,7 +204,7 @@ const Step2 = ({ setStep }) => {
                 />
                 <div>I am not a US person</div>
               </Col>
-              <Col className="d-flex gap-50">
+              <Col className="d-flex gap-50 form-check">
                 <Input
                   type="radio"
                   checked={taxUserType === 'US'}
@@ -274,10 +274,10 @@ const Step2 = ({ setStep }) => {
                 <Info size={18} color={theme.infoIcon} id="security-number" />
                 <UncontrolledTooltip placement="right" target="security-number">
                   <div className="d-flex flex-column align-items-start">
-                    <p className="m-0">
+                    <p className="m-0 text-start">
                       {taxUserType === 'NON_US'
                         ? 'National security number(NSN); Government recognized unique national security number eg PAN card, Aadhar card etc'
-                        : 'Social security number(SSN)'}
+                        : 'Enter Social Security Number (SSN) eg gov ID#'}
                     </p>
                   </div>
                 </UncontrolledTooltip>

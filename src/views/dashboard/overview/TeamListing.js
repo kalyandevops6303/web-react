@@ -30,7 +30,7 @@ import {
   selectRecommendedTeamsLoading,
   userData,
 } from '../../../redux/selectors/dashboardSelectors';
-import { getMyTeam, getRecommendedTeams, getTeamInvitation } from '../../../redux/actions/dashboardActions';
+import { getRecommendedTeams } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import MyTeamCard from './MyTeamCard';
@@ -153,10 +153,6 @@ const TeamListing = () => {
     // if (open === '3') {
     //   dispatch(getRecommendedTeams());
     // }
-
-    dispatch(getMyTeam());
-
-    dispatch(getTeamInvitation());
 
     dispatch(getRecommendedTeams());
   }, []);

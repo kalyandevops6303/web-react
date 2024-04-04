@@ -124,6 +124,9 @@ const AlertCardWrapper = styled(CardWrapper)`
     font-size: 12px;
     margin: auto;
   }
+  .w-65 {
+    width: 65%;
+  }
 `;
 
 const EarningAmount = styled.div`

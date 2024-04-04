@@ -29,7 +29,6 @@ import Disputes from '../../views/disputes';
 import CreateTeam from '../../views/createTeam';
 import ComingSoon from '../../views/auth/ComingSoon';
 import ProjectDetails from '../../views/project-details';
-import BidDetails from '../../views/project-details/BidDetails';
 import ContractView from '../../views/project-details/ContractView';
 import { userOnboarding, userProfileEdit } from '../../utility/constants/Constant';
 import Chat from '../../views/chat';
@@ -40,6 +39,7 @@ import ReferralAndReward from '../../views/ReferralAndReward';
 import CreateClub from '../../views/createClub';
 import ClubInvitation from '../../views/club-invitation';
 import PaymentFullView from '../../views/paymentFullView';
+import BidDetails from '../../views/project-details/BidDetails';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -85,9 +85,10 @@ const Routes = [
     element: <ProjectDetails />,
   },
   {
-    path: '/project-details/:projectId/:projectStep/:bidId',
+    path: '/project-details/:projectId/bid/:bidId',
     element: <BidDetails />,
   },
+
   {
     path: '/project-details/:projectId/:projectStep/doc/:docType/*',
     element: <ContractView />,
@@ -174,9 +175,6 @@ const Routes = [
   {
     path: '/create-team/:section-details',
     element: <CreateTeam />,
-    meta: {
-      layout: 'blank',
-    },
   },
   {
     path: `/${userProfileEdit.team}/:section-details`,
@@ -185,9 +183,6 @@ const Routes = [
   {
     path: '/create-club/:section-details',
     element: <CreateClub />,
-    meta: {
-      layout: 'blank',
-    },
   },
   {
     path: `/${userProfileEdit.club}/:section-details`,

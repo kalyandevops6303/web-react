@@ -28,6 +28,7 @@ import ClubCard from '../../cards/ClubCard';
 import { skillsService, toolsService } from '../../../services/staticServices';
 import { getClubs } from '../../../redux/actions/clubActions';
 import { ResponsiveGrid } from '../../cards/style';
+import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const statusOptions = [
@@ -552,6 +553,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           </Row>
         </SecondaryFiltersWrap>
       </FormWrapper>
+
+      {!isLoading && <SearchResultsCount metaData={selectClubsMetaData} />}
 
       {isLoading ? (
         <ComponentSpinner />
