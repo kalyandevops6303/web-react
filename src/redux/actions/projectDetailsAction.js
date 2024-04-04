@@ -269,8 +269,6 @@ const requestChange =
     try {
       await requestChangeService({ bid_id, description });
       dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
-      // dispatch(getBidDetails({ project_id }));
-      // dispatch(getBidTimeline({ project_id }));
       onSuccess();
       dispatch(requestChangeSuccess());
     } catch (error) {
@@ -285,9 +283,6 @@ const rejectBidChange =
     try {
       await rejectBidChangeService({ snapshot_id, description });
       dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
-
-      // dispatch(getBidDetails({ project_id }));
-      // dispatch(getBidTimeline({ project_id }));
       onSuccess();
       dispatch(rejectBidChangeSuccess());
     } catch (error) {
@@ -559,21 +554,6 @@ const relistProjectByDate = (projectId, startDate, endDate, onSuccess) => async 
     errorHandler(error, relistProjectByDateFailure);
   }
 };
-
-// const getProjectDetails =
-//   ({ projectId, isBidView }) =>
-//   async (dispatch) => {
-//     dispatch(projectDetailsRequest());
-//     try {
-//       const res = await projectDetailsService(projectId);
-//       if (isBidView) {
-//         dispatch(checkDocumentActivated({ isNDA: res?.nda?.is_nda, project_id: projectId }));
-//       }
-//       dispatch(projectDetailsSuccess(res.data.data));
-//     } catch (error) {
-//       errorHandler(error, projectDetailsFailure);
-//     }
-//   };
 
 export {
   extendValidity,
