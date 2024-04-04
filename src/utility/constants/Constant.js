@@ -106,6 +106,20 @@ const PAYMENT_STATUS = {
   PAYMENT_FAILED: 'PAYMENT_FAILED',
 };
 
+const snapShotStatus = {
+  DRAFT: 'DRAFT',
+};
+
+const bidStatus = {
+  BID_UPDATED: 'BID_UPDATED',
+  BID_REVIEWED: 'BID_REVIEWED',
+  BID_ACCEPTED: 'BID_ACCEPTED',
+  BID_SUBMITTED: 'BID_SUBMITTED',
+  BID_CHANGE_ACCPETED: 'BID_CHANGE_ACCEPTED',
+  BID_CHANGE_REJECTED: 'BID_CHANGE_REJECTED',
+  BID_CHANGE_REQUEST: 'BID_CHANGE_REQUEST',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -127,4 +141,6 @@ export {
   roleTypeOptions,
   PAYMENT_STATUS,
   clubStatus,
+  snapShotStatus,
+  bidStatus,
 };

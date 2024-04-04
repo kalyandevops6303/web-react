@@ -130,20 +130,6 @@ const ProjectDetails = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (projectDetailsData) {
-  //     dispatch(
-  //       checkDocumentActivated({
-  //         isNDA: projectDetailsData?.nda?.is_nda,
-  //         project_id: params.projectId,
-  //       }),
-  //     );
-  //   }
-  //   return () => {
-  //     dispatch(clearDocstate());
-  //   };
-  // }, []);
-
   const getLocationTernery = () => {
     const lowercasedStep = currentStep.toLowerCase();
 

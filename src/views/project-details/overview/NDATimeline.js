@@ -10,7 +10,7 @@ import NameInfo from '../../../@core/components/name-info';
 import { selectNDAData, selectNDATimeline } from '../../../redux/selectors/projectDetailsSelectors';
 import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { getDocumentTimeline } from '../../../redux/actions/projectDetailsAction';
+import { getNDATimeline } from '../../../redux/actions/projectDetailsAction';
 
 const NDATimeline = () => {
   const navigate = useNavigate();
@@ -18,15 +18,15 @@ const NDATimeline = () => {
   const contractTimeline = useSelector(selectNDATimeline);
   const dispatch = useDispatch();
   const param = useParams();
-  const loading = useSelector((state) => state?.projectDetails?.getDocumentTimelineLoading);
-  const docType = useSelector((state) => state?.projectDetails?.documentType?.doc_type);
+  const loading = useSelector((state) => state?.projectDetails?.getNDATimelineLoading);
+  // const docType = useSelector((state) => state?.projectDetails?.documentType?.doc_type);
   const [open, setOpen] = useState(null);
   const toggle = (id) => {
     if (open === id) {
       setOpen();
     } else {
       if (id === 1 && !loading) {
-        dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'NDA' }));
+        dispatch(getNDATimeline({ project_id: param?.projectId, doc_type: 'NDA' }));
       }
       setOpen(id);
     }
@@ -116,7 +116,7 @@ const NDATimeline = () => {
           </AccordionHeadStyle>
         </AccordionHeader>
 
-        {loading && docType === 'NDA' ? (
+        {loading ? (
           <ComponentSpinner />
         ) : bidUpdatesDataSet?.length > 0 ? (
           <AccordionBody accordionId="1" className="accordion-status-body">

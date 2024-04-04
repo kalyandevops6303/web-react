@@ -29,14 +29,13 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { FileText, Info } from 'react-feather';
 import { downloadFile, formatFileSize } from '../../utility/Utils';
 import { BidDetailsWrap } from '../project-details/style';
-import { userTypes } from '../../utility/constants/Constant';
+import { snapShotStatus, userTypes } from '../../utility/constants/Constant';
 import theme from '../../configs/themeVariables';
 import { AccordionBodyContent, AccordionTableHeader } from '../create-bid/style';
 import ShowMoreLess from '../../@core/components/show-more-less-comp';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { selectUserData } from '../../redux/selectors/authSelectors';
-// import SnapshotData from '../project-details/overview/Snapshot.json';
 import { getBidSnapshot } from '../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
@@ -102,23 +101,19 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
           <section className="min-height-400">
             <div className="d-flex justify-content-between align-items-center">
               <p className="font-medium-3 fw-bold">Bid Submitted Preview</p>
-              {/* {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'REJECTED' && (
-              <p className="edit-bid-btn mt-1 cursor-pointer" onClick={onEditBidClick}>
-                Edit Bid
-              </p>
-            )} */}
 
-              {/* {bidInfo?.status !== 'ACCEPTED' && bidInfo?.status !== 'REJECTED' && ( */}
-              {!isLoading && userData?.user_type === userTypes.client && snapshotData?.status === 'DRAFT' && (
-                <div className="d-flex justify-content-end mb-2">
-                  <Button onClick={onReject} color="flat-danger" className="me-2">
-                    Reject
-                  </Button>
-                  <Button onClick={onAccept} color="primary" type="submit">
-                    Accept Change
-                  </Button>
-                </div>
-              )}
+              {!isLoading &&
+                userData?.user_type === userTypes.client &&
+                snapshotData?.status === snapShotStatus.DRAFT && (
+                  <div className="d-flex justify-content-end mb-2">
+                    <Button onClick={onReject} color="flat-danger" className="me-2">
+                      Reject
+                    </Button>
+                    <Button onClick={onAccept} color="primary" type="submit">
+                      Accept Change
+                    </Button>
+                  </div>
+                )}
 
               {!isLoading && userData?.user_type !== userTypes.client && selectedTimeline?.can_edit && (
                 <p className="edit-bid-btn mt-1 cursor-pointer" onClick={onEditBidClick}>

@@ -14,7 +14,6 @@ import DateTime from '../../../lib/date-time';
 import Round from '../../../lib/round';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
-import theme from '../../../configs/themeVariables';
 import NameInfo from '../../../@core/components/name-info';
 import BidPreviewModal from '../../modals/BidPreviewModal';
 
@@ -22,10 +21,11 @@ import Empty from './Empty';
 import { acceptBidChange, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
-import { userTypes } from '../../../utility/constants/Constant';
+import { bidStatus, userTypes } from '../../../utility/constants/Constant';
 import BidChangeRequestModal from '../../modals/BidChangeRequestModal';
 import AcceptBidModal from '../../modals/AcceptBidModal';
 import RejectBidChangeModal from '../../modals/RejectBidChangeModal';
+import { getBidAction, getStatusColor } from '../../../utility/Utils';
 
 const BidSubmitted = () => {
   const dispatch = useDispatch();
@@ -58,55 +58,6 @@ const BidSubmitted = () => {
       setOpen(id);
     }
   };
-  const status = {
-    BID_UPDATED: 'BID_UPDATED',
-    BID_REVIEWED: 'BID_REVIEWED',
-    BID_ACCEPTED: 'BID_ACCEPTED',
-    BID_SUBMITTED: 'BID_SUBMITTED',
-    BID_CHANGE_ACCPETED: 'BID_CHANGE_ACCEPTED',
-    BID_CHANGE_REJECTED: 'BID_CHANGE_REJECTED',
-    BID_CHANGE_REQUEST: 'BID_CHANGE_REQUEST',
-  };
-
-  const getStatusColor = (action) => {
-    switch (action) {
-      case status.BID_UPDATED:
-        return theme.purpleTimelimeColor;
-      case status.BID_REVIEWED:
-        return theme.orangeColor;
-      case status.BID_ACCEPTED:
-        return theme.timelineSuccessColor;
-      case status.BID_SUBMITTED:
-        return theme.purpleTimelimeColor;
-      case status.BID_CHANGE_ACCPETED:
-        return theme.timelineSuccessColor;
-      case status.BID_CHANGE_REJECTED:
-        return theme.red;
-      default:
-        return theme.purpleTimelimeColor; // Default color if status is not recognized
-    }
-  };
-
-  const getBidAction = (action) => {
-    switch (action) {
-      case status.BID_UPDATED:
-        return 'Bid Updated';
-      case status.BID_REVIEWED:
-        return 'Bid Reviewed';
-      case status.BID_ACCEPTED:
-        return 'Bid Accepted';
-      case status.BID_SUBMITTED:
-        return 'Bid Submitted';
-      case status.BID_CHANGE_REQUEST:
-        return 'Bid change Request';
-      case status.BID_CHANGE_ACCPETED:
-        return 'Bid change Accepted';
-      case status.BID_CHANGE_REJECTED:
-        return 'Bid change Rejected';
-      default:
-        return '';
-    }
-  };
 
   const handleViewBid = (item) => {
     toggleBidModal();
@@ -136,7 +87,7 @@ const BidSubmitted = () => {
       customContent: (
         <div className="d-flex justify-content-between mb-1">
           <div className="timeline-single-item">
-            <h6 className={`mb-25 ${item?.action === status.BID_CHANGE_REJECTED ? 'color-red' : ''}`}>
+            <h6 className={`mb-25 ${item?.action === bidStatus.BID_CHANGE_REJECTED ? 'color-red' : ''}`}>
               {getBidAction(item?.action)}
             </h6>
             <span className="d-block mb-1">
@@ -149,12 +100,12 @@ const BidSubmitted = () => {
             <span className="time ms-auto">{item?.time ? DateTime?.fromMillis(item?.time)?.toRelative() : '-'}</span>
 
             {item?.can_edit &&
-            (item?.action === status.BID_CHANGE_REQUEST || item?.action === status.BID_CHANGE_REJECTED) ? (
+            (item?.action === bidStatus.BID_CHANGE_REQUEST || item?.action === bidStatus.BID_CHANGE_REJECTED) ? (
               <CardText className="card-cta" onClick={onEditBidClick}>
                 Edit Bid
               </CardText>
             ) : (
-              (item?.action === status.BID_UPDATED || item?.action === status.BID_SUBMITTED) && (
+              (item?.action === bidStatus.BID_UPDATED || item?.action === bidStatus.BID_SUBMITTED) && (
                 <CardText onClick={() => handleViewBid(item)} className="card-cta">
                   View Bid
                 </CardText>

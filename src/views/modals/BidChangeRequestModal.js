@@ -26,7 +26,6 @@ const BidChangeRequestModal = ({ modal, toggleModal }) => {
   const {
     control,
     handleSubmit,
-    // setValue,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -57,7 +56,7 @@ const BidChangeRequestModal = ({ modal, toggleModal }) => {
       <ModalHeader toggle={loading ? null : toggleModal} />
       <ModalBody className="pt-0 px-5">
         <h2 className="font-large-1 text-center mb-2">Bid Change Request</h2>
-        <p className="mb-75">Tell us in detail why you are raising this dispute</p>
+        <p className="mb-75">Tell us in detail what bid change you are requesting for</p>
         <ChangeRequestModalWrapper>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className="mb-1">

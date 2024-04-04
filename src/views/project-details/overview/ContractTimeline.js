@@ -16,14 +16,13 @@ import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { getDocumentTimeline } from '../../../redux/actions/projectDetailsAction';
+import { getContractTimeline } from '../../../redux/actions/projectDetailsAction';
 
 const ContractTimeline = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const param = useParams();
-  const loading = useSelector((state) => state?.projectDetails?.getDocumentTimelineLoading);
-  const docType = useSelector((state) => state?.projectDetails?.documentType?.doc_type);
+  const loading = useSelector((state) => state?.projectDetails?.getContractTimelineLoading);
 
   const contractData = useSelector(selectContractData);
   const contractTimeline = useSelector(selectContractTimeline);
@@ -36,7 +35,7 @@ const ContractTimeline = () => {
       setOpen();
     } else {
       if (id === 1 && !loading) {
-        dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
+        dispatch(getContractTimeline({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
       }
       setOpen(id);
     }
@@ -147,7 +146,7 @@ const ContractTimeline = () => {
             )}
           </AccordionHeadStyle>
         </AccordionHeader>
-        {loading && docType === 'CONTRACT' ? (
+        {loading ? (
           <ComponentSpinner />
         ) : bidUpdatesDataSet?.length > 0 ? (
           <AccordionBody accordionId="1" className="accordion-status-body">

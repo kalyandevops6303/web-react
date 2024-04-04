@@ -199,22 +199,34 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
-    getDocumentTimelineRequest: (state, action) => ({
+    getNDATimelineRequest: (state) => ({
       ...state,
-      getDocumentTimelineLoading: true,
-      documentType: action.payload,
+      getNDATimelineLoading: true,
       error: null,
     }),
-    getDocumentTimelineSuccess: (state, action) => ({
+    getNDATimelineSuccess: (state, action) => ({
       ...state,
-      getDocumentTimelineLoading: false,
-      documentType: '',
+      getNDATimelineLoading: false,
       ...action.payload,
     }),
-    getDocumentTimelineFailure: (state, action) => ({
+    getNDATimelineFailure: (state, action) => ({
       ...state,
-      getDocumentTimelineLoading: false,
-      documentType: '',
+      getNDATimelineLoading: false,
+      error: action.payload,
+    }),
+    getContractTimelineRequest: (state) => ({
+      ...state,
+      getContractTimelineLoading: true,
+      error: null,
+    }),
+    getContractTimelineSuccess: (state, action) => ({
+      ...state,
+      getContractTimelineLoading: false,
+      ...action.payload,
+    }),
+    getContractTimelineFailure: (state, action) => ({
+      ...state,
+      getContractTimelineLoading: false,
       error: action.payload,
     }),
 
@@ -596,6 +608,12 @@ export const {
   getbidSnapshotRequest,
   getbidSnapshotSuccess,
   getbidSnapshotFailure,
+  getNDATimelineFailure,
+  getNDATimelineRequest,
+  getNDATimelineSuccess,
+  getContractTimelineRequest,
+  getContractTimelineSuccess,
+  getContractTimelineFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

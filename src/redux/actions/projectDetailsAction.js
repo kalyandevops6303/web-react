@@ -54,18 +54,21 @@ import {
   getBidTimelineFailure,
   getBidTimelineRequest,
   getBidTimelineSuccess,
+  getContractTimelineFailure,
+  getContractTimelineRequest,
+  getContractTimelineSuccess,
   getDocumentFailure,
   getDocumentRequest,
   getDocumentSuccess,
-  getDocumentTimelineFailure,
-  getDocumentTimelineRequest,
-  getDocumentTimelineSuccess,
   getInvitedByFailure,
   getInvitedByRequest,
   getInvitedBySuccess,
   getInvitedMemberFailure,
   getInvitedMemberRequest,
   getInvitedMemberSuccess,
+  getNDATimelineFailure,
+  getNDATimelineRequest,
+  getNDATimelineSuccess,
   getReceivedBidsFailure,
   getReceivedBidsRequest,
   getReceivedBidsSuccess,
@@ -364,21 +367,27 @@ const removeWorkerFromProjectTeam =
 
 // Contract flow
 
-const getDocumentTimeline =
+const getNDATimeline =
   ({ project_id, doc_type }) =>
   async (dispatch) => {
-    dispatch(getDocumentTimelineRequest({ doc_type }));
+    dispatch(getNDATimelineRequest());
     try {
       const res = await getDocumentTimelineService({ project_id, doc_type });
-
-      if (doc_type === 'CONTRACT') {
-        dispatch(getDocumentTimelineSuccess({ contractTimeline: res.data.data }));
-      }
-      if (doc_type === 'NDA') {
-        dispatch(getDocumentTimelineSuccess({ ndaTimeline: res.data.data }));
-      }
+      dispatch(getNDATimelineSuccess({ ndaTimeline: res.data.data }));
     } catch (error) {
-      errorHandler(error, getDocumentTimelineFailure);
+      errorHandler(error, getNDATimelineFailure);
+    }
+  };
+
+const getContractTimeline =
+  ({ project_id, doc_type }) =>
+  async (dispatch) => {
+    dispatch(getContractTimelineRequest());
+    try {
+      const res = await getDocumentTimelineService({ project_id, doc_type });
+      dispatch(getContractTimelineSuccess({ contractTimeline: res.data.data }));
+    } catch (error) {
+      errorHandler(error, getContractTimelineFailure);
     }
   };
 
@@ -563,7 +572,6 @@ export {
   removeFavourite,
   getInvitedMember,
   checkDocumentActivated,
-  getDocumentTimeline,
   updateContract,
   sendDocument,
   signContractByTalent,
@@ -585,4 +593,6 @@ export {
   acceptBidChange,
   getBidTimeline,
   getBidSnapshot,
+  getNDATimeline,
+  getContractTimeline,
 };
