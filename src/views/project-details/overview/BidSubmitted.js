@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   AccordionBody,
   AccordionHeader,
@@ -50,6 +50,9 @@ const BidSubmitted = () => {
     if (open === id) {
       setOpen();
     } else {
+      if (id === 1 && !bidTimelineLoading) {
+        dispatch(getBidTimeline({ project_id: param?.projectId }));
+      }
       setOpen(id);
     }
   };
@@ -102,12 +105,6 @@ const BidSubmitted = () => {
         return '';
     }
   };
-
-  useEffect(() => {
-    if (open === 1) {
-      dispatch(getBidTimeline({ project_id: param?.projectId }));
-    }
-  }, [open]);
 
   const handleViewBid = (item) => {
     toggleBidModal();

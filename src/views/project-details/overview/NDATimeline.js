@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAccordion } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
@@ -25,14 +25,12 @@ const NDATimeline = () => {
     if (open === id) {
       setOpen();
     } else {
+      if (id === 1 && !loading) {
+        dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'NDA' }));
+      }
       setOpen(id);
     }
   };
-  useEffect(() => {
-    if (open === 1) {
-      dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'NDA' }));
-    }
-  }, [open]);
 
   const bidUpdatesDataSet = [];
   contractTimeline?.timeline?.map((item) =>
@@ -68,8 +66,8 @@ const NDATimeline = () => {
   return (
     <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
       <AccordionItem>
-        <AccordionHeader targetId="1">
-          <AccordionHeadStyle onClick={() => toggle(1)}>
+        <AccordionHeader onClick={() => toggle(1)} targetId="1">
+          <AccordionHeadStyle>
             <span className="d-flex title-head">
               NDA
               {ndaData?.is_contract_terminated === false ? (

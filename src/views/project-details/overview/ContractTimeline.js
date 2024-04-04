@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAccordion } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
@@ -35,14 +35,12 @@ const ContractTimeline = () => {
     if (open === id) {
       setOpen();
     } else {
+      if (id === 1 && !loading) {
+        dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
+      }
       setOpen(id);
     }
   };
-  useEffect(() => {
-    if (open === 1) {
-      dispatch(getDocumentTimeline({ project_id: param?.projectId, doc_type: 'CONTRACT' }));
-    }
-  }, [open]);
 
   contractTimeline?.timeline?.map((item) =>
     bidUpdatesDataSet.push({
@@ -86,7 +84,6 @@ const ContractTimeline = () => {
       <AccordionItem>
         <AccordionHeader onClick={() => toggle(1)} targetId="1">
           <AccordionHeadStyle>
-            {/* <span className="title-head">Contract</span> */}
             <span className="d-flex title-head">
               Contract
               {contractData?.is_contract_terminated === false ? (
@@ -116,7 +113,7 @@ const ContractTimeline = () => {
                         View
                       </CardText>
                     )}
-                    {/* <CardText className="d-none view-all-cta">Give rating</CardText> */}
+                    <CardText className="d-none view-all-cta">Give rating</CardText>
                     <div className="d-flex gap-1 aling-items-center">
                       <div className="me-1">
                         <span className="key">Updated at</span>
