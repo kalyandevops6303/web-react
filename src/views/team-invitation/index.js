@@ -231,7 +231,7 @@ const TeamInvitation = () => {
                         <>
                           <p className="fw-bolder mt-2 mb-0">Message</p>
                           <div className="w-75">
-                            <p className="font-small-3 w-50">{invitedByData?.message} Hello</p>
+                            <p className="font-small-4 w-50">{invitedByData?.message} Hello</p>
                           </div>
                         </>
                       )}
