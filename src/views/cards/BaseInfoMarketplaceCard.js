@@ -84,7 +84,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         navigate(`/profile/talent/${data?.bidders?.talent_id}`, { state });
       }
     } else {
-      navigate(`/profile/client/${data?.client_details?._id}`, { state });
+      navigate(`/profile/client/${clientDetails?._id}`, { state });
     }
   };
 
