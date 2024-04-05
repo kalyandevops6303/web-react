@@ -258,7 +258,7 @@ const BidDetails = () => {
                     <CardText className="key mb-0">Total Bid Amount</CardText>
                     <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
                     <UncontrolledTooltip placement="bottom" target="amount-info">
-                      <p className="m-0">A Total of talent cost + duration for all the milestone</p>
+                      <p className="m-0">A total of talent cost + duration for all the milestone</p>
                     </UncontrolledTooltip>
                   </div>
                 </div>
@@ -290,7 +290,7 @@ const BidDetails = () => {
                     <CardText className="key mb-0">Estimated Duration</CardText>
                     <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
                     <UncontrolledTooltip placement="bottom" target="duration-info">
-                      <p className="m-0">Sum total of all milestone duration hours/week</p>
+                      <p className="m-0">Sum total of all milestones duration hours/week</p>
                     </UncontrolledTooltip>
                   </div>
                 </div>

@@ -56,7 +56,7 @@ const BidChangeRequestModal = ({ modal, toggleModal }) => {
       <ModalHeader toggle={loading ? null : toggleModal} />
       <ModalBody className="pt-0 px-5">
         <h2 className="font-large-1 text-center mb-2">Bid Change Request</h2>
-        <p className="mb-75">Tell us in detail what bid change you are requesting for</p>
+        <p className="mb-75">Tell us in detail what bid change are you requesting for</p>
         <ChangeRequestModalWrapper>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className="mb-1">
@@ -85,7 +85,7 @@ const BidChangeRequestModal = ({ modal, toggleModal }) => {
                 <span>
                   <Info size={18} color={theme.activeColor} className="me-50 mb-25" />
                   <span className="fw-bolder font-medium-1">Note:&nbsp; </span>
-                  Any signed NDA & Contracts will be null and void once bid change request is initiated.
+                  Any signed NDA & contracts will be null and void once bid change request is initiated.
                 </span>
               </p>
             </div>

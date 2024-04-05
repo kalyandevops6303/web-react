@@ -53,7 +53,7 @@ const RejectBidChangeModal = ({ modal, toggleModal, selectedTimeline }) => {
       <ModalHeader toggle={loading ? null : toggleModal} />
       <ModalBody className="pt-0 px-5">
         <h2 className="font-large-1 text-center mb-2">Reject Bid Change</h2>
-        <p className="mb-75">Tell us in detail why you rejecting the bid change</p>
+        <p className="mb-75">Tell us in detail why are you rejecting the bid change</p>
         <ChangeRequestModalWrapper>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className="mb-1">
