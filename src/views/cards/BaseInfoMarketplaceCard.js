@@ -217,7 +217,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
             <div className="d-flex flex-grow-1">
               <RatingBadge number={returnFormattedRating(clientDetails?.rating || 0)} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {clientDetails?.projects_listed_count ?? 0} Projects
+                {clientDetails?.projects_worked_on_count ?? 0} Projects
               </CardText>
             </div>
           </div>
