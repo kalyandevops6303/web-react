@@ -289,10 +289,10 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                         width={40}
                         height={50}
                         style={{ objectFit: 'cover' }}
-                        onClick={(e) => handleClientNavigate(e)}
+                        onClick={(e) => handleTeamTalentNavigate(e)}
                       />
                       <div>
-                        <div onClick={(e) => handleClientNavigate(e)} className="flex-grow-1">
+                        <div onClick={(e) => handleTeamTalentNavigate(e)} className="flex-grow-1">
                           <CardTitle className="marketplace-card-title mb-25 ms-25 fw-bolder">
                             {data?.worker_details?.name ??
                               `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}{' '}

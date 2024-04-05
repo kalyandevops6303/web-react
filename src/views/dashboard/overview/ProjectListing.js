@@ -218,7 +218,7 @@ const ProjectListing = () => {
     setIsSliderLoading(true);
     setTimeout(() => {
       setIsSliderLoading(false);
-    }, 1000);
+    }, 150);
   }, [open]);
 
   useEffect(() => {

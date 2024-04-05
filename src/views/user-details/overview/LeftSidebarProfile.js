@@ -36,8 +36,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
-  const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
-  const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const favUnfavLoading = useSelector((state) => state.currentProfile.favUnfavLoading);
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
@@ -185,7 +183,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               readonly
             />
             <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
-              {recentProjectsMetadata?.total_records || 0} Projects | {reviewMetadata?.total_records || 0} Reviews
+              {data?.projects_worked_on_count || 0} Projects | {data?.total_reviews || 0} Reviews
             </CardText>
           </div>
 

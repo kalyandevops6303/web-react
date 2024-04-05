@@ -239,7 +239,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
                 </CardText>
               ) : (
                 <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                  {clientDetails?.project_listed_count ?? 0} Projects
+                  {clientDetails?.projects_worked_on_count ?? 0} Projects
                 </CardText>
               )}
             </div>
