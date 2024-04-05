@@ -189,7 +189,7 @@ const PaymentTable = () => {
     return item.estimated_cost;
   };
   const showPaymentCalculation =
-    user.user_type === userTypes.client && !isAllMilestonePaid && selectedPaymentId.length > 0;
+    user?.user_type === userTypes.client && !isAllMilestonePaid && selectedPaymentId.length > 0;
 
   if (listLoading) {
     return <ComponentSpinner />;

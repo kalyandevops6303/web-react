@@ -57,7 +57,7 @@ const CreateClubOrTeamModal = ({ modal, toggleModal }) => {
                 <div className="label">
                   <p className="fw-bolder mb-50">Team</p>
                   <p className="fw-light mb-0">
-                    A network of global talent who work together on projects in one or more areas of interest.
+                    A network of worldwide talent who work together on projects in one or more areas of interest.
                   </p>
                 </div>
               </div>
