@@ -208,8 +208,7 @@ const Listing = ({ stepper, setListingDetails }) => {
                       placeholder="Select start date"
                       options={{
                         minDate: 'today',
-                        // eslint-disable-next-line no-unsafe-optional-chaining
-                        maxDate: new Date().setMonth(new Date()?.getMonth() + 3),
+                        maxDate: new Date().setMonth(new Date().getMonth() + 3),
                         dateFormat: 'M d, Y',
                       }}
                       className={classNames('form-control', {
