@@ -265,7 +265,12 @@ const Search = () => {
                 <div
                   style={
                     activeTab === userTypes.client
-                      ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', placeItems: 'center' }
+                      ? {
+                          display: 'grid',
+                          height: 'auto',
+                          overflow: 'auto',
+                          gridTemplateColumns: 'repeat(auto-fill, minmax(33%, auto))',
+                        }
                       : {}
                   }
                   className="grid-layout flex-wrap justify-content-between"
