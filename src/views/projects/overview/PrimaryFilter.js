@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Calendar, CheckSquare, FileMinus, Layers, UserPlus, UserX } from 'react-feather';
+import { Calendar, CheckSquare, FileMinus, Flag, Layers } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import Statbox from '../../user-details/overview/Statbox';
 import { getCardInfo } from '../../../redux/actions/projectActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import PlusUsers from '../../../assets/images/PlusUsers.svg';
 
 const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
   const dispatch = useDispatch();
@@ -82,7 +83,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
               isMarketPlaceTab
               title={selectCardData?.dispute || 0}
               desc="Disputed"
-              icon={<UserX height={20} />}
+              icon={<Flag height={20} />}
               color="light-red"
             />
           </Col>
@@ -96,8 +97,8 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, userType }) => {
             isMarketPlaceTab
             title={selectCardData?.invited || 0}
             desc="Invited"
-            icon={<UserPlus height={20} />}
-            color="light-red"
+            icon={<img alt="users" src={PlusUsers} height={24} width={24} className="no-border-radius" />}
+            color="light-purple-2"
           />
         </Col>
         <Col>
