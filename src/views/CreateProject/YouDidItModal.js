@@ -67,7 +67,7 @@ const YouDidItModal = ({ modal, toggleModal, onNewProjectCreation }) => {
           <div>
             <h2 className="fw-bold modal-heading text-center mb-2">You did it!</h2>
             <h4 className="fw-bold font-small-5">Your project is ready to be listed on the marketplace.</h4>
-            <p className="fw-light modal-text mt-50">
+            <p className="fw-light modal-body-text mt-50">
               If you have selected a start date then your project will be listed on the requested date.
             </p>
           </div>

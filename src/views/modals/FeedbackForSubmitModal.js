@@ -34,7 +34,7 @@ const FeedbackForSubmitModal = ({ modal, toggleModal, links, documents }) => {
             <img className="gif object-fit-contain" src={Feedback} width={220} alt="gif" />
             <div className="content-side">
               <CardTitle className="modal-heading">Great Job!</CardTitle>
-              <CardSubtitle className="mb-1 modal-text">
+              <CardSubtitle className="mb-1 modal-body-text">
                 You have successfully completed a milestone submission{' '}
               </CardSubtitle>
               <ArtifactsModalWrap className="mb-2 modal-artifacts">

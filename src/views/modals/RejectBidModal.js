@@ -19,7 +19,7 @@ const RejectBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) 
             <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
             <div>
               <CardTitle className="modal-heading">Tough Call</CardTitle>
-              <CardText className="modal-text fw-light w-76">
+              <CardText className="modal-body-text fw-light w-76">
                 You are rejecting this project bid offered by the following team or talent:
               </CardText>
               <section className="d-flex gap-2 stats">

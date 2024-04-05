@@ -26,7 +26,7 @@ const DeclineClubInvitaionModal = ({ modal, toggleModal, data, onDecline, onLoad
             <div className="me-4">
               <CardTitle className="modal-heading">Tough Call</CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">Decline Invitation</CardSubtitle>
-              <CardText className="modal-text fw-light w-76">
+              <CardText className="modal-body-text fw-light w-76">
                 You are about to decline the invitation for the below club
               </CardText>
 

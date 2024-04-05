@@ -20,7 +20,7 @@ const JoinTeamModal = ({ title, isLoading, data, onAccept, modal, toggleModal })
             <img className="gif" style={{ margin: 'auto' }} src={AcceptGif} width={160} height={160} alt="gif" />
             <div className="content-side">
               <CardTitle className="modal-heading">{title}</CardTitle>
-              <CardText className="modal-text fw-light">
+              <CardText className="modal-body-text fw-light">
                 By doing this you will be sending a join request to this team
               </CardText>
               <div className="mt-2 d-flex align-items-center">

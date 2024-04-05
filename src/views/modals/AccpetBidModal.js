@@ -19,7 +19,7 @@ const AcceptBidModal = ({ isLoading, modalData, onAccept, modal, toggleModal }) 
             <img className="gif" style={{ margin: 'auto' }} src={AcceptGif} width={160} height={160} alt="gif" />
             <div className="content-side">
               <CardTitle className="modal-heading">Great Choice!</CardTitle>
-              <CardText className="modal-text fw-light">
+              <CardText className="modal-body-text fw-light">
                 By accepting this bid you are assigning this project to the following team or talent:
               </CardText>
               <section className="d-flex gap-2 stats">

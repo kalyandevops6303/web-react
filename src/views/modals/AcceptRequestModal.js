@@ -24,7 +24,7 @@ const AcceptRequestModal = ({ title, isLoading, data, onAccept, modal, toggleMod
               <CardSubtitle className="mb-75 fw-bold subtitle">Accept request</CardSubtitle>
 
               {isClubInvitation ? (
-                <CardText className="modal-text fw-light">By accepting this request you will be added to the club</CardText>
+                <CardText className="modal-body-text fw-light">By accepting this request you will be added to the club</CardText>
               ) : (
                 <CardText className="desc fw-light">
                   {`By accepting this request ${

@@ -29,7 +29,7 @@ const TeamCreatedModal = ({ previewImage, teamCreateData, onInvite, modal, teamD
           <img src={GreatJobGif} width={120} height={120} alt="great-job" className="me-5" />
           <div className="w-75">
             <h2 className="fw-bold modal-heading mb-1">Great Job!</h2>
-            <p className="modal-text">You have successfully created a team.</p>
+            <p className="modal-body-text">You have successfully created a team.</p>
             <div className="my-1 d-flex align-items-center">
               <TeamCreatedModalImageWrapper>
                 {previewImage ? <TeamCreatedModalLogoImg src={previewImage} alt="team-logo" /> : <UserPlus size={30} />}

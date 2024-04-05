@@ -33,7 +33,7 @@ const TerminateContractModal = ({ project_id, docType, modalData, modal, toggleM
             <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
             <div>
               <CardTitle className="modal-heading">Early termination</CardTitle>
-              <CardSubtitle className="mb-75 fw-bold modal-text">
+              <CardSubtitle className="mb-75 fw-bold modal-body-text">
                 Terminate {isContractView ? 'Contract' : 'NDA'}
               </CardSubtitle>
 

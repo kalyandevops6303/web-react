@@ -28,7 +28,7 @@ const AcceptMemberModal = ({ title, isLoading, data, onAccept, modal, toggleModa
             <div className="content-side">
               <CardTitle className="modal-heading mb-2">{title}</CardTitle>
 
-              <CardText className="modal-text fw-light mb-3">Your accepting the below membership request </CardText>
+              <CardText className="modal-body-text fw-light mb-3">Your accepting the below membership request </CardText>
               <section className="d-flex gap-4">
                 <div className="d-flex flex-column">
                   <div className="my-1 d-flex">

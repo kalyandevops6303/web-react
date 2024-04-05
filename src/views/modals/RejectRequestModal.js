@@ -23,7 +23,7 @@ const RejectRequestModal = ({ title, isLoading, data, onReject, modal, toggleMod
               </CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">Decline request</CardSubtitle>
 
-              <CardText className="modal-text fw-light w-76">You are declining this request from</CardText>
+              <CardText className="modal-body-text fw-light w-76">You are declining this request from</CardText>
               <section className="d-flex gap-2 stats">
                 <div>
                   <CardText className="value mb-25">

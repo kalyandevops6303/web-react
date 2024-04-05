@@ -22,7 +22,7 @@ const FeedbackForAcceptModal = ({ modal, toggleModal, data }) => {
             <img className="gif object-fit-contain" src={Feedback} width={250} alt="gif" />
             <div className="content-side">
               <CardTitle className="modal-heading">Great Job!</CardTitle>
-              <CardSubtitle className="mb-75 modal-text">
+              <CardSubtitle className="mb-75 modal-body-text">
                 You have successfully accepted the <br /> milestone
               </CardSubtitle>
               <CardSubtitle className="subtitle mb-3">

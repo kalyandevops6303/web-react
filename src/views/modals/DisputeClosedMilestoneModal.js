@@ -48,7 +48,7 @@ const DisputeClosedModal = ({ modal, toggleModal, selectedDispute, toggleDetails
             <h2 className="modal-heading text-blue">Dispute Closed</h2>
             <h4 className="my-1">{dispute_type?.name}</h4>
             <div className="description-container">
-              <p className="font-medium-3 modal-text">{description || ''}</p>
+              <p className="font-medium-3 modal-body-text">{description || ''}</p>
             </div>
             <div className="d-flex align-items-center mt-1">
               <Avatar

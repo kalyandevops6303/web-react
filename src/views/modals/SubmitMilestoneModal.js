@@ -31,7 +31,7 @@ const SubmitMilestoneModal = ({ isLoading, onSuccess, modal, toggleModal, links,
             <img className="gif" src={Notepad} width={180} height={180} alt="gif" />
             <div className="content-side">
               <CardTitle className="modal-heading">Are you sure you want to make this submission? </CardTitle>
-              <CardSubtitle className="mb-1 modal-text">
+              <CardSubtitle className="mb-1 modal-body-text">
                 Only after submission client will receive <br /> these files.{' '}
               </CardSubtitle>
               <ArtifactsModalWrap className="mb-2 modal-artifacts">

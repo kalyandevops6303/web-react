@@ -300,7 +300,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute })
               />
               <div>
                 <p className="fw-bold mb-0">{`${created_by?.first_name} ${created_by?.last_name}`}</p>
-                <p className="mb-0 modal-text">
+                <p className="mb-0 modal-body-text">
                   {'company_name' in created_by ? created_by?.company_name : created_by?.role?.name}
                 </p>
               </div>

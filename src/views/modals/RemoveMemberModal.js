@@ -47,7 +47,7 @@ const RemoveMemberModal = ({ modal, toggleModal, data }) => {
             <div className="me-4">
               <CardTitle className="modal-heading">Tough Call</CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">Remove Team Member</CardSubtitle>
-              <CardText className="modal-text fw-light w-76">
+              <CardText className="modal-body-text fw-light w-76">
                 You are about to remove the below <br /> team member
               </CardText>
 

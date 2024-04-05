@@ -33,7 +33,7 @@ const RemoveProjectTeamMemberModal = ({ modal, toggleModal, data }) => {
             <img className="gif" src={DeleteGif} width={244} height={244} alt="gif" />
             <div className="me-4">
               <CardTitle className="modal-heading">Tough Call</CardTitle>
-              <CardSubtitle className="mb-75 fw-bold modal-text">Remove Team Member</CardSubtitle>
+              <CardSubtitle className="mb-75 fw-bold modal-body-text">Remove Team Member</CardSubtitle>
               <CardText className="desc fw-light w-76">
                 You are about to remove the below <br /> team member
               </CardText>

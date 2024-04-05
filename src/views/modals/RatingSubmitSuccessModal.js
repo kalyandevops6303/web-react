@@ -19,7 +19,7 @@ const RatingSubmitSuccessModal = ({ modal, toggleModal, data }) => {
           <img src={ThankYouGif} alt="closed" height={217} width={217} className="me-2" />
           <div className="w-100">
             <h2 className="modal-heading mb-1">Thank You!</h2>
-            <p className="modal-text fw-bold">Your input is valuable to us.</p>
+            <p className="modal-body-text fw-bold">Your input is valuable to us.</p>
             <Rating
               readonly
               initialRating={rating}

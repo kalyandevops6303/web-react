@@ -81,7 +81,7 @@ const AcceptClubInviationModal = ({
           <div className="w-100">
             <h2 className="fw-bold modal-heading mb-1">Great Job!</h2>
             <h4 className="fw-bold font-small-5">Invitation accepted</h4>
-            <p className="fw-light modal-text mt-75">{description}</p>
+            <p className="fw-light modal-body-text mt-75">{description}</p>
             <InviteUsersListContainer>
               {selectedTalents.map((talent) => (
                 <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center mb-2 mx-0">

@@ -27,7 +27,7 @@ const ConfirmContractModal = ({ docType, modalData, onAccept, modal, toggleModal
                 Agree & Accept {isContractView ? 'Contract' : 'NDA'}
               </CardSubtitle>
 
-              <CardText className="modal-text fw-light">
+              <CardText className="modal-body-text fw-light">
                 Are you sure you want to sign the {isContractView ? 'contract' : 'NDA'}?
               </CardText>
               <section className="d-flex gap-2 stats">

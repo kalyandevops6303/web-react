@@ -79,7 +79,7 @@ const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, notificationId, 
             <img src={SwitchGif} alt="complete-profile" width={170} height={170} />
             <div className="pe-1 ms-3">
               <h2 className="fw-bold modal-heading">Switch Profile</h2>
-              <p className="fw-normal mt-1 modal-text">
+              <p className="fw-normal mt-1 modal-body-text">
                 This action needs to be taken by a different profile. Please switch to the relevant profile.
               </p>
             </div>

@@ -49,7 +49,7 @@ const FeedbackRemoveArtifactsModal = ({ modal, toggleModal, data }) => {
                   </Col>
                 )}
               </ArtifactsModalWrap>
-              <CardSubtitle className="modal-text mb-25">
+              <CardSubtitle className="modal-body-text mb-25">
                 <span className="fw-bold pe-50 word-break">{data?.description}</span>
               </CardSubtitle>
             </div>

@@ -19,7 +19,7 @@ const FeedbackForCompleteModal = ({ modal, toggleModal, data, projectName }) => 
             <img className="gif object-fit-contain" src={Feedback} width={220} alt="gif" />
             <div className="content-side">
               <CardTitle className="modal-heading">Great Job!</CardTitle>
-              <CardSubtitle className="mb-75 modal-text">
+              <CardSubtitle className="mb-75 modal-body-text">
                 You have successfully completed the <br /> milestone
               </CardSubtitle>
               <CardSubtitle className="subtitle mb-25">
