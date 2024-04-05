@@ -26,9 +26,9 @@ const AcceptMemberModal = ({ title, isLoading, data, onAccept, modal, toggleModa
           <div className="d-flex justify-content-between pr-25">
             <img className="gif" style={{ margin: 'auto' }} src={GreatJobTick} width={120} height={120} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom mb-2">{title}</CardTitle>
+              <CardTitle className="modal-heading mb-2">{title}</CardTitle>
 
-              <CardText className="desc fw-light mb-3">Your accepting the below membership request </CardText>
+              <CardText className="modal-body-text fw-light mb-3">Your accepting the below membership request </CardText>
               <section className="d-flex gap-4">
                 <div className="d-flex flex-column">
                   <div className="my-1 d-flex">

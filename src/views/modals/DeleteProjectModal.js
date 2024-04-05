@@ -49,14 +49,14 @@ const DeleteProjectModal = ({ modal, toggleModal, data, workers }) => {
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" src={DeleteGif} width={150} height={150} alt="gif" />
             <div>
-              <CardTitle className="modal-title-custom">Project Termination</CardTitle>
+              <CardTitle className="modal-heading">Project Termination</CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">Don’t want to continue with the project? </CardSubtitle>
-              <CardText className="desc fw-light w-76">
+              <CardText className="modal-body-text fw-light w-76">
                 <span className="fw-bolder">Delete : </span> Deleting the project will remove this project from the
                 platform.
               </CardText>
               {workers?.entity_type && (
-                <CardText className="desc fw-light w-76">
+                <CardText className="modal-body-text fw-light w-76">
                   <span className="fw-bolder">Relist Project :</span> Relisting the project will terminate the contract
                   with the existing team/talent & list this project back in marketplace.
                 </CardText>

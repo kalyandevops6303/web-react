@@ -125,6 +125,8 @@ const ProjectDetails = () => {
         return { title: 'Dashboard', link: '/dashboard' };
       case 'my-teams':
         return { title: 'My teams', link: '/my-teams' };
+      case 'payments':
+        return { title: 'Payments', link: '/payments' };
       default:
         return '';
     }

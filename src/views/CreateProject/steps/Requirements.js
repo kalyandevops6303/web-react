@@ -51,7 +51,7 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { downloadUploadedFile } from '../../../utility/Utils';
+import { downloadUploadedFile, getFileSize } from '../../../utility/Utils';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -68,7 +68,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           yup
             .number()
             .min(1, 'Expected duration should be at least 1 week')
-            .max(52, 'Expected duration cannot be greater than 52 weeks')
+            .max(12, 'Expected duration cannot be greater than 12 weeks')
             .integer('Expected duration should be a number')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
@@ -231,6 +231,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     watch,
     setValue,
     clearErrors,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -262,6 +263,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   useEffect(() => {
     clearErrors('expectedDuration');
+    if (watch('expectedDuration') >= 0) {
+      trigger('expectedDuration');
+    }
   }, [watch('expectedDurationPeriod')]);
 
   const loadSkillsOptions = async (search) => {
@@ -520,15 +524,6 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     setFiles([...filtered]);
   };
 
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-    }
-  };
-
   const formattedDate = new Date()
     .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
     .replace(',', '')
@@ -557,7 +552,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate}

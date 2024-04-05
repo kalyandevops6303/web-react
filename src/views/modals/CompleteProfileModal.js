@@ -33,8 +33,8 @@ const CompleteProfileModal = ({ modal, toggleModal, modalInfoText }) => {
         <div className="d-flex align-items-center px-50 py-0">
           <img src={CompleteProfileGif} alt="complete-profile" width={140} height={140} />
           <div className="pe-1 ms-3">
-            <h2 className="fw-bold font-large-1">Complete Profile</h2>
-            <p className="fw-normal font-medium-3 mt-1">
+            <h2 className="fw-bold modal-heading">Complete Profile</h2>
+            <p className="fw-normal modal-body-text mt-1">
               Completing your profile will enable you to {modalInfoText || 'perform this action'}
             </p>
             <span className="font-weight-bold percentage">{profilePercentageData?.profile_completed}%</span>

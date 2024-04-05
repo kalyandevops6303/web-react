@@ -20,7 +20,7 @@ const FeedbackRemoveArtifactsModal = ({ modal, toggleModal, data }) => {
           <div className="d-flex justify-content-between pr-1">
             <img className="gif object-fit-contain" src={DeleteGif} width={160} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Removed File</CardTitle>
+              <CardTitle className="modal-heading">Removed File</CardTitle>
 
               <ArtifactsModalWrap className="mb-1 modal-artifacts">
                 {data?.link ? (
@@ -49,7 +49,7 @@ const FeedbackRemoveArtifactsModal = ({ modal, toggleModal, data }) => {
                   </Col>
                 )}
               </ArtifactsModalWrap>
-              <CardSubtitle className="subtitle mb-25">
+              <CardSubtitle className="modal-body-text mb-25">
                 <span className="fw-bold pe-50 word-break">{data?.description}</span>
               </CardSubtitle>
             </div>

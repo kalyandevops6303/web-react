@@ -301,13 +301,11 @@ export const renderFilePreview = (file) => {
   return <FileText size="20" className="me-75 mb-25" />;
 };
 
-export const renderFileSize = (size) => {
+export const getFileSize = (size) => {
   if (Math.round(size / 100) / 10 > 1000) {
     return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-    // eslint-disable-next-line
-  } else {
-    return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
   }
+  return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
 };
 
 export const getProjectStatus = ({ status, type }) => {

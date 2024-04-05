@@ -32,7 +32,7 @@ import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { userTypes } from '../../../utility/constants/Constant';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
-import { downloadFile } from '../../../utility/Utils';
+import { downloadFile, getFileSize } from '../../../utility/Utils';
 
 const Preview = () => {
   const dispatch = useDispatch();
@@ -51,15 +51,6 @@ const Preview = () => {
   };
 
   const renderFilePreview = () => <FileText size="18" className="me-75 mb-50" />;
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-    }
-  };
 
   const renderFormattedDate = (date) => {
     const formattedDate = date
@@ -115,7 +106,7 @@ const Preview = () => {
               </div>
             </Col>
             <Col sm="2" md="4" lg="2">
-              {renderFileSize(file.size)}
+              {getFileSize(file.size)}
             </Col>
             <Col sm="2" md="2" lg="2" className="d-flex justify-content-end">
               {renderFormattedDate(new Date(file.created_at))}
