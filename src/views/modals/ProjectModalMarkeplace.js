@@ -34,7 +34,7 @@ import { selectSavedUserData, selectUserData } from '../../redux/selectors/authS
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { downloadFile } from '../../utility/Utils';
+import { downloadFile, getFileSize } from '../../utility/Utils';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -154,15 +154,6 @@ const ProjectModal = ({
     } else {
       setSelectedProject(data);
       dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
-    }
-  };
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
     }
   };
 
@@ -366,7 +357,7 @@ const ProjectModal = ({
                       </span>
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
-                      {renderFileSize(document?.size)}
+                      {getFileSize(document?.size)}
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
                       {DateTime?.fromMillis(document?.created_at).toFormat('dd MMM yyyy')}

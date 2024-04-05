@@ -15,6 +15,7 @@ import { projectDetails } from '../../../redux/selectors/createBidSelectors';
 import DateTime from '../../../lib/date-time';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { returnFormattedRating } from '../../../utility/Utils';
+import ViewFilesModal from '../../modals/ViewFilesModal';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
@@ -36,6 +37,11 @@ const LeftSidebarProjectDetails = () => {
   }, []);
 
   const [daysLeft, setDaysLeft] = useState(0);
+  const [viewFilesModal, setViewFilesModal] = useState(null);
+
+  const toggleViewFilesModal = () => {
+    setViewFilesModal(!viewFilesModal);
+  };
 
   useEffect(() => {
     if (projectDetailsData) {
@@ -61,6 +67,14 @@ const LeftSidebarProjectDetails = () => {
 
   return (
     <LeftSidebarProjectDetailsWrapper>
+      {viewFilesModal && (
+        <ViewFilesModal
+          modal={viewFilesModal}
+          toggleModal={toggleViewFilesModal}
+          modalTitle="Project Requirements Documents"
+          documents={projectDetailsData?.details?.documents}
+        />
+      )}
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between status-head">
@@ -126,7 +140,10 @@ const LeftSidebarProjectDetails = () => {
               </CardText>
             </div>
             {projectDetailsData?.details?.documents?.length > 0 && (
-              <div className="d-flex align-items-center">
+              <div
+                className="d-flex align-items-center cursor-pointer attachments"
+                onClick={() => setViewFilesModal(true)}
+              >
                 <Paperclip size={14} />
                 <span className="ms-25">{projectDetailsData?.details?.documents?.length}</span>
               </div>

@@ -104,7 +104,6 @@ class CometChatAddGroupMemberList extends React.Component {
         this.setState(
           {
             userlist: [],
-            membersToAdd: [],
             membersToRemove: [],
             filteredlist: [],
             decoratorMessage: Translator.translate('LOADING', this.context.language),
