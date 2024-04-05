@@ -89,7 +89,13 @@ const Disputes = () => {
     setSelectedDispute(dispute);
 
     const onAcceptSuccess = () => {
-      dispatch(getMilestoneDisputes({ projectId: param?.projectId, milestoneId: param?.milestoneId }));
+      dispatch(
+        getMilestoneDisputes({
+          projectId: param?.projectId,
+          milestoneId: param?.milestoneId,
+          metaData: { page: 1, page_size: 10 },
+        }),
+      );
       setDisputeDetailsModal(true);
     };
     if (status === disputeStatuses.open && dispute_against.includes(selectUserDetails._id)) {

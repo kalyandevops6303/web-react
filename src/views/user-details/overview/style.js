@@ -58,6 +58,12 @@ const StatboxWrap = styled(Card)`
       color: ${theme.purpleColor}; // purple
     }
   }
+  .bg-light-purple-2 {
+    background: ${theme.purpleTimelimeColor}1f; // light-purple-2
+    svg {
+      color: ${theme.purpleTimelimeColor}; // purple
+    }
+  }
   .bg-light-info {
     background: ${theme.info}1f; // light-purple
     svg {
@@ -81,6 +87,10 @@ const StatboxWrap = styled(Card)`
     svg {
       color: ${theme.red}; // purple
     }
+  }
+
+  .no-border-radius {
+    border-radius: 0 !important;
   }
 `;
 
