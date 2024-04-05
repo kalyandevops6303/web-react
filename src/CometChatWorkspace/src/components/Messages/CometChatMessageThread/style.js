@@ -82,7 +82,7 @@ export const messageContainerStyle = (event) => {
     overflowY: 'auto',
     transition: 'background .3s ease-out .1s',
     width: '100%',
-    zIndex: '100',
+    zIndex: '1',
     minHeight: 'calc(100% - 68px)',
     order: '2',
     '.chat__list': {
@@ -126,6 +126,9 @@ export const parentMessageStyle = (message) => {
     },
     '.message__wrapper, .message__file__wrapper': {
       width: '100%'
+    },
+    '.message__content__wrapper': {
+      backgroundColor: 'white'
     }
   };
 };
