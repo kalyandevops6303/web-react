@@ -26,7 +26,6 @@ export const messageImgWrapper = (context) => {
 
   return {
     display: 'inline-block',
-    width: '100%',
     height: '200px',
     cursor: 'pointer',
     flexShrink: '0',

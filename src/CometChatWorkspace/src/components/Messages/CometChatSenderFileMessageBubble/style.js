@@ -18,18 +18,18 @@ export const messageWrapperStyle = () => {
     width: 'auto',
     flex: '1 1',
     alignSelf: 'stretch',
-    boxShadow: '0px 4px 16px -7px rgba(150,170,180,0.5)',
+ 
   };
 };
 
 export const messageFileWrapper = (context) => {
   return {
+    boxShadow: '0px 4px 16px -7px rgba(150,170,180,0.5)',
     display: 'inline-block',
     borderRadius: '5px',
     backgroundColor: `#84CCFF1F`,
     color: `${context.theme.color.white}`,
     padding: '10px 20px 15px 20px',
-    width: '100%',
     '.message__file': {
       display: 'flex',
       justifyContent: 'center',
