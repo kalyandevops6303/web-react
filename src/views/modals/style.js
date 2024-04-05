@@ -24,16 +24,7 @@ const AcceptModalWrapper = styled.div`
   .content-side {
     width: 65%;
   }
-  .modal-title-custom {
-    font-size: 1.75rem;
-    font-weight: 500;
-    // color: ${theme.red};
-    margin-bottom: 0.75rem;
-  }
   .subtitle {
-    font-size: 1.125rem;
-  }
-  .desc {
     font-size: 1.125rem;
   }
   .stats {
@@ -67,7 +58,7 @@ const DeleteModalWrapper = styled.div`
     margin: -30px 0 -70px -1rem;
   }
   .modal-title-custom {
-    font-size: 1.75rem;
+    font-size: 1.719rem;
     font-weight: 500;
     color: ${theme.red};
     margin-bottom: 0.75rem;
@@ -76,7 +67,7 @@ const DeleteModalWrapper = styled.div`
     font-size: 1.125rem;
   }
   .desc {
-    font-size: 1.125rem;
+    font-size: 1.286rem;
   }
   .stats {
     margin-top: 1.2rem;
@@ -100,7 +91,7 @@ const TerminateModalWrapper = styled.div`
     margin: 1rem 0.5rem 0px 0rem;
   }
   .modal-title-custom {
-    font-size: 1.75rem;
+    font-size: 1.719rem;
     font-weight: 500;
     color: ${theme.red};
     margin-bottom: 0.75rem;
@@ -109,7 +100,7 @@ const TerminateModalWrapper = styled.div`
     font-size: 1.125rem;
   }
   .desc {
-    font-size: 1rem;
+    font-size: 1.286rem;
     font-weight: 400 !important;
   }
   .stats {
@@ -139,7 +130,7 @@ const RemoveMemberModalWrapper = styled.div`
     margin: -30px 0 -70px -1rem;
   }
   .modal-title-custom {
-    font-size: 1.75rem;
+    font-size: 1.719rem;
     font-weight: 500;
     color: ${theme.red};
     margin-bottom: 0.75rem;
@@ -148,7 +139,7 @@ const RemoveMemberModalWrapper = styled.div`
     font-size: 1.125rem;
   }
   .desc {
-    font-size: 1.125rem;
+    font-size: 1.286rem;
   }
   .stats {
     margin-top: 1.2rem;
@@ -172,7 +163,7 @@ const EditContractWrap = styled.div`
   .modal-title-edit {
     text-align: center;
     margin-bottom: 3rem;
-    font-size: 1.75rem !important;
+    font-size: 1.719rem !important;
     font-weight: 500;
   }
 `;
@@ -207,7 +198,7 @@ const MessageIconWrap = styled.div`
 
 const MakePaymentModalWrapper = styled.div`
   .modal-header {
-    font-size: 26px;
+    font-size: 2px;
     font-weight: 500;
   }
   .modal-title {

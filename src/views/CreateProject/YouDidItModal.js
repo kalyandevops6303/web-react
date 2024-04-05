@@ -65,9 +65,9 @@ const YouDidItModal = ({ modal, toggleModal, onNewProjectCreation }) => {
             <img src={Notepad} alt="you-did-it" width={244} height={244} />
           </YouDidItGifContainer>
           <div>
-            <h2 className="fw-bold font-large-1 text-center mb-2">You did it!</h2>
+            <h2 className="fw-bold modal-heading text-center mb-2">You did it!</h2>
             <h4 className="fw-bold font-small-5">Your project is ready to be listed on the marketplace.</h4>
-            <p className="fw-light mt-50">
+            <p className="fw-light modal-body-text mt-50">
               If you have selected a start date then your project will be listed on the requested date.
             </p>
           </div>
