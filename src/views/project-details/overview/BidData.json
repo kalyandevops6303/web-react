@@ -1,0 +1,62 @@
+{
+  "bid_status": "IN_REVIEW",
+  "duration": 1,
+  "talent_cost": 100,
+  "updated_date": 123,
+  "is_bid_editable": true,
+  "can_request_changes": true,
+  "timeline": [
+    {
+      "action": "BID_SUBMITTED",
+      "time": 1707211596283,
+      "snapshot_id": "",
+      "description": "",
+      "by_entity": {
+        "entity_id": "655f2d5d14a117f701d458ea",
+        "entity": "TEAM",
+        "name": "Sky black squad",
+        "role": "",
+        "image": "https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64d60539e127974f873d31d8/69dd39ff-618f-4f17-a40b-28bddea2ba38.jpg"
+      }
+    },
+    {
+      "action": "BID_REVIEWED",
+      "time": 1707211634916,
+      "snapshot_id": "",
+      "description": "",
+      "by_entity": {
+        "entity_id": "64e843f347a11f69d95a8f7b",
+        "entity": "CLIENT",
+        "name": "Vighnesh Client",
+        "role": "Client Jack org",
+        "image": "https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e843f347a11f69d95a8f7b/b9f4953a-9e96-4d46-9249-de6adc20754e.jpg"
+      }
+    },
+    {
+      "action": "BID_ACCEPTED",
+      "time": 1707211640543,
+      "snapshot_id": "",
+      "description": "",
+      "by_entity": {
+        "entity_id": "64e843f347a11f69d95a8f7b",
+        "entity": "CLIENT",
+        "name": "Vighnesh Client",
+        "role": "Client Jack org",
+        "image": "https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e843f347a11f69d95a8f7b/b9f4953a-9e96-4d46-9249-de6adc20754e.jpg"
+      }
+    },
+    {
+      "action": "BID_CHANGE_REQUEST",
+      "time": 1707211640543,
+      "snapshot_id": "",
+      "description": "Please change milestone",
+      "by_entity": {
+        "entity_id": "64e843f347a11f69d95a8f7b",
+        "entity": "CLIENT",
+        "name": "Vighnesh Client",
+        "role": "Client Jack org",
+        "image": "https://trumiodevsa.blob.core.windows.net/trumio-public/profile/64e843f347a11f69d95a8f7b/b9f4953a-9e96-4d46-9249-de6adc20754e.jpg"
+      }
+    }
+  ]
+}

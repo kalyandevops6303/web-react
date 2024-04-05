@@ -296,6 +296,10 @@ const BidDetailsWrap = styled.div`
       border-bottom: 1px solid ${theme.cardHeaderBorderColor};
     }
   }
+
+  .min-height-400 {
+    min-height: 400px;
+  }
 `;
 const BidWrapper = styled.div`
   .basic-title {
@@ -335,6 +339,11 @@ const BidWrapper = styled.div`
     cursor: pointer;
     font-weight: 500;
   }
+  .card-cta-disabled {
+    text-decoration: underline;
+    color: ${theme.activeNavPillText}4f;
+    font-weight: 500;
+  }
   .indicator {
     height: 0.5rem;
     width: 0.5rem;
@@ -342,8 +351,11 @@ const BidWrapper = styled.div`
     background: ${theme.red};
     align-self: flex-start;
   }
-
+  .color-red {
+    color: ${theme.red};
+  }
   .meta-data {
+    width: 20%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -354,6 +366,9 @@ const BidWrapper = styled.div`
     .card-cta {
       text-align: right;
     }
+  }
+  .timeline-single-item {
+    width: 80%;
   }
 
   // Accordion
@@ -443,6 +458,16 @@ const BidWrapper = styled.div`
     height: 1.7rem;
     width: 1.7rem;
     padding: 0.3rem;
+  }
+  .red-dot {
+    width: 8px;
+    height: 8px;
+    background-color: ${theme.red};
+    border-radius: 50%;
+    outline: 2px solid white;
+    position: absolute;
+    top: 0px;
+    right: 0px;
   }
 `;
 

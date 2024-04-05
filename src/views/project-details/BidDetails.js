@@ -32,7 +32,7 @@ import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
 import { userTypes } from '../../utility/constants/Constant';
 import { downloadFile, formatFileSize, truncateSentence } from '../../utility/Utils';
-import AcceptBidModal from '../modals/AccpetBidModal';
+import AcceptBidModal from '../modals/AcceptBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
@@ -41,6 +41,7 @@ import { AccordionBodyContent, AccordionTableHeader } from '../create-bid/style'
 import ShowMoreLess from '../../@core/components/show-more-less-comp';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
+import round from '../../lib/round';
 
 const BidDetails = () => {
   const dispatch = useDispatch();
@@ -252,18 +253,18 @@ const BidDetails = () => {
               <CardTitle className="main-card-title">Bid Details</CardTitle>
               <CardBody className="main-card-body bid-eta d-flex align-items-center">
                 <div>
-                  <CardText className="value">${bidInfo?.total_estimated_cost}</CardText>
+                  <CardText className="value">${round(bidInfo?.total_estimated_cost, 2)}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Total Bid Amount</CardText>
                     <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
                     <UncontrolledTooltip placement="bottom" target="amount-info">
-                      <p className="m-0">A Total of talent cost + duration for all the milestone</p>
+                      <p className="m-0">A total of talent cost + duration for all the milestone</p>
                     </UncontrolledTooltip>
                   </div>
                 </div>
                 <p className="m-0 symbol font-medium-4">+</p>
                 <div>
-                  <CardText className="value">${bidInfo?.platform_fee}</CardText>
+                  <CardText className="value">${round(bidInfo?.platform_fee, 2)}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Platform Fees</CardText>
                     <Info size={14} color={theme.infoIcon} id="bid-platform-fee-info" className="ms-50" />
@@ -274,7 +275,7 @@ const BidDetails = () => {
                 </div>
                 <p className="m-0 symbol font-medium-4">=</p>
                 <div>
-                  <CardText className="value">${bidInfo?.total_project_cost}</CardText>
+                  <CardText className="value">${round(bidInfo?.total_project_cost, 2)}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Total Project Cost</CardText>
                   </div>
@@ -289,7 +290,7 @@ const BidDetails = () => {
                     <CardText className="key mb-0">Estimated Duration</CardText>
                     <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
                     <UncontrolledTooltip placement="bottom" target="duration-info">
-                      <p className="m-0">Sum total of all milestone duration hours/week</p>
+                      <p className="m-0">Sum total of all milestones duration hours/week</p>
                     </UncontrolledTooltip>
                   </div>
                 </div>

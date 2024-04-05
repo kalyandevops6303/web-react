@@ -11,12 +11,12 @@ import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ReceivedBids from './ReceivedBids';
 import BidSubmitted from './BidSubmitted';
-import { checkDocumentActivated, getBidDetails } from '../../../redux/actions/projectDetailsAction';
+import { getBidDetails } from '../../../redux/actions/projectDetailsAction';
 import {
   projectDetails,
   projectDetailsLoading,
-  selectIsContract,
-  selectIsNDA,
+  selectContractData,
+  selectNDAData,
 } from '../../../redux/selectors/projectDetailsSelectors';
 import ContractTimeline from './ContractTimeline';
 import NDATimeline from './NDATimeline';
@@ -32,39 +32,30 @@ const BidTimelineWrapper = styled.div`
     background: ${theme.red};
     align-self: flex-start;
   }
+  .word-wrap {
+    word-break: break-word;
+  }
 `;
 
 const BidTimeline = () => {
   const param = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const contractData = useSelector(selectIsContract);
-  const ndaData = useSelector(selectIsNDA);
+  const contractData = useSelector(selectContractData);
+  const ndaData = useSelector(selectNDAData);
   const projectDetailsData = useSelector(projectDetails);
-  const bidInfo = useSelector((state) => state.projectDetails.bidInfo);
-  const bidInfoError = useSelector((state) => state.projectDetails.errorBidInfo);
   const isDocLoading = useSelector((state) => state.projectDetails.checkDocumentActivatedLoading);
   const isLoading = useSelector(projectDetailsLoading);
 
   const userType = useSelector(selectUserType);
 
   useEffect(() => {
-    dispatch(
-      checkDocumentActivated({
-        isNDA: projectDetailsData?.nda?.is_nda,
-        project_id: param.projectId,
-      }),
-    );
+    dispatch(getBidDetails({ project_id: param?.projectId }));
     return () => {
       dispatch(clearDocstate());
     };
-  }, [projectDetailsData]);
-
-  useEffect(() => {
-    if (userType !== userTypes.client) {
-      dispatch(getBidDetails({ project_id: param?.projectId }));
-    }
   }, []);
+
   const handleDoc = ({ type }) => {
     navigate(`doc/${type}`);
   };
@@ -105,10 +96,10 @@ const BidTimeline = () => {
               </CardBody>
             </Card>
           ) : ndaData?.show_document ? (
-            <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
-              <NDATimeline />
-            </UncontrolledAccordion>
+            // <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
+            <NDATimeline />
           ) : (
+            // </UncontrolledAccordion>
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
@@ -157,10 +148,10 @@ const BidTimeline = () => {
               </CardBody>
             </Card>
           ) : contractData?.show_document ? (
-            <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
-              <ContractTimeline />
-            </UncontrolledAccordion>
+            // <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
+            <ContractTimeline />
           ) : (
+            // </UncontrolledAccordion>
             <Card>
               <CardBody className="basic-title">
                 <div className="d-flex justify-content-between">
@@ -185,13 +176,13 @@ const BidTimeline = () => {
 
     {
       order: 3,
-      isVisible: userType !== userTypes.client,
+      isVisible: true,
       isDisabled: false,
       color: theme.timelineSuccessColor,
       customContent: (
-        <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
-          {userType !== userTypes.client && <BidSubmitted />}
-        </UncontrolledAccordion>
+        // <UncontrolledAccordion className="accordion-timeline" defaultOpen="1">
+        <BidSubmitted />
+        // </UncontrolledAccordion>
       ),
     },
     {
@@ -212,10 +203,21 @@ const BidTimeline = () => {
   if (isDocLoading || isLoading) {
     return <ComponentSpinner />;
   }
-
   return (
     <BidTimelineWrapper>
-      {userType !== userTypes.client && bidInfo && (
+      <div>
+        {contractData &&
+          // If contractData is true...
+          (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && ndaData)) && (
+            // If projectDetailsData?.nda?.is_nda is true, check ndaData before rendering Timeline.
+            // {console.log(contractData)}
+            <Timeline data={bidStageWithOrder} />
+          )}
+      </div>
+
+      {/* {bidInfoError && <Timeline data={bidStageWithOrder} />} */}
+
+      {/* {userType !== userTypes.client && bidInfo && (
         // If the user type is talent, check if bidInfo is available before proceeding.
         <div>
           {contractData &&
@@ -226,7 +228,7 @@ const BidTimeline = () => {
             )}
         </div>
       )}
-      {userType === userTypes.client && (
+      {userType === userTypes.client && bidInfo && (
         // If the user type is client, no need to check bidInfo.
         <div>
           {contractData &&
@@ -237,7 +239,7 @@ const BidTimeline = () => {
             )}
         </div>
       )}
-      {bidInfoError && <Timeline data={bidStageWithOrder} />}
+      {bidInfoError && <Timeline data={bidStageWithOrder} />} */}
     </BidTimelineWrapper>
   );
 };

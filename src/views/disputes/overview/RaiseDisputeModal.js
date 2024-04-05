@@ -135,7 +135,7 @@ const RaiseDisputeModal = ({ modal, toggleModal, primaryFilter, projectDetail, f
       <ModalBody className="pt-0 px-5">
         <h2 className="font-large-1 text-center">Raise Dispute</h2>
         <h4 className="mt-2 mb-75">Enter Dispute Details</h4>
-        <p className="mb-3">Tell us in detail why you are raising this dispute</p>
+        <p className="mb-3">Tell us in detail why are you raising this dispute</p>
         <DisputeFormContainer>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className="mb-1">

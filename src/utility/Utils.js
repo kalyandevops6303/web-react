@@ -7,7 +7,7 @@ import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { maxFileSize } from './constants/Constant';
+import { bidStatus, maxFileSize } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
@@ -639,5 +639,45 @@ export const handleLinkOpen = (URL) => {
   } else {
     // eslint-disable-next-line no-undef
     window.open(`https://${URL}`, '_blank');
+  }
+};
+
+export const getStatusColor = (action) => {
+  switch (action) {
+    case bidStatus.BID_UPDATED:
+      return theme.purpleTimelimeColor;
+    case bidStatus.BID_REVIEWED:
+      return theme.orangeColor;
+    case bidStatus.BID_ACCEPTED:
+      return theme.timelineSuccessColor;
+    case bidStatus.BID_SUBMITTED:
+      return theme.purpleTimelimeColor;
+    case bidStatus.BID_CHANGE_ACCPETED:
+      return theme.timelineSuccessColor;
+    case bidStatus.BID_CHANGE_REJECTED:
+      return theme.red;
+    default:
+      return theme.purpleTimelimeColor; // Default color if status is not recognized
+  }
+};
+
+export const getBidAction = (action) => {
+  switch (action) {
+    case bidStatus.BID_UPDATED:
+      return 'Bid Updated';
+    case bidStatus.BID_REVIEWED:
+      return 'Bid Reviewed';
+    case bidStatus.BID_ACCEPTED:
+      return 'Bid Accepted';
+    case bidStatus.BID_SUBMITTED:
+      return 'Bid Submitted';
+    case bidStatus.BID_CHANGE_REQUEST:
+      return 'Bid change Request';
+    case bidStatus.BID_CHANGE_ACCPETED:
+      return 'Bid change Accepted';
+    case bidStatus.BID_CHANGE_REJECTED:
+      return 'Bid change Rejected';
+    default:
+      return '';
   }
 };

@@ -49,6 +49,7 @@ const ProjectDetails = () => {
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
   const user = useSelector(userData);
+
   const [stepsArray, setStepsArray] = useState(steps);
   const [stepsArrayInvite, setStepsArrayInvite] = useState(InviteView);
   const [selectedMilestone, setSelectedMilestone] = useState(null);
