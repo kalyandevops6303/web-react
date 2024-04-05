@@ -1103,6 +1103,7 @@ class CustomGroupProfileSidebar extends React.Component {
     CometChat.updateGroup(group).then(
       (group) => {
         console.log('Group name updated successfully');
+        this.context.setItem(group)
       },
       (error) => {
         console.log('Group name update failed', error);
