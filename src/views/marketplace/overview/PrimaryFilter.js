@@ -75,7 +75,7 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
           <Statbox
             isActive={selected === 'my_bids'}
             isMarketPlaceTab
-            title={selectCardData?.bids_submitted ?? 0}
+            title={selectCardData?.bids_received ?? 0}
             desc="Bid Received"
             icon={<File height={20} />}
             color="light-primary"
