@@ -1178,7 +1178,7 @@ class CustomGroupProfileSidebar extends React.Component {
                   }}
                 />
 
-                {this.isGroupAdmin && (
+                {this.isGroupAdmin() && (
                   <>
                     {this.state.isNameEditOn ? (
                       <Check
