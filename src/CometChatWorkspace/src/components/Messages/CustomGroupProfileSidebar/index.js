@@ -1114,6 +1114,13 @@ class CustomGroupProfileSidebar extends React.Component {
     );
   };
 
+  isGroupAdmin = () => {
+    const adminUIDList = this.context.groupAdmins.map((admin) => admin.uid)
+    const currentUserUID = this.loggedInUser?.uid 
+
+    return (adminUIDList.includes(currentUserUID))
+  }
+
   render() {
     // console.log(this.props.data)
     return (
@@ -1171,6 +1178,8 @@ class CustomGroupProfileSidebar extends React.Component {
                   }}
                 />
 
+                {this.isGroupAdmin && 
+                <>
                 {this.state.isNameEditOn ? (
                   <Check
                     className="about__name__icon"
@@ -1188,6 +1197,8 @@ class CustomGroupProfileSidebar extends React.Component {
                     onClick={this.turnOnNameEdit}
                   />
                 )}
+                </>
+  }
               </div>
             </div>
 
