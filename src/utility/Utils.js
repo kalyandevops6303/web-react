@@ -681,3 +681,12 @@ export const getBidAction = (action) => {
       return '';
   }
 };
+
+export const handleEmailClick = () => {
+  const recipient = 'support@trumio.ai';
+  const subject = '';
+  const body = '';
+  const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // eslint-disable-next-line no-undef
+  window.location.href = mailtoLink;
+};
