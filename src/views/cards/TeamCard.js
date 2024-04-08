@@ -28,7 +28,7 @@ const Team = ({ data, isSearchPage, primaryFilter, secondFilterState }) => {
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const users = [];
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   data?.team_members?.map((user) =>
     users.push({
       user_id: user?.user_id,

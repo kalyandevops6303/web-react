@@ -629,7 +629,7 @@ export const getModifiedProjectResponse = ({ data }) => {
       _id: data?.bid,
       status: data?.bid?.status,
     },
-    is_favorite: data?.project?.is_favourite,
+    is_favourite: data?.project?.is_favourite,
   };
 };
 export const handleLinkOpen = (URL) => {

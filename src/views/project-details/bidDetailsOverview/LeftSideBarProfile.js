@@ -123,7 +123,7 @@ const LeftSidebarProfile = ({
                 </CustomBadge>
               </div>
             )}
-            {data?.is_favorite ? (
+            {data?.is_favourite ? (
               <Heart
                 className=" cursor-pointer d-flex ms-auto heart"
                 fill={theme.red}

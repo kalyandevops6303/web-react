@@ -22,7 +22,7 @@ import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 function TalentCard({ data, isSearchPage, primaryFilter, secondFilterState }) {
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
   const dispatch = useDispatch();
   const navigate = useNavigate();
