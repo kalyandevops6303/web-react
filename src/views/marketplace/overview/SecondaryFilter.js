@@ -146,39 +146,40 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         valuesOnly[key] = secondFilterState[key].map((item) => item.value);
       }
     });
-
-    if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
-      dispatch(
-        getUsers({
-          isRecommanded,
-          isFavorite,
-          primaryFilter,
-          metaData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
-    } else {
-      dispatch(
-        getListProjects({
-          isMyListing: primaryFilter === 'my_listings',
-          isMyBids: primaryFilter === 'my_bids',
-          show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
-          isRecommanded,
-          isFavorite,
-          metaData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
+    if (userType) {
+      if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
+        dispatch(
+          getUsers({
+            isRecommanded,
+            isFavorite,
+            primaryFilter,
+            metaData,
+            userType,
+            onSuccess,
+            onError,
+            postData: valuesOnly,
+            searchText,
+          }),
+        );
+      } else {
+        dispatch(
+          getListProjects({
+            isMyListing: primaryFilter === 'my_listings',
+            isMyBids: primaryFilter === 'my_bids',
+            show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
+            isRecommanded,
+            isFavorite,
+            metaData,
+            userType,
+            onSuccess,
+            onError,
+            postData: valuesOnly,
+            searchText,
+          }),
+        );
+      }
     }
-  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite]);
+  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite, userType]);
 
   useEffect(() => {
     if (location?.state?.isRecommended) {
