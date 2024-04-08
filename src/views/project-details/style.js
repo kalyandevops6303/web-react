@@ -127,7 +127,7 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
   }
   .rating-label {
     color: ${theme.bodyColor};
-    font-weight: 300;
+    font-weight: 400;
   }
 
   //stats
@@ -149,7 +149,7 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
     }
     .stat-key {
       font-size: 0.75rem;
-      font-weight: 300;
+      font-weight: 400;
       line-height: 1.125rem; /* 150% */
     }
   }
@@ -164,7 +164,7 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
     }
   }
   .info-key {
-    font-weight: 300;
+    font-weight: 400;
     margin-right: 1rem;
   }
 
@@ -174,7 +174,7 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
       font-weight: 400;
     }
     .value {
-      font-weight: 300;
+      font-weight: 400;
     }
   }
 
@@ -240,7 +240,7 @@ const BidDetailsWrap = styled.div`
     }
   }
   .milestone-title {
-    font-weight: 300;
+    font-weight: 400;
     font-size: 1.2rem;
   }
 

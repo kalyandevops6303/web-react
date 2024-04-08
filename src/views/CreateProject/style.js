@@ -440,7 +440,7 @@ export const TextEditorContainer = styled.div`
   .ql-editor.ql-blank::before {
     color: ${theme.gray};
     font-style: normal;
-    font-weight: 300;
+    font-weight: 400;
     font-size: 13px;
   }
 
@@ -469,7 +469,7 @@ export const PreviewTextEditorContainer = styled.div`
   .ql-editor.ql-blank::before {
     color: ${theme.gray};
     font-style: normal;
-    font-weight: 300;
+    font-weight: 400;
     font-size: 13px;
   }
 

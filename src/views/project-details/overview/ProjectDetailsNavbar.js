@@ -85,7 +85,7 @@ const ProjectDetailsNavbar = ({ onChangeStep, steps, currentStep }) => {
         }
         .stepper-subtitle {
           font-size: 0.75rem;
-          font-weight: 300;
+          font-weight: 400;
         }
       }
     }

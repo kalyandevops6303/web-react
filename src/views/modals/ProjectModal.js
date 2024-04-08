@@ -57,13 +57,13 @@ const ViewProjectDetailModalWrap = styled.div`
   }
   .rating-label {
     color: ${theme.bodyColor};
-    font-weight: 300;
+    font-weight: 400;
   }
   .project-name {
     font-size: 16px;
   }
   .project-desc {
-    font-weight: 300;
+    font-weight: 400;
     font-size: 16px;
     line-height: 24px;
   }

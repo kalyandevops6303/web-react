@@ -9,7 +9,7 @@ const BadgeGroupWrap = styled.div`
     }
     .badge-box {
       .info-key {
-        font-weight: 300;
+        font-weight: 400;
         margin-right: 1rem;
       }
       .badge {
