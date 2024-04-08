@@ -1103,7 +1103,7 @@ class CustomGroupProfileSidebar extends React.Component {
     CometChat.updateGroup(group).then(
       (group) => {
         console.log('Group name updated successfully');
-        this.context.setItem(group)
+        this.context.setItem(group);
       },
       (error) => {
         console.log('Group name update failed', error);
@@ -1115,11 +1115,11 @@ class CustomGroupProfileSidebar extends React.Component {
   };
 
   isGroupAdmin = () => {
-    const adminUIDList = this.context.groupAdmins.map((admin) => admin.uid)
-    const currentUserUID = this.loggedInUser?.uid 
+    const adminUIDList = this.context.groupAdmins.map((admin) => admin.uid);
+    const currentUserUID = this.loggedInUser?.uid;
 
-    return (adminUIDList.includes(currentUserUID))
-  }
+    return adminUIDList.includes(currentUserUID);
+  };
 
   render() {
     // console.log(this.props.data)
@@ -1178,27 +1178,27 @@ class CustomGroupProfileSidebar extends React.Component {
                   }}
                 />
 
-                {this.isGroupAdmin && 
-                <>
-                {this.state.isNameEditOn ? (
-                  <Check
-                    className="about__name__icon"
-                    css={aboutNameIconStyle()}
-                    size={16}
-                    color="#0185E4"
-                    onClick={this.saveName}
-                  />
-                ) : (
-                  <Edit2
-                    className="about__name__icon"
-                    css={aboutNameIconStyle()}
-                    size={16}
-                    color="#0185E4"
-                    onClick={this.turnOnNameEdit}
-                  />
+                {this.isGroupAdmin && (
+                  <>
+                    {this.state.isNameEditOn ? (
+                      <Check
+                        className="about__name__icon"
+                        css={aboutNameIconStyle()}
+                        size={16}
+                        color="#0185E4"
+                        onClick={this.saveName}
+                      />
+                    ) : (
+                      <Edit2
+                        className="about__name__icon"
+                        css={aboutNameIconStyle()}
+                        size={16}
+                        color="#0185E4"
+                        onClick={this.turnOnNameEdit}
+                      />
+                    )}
+                  </>
                 )}
-                </>
-  }
               </div>
             </div>
 
