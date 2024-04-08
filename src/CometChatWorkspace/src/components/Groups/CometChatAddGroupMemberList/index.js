@@ -193,6 +193,8 @@ class CometChatAddGroupMemberList extends React.Component {
           }
           this.setState({ addingMembers: false });
           this.props.close();
+
+          this.context.setItem({...this.context.item, membersCount: this.context.item.membersCount + 1})
         })
         .catch((error) => {
           console.log(error);
