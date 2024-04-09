@@ -1078,6 +1078,8 @@ class CustomGroupProfileSidebar extends React.Component {
             isAvatarLoading: false,
             groupAvatarSrc: file_url,
           });
+
+          this.context.setItem(group)
         },
         (error) => {
           console.log('Group avatar update failed', error);
