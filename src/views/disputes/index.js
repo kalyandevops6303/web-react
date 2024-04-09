@@ -151,9 +151,19 @@ const index = () => {
                         <Col sm="12" md="6" lg="7" className="d-flex justify-content-end align-items-center">
                           <p className="mb-0 fw-bold font-medium-1">{disputeStatusEnum[item?.status]}</p>
                         </Col>
-
-                        <Col sm="12" md="6" lg="5" className="d-flex justify-content-end">
-                          {!isOpenView && (
+                        {isOpenView ? (
+                          <Col sm="12" md="6" lg="5" className="d-flex justify-content-end">
+                            <div>
+                              <p className="mb-0">Opened On</p>
+                              <p className="mb-0 fw-bold font-medium-1 text-end">
+                                {item?.created_at > 0
+                                  ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy')
+                                  : '-'}
+                              </p>
+                            </div>
+                          </Col>
+                        ) : (
+                          <Col sm="12" md="6" lg="5" className="d-flex justify-content-end">
                             <div>
                               <p className="mb-0">Resolved On</p>
                               <p className="mb-0 fw-bold font-medium-1 text-end">
@@ -162,8 +172,8 @@ const index = () => {
                                   : '-'}
                               </p>
                             </div>
-                          )}
-                        </Col>
+                          </Col>
+                        )}
                       </Row>
                     </Col>
                   </Row>

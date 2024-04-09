@@ -18,21 +18,21 @@ import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data }) => {
   const userData = useSelector(selectAuthUserData);
   const dispatch = useDispatch();
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const navigate = useNavigate();
 
   const handleLike = (e) => {
     e.stopPropagation();
-    if (isFavUnfavLoading) {
+    if (!isFavUnfavLoading) {
       setIsFavorite(true);
       dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false) }));
     }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    if (isFavUnfavLoading) {
+    if (!isFavUnfavLoading) {
       setIsFavorite(false);
       dispatch(removeFav({ project_id: data?._id, onError: () => setIsFavorite(true) }));
     }

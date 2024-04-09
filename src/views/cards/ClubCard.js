@@ -24,7 +24,7 @@ const ClubCard = ({ data, isSearchPage }) => {
   const users = [];
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   data?.team_members?.map((user) =>
     users.push({
       user_id: user?.user_id,

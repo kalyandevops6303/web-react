@@ -17,7 +17,7 @@ import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
   const project = data?.project;
-  const [isFavorite, setIsFavorite] = useState(project?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
   const dispatch = useDispatch();
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 

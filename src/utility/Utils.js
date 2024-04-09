@@ -629,7 +629,7 @@ export const getModifiedProjectResponse = ({ data }) => {
       _id: data?.bid,
       status: data?.bid?.status,
     },
-    is_favorite: data?.project?.is_favourite,
+    is_favourite: data?.project?.is_favourite,
   };
 };
 export const handleLinkOpen = (URL) => {
@@ -680,4 +680,13 @@ export const getBidAction = (action) => {
     default:
       return '';
   }
+};
+
+export const handleEmailClick = () => {
+  const recipient = 'support@trumio.ai';
+  const subject = '';
+  const body = '';
+  const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // eslint-disable-next-line no-undef
+  window.location.href = mailtoLink;
 };

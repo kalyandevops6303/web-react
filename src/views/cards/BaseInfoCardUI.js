@@ -14,7 +14,7 @@ import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const BaseInfoUI = ({ data, hideUserInfo }) => {
   const dispatch = useDispatch();
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const handleLike = (e) => {
