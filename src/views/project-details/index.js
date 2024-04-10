@@ -133,7 +133,7 @@ const ProjectDetails = () => {
   };
 
   const getLocationTernery = () => {
-    const lowercasedStep = currentStep.toLowerCase();
+    const lowercasedStep = currentStep?.toLowerCase();
 
     switch (lowercasedStep) {
       case stepName.team.toLowerCase():
@@ -162,7 +162,10 @@ const ProjectDetails = () => {
 
   const generalBreadcrumb = [
     fromLocationPrimary(),
-    { title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }) },
+    {
+      title: truncateSentence({ sentence: projectDetailsData?.details?.name, maxCharacters: 30 }),
+      link: params?.projectId ? `/project-details/${params?.projectId}/bid` : null,
+    },
     getLocationTernery(),
     { title: currentMilestone?.name || null },
   ];

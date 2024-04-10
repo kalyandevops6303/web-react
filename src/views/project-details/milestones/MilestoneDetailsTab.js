@@ -225,7 +225,7 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
   });
 
   const isEditable =
-    userDataLocal.user_type !== userTypes.client &&
+    userDataLocal?.user_type !== userTypes.client &&
     (selectedMilestone.status === 'ON_GOING' || selectedMilestone.status === 'IN_REVIEW');
 
   const statusEnum = {
