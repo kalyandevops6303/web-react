@@ -120,6 +120,12 @@ const bidStatus = {
   BID_CHANGE_REQUEST: 'BID_CHANGE_REQUEST',
 };
 
+const fileScanStatus = {
+  CLEAN: 'CLEAN',
+  SCANNING: 'SCANNING',
+  THREAT: 'THREAT',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -143,4 +149,5 @@ export {
   clubStatus,
   snapShotStatus,
   bidStatus,
+  fileScanStatus,
 };
