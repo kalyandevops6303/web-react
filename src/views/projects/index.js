@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
@@ -6,11 +7,11 @@ import styled from 'styled-components';
 import { useIsTab } from '../../utility/Utils';
 import SecondaryFilters from './overview/SecondaryFilter';
 import PrimaryFilter from './overview/PrimaryFilter';
-import { userData } from '../../redux/selectors/dashboardSelectors';
 import { clearProjectData } from '../../redux/reducers/projectDetails';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import CreateProjectButton from '../marketplace/overview/CreateProjectButton';
 import { clearData } from '../../redux/reducers/project';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 
 const ProjectContainer = styled.div`
   @media only screen and (max-device-width: 600px) {
@@ -20,11 +21,22 @@ const ProjectContainer = styled.div`
   }
 `;
 
+const SecondaryFiltersWrapper = ({ primaryFilter }) => {
+  const userData = useSelector(selectAuthUserData);
+  return <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
+};
+SecondaryFiltersWrapper.propTypes = {
+  primaryFilter: PropTypes.string,
+};
+SecondaryFiltersWrapper.defaultProps = {
+  primaryFilter: '',
+};
+
 const Projects = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const userDetailsData = useSelector(userData);
+  const userData = useSelector(selectAuthUserData);
   const isTab = useIsTab();
 
   const routesMatch =
@@ -63,8 +75,6 @@ const Projects = () => {
     dispute: 'Dispute',
     invited: 'Invited',
   };
-  // eslint-disable-next-line react/no-unstable-nested-components
-  const SecondComp = () => <SecondaryFilters userType={userDetailsData?.user_type} primaryFilter={primaryFilter} />;
 
   return (
     <ProjectContainer>
@@ -75,34 +85,16 @@ const Projects = () => {
         selected={primaryFilter}
         handlePrimaryChangeFilter={handlePrimaryChangeFilter}
         isTab={isTab}
-        userType={userDetailsData?.user_type}
+        userType={userData?.user_type}
       />
 
       <Routes>
-        <Route
-          path="ongoing"
-          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
-        />
-        <Route
-          path="upcoming"
-          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
-        />
-        <Route
-          path="completed"
-          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
-        />
-        <Route
-          path="terminated"
-          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
-        />
-        <Route
-          path="dispute"
-          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
-        />
-        <Route
-          path="invited"
-          element={<SecondComp primaryFilter={primaryFilter} userType={userDetailsData?.user_type} />}
-        />
+        <Route path="ongoing" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="upcoming" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="completed" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="terminated" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="dispute" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="invited" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
       </Routes>
     </ProjectContainer>
   );

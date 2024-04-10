@@ -25,34 +25,50 @@ import {
   terminateProjectService,
   relistProjectService,
   relistProjectByDateService,
+  requestChangeService,
+  rejectBidChangeService,
+  acceptBidChangeService,
+  getBidTimelineService,
+  getBidSnapshotService,
 } from '../../services/projectDetailsServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
+  acceptBidChangeFailure,
+  acceptBidChangeRequest,
+  acceptBidChangeSuccess,
   checkDocumentActivatedFailure,
   checkDocumentActivatedRequest,
   checkDocumentActivatedSuccess,
   extendValidityFailure,
   extendValidityRequest,
   extendValiditySuccess,
+  favUnfavError,
+  favUnfavReq,
   getBidInfoFailure,
   getBidInfoRequest,
   getBidInfoSuccess,
   getBidMilestoneFailure,
   getBidMilestoneRequest,
   getBidMilestoneSuccess,
+  getBidTimelineFailure,
+  getBidTimelineRequest,
+  getBidTimelineSuccess,
+  getContractTimelineFailure,
+  getContractTimelineRequest,
+  getContractTimelineSuccess,
   getDocumentFailure,
   getDocumentRequest,
   getDocumentSuccess,
-  getDocumentTimelineFailure,
-  getDocumentTimelineRequest,
-  getDocumentTimelineSuccess,
   getInvitedByFailure,
   getInvitedByRequest,
   getInvitedBySuccess,
   getInvitedMemberFailure,
   getInvitedMemberRequest,
   getInvitedMemberSuccess,
+  getNDATimelineFailure,
+  getNDATimelineRequest,
+  getNDATimelineSuccess,
   getReceivedBidsFailure,
   getReceivedBidsRequest,
   getReceivedBidsSuccess,
@@ -62,10 +78,16 @@ import {
   getUnassignedRoleFailure,
   getUnassignedRoleRequest,
   getUnassignedRoleSuccess,
+  getbidSnapshotFailure,
+  getbidSnapshotRequest,
+  getbidSnapshotSuccess,
   makeFavSuccess,
   projectDetailsFailure,
   projectDetailsRequest,
   projectDetailsSuccess,
+  rejectBidChangeFailure,
+  rejectBidChangeRequest,
+  rejectBidChangeSuccess,
   relistProjectByDateFailure,
   relistProjectByDateRequest,
   relistProjectByDateSuccess,
@@ -76,6 +98,9 @@ import {
   removeWorkerFailure,
   removeWorkerRequest,
   removeWorkerSuccess,
+  requestChangeFailure,
+  requestChangeRequest,
+  requestChangeSuccess,
   sendDocumentFailure,
   sendDocumentRequest,
   sendDocumentSuccess,
@@ -92,16 +117,6 @@ import {
   updateContractRequest,
   updateContractSuccess,
 } from '../reducers/projectDetails';
-
-const getProjectDetails = (projectId) => async (dispatch) => {
-  dispatch(projectDetailsRequest());
-  try {
-    const res = await projectDetailsService(projectId);
-    dispatch(projectDetailsSuccess(res.data.data));
-  } catch (error) {
-    errorHandler(error, projectDetailsFailure);
-  }
-};
 
 const getTeamMembers =
   ({ project_id }) =>
@@ -173,6 +188,125 @@ const getBidDetails =
     }
   };
 
+const checkDocumentActivated =
+  ({ isNDA, project_id }) =>
+  async (dispatch) => {
+    dispatch(checkDocumentActivatedRequest());
+    try {
+      let resContract;
+      let resNDA;
+      const getContract = async () => {
+        dispatch(checkDocumentActivatedRequest());
+
+        resContract = await checkDocumentActivatedService({ project_id, doc_type: 'CONTRACT' });
+        // These lines can be uncommented if timeline to be opened directly
+        // if (resContract.data.data.show_document) {
+        //   dispatch(getDocumentTimeline({ project_id, doc_type: 'CONTRACT' }));
+        // }
+        dispatch(checkDocumentActivatedSuccess({ contractData: resContract.data.data }));
+      };
+      if (isNDA) {
+        resNDA = await checkDocumentActivatedService({ project_id, doc_type: 'NDA' });
+        // These lines can be uncommented if timeline to be opened directly
+        // if (resNDA.data.data.show_document) {
+        //   dispatch(getDocumentTimeline({ project_id, doc_type: 'NDA' }));
+        // }
+        dispatch(checkDocumentActivatedSuccess({ ndaData: resNDA.data.data }));
+
+        if (resNDA.data.data.is_signed) {
+          await getContract();
+        } else {
+          dispatch(checkDocumentActivatedSuccess({ contractData: { show_document: false, is_signed: false } }));
+        }
+      } else {
+        await getContract();
+      }
+    } catch (error) {
+      errorHandler(error, checkDocumentActivatedFailure);
+    }
+  };
+
+const getProjectDetails =
+  ({ projectId, isBidView }) =>
+  async (dispatch) => {
+    dispatch(projectDetailsRequest());
+    try {
+      const res = await projectDetailsService(projectId);
+      if (isBidView) {
+        dispatch(checkDocumentActivated({ isNDA: res?.data.data.nda?.is_nda, project_id: projectId }));
+      }
+      dispatch(projectDetailsSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, projectDetailsFailure);
+    }
+  };
+
+const getBidTimeline =
+  ({ project_id }) =>
+  async (dispatch) => {
+    dispatch(getBidTimelineRequest());
+    try {
+      const res = await getBidTimelineService({ project_id });
+      dispatch(getBidTimelineSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getBidTimelineFailure);
+    }
+  };
+
+const getBidSnapshot =
+  ({ snapshot_id }) =>
+  async (dispatch) => {
+    dispatch(getbidSnapshotRequest());
+    try {
+      const res = await getBidSnapshotService({ snapshot_id });
+      dispatch(getbidSnapshotSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getbidSnapshotFailure);
+    }
+  };
+
+const requestChange =
+  ({ bid_id, description, project_id, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(requestChangeRequest());
+    try {
+      await requestChangeService({ bid_id, description });
+      dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
+      onSuccess();
+      dispatch(requestChangeSuccess());
+    } catch (error) {
+      errorHandler(error, requestChangeFailure);
+    }
+  };
+
+const rejectBidChange =
+  ({ snapshot_id, description, project_id, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(rejectBidChangeRequest());
+    try {
+      await rejectBidChangeService({ snapshot_id, description });
+      dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
+      onSuccess();
+      dispatch(rejectBidChangeSuccess());
+    } catch (error) {
+      errorHandler(error, rejectBidChangeFailure);
+    }
+  };
+
+const acceptBidChange =
+  ({ snapshot_id, project_id, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(acceptBidChangeRequest());
+    try {
+      await acceptBidChangeService({ snapshot_id });
+      dispatch(getProjectDetails({ projectId: project_id, isBidView: true }));
+      onSuccess();
+      dispatch(acceptBidChangeSuccess());
+    } catch (error) {
+      errorHandler(error, acceptBidChangeFailure);
+    }
+  };
+
 const updateBidStatus =
   ({ bid_id, assign, status, onSuccess, onError }) =>
   async () => {
@@ -233,55 +367,27 @@ const removeWorkerFromProjectTeam =
 
 // Contract flow
 
-const getDocumentTimeline =
+const getNDATimeline =
   ({ project_id, doc_type }) =>
   async (dispatch) => {
-    dispatch(getDocumentTimelineRequest());
+    dispatch(getNDATimelineRequest());
     try {
       const res = await getDocumentTimelineService({ project_id, doc_type });
-
-      if (doc_type === 'CONTRACT') {
-        dispatch(getDocumentTimelineSuccess({ contractTimeline: res.data.data }));
-      }
-      if (doc_type === 'NDA') {
-        dispatch(getDocumentTimelineSuccess({ ndaTimeline: res.data.data }));
-      }
+      dispatch(getNDATimelineSuccess({ ndaTimeline: res.data.data }));
     } catch (error) {
-      errorHandler(error, getDocumentTimelineFailure);
+      errorHandler(error, getNDATimelineFailure);
     }
   };
 
-const checkDocumentActivated =
-  ({ isNDA, project_id }) =>
+const getContractTimeline =
+  ({ project_id, doc_type }) =>
   async (dispatch) => {
-    dispatch(checkDocumentActivatedRequest());
+    dispatch(getContractTimelineRequest());
     try {
-      let resContract;
-      let resNDA;
-      const getContract = async () => {
-        resContract = await checkDocumentActivatedService({ project_id, doc_type: 'CONTRACT' });
-        if (resContract.data.data.show_document) {
-          dispatch(getDocumentTimeline({ project_id, doc_type: 'CONTRACT' }));
-        }
-        dispatch(checkDocumentActivatedSuccess({ isContract: resContract.data.data }));
-      };
-      if (isNDA) {
-        resNDA = await checkDocumentActivatedService({ project_id, doc_type: 'NDA' });
-        if (resNDA.data.data.show_document) {
-          dispatch(getDocumentTimeline({ project_id, doc_type: 'NDA' }));
-        }
-        dispatch(checkDocumentActivatedSuccess({ isNDA: resNDA.data.data }));
-
-        if (resNDA.data.data.is_signed) {
-          await getContract();
-        } else {
-          dispatch(checkDocumentActivatedSuccess({ isContract: { show_document: false, is_signed: false } }));
-        }
-      } else {
-        await getContract();
-      }
+      const res = await getDocumentTimelineService({ project_id, doc_type });
+      dispatch(getContractTimelineSuccess({ contractTimeline: res.data.data }));
     } catch (error) {
-      errorHandler(error, checkDocumentActivatedFailure);
+      errorHandler(error, getContractTimelineFailure);
     }
   };
 
@@ -409,22 +515,28 @@ const updateContract =
     }
   };
 
-const makeFavourite = (id, user_type) => async (dispatch) => {
-  try {
-    await makeFavService(id, user_type);
-    dispatch(makeFavSuccess());
-  } catch (error) {
-    errorHandler(error);
-  }
-};
-const removeFavourite = (id) => async (dispatch) => {
-  try {
-    await removeFavService({ user_id: id });
-    dispatch(removeFavSuccess());
-  } catch (error) {
-    errorHandler(error);
-  }
-};
+const makeFavourite =
+  ({ id, user_type }) =>
+  async (dispatch) => {
+    dispatch(favUnfavReq());
+    try {
+      await makeFavService(id, user_type);
+      dispatch(makeFavSuccess());
+    } catch (error) {
+      errorHandler(error, favUnfavError);
+    }
+  };
+const removeFavourite =
+  ({ id }) =>
+  async (dispatch) => {
+    dispatch(favUnfavReq());
+    try {
+      await removeFavService({ user_id: id });
+      dispatch(removeFavSuccess());
+    } catch (error) {
+      errorHandler(error, favUnfavError);
+    }
+  };
 
 const getBidMilestone =
   ({ project_id, entity_id, onSuccess, onError }) =>
@@ -460,7 +572,6 @@ export {
   removeFavourite,
   getInvitedMember,
   checkDocumentActivated,
-  getDocumentTimeline,
   updateContract,
   sendDocument,
   signContractByTalent,
@@ -477,4 +588,11 @@ export {
   removeWorkerFromProjectTeam,
   getBidMilestone,
   relistProjectByDate,
+  requestChange,
+  rejectBidChange,
+  acceptBidChange,
+  getBidTimeline,
+  getBidSnapshot,
+  getNDATimeline,
+  getContractTimeline,
 };

@@ -17,6 +17,7 @@ import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import { selectUserData } from '../../redux/selectors/authSelectors';
 import { disputeStatusEnum, disputeStatuses } from '../../utility/constants/Constant';
 import { clearDisputeReplies } from '../../redux/reducers/dispute';
+import { DisputeWrapper } from './style';
 
 const index = () => {
   const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const index = () => {
   };
 
   const routesMatch = useMatch('/disputes/all') || useMatch('/disputes/open') || useMatch('/disputes/resolved');
-
+  const isOpenView = useMatch('/disputes/open');
   const [primaryFilter, setPrimaryFilter] = useState(routesMatch?.pathname?.split('/')?.[2]);
 
   const handlePrimaryChangeFilter = (props) => {
@@ -107,7 +108,7 @@ const index = () => {
   };
 
   const Listings = () => (
-    <div>
+    <DisputeWrapper>
       {allDisputesData?.data?.length > 0 && (
         <Row className="d-flex align-items-center px-2 mb-2">
           <Col sm="12" md="6" lg="1">
@@ -138,7 +139,7 @@ const index = () => {
             allDisputesData?.data?.map((item) => (
               <Card className="cursor-pointer mb-1" key={item?._id} onClick={() => onDisputeClick(item)}>
                 <CardBody className="py-1">
-                  <Row className="d-flex align-items-center">
+                  <Row className="d-flex align-items-center min-height-3rem">
                     <Col sm="12" md="6" lg="1">
                       <p className="mb-0 fw-bold font-medium-1">#{item?.dispute_number}</p>
                     </Col>
@@ -147,19 +148,32 @@ const index = () => {
                     </Col>
                     <Col sm="12" md="6" lg="3">
                       <Row>
-                        <Col sm="12" md="6" lg="7" className="d-flex justify-content-end align-items-end">
+                        <Col sm="12" md="6" lg="7" className="d-flex justify-content-end align-items-center">
                           <p className="mb-0 fw-bold font-medium-1">{disputeStatusEnum[item?.status]}</p>
                         </Col>
-                        <Col sm="12" md="6" lg="5" className="d-flex justify-content-end">
-                          <div>
-                            <p className="mb-0">Resolved On</p>
-                            <p className="mb-0 fw-bold font-medium-1 text-end">
-                              {item?.resolved_on > 0
-                                ? DateTime.fromMillis(item?.resolved_on).toFormat('MMM dd, yy')
-                                : '-'}
-                            </p>
-                          </div>
-                        </Col>
+                        {isOpenView ? (
+                          <Col sm="12" md="6" lg="5" className="d-flex justify-content-end">
+                            <div>
+                              <p className="mb-0">Opened On</p>
+                              <p className="mb-0 fw-bold font-medium-1 text-end">
+                                {item?.created_at > 0
+                                  ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy')
+                                  : '-'}
+                              </p>
+                            </div>
+                          </Col>
+                        ) : (
+                          <Col sm="12" md="6" lg="5" className="d-flex justify-content-end">
+                            <div>
+                              <p className="mb-0">Resolved On</p>
+                              <p className="mb-0 fw-bold font-medium-1 text-end">
+                                {item?.resolved_on > 0
+                                  ? DateTime.fromMillis(item?.resolved_on).toFormat('MMM dd, yy')
+                                  : '-'}
+                              </p>
+                            </div>
+                          </Col>
+                        )}
                       </Row>
                     </Col>
                   </Row>
@@ -174,7 +188,7 @@ const index = () => {
           )}
         </InfiniteScroll>
       )}
-    </div>
+    </DisputeWrapper>
   );
 
   return (

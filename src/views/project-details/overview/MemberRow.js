@@ -78,7 +78,6 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
                 <Mail size={20} className="mail-icon" color={theme.activeColor} />
               </span>
             )}
-
             {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') &&
               hasDeleleteAccess &&
               teamId && (

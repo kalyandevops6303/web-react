@@ -48,6 +48,7 @@ import {
   downloadFile,
   downloadUploadedFile,
   removeEmptyKeys,
+  getFileSize,
   returnFilteredDropdownOptions,
 } from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
@@ -214,32 +215,25 @@ const Personal = () => {
   };
 
   const fetchUploadUrl = async (file) => {
-    if (isFileValid(file)) {
-      const response = await resumeUploadService(file.name);
+    const response = await resumeUploadService(file.name);
 
-      const fileWithUrl = {
-        id: uuidv4(),
-        file,
-        uploadData: response?.data?.data,
-        isUploaded: false,
-      };
+    const fileWithUrl = {
+      id: uuidv4(),
+      file,
+      uploadData: response?.data?.data,
+      isUploaded: false,
+    };
 
-      setFiles([fileWithUrl]);
+    setFiles([fileWithUrl]);
 
-      handleUploadFile(fileWithUrl);
-    }
+    handleUploadFile(fileWithUrl);
   };
 
   const handleFileChange = (e) => {
-    fetchUploadUrl(e.target.files[0]);
-  };
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
+    if (isFileValid(e.target.files[0])) {
+      fetchUploadUrl(e.target.files[0]);
     } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
+      e.target.value = '';
     }
   };
 
@@ -297,7 +291,7 @@ const Personal = () => {
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate}

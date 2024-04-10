@@ -1,5 +1,5 @@
-import { getTeamService, createTeamService, getInviteDetails, updateTeamService } from '../../services/teamServices';
 // eslint-disable-next-line import/no-cycle
+import { getTeamService, createTeamService, getInviteDetails, updateTeamService } from '../../services/teamServices';
 import errorHandler from '../../utility/errorHandler';
 import {
   getTeamCreated,
@@ -11,17 +11,21 @@ import {
   updateTeamSuccess,
 } from '../reducers/team';
 import { getInvitedBySuccess } from '../reducers/projectDetails';
+import { getMyTeamFailure, getMyTeamRequest, getMyTeamSuccess } from '../reducers/dashboard';
 
 const getTeams =
   ({ onSuccess }) =>
   async (dispatch) => {
     dispatch(getTeamRequest());
+    dispatch(getMyTeamRequest());
     try {
       const res = await getTeamService();
       dispatch(getTeamSuccess(res.data.data.data));
+      dispatch(getMyTeamSuccess({ ...res.data.data, unreadCount: res.data.data.data?.[0]?.is_overall_read || 0 }));
       onSuccess(res.data.data.data);
     } catch (error) {
       errorHandler(error, getTeamError);
+      errorHandler(error, getMyTeamFailure);
     }
   };
 

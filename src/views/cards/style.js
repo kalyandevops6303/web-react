@@ -57,7 +57,7 @@ const ProjectCardWrap = styled(CardWrap)`
   .marketplace-card-role {
     font-size: 0.8rem !important;
     color: ${theme.gray};
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.125rem;
 
     overflow: hidden;
@@ -73,10 +73,10 @@ const ProjectCardWrap = styled(CardWrap)`
   }
   .rating-label {
     color: ${theme.bodyColor};
-    font-weight: 300;
+    font-weight: 400;
   }
   .project-desc {
-    font-weight: 300;
+    font-weight: 400;
     font-size: 16px;
     line-height: 24px;
   }
@@ -149,7 +149,7 @@ const TeamCardWrap = styled(CardWrap)`
   }
   .rating-label {
     color: ${theme.bodyColor};
-    font-weight: 300;
+    font-weight: 400;
   }
   .avatar-wrap {
     .avatars {
@@ -224,7 +224,7 @@ const UserCardWrap = styled(CardWrap)`
     line-height: 1.125rem;
     font-size: 0.75rem !important;
     color: ${theme.gray};
-    font-weight: 300;
+    font-weight: 400;
   }
 
   .market-place-card-photo {
@@ -243,7 +243,7 @@ const UserCardWrap = styled(CardWrap)`
   }
   .rating-label {
     color: ${theme.bodyColor};
-    font-weight: 300;
+    font-weight: 400;
   }
 
   //exp
@@ -347,7 +347,7 @@ const ClientCardWrap = styled(CardWrap)`
     line-height: 1.125rem;
     font-size: 0.75rem !important;
     color: ${theme.gray};
-    font-weight: 300;
+    font-weight: 400;
   }
 
   .market-place-card-photo {
@@ -366,7 +366,7 @@ const ClientCardWrap = styled(CardWrap)`
   }
   .rating-label {
     color: ${theme.bodyColor};
-    font-weight: 300;
+    font-weight: 400;
   }
 
   //exp

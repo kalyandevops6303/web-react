@@ -23,14 +23,14 @@ const MarketPlaceContainer = styled.div`
   }
 `;
 
-const SecondComp = ({ primaryFilter }) => {
+const SecondaryFiltersWrapper = ({ primaryFilter }) => {
   const userData = useSelector(selectAuthUserData);
   return <SecondaryFilters userType={userData?.user_type} primaryFilter={primaryFilter} />;
 };
-SecondComp.propTypes = {
+SecondaryFiltersWrapper.propTypes = {
   primaryFilter: PropTypes.string,
 };
-SecondComp.defaultProps = {
+SecondaryFiltersWrapper.defaultProps = {
   primaryFilter: '',
 };
 
@@ -97,12 +97,12 @@ const MarketPlace = () => {
       <CreateProjectButton />
       <PrimaryFilter selected={primaryFilter} handlePrimaryChangeFilter={handlePrimaryChangeFilter} isTab={isTab} />
       <Routes>
-        <Route path="all_listings" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="my_listings" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="my_bids" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="clients" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="talents" element={<SecondComp primaryFilter={primaryFilter} />} />
-        <Route path="teams" element={<SecondComp primaryFilter={primaryFilter} />} />
+        <Route path="all_listings" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="my_listings" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="my_bids" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="clients" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="talents" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
+        <Route path="teams" element={<SecondaryFiltersWrapper primaryFilter={primaryFilter} />} />
       </Routes>
     </MarketPlaceContainer>
   );

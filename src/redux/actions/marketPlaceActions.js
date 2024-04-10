@@ -20,6 +20,7 @@ import {
 } from '../reducers/marketPlace';
 import { makeFavService, makeProjectFavService, removeFavService } from '../../services/profileServices';
 import { userTypes } from '../../utility/constants/Constant';
+import { favUnfavError, favUnfavRequest, favUnfavSuccess } from '../reducers/favUnfav';
 
 const getCardInfo =
   ({ onSuccess, onError }) =>
@@ -127,23 +128,31 @@ const getUsers =
 
 const makeFav =
   ({ user_id, user_type, project_id, onSuccess, onError }) =>
-  async () => {
+  async (dispatch) => {
+    dispatch(favUnfavRequest());
+
     try {
       if (project_id) {
         await makeProjectFavService(project_id);
       } else {
         await makeFavService(user_id, user_type);
       }
-      onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      }
+      dispatch(favUnfavSuccess());
     } catch (error) {
-      onError();
-      errorHandler(error);
+      if (onError) {
+        onError();
+      }
+      errorHandler(error, favUnfavError);
     }
   };
 
 const removeFav =
   ({ user_id, project_id, team_id, onSuccess, onError }) =>
-  async () => {
+  async (dispatch) => {
+    dispatch(favUnfavRequest());
     try {
       let data;
       if (project_id) {
@@ -154,10 +163,15 @@ const removeFav =
         data = { user_id };
       }
       await removeFavService(data);
-      onSuccess();
+      dispatch(favUnfavSuccess());
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
-      onError();
-      errorHandler(error);
+      if (onError) {
+        onError();
+      }
+      errorHandler(error, favUnfavError);
     }
   };
 

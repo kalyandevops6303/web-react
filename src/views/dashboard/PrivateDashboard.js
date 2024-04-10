@@ -140,7 +140,7 @@ const PrivateDashboard = () => {
       setCompleteProfileModalInfoText('create team');
       setCompleteProfileModal(true);
     } else {
-      navigate('/create-team/profile-details');
+      setOptionsModal(true);
     }
   };
 
@@ -291,7 +291,7 @@ const PrivateDashboard = () => {
               <TalentListing />
             </section>
           )}
-          {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
+          {userDetailsData?.team_type === userTypes.club && isClubAdmin && getTeamId('team_id') && (
             <section className="mb-2">
               <Header className="mb-1">Members</Header>
               <TalentListing />

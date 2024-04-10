@@ -38,7 +38,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
-import { downloadFile, downloadUploadedFile, formatDateWithDash } from '../../../utility/Utils';
+import { downloadFile, downloadUploadedFile, formatDateWithDash, getFileSize } from '../../../utility/Utils';
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import { bidDetailsLoading, projectDetails, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
@@ -402,7 +402,7 @@ const FixedAdvanceMilestoneView = () => {
     if (!allMilestonesValid) {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     } else if (totalCost > projectDetailsData?.pay_type?.fixed_cost) {
-      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed cost.');
+      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed price.');
     } else if (allMilestonesValid && totalCost <= projectDetailsData?.pay_type?.fixed_cost) {
       milestonesAppend({
         milestoneId: uuidv4(),
@@ -496,15 +496,6 @@ const FixedAdvanceMilestoneView = () => {
     setFiles([...filtered]);
   };
 
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-    }
-  };
-
   const requiredFormattedDate = (date = new Date()) => {
     const formattedDate = new Date(date)
       .toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -551,10 +542,10 @@ const FixedAdvanceMilestoneView = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <>
-                    {renderFilePreview()}
-                    {file?.file?.name || file?.file?.file_name}
-                  </>
+                  <div className="d-flex align-items-center">
+                    <span>{renderFilePreview()}</span>
+                    <span>{file?.file?.name || file?.file?.file_name}</span>
+                  </div>
                 )}
               </div>
             </Col>
@@ -562,7 +553,7 @@ const FixedAdvanceMilestoneView = () => {
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate(file?.file?.created_at)}
@@ -701,15 +692,15 @@ const FixedAdvanceMilestoneView = () => {
                 <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
                   <Info size={18} color={theme.red} className="me-50" />
                   <p className="font-medium-1 m-0 error">
-                    <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of
-                    the project. Please adjust your cost in order to submit the bid
+                    <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price of the
+                    project. Please adjust your price in order to submit the bid
                   </p>
                 </div>
               )}
               <div className="d-none fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
                 <Info size={18} color={theme.activeNavPillText} className="me-50" />
                 <p className="font-medium-1 m-0 info">
-                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
+                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed price will be equally
                   distributed between each talent
                 </p>
               </div>
@@ -755,10 +746,10 @@ const FixedAdvanceMilestoneView = () => {
                         className={bidData?.is_bid_type_changeable ? 'me-3 custom-cost-margin' : 'custom-cost-margin'}
                       >
                         <div className="d-flex align-items-center m-0">
-                          <Label className="form-label m-0">Fixed Cost</Label>
+                          <Label className="form-label m-0">Fixed Price</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
                           <UncontrolledTooltip placement="top" target="fixed-info">
-                            Predetermined project cost fixed by the client
+                            Predetermined project price fixed by the client
                           </UncontrolledTooltip>
                         </div>
                         <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
@@ -819,7 +810,7 @@ const FixedAdvanceMilestoneView = () => {
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">{milestoneHours}h</p>
                                 </div>
                                 <div>
-                                  <Label className="fw-normal form-label">Talent Cost</Label>
+                                  <Label className="fw-normal form-label">Talent Amount</Label>
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">$ {milestoneCost}</p>
                                 </div>
                               </Col>
@@ -1339,9 +1330,9 @@ const FixedAdvanceMilestoneView = () => {
               </Row>
             </CardBody>
           </Card>
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center mb-4">
             <div
-              className="d-flex align-items-center upload-button cursor-pointer"
+              className="d-flex align-items-center upload-button cursor-pointer mb-50"
               onClick={() => {
                 if (selectUserDetailsData?.user_type === userTypes.team) {
                   navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`);

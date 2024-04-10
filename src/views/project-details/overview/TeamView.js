@@ -234,7 +234,13 @@ const TeamView = () => {
         <CardBody className="main-card-body">
           {teamMembers?.length > 0 ? (
             teamMembers?.map((item) => (
-              <MemberRow hasDeleleteAccess={hasDeleleteAccess} data={item} key={item.user_id} withReview={false} />
+              <MemberRow
+                teamMembersCount={teamMembers?.length}
+                hasDeleleteAccess={hasDeleleteAccess}
+                data={item}
+                key={item.user_id}
+                withReview={false}
+              />
             ))
           ) : (
             <>

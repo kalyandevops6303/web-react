@@ -375,9 +375,8 @@ const ContractView = () => {
                   <div key={worker?.user_id} className="d-flex mb-1 justify-content-between">
                     <NameInfo
                       img={worker?.image_uri}
-                      name={`${worker?.first_name} ${worker?.last_name}`}
+                      name={worker?.accepted_date > 0 ? `${worker?.first_name} ${worker?.last_name}` : ''}
                       info={worker?.role}
-                      acceptedDate={worker?.accepted_date}
                     />
                     <div>
                       {worker?.accepted_date === 0 ? (

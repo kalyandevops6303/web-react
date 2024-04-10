@@ -13,8 +13,13 @@ const CertificationNonUs = ({ isAgreed, onChange }) => (
         Under penalties of perjury, i declare that i have examined the information on this form and to the best of my
         knowledge and belief it is true, correct, and complete. I further certify under penalties of perjury that
       </h5>
-      <p className="mt-3">
+      <p className="mt-2">
         <ul>
+          <li>
+            I am the individual that is the beneficial owner (or am authorized to sign for the individual that is the
+            beneficial owner) of all the income or proceeds to which this form relates or am using this form to document
+            myself chapter 4 purpose;
+          </li>
           <li>The person name on line 1 of this form is not a U.S person;</li>
           <li>
             This form relates to:

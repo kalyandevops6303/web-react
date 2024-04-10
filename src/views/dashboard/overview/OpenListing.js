@@ -193,7 +193,7 @@ const OpenListing = () => {
     setIsSliderLoading(true);
     setTimeout(() => {
       setIsSliderLoading(false);
-    }, 1000);
+    }, 150);
   }, [open]);
 
   return (

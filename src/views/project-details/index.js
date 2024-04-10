@@ -49,6 +49,7 @@ const ProjectDetails = () => {
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
   const user = useSelector(userData);
+
   const [stepsArray, setStepsArray] = useState(steps);
   const [stepsArrayInvite, setStepsArrayInvite] = useState(InviteView);
   const [selectedMilestone, setSelectedMilestone] = useState(null);
@@ -124,6 +125,8 @@ const ProjectDetails = () => {
         return { title: 'Dashboard', link: '/dashboard' };
       case 'my-teams':
         return { title: 'My teams', link: '/my-teams' };
+      case 'payments':
+        return { title: 'Payments', link: '/payments' };
       default:
         return '';
     }
