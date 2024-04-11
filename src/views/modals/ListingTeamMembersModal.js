@@ -236,7 +236,7 @@ TeamMembersComponent.defaultProps = {
   isAdmin: false,
 };
 
-const InvitedMemberComponent = () => {
+const InvitedMemberComponent = ({ isAdmin }) => {
   const inviteMembers = useSelector(selectGetInvitedMember);
   const [hasMore, setHasMore] = useState(true);
   const [loadingItems, setLoadingItems] = useState({});
@@ -365,19 +365,21 @@ const InvitedMemberComponent = () => {
                         <p className="fw-bold m-0">{item?.status && capitalize(item?.status)}</p>
                       </Col>
 
-                      <Col sm="12" md="1" lg="1">
-                        {loadingItems[item?._id] ? (
-                          <div className="d-flex justify-content-center">
-                            <Spinner size="sm" />
-                          </div>
-                        ) : (
-                          <MessageIconWrap onClick={() => handleSendMail({ id: item?._id })}>
-                            <span className="mail-bg">
-                              <Mail size={20} className="mail-icon" color={theme.activeColor} />
-                            </span>
-                          </MessageIconWrap>
-                        )}
-                      </Col>
+                      {(isClubView ? isAdmin : true) && (
+                        <Col sm="12" md="1" lg="1">
+                          {loadingItems[item?._id] ? (
+                            <div className="d-flex justify-content-center">
+                              <Spinner size="sm" />
+                            </div>
+                          ) : (
+                            <MessageIconWrap onClick={() => handleSendMail({ id: item?._id })}>
+                              <span className="mail-bg">
+                                <Mail size={20} className="mail-icon" color={theme.activeColor} />
+                              </span>
+                            </MessageIconWrap>
+                          )}
+                        </Col>
+                      )}
                     </Row>
                   </CardBody>
                 </Card>
@@ -388,6 +390,13 @@ const InvitedMemberComponent = () => {
       )}
     </div>
   );
+};
+
+InvitedMemberComponent.propTypes = {
+  isAdmin: Proptypes.bool,
+};
+InvitedMemberComponent.defaultProps = {
+  isAdmin: false,
 };
 
 const ListingTeamMembersModal = ({
@@ -426,7 +435,7 @@ const ListingTeamMembersModal = ({
                 onInviteTeamMemberClick={onInviteTeamMemberClick}
                 isAdmin={isAdmin}
               />
-              <InvitedMemberComponent />
+              <InvitedMemberComponent isAdmin={isAdmin} />
             </div>
           </ModalBody>
         </div>

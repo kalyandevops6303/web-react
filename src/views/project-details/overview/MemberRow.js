@@ -14,10 +14,14 @@ import DateTime from '../../../lib/date-time';
 import RemoveProjectTeamMemberModal from '../../modals/RemoveProjectTeamMemberModal';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { getTeamId } from '../../../utility/Utils';
+import { userTypes } from '../../../utility/constants/Constant';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
 
-const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
+const MemberRow = ({ hasDeleleteAccess, data, withReview, teamMembersCount }) => {
   const [removeProjectTeamMemberModal, setRemoveProjectTeamMemberModal] = useState(null);
   const projectDetailsData = useSelector(projectDetails);
+  const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
+  const userDetailsData = useSelector(selectUserData);
 
   const teamId = getTeamId('team_id');
   const toggleRemoveProjectTeamMemberModal = () => {
@@ -79,8 +83,10 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview }) => {
               </span>
             )}
             {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') &&
+              teamMembersCount > 1 &&
               hasDeleleteAccess &&
-              teamId && (
+              teamId &&
+              (userDetailsData?.team_type === userTypes.club ? isClubAdmin : true) && (
                 <Trash2
                   className="delete-icon cursor-pointer"
                   color={theme.red}
@@ -97,10 +103,12 @@ MemberRow.propTypes = {
   data: Proptypes.object,
   withReview: Proptypes.bool,
   hasDeleleteAccess: Proptypes.bool,
+  teamMembersCount: Proptypes.number,
 };
 MemberRow.defaultProps = {
   data: {},
   withReview: false,
   hasDeleleteAccess: false,
+  teamMembersCount: 0,
 };
 export default MemberRow;
