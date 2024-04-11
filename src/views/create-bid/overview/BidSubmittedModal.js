@@ -38,7 +38,6 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
       ?.filter((worker) => worker.user_id && worker.user_id !== selectSavedUser?._id)
       ?.map((worker) => {
         const reqData = {
-          redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
           requests_to: {
             user_ids: [worker.user_id],
           },

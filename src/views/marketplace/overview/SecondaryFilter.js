@@ -18,7 +18,7 @@ import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
 import { getListProjects, getUsers } from '../../../redux/actions/marketPlaceActions';
 import {
   companyIndustriesService,
@@ -651,7 +651,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && <SearchResultsCount metaData={selectMarkeMetaData} />}
+      {!isLoading && (isAnyKeyNonEmptyArray(secondFilterState) || searchText) && (
+        <SearchResultsCount metaData={selectMarkeMetaData} />
+      )}
 
       {isLoading ? (
         <ComponentSpinner />
