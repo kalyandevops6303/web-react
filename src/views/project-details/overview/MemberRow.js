@@ -23,6 +23,8 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview, teamMembersCount }) =>
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const userDetailsData = useSelector(selectUserData);
 
+  const isClubView = userDetailsData?.team_type === userTypes.club;
+
   const teamId = getTeamId('team_id');
   const toggleRemoveProjectTeamMemberModal = () => {
     setRemoveProjectTeamMemberModal(!removeProjectTeamMemberModal);
@@ -86,7 +88,7 @@ const MemberRow = ({ hasDeleleteAccess, data, withReview, teamMembersCount }) =>
               teamMembersCount > 1 &&
               hasDeleleteAccess &&
               teamId &&
-              (userDetailsData?.team_type === userTypes.club ? isClubAdmin : true) && (
+              (!isClubView || (isClubView && isClubAdmin)) && (
                 <Trash2
                   className="delete-icon cursor-pointer"
                   color={theme.red}

@@ -365,7 +365,7 @@ const InvitedMemberComponent = ({ isAdmin }) => {
                         <p className="fw-bold m-0">{item?.status && capitalize(item?.status)}</p>
                       </Col>
 
-                      {(isClubView ? isAdmin : true) && (
+                      {(!isClubView || (isClubView && isAdmin)) && (
                         <Col sm="12" md="1" lg="1">
                           {loadingItems[item?._id] ? (
                             <div className="d-flex justify-content-center">
