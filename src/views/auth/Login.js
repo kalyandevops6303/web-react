@@ -175,6 +175,14 @@ const Login = () => {
                   className="input-group-merge"
                   id="password"
                   placeholder="Enter your password"
+                  onPaste={(e) => { // disable copy and paste from password field
+                    e.preventDefault();
+                    return false;
+                  }}
+                  onCopy={(e) => {
+                    e.preventDefault();
+                    return false;
+                  }}
                 />
               )}
             />
