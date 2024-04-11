@@ -104,7 +104,9 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
                 {data?.client?.first_name} {data?.client?.last_name}
               </CardTitle>
-              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
+              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+                {data?.client?.company_name}
+              </CardText>
             </div>
             <div className="d-flex flex-grow-1">
               <RatingBadge number={Math.round(data?.invitations_to?.rating ?? data?.client?.rating)} />

@@ -125,9 +125,13 @@ const InvitedMemberComponent = () => {
                             </h6>
                           </div>
                         </div>
-                        <CardText style={{ flex: '2' }} className="fw-bold m-auto me-4">
-                          {data?.request_for?.role || 'Team Member'}
-                        </CardText>
+                        {userDetailsData?.user_type !== userTypes.client ? (
+                          <CardText style={{ flex: '2' }} className="fw-bold m-auto me-4">
+                            {data?.request_for?.role || 'Team Member'}
+                          </CardText>
+                        ) : (
+                          <CardText style={{ flex: '2' }} className="fw-bold m-auto me-4" />
+                        )}
                         <div style={{ flex: '2' }} className="me-4">
                           <Rating
                             initialRating={returnFormattedRating(data?.send_to?.rating)}

@@ -201,13 +201,15 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                       {profileToShowInRightSideOfCard?.first_name} {profileToShowInRightSideOfCard?.last_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                      {profileToShowInRightSideOfCard?.user_type === userTypes.client ? 'Client' : ''}
+                      {profileToShowInRightSideOfCard?.user_type === userTypes.client
+                        ? profileToShowInRightSideOfCard?.company_name
+                        : ''}
                     </CardText>
                   </div>
                   <div className="d-flex flex-grow-1 mt-25">
                     <RatingBadge number={Math.round(profileToShowInRightSideOfCard?.rating ?? 0)} />
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                      {profileToShowInRightSideOfCard?.project_count ?? 0} Projects
+                      {profileToShowInRightSideOfCard?.projects_worked_on_count ?? 0} Projects
                     </CardText>
                   </div>
                 </div>
@@ -259,13 +261,13 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                       {data?.client?.first_name} {data?.client?.last_name}
                     </CardTitle>
                     <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                      {data?.client?.title}
+                      {data?.client?.company_name}
                     </CardText>
                   </div>
                   <div className="d-flex flex-grow-1 mt-25">
                     <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                      {data?.client?.project_count ?? 0} Projects
+                      {data?.client?.projects_worked_on_count ?? 0} Projects
                     </CardText>
                   </div>
                 </div>
@@ -298,13 +300,13 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                               `${data?.worker_details?.first_name} ${data?.worker_details?.last_name}`}{' '}
                           </CardTitle>
                           <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role text-truncate ">
-                            {data?.worker_details?.title || 'Role'}
+                            {data?.worker_details?.title}
                           </CardText>
                         </div>
                         <div className="d-flex flex-grow-1 mt-25">
                           <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
                           <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                            {data?.worker_details?.project_count ?? 0} Projects
+                            {data?.worker_details?.projects_worked_on_count ?? 0} Projects
                           </CardText>
                         </div>
                       </div>
@@ -332,7 +334,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                     <div className="d-flex flex-grow-1 mt-25">
                       <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
                       <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                        {data?.client?.project_count} Projects
+                        {data?.client?.projects_worked_on_count} Projects
                       </CardText>
                     </div>
                   </div>
