@@ -554,7 +554,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && <SearchResultsCount metaData={selectClubsMetaData} />}
+      {!isLoading && searchText && <SearchResultsCount metaData={selectClubsMetaData} />}
 
       {isLoading ? (
         <ComponentSpinner />

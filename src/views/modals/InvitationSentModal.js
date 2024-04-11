@@ -66,7 +66,6 @@ const InvitationSentModal = ({
     const teamId = getTeamId('team_id');
     const newPostData = {
       message,
-      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
       requests_to: {
         user_ids: userIds || [],
         team_ids: teamIds.length > 0 ? teamIds : [],
@@ -83,7 +82,6 @@ const InvitationSentModal = ({
     if (clubAdminIds.length > 0) {
       const newAdminPostData = {
         message,
-        redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
         requests_to: {
           user_ids: clubAdminIds || [],
           team_ids: teamIds.length > 0 ? teamIds : [],

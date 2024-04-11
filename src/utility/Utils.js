@@ -690,3 +690,13 @@ export const handleEmailClick = () => {
   // eslint-disable-next-line no-undef
   window.location.href = mailtoLink;
 };
+
+export const isAnyKeyNonEmptyArray = (obj) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in obj) {
+    if (Array.isArray(obj[key]) && obj[key].length > 0) {
+      return true; // Found non empty array
+    }
+  }
+  return false; // No non empty array found
+};

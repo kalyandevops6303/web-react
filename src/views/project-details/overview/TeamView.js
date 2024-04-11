@@ -72,7 +72,6 @@ const InvitedMemberComponent = () => {
     const newPostData = {
       message: '',
       // eslint-disable-next-line no-undef
-      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
       requests_to: {
         user_ids: [user_id],
         team_ids: [],
