@@ -22,6 +22,8 @@ import {
   clearClubCreateData,
 } from '../reducers/clubs';
 import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
+import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
+import { fileScanStatus } from '../../utility/constants/Constant';
 
 const getClubs =
   ({ filterData, metaData, onSuccess, onError }) =>
@@ -77,12 +79,23 @@ const registerClubEmail =
   };
 
 const createClub =
-  ({ data, onSuccess }) =>
+  ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const res = await createTeamService(data);
-      dispatch(getClubCreated(res.data.data));
-      onSuccess(res.data.data);
+      const finalScanStatus = await handleScanFiles({
+        fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+        isPrivate: false,
+      });
+
+      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+        const res = await createTeamService(data);
+        dispatch(getClubCreated(res.data.data));
+        onSuccess(res.data.data);
+      } else {
+        // If files are Corrupted show toast message
+        handleCorruptedFiles({ finalScanStatus });
+        onError();
+      }
     } catch (error) {
       errorHandler(error);
     }
@@ -100,9 +113,27 @@ const changeMemberType = (data, onSuccess) => async () => {
 const updateClub = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const res = await updateTeamService(data);
-    dispatch(updateTeamSuccess(res.data.data));
-    onSuccess();
+    const callMainAPI = async () => {
+      const res = await updateTeamService(data);
+      dispatch(updateTeamSuccess(res.data.data));
+      onSuccess();
+    };
+    if (data?.team_logo) {
+      const finalScanStatus = await handleScanFiles({
+        fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+        isPrivate: false,
+      });
+
+      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+        callMainAPI();
+      } else {
+        // If files are Corrupted show toast message
+        handleCorruptedFiles({ finalScanStatus });
+        dispatch(updateTeamFailure());
+      }
+    } else {
+      callMainAPI();
+    }
   } catch (error) {
     errorHandler(error, updateTeamFailure);
   }

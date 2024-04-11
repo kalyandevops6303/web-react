@@ -7,12 +7,14 @@ import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { bidStatus, maxFileSize } from './constants/Constant';
+import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
 import PDFIcon from '../assets/images/pdfV2.svg';
+// eslint-disable-next-line import/no-cycle
+import fileScanningService from '../services/fileUploadService';
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -689,4 +691,45 @@ export const handleEmailClick = () => {
   const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   // eslint-disable-next-line no-undef
   window.location.href = mailtoLink;
+};
+
+const delay = (ms) =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+
+export const handleScanFiles = async ({ fileKeys, isPrivate, retryCount = 0 }) => {
+  const maxRetries = 3;
+
+  if (retryCount > maxRetries) {
+    throw new Error('Scanning file(s) taking longer than expected');
+  }
+
+  const scanStatus = await fileScanningService({ fileKeys, isPrivate });
+
+  if (scanStatus.data.data.some((result) => result?.status === fileScanStatus.SCANNING)) {
+    await delay(timeDalayToRetryScanning); // Wait for given milliseconds
+    return handleScanFiles({
+      fileKeys: scanStatus.data.data
+        .filter((result) => result?.status === fileScanStatus.SCANNING)
+        .map((scanningResult) => ({
+          file_name: scanningResult.file_name,
+          file_key: scanningResult.file_key,
+        })),
+      isPrivate,
+      retryCount: retryCount + 1, // Increment retry count
+    }); // Recursively call until scanStatus changes
+  }
+  return scanStatus;
+};
+
+export const handleCorruptedFiles = ({ finalScanStatus }) => {
+  const corruptedFiles = finalScanStatus.data.data
+    .filter((result) => result.status === fileScanStatus.THREAT)
+    .map((threatResult) => threatResult.file_name);
+  if (corruptedFiles.length > 0) {
+    ShowToastMessage(ERROR, `Corrupted files: ${corruptedFiles.join(', ')}`);
+  }
 };

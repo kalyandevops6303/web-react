@@ -41,7 +41,7 @@ const EmailVerifyModal = ({ modal, toggleModal, setClubCreatedModal }) => {
       email_code: code,
       team_type: 'CLUB',
     };
-    dispatch(createClub({ data: dataWithCode, onSuccess: onCreateTeamSuccess }));
+    dispatch(createClub({ data: dataWithCode, onSuccess: onCreateTeamSuccess, onError: () => setIsLoading(false) }));
   };
 
   return (
