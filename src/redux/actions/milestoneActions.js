@@ -74,21 +74,26 @@ const submitMilstone =
   async (dispatch) => {
     dispatch(submitMilestoneRequest());
     try {
-      const fileKeys = data?.documents?.map((file) => file?.file_key);
-
-      // Recursive function until status in Scanning
-      const finalScanStatus = await handleScanFiles({ fileKeys, isPrivate: true });
-
-      // If files are Clean proceed with API call
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+      const callMainAPI = async () => {
         await submitMilestoneService({ milestone_id, data });
         dispatch(submitMilestoneSuccess());
         dispatch(getSubmissionHistory({ milestoneId: milestone_id, metaData: { page: 1, page_size: 10 } }));
         onSuccess();
+      };
+      if (data?.documents?.length > 0) {
+        // Recursive function until status in Scanning
+        const finalScanStatus = await handleScanFiles({ fileKeys: data?.documents, isPrivate: true });
+
+        // If files are Clean proceed with API call
+        if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+          callMainAPI();
+        } else {
+          // If files are Corrupted show toast message
+          handleCorruptedFiles({ finalScanStatus });
+          dispatch(submitMilestoneFailure());
+        }
       } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(submitMilestoneFailure());
+        callMainAPI();
       }
     } catch (error) {
       errorHandler(error, submitMilestoneFailure);
