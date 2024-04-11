@@ -165,52 +165,46 @@ const MilestoneDetailsTab = ({ selectedMilestone }) => {
     );
 
     const fetchUploadUrls = async () => {
-      const allFiles = [...documentsFields, ...acceptedFiles];
+      const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
-      if (allFiles?.length > 5) {
-        ShowToastMessage(ERROR, 'Maximum 5 files allowed');
-      } else {
-        const validFiles = acceptedFiles.filter((file) => isFileValid(file));
-
-        const promises = validFiles.map(async (file) => {
-          try {
-            const response = await milestoneSubmissionFileUploadService({
-              file_name: file.name,
-              project_id: selectedMilestone?.project_id,
-              milestone_id: selectedMilestone._id,
-            });
-            return {
-              id: uuidv4(),
-              file,
-              uploadData: response?.data?.data,
-              file_key: response?.data?.data?.file_key,
-              newId: `${response?.data?.data?.file_key.split('.')[0].split('/')[0]}-${
-                response?.data?.data?.file_key.split('.')[0].split('/')[2]
-              }`,
-            };
-          } catch (error) {
-            errorHandler(error);
-            throw error;
-          }
-        });
-
-        const fileId = uuidv4();
-        const filesWithUrls = await Promise.all(promises);
-        // setDocuments((oldFiles) => [...oldFiles, ...filesWithUrls]);
-        // eslint-disable-next-line array-callback-return
-        filesWithUrls?.map((doc) => {
-          documentsAppend({
-            id: fileId,
-            fileData: doc,
-            description: undefined,
-            time: DateTime.now().toFormat(`dd MMM yyyy, hh:mm a`),
+      const promises = validFiles.map(async (file) => {
+        try {
+          const response = await milestoneSubmissionFileUploadService({
+            file_name: file.name,
+            project_id: selectedMilestone?.project_id,
+            milestone_id: selectedMilestone._id,
           });
+          return {
+            id: uuidv4(),
+            file,
+            uploadData: response?.data?.data,
+            file_key: response?.data?.data?.file_key,
+            newId: `${response?.data?.data?.file_key.split('.')[0].split('/')[0]}-${
+              response?.data?.data?.file_key.split('.')[0].split('/')[2]
+            }`,
+          };
+        } catch (error) {
+          errorHandler(error);
+          throw error;
+        }
+      });
+
+      const fileId = uuidv4();
+      const filesWithUrls = await Promise.all(promises);
+      // setDocuments((oldFiles) => [...oldFiles, ...filesWithUrls]);
+      // eslint-disable-next-line array-callback-return
+      filesWithUrls?.map((doc) => {
+        documentsAppend({
+          id: fileId,
+          fileData: doc,
+          description: undefined,
+          time: DateTime.now().toFormat(`dd MMM yyyy, hh:mm a`),
         });
-        const onError = () => {
-          documentsRemove(fileId);
-        };
-        filesWithUrls.forEach((fileWithUrl) => handleUploadFile({ file: fileWithUrl, onError }));
-      }
+      });
+      const onError = () => {
+        documentsRemove(fileId);
+      };
+      filesWithUrls.forEach((fileWithUrl) => handleUploadFile({ file: fileWithUrl, onError }));
     };
     fetchUploadUrls();
   };
