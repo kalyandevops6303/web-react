@@ -34,10 +34,22 @@ class CometChatUI extends React.Component {
   }
 
   componentDidMount() {
+    this.deleteUserInfoFromLocalStorage();
     if (this.props.chatWithUser.length === 0 && this.props.chatWithGroup.length === 0) {
       this.toggleSideBar();
     }
   }
+
+  deleteUserInfoFromLocalStorage = () => {
+    let userDetailsKey = `${CometChat.appId}:common_store/user`;
+    let userDetails = localStorage.getItem(userDetailsKey);
+
+    let userDetailsParsed = JSON.parse(JSON.parse(userDetails));
+    delete userDetailsParsed['metadata'];
+
+    let stringifiedUserDetails = `${JSON.stringify(JSON.stringify(userDetailsParsed))}`;
+    localStorage.setItem(userDetailsKey, stringifiedUserDetails);
+  };
 
   navBarAction = (action, type, item) => {
     switch (action) {

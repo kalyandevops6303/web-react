@@ -16,7 +16,7 @@ import ProjectCard from '../../cards/ProjectCard';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import NoDataFoundComponent from './NoDataFoundComp';
-import { selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
 import { getClientNameService, getTeamNameSerive } from '../../../services/projectServices';
 import { userTypes } from '../../../utility/constants/Constant';
 import { clearData } from '../../../redux/reducers/project';
@@ -402,7 +402,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && <SearchResultsCount metaData={selectProjectMetaData} />}
+      {!isLoading &&
+        (isAnyKeyNonEmptyArray({
+          client_name: secondFilterState?.client_name,
+          team_name: secondFilterState?.team_name,
+          project_type: secondFilterState?.project_type,
+        }) ||
+          searchText ||
+          primaryFilter === 'invited') && <SearchResultsCount metaData={selectProjectMetaData} />}
 
       {isLoading ? (
         <ComponentSpinner />

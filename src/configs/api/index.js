@@ -300,6 +300,9 @@ const API = {
     paymentMetrics: `${apiOnboardingEndpoint}/api/v1/payment-metrics`,
     paymentHistory: `${apiOnboardingEndpoint}/api/v1/payment-history`,
   },
+  fileUpload: {
+    scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
+  },
 };
 
 export default API;

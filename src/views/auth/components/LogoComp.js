@@ -5,7 +5,7 @@ const LogoComp = () => {
   return (
     <div className="logo-wrap">
       <img alt="logo" src={Logo} className="card-logo" />
-      <span className="ms-25 mt-75">v0.0.23</span>
+      <span className="ms-25 mt-75">v0.0.24</span>
     </div>
   );
 };

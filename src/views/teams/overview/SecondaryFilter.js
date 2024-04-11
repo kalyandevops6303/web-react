@@ -12,7 +12,7 @@ import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
 
 import { clearData } from '../../../redux/reducers/myTeams';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -605,7 +605,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && <SearchResultsCount metaData={selectMyTeamMetaData} />}
+      {!isLoading &&
+        (isAnyKeyNonEmptyArray({
+          skills: secondFilterState?.skills,
+          tools: secondFilterState?.tools,
+        }) ||
+          searchText ||
+          primaryFilter === 'recommendation' ||
+          primaryFilter === 'join_requests' ||
+          primaryFilter === 'favourites') && <SearchResultsCount metaData={selectMyTeamMetaData} />}
 
       {isLoading ? (
         <ComponentSpinner />

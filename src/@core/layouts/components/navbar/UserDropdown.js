@@ -29,7 +29,7 @@ import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
-import { DeclinedButton } from './style';
+import { DeclinedButton, InreviewButton } from './style';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -282,7 +282,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
               <DropdownItem
                 className={`d-flex justify-content-between ${userDetailsData?._id === team?._id ? 'isActive' : ''}`} // to={`/profile/${userDetailsData?.user_type}/${userDetailsData?._id}`}
                 onClick={() => handleSwitch(team, userDetailsData?._id === team?._id)}
-                disabled={team?.club_status === clubStatus.DECLINED}
+                disabled={team?.club_status === clubStatus.DECLINED || team?.club_status === clubStatus.IN_REVIEW}
                 key={index}
               >
                 <section className="user-info-avatar d-flex align-items-center">
@@ -304,6 +304,8 @@ const UserDropdown = ({ setNavBarLoading }) => {
                   </div>
                 </section>
                 {team.club_status === clubStatus.DECLINED && <DeclinedButton>Rejected</DeclinedButton>}
+                {team.club_status === clubStatus.IN_REVIEW && <InreviewButton>In Review</InreviewButton>}
+
                 {userDetailsData?._id === team?._id && <Check className="m-auto ms-3 me-0" size={14} />}
               </DropdownItem>
             ))}

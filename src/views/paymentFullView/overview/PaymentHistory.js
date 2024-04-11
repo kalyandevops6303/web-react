@@ -48,10 +48,10 @@ const PaymentHistory = () => {
           Processing
         </Badge>
       );
-    } else if (status === 'PAYMENT_FAILED') {
+    } else if (status === 'FAILED') {
       return (
         <Badge pill color="light-danger">
-          Payment Failed
+          Failed
         </Badge>
       );
     }
