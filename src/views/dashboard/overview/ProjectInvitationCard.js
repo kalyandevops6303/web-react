@@ -4,22 +4,24 @@
 import PropTypes from 'prop-types';
 // ** Custom Components
 import AvatarGroup from '@components/avatar-group';
+import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 
 // ** Reactstrap Imports
 import { useNavigate } from 'react-router';
 import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { useDispatch } from 'react-redux';
-
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 
+import { DateTime } from 'luxon';
+import theme from '../../../configs/themeVariables';
 import { ProjectWrapper } from './style';
-import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
+import TagsSection from './TagsSection';
 
 const UserSection = ({ totalCount, users, name, projectName }) => (
   <div className={`${projectName ? '' : 'mt-1'} user-section`}>
@@ -86,6 +88,17 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
     }
   };
 
+  const giveStrokeColor = (percentage) => {
+    if (percentage <= 40) {
+      return theme.red;
+      // eslint-disable-next-line
+    } else if (percentage > 40 && percentage <= 70) {
+      return theme.orange;
+    } else {
+      return theme.green;
+    }
+  };
+
   const users = [];
 
   data?.invitation_by?.team_members?.map((user) =>
@@ -102,7 +115,7 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design new-tag-relative-card" style={{ height: '230px' }}>
+      <Card className="card-app-design new-tag-relative-card" >
         {!data?.is_new && <NewTag />}
         <CardBody className="d-flex flex-column justify-content-between">
           <div>
@@ -114,9 +127,36 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
               {data?.project?.details?.name || data?.name}
             </CardTitle>
 
-            <div className="d-flex">
+            {/* <div className="d-flex">
               <RatingBadge number="0" />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+            </div> */}
+            <div className="d-flex w-100 mb-1">
+              <div className="circular-progressbar-container">
+                <CircularProgressbarWithChildren
+                  value={data?.match_percentage}
+                  styles={{
+                    path: {
+                      stroke: giveStrokeColor(data?.match_percentage),
+                      strokeLinecap: 'round',
+                      transition: 'stroke-dashoffset 0.5s ease 0s',
+                      transform: 'rotate(0turn)',
+                      transformOrigin: 'center center',
+                    },
+                    trail: {
+                      stroke: theme.progressBarBg,
+                      strokeLinecap: 'round',
+                      transform: 'rotate(0turn)',
+                      transformOrigin: 'center center',
+                    },
+                  }}
+                >
+                  <div className="d-flex justify-content-center align-items-center">
+                    <p className="percentage-text m-0">{data?.match_percentage}%</p>
+                  </div>
+                </CircularProgressbarWithChildren>
+              </div>
+              <TagsSection open="" tags={data?.project.proficiency.skills} />
             </div>
             <UserSection
               totalCount={
@@ -127,14 +167,20 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
               users={users}
               projectName={data?.project?.details?.name}
             />
-            <div className="design-planning-wrapper pt-5 d-none">
-              <div className="design-planning">
-                <CardText className="mb-25">Earned</CardText>
-                <h6 className="mb-0">{`$ ${data?.project?.earned ?? 0}`}</h6>
-              </div>
-              <div className="design-planning">
-                <CardText className="mb-25">New Amt</CardText>
-                <h6 className="mb-0">{`$ ${data?.project?.newAmt ?? 0}`}</h6>
+            <div className="bottom-detail d-flex mt-1">
+              <div className="design-planning-wrapper">
+                <div className="design-planning">
+                  <CardText className="mb-25">Start date</CardText>
+                  <h6 className="mb-0">{`${
+                    DateTime.fromMillis(data?.project?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
+                  }`}</h6>
+                </div>
+                {!data?.pay_type?.variable_cost && (
+                  <div className="design-planning">
+                    <CardText className="mb-25">Amount</CardText>
+                    <h6 className="mb-0">{`${data?.project?.pay_type.currency?.code}-${data?.project?.pay_type.fixed_cost}`}</h6>
+                  </div>
+                )}
               </div>
             </div>
           </div>
