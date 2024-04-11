@@ -31,7 +31,7 @@ const handleError = (err, callBack) => {
   if (callBack) {
     dispatch(callBack(err));
   }
-  showErrorNotification(err?.response?.data?.errorData?.message || 'Operation could not be completed');
+  showErrorNotification(err?.response?.data?.errorData?.message || err?.message || 'Operation could not be completed');
 };
 
 const cometChatToken = getItem('cometChatToken');
