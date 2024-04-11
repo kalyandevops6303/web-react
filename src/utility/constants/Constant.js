@@ -126,6 +126,8 @@ const fileScanStatus = {
   THREAT: 'THREAT',
 };
 
+const timeDalayToRetryScanning = 4000;
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -150,4 +152,5 @@ export {
   snapShotStatus,
   bidStatus,
   fileScanStatus,
+  timeDalayToRetryScanning,
 };

@@ -7,7 +7,7 @@ import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { bidStatus, fileScanStatus, maxFileSize } from './constants/Constant';
+import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
@@ -700,15 +700,34 @@ const delay = (ms) =>
     }, ms);
   });
 
-export const handleScanFiles = async ({ fileKeys, isPrivate }) => {
+// const testData = {
+//   data: {
+//     data: [
+//       {
+//         name: 'projects/65f16ce88f192b87e9a6e6b5/milestones/65f1749b8f192b87e9a6e724/0d1bd273-d1c0-4810-a204-684c393b2ba9.pdf',
+//         status: 'SCANNING',
+//       },
+//     ],
+//   },
+//   status: 'SUCCESS',
+// };
+
+export const handleScanFiles = async ({ fileKeys, isPrivate, retryCount = 0 }) => {
+  const maxRetries = 3;
+
+  if (retryCount > maxRetries) {
+    throw new Error('Scanning file(s) longer than expected');
+  }
+
   const scanStatus = await fileScanningService({ fileKeys, isPrivate });
   if (scanStatus.data.data.some((result) => result?.status === fileScanStatus.SCANNING)) {
-    await delay(5000); // Wait for 5000 milliseconds
+    await delay(timeDalayToRetryScanning); // Wait for given milliseconds
     return handleScanFiles({
       fileKeys: scanStatus.data.data
         .filter((result) => result?.status === fileScanStatus.SCANNING)
         .map((scanningResult) => scanningResult.name),
       isPrivate,
+      retryCount: retryCount + 1, // Increment retry count
     }); // Recursively call until scanStatus changes
   }
   return scanStatus;
