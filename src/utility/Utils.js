@@ -700,32 +700,24 @@ const delay = (ms) =>
     }, ms);
   });
 
-// const testData = {
-//   data: {
-//     data: [
-//       {
-//         name: 'projects/65f16ce88f192b87e9a6e6b5/milestones/65f1749b8f192b87e9a6e724/0d1bd273-d1c0-4810-a204-684c393b2ba9.pdf',
-//         status: 'SCANNING',
-//       },
-//     ],
-//   },
-//   status: 'SUCCESS',
-// };
-
 export const handleScanFiles = async ({ fileKeys, isPrivate, retryCount = 0 }) => {
   const maxRetries = 3;
 
   if (retryCount > maxRetries) {
-    throw new Error('Scanning file(s) longer than expected');
+    throw new Error('Scanning file(s) taking longer than expected');
   }
 
   const scanStatus = await fileScanningService({ fileKeys, isPrivate });
+
   if (scanStatus.data.data.some((result) => result?.status === fileScanStatus.SCANNING)) {
     await delay(timeDalayToRetryScanning); // Wait for given milliseconds
     return handleScanFiles({
       fileKeys: scanStatus.data.data
         .filter((result) => result?.status === fileScanStatus.SCANNING)
-        .map((scanningResult) => scanningResult.name),
+        .map((scanningResult) => ({
+          file_name: scanningResult.file_name,
+          file_key: scanningResult.file_key,
+        })),
       isPrivate,
       retryCount: retryCount + 1, // Increment retry count
     }); // Recursively call until scanStatus changes
@@ -736,7 +728,7 @@ export const handleScanFiles = async ({ fileKeys, isPrivate, retryCount = 0 }) =
 export const handleCorruptedFiles = ({ finalScanStatus }) => {
   const corruptedFiles = finalScanStatus.data.data
     .filter((result) => result.status === fileScanStatus.THREAT)
-    .map((threatResult) => threatResult.name);
+    .map((threatResult) => threatResult.file_name);
   if (corruptedFiles.length > 0) {
     ShowToastMessage(ERROR, `Corrupted files: ${corruptedFiles.join(', ')}`);
   }
