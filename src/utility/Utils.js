@@ -740,6 +740,6 @@ export const handleCorruptedFiles = ({ finalScanStatus }) => {
     .filter((result) => result.status === fileScanStatus.THREAT)
     .map((threatResult) => threatResult.file_name);
   if (corruptedFiles.length > 0) {
-    ShowToastMessage(ERROR, `Corrupted files: ${corruptedFiles.join(', ')}`);
+    ShowToastMessage(ERROR, `One or more file(s) seem to be maliciuous/corrupted: ${corruptedFiles.join(', ')}`);
   }
 };
