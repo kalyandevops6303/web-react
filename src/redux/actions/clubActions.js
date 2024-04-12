@@ -82,19 +82,26 @@ const createClub =
   ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
-        isPrivate: false,
-      });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+      const callMainAPI = async () => {
         const res = await createTeamService(data);
         dispatch(getClubCreated(res.data.data));
         onSuccess(res.data.data);
+      };
+      if (data?.team_logo) {
+        const finalScanStatus = await handleScanFiles({
+          fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+          isPrivate: false,
+        });
+
+        if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+          callMainAPI();
+        } else {
+          // If files are Corrupted show toast message
+          handleCorruptedFiles({ finalScanStatus });
+          onError();
+        }
       } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        onError();
+        callMainAPI();
       }
     } catch (error) {
       errorHandler(error);

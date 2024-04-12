@@ -65,19 +65,26 @@ const createTeam =
 const updateTeam = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const finalScanStatus = await handleScanFiles({
-      fileKeys: [{ file_name: 'Team logo', file_key: data?.team_logo }],
-      isPrivate: false,
-    });
-
-    if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+    const callMainAPI = async () => {
       const res = await updateTeamService(data);
       dispatch(updateTeamSuccess(res.data.data));
       onSuccess();
+    };
+    if (data?.team_logo) {
+      const finalScanStatus = await handleScanFiles({
+        fileKeys: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+        isPrivate: false,
+      });
+
+      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+        callMainAPI();
+      } else {
+        // If files are Corrupted show toast message
+        handleCorruptedFiles({ finalScanStatus });
+        dispatch(updateTeamFailure());
+      }
     } else {
-      // If files are Corrupted show toast message
-      handleCorruptedFiles({ finalScanStatus });
-      dispatch(updateTeamFailure());
+      callMainAPI();
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);
