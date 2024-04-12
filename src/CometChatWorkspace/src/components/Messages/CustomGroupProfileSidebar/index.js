@@ -465,6 +465,7 @@ class CustomGroupProfileSidebar extends React.Component {
       default:
         break;
     }
+    this.props.actionGenerated(action, messages, key, group, options)
   };
 
   errorHandler = (errorCode) => {
