@@ -82,19 +82,26 @@ const createClub =
   ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
-        isPrivate: false,
-      });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+      const handleCreateClub = async () => {
         const res = await createTeamService(data);
         dispatch(getClubCreated(res.data.data));
         onSuccess(res.data.data);
+      };
+      if (data?.team_logo) {
+        const finalScanStatus = await handleScanFiles({
+          fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+          isPrivate: false,
+        });
+
+        if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+          handleCreateClub();
+        } else {
+          // If files are Corrupted show toast message
+          handleCorruptedFiles({ finalScanStatus });
+          onError();
+        }
       } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        onError();
+        handleCreateClub();
       }
     } catch (error) {
       errorHandler(error);
@@ -113,7 +120,7 @@ const changeMemberType = (data, onSuccess) => async () => {
 const updateClub = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const callMainAPI = async () => {
+    const handleUpdateClub = async () => {
       const res = await updateTeamService(data);
       dispatch(updateTeamSuccess(res.data.data));
       onSuccess();
@@ -125,14 +132,14 @@ const updateClub = (data, onSuccess) => async (dispatch) => {
       });
 
       if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
+        handleUpdateClub();
       } else {
         // If files are Corrupted show toast message
         handleCorruptedFiles({ finalScanStatus });
         dispatch(updateTeamFailure());
       }
     } else {
-      callMainAPI();
+      handleUpdateClub();
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);

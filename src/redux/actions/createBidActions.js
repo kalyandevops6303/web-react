@@ -115,7 +115,7 @@ const saveSetWorkers = (bidId, data, onSuccess) => async (dispatch) => {
 const saveSetMilestones = (projectId, bidId, data, onSuccess) => async (dispatch) => {
   dispatch(setMilestonesRequest());
   try {
-    const callMainAPI = async () => {
+    const handleSaveMilestone = async () => {
       const res = await setMilestonesService(projectId, bidId, data);
       dispatch(setMilestonesSuccess(res.data.data));
       onSuccess();
@@ -126,14 +126,14 @@ const saveSetMilestones = (projectId, bidId, data, onSuccess) => async (dispatch
       const finalScanStatus = await handleScanFiles({ fileKeys: data?.documents, isPrivate: true });
       // If files are Clean proceed with API call
       if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
+        handleSaveMilestone();
       } else {
         // If files are Corrupted show toast message
         handleCorruptedFiles({ finalScanStatus });
         dispatch(setMilestonesFailure());
       }
     } else {
-      callMainAPI();
+      handleSaveMilestone();
     }
   } catch (error) {
     errorHandler(error, setMilestonesFailure);

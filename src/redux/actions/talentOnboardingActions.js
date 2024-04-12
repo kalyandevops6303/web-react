@@ -37,7 +37,7 @@ const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
 const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(accountDetailsRequest());
   try {
-    const callMainAPI = async () => {
+    const handleSaveTalentDetails = async () => {
       const res = await accountDetailsService(data);
       dispatch(accountDetailsSuccess(res.data.data));
       dispatch(cometChatLogin(res.data.data.comet_chat_token));
@@ -51,14 +51,14 @@ const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
       });
 
       if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
+        handleSaveTalentDetails();
       } else {
         // If files are Corrupted show toast message
         handleCorruptedFiles({ finalScanStatus });
         dispatch(accountDetailsFailure());
       }
     } else {
-      callMainAPI();
+      handleSaveTalentDetails();
     }
   } catch (error) {
     errorHandler(error, accountDetailsFailure);
@@ -68,7 +68,7 @@ const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
 const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(profileDetailsRequest());
   try {
-    const callMainAPI = async () => {
+    const handleSaveProfileDetails = async () => {
       const res = await profileDetailsService(data);
       dispatch(profileDetailsSuccess(res.data.data));
       onSuccess();
@@ -81,14 +81,14 @@ const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
       });
 
       if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
+        handleSaveProfileDetails();
       } else {
         // If files are Corrupted show toast message
         handleCorruptedFiles({ finalScanStatus });
         dispatch(profileDetailsFailure());
       }
     } else {
-      callMainAPI();
+      handleSaveProfileDetails();
     }
   } catch (error) {
     errorHandler(error, profileDetailsFailure);
