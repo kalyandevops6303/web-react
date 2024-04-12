@@ -71,7 +71,7 @@ const acceptDisputeApi = (disputeId, onSuccess) => async (dispatch) => {
 const replyOnDisputeApi = (data, onSuccess) => async (dispatch) => {
   dispatch(replyOnDisputeRequest());
   try {
-    const callMainAPI = async () => {
+    const handleDisupte = async () => {
       const res = await replyOnDisputeService(data);
       dispatch(replyOnDisputeSuccess(res.data.data));
       onSuccess();
@@ -83,14 +83,14 @@ const replyOnDisputeApi = (data, onSuccess) => async (dispatch) => {
       });
 
       if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
+        handleDisupte();
       } else {
         // If files are Corrupted show toast message
         handleCorruptedFiles({ finalScanStatus });
         dispatch(replyOnDisputeFailure());
       }
     } else {
-      callMainAPI();
+      handleDisupte();
     }
   } catch (error) {
     errorHandler(error, replyOnDisputeFailure);

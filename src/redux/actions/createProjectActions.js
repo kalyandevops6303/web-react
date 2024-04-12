@@ -96,7 +96,7 @@ const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => 
 const createNewProject = (data, onSuccess) => async (dispatch) => {
   dispatch(createProjectRequest());
   try {
-    const callMainAPI = async () => {
+    const handleCreateProject = async () => {
       const res = await createProjectService(data);
       dispatch(createProjectSuccess(res.data.data));
       dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
@@ -111,14 +111,14 @@ const createNewProject = (data, onSuccess) => async (dispatch) => {
 
       // If files are Clean proceed with API call
       if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
+        handleCreateProject();
       } else {
         // If files are Corrupted show toast message
         handleCorruptedFiles({ finalScanStatus });
         dispatch(createProjectFailure());
       }
     } else {
-      callMainAPI();
+      handleCreateProject();
     }
   } catch (error) {
     errorHandler(error, createProjectFailure);

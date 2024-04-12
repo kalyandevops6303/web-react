@@ -82,7 +82,7 @@ const createClub =
   ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const callMainAPI = async () => {
+      const handleCreateClub = async () => {
         const res = await createTeamService(data);
         dispatch(getClubCreated(res.data.data));
         onSuccess(res.data.data);
@@ -94,14 +94,14 @@ const createClub =
         });
 
         if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-          callMainAPI();
+          handleCreateClub();
         } else {
           // If files are Corrupted show toast message
           handleCorruptedFiles({ finalScanStatus });
           onError();
         }
       } else {
-        callMainAPI();
+        handleCreateClub();
       }
     } catch (error) {
       errorHandler(error);
@@ -120,7 +120,7 @@ const changeMemberType = (data, onSuccess) => async () => {
 const updateClub = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const callMainAPI = async () => {
+    const handleUpdateClub = async () => {
       const res = await updateTeamService(data);
       dispatch(updateTeamSuccess(res.data.data));
       onSuccess();
@@ -132,14 +132,14 @@ const updateClub = (data, onSuccess) => async (dispatch) => {
       });
 
       if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
+        handleUpdateClub();
       } else {
         // If files are Corrupted show toast message
         handleCorruptedFiles({ finalScanStatus });
         dispatch(updateTeamFailure());
       }
     } else {
-      callMainAPI();
+      handleUpdateClub();
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);

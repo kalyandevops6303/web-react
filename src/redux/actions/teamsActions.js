@@ -35,7 +35,7 @@ const createTeam =
   ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const callMainAPI = async () => {
+      const handleCreateTeam = async () => {
         const res = await createTeamService(data);
         dispatch(getTeamCreated(res.data.data));
         onSuccess(res.data.data);
@@ -47,14 +47,14 @@ const createTeam =
         });
 
         if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-          callMainAPI();
+          handleCreateTeam();
         } else {
           // If files are Corrupted show toast message
           handleCorruptedFiles({ finalScanStatus });
           onError();
         }
       } else {
-        callMainAPI();
+        handleCreateTeam();
       }
     } catch (error) {
       onError();
@@ -65,7 +65,7 @@ const createTeam =
 const updateTeam = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const callMainAPI = async () => {
+    const handleUpdateTeam = async () => {
       const res = await updateTeamService(data);
       dispatch(updateTeamSuccess(res.data.data));
       onSuccess();
@@ -77,14 +77,14 @@ const updateTeam = (data, onSuccess) => async (dispatch) => {
       });
 
       if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
+        handleUpdateTeam();
       } else {
         // If files are Corrupted show toast message
         handleCorruptedFiles({ finalScanStatus });
         dispatch(updateTeamFailure());
       }
     } else {
-      callMainAPI();
+      handleUpdateTeam();
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);
