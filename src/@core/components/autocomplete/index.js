@@ -68,7 +68,6 @@ const Autocomplete = (props) => {
         placeholder={props.placeholder}
         ref={inputElRef}
         defaultValue={props.defaultValue}
-        onFocus={() => setFocused(true)}
         autoFocus={props.autoFocus}
         onBlur={(e) => {
           if (props.onBlur) props.onBlur(e);
