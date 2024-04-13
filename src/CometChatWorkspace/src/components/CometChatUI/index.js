@@ -27,6 +27,7 @@ class CometChatUI extends React.Component {
       showProfileSideBar: false,
       avatar: null,
       presence: null,
+      updateGroupActionMessages: false
     };
 
     this.navBarRef = React.createRef();
@@ -74,6 +75,10 @@ class CometChatUI extends React.Component {
   };
 
   actionHandler = (action, item, count, ...otherProps) => {
+    this.setState({
+      ...this.state,
+      updateGroupActionMessages: true
+    })
     switch (action) {
       case enums.ACTIONS['TOGGLE_SIDEBAR']:
         this.toggleSideBar();
@@ -127,6 +132,13 @@ class CometChatUI extends React.Component {
     }
   };
 
+  setUpdateGroupActionMessages = (value) => {
+    this.setState({
+      ...this.state, 
+      updateGroupActionMessages: value
+    })
+  }
+
   render() {
     let messageScreen = (
       <CometChatMessages
@@ -136,6 +148,8 @@ class CometChatUI extends React.Component {
         lang={this.props.lang}
         _parent="unified"
         actionGenerated={this.actionHandler}
+        updateGroupActionMessages={this.state.updateGroupActionMessages}
+        setUpdateGroupActionMessages={this.state.setUpdateGroupActionMessages}
         enableMilestoneInput={this.props.enableMilestoneInput}
         cancelMilestoneInput={this.props.cancelMilestoneInput}
         milestoneAttachment={this.props.milestoneAttachment} // use it here to open the specific project chat and pass it ahead
@@ -168,6 +182,7 @@ class CometChatUI extends React.Component {
                   <CustomGroupProfileSidebar
                     data={{ avatar: this.state.avatar, presence: this.state.presence }}
                     closePopup={() => this.setState({ showProfileSideBar: false })}
+                    actionGenerated={this.actionHandler}
                   />
                 )}
               </div>
