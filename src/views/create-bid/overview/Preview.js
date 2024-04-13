@@ -32,7 +32,7 @@ import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { userTypes } from '../../../utility/constants/Constant';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
-import { downloadFile } from '../../../utility/Utils';
+import { downloadFile, getFileSize } from '../../../utility/Utils';
 
 const Preview = () => {
   const dispatch = useDispatch();
@@ -51,15 +51,6 @@ const Preview = () => {
   };
 
   const renderFilePreview = () => <FileText size="18" className="me-75 mb-50" />;
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-    }
-  };
 
   const renderFormattedDate = (date) => {
     const formattedDate = date
@@ -115,7 +106,7 @@ const Preview = () => {
               </div>
             </Col>
             <Col sm="2" md="4" lg="2">
-              {renderFileSize(file.size)}
+              {getFileSize(file.size)}
             </Col>
             <Col sm="2" md="2" lg="2" className="d-flex justify-content-end">
               {renderFormattedDate(new Date(file.created_at))}
@@ -165,17 +156,17 @@ const Preview = () => {
                   <CardText className="key m-0">Estimated Duration</CardText>
                   <Info size={14} color={theme.infoIcon} id="duration-info" className="ms-50" />
                   <UncontrolledTooltip placement="right" target="duration-info">
-                    <p className="m-0">Sum total of all milestone duration hours/week</p>
+                    <p className="m-0">Sum total of all milestones duration hours/week</p>
                   </UncontrolledTooltip>
                 </div>
               </div>
               <div>
                 <CardText className="value mb-25">${bidDetailsData?.total_estimated_cost}</CardText>
                 <div className="d-flex align-items-center">
-                  <CardText className="key m-0">Talent Cost</CardText>
+                  <CardText className="key m-0">Talent Amount</CardText>
                   <Info size={14} color={theme.infoIcon} id="cost-info" className="ms-50" />
                   <UncontrolledTooltip placement="right" target="cost-info">
-                    <p className="m-0">Talent cost is the full fee paid to the talent</p>
+                    <p className="m-0">Talent amount is the full fee paid to the talent</p>
                   </UncontrolledTooltip>
                 </div>
               </div>

@@ -38,7 +38,6 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
       ?.filter((worker) => worker.user_id && worker.user_id !== selectSavedUser?._id)
       ?.map((worker) => {
         const reqData = {
-          redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
           requests_to: {
             user_ids: [worker.user_id],
           },
@@ -137,8 +136,8 @@ const BidSubmittedModal = ({ modal, toggleModal }) => {
             />
           </AccountCreatedImageContainer>
           <div className="ms-2">
-            <p className="font-large-1 text-center mb-3">Well Done!</p>
-            <p className="w-75">You have completed bidding for this project. Good Luck!</p>
+            <p className="modal-heading text-center mb-3">Well Done!</p>
+            <p className="w-75 modal-body-text">You have completed bidding for this project. Good Luck!</p>
           </div>
         </div>
         <div className="d-flex justify-content-end align-items-center mt-2 mb-2 pe-1">

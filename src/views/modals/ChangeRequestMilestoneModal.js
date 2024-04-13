@@ -51,8 +51,8 @@ const ChangeRequestMilestoneModal = ({ isLoading, onAccept, modal, toggleModal }
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" src={Notepad} width={150} height={150} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Change Request Initiated</CardTitle>
-              <CardSubtitle className="mb-75 subtitle">You have successfully initiated a change request.</CardSubtitle>
+              <CardTitle className="modal-heading">Change Request Initiated</CardTitle>
+              <CardSubtitle className="mb-75 modal-body-text">You have successfully initiated a change request.</CardSubtitle>
             </div>
           </div>
           <div className="d-flex gap-1 justify-content-end">

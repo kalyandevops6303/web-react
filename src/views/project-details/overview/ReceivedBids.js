@@ -39,6 +39,7 @@ import theme from '../../../configs/themeVariables';
 import { getReceivedBids } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { CustomBadge } from '../../styled';
+import round from '../../../lib/round';
 
 const TableWrapper = styled.div`
   .rdt_TableHeadRow {
@@ -198,27 +199,32 @@ const ReceivedBids = ({ projectName }) => {
           <div className="table-user-sub">{item?.projects_worked_on_count || 0} Projects</div>
         </>
       ),
-      bid: `$${item?.total_estimated_cost}`,
+      bid: `$${round(item?.total_estimated_cost, 2)}`,
       attachments: (
         <div>
           <Paperclip size={18} color={theme.bodyColor} /> <span>{item?.documents_count}</span>
         </div>
       ),
       status: (
-        <CustomBadge>
-          <Badge className={`${item?.status} truncate-1`} color="badge">
-            {item.status}
-          </Badge>
-        </CustomBadge>
+        <div className="position-relative">
+          <CustomBadge>
+            <Badge className={`${item?.status} truncate-1 rounded-corner`} color="badge">
+              {item.status}
+            </Badge>
+          </CustomBadge>
+          {item?.status === 'UPDATED' && <div className="red-dot" />}
+        </div>
       ),
       action: (
         <div className="d-flex gap-1">
-          <Eye
-            className="cursor-pointer"
-            onClick={() => handleRedirectTobidDetails(item)}
-            size={22}
-            color={theme.bodyColor}
-          />
+          {item?.status !== 'ACCEPTED' && (
+            <Eye
+              className="cursor-pointer"
+              onClick={() => handleRedirectTobidDetails(item)}
+              size={22}
+              color={theme.bodyColor}
+            />
+          )}
           <MoreVertical className="d-none" size={18} color={theme.bodyColor} />
         </div>
       ),
@@ -227,6 +233,7 @@ const ReceivedBids = ({ projectName }) => {
 
   const statusOption = [
     { label: 'New', value: 'NEW' },
+    { label: 'Updated', value: 'UPDATED' },
     { label: 'Reviewed', value: 'REVIEWED' },
     { label: 'Accepted', value: 'ACCEPTED' },
     { label: 'Rejected', value: 'REJECTED' },

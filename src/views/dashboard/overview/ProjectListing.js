@@ -218,7 +218,7 @@ const ProjectListing = () => {
     setIsSliderLoading(true);
     setTimeout(() => {
       setIsSliderLoading(false);
-    }, 1000);
+    }, 150);
   }, [open]);
 
   useEffect(() => {
@@ -249,7 +249,7 @@ const ProjectListing = () => {
     ) {
       dispatch(getRecommendedProjects({ user_type: userDetailsData?.user_type }));
     }
-  }, []);
+  }, [userDetailsData?.user_type]);
 
   const onViewAllClick = (e, path) => {
     e.stopPropagation();

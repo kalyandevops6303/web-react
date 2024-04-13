@@ -123,7 +123,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
       <ModalHeader toggle={onClose} />
       <ModalBody>
         <MakePaymentModalWrapper>
-          <CardTitle className="d-flex justify-content-center modal-header">Milestone Payment</CardTitle>
+          <CardTitle className="d-flex justify-content-center modal-heading">Milestone Payment</CardTitle>
           <div className="px-4">
             <CardText className="mt-1">
               At any given point of time a minimum of 2 milestone payments need to be paid. This does not apply for

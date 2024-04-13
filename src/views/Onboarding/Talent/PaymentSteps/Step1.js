@@ -16,6 +16,7 @@ import {
   savePaymentDetails,
   updatePaymentDetails,
 } from '../../../../redux/actions/paymentActions';
+import { handleEmailClick } from '../../../../utility/Utils';
 
 // eslint-disable-next-line react/prop-types
 const Step1 = ({ setStep }) => {
@@ -80,6 +81,7 @@ const Step1 = ({ setStep }) => {
   const handleNextClick = (e) => {
     if (taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
+      handleEmailClick();
       e.preventDefault();
       return;
     }

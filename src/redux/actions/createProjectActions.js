@@ -42,6 +42,8 @@ import {
   toolsAIRequest,
   toolsAISuccess,
 } from '../reducers/static';
+import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
+import { fileScanStatus } from '../../utility/constants/Constant';
 
 const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   if (page === 1) {
@@ -94,13 +96,30 @@ const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => 
 const createNewProject = (data, onSuccess) => async (dispatch) => {
   dispatch(createProjectRequest());
   try {
-    const res = await createProjectService(data);
-    dispatch(createProjectSuccess(res.data.data));
-    dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
-    dispatch(getFavoriteTeams(res.data.data.project_id, '', 1, 10, []));
-    dispatch(getAlmaMaterTalents(res.data.data.project_id, '', 1, 10, []));
-    ShowToastMessage(SUCCESS, res.data.data.message);
-    onSuccess();
+    const handleCreateProject = async () => {
+      const res = await createProjectService(data);
+      dispatch(createProjectSuccess(res.data.data));
+      dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
+      dispatch(getFavoriteTeams(res.data.data.project_id, '', 1, 10, []));
+      dispatch(getAlmaMaterTalents(res.data.data.project_id, '', 1, 10, []));
+      ShowToastMessage(SUCCESS, res.data.data.message);
+      onSuccess();
+    };
+    if (data?.details?.documents?.length > 0) {
+      // Recursive function until status in Scanning
+      const finalScanStatus = await handleScanFiles({ fileKeys: data?.details?.documents, isPrivate: true });
+
+      // If files are Clean proceed with API call
+      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+        handleCreateProject();
+      } else {
+        // If files are Corrupted show toast message
+        handleCorruptedFiles({ finalScanStatus });
+        dispatch(createProjectFailure());
+      }
+    } else {
+      handleCreateProject();
+    }
   } catch (error) {
     errorHandler(error, createProjectFailure);
   }

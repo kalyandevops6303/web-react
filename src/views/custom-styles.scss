@@ -44,6 +44,18 @@
 .modal-dialog {
   max-width: none !important;
 }
+
+.modal-heading {
+  font-size: 1.719rem;//24.066px
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  padding: 0;  
+}
+
+.modal-body-text {
+  font-size: 1.286rem;//18.002px
+}
+
 .custom-modal-project-details {
   width: 78% !important;
   margin: 0 auto;

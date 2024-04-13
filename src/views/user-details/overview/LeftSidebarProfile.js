@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -11,9 +11,7 @@ import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
 import DribbleIcon from '@src/assets/images/dribble.png';
 import BehanceIcon from '@src/assets/images/behance.png';
-
 import Avatar from '@components/avatar';
-
 import Rating from 'react-rating';
 import { Download, GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
 import { ActionButtonWrapper, DownloadIconContainer, LeftSidebarProfileWrapper } from './style';
@@ -25,11 +23,7 @@ import { downloadFile, giveProgressBarColorClassName, returnFormattedRating } fr
 import { CustomBadge } from '../../styled';
 import { clubStatus, userProfileEdit, userTypes } from '../../../utility/constants/Constant';
 import TwitterXIcon from '../../../assets/images/logo/X-logo.svg';
-import {
-  getDownloadUrl,
-  getProfilePercentage,
-  getTeamProfilePercentage,
-} from '../../../redux/actions/dashboardActions';
+import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { selectAuthUserData, selectUserData } from '../../../redux/selectors/authSelectors';
 import ReportUserModal from './ReportUserModal';
 import ShowToastMessage from '../../../@core/components/toast';
@@ -42,10 +36,8 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
   const param = useParams();
   const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
-  const recentProjectsMetadata = useSelector((state) => state.currentProfile.userRecentProjectMetaData);
-  const reviewMetadata = useSelector((state) => state.currentProfile.userReviewMetaData);
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
-
+  const favUnfavLoading = useSelector((state) => state.currentProfile.favUnfavLoading);
   const [isFavourite, setIsFavourite] = useState(data?.is_favourite);
   const isEditable = userData?._id === param?.userId;
   const userDataSelector = useSelector(selectUserData);
@@ -91,17 +83,6 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
     downloadFile({ data: { download_url }, file_name });
   };
 
-  useEffect(() => {
-    if (showProfilePercent) {
-      if (isTalentView || isClient) {
-        dispatch(getProfilePercentage());
-      }
-      if (isTeamView) {
-        dispatch(getTeamProfilePercentage());
-      }
-    }
-  }, []);
-
   return (
     <LeftSidebarProfileWrapper>
       <Card>
@@ -123,10 +104,10 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
                   className="cursor-pointer d-flex ms-auto heart"
                   fill={theme.red}
                   stroke={theme.red}
-                  onClick={handleUnLike}
+                  onClick={favUnfavLoading ? null : handleUnLike}
                 />
               ) : (
-                <Heart className="cursor-pointer d-flex ms-auto heart" onClick={handleLike} />
+                <Heart className="cursor-pointer d-flex ms-auto heart" onClick={favUnfavLoading ? null : handleLike} />
               ))}
           </div>
 
@@ -202,7 +183,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               readonly
             />
             <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
-              {recentProjectsMetadata?.total_records || 0} Projects | {reviewMetadata?.total_records || 0} Reviews
+              {data?.projects_worked_on_count || 0} Projects | {data?.total_reviews || 0} Reviews
             </CardText>
           </div>
 

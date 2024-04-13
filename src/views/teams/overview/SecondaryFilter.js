@@ -12,7 +12,7 @@ import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
 
 import { clearData } from '../../../redux/reducers/myTeams';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -33,6 +33,7 @@ import ClientCard from '../../cards/ClientCard';
 import { skillsService, toolsService } from '../../../services/staticServices';
 import capitalize from '../../../lib/capitalize';
 import { ResponsiveGrid } from '../../cards/style';
+import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const statusOptions = [
@@ -604,14 +605,15 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && (
-        <p className="font-medium-1 fw-bolder">
-          Search Results Found{' '}
-          {selectMyTeamMetaData?.total_records < 10
-            ? `0${selectMyTeamMetaData?.total_records}`
-            : selectMyTeamMetaData?.total_records}
-        </p>
-      )}
+      {!isLoading &&
+        (isAnyKeyNonEmptyArray({
+          skills: secondFilterState?.skills,
+          tools: secondFilterState?.tools,
+        }) ||
+          searchText ||
+          primaryFilter === 'recommendation' ||
+          primaryFilter === 'join_requests' ||
+          primaryFilter === 'favourites') && <SearchResultsCount metaData={selectMyTeamMetaData} />}
 
       {isLoading ? (
         <ComponentSpinner />

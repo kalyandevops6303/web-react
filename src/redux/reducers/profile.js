@@ -31,9 +31,18 @@ const profileSlice = createSlice({
       error: action.payload,
     }),
 
+    favUnfavReq: (state) => ({
+      ...state,
+      favUnfavLoading: true,
+    }),
     makeFavSuccess: (state) => ({
       ...state,
       userProfile: { ...state.userProfile, is_favourite: true },
+      favUnfavLoading: false,
+    }),
+    favUnfavError: (state) => ({
+      ...state,
+      favUnfavLoading: false,
     }),
     makeTeamMemberSuccess: (state) => ({
       ...state,
@@ -42,6 +51,7 @@ const profileSlice = createSlice({
     removeFavSuccess: (state) => ({
       ...state,
       userProfile: { ...state.userProfile, is_favourite: false },
+      favUnfavLoading: false,
     }),
 
     getRecentProjectRequest: (state) => ({
@@ -133,7 +143,9 @@ export const {
   makeTeamMemberSuccess,
   getProfileSuccess,
   getProfileFailure,
+  favUnfavReq,
   makeFavSuccess,
+  favUnfavError,
   clearData,
   removeFavSuccess,
   getRecentProjectFailure,

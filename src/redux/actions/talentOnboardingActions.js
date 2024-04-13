@@ -20,6 +20,8 @@ import {
   checkpointCompleteFailure,
 } from '../reducers/talentOnboarding';
 import { cometChatLogin } from '../reducers/auth';
+import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
+import { fileScanStatus } from '../../utility/constants/Constant';
 
 const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   dispatch(userDetailsRequest());
@@ -35,10 +37,29 @@ const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
 const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(accountDetailsRequest());
   try {
-    const res = await accountDetailsService(data);
-    dispatch(accountDetailsSuccess(res.data.data));
-    dispatch(cometChatLogin(res.data.data.comet_chat_token));
-    onSuccess();
+    const handleSaveTalentDetails = async () => {
+      const res = await accountDetailsService(data);
+      dispatch(accountDetailsSuccess(res.data.data));
+      dispatch(cometChatLogin(res.data.data.comet_chat_token));
+      onSuccess();
+    };
+    if (data?.image_uri) {
+      // Recursive function until status in Scanning
+      const finalScanStatus = await handleScanFiles({
+        fileKeys: [{ file_name: 'Profile Image', file_key: data?.image_uri }],
+        // isPrivate: true,
+      });
+
+      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+        handleSaveTalentDetails();
+      } else {
+        // If files are Corrupted show toast message
+        handleCorruptedFiles({ finalScanStatus });
+        dispatch(accountDetailsFailure());
+      }
+    } else {
+      handleSaveTalentDetails();
+    }
   } catch (error) {
     errorHandler(error, accountDetailsFailure);
   }
@@ -47,9 +68,28 @@ const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
 const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(profileDetailsRequest());
   try {
-    const res = await profileDetailsService(data);
-    dispatch(profileDetailsSuccess(res.data.data));
-    onSuccess();
+    const handleSaveProfileDetails = async () => {
+      const res = await profileDetailsService(data);
+      dispatch(profileDetailsSuccess(res.data.data));
+      onSuccess();
+    };
+    if (data?.resume || data?.image_uri) {
+      // Recursive function until status in Scanning
+      const finalScanStatus = await handleScanFiles({
+        fileKeys: data?.image_uri ? [{ file_name: 'Profile Image', file_key: data?.image_uri }] : [data?.resume],
+        isPrivate: !!data?.resume,
+      });
+
+      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+        handleSaveProfileDetails();
+      } else {
+        // If files are Corrupted show toast message
+        handleCorruptedFiles({ finalScanStatus });
+        dispatch(profileDetailsFailure());
+      }
+    } else {
+      handleSaveProfileDetails();
+    }
   } catch (error) {
     errorHandler(error, profileDetailsFailure);
   }

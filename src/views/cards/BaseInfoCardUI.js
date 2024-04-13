@@ -4,26 +4,32 @@ import hat from '@src/assets/images/hat.svg';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
 import { Heart } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import BadgeGroup from '../../@core/components/badge-group';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
-const BaseInfoUI = ({ data }) => {
+const BaseInfoUI = ({ data, hideUserInfo }) => {
   const dispatch = useDispatch();
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    if (!isFavUnfavLoading) {
+      setIsFavorite(true);
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false) }));
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (!isFavUnfavLoading) {
+      setIsFavorite(false);
+      dispatch(removeFav({ project_id: data?._id, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const giveStrokeColor = (percentage) => {
@@ -86,25 +92,31 @@ const BaseInfoUI = ({ data }) => {
           )}
         </div>
       </div>
-      <div className="d-flex mb-2 align-items-center">
-        <img
-          className="market-place-card-photo me-75"
-          src={data?.client?.image_uri?.length ? data?.client?.image_uri : defaultAvatar}
-          alt="avatar"
-        />
-        <div className="d-flex w-100 align-items-center">
-          <div className="flex-grow-1">
-            <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
-              {data?.client?.first_name} {data?.client?.last_name}
-            </CardTitle>
-            <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">{data?.client?.title}</CardText>
-          </div>
-          <div className="d-flex flex-grow-1">
-            <RatingBadge number={Math.round(data?.invitations_to?.rating ?? data?.client?.rating)} />
-            <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
+      {!hideUserInfo && (
+        <div className="d-flex mb-2 align-items-center">
+          <img
+            className="market-place-card-photo me-75"
+            src={data?.client?.image_uri?.length ? data?.client?.image_uri : defaultAvatar}
+            alt="avatar"
+          />
+          <div className="d-flex w-100 align-items-center">
+            <div className="flex-grow-1">
+              <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
+                {data?.client?.first_name} {data?.client?.last_name}
+              </CardTitle>
+              <CardText className="font-small-3 fw-300 ms-25 marketplace-card-role">
+                {data?.client?.company_name}
+              </CardText>
+            </div>
+            <div className="d-flex flex-grow-1">
+              <RatingBadge number={Math.round(data?.invitations_to?.rating ?? data?.client?.rating)} />
+              <CardText className="ps-1 font-small-3 fw-300 rating-label">
+                {data?.client?.projects_worked_on_count || 0} Projects
+              </CardText>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div>
         <BadgeGroup
           title="Skills"
@@ -125,9 +137,11 @@ const BaseInfoUI = ({ data }) => {
 
 BaseInfoUI.propTypes = {
   data: PropTypes.object,
+  hideUserInfo: PropTypes.bool,
 };
 
 BaseInfoUI.defaultProps = {
   data: {},
+  hideUserInfo: false,
 };
 export default BaseInfoUI;

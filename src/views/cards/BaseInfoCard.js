@@ -7,7 +7,7 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
 import AvatarGroup from '@components/avatar-group';
 import { Heart } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
@@ -16,24 +16,30 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { returnFormattedRating } from '../../utility/Utils';
 import { BidsReceivedWrapper, IconWrapper } from './style';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const location = useLocation();
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(makeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    if (!isFavUnfavLoading) {
+      setIsFavorite(true);
+      dispatch(makeFav({ project_id: data?._id, onError: () => setIsFavorite(false) }));
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ project_id: data?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (!isFavUnfavLoading) {
+      setIsFavorite(false);
+      dispatch(removeFav({ project_id: data?._id, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const giveStrokeColor = (percentage) => {
@@ -233,7 +239,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
                 </CardText>
               ) : (
                 <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                  {clientDetails?.project_listed_count ?? 0} Projects
+                  {clientDetails?.projects_worked_on_count ?? 0} Projects
                 </CardText>
               )}
             </div>

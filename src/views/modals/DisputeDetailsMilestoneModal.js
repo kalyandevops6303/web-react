@@ -134,23 +134,17 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute })
     );
 
     const fetchUploadUrls = async () => {
-      const allFiles = [...filesRef.current, ...acceptedFiles];
+      const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
-      if (allFiles?.length > 5) {
-        ShowToastMessage(ERROR, 'Maximum 5 files allowed');
-      } else {
-        const validFiles = acceptedFiles.filter((file) => isFileValid(file));
+      const promises = validFiles.map(async (file) => {
+        const response = await disputeReplyFileUploadService(file.name, _id);
+        return { id: uuidv4(), file, uploadData: response?.data?.data };
+      });
 
-        const promises = validFiles.map(async (file) => {
-          const response = await disputeReplyFileUploadService(file.name, _id);
-          return { id: uuidv4(), file, uploadData: response?.data?.data };
-        });
+      const filesWithUrls = await Promise.all(promises);
+      setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
 
-        const filesWithUrls = await Promise.all(promises);
-        setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
-
-        filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
-      }
+      filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
     };
     fetchUploadUrls();
   }, []);
@@ -287,7 +281,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute })
         customContent: (
           <div>
             <div className="d-flex justify-content-between mb-25">
-              <p className="fw-bold mb-0">Dispute Raised</p>
+              <p className="fw-bold modal-heading mb-0">Dispute Raised</p>
               <p className="font-small-3 mb-0">{DateTime?.fromMillis(created_at)?.toRelative()}</p>
             </div>
             <p>{DateTime.fromMillis(created_at).toFormat('MMM dd, yy')}</p>
@@ -300,7 +294,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute })
               />
               <div>
                 <p className="fw-bold mb-0">{`${created_by?.first_name} ${created_by?.last_name}`}</p>
-                <p className="mb-0">
+                <p className="mb-0 modal-body-text">
                   {'company_name' in created_by ? created_by?.company_name : created_by?.role?.name}
                 </p>
               </div>
@@ -367,7 +361,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute })
           {status !== disputeStatuses.resolved && (
             <div className="d-flex justify-content-end align-items-center mt-2">
               <p className="text-decoration-underline fw-bold blue-btn mb-0 me-3 cursor-pointer" onClick={onDispute}>
-                Dispute Resolved
+                Resolve Dispute
               </p>
               <p
                 className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"

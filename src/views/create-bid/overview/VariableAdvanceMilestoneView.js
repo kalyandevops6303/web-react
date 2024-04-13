@@ -37,7 +37,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
-import { downloadFile, downloadUploadedFile, formatDateWithDash } from '../../../utility/Utils';
+import { downloadFile, downloadUploadedFile, formatDateWithDash, getFileSize } from '../../../utility/Utils';
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import { bidDetailsLoading, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
@@ -452,23 +452,18 @@ const VariableAdvanceMilestoneView = () => {
     );
 
     const fetchUploadUrls = async () => {
-      const allFiles = [...filesRef.current, ...acceptedFiles];
+      
+      const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
-      if (allFiles?.length > 5) {
-        ShowToastMessage(ERROR, 'Maximum 5 files allowed');
-      } else {
-        const validFiles = acceptedFiles.filter((file) => isFileValid(file));
+      const promises = validFiles.map(async (file) => {
+        const response = await milestoneFileUploadService(file.name);
+        return { id: uuidv4(), file, uploadData: response?.data?.data, isUploaded: false };
+      });
 
-        const promises = validFiles.map(async (file) => {
-          const response = await milestoneFileUploadService(file.name);
-          return { id: uuidv4(), file, uploadData: response?.data?.data, isUploaded: false };
-        });
+      const filesWithUrls = await Promise.all(promises);
+      setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
 
-        const filesWithUrls = await Promise.all(promises);
-        setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
-
-        filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
-      }
+      filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
     };
     fetchUploadUrls();
   }, []);
@@ -488,15 +483,6 @@ const VariableAdvanceMilestoneView = () => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     setFiles([...filtered]);
-  };
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-    }
   };
 
   const requiredFormattedDate = (date = new Date()) => {
@@ -545,10 +531,10 @@ const VariableAdvanceMilestoneView = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <>
-                    {renderFilePreview()}
-                    {file?.file?.name || file?.file?.file_name}
-                  </>
+                  <div className="d-flex align-items-center">
+                    <span>{renderFilePreview()}</span>
+                    <span>{file?.file?.name || file?.file?.file_name}</span>
+                  </div>
                 )}
               </div>
             </Col>
@@ -556,7 +542,7 @@ const VariableAdvanceMilestoneView = () => {
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate(file?.file?.created_at)}
@@ -778,7 +764,7 @@ const VariableAdvanceMilestoneView = () => {
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">{milestoneHours}h</p>
                                 </div>
                                 <div>
-                                  <Label className="fw-normal form-label">Talent Cost</Label>
+                                  <Label className="fw-normal form-label">Talent Amount</Label>
                                   <p className="fw-bold font-medium-1 mt-50 mb-0 text-end">$ {milestoneCost}</p>
                                 </div>
                               </Col>
@@ -1302,9 +1288,9 @@ const VariableAdvanceMilestoneView = () => {
               </Row>
             </CardBody>
           </Card>
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center mb-4">
             <div
-              className="d-flex align-items-center upload-button cursor-pointer"
+              className="d-flex align-items-center upload-button cursor-pointer mb-50"
               onClick={() => {
                 if (selectUserDetailsData?.user_type === userTypes.team) {
                   navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`);

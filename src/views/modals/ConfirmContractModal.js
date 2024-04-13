@@ -22,13 +22,13 @@ const ConfirmContractModal = ({ docType, modalData, onAccept, modal, toggleModal
           <div className="d-flex justify-content-between pr-1">
             <img className="gif" src={AcceptGif} width={150} height={150} alt="gif" />
             <div className="content-side">
-              <CardTitle className="modal-title-custom">Sign {isContractView ? 'Contract' : 'NDA'}</CardTitle>
+              <CardTitle className="modal-heading">Sign {isContractView ? 'Contract' : 'NDA'}</CardTitle>
               <CardSubtitle className="mb-75 fw-bold subtitle">
                 Agree & Accept {isContractView ? 'Contract' : 'NDA'}
               </CardSubtitle>
 
-              <CardText className="desc fw-light">
-                Are you sure you want to sign the {isContractView ? 'contract' : 'NDA'}
+              <CardText className="modal-body-text fw-light">
+                Are you sure you want to sign the {isContractView ? 'contract' : 'NDA'}?
               </CardText>
               <section className="d-flex gap-2 stats">
                 <div style={{ minWidth: '10rem' }}>

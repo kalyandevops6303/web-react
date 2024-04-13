@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import DateTime from '../../lib/date-time';
@@ -16,6 +16,8 @@ import SwitchConfirmModal from '../modals/SwitchConfirm';
 import { getPath, getReadType } from '../../utility/Utils';
 import NewTag from '../../@core/components/new-tag';
 import { updateCardStatus } from '../../redux/actions/dashboardActions';
+import { selectUserData } from '../../redux/selectors/authSelectors';
+import { userTypes } from '../../utility/constants/Constant';
 
 const ProjectCard = ({
   secondaryFilterForInvitedType,
@@ -33,8 +35,9 @@ const ProjectCard = ({
   const [isNewTag, setIsTagNew] = useState(data?.is_read === false);
   const dispatch = useDispatch();
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
-
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
+  const userdata = useSelector(selectUserData);
+
   useEffect(() => {
     setShowFullText(isExpanded);
   }, [isExpanded, isPopoverOpen]);
@@ -179,9 +182,19 @@ const ProjectCard = ({
                     data={data}
                   />
                 ) : (
-                  <BaseInfoUI data={data} />
+                  <BaseInfoUI
+                    hideUserInfo={primaryFilter === 'terminated' && userdata?.user_type === userTypes.client}
+                    data={data}
+                    primaryFilter={primaryFilter}
+                  />
                 )}
-                {!isTeam && !isProjectWithTeam && <BaseInfoUI data={data} />}
+                {!isTeam && !isProjectWithTeam && (
+                  <BaseInfoUI
+                    hideUserInfo={primaryFilter === 'terminated' && userdata?.user_type === userTypes.client}
+                    data={data}
+                    primaryFilter={primaryFilter}
+                  />
+                )}
               </Col>
             </Row>
           </CardBody>

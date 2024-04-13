@@ -106,6 +106,22 @@ class CustomProfileSidebar extends React.Component {
     }
   };
 
+  toTwelveHourString = (time_24h) => {
+    if (time_24h < 0 || time_24h > 23) {
+      return 'Not Available';
+    }
+
+    if (time_24h === 0) {
+      return '12 AM';
+    } else if (time_24h < 12) {
+      return time_24h + ' AM';
+    } else if (time_24h === 12) {
+      return '12 PM';
+    } else {
+      return time_24h - 12 + ' PM';
+    }
+  };
+
   render() {
     if (!this.state.user) {
       return null;
@@ -120,7 +136,7 @@ class CustomProfileSidebar extends React.Component {
     const startTime = weekdaysAvailability?.start_time;
     const endTime = weekdaysAvailability?.end_time;
 
-    const workingHours = weekdaysAvailability ? `${weekdays} ${startTime}AM - ${endTime}PM` : 'Not Available';
+    const workingHours = weekdaysAvailability ? `${weekdays} ${this.toTwelveHourString(startTime)} - ${this.toTwelveHourString(endTime)}` : 'Not Available';
 
     return (
       <React.Fragment>

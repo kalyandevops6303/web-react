@@ -86,6 +86,16 @@ const CustomBadge = styled.span`
     background: ${theme.purpleColor}1f !important;
     border: ${(props) => (props.bordered ? `1px solid ${theme.purpleColor}` : 'none')};
   }
+  .UPDATED {
+    color: ${theme.purpleColor};
+    background: ${theme.purpleColor}1f !important;
+  }
+  .rounded-corner {
+    border-radius: 1.0625rem;
+    margin: 2px;
+    padding-right: 8px;
+    padding-left: 8px;
+  }
 `;
 
 const FormWrapper = styled.div`
@@ -373,6 +383,21 @@ const ElevateShadow = styled(Elevate)`
   }
 `;
 
+const CircularBackButtonContainer = styled.div`
+  .back-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: ${theme.activeNavPillText};
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+  }
+  p {
+    color: ${theme.activeNavPillText};
+  }
+`;
+
 export {
   ElevateShadow,
   CardWrapper,
@@ -388,4 +413,5 @@ export {
   TeamCreatedModalImageWrapper,
   TeamCreatedModalLogoImg,
   Elevate,
+  CircularBackButtonContainer,
 };

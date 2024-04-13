@@ -18,7 +18,7 @@ import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
 import { getListProjects, getUsers } from '../../../redux/actions/marketPlaceActions';
 import {
   companyIndustriesService,
@@ -43,6 +43,7 @@ import TeamCard from '../../cards/TeamCard';
 import ClientCard from '../../cards/ClientCard';
 import TalentCard from '../../cards/TalentCard';
 import { ResponsiveGrid } from '../../cards/style';
+import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const [searchText, setSearchText] = useState('');
@@ -145,39 +146,40 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         valuesOnly[key] = secondFilterState[key].map((item) => item.value);
       }
     });
-
-    if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
-      dispatch(
-        getUsers({
-          isRecommanded,
-          isFavorite,
-          primaryFilter,
-          metaData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
-    } else {
-      dispatch(
-        getListProjects({
-          isMyListing: primaryFilter === 'my_listings',
-          isMyBids: primaryFilter === 'my_bids',
-          show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
-          isRecommanded,
-          isFavorite,
-          metaData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
+    if (userType) {
+      if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
+        dispatch(
+          getUsers({
+            isRecommanded,
+            isFavorite,
+            primaryFilter,
+            metaData,
+            userType,
+            onSuccess,
+            onError,
+            postData: valuesOnly,
+            searchText,
+          }),
+        );
+      } else {
+        dispatch(
+          getListProjects({
+            isMyListing: primaryFilter === 'my_listings',
+            isMyBids: primaryFilter === 'my_bids',
+            show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
+            isRecommanded,
+            isFavorite,
+            metaData,
+            userType,
+            onSuccess,
+            onError,
+            postData: valuesOnly,
+            searchText,
+          }),
+        );
+      }
     }
-  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite]);
+  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite, userType]);
 
   useEffect(() => {
     if (location?.state?.isRecommended) {
@@ -649,13 +651,8 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && (
-        <p className="font-medium-1 fw-bolder">
-          Search Results Found{' '}
-          {selectMarkeMetaData?.total_records < 10
-            ? `0${selectMarkeMetaData?.total_records}`
-            : selectMarkeMetaData?.total_records}
-        </p>
+      {!isLoading && (isAnyKeyNonEmptyArray(secondFilterState) || searchText) && (
+        <SearchResultsCount metaData={selectMarkeMetaData} />
       )}
 
       {isLoading ? (

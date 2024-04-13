@@ -51,7 +51,7 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { downloadUploadedFile } from '../../../utility/Utils';
+import { downloadUploadedFile, getFileSize } from '../../../utility/Utils';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -68,7 +68,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
           yup
             .number()
             .min(1, 'Expected duration should be at least 1 week')
-            .max(52, 'Expected duration cannot be greater than 52 weeks')
+            .max(12, 'Expected duration cannot be greater than 12 weeks')
             .integer('Expected duration should be a number')
             .typeError('Please enter a number')
             .required('Expected duration is required'),
@@ -217,10 +217,10 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       then: () =>
         yup
           .number()
-          .min(1, 'Fixed cost is required')
-          .integer('Fixed cost must be an integer')
+          .min(1, 'Fixed amount is required')
+          .integer('Fixed amount must be an integer')
           .typeError('Please enter a number')
-          .required('Fixed cost is required'),
+          .required('Fixed amount is required'),
     }),
     nda: yup.string().required('NDA is required'),
   });
@@ -231,6 +231,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     watch,
     setValue,
     clearErrors,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -262,6 +263,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   useEffect(() => {
     clearErrors('expectedDuration');
+    if (watch('expectedDuration') >= 0) {
+      trigger('expectedDuration');
+    }
   }, [watch('expectedDurationPeriod')]);
 
   const loadSkillsOptions = async (search) => {
@@ -475,23 +479,18 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     );
 
     const fetchUploadUrls = async () => {
-      const allFiles = [...filesRef.current, ...acceptedFiles];
+    
+      const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
-      if (allFiles?.length > 5) {
-        ShowToastMessage(ERROR, 'Maximum 5 files allowed');
-      } else {
-        const validFiles = acceptedFiles.filter((file) => isFileValid(file));
+      const promises = validFiles.map(async (file) => {
+        const response = await projectFileUploadService(file.name);
+        return { id: uuidv4(), file, uploadData: response?.data?.data };
+      });
 
-        const promises = validFiles.map(async (file) => {
-          const response = await projectFileUploadService(file.name);
-          return { id: uuidv4(), file, uploadData: response?.data?.data };
-        });
+      const filesWithUrls = await Promise.all(promises);
+      setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
 
-        const filesWithUrls = await Promise.all(promises);
-        setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
-
-        filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
-      }
+      filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
     };
     fetchUploadUrls();
   }, []);
@@ -518,15 +517,6 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     setFiles([...filtered]);
-  };
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-    }
   };
 
   const formattedDate = new Date()
@@ -557,7 +547,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate}
@@ -1650,7 +1640,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                               }}
                             />
                             <Label for="variable-price" className="form-check-label">
-                              Variable cost
+                              Variable price
                             </Label>
                           </div>
                           <div className="form-check form-check-inline checkbox-custom-margin custom-checkbox-border">
@@ -1671,7 +1661,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                               }}
                             />
                             <Label for="fixed-price" className="form-check-label">
-                              Fixed cost
+                              Fixed price
                             </Label>
                           </div>
                         </div>
@@ -1682,7 +1672,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                   {projectPayType === 'fixed-price' && (
                     <Col sm="12" md="6" lg="3">
                       <Label className="form-label" for="projectFixedCost">
-                        Fixed Cost{`${watch('currencyType') ? ` in ${watch('currencyType')?.value?.code}` : ''}`}
+                        Fixed Price{`${watch('currencyType') ? ` in ${watch('currencyType')?.value?.code}` : ''}`}
                         <span className="label-asterisk me-50">*</span>
                       </Label>
                       <Controller

@@ -150,7 +150,6 @@ const DetailsCTAHeader = ({ isTeamView, data, isClubProfile }) => {
   const sendJoinTeamRequest = () => {
     const newPostData = {
       message: '',
-      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
       requests_to: {
         user_ids: [],
         team_ids: [param?.userId],
@@ -255,11 +254,15 @@ const DetailsCTAHeader = ({ isTeamView, data, isClubProfile }) => {
                     Invite
                   </Button>
                 )}
-              {userData?.team_type === userTypes.club && isClubAdmin && (
-                <Button className="btn-head-padding-25" color="primary" onClick={handleInviteTalent}>
-                  Invite
-                </Button>
-              )}
+
+              {!data?.is_team_member &&
+                userData?.team_type === userTypes.club &&
+                isClubAdmin &&
+                data?.user_type === userTypes.talent && (
+                  <Button className="btn-head-padding-25" color="primary" onClick={handleInviteTalent}>
+                    Invite
+                  </Button>
+                )}
               {!requestStatusData &&
                 !data?.is_team_member &&
                 isTeamView &&
