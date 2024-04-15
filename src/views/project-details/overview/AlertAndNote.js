@@ -37,8 +37,7 @@ const AlertAndNote = () => {
     if (duration.as('days') >= 1) {
       return `${Math.floor(duration.as('days'))} day(s)`;
     }
-
-    return duration.toFormat(" hh'h' mm'm'");
+    return '0 day';
   };
 
   const add7Days = (timestamp) => {
@@ -113,8 +112,8 @@ const AlertAndNote = () => {
       </p>
     </div>
   );
-
-  if (document?.bid_validity === null) {
+  const currentDateTime = DateTime.now();
+  if (document?.bid_validity === null || currentDateTime > paymentValidity) {
     return '';
   }
 
