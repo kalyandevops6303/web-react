@@ -112,8 +112,8 @@ const AlertAndNote = () => {
       </p>
     </div>
   );
-  const currentDateTime = DateTime.now();
-  if (document?.bid_validity === null || currentDateTime > paymentValidity) {
+  const currentDateTime = DateTime.now().toMillis();
+  if (document?.bid_validity === null || (paymentValidity > 0 && currentDateTime > paymentValidity)) {
     return '';
   }
 
