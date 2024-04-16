@@ -20,8 +20,7 @@ import {
   checkpointCompleteFailure,
 } from '../reducers/talentOnboarding';
 import { cometChatLogin } from '../reducers/auth';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   dispatch(userDetailsRequest());
@@ -44,19 +43,12 @@ const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
       onSuccess();
     };
     if (data?.image_uri) {
-      // Recursive function until status in Scanning
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: [{ file_name: 'Profile Image', file_key: data?.image_uri }],
-        // isPrivate: true,
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Profile Image', file_key: data?.image_uri }],
+        handleMainAPI: handleSaveTalentDetails,
+        onError: () => dispatch(accountDetailsFailure()),
+        isPrivate: false,
       });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        handleSaveTalentDetails();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(accountDetailsFailure());
-      }
     } else {
       handleSaveTalentDetails();
     }
@@ -74,19 +66,12 @@ const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
       onSuccess();
     };
     if (data?.resume || data?.image_uri) {
-      // Recursive function until status in Scanning
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: data?.image_uri ? [{ file_name: 'Profile Image', file_key: data?.image_uri }] : [data?.resume],
+      scanAndProcessFiles({
+        fileData: data?.image_uri ? [{ file_name: 'Profile Image', file_key: data?.image_uri }] : [data?.resume],
+        handleMainAPI: handleSaveProfileDetails,
+        onError: () => dispatch(profileDetailsFailure()),
         isPrivate: !!data?.resume,
       });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        handleSaveProfileDetails();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(profileDetailsFailure());
-      }
     } else {
       handleSaveProfileDetails();
     }
