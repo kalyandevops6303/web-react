@@ -44,7 +44,7 @@ const ChangeClubMemberModal = ({ modal, toggleModal, memberType }) => {
 
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
-      <ModalHeader toggle={isLoading ? null : handleClose} />
+      <ModalHeader toggle={loading ? null : handleClose} />
       <ModalBody className="px-3 py-0">
         <div className="d-flex align-items-center">
           <img src={SwitchMember} alt="great-job" width={120} height={120} className="me-4" />
