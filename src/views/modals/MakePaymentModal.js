@@ -8,11 +8,13 @@ import {
   CardBody,
   CardText,
   CardTitle,
+  Col,
   Input,
   Label,
   Modal,
   ModalBody,
   ModalHeader,
+  Row,
   Spinner,
 } from 'reactstrap';
 import { PropTypes } from 'prop-types';
@@ -21,7 +23,7 @@ import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/mil
 import { PAYMENT_STATUS } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
-function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
+function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAndDisabledPaymentId }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
   const [feeStructre, setFeeStructure] = useState(null);
 
@@ -139,33 +141,52 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                   className="d-flex justify-content-center"
                   key={item._id}
                 >
-                  <CardBody className="d-flex justify-content-between">
-                    <div className="d-flex">
-                      <Input
-                        type="checkbox"
-                        id={item._id}
-                        checked={selectedIds.includes(item._id)}
-                        onChange={(evt) => handleMilestoneSelect(evt, item._id)}
-                        disabled={isDisabled(item.payment_status)}
-                        className="payment-form-control"
-                      />
-                      <div className="d-flex flex-column" style={{ marginTop: '-2px' }}>
-                        <Label
-                          for={item._id}
-                          className="text-truncate"
-                          style={{ marginLeft: '10px', fontSize: '16px' }}
+                  <CardBody className="d-flex justify-content-between pe-0">
+                    <Row className="w-100">
+                      <Col sm="12" md="5" lg="5">
+                        <div className="d-flex form-check w-100">
+                          <Input
+                            type="checkbox"
+                            id={item._id}
+                            checked={selectedIds.includes(item._id)}
+                            onChange={(evt) =>
+                              !selectedAndDisabledPaymentId?.includes(item?._id) && handleMilestoneSelect(evt, item._id)
+                            }
+                            disabled={isDisabled(item.payment_status)}
+                            className="payment-form-control"
+                          />
+                          <div className="d-flex flex-column w-100" style={{ marginTop: '-2px' }}>
+                            <Label
+                              for={item._id}
+                              className="text-truncate"
+                              style={{
+                                marginLeft: '10px',
+                                fontSize: '16px',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                              }}
+                            >
+                              {item.name}
+                            </Label>
+                          </div>
+                        </div>
+                      </Col>
+                      <Col sm="12" md="5" lg="4">
+                        <Badge
+                          color={getTagSettings(item.payment_status).theme}
+                          style={{ width: 'fit-content', marginLeft: '10px' }}
                         >
-                          {item.name}
-                        </Label>
-                      </div>
-                    </div>
-                    <Badge
-                      color={getTagSettings(item.payment_status).theme}
-                      style={{ width: 'fit-content', marginLeft: '10px' }}
-                    >
-                      {getTagSettings(item.payment_status).text}
-                    </Badge>
-                    <div style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${item.estimated_cost}`}</div>
+                          {getTagSettings(item.payment_status).text}
+                        </Badge>
+                      </Col>
+                      <Col sm="12" md="5" lg="3">
+                        <div
+                          style={{ fontSize: '16px', fontWeight: '500' }}
+                          className="text-end"
+                        >{`$ ${item.estimated_cost}`}</div>
+                      </Col>
+                    </Row>
                   </CardBody>
                 </Card>
               ))}
@@ -212,12 +233,14 @@ MakePaymentModal.propTypes = {
   modal: PropTypes.bool,
   toggleModal: PropTypes.func,
   selectedMilestoneIds: PropTypes.array,
+  selectedAndDisabledPaymentId: PropTypes.array,
 };
 
 MakePaymentModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   selectedMilestoneIds: [],
+  selectedAndDisabledPaymentId: [],
 };
 
 export default MakePaymentModal;

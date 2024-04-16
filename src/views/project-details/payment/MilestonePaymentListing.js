@@ -11,6 +11,7 @@ import { PAYMENT_STATUS } from '../../../utility/constants/Constant';
 function MilestonePaymentListing() {
   const [selectedMilestones, setSelectedMilestones] = useState([]);
   const [makePaymentModal, setMakePaymentModal] = useState(false);
+  const [selectedAndDisabledPaymentId, setSelectedAndDisabledPaymentId] = useState([]);
 
   const projectDetailsData = useSelector(projectDetails);
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
@@ -68,6 +69,44 @@ function MilestonePaymentListing() {
     }
     return false;
   };
+
+  useEffect(() => {
+    if (milestoneData && !isAllMilestonePaid) {
+      if (milestoneData?.length > 2) {
+        const firstMilestone = milestoneData[0];
+        const secondMilestone = milestoneData[1];
+
+        const isFirstAndSecondMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
+
+        if (!isFirstAndSecondMilestonePaid) {
+          setSelectedMilestones([firstMilestone._id, secondMilestone._id]);
+          setSelectedAndDisabledPaymentId([firstMilestone._id, secondMilestone._id]);
+        } else {
+          const firstNotPaidMilestoneInTheList = milestoneData.find((mile) => !isPaymentDone(mile));
+          setSelectedMilestones([firstNotPaidMilestoneInTheList._id]);
+          setSelectedAndDisabledPaymentId([firstNotPaidMilestoneInTheList._id]);
+        }
+      } else if (milestoneData?.length === 2) {
+        const firstMilestone = milestoneData[0];
+        const secondMilestone = milestoneData[1];
+
+        const isFirstAndSecondMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
+
+        if (!isFirstAndSecondMilestonePaid) {
+          setSelectedMilestones([firstMilestone._id, secondMilestone._id]);
+          setSelectedAndDisabledPaymentId([firstMilestone._id, secondMilestone._id]);
+        }
+      } else {
+        const firstMilestone = milestoneData[0];
+
+        if (!isPaymentDone(firstMilestone)) {
+          setSelectedMilestones([firstMilestone._id]);
+          setSelectedAndDisabledPaymentId([firstMilestone._id]);
+        }
+      }
+    }
+  }, [milestoneData]);
+
   return (
     <div className="mt-2">
       {makePaymentModal && (
@@ -75,6 +114,7 @@ function MilestonePaymentListing() {
           modal={makePaymentModal}
           toggleModal={handleCancel}
           selectedMilestoneIds={selectedMilestones}
+          selectedAndDisabledPaymentId={selectedAndDisabledPaymentId}
         />
       )}
       {milestoneDataLoading ? (
@@ -93,7 +133,7 @@ function MilestonePaymentListing() {
                 payableAmount={milestone.estimated_cost}
                 paymentStatus={milestone.payment_status}
                 checked={selectedMilestones.includes(milestone._id)}
-                onSelect={handleMilestoneSelect}
+                onSelect={!selectedAndDisabledPaymentId?.includes(milestone?._id) && handleMilestoneSelect}
               />
             ))}
           {milestoneData?.length > 0 && (
