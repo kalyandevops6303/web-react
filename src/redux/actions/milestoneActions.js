@@ -27,8 +27,8 @@ import {
   submitMilestoneService,
 } from '../../services/projectMilestoneService';
 import { transferFundService } from '../../services/paymentDetailService';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getMilestoneDetail =
   ({ milestoneId }) =>
@@ -81,17 +81,12 @@ const submitMilstone =
         onSuccess();
       };
       if (data?.documents?.length > 0) {
-        // Recursive function until status in Scanning
-        const finalScanStatus = await handleScanFiles({ fileKeys: data?.documents, isPrivate: true });
-
-        // If files are Clean proceed with API call
-        if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-          callMainAPI();
-        } else {
-          // If files are Corrupted show toast message
-          handleCorruptedFiles({ finalScanStatus });
-          dispatch(submitMilestoneFailure());
-        }
+        scanAndProcessFiles({
+          fileData: data?.documents,
+          handleMainAPI: callMainAPI,
+          onError: () => dispatch(submitMilestoneFailure()),
+          isPrivate: true,
+        });
       } else {
         callMainAPI();
       }

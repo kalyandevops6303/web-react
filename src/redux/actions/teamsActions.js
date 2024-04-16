@@ -12,8 +12,7 @@ import {
 } from '../reducers/team';
 import { getInvitedBySuccess } from '../reducers/projectDetails';
 import { getMyTeamFailure, getMyTeamRequest, getMyTeamSuccess } from '../reducers/dashboard';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getTeams =
   ({ onSuccess }) =>
@@ -41,18 +40,12 @@ const createTeam =
         onSuccess(res.data.data);
       };
       if (data?.team_logo) {
-        const finalScanStatus = await handleScanFiles({
-          fileKeys: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+        scanAndProcessFiles({
+          fileData: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+          handleMainAPI: callMainAPI,
+          onError,
           isPrivate: false,
         });
-
-        if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-          callMainAPI();
-        } else {
-          // If files are Corrupted show toast message
-          handleCorruptedFiles({ finalScanStatus });
-          onError();
-        }
       } else {
         callMainAPI();
       }
@@ -65,20 +58,18 @@ const createTeam =
 const updateTeam = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const finalScanStatus = await handleScanFiles({
-      fileKeys: [{ file_name: 'Team logo', file_key: data?.team_logo }],
-      isPrivate: false,
-    });
-
-    if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+    const callMainAPI = async () => {
       const res = await updateTeamService(data);
       dispatch(updateTeamSuccess(res.data.data));
       onSuccess();
-    } else {
-      // If files are Corrupted show toast message
-      handleCorruptedFiles({ finalScanStatus });
-      dispatch(updateTeamFailure());
-    }
+    };
+
+    scanAndProcessFiles({
+      fileData: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+      handleMainAPI: callMainAPI,
+      onError: () => dispatch(updateTeamFailure()),
+      isPrivate: false,
+    });
   } catch (error) {
     errorHandler(error, updateTeamFailure);
   }

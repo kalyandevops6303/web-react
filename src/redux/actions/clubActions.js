@@ -22,8 +22,7 @@ import {
   clearClubCreateData,
 } from '../reducers/clubs';
 import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getClubs =
   ({ filterData, metaData, onSuccess, onError }) =>
@@ -82,20 +81,18 @@ const createClub =
   ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
-        isPrivate: false,
-      });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
+      const callMainAPI = async () => {
         const res = await createTeamService(data);
         dispatch(getClubCreated(res.data.data));
         onSuccess(res.data.data);
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        onError();
-      }
+      };
+
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+        handleMainAPI: callMainAPI,
+        onError,
+        isPrivate: false,
+      });
     } catch (error) {
       errorHandler(error);
     }
@@ -119,18 +116,12 @@ const updateClub = (data, onSuccess) => async (dispatch) => {
       onSuccess();
     };
     if (data?.team_logo) {
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+        handleMainAPI: callMainAPI,
+        onError: () => dispatch(updateTeamFailure()),
         isPrivate: false,
       });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(updateTeamFailure());
-      }
     } else {
       callMainAPI();
     }

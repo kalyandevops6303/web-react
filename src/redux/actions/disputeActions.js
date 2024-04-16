@@ -31,8 +31,7 @@ import {
   replyOnDisputeService,
   resolveDisputeService,
 } from '../../services/disputeServices';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const raiseNewDispute = (data, onSuccess) => async (dispatch) => {
   dispatch(raiseDisputeRequest());
@@ -77,18 +76,12 @@ const replyOnDisputeApi = (data, onSuccess) => async (dispatch) => {
       onSuccess();
     };
     if (data?.documents) {
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: data?.documents,
+      scanAndProcessFiles({
+        fileData: data?.documents,
+        handleMainAPI: callMainAPI,
+        onError: () => dispatch(replyOnDisputeFailure()),
         isPrivate: true,
       });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(replyOnDisputeFailure());
-      }
     } else {
       callMainAPI();
     }

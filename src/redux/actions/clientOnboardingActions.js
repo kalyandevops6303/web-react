@@ -10,8 +10,7 @@ import {
 import { accountDetailsService, profileDetailsService } from '../../services/clientOnboardingServices';
 import { saveCheckpointComplete } from './talentOnboardingActions';
 import { cometChatLogin } from '../reducers/auth';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const saveClientAccountDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(accountDetailsRequest());
@@ -23,18 +22,12 @@ const saveClientAccountDetails = (data, onSuccess) => async (dispatch) => {
       onSuccess();
     };
     if (data?.image_uri) {
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: [{ file_name: 'Profile Image', file_key: data?.image_uri }],
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Profile Image', file_key: data?.image_uri }],
+        handleMainAPI: callMainAPI,
+        onError: () => dispatch(accountDetailsFailure()),
         isPrivate: false,
       });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(accountDetailsFailure());
-      }
     } else {
       callMainAPI();
     }
@@ -52,18 +45,12 @@ const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
       onSuccess();
     };
     if (data?.image_uri || data?.company_logo) {
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: [{ file_name: 'Company logo', file_key: data?.image_uri || data?.company_logo }],
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Company logo', file_key: data?.image_uri || data?.company_logo }],
+        handleMainAPI: callMainAPI,
+        onError: () => dispatch(profileDetailsFailure()),
         isPrivate: false,
       });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        callMainAPI();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(profileDetailsFailure());
-      }
     } else {
       callMainAPI();
     }

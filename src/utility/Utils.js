@@ -703,43 +703,50 @@ export const isAnyKeyNonEmptyArray = (obj) => {
   return false; // No non empty array found
 };
 
-const delay = (ms) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
+export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, isPrivate }) => {
+  const processFile = async (index) => {
+    if (index >= fileData.length) {
+      handleMainAPI();
+      return;
+    }
 
-export const handleScanFiles = async ({ fileKeys, isPrivate, retryCount = 0 }) => {
-  const maxRetries = 3;
+    const file = fileData[index];
+    try {
+      const response = await fileScanningService({ fileKeys: [file], isPrivate });
+      if (response.data.data?.[0].status === fileScanStatus.SCANNING) {
+        // Retry logic
+        let retries = 3;
+        const retryInterval = setInterval(async () => {
+          if (retries <= 0) {
+            clearInterval(retryInterval);
+            ShowToastMessage(ERROR, `Scanning ${file?.file_name} taking longer than expected. `);
+            onError(); // Handle error on too many retries
+          } else {
+            const retryResponse = await fileScanningService({ fileKeys: [file], isPrivate: true });
+            if (retryResponse.data.data?.[0].status !== fileScanStatus.SCANNING) {
+              clearInterval(retryInterval);
+              if (retryResponse.data.data?.[0].status === fileScanStatus.CLEAN) {
+                processFile(index + 1); // Move to the next file
+              } else if (retryResponse.data.data?.[0].status === fileScanStatus.THREAT) {
+                onError(); // Handle error for threat
+                ShowToastMessage(ERROR, `${file?.file_name} seem to be maliciuous/corrupted. `);
+              }
+            }
+          }
+          retries -= 1;
+        }, timeDalayToRetryScanning); // Retry every given seconds
+      } else if (response.data.data?.[0].status === fileScanStatus.CLEAN) {
+        processFile(index + 1); // Move to the next file
+      } else if (response.data.data?.[0].status === fileScanStatus.THREAT) {
+        onError(); // Handle error for threat
+        ShowToastMessage(ERROR, `${file?.file_name} seem to be maliciuous/corrupted. `);
+      }
+    } catch (error) {
+      console.error('Error processing file:', error);
+      onError();
+    }
+  };
 
-  if (retryCount > maxRetries) {
-    throw new Error('Scanning file(s) taking longer than expected');
-  }
-
-  const scanStatus = await fileScanningService({ fileKeys, isPrivate });
-
-  if (scanStatus.data.data.some((result) => result?.status === fileScanStatus.SCANNING)) {
-    await delay(timeDalayToRetryScanning); // Wait for given milliseconds
-    return handleScanFiles({
-      fileKeys: scanStatus.data.data
-        .filter((result) => result?.status === fileScanStatus.SCANNING)
-        .map((scanningResult) => ({
-          file_name: scanningResult.file_name,
-          file_key: scanningResult.file_key,
-        })),
-      isPrivate,
-      retryCount: retryCount + 1, // Increment retry count
-    }); // Recursively call until scanStatus changes
-  }
-  return scanStatus;
-};
-
-export const handleCorruptedFiles = ({ finalScanStatus }) => {
-  const corruptedFiles = finalScanStatus.data.data
-    .filter((result) => result.status === fileScanStatus.THREAT)
-    .map((threatResult) => threatResult.file_name);
-  if (corruptedFiles.length > 0) {
-    ShowToastMessage(ERROR, `Corrupted files: ${corruptedFiles.join(', ')}`);
-  }
+  // Start processing files
+  processFile(0);
 };
