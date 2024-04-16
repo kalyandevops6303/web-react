@@ -80,9 +80,13 @@ const submitMilstone =
         dispatch(getSubmissionHistory({ milestoneId: milestone_id, metaData: { page: 1, page_size: 10 } }));
         onSuccess();
       };
+      const file_keys = data?.documents?.map((file) => ({
+        file_key: file.file_key,
+        file_name: file.file_name,
+      }));
       if (data?.documents?.length > 0) {
         scanAndProcessFiles({
-          fileData: data?.documents,
+          fileData: file_keys,
           handleMainAPI: handleSubmitMilestone,
           onError: () => dispatch(submitMilestoneFailure()),
           isPrivate: true,
