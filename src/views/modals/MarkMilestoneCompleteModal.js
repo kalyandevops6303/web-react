@@ -24,7 +24,7 @@ const MarkMilestoneCompleteModal = ({ data, onSuccess, modal, toggleModal }) => 
               <CardTitle className="mb-1 modal-heading">
                 Are you sure you want to mark the milestone as complete?
               </CardTitle>
-              <CardSubtitle className="mb-75 modal-body-text">
+              <CardSubtitle className="mb-75 modal-body-text word-break">
                 <b>Milestone {data?.seq}:</b> {data?.description}
               </CardSubtitle>
             </div>

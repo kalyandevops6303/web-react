@@ -114,7 +114,7 @@ const saveSetWorkers = (bidId, data, onSuccess) => async (dispatch) => {
 const saveSetMilestones = (projectId, bidId, data, onSuccess) => async (dispatch) => {
   dispatch(setMilestonesRequest());
   try {
-    const callMainAPI = async () => {
+    const handleSaveMilestone = async () => {
       const res = await setMilestonesService(projectId, bidId, data);
       dispatch(setMilestonesSuccess(res.data.data));
       onSuccess();
@@ -123,12 +123,12 @@ const saveSetMilestones = (projectId, bidId, data, onSuccess) => async (dispatch
     if (data?.documents?.length > 0) {
       scanAndProcessFiles({
         fileData: data?.documents,
-        handleMainAPI: callMainAPI,
+        handleMainAPI: handleSaveMilestone,
         onError: () => dispatch(setMilestonesFailure()),
         isPrivate: true,
       });
     } else {
-      callMainAPI();
+      handleSaveMilestone();
     }
   } catch (error) {
     errorHandler(error, setMilestonesFailure);

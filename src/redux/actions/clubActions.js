@@ -81,18 +81,22 @@ const createClub =
   ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const callMainAPI = async () => {
+      const handleCreateClub = async () => {
         const res = await createTeamService(data);
         dispatch(getClubCreated(res.data.data));
         onSuccess(res.data.data);
       };
 
-      scanAndProcessFiles({
-        fileData: [{ file_name: 'Club logo', file_key: data?.team_logo }],
-        handleMainAPI: callMainAPI,
-        onError,
-        isPrivate: false,
-      });
+      if (data?.team_logo) {
+        scanAndProcessFiles({
+          fileData: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+          handleMainAPI: handleCreateClub,
+          onError,
+          isPrivate: false,
+        });
+      } else {
+        handleCreateClub();
+      }
     } catch (error) {
       errorHandler(error);
     }
@@ -110,7 +114,7 @@ const changeMemberType = (data, onSuccess) => async () => {
 const updateClub = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const callMainAPI = async () => {
+    const handleUpdateClub = async () => {
       const res = await updateTeamService(data);
       dispatch(updateTeamSuccess(res.data.data));
       onSuccess();
@@ -118,12 +122,12 @@ const updateClub = (data, onSuccess) => async (dispatch) => {
     if (data?.team_logo) {
       scanAndProcessFiles({
         fileData: [{ file_name: 'Club logo', file_key: data?.team_logo }],
-        handleMainAPI: callMainAPI,
+        handleMainAPI: handleUpdateClub,
         onError: () => dispatch(updateTeamFailure()),
         isPrivate: false,
       });
     } else {
-      callMainAPI();
+      handleUpdateClub();
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);

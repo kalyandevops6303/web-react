@@ -34,7 +34,7 @@ const createTeam =
   ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const callMainAPI = async () => {
+      const handleCreateTeam = async () => {
         const res = await createTeamService(data);
         dispatch(getTeamCreated(res.data.data));
         onSuccess(res.data.data);
@@ -42,12 +42,12 @@ const createTeam =
       if (data?.team_logo) {
         scanAndProcessFiles({
           fileData: [{ file_name: 'Team logo', file_key: data?.team_logo }],
-          handleMainAPI: callMainAPI,
+          handleMainAPI: handleCreateTeam,
           onError,
           isPrivate: false,
         });
       } else {
-        callMainAPI();
+        handleCreateTeam();
       }
     } catch (error) {
       onError();
@@ -58,18 +58,22 @@ const createTeam =
 const updateTeam = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const callMainAPI = async () => {
+    const handleUpdateTeam = async () => {
       const res = await updateTeamService(data);
       dispatch(updateTeamSuccess(res.data.data));
       onSuccess();
     };
 
-    scanAndProcessFiles({
-      fileData: [{ file_name: 'Team logo', file_key: data?.team_logo }],
-      handleMainAPI: callMainAPI,
-      onError: () => dispatch(updateTeamFailure()),
-      isPrivate: false,
-    });
+    if (data?.team_logo) {
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+        handleMainAPI: handleUpdateTeam,
+        onError: () => dispatch(updateTeamFailure()),
+        isPrivate: false,
+      });
+    } else {
+      handleUpdateTeam();
+    }
   } catch (error) {
     errorHandler(error, updateTeamFailure);
   }

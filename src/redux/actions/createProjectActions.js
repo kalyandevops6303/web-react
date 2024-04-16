@@ -95,7 +95,7 @@ const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => 
 const createNewProject = (data, onSuccess) => async (dispatch) => {
   dispatch(createProjectRequest());
   try {
-    const callMainAPI = async () => {
+    const handleCreateProject = async () => {
       const res = await createProjectService(data);
       dispatch(createProjectSuccess(res.data.data));
       dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
@@ -107,12 +107,12 @@ const createNewProject = (data, onSuccess) => async (dispatch) => {
     if (data?.details?.documents?.length > 0) {
       scanAndProcessFiles({
         fileData: data?.details?.documents,
-        handleMainAPI: callMainAPI,
+        handleMainAPI: handleCreateProject,
         onError: () => dispatch(createProjectFailure()),
         isPrivate: true,
       });
     } else {
-      callMainAPI();
+      handleCreateProject();
     }
   } catch (error) {
     errorHandler(error, createProjectFailure);

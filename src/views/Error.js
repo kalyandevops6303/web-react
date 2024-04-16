@@ -17,7 +17,6 @@ const Error = () => (
       <div className="w-100 text-center">
         <h2 className="mb-1">Something went wrong</h2>
         <a href="/dashboard">
-          s
           <Button color="primary" className="btn-sm-block mb-2">
             Back to home
           </Button>

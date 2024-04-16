@@ -10,12 +10,12 @@ import { getToken, messaging } from './configs/api/firebase';
 
 // ** Router Import
 import Router from './router/Router';
-import { setItem } from './utility/localStorageControl';
+import { getItem, setItem } from './utility/localStorageControl';
 import { fcmSubscribeNotification } from './redux/actions/authActions';
 import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
 import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
-import { cometloginSuccess } from './redux/reducers/auth';
+import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/reducers/auth';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -69,7 +69,28 @@ const App = () => {
       };
       tokenFunc();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, cometAuthToken, fcmToken]);
+
+  // Fetch AccessToken and refreshToken from localstorage and check on init
+  useEffect(() => {
+    const accessToken = getItem('access_token');
+    const refreshToken = getItem('refresh_token');
+    const refreshTokenExpires = getItem('refresh_token_expires');
+
+    // check that refreshToken is not expired
+    const isUserStillLoggedIn =
+      accessToken
+      && refreshToken
+      && refreshTokenExpires
+      && new Date(refreshTokenExpires) >= new Date();
+
+    if (isUserStillLoggedIn) {
+      dispatch(setLoggedInStatus());
+
+      const cometChatAuthToken = getItem('cometChatToken');
+      dispatch(cometChatLogin(cometChatAuthToken));
+    }
+  },[]);
 
   useEffect(() => {
     const channel = new BroadcastChannel('data-channel');

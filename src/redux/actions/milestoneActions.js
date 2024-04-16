@@ -74,7 +74,7 @@ const submitMilstone =
   async (dispatch) => {
     dispatch(submitMilestoneRequest());
     try {
-      const callMainAPI = async () => {
+      const handleSubmitMilestone = async () => {
         await submitMilestoneService({ milestone_id, data });
         dispatch(submitMilestoneSuccess());
         dispatch(getSubmissionHistory({ milestoneId: milestone_id, metaData: { page: 1, page_size: 10 } }));
@@ -83,12 +83,12 @@ const submitMilstone =
       if (data?.documents?.length > 0) {
         scanAndProcessFiles({
           fileData: data?.documents,
-          handleMainAPI: callMainAPI,
+          handleMainAPI: handleSubmitMilestone,
           onError: () => dispatch(submitMilestoneFailure()),
           isPrivate: true,
         });
       } else {
-        callMainAPI();
+        handleSubmitMilestone();
       }
     } catch (error) {
       errorHandler(error, submitMilestoneFailure);

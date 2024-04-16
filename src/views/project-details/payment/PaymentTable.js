@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Badge, Button, Card, CardBody, CardText, Input, Table, UncontrolledTooltip } from 'reactstrap';
-import { ChevronDown, ChevronUp } from 'react-feather';
+import { ChevronDown, ChevronUp, Copy } from 'react-feather';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import {
@@ -19,6 +19,7 @@ import PaymentStatusForRow from './PaymentStatusForRow';
 import PaymentBy from './PaymentBy';
 import { clearMilestoneTransactions } from '../../../redux/reducers/milestonePayment';
 import PaymentTableWrapper from './style';
+import theme from '../../../configs/themeVariables';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -26,6 +27,7 @@ const PaymentTable = () => {
   const [makePaymentModal, setMakePaymentModal] = useState(false);
   const [feeStructure, setFeeStructure] = useState(null);
   const [open, setOpen] = useState('');
+  const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const listLoading = useSelector((state) => state.milestonePayment?.listLoading);
@@ -55,15 +57,25 @@ const PaymentTable = () => {
             {transaction_id}
           </UncontrolledTooltip>
         )}
-        <span
-          className="fw-bold"
-          style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '80px', whiteSpace: 'nowrap' }}
-          id={transaction_id.replace(/^[^a-zA-Z_]/, '_')}
+        <div
+          className="d-flex align-items-center"
+          onMouseEnter={() => setSelectedTransactionId(transaction_id)}
+          onMouseLeave={() => setSelectedTransactionId(null)}
           onClick={() => handleCopyToClipboard(transaction_id)}
+          id={transaction_id.replace(/^[^a-zA-Z_]/, '_')}
         >
-          {transaction_id}
-        </span>
-
+          <span
+            className="fw-bold"
+            style={{ overflow: 'hidden', textOverflow: 'ellipsis', width: '80px', whiteSpace: 'nowrap' }}
+          >
+            {transaction_id}
+          </span>
+          <Copy
+            size={20}
+            color={selectedTransactionId === transaction_id ? theme.activeNavPillText : theme.infoIcon}
+            className="ms-50"
+          />
+        </div>
         <span>{formatDate(date)}</span>
       </div>
     ),

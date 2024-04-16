@@ -70,20 +70,20 @@ const acceptDisputeApi = (disputeId, onSuccess) => async (dispatch) => {
 const replyOnDisputeApi = (data, onSuccess) => async (dispatch) => {
   dispatch(replyOnDisputeRequest());
   try {
-    const callMainAPI = async () => {
+    const handleDisupte = async () => {
       const res = await replyOnDisputeService(data);
       dispatch(replyOnDisputeSuccess(res.data.data));
       onSuccess();
     };
-    if (data?.documents) {
+    if (data?.documents?.length > 0) {
       scanAndProcessFiles({
         fileData: data?.documents,
-        handleMainAPI: callMainAPI,
+        handleMainAPI: handleDisupte,
         onError: () => dispatch(replyOnDisputeFailure()),
         isPrivate: true,
       });
     } else {
-      callMainAPI();
+      handleDisupte();
     }
   } catch (error) {
     errorHandler(error, replyOnDisputeFailure);

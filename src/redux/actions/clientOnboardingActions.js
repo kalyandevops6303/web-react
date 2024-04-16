@@ -15,7 +15,7 @@ import { scanAndProcessFiles } from '../../utility/Utils';
 const saveClientAccountDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(accountDetailsRequest());
   try {
-    const callMainAPI = async () => {
+    const handleSaveClientDetails = async () => {
       const res = await accountDetailsService(data);
       dispatch(accountDetailsSuccess(res.data.data));
       dispatch(cometChatLogin(res.data.data.comet_chat_token));
@@ -24,12 +24,12 @@ const saveClientAccountDetails = (data, onSuccess) => async (dispatch) => {
     if (data?.image_uri) {
       scanAndProcessFiles({
         fileData: [{ file_name: 'Profile Image', file_key: data?.image_uri }],
-        handleMainAPI: callMainAPI,
+        handleMainAPI: handleSaveClientDetails,
         onError: () => dispatch(accountDetailsFailure()),
         isPrivate: false,
       });
     } else {
-      callMainAPI();
+      handleSaveClientDetails();
     }
   } catch (error) {
     errorHandler(error, accountDetailsFailure);
@@ -39,7 +39,7 @@ const saveClientAccountDetails = (data, onSuccess) => async (dispatch) => {
 const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(profileDetailsRequest());
   try {
-    const callMainAPI = async () => {
+    const handleSaveProfileDetails = async () => {
       const res = await profileDetailsService(data);
       dispatch(profileDetailsSuccess(res.data.data));
       onSuccess();
@@ -47,12 +47,12 @@ const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
     if (data?.image_uri || data?.company_logo) {
       scanAndProcessFiles({
         fileData: [{ file_name: 'Company logo', file_key: data?.image_uri || data?.company_logo }],
-        handleMainAPI: callMainAPI,
+        handleMainAPI: handleSaveProfileDetails,
         onError: () => dispatch(profileDetailsFailure()),
         isPrivate: false,
       });
     } else {
-      callMainAPI();
+      handleSaveProfileDetails();
     }
   } catch (error) {
     errorHandler(error, profileDetailsFailure);
