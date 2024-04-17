@@ -42,8 +42,7 @@ import {
   toolsAIRequest,
   toolsAISuccess,
 } from '../reducers/static';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   if (page === 1) {
@@ -106,17 +105,12 @@ const createNewProject = (data, onSuccess) => async (dispatch) => {
       onSuccess();
     };
     if (data?.details?.documents?.length > 0) {
-      // Recursive function until status in Scanning
-      const finalScanStatus = await handleScanFiles({ fileKeys: data?.details?.documents, isPrivate: true });
-
-      // If files are Clean proceed with API call
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        handleCreateProject();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(createProjectFailure());
-      }
+      scanAndProcessFiles({
+        fileData: data?.details?.documents,
+        handleMainAPI: handleCreateProject,
+        onError: () => dispatch(createProjectFailure()),
+        isPrivate: true,
+      });
     } else {
       handleCreateProject();
     }

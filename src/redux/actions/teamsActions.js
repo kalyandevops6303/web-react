@@ -12,8 +12,7 @@ import {
 } from '../reducers/team';
 import { getInvitedBySuccess } from '../reducers/projectDetails';
 import { getMyTeamFailure, getMyTeamRequest, getMyTeamSuccess } from '../reducers/dashboard';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getTeams =
   ({ onSuccess }) =>
@@ -41,18 +40,12 @@ const createTeam =
         onSuccess(res.data.data);
       };
       if (data?.team_logo) {
-        const finalScanStatus = await handleScanFiles({
-          fileKeys: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+        scanAndProcessFiles({
+          fileData: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+          handleMainAPI: handleCreateTeam,
+          onError,
           isPrivate: false,
         });
-
-        if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-          handleCreateTeam();
-        } else {
-          // If files are Corrupted show toast message
-          handleCorruptedFiles({ finalScanStatus });
-          onError();
-        }
       } else {
         handleCreateTeam();
       }
@@ -70,19 +63,14 @@ const updateTeam = (data, onSuccess) => async (dispatch) => {
       dispatch(updateTeamSuccess(res.data.data));
       onSuccess();
     };
+
     if (data?.team_logo) {
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+        handleMainAPI: handleUpdateTeam,
+        onError: () => dispatch(updateTeamFailure()),
         isPrivate: false,
       });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        handleUpdateTeam();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(updateTeamFailure());
-      }
     } else {
       handleUpdateTeam();
     }
