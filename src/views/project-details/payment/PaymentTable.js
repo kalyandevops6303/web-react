@@ -262,7 +262,6 @@ const PaymentTable = () => {
           selectedAndDisabledPaymentId={selectedAndDisabledPaymentId}
         />
       )}
-
       {milestoneData?.length > 0 && (
         <Card className="" style={{ backgroundColor: 'transparent' }}>
           <div className="p-2 pb-0">
@@ -270,7 +269,7 @@ const PaymentTable = () => {
           </div>
           <hr />
           <CardBody>
-            {user?.user_type === userTypes.client && (
+            {user?.user_type === userTypes.client && !isAllMilestonePaid && (
               <PaymentInfoBanner className="mb-2 d-flex px-1 py-2">
                 <Info size={18} color={theme.activeNavPillText} className="me-50 info-banner-icon" />
                 <p className="font-medium-1 m-0 info">
