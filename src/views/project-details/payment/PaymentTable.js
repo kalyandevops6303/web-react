@@ -145,37 +145,34 @@ const PaymentTable = () => {
 
   useEffect(() => {
     if (milestoneData && !isAllMilestonePaid) {
-      if (milestoneData?.length > 2) {
+      if (milestoneData?.length >= 2) {
+        // if there are 2 or more milestones
         const firstMilestone = milestoneData[0];
         const secondMilestone = milestoneData[1];
 
+        // checking if first and second milestones are paid
         const isFirstTwoMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
 
         if (!isFirstTwoMilestonePaid) {
+          // this will run for both the cases - total milestones > 2 or total milestones = 2
+          // if first and second milestones are not paid then selecting both of them for payment and these will be disabled from user's selection
           setSelectedPaymentData([firstMilestone, secondMilestone]);
           setSelectedPaymentId([firstMilestone._id, secondMilestone._id]);
           setSelectedAndDisabledPaymentId([firstMilestone._id, secondMilestone._id]);
-        } else {
+        } else if (milestoneData?.length > 2) {
+          // this will run only for total milestones > 2
+          // selecting latest not paid milestone in the list for the payment and this will be disabled from user's selection
           const firstNotPaidMilestoneInTheList = milestoneData.find((mile) => !isPaymentDone(mile));
           setSelectedPaymentData([firstNotPaidMilestoneInTheList]);
           setSelectedPaymentId([firstNotPaidMilestoneInTheList._id]);
           setSelectedAndDisabledPaymentId([firstNotPaidMilestoneInTheList._id]);
         }
-      } else if (milestoneData?.length === 2) {
-        const firstMilestone = milestoneData[0];
-        const secondMilestone = milestoneData[1];
-
-        const isFirstTwoMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
-
-        if (!isFirstTwoMilestonePaid) {
-          setSelectedPaymentData([firstMilestone, secondMilestone]);
-          setSelectedPaymentId([firstMilestone._id, secondMilestone._id]);
-          setSelectedAndDisabledPaymentId([firstMilestone._id, secondMilestone._id]);
-        }
       } else {
+        // if there is only 1 milestone
         const firstMilestone = milestoneData[0];
 
         if (!isPaymentDone(firstMilestone)) {
+          // checking if first milestone is not paid then selecting that milestone for payment and this will be disabled from user's selection
           setSelectedPaymentData([firstMilestone]);
           setSelectedPaymentId([firstMilestone._id]);
           setSelectedAndDisabledPaymentId([firstMilestone._id]);
@@ -274,7 +271,7 @@ const PaymentTable = () => {
                 <Info size={18} color={theme.activeNavPillText} className="me-50 info-banner-icon" />
                 <p className="font-medium-1 m-0 info">
                   <span className="fw-bolder font-medium-1">Note:</span> In order for the project to start, at any given
-                  point of time minimum of 2 milestone payments needs to be made.
+                  point of time a minimum of 2 milestone payments need to be made.
                 </p>
               </PaymentInfoBanner>
             )}

@@ -72,34 +72,32 @@ function MilestonePaymentListing() {
 
   useEffect(() => {
     if (milestoneData && !isAllMilestonePaid) {
-      if (milestoneData?.length > 2) {
+      if (milestoneData?.length >= 2) {
+        // if there are 2 or more milestones
         const firstMilestone = milestoneData[0];
         const secondMilestone = milestoneData[1];
 
+        // checking if first and second milestones are paid
         const isFirstAndSecondMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
 
         if (!isFirstAndSecondMilestonePaid) {
+          // this will run for both the cases - total milestones > 2 or total milestones = 2
+          // if first and second milestones are not paid then selecting both of them for payment and these will be disabled from user's selection
           setSelectedMilestones([firstMilestone._id, secondMilestone._id]);
           setSelectedAndDisabledPaymentId([firstMilestone._id, secondMilestone._id]);
-        } else {
+        } else if (milestoneData?.length > 2) {
+          // this will run only for total milestones > 2
+          // selecting latest not paid milestone in the list for the payment and this will be disabled from user's selection
           const firstNotPaidMilestoneInTheList = milestoneData.find((mile) => !isPaymentDone(mile));
           setSelectedMilestones([firstNotPaidMilestoneInTheList._id]);
           setSelectedAndDisabledPaymentId([firstNotPaidMilestoneInTheList._id]);
         }
-      } else if (milestoneData?.length === 2) {
-        const firstMilestone = milestoneData[0];
-        const secondMilestone = milestoneData[1];
-
-        const isFirstAndSecondMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
-
-        if (!isFirstAndSecondMilestonePaid) {
-          setSelectedMilestones([firstMilestone._id, secondMilestone._id]);
-          setSelectedAndDisabledPaymentId([firstMilestone._id, secondMilestone._id]);
-        }
       } else {
+        // if there is only 1 milestone
         const firstMilestone = milestoneData[0];
 
         if (!isPaymentDone(firstMilestone)) {
+          // checking if first milestone is not paid then selecting that milestone for payment and this will be disabled from user's selection
           setSelectedMilestones([firstMilestone._id]);
           setSelectedAndDisabledPaymentId([firstMilestone._id]);
         }

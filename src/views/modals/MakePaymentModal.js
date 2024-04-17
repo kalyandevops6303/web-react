@@ -156,27 +156,14 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
                             className="payment-form-control"
                           />
                           <div className="d-flex flex-column w-100" style={{ marginTop: '-2px' }}>
-                            <Label
-                              for={item._id}
-                              className="text-truncate"
-                              style={{
-                                marginLeft: '10px',
-                                fontSize: '16px',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                              }}
-                            >
+                            <Label for={item._id} className="text-truncate truncated-milestone-name">
                               {item.name}
                             </Label>
                           </div>
                         </div>
                       </Col>
                       <Col sm="12" md="5" lg="4">
-                        <Badge
-                          color={getTagSettings(item.payment_status).theme}
-                          style={{ width: 'fit-content', marginLeft: '10px' }}
-                        >
+                        <Badge color={getTagSettings(item.payment_status).theme} className="payment-status-badge">
                           {getTagSettings(item.payment_status).text}
                         </Badge>
                       </Col>

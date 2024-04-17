@@ -222,6 +222,18 @@ const MakePaymentModalWrapper = styled.div`
   .form-check-input:checked {
     border: 1.5px solid ${theme.activeNavPillText};
   }
+
+  .truncated-milestone-name {
+    margin-left: 10px;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .payment-status-badge {
+    width: fit-content;
+  }
 `;
 
 const PrivacyPolicyModalWrapper = styled.div`
