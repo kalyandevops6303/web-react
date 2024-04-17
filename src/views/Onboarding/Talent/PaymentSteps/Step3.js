@@ -18,6 +18,7 @@ import {
 import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import { useForm, Controller } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
+import InputPasswordToggle from '@components/input-password-toggle';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { PropTypes } from 'prop-types';
@@ -754,7 +755,8 @@ const Step3 = ({ setStep }) => {
                       </p>
                     </div>
                   </UncontrolledTooltip>
-                  <Input
+                  <InputPasswordToggle
+                    className="no-right-border"
                     placeholder="Enter SSN #"
                     id="taxId"
                     name="taxId"
