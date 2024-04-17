@@ -217,6 +217,7 @@ const API = {
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
     polling: `${apiAuthEndpoint}/api/v1/notifications/polling`,
     markAsRead: `${apiAuthEndpoint}/api/v1/notifications/mark-as-read`,
+    markAllAsRead: `${apiAuthEndpoint}/api/v1/notifications/mark-all-as-read`,
   },
   createBid: {
     checkBid: `${apiCreateProjectEndpoint}/api/v1/bid/check`,

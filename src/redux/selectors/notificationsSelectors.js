@@ -18,10 +18,16 @@ const markNotificationAsReadLoading = createSelector(
   (dashboard) => dashboard.markNotificationAsReadLoading,
 );
 
+const markAllNotificationAsReadLoading = createSelector(
+  notificationsSelector,
+  (dashboard) => dashboard.markAllNotificationAsReadLoading,
+);
+
 export {
   notifications,
   notificationsLoading,
   notificationsPolling,
   notificationsPollingLoading,
   markNotificationAsReadLoading,
+  markAllNotificationAsReadLoading,
 };

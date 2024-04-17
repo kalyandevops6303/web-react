@@ -9,12 +9,16 @@ import {
   markNotificationAsReadRequest,
   markNotificationAsReadSuccess,
   markNotificationAsReadFailure,
+  markAllNotificationAsReadRequest,
+  markAllNotificationAsReadSuccess,
+  markAllNotificationAsReadFailure,
 } from '../reducers/notifications';
 import {
   getNotificationsService,
   getAlertsNotificationsService,
   getNotificationsPollingService,
   markNotificationAsReadService,
+  markAllNotificationAsReadService,
 } from '../../services/notificationsServices';
 
 const getNotifications =
@@ -65,4 +69,21 @@ const markNotificationAsRead = (notificationId) => async (dispatch) => {
   }
 };
 
-export { getNotifications, getAlertsNotifications, getNotificationsPolling, markNotificationAsRead };
+const markAllNotificationAsRead = (onSuccess) => async (dispatch) => {
+  dispatch(markAllNotificationAsReadRequest());
+  try {
+    const res = await markAllNotificationAsReadService();
+    dispatch(markAllNotificationAsReadSuccess(res.data.data));
+    onSuccess(res);
+  } catch (error) {
+    errorHandler(error, markAllNotificationAsReadFailure);
+  }
+};
+
+export {
+  getNotifications,
+  getAlertsNotifications,
+  getNotificationsPolling,
+  markNotificationAsRead,
+  markAllNotificationAsRead,
+};

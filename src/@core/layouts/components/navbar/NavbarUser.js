@@ -51,7 +51,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
     if (userDetailsData) {
       dispatch(getNotificationsPolling());
     }
-  }, [location]);
+  }, [location, userDetailsData]);
 
   return (
     <ul className="nav navbar-nav align-items-center ms-auto">
