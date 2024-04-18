@@ -53,6 +53,7 @@ export const messageContentWrapperStyle = () => {
     flexDirection: 'column',
     boxShadow: '0px 4px 16px -7px rgba(150,170,180,0.5)',
     padding: '14px',
+    backgroundColor: "white"
   };
 };
 

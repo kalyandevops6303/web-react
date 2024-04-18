@@ -22,6 +22,7 @@ import {
   clearClubCreateData,
 } from '../reducers/clubs';
 import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getClubs =
   ({ filterData, metaData, onSuccess, onError }) =>
@@ -77,12 +78,25 @@ const registerClubEmail =
   };
 
 const createClub =
-  ({ data, onSuccess }) =>
+  ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const res = await createTeamService(data);
-      dispatch(getClubCreated(res.data.data));
-      onSuccess(res.data.data);
+      const handleCreateClub = async () => {
+        const res = await createTeamService(data);
+        dispatch(getClubCreated(res.data.data));
+        onSuccess(res.data.data);
+      };
+
+      if (data?.team_logo) {
+        scanAndProcessFiles({
+          fileData: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+          handleMainAPI: handleCreateClub,
+          onError,
+          isPrivate: false,
+        });
+      } else {
+        handleCreateClub();
+      }
     } catch (error) {
       errorHandler(error);
     }
@@ -100,9 +114,21 @@ const changeMemberType = (data, onSuccess) => async () => {
 const updateClub = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const res = await updateTeamService(data);
-    dispatch(updateTeamSuccess(res.data.data));
-    onSuccess();
+    const handleUpdateClub = async () => {
+      const res = await updateTeamService(data);
+      dispatch(updateTeamSuccess(res.data.data));
+      onSuccess();
+    };
+    if (data?.team_logo) {
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+        handleMainAPI: handleUpdateClub,
+        onError: () => dispatch(updateTeamFailure()),
+        isPrivate: false,
+      });
+    } else {
+      handleUpdateClub();
+    }
   } catch (error) {
     errorHandler(error, updateTeamFailure);
   }

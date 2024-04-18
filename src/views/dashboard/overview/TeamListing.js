@@ -30,7 +30,7 @@ import {
   selectRecommendedTeamsLoading,
   userData,
 } from '../../../redux/selectors/dashboardSelectors';
-import { getMyTeam, getRecommendedTeams, getTeamInvitation } from '../../../redux/actions/dashboardActions';
+import { getRecommendedTeams } from '../../../redux/actions/dashboardActions';
 import theme from '../../../configs/themeVariables';
 import { userTypes } from '../../../utility/constants/Constant';
 import MyTeamCard from './MyTeamCard';
@@ -154,10 +154,6 @@ const TeamListing = () => {
     //   dispatch(getRecommendedTeams());
     // }
 
-    dispatch(getMyTeam());
-
-    dispatch(getTeamInvitation());
-
     dispatch(getRecommendedTeams());
   }, []);
 
@@ -187,7 +183,7 @@ const TeamListing = () => {
     setIsSliderLoading(true);
     setTimeout(() => {
       setIsSliderLoading(false);
-    }, 1000);
+    }, 150);
   }, [open]);
 
   return (

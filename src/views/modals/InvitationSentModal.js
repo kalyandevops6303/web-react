@@ -66,7 +66,6 @@ const InvitationSentModal = ({
     const teamId = getTeamId('team_id');
     const newPostData = {
       message,
-      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
       requests_to: {
         user_ids: userIds || [],
         team_ids: teamIds.length > 0 ? teamIds : [],
@@ -83,7 +82,6 @@ const InvitationSentModal = ({
     if (clubAdminIds.length > 0) {
       const newAdminPostData = {
         message,
-        redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
         requests_to: {
           user_ids: clubAdminIds || [],
           team_ids: teamIds.length > 0 ? teamIds : [],
@@ -150,8 +148,8 @@ const InvitationSentModal = ({
         <div className="d-flex align-items-center">
           <img src={GreatJobTick} alt="great-job" width={120} height={120} className="me-4" />
           <div className="w-100">
-            <h2 className="fw-bold font-large-1 mb-1">Great Job!</h2>
-            <p className="fw-light font-medium-3 mt-75">{description}</p>
+            <h2 className="fw-bold modal-heading mb-1">Great Job!</h2>
+            <p className="fw-light modal-body-text mt-75">{description}</p>
             <InviteUsersListContainer>
               {selectedTalents.map((talent) => (
                 <Row key={talent?.user_id || talent?._id} className="d-flex align-items-center mb-2 mx-0">

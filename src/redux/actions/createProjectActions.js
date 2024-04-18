@@ -42,6 +42,7 @@ import {
   toolsAIRequest,
   toolsAISuccess,
 } from '../reducers/static';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   if (page === 1) {
@@ -94,11 +95,23 @@ const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => 
 const createNewProject = (data, onSuccess) => async (dispatch) => {
   dispatch(createProjectRequest());
   try {
-    const res = await createProjectService(data);
-    dispatch(createProjectSuccess(res.data.data));
-    dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
-    ShowToastMessage(SUCCESS, res.data.data.message);
-    onSuccess();
+    const handleCreateProject = async () => {
+      const res = await createProjectService(data);
+      dispatch(createProjectSuccess(res.data.data));
+      dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
+      ShowToastMessage(SUCCESS, res.data.data.message);
+      onSuccess();
+    };
+    if (data?.details?.documents?.length > 0) {
+      scanAndProcessFiles({
+        fileData: data?.details?.documents,
+        handleMainAPI: handleCreateProject,
+        onError: () => dispatch(createProjectFailure()),
+        isPrivate: true,
+      });
+    } else {
+      handleCreateProject();
+    }
   } catch (error) {
     errorHandler(error, createProjectFailure);
   }

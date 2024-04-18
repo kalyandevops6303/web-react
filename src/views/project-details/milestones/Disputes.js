@@ -89,7 +89,13 @@ const Disputes = () => {
     setSelectedDispute(dispute);
 
     const onAcceptSuccess = () => {
-      dispatch(getMilestoneDisputes({ projectId: param?.projectId, milestoneId: param?.milestoneId }));
+      dispatch(
+        getMilestoneDisputes({
+          projectId: param?.projectId,
+          milestoneId: param?.milestoneId,
+          metaData: { page: 1, page_size: 10 },
+        }),
+      );
       setDisputeDetailsModal(true);
     };
     if (status === disputeStatuses.open && dispute_against.includes(selectUserDetails._id)) {
@@ -151,16 +157,29 @@ const Disputes = () => {
                               <Col sm="12" md="6" lg="2" className="d-flex justify-content-end align-items-end">
                                 <p className="mb-0 fw-bold font-medium-1">{disputeStatusEnum[item?.status]}</p>
                               </Col>
-                              <Col sm="12" md="6" lg="2" className="d-flex justify-content-end">
-                                <div>
-                                  <p className="mb-0">Resolved On</p>
-                                  <p className="mb-0 fw-bold font-medium-1 text-end">
-                                    {item?.created_at > 0
-                                      ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy')
-                                      : '-'}
-                                  </p>
-                                </div>
-                              </Col>
+                              {item?.status === disputeStatuses.resolved ? (
+                                <Col sm="12" md="6" lg="2" className="d-flex justify-content-end">
+                                  <div>
+                                    <p className="mb-0">Resolved On</p>
+                                    <p className="mb-0 fw-bold font-medium-1 text-end">
+                                      {item?.resolved_on > 0
+                                        ? DateTime.fromMillis(item?.resolved_on).toFormat('MMM dd, yy')
+                                        : '-'}
+                                    </p>
+                                  </div>
+                                </Col>
+                              ) : (
+                                <Col sm="12" md="6" lg="2" className="d-flex justify-content-end">
+                                  <div>
+                                    <p className="mb-0">Opened On</p>
+                                    <p className="mb-0 fw-bold font-medium-1 text-end">
+                                      {item?.created_at > 0
+                                        ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy')
+                                        : '-'}
+                                    </p>
+                                  </div>
+                                </Col>
+                              )}
                             </Row>
                           </CardBody>
                         </Card>

@@ -1,4 +1,5 @@
 import API from '../configs/api';
+// eslint-disable-next-line import/no-cycle
 import DataService from '../configs/dataService/dataService';
 
 const projectDetailsService = (projectId) =>
@@ -23,6 +24,11 @@ const getReceivedBidsService = ({ project_id, metadata, search_text, bid_status 
 
 const getBidDetailsService = ({ bid_id }) => DataService.put(`${API.projectDetails.getBidReview}?bid_id=${bid_id}`);
 
+const getBidTimelineService = ({ project_id }) =>
+  DataService.get(`${API.projectDetails.getBidTimeline}?project_id=${project_id}`);
+
+const getBidSnapshotService = ({ snapshot_id }) =>
+  DataService.get(`${API.projectDetails.getBidSnapshot}?bid_snapshot_id=${snapshot_id}`);
 const getCommonBidDetailsService = ({ project_id, entity_id }) =>
   DataService.get(`${API.projectDetails.commonBidInfo}?project_id=${project_id}&entity_id=${entity_id}`);
 
@@ -114,6 +120,15 @@ const relistProjectByDateService = (projectId, startDate, endDate) =>
     `${API.projectDetails.relistProjectByDate}?project_id=${projectId}&start_date=${startDate}&end_date=${endDate}`,
   );
 
+const requestChangeService = ({ bid_id, description }) =>
+  DataService.post(`${API.projectDetails.requestChange}`, { bid_id, description });
+
+const rejectBidChangeService = ({ snapshot_id, description }) =>
+  DataService.put(`${API.projectDetails.rejectBidChange}?bid_snapshot_id=${snapshot_id}`, { description });
+
+const acceptBidChangeService = ({ snapshot_id }) =>
+  DataService.put(`${API.projectDetails.acceptBidChange}?bid_snapshot_id=${snapshot_id}`);
+
 export {
   extendDocValidityService,
   extendPaymentValidityService,
@@ -142,4 +157,9 @@ export {
   terminateProjectService,
   relistProjectService,
   relistProjectByDateService,
+  requestChangeService,
+  rejectBidChangeService,
+  acceptBidChangeService,
+  getBidTimelineService,
+  getBidSnapshotService,
 };

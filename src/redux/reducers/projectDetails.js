@@ -6,8 +6,8 @@ const initialState = {
   getTeamMember: [],
   getTeamMemberLoading: false,
   receivedBids: [],
-  isNDA: null,
-  isContract: null,
+  ndaData: null,
+  contractData: null,
   getReceivedBidsLoading: false,
   removeWorkerLoading: false,
   ndaTimeline: null,
@@ -99,6 +99,25 @@ const projectDetails = createSlice({
       getBidInfoLoading: false,
       errorBidInfo: action.payload,
     }),
+
+    getBidTimelineRequest: (state) => ({
+      ...state,
+      getBidTimelineLoading: true,
+      errorBidTimeline: null,
+    }),
+    getBidTimelineSuccess: (state, action) => ({
+      ...state,
+      getBidTimelineLoading: false,
+      bidTimeline: action.payload,
+      errorBidTimeline: null,
+    }),
+
+    getBidTimelineFailure: (state, action) => ({
+      ...state,
+      getBidTimelineLoading: false,
+      errorBidTimeline: action.payload,
+    }),
+
     getUnassignedRoleRequest: (state) => ({
       ...state,
       getUnassignedRoleLoading: true,
@@ -157,8 +176,8 @@ const projectDetails = createSlice({
 
     clearDocstate: (state) => ({
       ...state,
-      isNDA: null,
-      isContract: null,
+      ndaData: null,
+      contractData: null,
       ndaTimeline: null,
       contractTimeline: null,
     }),
@@ -180,19 +199,98 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
-    getDocumentTimelineRequest: (state) => ({
+    getNDATimelineRequest: (state) => ({
       ...state,
-      getDocumentTimelineLoading: true,
+      getNDATimelineLoading: true,
       error: null,
     }),
-    getDocumentTimelineSuccess: (state, action) => ({
+    getNDATimelineSuccess: (state, action) => ({
       ...state,
-      getDocumentTimelineLoading: false,
+      getNDATimelineLoading: false,
       ...action.payload,
     }),
-    getDocumentTimelineFailure: (state, action) => ({
+    getNDATimelineFailure: (state, action) => ({
       ...state,
-      getDocumentTimelineLoading: false,
+      getNDATimelineLoading: false,
+      error: action.payload,
+    }),
+    getContractTimelineRequest: (state) => ({
+      ...state,
+      getContractTimelineLoading: true,
+      error: null,
+    }),
+    getContractTimelineSuccess: (state, action) => ({
+      ...state,
+      getContractTimelineLoading: false,
+      ...action.payload,
+    }),
+    getContractTimelineFailure: (state, action) => ({
+      ...state,
+      getContractTimelineLoading: false,
+      error: action.payload,
+    }),
+
+    getbidSnapshotRequest: (state) => ({
+      ...state,
+      getbidSnapshotLoading: true,
+      snapshotData: null,
+      error: null,
+    }),
+    getbidSnapshotSuccess: (state, action) => ({
+      ...state,
+      getbidSnapshotLoading: false,
+      snapshotData: action.payload,
+      ...action.payload,
+    }),
+    getbidSnapshotFailure: (state, action) => ({
+      ...state,
+      getbidSnapshotLoading: false,
+      snapshotData: null,
+      error: action.payload,
+    }),
+
+    requestChangeRequest: (state) => ({
+      ...state,
+      requestChangeLoading: true,
+      error: null,
+    }),
+    requestChangeSuccess: (state) => ({
+      ...state,
+      requestChangeLoading: false,
+    }),
+    requestChangeFailure: (state, action) => ({
+      ...state,
+      requestChangeLoading: false,
+      error: action.payload,
+    }),
+
+    rejectBidChangeRequest: (state) => ({
+      ...state,
+      rejectBidChangeLoading: true,
+      error: null,
+    }),
+    rejectBidChangeSuccess: (state) => ({
+      ...state,
+      rejectBidChangeLoading: false,
+    }),
+    rejectBidChangeFailure: (state, action) => ({
+      ...state,
+      rejectBidChangeLoading: false,
+      error: action.payload,
+    }),
+
+    acceptBidChangeRequest: (state) => ({
+      ...state,
+      acceptBidChangeLoading: true,
+      error: null,
+    }),
+    acceptBidChangeSuccess: (state) => ({
+      ...state,
+      acceptBidChangeLoading: false,
+    }),
+    acceptBidChangeFailure: (state, action) => ({
+      ...state,
+      acceptBidChangeLoading: false,
       error: action.payload,
     }),
 
@@ -378,13 +476,23 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
+    favUnfavReq: (state) => ({
+      ...state,
+      favUnfavLoading: true,
+    }),
+
+    favUnfavError: (state) => ({
+      ...state,
+      favUnfavLoading: false,
+    }),
+
     makeFavSuccess: (state) => ({
       ...state,
       bidInfo: {
         ...state.bidInfo,
         user_details: {
           ...state.bidInfo.user_details,
-          is_favorite: true,
+          is_favourite: true,
         },
       },
     }),
@@ -395,7 +503,7 @@ const projectDetails = createSlice({
         ...state.bidInfo,
         user_details: {
           ...state.bidInfo.user_details,
-          is_favorite: false,
+          is_favourite: false,
         },
       },
     }),
@@ -420,6 +528,8 @@ const projectDetails = createSlice({
 export const {
   clearDocstate,
   makeFavSuccess,
+  favUnfavReq,
+  favUnfavError,
   removeFavSuccess,
   getInvitedMemberFailure,
   getInvitedMemberRequest,
@@ -452,6 +562,9 @@ export const {
   getBidInfoRequest,
   getBidInfoSuccess,
   getBidInfoFailure,
+  getBidTimelineRequest,
+  getBidTimelineSuccess,
+  getBidTimelineFailure,
   getReceivedBidsRequest,
   getReceivedBidsSuccess,
   getReceivedBidsFailure,
@@ -483,6 +596,24 @@ export const {
   relistProjectByDateRequest,
   relistProjectByDateSuccess,
   relistProjectByDateFailure,
+  requestChangeRequest,
+  requestChangeSuccess,
+  requestChangeFailure,
+  rejectBidChangeRequest,
+  rejectBidChangeSuccess,
+  rejectBidChangeFailure,
+  acceptBidChangeRequest,
+  acceptBidChangeSuccess,
+  acceptBidChangeFailure,
+  getbidSnapshotRequest,
+  getbidSnapshotSuccess,
+  getbidSnapshotFailure,
+  getNDATimelineFailure,
+  getNDATimelineRequest,
+  getNDATimelineSuccess,
+  getContractTimelineRequest,
+  getContractTimelineSuccess,
+  getContractTimelineFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

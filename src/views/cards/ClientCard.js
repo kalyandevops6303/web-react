@@ -4,7 +4,7 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { PropTypes } from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Heart, MapPin } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import Avatar from '@components/avatar';
 import hat from '@src/assets/images/hat.svg';
@@ -16,6 +16,7 @@ import { userTypes } from '../../utility/constants/Constant';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import TextToolTip from './TextToolTip';
 import { Elevate } from '../styled';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const giveStrokeColor = (percentage) => {
   if (percentage <= 40) {
@@ -28,7 +29,8 @@ const giveStrokeColor = (percentage) => {
   }
 };
 const ClientCard = ({ isSearchPage, data, userType }) => {
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -56,20 +58,23 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(
-      makeFav({
-        user_id: data?.user_id,
-        user_type: data?.user_type,
-        onSuccess: () => {},
-        onError: () => setIsFavorite(false),
-      }),
-    );
+    if (!isFavUnfavLoading) {
+      setIsFavorite(true);
+      dispatch(
+        makeFav({
+          user_id: data?.user_id,
+          user_type: data?.user_type,
+          onError: () => setIsFavorite(false),
+        }),
+      );
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ user_id: data?.user_id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (!isFavUnfavLoading) {
+      setIsFavorite(false);
+      dispatch(removeFav({ user_id: data?.user_id, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const handleCard = () => {
@@ -150,7 +155,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                 <div className="d-flex mt-1 justify-content-end w-100">
                   <RatingBadge number={Math.round(data?.rating ?? 0)} />
                   <CardText className="ps-50 font-small-3 fw-300 rating-label">
-                    {data?.project_listed_count ?? 0} Projects
+                    {data?.projects_worked_on_count ?? 0} Projects
                   </CardText>
                 </div>
               </div>

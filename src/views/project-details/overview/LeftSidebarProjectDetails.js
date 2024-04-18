@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import { Badge, Button, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import MoneyIcon from '@src/assets/images/money.svg';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
+import { Paperclip } from 'react-feather';
 import BadgeGroup from '../../../@core/components/badge-group-dynamic-count';
 import { LeftSidebarProjectDetailsWrapper } from '../style';
 import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
@@ -22,10 +23,12 @@ import DeleteProjectModal from '../../modals/DeleteProjectModal';
 import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
 import RelistListingDetailsModal from '../../modals/RelistListingDetailsModal';
 import RelistSuccessModal from '../../modals/RelistSuccessModal';
+import ViewFilesModal from '../../modals/ViewFilesModal';
 
 const LeftSidebarProjectDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const params = useParams();
   const userData = useSelector(selectUserData);
   const [inviteModal, setInviteModal] = useState(false);
@@ -37,6 +40,11 @@ const LeftSidebarProjectDetails = () => {
   const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
   const [projectRelistData, setProjectRelistData] = useState(null);
+  const [viewFilesModal, setViewFilesModal] = useState(null);
+
+  const toggleViewFilesModal = () => {
+    setViewFilesModal(!viewFilesModal);
+  };
 
   const toggleModal = () => {
     setInviteModal(!inviteModal);
@@ -63,9 +71,10 @@ const LeftSidebarProjectDetails = () => {
   };
 
   const isLoading = useSelector(projectDetailsLoading);
+  const isBidView = location.pathname.startsWith('/project-details/') && location.pathname.endsWith('/bid');
 
   useEffect(() => {
-    dispatch(getProjectDetails(params.projectId));
+    dispatch(getProjectDetails({ projectId: params.projectId, isBidView }));
   }, []);
 
   const [daysLeft, setDaysLeft] = useState(0);
@@ -113,6 +122,14 @@ const LeftSidebarProjectDetails = () => {
 
   return (
     <LeftSidebarProjectDetailsWrapper>
+      {viewFilesModal && (
+        <ViewFilesModal
+          modal={viewFilesModal}
+          toggleModal={toggleViewFilesModal}
+          modalTitle="Project Requirements Documents"
+          documents={projectDetailsData?.details?.documents}
+        />
+      )}
       {deleteModal && (
         <DeleteProjectModal
           modal={deleteModal}
@@ -259,11 +276,23 @@ const LeftSidebarProjectDetails = () => {
             <CardTitle className="main-title mb-75">Project Details</CardTitle>
           </section>
 
-          <div className="d-flex mb-75 flex-wrap gap-25">
-            <span className="info-key">Posted date:</span>
-            <CardText className="info-value">
-              {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)}
-            </CardText>
+          <div className="d-flex justify-content-between mb-75">
+            <div className="d-flex flex-wrap gap-25">
+              <span className="info-key">Posted date:</span>
+              <CardText className="info-value ">
+                {' '}
+                {DateTime.fromMillis(projectDetailsData?.listing_details?.start_date_epoch || 0).toFormat(`MMM dd, yy`)}
+              </CardText>
+            </div>
+            {projectDetailsData?.details?.documents?.length > 0 && (
+              <div
+                className="d-flex align-items-center cursor-pointer attachments"
+                onClick={() => setViewFilesModal(true)}
+              >
+                <Paperclip size={14} />
+                <span className="ms-25">{projectDetailsData?.details?.documents?.length}</span>
+              </div>
+            )}
           </div>
 
           <div className="d-flex">

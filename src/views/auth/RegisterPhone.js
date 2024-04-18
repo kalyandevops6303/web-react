@@ -105,6 +105,7 @@ const RegisterPhone = () => {
                   render={({ field }) => (
                     <Input
                       {...field}
+                      type="number"
                       value={field.value || ''} // Set a default value for the input
                       placeholder="Enter phone number"
                       invalid={errors.mobile && true}

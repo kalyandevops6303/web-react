@@ -1,15 +1,17 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable consistent-return */
 /* eslint-disable no-else-return */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import DataTable from 'react-data-table-component';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
-import { ChevronDown, ChevronUp } from 'react-feather';
+import { ChevronDown, ChevronUp, Copy } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../../lib/date-time';
+import CopyToClipboard from '../../../lib/copy-clipboard';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import { userTypes } from '../../../utility/constants/Constant';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
@@ -19,13 +21,22 @@ import { getPaymentHistory } from '../../../redux/actions/paymentFullViewActions
 import { paymentHistory, paymentHistoryLoading } from '../../../redux/selectors/paymentFullViewSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import capitalize from '../../../lib/capitalize';
+import { setItem } from '../../../utility/localStorageControl';
+import SwitchConfirmModal from '../../modals/SwitchConfirm';
+import ShowToastMessage from '../../../@core/components/toast';
+import { SUCCESS } from '../../../utility/constants/ToastTypes';
 
 const PaymentHistory = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const userData = useSelector(selectUserData);
   const paymentHistoryData = useSelector(paymentHistory);
   const paymentHistoryIsLoading = useSelector(paymentHistoryLoading);
+
+  const [switchProfileModal, setSwitchProfileModal] = useState(false);
+  const [switchData, setSwitchData] = useState();
+  const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 
   const showStatusBadge = (status) => {
     if (status === 'PAID') {
@@ -41,10 +52,10 @@ const PaymentHistory = () => {
           Processing
         </Badge>
       );
-    } else if (status === 'PAYMENT_FAILED') {
+    } else if (status === 'FAILED') {
       return (
         <Badge pill color="light-danger">
-          Payment Failed
+          Failed
         </Badge>
       );
     }
@@ -65,13 +76,13 @@ const PaymentHistory = () => {
     {
       name: 'Transaction ID',
       sortable: false,
-      minWidth: '12%',
+      minWidth: '15%',
       selector: (row) => row.transaction_id,
     },
     {
       name: 'Project Name',
       sortable: false,
-      minWidth: '23%',
+      minWidth: '20%',
       selector: (row) => row.project_name,
     },
     {
@@ -111,13 +122,13 @@ const PaymentHistory = () => {
     {
       name: 'Transaction ID',
       sortable: false,
-      minWidth: '12%',
+      minWidth: '15%',
       selector: (row) => row.transaction_id,
     },
     {
       name: 'Project Name',
       sortable: false,
-      minWidth: '18%',
+      minWidth: '15%',
       selector: (row) => row.project_name,
     },
     {
@@ -223,18 +234,53 @@ const PaymentHistory = () => {
       paymentHistoryDataset.push({
         transaction_id: (
           <div>
-            <p className="mb-0 fw-bolder font-small-4" id={`tooltip-${item?.transaction_id}`}>
-              #{item?.transaction_id}
-            </p>
+            {item?.transaction_id && (
+              <CopyToClipboard
+                text={item?.transaction_id}
+                onCopy={() => {
+                  ShowToastMessage(SUCCESS, 'Transaction Id copied to clipboard');
+                }}
+              >
+                <div
+                  className="d-flex align-items-center cursor-pointer"
+                  onMouseEnter={() => setSelectedTransactionId(item?.transaction_id)}
+                  onMouseLeave={() => setSelectedTransactionId(null)}
+                  id={`tooltip-${item?.transaction_id}`}
+                >
+                  <p className="mb-0 fw-bolder font-small-4">#{item?.transaction_id?.substring(0, 10)}...</p>
+                  <Copy
+                    size={20}
+                    color={selectedTransactionId === item?.transaction_id ? theme.activeNavPillText : theme.infoIcon}
+                    className="ms-50"
+                  />
+                  <UncontrolledTooltip target={`tooltip-${item?.transaction_id}`} autohide={false}>
+                    {item?.transaction_id}
+                  </UncontrolledTooltip>
+                </div>
+              </CopyToClipboard>
+            )}
             <p className="mb-0 font-small-2">{DateTime.fromMillis(item?.created_at).toFormat('dd MMM yy')}</p>
-            <UncontrolledTooltip target={`tooltip-${item?.transaction_id}`} autohide={false}>
-              {item?.transaction_id}
-            </UncontrolledTooltip>
           </div>
         ),
         project_name: (
           <>
-            <p className="mb-0 font-small-4 name-ellipsis" id={`project-${item?.transaction_id}`}>
+            <p
+              className="mb-0 font-small-4 name-ellipsis cursor-pointer"
+              id={`project-${item?.transaction_id}`}
+              onClick={() => {
+                setItem('baseRoute', 'payments');
+                if (userData?.user_type === userTypes.talent && '_id' in item?.team) {
+                  setSwitchData({
+                    entity: 'TEAM',
+                    navigateTo: `/project-details/${item?.project_id}/payment`,
+                    switchTeamId: item?.team?._id,
+                  });
+                  setSwitchProfileModal(true);
+                } else {
+                  navigate(`/project-details/${item?.project_id}/payment`);
+                }
+              }}
+            >
               {item?.project_name}
             </p>
             <UncontrolledTooltip target={`project-${item?.transaction_id}`}>{item?.project_name}</UncontrolledTooltip>
@@ -257,7 +303,13 @@ const PaymentHistory = () => {
             {typeof item?.to === 'string' ? (
               <p className="mb-0 font-small-4">{item?.to}</p>
             ) : (
-              <div className="d-flex align-items-center">
+              <div
+                className="d-flex align-items-center cursor-pointer"
+                onClick={() => {
+                  setItem('baseRoute', 'payments');
+                  navigate(`/profile/talent/${item?.to?.user_id}`);
+                }}
+              >
                 <Avatar
                   img={item?.to?.image_uri || defaultAvatar}
                   imgHeight="28"
@@ -277,7 +329,13 @@ const PaymentHistory = () => {
           </div>
         ),
         client_name: (
-          <div className="d-flex align-items-center">
+          <div
+            className="d-flex align-items-center cursor-pointer"
+            onClick={() => {
+              setItem('baseRoute', 'payments');
+              navigate(`/profile/client/${item?.client?.user_id}`);
+            }}
+          >
             <Avatar
               img={item?.client?.image_uri || defaultAvatar}
               imgHeight="28"
@@ -289,7 +347,17 @@ const PaymentHistory = () => {
             </p>
           </div>
         ),
-        team_name: <>{showTeamDetails(item?.team?.name, item?.team?.logo)}</>,
+        team_name: (
+          <p
+            className="mb-0 cursor-pointer"
+            onClick={() => {
+              setItem('baseRoute', 'payments');
+              navigate(`/profile/team/${item?.team?._id}`);
+            }}
+          >
+            {showTeamDetails(item?.team?.name, item?.team?.logo)}
+          </p>
+        ),
         status: <>{showStatusBadge(item?.status)}</>,
         pay_type: <p className="mb-0 font-small-4">{capitalize(item?.pay_type)}</p>,
         total_cost: <p className="mb-0 font-small-4">${item?.total_cost}</p>,
@@ -322,7 +390,7 @@ const PaymentHistory = () => {
               <p className="m-0">Milestone #{milestone?.seq}</p>
               <div className="d-flex justify-content-between additional-details">
                 <div>
-                  <p className="mb-50">Talent Cost</p>
+                  <p className="mb-50">Talent Amount</p>
                   <p className="m-0">Platform Fee</p>
                 </div>
                 <div className="text-end">
@@ -369,6 +437,15 @@ const PaymentHistory = () => {
 
   return (
     <>
+      {switchProfileModal && (
+        <SwitchConfirmModal
+          entity={switchData?.entity}
+          navigateTo={switchData?.navigateTo}
+          switchTeamId={switchData?.switchTeamId}
+          modal={switchProfileModal}
+          toggleModal={() => setSwitchProfileModal(!switchProfileModal)}
+        />
+      )}
       <p className="fw-bold font-medium-3 mt-1">Payment History</p>
       {paymentHistoryIsLoading ? (
         <ComponentSpinner />

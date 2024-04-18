@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FileText, ArrowLeft, Box, Check, CreditCard } from 'react-feather';
 import { Col, Row } from 'reactstrap';
 import Wizard from '../../@core/components/wizard';
@@ -9,7 +9,8 @@ import Invite from './steps/Invite';
 import Listing from './steps/Listing';
 import Requirements from './steps/Requirements';
 import theme from '../../configs/themeVariables';
-import { BackButtonContainer, BackIconContainer, FormWizardContainer } from './style';
+import { FormWizardContainer } from './style';
+import { CircularBackButtonContainer } from '../styled';
 import { clearCreateProjectData } from '../../redux/reducers/createProject';
 
 const CreateProject = () => {
@@ -21,6 +22,7 @@ const CreateProject = () => {
   const [files, setFiles] = useState([]);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const toggleYouDidItModal = () => {
     setYouDidItModal(!youDidItModal);
@@ -95,16 +97,15 @@ const CreateProject = () => {
 
   return (
     <>
-      <Row className="m-0">
-        <BackButtonContainer className="p-0">
-          <Link to="/dashboard" className="p-0 d-flex">
-            <BackIconContainer>
-              <ArrowLeft size={18} color={theme.white} />
-            </BackIconContainer>
-            <h4 className="m-0 fw-light blue-text mt-25 mx-50">Create Project</h4>
-          </Link>
-        </BackButtonContainer>
-      </Row>
+      <CircularBackButtonContainer
+        className="d-flex align-items-center cursor-pointer"
+        onClick={() => navigate('/dashboard')}
+      >
+        <div className="back-icon-container">
+          <ArrowLeft size={18} color={theme.white} />
+        </div>
+        <p className="fw-light mb-0 ms-50 font-medium-2">Create Project</p>
+      </CircularBackButtonContainer>
       <Row>
         <Col lg="9" md="12" sm="12">
           <FormWizardContainer className="modern-horizontal-wizard">

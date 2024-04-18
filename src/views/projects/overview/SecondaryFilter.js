@@ -16,12 +16,13 @@ import ProjectCard from '../../cards/ProjectCard';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import '../../custom-styles.scss';
 import NoDataFoundComponent from './NoDataFoundComp';
-import { selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
 import { getClientNameService, getTeamNameSerive } from '../../../services/projectServices';
 import { userTypes } from '../../../utility/constants/Constant';
 import { clearData } from '../../../redux/reducers/project';
 import theme from '../../../configs/themeVariables';
 import { ResponsiveGrid } from '../../cards/style';
+import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 
 // eslint-disable-next-line react/prop-types
 const SecondaryFilters = ({ primaryFilter, userType }) => {
@@ -401,14 +402,14 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && (
-        <p className="font-medium-1 fw-bolder">
-          Search Results Found{' '}
-          {selectProjectMetaData?.total_records < 10
-            ? `0${selectProjectMetaData?.total_records}`
-            : selectProjectMetaData?.total_records}
-        </p>
-      )}
+      {!isLoading &&
+        (isAnyKeyNonEmptyArray({
+          client_name: secondFilterState?.client_name,
+          team_name: secondFilterState?.team_name,
+          project_type: secondFilterState?.project_type,
+        }) ||
+          searchText ||
+          primaryFilter === 'invited') && <SearchResultsCount metaData={selectProjectMetaData} />}
 
       {isLoading ? (
         <ComponentSpinner />

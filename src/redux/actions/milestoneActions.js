@@ -28,6 +28,8 @@ import {
 } from '../../services/projectMilestoneService';
 import { transferFundService } from '../../services/paymentDetailService';
 
+import { scanAndProcessFiles } from '../../utility/Utils';
+
 const getMilestoneDetail =
   ({ milestoneId }) =>
   async (dispatch) => {
@@ -66,15 +68,32 @@ const getMilestoneDisputes =
       errorHandler(error, milestoneDisputeFailure);
     }
   };
+
 const submitMilstone =
   ({ milestone_id, data, onSuccess }) =>
   async (dispatch) => {
     dispatch(submitMilestoneRequest());
     try {
-      await submitMilestoneService({ milestone_id, data });
-      dispatch(submitMilestoneSuccess());
-      dispatch(getSubmissionHistory({ milestoneId: milestone_id, metaData: { page: 1, page_size: 10 } }));
-      onSuccess();
+      const handleSubmitMilestone = async () => {
+        await submitMilestoneService({ milestone_id, data });
+        dispatch(submitMilestoneSuccess());
+        dispatch(getSubmissionHistory({ milestoneId: milestone_id, metaData: { page: 1, page_size: 10 } }));
+        onSuccess();
+      };
+      const file_keys = data?.documents?.map((file) => ({
+        file_key: file.file_key,
+        file_name: file.file_name,
+      }));
+      if (data?.documents?.length > 0) {
+        scanAndProcessFiles({
+          fileData: file_keys,
+          handleMainAPI: handleSubmitMilestone,
+          onError: () => dispatch(submitMilestoneFailure()),
+          isPrivate: true,
+        });
+      } else {
+        handleSubmitMilestone();
+      }
     } catch (error) {
       errorHandler(error, submitMilestoneFailure);
     }

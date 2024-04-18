@@ -52,7 +52,7 @@ const recommendedTeamsForClientService = () => DataService.get(API.dashboard.rec
 
 const checkBidsAcceptedService = () =>
   DataService.post(API.dashboard.checkBidsAccepted, {
-    bid_statuses: ['ACCEPTED'],
+    bid_statuses: [],
   });
 
 const activeProjectsForTalentService = () => DataService.get(API.dashboard.activeProjectsForTalent);

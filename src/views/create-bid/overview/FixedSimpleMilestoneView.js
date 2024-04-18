@@ -37,7 +37,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
-import { downloadFile, downloadUploadedFile, formatDateWithDash } from '../../../utility/Utils';
+import { downloadFile, downloadUploadedFile, formatDateWithDash, getFileSize } from '../../../utility/Utils';
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import { bidDetailsLoading, projectDetails, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
@@ -65,7 +65,7 @@ const FixedSimpleMilestoneView = () => {
           .number()
           .min(1, 'Cost must be at least 1')
           .typeError('Please enter a number')
-          .required('Talent cost is required')
+          .required('Talent amount is required')
           .integer('Cost must be an integer'),
         name: yup
           .string()
@@ -304,7 +304,7 @@ const FixedSimpleMilestoneView = () => {
     if (!allMilestonesValid) {
       ShowToastMessage(ERROR, 'Please fill all required fields for existing milestones before adding a new one.');
     } else if (totalCost > projectDetailsData?.pay_type?.fixed_cost) {
-      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed cost.');
+      ShowToastMessage(ERROR, 'Please adjust total cost to be less than project fixed price.');
     } else if (allMilestonesValid) {
       milestonesAppend({
         name: undefined,
@@ -355,23 +355,17 @@ const FixedSimpleMilestoneView = () => {
     );
 
     const fetchUploadUrls = async () => {
-      const allFiles = [...filesRef.current, ...acceptedFiles];
+      const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
-      if (allFiles?.length > 5) {
-        ShowToastMessage(ERROR, 'Maximum 5 files allowed');
-      } else {
-        const validFiles = acceptedFiles.filter((file) => isFileValid(file));
+      const promises = validFiles.map(async (file) => {
+        const response = await milestoneFileUploadService(file.name);
+        return { id: uuidv4(), file, uploadData: response?.data?.data, isUploaded: false };
+      });
 
-        const promises = validFiles.map(async (file) => {
-          const response = await milestoneFileUploadService(file.name);
-          return { id: uuidv4(), file, uploadData: response?.data?.data, isUploaded: false };
-        });
+      const filesWithUrls = await Promise.all(promises);
+      setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
 
-        const filesWithUrls = await Promise.all(promises);
-        setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
-
-        filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
-      }
+      filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
     };
     fetchUploadUrls();
   }, []);
@@ -391,15 +385,6 @@ const FixedSimpleMilestoneView = () => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     setFiles([...filtered]);
-  };
-
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-      // eslint-disable-next-line
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
-    }
   };
 
   const requiredFormattedDate = (date = new Date()) => {
@@ -448,10 +433,10 @@ const FixedSimpleMilestoneView = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <>
-                    {renderFilePreview()}
-                    {file?.file?.name || file?.file?.file_name}
-                  </>
+                  <div className="d-flex align-items-center">
+                    <span>{renderFilePreview()}</span>
+                    <span>{file?.file?.name || file?.file?.file_name}</span>
+                  </div>
                 )}
               </div>
             </Col>
@@ -459,7 +444,7 @@ const FixedSimpleMilestoneView = () => {
               {uploadingFiles.includes(file) ? <span>Uploading...</span> : <span>Uploaded</span>}
             </Col>
             <Col sm="2" md="2" lg="2">
-              {renderFileSize(file.file.size)}
+              {getFileSize(file.file.size)}
             </Col>
             <Col sm="2" md="2" lg="2">
               {requiredFormattedDate(file?.file?.created_at)}
@@ -573,15 +558,15 @@ const FixedSimpleMilestoneView = () => {
                 <div className="fixed-cost-banner error-banner mb-2 d-flex px-1 py-2">
                   <Info size={18} color={theme.red} className="me-50" />
                   <p className="font-medium-1 m-0 error">
-                    <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of
-                    the project. Please adjust your cost in order to submit the bid
+                    <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price of the
+                    project. Please adjust your price in order to submit the bid
                   </p>
                 </div>
               )}
-              <div className="d-none fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
+              <div className="fixed-cost-banner info-banner mb-2 d-flex px-1 py-2">
                 <Info size={18} color={theme.activeNavPillText} className="me-50" />
                 <p className="font-medium-1 m-0 info">
-                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed cost will be equally
+                  <span className="fw-bolder font-medium-1">Fixed Price:</span> The fixed price will be equally
                   distributed between each talent
                 </p>
               </div>
@@ -623,10 +608,10 @@ const FixedSimpleMilestoneView = () => {
                         className={bidData?.is_bid_type_changeable ? 'me-4 custom-cost-margin' : 'custom-cost-margin'}
                       >
                         <div className="d-flex align-items-center m-0">
-                          <Label className="form-label m-0">Fixed Cost</Label>
+                          <Label className="form-label m-0">Fixed Price</Label>
                           <Info size={18} color={theme.infoIcon} id="fixed-info" className="ms-50" />
                           <UncontrolledTooltip placement="top" target="fixed-info">
-                            <p className="m-0">Predetermined project cost fixed by the client</p>
+                            <p className="m-0">Predetermined project price fixed by the client</p>
                           </UncontrolledTooltip>
                         </div>
                         <p className="fw-bold font-medium-1 text-end me-2 mt-50 mb-0">
@@ -734,7 +719,7 @@ const FixedSimpleMilestoneView = () => {
                               <Col sm="12" md="12" lg="4">
                                 <div>
                                   <Label className="fw-normal form-label me-2" for="talentCost">
-                                    Talent Cost<span className="label-asterisk me-50">*</span>
+                                    Talent Amount<span className="label-asterisk me-50">*</span>
                                   </Label>
                                   <Controller
                                     id={`milestones[${milestoneIndex}].talentCost`}
@@ -1037,9 +1022,9 @@ const FixedSimpleMilestoneView = () => {
               </Row>
             </CardBody>
           </Card>
-          <div className="d-flex justify-content-between align-items-center" style={{ paddingBottom: '60px' }}>
+          <div className="d-flex justify-content-between align-items-center mb-4">
             <div
-              className="d-flex align-items-center upload-button cursor-pointer"
+              className="d-flex align-items-center upload-button cursor-pointer mb-50"
               onClick={() => {
                 if (selectUserDetailsData?.user_type === userTypes.team) {
                   navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/team`);

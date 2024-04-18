@@ -126,7 +126,7 @@ const MilestoneListing = ({ milestonesData }) => {
                     </CardText>
                   </div>
                   <div className="mx-2">
-                    <CardText className="fw-normal mb-0 fs-6">Completed</CardText>
+                    <CardText className="fw-normal mb-0 fs-6">Completed On</CardText>
                     <CardText className="fw-bolder fs-5 mb-0">{getCompletedDate(mile)}</CardText>
                   </div>
                   <ChevronRight color="#B9B9C3" />

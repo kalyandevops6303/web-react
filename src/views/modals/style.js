@@ -24,16 +24,7 @@ const AcceptModalWrapper = styled.div`
   .content-side {
     width: 65%;
   }
-  .modal-title-custom {
-    font-size: 1.75rem;
-    font-weight: 500;
-    // color: ${theme.red};
-    margin-bottom: 0.75rem;
-  }
   .subtitle {
-    font-size: 1.125rem;
-  }
-  .desc {
     font-size: 1.125rem;
   }
   .stats {
@@ -56,6 +47,9 @@ const AcceptModalWrapper = styled.div`
       font-weight: 500;
     }
   }
+  .word-break {
+    word-break: break-word;
+  }
 `;
 
 const DeleteModalWrapper = styled.div`
@@ -64,7 +58,7 @@ const DeleteModalWrapper = styled.div`
     margin: -30px 0 -70px -1rem;
   }
   .modal-title-custom {
-    font-size: 1.75rem;
+    font-size: 1.719rem;
     font-weight: 500;
     color: ${theme.red};
     margin-bottom: 0.75rem;
@@ -73,7 +67,7 @@ const DeleteModalWrapper = styled.div`
     font-size: 1.125rem;
   }
   .desc {
-    font-size: 1.125rem;
+    font-size: 1.286rem;
   }
   .stats {
     margin-top: 1.2rem;
@@ -97,7 +91,7 @@ const TerminateModalWrapper = styled.div`
     margin: 1rem 0.5rem 0px 0rem;
   }
   .modal-title-custom {
-    font-size: 1.75rem;
+    font-size: 1.719rem;
     font-weight: 500;
     color: ${theme.red};
     margin-bottom: 0.75rem;
@@ -106,7 +100,7 @@ const TerminateModalWrapper = styled.div`
     font-size: 1.125rem;
   }
   .desc {
-    font-size: 1rem;
+    font-size: 1.286rem;
     font-weight: 400 !important;
   }
   .stats {
@@ -136,7 +130,7 @@ const RemoveMemberModalWrapper = styled.div`
     margin: -30px 0 -70px -1rem;
   }
   .modal-title-custom {
-    font-size: 1.75rem;
+    font-size: 1.719rem;
     font-weight: 500;
     color: ${theme.red};
     margin-bottom: 0.75rem;
@@ -145,7 +139,7 @@ const RemoveMemberModalWrapper = styled.div`
     font-size: 1.125rem;
   }
   .desc {
-    font-size: 1.125rem;
+    font-size: 1.286rem;
   }
   .stats {
     margin-top: 1.2rem;
@@ -169,7 +163,7 @@ const EditContractWrap = styled.div`
   .modal-title-edit {
     text-align: center;
     margin-bottom: 3rem;
-    font-size: 1.75rem !important;
+    font-size: 1.719rem !important;
     font-weight: 500;
   }
 `;
@@ -204,7 +198,7 @@ const MessageIconWrap = styled.div`
 
 const MakePaymentModalWrapper = styled.div`
   .modal-header {
-    font-size: 26px;
+    font-size: 2px;
     font-weight: 500;
   }
   .modal-title {
@@ -213,6 +207,32 @@ const MakePaymentModalWrapper = styled.div`
   }
   .card-header-border {
     border: 1px solid #ebe9f1;
+  }
+
+  .form-check-input:not(:disabled):checked {
+    box-shadow: 0px 2px 4px ${theme.checkboxShadow};
+  }
+  .form-check-input:checked {
+    background-color: ${theme.activeNavPillText};
+    border-color: ${theme.activeNavPillText};
+  }
+  .form-check-input {
+    border: 1.5px solid ${theme.inputBorderColor};
+  }
+  .form-check-input:checked {
+    border: 1.5px solid ${theme.activeNavPillText};
+  }
+
+  .truncated-milestone-name {
+    margin-left: 10px;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .payment-status-badge {
+    width: fit-content;
   }
 `;
 
@@ -270,6 +290,62 @@ const RelistModalWrapper = styled.div`
   }
 `;
 
+const ChangeRequestModalWrapper = styled.div`
+  .select__placeholder {
+    font-size: 12px;
+    color: ${theme.textMuted};
+  }
+  .select__indicator {
+    svg {
+      color: ${theme.textMuted};
+    }
+  }
+
+  .select__control {
+    border-color: ${theme.inputBorderColor};
+
+    svg {
+      color: ${theme.textMuted};
+    }
+
+    .select__placeholder {
+      color: ${theme.textMuted};
+    }
+  }
+
+  .upload-button {
+    width: fit-content;
+
+    h5 {
+      margin: 0 0 0 8px;
+      color: ${theme.activeNavPillText};
+    }
+  }
+
+  .form-check-label.form-label {
+    color: ${theme.checkboxLabel};
+  }
+
+  .info-bg {
+    background-color: ${theme.activeColor}1f;
+    border-radius: 0.375rem;
+    color: ${theme.activeColor};
+  }
+`;
+
+const ViewFilesModalWrapper = styled.div`
+  .modal-header,
+  .modal-body {
+    background-color: #f8f8f8 !important;
+    border-radius: 6px;
+  }
+
+  .white-container {
+    background-color: #ffffff;
+    border-radius: 6px;
+  }
+`;
+
 export {
   RemoveMemberModalWrapper,
   MessageIconWrap,
@@ -281,5 +357,7 @@ export {
   TerminateModalWrapper,
   PublicTeamMembersListingModalWrapper,
   RelistModalWrapper,
+  ChangeRequestModalWrapper,
   ArtifactsModalWrap,
+  ViewFilesModalWrapper,
 };

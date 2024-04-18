@@ -7,12 +7,14 @@ import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { maxFileSize } from './constants/Constant';
+import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
 import PDFIcon from '../assets/images/pdfV2.svg';
+// eslint-disable-next-line import/no-cycle
+import fileScanningService from '../services/fileUploadService';
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -301,13 +303,11 @@ export const renderFilePreview = (file) => {
   return <FileText size="20" className="me-75 mb-25" />;
 };
 
-export const renderFileSize = (size) => {
+export const getFileSize = (size) => {
   if (Math.round(size / 100) / 10 > 1000) {
     return `${(Math.round(size / 100) / 10000).toFixed(1)} MB`;
-    // eslint-disable-next-line
-  } else {
-    return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
   }
+  return `${(Math.round(size / 100) / 10).toFixed(1)} KB`;
 };
 
 export const getProjectStatus = ({ status, type }) => {
@@ -631,7 +631,7 @@ export const getModifiedProjectResponse = ({ data }) => {
       _id: data?.bid,
       status: data?.bid?.status,
     },
-    is_favorite: data?.project?.is_favourite,
+    is_favourite: data?.project?.is_favourite,
   };
 };
 export const handleLinkOpen = (URL) => {
@@ -642,4 +642,111 @@ export const handleLinkOpen = (URL) => {
     // eslint-disable-next-line no-undef
     window.open(`https://${URL}`, '_blank');
   }
+};
+
+export const getStatusColor = (action) => {
+  switch (action) {
+    case bidStatus.BID_UPDATED:
+      return theme.purpleTimelimeColor;
+    case bidStatus.BID_REVIEWED:
+      return theme.orangeColor;
+    case bidStatus.BID_ACCEPTED:
+      return theme.timelineSuccessColor;
+    case bidStatus.BID_SUBMITTED:
+      return theme.purpleTimelimeColor;
+    case bidStatus.BID_CHANGE_ACCPETED:
+      return theme.timelineSuccessColor;
+    case bidStatus.BID_CHANGE_REJECTED:
+      return theme.red;
+    default:
+      return theme.purpleTimelimeColor; // Default color if status is not recognized
+  }
+};
+
+export const getBidAction = (action) => {
+  switch (action) {
+    case bidStatus.BID_UPDATED:
+      return 'Bid Updated';
+    case bidStatus.BID_REVIEWED:
+      return 'Bid Reviewed';
+    case bidStatus.BID_ACCEPTED:
+      return 'Bid Accepted';
+    case bidStatus.BID_SUBMITTED:
+      return 'Bid Submitted';
+    case bidStatus.BID_CHANGE_REQUEST:
+      return 'Bid change Request';
+    case bidStatus.BID_CHANGE_ACCPETED:
+      return 'Bid change Accepted';
+    case bidStatus.BID_CHANGE_REJECTED:
+      return 'Bid change Rejected';
+    default:
+      return '';
+  }
+};
+
+export const handleEmailClick = () => {
+  const recipient = 'support@trumio.ai';
+  const subject = '';
+  const body = '';
+  const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // eslint-disable-next-line no-undef
+  window.location.href = mailtoLink;
+};
+
+export const isAnyKeyNonEmptyArray = (obj) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in obj) {
+    if (Array.isArray(obj[key]) && obj[key].length > 0) {
+      return true; // Found non empty array
+    }
+  }
+  return false; // No non empty array found
+};
+
+export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, isPrivate }) => {
+  const processFile = async (index) => {
+    if (index >= fileData.length) {
+      handleMainAPI();
+      return;
+    }
+
+    const file = fileData[index];
+    try {
+      const response = await fileScanningService({ fileKeys: [file], isPrivate });
+      if (response.data.data?.[0].status === fileScanStatus.SCANNING) {
+        // Retry logic
+        let retries = 3;
+        const retryInterval = setInterval(async () => {
+          if (retries <= 0) {
+            clearInterval(retryInterval);
+            ShowToastMessage(ERROR, `Scanning ${file?.file_name} taking longer than expected. `);
+            onError(); // Handle error on too many retries
+          } else {
+            const retryResponse = await fileScanningService({ fileKeys: [file], isPrivate: true });
+            if (retryResponse.data.data?.[0].status !== fileScanStatus.SCANNING) {
+              clearInterval(retryInterval);
+              if (retryResponse.data.data?.[0].status === fileScanStatus.CLEAN) {
+                processFile(index + 1); // Move to the next file
+              } else if (retryResponse.data.data?.[0].status === fileScanStatus.THREAT) {
+                onError(); // Handle error for threat
+                ShowToastMessage(ERROR, `${file?.file_name} seem to be maliciuous/corrupted. `);
+              }
+            }
+          }
+          retries -= 1;
+        }, timeDalayToRetryScanning); // Retry every given seconds
+      } else if (response.data.data?.[0].status === fileScanStatus.CLEAN) {
+        processFile(index + 1); // Move to the next file
+      } else if (response.data.data?.[0].status === fileScanStatus.THREAT) {
+        onError(); // Handle error for threat
+        ShowToastMessage(ERROR, `${file?.file_name} seem to be maliciuous/corrupted. `);
+      }
+    } catch (error) {
+      console.error('Error processing file:', error);
+      onError();
+    }
+  };
+
+  // Start processing files
+  processFile(0);
 };

@@ -7,7 +7,7 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import PropTypes from 'prop-types';
 import AvatarGroup from '@components/avatar-group';
 import { Heart } from 'react-feather';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import theme from '../../configs/themeVariables';
 import RatingBadge from '../../@core/components/rating-group/RatingBadge';
@@ -16,25 +16,31 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { returnFormattedRating } from '../../utility/Utils';
 import { BidsReceivedWrapper, IconWrapper } from './style';
+import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
   const project = data?.project;
-  const [isFavorite, setIsFavorite] = useState(project?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
+  const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const location = useLocation();
 
   const handleLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(true);
-    dispatch(makeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(false) }));
+    if (!isFavUnfavLoading) {
+      setIsFavorite(true);
+      dispatch(makeFav({ project_id: project?._id, onError: () => setIsFavorite(false) }));
+    }
   };
   const handleUnLike = (e) => {
     e.stopPropagation();
-    setIsFavorite(false);
-    dispatch(removeFav({ project_id: project?._id, onSuccess: () => {}, onError: () => setIsFavorite(true) }));
+    if (!isFavUnfavLoading) {
+      setIsFavorite(false);
+      dispatch(removeFav({ project_id: project?._id, onError: () => setIsFavorite(true) }));
+    }
   };
 
   const giveStrokeColor = (percentage) => {
@@ -78,7 +84,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         navigate(`/profile/talent/${data?.bidders?.talent_id}`, { state });
       }
     } else {
-      navigate(`/profile/client/${data?.client_details?._id}`, { state });
+      navigate(`/profile/client/${clientDetails?._id}`, { state });
     }
   };
 
@@ -211,7 +217,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
             <div className="d-flex flex-grow-1">
               <RatingBadge number={returnFormattedRating(clientDetails?.rating || 0)} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
-                {clientDetails?.project_listed_count ?? 0} Projects
+                {clientDetails?.projects_worked_on_count ?? 0} Projects
               </CardText>
             </div>
           </div>

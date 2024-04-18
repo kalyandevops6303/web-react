@@ -124,6 +124,9 @@ const AlertCardWrapper = styled(CardWrapper)`
     font-size: 12px;
     margin: auto;
   }
+  .w-65 {
+    width: 65%;
+  }
 `;
 
 const EarningAmount = styled.div`
@@ -195,7 +198,7 @@ const ProjectWrapper = styled.div`
       line-height: 20px;
     }
     .card-text {
-      font-weight: 300;
+      font-weight: 400;
       font-size: 14px;
       color: ${theme.headingTextColor};
       line-height: 18px;
@@ -340,7 +343,7 @@ const ProjectWrapper = styled.div`
   .active-project-team-name {
     color: #5e5873;
     font-size: 14px;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   .active-project-simple-heading {

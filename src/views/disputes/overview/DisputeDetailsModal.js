@@ -145,23 +145,17 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
     );
 
     const fetchUploadUrls = async () => {
-      const allFiles = [...filesRef.current, ...acceptedFiles];
+      const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
-      if (allFiles?.length > 5) {
-        ShowToastMessage(ERROR, 'Maximum 5 files allowed');
-      } else {
-        const validFiles = acceptedFiles.filter((file) => isFileValid(file));
+      const promises = validFiles.map(async (file) => {
+        const response = await disputeReplyFileUploadService(file.name, _id);
+        return { id: uuidv4(), file, uploadData: response?.data?.data };
+      });
 
-        const promises = validFiles.map(async (file) => {
-          const response = await disputeReplyFileUploadService(file.name, _id);
-          return { id: uuidv4(), file, uploadData: response?.data?.data };
-        });
+      const filesWithUrls = await Promise.all(promises);
+      setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
 
-        const filesWithUrls = await Promise.all(promises);
-        setFiles((oldFiles) => [...oldFiles, ...filesWithUrls]);
-
-        filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
-      }
+      filesWithUrls.forEach((fileWithUrl) => handleUploadFile(fileWithUrl));
     };
     fetchUploadUrls();
   }, []);
@@ -322,7 +316,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
         customContent: (
           <div>
             <div className="d-flex justify-content-between mb-25">
-              <p className="fw-bold mb-0">Dispute Raised</p>
+              <p className="fw-bold modal-heading mb-0">Dispute Raised</p>
               <p className="font-small-3 mb-0">{DateTime?.fromMillis(created_at)?.toRelative()}</p>
             </div>
             <p>{DateTime.fromMillis(created_at).toFormat('MMM dd, yy')}</p>
@@ -341,7 +335,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
               </div>
             </div>
             <p className="fw-bold mt-1 mb-75">{dispute_type?.name}</p>
-            <p className="font-medium-1" style={{ wordWrap: 'break-word' }}>
+            <p className="modal-body-text" style={{ wordWrap: 'break-word' }}>
               {description || ''}
             </p>
           </div>
@@ -415,7 +409,7 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
                 className="text-decoration-underline fw-bold blue-btn mb-0 me-3 cursor-pointer"
                 onClick={() => setDisputeClosedModal(true)}
               >
-                Dispute Resolved
+                Resolve Dispute
               </p>
               <p
                 className="text-decoration-underline fw-bold blue-btn mb-0 cursor-pointer"

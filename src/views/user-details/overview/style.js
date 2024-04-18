@@ -27,7 +27,7 @@ const StatboxWrap = styled(Card)`
     cursor: auto;
   }
   .stat-desc {
-    font-weight: 300;
+    font-weight: 400;
     font-size: 13px;
   }
   .time {
@@ -58,6 +58,12 @@ const StatboxWrap = styled(Card)`
       color: ${theme.purpleColor}; // purple
     }
   }
+  .bg-light-purple-2 {
+    background: ${theme.purpleTimelimeColor}1f; // light-purple-2
+    svg {
+      color: ${theme.purpleTimelimeColor}; // purple
+    }
+  }
   .bg-light-info {
     background: ${theme.info}1f; // light-purple
     svg {
@@ -81,6 +87,10 @@ const StatboxWrap = styled(Card)`
     svg {
       color: ${theme.red}; // purple
     }
+  }
+
+  .no-border-radius {
+    border-radius: 0 !important;
   }
 `;
 
@@ -112,7 +122,7 @@ const LeftSidebarProfileWrapper = styled.div`
     margin: 1rem auto 1.8rem auto;
     .user-name {
       font-size: 17px;
-      font-weight: 300;
+      font-weight: 400;
     }
   }
 
@@ -133,7 +143,7 @@ const LeftSidebarProfileWrapper = styled.div`
       margin: 0 0.2rem;
     }
     .project-text {
-      font-weight: 300;
+      font-weight: 400;
     }
   }
 
@@ -149,7 +159,7 @@ const LeftSidebarProfileWrapper = styled.div`
   }
 
   .info-key {
-    font-weight: 300;
+    font-weight: 400;
     margin-right: 1rem;
   }
 
@@ -249,7 +259,7 @@ const RecentProjectWrap = styled.div`
   }
 
   .project-desc {
-    font-weight: 300 !important;
+    font-weight: 400 !important;
     min-height: 6rem;
   }
   .truncate-4 {
@@ -263,7 +273,7 @@ const RecentProjectWrap = styled.div`
 
 const ReviewsContainer = styled.div`
   .review-title {
-    font-weight: 300;
+    font-weight: 400;
     border-bottom: 1px solid ${theme.cardHeaderBorderColor};
     padding-bottom: 1rem;
     margin: 0 2.5rem;
@@ -291,7 +301,7 @@ const ReviewWrap = styled.div`
     border-radius: 50%;
   }
   .fw-300 {
-    font-weight: 300;
+    font-weight: 400;
   }
   .rounded-pill {
     border: 1px solid;

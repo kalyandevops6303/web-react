@@ -22,6 +22,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const isUserDataLoading = useSelector((state) => state.auth.userDataLoading);
   const isNavbarSearchBarOpen = useSelector((state) => state.search.isNavbarSearchBarOpen);
   const isNotificationCount = useSelector((state) => state.notifications.notificationCount);
   const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
@@ -29,7 +30,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
   const unreadMsgCount = useSelector((state) => state.chat.unreadMsgCount);
   const notificationsPollingData = useSelector(notificationsPolling);
 
-  const isTabDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW;
+  const isTabDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW || isUserDataLoading;
 
   const handleNotificaionClick = () => {
     isNotificationCount && dispatch(notificationCount(false));
@@ -50,7 +51,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
     if (userDetailsData) {
       dispatch(getNotificationsPolling());
     }
-  }, [location]);
+  }, [location, userDetailsData]);
 
   return (
     <ul className="nav navbar-nav align-items-center ms-auto">

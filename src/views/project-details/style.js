@@ -127,7 +127,7 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
   }
   .rating-label {
     color: ${theme.bodyColor};
-    font-weight: 300;
+    font-weight: 400;
   }
 
   //stats
@@ -149,7 +149,7 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
     }
     .stat-key {
       font-size: 0.75rem;
-      font-weight: 300;
+      font-weight: 400;
       line-height: 1.125rem; /* 150% */
     }
   }
@@ -164,7 +164,7 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
     }
   }
   .info-key {
-    font-weight: 300;
+    font-weight: 400;
     margin-right: 1rem;
   }
 
@@ -174,8 +174,12 @@ const LeftSidebarProjectDetailsWrapper = styled.div`
       font-weight: 400;
     }
     .value {
-      font-weight: 300;
+      font-weight: 400;
     }
+  }
+
+  .attachments {
+    color: ${theme.activeColor};
   }
 `;
 
@@ -236,7 +240,7 @@ const BidDetailsWrap = styled.div`
     }
   }
   .milestone-title {
-    font-weight: 300;
+    font-weight: 400;
     font-size: 1.2rem;
   }
 
@@ -292,6 +296,10 @@ const BidDetailsWrap = styled.div`
       border-bottom: 1px solid ${theme.cardHeaderBorderColor};
     }
   }
+
+  .min-height-400 {
+    min-height: 400px;
+  }
 `;
 const BidWrapper = styled.div`
   .basic-title {
@@ -331,6 +339,11 @@ const BidWrapper = styled.div`
     cursor: pointer;
     font-weight: 500;
   }
+  .card-cta-disabled {
+    text-decoration: underline;
+    color: ${theme.activeNavPillText}4f;
+    font-weight: 500;
+  }
   .indicator {
     height: 0.5rem;
     width: 0.5rem;
@@ -338,8 +351,11 @@ const BidWrapper = styled.div`
     background: ${theme.red};
     align-self: flex-start;
   }
-
+  .color-red {
+    color: ${theme.red};
+  }
   .meta-data {
+    width: 20%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -350,6 +366,9 @@ const BidWrapper = styled.div`
     .card-cta {
       text-align: right;
     }
+  }
+  .timeline-single-item {
+    width: 80%;
   }
 
   // Accordion
@@ -439,6 +458,16 @@ const BidWrapper = styled.div`
     height: 1.7rem;
     width: 1.7rem;
     padding: 0.3rem;
+  }
+  .red-dot {
+    width: 8px;
+    height: 8px;
+    background-color: ${theme.red};
+    border-radius: 50%;
+    outline: 2px solid white;
+    position: absolute;
+    top: 0px;
+    right: 0px;
   }
 `;
 
@@ -679,6 +708,19 @@ const RatingTag = styled.div`
   }
 `;
 
+const PaymentInfoBanner = styled.div`
+  border-radius: 6px;
+  background: ${theme.infoBannerBg};
+
+  .info-banner-icon {
+    margin-top: 2px;
+  }
+
+  p {
+    color: ${theme.activeNavPillText};
+  }
+`;
+
 export {
   BidWrapper,
   TeamVieWrapper,
@@ -693,4 +735,5 @@ export {
   UserNameWrapper,
   TableWrapper,
   SubmissionHistoryWrapper,
+  PaymentInfoBanner,
 };

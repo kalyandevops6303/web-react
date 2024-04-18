@@ -175,9 +175,6 @@ const Routes = [
   {
     path: '/create-team/:section-details',
     element: <CreateTeam />,
-    meta: {
-      layout: 'blank',
-    },
   },
   {
     path: `/${userProfileEdit.team}/:section-details`,
@@ -186,9 +183,6 @@ const Routes = [
   {
     path: '/create-club/:section-details',
     element: <CreateClub />,
-    meta: {
-      layout: 'blank',
-    },
   },
   {
     path: `/${userProfileEdit.club}/:section-details`,
