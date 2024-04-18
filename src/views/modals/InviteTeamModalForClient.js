@@ -74,7 +74,7 @@ const InviteTeamModalForClient = ({
   const isAlmaMaterTalentsLoading = useSelector(almaMaterTalentsLoading);
   const isFavoriteTeamsLoading = useSelector(favoriteTeamsLoading);
 
-  const [activeTab, setTabActive] = useState(tabNames.favourite);
+  const [activeTab, setTabActive] = useState(tabNames.recommended);
   const [searchValue, setSearchValue] = useState(null);
 
   const toggleTabs = (tab) => {
@@ -122,7 +122,7 @@ const InviteTeamModalForClient = ({
     );
   };
   useEffect(() => {
-    dispatch(getFavoriteTeams(param?.projectId, searchValue, 1, 10, []));
+    dispatch(getBestTalents(param?.projectId, searchValue, 1, 10, []));
   }, []);
   useEffect(() => {
     let delayDebounceFn = null;
@@ -273,17 +273,6 @@ const InviteTeamModalForClient = ({
               <Nav tabs className="font-medium border-bottom ps-1">
                 <NavItem className="me-1">
                   <NavLink
-                    active={activeTab === tabNames.favourite}
-                    onClick={() => {
-                      toggleTabs(tabNames.favourite);
-                      dispatch(getFavoriteTeams(param?.projectId, searchValue, 1, 10, []));
-                    }}
-                  >
-                    Favorite Teams
-                  </NavLink>
-                </NavItem>
-                <NavItem className="me-1">
-                  <NavLink
                     active={activeTab === tabNames.recommended}
                     onClick={() => {
                       toggleTabs(tabNames.recommended);
@@ -293,6 +282,18 @@ const InviteTeamModalForClient = ({
                     Recommended Talent
                   </NavLink>
                 </NavItem>
+                <NavItem className="me-1">
+                  <NavLink
+                    active={activeTab === tabNames.favourite}
+                    onClick={() => {
+                      toggleTabs(tabNames.favourite);
+                      dispatch(getFavoriteTeams(param?.projectId, searchValue, 1, 10, []));
+                    }}
+                  >
+                    Favorite Teams
+                  </NavLink>
+                </NavItem>
+
                 <NavItem className="me-1">
                   <NavLink
                     active={activeTab === tabNames.almaMater}
@@ -592,11 +593,9 @@ const InviteTeamModalForClient = ({
           )}
           <div className="d-flex justify-content-end align-items-center">
             <div>
-              <Link to="#" onClick={toggleModal}>
-                <Button color="primary" outline>
-                  <span className="px-2">Close</span>
-                </Button>
-              </Link>
+              <Button color="primary" outline onClick={toggleModal}>
+                <span className="px-2">Close</span>
+              </Button>
               {selectedIds.length > 0 && (
                 <Button color="primary" className="ms-3" onClick={onSendInvitationModalOpen}>
                   Invite
