@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Badge, Button, Card, CardBody, CardText, Input, Table, UncontrolledTooltip } from 'reactstrap';
-import { ChevronDown, ChevronUp, Copy } from 'react-feather';
+import { ChevronDown, ChevronUp, Copy, Info } from 'react-feather';
 import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import {
@@ -20,6 +20,7 @@ import PaymentBy from './PaymentBy';
 import { clearMilestoneTransactions } from '../../../redux/reducers/milestonePayment';
 import PaymentTableWrapper from './style';
 import theme from '../../../configs/themeVariables';
+import { PaymentInfoBanner } from '../style';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -28,6 +29,7 @@ const PaymentTable = () => {
   const [feeStructure, setFeeStructure] = useState(null);
   const [open, setOpen] = useState('');
   const [selectedTransactionId, setSelectedTransactionId] = useState(null);
+  const [selectedAndDisabledPaymentId, setSelectedAndDisabledPaymentId] = useState([]);
 
   const milestoneData = useSelector((state) => state.milestonePayment?.milestoneListDetails);
   const listLoading = useSelector((state) => state.milestonePayment?.listLoading);
@@ -123,6 +125,7 @@ const PaymentTable = () => {
   const handlePaymentSelect = (e) => {
     const id = e.target.name;
     const isExisting = selectedPaymentData.find((item) => item._id === id);
+
     if (isExisting) {
       const newArray = selectedPaymentData.filter((item) => item._id !== id);
       const newData = selectedPaymentId.filter((item) => item !== id);
@@ -135,6 +138,48 @@ const PaymentTable = () => {
       setSelectedPaymentId((prev) => [...prev, id]);
     }
   };
+
+  const isAllMilestonePaid = milestoneData?.every(
+    (mile) => mile.payment_status === PAYMENT_STATUS.PAID || mile.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL,
+  );
+
+  useEffect(() => {
+    if (milestoneData && !isAllMilestonePaid) {
+      if (milestoneData?.length >= 2) {
+        // if there are 2 or more milestones
+        const firstMilestone = milestoneData[0];
+        const secondMilestone = milestoneData[1];
+
+        // checking if first and second milestones are paid
+        const isFirstTwoMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
+
+        if (!isFirstTwoMilestonePaid) {
+          // this will run for both the cases - total milestones > 2 or total milestones = 2
+          // if first and second milestones are not paid then selecting both of them for payment and these will be disabled from user's selection
+          setSelectedPaymentData([firstMilestone, secondMilestone]);
+          setSelectedPaymentId([firstMilestone._id, secondMilestone._id]);
+          setSelectedAndDisabledPaymentId([firstMilestone._id, secondMilestone._id]);
+        } else if (milestoneData?.length > 2) {
+          // this will run only for total milestones > 2
+          // selecting latest not paid milestone in the list for the payment and this will be disabled from user's selection
+          const firstNotPaidMilestoneInTheList = milestoneData.find((mile) => !isPaymentDone(mile));
+          setSelectedPaymentData([firstNotPaidMilestoneInTheList]);
+          setSelectedPaymentId([firstNotPaidMilestoneInTheList._id]);
+          setSelectedAndDisabledPaymentId([firstNotPaidMilestoneInTheList._id]);
+        }
+      } else {
+        // if there is only 1 milestone
+        const firstMilestone = milestoneData[0];
+
+        if (!isPaymentDone(firstMilestone)) {
+          // checking if first milestone is not paid then selecting that milestone for payment and this will be disabled from user's selection
+          setSelectedPaymentData([firstMilestone]);
+          setSelectedPaymentId([firstMilestone._id]);
+          setSelectedAndDisabledPaymentId([firstMilestone._id]);
+        }
+      }
+    }
+  }, [milestoneData]);
 
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
@@ -174,9 +219,6 @@ const PaymentTable = () => {
     isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
     isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
 
-  const isAllMilestonePaid = milestoneData?.every(
-    (mile) => mile.payment_status === PAYMENT_STATUS.PAID || mile.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL,
-  );
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
@@ -214,9 +256,9 @@ const PaymentTable = () => {
           modal={makePaymentModal}
           toggleModal={handleCancel}
           selectedMilestoneIds={selectedPaymentId}
+          selectedAndDisabledPaymentId={selectedAndDisabledPaymentId}
         />
       )}
-
       {milestoneData?.length > 0 && (
         <Card className="" style={{ backgroundColor: 'transparent' }}>
           <div className="p-2 pb-0">
@@ -224,6 +266,15 @@ const PaymentTable = () => {
           </div>
           <hr />
           <CardBody>
+            {user?.user_type === userTypes.client && !isAllMilestonePaid && (
+              <PaymentInfoBanner className="mb-2 d-flex px-1 py-2">
+                <Info size={18} color={theme.activeNavPillText} className="me-50 info-banner-icon" />
+                <p className="font-medium-1 m-0 info">
+                  <span className="fw-bolder font-medium-1">Note:</span> In order for the project to start, at any given
+                  point of time a minimum of 2 milestone payments need to be made.
+                </p>
+              </PaymentInfoBanner>
+            )}
             <div className="shadow rounded" style={{ backgroundColor: 'white', width: '100%' }}>
               <PaymentTableWrapper>
                 <Table responsive className="w-100">
@@ -255,20 +306,20 @@ const PaymentTable = () => {
                           onClick={() => showMilestoneTransanctions(item?._id, item)}
                         >
                           {isClient ? (
-                            !isPaymentDone(item) ? (
-                              <td className="py-1">
+                            <td className="py-1">
+                              <div className="form-check">
                                 <Input
                                   type="checkbox"
                                   checked={selectedPaymentId.includes(item?._id)}
                                   name={item?._id}
-                                  onChange={(e) => handlePaymentSelect(e)}
+                                  onChange={(e) =>
+                                    !selectedAndDisabledPaymentId?.includes(item?._id) && handlePaymentSelect(e)
+                                  }
                                   className="p-50 payment-form-control"
                                   disabled={isDisabled(item.payment_status)}
                                 />
-                              </td>
-                            ) : (
-                              <td>{}</td>
-                            )
+                              </div>
+                            </td>
                           ) : (
                             <td> </td>
                           )}
