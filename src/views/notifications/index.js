@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { selectThemeColors } from '@utils';
-import { Badge, Card, CardBody, Col, Label, Row } from 'reactstrap';
+import { Badge, Card, CardBody, Col, Label, Row, Spinner } from 'reactstrap';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Bell } from 'react-feather';
@@ -11,7 +11,12 @@ import DateTime from '../../lib/date-time';
 import { BorderCardContainer, NotificationBadgeContainer } from './style';
 import theme from '../../configs/themeVariables';
 // import getNotifications from '../../redux/actions/notificationsActions';
-import { notifications, notificationsLoading } from '../../redux/selectors/notificationsSelectors';
+import {
+  markAllNotificationAsReadLoading,
+  notifications,
+  notificationsLoading,
+  notificationsPolling,
+} from '../../redux/selectors/notificationsSelectors';
 import NoDataFoundGif from '../../assets/images/noDataFoundGif.gif';
 import { clearNotificationsData } from '../../redux/reducers/notifications';
 import SwitchConfirmModal from '../modals/SwitchConfirm';
@@ -20,7 +25,14 @@ import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { setItem } from '../../utility/localStorageControl';
 import { ElevateShadow } from '../styled';
-import { getNotifications, markNotificationAsRead } from '../../redux/actions/notificationsActions';
+import {
+  getNotifications,
+  getNotificationsPolling,
+  markAllNotificationAsRead,
+  markNotificationAsRead,
+} from '../../redux/actions/notificationsActions';
+import { SUCCESS } from '../../utility/constants/ToastTypes';
+import ShowToastMessage from '../../@core/components/toast';
 
 const Notifications = () => {
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
@@ -41,6 +53,9 @@ const Notifications = () => {
 
   const notificationsData = useSelector(notifications);
   const isLoading = useSelector(notificationsLoading);
+  const markAllNotificationAsReadIsLoading = useSelector(markAllNotificationAsReadLoading);
+  const notificationsPollingData = useSelector(notificationsPolling);
+
   useEffect(() => {
     dispatch(getNotifications({ priority: 0, page: 1, pageSize: 10, oldData: [] }));
     setItem('baseRoute', 'notifications');
@@ -91,6 +106,17 @@ const Notifications = () => {
     }
   `;
 
+  const onMarkAllAsReadSuccess = (res) => {
+    setSelectedPriority({ label: 'All Priorities', value: 0 });
+    dispatch(getNotificationsPolling());
+    dispatch(getNotifications({ priority: 0, page: 1, pageSize: 10, oldData: [] }));
+    ShowToastMessage(SUCCESS, res.data.data.message);
+  };
+
+  const onMarkAllAsReadClick = () => {
+    dispatch(markAllNotificationAsRead(onMarkAllAsReadSuccess));
+  };
+
   if (isLoading) {
     return <ComponentSpinner />;
   }
@@ -99,7 +125,20 @@ const Notifications = () => {
     <>
       <div className="d-flex justify-content-between mb-2 mt-1">
         <h2>Notifications</h2>
-        <Row className="mt-2 w-100 justify-content-end">
+        <Row className="mt-2 w-100 justify-content-end align-items-end">
+          {notificationsPollingData?.unread_notifications_count > 0 && notificationsData?.data?.length > 0 && (
+            <Col sm="6" md="4" lg="2">
+              {markAllNotificationAsReadIsLoading ? (
+                <div className="d-flex align-items-center justify-content-center">
+                  <Spinner size="sm" color="primary" />
+                </div>
+              ) : (
+                <p className="m-0 text-primary text-decoration-underline cursor-pointer" onClick={onMarkAllAsReadClick}>
+                  Mark All As Read
+                </p>
+              )}
+            </Col>
+          )}
           <Col sm="6" md="4" lg="2">
             <Label>Priority</Label>
             <FiltersWrap>
