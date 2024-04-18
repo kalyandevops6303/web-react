@@ -13,8 +13,10 @@ import {
   FormFeedback,
   Spinner,
   UncontrolledTooltip,
+  InputGroup,
+  InputGroupText,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, Info } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info, Eye, EyeOff } from 'react-feather';
 import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
@@ -63,7 +65,21 @@ const Step2 = ({ setStep }) => {
       })
       .transform((value) => (value === null ? undefined : value))
       .required('This is required'),
-    taxId: Yup.string().required('Tax Id is required'),
+    taxType: Yup.string(),
+    ssnTaxId: Yup.number().when('taxType', {
+      is: (taxType) => taxType === 'US',
+      then: () =>
+        Yup.number()
+          .required('Tax Id is required')
+          .min(100000000, 'Tax Id must be 9 digits without any special characters')
+          .max(999999999, 'Tax Id must be 9 digits without any special characters')
+          .integer('Tax Id must be a number')
+          .typeError('Tax Id Must be a number'),
+    }),
+    nsnTaxId: Yup.string().when('taxType', {
+      is: (taxType) => taxType === 'NON_US',
+      then: () => Yup.string().required('Tax Id is required'),
+    }),
   });
 
   const {
@@ -76,7 +92,8 @@ const Step2 = ({ setStep }) => {
     resolver: yupResolver(taxIdentitySchema),
     defaultValues: {
       taxName: '',
-      taxId: '',
+      ssnTaxId: '',
+      nsnTaxId: '',
       taxClass: '',
     },
   });
@@ -97,10 +114,13 @@ const Step2 = ({ setStep }) => {
         });
       }
       if (res.tax_identification?.social_security_number?.length > 0 && res?.tax_user_type === 'US') {
-        setValue('taxId', res.tax_identification?.social_security_number);
+        setValue('ssnTaxId', res.tax_identification?.social_security_number, { shouldValidate: true });
       }
       if (res.tax_identification?.national_taxpayer_number?.length > 0 && res?.tax_user_type === 'NON_US') {
-        setValue('taxId', res.tax_identification?.national_taxpayer_number);
+        setValue('nsnTaxId', res.tax_identification?.national_taxpayer_number, { shouldValidate: true });
+      }
+      if (res?.tax_user_type) {
+        setValue('taxType', res?.tax_user_type);
       }
     }
   };
@@ -161,8 +181,8 @@ const Step2 = ({ setStep }) => {
         tax_identification: {
           legal_name: data?.taxName,
           federal_tax_classification: data?.taxClass?.value,
-          social_security_number: taxUserType === 'US' ? data?.taxId : '',
-          national_taxpayer_number: taxUserType === 'NON_US' ? data?.taxId : '',
+          social_security_number: data?.ssnTaxId || '',
+          national_taxpayer_number: data?.nsnTaxId || '',
           tax_payer_identification_type: taxUserType === 'US' ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
         },
       };
@@ -173,6 +193,16 @@ const Step2 = ({ setStep }) => {
 
       dispatch(updatePaymentDetails(updatedData, onSuccess));
     }
+  };
+  const [inputVisibility, setInputVisibility] = useState(false);
+
+  const renderIcon = () => {
+    const size = 18;
+
+    if (inputVisibility === false) {
+      return <Eye color="#E3E6EF" size={size} />;
+    }
+    return <EyeOff color="#E3E6EF" size={size} />;
   };
 
   return (
@@ -247,6 +277,7 @@ const Step2 = ({ setStep }) => {
                   invalid={errors.taxClass && true}
                   render={({ field }) => (
                     <Select
+                      isSearchable={false}
                       isLoading={false}
                       options={taxClassificationOptions}
                       isDisabled={isPaymentOnboardingDone}
@@ -266,37 +297,77 @@ const Step2 = ({ setStep }) => {
               </Col>
             </Row>
             <Row className="mt-1 mb-1">
-              <Col sm="12" md="12" lg="6">
-                <Label className="form-label" for="taxId">
-                  {taxUserType === 'NON_US' ? 'NSN #' : 'SSN #'}
-                  <span className="label-asterisk me-25">*</span>
-                </Label>
-                <Info size={18} color={theme.infoIcon} id="security-number" />
-                <UncontrolledTooltip placement="right" target="security-number">
-                  <div className="d-flex flex-column align-items-start">
-                    <p className="m-0 text-start">
-                      {taxUserType === 'NON_US'
-                        ? 'National security number(NSN); Government recognized unique national security number eg PAN card, Aadhar card etc'
-                        : 'Enter Social Security Number (SSN) eg gov ID#'}
-                    </p>
-                  </div>
-                </UncontrolledTooltip>
-                <Controller
-                  id="taxId"
-                  name="taxId"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      disabled={isPaymentOnboardingDone}
-                      placeholder={taxUserType === 'NON_US' ? 'Enter NSN #' : 'Enter SSN #'}
-                      invalid={errors.taxId && true}
-                      className="payment-form-control"
-                    />
-                  )}
-                />
-                {errors.taxId && <FormFeedback>{errors.taxId.message}</FormFeedback>}
-              </Col>
+              {taxUserType === 'US' && (
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="ssnTaxId">
+                    SSN #<span className="label-asterisk me-25">*</span>
+                  </Label>
+                  <Info size={18} color={theme.infoIcon} id="security-number" />
+                  <UncontrolledTooltip placement="right" target="security-number">
+                    <div className="d-flex flex-column align-items-start">
+                      <p className="m-0 text-start">Enter Social Security Number (SSN) eg gov ID#</p>
+                    </div>
+                  </UncontrolledTooltip>
+                  <Controller
+                    id="ssnTaxId"
+                    name="ssnTaxId"
+                    control={control}
+                    render={({ field }) => (
+                      <InputGroup
+                        className={`payment-form-control input-group-merge ${errors.ssnTaxId && 'is-invalid'}`}
+                      >
+                        <Input
+                          type={inputVisibility === false ? 'password' : 'text'}
+                          {...field}
+                          invalid={errors.ssnTaxId && true}
+                          placeholder="Enter SSN #"
+                        />
+                        <InputGroupText className="cursor-pointer" onClick={() => setInputVisibility(!inputVisibility)}>
+                          {renderIcon()}
+                        </InputGroupText>
+                      </InputGroup>
+                    )}
+                  />
+                  {errors.ssnTaxId && <FormFeedback>{errors.ssnTaxId.message}</FormFeedback>}
+                </Col>
+              )}
+              {taxUserType === 'NON_US' && (
+                <Col sm="12" md="12" lg="6">
+                  <Label className="form-label" for="nsnTaxId">
+                    NSN #<span className="label-asterisk me-25">*</span>
+                  </Label>
+                  <Info size={18} color={theme.infoIcon} id="security-number" />
+                  <UncontrolledTooltip placement="right" target="security-number">
+                    <div className="d-flex flex-column align-items-start">
+                      <p className="m-0 text-start">
+                        National security number(NSN); Government recognized unique national security number eg PAN
+                        card, Aadhar card etc
+                      </p>
+                    </div>
+                  </UncontrolledTooltip>
+                  <Controller
+                    id="nsnTaxId"
+                    name="nsnTaxId"
+                    control={control}
+                    render={({ field }) => (
+                      <InputGroup
+                        className={`payment-form-control input-group-merge ${errors.nsnTaxId && 'is-invalid'}`}
+                      >
+                        <Input
+                          type={inputVisibility === false ? 'password' : 'text'}
+                          {...field}
+                          invalid={errors.nsnTaxId && true}
+                          placeholder="Enter NSN #"
+                        />
+                        <InputGroupText className="cursor-pointer" onClick={() => setInputVisibility(!inputVisibility)}>
+                          {renderIcon()}
+                        </InputGroupText>
+                      </InputGroup>
+                    )}
+                  />
+                  {errors.nsnTaxId && <FormFeedback>{errors.nsnTaxId.message}</FormFeedback>}
+                </Col>
+              )}
             </Row>
           </CardBody>
         </Card>
