@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft, FileText, Info } from 'react-feather';
+import { ChevronLeft, Info } from 'react-feather';
 import {
   AccordionBody,
   AccordionHeader,
@@ -31,7 +31,7 @@ import theme from '../../configs/themeVariables';
 import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
 import { userTypes } from '../../utility/constants/Constant';
-import { downloadFile, formatFileSize, truncateSentence } from '../../utility/Utils';
+import { downloadFile, formatFileSize, renderFilePreview, truncateSentence } from '../../utility/Utils';
 import AcceptBidModal from '../modals/AcceptBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
@@ -520,9 +520,17 @@ const BidDetails = () => {
             </CardBody>
           </Card>
           <Card>
-            {bidInfo?.documents?.map((item) => (
-              <div key={item?.file_key}>
-                <CardBody className="d-flex align-items-center w-100">
+            <CardBody className="gap-3">
+              {bidInfo?.documents?.map((item, index) => (
+                <div
+                  className={
+                    // eslint-disable-next-line no-unsafe-optional-chaining
+                    index !== bidInfo?.documents?.length - 1
+                      ? 'd-flex align-items-center w-100 mb-2'
+                      : 'd-flex align-items-center w-100'
+                  }
+                  key={item?.file_key}
+                >
                   {downloadUrlIsLoading && selectedFileKey === item?.file_key ? (
                     <div className="d-flex align-items-center justify-content-between">
                       <Spinner color="primary" />
@@ -542,8 +550,7 @@ const BidDetails = () => {
                         );
                       }}
                     >
-                      <FileText size="18" className="me-75" />
-                      <CardText className="mb-0">{item?.file_name}</CardText>
+                      {renderFilePreview(item)} <span className="mb-0">{item?.file_name}</span>
                     </div>
                   )}
                   <div className="d-flex justify-content-end w-100 ms-1 font-weight-bold">
@@ -554,9 +561,9 @@ const BidDetails = () => {
                       </CardText>
                     </div>
                   </div>
-                </CardBody>
-              </div>
-            ))}
+                </div>
+              ))}
+            </CardBody>
           </Card>
         </Col>
       </Row>

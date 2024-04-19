@@ -30,7 +30,7 @@ import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ChevronLeft, ChevronRight, Edit, FileText, Info, Plus, Upload } from 'react-feather';
+import { ChevronLeft, ChevronRight, Edit, Info, Plus, Upload } from 'react-feather';
 import { ChangeBidTypeButton, MilestoneSectionWrapper } from '../style';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
@@ -38,7 +38,13 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userTypes } from '../../../utility/constants/Constant';
 import { DropzoneContainer } from '../../CreateProject/style';
-import { downloadFile, downloadUploadedFile, formatDateWithDash, getFileSize } from '../../../utility/Utils';
+import {
+  downloadFile,
+  downloadUploadedFile,
+  formatDateWithDash,
+  getFileSize,
+  renderFilePreview,
+} from '../../../utility/Utils';
 import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
 import { bidDetailsLoading, projectDetails, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
@@ -482,8 +488,6 @@ const FixedAdvanceMilestoneView = () => {
     onDrop,
   });
 
-  const renderFilePreview = () => <FileText size="18" className="me-75 mb-50" />;
-
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
@@ -537,7 +541,7 @@ const FixedAdvanceMilestoneView = () => {
                   </div>
                 ) : (
                   <div className="d-flex align-items-center">
-                    <span>{renderFilePreview()}</span>
+                    <span>{renderFilePreview(file?.file)}</span>
                     <span>{file?.file?.name || file?.file?.file_name}</span>
                   </div>
                 )}
