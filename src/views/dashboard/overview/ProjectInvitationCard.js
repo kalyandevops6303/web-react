@@ -8,7 +8,7 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 
 // ** Reactstrap Imports
 import { useNavigate } from 'react-router';
-import { Card, CardBody, CardText, CardTitle } from 'reactstrap';
+import { Badge, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import { useDispatch } from 'react-redux';
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -23,44 +23,66 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import TagsSection from './TagsSection';
 
-const UserSection = ({ totalCount, users, name, projectName }) => (
-  <div className={`${projectName ? '' : 'mt-1'} user-section`}>
-    {projectName && <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>}
-    <div className="avatar-wrap">
-      {users.length > 3 ? (
-        <span className="d-flex avatars">
+const UserSection = ({ totalCount, users, name, projectName, tagName }) => {
+  const renderBadgeBasedOnTagName = () => {
+    switch (tagName) {
+      case 'Team':
+        return (
+          <Badge className="rounded talent-badge" color={`light-client'}`}>
+            {tagName}
+          </Badge>
+        );
+      case 'Client':
+        return (
+          <Badge className="rounded light-client" color={`light-client'}`}>
+            {tagName}
+          </Badge>
+        );
+      default:
+        return null;
+    }
+  };
+  return (
+    <div className={`${projectName ? '' : 'mt-1'} user-section`}>
+      <div className="d-flex">{renderBadgeBasedOnTagName()}</div>
+      {projectName && <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>}
+      <div className="avatar-wrap">
+        {users.length > 3 ? (
+          <span className="d-flex avatars">
+            <AvatarGroup
+              totalCount={totalCount}
+              size="sm"
+              className="mr-4"
+              data={[
+                ...users.slice(0, 3).map((user) => ({
+                  ...user,
+                  tooltipId: `${projectName ?? name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
+                })),
+              ]}
+            />
+          </span>
+        ) : (
           <AvatarGroup
-            totalCount={totalCount}
             size="sm"
-            className="mr-4"
             data={[
-              ...users.slice(0, 3).map((user) => ({
+              ...users?.map((user) => ({
                 ...user,
                 tooltipId: `${projectName ?? name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
               })),
             ]}
           />
-        </span>
-      ) : (
-        <AvatarGroup
-          size="sm"
-          data={[
-            ...users?.map((user) => ({
-              ...user,
-              tooltipId: `${projectName ?? name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
-            })),
-          ]}
-        />
-      )}
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 UserSection.propTypes = {
   users: PropTypes.array,
   name: PropTypes.string,
   totalCount: PropTypes.number,
   projectName: PropTypes.string,
+  tagName: PropTypes.string,
 };
 
 const ProjectInvitaionCard = ({ accordionName, data, className }) => {
@@ -99,6 +121,27 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
     }
   };
 
+  const renderAmountBasedOnRequestEntity = () => {
+    switch (data?.request_entity) {
+      case 'TEAM':
+        return (
+          <div className="design-planning mt-1 bottom-detail-elements">
+            <CardText className="mb-25">Amount</CardText>
+            <h6 className="mb-0">{`${data?.project?.pay_type.currency?.code}-${data?.project?.amount}`}</h6>
+          </div>
+        );
+      case 'CLIENT':
+        return !data?.pay_type?.variable_cost ? (
+          <div className="design-planning mt-1 bottom-detail-elements">
+            <CardText className="mb-25">Amount</CardText>
+            <h6 className="mb-0">{`${data?.project?.pay_type.currency?.code}-${data?.project?.pay_type.fixed_cost}`}</h6>
+          </div>
+        ) : null;
+      default:
+        return null;
+    }
+  };
+
   const users = [];
 
   data?.invitation_by?.team_members?.map((user) =>
@@ -115,7 +158,7 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      <Card className="card-app-design new-tag-relative-card" >
+      <Card className="card-app-design new-tag-relative-card">
         {!data?.is_new && <NewTag />}
         <CardBody className="d-flex flex-column justify-content-between">
           <div>
@@ -158,29 +201,46 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
               </div>
               <TagsSection open="" tags={data?.project.proficiency.skills} />
             </div>
-            <UserSection
-              totalCount={
-                data?.invitation_by?.team_members_count || data?.invitation_by?.workers_count || data?.workers_count
-              }
-              tagName="Team"
-              name={data?.invitation_by?.name}
-              users={users}
-              projectName={data?.project?.details?.name}
-            />
-            <div className="bottom-detail d-flex mt-1">
-              <div className="design-planning-wrapper">
-                <div className="design-planning">
+            <div className="d-flex justify-content-between">
+              <div>
+                <UserSection
+                  tagName="Client"
+                  name={data?.client?.company_name}
+                  users={[
+                    {
+                      user_type: userTypes.client,
+                      title: `${data?.client?.first_name} ${data?.client?.last_name}`,
+                      user_id: data?.client?._id,
+                      img: data?.client?.image_uri || avatar7,
+                      placement: 'bottom',
+                      imgHeight: 33,
+                      imgWidth: 33,
+                      tooltipId: `tooltip-${data?.client?.first_name?.replace(
+                        /\s+/g,
+                        '-',
+                      )}-${data?.client_info?.last_name?.replace(/\s+/g, '-')}`,
+                    },
+                  ]}
+                  projectName={data?.project?.details?.name}
+                />
+                <div className="design-planning mt-1 bottom-detail-elements">
                   <CardText className="mb-25">Start date</CardText>
                   <h6 className="mb-0">{`${
                     DateTime.fromMillis(data?.project?.listing_details?.start_date_epoch).toFormat('MMM dd, yy') || '-'
                   }`}</h6>
                 </div>
-                {!data?.pay_type?.variable_cost && (
-                  <div className="design-planning">
-                    <CardText className="mb-25">Amount</CardText>
-                    <h6 className="mb-0">{`${data?.project?.pay_type.currency?.code}-${data?.project?.pay_type.fixed_cost}`}</h6>
-                  </div>
-                )}
+              </div>
+              <div>
+                <UserSection
+                  totalCount={
+                    data?.invitation_by?.team_members_count || data?.invitation_by?.workers_count || data?.workers_count
+                  }
+                  tagName="Team"
+                  name={data?.invitation_by?.name}
+                  users={users}
+                  projectName={data?.project?.details?.name}
+                />
+                {renderAmountBasedOnRequestEntity()}
               </div>
             </div>
           </div>
