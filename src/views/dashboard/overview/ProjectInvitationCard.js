@@ -9,6 +9,7 @@ import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 // ** Reactstrap Imports
 import { useNavigate } from 'react-router';
 import { Badge, Card, CardBody, CardText, CardTitle } from 'reactstrap';
+import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 // ** Avatar Imports
 import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -16,26 +17,31 @@ import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { DateTime } from 'luxon';
 import theme from '../../../configs/themeVariables';
 import { ProjectWrapper } from './style';
-import { userTypes } from '../../../utility/constants/Constant';
+import { userTypes, minimumAvatarLength } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import TagsSection from './TagsSection';
+import { giveStrokeColor, generateToolTipId } from '../../../utility/Utils';
 
 const UserSection = ({ totalCount, users, name, projectName, tagName }) => {
+  const userSectionClasses = classNames({
+    'mt-1': !projectName,
+    'user-section': true,
+  });
   const renderBadgeBasedOnTagName = () => {
     switch (tagName) {
-      case 'Team':
+      case userTypes.team:
         return (
           <Badge className="rounded talent-badge" color={`light-client'}`}>
-            {tagName}
+            Team
           </Badge>
         );
-      case 'Client':
+      case userTypes.client:
         return (
           <Badge className="rounded light-client" color={`light-client'}`}>
-            {tagName}
+            Client
           </Badge>
         );
       default:
@@ -43,11 +49,11 @@ const UserSection = ({ totalCount, users, name, projectName, tagName }) => {
     }
   };
   return (
-    <div className={`${projectName ? '' : 'mt-1'} user-section`}>
+    <div className={userSectionClasses}>
       <div className="d-flex">{renderBadgeBasedOnTagName()}</div>
       {projectName && <CardText className="mt-1 truncate-2 active-project-users">{name}</CardText>}
       <div className="avatar-wrap">
-        {users.length > 3 ? (
+        {users.length > minimumAvatarLength ? (
           <span className="d-flex avatars">
             <AvatarGroup
               totalCount={totalCount}
@@ -56,7 +62,7 @@ const UserSection = ({ totalCount, users, name, projectName, tagName }) => {
               data={[
                 ...users.slice(0, 3).map((user) => ({
                   ...user,
-                  tooltipId: `${projectName ?? name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
+                  tooltipId: generateToolTipId(projectName, name, user.title),
                 })),
               ]}
             />
@@ -67,7 +73,7 @@ const UserSection = ({ totalCount, users, name, projectName, tagName }) => {
             data={[
               ...users?.map((user) => ({
                 ...user,
-                tooltipId: `${projectName ?? name}-${user.title}`.replace(/[^a-zA-Z0-9-]/g, '-'),
+                tooltipId: generateToolTipId(projectName, name, user.title),
               })),
             ]}
           />
@@ -110,27 +116,16 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
     }
   };
 
-  const giveStrokeColor = (percentage) => {
-    if (percentage <= 40) {
-      return theme.red;
-      // eslint-disable-next-line
-    } else if (percentage > 40 && percentage <= 70) {
-      return theme.orange;
-    } else {
-      return theme.green;
-    }
-  };
-
   const renderAmountBasedOnRequestEntity = () => {
     switch (data?.request_entity) {
-      case 'TEAM':
+      case userTypes.team:
         return (
           <div className="design-planning mt-1 bottom-detail-elements">
             <CardText className="mb-25">Amount</CardText>
             <h6 className="mb-0">{`${data?.project?.pay_type.currency?.code}-${data?.project?.amount}`}</h6>
           </div>
         );
-      case 'CLIENT':
+      case userTypes.client:
         return !data?.pay_type?.variable_cost ? (
           <div className="design-planning mt-1 bottom-detail-elements">
             <CardText className="mb-25">Amount</CardText>
@@ -204,7 +199,7 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
             <div className="d-flex justify-content-between">
               <div>
                 <UserSection
-                  tagName="Client"
+                  tagName="CLIENT"
                   name={data?.client?.company_name}
                   users={[
                     {
@@ -235,7 +230,7 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
                   totalCount={
                     data?.invitation_by?.team_members_count || data?.invitation_by?.workers_count || data?.workers_count
                   }
-                  tagName="Team"
+                  tagName="TEAM"
                   name={data?.invitation_by?.name}
                   users={users}
                   projectName={data?.project?.details?.name}
