@@ -47,6 +47,9 @@ const TableWrapper = styled.div`
       margin-left: 4rem;
     }
   }
+  .react-dataTable {
+    border-radius: 0.375rem;
+  }
 `;
 
 const ReceivedBids = ({ projectName }) => {
@@ -54,6 +57,7 @@ const ReceivedBids = ({ projectName }) => {
   const param = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const [open, setOpen] = useState(null);
   const receivedBids = useSelector((state) => state.projectDetails.receivedBids);
   const [hasMore, setHasMore] = useState(true);
   const totalInvited = useSelector((state) => state.projectDetails.invitedMemberForProjectByClient);
@@ -75,9 +79,11 @@ const ReceivedBids = ({ projectName }) => {
   }, [selectReceivedBidscurrentPreview]);
 
   useEffect(() => {
-    dispatch(
-      getReceivedBids({ metadata, search_text: searchText, bid_status: status?.value, project_id: param?.projectId }),
-    );
+    if (!isLoading) {
+      dispatch(
+        getReceivedBids({ metadata, search_text: searchText, bid_status: status?.value, project_id: param?.projectId }),
+      );
+    }
   }, [searchText, status]);
 
   const fetchMore = () => {
@@ -94,6 +100,24 @@ const ReceivedBids = ({ projectName }) => {
         project_id: param?.projectId,
       }),
     );
+  };
+
+  const toggle = (id) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      if (id === 1 && !isLoading) {
+        dispatch(
+          getReceivedBids({
+            metadata,
+            search_text: searchText,
+            bid_status: status?.value,
+            project_id: param?.projectId,
+          }),
+        );
+      }
+      setOpen(id);
+    }
   };
 
   const tableColumns = [
@@ -249,25 +273,30 @@ const ReceivedBids = ({ projectName }) => {
 
   return (
     <AccordionItem>
-      <AccordionHeader targetId="1">
+      <AccordionHeader targetId="1" onClick={() => toggle(1)} className="active-accordion-header">
         <AccordionHeadStyle>
-          <span className="title-head">Received Bids</span>
+          <div className="title-head">
+            <span className="step d-block">STEP 1</span>
+            <span className="d-flex">
+              Received Bids <span className="indicator" />
+            </span>
+          </div>
           <div className="d-flex gap-1 aling-items-center">
             <CardText className="d-none view-all-cta">Give rating</CardText>
             <div>
               <span className="key">Received</span>
-              <CardText className="value text-end">{selectReceivedBidsMetadata?.total_records}</CardText>
+              <CardText className="value text-end">{selectReceivedBidsMetadata?.total_records || 0}</CardText>
             </div>
             <div className="me-1">
               <span className="key">Invited</span>
-              <CardText className="value text-end">{totalInvited}</CardText>
+              <CardText className="value text-end">{totalInvited || 0}</CardText>
             </div>
           </div>
         </AccordionHeadStyle>
       </AccordionHeader>
       <AccordionBody accordionId="1">
         <div className="accordion-body-desc">
-          <CardText className="desc mb-0">Please review the bids received for your project</CardText>
+          <CardText className="desc mb-0 mt-1">Please review the bids received for your project</CardText>
           <Row className="justify-content-between w-100 mb-2">
             <Col className="d-flex align-items-end" sm="12" md="12" lg="5">
               <InputGroup className="input-group-merge">

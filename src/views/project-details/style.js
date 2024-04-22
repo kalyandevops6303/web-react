@@ -398,7 +398,7 @@ const BidWrapper = styled.div`
       }
     }
     .accordion-item {
-      border-radius: 0.3rem;
+      border-radius: 0.375rem;
       .accordion-header {
         button {
           font-size: 1rem;
@@ -406,6 +406,26 @@ const BidWrapper = styled.div`
           font-size: 1rem !important;
         }
       }
+    }
+  }
+  .sign-accordion-header {
+    padding: 1rem 1.2rem;
+  }
+  .active-accordion-header {
+    border-radius: 0.375rem;
+    background: ${theme.accordionHeaderActiveBg};
+    .collapsed {
+      background: ${theme.accordionHeaderActiveBg};
+    }
+  }
+  .title-head {
+    margin: auto 0;
+    .step {
+      color: ${theme.gray};
+      font-size: 0.75rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1rem; /* 133.333% */
     }
   }
 
@@ -521,6 +541,13 @@ const AccordionHeadStyle = styled.div`
   padding-left: 1.2rem;
   .title-head {
     margin: auto 0;
+    .step {
+      color: ${theme.gray};
+      font-size: 0.75rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1rem; /* 133.333% */
+    }
   }
   .view-all-cta {
     font-size: 0.875rem;

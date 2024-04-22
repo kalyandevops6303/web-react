@@ -92,6 +92,7 @@ const badgeIconOrange = '#EF8C18';
 const newTagColor = '#093682';
 const darkGreyBorderColor = '#C2C2C2';
 const inputDisabledBg = '#efefef';
+const accordionHeaderActiveBg = '#F2F8FF';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -189,5 +190,6 @@ const theme = {
   newTagColor,
   darkGreyBorderColor,
   inputDisabledBg,
+  accordionHeaderActiveBg,
 };
 export default theme;

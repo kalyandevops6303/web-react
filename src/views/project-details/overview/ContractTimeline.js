@@ -81,16 +81,29 @@ const ContractTimeline = () => {
   return (
     <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
       <AccordionItem>
-        <AccordionHeader onClick={() => toggle(1)} targetId="1">
+        <AccordionHeader onClick={() => toggle(1)} targetId="1" className="active-accordion-header">
           <AccordionHeadStyle>
-            <span className="d-flex title-head">
-              Contract
-              {contractData?.is_contract_terminated === false ? (
-                <span> {!contractData?.is_signed ? <span className="indicator" /> : ''}</span>
-              ) : (
-                ''
-              )}
-            </span>
+            <div className="title-head">
+              <span className="step d-block">
+                STEP{' '}
+                {(() => {
+                  switch (userType) {
+                    case userTypes.client:
+                      return projectDetailsData?.nda?.is_nda ? 4 : 3;
+                    default:
+                      return projectDetailsData?.nda?.is_nda ? 3 : 2;
+                  }
+                })()}
+              </span>
+              <span className="d-flex">
+                Contract
+                {contractData?.is_contract_terminated === false ? (
+                  <span> {!contractData?.is_signed ? <span className="indicator" /> : ''}</span>
+                ) : (
+                  ''
+                )}
+              </span>
+            </div>
 
             {contractData?.is_contract_terminated === false ? (
               <div>

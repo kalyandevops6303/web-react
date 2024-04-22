@@ -372,9 +372,12 @@ const TeamCreatedModalLogoImg = styled.img`
 const Elevate = styled.div`
   transition: box-shadow 0.3s; /* Optional: Add a transition for a smoother effect on hover */
   border-radius: 0.375rem;
+
+  box-shadow: ${(props) => (props.active ? `0px 0px 0px 1px ${theme.blueBorderColorv2}` : 'none')};
+
   &:hover {
     border-radius: 0.375rem;
-    box-shadow: 0px 0px 0px 1px ${theme.blueBorderColorv2}, /* First box shadow */ 0px 8px 12px 0px rgba(0, 0, 0, 0.08); /* Second box shadow */
+    box-shadow: 0px 0px 0px 1px ${theme.blueBorderColorv2};
   }
 `;
 const ElevateShadow = styled(Elevate)`
