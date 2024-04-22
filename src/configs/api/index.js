@@ -217,6 +217,7 @@ const API = {
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
     polling: `${apiAuthEndpoint}/api/v1/notifications/polling`,
     markAsRead: `${apiAuthEndpoint}/api/v1/notifications/mark-as-read`,
+    markAllAsRead: `${apiAuthEndpoint}/api/v1/notifications/mark-all-as-read`,
   },
   createBid: {
     checkBid: `${apiCreateProjectEndpoint}/api/v1/bid/check`,
@@ -299,6 +300,9 @@ const API = {
   paymentFullView: {
     paymentMetrics: `${apiOnboardingEndpoint}/api/v1/payment-metrics`,
     paymentHistory: `${apiOnboardingEndpoint}/api/v1/payment-history`,
+  },
+  fileUpload: {
+    scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
   },
 };
 

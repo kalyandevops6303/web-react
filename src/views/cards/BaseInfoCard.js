@@ -19,7 +19,7 @@ import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;

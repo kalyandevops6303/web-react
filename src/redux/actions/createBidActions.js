@@ -10,6 +10,7 @@ import {
   setWorkersService,
   submitBidService,
 } from '../../services/createBidServices';
+import { scanAndProcessFiles } from '../../utility/Utils';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -113,9 +114,22 @@ const saveSetWorkers = (bidId, data, onSuccess) => async (dispatch) => {
 const saveSetMilestones = (projectId, bidId, data, onSuccess) => async (dispatch) => {
   dispatch(setMilestonesRequest());
   try {
-    const res = await setMilestonesService(projectId, bidId, data);
-    dispatch(setMilestonesSuccess(res.data.data));
-    onSuccess();
+    const handleSaveMilestone = async () => {
+      const res = await setMilestonesService(projectId, bidId, data);
+      dispatch(setMilestonesSuccess(res.data.data));
+      onSuccess();
+    };
+
+    if (data?.documents?.length > 0) {
+      scanAndProcessFiles({
+        fileData: data?.documents,
+        handleMainAPI: handleSaveMilestone,
+        onError: () => dispatch(setMilestonesFailure()),
+        isPrivate: true,
+      });
+    } else {
+      handleSaveMilestone();
+    }
   } catch (error) {
     errorHandler(error, setMilestonesFailure);
   }

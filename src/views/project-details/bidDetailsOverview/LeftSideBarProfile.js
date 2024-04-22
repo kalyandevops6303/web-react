@@ -88,7 +88,6 @@ const LeftSidebarProfile = ({
   const handleJoinTeam = () => {
     const newPostData = {
       message: '',
-      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
       requests_to: {
         user_ids: [],
         team_ids: [param?.userId],
@@ -123,7 +122,7 @@ const LeftSidebarProfile = ({
                 </CustomBadge>
               </div>
             )}
-            {data?.is_favorite ? (
+            {data?.is_favourite ? (
               <Heart
                 className=" cursor-pointer d-flex ms-auto heart"
                 fill={theme.red}

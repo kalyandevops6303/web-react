@@ -53,3 +53,15 @@ export const DeclinedButton = styled.button`
   border: none;
   outline: none;
 `;
+
+export const InreviewButton = styled.button`
+  background-color: ${theme.orange} !important;
+  color: ${theme.white} !important;
+  border-radius: 12px !important;
+  font-size: 10px;
+  padding: 4px 10px !important;
+  align-self: flex-end !important;
+  margin-bottom: 3px;
+  border: none;
+  outline: none;
+`;

@@ -20,7 +20,7 @@ import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
 const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
   const project = data?.project;
-  const [isFavorite, setIsFavorite] = useState(project?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;

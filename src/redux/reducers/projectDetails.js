@@ -492,7 +492,7 @@ const projectDetails = createSlice({
         ...state.bidInfo,
         user_details: {
           ...state.bidInfo.user_details,
-          is_favorite: true,
+          is_favourite: true,
         },
       },
     }),
@@ -503,7 +503,7 @@ const projectDetails = createSlice({
         ...state.bidInfo,
         user_details: {
           ...state.bidInfo.user_details,
-          is_favorite: false,
+          is_favourite: false,
         },
       },
     }),

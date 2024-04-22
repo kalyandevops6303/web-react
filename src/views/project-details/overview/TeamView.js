@@ -35,6 +35,8 @@ const InvitedMemberComponent = () => {
 
   const selectInvitedMembersMetadata = useSelector((state) => state.projectDetails.invitedMemberMetaData);
   const selectInvitedMembercurrentPreview = useSelector((state) => state.projectDetails.invitedMemberCurrentPreview);
+  const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
+  const userDetailsData = useSelector(selectUserData);
   const metadata = { page: 1, page_size: 10 };
 
   useEffect(() => {
@@ -70,7 +72,6 @@ const InvitedMemberComponent = () => {
     const newPostData = {
       message: '',
       // eslint-disable-next-line no-undef
-      redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth/login`,
       requests_to: {
         user_ids: [user_id],
         team_ids: [],
@@ -124,9 +125,13 @@ const InvitedMemberComponent = () => {
                             </h6>
                           </div>
                         </div>
-                        <CardText style={{ flex: '2' }} className="fw-bold m-auto me-4">
-                          {data?.request_for?.role || 'Team Member'}
-                        </CardText>
+                        {userDetailsData?.user_type !== userTypes.client ? (
+                          <CardText style={{ flex: '2' }} className="fw-bold m-auto me-4">
+                            {data?.request_for?.role || 'Team Member'}
+                          </CardText>
+                        ) : (
+                          <CardText style={{ flex: '2' }} className="fw-bold m-auto me-4" />
+                        )}
                         <div style={{ flex: '2' }} className="me-4">
                           <Rating
                             initialRating={returnFormattedRating(data?.send_to?.rating)}
@@ -150,23 +155,52 @@ const InvitedMemberComponent = () => {
                           <CardText className="value">{data?.status}</CardText>
                         </div>
                       </div>
-                      {loadingItems[data?._id] ? (
+                      {userDetailsData?.team_type === userTypes.club ? (
                         <div className="d-flex justify-content-center m-auto">
-                          <Spinner size="sm" />
+                          {isClubAdmin && (
+                            <div className="d-flex justify-content-center m-auto">
+                              {loadingItems[data?._id] ? (
+                                <div className="d-flex justify-content-center m-auto">
+                                  <Spinner size="sm" />
+                                </div>
+                              ) : (
+                                <span
+                                  onClick={() =>
+                                    handleSendMail({
+                                      user_id: data?.send_to?.user_id,
+                                      id: data?._id,
+                                      role: data?.request_for?.role,
+                                    })
+                                  }
+                                  className="mail-bg cursor-pointer m-auto"
+                                >
+                                  <Mail size={20} className="mail-icon" color={theme.activeColor} />
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       ) : (
-                        <span
-                          onClick={() =>
-                            handleSendMail({
-                              user_id: data?.send_to?.user_id,
-                              id: data?._id,
-                              role: data?.request_for?.role,
-                            })
-                          }
-                          className="mail-bg cursor-pointer m-auto"
-                        >
-                          <Mail size={20} className="mail-icon" color={theme.activeColor} />
-                        </span>
+                        <div className="d-flex justify-content-center m-auto">
+                          {loadingItems[data?._id] ? (
+                            <div className="d-flex justify-content-center m-auto">
+                              <Spinner size="sm" />
+                            </div>
+                          ) : (
+                            <span
+                              onClick={() =>
+                                handleSendMail({
+                                  user_id: data?.send_to?.user_id,
+                                  id: data?._id,
+                                  role: data?.request_for?.role,
+                                })
+                              }
+                              className="mail-bg cursor-pointer m-auto"
+                            >
+                              <Mail size={20} className="mail-icon" color={theme.activeColor} />
+                            </span>
+                          )}
+                        </div>
                       )}
                     </section>
                   </CardBody>
@@ -190,6 +224,7 @@ const TeamView = () => {
   const unassigned = useSelector((state) => state.projectDetails.unassignedRole);
   const isTeamLoading = useSelector((state) => state.projectDetails.getTeamMemberLoading);
   const isUnassignLoading = useSelector((state) => state.projectDetails.getUnassignedRoleLoading);
+  const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
   const metadata = { page: 1, page_size: 10 };
 
   useEffect(() => {
@@ -272,6 +307,7 @@ const TeamView = () => {
                           color="primary"
                           type="secondary"
                           outline
+                          disabled={userData?.team_type === userTypes.club && !isClubAdmin}
                         >
                           Assign team member
                         </Button>

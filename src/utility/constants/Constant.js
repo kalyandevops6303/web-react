@@ -120,6 +120,14 @@ const bidStatus = {
   BID_CHANGE_REQUEST: 'BID_CHANGE_REQUEST',
 };
 
+const fileScanStatus = {
+  CLEAN: 'CLEAN',
+  SCANNING: 'SCANNING',
+  THREAT: 'THREAT',
+};
+
+const timeDalayToRetryScanning = 4000;
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -143,4 +151,6 @@ export {
   clubStatus,
   snapShotStatus,
   bidStatus,
+  fileScanStatus,
+  timeDalayToRetryScanning,
 };

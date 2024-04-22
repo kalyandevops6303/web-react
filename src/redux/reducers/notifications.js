@@ -8,6 +8,7 @@ const initialState = {
   notificationsPolling: null,
   notificationsPollingLoading: false,
   markNotificationAsReadLoading: false,
+  markAllNotificationAsReadLoading: false,
 };
 
 const notificationsSlice = createSlice({
@@ -71,6 +72,21 @@ const notificationsSlice = createSlice({
       markNotificationAsReadLoading: false,
       error: action.payload,
     }),
+
+    markAllNotificationAsReadRequest: (state) => ({
+      ...state,
+      markAllNotificationAsReadLoading: true,
+      error: null,
+    }),
+    markAllNotificationAsReadSuccess: (state) => ({
+      ...state,
+      markAllNotificationAsReadLoading: false,
+    }),
+    markAllNotificationAsReadFailure: (state, action) => ({
+      ...state,
+      markAllNotificationAsReadLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -86,6 +102,9 @@ export const {
   markNotificationAsReadRequest,
   markNotificationAsReadSuccess,
   markNotificationAsReadFailure,
+  markAllNotificationAsReadRequest,
+  markAllNotificationAsReadSuccess,
+  markAllNotificationAsReadFailure,
 } = notificationsSlice.actions;
 
 export default notificationsSlice.reducer;

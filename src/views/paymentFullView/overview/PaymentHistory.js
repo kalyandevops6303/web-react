@@ -7,10 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import DataTable from 'react-data-table-component';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
-import { ChevronDown, ChevronUp } from 'react-feather';
+import { ChevronDown, ChevronUp, Copy } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../../lib/date-time';
+import CopyToClipboard from '../../../lib/copy-clipboard';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import { userTypes } from '../../../utility/constants/Constant';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
@@ -22,6 +23,8 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import capitalize from '../../../lib/capitalize';
 import { setItem } from '../../../utility/localStorageControl';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
+import ShowToastMessage from '../../../@core/components/toast';
+import { SUCCESS } from '../../../utility/constants/ToastTypes';
 
 const PaymentHistory = () => {
   const dispatch = useDispatch();
@@ -33,6 +36,7 @@ const PaymentHistory = () => {
 
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const [switchData, setSwitchData] = useState();
+  const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 
   const showStatusBadge = (status) => {
     if (status === 'PAID') {
@@ -48,10 +52,10 @@ const PaymentHistory = () => {
           Processing
         </Badge>
       );
-    } else if (status === 'PAYMENT_FAILED') {
+    } else if (status === 'FAILED') {
       return (
         <Badge pill color="light-danger">
-          Payment Failed
+          Failed
         </Badge>
       );
     }
@@ -72,13 +76,13 @@ const PaymentHistory = () => {
     {
       name: 'Transaction ID',
       sortable: false,
-      minWidth: '12%',
+      minWidth: '15%',
       selector: (row) => row.transaction_id,
     },
     {
       name: 'Project Name',
       sortable: false,
-      minWidth: '23%',
+      minWidth: '20%',
       selector: (row) => row.project_name,
     },
     {
@@ -118,13 +122,13 @@ const PaymentHistory = () => {
     {
       name: 'Transaction ID',
       sortable: false,
-      minWidth: '12%',
+      minWidth: '15%',
       selector: (row) => row.transaction_id,
     },
     {
       name: 'Project Name',
       sortable: false,
-      minWidth: '18%',
+      minWidth: '15%',
       selector: (row) => row.project_name,
     },
     {
@@ -230,13 +234,32 @@ const PaymentHistory = () => {
       paymentHistoryDataset.push({
         transaction_id: (
           <div>
-            <p className="mb-0 fw-bolder font-small-4" id={`tooltip-${item?.transaction_id}`}>
-              #{item?.transaction_id}
-            </p>
+            {item?.transaction_id && (
+              <CopyToClipboard
+                text={item?.transaction_id}
+                onCopy={() => {
+                  ShowToastMessage(SUCCESS, 'Transaction Id copied to clipboard');
+                }}
+              >
+                <div
+                  className="d-flex align-items-center cursor-pointer"
+                  onMouseEnter={() => setSelectedTransactionId(item?.transaction_id)}
+                  onMouseLeave={() => setSelectedTransactionId(null)}
+                  id={`tooltip-${item?.transaction_id}`}
+                >
+                  <p className="mb-0 fw-bolder font-small-4">#{item?.transaction_id?.substring(0, 10)}...</p>
+                  <Copy
+                    size={20}
+                    color={selectedTransactionId === item?.transaction_id ? theme.activeNavPillText : theme.infoIcon}
+                    className="ms-50"
+                  />
+                  <UncontrolledTooltip target={`tooltip-${item?.transaction_id}`} autohide={false}>
+                    {item?.transaction_id}
+                  </UncontrolledTooltip>
+                </div>
+              </CopyToClipboard>
+            )}
             <p className="mb-0 font-small-2">{DateTime.fromMillis(item?.created_at).toFormat('dd MMM yy')}</p>
-            <UncontrolledTooltip target={`tooltip-${item?.transaction_id}`} autohide={false}>
-              {item?.transaction_id}
-            </UncontrolledTooltip>
           </div>
         ),
         project_name: (

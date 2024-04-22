@@ -465,6 +465,7 @@ class CustomGroupProfileSidebar extends React.Component {
       default:
         break;
     }
+    this.props.actionGenerated(action, messages, key, group, options)
   };
 
   errorHandler = (errorCode) => {
@@ -1078,6 +1079,8 @@ class CustomGroupProfileSidebar extends React.Component {
             isAvatarLoading: false,
             groupAvatarSrc: file_url,
           });
+
+          this.context.setItem(group)
         },
         (error) => {
           console.log('Group avatar update failed', error);

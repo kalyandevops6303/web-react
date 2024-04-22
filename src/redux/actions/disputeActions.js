@@ -31,6 +31,7 @@ import {
   replyOnDisputeService,
   resolveDisputeService,
 } from '../../services/disputeServices';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const raiseNewDispute = (data, onSuccess) => async (dispatch) => {
   dispatch(raiseDisputeRequest());
@@ -69,9 +70,21 @@ const acceptDisputeApi = (disputeId, onSuccess) => async (dispatch) => {
 const replyOnDisputeApi = (data, onSuccess) => async (dispatch) => {
   dispatch(replyOnDisputeRequest());
   try {
-    const res = await replyOnDisputeService(data);
-    dispatch(replyOnDisputeSuccess(res.data.data));
-    onSuccess();
+    const handleDisupte = async () => {
+      const res = await replyOnDisputeService(data);
+      dispatch(replyOnDisputeSuccess(res.data.data));
+      onSuccess();
+    };
+    if (data?.documents?.length > 0) {
+      scanAndProcessFiles({
+        fileData: data?.documents,
+        handleMainAPI: handleDisupte,
+        onError: () => dispatch(replyOnDisputeFailure()),
+        isPrivate: true,
+      });
+    } else {
+      handleDisupte();
+    }
   } catch (error) {
     errorHandler(error, replyOnDisputeFailure);
   }

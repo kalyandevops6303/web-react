@@ -18,7 +18,7 @@ import debounce from '../../../lib/debounce';
 import throttle from '../../../lib/throttle';
 import theme from '../../../configs/themeVariables';
 import { FormWrapper, SecondaryFiltersWrap } from '../../styled';
-import { selectThemeColors, useIsTab } from '../../../utility/Utils';
+import { isAnyKeyNonEmptyArray, selectThemeColors, useIsTab } from '../../../utility/Utils';
 import { getListProjects, getUsers } from '../../../redux/actions/marketPlaceActions';
 import {
   companyIndustriesService,
@@ -146,39 +146,40 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         valuesOnly[key] = secondFilterState[key].map((item) => item.value);
       }
     });
-
-    if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
-      dispatch(
-        getUsers({
-          isRecommanded,
-          isFavorite,
-          primaryFilter,
-          metaData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
-    } else {
-      dispatch(
-        getListProjects({
-          isMyListing: primaryFilter === 'my_listings',
-          isMyBids: primaryFilter === 'my_bids',
-          show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
-          isRecommanded,
-          isFavorite,
-          metaData,
-          userType,
-          onSuccess,
-          onError,
-          postData: valuesOnly,
-          searchText,
-        }),
-      );
+    if (userType) {
+      if (primaryFilter === 'talents' || primaryFilter === 'clients' || primaryFilter === 'teams') {
+        dispatch(
+          getUsers({
+            isRecommanded,
+            isFavorite,
+            primaryFilter,
+            metaData,
+            userType,
+            onSuccess,
+            onError,
+            postData: valuesOnly,
+            searchText,
+          }),
+        );
+      } else {
+        dispatch(
+          getListProjects({
+            isMyListing: primaryFilter === 'my_listings',
+            isMyBids: primaryFilter === 'my_bids',
+            show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
+            isRecommanded,
+            isFavorite,
+            metaData,
+            userType,
+            onSuccess,
+            onError,
+            postData: valuesOnly,
+            searchText,
+          }),
+        );
+      }
     }
-  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite]);
+  }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite, userType]);
 
   useEffect(() => {
     if (location?.state?.isRecommended) {
@@ -650,7 +651,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         </SecondaryFiltersWrap>
       </FormWrapper>
 
-      {!isLoading && <SearchResultsCount metaData={selectMarkeMetaData} />}
+      {!isLoading && (isAnyKeyNonEmptyArray(secondFilterState) || searchText) && (
+        <SearchResultsCount metaData={selectMarkeMetaData} />
+      )}
 
       {isLoading ? (
         <ComponentSpinner />

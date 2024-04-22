@@ -12,6 +12,7 @@ import {
 } from '../reducers/team';
 import { getInvitedBySuccess } from '../reducers/projectDetails';
 import { getMyTeamFailure, getMyTeamRequest, getMyTeamSuccess } from '../reducers/dashboard';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getTeams =
   ({ onSuccess }) =>
@@ -33,9 +34,21 @@ const createTeam =
   ({ data, onSuccess, onError }) =>
   async (dispatch) => {
     try {
-      const res = await createTeamService(data);
-      dispatch(getTeamCreated(res.data.data));
-      onSuccess(res.data.data);
+      const handleCreateTeam = async () => {
+        const res = await createTeamService(data);
+        dispatch(getTeamCreated(res.data.data));
+        onSuccess(res.data.data);
+      };
+      if (data?.team_logo) {
+        scanAndProcessFiles({
+          fileData: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+          handleMainAPI: handleCreateTeam,
+          onError,
+          isPrivate: false,
+        });
+      } else {
+        handleCreateTeam();
+      }
     } catch (error) {
       onError();
       errorHandler(error);
@@ -45,9 +58,22 @@ const createTeam =
 const updateTeam = (data, onSuccess) => async (dispatch) => {
   dispatch(updateTeamRequest());
   try {
-    const res = await updateTeamService(data);
-    dispatch(updateTeamSuccess(res.data.data));
-    onSuccess();
+    const handleUpdateTeam = async () => {
+      const res = await updateTeamService(data);
+      dispatch(updateTeamSuccess(res.data.data));
+      onSuccess();
+    };
+
+    if (data?.team_logo) {
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Team logo', file_key: data?.team_logo }],
+        handleMainAPI: handleUpdateTeam,
+        onError: () => dispatch(updateTeamFailure()),
+        isPrivate: false,
+      });
+    } else {
+      handleUpdateTeam();
+    }
   } catch (error) {
     errorHandler(error, updateTeamFailure);
   }

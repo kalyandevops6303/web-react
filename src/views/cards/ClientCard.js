@@ -29,7 +29,7 @@ const giveStrokeColor = (percentage) => {
   }
 };
 const ClientCard = ({ isSearchPage, data, userType }) => {
-  const [isFavorite, setIsFavorite] = useState(data?.is_favorite);
+  const [isFavorite, setIsFavorite] = useState(data?.is_favourite);
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
 
   const dispatch = useDispatch();

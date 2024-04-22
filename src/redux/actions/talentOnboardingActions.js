@@ -20,6 +20,7 @@ import {
   checkpointCompleteFailure,
 } from '../reducers/talentOnboarding';
 import { cometChatLogin } from '../reducers/auth';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   dispatch(userDetailsRequest());
@@ -35,10 +36,22 @@ const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
 const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(accountDetailsRequest());
   try {
-    const res = await accountDetailsService(data);
-    dispatch(accountDetailsSuccess(res.data.data));
-    dispatch(cometChatLogin(res.data.data.comet_chat_token));
-    onSuccess();
+    const handleSaveTalentDetails = async () => {
+      const res = await accountDetailsService(data);
+      dispatch(accountDetailsSuccess(res.data.data));
+      dispatch(cometChatLogin(res.data.data.comet_chat_token));
+      onSuccess();
+    };
+    if (data?.image_uri) {
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Profile Image', file_key: data?.image_uri }],
+        handleMainAPI: handleSaveTalentDetails,
+        onError: () => dispatch(accountDetailsFailure()),
+        isPrivate: false,
+      });
+    } else {
+      handleSaveTalentDetails();
+    }
   } catch (error) {
     errorHandler(error, accountDetailsFailure);
   }
@@ -47,9 +60,21 @@ const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
 const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
   dispatch(profileDetailsRequest());
   try {
-    const res = await profileDetailsService(data);
-    dispatch(profileDetailsSuccess(res.data.data));
-    onSuccess();
+    const handleSaveProfileDetails = async () => {
+      const res = await profileDetailsService(data);
+      dispatch(profileDetailsSuccess(res.data.data));
+      onSuccess();
+    };
+    if (data?.resume || data?.image_uri) {
+      scanAndProcessFiles({
+        fileData: data?.image_uri ? [{ file_name: 'Profile Image', file_key: data?.image_uri }] : [data?.resume],
+        handleMainAPI: handleSaveProfileDetails,
+        onError: () => dispatch(profileDetailsFailure()),
+        isPrivate: !!data?.resume,
+      });
+    } else {
+      handleSaveProfileDetails();
+    }
   } catch (error) {
     errorHandler(error, profileDetailsFailure);
   }
