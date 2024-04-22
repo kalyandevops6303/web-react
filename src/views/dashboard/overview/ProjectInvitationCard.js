@@ -199,7 +199,7 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
             <div className="d-flex justify-content-between">
               <div>
                 <UserSection
-                  tagName="CLIENT"
+                  tagName={userTypes.client}
                   name={data?.client?.company_name}
                   users={[
                     {
@@ -230,7 +230,7 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
                   totalCount={
                     data?.invitation_by?.team_members_count || data?.invitation_by?.workers_count || data?.workers_count
                   }
-                  tagName="TEAM"
+                  tagName={userTypes.team}
                   name={data?.invitation_by?.name}
                   users={users}
                   projectName={data?.project?.details?.name}
