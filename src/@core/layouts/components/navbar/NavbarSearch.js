@@ -46,7 +46,9 @@ const NavbarSearch = () => {
 
   return (
     <NavItem
-      className={`${isDisabled && 'cursor-not-allowed'} nav-search`}
+      className={`${isDisabled && 'cursor-not-allowed'} nav-search w-100 mt-auto mb-auto ${
+        query.isNavbarSearchBarOpen ? 'me-1 ms-50' : ''
+      } `}
       onClick={() => {
         if (!isDisabled) {
           dispatch(toggleIsNavbarSearchBarOpen());

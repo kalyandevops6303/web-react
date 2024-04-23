@@ -28,6 +28,7 @@ import SwitchConfirmModal from '../../../../views/modals/SwitchConfirm';
 const HeadWrapper = styled.div`
   display: flex;
   width: 100%;
+  justify-content: space-between;
   .navbar-brand {
     margin: auto 0;
     .brand-logo {
@@ -62,6 +63,9 @@ const HeadWrapper = styled.div`
     .menu-item {
       display: none;
     }
+  }
+  .d-contents {
+    display: contents;
   }
 `;
 
@@ -114,39 +118,40 @@ const ThemeNavbar = (props) => {
 
   return (
     <HeadWrapper className={className}>
-      <div className="bookmark-wrapper d-flex align-items-center">
-        <ul className="navbar-nav d-xl-none">
-          <NavItem className="mobile-menu me-auto">
-            <RsNavLink className="nav-menu-main menu-toggle hidden-xs" onClick={() => setMenuVisibility(true)}>
-              <Menu className="ficon" />
-            </RsNavLink>
-          </NavItem>
-        </ul>
-      </div>
+      <div className="d-flex">
+        <div className="d-flex align-items-center">
+          <ul className="navbar-nav d-xl-none">
+            <NavItem className="mobile-menu me-auto">
+              <RsNavLink className="nav-menu-main menu-toggle hidden-xs" onClick={() => setMenuVisibility(true)}>
+                <Menu className="ficon" />
+              </RsNavLink>
+            </NavItem>
+          </ul>
+        </div>
 
-      <div
-        className="navbar-brand cursor-pointer"
-        onClick={() => {
-          if (userData) {
-            navigate('/dashboard');
-          } else {
-            navigate('/auth');
-          }
-          dispatch(setActiveNavTab('dashboard'));
-        }}
-      >
-        <span className="brand-logo">
-          <img src={themeConfig.app.appLogoImage} alt="logo" />
-          <span className="ms-25 mt-25">v1.0.0</span>
-        </span>
-      </div>
+        <div
+          className="navbar-brand cursor-pointer"
+          onClick={() => {
+            if (userData) {
+              navigate('/dashboard');
+            } else {
+              navigate('/auth');
+            }
+            dispatch(setActiveNavTab('dashboard'));
+          }}
+        >
+          <span className="brand-logo">
+            <img src={themeConfig.app.appLogoImage} alt="logo" />
+            <span className="ms-25 mt-25">v1.0.0</span>
+          </span>
+        </div>
 
-      {!isNavbarSearchBarOpen && (
+        {/* {!isNavbarSearchBarOpen && ( */}
         <>
           <NavLink
             className={({ isActive }) =>
-              (isActive || activeTab === 'dashboard' ? 'is-active' : '') +
-              ' menu-item nav-menu-main menu-toggle hidden-xs'
+              (isActive || activeTab === 'dashboard' ? 'is-active text-nowrap' : '') +
+              ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
             }
             to="/dashboard"
             onClick={() => {
@@ -209,8 +214,8 @@ const ThemeNavbar = (props) => {
                 (location?.pathname?.split('/')?.[1] === 'my-teams' ||
                 location?.state?.from?.primary === 'my-teams' ||
                 activeTab === 'my-teams'
-                  ? 'is-active'
-                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+                  ? 'is-active text-nowrap'
+                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
               }
               to={`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`}
             >
@@ -234,9 +239,11 @@ const ThemeNavbar = (props) => {
             </NavLink>
           )}
         </>
-      )}
-
-      <NavbarUser skin={skin} setSkin={setSkin} />
+        {/* )} */}
+      </div>
+      <div className="w-100 d-flex">
+        <NavbarUser skin={skin} setSkin={setSkin} />
+      </div>
     </HeadWrapper>
   );
 };

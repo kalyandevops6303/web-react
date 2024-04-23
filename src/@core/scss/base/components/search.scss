@@ -13,7 +13,7 @@
     border-radius: 0 !important;
   }
   a.nav-link-search {
-    float: left;
+    float: right;
     border-right: 1px solid #ebe9f1;
     margin-right: 8px;
     padding-right: 1rem !important;
@@ -42,13 +42,12 @@
     &.open {
       border-radius: 1.875rem;
       border: 1px solid rgba(1, 133, 228, 0.50);;
-
-      position: absolute;
-      top: 14px;
-      left: 16rem;
-      right: 18rem;
-      z-index: 1000;
-      width: auto;
+      position: relative;
+      // top: 14px;
+      // left: 16rem;
+      // right: 18rem;
+      // z-index: 1000;
+      width: 100%;
       display: block;
       background: $white;
       border-radius: 20px;
@@ -56,6 +55,7 @@
         left: 0;
         top: 10px;
         width: 100%;
+        position: absolute;
       }
       .search-input-close,
       .search-input-icon {

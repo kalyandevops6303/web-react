@@ -54,20 +54,20 @@ const NavbarUser = ({ setNavBarLoading }) => {
   }, [location, userDetailsData]);
 
   return (
-    <ul className="nav navbar-nav align-items-center ms-auto">
+    <ul className="nav navbar-nav align-items-center ms-auto d-contents">
       <NavbarSearch />
       {isTab && isNavbarSearchBarOpen ? (
         ''
       ) : (
         <>
           {isTabDisabled ? (
-            <div className="text-muted cursor-not-allowed">
+            <div className="text-muted cursor-not-allowed mt-auto mb-auto">
               <NotificationIconContainer>
                 <Bell size={20} color={theme.bodyColor} />
               </NotificationIconContainer>
             </div>
           ) : (
-            <NotificationIconContainer onClick={handleNotificaionClick}>
+            <NotificationIconContainer onClick={handleNotificaionClick} className="mt-auto mb-auto">
               <Link to="/notifications">
                 {(isNotificationCount || notificationsPollingData?.unread_notifications_count > 0) && (
                   <span className="notification-dot" />
@@ -79,12 +79,12 @@ const NavbarUser = ({ setNavBarLoading }) => {
 
           {isTabDisabled ? (
             <MessageIconContainer>
-              <div className="text-muted cursor-not-allowed">
+              <div className="text-muted cursor-not-allowed mt-auto mb-auto">
                 <MessageSquare size={20} color={theme.bodyColor} />
               </div>
             </MessageIconContainer>
           ) : (
-            <MessageIconContainer>
+            <MessageIconContainer className="mt-auto mb-auto">
               <div onClick={handleChatNavigate}>
                 {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
                 <MessageSquare size={20} color={theme.bodyColor} />
