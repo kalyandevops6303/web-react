@@ -147,9 +147,17 @@ const Search = () => {
           searchData?.project?.data?.length === 0 &&
           searchData?.talent?.data?.length === 0 &&
           searchData?.client?.data?.length === 0 &&
-          searchData?.team?.data?.length === 0
+          searchData?.team?.data?.length === 0 &&
+          searchData?.club?.data?.length === 0
         ) {
           setActivetab('PROJECT');
+        } else if (
+          searchData?.project?.data?.length === 0 &&
+          searchData?.talent?.data?.length === 0 &&
+          searchData?.client?.data?.length === 0 &&
+          searchData?.team?.data?.length === 0
+        ) {
+          setActivetab(userTypes.club);
         } else if (
           searchData?.project?.data?.length === 0 &&
           searchData?.talent?.data?.length === 0 &&
@@ -240,8 +248,20 @@ const Search = () => {
                   </UncontrolledTooltip>
                 )}
               </li>
-              <li className={activeTab === userTypes.club && 'active'} onClick={() => setActivetab(userTypes.club)}>
-                <CardText>Club ({searchData?.club?.metadata?.total_records})</CardText>
+              <li
+                className={
+                  activeTab === userTypes.club
+                    ? 'active'
+                    : `${searchData?.club?.metadata?.total_records === 0 ? 'no-data' : ''}`
+                }
+                onClick={() => searchData?.club?.metadata?.total_records !== 0 && setActivetab(userTypes.club)}
+              >
+                <CardText id="club-tab">Club ({searchData?.club?.metadata?.total_records})</CardText>
+                {searchData?.club?.metadata?.total_records === 0 && (
+                  <UncontrolledTooltip placement="top" target="club-tab">
+                    No results found
+                  </UncontrolledTooltip>
+                )}
               </li>
             </NavigationBar>
             {isLoading ? (
