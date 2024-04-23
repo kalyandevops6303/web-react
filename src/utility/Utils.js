@@ -761,3 +761,5 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
   // Start processing files
   processFile(0);
 };
+
+export const  generateToolTipId = (projectName,name,title) => `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');

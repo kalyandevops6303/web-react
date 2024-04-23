@@ -205,6 +205,15 @@ const ProjectWrapper = styled.div`
     }
   }
 
+  .bottom-detail-elements {
+    background: #f8f8f8;
+    padding: 0.5rem;
+    text-align: center;
+    background-color: #f8f8f8;
+    border-radius: 0.357rem;
+}
+  }
+
   .truncate-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -236,6 +245,10 @@ const ProjectWrapper = styled.div`
       border-radius: 50%;
       margin-top: -2px;
       margin-left: 4px;
+    }
+    .talent-badge {
+      background-color : #e6fafa !important;
+      color: #30d6d2;
     }
     color: ${theme.headingTextColor};
     .avatar-wrap {
