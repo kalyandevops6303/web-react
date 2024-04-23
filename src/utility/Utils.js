@@ -722,15 +722,22 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
             ShowToastMessage(ERROR, `Scanning ${file?.file_name} taking longer than expected. `);
             onError(); // Handle error on too many retries
           } else {
-            const retryResponse = await fileScanningService({ fileKeys: [file], isPrivate: true });
-            if (retryResponse.data.data?.[0].status !== fileScanStatus.SCANNING) {
-              clearInterval(retryInterval);
-              if (retryResponse.data.data?.[0].status === fileScanStatus.CLEAN) {
-                processFile(index + 1); // Move to the next file
-              } else if (retryResponse.data.data?.[0].status === fileScanStatus.THREAT) {
-                onError(); // Handle error for threat
-                ShowToastMessage(ERROR, `${file?.file_name} seem to be maliciuous/corrupted. `);
+            try {
+              const retryResponse = await fileScanningService({ fileKeys: [file], isPrivate });
+              if (retryResponse.data.data?.[0].status !== fileScanStatus.SCANNING) {
+                clearInterval(retryInterval);
+                if (retryResponse.data.data?.[0].status === fileScanStatus.CLEAN) {
+                  processFile(index + 1); // Move to the next file
+                } else if (retryResponse.data.data?.[0].status === fileScanStatus.THREAT) {
+                  onError(); // Handle error for threat
+                  ShowToastMessage(ERROR, `${file?.file_name} seems to be malicious/corrupted. `);
+                }
               }
+            } catch (retryError) {
+              console.error('Error retrying file scan:', retryError);
+              ShowToastMessage(ERROR, `Error scanning file: ${file?.file_name}`);
+              clearInterval(retryInterval); // Stop retrying on error
+              onError(); // Handle error for retry
             }
           }
           retries -= 1;
@@ -751,4 +758,5 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
   processFile(0);
 };
 
-export const  generateToolTipId = (projectName,name,title) => `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
+export const generateToolTipId = (projectName, name, title) =>
+  `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
