@@ -68,8 +68,8 @@ const InviteTeamMemberModal = ({
   inviteRole,
 }) => {
   const tabNames = {
-    favourite: '2',
     recommended: '1',
+    favourite: '2',
     almaMater: '3',
     teamMember: '4',
   };
@@ -90,6 +90,11 @@ const InviteTeamMemberModal = ({
   const [activeTab, setTabActive] = useState(tabNames.recommended);
   const [searchValue, setSearchValue] = useState(null);
   const userData = useSelector(selectUserData);
+
+  const metaData = {
+    page: 1,
+    page_size: 10,
+  };
 
   const toggleTabs = (tab) => {
     if (activeTab !== tab) {
@@ -150,7 +155,7 @@ const InviteTeamMemberModal = ({
 
   useEffect(() => {
     if (activeTab === tabNames.recommended) {
-      dispatch(getBestTalents(projectId, searchValue, 1, 10, []));
+      dispatch(getBestTalents(projectId, searchValue, metaData.page, metaData.page_size, []));
     }
   }, []);
 
@@ -159,17 +164,17 @@ const InviteTeamMemberModal = ({
     if (searchValue !== null) {
       delayDebounceFn = setTimeout(() => {
         if (activeTab === tabNames.favourite) {
-          dispatch(getFavoriteTalents(projectId, searchValue, 1, 10, []));
+          dispatch(getFavoriteTalents(projectId, searchValue, metaData.page, metaData.page_size, []));
         }
         if (activeTab === tabNames.recommended) {
-          dispatch(getBestTalents(projectId, searchValue, 1, 10, []));
+          dispatch(getBestTalents(projectId, searchValue, metaData.page, metaData.page_size, []));
         }
         if (activeTab === tabNames.almaMater) {
-          dispatch(getAlmaMaterTalents(projectId, searchValue, 1, 10, []));
+          dispatch(getAlmaMaterTalents(projectId, searchValue, metaData.page, metaData.page_size, []));
         }
 
         if (userData?.user_type !== userTypes.client && projectId && activeTab === tabNames.teamMember) {
-          dispatch(getTeamMemberForInvite(projectId, searchValue, 1, 10, []));
+          dispatch(getTeamMemberForInvite(projectId, searchValue, metaData.page, metaData.page_size, []));
         }
       }, 500);
     }
@@ -315,7 +320,7 @@ const InviteTeamMemberModal = ({
                     active={activeTab === tabNames.recommended}
                     onClick={() => {
                       toggleTabs(tabNames.recommended);
-                      dispatch(getBestTalents(projectId, searchValue, 1, 10, []));
+                      dispatch(getBestTalents(projectId, searchValue, metaData.page, metaData.page_size, []));
                     }}
                   >
                     Recommended Talent
@@ -326,7 +331,7 @@ const InviteTeamMemberModal = ({
                     active={activeTab === tabNames.favourite}
                     onClick={() => {
                       toggleTabs(tabNames.favourite);
-                      dispatch(getFavoriteTalents(projectId, searchValue, 1, 10, []));
+                      dispatch(getFavoriteTalents(projectId, searchValue, metaData.page, metaData.page_size, []));
                     }}
                   >
                     Favorite Talent
@@ -337,7 +342,7 @@ const InviteTeamMemberModal = ({
                     active={activeTab === tabNames.almaMater}
                     onClick={() => {
                       toggleTabs(tabNames.almaMater);
-                      dispatch(getAlmaMaterTalents(projectId, searchValue, 1, 10, []));
+                      dispatch(getAlmaMaterTalents(projectId, searchValue, metaData.page, metaData.page_size, []));
                     }}
                   >
                     Alma Mater
@@ -355,7 +360,9 @@ const InviteTeamMemberModal = ({
                           projectId &&
                           activeTab === tabNames.teamMember
                         ) {
-                          dispatch(getTeamMemberForInvite(projectId, searchValue, 1, 10, []));
+                          dispatch(
+                            getTeamMemberForInvite(projectId, searchValue, metaData.page, metaData.page_size, []),
+                          );
                         }
                       }}
                     >
