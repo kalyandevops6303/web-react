@@ -128,6 +128,8 @@ const fileScanStatus = {
 
 const timeDalayToRetryScanning = 4000;
 
+const minimumAvatarLength = 3;
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -153,4 +155,5 @@ export {
   bidStatus,
   fileScanStatus,
   timeDalayToRetryScanning,
+  minimumAvatarLength,
 };
