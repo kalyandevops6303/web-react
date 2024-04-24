@@ -6,6 +6,7 @@ import '../custom-styles.scss';
 import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import styled from 'styled-components';
 import SwitchGif from '../../assets/images/gifs/timer.gif';
+import { DOCUMENT_EXTENSION, PAYMENT_EXTENSION } from '../../utility/constants/Constant';
 
 const ExtendModal = ({ modal, toggleModal, onExtend, validityType, projectDetails }) => {
   const isLoading = useSelector((state) => state.projectDetails.extendValidityLoading);
@@ -40,7 +41,9 @@ const ExtendModal = ({ modal, toggleModal, onExtend, validityType, projectDetail
                     ? 'NDA and Contract'
                     : 'Contract'
                   : 'Payment'}{' '}
-                validity will be extended by 7 days
+                {`validity will be extended by ${
+                  validityType === 'DOCUMENT' ? DOCUMENT_EXTENSION : PAYMENT_EXTENSION
+                } days`}
               </p>
             </div>
           </div>
