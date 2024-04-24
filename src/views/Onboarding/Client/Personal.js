@@ -43,6 +43,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import RemoveUploadedPicture from '../../../@core/components/remove-uploaded-picture';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -281,6 +282,7 @@ const Personal = () => {
         office_address,
         company_logo: imageUrlRes.file_key,
       };
+      dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
     } else {
       reqData = {
         company_name,
@@ -290,9 +292,8 @@ const Personal = () => {
         company_strength,
         office_address,
       };
+      dispatch(saveProfileDetails({ ...removeEmptyKeys(reqData), company_logo: '' }, onSuccess));
     }
-
-    dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
   };
 
   const loadCompanyIndustriesOptions = async (search) => {
@@ -413,6 +414,12 @@ const Personal = () => {
     }
   };
 
+  const onRemovePictureClick = () => {
+    setSelectedImage(null);
+    setSelectedImagePreview(null);
+    setImageUrlRes(null);
+  };
+
   useEffect(() => {
     dispatch(getUserDetails(onGetUserDetailsSuccess));
   }, []);
@@ -448,13 +455,21 @@ const Personal = () => {
                     ref={fileInputRef}
                   />
                   <Button
+                    id={selectedImage && selectedImagePreview ? 'popFocus' : 'noFocus'}
                     color="primary"
                     className="ml-2 mr-1"
                     disabled={isImageUploading}
-                    onClick={() => fileInputRef.current.click()}
+                    onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                   >
                     {isImageUploading ? <Spinner size="sm" /> : 'Upload Company Logo'}
                   </Button>
+                  {selectedImage && selectedImagePreview && (
+                    <RemoveUploadedPicture
+                      fileInputRef={fileInputRef}
+                      onRemovePicture={onRemovePictureClick}
+                      offset={[15, 10]}
+                    />
+                  )}
                 </div>
                 <Info size={18} color={theme.infoIcon} id="logo-info" />
                 <UncontrolledTooltip placement="right" target="logo-info">

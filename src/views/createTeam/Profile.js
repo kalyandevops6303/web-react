@@ -47,6 +47,7 @@ import { clearModalData } from '../../redux/reducers/inviteTalent';
 import { getLanguages } from '../../redux/actions/staticActions';
 import { languages } from '../../redux/selectors/staticSelectors';
 import TeamCreatingModal from './TeamCreatingModal';
+import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -325,6 +326,11 @@ const Profile = () => {
           skills: skillsSelected,
           availability,
         };
+
+        const onApiSuccess = () => {
+          navigate('/dashboard');
+        };
+        dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
       } else {
         reqData = {
           _id: userDetailsData._id,
@@ -337,6 +343,11 @@ const Profile = () => {
           skills: skillsSelected,
           availability,
         };
+
+        const onApiSuccess = () => {
+          navigate('/dashboard');
+        };
+        dispatch(updateTeam({ ...removeEmptyKeys(reqData), team_logo: '' }, onApiSuccess));
       }
     } else {
       // eslint-disable-next-line no-lonely-if
@@ -637,6 +648,12 @@ const Profile = () => {
     }
   };
 
+  const onRemovePictureClick = () => {
+    setSelectedImage(null);
+    setSelectedImagePreview(null);
+    setImageUrlRes(null);
+  };
+
   return (
     <ProfileFormContainer className="w-75">
       {teamCreatingModal && (
@@ -691,14 +708,22 @@ const Profile = () => {
                   ref={fileInputRef}
                 />
                 <Button
+                  id={selectedImage && selectedImagePreview ? 'popFocus' : 'noFocus'}
                   color="primary"
                   className="ml-2 mr-1 d-flex align-items-center py-50"
                   disabled={isImageUploading}
-                  onClick={() => fileInputRef.current.click()}
+                  onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                 >
                   <Camera className="me-50" />
                   {isImageUploading ? <Spinner size="sm" /> : 'Upload Team Logo'}
                 </Button>
+                {selectedImage && selectedImagePreview && (
+                  <RemoveUploadedPicture
+                    fileInputRef={fileInputRef}
+                    onRemovePicture={onRemovePictureClick}
+                    offset={[15, 10]}
+                  />
+                )}
               </div>
               <Info size={18} color={theme.infoIcon} id="logo-info" />
               <UncontrolledTooltip placement="right" target="logo-info">
