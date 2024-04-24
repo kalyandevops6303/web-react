@@ -3,12 +3,11 @@ import Proptypes from 'prop-types';
 import '../custom-styles.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Row, Col, Card, CardBody, Spinner } from 'reactstrap';
-import { FileText } from 'react-feather';
 import DateTime from '../../lib/date-time';
 import { ViewFilesModalWrapper } from './style';
 import theme from '../../configs/themeVariables';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
-import { downloadFile, getFileSize } from '../../utility/Utils';
+import { downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
 
 const ViewFilesModal = ({ modal, toggleModal, documents, modalTitle }) => {
@@ -58,10 +57,10 @@ const ViewFilesModal = ({ modal, toggleModal, documents, modalTitle }) => {
                             <Spinner color="primary" />
                           </div>
                         ) : (
-                          <>
-                            <FileText size="18" className="me-75" />
-                            {document?.file_name}
-                          </>
+                          <div className="d-flex align-items-center">
+                            <span>{renderFilePreview(document)}</span>
+                            <span>{document.file_name}</span>
+                          </div>
                         )}
                       </span>
                     </Col>

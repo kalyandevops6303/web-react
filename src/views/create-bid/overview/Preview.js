@@ -17,7 +17,7 @@ import {
   UncontrolledAccordion,
   UncontrolledTooltip,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, FileText, Info } from 'react-feather';
+import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import Avatar from '@components/avatar';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
@@ -32,7 +32,7 @@ import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { userTypes } from '../../../utility/constants/Constant';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
-import { downloadFile, getFileSize } from '../../../utility/Utils';
+import { downloadFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
 
 const Preview = () => {
   const dispatch = useDispatch();
@@ -49,8 +49,6 @@ const Preview = () => {
   const toggleBidSubmittedModal = () => {
     setBidSubmittedModal(!bidSubmittedModal);
   };
-
-  const renderFilePreview = () => <FileText size="18" className="me-75 mb-50" />;
 
   const renderFormattedDate = (date) => {
     const formattedDate = date
@@ -98,10 +96,10 @@ const Preview = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <>
-                    {renderFilePreview()}
-                    {file.file_name}
-                  </>
+                  <div className="d-flex align-items-center">
+                    <span>{renderFilePreview(file)}</span>
+                    <span>{file.file_name}</span>
+                  </div>
                 )}
               </div>
             </Col>
