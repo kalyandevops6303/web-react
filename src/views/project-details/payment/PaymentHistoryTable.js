@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Card, CardText, Table, UncontrolledTooltip } from 'reactstrap';
-import { Info } from 'react-feather';
+import { Copy, Info } from 'react-feather';
 import styled from 'styled-components';
 
 import {
@@ -18,6 +18,7 @@ import theme from '../../../configs/themeVariables';
 function PaymentHistoryTable() {
   const [transactions, setTransactions] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
+  const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 
   const projectDetailsData = useSelector(projectDetails);
   const user = useSelector(userData);
@@ -149,19 +150,34 @@ function PaymentHistoryTable() {
                           {isCopied ? 'Copied!' : item?.transaction_id}
                         </UncontrolledTooltip>
                       )}
-                      <span
-                        className="fw-bold"
-                        style={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          width: '80px',
-                          whiteSpace: 'nowrap',
-                        }}
-                        id={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}
+                      <div
+                        className="d-flex align-items-center"
+                        onMouseEnter={() => setSelectedTransactionId(`${item?.transaction_id}-${item?.milestone?._id}`)}
+                        onMouseLeave={() => setSelectedTransactionId(null)}
                         onClick={() => handleCopyToClipboard(item?.transaction_id)}
+                        id={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}
                       >
-                        {item?.transaction_id}
-                      </span>
+                        <span
+                          className="fw-bold"
+                          style={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            width: '80px',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {item?.transaction_id}
+                        </span>
+                        <Copy
+                          size={20}
+                          color={
+                            selectedTransactionId === `${item?.transaction_id}-${item?.milestone?._id}`
+                              ? theme.activeNavPillText
+                              : theme.infoIcon
+                          }
+                          className="ms-50"
+                        />
+                      </div>
                       <span>{formatDate(item?.created_at)}</span>
                     </div>
                   </td>

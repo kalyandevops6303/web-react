@@ -66,7 +66,7 @@ const Invite = ({ stepper }) => {
   const [invitedIds, setInvitedIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedTalents, setSelectedTalents] = useState([]);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(null);
 
   const [inviteModal, setInviteModal] = useState(null);
   const [sendInvitationModal, setSendInvitationModal] = useState(null);
@@ -168,15 +168,19 @@ const Invite = ({ stepper }) => {
 
   useEffect(() => {
     let delayDebounceFn = null;
-
-    if (createProjectDetails && stepper?._currentIndex === 3) {
+    if (searchValue !== null && createProjectDetails && stepper?._currentIndex === 3) {
       delayDebounceFn = setTimeout(() => {
-        dispatch(getBestTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
-        dispatch(getFavoriteTeams(createProjectDetails?.project_id, searchValue, 1, 10, []));
-        dispatch(getAlmaMaterTalents(createProjectDetails?.project_id, searchValue, 1, 10, []));
+        if (activeTab === tabNames.best) {
+          dispatch(getBestTalents(createProjectDetails?.project_id || 1, searchValue, 1, 10, []));
+        }
+        if (activeTab === tabNames.favourite) {
+          dispatch(getFavoriteTeams(createProjectDetails?.project_id || 1, searchValue, 1, 10, []));
+        }
+        if (activeTab === tabNames.almaMater) {
+          dispatch(getAlmaMaterTalents(createProjectDetails?.project_id || 1, searchValue, 1, 10, []));
+        }
       }, 500);
     }
-
     return () => clearTimeout(delayDebounceFn);
   }, [searchValue, stepper]);
 
@@ -295,6 +299,7 @@ const Invite = ({ stepper }) => {
                     active={activeTab === tabNames.best}
                     onClick={() => {
                       toggleTabs(tabNames.best);
+                      dispatch(getBestTalents(createProjectDetails?.project_id || 1, searchValue, 1, 10, []));
                     }}
                   >
                     Best Talent
@@ -305,6 +310,7 @@ const Invite = ({ stepper }) => {
                     active={activeTab === tabNames.favourite}
                     onClick={() => {
                       toggleTabs(tabNames.favourite);
+                      dispatch(getFavoriteTeams(createProjectDetails?.project_id || 1, searchValue, 1, 10, []));
                     }}
                   >
                     Favorite Teams
@@ -315,6 +321,7 @@ const Invite = ({ stepper }) => {
                     active={activeTab === tabNames.almaMater}
                     onClick={() => {
                       toggleTabs(tabNames.almaMater);
+                      dispatch(getAlmaMaterTalents(createProjectDetails?.project_id || 1, searchValue, 1, 10, []));
                     }}
                   >
                     Alma Mater

@@ -21,7 +21,7 @@ const PaymentFullView = () => {
 
   return (
     <>
-      <BreadCrumbs data={[{ title: 'Dashboard' }, { title: 'Payments' }]} />
+      <BreadCrumbs data={[{ title: 'Dashboard', link: '/dashboard' }, { title: 'Payments' }]} />
 
       <TopStatCards />
 

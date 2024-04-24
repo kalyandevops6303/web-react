@@ -10,8 +10,7 @@ import {
   setWorkersService,
   submitBidService,
 } from '../../services/createBidServices';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -122,16 +121,12 @@ const saveSetMilestones = (projectId, bidId, data, onSuccess) => async (dispatch
     };
 
     if (data?.documents?.length > 0) {
-      // Recursive function until status in Scanning
-      const finalScanStatus = await handleScanFiles({ fileKeys: data?.documents, isPrivate: true });
-      // If files are Clean proceed with API call
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        handleSaveMilestone();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(setMilestonesFailure());
-      }
+      scanAndProcessFiles({
+        fileData: data?.documents,
+        handleMainAPI: handleSaveMilestone,
+        onError: () => dispatch(setMilestonesFailure()),
+        isPrivate: true,
+      });
     } else {
       handleSaveMilestone();
     }

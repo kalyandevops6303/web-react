@@ -47,9 +47,9 @@ const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async
   try {
     let res;
     if (projectId) {
-      res = await bestTalentsForProjectService(projectId, searchText, page, pageSize);
+      res = await bestTalentsForProjectService(projectId, searchText || '', page, pageSize);
     } else {
-      res = await bestTalentsService(searchText, page, pageSize);
+      res = await bestTalentsService(searchText || '', page, pageSize);
     }
     dispatch(bestTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
@@ -64,9 +64,9 @@ const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => a
   try {
     let res;
     if (projectId) {
-      res = await favoriteTalentsForProjectService(projectId, searchText, page, pageSize);
+      res = await favoriteTalentsForProjectService(projectId, searchText || '', page, pageSize);
     } else {
-      res = await favoriteTalentsService(searchText, page, pageSize);
+      res = await favoriteTalentsService(searchText || '', page, pageSize);
     }
     dispatch(favoriteTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
@@ -81,9 +81,9 @@ const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => 
   try {
     let res;
     if (projectId) {
-      res = await almaMaterTalentsProjectService(projectId, searchText, page, pageSize);
+      res = await almaMaterTalentsProjectService(projectId, searchText || '', page, pageSize);
     } else {
-      res = await almaMaterTalentsService(searchText, page, pageSize);
+      res = await almaMaterTalentsService(searchText || '', page, pageSize);
     }
 
     dispatch(almaMaterTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
@@ -128,7 +128,7 @@ const getTeamMemberForInvite = (projectId, searchText, page, pageSize, oldData) 
   }
 
   try {
-    const res = await getTeamMeberforInviteService(searchText, page, pageSize, projectId);
+    const res = await getTeamMeberforInviteService(searchText || '', page, pageSize, projectId);
     dispatch(teamMemberForInviteSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, teamMemberForInviteFailure);

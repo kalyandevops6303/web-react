@@ -34,13 +34,17 @@ import {
   profileDetailsLoading,
   userDetailsLoading,
 } from '../../redux/selectors/talentOnboardingSelectors';
+
 import ShowToastMessage from '../../@core/components/toast';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import {
   saveClientAccountDetails,
   saveProfileDetails as saveClientProfileDetails,
 } from '../../redux/actions/clientOnboardingActions';
-import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
+import {
+  clientAccountDetailsLoading,
+  profileDetailsLoading as clientProfileDetailsLoading,
+} from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
@@ -94,6 +98,7 @@ const Account = () => {
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const profileDetailsForClientLoading = useSelector(clientProfileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const convertReferralIsLoading = useSelector(convertReferralLoading);
 
@@ -440,14 +445,15 @@ const Account = () => {
                 isImageUploading ||
                 convertReferralIsLoading ||
                 (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
-                  ? !isValid || talentAccountDetailsIsLoading
-                  : !isValid || clientAccountDetailsIsLoading)
+                  ? !isValid || talentAccountDetailsIsLoading || profileDetailsIsLoading
+                  : !isValid || clientAccountDetailsIsLoading || profileDetailsForClientLoading)
               }
             >
               {talentAccountDetailsIsLoading ||
               clientAccountDetailsIsLoading ||
               convertReferralIsLoading ||
-              profileDetailsIsLoading ? (
+              profileDetailsIsLoading ||
+              profileDetailsForClientLoading ? (
                 <Spinner size="sm" />
               ) : (
                 <>

@@ -132,6 +132,8 @@ const fileScanStatus = {
 
 const timeDalayToRetryScanning = 4000;
 
+const minimumAvatarLength = 3;
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -159,4 +161,5 @@ export {
   timeDalayToRetryScanning,
   DOCUMENT_EXTENSION,
   PAYMENT_EXTENSION,
+  minimumAvatarLength,
 };

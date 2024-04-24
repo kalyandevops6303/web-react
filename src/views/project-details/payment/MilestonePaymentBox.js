@@ -3,6 +3,7 @@ import { Card, CardBody, Input, Label, Badge } from 'reactstrap';
 import { PropTypes } from 'prop-types';
 
 import { PAYMENT_STATUS } from '../../../utility/constants/Constant';
+import PaymentTableWrapper from './style';
 
 function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, checked, onSelect }) {
   const getTagSettings = (tag) => {
@@ -31,40 +32,42 @@ function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, 
     paymentStatus === PAYMENT_STATUS.PAYMENT_PROCESSING;
 
   return (
-    <Card style={{ height: '72px' }} className="d-flex justify-content-center">
-      <CardBody className="d-flex justify-content-between">
-        <div className="d-flex">
-          <Input
-            type="checkbox"
-            id={id}
-            onChange={(e) => onSelect(e, id)}
-            checked={checked}
-            disabled={isDisabled}
-            className="payment-form-control"
-          />
+    <PaymentTableWrapper>
+      <Card style={{ height: '72px' }} className="d-flex justify-content-center">
+        <CardBody className="d-flex justify-content-between">
+          <div className="d-flex form-check">
+            <Input
+              type="checkbox"
+              id={id}
+              onChange={(e) => onSelect(e, id)}
+              checked={checked}
+              disabled={isDisabled}
+              className="payment-form-control"
+            />
 
-          <div className="d-flex flex-column" style={{ marginTop: '-2px' }}>
-            <Label
-              for={id}
-              style={{
-                marginLeft: '10px',
-                fontSize: '16px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                width: '150px',
-              }}
-            >
-              {milestoneName}
-            </Label>
-            <Badge color={getTagSettings(paymentStatus).theme} style={{ width: 'fit-content', marginLeft: '10px' }}>
-              {getTagSettings(paymentStatus).text}
-            </Badge>
+            <div className="d-flex flex-column" style={{ marginTop: '-2px' }}>
+              <Label
+                for={id}
+                style={{
+                  marginLeft: '10px',
+                  fontSize: '16px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  width: '150px',
+                }}
+              >
+                {milestoneName}
+              </Label>
+              <Badge color={getTagSettings(paymentStatus).theme} style={{ width: 'fit-content', marginLeft: '10px' }}>
+                {getTagSettings(paymentStatus).text}
+              </Badge>
+            </div>
           </div>
-        </div>
-        <div style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${payableAmount}`}</div>{' '}
-      </CardBody>
-    </Card>
+          <div style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${payableAmount}`}</div>{' '}
+        </CardBody>
+      </Card>
+    </PaymentTableWrapper>
   );
 }
 

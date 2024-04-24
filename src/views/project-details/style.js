@@ -708,6 +708,19 @@ const RatingTag = styled.div`
   }
 `;
 
+const PaymentInfoBanner = styled.div`
+  border-radius: 6px;
+  background: ${theme.infoBannerBg};
+
+  .info-banner-icon {
+    margin-top: 2px;
+  }
+
+  p {
+    color: ${theme.activeNavPillText};
+  }
+`;
+
 export {
   BidWrapper,
   TeamVieWrapper,
@@ -722,4 +735,5 @@ export {
   UserNameWrapper,
   TableWrapper,
   SubmissionHistoryWrapper,
+  PaymentInfoBanner,
 };
