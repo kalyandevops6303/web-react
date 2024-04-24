@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
-import { ChevronRight, FileText } from 'react-feather';
+import { ChevronRight } from 'react-feather';
 import React, { useEffect } from 'react';
 import Proptypes from 'prop-types';
 import {
@@ -34,7 +34,7 @@ import { selectSavedUserData, selectUserData } from '../../redux/selectors/authS
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { downloadFile, getFileSize } from '../../utility/Utils';
+import { downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -352,8 +352,10 @@ const ProjectModal = ({
                         style={{ color: theme.activeColor }}
                         onClick={() => downloadFile({ data: document })}
                       >
-                        <FileText size="18" className="me-75" />
-                        {document?.file_name}
+                        <div className="d-flex align-items-center">
+                          <span>{renderFilePreview(document)}</span>
+                          <span>{document.file_name}</span>
+                        </div>
                       </span>
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">
