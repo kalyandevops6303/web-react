@@ -23,6 +23,7 @@ import {
 } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import Avatar from '@components/avatar';
+import classnames from 'classnames';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { DateTime } from 'luxon';
@@ -520,50 +521,49 @@ const BidDetails = () => {
             </CardBody>
           </Card>
           <Card>
-            <CardBody className="gap-3">
-              {bidInfo?.documents?.map((item, index) => (
-                <div
-                  className={
-                    // eslint-disable-next-line no-unsafe-optional-chaining
-                    index !== bidInfo?.documents?.length - 1
-                      ? 'd-flex align-items-center w-100 mb-2'
-                      : 'd-flex align-items-center w-100'
-                  }
-                  key={item?.file_key}
-                >
-                  {downloadUrlIsLoading && selectedFileKey === item?.file_key ? (
-                    <div className="d-flex align-items-center justify-content-between">
-                      <Spinner color="primary" />
-                    </div>
-                  ) : (
-                    <div
-                      className="d-flex align-items-center w-100 cursor-pointer"
-                      style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
-                      onClick={() => {
-                        setSelectedFileKey(item?.file_key);
-                        dispatch(
-                          getDownloadUrl({
-                            fileKey: item?.file_key,
-                            onSuccess: onDownloadResumeUrlSuccess,
-                            fileName: item?.file_name,
-                          }),
-                        );
-                      }}
-                    >
-                      {renderFilePreview(item)} <span className="mb-0">{item?.file_name}</span>
-                    </div>
-                  )}
-                  <div className="d-flex justify-content-end w-100 ms-1 font-weight-bold">
-                    <div className="d-flex gap-4">
-                      <CardText className="mb-0">{formatFileSize(item?.size)}</CardText>
-                      <CardText className="mb-0">
-                        {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
-                      </CardText>
+            {bidInfo?.documents?.length > 0 && (
+              <CardBody className="gap-3">
+                {bidInfo?.documents?.map((item, index) => (
+                  <div
+                    className={classnames('d-flex', 'align-items-center', 'w-100', {
+                      'mb-space': index !== bidInfo?.documents?.length - 1,
+                    })}
+                    key={item?.file_key}
+                  >
+                    {downloadUrlIsLoading && selectedFileKey === item?.file_key ? (
+                      <div className="d-flex align-items-center justify-content-between">
+                        <Spinner color="primary" />
+                      </div>
+                    ) : (
+                      <div
+                        className="d-flex align-items-center w-100 cursor-pointer"
+                        style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                        onClick={() => {
+                          setSelectedFileKey(item?.file_key);
+                          dispatch(
+                            getDownloadUrl({
+                              fileKey: item?.file_key,
+                              onSuccess: onDownloadResumeUrlSuccess,
+                              fileName: item?.file_name,
+                            }),
+                          );
+                        }}
+                      >
+                        {renderFilePreview(item)} <span className="mb-0">{item?.file_name}</span>
+                      </div>
+                    )}
+                    <div className="d-flex justify-content-end w-100 ms-1 font-weight-bold">
+                      <div className="d-flex gap-4">
+                        <CardText className="mb-0">{formatFileSize(item?.size)}</CardText>
+                        <CardText className="mb-0">
+                          {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
+                        </CardText>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </CardBody>
+                ))}
+              </CardBody>
+            )}
           </Card>
         </Col>
       </Row>
