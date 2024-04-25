@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Badge, Button, Card, CardBody, CardText, Input, Table, UncontrolledTooltip } from 'reactstrap';
 import { ChevronDown, ChevronUp, Copy, Info } from 'react-feather';
-import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, paymentText, userTypes } from '../../../utility/constants/Constant';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import {
   getApplicationFee,
@@ -183,19 +183,19 @@ const PaymentTable = () => {
 
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: 'Payment Failed' };
+      return { theme: 'light-danger', text: paymentText.PAYMENT_FAILED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Milestone In Progress' };
+      return { theme: 'light-warning', text: isClient ? paymentText.PAYMENT_DUE : paymentText.FUNDS_UNAVAILABLE };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
-      return { theme: 'light-primary', text: 'Payment Processing' };
+      return { theme: 'light-primary', text: paymentText.PAYMENT_PROCESSING };
     }
     if (tag === PAYMENT_STATUS.INITIATED) {
-      return { theme: 'light-primary', text: 'Payment Initiated' };
+      return { theme: 'light-primary', text: paymentText.PAYMENT_INITIATED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Funds Available' };
+      return { theme: 'light-success', text: paymentText.FUNDS_AVAILABLE };
     }
     return { theme: 'light-primary', text: tag };
   };
@@ -397,7 +397,7 @@ const PaymentTable = () => {
                                   </div>
                                 </td>
                                 <td>
-                                  <PaymentStatusForRow paymentStatus={paymentStatusList} />
+                                  <PaymentStatusForRow paymentStatus={paymentStatusList} isClient={isClient} />
                                 </td>
                                 <td>{}</td>
                                 <td colSpan={2}>

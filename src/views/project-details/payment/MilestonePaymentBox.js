@@ -2,25 +2,25 @@ import React from 'react';
 import { Card, CardBody, Input, Label, Badge } from 'reactstrap';
 import { PropTypes } from 'prop-types';
 
-import { PAYMENT_STATUS } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, paymentText } from '../../../utility/constants/Constant';
 import PaymentTableWrapper from './style';
 
 function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, checked, onSelect }) {
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: 'Payment Failed' };
+      return { theme: 'light-danger', text: paymentText.PAYMENT_FAILED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Milestone In Progress' };
+      return { theme: 'light-warning', text: paymentText.PAYMENT_DUE };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
-      return { theme: 'light-primary', text: 'Payment Processing' };
+      return { theme: 'light-primary', text: paymentText.PAYMENT_PROCESSING };
     }
     if (tag === PAYMENT_STATUS.INITIATED) {
-      return { theme: 'light-primary', text: 'Payment Initiated' };
+      return { theme: 'light-primary', text: paymentText.PAYMENT_INITIATED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Funds Available' };
+      return { theme: 'light-success', text: paymentText.FUNDS_AVAILABLE };
     }
     return { theme: 'light-primary', text: tag };
   };
