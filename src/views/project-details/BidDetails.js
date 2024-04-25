@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft, FileText, Info } from 'react-feather';
+import { ChevronLeft, Info } from 'react-feather';
 import {
   AccordionBody,
   AccordionHeader,
@@ -23,6 +23,7 @@ import {
 } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import Avatar from '@components/avatar';
+import classnames from 'classnames';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { DateTime } from 'luxon';
@@ -31,7 +32,7 @@ import theme from '../../configs/themeVariables';
 import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
 import { userTypes } from '../../utility/constants/Constant';
-import { downloadFile, formatFileSize, truncateSentence } from '../../utility/Utils';
+import { downloadFile, formatFileSize, renderFilePreview, truncateSentence } from '../../utility/Utils';
 import AcceptBidModal from '../modals/AcceptBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
@@ -520,43 +521,49 @@ const BidDetails = () => {
             </CardBody>
           </Card>
           <Card>
-            {bidInfo?.documents?.map((item) => (
-              <div key={item?.file_key}>
-                <CardBody className="d-flex align-items-center w-100">
-                  {downloadUrlIsLoading && selectedFileKey === item?.file_key ? (
-                    <div className="d-flex align-items-center justify-content-between">
-                      <Spinner color="primary" />
-                    </div>
-                  ) : (
-                    <div
-                      className="d-flex align-items-center w-100 cursor-pointer"
-                      style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
-                      onClick={() => {
-                        setSelectedFileKey(item?.file_key);
-                        dispatch(
-                          getDownloadUrl({
-                            fileKey: item?.file_key,
-                            onSuccess: onDownloadResumeUrlSuccess,
-                            fileName: item?.file_name,
-                          }),
-                        );
-                      }}
-                    >
-                      <FileText size="18" className="me-75" />
-                      <CardText className="mb-0">{item?.file_name}</CardText>
-                    </div>
-                  )}
-                  <div className="d-flex justify-content-end w-100 ms-1 font-weight-bold">
-                    <div className="d-flex gap-4">
-                      <CardText className="mb-0">{formatFileSize(item?.size)}</CardText>
-                      <CardText className="mb-0">
-                        {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
-                      </CardText>
+            {bidInfo?.documents?.length > 0 && (
+              <CardBody className="gap-3">
+                {bidInfo?.documents?.map((item, index) => (
+                  <div
+                    className={classnames('d-flex', 'align-items-center', 'w-100', {
+                      'mb-space': index !== bidInfo?.documents?.length - 1,
+                    })}
+                    key={item?.file_key}
+                  >
+                    {downloadUrlIsLoading && selectedFileKey === item?.file_key ? (
+                      <div className="d-flex align-items-center justify-content-between">
+                        <Spinner color="primary" />
+                      </div>
+                    ) : (
+                      <div
+                        className="d-flex align-items-center w-100 cursor-pointer"
+                        style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                        onClick={() => {
+                          setSelectedFileKey(item?.file_key);
+                          dispatch(
+                            getDownloadUrl({
+                              fileKey: item?.file_key,
+                              onSuccess: onDownloadResumeUrlSuccess,
+                              fileName: item?.file_name,
+                            }),
+                          );
+                        }}
+                      >
+                        {renderFilePreview(item)} <span className="mb-0">{item?.file_name}</span>
+                      </div>
+                    )}
+                    <div className="d-flex justify-content-end w-100 ms-1 font-weight-bold">
+                      <div className="d-flex gap-4">
+                        <CardText className="mb-0">{formatFileSize(item?.size)}</CardText>
+                        <CardText className="mb-0">
+                          {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
+                        </CardText>
+                      </div>
                     </div>
                   </div>
-                </CardBody>
-              </div>
-            ))}
+                ))}
+              </CardBody>
+            )}
           </Card>
         </Col>
       </Row>

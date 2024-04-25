@@ -7,7 +7,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal, ModalHeader, ModalBody, Row, Col, Input, Button, Spinner, Form, FormFeedback } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { FileText, Upload } from 'react-feather';
+import { Upload } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { DisputeDetailsContainer, RepliesContainer } from '../style';
@@ -26,7 +26,7 @@ import { UploadIconContainer } from '../../Onboarding/style';
 import { disputeReplyFileUploadService, disputeReplyFileUploadToAzureService } from '../../../services/disputeServices';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import DisputeClosedModal from './DisputeClosedModal';
-import { downloadFile, downloadUploadedFile } from '../../../utility/Utils';
+import { downloadFile, downloadUploadedFile, renderFilePreview } from '../../../utility/Utils';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 
@@ -191,8 +191,10 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
             style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
             onClick={() => downloadUploadedFile({ file: file.file })}
           >
-            <FileText size="18" className="me-75 mb-50" />
-            {file.file.name}
+            <div className="d-flex align-items-center">
+              <span>{renderFilePreview(file?.file)}</span>
+              <span>{file.file.name}</span>
+            </div>
           </div>
           <div>
             <Button
@@ -267,10 +269,10 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, primaryFilte
                       <Spinner color="primary" />
                     </div>
                   ) : (
-                    <>
-                      <FileText size="18" className="me-75 mb-50" />
-                      <p className="mb-0">{document.file_name}</p>
-                    </>
+                    <div className="d-flex align-items-center">
+                      <span>{renderFilePreview(document)}</span>
+                      <span>{document.file_name}</span>
+                    </div>
                   )}
                 </div>
               ))}

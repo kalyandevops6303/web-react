@@ -13,6 +13,10 @@ import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
 import PDFIcon from '../assets/images/pdfV2.svg';
+import DocIcon from '../assets/images/DOC.svg';
+import TextIcon from '../assets/images/TXT.svg';
+import JPGIcon from '../assets/images/JPG.svg';
+
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
 // ** Checks if an object is empty (returns boolean)
@@ -294,13 +298,20 @@ export const isFileValid = (file) => {
 };
 
 export const renderFilePreview = (file) => {
-  if (file?.type?.startsWith('image')) {
-    return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="22" width="22" />;
+  const name = file?.name || file?.file_name;
+  if (name?.toLowerCase().endsWith('.jpeg') || name?.toLowerCase().endsWith('.jpg')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={JPGIcon} height="22" width="22" />;
   }
-  if (file?.name?.toLowerCase().endsWith('.pdf')) {
-    return <img className="rounded me-75" alt="pdf" src={PDFIcon} height="22" width="22" />;
+  if (name?.toLowerCase().endsWith('.txt')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={TextIcon} height="22" width="22" />;
   }
-  return <FileText size="20" className="me-75 mb-25" />;
+  if (name?.toLowerCase().endsWith('.pdf')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={PDFIcon} height="22" width="22" />;
+  }
+  if (name?.toLowerCase().endsWith('.doc') || name?.toLowerCase().endsWith('.docx')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={DocIcon} height="22" width="22" />;
+  }
+  return <FileText size="18" className="me-75 mb-25" />;
 };
 
 export const getFileSize = (size) => {
