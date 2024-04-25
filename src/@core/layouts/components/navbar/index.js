@@ -53,7 +53,7 @@ const HeadWrapper = styled.div`
   }
   .is-active {
     font-weight: 600;
-    border-bottom: 2px solid ${theme.activeColor};
+    border-bottom: 3px solid ${theme.activeColor};
     color: ${theme.activeColor};
     &:hover {
       color: ${theme.activeColor};

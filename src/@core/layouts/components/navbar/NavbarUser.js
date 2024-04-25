@@ -16,6 +16,7 @@ import { clearUnreadMsgCountData } from '../../../../redux/reducers/chat';
 import { clubStatus } from '../../../../utility/constants/Constant';
 import { getNotificationsPolling } from '../../../../redux/actions/notificationsActions';
 import { notificationsPolling } from '../../../../redux/selectors/notificationsSelectors';
+import styled from 'styled-components';
 
 const NavbarUser = ({ setNavBarLoading }) => {
   const isTab = useIsTab();
@@ -31,6 +32,8 @@ const NavbarUser = ({ setNavBarLoading }) => {
   const notificationsPollingData = useSelector(notificationsPolling);
 
   const isTabDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW || isUserDataLoading;
+  const isChatView = location.pathname.includes('/chat');
+  const isNotificationView = location.pathname.includes('/notifications');
 
   const handleNotificaionClick = () => {
     isNotificationCount && dispatch(notificationCount(false));
@@ -53,6 +56,19 @@ const NavbarUser = ({ setNavBarLoading }) => {
     }
   }, [location, userDetailsData]);
 
+  const LineWrapper = styled.div`
+    position: relative;
+    .line {
+      height: 3px;
+      background: ${theme.activeColor};
+      width: 90%;
+      position: absolute;
+      bottom: -21px;
+      margin: auto;
+      left: 0;
+      right: 0;
+    }
+  `;
   return (
     <ul className="nav navbar-nav align-items-center ms-auto d-contents">
       <NavbarSearch />
@@ -61,34 +77,44 @@ const NavbarUser = ({ setNavBarLoading }) => {
       ) : (
         <>
           {isTabDisabled ? (
-            <div className="text-muted cursor-not-allowed mt-auto mb-auto">
+            <div className="text-muted cursor-not-allowed  mb-auto mt-75">
               <NotificationIconContainer>
                 <Bell size={20} color={theme.bodyColor} />
               </NotificationIconContainer>
             </div>
           ) : (
-            <NotificationIconContainer onClick={handleNotificaionClick} className="mt-auto mb-auto">
+            <NotificationIconContainer onClick={handleNotificaionClick} className=" mb-auto mt-75">
               <Link to="/notifications">
                 {(isNotificationCount || notificationsPollingData?.unread_notifications_count > 0) && (
                   <span className="notification-dot" />
                 )}
-                <Bell size={20} color={theme.bodyColor} />
+                <Bell size={20} color={isNotificationView ? theme.activeColor : theme.bodyColor} />
               </Link>
+              {isNotificationView && (
+                <LineWrapper>
+                  <div className="line"></div>
+                </LineWrapper>
+              )}
             </NotificationIconContainer>
           )}
 
           {isTabDisabled ? (
             <MessageIconContainer>
-              <div className="text-muted cursor-not-allowed mt-auto mb-auto">
+              <div className="text-muted cursor-not-allowed mb-auto mt-75">
                 <MessageSquare size={20} color={theme.bodyColor} />
               </div>
             </MessageIconContainer>
           ) : (
-            <MessageIconContainer className="mt-auto mb-auto">
+            <MessageIconContainer className=" mb-auto mt-75">
               <div onClick={handleChatNavigate}>
                 {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
-                <MessageSquare size={20} color={theme.bodyColor} />
+                <MessageSquare size={20} color={isChatView ? theme.activeColor : theme.bodyColor} />
               </div>
+              {isChatView && (
+                <LineWrapper>
+                  <div className="line"></div>
+                </LineWrapper>
+              )}
             </MessageIconContainer>
           )}
 

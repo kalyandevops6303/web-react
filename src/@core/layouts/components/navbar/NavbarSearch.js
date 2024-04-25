@@ -56,7 +56,7 @@ const NavbarSearch = () => {
       }}
     >
       {!query.isNavbarSearchBarOpen && (
-        <NavLink className={`${isDisabled && 'cursor-not-allowed'} nav-link-search me-1`}>
+        <NavLink className={`${isDisabled && 'cursor-not-allowed'} nav-link-search me-1 `}>
           <Icon.Search className="ficon" />
         </NavLink>
       )}
