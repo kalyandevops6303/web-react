@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
-import { GOOGLE_ANALYTICS_CONSTANTS } from '../../constants';
-import { COMETCHAT_CONSTANTS } from './constants';
+import { GOOGLE_ANALYTICS_CONSTANTS , COMETCHAT_CONSTANTS } from './constants';
+
 import { getToken, messaging } from './configs/api/firebase';
 
 // ** Router Import

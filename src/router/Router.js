@@ -3,8 +3,7 @@ import { useRoutes, useLocation } from 'react-router-dom';
 import { useEffect  } from 'react';
 import ReactGA from 'react-ga';
 import { useLayout } from '@hooks/useLayout';
-import { GOOGLE_ANALYTICS_CONSTANTS } from '../../constants';
-
+import { GOOGLE_ANALYTICS_CONSTANTS } from '../constants';
 // ** GetRoutes
 import { getRoutes } from './routes';
 
