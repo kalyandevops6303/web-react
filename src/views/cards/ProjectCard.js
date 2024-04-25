@@ -23,8 +23,6 @@ const ProjectCard = ({
   secondaryFilterForInvitedType,
   secondFilterState,
   primaryFilter,
-  isProjectWithTeam,
-  isTeam,
   isExpanded,
   data,
   isPopoverOpen,
@@ -136,7 +134,7 @@ const ProjectCard = ({
                       </>
                     )}
                   </CardText>
-                  {(data?.assigned_date || data?.completed_date || data?.invitation_to?.updated_at) && (
+                  {(data?.assigned_date || data?.completed_date || data?.invite_date) && (
                     <CardText className="mb-1">
                       {data?.assigned_date && (
                         <span className="me-1">
@@ -152,21 +150,10 @@ const ProjectCard = ({
                             : ''}
                         </span>
                       )}
-                      {data?.invitation_to?.updated_at && (
+                      {data?.invite_date && (
                         <span className="me-1">
-                          {data?.invitation_to?.updated_at
-                            ? `Invite Date: ${DateTime?.fromMillis(data?.invitation_to?.updated_at).toFormat(
-                                'dd-MM-yy',
-                              )}`
-                            : ''}
-                        </span>
-                      )}
-                      {data?.invitation_by?.updated_at && (
-                        <span>
-                          {data?.invitation_by?.updated_at
-                            ? `Invite Date: ${DateTime?.fromMillis(data?.invitation_by?.updated_at).toFormat(
-                                'dd-MM-yy',
-                              )}`
+                          {data?.invite_date
+                            ? `Invite Date: ${DateTime?.fromMillis(data?.invite_date).toFormat('dd-MM-yy')}`
                             : ''}
                         </span>
                       )}
@@ -202,20 +189,13 @@ const ProjectCard = ({
                 )}
               </Col>
               <Col lg="4">
-                {isProjectWithTeam && primaryFilter !== 'terminated' ? (
+                {primaryFilter !== 'terminated' ? (
                   <ProjectWithTeamUI
                     secondaryFilterForInvitedType={secondaryFilterForInvitedType}
                     primaryFilter={primaryFilter}
                     data={data}
                   />
                 ) : (
-                  <BaseInfoUI
-                    hideUserInfo={primaryFilter === 'terminated' && userdata?.user_type === userTypes.client}
-                    data={data}
-                    primaryFilter={primaryFilter}
-                  />
-                )}
-                {!isTeam && !isProjectWithTeam && (
                   <BaseInfoUI
                     hideUserInfo={primaryFilter === 'terminated' && userdata?.user_type === userTypes.client}
                     data={data}
@@ -269,8 +249,6 @@ ProjectCard.propTypes = {
   data: PropTypes.object,
   secondFilterState: PropTypes.object,
   isPopoverOpen: PropTypes.bool,
-  isProjectWithTeam: PropTypes.bool,
-  isTeam: PropTypes.bool,
   primaryFilter: PropTypes.string,
   secondaryFilterForInvitedType: PropTypes.string,
 };
@@ -280,8 +258,6 @@ ProjectCard.defaultProps = {
   isExpanded: false,
   data: {},
   isPopoverOpen: false,
-  isProjectWithTeam: false,
-  isTeam: false,
   primaryFilter: '',
   secondaryFilterForInvitedType: '',
 };
