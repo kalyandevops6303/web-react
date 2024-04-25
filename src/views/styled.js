@@ -374,8 +374,7 @@ const Elevate = styled.div`
   border-radius: 0.375rem;
   &:hover {
     border-radius: 0.375rem;
-    box-shadow: 0px 0px 0px 1px ${theme.blueBorderColorv2}, /* First box shadow */ 0px 8px 12px 0px rgba(0, 0, 0, 0.08); /* Second box shadow */
-  }
+    box-shadow: ${(props) => (props.elevate === false ? '' : `0px 0px 0px 1px ${theme.blueBorderColorv2}`)} 
 `;
 const ElevateShadow = styled(Elevate)`
   &:hover {

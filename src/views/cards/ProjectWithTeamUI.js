@@ -58,8 +58,8 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
   } else if (userData.user_type === userTypes.team) {
     if (secondaryFilterForInvitedType === 'SENT') {
       profileToShowInRightSideOfCard = data?.invitation_to;
-    } else {
-      profileToShowInRightSideOfCard = data?.invited_type;
+    } else if (secondaryFilterForInvitedType === 'RECEIVED') {
+      profileToShowInRightSideOfCard = data?.invitation_by;
     }
   } else {
     profileToShowInRightSideOfCard = data?.invitation_to;
