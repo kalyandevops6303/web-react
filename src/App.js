@@ -1,10 +1,13 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
 import React, { Suspense, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import ReactGA from 'react-ga';
 import { useDispatch, useSelector } from 'react-redux';
 import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
+import { GOOGLE_ANALYTICS_CONSTANTS } from '../../constants';
 import { COMETCHAT_CONSTANTS } from './constants';
 import { getToken, messaging } from './configs/api/firebase';
 
@@ -16,6 +19,8 @@ import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
 import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
 import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/reducers/auth';
+
+ReactGA.initialize(GOOGLE_ANALYTICS_CONSTANTS.TRACKING_ID);
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -53,7 +58,9 @@ const App = () => {
     });
   };
 
+  const location = useLocation();
   useEffect(() => {
+    ReactGA.pageview(location.pathname + location.search);
     if (isLoggedIn && !fcmToken) {
       let data;
       const tokenFunc = async () => {
@@ -69,7 +76,7 @@ const App = () => {
       };
       tokenFunc();
     }
-  }, [isLoggedIn, cometAuthToken, fcmToken]);
+  }, [isLoggedIn, cometAuthToken, fcmToken, location]);
 
   // Fetch AccessToken and refreshToken from localstorage and check on init
   useEffect(() => {
