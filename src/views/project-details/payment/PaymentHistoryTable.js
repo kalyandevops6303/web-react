@@ -11,7 +11,7 @@ import {
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
 import { formatDate } from '../../../utility/Utils';
-import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, paymentText, userTypes } from '../../../utility/constants/Constant';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import theme from '../../../configs/themeVariables';
 
@@ -54,16 +54,16 @@ function PaymentHistoryTable() {
       return { theme: 'light-danger', text: 'Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: isClient ? 'Payment Due' : 'Funds Unavailable' };
+      return { theme: 'light-warning', text: isClient ? paymentText.PAYMENT_DUE : paymentText.FUNDS_UNAVAILABLE };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
-      return { theme: 'light-primary', text: 'Processing' };
+      return { theme: 'light-primary', text: paymentText.PROCESSING };
     }
     if (tag === PAYMENT_STATUS.INITIATED) {
-      return { theme: 'light-primary', text: 'Initiated' };
+      return { theme: 'light-primary', text: paymentText.INITIATED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Successful' };
+      return { theme: 'light-success', text: paymentText.SUCCESSFUL };
     }
     return { theme: 'light-primary', text: tag };
   };
