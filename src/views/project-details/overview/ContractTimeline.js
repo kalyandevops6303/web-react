@@ -4,6 +4,7 @@ import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAc
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import { useNavigate, useParams } from 'react-router-dom';
+import classnames from 'classnames';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
@@ -12,7 +13,7 @@ import {
   selectContractData,
   selectContractTimeline,
 } from '../../../redux/selectors/projectDetailsSelectors';
-import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
+import { getContractStepLabel, getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -81,19 +82,15 @@ const ContractTimeline = () => {
   return (
     <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
       <AccordionItem>
-        <AccordionHeader onClick={() => toggle(1)} targetId="1" className="active-accordion-header">
+        <AccordionHeader
+          onClick={() => toggle(1)}
+          targetId="1"
+          className={classnames({ 'active-accordion-header': false })}
+        >
           <AccordionHeadStyle>
             <div className="title-head">
               <span className="step d-block">
-                STEP{' '}
-                {(() => {
-                  switch (userType) {
-                    case userTypes.client:
-                      return projectDetailsData?.nda?.is_nda ? 4 : 3;
-                    default:
-                      return projectDetailsData?.nda?.is_nda ? 3 : 2;
-                  }
-                })()}
+                STEP {getContractStepLabel({ isNDA: projectDetailsData?.nda?.is_nda, user_type: userType })}
               </span>
               <span className="d-flex">
                 Contract

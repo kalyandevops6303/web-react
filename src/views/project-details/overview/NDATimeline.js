@@ -4,6 +4,7 @@ import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAc
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import { useNavigate, useParams } from 'react-router-dom';
+import classnames from 'classnames';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
@@ -69,12 +70,16 @@ const NDATimeline = () => {
   return (
     <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
       <AccordionItem>
-        <AccordionHeader onClick={() => toggle(1)} targetId="1" className="active-accordion-header">
+        <AccordionHeader
+          onClick={() => toggle(1)}
+          targetId="1"
+          className={classnames({ 'active-accordion-header': false })}
+        >
           <AccordionHeadStyle>
             <div className="title-head">
               <span className="step d-block">STEP {userData?.userType === userTypes.client ? 3 : 2}</span>
               <span className="d-flex">
-                NDA <span className="indicator" />
+                NDA <span className="d-none indicator" />
                 {ndaData?.is_contract_terminated === false ? (
                   <span> {!ndaData?.is_signed ? <span className="indicator" /> : ''}</span>
                 ) : (

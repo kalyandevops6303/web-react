@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Card, CardBody, CardText, UncontrolledAccordion } from 'reactstrap';
 import { ChevronRight } from 'react-feather';
+import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import theme from '../../../configs/themeVariables';
 import Timeline from '../../../@core/components/timeline';
@@ -23,6 +24,7 @@ import NDATimeline from './NDATimeline';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { clearDocstate } from '../../../redux/reducers/projectDetails';
 import { Elevate } from '../../styled';
+import { getContractStepLabel } from '../../../utility/Utils';
 
 const BidTimelineWrapper = styled.div`
   .indicator {
@@ -68,9 +70,11 @@ const BidTimeline = () => {
       color: theme.timelineSuccessColor,
       isDisabled: false,
       customContent: (
-        <Elevate active>
+        <Elevate active={false}>
           <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
-            {userType === userTypes.client && <ReceivedBids projectName={projectDetailsData?.details?.name} />}
+            {userType === userTypes.client && (
+              <ReceivedBids active={false} projectName={projectDetailsData?.details?.name} />
+            )}
           </UncontrolledAccordion>
         </Elevate>
       ),
@@ -79,19 +83,21 @@ const BidTimeline = () => {
       order: 2,
       isVisible: true,
       isDisabled: false,
-      color: theme.timelineSuccessColor,
+      color: userType === userTypes.client ? theme.purpleTimelimeColor : theme.timelineSuccessColor,
       customContent: <BidSubmitted />,
     },
     {
       order: 3,
       isVisible: projectDetailsData?.nda?.is_nda,
       isDisabled: ndaData?.show_document === false,
-      color: theme.purpleTimelimeColor,
+      color: theme.orangeColor,
       customContent: (
-        <Elevate active>
+        <Elevate active={false}>
           {userType === userTypes.client && !ndaData?.is_signed ? (
             <Card>
-              <CardBody className="basic-title sign-accordion-header active-accordion-header ">
+              <CardBody
+                className={classnames('basic-title', 'sign-accordion-header', { 'active-accordion-header': false })}
+              >
                 <div className="d-flex justify-content-between">
                   <div className="title-head">
                     <span className="step d-block">STEP {userType === userTypes.client ? 3 : 2}</span>
@@ -115,7 +121,9 @@ const BidTimeline = () => {
             <NDATimeline />
           ) : (
             <Card>
-              <CardBody className="basic-title sign-accordion-header active-accordion-header">
+              <CardBody
+                className={classnames('basic-title', 'sign-accordion-header', { 'active-accordion-header': false })}
+              >
                 <div className="d-flex justify-content-between">
                   <div className="title-head">
                     <span className="step d-block">STEP {userType === userTypes.client ? 3 : 2}</span>
@@ -144,23 +152,17 @@ const BidTimeline = () => {
       isDisabled: contractData?.show_document === false,
       color: theme.orangeColor,
       customContent: (
-        <Elevate active>
+        <Elevate active={false}>
           {userType === userTypes.client && !contractData?.is_signed ? (
             <Card>
-              <CardBody className="basic-title sign-accordion-header active-accordion-header">
+              <CardBody
+                className={classnames('basic-title', 'sign-accordion-header', { 'active-accordion-header': false })}
+              >
                 <div className="d-flex justify-content-between">
                   <div className="title-head">
                     <span className="step d-block">
                       {/* Steps are can be different for client and talent/team */}
-                      STEP{' '}
-                      {(() => {
-                        switch (userType) {
-                          case userTypes.client:
-                            return projectDetailsData?.nda?.is_nda ? 4 : 3;
-                          default:
-                            return projectDetailsData?.nda?.is_nda ? 3 : 2;
-                        }
-                      })()}
+                      STEP {getContractStepLabel({ isNDA: projectDetailsData?.nda?.is_nda, user_type: userType })}
                     </span>
                     <CardText
                       className={`d-flex fw-bold mb-0  ${!contractData?.show_document ? 'disabled-color' : ''}`}
@@ -185,20 +187,14 @@ const BidTimeline = () => {
             <ContractTimeline />
           ) : (
             <Card>
-              <CardBody className="basic-title sign-accordion-header active-accordion-header">
+              <CardBody
+                className={classnames('basic-title', 'sign-accordion-header', { 'active-accordion-header': false })}
+              >
                 <div className="d-flex justify-content-between">
                   <div className="title-head">
                     <span className="step d-block">
                       {/* Steps are can be different for client and talent/team */}
-                      STEP{' '}
-                      {(() => {
-                        switch (userType) {
-                          case userTypes.client:
-                            return projectDetailsData?.nda?.is_nda ? 4 : 3;
-                          default:
-                            return projectDetailsData?.nda?.is_nda ? 3 : 2;
-                        }
-                      })()}
+                      STEP {getContractStepLabel({ isNDA: projectDetailsData?.nda?.is_nda, user_type: userType })}
                     </span>
                     <CardText className={`fw-bold mb-0  ${!contractData?.show_document ? 'disabled-color' : ''}`}>
                       Contract {contractData?.show_document && <span className="indicator" />}

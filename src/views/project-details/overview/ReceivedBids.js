@@ -3,6 +3,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 import {
   AccordionBody,
@@ -52,7 +53,7 @@ const TableWrapper = styled.div`
   }
 `;
 
-const ReceivedBids = ({ projectName }) => {
+const ReceivedBids = ({ projectName, active }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const navigate = useNavigate();
@@ -273,12 +274,18 @@ const ReceivedBids = ({ projectName }) => {
 
   return (
     <AccordionItem>
-      <AccordionHeader targetId="1" onClick={() => toggle(1)} className="active-accordion-header">
+      <AccordionHeader
+        targetId="1"
+        onClick={() => toggle(1)}
+        className={classnames({
+          'active-accordion-header': active,
+        })}
+      >
         <AccordionHeadStyle>
           <div className="title-head">
             <span className="step d-block">STEP 1</span>
             <span className="d-flex">
-              Received Bids <span className="indicator" />
+              Received Bids <span className="d-none indicator" />
             </span>
           </div>
           <div className="d-flex gap-1 aling-items-center">
@@ -358,9 +365,11 @@ const ReceivedBids = ({ projectName }) => {
 
 ReceivedBids.propTypes = {
   projectName: PropTypes.string,
+  active: PropTypes.bool,
 };
 ReceivedBids.defaultProps = {
   projectName: '',
+  active: false,
 };
 
 export default memo(ReceivedBids);

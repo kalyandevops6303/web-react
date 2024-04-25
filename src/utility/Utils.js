@@ -7,7 +7,7 @@ import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning } from './constants/Constant';
+import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning, userTypes } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
@@ -749,4 +749,13 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
 
   // Start processing files
   processFile(0);
+};
+
+export const getContractStepLabel = ({ isNDA, user_type }) => {
+  switch (user_type) {
+    case userTypes.client:
+      return isNDA ? 4 : 3;
+    default:
+      return isNDA ? 3 : 2;
+  }
 };

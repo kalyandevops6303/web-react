@@ -10,6 +10,7 @@ import {
 } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import classnames from 'classnames';
 import DateTime from '../../../lib/date-time';
 import Round from '../../../lib/round';
 import { AccordionHeadStyle } from '../style';
@@ -146,12 +147,17 @@ const BidSubmitted = () => {
       }),
     );
   };
-
   const BidTimelineAccordion = (
-    <Elevate active>
+    <Elevate active={false}>
       <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
         <AccordionItem>
-          <AccordionHeader onClick={() => toggle(1)} targetId="1" className="active-accordion-header">
+          <AccordionHeader
+            onClick={() => toggle(1)}
+            targetId="1"
+            className={classnames({
+              'active-accordion-header': false,
+            })}
+          >
             <AccordionHeadStyle>
               <div className="title-head">
                 {/* If Client, step = 2
@@ -159,7 +165,7 @@ const BidSubmitted = () => {
                 <span className="step d-block">STEP {userData?.user_type === userTypes.client ? 2 : 1}</span>
                 <span className="d-flex">
                   {userData?.user_type === userTypes.client ? 'Accepted Bid' : 'Bid Submitted'}
-                  <span className="indicator" />
+                  <span className="d-none indicator" />
                 </span>
               </div>
 
