@@ -25,6 +25,7 @@ function PaymentHistoryTable() {
 
   const isTalent = user?.user_type === userTypes.talent;
   const isTeam = user?.user_type === userTypes.team;
+  const isClient = user?.user_type === userTypes.client;
 
   useEffect(() => {
     if (projectDetailsData?._id) {
@@ -53,7 +54,7 @@ function PaymentHistoryTable() {
       return { theme: 'light-danger', text: 'Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Milestone In Progress' };
+      return { theme: 'light-warning', text: isClient ? 'Payment Due' : 'Funds Unavailable' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: 'Processing' };

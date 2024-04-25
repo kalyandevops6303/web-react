@@ -3,13 +3,13 @@ import { Badge } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { PAYMENT_STATUS } from '../../../utility/constants/Constant';
 
-function PaymentStatusForRow({ paymentStatus = [] }) {
+function PaymentStatusForRow({ paymentStatus = [], isClient }) {
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
       return { theme: 'light-danger', text: 'Payment Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Milestone In Progress' };
+      return { theme: 'light-warning', text: isClient ? 'Payment Due' : 'Funds Unavailable' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: 'Payment Processing' };
@@ -36,9 +36,11 @@ function PaymentStatusForRow({ paymentStatus = [] }) {
 
 PaymentStatusForRow.propTypes = {
   paymentStatus: PropTypes.array,
+  isClient: PropTypes.bool,
 };
 
 PaymentStatusForRow.defaultProps = {
   paymentStatus: [],
+  isClient: false,
 };
 export default PaymentStatusForRow;

@@ -186,7 +186,7 @@ const PaymentTable = () => {
       return { theme: 'light-danger', text: 'Payment Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Milestone In Progress' };
+      return { theme: 'light-warning', text: isClient ? 'Payment Due' : 'Funds Unavailable' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: 'Payment Processing' };
@@ -397,7 +397,7 @@ const PaymentTable = () => {
                                   </div>
                                 </td>
                                 <td>
-                                  <PaymentStatusForRow paymentStatus={paymentStatusList} />
+                                  <PaymentStatusForRow paymentStatus={paymentStatusList} isClient={isClient} />
                                 </td>
                                 <td>{}</td>
                                 <td colSpan={2}>

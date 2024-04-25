@@ -55,7 +55,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
       return { theme: 'light-danger', text: 'Payment Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Milestone In Progress' };
+      return { theme: 'light-warning', text: 'Payment Due' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING || tag === PAYMENT_STATUS.INITIATED) {
       return { theme: 'light-primary', text: 'Payment Processing' };
