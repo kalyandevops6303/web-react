@@ -292,7 +292,12 @@ const Personal = () => {
         company_strength,
         office_address,
       };
-      dispatch(saveProfileDetails({ ...removeEmptyKeys(reqData), company_logo: '' }, onSuccess));
+
+      if (selectedImage && selectedImagePreview) {
+        dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+      } else {
+        dispatch(saveProfileDetails({ ...removeEmptyKeys(reqData), company_logo: '' }, onSuccess));
+      }
     }
   };
 

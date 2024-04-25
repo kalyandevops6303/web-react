@@ -313,6 +313,10 @@ const Profile = () => {
     let reqData;
 
     if (location.pathname.includes('profile-edit')) {
+      const onApiSuccess = () => {
+        navigate('/dashboard');
+      };
+
       if (imageUrlRes) {
         reqData = {
           _id: userDetailsData._id,
@@ -327,9 +331,6 @@ const Profile = () => {
           availability,
         };
 
-        const onApiSuccess = () => {
-          navigate('/dashboard');
-        };
         dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
       } else {
         reqData = {
@@ -344,10 +345,11 @@ const Profile = () => {
           availability,
         };
 
-        const onApiSuccess = () => {
-          navigate('/dashboard');
-        };
-        dispatch(updateTeam({ ...removeEmptyKeys(reqData), team_logo: '' }, onApiSuccess));
+        if (selectedImage && selectedImagePreview) {
+          dispatch(updateTeam({ ...removeEmptyKeys(reqData) }, onApiSuccess));
+        } else {
+          dispatch(updateTeam({ ...removeEmptyKeys(reqData), team_logo: '' }, onApiSuccess));
+        }
       }
     } else {
       // eslint-disable-next-line no-lonely-if
@@ -363,6 +365,9 @@ const Profile = () => {
           skills: skillsSelected,
           availability,
         };
+
+        setTeamCreateData(removeEmptyKeys(reqData));
+        setTeamCreatingModal(true);
       } else {
         reqData = {
           name: teamName,
@@ -374,17 +379,15 @@ const Profile = () => {
           skills: skillsSelected,
           availability,
         };
-      }
-    }
 
-    if (location.pathname.includes('profile-edit')) {
-      const onApiSuccess = () => {
-        navigate('/dashboard');
-      };
-      dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
-    } else {
-      setTeamCreateData(removeEmptyKeys(reqData));
-      setTeamCreatingModal(true);
+        if (selectedImage && selectedImagePreview) {
+          setTeamCreateData(removeEmptyKeys(reqData));
+          setTeamCreatingModal(true);
+        } else {
+          setTeamCreateData({ ...removeEmptyKeys(reqData), team_logo: '' });
+          setTeamCreatingModal(true);
+        }
+      }
     }
   };
 

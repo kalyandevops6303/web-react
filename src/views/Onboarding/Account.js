@@ -162,6 +162,8 @@ const Account = () => {
     let reqData;
     if (imageUrlRes) {
       reqData = { first_name: firstName.trim(), last_name: lastName.trim(), image_uri: imageUrlRes.file_key };
+    } else if (selectedImage && selectedImagePreview) {
+      reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
     } else {
       reqData = { first_name: firstName.trim(), last_name: lastName.trim(), image_uri: '' };
     }
