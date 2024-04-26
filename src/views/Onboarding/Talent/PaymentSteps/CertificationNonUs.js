@@ -50,7 +50,7 @@ const CertificationNonUs = ({ isAgreed, onChange }) => (
         </b>
       </p>
 
-      <div className="d-flex gap-50">
+      <div className="d-flex gap-50 form-check">
         <Input type="checkbox" name="checkbox6" checked={isAgreed} onChange={onChange} />
         <Label className="fs-6">
           I certify that i have the capacity to sign the person identified on line 1 of this form
