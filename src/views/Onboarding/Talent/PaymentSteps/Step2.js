@@ -33,6 +33,7 @@ import { getPaymentDetails, updatePaymentDetails } from '../../../../redux/actio
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
 import { formatDate } from '../../../../utility/Utils';
+import { TooltipWrapper } from '../../../styled';
 
 // eslint-disable-next-line react/prop-types
 const Step2 = ({ setStep }) => {
@@ -75,13 +76,14 @@ const Step2 = ({ setStep }) => {
           .max(999999999, 'Tax Id must be 9 digits without any special characters')
           .integer('Tax Id must be a number')
           .typeError('Tax Id Must be a number'),
+      otherwise: () => Yup.number().optional(),
     }),
     nsnTaxId: Yup.string().when('taxType', {
       is: (taxType) => taxType === 'NON_US',
       then: () => Yup.string().required('Tax Id is required'),
+      otherwise: () => Yup.string().optional(),
     }),
   });
-
   const {
     control,
     handleSubmit,
@@ -92,8 +94,6 @@ const Step2 = ({ setStep }) => {
     resolver: yupResolver(taxIdentitySchema),
     defaultValues: {
       taxName: '',
-      ssnTaxId: '',
-      nsnTaxId: '',
       taxClass: '',
     },
   });
@@ -338,12 +338,11 @@ const Step2 = ({ setStep }) => {
                   </Label>
                   <Info size={18} color={theme.infoIcon} id="security-number" />
                   <UncontrolledTooltip placement="right" target="security-number">
-                    <div className="d-flex flex-column align-items-start">
-                      <p className="m-0 text-start">
-                        National security number(NSN); Government recognized unique national security number eg PAN
-                        card, Aadhar card etc
-                      </p>
-                    </div>
+                    <TooltipWrapper>
+                      <div className="d-flex flex-column align-items-start tooltip-style">
+                        <p>Government recognized unique national security number. E.g. PAN Card, Aadhar Card, etc.</p>
+                      </div>
+                    </TooltipWrapper>
                   </UncontrolledTooltip>
                   <Controller
                     id="nsnTaxId"
@@ -358,6 +357,7 @@ const Step2 = ({ setStep }) => {
                           {...field}
                           invalid={errors.nsnTaxId && true}
                           placeholder="Enter NSN #"
+                          autoComplete="none"
                         />
                         <InputGroupText className="cursor-pointer" onClick={() => setInputVisibility(!inputVisibility)}>
                           {renderIcon()}
@@ -405,7 +405,7 @@ const Step2 = ({ setStep }) => {
               </div>
               <div className="d-flex flex-column mt-2">
                 <Label className="fs-5">Signed On : {currentDate || ''}</Label>
-                <Col className="d-flex gap-50 mt-1 mb-1">
+                <Col className="d-flex gap-50 mt-1 mb-1 form-check">
                   <Input
                     type="checkbox"
                     name="checkbox1"
@@ -417,7 +417,7 @@ const Step2 = ({ setStep }) => {
                     I consent to provide an electronic signature by clicking on the above ‘I confirm’ button.
                   </Label>
                 </Col>
-                <Col className="d-flex gap-50 mt-1 mb-1">
+                <Col className="d-flex gap-50 mt-1 mb-1 form-check">
                   <Input
                     type="checkbox"
                     name="checkbox2"
