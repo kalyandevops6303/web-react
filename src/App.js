@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
-import { COMETCHAT_CONSTANTS } from './constants';
+
 import { getToken, messaging } from './configs/api/firebase';
 
 // ** Router Import
@@ -16,6 +16,7 @@ import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
 import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
 import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/reducers/auth';
+import { COMETCHAT_CONSTANTS } from './constants';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);

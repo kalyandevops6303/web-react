@@ -3,6 +3,10 @@ export const COMETCHAT_CONSTANTS = {
   REGION: import.meta.env.VITE_APP_REGION,
 };
 
+export const GOOGLE_ANALYTICS_CONSTANTS = {
+  TRACKING_ID: import.meta.env.GOOGLE_ANALYTICS_TRACKING_ID,
+};
+
 export const FIREBASE_CONSTANTS = {
   PUBLIC_VAPID_KEY: import.meta.env.VITE_VAPID,
   CONFIG: {
