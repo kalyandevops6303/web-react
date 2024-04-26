@@ -4,7 +4,7 @@ export const COMETCHAT_CONSTANTS = {
 };
 
 export const GOOGLE_ANALYTICS_CONSTANTS = {
-  TRACKING_ID: "G-6DHYQ3EQVZ",
+  TRACKING_ID: import.meta.env.GOOGLE_ANALYTICS_TRACKING_ID,
 };
 
 export const FIREBASE_CONSTANTS = {

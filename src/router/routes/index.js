@@ -1,7 +1,6 @@
 // ** React Imports
-import { Fragment,useEffect  } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import ReactGA from 'react-ga';
+import { Fragment } from 'react';
+import { Navigate} from 'react-router-dom';
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout';
 import VerticalLayout from '@src/layouts/VerticalLayout';
@@ -13,7 +12,6 @@ import PublicRoute from '@components/routes/PublicRoute';
 
 // ** Utils
 import { isObjEmpty } from '@utils';
-import { GOOGLE_ANALYTICS_CONSTANTS } from '../../constants';
 
 import PrivateDashboard from '../../views/dashboard/PrivateDashboard';
 import UserDetails from '../../views/user-details';
@@ -42,8 +40,6 @@ import CreateClub from '../../views/createClub';
 import ClubInvitation from '../../views/club-invitation';
 import PaymentFullView from '../../views/paymentFullView';
 import BidDetails from '../../views/project-details/BidDetails';
-
-ReactGA.initialize(GOOGLE_ANALYTICS_CONSTANTS.TRACKING_ID);
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -267,11 +263,6 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
 const getRoutes = (layout) => {
   const defaultLayout = layout || 'vertical';
   const layouts = ['vertical', 'horizontal', 'blank'];
-
-  const location = useLocation();
-  useEffect(() => {
-    ReactGA.pageview(location.pathname + location.search);
-  }, [location]);
 
   const AllRoutes = [];
 
