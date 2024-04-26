@@ -155,7 +155,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
               )}
 
               <div className="d-flex flex-grow-1 mt-25">
-                <RatingBadge number={Math.round(profileToShowInRightSideOfCard?.rating ?? 0)} />
+                <RatingBadge number={profileToShowInRightSideOfCard?.rating ?? 0} />
                 <CardText className="ps-1 font-small-3 fw-300 rating-label">
                   {profileToShowInRightSideOfCard?.project_count ?? 0} Projects
                 </CardText>
@@ -207,7 +207,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                     </CardText>
                   </div>
                   <div className="d-flex flex-grow-1 mt-25">
-                    <RatingBadge number={Math.round(profileToShowInRightSideOfCard?.rating ?? 0)} />
+                    <RatingBadge number={profileToShowInRightSideOfCard?.rating ?? 0} />
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">
                       {profileToShowInRightSideOfCard?.projects_worked_on_count ?? 0} Projects
                     </CardText>
@@ -265,7 +265,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                     </CardText>
                   </div>
                   <div className="d-flex flex-grow-1 mt-25">
-                    <RatingBadge number={Math.round(data?.client?.rating ?? 0)} />
+                    <RatingBadge number={data?.client?.rating ?? 0} />
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">
                       {data?.client?.projects_worked_on_count ?? 0} Projects
                     </CardText>
@@ -304,7 +304,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                           </CardText>
                         </div>
                         <div className="d-flex flex-grow-1 mt-25">
-                          <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
+                          <RatingBadge number={data?.worker_details?.rating ?? 0} />
                           <CardText className="ps-1 font-small-3 fw-300 rating-label">
                             {data?.worker_details?.projects_worked_on_count ?? 0} Projects
                           </CardText>
@@ -332,7 +332,7 @@ const ProjectWithTeamUI = ({ secondaryFilterForInvitedType, primaryFilter, data 
                     )}
 
                     <div className="d-flex flex-grow-1 mt-25">
-                      <RatingBadge number={Math.round(data?.worker_details?.rating ?? 0)} />
+                      <RatingBadge number={data?.worker_details?.rating ?? 0} />
                       <CardText className="ps-1 font-small-3 fw-300 rating-label">
                         {data?.client?.projects_worked_on_count ?? 0} Projects
                       </CardText>

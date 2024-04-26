@@ -14,7 +14,6 @@ import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
-import { returnFormattedRating } from '../../utility/Utils';
 import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
@@ -229,9 +228,7 @@ const BaseInfoCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
             </div>
             <div className="d-flex flex-grow-1">
               <RatingBadge
-                number={returnFormattedRating(
-                  data?.bidder_details ? data?.bidder_details?.rating ?? 0 : clientDetails?.rating ?? 0,
-                )}
+                number={data?.bidder_details ? data?.bidder_details?.rating ?? 0 : clientDetails?.rating ?? 0}
               />
               {data?.bidder_details ? (
                 <CardText className="ps-1 font-small-3 fw-300 rating-label">

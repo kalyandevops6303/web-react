@@ -153,7 +153,7 @@ const ClientCard = ({ isSearchPage, data, userType }) => {
                   )}
                 </div>
                 <div className="d-flex mt-1 justify-content-end w-100">
-                  <RatingBadge number={Math.round(data?.rating ?? 0)} />
+                  <RatingBadge number={data?.rating ?? 0} />
                   <CardText className="ps-50 font-small-3 fw-300 rating-label">
                     {data?.projects_worked_on_count ?? 0} Projects
                   </CardText>
