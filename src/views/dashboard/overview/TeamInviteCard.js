@@ -103,42 +103,11 @@ const TeamInviteCard = ({ accordionName, data, className }) => {
 
   return (
     <ProjectWrapper className={className}>
-      {/* <Card className="card-app-design new-tag-relative-card" style={{ height: '180px' }}>
-        {!data?.is_new && <NewTag />}
-        <CardBody className="d-flex flex-column justify-content-between">
-          <div>
-            <CardTitle className="mt-50 truncate-2 mb-50 max-height">
-              {data?.project?.details?.name || data?.name}
-            </CardTitle>
-
-            <div className="d-flex">
-              <RatingBadge number="0" />
-              <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
-            </div>
-            <UserSection
-              totalCount={data?.team_members_count || data?.workers_count}
-              tagName="Team"
-              name={data?.name}
-              users={users}
-              projectName={data?.project?.details?.name}
-            />
-          </div>
-          <div
-            onClick={handleRedirect}
-            className={`${
-              data?.project?.details?.name ? '' : ''
-            } cursor-pointer font-weight-normal text-center text-primary project-cta mt-25`}
-          >
-            View Invites
-          </div>
-        </CardBody>
-      </Card> */}
-
       <Card className="card-app-design new-tag-relative-card">
         {!data?.is_read && <NewTag />}
         <CardBody>
           <div className="d-flex">
-            <RatingBadge number="0" />
+            <RatingBadge number={data?.rating} />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
           </div>
           <CardTitle className="mt-50 truncate-1 mb-1">{data?.name}</CardTitle>
