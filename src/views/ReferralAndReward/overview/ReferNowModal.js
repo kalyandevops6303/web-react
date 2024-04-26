@@ -62,6 +62,11 @@ const ReferNowModal = ({ modal, toggleModal }) => {
           setValidEmailError(true);
         }
         break;
+      case 'Backspace': 
+        if (inputValue.length === 1) {
+          setInputValue("");
+        }
+        break;
       default:
         break;
     }
@@ -91,7 +96,11 @@ const ReferNowModal = ({ modal, toggleModal }) => {
                   isMulti
                   menuIsOpen={false}
                   onChange={(newValue) => setCustomEmailsValue(newValue)}
-                  onInputChange={(newValue) => setInputValue(newValue)}
+                  onInputChange={(newValue) => {
+                    if (newValue) {
+                      setInputValue(newValue);
+                    }
+                  }}
                   onKeyDown={(e) => handleKeyDown(e)}
                   placeholder="Enter email IDs"
                   value={customEmailsValue}
@@ -107,6 +116,7 @@ const ReferNowModal = ({ modal, toggleModal }) => {
                         e.preventDefault();
                       }
                     } else {
+                      e.preventDefault();
                       setValidEmailError(true);
                     }
                   }}
