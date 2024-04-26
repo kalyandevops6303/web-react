@@ -35,7 +35,11 @@ const InviteModal = ({ modal, toggleModal, projectId }) => {
   const onSubmit = () => {
     const allEmails = customEmailsValue.map((email) => email.label);
 
-    dispatch(inviteTalents(projectId, { emails: allEmails }, onSuccess));
+    if (allEmails.length) {
+      dispatch(inviteTalents(projectId, { emails: allEmails }, onSuccess));
+    } else {
+      setValidEmailError(true);
+    }
   };
 
   const handleKeyDown = (event) => {
@@ -53,6 +57,11 @@ const InviteModal = ({ modal, toggleModal, projectId }) => {
           }
         } else {
           setValidEmailError(true);
+        }
+        break;
+      case 'Backspace':
+        if (inputValue.length === 1) {
+          setInputValue('');
         }
         break;
       default:
@@ -88,6 +97,22 @@ const InviteModal = ({ modal, toggleModal, projectId }) => {
                   onKeyDown={(e) => handleKeyDown(e)}
                   placeholder="Enter email IDs"
                   value={customEmailsValue}
+                  onBlur={(e) => {
+                    if (validEmailRegex.test(inputValue)) {
+                      if (
+                        validEmailRegex.test(inputValue) &&
+                        !customEmailsValue.find((email) => email.label === inputValue)
+                      ) {
+                        setCustomEmailsValue((prev) => [...prev, createOption(inputValue, inputValue)]);
+                        setInputValue('');
+                        setValidEmailError(false);
+                        e.preventDefault();
+                      }
+                    } else {
+                      e.preventDefault();
+                      setValidEmailError(true);
+                    }
+                  }}
                 />
                 {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
               </Col>
