@@ -127,7 +127,7 @@ const InviteModal = ({ modal, toggleModal, projectId }) => {
                 type="button"
                 className="mb-1 mt-3"
                 onClick={onSubmit}
-                disabled={customEmailsValue.length === 0 || inviteTalentsIsLoading}
+                disabled={inviteTalentsIsLoading}
               >
                 {inviteTalentsIsLoading ? <Spinner size="sm" /> : <>Send Invite</>}
               </Button>
