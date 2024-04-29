@@ -11,6 +11,7 @@ import ProjectModalViews from './ProjectModalViews';
 import { userTypes } from '../../../utility/constants/Constant';
 import NewTag from '../../../@core/components/new-tag';
 import { updateCardStatus } from '../../../redux/actions/dashboardActions';
+import { roundOfAmount } from '../../../utility/Utils';
 
 const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
   const [showModal, setShowModal] = useState(false);
@@ -80,7 +81,7 @@ const UpcomingProjectCardForTalent = ({ accordionName, data, className }) => {
               </div>
               <div className="design-planning">
                 <CardText className="mb-25">Amount</CardText>
-                <h6 className="mb-0">${data?.amount}</h6>
+                <h6 className="mb-0">${roundOfAmount(data?.amount)}</h6>
               </div>
             </div>
           </div>
