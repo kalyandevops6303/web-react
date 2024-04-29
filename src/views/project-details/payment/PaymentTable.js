@@ -17,7 +17,7 @@ import { formatDate } from '../../../utility/Utils';
 import TransactionTimeline from './TransactionTimeline';
 import PaymentStatusForRow from './PaymentStatusForRow';
 import PaymentBy from './PaymentBy';
-import { clearMilestoneTransactions } from '../../../redux/reducers/milestonePayment';
+import { clearMilestoneTransactions, milestoneListSuccess } from '../../../redux/reducers/milestonePayment';
 import PaymentTableWrapper from './style';
 import theme from '../../../configs/themeVariables';
 import { PaymentInfoBanner } from '../style';
@@ -94,6 +94,8 @@ const PaymentTable = () => {
     milestone?.payment_status === PAYMENT_STATUS.PAID ||
     milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
 
+  const isPaymentInitiated = (milestone) => milestone?.payment_status === PAYMENT_STATUS.INITIATED;
+
   const showMilestoneTransanctions = (milestoneId, item) => {
     if ((isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED')) {
       if (open === milestoneId) {
@@ -120,6 +122,10 @@ const PaymentTable = () => {
     if (projectDetailsData?._id) {
       dispatch(getMilestonePaymentListing(projectDetailsData?._id, () => {}));
     }
+
+    return () => {
+      dispatch(milestoneListSuccess([]));
+    };
   }, [projectDetailsData?._id]);
 
   const handlePaymentSelect = (e) => {
@@ -151,9 +157,13 @@ const PaymentTable = () => {
         const secondMilestone = milestoneData[1];
 
         // checking if first and second milestones are paid
-        const isFirstTwoMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
+        const isFirstAndSecondMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
 
-        if (!isFirstTwoMilestonePaid) {
+        // checking if first and second milestones are payment initiated
+        const isFirstAndSecondMilestoneInitiated =
+          isPaymentInitiated(firstMilestone) && isPaymentInitiated(secondMilestone);
+
+        if (!isFirstAndSecondMilestoneInitiated && !isFirstAndSecondMilestonePaid) {
           // this will run for both the cases - total milestones > 2 or total milestones = 2
           // if first and second milestones are not paid then selecting both of them for payment and these will be disabled from user's selection
           setSelectedPaymentData([firstMilestone, secondMilestone]);
@@ -162,7 +172,9 @@ const PaymentTable = () => {
         } else if (milestoneData?.length > 2) {
           // this will run only for total milestones > 2
           // selecting latest not paid milestone in the list for the payment and this will be disabled from user's selection
-          const firstNotPaidMilestoneInTheList = milestoneData.find((mile) => !isPaymentDone(mile));
+          const firstNotPaidMilestoneInTheList = milestoneData.find(
+            (mile) => !isPaymentDone(mile) && !isPaymentInitiated(mile),
+          );
           setSelectedPaymentData([firstNotPaidMilestoneInTheList]);
           setSelectedPaymentId([firstNotPaidMilestoneInTheList._id]);
           setSelectedAndDisabledPaymentId([firstNotPaidMilestoneInTheList._id]);
@@ -171,7 +183,7 @@ const PaymentTable = () => {
         // if there is only 1 milestone
         const firstMilestone = milestoneData[0];
 
-        if (!isPaymentDone(firstMilestone)) {
+        if (!isPaymentDone(firstMilestone) && !isPaymentInitiated(firstMilestone)) {
           // checking if first milestone is not paid then selecting that milestone for payment and this will be disabled from user's selection
           setSelectedPaymentData([firstMilestone]);
           setSelectedPaymentId([firstMilestone._id]);
@@ -215,10 +227,6 @@ const PaymentTable = () => {
     setMakePaymentModal(false);
   };
 
-  const isFirstTwoMilestonePaid =
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
-
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
@@ -230,9 +238,7 @@ const PaymentTable = () => {
       return true;
     }
     if (milestoneData?.length === 1) return false;
-    if (!isFirstTwoMilestonePaid && selectedPaymentId?.length < 2) {
-      return true;
-    }
+
     return false;
   };
 
@@ -413,7 +419,7 @@ const PaymentTable = () => {
                 </Table>
               </PaymentTableWrapper>
             </div>
-            {showPaymentCalculation && (
+            {showPaymentCalculation && selectedPaymentId?.length > 0 && (
               <div className="d-flex w-100 mt-2 justify-content-between">
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>{`${applicationFee?.name ?? ''} (${
                   applicationFee?.percentage ?? 0
@@ -422,7 +428,7 @@ const PaymentTable = () => {
               </div>
             )}
             <hr />
-            {showPaymentCalculation && (
+            {showPaymentCalculation && selectedPaymentId?.length > 0 && (
               <div className="d-flex w-100 mt-2 justify-content-between">
                 <CardText style={{ fontSize: '16px', fontWeight: '500' }}>
                   {`Total payment (Inclusive of ${applicationFee?.name ?? ''})`}
@@ -433,7 +439,7 @@ const PaymentTable = () => {
               </div>
             )}
 
-            {showPaymentCalculation && !isAllMilestonePaid && (
+            {showPaymentCalculation && !isAllMilestonePaid && selectedPaymentId?.length > 0 && (
               <div className="d-flex justify-content-end w-100 mt-5">
                 <Button onClick={handlePayment} className="d-contents" color="primary" disabled={isPaymentDisabled()}>
                   {totalPending > 0 ? `Pay $${totalPending}` : 'Make Payment'}
