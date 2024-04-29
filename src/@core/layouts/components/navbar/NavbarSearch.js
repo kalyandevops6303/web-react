@@ -42,12 +42,16 @@ const NavbarSearch = () => {
     }
   };
 
-  // ** Function to handle search suggestion Click
+  const handleCloseSearchBar = (e) => {
+    e.stopPropagation();
+    dispatch(toggleIsNavbarSearchBarOpen());
+    dispatch(clearQuery(''));
+  };
 
   return (
     <NavItem
       className={`${isDisabled && 'cursor-not-allowed'} nav-search w-100 mt-auto mb-auto ${
-        query.isNavbarSearchBarOpen ? 'me-1 ms-50' : ''
+        query.isNavbarSearchBarOpen ? 'global-search' : ''
       } `}
       onClick={() => {
         if (!isDisabled) {
@@ -56,7 +60,7 @@ const NavbarSearch = () => {
       }}
     >
       {!query.isNavbarSearchBarOpen && (
-        <NavLink className={`${isDisabled && 'cursor-not-allowed'} nav-link-search me-1 `}>
+        <NavLink className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}>
           <Icon.Search className="ficon" />
         </NavLink>
       )}
@@ -80,18 +84,11 @@ const NavbarSearch = () => {
             autoFocus={true}
             onKeyDown={onKeyDown}
             defaultValue={query?.query}
+            onBlur={(e) => handleCloseSearchBar(e)}
           />
         ) : null}
         <div className="search-input-close">
-          <Icon.X
-            color={theme.activeNavPillText}
-            className="ficon"
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(toggleIsNavbarSearchBarOpen());
-              dispatch(clearQuery(''));
-            }}
-          />
+          <Icon.X color={theme.activeNavPillText} className="ficon" onClick={(e) => handleCloseSearchBar(e)} />
         </div>
       </div>
     </NavItem>

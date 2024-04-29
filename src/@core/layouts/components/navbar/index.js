@@ -67,6 +67,9 @@ const HeadWrapper = styled.div`
   .d-contents {
     display: contents;
   }
+  .global-search {
+    margin-left: 2rem;
+  }
 `;
 
 const ThemeNavbar = (props) => {
@@ -146,100 +149,100 @@ const ThemeNavbar = (props) => {
           </span>
         </div>
 
-        {/* {!isNavbarSearchBarOpen && ( */}
-        <>
-          <NavLink
-            className={({ isActive }) =>
-              (isActive || activeTab === 'dashboard' ? 'is-active text-nowrap' : '') +
-              ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
-            }
-            to="/dashboard"
-            onClick={() => {
-              dispatch(setActiveNavTab('dashboard'));
-            }}
-          >
-            Dashboard
-          </NavLink>
-          {isTabDisabled ? (
-            <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Marketplace</span>
-          ) : (
+        {!isNavbarSearchBarOpen && (
+          <>
             <NavLink
-              onClick={() => {
-                dispatch(setActiveNavTab('marketplace'));
-                setItem(
-                  'selectedMarketplaceTab',
-                  userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
-                );
-              }}
-              className={
-                (location?.pathname?.split('/')?.[1] === 'marketplace' ||
-                location?.state?.from?.primary === 'Marketplace' ||
-                activeTab === 'marketplace'
-                  ? 'is-active'
-                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+              className={({ isActive }) =>
+                (isActive || activeTab === 'dashboard' ? 'is-active text-nowrap' : '') +
+                ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
               }
-              to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`}
-            >
-              Marketplace
-            </NavLink>
-          )}
-
-          {isTabDisabled ? (
-            <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Project</span>
-          ) : (
-            <NavLink
-              className={
-                (location?.pathname?.split('/')?.[1] === 'projects' ||
-                location?.state?.from?.primary === 'projects' ||
-                activeTab === 'projects'
-                  ? 'is-active'
-                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
-              }
-              to="/projects/ongoing"
+              to="/dashboard"
               onClick={() => {
-                localStorage.removeItem('selectedProjectTab');
-                dispatch(setActiveNavTab('projects'));
+                dispatch(setActiveNavTab('dashboard'));
               }}
             >
-              Projects
+              Dashboard
             </NavLink>
-          )}
+            {isTabDisabled ? (
+              <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Marketplace</span>
+            ) : (
+              <NavLink
+                onClick={() => {
+                  dispatch(setActiveNavTab('marketplace'));
+                  setItem(
+                    'selectedMarketplaceTab',
+                    userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings',
+                  );
+                }}
+                className={
+                  (location?.pathname?.split('/')?.[1] === 'marketplace' ||
+                  location?.state?.from?.primary === 'Marketplace' ||
+                  activeTab === 'marketplace'
+                    ? 'is-active'
+                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+                }
+                to={`/marketplace/${userData?.user_type === userTypes.client ? 'my_listings' : 'all_listings'}`}
+              >
+                Marketplace
+              </NavLink>
+            )}
 
-          {isTabDisabled ? (
-            <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>My Team</span>
-          ) : (
-            <NavLink
-              onClick={() => dispatch(setActiveNavTab('my-teams'))}
-              className={
-                (location?.pathname?.split('/')?.[1] === 'my-teams' ||
-                location?.state?.from?.primary === 'my-teams' ||
-                activeTab === 'my-teams'
-                  ? 'is-active text-nowrap'
-                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
-              }
-              to={`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`}
-            >
-              My Team
-            </NavLink>
-          )}
+            {isTabDisabled ? (
+              <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>Project</span>
+            ) : (
+              <NavLink
+                className={
+                  (location?.pathname?.split('/')?.[1] === 'projects' ||
+                  location?.state?.from?.primary === 'projects' ||
+                  activeTab === 'projects'
+                    ? 'is-active'
+                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+                }
+                to="/projects/ongoing"
+                onClick={() => {
+                  localStorage.removeItem('selectedProjectTab');
+                  dispatch(setActiveNavTab('projects'));
+                }}
+              >
+                Projects
+              </NavLink>
+            )}
 
-          {userData?.user_type === userTypes.talent && (
-            <NavLink
-              onClick={() => dispatch(setActiveNavTab('clubs'))}
-              className={
-                (location?.pathname?.split('/')?.[1] === 'clubs' ||
-                location?.state?.from?.primary === 'clubs' ||
-                activeTab === 'clubs'
-                  ? 'is-active'
-                  : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
-              }
-              to="/clubs/my_clubs"
-            >
-              Clubs
-            </NavLink>
-          )}
-        </>
-        {/* )} */}
+            {isTabDisabled ? (
+              <span className={'text-muted menu-item nav-menu-main menu-toggle hidden-xs'}>My Team</span>
+            ) : (
+              <NavLink
+                onClick={() => dispatch(setActiveNavTab('my-teams'))}
+                className={
+                  (location?.pathname?.split('/')?.[1] === 'my-teams' ||
+                  location?.state?.from?.primary === 'my-teams' ||
+                  activeTab === 'my-teams'
+                    ? 'is-active text-nowrap'
+                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs text-nowrap'
+                }
+                to={`/my-teams/${userData?.user_type === userTypes.team ? 'talents' : 'teams'}`}
+              >
+                My Team
+              </NavLink>
+            )}
+
+            {userData?.user_type === userTypes.talent && (
+              <NavLink
+                onClick={() => dispatch(setActiveNavTab('clubs'))}
+                className={
+                  (location?.pathname?.split('/')?.[1] === 'clubs' ||
+                  location?.state?.from?.primary === 'clubs' ||
+                  activeTab === 'clubs'
+                    ? 'is-active'
+                    : '') + ' menu-item nav-menu-main menu-toggle hidden-xs'
+                }
+                to="/clubs/my_clubs"
+              >
+                Clubs
+              </NavLink>
+            )}
+          </>
+        )}
       </div>
       <div className="w-100 d-flex">
         <NavbarUser skin={skin} setSkin={setSkin} />

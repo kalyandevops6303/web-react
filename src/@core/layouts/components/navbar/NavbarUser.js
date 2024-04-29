@@ -77,7 +77,26 @@ const NavbarUser = ({ setNavBarLoading }) => {
       ) : (
         <>
           {isTabDisabled ? (
-            <div className="text-muted cursor-not-allowed  mb-auto mt-75">
+            <MessageIconContainer>
+              <div className="text-muted cursor-not-allowed mb-auto mt-75">
+                <MessageSquare size={20} color={theme.bodyColor} />
+              </div>
+            </MessageIconContainer>
+          ) : (
+            <MessageIconContainer className="mb-auto mt-75">
+              <div onClick={handleChatNavigate}>
+                {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
+                <MessageSquare size={20} color={isChatView ? theme.activeColor : theme.bodyColor} />
+              </div>
+              {isChatView && (
+                <LineWrapper>
+                  <div className="line"></div>
+                </LineWrapper>
+              )}
+            </MessageIconContainer>
+          )}
+          {isTabDisabled ? (
+            <div className="text-muted cursor-not-allowed mb-auto mt-75">
               <NotificationIconContainer>
                 <Bell size={20} color={theme.bodyColor} />
               </NotificationIconContainer>
@@ -96,26 +115,6 @@ const NavbarUser = ({ setNavBarLoading }) => {
                 </LineWrapper>
               )}
             </NotificationIconContainer>
-          )}
-
-          {isTabDisabled ? (
-            <MessageIconContainer>
-              <div className="text-muted cursor-not-allowed mb-auto mt-75">
-                <MessageSquare size={20} color={theme.bodyColor} />
-              </div>
-            </MessageIconContainer>
-          ) : (
-            <MessageIconContainer className=" mb-auto mt-75">
-              <div onClick={handleChatNavigate}>
-                {unreadMsgCount !== 0 && <span className="msg-notification-dot">{unreadMsgCount}</span>}
-                <MessageSquare size={20} color={isChatView ? theme.activeColor : theme.bodyColor} />
-              </div>
-              {isChatView && (
-                <LineWrapper>
-                  <div className="line"></div>
-                </LineWrapper>
-              )}
-            </MessageIconContainer>
           )}
 
           <UserDropdown />
