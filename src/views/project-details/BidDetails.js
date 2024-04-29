@@ -32,7 +32,7 @@ import theme from '../../configs/themeVariables';
 import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
 import { userTypes } from '../../utility/constants/Constant';
-import { downloadFile, formatFileSize, renderFilePreview, truncateSentence } from '../../utility/Utils';
+import { downloadFile, formatFileSize, renderFilePreview, roundOfAmount, truncateSentence } from '../../utility/Utils';
 import AcceptBidModal from '../modals/AcceptBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
@@ -478,7 +478,7 @@ const BidDetails = () => {
                                         </p>
                                       </Col>
                                       <Col sm="12" md="12" lg="2">
-                                        <p className="content-description">${worker?.amount || 0}</p>
+                                        <p className="content-description">${roundOfAmount(worker?.amount)}</p>
                                       </Col>
                                     </Row>
                                   ))}

@@ -23,7 +23,7 @@ import { updateCardStatus } from '../../../redux/actions/dashboardActions';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import TagsSection from './TagsSection';
-import { giveStrokeColor, generateToolTipId } from '../../../utility/Utils';
+import { giveStrokeColor, generateToolTipId, roundOfAmount } from '../../../utility/Utils';
 
 const UserSection = ({ totalCount, users, name, projectName, tagName }) => {
   const userSectionClasses = classNames({
@@ -122,7 +122,9 @@ const ProjectInvitaionCard = ({ accordionName, data, className }) => {
         return (
           <div className="design-planning mt-1 bottom-detail-elements">
             <CardText className="mb-25">Amount</CardText>
-            <h6 className="mb-0">{`${data?.project?.pay_type.currency?.code}-${data?.project?.amount}`}</h6>
+            <h6 className="mb-0">{`${data?.project?.pay_type.currency?.code}-${roundOfAmount(
+              data?.project?.amount,
+            )}`}</h6>
           </div>
         );
       case userTypes.client:
