@@ -14,7 +14,7 @@ import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
-import { returnFormattedRating } from '../../utility/Utils';
+
 import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
@@ -215,7 +215,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
               </CardText>
             </div>
             <div className="d-flex flex-grow-1">
-              <RatingBadge number={returnFormattedRating(clientDetails?.rating || 0)} />
+              <RatingBadge number={clientDetails?.rating || 0} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {clientDetails?.projects_worked_on_count ?? 0} Projects
               </CardText>

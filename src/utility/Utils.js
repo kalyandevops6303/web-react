@@ -20,6 +20,7 @@ import JPGIcon from '../assets/images/JPG.svg';
 
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
+import round from '../lib/round';
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -393,17 +394,7 @@ export const formattedDate = (value) => {
   return formattedDateString;
 };
 
-export const returnFormattedRating = (num) => {
-  // Check if the number is an integer
-  if (Number.isInteger(num)) {
-    return num; // Return the number as is
-    // eslint-disable-next-line no-else-return
-  } else {
-    // Round the number to one decimal place for float or decimal numbers
-    return Math.round(num * 10) / 10;
-  }
-};
-
+export const returnFormattedRating = (num) => (num ? round(num, 1) : 0);
 // eslint-disable-next-line no-undef
 export const getTeamId = () => getItemFromSession('team_id');
 

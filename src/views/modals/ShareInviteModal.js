@@ -55,7 +55,11 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
       },
     };
 
-    dispatch(inviteTalents({ data: newPostData, onSuccess }));
+    if (allEmails.length) {
+      dispatch(inviteTalents({ data: newPostData, onSuccess }));
+    } else {
+      setValidEmailError(true);
+    }
   };
 
   const handleInputChange = (newValue, actionMeta) => {
@@ -79,6 +83,11 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
           }
         } else {
           setValidEmailError(true);
+        }
+        break;
+      case 'Backspace':
+        if (inputValue.length === 1) {
+          setInputValue('');
         }
         break;
       default:
@@ -118,6 +127,22 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
                   onKeyDown={(e) => handleKeyDown(e)}
                   placeholder="Enter email IDs"
                   value={customEmailsValue}
+                  onBlur={(e) => {
+                    if (validEmailRegex.test(inputValue)) {
+                      if (
+                        validEmailRegex.test(inputValue) &&
+                        !customEmailsValue.find((email) => email.label === inputValue)
+                      ) {
+                        setCustomEmailsValue((prev) => [...prev, createOption(inputValue, inputValue)]);
+                        setInputValue('');
+                        setValidEmailError(false);
+                        e.preventDefault();
+                      }
+                    } else {
+                      e.preventDefault();
+                      setValidEmailError(true);
+                    }
+                  }}
                 />
                 {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
               </Col>
@@ -132,7 +157,7 @@ const ShareInviteModal = ({ createTeamView, modal, inviteRole, toggleModal, proj
                 type="button"
                 className="mb-1 mt-3"
                 onClick={onSubmit}
-                disabled={customEmailsValue.length === 0 || inviteTalentsIsLoading}
+                disabled={inviteTalentsIsLoading}
               >
                 {inviteTalentsIsLoading ? <Spinner size="sm" /> : <>Send Invite</>}
               </Button>

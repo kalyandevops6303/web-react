@@ -38,7 +38,11 @@ const ReferNowModal = ({ modal, toggleModal }) => {
     // eslint-disable-next-line no-undef
     const data = { redirect_url: `${`${window.location.protocol}//${window.location.host}`}/auth`, emails: allEmails };
 
-    dispatch(createNewReferral(data, onSuccess));
+    if (allEmails.length) {
+      dispatch(createNewReferral(data, onSuccess));
+    } else {
+      setValidEmailError(true);
+    }
   };
 
   const handleKeyDown = (event) => {
@@ -56,6 +60,11 @@ const ReferNowModal = ({ modal, toggleModal }) => {
           }
         } else {
           setValidEmailError(true);
+        }
+        break;
+      case 'Backspace': 
+        if (inputValue.length === 1) {
+          setInputValue("");
         }
         break;
       default:
@@ -87,10 +96,30 @@ const ReferNowModal = ({ modal, toggleModal }) => {
                   isMulti
                   menuIsOpen={false}
                   onChange={(newValue) => setCustomEmailsValue(newValue)}
-                  onInputChange={(newValue) => setInputValue(newValue)}
+                  onInputChange={(newValue) => {
+                    if (newValue) {
+                      setInputValue(newValue);
+                    }
+                  }}
                   onKeyDown={(e) => handleKeyDown(e)}
                   placeholder="Enter email IDs"
                   value={customEmailsValue}
+                  onBlur={(e) => {
+                    if (validEmailRegex.test(inputValue)) {
+                      if (
+                        validEmailRegex.test(inputValue) &&
+                        !customEmailsValue.find((email) => email.label === inputValue)
+                      ) {
+                        setCustomEmailsValue((prev) => [...prev, createOption(inputValue, inputValue)]);
+                        setInputValue('');
+                        setValidEmailError(false);
+                        e.preventDefault();
+                      }
+                    } else {
+                      e.preventDefault();
+                      setValidEmailError(true);
+                    }
+                  }}
                 />
                 {validEmailError && <FormFeedback>Enter a valid email</FormFeedback>}
               </Col>
@@ -105,7 +134,7 @@ const ReferNowModal = ({ modal, toggleModal }) => {
                 type="button"
                 className="mb-1 mt-2"
                 onClick={onSubmit}
-                disabled={customEmailsValue.length === 0 || createReferralIsLoading}
+                disabled={createReferralIsLoading}
               >
                 {createReferralIsLoading ? <Spinner size="sm" /> : <>Send Invite</>}
               </Button>
