@@ -80,10 +80,7 @@ const App = () => {
 
     // check that refreshToken is not expired
     const isUserStillLoggedIn =
-      accessToken
-      && refreshToken
-      && refreshTokenExpires
-      && new Date(refreshTokenExpires) >= new Date();
+      accessToken && refreshToken && refreshTokenExpires && new Date(refreshTokenExpires) >= new Date();
 
     if (isUserStillLoggedIn) {
       dispatch(setLoggedInStatus());
@@ -91,7 +88,7 @@ const App = () => {
       const cometChatAuthToken = getItem('cometChatToken');
       dispatch(cometChatLogin(cometChatAuthToken));
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     const channel = new BroadcastChannel('data-channel');
