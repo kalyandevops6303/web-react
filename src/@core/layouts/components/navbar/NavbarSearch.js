@@ -14,15 +14,17 @@ import { useDispatch, useSelector } from 'react-redux';
 // ** Custom Components
 import Autocomplete from '@components/autocomplete';
 import theme from '../../../../configs/themeVariables';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { clearQuery, handleQuery, toggleIsNavbarSearchBarOpen } from '../../../../redux/reducers/gloabalSearch';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus } from '../../../../utility/constants/Constant';
+
 
 const NavbarSearch = () => {
   // ** Store Vars
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // ** States
   const [suggestions, setSuggestions] = useState([]);
@@ -84,7 +86,12 @@ const NavbarSearch = () => {
             autoFocus={true}
             onKeyDown={onKeyDown}
             defaultValue={query?.query}
-            onBlur={(e) => handleCloseSearchBar(e)}
+            onBlur={(e) => {
+              // dont close on blur for search page
+              if (location.pathname !== '/search') {
+                handleCloseSearchBar(e);
+              }
+            }}
           />
         ) : null}
         <div className="search-input-close">
