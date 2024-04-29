@@ -53,14 +53,14 @@ const NavbarSearch = () => {
       className={`${isDisabled && 'cursor-not-allowed'} nav-search w-100 mt-auto mb-auto ${
         query.isNavbarSearchBarOpen ? 'global-search' : ''
       } `}
-      onClick={() => {
+   
+    >
+      {!query.isNavbarSearchBarOpen && (
+        <NavLink className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}    onClick={() => {
         if (!isDisabled) {
           dispatch(toggleIsNavbarSearchBarOpen());
         }
-      }}
-    >
-      {!query.isNavbarSearchBarOpen && (
-        <NavLink className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}>
+      }}>
           <Icon.Search className="ficon" />
         </NavLink>
       )}
