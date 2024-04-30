@@ -19,7 +19,6 @@ import { clearQuery, handleQuery, toggleIsNavbarSearchBarOpen } from '../../../.
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus } from '../../../../utility/constants/Constant';
 
-
 const NavbarSearch = () => {
   // ** Store Vars
   const dispatch = useDispatch();
@@ -55,14 +54,16 @@ const NavbarSearch = () => {
       className={`${isDisabled && 'cursor-not-allowed'} nav-search w-100 mt-auto mb-auto ${
         query.isNavbarSearchBarOpen ? 'global-search' : ''
       } `}
-   
     >
       {!query.isNavbarSearchBarOpen && (
-        <NavLink className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}    onClick={() => {
-        if (!isDisabled) {
-          dispatch(toggleIsNavbarSearchBarOpen());
-        }
-      }}>
+        <NavLink
+          className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}
+          onClick={() => {
+            if (!isDisabled) {
+              dispatch(toggleIsNavbarSearchBarOpen());
+            }
+          }}
+        >
           <Icon.Search className="ficon" />
         </NavLink>
       )}
