@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
-import Round from '../lib/round';
 
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
+import round from '../lib/round';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
 import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
@@ -17,10 +17,9 @@ import PDFIcon from '../assets/images/pdfV2.svg';
 import DocIcon from '../assets/images/DOC.svg';
 import TextIcon from '../assets/images/TXT.svg';
 import JPGIcon from '../assets/images/JPG.svg';
-
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
-import round from '../lib/round';
+
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -764,4 +763,4 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
 export const generateToolTipId = (projectName, name, title) =>
   `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
 
-export const roundOfAmount = (amount) => (amount ? Round(amount, 2) : 0);
+export const roundOfAmount = (amount) => (amount ? round(amount, 2) : 0);
