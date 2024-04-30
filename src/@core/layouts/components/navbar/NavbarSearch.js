@@ -18,8 +18,6 @@ import { useNavigate, useLocation } from 'react-router';
 import { clearQuery, handleQuery, toggleIsNavbarSearchBarOpen } from '../../../../redux/reducers/gloabalSearch';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus } from '../../../../utility/constants/Constant';
-import styled from 'styled-components';
-import { SearchBarWrapper } from './style';
 
 const NavbarSearch = () => {
   // ** Store Vars
@@ -53,7 +51,6 @@ const NavbarSearch = () => {
 
   const navSearchClasses = classnames('nav-search', 'w-100', 'mt-auto', 'mb-auto', {
     'cursor-not-allowed': isDisabled,
-    'global-search': query.isNavbarSearchBarOpen,
   });
   const navBarClass = `${navSearchClasses}`;
 
