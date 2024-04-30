@@ -67,9 +67,6 @@ const HeadWrapper = styled.div`
   .d-contents {
     display: contents;
   }
-  .global-search {
-    margin-left: 2rem !important;
-  }
 `;
 
 const ThemeNavbar = (props) => {

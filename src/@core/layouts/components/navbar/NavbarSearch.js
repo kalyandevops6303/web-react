@@ -18,6 +18,8 @@ import { useNavigate, useLocation } from 'react-router';
 import { clearQuery, handleQuery, toggleIsNavbarSearchBarOpen } from '../../../../redux/reducers/gloabalSearch';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus } from '../../../../utility/constants/Constant';
+import styled from 'styled-components';
+import { SearchBarWrapper } from './style';
 
 const NavbarSearch = () => {
   // ** Store Vars
@@ -53,56 +55,57 @@ const NavbarSearch = () => {
     'cursor-not-allowed': isDisabled,
     'global-search': query.isNavbarSearchBarOpen,
   });
-
   const navBarClass = `${navSearchClasses}`;
 
   return (
-    <NavItem className={navBarClass}>
-      {!query.isNavbarSearchBarOpen && (
-        <NavLink
-          className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}
-          onClick={() => {
-            if (!isDisabled) {
-              dispatch(toggleIsNavbarSearchBarOpen());
-            }
-          }}
-        >
-          <Icon.Search className="ficon" />
-        </NavLink>
-      )}
-
-      <div
-        className={classnames('search-input', {
-          open: query.isNavbarSearchBarOpen === true || (query?.query && true),
-        })}
-      >
-        <div className={`${isDisabled && 'cursor-not-allowed'} search-input-icon`}>
-          <Icon.Search color={theme.activeNavPillText} />
-        </div>
-        {query.isNavbarSearchBarOpen || query?.query ? (
-          <Autocomplete
-            className="form-control"
-            suggestions={suggestions}
-            filterKey="title"
-            filterHeaderKey="groupTitle"
-            grouped={true}
-            placeholder="Explore Trumio..."
-            autoFocus={true}
-            onKeyDown={onKeyDown}
-            defaultValue={query?.query}
-            onBlur={(e) => {
-              // dont close on blur for search page
-              if (location.pathname !== '/search') {
-                handleCloseSearchBar(e);
+    <SearchBarWrapper>
+      <NavItem className={navBarClass}>
+        {!query.isNavbarSearchBarOpen && (
+          <NavLink
+            className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}
+            onClick={() => {
+              if (!isDisabled) {
+                dispatch(toggleIsNavbarSearchBarOpen());
               }
             }}
-          />
-        ) : null}
-        <div className="search-input-close">
-          <Icon.X color={theme.activeNavPillText} className="ficon" onClick={(e) => handleCloseSearchBar(e)} />
+          >
+            <Icon.Search className="ficon" />
+          </NavLink>
+        )}
+
+        <div
+          className={classnames('search-input', {
+            open: query.isNavbarSearchBarOpen === true || (query?.query && true),
+          })}
+        >
+          <div className={`${isDisabled && 'cursor-not-allowed'} search-input-icon`}>
+            <Icon.Search color={theme.activeNavPillText} />
+          </div>
+          {query.isNavbarSearchBarOpen || query?.query ? (
+            <Autocomplete
+              className="form-control"
+              suggestions={suggestions}
+              filterKey="title"
+              filterHeaderKey="groupTitle"
+              grouped={true}
+              placeholder="Explore Trumio..."
+              autoFocus={true}
+              onKeyDown={onKeyDown}
+              defaultValue={query?.query}
+              onBlur={(e) => {
+                // dont close on blur for search page
+                if (location.pathname !== '/search') {
+                  handleCloseSearchBar(e);
+                }
+              }}
+            />
+          ) : null}
+          <div className="search-input-close">
+            <Icon.X color={theme.activeNavPillText} className="ficon" onClick={(e) => handleCloseSearchBar(e)} />
+          </div>
         </div>
-      </div>
-    </NavItem>
+      </NavItem>
+    </SearchBarWrapper>
   );
 };
 

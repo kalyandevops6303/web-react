@@ -66,3 +66,11 @@ export const InreviewButton = styled.button`
   border: none;
   outline: none;
 `;
+
+export const SearchBarWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  .global-search {
+    margin-left: 2rem !important;
+  }
+`;
