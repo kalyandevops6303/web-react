@@ -49,12 +49,13 @@ const NavbarSearch = () => {
     dispatch(clearQuery(''));
   };
 
+  const navSearchClasses = classnames('nav-search', 'w-100', 'mt-auto', 'mb-auto', {
+    'cursor-not-allowed': isDisabled,
+  });
+  const navBarClass = `${navSearchClasses}`;
+
   return (
-    <NavItem
-      className={`${isDisabled && 'cursor-not-allowed'} nav-search w-100 mt-auto mb-auto ${
-        query.isNavbarSearchBarOpen ? 'global-search' : ''
-      } `}
-    >
+    <NavItem className={navBarClass} style={{ marginLeft: `${query.isNavbarSearchBarOpen ? '2rem' : ''}` }}>
       {!query.isNavbarSearchBarOpen && (
         <NavLink
           className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}
