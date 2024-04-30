@@ -5,7 +5,7 @@ import MilestonePaymentBox from './MilestonePaymentBox';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { getMilestonePaymentListing } from '../../../redux/actions/milestonePaymentActions';
 import MakePaymentModal from '../../modals/MakePaymentModal';
-import { clearPaymentListingData } from '../../../redux/reducers/milestonePayment';
+import { clearPaymentListingData, milestoneListSuccess } from '../../../redux/reducers/milestonePayment';
 import { PAYMENT_STATUS } from '../../../utility/constants/Constant';
 
 function MilestonePaymentListing() {
@@ -27,6 +27,10 @@ function MilestonePaymentListing() {
     if (projectDetailsData?._id) {
       dispatch(getMilestonePaymentListing(projectDetailsData?._id, () => {}));
     }
+
+    return () => {
+      dispatch(milestoneListSuccess([]));
+    };
   }, [projectDetailsData?._id]);
 
   const handleMilestoneSelect = (evt, id) => {
@@ -51,9 +55,7 @@ function MilestonePaymentListing() {
     milestone?.payment_status === PAYMENT_STATUS.PAID ||
     milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
 
-  const isFirstTwoMilestonePaid =
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
+  const isPaymentInitiated = (milestone) => milestone?.payment_status === PAYMENT_STATUS.INITIATED;
 
   const isAllMilestonePaid = milestoneData?.every(
     (mile) => mile.payment_status === PAYMENT_STATUS.PAID || mile.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL,
@@ -64,9 +66,7 @@ function MilestonePaymentListing() {
       return true;
     }
     if (milestoneData?.length === 1) return false;
-    if (!isFirstTwoMilestonePaid && selectedMilestones?.length < 2) {
-      return true;
-    }
+
     return false;
   };
 
@@ -80,7 +80,11 @@ function MilestonePaymentListing() {
         // checking if first and second milestones are paid
         const isFirstAndSecondMilestonePaid = isPaymentDone(firstMilestone) && isPaymentDone(secondMilestone);
 
-        if (!isFirstAndSecondMilestonePaid) {
+        // checking if first and second milestones are payment initiated
+        const isFirstAndSecondMilestoneInitiated =
+          isPaymentInitiated(firstMilestone) && isPaymentInitiated(secondMilestone);
+
+        if (!isFirstAndSecondMilestoneInitiated && !isFirstAndSecondMilestonePaid) {
           // this will run for both the cases - total milestones > 2 or total milestones = 2
           // if first and second milestones are not paid then selecting both of them for payment and these will be disabled from user's selection
           setSelectedMilestones([firstMilestone._id, secondMilestone._id]);
@@ -88,7 +92,9 @@ function MilestonePaymentListing() {
         } else if (milestoneData?.length > 2) {
           // this will run only for total milestones > 2
           // selecting latest not paid milestone in the list for the payment and this will be disabled from user's selection
-          const firstNotPaidMilestoneInTheList = milestoneData.find((mile) => !isPaymentDone(mile));
+          const firstNotPaidMilestoneInTheList = milestoneData.find(
+            (mile) => !isPaymentDone(mile) && !isPaymentInitiated(mile),
+          );
           setSelectedMilestones([firstNotPaidMilestoneInTheList._id]);
           setSelectedAndDisabledPaymentId([firstNotPaidMilestoneInTheList._id]);
         }
@@ -96,7 +102,7 @@ function MilestonePaymentListing() {
         // if there is only 1 milestone
         const firstMilestone = milestoneData[0];
 
-        if (!isPaymentDone(firstMilestone)) {
+        if (!isPaymentDone(firstMilestone) && !isPaymentInitiated(firstMilestone)) {
           // checking if first milestone is not paid then selecting that milestone for payment and this will be disabled from user's selection
           setSelectedMilestones([firstMilestone._id]);
           setSelectedAndDisabledPaymentId([firstMilestone._id]);
@@ -134,7 +140,7 @@ function MilestonePaymentListing() {
                 onSelect={!selectedAndDisabledPaymentId?.includes(milestone?._id) && handleMilestoneSelect}
               />
             ))}
-          {milestoneData?.length > 0 && (
+          {milestoneData?.length > 0 && selectedMilestones?.length > 0 && (
             <div className="d-flex justify-content-end">
               {!isAllMilestonePaid ? (
                 <Button color="primary" onClick={handleSelectedMilestonePayment} disabled={isDisabled()}>

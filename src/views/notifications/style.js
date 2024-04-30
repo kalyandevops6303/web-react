@@ -29,3 +29,16 @@ export const NotificationBadgeContainer = styled.div`
     border: 0.1px solid ${theme.white};
   }
 `;
+
+export const MarkAllAsReadButtonContainer = styled.div`
+  .btn-outline-secondary {
+    padding-left: 25px;
+    padding-right: 25px;
+    border: 1px solid ${theme.activeNavPillText} !important;
+    background-color: ${theme.white};
+
+    p {
+      color: ${theme.activeNavPillText};
+    }
+  }
+`;
