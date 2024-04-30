@@ -58,7 +58,7 @@ const NavbarSearch = () => {
   const navBarClass = `${navSearchClasses}`;
 
   return (
-    <NavItem className={navBarClass} style={{ marginLeft: `${query.isNavbarSearchBarOpen ? '2rem !important' : ''}` }}>
+    <NavItem className={navBarClass} style={{ marginLeft: `${query.isNavbarSearchBarOpen ? '2rem' : ''}` }}>
       {!query.isNavbarSearchBarOpen && (
         <NavLink
           className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}
