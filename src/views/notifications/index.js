@@ -3,14 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { selectThemeColors } from '@utils';
-import { Badge, Card, CardBody, Col, Label, Row, Spinner } from 'reactstrap';
+import { Badge, Button, Card, CardBody, Label, Spinner } from 'reactstrap';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Bell } from 'react-feather';
 import DateTime from '../../lib/date-time';
-import { BorderCardContainer, NotificationBadgeContainer } from './style';
+import { BorderCardContainer, MarkAllAsReadButtonContainer, NotificationBadgeContainer } from './style';
 import theme from '../../configs/themeVariables';
-// import getNotifications from '../../redux/actions/notificationsActions';
 import {
   markAllNotificationAsReadLoading,
   notifications,
@@ -123,44 +122,42 @@ const Notifications = () => {
 
   return (
     <>
-      <div className="d-flex justify-content-between mb-2 mt-1">
-        <h2>Notifications</h2>
-        <Row className="mt-2 w-100 justify-content-end align-items-end">
-          {notificationsPollingData?.unread_notifications_count > 0 && notificationsData?.data?.length > 0 && (
-            <Col sm="6" md="4" lg="2">
+      <h2>Notifications</h2>
+      <div className="d-flex justify-content-between align-items-end mb-2 mt-2">
+        {notificationsPollingData?.unread_notifications_count > 0 && notificationsData?.data?.length > 0 ? (
+          <MarkAllAsReadButtonContainer>
+            <Button outline onClick={onMarkAllAsReadClick} className="py-75">
               {markAllNotificationAsReadIsLoading ? (
-                <div className="d-flex align-items-center justify-content-center">
-                  <Spinner size="sm" color="primary" />
-                </div>
+                <Spinner size="sm" color="primary" />
               ) : (
-                <p className="m-0 text-primary text-decoration-underline cursor-pointer" onClick={onMarkAllAsReadClick}>
-                  Mark All As Read
-                </p>
+                <p className="m-0 fw-normal">Mark all as read</p>
               )}
-            </Col>
-          )}
-          <Col sm="6" md="4" lg="2">
-            <Label>Priority</Label>
-            <FiltersWrap>
-              <Select
-                style={{ cursor: 'pointer' }}
-                options={[
-                  { label: 'All Priorities', value: 0 },
-                  { label: 'Priority 1', value: 1 },
-                  { label: 'Priority 2', value: 2 },
-                  { label: 'Priority 3', value: 3 },
-                  { label: 'Priority 4', value: 4 },
-                ]}
-                value={selectedPriority}
-                classNamePrefix="select"
-                placeholder="Select priority"
-                theme={selectThemeColors}
-                className="cursor-pointer"
-                onChange={(option) => onPriorityChange(option)}
-              />
-            </FiltersWrap>
-          </Col>
-        </Row>
+            </Button>
+          </MarkAllAsReadButtonContainer>
+        ) : (
+          <div />
+        )}
+        <div>
+          <Label>Priority</Label>
+          <FiltersWrap>
+            <Select
+              style={{ cursor: 'pointer' }}
+              options={[
+                { label: 'All Priorities', value: 0 },
+                { label: 'Priority 1', value: 1 },
+                { label: 'Priority 2', value: 2 },
+                { label: 'Priority 3', value: 3 },
+                { label: 'Priority 4', value: 4 },
+              ]}
+              value={selectedPriority}
+              classNamePrefix="select"
+              placeholder="Select priority"
+              theme={selectThemeColors}
+              className="cursor-pointer"
+              onChange={(option) => onPriorityChange(option)}
+            />
+          </FiltersWrap>
+        </div>
       </div>
 
       <InfiniteScroll

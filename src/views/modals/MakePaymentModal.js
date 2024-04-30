@@ -96,14 +96,6 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
     dispatch(makeMilestonePayment(payload, onSuccess));
   };
 
-  const isPaymentDone = (milestone) =>
-    milestone?.payment_status === PAYMENT_STATUS.PAID ||
-    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
-
-  const isFirstTwoMilestonePaid =
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
-
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
@@ -115,9 +107,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
       return true;
     }
     if (milestoneData?.length === 1) return false;
-    if (!isFirstTwoMilestonePaid && selectedIds?.length < 2) {
-      return true;
-    }
+
     return false;
   };
   return (
@@ -200,7 +190,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
             )}
             {paymentFeeLoading || selectedIds.length === 0 ? null : (
               <div className="d-flex justify-content-end py-1">
-                <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled()}>
+                <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled() || milestoneDataLoading}>
                   {milestoneDataLoading ? (
                     <Spinner size="sm" />
                   ) : (
