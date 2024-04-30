@@ -68,7 +68,7 @@ const HeadWrapper = styled.div`
     display: contents;
   }
   .global-search {
-    margin-left: 2rem;
+    margin-left: 2rem !important;
   }
 `;
 
