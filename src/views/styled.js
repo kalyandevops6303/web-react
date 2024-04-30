@@ -398,6 +398,19 @@ const CircularBackButtonContainer = styled.div`
   }
 `;
 
+const TooltipWrapper = styled.div`
+  .tooltip-style {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    text-align: left;
+  }
+  p {
+    padding: 0;
+    margin: 0;
+  }
+`;
+
 export {
   ElevateShadow,
   CardWrapper,
@@ -414,4 +427,5 @@ export {
   TeamCreatedModalLogoImg,
   Elevate,
   CircularBackButtonContainer,
+  TooltipWrapper,
 };

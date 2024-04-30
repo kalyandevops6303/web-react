@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronRight, FileText, Info, Minus, Upload } from 'react-feather';
+import { ChevronRight, Info, Minus, Upload } from 'react-feather';
 import 'react-quill/dist/quill.snow.css';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import Select from 'react-select';
@@ -51,7 +51,7 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { downloadUploadedFile, getFileSize } from '../../../utility/Utils';
+import { downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -479,7 +479,6 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     );
 
     const fetchUploadUrls = async () => {
-    
       const validFiles = acceptedFiles.filter((file) => isFileValid(file));
 
       const promises = validFiles.map(async (file) => {
@@ -503,15 +502,6 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     },
     onDrop,
   });
-
-  const renderFilePreview = (file) => {
-    if (file.type.startsWith('image')) {
-      return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
-      // eslint-disable-next-line
-    } else {
-      return <FileText size="18" className="me-75 mb-50" />;
-    }
-  };
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
@@ -539,8 +529,10 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                 style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
                 onClick={() => downloadUploadedFile({ file: file.file })}
               >
-                {renderFilePreview(file.file)}
-                {file.file.name}
+                <div className="d-flex align-items-center">
+                  <span>{renderFilePreview(file.file)}</span>
+                  <span>{file.file.name}</span>
+                </div>
               </div>
             </Col>
             <Col sm="6" md="2" lg="2">

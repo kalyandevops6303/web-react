@@ -11,7 +11,7 @@ import { ChevronLeft } from 'react-feather';
 import theme from '../../configs/themeVariables';
 import { InfoContainer } from '../create-bid/style';
 import { ProfileFormContainer, UploadIconContainer } from '../Onboarding/style';
-import { isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
+import { handleEmailClick, isUrlWithoutProtocol, removeEmptyKeys } from '../../utility/Utils';
 import ClubCreatedModal from './ClubCreatedModal';
 import { registerClubEmail, setClubCreateDataAction, updateClub } from '../../redux/actions/clubActions';
 import EmailVerifyModal from './EmailVerifyModal';
@@ -379,13 +379,19 @@ const Profile = () => {
             <h5 className="fw-bold">Back</h5>
           </div>
           <div>
-            <Button disabled={!isValid || disableBtn} color="primary" type="submit">
-              {loading ? (
-                <Spinner size="sm" />
-              ) : (
-                <span className="me-50">{location.pathname.includes('profile-edit') ? 'Save' : 'Create'}</span>
-              )}
-            </Button>
+            {isUniversityApprovalValue === 'Yes' || isUniversityApprovalValue === '' ? (
+              <Button disabled={!isValid || disableBtn} color="primary" type="submit">
+                {loading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <span className="me-50">{location.pathname.includes('profile-edit') ? 'Save' : 'Create'}</span>
+                )}
+              </Button>
+            ) : (
+              <Button color="primary" onClick={handleEmailClick}>
+                Email Support Team
+              </Button>
+            )}
           </div>
         </div>
       </Form>

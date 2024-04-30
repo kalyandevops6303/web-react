@@ -64,7 +64,7 @@ const TeamCreatingModal = ({ teamCreateData, toggleModal, modal, setTeamData, se
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalBody className="pt-3 pb-2 px-2">
         <div className="d-flex align-items-center">
-          <img src={TeamCreatingGif} width={200} height={200} alt="team-creating" className="me-3" />
+          <img src={TeamCreatingGif} height={200} alt="team-creating" className="me-3" />
           <div className="w-50">
             <h2 className="fw-bold font-large-1 mb-1">Great, creating your team!</h2>
             <p className="font-medium-2 mt-75">This will only take few seconds...</p>

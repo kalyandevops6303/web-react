@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-undef */
-import { ChevronRight, FileText } from 'react-feather';
+import { ChevronRight } from 'react-feather';
 import React, { useEffect } from 'react';
 import Proptypes from 'prop-types';
 import {
@@ -34,7 +34,7 @@ import { selectSavedUserData, selectUserData } from '../../redux/selectors/authS
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profilePercentage } from '../../redux/selectors/dashboardSelectors';
-import { downloadFile, getFileSize } from '../../utility/Utils';
+import { downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 
 const ViewProjectDetailModalWrap = styled.div`
   .card-header {
@@ -70,6 +70,13 @@ const ViewProjectDetailModalWrap = styled.div`
   .badge {
     width: fit-content !important;
     display: initial !important;
+  }
+
+  .total-count {
+    border-radius: 17px;
+    border: 1px solid ${theme.newTagColor};
+    background: rgba(194, 217, 255, 0.12);
+    margin-top: -6px;
   }
 `;
 
@@ -298,17 +305,15 @@ const ProjectModal = ({
                 {location.pathname.split('/').includes('my_listings') && (
                   <Col lg="4">
                     {bidsReceivedAvatarGroup?.length ? (
-                      <div>
+                      <div className="d-flex align-items-center">
                         {bidsReceivedAvatarGroup?.length > 3 ? (
-                          <AvatarGroup
-                            totalCount={data?.bid_profiles?.length || 0}
-                            size="sm"
-                            className="ms-25 mb-50"
-                            data={bidsReceivedAvatarGroup?.slice(0, 3)}
-                          />
+                          <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
                         ) : (
                           <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
                         )}
+                        <div className="total-count px-75 ms-1">
+                          <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+                        </div>
                       </div>
                     ) : (
                       <CardTitle className="mb-25 fw-bolder">None</CardTitle>
@@ -352,8 +357,10 @@ const ProjectModal = ({
                         style={{ color: theme.activeColor }}
                         onClick={() => downloadFile({ data: document })}
                       >
-                        <FileText size="18" className="me-75" />
-                        {document?.file_name}
+                        <div className="d-flex align-items-center">
+                          <span>{renderFilePreview(document)}</span>
+                          <span>{document.file_name}</span>
+                        </div>
                       </span>
                     </Col>
                     <Col sm="6" md="6" lg="2" className="text-end">

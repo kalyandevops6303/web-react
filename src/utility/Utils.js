@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
-
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
@@ -13,8 +12,13 @@ import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
 import PDFIcon from '../assets/images/pdfV2.svg';
+import DocIcon from '../assets/images/DOC.svg';
+import TextIcon from '../assets/images/TXT.svg';
+import JPGIcon from '../assets/images/JPG.svg';
+
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
+import round from '../lib/round';
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -294,13 +298,20 @@ export const isFileValid = (file) => {
 };
 
 export const renderFilePreview = (file) => {
-  if (file?.type?.startsWith('image')) {
-    return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="22" width="22" />;
+  const name = file?.name || file?.file_name;
+  if (name?.toLowerCase().endsWith('.jpeg') || name?.toLowerCase().endsWith('.jpg')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={JPGIcon} height="22" width="22" />;
   }
-  if (file?.name?.toLowerCase().endsWith('.pdf')) {
-    return <img className="rounded me-75" alt="pdf" src={PDFIcon} height="22" width="22" />;
+  if (name?.toLowerCase().endsWith('.txt')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={TextIcon} height="22" width="22" />;
   }
-  return <FileText size="20" className="me-75 mb-25" />;
+  if (name?.toLowerCase().endsWith('.pdf')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={PDFIcon} height="22" width="22" />;
+  }
+  if (name?.toLowerCase().endsWith('.doc') || name?.toLowerCase().endsWith('.docx')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={DocIcon} height="22" width="22" />;
+  }
+  return <FileText size="18" className="me-75 mb-25" />;
 };
 
 export const getFileSize = (size) => {
@@ -381,17 +392,7 @@ export const formattedDate = (value) => {
   return formattedDateString;
 };
 
-export const returnFormattedRating = (num) => {
-  // Check if the number is an integer
-  if (Number.isInteger(num)) {
-    return num; // Return the number as is
-    // eslint-disable-next-line no-else-return
-  } else {
-    // Round the number to one decimal place for float or decimal numbers
-    return Math.round(num * 10) / 10;
-  }
-};
-
+export const returnFormattedRating = (num) => (num ? round(num, 1) : 0);
 // eslint-disable-next-line no-undef
 export const getTeamId = () => getItemFromSession('team_id');
 
@@ -722,15 +723,22 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
             ShowToastMessage(ERROR, `Scanning ${file?.file_name} taking longer than expected. `);
             onError(); // Handle error on too many retries
           } else {
-            const retryResponse = await fileScanningService({ fileKeys: [file], isPrivate: true });
-            if (retryResponse.data.data?.[0].status !== fileScanStatus.SCANNING) {
-              clearInterval(retryInterval);
-              if (retryResponse.data.data?.[0].status === fileScanStatus.CLEAN) {
-                processFile(index + 1); // Move to the next file
-              } else if (retryResponse.data.data?.[0].status === fileScanStatus.THREAT) {
-                onError(); // Handle error for threat
-                ShowToastMessage(ERROR, `${file?.file_name} seem to be maliciuous/corrupted. `);
+            try {
+              const retryResponse = await fileScanningService({ fileKeys: [file], isPrivate });
+              if (retryResponse.data.data?.[0].status !== fileScanStatus.SCANNING) {
+                clearInterval(retryInterval);
+                if (retryResponse.data.data?.[0].status === fileScanStatus.CLEAN) {
+                  processFile(index + 1); // Move to the next file
+                } else if (retryResponse.data.data?.[0].status === fileScanStatus.THREAT) {
+                  onError(); // Handle error for threat
+                  ShowToastMessage(ERROR, `${file?.file_name} seems to be malicious/corrupted. `);
+                }
               }
+            } catch (retryError) {
+              console.error('Error retrying file scan:', retryError);
+              ShowToastMessage(ERROR, `Error scanning file: ${file?.file_name}`);
+              clearInterval(retryInterval); // Stop retrying on error
+              onError(); // Handle error for retry
             }
           }
           retries -= 1;
@@ -759,3 +767,7 @@ export const getContractStepLabel = ({ isNDA, user_type }) => {
       return isNDA ? 3 : 2;
   }
 };
+export const generateToolTipId = (projectName, name, title) =>
+  `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
+
+export const roundOfAmount = (amount) => (amount ? round(amount, 2) : 0);

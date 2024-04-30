@@ -300,6 +300,10 @@ const BidDetailsWrap = styled.div`
   .min-height-400 {
     min-height: 400px;
   }
+
+  .mb-space {
+    margin-bottom: 2rem;
+  }
 `;
 const BidWrapper = styled.div`
   .basic-title {

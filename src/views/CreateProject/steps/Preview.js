@@ -2,10 +2,10 @@ import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 import 'react-quill/dist/quill.snow.css';
-import { ChevronLeft, ChevronRight, FileText } from 'react-feather';
+import { ChevronLeft, ChevronRight } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
 import { TagsContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat, downloadUploadedFile, getFileSize } from '../../../utility/Utils';
+import { convertTo12HourFormat, downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
@@ -27,15 +27,6 @@ const Preview = ({
   const dispatch = useDispatch();
 
   const createProjectIsLoading = useSelector(createProjectLoading);
-
-  const renderFilePreview = (file) => {
-    if (file.type.startsWith('image')) {
-      return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="18" width="18" />;
-      // eslint-disable-next-line
-    } else {
-      return <FileText size="18" className="me-75 mb-50" />;
-    }
-  };
 
   const renderFormattedDate = (date) => {
     const formattedDate = date
@@ -69,8 +60,10 @@ const Preview = ({
                 style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
                 onClick={() => downloadUploadedFile({ file: file.file })}
               >
-                {renderFilePreview(file.file)}
-                {file.file.name}
+                <div className="d-flex align-items-center">
+                  <span>{renderFilePreview(file.file)}</span>
+                  <span>{file.file.name}</span>
+                </div>
               </div>
             </Col>
             <Col sm="2" md="2" lg="4">

@@ -26,8 +26,8 @@ import {
 import Avatar from '@components/avatar';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
-import { FileText, Info } from 'react-feather';
-import { downloadFile, formatFileSize } from '../../utility/Utils';
+import { Info } from 'react-feather';
+import { downloadFile, formatFileSize, renderFilePreview, roundOfAmount } from '../../utility/Utils';
 import { BidDetailsWrap } from '../project-details/style';
 import { snapShotStatus, userTypes } from '../../utility/constants/Constant';
 import theme from '../../configs/themeVariables';
@@ -327,7 +327,7 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
                                               </p>
                                             </Col>
                                             <Col sm="12" md="12" lg="2">
-                                              <p className="content-description">${worker?.amount || 0}</p>
+                                              <p className="content-description">${roundOfAmount(worker?.amount)}</p>
                                             </Col>
                                           </Row>
                                         ))}
@@ -343,14 +343,14 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
                     </Card>
                   </CardBody>
                 </Card>
-                {bidInfo?.bid?.documents?.length > 0 && (
+                {snapshotData?.bid?.documents?.length > 0 && (
                   <Card className="px-1 py-1">
-                    {bidInfo?.bid?.documents?.map((document, index) => (
+                    {snapshotData?.bid?.documents?.map((document, index) => (
                       <Row
                         key={document.file_key}
                         className={
                           // eslint-disable-next-line no-unsafe-optional-chaining
-                          index !== bidInfo?.documents?.length - 1
+                          index !== snapshotData?.bid?.documents?.length - 1
                             ? 'd-flex align-items-center mb-1'
                             : 'd-flex align-items-center'
                         }
@@ -375,10 +375,10 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
                                 <Spinner color="primary" />
                               </div>
                             ) : (
-                              <>
-                                <FileText size="18" className="me-75" />
-                                {document?.file_name}
-                              </>
+                              <div className="d-flex align-items-center">
+                                <span>{renderFilePreview(document)}</span>
+                                <span>{document?.file_name}</span>
+                              </div>
                             )}
                           </span>
                         </Col>
