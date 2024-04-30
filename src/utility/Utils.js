@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
+import Round from '../lib/round';
 
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
@@ -762,3 +763,5 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
 
 export const generateToolTipId = (projectName, name, title) =>
   `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
+
+export const roundOfAmount = (amount) => (amount ? Round(amount, 2) : 0);

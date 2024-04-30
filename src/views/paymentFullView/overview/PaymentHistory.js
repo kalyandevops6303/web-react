@@ -25,6 +25,7 @@ import { setItem } from '../../../utility/localStorageControl';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
 import ShowToastMessage from '../../../@core/components/toast';
 import { SUCCESS } from '../../../utility/constants/ToastTypes';
+import { roundOfAmount } from '../../../utility/Utils';
 
 const PaymentHistory = () => {
   const dispatch = useDispatch();
@@ -361,7 +362,7 @@ const PaymentHistory = () => {
         status: <>{showStatusBadge(item?.status)}</>,
         pay_type: <p className="mb-0 font-small-4">{capitalize(item?.pay_type)}</p>,
         total_cost: <p className="mb-0 font-small-4">${item?.total_cost}</p>,
-        amount: <p className="mb-0 font-small-4">${item?.amount}</p>,
+        amount: <p className="mb-0 font-small-4">${roundOfAmount(item?.amount)}</p>,
         disabled: userData?.user_type === userTypes.client ? item?.disabled : true,
         expandedMilestonesData: item?.milestones || [],
       }),

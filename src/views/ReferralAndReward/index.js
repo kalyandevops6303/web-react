@@ -17,6 +17,7 @@ import { getAllReferrals } from '../../redux/actions/referralAndRewardActions';
 import { allReferrals, allReferralsLoading } from '../../redux/selectors/referralAndRewardSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { roundOfAmount } from '../../utility/Utils';
 
 const ReferralAndReward = () => {
   const dispatch = useDispatch();
@@ -139,7 +140,7 @@ const ReferralAndReward = () => {
         </p>
       ),
       status: <p className="mb-0 table-data">{showStatusBadge(item?.status)}</p>,
-      amount: <p className="mb-0 table-data">$ {item?.amount}</p>,
+      amount: <p className="mb-0 table-data">$ {roundOfAmount(item?.amount)}</p>,
     }),
   );
 
