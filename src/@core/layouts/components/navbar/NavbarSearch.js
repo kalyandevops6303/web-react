@@ -58,54 +58,52 @@ const NavbarSearch = () => {
   const navBarClass = `${navSearchClasses}`;
 
   return (
-    <SearchBarWrapper>
-      <NavItem className={navBarClass}>
-        {!query.isNavbarSearchBarOpen && (
-          <NavLink
-            className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}
-            onClick={() => {
-              if (!isDisabled) {
-                dispatch(toggleIsNavbarSearchBarOpen());
+    <NavItem className={navBarClass} style={{ marginLeft: `${query.isNavbarSearchBarOpen ? '2rem !important' : ''}` }}>
+      {!query.isNavbarSearchBarOpen && (
+        <NavLink
+          className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}
+          onClick={() => {
+            if (!isDisabled) {
+              dispatch(toggleIsNavbarSearchBarOpen());
+            }
+          }}
+        >
+          <Icon.Search className="ficon" />
+        </NavLink>
+      )}
+
+      <div
+        className={classnames('search-input', {
+          open: query.isNavbarSearchBarOpen === true || (query?.query && true),
+        })}
+      >
+        <div className={`${isDisabled && 'cursor-not-allowed'} search-input-icon`}>
+          <Icon.Search color={theme.activeNavPillText} />
+        </div>
+        {query.isNavbarSearchBarOpen || query?.query ? (
+          <Autocomplete
+            className="form-control"
+            suggestions={suggestions}
+            filterKey="title"
+            filterHeaderKey="groupTitle"
+            grouped={true}
+            placeholder="Explore Trumio..."
+            autoFocus={true}
+            onKeyDown={onKeyDown}
+            defaultValue={query?.query}
+            onBlur={(e) => {
+              // dont close on blur for search page
+              if (location.pathname !== '/search') {
+                handleCloseSearchBar(e);
               }
             }}
-          >
-            <Icon.Search className="ficon" />
-          </NavLink>
-        )}
-
-        <div
-          className={classnames('search-input', {
-            open: query.isNavbarSearchBarOpen === true || (query?.query && true),
-          })}
-        >
-          <div className={`${isDisabled && 'cursor-not-allowed'} search-input-icon`}>
-            <Icon.Search color={theme.activeNavPillText} />
-          </div>
-          {query.isNavbarSearchBarOpen || query?.query ? (
-            <Autocomplete
-              className="form-control"
-              suggestions={suggestions}
-              filterKey="title"
-              filterHeaderKey="groupTitle"
-              grouped={true}
-              placeholder="Explore Trumio..."
-              autoFocus={true}
-              onKeyDown={onKeyDown}
-              defaultValue={query?.query}
-              onBlur={(e) => {
-                // dont close on blur for search page
-                if (location.pathname !== '/search') {
-                  handleCloseSearchBar(e);
-                }
-              }}
-            />
-          ) : null}
-          <div className="search-input-close">
-            <Icon.X color={theme.activeNavPillText} className="ficon" onClick={(e) => handleCloseSearchBar(e)} />
-          </div>
+          />
+        ) : null}
+        <div className="search-input-close">
+          <Icon.X color={theme.activeNavPillText} className="ficon" onClick={(e) => handleCloseSearchBar(e)} />
         </div>
-      </NavItem>
-    </SearchBarWrapper>
+      </div>
+    </NavItem>
   );
 };
 
