@@ -7,12 +7,12 @@ import DateTime from '../../../lib/date-time';
 import Duration from '../../../lib/duration';
 import theme from '../../../configs/themeVariables';
 import { extendValidity } from '../../../redux/actions/projectDetailsAction';
-import { DOCUMENT_EXTENSION, PAYMENT_EXTENSION, userTypes } from '../../../utility/constants/Constant';
+import { userTypes } from '../../../utility/constants/Constant';
 import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { projectDetails, selectDocument } from '../../../redux/selectors/projectDetailsSelectors';
 import ExtendModal from '../../modals/ExtendModal';
 
-const AlertAndNote = () => {
+const AlertAndNote = ({ documentExtention, paymentExtention }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const document = useSelector(selectDocument);
@@ -69,7 +69,7 @@ const AlertAndNote = () => {
           stateUpdater(
             addDays({
               timestamp: validityType === 'DOCUMENT' ? documentValidity : paymentValidity,
-              days: validityType === 'DOCUMENT' ? DOCUMENT_EXTENSION : PAYMENT_EXTENSION,
+              days: validityType === 'DOCUMENT' ? documentExtention : paymentExtention,
             }),
           );
           setExtendModal(false);
@@ -100,6 +100,8 @@ const AlertAndNote = () => {
       </CardText>
       {extendModal && (
         <ExtendModal
+          documentExtention={documentExtention}
+          paymentExtention={paymentExtention}
           modal={extendModal}
           toggleModal={() => setExtendModal(!extendModal)}
           validityType={validityType}
@@ -145,7 +147,7 @@ const AlertAndNote = () => {
       } contract.
       ${
         userType === userTypes.client && !isDocumentExtended
-          ? `You can choose to extend by an additional ${DOCUMENT_EXTENSION} days.`
+          ? `You can choose to extend by an additional ${documentExtention} days.`
           : ''
       }`;
 
@@ -163,7 +165,7 @@ const AlertAndNote = () => {
         paymentValidity,
       )} after signing the ${projectInfo?.nda?.is_nda ? 'NDA and' : ''} contract. ${
         userType === userTypes.client && !isPaymentExtended
-          ? `You can choose to extend by an additional ${PAYMENT_EXTENSION} days.`
+          ? `You can choose to extend by an additional ${paymentExtention} days.`
           : ''
       }`;
       return renderAlertBanner({
