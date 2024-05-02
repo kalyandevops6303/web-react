@@ -157,6 +157,8 @@ const API = {
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
+
+    getAppConfig: `${apiCreateProjectEndpoint}/api/v1/app_config`,
   },
   projectMilestones: {
     getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,

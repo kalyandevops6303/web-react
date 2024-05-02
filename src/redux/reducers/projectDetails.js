@@ -199,6 +199,22 @@ const projectDetails = createSlice({
       error: action.payload,
     }),
 
+    getAppConfigRequest: (state) => ({
+      ...state,
+      getAppConfigLoading: true,
+      error: null,
+    }),
+    getAppConfigSuccess: (state, action) => ({
+      ...state,
+      getAppConfigLoading: false,
+      appConfig: action.payload,
+    }),
+    getAppConfigFailure: (state, action) => ({
+      ...state,
+      getAppConfigLoading: false,
+      error: action.payload,
+    }),
+
     getNDATimelineRequest: (state) => ({
       ...state,
       getNDATimelineLoading: true,
@@ -614,6 +630,9 @@ export const {
   getContractTimelineRequest,
   getContractTimelineSuccess,
   getContractTimelineFailure,
+  getAppConfigRequest,
+  getAppConfigSuccess,
+  getAppConfigFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

@@ -1,10 +1,6 @@
 /* eslint-disable no-useless-escape */
 import { Box, Check, Watch } from 'react-feather';
 
-// In days
-const DOCUMENT_EXTENSION = 15;
-const PAYMENT_EXTENSION = 15;
-
 const ERROR_CODES = {
   EC_401: 401,
   EC_404: 404,
@@ -177,8 +173,6 @@ export {
   bidStatus,
   fileScanStatus,
   timeDalayToRetryScanning,
-  DOCUMENT_EXTENSION,
-  PAYMENT_EXTENSION,
   minimumAvatarLength,
   paymentText,
 };
