@@ -41,7 +41,8 @@ const blueBorderColorv2 = '#0578FB';
 const blueCardBg = '#E9F3FF';
 const tableHeaderColor = '#F3F2F7';
 const yellowColor = '#feffb8';
-
+const toastBacgroundColor = '#e6f3fc';
+const toastBorderColor = '#004280';
 // status
 const succesGreenColor = '#20C997';
 const succesGreenBg = '#20C9971F';
@@ -110,6 +111,8 @@ const theme = {
   bodyBgColor,
   inputBorderColor: themeInputBorderColor, // color for theme input borders
   textMuted: textMutedColor, // color for theme input borders
+  toastBacgroundColor,// color for notification toast background
+  toastBorderColor,// color for notification toast border
   uploadIconBackground: uploadIconBackgroundColor, // color for upload icon background
   white: whiteColor, // white color for all components
   checkboxShadow: checkboxShadowColor, // checkbox shadow color

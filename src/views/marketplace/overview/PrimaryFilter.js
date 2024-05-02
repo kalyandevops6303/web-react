@@ -4,6 +4,7 @@ import { Col, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import MoneyIcon from '@src/assets/images/money.png';
+import ClientIcon from '@src/assets/images/client.svg';
 import Statbox from '../../user-details/overview/Statbox';
 import { getCardInfo } from '../../../redux/actions/marketPlaceActions';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -120,8 +121,8 @@ const PrimaryFilter = ({ selected, handlePrimaryChangeFilter, isTab }) => {
               isMarketPlaceTab
               title={selectCardData?.clients ?? 0}
               desc="Clients"
-              icon={<Users height={20} />}
-              color="light-purple"
+              icon={<img src={ClientIcon} height={22} alt="client" />}
+              color="light-primary"
             />
           </Col>
           {!isTab && userType !== userTypes.team && (
