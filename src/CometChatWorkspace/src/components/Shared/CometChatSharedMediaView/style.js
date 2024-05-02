@@ -91,8 +91,9 @@ export const mediaItemStyle = () => {
   return {
     height: '100px',
     overflowY: 'auto',
-    overflowX: 'hidden',
+    // overflowX: 'hidden',
     display: 'flex',
+    // flexDirection: 'column',
     flexWrap: 'wrap',
     fontSize: '14px',
   };
@@ -155,12 +156,13 @@ export const itemStyle = (state, props, img, context) => {
   let itemTypeStyle = {};
   if (state.messagetype === 'image') {
     itemTypeStyle = {
-      height: '40px',
-      width: '40px',
+      height: 'calc(width)',
+      width: '18%',
+      maxWidth: '18%',
       '> img': {
         display: 'block',
         width: '100%',
-        height: '100%',
+        height: '40px',
         objectFit: 'contain',
       },
     };
@@ -176,6 +178,7 @@ export const itemStyle = (state, props, img, context) => {
     itemTypeStyle = {
       display: 'flex',
       alignItems: 'center',
+      width: "90%",
       '> a': {
         maxWidth: '100%',
         maxHeight: '100%',
@@ -199,6 +202,9 @@ export const itemStyle = (state, props, img, context) => {
           textAlign: 'left',
           width: 'calc(100% - 30px)',
         },
+        '.media_items': {
+          flexDirection: 'column'
+        }
       },
     };
   }
