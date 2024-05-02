@@ -345,7 +345,7 @@ const InviteListing = () => {
                           {projectInvitation?.metadata?.total_records > 10 && (
                             <ViewAllCard
                               accordionName={AccordionName.projectInvitation}
-                              height={230}
+                              height={334}
                               width={225}
                               onViewAll={() => {
                                 navigate('/projects/invited');

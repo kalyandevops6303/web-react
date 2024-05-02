@@ -44,6 +44,7 @@ import { getTeamById } from '../../services/teamServices';
 import { getProjectAreas, getSkills, getTools } from '../../redux/actions/staticActions';
 import { projectAreas, skillsList, toolsList } from '../../redux/selectors/staticSelectors';
 import { userProfileEdit } from '../../utility/constants/Constant';
+import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
 
 const Account = () => {
   const ProfileSchema = yup.object().shape({
@@ -224,6 +225,10 @@ const Account = () => {
       let reqData;
 
       if (location.pathname.includes('profile-edit')) {
+        const onApiSuccess = () => {
+          navigate(`/${userProfileEdit.club}/profile-details`);
+        };
+
         if (imageUrlRes) {
           reqData = {
             _id: userDetailsData._id,
@@ -234,6 +239,11 @@ const Account = () => {
             tools: toolsSelected,
             skills: skillsSelected,
           };
+
+          const removeEmpty = removeEmptyKeys(reqData);
+          dispatch(setClubCreateDataAction(removeEmpty));
+
+          dispatch(updateClub(removeEmptyKeys(removeEmpty), onApiSuccess));
         } else {
           reqData = {
             _id: userDetailsData._id,
@@ -243,6 +253,15 @@ const Account = () => {
             tools: toolsSelected,
             skills: skillsSelected,
           };
+
+          const removeEmpty = removeEmptyKeys(reqData);
+          dispatch(setClubCreateDataAction(removeEmpty));
+
+          if (selectedImage && selectedImagePreview) {
+            dispatch(updateClub(removeEmptyKeys(removeEmpty), onApiSuccess));
+          } else {
+            dispatch(updateClub({ ...removeEmptyKeys(removeEmpty), team_logo: '' }, onApiSuccess));
+          }
         }
       } else {
         // eslint-disable-next-line no-lonely-if
@@ -257,6 +276,10 @@ const Account = () => {
             skills: skillsSelected,
             education_institute: educationInstitution,
           };
+
+          const removeEmpty = removeEmptyKeys(reqData);
+          dispatch(setClubCreateDataAction(removeEmpty));
+          navigate(`/create-club/profile-details`);
         } else {
           reqData = {
             name: clubName,
@@ -267,19 +290,17 @@ const Account = () => {
             skills: skillsSelected,
             education_institute: educationInstitution,
           };
+
+          const removeEmpty = removeEmptyKeys(reqData);
+
+          if (selectedImage && selectedImagePreview) {
+            dispatch(setClubCreateDataAction(removeEmpty));
+            navigate(`/create-club/profile-details`);
+          } else {
+            dispatch(setClubCreateDataAction({ ...removeEmpty, team_logo: '' }));
+            navigate(`/create-club/profile-details`);
+          }
         }
-      }
-
-      const removeEmpty = removeEmptyKeys(reqData);
-      dispatch(setClubCreateDataAction(removeEmpty));
-
-      if (location.pathname.includes('profile-edit')) {
-        const onApiSuccess = () => {
-          navigate(`/${userProfileEdit.club}/profile-details`);
-        };
-        dispatch(updateClub(removeEmptyKeys(removeEmpty), onApiSuccess));
-      } else {
-        navigate(`/create-club/profile-details`);
       }
     }
   };
@@ -531,6 +552,12 @@ const Account = () => {
     }
   }, [allToolsList, allSkillsList, projectAreasList, clubCreateData]);
 
+  const onRemovePictureClick = () => {
+    setSelectedImage(null);
+    setSelectedImagePreview(null);
+    setImageUrlRes(null);
+  };
+
   const formatGroupLabel = (data) => (
     <GroupLabelWrapper>
       <span>{data.label}</span>
@@ -570,14 +597,22 @@ const Account = () => {
                   ref={fileInputRef}
                 />
                 <Button
+                  id={selectedImage && selectedImagePreview ? 'popFocus' : 'noFocus'}
                   color="primary"
                   className="ml-2 mr-1 d-flex align-items-center py-50"
                   disabled={isImageUploading}
-                  onClick={() => fileInputRef.current.click()}
+                  onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                 >
                   <Camera className="me-50" />
                   {isImageUploading ? <Spinner size="sm" /> : 'Upload Club Logo'}
                 </Button>
+                {selectedImage && selectedImagePreview && (
+                  <RemoveUploadedPicture
+                    fileInputRef={fileInputRef}
+                    onRemovePicture={onRemovePictureClick}
+                    offset={[15, 10]}
+                  />
+                )}
               </div>
               <Info size={18} color={theme.infoIcon} id="logo-info" />
               <UncontrolledTooltip placement="right" target="logo-info">

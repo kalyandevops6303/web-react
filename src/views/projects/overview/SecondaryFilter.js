@@ -441,7 +441,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
                   isExpanded={false}
                   primaryFilter={primaryFilter}
                   secondaryFilterForInvitedType={secondFilterState.invitation_type[0].value}
-                  isProjectWithTeam
                 />
               );
             })}

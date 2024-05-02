@@ -21,7 +21,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
-import { ChevronLeft, ChevronRight, FileText, Upload } from 'react-feather';
+import { ChevronLeft, ChevronRight, Upload } from 'react-feather';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -50,6 +50,7 @@ import {
   removeEmptyKeys,
   getFileSize,
   returnFilteredDropdownOptions,
+  renderFilePreview,
 } from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -280,10 +281,10 @@ const Personal = () => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <>
-                    <FileText size="18" className="me-75 mb-50" />
-                    <p className="mb-0">{file.file.name}</p>
-                  </>
+                  <div className="d-flex align-items-center">
+                    <span>{renderFilePreview(file.file)}</span>
+                    <span>{file.file.name}</span>
+                  </div>
                 )}
               </div>
             </Col>

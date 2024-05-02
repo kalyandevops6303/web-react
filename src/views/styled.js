@@ -374,8 +374,7 @@ const Elevate = styled.div`
   border-radius: 0.375rem;
   &:hover {
     border-radius: 0.375rem;
-    box-shadow: 0px 0px 0px 1px ${theme.blueBorderColorv2}, /* First box shadow */ 0px 8px 12px 0px rgba(0, 0, 0, 0.08); /* Second box shadow */
-  }
+    box-shadow: ${(props) => (props.elevate === false ? '' : `0px 0px 0px 1px ${theme.blueBorderColorv2}`)} 
 `;
 const ElevateShadow = styled(Elevate)`
   &:hover {
@@ -398,6 +397,19 @@ const CircularBackButtonContainer = styled.div`
   }
 `;
 
+const TooltipWrapper = styled.div`
+  .tooltip-style {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    text-align: left;
+  }
+  p {
+    padding: 0;
+    margin: 0;
+  }
+`;
+
 export {
   ElevateShadow,
   CardWrapper,
@@ -414,4 +426,5 @@ export {
   TeamCreatedModalLogoImg,
   Elevate,
   CircularBackButtonContainer,
+  TooltipWrapper,
 };

@@ -1,6 +1,10 @@
 /* eslint-disable no-useless-escape */
 import { Box, Check, Watch } from 'react-feather';
 
+// In days
+const DOCUMENT_EXTENSION = 15;
+const PAYMENT_EXTENSION = 15;
+
 const ERROR_CODES = {
   EC_401: 401,
   EC_404: 404,
@@ -104,6 +108,24 @@ const PAYMENT_STATUS = {
   PAYMENT_PROCESSING: 'PAYMENT_PROCESSING',
   PAYMENT_SUCCESSFUL: 'PAYMENT_SUCCESSFUL',
   PAYMENT_FAILED: 'PAYMENT_FAILED',
+  FUNDS_AVAILABLE: 'FUNDS_AVAILABLE',
+  FUNDS_UNAVAILABLE: 'FUNDS_UNAVAILABLE',
+};
+
+const paymentText = {
+  PENDING: 'Pending',
+  INITIATED: 'Initiated',
+  PAID: 'Paid',
+  FAILED: 'Failed',
+  PAYMENT_DUE: 'Payment Due',
+  PAYMENT_PROCESSING: 'Payment Processing',
+  PAYMENT_SUCCESSFUL: 'Payment Successful',
+  PAYMENT_FAILED: 'Payment Failed',
+  FUNDS_AVAILABLE: 'Funds Available',
+  FUNDS_UNAVAILABLE: 'Funds Unavailable',
+  PAYMENT_INITIATED: 'Payment Initiated',
+  PROCESSING: 'Processing',
+  SUCCESSFUL: 'Successful',
 };
 
 const snapShotStatus = {
@@ -155,5 +177,8 @@ export {
   bidStatus,
   fileScanStatus,
   timeDalayToRetryScanning,
+  DOCUMENT_EXTENSION,
+  PAYMENT_EXTENSION,
   minimumAvatarLength,
+  paymentText,
 };

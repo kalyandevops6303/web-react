@@ -374,10 +374,20 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   };
 
-  const isUsers =
-    location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
-
   const inMyBids = location.pathname?.split('/')?.includes('my_bids');
+
+  const getSearchPlaceholder = () => {
+    switch (primaryFilter) {
+      case 'teams':
+        return 'Search team name';
+      case 'clients':
+        return 'Search client name';
+      case 'talents':
+        return 'Search talent name';
+      default:
+        return 'Search project name, user name';
+    }
+  };
 
   const setStatusOptions = () => {
     if (primaryFilter === 'all_listings') {
@@ -445,7 +455,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Input
                 innerRef={inputRef}
                 onChange={debounce(handleSearchTextChange, 300)}
-                placeholder={isUsers ? 'Search users' : 'Search project name, user name'}
+                placeholder={getSearchPlaceholder()}
               />
             </InputGroup>
           </div>

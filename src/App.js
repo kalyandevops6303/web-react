@@ -132,10 +132,8 @@ const App = () => {
             <div className="d-flex align-items-center">
               <Info size="22" className="me-1" color={theme.primary} />
               <div className="d-flex align-items-center">
-                <div>
-                  <p className="mb-0 fw-bold">{payload?.data?.title}</p>
-                  <small>{payload?.data?.body}</small>
-                </div>
+                <p className="fw-bolder mb-0">{payload?.data?.title} -&nbsp;</p>
+                <p className="fw-bold mb-0">{payload?.data?.body}</p>
               </div>
             </div>
             <X size="14" onClick={() => toast.dismiss(t.id)} />
@@ -143,8 +141,11 @@ const App = () => {
         ),
         {
           style: {
-            minWidth: '300px',
-            border: `wpx solid ${theme.primary}`,
+            background: theme.toastBacgroundColor,
+            borderLeft: `4px solid ${theme.toastBorderColor}`,
+            maxWidth: '100%',
+            width: '100%',
+            color: theme.toastBorderColor,
           },
         },
       );
@@ -152,6 +153,7 @@ const App = () => {
       console.log('INSIDE ELSE');
     }
   });
+
   return (
     <Suspense fallback={null}>
       <Router />
