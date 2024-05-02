@@ -22,7 +22,7 @@ import Empty from './Empty';
 import { acceptBidChange, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
-import { bidStatus, userTypes } from '../../../utility/constants/Constant';
+import { bidStages, bidStatus, userTypes } from '../../../utility/constants/Constant';
 import BidChangeRequestModal from '../../modals/BidChangeRequestModal';
 import AcceptBidModal from '../../modals/AcceptBidModal';
 import RejectBidChangeModal from '../../modals/RejectBidChangeModal';
@@ -38,6 +38,7 @@ const BidSubmitted = () => {
   const bidTimeline = useSelector((state) => state.projectDetails.bidTimeline);
   const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
   const isBidAccepting = useSelector((state) => state.projectDetails.acceptBidChangeLoading);
+  const activeStage = useSelector((state) => state.projectDetails.activeStage);
   const [open, setOpen] = useState(null);
   const [bidRequestModal, setBidRequestModal] = useState(false);
   const [acceptBidModal, setAcceptBidModal] = useState(false);
@@ -147,8 +148,9 @@ const BidSubmitted = () => {
       }),
     );
   };
+
   const BidTimelineAccordion = (
-    <Elevate active={false}>
+    <Elevate active={activeStage === bidStages.BID_SUBMITTED || activeStage === bidStages.ACCEPTED_BID}>
       <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
         <AccordionItem>
           <AccordionHeader
@@ -267,9 +269,14 @@ const BidSubmitted = () => {
             BidTimelineAccordion
           ) : (
             <Card>
-              <CardBody className="basic-title">
+              <CardBody
+                className={classnames('basic-title', 'sign-accordion-header', { 'active-accordion-header': false })}
+              >
                 <div className="d-flex justify-content-between">
-                  <CardText className="d-flex fw-bold mb-0 disabled-color">Accepted Bid</CardText>
+                  <div className="title-head">
+                    <span className="step d-block">STEP {userData?.user_type === userTypes.client ? 3 : 2}</span>
+                    <CardText className="d-flex fw-bold mb-0 disabled-color">Accepted Bid</CardText>
+                  </div>
                 </div>
               </CardBody>
             </Card>

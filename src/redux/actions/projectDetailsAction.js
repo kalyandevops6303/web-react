@@ -30,6 +30,7 @@ import {
   acceptBidChangeService,
   getBidTimelineService,
   getBidSnapshotService,
+  getActiveStageService,
 } from '../../services/projectDetailsServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
@@ -45,6 +46,9 @@ import {
   extendValiditySuccess,
   favUnfavError,
   favUnfavReq,
+  getActiveStageFailure,
+  getActiveStageRequest,
+  getActiveStageSuccess,
   getBidInfoFailure,
   getBidInfoRequest,
   getBidInfoSuccess,
@@ -226,6 +230,17 @@ const checkDocumentActivated =
     }
   };
 
+const getActiveStage =
+  ({ project_id }) =>
+  async (dispatch) => {
+    dispatch(getActiveStageRequest());
+    try {
+      const res = await getActiveStageService({ project_id });
+      dispatch(getActiveStageSuccess(res.data.data));
+    } catch (error) {
+      errorHandler(error, getActiveStageFailure);
+    }
+  };
 const getProjectDetails =
   ({ projectId, isBidView }) =>
   async (dispatch) => {
@@ -234,6 +249,7 @@ const getProjectDetails =
       const res = await projectDetailsService(projectId);
       if (isBidView) {
         dispatch(checkDocumentActivated({ isNDA: res?.data.data.nda?.is_nda, project_id: projectId }));
+        dispatch(getActiveStage({ project_id: projectId }));
       }
       dispatch(projectDetailsSuccess(res.data.data));
     } catch (error) {

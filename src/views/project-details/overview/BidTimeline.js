@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import theme from '../../../configs/themeVariables';
 import Timeline from '../../../@core/components/timeline';
 import { selectUserType } from '../../../redux/selectors/authSelectors';
-import { userTypes } from '../../../utility/constants/Constant';
+import { bidStages, userTypes } from '../../../utility/constants/Constant';
 import ReceivedBids from './ReceivedBids';
 import BidSubmitted from './BidSubmitted';
 import { getBidDetails } from '../../../redux/actions/projectDetailsAction';
@@ -49,7 +49,8 @@ const BidTimeline = () => {
   const projectDetailsData = useSelector(projectDetails);
   const isDocLoading = useSelector((state) => state.projectDetails.checkDocumentActivatedLoading);
   const isLoading = useSelector(projectDetailsLoading);
-
+  const isGetStageLoading = useSelector((state) => state.projectDetails.getActiveStageLoading);
+  const activeStage = useSelector((state) => state.projectDetails.activeStage);
   const userType = useSelector(selectUserType);
 
   useEffect(() => {
@@ -70,7 +71,7 @@ const BidTimeline = () => {
       color: theme.timelineSuccessColor,
       isDisabled: false,
       customContent: (
-        <Elevate active={false}>
+        <Elevate active={activeStage === bidStages.RECEIVED_BIDS}>
           <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
             {userType === userTypes.client && (
               <ReceivedBids active={false} projectName={projectDetailsData?.details?.name} />
@@ -92,7 +93,7 @@ const BidTimeline = () => {
       isDisabled: ndaData?.show_document === false,
       color: theme.orangeColor,
       customContent: (
-        <Elevate active={false}>
+        <Elevate active={activeStage === bidStages.NDA}>
           {userType === userTypes.client && !ndaData?.is_signed ? (
             <Card>
               <CardBody
@@ -152,7 +153,7 @@ const BidTimeline = () => {
       isDisabled: contractData?.show_document === false,
       color: theme.orangeColor,
       customContent: (
-        <Elevate active={false}>
+        <Elevate active={activeStage === bidStages.CONTRACT}>
           {userType === userTypes.client && !contractData?.is_signed ? (
             <Card>
               <CardBody
@@ -219,9 +220,10 @@ const BidTimeline = () => {
 
   const bidStageWithOrder = bidStageData.slice().sort((a, b) => a.order - b.order);
 
-  if (isDocLoading || isLoading) {
+  if (isDocLoading || isLoading || isGetStageLoading) {
     return <ComponentSpinner />;
   }
+
   return (
     <BidTimelineWrapper>
       <div>
@@ -229,7 +231,6 @@ const BidTimeline = () => {
           // If contractData is true...
           (!projectDetailsData?.nda?.is_nda || (projectDetailsData?.nda?.is_nda && ndaData)) && (
             // If projectDetailsData?.nda?.is_nda is true, check ndaData before rendering Timeline.
-            // {console.log(contractData)}
             <Timeline data={bidStageWithOrder} />
           )}
       </div>
