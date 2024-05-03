@@ -3,6 +3,7 @@ import FilledStar from '@src/assets/images/filler_star.png';
 import { Badge } from 'reactstrap';
 import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
+import { returnFormattedRating } from '../../../utility/Utils';
 
 const RatingBadge = ({ number }) => {
   const BadgeWrap = styled.div`
@@ -20,7 +21,7 @@ const RatingBadge = ({ number }) => {
     <BadgeWrap>
       <Badge color="light-warning" className="rating-badge">
         <img height={14} src={FilledStar} alt="Filled star" />
-        {number}
+        {returnFormattedRating(number, 1)}
       </Badge>
     </BadgeWrap>
   );

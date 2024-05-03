@@ -300,6 +300,10 @@ const BidDetailsWrap = styled.div`
   .min-height-400 {
     min-height: 400px;
   }
+
+  .mb-space {
+    margin-bottom: 2rem;
+  }
 `;
 const BidWrapper = styled.div`
   .basic-title {
@@ -398,7 +402,7 @@ const BidWrapper = styled.div`
       }
     }
     .accordion-item {
-      border-radius: 0.3rem;
+      border-radius: 0.375rem;
       .accordion-header {
         button {
           font-size: 1rem;
@@ -406,6 +410,26 @@ const BidWrapper = styled.div`
           font-size: 1rem !important;
         }
       }
+    }
+  }
+  .sign-accordion-header {
+    padding: 1rem 1.2rem;
+  }
+  .active-accordion-header {
+    border-radius: 0.375rem;
+    background: ${theme.accordionHeaderActiveBg};
+    .collapsed {
+      background: ${theme.accordionHeaderActiveBg};
+    }
+  }
+  .title-head {
+    margin: auto 0;
+    .step {
+      color: ${theme.gray};
+      font-size: 0.75rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1rem; /* 133.333% */
     }
   }
 
@@ -521,6 +545,13 @@ const AccordionHeadStyle = styled.div`
   padding-left: 1.2rem;
   .title-head {
     margin: auto 0;
+    .step {
+      color: ${theme.gray};
+      font-size: 0.75rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1rem; /* 133.333% */
+    }
   }
   .view-all-cta {
     font-size: 0.875rem;
@@ -708,6 +739,19 @@ const RatingTag = styled.div`
   }
 `;
 
+const PaymentInfoBanner = styled.div`
+  border-radius: 6px;
+  background: ${theme.infoBannerBg};
+
+  .info-banner-icon {
+    margin-top: 2px;
+  }
+
+  p {
+    color: ${theme.activeNavPillText};
+  }
+`;
+
 export {
   BidWrapper,
   TeamVieWrapper,
@@ -722,4 +766,5 @@ export {
   UserNameWrapper,
   TableWrapper,
   SubmissionHistoryWrapper,
+  PaymentInfoBanner,
 };

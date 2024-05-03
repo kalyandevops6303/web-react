@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // ** Custom Components
 import Autocomplete from '@components/autocomplete';
 import theme from '../../../../configs/themeVariables';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { clearQuery, handleQuery, toggleIsNavbarSearchBarOpen } from '../../../../redux/reducers/gloabalSearch';
 import { selectUserData } from '../../../../redux/selectors/authSelectors';
 import { clubStatus } from '../../../../utility/constants/Constant';
@@ -23,6 +23,7 @@ const NavbarSearch = () => {
   // ** Store Vars
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // ** States
   const [suggestions, setSuggestions] = useState([]);
@@ -42,19 +43,29 @@ const NavbarSearch = () => {
     }
   };
 
-  // ** Function to handle search suggestion Click
+  const handleCloseSearchBar = (e) => {
+    e.stopPropagation();
+    dispatch(toggleIsNavbarSearchBarOpen());
+    dispatch(clearQuery(''));
+  };
+
+  const navSearchClasses = classnames('nav-search', 'w-100', 'mt-auto', 'mb-auto', {
+    'cursor-not-allowed': isDisabled,
+    'main-search': query.isNavbarSearchBarOpen,
+  });
+  const navBarClass = `${navSearchClasses}`;
 
   return (
-    <NavItem
-      className={`${isDisabled && 'cursor-not-allowed'} nav-search`}
-      onClick={() => {
-        if (!isDisabled) {
-          dispatch(toggleIsNavbarSearchBarOpen());
-        }
-      }}
-    >
+    <NavItem className={navBarClass}>
       {!query.isNavbarSearchBarOpen && (
-        <NavLink className={`${isDisabled && 'cursor-not-allowed'} nav-link-search me-1`}>
+        <NavLink
+          className={`${isDisabled && 'cursor-not-allowed'} nav-link-search`}
+          onClick={() => {
+            if (!isDisabled) {
+              dispatch(toggleIsNavbarSearchBarOpen());
+            }
+          }}
+        >
           <Icon.Search className="ficon" />
         </NavLink>
       )}
@@ -78,18 +89,16 @@ const NavbarSearch = () => {
             autoFocus={true}
             onKeyDown={onKeyDown}
             defaultValue={query?.query}
+            onBlur={(e) => {
+              // dont close on blur for search page
+              if (location.pathname !== '/search') {
+                handleCloseSearchBar(e);
+              }
+            }}
           />
         ) : null}
         <div className="search-input-close">
-          <Icon.X
-            color={theme.activeNavPillText}
-            className="ficon"
-            onClick={(e) => {
-              e.stopPropagation();
-              dispatch(toggleIsNavbarSearchBarOpen());
-              dispatch(clearQuery(''));
-            }}
-          />
+          <Icon.X color={theme.activeNavPillText} className="ficon" onClick={(e) => handleCloseSearchBar(e)} />
         </div>
       </div>
     </NavItem>

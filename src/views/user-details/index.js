@@ -247,17 +247,19 @@ const UserDetails = () => {
                 isEditable={userData?._id === param?.userId}
                 isClubProfile={currentProfile.team_type === 'CLUB'}
               />
-              <Col lg="3">
+              <Col lg="3" className="pe-75">
                 <Statbox
+                  elevate={false}
                   title={recentProjectsMetadata?.total_records || 0}
-                  desc="Completed Projects"
+                  desc="Completed Project(s)"
                   icon={<Check height={20} />}
                   color="light-success"
                 />
               </Col>
               {isTalentView && (
-                <Col lg="3">
+                <Col lg="3" className="pe-75">
                   <Statbox
+                    elevate={false}
                     title={`${currentProfile?.currency_preference?.code || ''} ${currentProfile?.hourly_rate || 0}`}
                     desc="Hourly Rate"
                     icon={<img src={MoneyIcon} height={22} alt="money" />}
@@ -267,8 +269,9 @@ const UserDetails = () => {
               )}
               {isTeamView ||
                 (isClubView && (
-                  <Col lg="3">
+                  <Col lg="3" className="pe-75">
                     <Statbox
+                      elevate={false}
                       title={`${currentProfile?.total_project_value?.code || ''} ${
                         currentProfile?.total_project_value || 0
                       }`}
@@ -279,8 +282,9 @@ const UserDetails = () => {
                   </Col>
                 ))}
               {isTalentView && (
-                <Col lg="3">
+                <Col lg="3" className="pe-75">
                   <Statbox
+                    elevate={false}
                     title={`${calculateYearsFromMonths(currentProfile?.work_experience)}`}
                     desc="Work Experience"
                     icon={<Briefcase height={20} />}
@@ -288,8 +292,9 @@ const UserDetails = () => {
                   />
                 </Col>
               )}
-              <Col lg="3">
+              <Col lg="3" className="pe-75">
                 <Statbox
+                  elevate={false}
                   title={
                     <>
                       {calculateAvailableHoursPerWeek(currentProfile?.availability) < 0

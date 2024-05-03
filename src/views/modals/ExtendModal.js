@@ -7,7 +7,15 @@ import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import styled from 'styled-components';
 import SwitchGif from '../../assets/images/gifs/timer.gif';
 
-const ExtendModal = ({ modal, toggleModal, onExtend, validityType, projectDetails }) => {
+const ExtendModal = ({
+  modal,
+  toggleModal,
+  onExtend,
+  validityType,
+  projectDetails,
+  documentExtention,
+  paymentExtention,
+}) => {
   const isLoading = useSelector((state) => state.projectDetails.extendValidityLoading);
   const SwitchModalWrapper = styled.div`
     .title {
@@ -40,7 +48,9 @@ const ExtendModal = ({ modal, toggleModal, onExtend, validityType, projectDetail
                     ? 'NDA and Contract'
                     : 'Contract'
                   : 'Payment'}{' '}
-                validity will be extended by 7 days
+                {`validity will be extended by ${
+                  validityType === 'DOCUMENT' ? documentExtention : paymentExtention
+                } days`}
               </p>
             </div>
           </div>
@@ -63,6 +73,8 @@ ExtendModal.propTypes = {
   onExtend: Proptypes.func,
   validityType: Proptypes.string,
   projectDetails: Proptypes.object,
+  documentExtention: Proptypes.number,
+  paymentExtention: Proptypes.number,
 };
 
 ExtendModal.defaultProps = {
@@ -71,4 +83,6 @@ ExtendModal.defaultProps = {
   onExtend: () => {},
   validityType: '',
   projectDetails: {},
+  documentExtention: 0,
+  paymentExtention: 0,
 };

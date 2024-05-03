@@ -42,15 +42,14 @@ import {
   toolsAIRequest,
   toolsAISuccess,
 } from '../reducers/static';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getBestTalents = (projectId, searchText, page, pageSize, oldData) => async (dispatch) => {
   if (page === 1) {
     dispatch(bestTalentsRequest());
   }
   try {
-    const res = await bestTalentsService(projectId, searchText, page, pageSize);
+    const res = await bestTalentsService(projectId, searchText || '', page, pageSize);
     dispatch(bestTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, bestTalentsFailure);
@@ -62,7 +61,7 @@ const getFavoriteTalents = (projectId, searchText, page, pageSize, oldData) => a
     dispatch(favoriteTalentsRequest());
   }
   try {
-    const res = await favoriteTalentsService(projectId, searchText, page, pageSize);
+    const res = await favoriteTalentsService(projectId, searchText || '', page, pageSize);
     dispatch(favoriteTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, favoriteTalentsFailure);
@@ -74,7 +73,7 @@ const getFavoriteTeams = (projectId, searchText, page, pageSize, oldData) => asy
     dispatch(favoriteTeamsRequest());
   }
   try {
-    const res = await favoriteTeamsService(projectId, searchText, page, pageSize);
+    const res = await favoriteTeamsService(projectId, searchText || '', page, pageSize);
     dispatch(favoriteTeamsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, favoriteTeamsFailure);
@@ -86,7 +85,7 @@ const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => 
     dispatch(almaMaterTalentsRequest());
   }
   try {
-    const res = await almaMaterTalentsService(projectId, searchText, page, pageSize);
+    const res = await almaMaterTalentsService(projectId, searchText || '', page, pageSize);
     dispatch(almaMaterTalentsSuccess({ ...res.data.data, data: [...oldData, ...res.data.data.data] }));
   } catch (error) {
     errorHandler(error, almaMaterTalentsFailure);
@@ -100,23 +99,16 @@ const createNewProject = (data, onSuccess) => async (dispatch) => {
       const res = await createProjectService(data);
       dispatch(createProjectSuccess(res.data.data));
       dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
-      dispatch(getFavoriteTeams(res.data.data.project_id, '', 1, 10, []));
-      dispatch(getAlmaMaterTalents(res.data.data.project_id, '', 1, 10, []));
       ShowToastMessage(SUCCESS, res.data.data.message);
       onSuccess();
     };
     if (data?.details?.documents?.length > 0) {
-      // Recursive function until status in Scanning
-      const finalScanStatus = await handleScanFiles({ fileKeys: data?.details?.documents, isPrivate: true });
-
-      // If files are Clean proceed with API call
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        handleCreateProject();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(createProjectFailure());
-      }
+      scanAndProcessFiles({
+        fileData: data?.details?.documents,
+        handleMainAPI: handleCreateProject,
+        onError: () => dispatch(createProjectFailure()),
+        isPrivate: true,
+      });
     } else {
       handleCreateProject();
     }

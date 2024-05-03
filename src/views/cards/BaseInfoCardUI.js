@@ -109,7 +109,7 @@ const BaseInfoUI = ({ data, hideUserInfo }) => {
               </CardText>
             </div>
             <div className="d-flex flex-grow-1">
-              <RatingBadge number={Math.round(data?.invitations_to?.rating ?? data?.client?.rating)} />
+              <RatingBadge number={data?.invitations_to?.rating ?? data?.client?.rating} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {data?.client?.projects_worked_on_count || 0} Projects
               </CardText>

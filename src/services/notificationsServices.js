@@ -16,9 +16,12 @@ const getNotificationsPollingService = () => DataService.get(API.notifications.p
 const markNotificationAsReadService = (notificationId) =>
   DataService.put(`${API.notifications.markAsRead}?notification_id=${notificationId}`);
 
+const markAllNotificationAsReadService = () => DataService.put(`${API.notifications.markAllAsRead}`);
+
 export {
   getNotificationsService,
   getAlertsNotificationsService,
   getNotificationsPollingService,
   markNotificationAsReadService,
+  markAllNotificationAsReadService,
 };

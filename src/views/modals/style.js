@@ -208,6 +208,32 @@ const MakePaymentModalWrapper = styled.div`
   .card-header-border {
     border: 1px solid #ebe9f1;
   }
+
+  .form-check-input:not(:disabled):checked {
+    box-shadow: 0px 2px 4px ${theme.checkboxShadow};
+  }
+  .form-check-input:checked {
+    background-color: ${theme.activeNavPillText};
+    border-color: ${theme.activeNavPillText};
+  }
+  .form-check-input {
+    border: 1.5px solid ${theme.inputBorderColor};
+  }
+  .form-check-input:checked {
+    border: 1.5px solid ${theme.activeNavPillText};
+  }
+
+  .truncated-milestone-name {
+    margin-left: 10px;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .payment-status-badge {
+    width: fit-content;
+  }
 `;
 
 const PrivacyPolicyModalWrapper = styled.div`

@@ -22,8 +22,7 @@ import {
   clearClubCreateData,
 } from '../reducers/clubs';
 import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
-import { handleCorruptedFiles, handleScanFiles } from '../../utility/Utils';
-import { fileScanStatus } from '../../utility/constants/Constant';
+import { scanAndProcessFiles } from '../../utility/Utils';
 
 const getClubs =
   ({ filterData, metaData, onSuccess, onError }) =>
@@ -87,19 +86,14 @@ const createClub =
         dispatch(getClubCreated(res.data.data));
         onSuccess(res.data.data);
       };
+
       if (data?.team_logo) {
-        const finalScanStatus = await handleScanFiles({
-          fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+        scanAndProcessFiles({
+          fileData: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+          handleMainAPI: handleCreateClub,
+          onError,
           isPrivate: false,
         });
-
-        if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-          handleCreateClub();
-        } else {
-          // If files are Corrupted show toast message
-          handleCorruptedFiles({ finalScanStatus });
-          onError();
-        }
       } else {
         handleCreateClub();
       }
@@ -126,18 +120,12 @@ const updateClub = (data, onSuccess) => async (dispatch) => {
       onSuccess();
     };
     if (data?.team_logo) {
-      const finalScanStatus = await handleScanFiles({
-        fileKeys: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+      scanAndProcessFiles({
+        fileData: [{ file_name: 'Club logo', file_key: data?.team_logo }],
+        handleMainAPI: handleUpdateClub,
+        onError: () => dispatch(updateTeamFailure()),
         isPrivate: false,
       });
-
-      if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
-        handleUpdateClub();
-      } else {
-        // If files are Corrupted show toast message
-        handleCorruptedFiles({ finalScanStatus });
-        dispatch(updateTeamFailure());
-      }
     } else {
       handleUpdateClub();
     }

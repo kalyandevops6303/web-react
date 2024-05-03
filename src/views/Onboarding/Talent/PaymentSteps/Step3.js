@@ -18,6 +18,7 @@ import {
 import { ChevronLeft, ChevronRight, Info } from 'react-feather';
 import { useForm, Controller } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
+import InputPasswordToggle from '@components/input-password-toggle';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { PropTypes } from 'prop-types';
@@ -37,6 +38,7 @@ import AccountCreatedModal from '../../AccountCreatedModal';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 
 import { usWFormsSchema } from '../Schema';
+import { TooltipWrapper } from '../../../styled';
 
 const Step3 = ({ setStep }) => {
   const dispatch = useDispatch();
@@ -560,7 +562,7 @@ const Step3 = ({ setStep }) => {
               <h4 className="mt-4 mb-1">
                 Mailing Address<span className="label-asterisk me-50">*</span>
               </h4>
-              <Col className="d-flex gap-50">
+              <Col className="d-flex gap-50 form-check">
                 <Input type="checkbox" checked={copyAddress} onChange={handleCopyAddress} />
                 <Label className="fs-5">Same as permanent residence address</Label>
               </Col>
@@ -746,19 +748,26 @@ const Step3 = ({ setStep }) => {
                   </Label>
                   <Info size={18} color={theme.infoIcon} id="security-number" />
                   <UncontrolledTooltip placement="right" target="security-number">
-                    <div className="d-flex flex-column align-items-start">
-                      <p className="m-0 text-start">
-                        {!isUsPerson
-                          ? 'National security number(NSN); Government recognized unique national security number eg PAN card, Aadhar card etc'
-                          : 'Enter Social Security Number (SSN) eg gov ID#'}
-                      </p>
-                    </div>
+                    <TooltipWrapper>
+                      <div className="d-flex flex-column align-items-start">
+                        <p className="m-0 text-start tooltip-style">
+                          {!isUsPerson
+                            ? 'Government recognized unique national security number. E.g. PAN Card, Aadhar Card, etc.'
+                            : 'Enter Social Security Number (SSN) eg gov ID#'}
+                        </p>
+                      </div>
+                    </TooltipWrapper>
                   </UncontrolledTooltip>
-                  <Input
-                    placeholder="Enter SSN #"
+                  <InputPasswordToggle
+                    className="no-right-border"
+                    placeholder={!isUsPerson ? 'Enter NSN #' : 'Enter SSN #'}
                     id="taxId"
                     name="taxId"
-                    value={paymentDetailsRes?.tax_identification?.social_security_number ?? ''}
+                    value={
+                      isUsPerson
+                        ? paymentDetailsRes?.tax_identification?.social_security_number
+                        : paymentDetailsRes?.tax_identification?.national_taxpayer_number
+                    }
                     disabled
                   />
                 </Col>

@@ -28,7 +28,9 @@ const AcceptMemberModal = ({ title, isLoading, data, onAccept, modal, toggleModa
             <div className="content-side">
               <CardTitle className="modal-heading mb-2">{title}</CardTitle>
 
-              <CardText className="modal-body-text fw-light mb-3">Your accepting the below membership request </CardText>
+              <CardText className="modal-body-text fw-light mb-3">
+                Your accepting the below membership request{' '}
+              </CardText>
               <section className="d-flex gap-4">
                 <div className="d-flex flex-column">
                   <div className="my-1 d-flex">
@@ -46,7 +48,7 @@ const AcceptMemberModal = ({ title, isLoading, data, onAccept, modal, toggleModa
                   </div>
 
                   <div className="d-flex mr-2">
-                    <RatingBadge number={Math.round(data?.rating ?? 0)} />
+                    <RatingBadge number={data?.rating ?? 0} />
                     <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
                   </div>
                 </div>

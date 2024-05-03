@@ -433,6 +433,13 @@ const BidsReceivedWrapper = styled.div`
     font-size: 0.8rem;
   }
 
+  .total-count {
+    border-radius: 17px;
+    border: 1px solid ${theme.newTagColor};
+    background: rgba(194, 217, 255, 0.12);
+    margin-top: -6px;
+  }
+
   .relist-btn-wrapper {
     .btn-outline-primary:hover:not(.disabled):not(:disabled) {
       background-color: ${theme.primary};

@@ -130,17 +130,15 @@ const BaseInfoForBidReceived = ({ isSearchPage, data }) => {
       <BidsReceivedWrapper>
         <p className="wrapper-title mb-50">Bids Received</p>
         {bidsReceivedAvatarGroup?.length ? (
-          <div>
+          <div className="d-flex align-items-center">
             {bidsReceivedAvatarGroup?.length > 3 ? (
-              <AvatarGroup
-                totalCount={data?.bidders?.length || 0}
-                size="sm"
-                className="ms-25 mb-50"
-                data={bidsReceivedAvatarGroup?.slice(0, 3)}
-              />
+              <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
             ) : (
               <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
             )}
+            <div className="total-count px-75 ms-1">
+              <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+            </div>
           </div>
         ) : (
           <p className="m-0">None</p>

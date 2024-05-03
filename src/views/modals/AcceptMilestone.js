@@ -21,7 +21,7 @@ const AcceptMilestoneModal = ({ data, onSuccess, modal, toggleModal }) => {
             <div className="content-side">
               <CardTitle className="modal-title-custom">Are you sure you want to accept the milestone? </CardTitle>
               <CardSubtitle className="mb-75 subtitle">
-                <b>Milestone {data?.seq}:</b> {data?.description}
+                <b>Milestone {data?.seq}:</b> {data?.name}
               </CardSubtitle>
             </div>
           </div>

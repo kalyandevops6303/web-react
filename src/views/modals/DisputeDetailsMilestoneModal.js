@@ -7,7 +7,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal, ModalHeader, ModalBody, Row, Col, Input, Button, Spinner, Form, FormFeedback } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { FileText, Upload } from 'react-feather';
+import { Upload } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import theme from '../../configs/themeVariables';
@@ -25,6 +25,7 @@ import { disputeReplies, replyOnDisputeLoading } from '../../redux/selectors/dis
 import { disputeReplyFileUploadService, disputeReplyFileUploadToAzureService } from '../../services/disputeServices';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { DisputeDetailsContainer, RepliesContainer } from '../disputes/style';
+import { renderFilePreview } from '../../utility/Utils';
 
 const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute }) => {
   const ResponseSchema = yup.object().shape({
@@ -175,9 +176,9 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute })
               : 'd-flex align-items-center justify-content-between'
           }
         >
-          <div>
-            <FileText size="18" className="me-75 mb-50" />
-            {file.file.name}
+          <div className="d-flex align-items-center">
+            <span>{renderFilePreview(file?.file)}</span>
+            <span>{file.file.name}</span>
           </div>
           <div>
             <Button
@@ -235,8 +236,10 @@ const DisputeDetailsModal = ({ modal, toggleModal, selectedDispute, onDispute })
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <FileText size="18" className="me-75 mb-50" />
-                  <p className="mb-0">{document.file_name}</p>
+                  <div className="d-flex align-items-center">
+                    <span>{renderFilePreview(document)}</span>
+                    <span>{document.file_name}</span>
+                  </div>
                 </a>
               ))}
             </div>

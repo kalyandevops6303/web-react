@@ -104,6 +104,24 @@ const PAYMENT_STATUS = {
   PAYMENT_PROCESSING: 'PAYMENT_PROCESSING',
   PAYMENT_SUCCESSFUL: 'PAYMENT_SUCCESSFUL',
   PAYMENT_FAILED: 'PAYMENT_FAILED',
+  FUNDS_AVAILABLE: 'FUNDS_AVAILABLE',
+  FUNDS_UNAVAILABLE: 'FUNDS_UNAVAILABLE',
+};
+
+const paymentText = {
+  PENDING: 'Pending',
+  INITIATED: 'Initiated',
+  PAID: 'Paid',
+  FAILED: 'Failed',
+  PAYMENT_DUE: 'Payment Due',
+  PAYMENT_PROCESSING: 'Payment Processing',
+  PAYMENT_SUCCESSFUL: 'Payment Successful',
+  PAYMENT_FAILED: 'Payment Failed',
+  FUNDS_AVAILABLE: 'Funds Available',
+  FUNDS_UNAVAILABLE: 'Funds Unavailable',
+  PAYMENT_INITIATED: 'Payment Initiated',
+  PROCESSING: 'Processing',
+  SUCCESSFUL: 'Successful',
 };
 
 const snapShotStatus = {
@@ -128,6 +146,16 @@ const fileScanStatus = {
 
 const timeDalayToRetryScanning = 4000;
 
+const minimumAvatarLength = 3;
+
+const bidStages = {
+  RECEIVED_BIDS: 'RECEIVED_BIDS',
+  ACCEPTED_BID: 'ACCEPTED_BID',
+  NDA: 'NDA',
+  CONTRACT: 'CONTRACT',
+  BID_SUBMITTED: 'BID_SUBMITTED',
+  NO_STAGE: 'NO_STAGE',
+};
 export {
   ERROR_CODES,
   checkPoints,
@@ -153,4 +181,7 @@ export {
   bidStatus,
   fileScanStatus,
   timeDalayToRetryScanning,
+  minimumAvatarLength,
+  paymentText,
+  bidStages,
 };
