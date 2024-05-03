@@ -31,6 +31,7 @@ import {
   getBidTimelineService,
   getBidSnapshotService,
   getActiveStageService,
+  getAppConfigService,
 } from '../../services/projectDetailsServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
@@ -49,6 +50,9 @@ import {
   getActiveStageFailure,
   getActiveStageRequest,
   getActiveStageSuccess,
+  getAppConfigFailure,
+  getAppConfigRequest,
+  getAppConfigSuccess,
   getBidInfoFailure,
   getBidInfoRequest,
   getBidInfoSuccess,
@@ -409,6 +413,16 @@ const getContractTimeline =
 
 // Action creator for getting document timeline
 
+const getAppConfig = () => async (dispatch) => {
+  dispatch(getAppConfigRequest());
+  try {
+    const res = await getAppConfigService();
+    dispatch(getAppConfigSuccess(res.data.data));
+  } catch (error) {
+    errorHandler(error, getAppConfigFailure);
+  }
+};
+
 const getDocument =
   ({ project_id, doc_type, document_id }) =>
   async (dispatch) => {
@@ -611,4 +625,5 @@ export {
   getBidSnapshot,
   getNDATimeline,
   getContractTimeline,
+  getAppConfig,
 };

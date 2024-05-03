@@ -131,6 +131,7 @@ const acceptBidChangeService = ({ snapshot_id }) =>
 
 const getActiveStageService = ({ project_id }) =>
   DataService.get(`${API.projectDetails.getActiveStage}?project_id=${project_id}`);
+const getAppConfigService = () => DataService.get(`${API.projectDetails.getAppConfig}`);
 
 export {
   extendDocValidityService,
@@ -166,4 +167,5 @@ export {
   getBidTimelineService,
   getBidSnapshotService,
   getActiveStageService,
+  getAppConfigService,
 };
