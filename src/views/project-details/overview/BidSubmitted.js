@@ -274,7 +274,7 @@ const BidSubmitted = () => {
               >
                 <div className="d-flex justify-content-between">
                   <div className="title-head">
-                    <span className="step d-block">STEP {userData?.user_type === userTypes.client ? 3 : 2}</span>
+                    <span className="step d-block">STEP {userData?.user_type === userTypes.client ? 2 : 1}</span>
                     <CardText className="d-flex fw-bold mb-0 disabled-color">Accepted Bid</CardText>
                   </div>
                 </div>
