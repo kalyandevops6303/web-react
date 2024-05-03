@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
-
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
 import round from '../lib/round';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning } from './constants/Constant';
+import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning, userTypes } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
@@ -760,6 +759,14 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
   processFile(0);
 };
 
+export const getContractStepLabel = ({ isNDA, user_type }) => {
+  switch (user_type) {
+    case userTypes.client:
+      return isNDA ? 4 : 3;
+    default:
+      return isNDA ? 3 : 2;
+  }
+};
 export const generateToolTipId = (projectName, name, title) =>
   `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
 

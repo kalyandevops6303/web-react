@@ -538,6 +538,24 @@ const projectDetails = createSlice({
       relistProjectByDateLoading: false,
       error: action.payload,
     }),
+
+    getActiveStageRequest: (state) => ({
+      ...state,
+      getActiveStageLoading: true,
+      error: null,
+      activeStage: null,
+    }),
+    getActiveStageSuccess: (state, action) => ({
+      ...state,
+      getActiveStageLoading: false,
+      activeStage: action.payload,
+    }),
+    getActiveStageFailure: (state, action) => ({
+      ...state,
+      getActiveStageLoading: false,
+      error: action.payload,
+      activeStage: null,
+    }),
   },
 });
 
@@ -630,6 +648,9 @@ export const {
   getContractTimelineRequest,
   getContractTimelineSuccess,
   getContractTimelineFailure,
+  getActiveStageRequest,
+  getActiveStageSuccess,
+  getActiveStageFailure,
   getAppConfigRequest,
   getAppConfigSuccess,
   getAppConfigFailure,

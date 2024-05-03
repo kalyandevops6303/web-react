@@ -13,7 +13,7 @@ const Statbox = ({ isActive, elevate, className, isMarketPlaceTab, title, icon, 
     isMarketPlaceTab={isMarketPlaceTab}
     time={desc === 'Availability'}
   >
-    <Elevate elevate={elevate}>
+    <Elevate active={elevate}>
       <CardBody>
         <div className="d-flex align-items-center justify-content-between">
           <div className="my-auto">

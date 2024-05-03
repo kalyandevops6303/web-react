@@ -152,7 +152,7 @@ const API = {
     updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
     extendDocValidity: `${apiCreateProjectEndpoint}/api/v1/project/documents-validity-extension`,
     extendPaymentValidity: `${apiCreateProjectEndpoint}/api/v1/project/payment-validity-extension`,
-
+    getActiveStage: `${apiCreateProjectEndpoint}/api/v1/bid/get_stage`,
     // invite get
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,

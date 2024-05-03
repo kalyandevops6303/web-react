@@ -148,6 +148,14 @@ const timeDalayToRetryScanning = 4000;
 
 const minimumAvatarLength = 3;
 
+const bidStages = {
+  RECEIVED_BIDS: 'RECEIVED_BIDS',
+  ACCEPTED_BID: 'ACCEPTED_BID',
+  NDA: 'NDA',
+  CONTRACT: 'CONTRACT',
+  BID_SUBMITTED: 'BID_SUBMITTED',
+  NO_STAGE: 'NO_STAGE',
+};
 export {
   ERROR_CODES,
   checkPoints,
@@ -175,4 +183,5 @@ export {
   timeDalayToRetryScanning,
   minimumAvatarLength,
   paymentText,
+  bidStages,
 };

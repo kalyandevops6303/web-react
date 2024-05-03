@@ -129,6 +129,8 @@ const rejectBidChangeService = ({ snapshot_id, description }) =>
 const acceptBidChangeService = ({ snapshot_id }) =>
   DataService.put(`${API.projectDetails.acceptBidChange}?bid_snapshot_id=${snapshot_id}`);
 
+const getActiveStageService = ({ project_id }) =>
+  DataService.get(`${API.projectDetails.getActiveStage}?project_id=${project_id}`);
 const getAppConfigService = () => DataService.get(`${API.projectDetails.getAppConfig}`);
 
 export {
@@ -164,5 +166,6 @@ export {
   acceptBidChangeService,
   getBidTimelineService,
   getBidSnapshotService,
+  getActiveStageService,
   getAppConfigService,
 };
