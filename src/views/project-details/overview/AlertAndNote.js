@@ -44,6 +44,7 @@ const AlertAndNote = ({ documentExtention, paymentExtention }) => {
     if (duration.as('days') >= 1) {
       return `${Math.floor(duration.as('days'))} day(s)`;
     }
+
     return duration.toFormat("hh'h' mm'm'");
   };
 
@@ -126,8 +127,7 @@ const AlertAndNote = ({ documentExtention, paymentExtention }) => {
       </p>
     </div>
   );
-  const currentDateTime = DateTime.now().toMillis();
-  if (document?.bid_validity === null || (paymentValidity > 0 && currentDateTime > paymentValidity)) {
+  if (document?.bid_validity === null) {
     return '';
   }
 
