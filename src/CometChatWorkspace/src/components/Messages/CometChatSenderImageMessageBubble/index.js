@@ -261,6 +261,7 @@ class CometChatSenderImageMessageBubble extends React.Component {
         {/* Add name here in case required */}
 
         <div css={messageDetailsStyle()} className="message__details">
+          {name}
           {toolTipView}
           <div css={messageWrapperStyle()} className="message__wrapper">
             <div css={messageImgWrapper(this.context)} onClick={this.open} className="message__img__wrapper">
