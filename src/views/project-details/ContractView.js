@@ -17,7 +17,12 @@ import EditContractModal from '../modals/EditContractModal';
 import { ContractDetailsWrap } from './style';
 import { currentProfile } from './overview/constants';
 import { projectDetails, selectDocument } from '../../redux/selectors/projectDetailsSelectors';
-import { getDocument, sendDocument, signContractByTalent } from '../../redux/actions/projectDetailsAction';
+import {
+  getAppConfig,
+  getDocument,
+  sendDocument,
+  signContractByTalent,
+} from '../../redux/actions/projectDetailsAction';
 import { selectSavedUserData, selectUserType } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
 import ConfirmContractModal from '../modals/ConfirmContractModal';
@@ -39,6 +44,8 @@ const ContractView = () => {
   const userData = useSelector(selectSavedUserData);
   const profilePercentageData = useSelector(profilePercentage);
   const isLoading = useSelector((state) => state.projectDetails?.getDocumentLoading);
+  const isAppConfigLoading = useSelector((state) => state?.projectDetails?.getAppConfigLoading);
+  const appConfig = useSelector((state) => state?.projectDetails?.appConfig);
   const param = useParams();
   const dispatch = useDispatch();
   const document = useSelector(selectDocument);
@@ -93,6 +100,7 @@ const ContractView = () => {
   };
 
   useEffect(() => {
+    dispatch(getAppConfig());
     dispatch(getDocument({ document_id: param?.docId || '', project_id: param?.projectId, doc_type: getDocType() }));
     dispatch(getProfilePercentage());
   }, []);
@@ -166,7 +174,7 @@ const ContractView = () => {
     return false;
   };
 
-  if (isLoading) {
+  if (isLoading || isAppConfigLoading) {
     return <ComponentSpinner />;
   }
 
@@ -216,50 +224,20 @@ const ContractView = () => {
               !isFreshDoc ? '(View only)' : ''
             }`}</CardTitle>
             <CardBody>
-              {/* <div className="contract-info error-banner mb-2 d-flex px-1 py-2">
-                <Info size={18} color={theme.red} className="me-50" />
-                <p className="font-medium-1 m-0 error">
-                  <span className="fw-bolder font-medium-1">Alert :</span> You have exceeded the fixed price cost of the
-                  project. Please adjust your cost in order to submit the bid
-                </p>
-                <CardText
-                  className="me-1 ms-2 my-auto cursor-pointer"
-                  style={{ width: '10rem', color: theme.activeColor }}
-                >
-                  Extend validity
-                </CardText>
-              </div> */}
-              <AlertAndNote />
+              {appConfig && (
+                <AlertAndNote
+                  documentExtention={appConfig?.doc_sig_completion?.validity || 0}
+                  paymentExtention={appConfig?.payment_completion?.validity || 0}
+                />
+              )}
               <Card>
                 <CardBody className="contract-card-body">
                   <div className="d-flex justify-content-between ">
                     <CardTitle className="mb-1"> {CapitalizeDocType()}</CardTitle>
                     <div className="d-flex gap-1 align-items-center mb-75">
-                      {/* {document?.is_contract_sent && isContractView && isFreshDoc && userType === userTypes.client && (
-                        <div>
-                          {document?.is_terminated ? (
-                            <CardText className="terminate me-1">Terminated</CardText>
-                          ) : (
-                            <CardText className="terminate me-1" onClick={toggleTerminateModal}>
-                              Terminate
-                            </CardText>
-                          )}
-                        </div>
-                      )}
-                      {isTerminateModalOpen && (
-                        <TerminateContractModal
-                          modalData={{ name: 'Vigh', role: 'FE', org: 'Wowo', value: '100' }}
-                          terminateData={terminateData}
-                          toggleModal={toggleTerminateModal}
-                          modal={isTerminateModalOpen}
-                          docType={getDocType()}
-                          project_id={param?.projectId}
-                        />
-                      )} */}
                       {isAcceptModalOpen && (
                         <ConfirmContractModal
                           modalData={acceptModalData}
-                          // terminateData={acceptModalData}
                           toggleModal={toggleAcceptModal}
                           modal={isAcceptModalOpen}
                           onAccept={

@@ -32,7 +32,7 @@ import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { userTypes } from '../../../utility/constants/Constant';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
-import { downloadFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
+import { downloadFile, getFileSize, renderFilePreview, roundOfAmount } from '../../../utility/Utils';
 
 const Preview = () => {
   const dispatch = useDispatch();
@@ -336,7 +336,7 @@ const Preview = () => {
                                         </p>
                                       </Col>
                                       <Col sm="12" md="12" lg="2">
-                                        <p className="content-description">${worker?.amount || 0}</p>
+                                        <p className="content-description">${roundOfAmount(worker?.amount)}</p>
                                       </Col>
                                     </Row>
                                   ))}

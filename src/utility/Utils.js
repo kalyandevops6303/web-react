@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
-
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
+import round from '../lib/round';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning } from './constants/Constant';
+import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning, userTypes } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
@@ -16,9 +16,9 @@ import PDFIcon from '../assets/images/pdfV2.svg';
 import DocIcon from '../assets/images/DOC.svg';
 import TextIcon from '../assets/images/TXT.svg';
 import JPGIcon from '../assets/images/JPG.svg';
-
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
+
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -392,17 +392,7 @@ export const formattedDate = (value) => {
   return formattedDateString;
 };
 
-export const returnFormattedRating = (num) => {
-  // Check if the number is an integer
-  if (Number.isInteger(num)) {
-    return num; // Return the number as is
-    // eslint-disable-next-line no-else-return
-  } else {
-    // Round the number to one decimal place for float or decimal numbers
-    return Math.round(num * 10) / 10;
-  }
-};
-
+export const returnFormattedRating = (num) => (num ? round(num, 1) : 0);
 // eslint-disable-next-line no-undef
 export const getTeamId = () => getItemFromSession('team_id');
 
@@ -769,5 +759,15 @@ export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, is
   processFile(0);
 };
 
+export const getContractStepLabel = ({ isNDA, user_type }) => {
+  switch (user_type) {
+    case userTypes.client:
+      return isNDA ? 4 : 3;
+    default:
+      return isNDA ? 3 : 2;
+  }
+};
 export const generateToolTipId = (projectName, name, title) =>
   `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
+
+export const roundOfAmount = (amount) => (amount ? round(amount, 2) : 0);

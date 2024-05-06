@@ -71,6 +71,13 @@ const ViewProjectDetailModalWrap = styled.div`
     width: fit-content !important;
     display: initial !important;
   }
+
+  .total-count {
+    border-radius: 17px;
+    border: 1px solid ${theme.newTagColor};
+    background: rgba(194, 217, 255, 0.12);
+    margin-top: -6px;
+  }
 `;
 
 const ProjectModal = ({
@@ -298,17 +305,15 @@ const ProjectModal = ({
                 {location.pathname.split('/').includes('my_listings') && (
                   <Col lg="4">
                     {bidsReceivedAvatarGroup?.length ? (
-                      <div>
+                      <div className="d-flex align-items-center">
                         {bidsReceivedAvatarGroup?.length > 3 ? (
-                          <AvatarGroup
-                            totalCount={data?.bid_profiles?.length || 0}
-                            size="sm"
-                            className="ms-25 mb-50"
-                            data={bidsReceivedAvatarGroup?.slice(0, 3)}
-                          />
+                          <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
                         ) : (
                           <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
                         )}
+                        <div className="total-count px-75 ms-1">
+                          <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+                        </div>
                       </div>
                     ) : (
                       <CardTitle className="mb-25 fw-bolder">None</CardTitle>

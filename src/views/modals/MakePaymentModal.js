@@ -20,7 +20,7 @@ import {
 import { PropTypes } from 'prop-types';
 import { MakePaymentModalWrapper } from './style';
 import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
-import { PAYMENT_STATUS } from '../../utility/constants/Constant';
+import { PAYMENT_STATUS, paymentText } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAndDisabledPaymentId }) {
@@ -52,16 +52,16 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
 
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: 'Payment Failed' };
+      return { theme: 'light-danger', text: paymentText.PAYMENT_FAILED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Milestone In Progress' };
+      return { theme: 'light-warning', text: paymentText.PAYMENT_DUE };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING || tag === PAYMENT_STATUS.INITIATED) {
-      return { theme: 'light-primary', text: 'Payment Processing' };
+      return { theme: 'light-primary', text: paymentText.PAYMENT_PROCESSING };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Funds Available' };
+      return { theme: 'light-success', text: paymentText.FUNDS_AVAILABLE };
     }
     return { theme: 'light-primary', text: tag };
   };
@@ -96,14 +96,6 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
     dispatch(makeMilestonePayment(payload, onSuccess));
   };
 
-  const isPaymentDone = (milestone) =>
-    milestone?.payment_status === PAYMENT_STATUS.PAID ||
-    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
-
-  const isFirstTwoMilestonePaid =
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
-
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
@@ -115,9 +107,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
       return true;
     }
     if (milestoneData?.length === 1) return false;
-    if (!isFirstTwoMilestonePaid && selectedIds?.length < 2) {
-      return true;
-    }
+
     return false;
   };
   return (
@@ -200,7 +190,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
             )}
             {paymentFeeLoading || selectedIds.length === 0 ? null : (
               <div className="d-flex justify-content-end py-1">
-                <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled()}>
+                <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled() || milestoneDataLoading}>
                   {milestoneDataLoading ? (
                     <Spinner size="sm" />
                   ) : (

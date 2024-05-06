@@ -183,7 +183,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
               readonly
             />
             <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
-              {data?.projects_worked_on_count || 0} Projects | {data?.total_reviews || 0} Reviews
+              {data?.projects_worked_on_count || 0} Project(s) | {data?.total_reviews || 0} Review(s)
             </CardText>
           </div>
 

@@ -1,8 +1,8 @@
-const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:1443`;
-const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
-const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
-const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
-const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
+const apiAuthEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/user`;
+const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/dashboard`;
+const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/project`;
+const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}/ai-assist`;
+const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}/payment`;
 
 const API = {
   auth: {
@@ -152,11 +152,13 @@ const API = {
     updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
     extendDocValidity: `${apiCreateProjectEndpoint}/api/v1/project/documents-validity-extension`,
     extendPaymentValidity: `${apiCreateProjectEndpoint}/api/v1/project/payment-validity-extension`,
-
+    getActiveStage: `${apiCreateProjectEndpoint}/api/v1/bid/get_stage`,
     // invite get
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
+
+    getAppConfig: `${apiCreateProjectEndpoint}/api/v1/app_config`,
   },
   projectMilestones: {
     getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,

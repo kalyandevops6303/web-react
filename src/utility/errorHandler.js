@@ -36,9 +36,12 @@ const handleError = (err, callBack) => {
 
 const cometChatToken = getItem('cometChatToken');
 const fcmToken = getItem('fcmToken');
+const accessToken = getItem('access_token');
 const handleErrorCode = async (err, callBack) => {
   if (err?.response?.status === 401) {
-    showErrorNotification('Session expired!');
+    if (accessToken) {
+      showErrorNotification('Session expired!');
+    }
     if (fcmToken) {
       try {
         await fcmUnsubscribeService(fcmToken);

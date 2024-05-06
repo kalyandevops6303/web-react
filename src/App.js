@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
-import { COMETCHAT_CONSTANTS } from './constants';
+
 import { getToken, messaging } from './configs/api/firebase';
 
 // ** Router Import
@@ -17,6 +17,7 @@ import { notificationCount } from './redux/reducers/notifications';
 import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
 import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/reducers/auth';
 import "./App.css";
+import { COMETCHAT_CONSTANTS } from './constants';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -80,10 +81,7 @@ const App = () => {
 
     // check that refreshToken is not expired
     const isUserStillLoggedIn =
-      accessToken
-      && refreshToken
-      && refreshTokenExpires
-      && new Date(refreshTokenExpires) >= new Date();
+      accessToken && refreshToken && refreshTokenExpires && new Date(refreshTokenExpires) >= new Date();
 
     if (isUserStillLoggedIn) {
       dispatch(setLoggedInStatus());
@@ -91,7 +89,7 @@ const App = () => {
       const cometChatAuthToken = getItem('cometChatToken');
       dispatch(cometChatLogin(cometChatAuthToken));
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     const channel = new BroadcastChannel('data-channel');
@@ -135,10 +133,8 @@ const App = () => {
             <div className="d-flex align-items-center">
               <Info size="22" className="me-1" color={theme.primary} />
               <div className="d-flex align-items-center">
-                <div>
-                  <p className="mb-0 fw-bold">{payload?.data?.title}</p>
-                  <small>{payload?.data?.body}</small>
-                </div>
+                <p className="fw-bolder mb-0">{payload?.data?.title} -&nbsp;</p>
+                <p className="fw-bold mb-0">{payload?.data?.body}</p>
               </div>
             </div>
             <X size="14" onClick={() => toast.dismiss(t.id)} />
@@ -146,8 +142,11 @@ const App = () => {
         ),
         {
           style: {
-            minWidth: '300px',
-            border: `wpx solid ${theme.primary}`,
+            background: theme.toastBacgroundColor,
+            borderLeft: `4px solid ${theme.toastBorderColor}`,
+            maxWidth: '100%',
+            width: '100%',
+            color: theme.toastBorderColor,
           },
         },
       );
@@ -155,6 +154,7 @@ const App = () => {
       console.log('INSIDE ELSE');
     }
   });
+
   return (
     <Suspense fallback={null}>
       <Router />

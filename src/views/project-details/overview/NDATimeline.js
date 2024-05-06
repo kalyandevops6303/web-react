@@ -4,6 +4,7 @@ import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAc
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import { useNavigate, useParams } from 'react-router-dom';
+import classnames from 'classnames';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
@@ -11,6 +12,8 @@ import { selectNDAData, selectNDATimeline } from '../../../redux/selectors/proje
 import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { getNDATimeline } from '../../../redux/actions/projectDetailsAction';
+import { selectUserData } from '../../../redux/selectors/authSelectors';
+import { userTypes } from '../../../utility/constants/Constant';
 
 const NDATimeline = () => {
   const navigate = useNavigate();
@@ -18,6 +21,7 @@ const NDATimeline = () => {
   const contractTimeline = useSelector(selectNDATimeline);
   const dispatch = useDispatch();
   const param = useParams();
+  const userData = useSelector(selectUserData);
   const loading = useSelector((state) => state?.projectDetails?.getNDATimelineLoading);
   // const docType = useSelector((state) => state?.projectDetails?.documentType?.doc_type);
   const [open, setOpen] = useState(null);
@@ -66,16 +70,23 @@ const NDATimeline = () => {
   return (
     <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
       <AccordionItem>
-        <AccordionHeader onClick={() => toggle(1)} targetId="1">
+        <AccordionHeader
+          onClick={() => toggle(1)}
+          targetId="1"
+          className={classnames({ 'active-accordion-header': false })}
+        >
           <AccordionHeadStyle>
-            <span className="d-flex title-head">
-              NDA
-              {ndaData?.is_contract_terminated === false ? (
-                <span> {!ndaData?.is_signed ? <span className="indicator" /> : ''}</span>
-              ) : (
-                ''
-              )}
-            </span>
+            <div className="title-head">
+              <span className="step d-block">STEP {userData?.userType === userTypes.client ? 3 : 2}</span>
+              <span className="d-flex">
+                NDA <span className="d-none indicator" />
+                {ndaData?.is_contract_terminated === false ? (
+                  <span> {!ndaData?.is_signed ? <span className="indicator" /> : ''}</span>
+                ) : (
+                  ''
+                )}
+              </span>
+            </div>
 
             {ndaData?.is_contract_terminated === false ? (
               <div>

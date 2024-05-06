@@ -27,7 +27,7 @@ import Avatar from '@components/avatar';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { Info } from 'react-feather';
-import { downloadFile, formatFileSize, renderFilePreview } from '../../utility/Utils';
+import { downloadFile, formatFileSize, renderFilePreview, roundOfAmount } from '../../utility/Utils';
 import { BidDetailsWrap } from '../project-details/style';
 import { snapShotStatus, userTypes } from '../../utility/constants/Constant';
 import theme from '../../configs/themeVariables';
@@ -327,7 +327,7 @@ const BidPreviewModal = ({ onReject, onAccept, modal, selectedTimeline, toggleMo
                                               </p>
                                             </Col>
                                             <Col sm="12" md="12" lg="2">
-                                              <p className="content-description">${worker?.amount || 0}</p>
+                                              <p className="content-description">${roundOfAmount(worker?.amount)}</p>
                                             </Col>
                                           </Row>
                                         ))}
