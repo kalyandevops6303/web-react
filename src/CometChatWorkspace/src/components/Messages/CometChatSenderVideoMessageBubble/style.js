@@ -118,7 +118,6 @@ export const nameStyle = (context) => {
     fontSize: '15px',
     fontWeight: '800',
     fontStyle: 'bold',
-    // color: `${context.theme.color.messageText}`,
     color: `${context.userColor || context.theme.color.messageText}`,
     cursor: 'default',
   };

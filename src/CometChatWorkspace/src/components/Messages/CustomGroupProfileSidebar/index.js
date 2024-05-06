@@ -1135,20 +1135,20 @@ class CustomGroupProfileSidebar extends React.Component {
     if (this.state.isNameEditOn) {
       editGroupNameDialog = (
         <CometChatEditGroupNameDialog
-        {...this.props}
-        // type={'member'}
-        title={"Edit Group Name"}
-        description={""}
-        note={""}
-        onConfirm={this.saveName}
-        onCancel={() => {
-          this.setState({ isNameEditOn: false });
-        }}
-        initialGroupName={this.state.groupName}
-        message={Translator.translate('DELETE_CONFIRM', this.getContext().language)}
-        confirmButtonText={Translator.translate('SAVE', this.getContext().language)}
-        cancelButtonText={Translator.translate('DISCARD', this.getContext().language)}
-      />
+          {...this.props}
+          // type={'member'}
+          title={"Edit Group Name"}
+          description={""}
+          note={""}
+          onConfirm={this.saveName}
+          onCancel={() => {
+            this.setState({ isNameEditOn: false });
+          }}
+          initialGroupName={this.state.groupName}
+          message={Translator.translate('DELETE_CONFIRM', this.getContext().language)}
+          confirmButtonText={Translator.translate('SAVE', this.getContext().language)}
+          cancelButtonText={Translator.translate('DISCARD', this.getContext().language)}
+        />
       );
     }
 
@@ -1193,41 +1193,21 @@ class CustomGroupProfileSidebar extends React.Component {
                 </p>
               </div>
               <div className="about__name__container" css={aboutNameContainerStyle()}>
-                {/* <p className="about__content" css={aboutDescriptionStyle()}>
-                  {this.props.data.avatar.props.group.name}
-                </p> */}
                 <input
                   className="about__name"
                   css={aboutNameStyle()}
                   value={this.state.groupName}
                   disabled={!this.state.isNameEditOn}
-                  // onChange={(e) => {
-                  //   this.setState({
-                  //     groupName: e.target.value,
-                  //   });
-                  // }}
                 />
 
                 {this.isGroupAdmin() && (
-                  <>
-                    {/* {this.state.isNameEditOn ? (
-                      <Check
-                        className="about__name__icon"
-                        css={aboutNameIconStyle()}
-                        size={16}
-                        color="#0185E4"
-                        onClick={this.saveName}
-                      />
-                    ) : ( */}
-                      <Edit2
-                        className="about__name__icon"
-                        css={aboutNameIconStyle()}
-                        size={16}
-                        color="#0185E4"
-                        onClick={this.turnOnNameEdit}
-                      />
-                    {/* )} */}
-                  </>
+                    <Edit2
+                      className="about__name__icon"
+                      css={aboutNameIconStyle()}
+                      size={16}
+                      color="#0185E4"
+                      onClick={this.turnOnNameEdit}
+                    /> 
                 )}
               </div>
             </div>
@@ -1239,7 +1219,7 @@ class CustomGroupProfileSidebar extends React.Component {
                 containerHeight="225px"
                 theme={this.props.theme}
                 lang={this.context.language}
-                // lang={this.context.language}
+              // lang={this.context.language}
               />
             </div>
 
