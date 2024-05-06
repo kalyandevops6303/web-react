@@ -16,6 +16,7 @@ import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
 import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
 import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/reducers/auth';
+import "./App.css";
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);

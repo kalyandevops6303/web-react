@@ -3,15 +3,13 @@ import React from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
-import { CometChat } from '@cometchat-pro/chat';
 
 import { CometChatMessageActions, CometChatThreadedMessageReplyCount, CometChatReadReceipt } from '../';
 import { CometChatMessageReactions } from '../Extensions';
-import { CometChatAvatar } from '../../Shared';
 
 import { CometChatContext } from '../../../util/CometChatContext';
 import * as enums from '../../../util/enums.js';
-import { checkMessageForExtensionsData } from '../../../util/common';
+import { checkMessageForExtensionsData, getMessageFileMetadata } from '../../../util/common';
 
 import { theme } from '../../../resources/theme';
 import Translator from '../../../resources/localization/translator';
@@ -19,20 +17,22 @@ import Translator from '../../../resources/localization/translator';
 import {
   messageContainerStyle,
   messageWrapperStyle,
-  messageThumbnailStyle,
-  messageDetailStyle,
-  nameWrapperStyle,
-  nameStyle,
-  messageImgContainerStyle,
-  messageImgWrapperStyle,
+  messageImgWrapper,
   messageInfoWrapperStyle,
   messageReactionsWrapperStyle,
+  nameWrapperStyle,
+  messageThumbnailStyle,
+  nameStyle,
+  messageDetailsStyle,
 } from './style';
 
 import srcIcon from './resources/1px.png';
+import { getUserColor } from '../../../util/HelperFunctions.js';
+import { CometChatAvatar } from '../../Shared/index.js';
 
 class CometChatReceiverImageMessageBubble extends React.Component {
   static contextType = CometChatContext;
+  timer = null;
 
   constructor(props, context) {
     super(props, context);
@@ -41,7 +41,7 @@ class CometChatReceiverImageMessageBubble extends React.Component {
 
     this.state = {
       imageUrl: srcIcon,
-      imageName: Translator.translate('LOADING', this.context.language),
+      imageName: Translator.translate('LOADING', context.language),
       isHovering: false,
     };
   }
@@ -66,7 +66,7 @@ class CometChatReceiverImageMessageBubble extends React.Component {
     this.setImage();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const previousMessageStr = JSON.stringify(prevProps.message);
     const currentMessageStr = JSON.stringify(this.props.message);
 
@@ -95,7 +95,6 @@ class CometChatReceiverImageMessageBubble extends React.Component {
 
   setImage = () => {
     const thumbnailGenerationData = checkMessageForExtensionsData(this.props.message, 'thumbnail-generation');
-
     if (thumbnailGenerationData) {
       let imageName = '';
       if (
@@ -136,20 +135,34 @@ class CometChatReceiverImageMessageBubble extends React.Component {
   };
 
   setMessageImageUrl = () => {
-    if (
+    const metadataKey = enums.CONSTANTS['FILE_METADATA'];
+    const fileMetadata = getMessageFileMetadata(this.props.message, metadataKey);
+
+    let img = new Image();
+    let imageName;
+    if (fileMetadata instanceof Blob) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        img.src = reader.result;
+      };
+      imageName = fileMetadata['name'];
+      reader.readAsDataURL(fileMetadata);
+    } else if (
       this.props.message.data.attachments &&
       typeof this.props.message.data.attachments === 'object' &&
       this.props.message.data.attachments.length
     ) {
-      let img = new Image();
-      img.src = this.props.message.data.attachments[0].url;
-      const imageName = this.props.message.data.attachments[0]?.name;
-      img.onload = () => {
-        if (this._isMounted && this.state.imageUrl !== img.src) {
-          this.setState({ imageUrl: img.src, imageName: imageName });
-        }
-      };
+      const fileUrl = this.props.message.data.attachments[0]?.url;
+      imageName = this.props.message.data.attachments[0]?.name;
+      img.src = fileUrl;
     }
+
+    img.onload = () => {
+      //only if there is a change in the image path, update state
+      if (this._isMounted && this.state.imageUrl !== img.src) {
+        this.setState({ imageUrl: img.src, imageName: imageName });
+      }
+    };
   };
 
   downloadImage(imgUrl) {
@@ -162,11 +175,11 @@ class CometChatReceiverImageMessageBubble extends React.Component {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             this.timer = null;
-            resolve(xhr.response);
+            resolve(imgUrl);
           } else if (xhr.status === 403) {
             this.timer = setTimeout(() => {
               this.downloadImage(imgUrl)
-                .then((response) => resolve(response))
+                .then((response) => resolve(imgUrl))
                 .catch((error) => reject(error));
             }, 800);
           }
@@ -200,21 +213,23 @@ class CometChatReceiverImageMessageBubble extends React.Component {
   render() {
     let avatar = null,
       name = null;
-    if (this.props.message.receiverType === CometChat.RECEIVER_TYPE.GROUP) {
-      avatar = (
-        <div css={messageThumbnailStyle()} className="message__thumbnail">
-          <CometChatAvatar user={this.props.message.sender} />
-        </div>
-      );
 
-      name = (
-        <div css={nameWrapperStyle(avatar)} className="message__name__wrapper">
-          <span css={nameStyle(this.context)} className="message__name">
-            {this.props.message.sender.name}
-          </span>
-        </div>
-      );
-    }
+    avatar = (
+      <div css={messageThumbnailStyle()} className="message__thumbnail">
+        <CometChatAvatar user={this.props.message.sender} />
+      </div>
+    );
+
+    const userColor = getUserColor(this.props.message.sender);
+    this.context.userColor = userColor;
+
+    name = (
+      <div css={nameWrapperStyle(avatar)} className="message__name__wrapper">
+        <span css={nameStyle(this.context)} className="message__name">
+          {this.props.message.sender.name}
+        </span>
+      </div>
+    );
 
     let messageReactions = null;
     const reactionsData = checkMessageForExtensionsData(this.props.message, 'reactions');
@@ -238,36 +253,36 @@ class CometChatReceiverImageMessageBubble extends React.Component {
     return (
       <div
         css={messageContainerStyle()}
-        className="receiver__message__container message__image"
+        className="sender__message__container message__image"
         onMouseEnter={this.handleMouseHover}
         onMouseLeave={this.handleMouseHover}
       >
-        <div css={messageWrapperStyle()} className="message__wrapper">
-          {avatar}
-          <div css={messageDetailStyle(name)} className="message__details">
-            {name}
-            {toolTipView}
-            <div css={messageImgContainerStyle()} className="message__image__container">
-              <div css={messageImgWrapperStyle(this.context)} onClick={this.open} className="message__image__wrapper">
-                <img
-                  src={this.state.imageUrl}
-                  alt={this.state.imageName}
-                  ref={(el) => {
-                    this.imgRef = el;
-                  }}
-                />
-              </div>
-            </div>
+        {avatar}
+        {/* Add name here in case required */}
 
-            {messageReactions}
-
-            <div css={messageInfoWrapperStyle()} className="message__info__wrapper">
-              <CometChatReadReceipt message={this.props.message} />
-              <CometChatThreadedMessageReplyCount
-                message={this.props.message}
-                actionGenerated={this.props.actionGenerated}
+        <div css={messageDetailsStyle()} className="message__details">
+          {name}
+          {toolTipView}
+          <div css={messageWrapperStyle()} className="message__wrapper">
+            <div css={messageImgWrapper(this.context)} onClick={this.open} className="message__img__wrapper">
+              <img
+                src={this.state.imageUrl}
+                alt={this.state.imageName}
+                ref={(el) => {
+                  this.imgRef = el;
+                }}
               />
             </div>
+          </div>
+
+          {messageReactions}
+
+          <div css={messageInfoWrapperStyle()} className="message__info__wrapper">
+            <CometChatThreadedMessageReplyCount
+              message={this.props.message}
+              actionGenerated={this.props.actionGenerated}
+            />
+            <CometChatReadReceipt message={this.props.message} />
           </div>
         </div>
       </div>

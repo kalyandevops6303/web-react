@@ -8,82 +8,28 @@ export const messageContainerStyle = () => {
     clear: 'both',
     position: 'relative',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     flexShrink: '0',
   };
 };
 
 export const messageWrapperStyle = () => {
   return {
-    // width: 'auto',
-    flexGrow: 1,
-    alignSelf: 'stretch',
-    display: 'flex',
-  };
-};
-
-export const messageThumbnailStyle = () => {
-  return {
-    width: '36px',
-    height: '36px',
-    margin: '10px 5px',
-    float: 'left',
-    flexShrink: '0',
-  };
-};
-
-export const messageDetailStyle = () => {
-  return {
-    flexGrow: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  };
-};
-
-export const nameWrapperStyle = (avatar) => {
-  const paddingValue = avatar
-    ? {
-        padding: '3px 5px',
-      }
-    : {};
-
-  return {
-    alignSelf: 'flex-start',
-    ...paddingValue,
-  };
-};
-
-export const nameStyle = (context) => {
-  return {
-    // fontSize: '11px',
-    // color: `${context.theme.color.search}`,
-
-    fontSize: '15px',
-    fontWeight: '800',
-    fontStyle: 'bold',
-    color: `${context.userColor || context.theme.color.messageText}`,
-    cursor: 'default',
-  };
-};
-
-export const messageFileContainerStyle = () => {
-  return {
     width: 'auto',
     flex: '1 1',
     alignSelf: 'stretch',
-    boxShadow: '0px 4px 16px -7px rgba(150,170,180,0.5)',
-    display: 'flex',
+ 
   };
 };
 
-export const messageFileWrapperStyle = (context) => {
+export const messageFileWrapper = (context) => {
   return {
+    boxShadow: '0px 4px 16px -7px rgba(150,170,180,0.5)',
     display: 'inline-block',
     borderRadius: '5px',
     backgroundColor: `#84CCFF1F`,
     color: `${context.theme.color.white}`,
     padding: '10px 20px 15px 20px',
-    width: '100%',
     '.message__file': {
       display: 'flex',
       justifyContent: 'center',
@@ -110,53 +56,12 @@ export const messageFileWrapperStyle = (context) => {
   };
 };
 
-// export const messageFileWrapperStyle = (context) => {
-//   return {
-//     display: 'inline-block',
-//     borderRadius: '12px',
-//     color: `${context.theme.color.secondary}`,
-//     backgroundColor: `${context.theme.backgroundColor.secondary}`,
-//     padding: '8px 16px',
-//     alignSelf: 'flex-start',
-//     width: 'auto',
-//     '> a': {
-//       background: '0 0',
-//       textDecoration: 'none',
-//       backgroundColor: 'transparent',
-//       color: `${context.theme.color.primary}`,
-//       width: 'auto',
-//       fontSize: '14px',
-//       display: 'flex',
-//       alignItems: 'center',
-//       justifyContent: 'center',
-//       '&:visited, &:active, &:hover': {
-//         color: `${context.theme.color.primary}`,
-//         textDecoration: 'none',
-//       },
-//       label: {
-//         cursor: 'pointer',
-//       },
-//     },
-//   };
-// };
-
-export const messageTitleStyle = (img, context) => {
-  return {
-    color: '#616161',
-    fontSize: '12px',
-    fontWeight: 500,
-    lineHeight: '18px',
-    margin: '3px 0px',
-  };
-};
-
 export const messageInfoWrapperStyle = () => {
   return {
     alignSelf: 'flex-start',
-    padding: '4px 8px',
     display: 'flex',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    justifyContent: 'flex-start',
     height: '25px',
   };
 };
@@ -164,28 +69,33 @@ export const messageInfoWrapperStyle = () => {
 export const messageReactionsWrapperStyle = () => {
   return {
     display: 'flex',
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-end',
     width: '100%',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
     minHeight: '36px',
   };
 };
 
-export const iconStyle = (img, context) => {
+export const iconStyle = () => {
   return {
-    width: '24px',
     height: '24px',
-    display: 'inline-block',
-    mask: `url(${img}) center center no-repeat`,
-    backgroundColor: `${context.theme.secondaryTextColor}`,
-    marginRight: '8px',
+    // display: 'inline-block',
+    // mask: `url(${img}) center center no-repeat`,
+    // backgroundColor: `${context.theme.color.white}`,
+    // flexShrink: '0',
   };
 };
 
-export const fileIconStyle = (img, context) => {
+export const fileTypeIconContainerStyle = (img, context) => {
   return {
-    height: '24px',
+    height: '42px',
+    width: '42px',
+    borderRadius: '21px',
+    backgroundColor: '#0185E41F',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   };
 };
 
@@ -199,18 +109,6 @@ export const messageFileStyle = (img, context) => {
     padding: '10px',
     textDecoration: 'none',
     boxShadow: '0px 4px 8px 0px rgba(44, 63, 88, 0.1)',
-  };
-};
-
-export const fileTypeIconContainerStyle = (img, context) => {
-  return {
-    height: '42px',
-    width: '42px',
-    borderRadius: '21px',
-    backgroundColor: '#0185E41F',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   };
 };
 
@@ -235,6 +133,67 @@ export const fileNameStyle = (img, context) => {
   };
 };
 
+export const fileSizeStyle = (img, context) => {
+  return {
+    color: '#B9B9C3',
+    fontSize: '10px',
+    fontWeight: 500,
+    lineHeight: '12px',
+  };
+};
+
 export const fileDownloadIconStyle = (img, context) => {
   return {};
+};
+
+export const messageTitleStyle = (img, context) => {
+  return {
+    color: '#616161',
+    fontSize: '12px',
+    fontWeight: 500,
+    lineHeight: '18px',
+    margin: '3px 0px',
+  };
+};
+
+export const messageThumbnailStyle = () => {
+  return {
+    width: '36px',
+    height: '36px',
+    margin: '10px 5px',
+    float: 'left',
+    flexShrink: '0',
+  };
+};
+
+export const nameWrapperStyle = (avatar) => {
+  const paddingValue = avatar
+    ? {
+        padding: '3px 5px',
+      }
+    : {};
+
+  return {
+    alignSelf: 'flex-start',
+    ...paddingValue,
+  };
+};
+
+export const nameStyle = (context) => {
+  return {
+    fontSize: '15px',
+    fontWeight: '800',
+    fontStyle: 'bold',
+    // color: `${context.theme.color.messageText}`,
+    color: `${context.userColor || context.theme.color.messageText}`,
+    cursor: 'default',
+  };
+};
+
+export const messageDetailsStyle = () => {
+  return {
+    flexGrow: 1,
+    display: 'flex',
+    flexDirection: 'column',
+  };
 };

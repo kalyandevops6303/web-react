@@ -1,4 +1,5 @@
 import { CometChat } from '@cometchat-pro/chat';
+import { auto } from '@popperjs/core';
 
 export const messageActionStyle = (props, context, loggedInUser) => {
   const topPos =
@@ -29,15 +30,16 @@ export const messageActionStyle = (props, context, loggedInUser) => {
     listStyleType: 'none',
     padding: '8px',
     margin: '0',
-    height: '35px',
-    border: `1px solid ${context.theme.borderColor.primary}`,
-    backgroundColor: `${context.theme.backgroundColor.white}`,
+    height: '100%',
+    // border: `1px solid ${context.theme.borderColor.primary}`,
+    backgroundColor: `transparent`,
     borderRadius: '4px',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    ...alignment,
-    ...topPos,
-    ...direction,
+    // ...alignment,
+    // ...topPos,
+    // ...direction,
+    right: "-50px",
   };
 };
 
@@ -55,6 +57,9 @@ export const groupButtonStyle = (img, context, deleteOption) => {
       }
     : {
         backgroundColor: `${context.theme.secondaryTextColor}!important`,
+        "&:hover": {
+          backgroundColor: `${context.theme.primaryColor}!important`,
+        }
       };
 
   return {

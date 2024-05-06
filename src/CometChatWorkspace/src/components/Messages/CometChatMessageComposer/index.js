@@ -1358,7 +1358,7 @@ class CometChatMessageComposer extends React.PureComponent {
 
     let emojiViewer = null;
     if (this.state.emojiViewer) {
-      emojiViewer = <CometChatEmojiKeyboard onClick={this.emojiClicked} />;
+      emojiViewer = <CometChatEmojiKeyboard onClick={this.emojiClicked} onClose={() => this.setState({...this.state, emojiViewer: false})}/>;
     }
 
     let milestoneInput = (
