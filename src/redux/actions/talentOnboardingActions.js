@@ -47,7 +47,7 @@ const saveTalentAccountDetails = (data, onSuccess) => async (dispatch) => {
       // Recursive function until status in Scanning
       const finalScanStatus = await handleScanFiles({
         fileKeys: [{ file_name: 'Profile Image', file_key: data?.image_uri }],
-        // isPrivate: true,
+        isPrivate: false,
       });
 
       if (finalScanStatus.data.data.every((result) => result.status === fileScanStatus.CLEAN)) {
