@@ -6,11 +6,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { unionBy } from 'lodash';
 import { Badge, Button, Card, CardBody, CardText, CardTitle, Progress, Spinner, UncontrolledTooltip } from 'reactstrap';
-import avatar7 from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import FilledStar from '@src/assets/images/filler_star.png';
 import EmptyStar from '@src/assets/images/empty_star.png';
 import DribbleIcon from '@src/assets/images/dribble.png';
 import BehanceIcon from '@src/assets/images/behance.png';
+import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '@components/avatar';
 import Rating from 'react-rating';
 import { Download, GitHub, Heart, Link, Linkedin, UserCheck } from 'react-feather';
@@ -114,7 +114,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           <div className="user-image">
             {isClient && (
               <img
-                src={data?.company_logo?.length > 0 ? data?.company_logo : avatar7}
+                src={data?.company_logo?.length > 0 ? data?.company_logo : defaultAvatar}
                 alt="user"
                 width={112}
                 height={120}
@@ -124,7 +124,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
 
             {isTalentView && (
               <img
-                src={data?.image_uri?.length > 0 ? data?.image_uri : avatar7}
+                src={data?.image_uri?.length > 0 ? data?.image_uri : defaultAvatar}
                 alt="user"
                 width={112}
                 height={120}
@@ -133,7 +133,7 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
             )}
             {isTeamView && (
               <img
-                src={data?.team_logo?.length > 0 ? data?.team_logo : avatar7}
+                src={data?.team_logo?.length > 0 ? data?.team_logo : defaultAvatar}
                 alt="user"
                 width={112}
                 height={120}
@@ -159,13 +159,24 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           )}
 
           {isClient && (
-            <div className="public">
-              <CardText className="text-center user-name mb-25 fw-300">{`${
+            <div className="public mt-50 mb-1">
+              <CardText className="text-center user-name fw-bold mb-1">{`${
                 data?.company_name || 'Company name'
               }`}</CardText>
-              <CardText className="text-center mb-50 fw-bold">{`${data?.first_name || '-'} ${
-                data?.last_name || '-'
-              }`}</CardText>
+              <div className="d-flex align-items-center justify-content-center">
+                <Avatar
+                  img={data?.image_uri || defaultAvatar}
+                  imgHeight="44"
+                  imgWidth="44"
+                  className="me-50 user-pic"
+                />
+                <div className="mt-25 mb-25">
+                  <p className="fw-bold m-0 user-name client-name">
+                    {data?.first_name} {data?.last_name}
+                  </p>
+                  <p className="m-0 line-height-20 client-title">{data?.title}</p>
+                </div>
+              </div>
             </div>
           )}
           {isTeamView && (
@@ -178,12 +189,13 @@ const LeftSidebarProfile = ({ isTalentView, isInvited, isProjectDetailsView, isT
           <div className="projects-rating projects-rating-public">
             <Rating
               initialRating={returnFormattedRating(data?.rating)}
-              emptySymbol={<img height={22} src={EmptyStar} alt="Empty star" />}
-              fullSymbol={<img height={22} src={FilledStar} alt="Filled star" />}
+              emptySymbol={<img height={20} src={EmptyStar} alt="Empty star" />}
+              fullSymbol={<img height={20} src={FilledStar} alt="Filled star" />}
               readonly
             />
-            <CardText className={`mt-50 font-small-3 project-text ${isEditable && 'fw-bolder'}`}>
-              {data?.projects_worked_on_count || 0} Project(s) | {data?.total_reviews || 0} Review(s)
+            <CardText className="mt-50 font-small-3">
+              {data?.projects_worked_on_count || 0} Project(s)<span className="ms-50 me-25 fw-300">|</span>
+              {data?.total_reviews || 0} Review(s)
             </CardText>
           </div>
 
