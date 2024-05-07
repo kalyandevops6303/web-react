@@ -8,7 +8,7 @@ export const GOOGLE_ANALYTICS_CONSTANTS = {
 };
 
 export const HOTJAR_ANALYTICS_CONSTANTS = {
-  TRACKING_ID: import.meta.env.HOTJAR_TRACKING_ID,
+  TRACKING_ID: import.meta.env.VITE_HOTJAR_TRACKING_ID,
 };
 
 export const FIREBASE_CONSTANTS = {

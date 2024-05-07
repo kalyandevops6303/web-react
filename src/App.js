@@ -29,13 +29,13 @@ const App = () => {
   const dispatch = useDispatch();
   // const fcmSubscribeService = (token) => DataService.post(`${API.notification.subscribe}`, { token });
 
-  const appId = COMETCHAT_CONSTANTS.APP_ID;
-  const region = COMETCHAT_CONSTANTS.REGION;
-  const appSetting = new CometChat.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
-
   const siteId = HOTJAR_ANALYTICS_CONSTANTS.TRACKING_ID;
   const hotjarVersion = 6;
   Hotjar.init(siteId, hotjarVersion);
+
+  const appId = COMETCHAT_CONSTANTS.APP_ID;
+  const region = COMETCHAT_CONSTANTS.REGION;
+  const appSetting = new CometChat.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region).build();
 
   CometChat.init(appId, appSetting).then(
     () => {
