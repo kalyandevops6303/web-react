@@ -345,7 +345,7 @@ const InvitedMemberComponent = ({ isAdmin }) => {
                           />
                           <div>
                             <p className="fw-bolder m-0">
-                              {item?.first_name} {item?.last_name} {item?.user_email}
+                              {item?.first_name} {item?.last_name} {item?.user_status === "UNREGISTERED" ?  item?.user_email : ''}
                             </p>
                             <p className="font-small-3 m-0">{item?.role?.name}</p>
                           </div>
