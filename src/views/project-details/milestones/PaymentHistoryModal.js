@@ -2,7 +2,7 @@ import React from 'react';
 import Proptypes from 'prop-types';
 import '../../custom-styles.scss';
 import { Modal, ModalHeader, ModalBody, Table, Badge, CardText, Button } from 'reactstrap';
-import { formatDate } from '../../../utility/Utils';
+import { formatDate, roundOfAmount } from '../../../utility/Utils';
 
 const PaymentHistoryModal = ({ isOpen, toggleModal, name, role, payments, amount }) => (
   <Modal isOpen={isOpen} contentClassName="custom-modal-style" className="modal-dialog-centered">
@@ -50,7 +50,7 @@ const PaymentHistoryModal = ({ isOpen, toggleModal, name, role, payments, amount
                 <td>
                   <Badge color={item?.status === 'PENDING' ? 'light-danger' : 'light-success'}>{item?.status}</Badge>
                 </td>
-                <td>${item?.amount}</td>
+                <td>${roundOfAmount(item?.amount)}</td>
               </tr>
             ))}
           </tbody>

@@ -42,7 +42,6 @@ import { AccordionBodyContent, AccordionTableHeader } from '../create-bid/style'
 import ShowMoreLess from '../../@core/components/show-more-less-comp';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
-import round from '../../lib/round';
 
 const BidDetails = () => {
   const dispatch = useDispatch();
@@ -254,7 +253,7 @@ const BidDetails = () => {
               <CardTitle className="main-card-title">Bid Details</CardTitle>
               <CardBody className="main-card-body bid-eta d-flex align-items-center">
                 <div>
-                  <CardText className="value">${round(bidInfo?.total_estimated_cost, 2)}</CardText>
+                  <CardText className="value">${roundOfAmount(bidInfo?.total_estimated_cost)}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Total Bid Amount</CardText>
                     <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
@@ -265,7 +264,7 @@ const BidDetails = () => {
                 </div>
                 <p className="m-0 symbol font-medium-4">+</p>
                 <div>
-                  <CardText className="value">${round(bidInfo?.platform_fee, 2)}</CardText>
+                  <CardText className="value">${roundOfAmount(bidInfo?.platform_fee)}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Platform Fees</CardText>
                     <Info size={14} color={theme.infoIcon} id="bid-platform-fee-info" className="ms-50" />
@@ -276,7 +275,7 @@ const BidDetails = () => {
                 </div>
                 <p className="m-0 symbol font-medium-4">=</p>
                 <div>
-                  <CardText className="value">${round(bidInfo?.total_project_cost, 2)}</CardText>
+                  <CardText className="value">${roundOfAmount(bidInfo?.total_project_cost)}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Total Project Cost</CardText>
                   </div>
@@ -404,7 +403,9 @@ const BidDetails = () => {
                                 </p>
                               </Col>
                               <Col sm="12" md="12" lg="2" className="ps-2">
-                                <p className="fw-light m-0 font-small-4 ps-50">${milestone?.total_milestone_cost}</p>
+                                <p className="fw-light m-0 font-small-4 ps-50">
+                                  ${roundOfAmount(milestone?.total_milestone_cost)}
+                                </p>
                               </Col>
                             </Row>
                           </AccordionHeader>
@@ -507,7 +508,9 @@ const BidDetails = () => {
                                   </p>
                                 </Col>
                                 <Col sm="12" md="12" lg="2">
-                                  <p className="fw-bolder content-description">${milestone?.total_milestone_cost}</p>
+                                  <p className="fw-bolder content-description">
+                                    ${roundOfAmount(milestone?.total_milestone_cost)}
+                                  </p>
                                 </Col>
                               </Row>
                             </AccordionBodyContent>
