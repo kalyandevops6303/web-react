@@ -138,6 +138,11 @@ const bidStatus = {
   BID_CHANGE_REQUEST: 'BID_CHANGE_REQUEST',
 };
 
+const invitationUserStatus = {
+  REGISTERED: 'REGISTERED',
+  UNREGISTERED: 'UNREGISTERED',
+};
+
 const fileScanStatus = {
   CLEAN: 'CLEAN',
   SCANNING: 'SCANNING',
@@ -184,4 +189,5 @@ export {
   minimumAvatarLength,
   paymentText,
   bidStages,
+  invitationUserStatus,
 };
