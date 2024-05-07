@@ -6,7 +6,10 @@ import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
 
+import Hotjar from '@hotjar/browser';
 import { getToken, messaging } from './configs/api/firebase';
+
+// ** Hotjar Import
 
 // ** Router Import
 import Router from './router/Router';
@@ -16,8 +19,8 @@ import theme from './configs/themeVariables';
 import { notificationCount } from './redux/reducers/notifications';
 import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
 import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/reducers/auth';
-import "./App.css";
-import { COMETCHAT_CONSTANTS } from './constants';
+import './App.css';
+import { COMETCHAT_CONSTANTS, HOTJAR_ANALYTICS_CONSTANTS } from './constants';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -25,6 +28,10 @@ const App = () => {
   const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const dispatch = useDispatch();
   // const fcmSubscribeService = (token) => DataService.post(`${API.notification.subscribe}`, { token });
+
+  const siteId = HOTJAR_ANALYTICS_CONSTANTS.TRACKING_ID;
+  const hotjarVersion = 6;
+  Hotjar.init(siteId, hotjarVersion);
 
   const appId = COMETCHAT_CONSTANTS.APP_ID;
   const region = COMETCHAT_CONSTANTS.REGION;
