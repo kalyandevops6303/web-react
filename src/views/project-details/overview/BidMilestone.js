@@ -39,6 +39,7 @@ import { SUCCESS } from '../../../utility/constants/ToastTypes';
 import { clearInitedByData } from '../../../redux/reducers/projectDetails';
 import { AccordionBodyContent } from '../../create-bid/style';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
+import { roundOfAmount } from '../../../utility/Utils';
 
 const BidMilestoneWrap = styled.div`
   .value {
@@ -403,7 +404,7 @@ const BidMilestone = () => {
                             <p className="font-small-3 fw-bold content-description">{worker?.number_of_weeks} week</p>
                           </Col>
                           <Col sm="12" md="12" lg="2" className="d-none">
-                            <p className="content-description text-end me-3">${worker?.amount || 0}</p>
+                            <p className="content-description text-end me-3">${roundOfAmount(worker?.amount)}</p>{' '}
                           </Col>
                         </Row>
                       ))}
