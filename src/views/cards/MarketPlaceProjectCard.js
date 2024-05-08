@@ -78,6 +78,7 @@ const MarketPlaceProjectCard = ({
     REJECTED: 'Closed',
     REVIEWED: 'Reviewed',
     ACTIVE: 'Active',
+    UPDATED: 'Updated',
   };
 
   const divRef = useRef(null);
