@@ -2,6 +2,7 @@
 /* eslint-disable no-undef */
 import React, { Suspense, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { CometChat } from '@cometchat-pro/chat';
 import { toast } from 'react-hot-toast';
 import { Info, X } from 'react-feather';
@@ -27,6 +28,7 @@ const App = () => {
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const dispatch = useDispatch();
+  const location = useLocation();
   // const fcmSubscribeService = (token) => DataService.post(`${API.notification.subscribe}`, { token });
 
   const siteId = HOTJAR_ANALYTICS_CONSTANTS.TRACKING_ID;
@@ -127,36 +129,38 @@ const App = () => {
     if (!('Notification' in window)) {
       console.warn('This browser does not support system notifications.');
     } else if (Notification.permission === 'granted') {
-      if (payload.data.alert) {
-        dispatch(unreadMsgCountSuccess());
-      } else {
-        // only when type single
-        dispatch(notificationCount(true));
-      }
+      if (location.pathname !== '/notifications') {
+        if (payload.data.alert) {
+          dispatch(unreadMsgCountSuccess());
+        } else {
+          // only when type single
+          dispatch(notificationCount(true));
+        }
 
-      toast(
-        (t) => (
-          <div className="w-100 d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center">
-              <Info size="22" className="me-1" color={theme.primary} />
+        toast(
+          (t) => (
+            <div className="w-100 d-flex align-items-center justify-content-between">
               <div className="d-flex align-items-center">
-                <p className="fw-bolder mb-0">{payload?.data?.title} -&nbsp;</p>
-                <p className="fw-bold mb-0">{payload?.data?.body}</p>
+                <Info size="22" className="me-1" color={theme.primary} />
+                <div className="d-flex align-items-center">
+                  <p className="fw-bolder mb-0">{payload?.data?.title} -&nbsp;</p>
+                  <p className="fw-bold mb-0">{payload?.data?.body}</p>
+                </div>
               </div>
+              <X size="14" onClick={() => toast.dismiss(t.id)} />
             </div>
-            <X size="14" onClick={() => toast.dismiss(t.id)} />
-          </div>
-        ),
-        {
-          style: {
-            background: theme.toastBacgroundColor,
-            borderLeft: `4px solid ${theme.toastBorderColor}`,
-            maxWidth: '100%',
-            width: '100%',
-            color: theme.toastBorderColor,
+          ),
+          {
+            style: {
+              background: theme.toastBacgroundColor,
+              borderLeft: `4px solid ${theme.toastBorderColor}`,
+              maxWidth: '100%',
+              width: '100%',
+              color: theme.toastBorderColor,
+            },
           },
-        },
-      );
+        );
+      }
     } else {
       console.log('INSIDE ELSE');
     }
