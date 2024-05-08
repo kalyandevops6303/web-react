@@ -46,7 +46,8 @@ const CustomBadge = styled.span`
   .COMPLETED,
   .ACCEPTED,
   .CREATED,
-  .YET_TO_START {
+  .YET_TO_START,
+  .TO_BE_LISTED {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
     border: ${(props) => (props.bordered ? `1px solid ${theme.lighGreenColor}` : 'none')};
@@ -372,9 +373,9 @@ const TeamCreatedModalLogoImg = styled.img`
 const Elevate = styled.div`
   transition: box-shadow 0.3s; /* Optional: Add a transition for a smoother effect on hover */
   border-radius: 0.375rem;
-  box-shadow: ${(props) => (props.active ? `0px 0px 0px 1px ${theme.blueBorderColorv2}` : 'none')};
+  box-shadow: ${(props) => (props.active === true ? `0px 0px 0px 1px ${theme.blueBorderColorv2}` : '')};
   &:hover {
-    box-shadow: ${(props) => (props.active ? `0px 0px 0px 1px ${theme.blueBorderColorv2}` : 'none')};
+    box-shadow: ${(props) => (props.active === false ? '' : `0px 0px 0px 1px ${theme.blueBorderColorv2}`)};
   }
 `;
 const ElevateShadow = styled(Elevate)`

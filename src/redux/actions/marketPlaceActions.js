@@ -49,6 +49,7 @@ const getListProjects =
     searchText,
     isFavorite,
     show_expired,
+    show_to_be_listed,
   }) =>
   async (dispatch) => {
     if (metaData?.page === 1) {
@@ -77,6 +78,7 @@ const getListProjects =
             is_recommended: isRecommanded,
             is_favourite: isFavorite,
             show_expired,
+            show_to_be_listed,
           },
           searchText,
           metaData,
