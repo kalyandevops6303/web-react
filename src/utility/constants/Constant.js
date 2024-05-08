@@ -49,6 +49,7 @@ const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const bidStatusesOptions = [
   { label: 'New', value: 'NEW' },
+  { label: 'Updated', value: 'UPDATED' },
   { label: 'Reviewed', value: 'REVIEWED' },
   { label: 'Accepted', value: 'ACCEPTED' },
   { label: 'Closed', value: 'REJECTED' },
