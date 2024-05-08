@@ -46,7 +46,8 @@ const CustomBadge = styled.span`
   .COMPLETED,
   .ACCEPTED,
   .CREATED,
-  .YET_TO_START {
+  .YET_TO_START,
+  .TO_BE_LISTED {
     background: ${theme.lightGreenBg} !important;
     color: ${theme.lighGreenColor};
     border: ${(props) => (props.bordered ? `1px solid ${theme.lighGreenColor}` : 'none')};
