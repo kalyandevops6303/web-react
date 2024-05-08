@@ -23,8 +23,6 @@ const ProjectCard = ({
   secondaryFilterForInvitedType,
   secondFilterState,
   primaryFilter,
-  isProjectWithTeam,
-  isTeam,
   isExpanded,
   data,
   isPopoverOpen,
@@ -129,23 +127,39 @@ const ProjectCard = ({
                 <div className="d-flex flex-wrap project-stats">
                   <CardText className="project">
                     {data?.pay_type?.variable_cost ? (
-                      <>Variable Price&nbsp;</>
+                      <>Variable Price</>
                     ) : (
                       <>
                         Fixed Price - {data?.pay_type?.fixed_cost} {data?.pay_type?.currency?.code}&nbsp;
                       </>
                     )}
                   </CardText>
-                  <CardText className=" project mb-1">
-                    {data?.assigned_date
-                      ? `Assigned Date: ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')}`
-                      : ''}
-                    &nbsp;&nbsp;&nbsp;
-                    {data?.invitation_to?.updated_at
-                      ? `Invite Date: ${DateTime?.fromMillis(data?.invitation_to?.updated_at).toFormat('dd-MM-yy')}`
-                      : ''}
-                  </CardText>
-                  <CardText className="project d-flex align-items-center">
+                  {(data?.assigned_date || data?.completed_date || data?.invite_date) && (
+                    <CardText className="mb-1">
+                      {data?.assigned_date && (
+                        <span className="me-1">
+                          {data?.assigned_date
+                            ? `Assigned Date: ${DateTime?.fromMillis(data?.assigned_date).toFormat('dd-MM-yy')}    `
+                            : ''}
+                        </span>
+                      )}
+                      {data?.completed_date && (
+                        <span className="me-1">
+                          {data?.completed_date
+                            ? `Completed Date: ${DateTime?.fromMillis(data?.completed_date).toFormat('dd-MM-yy')}   `
+                            : ''}
+                        </span>
+                      )}
+                      {data?.invite_date && (
+                        <span className="me-1">
+                          {data?.invite_date
+                            ? `Invite Date: ${DateTime?.fromMillis(data?.invite_date).toFormat('dd-MM-yy')}`
+                            : ''}
+                        </span>
+                      )}
+                    </CardText>
+                  )}
+                  <CardText className="project d-flex align-items-center ms-25">
                     <img src={Mpin} alt="Mpin" className="mpin" />
                     {data?.client?.office_address?.country?.name || 'Location'}
                   </CardText>
@@ -175,20 +189,13 @@ const ProjectCard = ({
                 )}
               </Col>
               <Col lg="4">
-                {isProjectWithTeam && primaryFilter !== 'terminated' ? (
+                {primaryFilter !== 'terminated' ? (
                   <ProjectWithTeamUI
                     secondaryFilterForInvitedType={secondaryFilterForInvitedType}
                     primaryFilter={primaryFilter}
                     data={data}
                   />
                 ) : (
-                  <BaseInfoUI
-                    hideUserInfo={primaryFilter === 'terminated' && userdata?.user_type === userTypes.client}
-                    data={data}
-                    primaryFilter={primaryFilter}
-                  />
-                )}
-                {!isTeam && !isProjectWithTeam && (
                   <BaseInfoUI
                     hideUserInfo={primaryFilter === 'terminated' && userdata?.user_type === userTypes.client}
                     data={data}
@@ -242,8 +249,6 @@ ProjectCard.propTypes = {
   data: PropTypes.object,
   secondFilterState: PropTypes.object,
   isPopoverOpen: PropTypes.bool,
-  isProjectWithTeam: PropTypes.bool,
-  isTeam: PropTypes.bool,
   primaryFilter: PropTypes.string,
   secondaryFilterForInvitedType: PropTypes.string,
 };
@@ -253,8 +258,6 @@ ProjectCard.defaultProps = {
   isExpanded: false,
   data: {},
   isPopoverOpen: false,
-  isProjectWithTeam: false,
-  isTeam: false,
   primaryFilter: '',
   secondaryFilterForInvitedType: '',
 };

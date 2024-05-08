@@ -8,20 +8,22 @@ import {
   CardBody,
   CardText,
   CardTitle,
+  Col,
   Input,
   Label,
   Modal,
   ModalBody,
   ModalHeader,
+  Row,
   Spinner,
 } from 'reactstrap';
 import { PropTypes } from 'prop-types';
 import { MakePaymentModalWrapper } from './style';
 import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
-import { PAYMENT_STATUS } from '../../utility/constants/Constant';
+import { PAYMENT_STATUS, paymentText } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 
-function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
+function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAndDisabledPaymentId }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
   const [feeStructre, setFeeStructure] = useState(null);
 
@@ -50,16 +52,16 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
 
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: 'Payment Failed' };
+      return { theme: 'light-danger', text: paymentText.PAYMENT_FAILED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Milestone In Progress' };
+      return { theme: 'light-warning', text: paymentText.PAYMENT_DUE };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING || tag === PAYMENT_STATUS.INITIATED) {
-      return { theme: 'light-primary', text: 'Payment Processing' };
+      return { theme: 'light-primary', text: paymentText.PAYMENT_PROCESSING };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Funds Available' };
+      return { theme: 'light-success', text: paymentText.FUNDS_AVAILABLE };
     }
     return { theme: 'light-primary', text: tag };
   };
@@ -94,14 +96,6 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
     dispatch(makeMilestonePayment(payload, onSuccess));
   };
 
-  const isPaymentDone = (milestone) =>
-    milestone?.payment_status === PAYMENT_STATUS.PAID ||
-    milestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
-
-  const isFirstTwoMilestonePaid =
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[0]) ||
-    isPaymentDone(milestoneData?.length > 0 && milestoneData[1]);
-
   const isDisabled = (paymentStatus) =>
     paymentStatus === PAYMENT_STATUS.PAID ||
     paymentStatus === PAYMENT_STATUS.PAYMENT_SUCCESSFUL ||
@@ -113,9 +107,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
       return true;
     }
     if (milestoneData?.length === 1) return false;
-    if (!isFirstTwoMilestonePaid && selectedIds?.length < 2) {
-      return true;
-    }
+
     return false;
   };
   return (
@@ -139,33 +131,39 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
                   className="d-flex justify-content-center"
                   key={item._id}
                 >
-                  <CardBody className="d-flex justify-content-between">
-                    <div className="d-flex">
-                      <Input
-                        type="checkbox"
-                        id={item._id}
-                        checked={selectedIds.includes(item._id)}
-                        onChange={(evt) => handleMilestoneSelect(evt, item._id)}
-                        disabled={isDisabled(item.payment_status)}
-                        className="payment-form-control"
-                      />
-                      <div className="d-flex flex-column" style={{ marginTop: '-2px' }}>
-                        <Label
-                          for={item._id}
-                          className="text-truncate"
-                          style={{ marginLeft: '10px', fontSize: '16px' }}
-                        >
-                          {item.name}
-                        </Label>
-                      </div>
-                    </div>
-                    <Badge
-                      color={getTagSettings(item.payment_status).theme}
-                      style={{ width: 'fit-content', marginLeft: '10px' }}
-                    >
-                      {getTagSettings(item.payment_status).text}
-                    </Badge>
-                    <div style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${item.estimated_cost}`}</div>
+                  <CardBody className="d-flex justify-content-between pe-0">
+                    <Row className="w-100">
+                      <Col sm="12" md="5" lg="5">
+                        <div className="d-flex form-check w-100">
+                          <Input
+                            type="checkbox"
+                            id={item._id}
+                            checked={selectedIds.includes(item._id)}
+                            onChange={(evt) =>
+                              !selectedAndDisabledPaymentId?.includes(item?._id) && handleMilestoneSelect(evt, item._id)
+                            }
+                            disabled={isDisabled(item.payment_status)}
+                            className="payment-form-control"
+                          />
+                          <div className="d-flex flex-column w-100" style={{ marginTop: '-2px' }}>
+                            <Label for={item._id} className="text-truncate truncated-milestone-name">
+                              {item.name}
+                            </Label>
+                          </div>
+                        </div>
+                      </Col>
+                      <Col sm="12" md="5" lg="4">
+                        <Badge color={getTagSettings(item.payment_status).theme} className="payment-status-badge">
+                          {getTagSettings(item.payment_status).text}
+                        </Badge>
+                      </Col>
+                      <Col sm="12" md="5" lg="3">
+                        <div
+                          style={{ fontSize: '16px', fontWeight: '500' }}
+                          className="text-end"
+                        >{`$ ${item.estimated_cost}`}</div>
+                      </Col>
+                    </Row>
                   </CardBody>
                 </Card>
               ))}
@@ -192,7 +190,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds }) {
             )}
             {paymentFeeLoading || selectedIds.length === 0 ? null : (
               <div className="d-flex justify-content-end py-1">
-                <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled()}>
+                <Button color="primary" onClick={handlePayment} disabled={isPaymentDisabled() || milestoneDataLoading}>
                   {milestoneDataLoading ? (
                     <Spinner size="sm" />
                   ) : (
@@ -212,12 +210,14 @@ MakePaymentModal.propTypes = {
   modal: PropTypes.bool,
   toggleModal: PropTypes.func,
   selectedMilestoneIds: PropTypes.array,
+  selectedAndDisabledPaymentId: PropTypes.array,
 };
 
 MakePaymentModal.defaultProps = {
   modal: false,
   toggleModal: () => {},
   selectedMilestoneIds: [],
+  selectedAndDisabledPaymentId: [],
 };
 
 export default MakePaymentModal;

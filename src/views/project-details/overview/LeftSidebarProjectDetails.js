@@ -17,7 +17,6 @@ import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import InviteTalentToTeamForProjectDetails from '../../invite-talent-to-team/InviteViewForProjectDetails';
-import { returnFormattedRating } from '../../../utility/Utils';
 import { clearModalData } from '../../../redux/reducers/createProject';
 import DeleteProjectModal from '../../modals/DeleteProjectModal';
 import RelistConfirmationModal from '../../modals/RelistConfirmationModal';
@@ -202,7 +201,7 @@ const LeftSidebarProjectDetails = () => {
                     : projectDetailsData?.worker_details?.name}
                 </CardText>
                 <div className="d-flex flex-wrap">
-                  <RatingBadge number={returnFormattedRating(projectDetailsData?.worker_details?.rating) || 0} />
+                  <RatingBadge number={projectDetailsData?.worker_details?.rating || 0} />
                   <CardText className="ps-75 font-small-2 fw-300 rating-label">
                     {projectDetailsData?.worker_details?.projects_worked_on_count || 0} Projects
                   </CardText>
@@ -224,7 +223,7 @@ const LeftSidebarProjectDetails = () => {
               <div>
                 <CardText className="mb-0 ms-25">{projectDetailsData?.client_details?.company_name}</CardText>
                 <div className="d-flex flex-wrap">
-                  <RatingBadge number={returnFormattedRating(projectDetailsData?.client_details?.rating) || 0} />
+                  <RatingBadge number={projectDetailsData?.client_details?.rating || 0} />
                   <CardText className="ps-75 font-small-2 fw-300 rating-label">
                     {projectDetailsData?.client_details?.projects_listed_count || 0} Projects
                   </CardText>

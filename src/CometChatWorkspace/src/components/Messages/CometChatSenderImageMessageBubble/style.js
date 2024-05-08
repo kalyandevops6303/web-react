@@ -31,6 +31,8 @@ export const messageImgWrapper = (context) => {
     flexShrink: '0',
     padding: '20px',
     boxShadow: '0px 4px 16px -7px rgba(150,170,180,0.5)',
+    backgroundColor: `#84CCFF1F`,
+    borderRadius: '5px',
     img: {
       borderRadius: '8px',
       height: '100%',

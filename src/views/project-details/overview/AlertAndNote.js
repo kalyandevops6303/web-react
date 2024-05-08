@@ -12,7 +12,7 @@ import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { projectDetails, selectDocument } from '../../../redux/selectors/projectDetailsSelectors';
 import ExtendModal from '../../modals/ExtendModal';
 
-const AlertAndNote = () => {
+const AlertAndNote = ({ documentExtention, paymentExtention }) => {
   const dispatch = useDispatch();
   const param = useParams();
   const document = useSelector(selectDocument);
@@ -32,21 +32,29 @@ const AlertAndNote = () => {
 
     const targetDateTime = DateTime.fromMillis(timestamp);
     const currentDateTime = DateTime.now();
-    const duration = Duration.fromObject({ milliseconds: targetDateTime.diff(currentDateTime).milliseconds });
+    const duration = Duration.fromObject({
+      milliseconds: targetDateTime.diff(currentDateTime).milliseconds,
+    });
+
+    // Check if the duration is negative
+    if (duration.as('milliseconds') <= 0) {
+      return '0 day(s)';
+    }
 
     if (duration.as('days') >= 1) {
       return `${Math.floor(duration.as('days'))} day(s)`;
     }
-    return duration.toFormat(" hh'h' mm'm'");
+
+    return duration.toFormat("hh'h' mm'm'");
   };
 
-  const add7Days = (timestamp) => {
+  const addDays = ({ timestamp, days }) => {
     if (typeof timestamp !== 'number' && !Number.isNaN(timestamp)) {
       return '';
     }
 
     const originalDateTime = DateTime.fromMillis(timestamp);
-    const updatedDateTime = originalDateTime.plus({ days: 7 });
+    const updatedDateTime = originalDateTime.plus({ days });
     const updatedTimestamp = updatedDateTime.toMillis();
 
     return updatedTimestamp;
@@ -59,7 +67,12 @@ const AlertAndNote = () => {
         validity_type: validityType,
         onSuccess: () => {
           stateSetter(true);
-          stateUpdater(add7Days(validityType === 'DOCUMENT' ? documentValidity : paymentValidity));
+          stateUpdater(
+            addDays({
+              timestamp: validityType === 'DOCUMENT' ? documentValidity : paymentValidity,
+              days: validityType === 'DOCUMENT' ? documentExtention : paymentExtention,
+            }),
+          );
           setExtendModal(false);
         },
         onError: () => stateSetter(false),
@@ -88,6 +101,8 @@ const AlertAndNote = () => {
       </CardText>
       {extendModal && (
         <ExtendModal
+          documentExtention={documentExtention}
+          paymentExtention={paymentExtention}
           modal={extendModal}
           toggleModal={() => setExtendModal(!extendModal)}
           validityType={validityType}
@@ -131,7 +146,9 @@ const AlertAndNote = () => {
         projectInfo?.nda?.is_nda ? 'NDA and ' : ''
       } contract.
       ${
-        userType === userTypes.client && !isDocumentExtended ? 'You can choose to extend by an additional 7 days.' : ''
+        userType === userTypes.client && !isDocumentExtended
+          ? `You can choose to extend by an additional ${documentExtention} days.`
+          : ''
       }`;
 
       return renderAlertBanner({
@@ -147,7 +164,9 @@ const AlertAndNote = () => {
       const alertText = `The first payment must be made within ${calculateTimeDifference(
         paymentValidity,
       )} after signing the ${projectInfo?.nda?.is_nda ? 'NDA and' : ''} contract. ${
-        userType === userTypes.client && !isPaymentExtended ? 'You can choose to extend by an additional 7 days.' : ''
+        userType === userTypes.client && !isPaymentExtended
+          ? `You can choose to extend by an additional ${paymentExtention} days.`
+          : ''
       }`;
       return renderAlertBanner({
         alertText,

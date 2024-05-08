@@ -2,19 +2,23 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 import { FileText } from 'react-feather';
-
 import theme from '../configs/themeVariables';
 import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
+import round from '../lib/round';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning } from './constants/Constant';
+import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning, userTypes } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { getItemFromSession } from './sessesionStorageControl';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
 import PDFIcon from '../assets/images/pdfV2.svg';
+import DocIcon from '../assets/images/DOC.svg';
+import TextIcon from '../assets/images/TXT.svg';
+import JPGIcon from '../assets/images/JPG.svg';
 // eslint-disable-next-line import/no-cycle
 import fileScanningService from '../services/fileUploadService';
+
 // ** Checks if an object is empty (returns boolean)
 export const isObjEmpty = (obj) => Object.keys(obj).length === 0;
 
@@ -294,13 +298,20 @@ export const isFileValid = (file) => {
 };
 
 export const renderFilePreview = (file) => {
-  if (file?.type?.startsWith('image')) {
-    return <img className="rounded me-75" alt={file.name} src={URL.createObjectURL(file)} height="22" width="22" />;
+  const name = file?.name || file?.file_name;
+  if (name?.toLowerCase().endsWith('.jpeg') || name?.toLowerCase().endsWith('.jpg')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={JPGIcon} height="22" width="22" />;
   }
-  if (file?.name?.toLowerCase().endsWith('.pdf')) {
-    return <img className="rounded me-75" alt="pdf" src={PDFIcon} height="22" width="22" />;
+  if (name?.toLowerCase().endsWith('.txt')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={TextIcon} height="22" width="22" />;
   }
-  return <FileText size="20" className="me-75 mb-25" />;
+  if (name?.toLowerCase().endsWith('.pdf')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={PDFIcon} height="22" width="22" />;
+  }
+  if (name?.toLowerCase().endsWith('.doc') || name?.toLowerCase().endsWith('.docx')) {
+    return <img className="rounded me-75 mb-25" alt="pdf" src={DocIcon} height="22" width="22" />;
+  }
+  return <FileText size="18" className="me-75 mb-25" />;
 };
 
 export const getFileSize = (size) => {
@@ -381,17 +392,7 @@ export const formattedDate = (value) => {
   return formattedDateString;
 };
 
-export const returnFormattedRating = (num) => {
-  // Check if the number is an integer
-  if (Number.isInteger(num)) {
-    return num; // Return the number as is
-    // eslint-disable-next-line no-else-return
-  } else {
-    // Round the number to one decimal place for float or decimal numbers
-    return Math.round(num * 10) / 10;
-  }
-};
-
+export const returnFormattedRating = (num) => (num ? round(num, 1) : 0);
 // eslint-disable-next-line no-undef
 export const getTeamId = () => getItemFromSession('team_id');
 
@@ -703,43 +704,70 @@ export const isAnyKeyNonEmptyArray = (obj) => {
   return false; // No non empty array found
 };
 
-const delay = (ms) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
+export const scanAndProcessFiles = async ({ fileData, handleMainAPI, onError, isPrivate }) => {
+  const processFile = async (index) => {
+    if (index >= fileData.length) {
+      handleMainAPI();
+      return;
+    }
 
-export const handleScanFiles = async ({ fileKeys, isPrivate, retryCount = 0 }) => {
-  const maxRetries = 3;
+    const file = fileData[index];
+    try {
+      const response = await fileScanningService({ fileKeys: [file], isPrivate });
+      if (response.data.data?.[0].status === fileScanStatus.SCANNING) {
+        // Retry logic
+        let retries = 3;
+        const retryInterval = setInterval(async () => {
+          if (retries <= 0) {
+            clearInterval(retryInterval);
+            ShowToastMessage(ERROR, `Scanning ${file?.file_name} taking longer than expected. `);
+            onError(); // Handle error on too many retries
+          } else {
+            try {
+              const retryResponse = await fileScanningService({ fileKeys: [file], isPrivate });
+              if (retryResponse.data.data?.[0].status !== fileScanStatus.SCANNING) {
+                clearInterval(retryInterval);
+                if (retryResponse.data.data?.[0].status === fileScanStatus.CLEAN) {
+                  processFile(index + 1); // Move to the next file
+                } else if (retryResponse.data.data?.[0].status === fileScanStatus.THREAT) {
+                  onError(); // Handle error for threat
+                  ShowToastMessage(ERROR, `${file?.file_name} seems to be malicious/corrupted. `);
+                }
+              }
+            } catch (retryError) {
+              console.error('Error retrying file scan:', retryError);
+              ShowToastMessage(ERROR, `Error scanning file: ${file?.file_name}`);
+              clearInterval(retryInterval); // Stop retrying on error
+              onError(); // Handle error for retry
+            }
+          }
+          retries -= 1;
+        }, timeDalayToRetryScanning); // Retry every given seconds
+      } else if (response.data.data?.[0].status === fileScanStatus.CLEAN) {
+        processFile(index + 1); // Move to the next file
+      } else if (response.data.data?.[0].status === fileScanStatus.THREAT) {
+        onError(); // Handle error for threat
+        ShowToastMessage(ERROR, `${file?.file_name} seem to be maliciuous/corrupted. `);
+      }
+    } catch (error) {
+      console.error('Error processing file:', error);
+      onError();
+    }
+  };
 
-  if (retryCount > maxRetries) {
-    throw new Error('Scanning file(s) taking longer than expected');
-  }
-
-  const scanStatus = await fileScanningService({ fileKeys, isPrivate });
-
-  if (scanStatus.data.data.some((result) => result?.status === fileScanStatus.SCANNING)) {
-    await delay(timeDalayToRetryScanning); // Wait for given milliseconds
-    return handleScanFiles({
-      fileKeys: scanStatus.data.data
-        .filter((result) => result?.status === fileScanStatus.SCANNING)
-        .map((scanningResult) => ({
-          file_name: scanningResult.file_name,
-          file_key: scanningResult.file_key,
-        })),
-      isPrivate,
-      retryCount: retryCount + 1, // Increment retry count
-    }); // Recursively call until scanStatus changes
-  }
-  return scanStatus;
+  // Start processing files
+  processFile(0);
 };
 
-export const handleCorruptedFiles = ({ finalScanStatus }) => {
-  const corruptedFiles = finalScanStatus.data.data
-    .filter((result) => result.status === fileScanStatus.THREAT)
-    .map((threatResult) => threatResult.file_name);
-  if (corruptedFiles.length > 0) {
-    ShowToastMessage(ERROR, `One or more file(s) seem to be maliciuous/corrupted: ${corruptedFiles.join(', ')}`);
+export const getContractStepLabel = ({ isNDA, user_type }) => {
+  switch (user_type) {
+    case userTypes.client:
+      return isNDA ? 4 : 3;
+    default:
+      return isNDA ? 3 : 2;
   }
 };
+export const generateToolTipId = (projectName, name, title) =>
+  `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
+
+export const roundOfAmount = (amount) => (amount ? round(amount, 2) : 0);

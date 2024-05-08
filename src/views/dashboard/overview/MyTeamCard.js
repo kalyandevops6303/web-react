@@ -67,7 +67,7 @@ const MyTeamCard = ({ accordionName, data, className }) => {
         {!data?.is_read && <NewTag />}
         <CardBody>
           <div className="d-flex">
-            <RatingBadge number="0" />
+            <RatingBadge number={data?.rating} />
             <CardText className="ps-1 font-small-3 fw-300 rating-label">0 Projects</CardText>
           </div>
           <CardTitle className="mt-50 truncate-1 mb-1">{data?.name}</CardTitle>

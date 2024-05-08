@@ -152,11 +152,13 @@ const API = {
     updateContract: `${apiCreateProjectEndpoint}/api/v1/legal/document/update`,
     extendDocValidity: `${apiCreateProjectEndpoint}/api/v1/project/documents-validity-extension`,
     extendPaymentValidity: `${apiCreateProjectEndpoint}/api/v1/project/payment-validity-extension`,
-
+    getActiveStage: `${apiCreateProjectEndpoint}/api/v1/bid/get_stage`,
     // invite get
     bestTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/recommended-talents`,
     favoriteTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/favorite-talents`,
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project-course/alma-mater-talents`,
+
+    getAppConfig: `${apiCreateProjectEndpoint}/api/v1/app_config`,
   },
   projectMilestones: {
     getProjectMilestones: `${apiCreateProjectEndpoint}/api/v1/project/milestones`,
@@ -217,6 +219,7 @@ const API = {
     unsubscribe: `${apiAuthEndpoint}/api/v1/user/unsubscribe`,
     polling: `${apiAuthEndpoint}/api/v1/notifications/polling`,
     markAsRead: `${apiAuthEndpoint}/api/v1/notifications/mark-as-read`,
+    markAllAsRead: `${apiAuthEndpoint}/api/v1/notifications/mark-all-as-read`,
   },
   createBid: {
     checkBid: `${apiCreateProjectEndpoint}/api/v1/bid/check`,

@@ -14,7 +14,6 @@ import RatingBadge from '../../@core/components/rating-group/RatingBadge';
 import { makeFav, removeFav } from '../../redux/actions/marketPlaceActions';
 import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
-import { returnFormattedRating } from '../../utility/Utils';
 import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
 
@@ -215,7 +214,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
               </CardText>
             </div>
             <div className="d-flex flex-grow-1">
-              <RatingBadge number={returnFormattedRating(clientDetails?.rating || 0)} />
+              <RatingBadge number={clientDetails?.rating || 0} />
               <CardText className="ps-1 font-small-3 fw-300 rating-label">
                 {clientDetails?.projects_worked_on_count ?? 0} Projects
               </CardText>
@@ -257,17 +256,15 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         <BidsReceivedWrapper>
           <p className="wrapper-title mb-50">Bids Received</p>
           {bidsReceivedAvatarGroup?.length ? (
-            <div>
+            <div className="d-flex align-items-center">
               {bidsReceivedAvatarGroup?.length > 3 ? (
-                <AvatarGroup
-                  totalCount={data?.bidders?.length || 0}
-                  size="sm"
-                  className="ms-25 mb-50"
-                  data={bidsReceivedAvatarGroup?.slice(0, 3)}
-                />
+                <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup?.slice(0, 3)} />
               ) : (
                 <AvatarGroup size="sm" className="ms-25 mb-50" data={bidsReceivedAvatarGroup} />
               )}
+              <div className="total-count px-75 ms-1">
+                <p className="m-0">{bidsReceivedAvatarGroup?.length}</p>
+              </div>
             </div>
           ) : (
             <p className="m-0">None</p>

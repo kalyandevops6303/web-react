@@ -4,6 +4,7 @@ import { AccordionBody, AccordionHeader, AccordionItem, CardText, UncontrolledAc
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import { useNavigate, useParams } from 'react-router-dom';
+import classnames from 'classnames';
 import { AccordionHeadStyle } from '../style';
 import Timeline from '../../../@core/components/timeline';
 import NameInfo from '../../../@core/components/name-info';
@@ -12,7 +13,7 @@ import {
   selectContractData,
   selectContractTimeline,
 } from '../../../redux/selectors/projectDetailsSelectors';
-import { getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
+import { getContractStepLabel, getProjectStatus, getTimeLineDotColor } from '../../../utility/Utils';
 import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -81,16 +82,25 @@ const ContractTimeline = () => {
   return (
     <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
       <AccordionItem>
-        <AccordionHeader onClick={() => toggle(1)} targetId="1">
+        <AccordionHeader
+          onClick={() => toggle(1)}
+          targetId="1"
+          className={classnames({ 'active-accordion-header': false })}
+        >
           <AccordionHeadStyle>
-            <span className="d-flex title-head">
-              Contract
-              {contractData?.is_contract_terminated === false ? (
-                <span> {!contractData?.is_signed ? <span className="indicator" /> : ''}</span>
-              ) : (
-                ''
-              )}
-            </span>
+            <div className="title-head">
+              <span className="step d-block">
+                STEP {getContractStepLabel({ isNDA: projectDetailsData?.nda?.is_nda, user_type: userType })}
+              </span>
+              <span className="d-flex">
+                Contract
+                {contractData?.is_contract_terminated === false ? (
+                  <span> {!contractData?.is_signed ? <span className="indicator" /> : ''}</span>
+                ) : (
+                  ''
+                )}
+              </span>
+            </div>
 
             {contractData?.is_contract_terminated === false ? (
               <div>

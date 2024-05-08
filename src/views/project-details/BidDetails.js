@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft, FileText, Info } from 'react-feather';
+import { ChevronLeft, Info } from 'react-feather';
 import {
   AccordionBody,
   AccordionHeader,
@@ -23,6 +23,7 @@ import {
 } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import Avatar from '@components/avatar';
+import classnames from 'classnames';
 import AvatarGroup from '@components/avatar-group';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { DateTime } from 'luxon';
@@ -31,7 +32,7 @@ import theme from '../../configs/themeVariables';
 import { BidDetailsWrap } from './style';
 import { getBidDetails, updateBidStatus } from '../../redux/actions/projectDetailsAction';
 import { userTypes } from '../../utility/constants/Constant';
-import { downloadFile, formatFileSize, truncateSentence } from '../../utility/Utils';
+import { downloadFile, formatFileSize, renderFilePreview, roundOfAmount, truncateSentence } from '../../utility/Utils';
 import AcceptBidModal from '../modals/AcceptBidModal';
 import RejectBidModal from '../modals/RejectBidModal';
 import LeftSidebarProfile from './bidDetailsOverview/LeftSideBarProfile';
@@ -41,7 +42,6 @@ import { AccordionBodyContent, AccordionTableHeader } from '../create-bid/style'
 import ShowMoreLess from '../../@core/components/show-more-less-comp';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../redux/selectors/dashboardSelectors';
-import round from '../../lib/round';
 
 const BidDetails = () => {
   const dispatch = useDispatch();
@@ -253,7 +253,7 @@ const BidDetails = () => {
               <CardTitle className="main-card-title">Bid Details</CardTitle>
               <CardBody className="main-card-body bid-eta d-flex align-items-center">
                 <div>
-                  <CardText className="value">${round(bidInfo?.total_estimated_cost, 2)}</CardText>
+                  <CardText className="value">${roundOfAmount(bidInfo?.total_estimated_cost)}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Total Bid Amount</CardText>
                     <Info size={14} color={theme.infoIcon} id="amount-info" className="ms-50" />
@@ -264,7 +264,7 @@ const BidDetails = () => {
                 </div>
                 <p className="m-0 symbol font-medium-4">+</p>
                 <div>
-                  <CardText className="value">${round(bidInfo?.platform_fee, 2)}</CardText>
+                  <CardText className="value">${roundOfAmount(bidInfo?.platform_fee)}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Platform Fees</CardText>
                     <Info size={14} color={theme.infoIcon} id="bid-platform-fee-info" className="ms-50" />
@@ -275,7 +275,7 @@ const BidDetails = () => {
                 </div>
                 <p className="m-0 symbol font-medium-4">=</p>
                 <div>
-                  <CardText className="value">${round(bidInfo?.total_project_cost, 2)}</CardText>
+                  <CardText className="value">${roundOfAmount(bidInfo?.total_project_cost)}</CardText>
                   <div className="d-flex align-items-center m-0">
                     <CardText className="key mb-0">Total Project Cost</CardText>
                   </div>
@@ -403,7 +403,9 @@ const BidDetails = () => {
                                 </p>
                               </Col>
                               <Col sm="12" md="12" lg="2" className="ps-2">
-                                <p className="fw-light m-0 font-small-4 ps-50">${milestone?.total_milestone_cost}</p>
+                                <p className="fw-light m-0 font-small-4 ps-50">
+                                  ${roundOfAmount(milestone?.total_milestone_cost)}
+                                </p>
                               </Col>
                             </Row>
                           </AccordionHeader>
@@ -477,7 +479,7 @@ const BidDetails = () => {
                                         </p>
                                       </Col>
                                       <Col sm="12" md="12" lg="2">
-                                        <p className="content-description">${worker?.amount || 0}</p>
+                                        <p className="content-description">${roundOfAmount(worker?.amount)}</p>
                                       </Col>
                                     </Row>
                                   ))}
@@ -506,7 +508,9 @@ const BidDetails = () => {
                                   </p>
                                 </Col>
                                 <Col sm="12" md="12" lg="2">
-                                  <p className="fw-bolder content-description">${milestone?.total_milestone_cost}</p>
+                                  <p className="fw-bolder content-description">
+                                    ${roundOfAmount(milestone?.total_milestone_cost)}
+                                  </p>
                                 </Col>
                               </Row>
                             </AccordionBodyContent>
@@ -520,43 +524,49 @@ const BidDetails = () => {
             </CardBody>
           </Card>
           <Card>
-            {bidInfo?.documents?.map((item) => (
-              <div key={item?.file_key}>
-                <CardBody className="d-flex align-items-center w-100">
-                  {downloadUrlIsLoading && selectedFileKey === item?.file_key ? (
-                    <div className="d-flex align-items-center justify-content-between">
-                      <Spinner color="primary" />
-                    </div>
-                  ) : (
-                    <div
-                      className="d-flex align-items-center w-100 cursor-pointer"
-                      style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
-                      onClick={() => {
-                        setSelectedFileKey(item?.file_key);
-                        dispatch(
-                          getDownloadUrl({
-                            fileKey: item?.file_key,
-                            onSuccess: onDownloadResumeUrlSuccess,
-                            fileName: item?.file_name,
-                          }),
-                        );
-                      }}
-                    >
-                      <FileText size="18" className="me-75" />
-                      <CardText className="mb-0">{item?.file_name}</CardText>
-                    </div>
-                  )}
-                  <div className="d-flex justify-content-end w-100 ms-1 font-weight-bold">
-                    <div className="d-flex gap-4">
-                      <CardText className="mb-0">{formatFileSize(item?.size)}</CardText>
-                      <CardText className="mb-0">
-                        {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
-                      </CardText>
+            {bidInfo?.documents?.length > 0 && (
+              <CardBody className="gap-3">
+                {bidInfo?.documents?.map((item, index) => (
+                  <div
+                    className={classnames('d-flex', 'align-items-center', 'w-100', {
+                      'mb-space': index !== bidInfo?.documents?.length - 1,
+                    })}
+                    key={item?.file_key}
+                  >
+                    {downloadUrlIsLoading && selectedFileKey === item?.file_key ? (
+                      <div className="d-flex align-items-center justify-content-between">
+                        <Spinner color="primary" />
+                      </div>
+                    ) : (
+                      <div
+                        className="d-flex align-items-center w-100 cursor-pointer"
+                        style={{ color: theme.activeColor, maxWidth: 'fit-content' }}
+                        onClick={() => {
+                          setSelectedFileKey(item?.file_key);
+                          dispatch(
+                            getDownloadUrl({
+                              fileKey: item?.file_key,
+                              onSuccess: onDownloadResumeUrlSuccess,
+                              fileName: item?.file_name,
+                            }),
+                          );
+                        }}
+                      >
+                        {renderFilePreview(item)} <span className="mb-0">{item?.file_name}</span>
+                      </div>
+                    )}
+                    <div className="d-flex justify-content-end w-100 ms-1 font-weight-bold">
+                      <div className="d-flex gap-4">
+                        <CardText className="mb-0">{formatFileSize(item?.size)}</CardText>
+                        <CardText className="mb-0">
+                          {item?.created_at ? DateTime.fromMillis(item?.created_at).toFormat('MMM dd, yy') : '-'}
+                        </CardText>
+                      </div>
                     </div>
                   </div>
-                </CardBody>
-              </div>
-            ))}
+                ))}
+              </CardBody>
+            )}
           </Card>
         </Col>
       </Row>

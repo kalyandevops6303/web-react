@@ -140,7 +140,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     dispatch(clearData());
     const valuesOnly = {};
     Object.keys(secondFilterState).forEach((key) => {
-      if (key === 'statuses' && secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED')) {
+      if (
+        key === 'statuses' &&
+        (secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED') ||
+          secondFilterState?.statuses?.map((item) => item.value)?.includes('TO_BE_LISTED'))
+      ) {
         valuesOnly[key] = [];
       } else {
         valuesOnly[key] = secondFilterState[key].map((item) => item.value);
@@ -167,6 +171,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             isMyListing: primaryFilter === 'my_listings',
             isMyBids: primaryFilter === 'my_bids',
             show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
+            show_to_be_listed: secondFilterState?.statuses?.map((item) => item.value)?.includes('TO_BE_LISTED'),
             isRecommanded,
             isFavorite,
             metaData,
@@ -361,6 +366,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
           isMyListing: primaryFilter === 'my_listings',
           isMyBids: primaryFilter === 'my_bids',
           show_expired: secondFilterState?.statuses?.map((item) => item.value)?.includes('LISTING_EXPIRED'),
+          show_to_be_listed: secondFilterState?.statuses?.map((item) => item.value)?.includes('TO_BE_LISTED'),
           isRecommanded,
           isFavorite,
           metaData: newMeteData,
@@ -374,16 +380,30 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   };
 
-  const isUsers =
-    location.pathname?.split('/')?.includes('clients') || location.pathname?.split('/')?.includes('talents');
-
   const inMyBids = location.pathname?.split('/')?.includes('my_bids');
+
+  const getSearchPlaceholder = () => {
+    switch (primaryFilter) {
+      case 'teams':
+        return 'Search team name';
+      case 'clients':
+        return 'Search client name';
+      case 'talents':
+        return 'Search talent name';
+      default:
+        return 'Search project name, user name';
+    }
+  };
 
   const setStatusOptions = () => {
     if (primaryFilter === 'all_listings') {
       return statusForAllListing;
     } else if (primaryFilter === 'my_listings') {
-      return [...statusesOptions, { label: 'Expired', value: 'LISTING_EXPIRED' }];
+      return [
+        ...statusesOptions,
+        { label: 'Expired', value: 'LISTING_EXPIRED' },
+        { label: 'To Be Listed', value: 'TO_BE_LISTED' },
+      ];
     } else {
       return statusesOptions;
     }
@@ -445,7 +465,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <Input
                 innerRef={inputRef}
                 onChange={debounce(handleSearchTextChange, 300)}
-                placeholder={isUsers ? 'Search users' : 'Search project name, user name'}
+                placeholder={getSearchPlaceholder()}
               />
             </InputGroup>
           </div>

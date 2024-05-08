@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Card, CardText, Table, UncontrolledTooltip } from 'reactstrap';
-import { Info } from 'react-feather';
+import { Copy, Info } from 'react-feather';
 import styled from 'styled-components';
 
 import {
@@ -10,20 +10,22 @@ import {
 } from '../../../services/projectMilestoneService';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
-import { formatDate } from '../../../utility/Utils';
-import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
+import { formatDate, roundOfAmount } from '../../../utility/Utils';
+import { PAYMENT_STATUS, paymentText, userTypes } from '../../../utility/constants/Constant';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import theme from '../../../configs/themeVariables';
 
 function PaymentHistoryTable() {
   const [transactions, setTransactions] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
+  const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 
   const projectDetailsData = useSelector(projectDetails);
   const user = useSelector(userData);
 
   const isTalent = user?.user_type === userTypes.talent;
   const isTeam = user?.user_type === userTypes.team;
+  const isClient = user?.user_type === userTypes.client;
 
   useEffect(() => {
     if (projectDetailsData?._id) {
@@ -52,16 +54,16 @@ function PaymentHistoryTable() {
       return { theme: 'light-danger', text: 'Failed' };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: 'Milestone In Progress' };
+      return { theme: 'light-warning', text: isClient ? paymentText.PAYMENT_DUE : paymentText.FUNDS_UNAVAILABLE };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
-      return { theme: 'light-primary', text: 'Processing' };
+      return { theme: 'light-primary', text: paymentText.PROCESSING };
     }
     if (tag === PAYMENT_STATUS.INITIATED) {
-      return { theme: 'light-primary', text: 'Initiated' };
+      return { theme: 'light-primary', text: paymentText.INITIATED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: 'Successful' };
+      return { theme: 'light-success', text: paymentText.SUCCESSFUL };
     }
     return { theme: 'light-primary', text: tag };
   };
@@ -149,19 +151,34 @@ function PaymentHistoryTable() {
                           {isCopied ? 'Copied!' : item?.transaction_id}
                         </UncontrolledTooltip>
                       )}
-                      <span
-                        className="fw-bold"
-                        style={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          width: '80px',
-                          whiteSpace: 'nowrap',
-                        }}
-                        id={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}
+                      <div
+                        className="d-flex align-items-center"
+                        onMouseEnter={() => setSelectedTransactionId(`${item?.transaction_id}-${item?.milestone?._id}`)}
+                        onMouseLeave={() => setSelectedTransactionId(null)}
                         onClick={() => handleCopyToClipboard(item?.transaction_id)}
+                        id={item?.transaction_id.replace(/^[^a-zA-Z_]/, '_')}
                       >
-                        {item?.transaction_id}
-                      </span>
+                        <span
+                          className="fw-bold"
+                          style={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            width: '80px',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {item?.transaction_id}
+                        </span>
+                        <Copy
+                          size={20}
+                          color={
+                            selectedTransactionId === `${item?.transaction_id}-${item?.milestone?._id}`
+                              ? theme.activeNavPillText
+                              : theme.infoIcon
+                          }
+                          className="ms-50"
+                        />
+                      </div>
                       <span>{formatDate(item?.created_at)}</span>
                     </div>
                   </td>
@@ -179,7 +196,7 @@ function PaymentHistoryTable() {
                     <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
                   </td>
                   {isTalent || isTeam ? null : <td>{item?.application_fee ? `$ ${item?.application_fee}` : '-'}</td>}
-                  <td>$ {getTotalAmount(item)}</td>
+                  <td>$ {roundOfAmount(getTotalAmount(item))}</td>
                 </tr>
               ))}
             </tbody>

@@ -251,6 +251,10 @@ export const ProfileFormContainer = styled.div`
       margin-top: 15px;
     }
   }
+
+  .form-control.is-invalid {
+    background-image: none;
+  }
 `;
 
 export const UploadIconContainer = styled.div`

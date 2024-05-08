@@ -10,6 +10,7 @@ import {
 } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import classnames from 'classnames';
 import DateTime from '../../../lib/date-time';
 import Round from '../../../lib/round';
 import { AccordionHeadStyle } from '../style';
@@ -21,11 +22,12 @@ import Empty from './Empty';
 import { acceptBidChange, getBidTimeline } from '../../../redux/actions/projectDetailsAction';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
-import { bidStatus, userTypes } from '../../../utility/constants/Constant';
+import { bidStages, bidStatus, userTypes } from '../../../utility/constants/Constant';
 import BidChangeRequestModal from '../../modals/BidChangeRequestModal';
 import AcceptBidModal from '../../modals/AcceptBidModal';
 import RejectBidChangeModal from '../../modals/RejectBidChangeModal';
 import { getBidAction, getStatusColor } from '../../../utility/Utils';
+import { Elevate } from '../../styled';
 
 const BidSubmitted = () => {
   const dispatch = useDispatch();
@@ -36,6 +38,7 @@ const BidSubmitted = () => {
   const bidTimeline = useSelector((state) => state.projectDetails.bidTimeline);
   const bidTimelineLoading = useSelector((state) => state.projectDetails.getBidTimelineLoading);
   const isBidAccepting = useSelector((state) => state.projectDetails.acceptBidChangeLoading);
+  const activeStage = useSelector((state) => state.projectDetails.activeStage);
   const [open, setOpen] = useState(null);
   const [bidRequestModal, setBidRequestModal] = useState(false);
   const [acceptBidModal, setAcceptBidModal] = useState(false);
@@ -147,14 +150,26 @@ const BidSubmitted = () => {
   };
 
   const BidTimelineAccordion = (
-    <div>
+    <Elevate active={activeStage === bidStages.BID_SUBMITTED || activeStage === bidStages.ACCEPTED_BID}>
       <UncontrolledAccordion className="accordion-timeline" defaultOpen="0">
         <AccordionItem>
-          <AccordionHeader onClick={() => toggle(1)} targetId="1">
+          <AccordionHeader
+            onClick={() => toggle(1)}
+            targetId="1"
+            className={classnames({
+              'active-accordion-header': false,
+            })}
+          >
             <AccordionHeadStyle>
-              <span className="title-head">
-                {userData?.user_type === userTypes.client ? 'Accepted Bid' : 'Bid Submitted'}
-              </span>
+              <div className="title-head">
+                {/* If Client, step = 2
+              If Talent, step = 1 */}
+                <span className="step d-block">STEP {userData?.user_type === userTypes.client ? 2 : 1}</span>
+                <span className="d-flex">
+                  {userData?.user_type === userTypes.client ? 'Accepted Bid' : 'Bid Submitted'}
+                  <span className="d-none indicator" />
+                </span>
+              </div>
 
               <div className="d-flex gap-1 aling-items-center">
                 <CardText className="d-none view-all-cta">Give rating</CardText>
@@ -240,7 +255,7 @@ const BidSubmitted = () => {
           />
         )}
       </UncontrolledAccordion>
-    </div>
+    </Elevate>
   );
 
   return (
@@ -254,9 +269,14 @@ const BidSubmitted = () => {
             BidTimelineAccordion
           ) : (
             <Card>
-              <CardBody className="basic-title">
+              <CardBody
+                className={classnames('basic-title', 'sign-accordion-header', { 'active-accordion-header': false })}
+              >
                 <div className="d-flex justify-content-between">
-                  <CardText className="d-flex fw-bold mb-0 disabled-color">Accepted Bid</CardText>
+                  <div className="title-head">
+                    <span className="step d-block">STEP {userData?.user_type === userTypes.client ? 2 : 1}</span>
+                    <CardText className="d-flex fw-bold mb-0 disabled-color">Accepted Bid</CardText>
+                  </div>
                 </div>
               </CardBody>
             </Card>

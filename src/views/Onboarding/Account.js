@@ -34,13 +34,17 @@ import {
   profileDetailsLoading,
   userDetailsLoading,
 } from '../../redux/selectors/talentOnboardingSelectors';
+
 import ShowToastMessage from '../../@core/components/toast';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import {
   saveClientAccountDetails,
   saveProfileDetails as saveClientProfileDetails,
 } from '../../redux/actions/clientOnboardingActions';
-import { clientAccountDetailsLoading } from '../../redux/selectors/clientOnboardingSelectors';
+import {
+  clientAccountDetailsLoading,
+  profileDetailsLoading as clientProfileDetailsLoading,
+} from '../../redux/selectors/clientOnboardingSelectors';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { profileImageUploadService, profileImageUploadToAzureService } from '../../services/talentOnboardingServices';
 import ResetPasswordModal from './ResetPasswordModal';
@@ -48,6 +52,7 @@ import { checkPoints, maxFileSize, userOnboarding, userProfileEdit, userTypes } 
 import { convertReferral } from '../../redux/actions/referralAndRewardActions';
 import { getItem, removeItem } from '../../utility/localStorageControl';
 import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
+import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -94,6 +99,7 @@ const Account = () => {
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
   const clientAccountDetailsIsLoading = useSelector(clientAccountDetailsLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
+  const profileDetailsForClientLoading = useSelector(clientProfileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
   const convertReferralIsLoading = useSelector(convertReferralLoading);
 
@@ -156,8 +162,10 @@ const Account = () => {
     let reqData;
     if (imageUrlRes) {
       reqData = { first_name: firstName.trim(), last_name: lastName.trim(), image_uri: imageUrlRes.file_key };
-    } else {
+    } else if (selectedImage && selectedImagePreview) {
       reqData = { first_name: firstName.trim(), last_name: lastName.trim() };
+    } else {
+      reqData = { first_name: firstName.trim(), last_name: lastName.trim(), image_uri: '' };
     }
 
     if (
@@ -277,6 +285,12 @@ const Account = () => {
     }
   };
 
+  const onRemovePictureClick = () => {
+    setSelectedImage(null);
+    setSelectedImagePreview(null);
+    setImageUrlRes(null);
+  };
+
   useEffect(() => {
     if (imageUrlRes) {
       uploadImage(imageUrlRes.upload_url);
@@ -320,13 +334,21 @@ const Account = () => {
                     ref={fileInputRef}
                   />
                   <Button
+                    id={selectedImage && selectedImagePreview ? 'popFocus' : 'noFocus'}
                     color="primary"
                     className="ml-2 mr-1"
                     disabled={isImageUploading}
-                    onClick={() => fileInputRef.current.click()}
+                    onClick={() => !selectedImage && !selectedImagePreview && fileInputRef.current.click()}
                   >
                     {isImageUploading ? <Spinner size="sm" /> : 'Upload Image'}
                   </Button>
+                  {selectedImage && selectedImagePreview && (
+                    <RemoveUploadedPicture
+                      fileInputRef={fileInputRef}
+                      onRemovePicture={onRemovePictureClick}
+                      offset={[45, 10]}
+                    />
+                  )}
                 </div>
                 <Info size={18} color={theme.infoIcon} id="image-info" />
                 <UncontrolledTooltip placement="right" target="image-info">
@@ -440,14 +462,15 @@ const Account = () => {
                 isImageUploading ||
                 convertReferralIsLoading ||
                 (isNextButtonDisabled || userDetailsData?.user_type === userTypes.talent
-                  ? !isValid || talentAccountDetailsIsLoading
-                  : !isValid || clientAccountDetailsIsLoading)
+                  ? !isValid || talentAccountDetailsIsLoading || profileDetailsIsLoading
+                  : !isValid || clientAccountDetailsIsLoading || profileDetailsForClientLoading)
               }
             >
               {talentAccountDetailsIsLoading ||
               clientAccountDetailsIsLoading ||
               convertReferralIsLoading ||
-              profileDetailsIsLoading ? (
+              profileDetailsIsLoading ||
+              profileDetailsForClientLoading ? (
                 <Spinner size="sm" />
               ) : (
                 <>

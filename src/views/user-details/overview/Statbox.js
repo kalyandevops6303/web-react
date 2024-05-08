@@ -6,14 +6,14 @@ import Avatar from '@components/avatar';
 import { StatboxWrap } from './style';
 import { Elevate } from '../../styled';
 
-const Statbox = ({ isActive, className, isMarketPlaceTab, title, icon, desc, color }) => (
+const Statbox = ({ isActive, elevate, className, isMarketPlaceTab, title, icon, desc, color }) => (
   <StatboxWrap
     className={className}
     isActive={isActive}
     isMarketPlaceTab={isMarketPlaceTab}
     time={desc === 'Availability'}
   >
-    <Elevate>
+    <Elevate active={elevate}>
       <CardBody>
         <div className="d-flex align-items-center justify-content-between">
           <div className="my-auto">
@@ -35,6 +35,7 @@ Statbox.propTypes = {
   icon: PropTypes.element,
   desc: PropTypes.string,
   color: PropTypes.string,
+  elevate: PropTypes.bool,
 };
 
 export default Statbox;

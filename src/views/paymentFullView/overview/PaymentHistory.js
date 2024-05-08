@@ -7,10 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import Proptypes from 'prop-types';
 import DataTable from 'react-data-table-component';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
-import { ChevronDown, ChevronUp } from 'react-feather';
+import { ChevronDown, ChevronUp, Copy } from 'react-feather';
 import Avatar from '@components/avatar';
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import DateTime from '../../../lib/date-time';
+import CopyToClipboard from '../../../lib/copy-clipboard';
 import InfiniteScroll from '../../../lib/infinite-scroll';
 import { userTypes } from '../../../utility/constants/Constant';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
@@ -22,6 +23,9 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import capitalize from '../../../lib/capitalize';
 import { setItem } from '../../../utility/localStorageControl';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
+import ShowToastMessage from '../../../@core/components/toast';
+import { SUCCESS } from '../../../utility/constants/ToastTypes';
+import { roundOfAmount } from '../../../utility/Utils';
 
 const PaymentHistory = () => {
   const dispatch = useDispatch();
@@ -33,6 +37,7 @@ const PaymentHistory = () => {
 
   const [switchProfileModal, setSwitchProfileModal] = useState(false);
   const [switchData, setSwitchData] = useState();
+  const [selectedTransactionId, setSelectedTransactionId] = useState(null);
 
   const showStatusBadge = (status) => {
     if (status === 'PAID') {
@@ -72,13 +77,13 @@ const PaymentHistory = () => {
     {
       name: 'Transaction ID',
       sortable: false,
-      minWidth: '12%',
+      minWidth: '15%',
       selector: (row) => row.transaction_id,
     },
     {
       name: 'Project Name',
       sortable: false,
-      minWidth: '23%',
+      minWidth: '20%',
       selector: (row) => row.project_name,
     },
     {
@@ -118,13 +123,13 @@ const PaymentHistory = () => {
     {
       name: 'Transaction ID',
       sortable: false,
-      minWidth: '12%',
+      minWidth: '15%',
       selector: (row) => row.transaction_id,
     },
     {
       name: 'Project Name',
       sortable: false,
-      minWidth: '18%',
+      minWidth: '15%',
       selector: (row) => row.project_name,
     },
     {
@@ -230,13 +235,32 @@ const PaymentHistory = () => {
       paymentHistoryDataset.push({
         transaction_id: (
           <div>
-            <p className="mb-0 fw-bolder font-small-4" id={`tooltip-${item?.transaction_id}`}>
-              #{item?.transaction_id}
-            </p>
+            {item?.transaction_id && (
+              <CopyToClipboard
+                text={item?.transaction_id}
+                onCopy={() => {
+                  ShowToastMessage(SUCCESS, 'Transaction Id copied to clipboard');
+                }}
+              >
+                <div
+                  className="d-flex align-items-center cursor-pointer"
+                  onMouseEnter={() => setSelectedTransactionId(item?.transaction_id)}
+                  onMouseLeave={() => setSelectedTransactionId(null)}
+                  id={`tooltip-${item?.transaction_id}`}
+                >
+                  <p className="mb-0 fw-bolder font-small-4">#{item?.transaction_id?.substring(0, 10)}...</p>
+                  <Copy
+                    size={20}
+                    color={selectedTransactionId === item?.transaction_id ? theme.activeNavPillText : theme.infoIcon}
+                    className="ms-50"
+                  />
+                  <UncontrolledTooltip target={`tooltip-${item?.transaction_id}`} autohide={false}>
+                    {item?.transaction_id}
+                  </UncontrolledTooltip>
+                </div>
+              </CopyToClipboard>
+            )}
             <p className="mb-0 font-small-2">{DateTime.fromMillis(item?.created_at).toFormat('dd MMM yy')}</p>
-            <UncontrolledTooltip target={`tooltip-${item?.transaction_id}`} autohide={false}>
-              {item?.transaction_id}
-            </UncontrolledTooltip>
           </div>
         ),
         project_name: (
@@ -338,7 +362,7 @@ const PaymentHistory = () => {
         status: <>{showStatusBadge(item?.status)}</>,
         pay_type: <p className="mb-0 font-small-4">{capitalize(item?.pay_type)}</p>,
         total_cost: <p className="mb-0 font-small-4">${item?.total_cost}</p>,
-        amount: <p className="mb-0 font-small-4">${item?.amount}</p>,
+        amount: <p className="mb-0 font-small-4">${roundOfAmount(item?.amount)}</p>,
         disabled: userData?.user_type === userTypes.client ? item?.disabled : true,
         expandedMilestonesData: item?.milestones || [],
       }),
@@ -371,15 +395,8 @@ const PaymentHistory = () => {
                   <p className="m-0">Platform Fee</p>
                 </div>
                 <div className="text-end">
-                  <p className="mb-50">
-                    ${milestone?.amount % 1 !== 0 ? milestone?.amount?.toFixed(2) : milestone?.amount?.toFixed(0)}
-                  </p>
-                  <p className="m-0">
-                    $
-                    {milestone?.platform_fee % 1 !== 0
-                      ? milestone?.platform_fee?.toFixed(2)
-                      : milestone?.platform_fee?.toFixed(0)}
-                  </p>
+                  <p className="mb-50">${roundOfAmount(milestone?.amount)} </p>
+                  <p className="m-0">${roundOfAmount(milestone?.platform_fee)}</p>
                 </div>
               </div>
             </div>

@@ -20,6 +20,7 @@ import { MilestoneAccordionWrap } from './style';
 import theme from '../../../configs/themeVariables';
 import { selectAuthUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
+import { roundOfAmount } from '../../../utility/Utils';
 
 const TeamMembers = ({ selectedMilestone }) => {
   const [open, setOpen] = useState(0);
@@ -87,7 +88,7 @@ const TeamMembers = ({ selectedMilestone }) => {
                       {userData?.user_type === userTypes.client && (
                         <Col Col sm="12" md="3" lg="2">
                           <CardText className="font-small-3 m-0 fw-bold">
-                            {item?.amount ? `$${item?.amount}` : 'Not available'}
+                            {item?.amount ? `$${roundOfAmount(item?.amount)}` : 'Not available'}
                           </CardText>
                         </Col>
                       )}
