@@ -331,10 +331,11 @@ const ProjectModal = ({
               </CardTitle>
             </CardHeader>
             <CardBody>
-              <CardText className="fw-300 ms-75 project-desc" style={{ whiteSpace: 'pre-line' }}>
-                {' '}
-                {data?.details?.description}{' '}
-              </CardText>
+              <CardText
+                className="fw-300 ms-75 project-desc"
+                style={{ whiteSpace: 'pre-line' }}
+                dangerouslySetInnerHTML={{ __html: data?.details?.description }}
+              />
             </CardBody>
           </Card>
 
