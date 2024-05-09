@@ -203,13 +203,18 @@ const MarketPlaceProjectCard = ({
                 </div>
 
                 {!showFullText ? (
-                  <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
-                    {project?.details?.description ?? project?.description}
-                  </div>
+                  <div
+                    className="my-div"
+                    ref={divRef}
+                    style={{ maxHeight: '6.1rem', overflow: 'hidden' }}
+                    dangerouslySetInnerHTML={{ __html: project?.details?.description ?? project?.description }}
+                  />
                 ) : (
-                  <div className="my-div" ref={divRef}>
-                    {project?.details?.description ?? project?.description}
-                  </div>
+                  <div
+                    className="my-div"
+                    ref={divRef}
+                    dangerouslySetInnerHTML={{ __html: project?.details?.description ?? project?.description }}
+                  />
                 )}
 
                 {isContentOverflowing && (
