@@ -13,7 +13,7 @@ const ShowMoreLess = ({ content, maxLength }) => {
 
   return (
     <p style={{ whiteSpace: 'pre-line' }}>
-      <span>{displayedContent}</span>
+      <span dangerouslySetInnerHTML={{ __html: displayedContent }} />
       {content?.length > maxLength && (
         <span className="cursor-pointer" style={{ color: theme.activeNavPillText }} onClick={toggleExpanded}>
           {isExpanded ? ' read less' : '... read more'}
