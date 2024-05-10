@@ -23,6 +23,23 @@ const AcceptModalWrapper = styled.div`
   }
   .content-side {
     width: 65%;
+
+    .modal-title-custom {
+      font-size: 24px !important;
+    }
+
+    .custom-accept-label {
+      color: ${theme.textMuted};
+    }
+
+    .custom-accept-text {
+      font-size: 18px;
+    }
+
+    .amount-container {
+      min-width: 150px;
+      border-left: 2px solid rgba(0, 0, 0, 0.08);
+    }
   }
   .subtitle {
     font-size: 1.125rem;

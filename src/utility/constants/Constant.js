@@ -49,6 +49,7 @@ const validEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const bidStatusesOptions = [
   { label: 'New', value: 'NEW' },
+  { label: 'Updated', value: 'UPDATED' },
   { label: 'Reviewed', value: 'REVIEWED' },
   { label: 'Accepted', value: 'ACCEPTED' },
   { label: 'Closed', value: 'REJECTED' },
@@ -138,6 +139,11 @@ const bidStatus = {
   BID_CHANGE_REQUEST: 'BID_CHANGE_REQUEST',
 };
 
+const invitationUserStatus = {
+  REGISTERED: 'REGISTERED',
+  UNREGISTERED: 'UNREGISTERED',
+};
+
 const fileScanStatus = {
   CLEAN: 'CLEAN',
   SCANNING: 'SCANNING',
@@ -184,4 +190,5 @@ export {
   minimumAvatarLength,
   paymentText,
   bidStages,
+  invitationUserStatus,
 };

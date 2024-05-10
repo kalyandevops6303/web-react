@@ -162,17 +162,6 @@ class CometChatMessageReactions extends React.Component {
     const reaction = checkMessageForExtensionsData(this.props.message, 'reactions');
     const messageReactions = this.getMessageReactions(reaction);
 
-    const addReactionEmoji = this.addMessageReaction();
-
-    if (messageReactions !== null && messageReactions.length && addReactionEmoji !== null) {
-      if (this.props.message?.sender?.uid !== this.loggedInUser?.uid) {
-        messageReactions.push(addReactionEmoji);
-      } else {
-        // messageReactions.unshift(addReactionEmoji);
-        messageReactions.push(addReactionEmoji);
-      }
-    }
-
     return messageReactions;
   }
 }

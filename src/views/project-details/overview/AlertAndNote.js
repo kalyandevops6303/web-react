@@ -44,6 +44,7 @@ const AlertAndNote = ({ documentExtention, paymentExtention }) => {
     if (duration.as('days') >= 1) {
       return `${Math.floor(duration.as('days'))} day(s)`;
     }
+
     return duration.toFormat("hh'h' mm'm'");
   };
 

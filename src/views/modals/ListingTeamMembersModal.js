@@ -32,7 +32,7 @@ import { getInvitedMember, getTeamMembers } from '../../redux/actions/dashboardA
 import { selectGetInvitedMember, selectGetTeamMember } from '../../redux/selectors/dashboardSelectors';
 import { MessageIconWrap } from './style';
 import { inviteTalents } from '../../redux/actions/inviteTalent';
-import { userTypes } from '../../utility/constants/Constant';
+import { invitationUserStatus, userTypes } from '../../utility/constants/Constant';
 import { selectAuthUserData, selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
 import ChangeClubMemberModal from './ChangeClubMemberModal';
 import { getTeamId } from '../../utility/Utils';
@@ -345,7 +345,7 @@ const InvitedMemberComponent = ({ isAdmin }) => {
                           />
                           <div>
                             <p className="fw-bolder m-0">
-                              {item?.first_name} {item?.last_name} {item?.user_email}
+                              {item?.first_name} {item?.last_name} {item?.user_status === invitationUserStatus.UNREGISTERED ?  item?.user_email : ''}
                             </p>
                             <p className="font-small-3 m-0">{item?.role?.name}</p>
                           </div>
