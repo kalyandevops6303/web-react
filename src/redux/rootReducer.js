@@ -31,6 +31,7 @@ import activeNavTab from './reducers/activeNavTab';
 import paymentFullView from './reducers/paymentFullView';
 import milestone from './reducers/milestone';
 import favUnfav from './reducers/favUnfav';
+import formData from './reducers/formData';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -63,7 +64,7 @@ const rootReducer = combineReducers({
   paymentFullView,
   milestone,
   favUnfav,
-
+  formData,
   // Add more reducers if needed
 });
 
