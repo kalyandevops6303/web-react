@@ -6,8 +6,9 @@ import Avatar from '@components/avatar';
 import { StatboxWrap } from './style';
 import { Elevate } from '../../styled';
 
-const Statbox = ({ isActive, elevate, className, isMarketPlaceTab, title, icon, desc, color }) => (
+const Statbox = ({ onClick, isActive, elevate, className, isMarketPlaceTab, title, icon, desc, color }) => (
   <StatboxWrap
+    onClick={onClick}
     className={className}
     isActive={isActive}
     isMarketPlaceTab={isMarketPlaceTab}
@@ -28,6 +29,7 @@ const Statbox = ({ isActive, elevate, className, isMarketPlaceTab, title, icon, 
 );
 
 Statbox.propTypes = {
+  onClick: PropTypes.func,
   className: PropTypes.string,
   isActive: PropTypes.bool,
   isMarketPlaceTab: PropTypes.bool,
