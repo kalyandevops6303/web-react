@@ -17,12 +17,14 @@ import { notificationCount } from './redux/reducers/notifications';
 import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
 import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/reducers/auth';
 import { COMETCHAT_CONSTANTS } from './constants';
+import { checkPoints } from './utility/constants/Constant';
 
 const App = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.userData);
   // const fcmSubscribeService = (token) => DataService.post(`${API.notification.subscribe}`, { token });
 
   const appId = COMETCHAT_CONSTANTS.APP_ID;
@@ -82,7 +84,10 @@ const App = () => {
     const isUserStillLoggedIn =
       accessToken && refreshToken && refreshTokenExpires && new Date(refreshTokenExpires) >= new Date();
 
-    if (isUserStillLoggedIn) {
+    if (
+      isUserStillLoggedIn &&
+      (userData?.checkpoint === checkPoints.PROFILE_DETAILS || userData?.checkpoint === checkPoints.COMPLETE)
+    ) {
       dispatch(setLoggedInStatus());
 
       const cometChatAuthToken = getItem('cometChatToken');
