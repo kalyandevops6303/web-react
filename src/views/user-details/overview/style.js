@@ -189,6 +189,16 @@ const LeftSidebarProfileWrapper = styled.div`
       padding: 0.8rem 1rem;
     }
   }
+
+  .project-rating-count {
+    font-weight: 300;
+  }
+  .client-name {
+    line-height: 1.75rem;
+  }
+  .client-title {
+    line-height: 1.5rem;
+  }
 `;
 
 const DownloadIconContainer = styled.div`
