@@ -24,6 +24,7 @@ const App = () => {
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.userData);
   // const fcmSubscribeService = (token) => DataService.post(`${API.notification.subscribe}`, { token });
 
   const appId = COMETCHAT_CONSTANTS.APP_ID;
