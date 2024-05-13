@@ -6,4 +6,6 @@ const formData = createSelector(formDataSelector, (state) => state.formData);
 
 const formDocuments = createSelector(formDataSelector, (state) => state.formDocuments);
 
-export { formData, formDocuments };
+const formImage = createSelector(formDataSelector, (state) => state.formImage);
+
+export { formData, formDocuments, formImage };

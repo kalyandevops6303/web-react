@@ -4,7 +4,7 @@ import { AsyncPaginate } from 'react-select-async-paginate';
 import * as yup from 'yup';
 import Select from 'react-select';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
 import {
@@ -27,7 +27,12 @@ import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { AccountImageContainer, ProfileFormContainer } from '../Onboarding/style';
 import theme from '../../configs/themeVariables';
-import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
+import {
+  filteredFormSchema,
+  removeEmptyKeys,
+  returnFilteredDropdownOptions,
+  selectThemeColors,
+} from '../../utility/Utils';
 import {
   languagesService,
   servicesService,
@@ -48,6 +53,9 @@ import { getLanguages } from '../../redux/actions/staticActions';
 import { languages } from '../../redux/selectors/staticSelectors';
 import TeamCreatingModal from './TeamCreatingModal';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
+import { formData, formDocuments, formImage } from '../../redux/selectors/formDataSelectors';
+import { setFormData, setFormDocuments, setFormImage } from '../../redux/reducers/formData';
+import { getItemFromSession } from '../../utility/sessesionStorageControl';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -167,6 +175,8 @@ const Profile = () => {
     control,
     handleSubmit,
     watch,
+    reset,
+    trigger,
     setValue,
     formState: { errors },
   } = useForm({
@@ -204,6 +214,16 @@ const Profile = () => {
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
   const languagesData = useSelector(languages);
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
+  const savedFormImage = useSelector(formImage);
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
@@ -271,6 +291,7 @@ const Profile = () => {
   useEffect(() => {
     if (imageUrlRes) {
       uploadImage(imageUrlRes.upload_url);
+      dispatch(setFormImage(imageUrlRes));
     }
   }, [imageUrlRes]);
 
@@ -516,7 +537,9 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    getTeamDetails();
+    if (getItemFromSession('team_id')) {
+      getTeamDetails();
+    }
     dispatch(getLanguages());
   }, []);
 
@@ -524,19 +547,34 @@ const Profile = () => {
     if (location.pathname.includes('profile-edit')) {
       if (teamDetails) {
         if (teamDetails?.team_logo.length > 0) {
-          setSelectedImage(teamDetails.team_logo);
-          setSelectedImagePreview(teamDetails.team_logo);
+          if (savedFormDocuments) {
+            setSelectedImage(savedFormDocuments);
+            if (savedFormImage) {
+              setSelectedImagePreview(URL.createObjectURL(savedFormDocuments));
+            } else {
+              setSelectedImagePreview(savedFormDocuments);
+            }
+          } else {
+            setSelectedImage(teamDetails.team_logo);
+            setSelectedImagePreview(teamDetails.team_logo);
+          }
         }
-        if (teamDetails?.name?.length > 0) {
+        if (teamDetails?.name?.length > 0 && !savedFormData?.teamName) {
           setValue('teamName', teamDetails?.name, { shouldValidate: true });
+        } else {
+          setValue('teamName', savedFormData?.teamName, { shouldValidate: true });
         }
-        if (teamDetails?.tagline?.length > 0) {
+        if (teamDetails?.tagline?.length > 0 && !savedFormData?.teamTagline) {
           setValue('teamTagline', teamDetails?.tagline, { shouldValidate: true });
+        } else {
+          setValue('teamTagline', savedFormData?.teamTagline, { shouldValidate: true });
         }
-        if (teamDetails?.introduction?.length > 0) {
+        if (teamDetails?.introduction?.length > 0 && !savedFormData?.teamIntroduction) {
           setValue('teamIntroduction', teamDetails?.introduction, { shouldValidate: true });
+        } else {
+          setValue('teamIntroduction', savedFormData?.teamIntroduction, { shouldValidate: true });
         }
-        if (teamDetails?.services?.length > 0) {
+        if (teamDetails?.services?.length > 0 && !savedFormData?.services) {
           setValue(
             'services',
             teamDetails?.services.map((service) => ({
@@ -545,23 +583,29 @@ const Profile = () => {
             })),
             { shouldValidate: true },
           );
+        } else {
+          setValue('services', savedFormData?.services, { shouldValidate: true });
         }
-        if (teamDetails?.tools.length > 0) {
+        if (teamDetails?.tools.length > 0 && !savedFormData?.tools) {
           setValue(
             'tools',
             teamDetails?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
             { shouldValidate: true },
           );
+        } else {
+          setValue('tools', savedFormData?.tools, { shouldValidate: true });
         }
-        if (teamDetails?.skills.length > 0) {
+        if (teamDetails?.skills.length > 0 && !savedFormData?.skills) {
           setValue(
             'skills',
             teamDetails?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
             { shouldValidate: true },
           );
+        } else {
+          setValue('skills', savedFormData?.skills, { shouldValidate: true });
         }
         if ('timezone' in teamDetails?.availability) {
-          if (teamDetails?.availability?.timezone) {
+          if (teamDetails?.availability?.timezone && !savedFormData?.preferredWorkingTimeZone) {
             setValue(
               'preferredWorkingTimeZone',
               {
@@ -570,10 +614,12 @@ const Profile = () => {
               },
               { shouldValidate: true },
             );
+          } else {
+            setValue('preferredWorkingTimeZone', savedFormData?.preferredWorkingTimeZone, { shouldValidate: true });
           }
 
           let talentAvailabilityDays = [];
-          if ('weekdays_avl' in teamDetails?.availability) {
+          if ('weekdays_avl' in teamDetails?.availability && !savedFormData?.availabilityDays?.includes('weekdays')) {
             if ('days' in teamDetails?.availability?.weekdays_avl) {
               talentAvailabilityDays = [...talentAvailabilityDays, 'weekdays'];
               setValue('weekdays', teamDetails?.availability?.weekdays_avl?.days, { shouldValidate: true });
@@ -592,8 +638,12 @@ const Profile = () => {
                 { shouldValidate: true },
               );
             }
+          } else {
+            setValue('weekdays', savedFormData?.weekdays, { shouldValidate: true });
+            setValue('weekdayStartTime', savedFormData?.weekdayStartTime, { shouldValidate: true });
+            setValue('weekdayEndTime', savedFormData?.weekdayEndTime, { shouldValidate: true });
           }
-          if ('weekends_avl' in teamDetails?.availability) {
+          if ('weekends_avl' in teamDetails?.availability && !savedFormData?.availabilityDays?.includes('weekends')) {
             if ('days' in teamDetails?.availability?.weekends_avl) {
               talentAvailabilityDays = [...talentAvailabilityDays, 'weekends'];
               setValue('weekends', teamDetails?.availability?.weekends_avl?.days, { shouldValidate: true });
@@ -612,9 +662,17 @@ const Profile = () => {
                 { shouldValidate: true },
               );
             }
+          } else {
+            setValue('weekends', savedFormData?.weekends, { shouldValidate: true });
+            setValue('weekendStartTime', savedFormData?.weekendStartTime, { shouldValidate: true });
+            setValue('weekendEndTime', savedFormData?.weekendEndTime, { shouldValidate: true });
           }
 
-          setValue('availabilityDays', talentAvailabilityDays, { shouldValidate: true });
+          if (!savedFormData?.availabilityDays?.length) {
+            setValue('availabilityDays', talentAvailabilityDays, { shouldValidate: true });
+          } else {
+            setValue('availabilityDays', savedFormData?.availabilityDays, { shouldValidate: true });
+          }
         }
       }
     }
@@ -656,6 +714,41 @@ const Profile = () => {
     setSelectedImagePreview(null);
     setImageUrlRes(null);
   };
+
+  useEffect(() => {
+    if (selectedImage) {
+      dispatch(setFormDocuments(selectedImage));
+    }
+  }, [selectedImage]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: ProfileSchema.fields,
+      });
+      reset(requiredFields);
+      const cleanedRequiredFields = Object.entries(requiredFields)
+        .filter(([, value]) => !(Array.isArray(value) && value.length === 0)) // Filter out keys with empty arrays
+        .reduce((acc, [key, value]) => {
+          acc[key] = value; // Recreate the object with remaining keys
+          return acc;
+        }, {});
+      const keysWithValues = Object.keys(cleanedRequiredFields).filter((key) => cleanedRequiredFields[key]);
+      trigger(keysWithValues);
+    }
+    if (savedFormDocuments) {
+      setSelectedImage(savedFormDocuments);
+      if (!location.pathname.includes('profile-edit')) {
+        setSelectedImagePreview(URL.createObjectURL(savedFormDocuments));
+      } else {
+        setSelectedImagePreview(savedFormDocuments);
+      }
+    }
+    if (savedFormImage) {
+      setImageUrlRes(savedFormImage);
+    }
+  }, []);
 
   return (
     <ProfileFormContainer className="w-75">
@@ -1052,7 +1145,7 @@ const Profile = () => {
                             )}
                           />
                           {errors.weekdayStartTime && (
-                            <FormFeedback>{errors.weekdayStartTime.label.message}</FormFeedback>
+                            <FormFeedback>{errors.weekdayStartTime.label?.message}</FormFeedback>
                           )}
                         </Col>
                         <Col sm="6" md="6" lg="3">
@@ -1083,7 +1176,7 @@ const Profile = () => {
                               />
                             )}
                           />
-                          {errors.weekdayEndTime && <FormFeedback>{errors.weekdayEndTime.label.message}</FormFeedback>}
+                          {errors.weekdayEndTime && <FormFeedback>{errors.weekdayEndTime.label?.message}</FormFeedback>}
                         </Col>
                       </Row>
                       <Row className="mt-2">

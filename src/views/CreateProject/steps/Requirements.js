@@ -274,10 +274,6 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   }, [localFormData]);
 
   useEffect(() => {
-    dispatch(setFormDocuments(files));
-  }, [files]);
-
-  useEffect(() => {
     clearErrors('expectedDuration');
     if (watch('expectedDuration') >= 0) {
       trigger('expectedDuration');
@@ -472,6 +468,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   useEffect(() => {
     filesRef.current = files;
+    dispatch(setFormDocuments(files));
   }, [files]);
 
   const handleUploadFile = async (file) => {

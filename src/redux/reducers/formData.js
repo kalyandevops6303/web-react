@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   formData: null,
   formDocuments: null,
+  formImage: null,
 };
 
 const formData = createSlice({
@@ -17,17 +18,19 @@ const formData = createSlice({
       ...state,
       formDocuments: action.payload,
     }),
-    clearFormData: (state) => ({
+    setFormImage: (state, action) => ({
+      ...state,
+      formImage: action.payload,
+    }),
+    clearAllFormData: (state) => ({
       ...state,
       formData: null,
-    }),
-    clearFormDocuments: (state) => ({
-      ...state,
       formDocuments: null,
+      formImage: null,
     }),
   },
 });
 
-export const { setFormData, setFormDocuments, clearFormData, clearFormDocuments } = formData.actions;
+export const { setFormData, setFormDocuments, setFormImage, clearAllFormData } = formData.actions;
 
 export default formData.reducer;
