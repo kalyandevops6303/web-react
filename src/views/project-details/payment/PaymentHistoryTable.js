@@ -10,7 +10,7 @@ import {
 } from '../../../services/projectMilestoneService';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
-import { formatDate } from '../../../utility/Utils';
+import { formatDate, roundOfAmount } from '../../../utility/Utils';
 import { PAYMENT_STATUS, paymentText, userTypes } from '../../../utility/constants/Constant';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import theme from '../../../configs/themeVariables';
@@ -196,7 +196,7 @@ function PaymentHistoryTable() {
                     <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
                   </td>
                   {isTalent || isTeam ? null : <td>{item?.application_fee ? `$ ${item?.application_fee}` : '-'}</td>}
-                  <td>$ {getTotalAmount(item)}</td>
+                  <td>$ {roundOfAmount(getTotalAmount(item))}</td>
                 </tr>
               ))}
             </tbody>

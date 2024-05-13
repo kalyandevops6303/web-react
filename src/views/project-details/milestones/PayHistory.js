@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge, Card, CardText, Table } from 'reactstrap';
 import Proptypes from 'prop-types';
-import { formatDate } from '../../../utility/Utils';
+import { formatDate, roundOfAmount } from '../../../utility/Utils';
 
 const PayHistory = ({ transactions = [] }) => (
   <Card className="gray-card p-0">
@@ -25,7 +25,7 @@ const PayHistory = ({ transactions = [] }) => (
               <td>
                 <Badge color={item?.status === 'PENDING' ? 'light-danger' : 'light-success'}>{item?.status}</Badge>
               </td>
-              <td>${item?.amount}</td>
+              <td>${roundOfAmount(item?.amount)}</td>
             </tr>
           ))}
         </tbody>

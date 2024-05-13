@@ -202,13 +202,18 @@ const SearchProjectCard = ({
                 </div>
 
                 {!showFullText ? (
-                  <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
-                    {data?.details?.description ?? data?.description}
-                  </div>
+                  <div
+                    className="my-div"
+                    ref={divRef}
+                    style={{ maxHeight: '6.1rem', overflow: 'hidden' }}
+                    dangerouslySetInnerHTML={{ __html: data?.details?.description ?? data?.description }}
+                  />
                 ) : (
-                  <div className="my-div" ref={divRef}>
-                    {data?.details?.description ?? data?.description}
-                  </div>
+                  <div
+                    className="my-div"
+                    ref={divRef}
+                    dangerouslySetInnerHTML={{ __html: data?.details?.description ?? data?.description }}
+                  />
                 )}
 
                 {isContentOverflowing && (
