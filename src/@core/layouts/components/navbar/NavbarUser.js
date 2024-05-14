@@ -30,8 +30,10 @@ const NavbarUser = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
   const unreadMsgCount = useSelector((state) => state.chat.unreadMsgCount);
   const notificationsPollingData = useSelector(notificationsPolling);
+  const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
 
-  const isTabDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW || isUserDataLoading;
+  const isTabDisabled =
+    userDetailsData?.club_status === clubStatus.IN_REVIEW || isUserDataLoading || !isCometChatLoggedIn;
   const isChatView = location.pathname.includes('/chat');
   const isNotificationView = location.pathname.includes('/notifications');
 
