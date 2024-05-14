@@ -32,8 +32,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
   const notificationsPollingData = useSelector(notificationsPolling);
   const isCometChatLoggedIn = useSelector((state) => state.auth.isCometChatLoggedIn);
 
-  const isTabDisabled =
-    userDetailsData?.club_status === clubStatus.IN_REVIEW || isUserDataLoading || !isCometChatLoggedIn;
+  const isTabDisabled = userDetailsData?.club_status === clubStatus.IN_REVIEW || isUserDataLoading;
   const isChatView = location.pathname.includes('/chat');
   const isNotificationView = location.pathname.includes('/notifications');
 
@@ -78,7 +77,7 @@ const NavbarUser = ({ setNavBarLoading }) => {
         ''
       ) : (
         <>
-          {isTabDisabled ? (
+          {isTabDisabled || !isCometChatLoggedIn ? (
             <MessageIconContainer>
               <div className="text-muted cursor-not-allowed mb-auto mt-75">
                 <MessageSquare size={20} color={theme.bodyColor} />
