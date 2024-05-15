@@ -109,6 +109,10 @@ const PAYMENT_STATUS = {
   FUNDS_UNAVAILABLE: 'FUNDS_UNAVAILABLE',
 };
 
+const CHECKOUT_STATUS = {
+  CANCELLED: 'CANCELLED',
+};
+
 const paymentText = {
   PENDING: 'Pending',
   INITIATED: 'Initiated',
@@ -191,4 +195,5 @@ export {
   paymentText,
   bidStages,
   invitationUserStatus,
+  CHECKOUT_STATUS,
 };
