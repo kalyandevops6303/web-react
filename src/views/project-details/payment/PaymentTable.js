@@ -13,7 +13,7 @@ import {
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import MakePaymentModal from '../../modals/MakePaymentModal';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
-import { formatDate } from '../../../utility/Utils';
+import { formatDate, roundOfAmount } from '../../../utility/Utils';
 import TransactionTimeline from './TransactionTimeline';
 import PaymentStatusForRow from './PaymentStatusForRow';
 import PaymentBy from './PaymentBy';
@@ -376,15 +376,19 @@ const PaymentTable = () => {
                                     <div className="d-flex flex-column">
                                       <span>
                                         ${' '}
-                                        {milestoneTransactionDetails?.find(
-                                          (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
-                                        )?.amount ?? 0}
+                                        {roundOfAmount(
+                                          milestoneTransactionDetails?.find(
+                                            (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
+                                          )?.amount ?? 0,
+                                        )}
                                       </span>
                                       <span>
                                         ${' '}
-                                        {milestoneTransactionDetails?.find(
-                                          (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
-                                        )?.application_fee ?? 0}
+                                        {roundOfAmount(
+                                          milestoneTransactionDetails?.find(
+                                            (transaction) => transaction?.payment_type === PAYMENT_TYPES.CHECKOUT,
+                                          )?.application_fee ?? 0,
+                                        )}
                                       </span>
                                     </div>
                                   </td>
