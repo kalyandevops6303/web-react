@@ -104,7 +104,9 @@ const updatePaymentStatus = (data) => async (dispatch) => {
   dispatch(updatePaymentStatusRequest());
   try {
     await updatePaymentStatusService(data);
-    dispatch(updatePaymentStatusSuccess());
+    setTimeout(() => {
+      dispatch(updatePaymentStatusSuccess());
+    }, 5000);
   } catch (error) {
     errorHandler(error, updatePaymentStatusFailure);
   }
