@@ -8,7 +8,7 @@ import {
   makeMilestonePaymentService,
   spendingDetailService,
   upcomingPaymentsService,
-  // updatePaymentStatusService,
+  updatePaymentStatusService,
 } from '../../services/paymentDetailService';
 import errorHandler from '../../utility/errorHandler';
 import {
@@ -100,10 +100,10 @@ const getDashboardUpcomingPayments = () => async (dispatch) => {
   }
 };
 
-const updatePaymentStatus = () => async (dispatch) => {
+const updatePaymentStatus = (data) => async (dispatch) => {
   dispatch(updatePaymentStatusRequest());
   try {
-    // await updatePaymentStatusService(data);
+    await updatePaymentStatusService(data);
     setTimeout(() => {
       dispatch(updatePaymentStatusSuccess());
     }, 3000);
