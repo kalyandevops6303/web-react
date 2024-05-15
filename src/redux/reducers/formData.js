@@ -4,6 +4,7 @@ const initialState = {
   formData: null,
   formDocuments: null,
   formImage: null,
+  isFormImageRemoved: null,
 };
 
 const formData = createSlice({
@@ -22,15 +23,21 @@ const formData = createSlice({
       ...state,
       formImage: action.payload,
     }),
+    setIsFormImageRemoved: (state, action) => ({
+      ...state,
+      isFormImageRemoved: action.payload,
+    }),
     clearAllFormData: (state) => ({
       ...state,
       formData: null,
       formDocuments: null,
       formImage: null,
+      isFormImageRemoved: null,
     }),
   },
 });
 
-export const { setFormData, setFormDocuments, setFormImage, clearAllFormData } = formData.actions;
+export const { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved, clearAllFormData } =
+  formData.actions;
 
 export default formData.reducer;

@@ -8,4 +8,6 @@ const formDocuments = createSelector(formDataSelector, (state) => state.formDocu
 
 const formImage = createSelector(formDataSelector, (state) => state.formImage);
 
-export { formData, formDocuments, formImage };
+const isFormImageRemoved = createSelector(formDataSelector, (state) => state.isFormImageRemoved);
+
+export { formData, formDocuments, formImage, isFormImageRemoved };

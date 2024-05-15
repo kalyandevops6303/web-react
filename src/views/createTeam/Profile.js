@@ -53,8 +53,8 @@ import { getLanguages } from '../../redux/actions/staticActions';
 import { languages } from '../../redux/selectors/staticSelectors';
 import TeamCreatingModal from './TeamCreatingModal';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
-import { formData, formDocuments, formImage } from '../../redux/selectors/formDataSelectors';
-import { setFormData, setFormDocuments, setFormImage } from '../../redux/reducers/formData';
+import { formData, formDocuments, formImage, isFormImageRemoved } from '../../redux/selectors/formDataSelectors';
+import { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
 import { getItemFromSession } from '../../utility/sessesionStorageControl';
 
 const Profile = () => {
@@ -217,6 +217,7 @@ const Profile = () => {
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const savedFormImage = useSelector(formImage);
+  const savedIsFormImageRemoved = useSelector(isFormImageRemoved);
 
   const localFormData = useWatch({ control });
 
@@ -546,17 +547,18 @@ const Profile = () => {
   useEffect(() => {
     if (location.pathname.includes('profile-edit')) {
       if (teamDetails) {
-        if (teamDetails?.team_logo.length > 0) {
-          if (savedFormDocuments) {
-            setSelectedImage(savedFormDocuments);
-            if (savedFormImage) {
-              setSelectedImagePreview(URL.createObjectURL(savedFormDocuments));
-            } else {
-              setSelectedImagePreview(savedFormDocuments);
-            }
+        if (savedIsFormImageRemoved) {
+          setSelectedImage(null);
+          setSelectedImagePreview(null);
+        } else if (teamDetails?.team_logo.length > 0 && !savedFormDocuments) {
+          setSelectedImage(teamDetails.team_logo);
+          setSelectedImagePreview(teamDetails.team_logo);
+        } else {
+          setSelectedImage(savedFormDocuments);
+          if (savedFormImage) {
+            setSelectedImagePreview(URL.createObjectURL(savedFormDocuments));
           } else {
-            setSelectedImage(teamDetails.team_logo);
-            setSelectedImagePreview(teamDetails.team_logo);
+            setSelectedImagePreview(savedFormDocuments);
           }
         }
         if (teamDetails?.name?.length > 0 && !savedFormData?.teamName) {
@@ -713,6 +715,9 @@ const Profile = () => {
     setSelectedImage(null);
     setSelectedImagePreview(null);
     setImageUrlRes(null);
+    dispatch(setFormDocuments(null));
+    dispatch(setFormImage(null));
+    dispatch(setIsFormImageRemoved(true));
   };
 
   useEffect(() => {
@@ -737,7 +742,11 @@ const Profile = () => {
       const keysWithValues = Object.keys(cleanedRequiredFields).filter((key) => cleanedRequiredFields[key]);
       trigger(keysWithValues);
     }
-    if (savedFormDocuments) {
+    if (savedIsFormImageRemoved) {
+      dispatch(setIsFormImageRemoved(true));
+      setSelectedImage(null);
+      setSelectedImagePreview(null);
+    } else if (savedFormDocuments) {
       setSelectedImage(savedFormDocuments);
       if (!location.pathname.includes('profile-edit')) {
         setSelectedImagePreview(URL.createObjectURL(savedFormDocuments));
