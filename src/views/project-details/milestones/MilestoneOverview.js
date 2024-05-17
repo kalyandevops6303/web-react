@@ -88,7 +88,7 @@ const MilestoneOverview = ({ selectedMilestone }) => {
               </Button>
               {selectedMilestone?.status === 'IN_REVIEW' && userData?.user_type === userTypes.client && (
                 <Button onClick={handleAccept} className="d-contents" color="primary">
-                  Accept
+                  Accept & Pay
                 </Button>
               )}
               {selectedMilestone?.status === 'ON_GOING' && userData?.user_type !== userTypes.client && (

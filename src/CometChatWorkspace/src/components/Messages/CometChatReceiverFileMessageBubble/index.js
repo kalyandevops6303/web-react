@@ -3,41 +3,39 @@ import React from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
-import { CometChat } from '@cometchat-pro/chat';
 
 import { CometChatMessageActions, CometChatThreadedMessageReplyCount, CometChatReadReceipt } from '../';
 import { CometChatMessageReactions } from '../Extensions';
-import { CometChatAvatar } from '../../Shared';
 
 import { CometChatContext } from '../../../util/CometChatContext';
-import { checkMessageForExtensionsData } from '../../../util/common';
+import { checkMessageForExtensionsData, getMessageFileMetadata } from '../../../util/common';
+import * as enums from '../../../util/enums.js';
 
 import { theme } from '../../../resources/theme';
 
 import {
   messageContainerStyle,
   messageWrapperStyle,
-  messageThumbnailStyle,
-  messageDetailStyle,
-  nameWrapperStyle,
-  nameStyle,
-  messageFileContainerStyle,
-  messageFileWrapperStyle,
+  messageFileWrapper,
   messageInfoWrapperStyle,
   messageReactionsWrapperStyle,
   iconStyle,
-  fileIconStyle,
   messageFileStyle,
-  fileTypeIconContainerStyle,
   fileBodyStyle,
   fileNameStyle,
+  fileSizeStyle,
   fileDownloadIconStyle,
+  fileTypeIconContainerStyle,
   messageTitleStyle,
+  messageThumbnailStyle,
+  nameWrapperStyle,
+  nameStyle,
+  messageDetailsStyle,
 } from './style';
 
 import downloadIcon from './resources/download.png';
-import fileIcon from './resources/file-upload.svg';
-import { getFileIcon, getUserColor } from '../../../util/HelperFunctions';
+import { getFileIcon, getUserColor } from '../../../util/HelperFunctions.js';
+import { CometChatAvatar } from '../../Shared/index.js';
 
 class CometChatReceiverFileMessageBubble extends React.Component {
   static contextType = CometChatContext;
@@ -47,17 +45,43 @@ class CometChatReceiverFileMessageBubble extends React.Component {
 
     this.state = {
       isHovering: false,
+      fileData: {},
     };
+  }
+
+  componentDidMount() {
+    const fileData = this.getFileData();
+    this.setState({ fileData: fileData });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const currentMessageStr = JSON.stringify(this.props.message);
     const nextMessageStr = JSON.stringify(nextProps.message);
 
-    if (currentMessageStr !== nextMessageStr || this.state.isHovering !== nextState.isHovering) {
+    if (
+      currentMessageStr !== nextMessageStr ||
+      this.state.isHovering !== nextState.isHovering ||
+      this.state.fileData !== nextState.fileData
+    ) {
       return true;
     }
     return false;
+  }
+
+  componentDidUpdate(prevProps) {
+    const previousMessageStr = JSON.stringify(prevProps.message);
+    const currentMessageStr = JSON.stringify(this.props.message);
+
+    if (previousMessageStr !== currentMessageStr) {
+      const fileData = this.getFileData();
+
+      const previousfileData = JSON.stringify(this.state.fileData);
+      const currentfileData = JSON.stringify(fileData);
+
+      if (previousfileData !== currentfileData) {
+        this.setState({ fileData: fileData });
+      }
+    }
   }
 
   handleMouseHover = () => {
@@ -70,27 +94,48 @@ class CometChatReceiverFileMessageBubble extends React.Component {
     };
   };
 
+  getFileData = () => {
+    const metadataKey = enums.CONSTANTS['FILE_METADATA'];
+    const fileMetadata = getMessageFileMetadata(this.props.message, metadataKey);
+
+    if (fileMetadata instanceof Blob) {
+      return { fileName: fileMetadata['name'] };
+    } else if (
+      this.props.message.data.attachments &&
+      typeof this.props.message.data.attachments === 'object' &&
+      this.props.message.data.attachments.length
+    ) {
+      const fileName = this.props.message.data.attachments[0]?.name;
+      const fileUrl = this.props.message.data.attachments[0]?.url;
+
+      return { fileName, fileUrl: fileUrl };
+    }
+  };
+
   render() {
+    if (!Object.keys(this.state.fileData).length) {
+      return null;
+    }
+
     let avatar = null,
       name = null;
-    if (this.props.message.receiverType === CometChat.RECEIVER_TYPE.GROUP) {
-      avatar = (
-        <div css={messageThumbnailStyle()} className="message__thumbnail">
-          <CometChatAvatar user={this.props.message.sender} />
-        </div>
-      );
 
-      const userColor = getUserColor(this.props.message.sender);
-      this.context.userColor = userColor;
+    avatar = (
+      <div css={messageThumbnailStyle()} className="message__thumbnail">
+        <CometChatAvatar user={this.props.message.sender} />
+      </div>
+    );
 
-      name = (
-        <div css={nameWrapperStyle(avatar)} className="message__name__wrapper">
-          <span css={nameStyle(this.context)} className="message__name">
-            {this.props.message.sender.name}
-          </span>
-        </div>
-      );
-    }
+    const userColor = getUserColor(this.props.message.sender);
+    this.context.userColor = userColor;
+
+    name = (
+      <div css={nameWrapperStyle(avatar)} className="message__name__wrapper">
+        <span css={nameStyle(this.context)} className="message__name">
+          {this.props.message.sender.name}
+        </span>
+      </div>
+    );
 
     let messageReactions = null;
     const reactionsData = checkMessageForExtensionsData(this.props.message, 'reactions');
@@ -111,69 +156,67 @@ class CometChatReceiverFileMessageBubble extends React.Component {
       );
     }
 
-    let fileMessage = (
-      <a
-        css={messageFileStyle()}
-        href={this.props.message.data.attachments[0].url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="message__file_tile"
-      >
-        <div css={fileTypeIconContainerStyle()} className="filetype__icon__container">
-          <img
-            src={getFileIcon(this.props.message.data.attachments[0].name)}
-            className="filetype__icon"
-            css={fileIconStyle()}
-          />
-        </div>
-        <div css={fileBodyStyle()} className="file__body">
-          <div css={fileNameStyle()} className="file__name">
-            {this.props.message.data.attachments[0].name}
+    let fileMessage = null;
+    if (this.state.fileData.hasOwnProperty('fileUrl')) {
+      fileMessage = (
+        <a
+          css={messageFileStyle()}
+          href={this.state.fileData?.fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="message__file_tile"
+        >
+          <div css={fileTypeIconContainerStyle()} className="filetype__icon__container">
+            <img src={getFileIcon(this.state.fileData?.fileName)} className="filetype__icon" css={iconStyle()} />
           </div>
-          {/* <div css={fileSizeStyle()} className="file__size">
+          <div css={fileBodyStyle()} className="file__body">
+            <div css={fileNameStyle()} className="file__name">
+              {this.state.fileData?.fileName}
+            </div>
+            {/* <div css={fileSizeStyle()} className="file__size">
               125 MB
             </div> */}
-        </div>
-        <img css={fileDownloadIconStyle()} className="file__download__icon" src={downloadIcon} />
-      </a>
-    );
+          </div>
+          <img css={fileDownloadIconStyle()} className="file__download__icon" src={downloadIcon} />
+        </a>
+      );
+    } else {
+      fileMessage = (
+        <React.Fragment>
+          <img src={getFileIcon(this.state.fileData?.fileName)} className="filetype__icon" css={iconStyle()} />
+          <p>{this.state.fileData?.fileName}</p>
+        </React.Fragment>
+      );
+    }
 
     return (
       <div
         css={messageContainerStyle()}
-        className="receiver__message__container message__file"
+        className="sender__message__container message__file"
         onMouseEnter={this.handleMouseHover}
         onMouseLeave={this.handleMouseHover}
       >
-        <div css={messageWrapperStyle()} className="message__wrapper">
-          {avatar}
-          <div css={messageDetailStyle()} className="message__details">
-            {name}
-            {toolTipView}
-            <div css={messageFileContainerStyle()} className="message__file__container">
-              {/* <div css={messageFileWrapperStyle(this.context)} className="message__file__wrapper">
-                <a href={this.props.message.data.attachments[0].url} target="_blank" rel="noopener noreferrer">
-                  <i css={iconStyle(fileIcon, this.context)}></i>
-                  <label>{this.props.message.data.attachments[0].name}</label>
-                </a>
-              </div> */}
-              <div css={messageFileWrapperStyle(this.context)} className="message__file__wrapper">
-                <div css={messageTitleStyle()} className="message__title">
-                  Files
-                </div>
-                {fileMessage}
+        {avatar}
+        <div css={messageDetailsStyle()} className="message__details">
+          {name}
+          {toolTipView}
+          <div css={messageWrapperStyle()} className="message__wrapper">
+            <div css={messageFileWrapper(this.context)} className="message__file__wrapper">
+              <div css={messageTitleStyle()} className="message__title">
+                Files
               </div>
+              {fileMessage}
             </div>
+          </div>
 
-            {messageReactions}
+          {messageReactions}
 
-            <div css={messageInfoWrapperStyle()} className="message__info__wrapper">
-              <CometChatReadReceipt message={this.props.message} />
-              <CometChatThreadedMessageReplyCount
-                message={this.props.message}
-                actionGenerated={this.props.actionGenerated}
-              />
-            </div>
+          <div css={messageInfoWrapperStyle()} className="message__info__wrapper">
+            <CometChatThreadedMessageReplyCount
+              message={this.props.message}
+              actionGenerated={this.props.actionGenerated}
+            />
+            <CometChatReadReceipt message={this.props.message} />
           </div>
         </div>
       </div>

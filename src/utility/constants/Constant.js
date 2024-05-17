@@ -109,6 +109,10 @@ const PAYMENT_STATUS = {
   FUNDS_UNAVAILABLE: 'FUNDS_UNAVAILABLE',
 };
 
+const CHECKOUT_STATUS = {
+  CANCELLED: 'CANCELLED',
+};
+
 const paymentText = {
   PENDING: 'Pending',
   INITIATED: 'Initiated',
@@ -137,6 +141,11 @@ const bidStatus = {
   BID_CHANGE_ACCPETED: 'BID_CHANGE_ACCEPTED',
   BID_CHANGE_REJECTED: 'BID_CHANGE_REJECTED',
   BID_CHANGE_REQUEST: 'BID_CHANGE_REQUEST',
+};
+
+const invitationUserStatus = {
+  REGISTERED: 'REGISTERED',
+  UNREGISTERED: 'UNREGISTERED',
 };
 
 const fileScanStatus = {
@@ -185,4 +194,6 @@ export {
   minimumAvatarLength,
   paymentText,
   bidStages,
+  invitationUserStatus,
+  CHECKOUT_STATUS,
 };

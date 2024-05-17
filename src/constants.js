@@ -7,6 +7,10 @@ export const GOOGLE_ANALYTICS_CONSTANTS = {
   TRACKING_ID: import.meta.env.GOOGLE_ANALYTICS_TRACKING_ID,
 };
 
+export const HOTJAR_ANALYTICS_CONSTANTS = {
+  TRACKING_ID: import.meta.env.VITE_HOTJAR_TRACKING_ID,
+};
+
 export const FIREBASE_CONSTANTS = {
   PUBLIC_VAPID_KEY: import.meta.env.VITE_VAPID,
   CONFIG: {
