@@ -46,9 +46,10 @@ import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
-  const [searchText, setSearchText] = useState('');
-  const dispatch = useDispatch();
   const location = useLocation();
+  const [searchText, setSearchText] = useState(location?.state?.clientName ?? '');
+  const [inputText, setInputText] = useState(location?.state?.clientName ?? '');
+  const dispatch = useDispatch();
   const isTab = useIsTab();
   const popoverRef = useRef(null);
   const inputRef = useRef();
@@ -131,11 +132,11 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
     return ProjectCard;
   };
-
   const onSuccess = () => {};
   const onError = () => {
     setHasMore(false);
   };
+
   useEffect(() => {
     dispatch(clearData());
     const valuesOnly = {};
@@ -185,21 +186,6 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
       }
     }
   }, [secondFilterState, searchText, primaryFilter, isRecommanded, isFavorite, userType]);
-
-  useEffect(() => {
-    if (location?.state?.isRecommended) {
-      setSecondFilterState({
-        ...secondFilterState,
-        sort_by: [{ label: 'Recommended', value: 'RECOMMENDED' }],
-      });
-    }
-    if (location?.state?.isOpenListing) {
-      setSecondFilterState({
-        ...secondFilterState,
-        statuses: [{ label: 'Open', value: 'OPEN' }],
-      });
-    }
-  }, [location]);
 
   // Function to toggle the popover
   const togglePopover = () => {
@@ -326,8 +312,21 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   };
 
+  useEffect(() => {
+    const debouncedHandleSearchTextChange = debounce((value) => {
+      setSearchText(value);
+    }, 300);
+
+    debouncedHandleSearchTextChange(inputText);
+
+    // Cleanup the debounce function
+    return () => {
+      debouncedHandleSearchTextChange.cancel();
+    };
+  }, [inputText]);
+
   const handleSearchTextChange = (e) => {
-    setSearchText(e.target.value);
+    setInputText(e.target.value);
     e.preventDefault();
   };
 
@@ -462,11 +461,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
               <InputGroupText>
                 <Search size={14} />
               </InputGroupText>
-              <Input
-                innerRef={inputRef}
-                onChange={debounce(handleSearchTextChange, 300)}
-                placeholder={getSearchPlaceholder()}
-              />
+              <Input value={inputText} onChange={handleSearchTextChange} placeholder={getSearchPlaceholder()} />
             </InputGroup>
           </div>
           <Row>

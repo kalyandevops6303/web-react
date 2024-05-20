@@ -88,10 +88,15 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
   const currentURL = window.location.href;
 
   const handlePayment = () => {
+    const url = new URL(currentURL);
+
+    // Remove the query parameters
+    const baseURL = url.origin + url.pathname;
+
     const payload = {
       milestones: [...selectedIds],
-      success_url: currentURL,
-      cancel_url: currentURL,
+      success_url: baseURL,
+      cancel_url: baseURL,
     };
     dispatch(makeMilestonePayment(payload, onSuccess));
   };

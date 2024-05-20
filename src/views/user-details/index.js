@@ -1,5 +1,5 @@
 import { Briefcase, Calendar, Check } from 'react-feather';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Col, Row } from 'reactstrap';
@@ -30,6 +30,7 @@ import MembersListingCard from './overview/MembersListingCard';
 const UserDetails = () => {
   const dispatch = useDispatch();
   const param = useParams();
+  const navigate = useNavigate();
   const userData = useSelector(selectAuthUserData);
   const userDataSelector = useSelector(selectUserData);
   const requestStatusData = useSelector((state) => state.inviteTalent.getRequestStatus);
@@ -192,6 +193,12 @@ const UserDetails = () => {
     );
   };
 
+  const handelRedirectToOpenListing = () => {
+    navigate(`/marketplace/all_listings`, {
+      state: { clientName: `${currentProfile?.first_name} ${currentProfile?.last_name}` },
+    });
+  };
+
   if (loading) {
     return <ComponentSpinner />;
   }
@@ -247,6 +254,19 @@ const UserDetails = () => {
                 isEditable={userData?._id === param?.userId}
                 isClubProfile={currentProfile.team_type === 'CLUB'}
               />
+              {isClient && (
+                <Col lg="3" className="pe-75">
+                  <Statbox
+                    className="cursor-pointer"
+                    onClick={handelRedirectToOpenListing}
+                    elevate={false}
+                    title={currentProfile?.open_listing_count || 0}
+                    desc="Open listing(s)"
+                    icon={<img src={MoneyIcon} height={22} alt="money" />}
+                    color="light-warning"
+                  />
+                </Col>
+              )}
               <Col lg="3" className="pe-75">
                 <Statbox
                   elevate={false}
