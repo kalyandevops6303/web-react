@@ -55,6 +55,8 @@ import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors'
 import ChangeBidTypeConfirmationModal from '../../modals/ChangeBidTypeConfirmationModal';
 import CreateBidModal from '../../modals/CreateBidModal';
 import capitalize from '../../../lib/capitalize';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 
 const VariableAdvanceMilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -172,6 +174,8 @@ const VariableAdvanceMilestoneView = () => {
   const selectUserDetailsData = useSelector(selectUserData);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
 
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
@@ -184,6 +188,13 @@ const VariableAdvanceMilestoneView = () => {
   const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
   const [createBidModal, setCreateBidModal] = useState(null);
   const [bidData, setBidData] = useState(null);
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   const toggle = (id) => {
     if (open === id) {
@@ -271,6 +282,7 @@ const VariableAdvanceMilestoneView = () => {
     });
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/preview`);
   };
 
@@ -435,6 +447,7 @@ const VariableAdvanceMilestoneView = () => {
 
   useEffect(() => {
     filesRef.current = files;
+    dispatch(setFormDocuments(files));
   }, [files]);
 
   const handleUploadFile = async (file) => {
@@ -569,10 +582,12 @@ const VariableAdvanceMilestoneView = () => {
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
       setBidData(res);
-      if (res?.project_start_date > 0) {
+      if (res?.project_start_date > 0 && !savedFormData?.estimatedStartDate) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
+      } else if (savedFormData?.estimatedStartDate) {
+        setValue('estimatedStartDate', new Date(savedFormData?.estimatedStartDate), { shouldValidate: true });
       }
-      if (res?.milestones?.length > 0) {
+      if (res?.milestones?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = res?.milestones?.map((milestone) => ({
           milestoneId: uuidv4(),
           name: milestone?.name,
@@ -604,7 +619,7 @@ const VariableAdvanceMilestoneView = () => {
 
         setValue('milestones', reqData, { shouldValidate: true });
         trigger('milestones');
-      } else if (res?.workers?.length > 0) {
+      } else if (res?.workers?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = [
           {
             milestoneId: uuidv4(),
@@ -623,8 +638,10 @@ const VariableAdvanceMilestoneView = () => {
         ];
 
         setValue('milestones', reqData, { shouldValidate: true });
+      } else {
+        setValue('milestones', savedFormData?.milestones, { shouldValidate: true });
       }
-      if (res?.documents?.length > 0) {
+      if (res?.documents?.length > 0 && !savedFormDocuments?.length) {
         const reqFiles = res?.documents?.map((file) => ({
           file,
           id: uuidv4(),
@@ -634,6 +651,8 @@ const VariableAdvanceMilestoneView = () => {
           isUploaded: true,
         }));
         setFiles(reqFiles);
+      } else if (savedFormDocuments?.length) {
+        setFiles(savedFormDocuments);
       }
       if (res?.workers?.length > 0) {
         setAllWorkers(res?.workers);
@@ -1260,7 +1279,7 @@ const VariableAdvanceMilestoneView = () => {
                     </div>
                   </UncontrolledTooltip>
                 </Label>
-                {files.length ? (
+                {files?.length ? (
                   <>
                     <div className="px-1 mt-50">{fileList()}</div>
                     <div {...getRootProps({ className: 'dropzone' })}>
