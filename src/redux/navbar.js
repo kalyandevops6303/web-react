@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -50,6 +51,7 @@ export const layoutSlice = createSlice({
             item.isBookmarked = !item.isBookmarked;
             objectToUpdate = item;
           }
+          return objectToUpdate;
         });
 
         // ** Get index to add or remove bookmark from array

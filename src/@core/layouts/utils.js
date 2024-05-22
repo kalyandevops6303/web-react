@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 /* eslint-disable implicit-arrow-linebreak */
 // ** React Imports
 import { useContext } from "react";
@@ -52,6 +51,7 @@ export const hasActiveChild = (item, currentUrl) => {
     return false;
   }
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const child of children) {
     if (child.children) {
       if (hasActiveChild(child, currentUrl)) {
