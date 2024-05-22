@@ -136,8 +136,8 @@ const CustomBadge = styled.span`
     color: ${theme.fundedBlueColor};
   }
   .NOT_FUNDED {
-    background: ${theme.darkRedColor}1f !important;
-    color: ${theme.darkRedColor};
+    background: ${theme.disabledGrayColor}1f !important;
+    color: ${theme.disabledGrayColor};
   }
 
   .P {

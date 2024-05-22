@@ -192,7 +192,10 @@ const PaymentTable = () => {
   const getTagSettings = (tag) => {
     const { payment_status = '', status = '' } = tag;
     if (payment_status === PAYMENT_STATUS.PAYMENT_FAILED || payment_status === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: isClient ? paymentText.RETRY_PAYMENT : paymentText.NOT_FUNDED };
+      return {
+        theme: 'light-danger',
+        text: isClient ? paymentText.RETRY_PAYMENT : paymentText.NOT_FUNDED,
+      };
     }
     if (payment_status === PAYMENT_STATUS.PAYMENT_DUE || payment_status === PAYMENT_STATUS.PENDING) {
       return { theme: 'light-warning', text: isClient ? paymentText.PAYMENT_DUE : paymentText.NOT_FUNDED };
@@ -342,6 +345,7 @@ const PaymentTable = () => {
                             <CustomBadge>
                               <Badge
                                 className={classnames({
+                                  NOT_FUNDED: !isClient && !isPaymentDone(item),
                                   PAID_AMOUNT: item?.payment_status === 'PAID' && item?.status === 'COMPLETED',
                                   FUNDED: item?.payment_status === 'PAID' && item?.status !== 'COMPLETED',
                                   [item?.payment_status]: item?.payment_status !== 'PAID',
