@@ -91,9 +91,10 @@ const VerticalLayout = (props) => {
   }, [location]);
 
   //* * Sets Window Size & Layout Props
+  
   useEffect(() => {
     if (window !== undefined) {
-      window.addEventListener("resize", handleWindowWidth);
+     window.addEventListener("resize", handleWindowWidth);
     }
   }, [windowWidth]);
 
