@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Card, CardText, Table, UncontrolledTooltip } from 'reactstrap';
 import { Copy, Info } from 'react-feather';
+import classnames from 'classnames';
 import styled from 'styled-components';
 
 import {
@@ -14,6 +15,7 @@ import { formatDate, roundOfAmount } from '../../../utility/Utils';
 import { PAYMENT_STATUS, PAYMENT_TYPES, paymentText, userTypes } from '../../../utility/constants/Constant';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import theme from '../../../configs/themeVariables';
+import { CustomBadge } from '../../styled';
 
 function PaymentHistoryTable() {
   const [transactions, setTransactions] = useState([]);
@@ -195,7 +197,16 @@ function PaymentHistoryTable() {
                   )}
                   <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Payment Deposited' : 'Pay Out'}</td>
                   <td>
-                    <Badge color={getTagSettings(item).theme}>{getTagSettings(item).text}</Badge>
+                    <CustomBadge>
+                      <Badge
+                        className={classnames({
+                          [`${item?.payment_type}_${item?.status}`]: item?.status === PAYMENT_STATUS.PAID,
+                          [item?.status]: true,
+                        })}
+                      >
+                        {getTagSettings(item).text}
+                      </Badge>
+                    </CustomBadge>
                   </td>
                   {isTalent || isTeam ? null : <td>{item?.application_fee ? `$ ${item?.application_fee}` : '-'}</td>}
                   <td>$ {roundOfAmount(getTotalAmount(item))}</td>

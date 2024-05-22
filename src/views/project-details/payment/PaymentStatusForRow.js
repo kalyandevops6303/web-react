@@ -1,7 +1,9 @@
 import React from 'react';
 import { Badge } from 'reactstrap';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { PAYMENT_STATUS, PAYMENT_TYPES, paymentText } from '../../../utility/constants/Constant';
+import { CustomBadge } from '../../styled';
 
 function PaymentStatusForRow({ isClient, milestoneTransactionDetails = [] }) {
   const getTagSettings = (tag) => {
@@ -31,7 +33,16 @@ function PaymentStatusForRow({ isClient, milestoneTransactionDetails = [] }) {
     <div className="d-flex flex-column" style={{ gap: '60px' }}>
       {milestoneTransactionDetails.map((item) => (
         <div key={Math.random()}>
-          <Badge color={getTagSettings(item).theme}>{getTagSettings(item).text}</Badge>
+          <CustomBadge>
+            <Badge
+              className={classnames({
+                [`${item?.payment_type}_${item?.status}`]: item?.status === PAYMENT_STATUS.PAID,
+                [item?.status]: true,
+              })}
+            >
+              {getTagSettings(item).text}
+            </Badge>
+          </CustomBadge>
         </div>
       ))}
     </div>

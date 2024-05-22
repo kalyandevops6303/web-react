@@ -2,15 +2,15 @@ import React from 'react';
 import { Card, CardBody, Input, Label, Badge } from 'reactstrap';
 import { PropTypes } from 'prop-types';
 import { useSelector } from 'react-redux';
-
+import classnames from 'classnames';
 import { PAYMENT_STATUS, paymentText, userTypes } from '../../../utility/constants/Constant';
 import PaymentTableWrapper from './style';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
+import { CustomBadge } from '../../styled';
 
 function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, milestoneStatus, checked, onSelect }) {
   const user = useSelector(userData);
   const isClient = user?.user_type === userTypes.client;
-
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
       return { theme: 'light-danger', text: isClient ? paymentText.RETRY_PAYMENT : paymentText.NOT_FUNDED };
@@ -73,9 +73,18 @@ function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, 
               >
                 {milestoneName}
               </Label>
-              <Badge color={getTagSettings(paymentStatus).theme} style={{ width: 'fit-content', marginLeft: '10px' }}>
-                {getTagSettings(paymentStatus).text}
-              </Badge>
+              <CustomBadge>
+                <Badge
+                  className={classnames({
+                    FUNDED: paymentStatus === 'PAID' && milestoneStatus !== 'COMPLETED',
+                    PAID_AMOUNT: paymentStatus === 'PAID' && milestoneStatus === 'COMPLETED',
+                    [paymentStatus]: paymentStatus !== 'PAID',
+                  })}
+                  style={{ width: 'fit-content', marginLeft: '10px' }}
+                >
+                  {getTagSettings(paymentStatus).text}
+                </Badge>
+              </CustomBadge>
             </div>
           </div>
           <div style={{ fontSize: '16px', fontWeight: '500' }}>{`$ ${payableAmount}`}</div>{' '}

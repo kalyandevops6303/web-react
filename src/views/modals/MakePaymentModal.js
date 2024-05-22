@@ -22,6 +22,7 @@ import { MakePaymentModalWrapper } from './style';
 import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
 import { PAYMENT_STATUS, paymentText } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { CustomBadge } from '../styled';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAndDisabledPaymentId }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
@@ -166,9 +167,11 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
                         </div>
                       </Col>
                       <Col sm="12" md="5" lg="4">
-                        <Badge color={getTagSettings(item).theme} className="payment-status-badge">
-                          {getTagSettings(item).text}
-                        </Badge>
+                        <CustomBadge>
+                          <Badge className={`payment-status-badge ${item?.payment_status}`}>
+                            {getTagSettings(item).text}
+                          </Badge>
+                        </CustomBadge>
                       </Col>
                       <Col sm="12" md="5" lg="3">
                         <div

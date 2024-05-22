@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Badge, Button, Card, CardBody, CardText, Input, Table, UncontrolledTooltip } from 'reactstrap';
 import { ChevronDown, ChevronUp, Copy, Info } from 'react-feather';
+import classnames from 'classnames';
 import { PAYMENT_STATUS, PAYMENT_TYPES, paymentText, userTypes } from '../../../utility/constants/Constant';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import {
@@ -21,6 +22,7 @@ import { clearMilestoneTransactions, milestoneListSuccess } from '../../../redux
 import PaymentTableWrapper from './style';
 import theme from '../../../configs/themeVariables';
 import { PaymentInfoBanner } from '../style';
+import { CustomBadge } from '../../styled';
 
 const PaymentTable = () => {
   const [selectedPaymentId, setSelectedPaymentId] = useState([]);
@@ -337,7 +339,17 @@ const PaymentTable = () => {
                           <td>{item?.name}</td>
                           <td>{}</td>
                           <td className="statusCol">
-                            <Badge color={getTagSettings(item).theme}>{getTagSettings(item).text}</Badge>
+                            <CustomBadge>
+                              <Badge
+                                className={classnames({
+                                  PAID_AMOUNT: item?.payment_status === 'PAID' && item?.status === 'COMPLETED',
+                                  FUNDED: item?.payment_status === 'PAID' && item?.status !== 'COMPLETED',
+                                  [item?.payment_status]: item?.payment_status !== 'PAID',
+                                })}
+                              >
+                                {getTagSettings(item).text}
+                              </Badge>
+                            </CustomBadge>
                           </td>
                           <td>{}</td>
                           <td className="amountCol">$ {roundOfAmount(getTotalCost(item))}</td>{' '}
