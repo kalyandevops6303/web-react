@@ -35,7 +35,7 @@ const CreateClub = () => {
   }, []);
 
   return (
-    <div className={`${location.pathname.includes('create-club') ? 'px-5 py-2' : 'px-3 pt-1'} `}>
+    <div className={`${location.pathname.includes('create-club') ? 'px-5 py-2' : 'px-3 pt-1'}  `}>
       <div className="px-2">
         {location.pathname.includes('create-club') ? (
           <CircularBackButtonContainer

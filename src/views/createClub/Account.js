@@ -45,6 +45,7 @@ import { getProjectAreas, getSkills, getTools } from '../../redux/actions/static
 import { projectAreas, skillsList, toolsList } from '../../redux/selectors/staticSelectors';
 import { userProfileEdit } from '../../utility/constants/Constant';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
+import TextEditor from '../CreateProject/TextEditor';
 
 const Account = () => {
   const ProfileSchema = yup.object().shape({
@@ -705,14 +706,13 @@ const Account = () => {
                   id="clubIntroduction"
                   name="clubIntroduction"
                   control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="textarea"
-                      placeholder="Write your club introduction in 500 character"
-                      rows="5"
-                      invalid={errors.clubIntroduction && true}
-                    />
+                  render={({ field }) =>(
+                    <TextEditor
+                    name={field.name}
+                    onChange={field.onChange}
+                    value={field.value}
+                    placeholder="Write your club introduction in 500 characters !"
+                  />
                   )}
                 />
                 {errors.clubIntroduction && <FormFeedback>{errors.clubIntroduction.message}</FormFeedback>}

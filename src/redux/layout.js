@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-undef */
 // ** Redux Imports
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -6,19 +8,19 @@ import themeConfig from "@configs/themeConfig";
 
 const initialMenuCollapsed = () => {
   const item = window.localStorage.getItem("menuCollapsed");
-  //** Parse stored json or if none return initialValue
+  //* * Parse stored json or if none return initialValue
   return item ? JSON.parse(item) : themeConfig.layout.menu.isCollapsed;
 };
 
 const initialDirection = () => {
   const item = window.localStorage.getItem("direction");
-  //** Parse stored json or if none return initialValue
+  //* * Parse stored json or if none return initialValue
   return item ? JSON.parse(item) : themeConfig.layout.isRTL;
 };
 
 const initialSkin = () => {
   const item = window.localStorage.getItem("skin");
-  //** Parse stored json or if none return initialValue
+  //* * Parse stored json or if none return initialValue
   return item ? JSON.parse(item) : themeConfig.layout.skin;
 };
 

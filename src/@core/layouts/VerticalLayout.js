@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable react/prop-types */
 // ** React Imports
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -24,9 +26,6 @@ import themeConfig from "@configs/themeConfig";
 
 import Customizer from "@components/customizer";
 import ScrollToTop from "@components/scrolltop";
-import FooterComponent from "./components/footer";
-import NavbarComponent from "./components/navbar";
-import SidebarComponent from "./components/menu/vertical-menu";
 
 // ** Custom Hooks
 import { useRTL } from "@hooks/useRTL";
@@ -35,6 +34,9 @@ import { useLayout } from "@hooks/useLayout";
 import { useNavbarType } from "@hooks/useNavbarType";
 import { useFooterType } from "@hooks/useFooterType";
 import { useNavbarColor } from "@hooks/useNavbarColor";
+import SidebarComponent from "./components/menu/vertical-menu";
+import NavbarComponent from "./components/navbar";
+import FooterComponent from "./components/footer";
 
 // ** Styles
 import "@styles/base/core/menu/menu-types/vertical-menu.scss";
@@ -69,8 +71,8 @@ const VerticalLayout = (props) => {
   // ** Vars
   const location = useLocation();
   const isHidden = layoutStore.menuHidden;
-  const contentWidth = layoutStore.contentWidth;
-  const menuCollapsed = layoutStore.menuCollapsed;
+  const {contentWidth} = layoutStore;
+  const {menuCollapsed} = layoutStore;
 
   // ** Toggles Menu Collapsed
   const setMenuCollapsed = (val) => dispatch(handleMenuCollapsed(val));
@@ -81,21 +83,21 @@ const VerticalLayout = (props) => {
   // ** Handles Content Width
   const setIsHidden = (val) => dispatch(handleMenuHidden(val));
 
-  //** This function will detect the Route Change and will hide the menu on menu item click
+  //* * This function will detect the Route Change and will hide the menu on menu item click
   useEffect(() => {
     if (menuVisibility && windowWidth < 1200) {
       setMenuVisibility(false);
     }
   }, [location]);
 
-  //** Sets Window Size & Layout Props
+  //* * Sets Window Size & Layout Props
   useEffect(() => {
     if (window !== undefined) {
       window.addEventListener("resize", handleWindowWidth);
     }
   }, [windowWidth]);
 
-  //** ComponentDidMount
+  //* * ComponentDidMount
   useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
@@ -193,7 +195,7 @@ const VerticalLayout = (props) => {
           show: menuVisibility,
         })}
         onClick={() => setMenuVisibility(false)}
-      ></div>
+       />
       {/* Vertical Nav Menu Overlay */}
 
       {themeConfig.layout.customizer === true ? (
@@ -228,9 +230,7 @@ const VerticalLayout = (props) => {
           }
         )}
       >
-        {footer ? (
-          footer
-        ) : (
+        {footer || (
           <FooterComponent
             footerType={footerType}
             footerClasses={footerClasses}

@@ -1,3 +1,6 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
+/* eslint-disable no-undef */
+/* eslint-disable react/prop-types */
 // ** React Imports
 import { useEffect, useState, createContext } from "react";
 
@@ -8,14 +11,14 @@ const ThemeContext = ({ children }) => {
   // ** State
   const [colors, setColors] = useState({});
 
-  //** ComponentDidMount
+  //* * ComponentDidMount
   useEffect(() => {
     if (window !== "undefined") {
-      //** Get variable value
+      //* * Get variable value
       const getHex = (color) =>
         window.getComputedStyle(document.body).getPropertyValue(color).trim();
 
-      //** Colors obj
+      //* * Colors obj
       const obj = {
         primary: {
           light: getHex("--bs-primary").concat("1a"),
