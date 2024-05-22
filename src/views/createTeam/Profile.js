@@ -787,7 +787,7 @@ const Profile = () => {
                             name={field.name}
                             onChange={field.onChange}
                             value={field.value}
-                            placeholder="Add your team introduction in 500 characters !"
+                            placeholder="Add your team introduction in 500 characters."
                           />
                   )}
                 />

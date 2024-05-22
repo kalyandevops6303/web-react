@@ -726,7 +726,7 @@ const Personal = () => {
                       name={field.name}
                       onChange={field.onChange}
                       value={field.value}
-                      placeholder="Describe in 500 characters !"
+                      placeholder="Describe in 500 characters."
                     />
                     )}
                   />

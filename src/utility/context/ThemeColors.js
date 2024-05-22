@@ -1,9 +1,6 @@
-/* eslint-disable react/jsx-no-constructed-context-values */
-/* eslint-disable no-undef */
-/* eslint-disable react/prop-types */
 // ** React Imports
-import { useEffect, useState, createContext } from "react";
-
+import { useEffect, useState, createContext, useMemo } from "react";
+import PropTypes from 'prop-types';
 // ** Create Context
 const ThemeColors = createContext();
 
@@ -53,10 +50,15 @@ const ThemeContext = ({ children }) => {
       setColors({ ...obj });
     }
   }, []);
-
+  // Memoize the value to prevent it from changing on every render
+  const memoizedValue = useMemo(() => ({ colors }), [colors]);
   return (
-    <ThemeColors.Provider value={{ colors }}>{children}</ThemeColors.Provider>
+    <ThemeColors.Provider value={memoizedValue}>{children}</ThemeColors.Provider>
   );
+};
+
+ThemeContext.propTypes = {
+  children: PropTypes.node.isRequired // Ensure children is of type node and required
 };
 
 export { ThemeColors, ThemeContext };

@@ -711,7 +711,7 @@ const Account = () => {
                     name={field.name}
                     onChange={field.onChange}
                     value={field.value}
-                    placeholder="Write your club introduction in 500 characters !"
+                    placeholder="Write your club introduction in 500 characters."
                   />
                   )}
                 />
