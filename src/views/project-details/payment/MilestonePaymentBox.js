@@ -1,26 +1,40 @@
 import React from 'react';
 import { Card, CardBody, Input, Label, Badge } from 'reactstrap';
 import { PropTypes } from 'prop-types';
+import { useSelector } from 'react-redux';
 
-import { PAYMENT_STATUS, paymentText } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, paymentText, userTypes } from '../../../utility/constants/Constant';
 import PaymentTableWrapper from './style';
+import { userData } from '../../../redux/selectors/dashboardSelectors';
 
-function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, checked, onSelect }) {
+function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, milestoneStatus, checked, onSelect }) {
+  const user = useSelector(userData);
+  const isClient = user?.user_type === userTypes.client;
+
   const getTagSettings = (tag) => {
     if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: paymentText.PAYMENT_FAILED };
+      return { theme: 'light-danger', text: isClient ? paymentText.RETRY_PAYMENT : paymentText.NOT_FUNDED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: paymentText.PAYMENT_DUE };
+      return { theme: 'light-warning', text: isClient ? paymentText.PAYMENT_DUE : paymentText.NOT_FUNDED };
     }
     if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
-      return { theme: 'light-primary', text: paymentText.PAYMENT_PROCESSING };
+      return { theme: 'light-primary', text: isClient ? paymentText.PAYMENT_PROCESSING : paymentText.NOT_FUNDED };
     }
     if (tag === PAYMENT_STATUS.INITIATED) {
-      return { theme: 'light-primary', text: paymentText.PAYMENT_INITIATED };
+      return { theme: 'light-primary', text: isClient ? paymentText.PAYMENT_INITIATED : paymentText.NOT_FUNDED };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: paymentText.FUNDS_AVAILABLE };
+    if (tag === PAYMENT_STATUS.PAID && isClient) {
+      return {
+        theme: 'light-success',
+        text: milestoneStatus !== 'COMPLETED' ? paymentText.FUNDED : paymentText.PAID,
+      };
+    }
+    if (tag === PAYMENT_STATUS.PAID && !isClient) {
+      return {
+        theme: 'light-success',
+        text: milestoneStatus !== 'COMPLETED' ? paymentText.FUNDS_AVAILABLE : paymentText.PAID,
+      };
     }
     return { theme: 'light-primary', text: tag };
   };
@@ -78,6 +92,7 @@ MilestonePaymentBox.propTypes = {
   paymentStatus: PropTypes.string.isRequired,
   checked: PropTypes.bool.isRequired,
   onSelect: PropTypes.func.isRequired,
+  milestoneStatus: PropTypes.string.isRequired,
 };
 MilestonePaymentBox.defaultValues = {
   id: '',
@@ -86,6 +101,7 @@ MilestonePaymentBox.defaultValues = {
   paymentStatus: '',
   checked: false,
   onSelect: () => {},
+  milestoneStatus: '',
 };
 
 export default MilestonePaymentBox;

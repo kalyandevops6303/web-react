@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Badge, Button, Card, CardBody, CardText, Input, Table, UncontrolledTooltip } from 'reactstrap';
 import { ChevronDown, ChevronUp, Copy, Info } from 'react-feather';
-import { PAYMENT_STATUS, paymentText, userTypes } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, PAYMENT_TYPES, paymentText, userTypes } from '../../../utility/constants/Constant';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import {
   getApplicationFee,
@@ -39,11 +39,6 @@ const PaymentTable = () => {
   const user = useSelector(userData);
 
   const dispatch = useDispatch();
-
-  const PAYMENT_TYPES = {
-    CHECKOUT: 'CHECKOUT',
-    TRANSFER: 'TRANSFER',
-  };
 
   const handleCopyToClipboard = (text) => {
     // eslint-disable-next-line no-undef
@@ -87,7 +82,6 @@ const PaymentTable = () => {
     getTimelineItem(item?.payment_type, item?.transaction_id ?? item?._id, item?.created_at),
   );
 
-  const paymentStatusList = milestoneTransactionDetails?.map((item) => item?.status);
   const isClient = user?.user_type === userTypes.client;
 
   const isPaymentDone = (milestone) =>
@@ -194,22 +188,33 @@ const PaymentTable = () => {
   }, [milestoneData]);
 
   const getTagSettings = (tag) => {
-    if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: paymentText.PAYMENT_FAILED };
+    const { payment_status = '', status = '' } = tag;
+    if (payment_status === PAYMENT_STATUS.PAYMENT_FAILED || payment_status === PAYMENT_STATUS.FAILED) {
+      return { theme: 'light-danger', text: isClient ? paymentText.RETRY_PAYMENT : paymentText.NOT_FUNDED };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
-      return { theme: 'light-warning', text: isClient ? paymentText.PAYMENT_DUE : paymentText.FUNDS_UNAVAILABLE };
+    if (payment_status === PAYMENT_STATUS.PAYMENT_DUE || payment_status === PAYMENT_STATUS.PENDING) {
+      return { theme: 'light-warning', text: isClient ? paymentText.PAYMENT_DUE : paymentText.NOT_FUNDED };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
-      return { theme: 'light-primary', text: paymentText.PAYMENT_PROCESSING };
+    if (payment_status === PAYMENT_STATUS.PAYMENT_PROCESSING) {
+      return { theme: 'light-primary', text: isClient ? paymentText.PAYMENT_PROCESSING : paymentText.NOT_FUNDED };
     }
-    if (tag === PAYMENT_STATUS.INITIATED) {
-      return { theme: 'light-primary', text: paymentText.PAYMENT_INITIATED };
+    if (payment_status === PAYMENT_STATUS.INITIATED) {
+      return { theme: 'light-primary', text: isClient ? paymentText.PAYMENT_INITIATED : paymentText.NOT_FUNDED };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: paymentText.FUNDS_AVAILABLE };
+
+    if (payment_status === PAYMENT_STATUS.PAID && isClient) {
+      return {
+        theme: 'light-success',
+        text: status !== 'COMPLETED' ? paymentText.FUNDED : paymentText.PAID,
+      };
     }
-    return { theme: 'light-primary', text: tag };
+    if (payment_status === PAYMENT_STATUS.PAID && !isClient) {
+      return {
+        theme: 'light-success',
+        text: status !== 'COMPLETED' ? paymentText.FUNDS_AVAILABLE : paymentText.PAID,
+      };
+    }
+    return { theme: 'light-primary', text: payment_status };
   };
 
   const totalAmount = selectedPaymentData.reduce((acc, curr) => acc + curr.estimated_cost, 0);
@@ -332,12 +337,10 @@ const PaymentTable = () => {
                           <td>{item?.name}</td>
                           <td>{}</td>
                           <td className="statusCol">
-                            <Badge color={getTagSettings(item?.payment_status).theme}>
-                              {getTagSettings(item?.payment_status).text}
-                            </Badge>
+                            <Badge color={getTagSettings(item).theme}>{getTagSettings(item).text}</Badge>
                           </td>
                           <td>{}</td>
-                          <td className="amountCol">$ {getTotalCost(item)}</td>{' '}
+                          <td className="amountCol">$ {roundOfAmount(getTotalCost(item))}</td>{' '}
                           {(isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED') ? (
                             <td className="accordionCol">{open === item?._id ? <ChevronUp /> : <ChevronDown />}</td>
                           ) : !isPaymentDone(item) ? (
@@ -407,7 +410,10 @@ const PaymentTable = () => {
                                   </div>
                                 </td>
                                 <td>
-                                  <PaymentStatusForRow paymentStatus={paymentStatusList} isClient={isClient} />
+                                  <PaymentStatusForRow
+                                    milestoneTransactionDetails={milestoneTransactionDetails}
+                                    isClient={isClient}
+                                  />
                                 </td>
                                 <td>{}</td>
                                 <td colSpan={2}>
