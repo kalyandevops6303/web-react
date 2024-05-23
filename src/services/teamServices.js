@@ -1,4 +1,5 @@
 import API from '../configs/api';
+// eslint-disable-next-line import/no-cycle
 import DataService from '../configs/dataService/dataService';
 
 const getTeamService = () => DataService.get(`${API.team.getTeam}?page=1&page_size=100`);

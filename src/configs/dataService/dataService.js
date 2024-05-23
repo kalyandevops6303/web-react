@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getItem, setItem } from '../../utility/localStorageControl';
+// eslint-disable-next-line import/no-cycle
 import { getTeamId } from '../../utility/Utils';
 // eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';

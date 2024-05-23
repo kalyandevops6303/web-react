@@ -313,7 +313,7 @@ const Profile = () => {
     let reqData;
 
     if (location.pathname.includes('profile-edit')) {
-      const onApiSuccess = () => {
+      const onApiSuccess = async() => {
         navigate('/dashboard');
       };
 
@@ -330,7 +330,6 @@ const Profile = () => {
           skills: skillsSelected,
           availability,
         };
-
         dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
       } else {
         reqData = {
