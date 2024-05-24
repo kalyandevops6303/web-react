@@ -19,7 +19,7 @@ import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace, getTeamId, calculateRemainingBidsCount } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, calculateRemainingBidsCount } from '../../../utility/Utils';
 
 import {
   activeProjectsForClient,
@@ -62,6 +62,7 @@ import Tag from '../../../@core/components/tags';
 import ViewAllCard from './ExtraCardWithCount';
 import { AccordionName } from './DashboardConstant';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
+import getTeamId from '../../../utility/commonUtils';
 
 const Empty = ({ active, recommended, payment, isEducationNotCompleted }) => {
   const navigate = useNavigate();

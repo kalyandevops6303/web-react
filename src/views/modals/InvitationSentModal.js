@@ -16,7 +16,7 @@ import { inviteTalentsLoading } from '../../redux/selectors/createProjectSelecto
 import { inviteTalentsLoading as teamInviteLoading } from '../../redux/selectors/inviteTalentSelector';
 
 import { inviteTalents as inviteTalentForTeam } from '../../redux/actions/inviteTalent';
-import { getTeamId, returnFormattedRating } from '../../utility/Utils';
+import { returnFormattedRating } from '../../utility/Utils';
 
 const InvitationSentModal = ({
   projectId,
