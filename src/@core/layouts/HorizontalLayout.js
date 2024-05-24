@@ -26,11 +26,11 @@ import ScrollToTop from '@components/scrolltop';
 
 // ** Custom Hooks
 import { useRTL } from '@hooks/useRTL';
-import  useSkin  from '@hooks/useSkin';
+import useSkin from '@hooks/useSkin';
 import { useLayout } from '@hooks/useLayout';
-import  useNavbarType  from '@hooks/useNavbarType';
-import  useFooterType  from '@hooks/useFooterType';
-import  useNavbarColor  from '@hooks/useNavbarColor';
+import useNavbarType from '@hooks/useNavbarType';
+import useFooterType from '@hooks/useFooterType';
+import useNavbarColor from '@hooks/useNavbarColor';
 
 import NavbarComponent from './components/navbar';
 import FooterComponent from './components/footer';
@@ -40,7 +40,7 @@ import '@styles/base/core/menu/menu-types/horizontal-menu.scss';
 import SwitchConfirmModal from '../../views/modals/SwitchConfirm';
 import { selectUserData, selectUserType } from '../../redux/selectors/authSelectors';
 import { userTypes } from '../../utility/constants/Constant';
-import { getTeamId } from '../../utility/Utils';
+import getTeamId from '../../utility/commonUtils';
 import { getUserData } from '../../redux/actions/authActions';
 
 const HorizontalLayout = (props) => {
