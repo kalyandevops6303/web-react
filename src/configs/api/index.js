@@ -41,6 +41,7 @@ const API = {
     services: `${apiAuthEndpoint}/api/v1/static/services/all`,
     disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
     ratingTags: `${apiAuthEndpoint}/api/v1/static/tags/filter`,
+    issueTypes: `${apiAuthEndpoint}/api/v1/support-issue-types`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -306,6 +307,10 @@ const API = {
   },
   fileUpload: {
     scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
+  },
+  support: {
+    create: `${apiAuthEndpoint}/api/v1/support-request`,
+    count: `${apiAuthEndpoint}/api/v1/support-request/count`,
   },
 };
 

@@ -9,6 +9,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  CardText,
   Col,
   Form,
   FormFeedback,
@@ -39,6 +40,9 @@ import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { getCustomerSupportCount } from '../../../redux/actions/supportActions';
+import CustomerSupportModal from '../../modals/CustomerSupportModal';
+import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbackModal';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -113,6 +117,7 @@ const Educational = () => {
 
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
+  const supportData = useSelector((state) => state.support.supportCount);
 
   const onBackClick = () => {
     if (location.pathname.includes('profile-edit')) {
@@ -316,7 +321,30 @@ const Educational = () => {
 
   useEffect(() => {
     dispatch(getUserDetails(onGetUserDetailsSuccess));
+    dispatch(getCustomerSupportCount());
   }, []);
+
+  const [customerSupportModal, setCustomerSupportModal] = useState(false);
+  const [feedbackModal, setFeedbackSupportModal] = useState(false);
+  const [defaultSelected, setDefaultSelected] = useState([]);
+  const handleCustomerSupport = (value) => {
+    setCustomerSupportModal(true);
+    setDefaultSelected(value);
+  };
+
+  const toggleSupportModal = () => {
+    setCustomerSupportModal(!customerSupportModal);
+  };
+
+  const toggleFeedbackSupportModal = () => {
+    setFeedbackSupportModal(!feedbackModal);
+  };
+
+  const onCustomerSupportSuccess = () => {
+    setCustomerSupportModal(false);
+    setFeedbackSupportModal(true);
+    dispatch(getCustomerSupportCount());
+  };
 
   return (
     <ProfileFormContainer>
@@ -327,8 +355,17 @@ const Educational = () => {
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Card className="w-75">
-            <CardHeader>
+            <CardHeader className="d-flex align-items-end">
               <h4 className="m-0 mt-1">Education</h4>
+              <div className="d-flex align-items-center">
+                <Info size="16" className="me-50 info" color={theme.primary} />
+                <CardText
+                  onClick={() => handleCustomerSupport(['missing_institute'])}
+                  className="primary cursor-pointer"
+                >
+                  Couldn’t find your institution?
+                </CardText>
+              </div>
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>
@@ -452,13 +489,52 @@ const Educational = () => {
                   <h5 className="fw-bold">Add New</h5>
                 </div>
               </Row>
+              {supportData?.education?.approved_requests > 0 && (
+                <div className="success-banner mb-1 d-flex px-1 py-1 border rounded align-items-center">
+                  <Info size={18} color={theme.green} className="me-50" />
+                  <p className="font-medium-1 m-0 d-flex justify-content-between w-100">
+                    <span>
+                      <span className="fw-bold">support@trumio.ai </span>
+                      has resolved your{' '}
+                      {supportData?.education?.approved_requests > 1 && (
+                        <span className="fw-bold">({supportData?.education?.approved_requests})</span>
+                      )}{' '}
+                      query. Please check your email.
+                    </span>
+                  </p>
+                </div>
+              )}
+              {supportData?.education?.pending_requests > 0 && (
+                <div className="info-banner mb-1 d-flex px-1 py-1 border rounded align-items-center">
+                  <Info size={18} color={theme.activeNavPillText} className="me-50" />
+                  <p className="font-medium-1 m-0 d-flex justify-content-between w-100">
+                    <span>
+                      <span className="fw-bold">support@trumio.ai </span>
+                      has received your{' '}
+                      {supportData?.education?.pending_requests > 1 && (
+                        <span className="fw-bold">({supportData?.education?.pending_requests})</span>
+                      )}{' '}
+                      query. Our team is looking into it. We will revert soon.
+                    </span>
+                  </p>
+                </div>
+              )}
             </CardBody>
           </Card>
           <Card className="w-75">
-            <CardHeader>
+            <CardHeader className="d-flex align-items-end">
               <h4 className="m-0 mt-1">
                 Project Domain<span className="label-asterisk m-0">*</span>
               </h4>
+              <div className="d-flex align-items-center">
+                <Info size="16" className="me-50 info" color={theme.primary} />
+                <CardText
+                  onClick={() => handleCustomerSupport(['missing_skill', 'missing_tool'])}
+                  className="primary cursor-pointer"
+                >
+                  Couldn’t find your skills or tools?
+                </CardText>
+              </div>
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>
@@ -515,7 +591,7 @@ const Educational = () => {
                   {errors.skills && <FormFeedback>{errors.skills.message}</FormFeedback>}
                 </Col>
               </Row>
-              <Row className="mb-1">
+              <Row className="mb-2">
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="tools">
                     Tools <i>(Top 5)</i>
@@ -544,6 +620,36 @@ const Educational = () => {
                   {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
                 </Col>
               </Row>
+              {supportData?.tools_and_skills?.approved_requests > 0 && (
+                <div className="success-banner mb-1 d-flex px-1 py-1 border rounded align-items-center">
+                  <Info size={18} color={theme.green} className="me-50" />
+                  <p className="font-medium-1 m-0 d-flex justify-content-between w-100">
+                    <span>
+                      <span className="fw-bold">support@trumio.ai </span>
+                      has resolved your{' '}
+                      {supportData?.tools_and_skills?.approved_requests > 1 && (
+                        <span className="fw-bold">({supportData?.tools_and_skills?.approved_requests})</span>
+                      )}{' '}
+                      query. Please check your email.
+                    </span>
+                  </p>
+                </div>
+              )}
+              {supportData?.tools_and_skills?.pending_requests > 0 && (
+                <div className="info-banner mb-1 d-flex px-1 py-1 border rounded align-items-center">
+                  <Info size={18} color={theme.activeNavPillText} className="me-50" />
+                  <p className="font-medium-1 m-0 d-flex justify-content-between w-100">
+                    <span>
+                      <span className="fw-bold">support@trumio.ai </span>
+                      has received your{' '}
+                      {supportData?.tools_and_skills?.pending_requests > 1 && (
+                        <span className="fw-bold">({supportData?.tools_and_skills?.pending_requests})</span>
+                      )}{' '}
+                      query. Our team is looking into it. We will revert soon.
+                    </span>
+                  </p>
+                </div>
+              )}
             </CardBody>
           </Card>
           <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
@@ -571,6 +677,17 @@ const Educational = () => {
             </div>
           </div>
         </Form>
+      )}
+      {customerSupportModal && (
+        <CustomerSupportModal
+          onSuccess={onCustomerSupportSuccess}
+          modal={customerSupportModal}
+          toggleModal={toggleSupportModal}
+          defaultSelected={defaultSelected}
+        />
+      )}
+      {feedbackModal && (
+        <FeedbackForCustomerSupportModal modal={feedbackModal} toggleModal={toggleFeedbackSupportModal} />
       )}
     </ProfileFormContainer>
   );
