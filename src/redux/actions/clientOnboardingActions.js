@@ -52,7 +52,7 @@ const saveProfileDetails = (data, onSuccess) => async (dispatch) => {
         isPrivate: false,
       });
     } else {
-      handleSaveProfileDetails();
+      await handleSaveProfileDetails();
     }
   } catch (error) {
     errorHandler(error, profileDetailsFailure);

@@ -39,7 +39,6 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const savedUserDetails = useSelector(selectSavedUserData);
   const isTeamLoggedIn = useSelector(selectIsTeamLoggedIn);
   const teams = useSelector(selectTeamData);
-
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,8 +59,28 @@ const UserDropdown = ({ setNavBarLoading }) => {
   };
 
   const handleLogout = async () => {
-    const onSuccess = () => {
+    const onSuccess = async () => {
       navigate('/auth/login');
+
+      // Fcm unsubscribe
+      if (fcmToken) {
+        try {
+          await messaging?.deleteToken();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      // CometChat logout
+      const cometChatToken = getItem('cometChatToken');
+      if (cometChatToken) {
+        try {
+          CometChat.disconnect();
+          await CometChat.logout();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
       const keyToPreserve = 'isUserVisited';
       const preservedValue = getItem(keyToPreserve);
       // eslint-disable-next-line no-undef
@@ -73,14 +92,6 @@ const UserDropdown = ({ setNavBarLoading }) => {
     };
 
     dispatch(logoutAction({ fcmToken, onSuccess }));
-
-    // CometChat logout
-    await messaging.deleteToken();
-    const cometChatToken = getItem('cometChatToken');
-    if (cometChatToken) {
-      CometChat.disconnect();
-      await CometChat.logout();
-    }
   };
 
   const LineWrapper = styled.div`

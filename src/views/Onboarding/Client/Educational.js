@@ -72,9 +72,7 @@ const Educational = () => {
           value: yup.string(),
         }),
       )
-      .max(5, 'Maximum of five skills can be added')
-      .min(1, 'At least one skill is required')
-      .required('Skill is required'),
+      .max(5, 'Maximum of five skills can be added'),
     tools: yup
       .array()
       .of(
@@ -150,7 +148,7 @@ const Educational = () => {
       institution: educationDetail.educationInstitution.value,
     }));
     const project_area_of_interest = {
-      skills: skills.map((skill) => skill.value),
+      skills: skills?.map((skill) => skill.value),
       tools: tools?.map((tool) => tool.value),
       area: area?.value,
     };
@@ -565,7 +563,7 @@ const Educational = () => {
                 </Col>
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="skills">
-                    Skills<span className="label-asterisk">*</span> <i>(Top 5)</i>
+                    Skills <i>(Top 5)</i>
                   </Label>
                   <Controller
                     id="skills"

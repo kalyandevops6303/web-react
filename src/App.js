@@ -21,6 +21,7 @@ import { notificationCount } from './redux/reducers/notifications';
 import { setUnreadMsgCount, unreadMsgCountSuccess } from './redux/reducers/chat';
 import { cometChatLogin, cometloginSuccess, setLoggedInStatus } from './redux/reducers/auth';
 import './App.css';
+import { checkPoints } from './utility/constants/Constant';
 import { COMETCHAT_CONSTANTS, HOTJAR_ANALYTICS_CONSTANTS } from './constants';
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
   const fcmToken = useSelector((state) => state.auth.fcmToken);
   const cometAuthToken = useSelector((state) => state.auth.cometChatToken);
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.userData);
   const location = useLocation();
   // const fcmSubscribeService = (token) => DataService.post(`${API.notification.subscribe}`, { token });
 
@@ -92,7 +94,10 @@ const App = () => {
     const isUserStillLoggedIn =
       accessToken && refreshToken && refreshTokenExpires && new Date(refreshTokenExpires) >= new Date();
 
-    if (isUserStillLoggedIn) {
+    if (
+      isUserStillLoggedIn &&
+      (userData?.checkpoint === checkPoints.PROFILE_DETAILS || userData?.checkpoint === checkPoints.COMPLETE)
+    ) {
       dispatch(setLoggedInStatus());
 
       const cometChatAuthToken = getItem('cometChatToken');

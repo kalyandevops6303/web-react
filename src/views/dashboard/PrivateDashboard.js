@@ -33,7 +33,7 @@ import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 import ClubSection from './overview/ClubSection';
 import InviteClubMemberModal from '../modals/InviteClubMemberModal';
-import { getTeamId } from '../../utility/Utils';
+import getTeamId from '../../utility/commonUtils';
 import InviteListing from './overview/InviteListing';
 import PaymentListing from './overview/PaymentListing';
 
@@ -97,8 +97,7 @@ const PrivateDashboard = () => {
   const onCreateProjectClick = () => {
     if (
       profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute') ||
-      profilePercentageData?.values_missing?.includes('availability')
+      profilePercentageData?.values_missing?.includes('educational_institute')
     ) {
       setCompleteProfileModalInfoText('create project');
       setCompleteProfileModal(true);
