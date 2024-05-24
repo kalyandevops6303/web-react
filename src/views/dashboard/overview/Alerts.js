@@ -6,7 +6,8 @@ import { Badge, Card, CardBody, CardHeader, CardText, CardTitle, Progress } from
 import { AlertCardWrapper } from './style';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
-import { getTeamId, giveProgressBarColorClassName } from '../../../utility/Utils';
+import { giveProgressBarColorClassName } from '../../../utility/Utils';
+import getTeamId from '../../../utility/commonUtils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';

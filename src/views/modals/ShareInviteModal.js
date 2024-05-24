@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import CreatableSelect from 'react-select/creatable';
 import { Button, Modal, ModalHeader, ModalBody, Row, FormFeedback, Col, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
-import { getTeamId, selectThemeColors } from '../../utility/Utils';
+import { selectThemeColors } from '../../utility/Utils';
+import getTeamId from '../../../utility/commonUtils';
+
 import { validEmailRegex } from '../../utility/constants/Constant';
 import { RequirementsFormContainer } from '../CreateProject/style';
 import { inviteTalents } from '../../redux/actions/inviteTalent';
