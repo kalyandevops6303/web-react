@@ -80,7 +80,7 @@ import { clearTeamCardData } from '../reducers/myTeams';
 import { clearMarketplaceCardData } from '../reducers/marketPlace';
 import { clearProjectCardData } from '../reducers/project';
 import { registerClubEmailService } from '../../services/clubServices';
-import { getTeamId } from '../../utility/Utils';
+import getTeamId from '../../utility/commonUtils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { getClubAdminAccess } from './inviteTalent';
 

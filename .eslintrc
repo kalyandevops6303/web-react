@@ -68,6 +68,7 @@
     "react/jsx-props-no-spreading": "off"
   },
   "env": {
-    "jest": true
+    "jest": true,
+    "browser": true
   }
 }
