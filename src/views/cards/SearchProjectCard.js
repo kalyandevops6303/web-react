@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import parse from "html-react-parser";
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
@@ -206,14 +206,15 @@ const SearchProjectCard = ({
                     className="my-div"
                     ref={divRef}
                     style={{ maxHeight: '6.1rem', overflow: 'hidden' }}
-                    dangerouslySetInnerHTML={{ __html: data?.details?.description ?? data?.description }}
-                  />
+                  >
+                    {parse(data?.details?.description ?? data?.description)}
+                    </div>
                 ) : (
                   <div
                     className="my-div"
-                    ref={divRef}
-                    dangerouslySetInnerHTML={{ __html: data?.details?.description ?? data?.description }}
-                  />
+                    ref={divRef}>
+                  {parse(data?.details?.description ?? data?.description)}
+                  </div>
                 )}
 
                 {isContentOverflowing && (
