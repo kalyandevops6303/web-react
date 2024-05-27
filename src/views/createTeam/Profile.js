@@ -56,6 +56,7 @@ import RemoveUploadedPicture from '../../@core/components/remove-uploaded-pictur
 import { formData, formDocuments, formImage, isFormImageRemoved } from '../../redux/selectors/formDataSelectors';
 import { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
 import { getItemFromSession } from '../../utility/sessesionStorageControl';
+import TextEditor from '../CreateProject/TextEditor';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -335,7 +336,7 @@ const Profile = () => {
     let reqData;
 
     if (location.pathname.includes('profile-edit')) {
-      const onApiSuccess = () => {
+      const onApiSuccess = async() => {
         navigate('/dashboard');
       };
 
@@ -352,7 +353,6 @@ const Profile = () => {
           skills: skillsSelected,
           availability,
         };
-
         dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
       } else {
         reqData = {
@@ -884,13 +884,12 @@ const Profile = () => {
                   name="teamIntroduction"
                   control={control}
                   render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="textarea"
-                      placeholder="Write your team introduction in 500 characters"
-                      rows="5"
-                      invalid={errors.teamIntroduction && true}
-                    />
+                    <TextEditor
+                            name={field.name}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Add your team introduction in 500 characters."
+                          />
                   )}
                 />
                 {errors.teamIntroduction && <FormFeedback>{errors.teamIntroduction.message}</FormFeedback>}

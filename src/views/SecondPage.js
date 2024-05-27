@@ -1,7 +1,6 @@
 import { Card, CardHeader, CardBody, CardTitle, CardText } from "reactstrap";
 
-const SecondPage = () => {
-  return (
+const SecondPage = () => (
     <Card>
       <CardHeader>
         <CardTitle>Create Awesome 🙌</CardTitle>
@@ -16,6 +15,5 @@ const SecondPage = () => {
       </CardBody>
     </Card>
   );
-};
 
 export default SecondPage;

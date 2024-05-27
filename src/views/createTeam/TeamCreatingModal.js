@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import '../custom-styles.scss';
 import { Button, Modal, ModalBody, Spinner } from 'reactstrap';
 import TeamCreatingGif from '../../assets/images/gifs/teamCreating.gif';
@@ -14,6 +15,7 @@ const TeamCreatingModal = ({ teamCreateData, toggleModal, modal, setTeamData, se
   const [timer, setTimer] = useState(10);
   const zeroLoggedRef = useRef(false);
   const intervalId = useRef();
+  const navigate = useNavigate();
 
   const onCreateTeamSuccess = (data) => {
     setTeamData(data);
@@ -29,6 +31,7 @@ const TeamCreatingModal = ({ teamCreateData, toggleModal, modal, setTeamData, se
   const handleGetStarted = () => {
     setIsLoading(true);
     dispatch(createTeam({ data: teamCreateData, onSuccess: onCreateTeamSuccess, onError: () => setIsLoading(false) }));
+    navigate('/dashboard');
   };
 
   const handleRecallClick = () => {

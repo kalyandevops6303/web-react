@@ -9,7 +9,7 @@ import { ChevronLeft } from 'react-feather';
 import { ActionButtonWrapper } from './style';
 import theme from '../../../configs/themeVariables';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
-import { getTeamId } from '../../../utility/Utils';
+import getTeamId from '../../../utility/commonUtils';
 import { userTypes } from '../../../utility/constants/Constant';
 import { updateInvitation } from '../../../redux/actions/dashboardActions';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';

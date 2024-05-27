@@ -53,6 +53,7 @@ import RemoveUploadedPicture from '../../@core/components/remove-uploaded-pictur
 import { formData, formDocuments, formImage, isFormImageRemoved } from '../../redux/selectors/formDataSelectors';
 import { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
 import { clearClubCreateData } from '../../redux/reducers/clubs';
+import TextEditor from '../CreateProject/TextEditor';
 
 const Account = () => {
   const ProfileSchema = yup.object().shape({
@@ -791,14 +792,13 @@ const Account = () => {
                   id="clubIntroduction"
                   name="clubIntroduction"
                   control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="textarea"
-                      placeholder="Write your club introduction in 500 character"
-                      rows="5"
-                      invalid={errors.clubIntroduction && true}
-                    />
+                  render={({ field }) =>(
+                    <TextEditor
+                    name={field.name}
+                    onChange={field.onChange}
+                    value={field.value}
+                    placeholder="Write your club introduction in 500 characters."
+                  />
                   )}
                 />
                 {errors.clubIntroduction && <FormFeedback>{errors.clubIntroduction.message}</FormFeedback>}

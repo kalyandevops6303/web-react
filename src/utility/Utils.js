@@ -10,7 +10,6 @@ import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta
 import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning, userTypes } from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
-import { getItemFromSession } from './sessesionStorageControl';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
 import PDFIcon from '../assets/images/pdfV2.svg';
 import DocIcon from '../assets/images/DOC.svg';
@@ -393,8 +392,6 @@ export const formattedDate = (value) => {
 };
 
 export const returnFormattedRating = (num) => (num ? round(num, 1) : 0);
-// eslint-disable-next-line no-undef
-export const getTeamId = () => getItemFromSession('team_id');
 
 export const downloadFile = async ({ data, file_name }) => {
   // Replace 'your_file_url' with the actual URL of the file you want to download
