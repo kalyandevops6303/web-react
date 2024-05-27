@@ -7,7 +7,7 @@ import CreatableSelect from 'react-select/creatable';
 import { Button, Modal, ModalHeader, ModalBody, Row, FormFeedback, Col, Spinner } from 'reactstrap';
 import '../custom-styles.scss';
 import { selectThemeColors } from '../../utility/Utils';
-import getTeamId from '../../../utility/commonUtils';
+import getTeamId from '../../utility/commonUtils';
 
 import { validEmailRegex } from '../../utility/constants/Constant';
 import { RequirementsFormContainer } from '../CreateProject/style';
