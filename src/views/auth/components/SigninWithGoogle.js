@@ -6,6 +6,8 @@ import { memo, useEffect, useRef } from 'react';
 import { loginUserWithGoogle } from '../../../redux/actions/authActions';
 import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { ERROR_CODES, checkPoints } from '../../../utility/constants/Constant';
+import { setItem } from '../../../utility/localStorageControl';
+import { checkPointRedirection } from '../../../utility/Utils';
 
 const SigninWithGoogle = () => {
   const dispatch = useDispatch();
@@ -40,21 +42,14 @@ const SigninWithGoogle = () => {
   `;
 
   // Success handler for Google login
-  const onSuccess = (resp) => {
-    if (resp?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
-      navigate('/auth/register-phone');
-    } else if (resp?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
-      navigate(`/${resp.user_type.toLowerCase()}-onboarding/account-details`);
-    } else if (resp?.checkpoint === checkPoints.PROFILE_DETAILS) {
-      navigate(`/${resp.user_type.toLowerCase()}-onboarding/personal-details`);
-    } else if (resp?.checkpoint === checkPoints.COMPLETE) {
-      navigate('/dashboard');
-    }
+  const onSuccess = (response) => {
+    checkPointRedirection({ response, navigate });
   };
 
   // Error handler for Google login
-  const onError = (error) => {
+  const onError = (error, id_token) => {
     if (error.response.status === ERROR_CODES.EC_422) {
+      setItem('google_id_token', id_token);
       navigate('/auth');
     }
   };

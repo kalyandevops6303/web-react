@@ -7,7 +7,14 @@ import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
 import round from '../lib/round';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning, userTypes } from './constants/Constant';
+import {
+  bidStatus,
+  checkPoints,
+  fileScanStatus,
+  maxFileSize,
+  timeDalayToRetryScanning,
+  userTypes,
+} from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
@@ -768,3 +775,15 @@ export const generateToolTipId = (projectName, name, title) =>
   `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
 
 export const roundOfAmount = (amount) => (amount ? round(amount, 2) : 0);
+
+export const checkPointRedirection = ({ response, navigate }) => {
+  if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
+    navigate('/auth/register-phone');
+  } else if (response?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
+    navigate(`/${response.user_type.toLowerCase()}-onboarding/account-details`);
+  } else if (response?.checkpoint === checkPoints.PROFILE_DETAILS) {
+    navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
+  } else if (response?.checkpoint === checkPoints.COMPLETE) {
+    navigate('/dashboard');
+  }
+};
