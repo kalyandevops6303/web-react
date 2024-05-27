@@ -9,7 +9,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  CardText,
   Col,
   Form,
   FormFeedback,
@@ -37,12 +36,14 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
-import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
+import { CUSTOMER_SUPPORT_TYPES, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { getCustomerSupportCount } from '../../../redux/actions/supportActions';
 import CustomerSupportModal from '../../modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbackModal';
+import NoteComponent from '../NoteComponent';
+import CustomerSupportCTA from '../CustomerSupportCTA';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -323,7 +324,7 @@ const Educational = () => {
   }, []);
 
   const [customerSupportModal, setCustomerSupportModal] = useState(false);
-  const [feedbackModal, setFeedbackSupportModal] = useState(false);
+  const [feedbackModal, setFeedbackModal] = useState(false);
   const [defaultSelected, setDefaultSelected] = useState([]);
   const handleCustomerSupport = (value) => {
     setCustomerSupportModal(true);
@@ -335,12 +336,12 @@ const Educational = () => {
   };
 
   const toggleFeedbackSupportModal = () => {
-    setFeedbackSupportModal(!feedbackModal);
+    setFeedbackModal(!feedbackModal);
   };
 
   const onCustomerSupportSuccess = () => {
     setCustomerSupportModal(false);
-    setFeedbackSupportModal(true);
+    setFeedbackModal(true);
     dispatch(getCustomerSupportCount());
   };
 
@@ -355,15 +356,10 @@ const Educational = () => {
           <Card className="w-75">
             <CardHeader className="d-flex align-items-end">
               <h4 className="m-0 mt-1">Education</h4>
-              <div className="d-flex align-items-center">
-                <Info size="16" className="me-50 info" color={theme.primary} />
-                <CardText
-                  onClick={() => handleCustomerSupport(['missing_institute'])}
-                  className="primary cursor-pointer"
-                >
-                  Couldn’t find your institution?
-                </CardText>
-              </div>
+              <CustomerSupportCTA
+                type={CUSTOMER_SUPPORT_TYPES.education}
+                handleCustomerSupport={handleCustomerSupport}
+              />
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>
@@ -487,35 +483,12 @@ const Educational = () => {
                   <h5 className="fw-bold">Add New</h5>
                 </div>
               </Row>
-              {supportData?.education?.approved_requests > 0 && (
-                <div className="success-banner mb-1 d-flex px-1 py-1 border rounded align-items-center">
-                  <Info size={18} color={theme.green} className="me-50" />
-                  <p className="font-medium-1 m-0 d-flex justify-content-between w-100">
-                    <span>
-                      <span className="fw-bold">support@trumio.ai </span>
-                      has resolved your{' '}
-                      {supportData?.education?.approved_requests > 1 && (
-                        <span className="fw-bold">({supportData?.education?.approved_requests})</span>
-                      )}{' '}
-                      query. Please check your email.
-                    </span>
-                  </p>
-                </div>
-              )}
+
               {supportData?.education?.pending_requests > 0 && (
-                <div className="info-banner mb-1 d-flex px-1 py-1 border rounded align-items-center">
-                  <Info size={18} color={theme.activeNavPillText} className="me-50" />
-                  <p className="font-medium-1 m-0 d-flex justify-content-between w-100">
-                    <span>
-                      <span className="fw-bold">support@trumio.ai </span>
-                      has received your{' '}
-                      {supportData?.education?.pending_requests > 1 && (
-                        <span className="fw-bold">({supportData?.education?.pending_requests})</span>
-                      )}{' '}
-                      query. Our team is looking into it. We will revert soon.
-                    </span>
-                  </p>
-                </div>
+                <NoteComponent type="info" requestCount={supportData?.education?.pending_requests} />
+              )}
+              {supportData?.education?.approved_requests > 0 && (
+                <NoteComponent type="success" requestCount={supportData?.education?.approved_requests} />
               )}
             </CardBody>
           </Card>
@@ -524,15 +497,10 @@ const Educational = () => {
               <h4 className="m-0 mt-1">
                 Project Domain<span className="label-asterisk m-0">*</span>
               </h4>
-              <div className="d-flex align-items-center">
-                <Info size="16" className="me-50 info" color={theme.primary} />
-                <CardText
-                  onClick={() => handleCustomerSupport(['missing_skill', 'missing_tool'])}
-                  className="primary cursor-pointer"
-                >
-                  Couldn’t find your skills or tools?
-                </CardText>
-              </div>
+              <CustomerSupportCTA
+                type={CUSTOMER_SUPPORT_TYPES.tools_and_skills}
+                handleCustomerSupport={handleCustomerSupport}
+              />
             </CardHeader>
             <hr className="m-0 card-header-border" />
             <CardBody>
@@ -618,35 +586,12 @@ const Educational = () => {
                   {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
                 </Col>
               </Row>
-              {supportData?.tools_and_skills?.approved_requests > 0 && (
-                <div className="success-banner mb-1 d-flex px-1 py-1 border rounded align-items-center">
-                  <Info size={18} color={theme.green} className="me-50" />
-                  <p className="font-medium-1 m-0 d-flex justify-content-between w-100">
-                    <span>
-                      <span className="fw-bold">support@trumio.ai </span>
-                      has resolved your{' '}
-                      {supportData?.tools_and_skills?.approved_requests > 1 && (
-                        <span className="fw-bold">({supportData?.tools_and_skills?.approved_requests})</span>
-                      )}{' '}
-                      query. Please check your email.
-                    </span>
-                  </p>
-                </div>
-              )}
+
               {supportData?.tools_and_skills?.pending_requests > 0 && (
-                <div className="info-banner mb-1 d-flex px-1 py-1 border rounded align-items-center">
-                  <Info size={18} color={theme.activeNavPillText} className="me-50" />
-                  <p className="font-medium-1 m-0 d-flex justify-content-between w-100">
-                    <span>
-                      <span className="fw-bold">support@trumio.ai </span>
-                      has received your{' '}
-                      {supportData?.tools_and_skills?.pending_requests > 1 && (
-                        <span className="fw-bold">({supportData?.tools_and_skills?.pending_requests})</span>
-                      )}{' '}
-                      query. Our team is looking into it. We will revert soon.
-                    </span>
-                  </p>
-                </div>
+                <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
+              )}
+              {supportData?.tools_and_skills?.approved_requests > 0 && (
+                <NoteComponent type="success" requestCount={supportData?.tools_and_skills?.approved_requests} />
               )}
             </CardBody>
           </Card>

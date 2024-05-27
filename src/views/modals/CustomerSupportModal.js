@@ -22,11 +22,12 @@ import {
   CardText,
 } from 'reactstrap';
 import { SupportModalWrapper } from './style';
-import { returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
+import { getMissingName, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import { getIssueTypeService } from '../../services/supportServices';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
 import { customerSupport } from '../../redux/actions/supportActions';
+import { CUSTOMER_SUPPORT_TYPES, SUPPORT_EMAIL } from '../../utility/constants/Constant';
 
 const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }) => {
   const [issueTypeOptions, setIssueTypeOptions] = useState(null);
@@ -42,29 +43,29 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
       })
       .required('Issue type is required'),
     skill: yup.string().when('issueType.value', {
-      is: (issueType) => issueType === 'missing_skill',
+      is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_skill,
       then: () =>
         yup
           .string()
-          .min(2, 'Skill must be at least 2 characters')
+          .min(1, 'Skill must be at least 1 character')
           .max(150, 'Skill must be 150 characters or less')
           .required('Skill is required'),
     }),
     tool: yup.string().when('issueType.value', {
-      is: (issueType) => issueType === 'missing_tool',
+      is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_tool,
       then: () =>
         yup
           .string()
-          .min(2, 'Tool must be at least 2 characters')
+          .min(1, 'Tool must be at least 1 character')
           .max(150, 'Tool must be 150 characters or less')
           .required('Tool is required'),
     }),
     institute: yup.string().when('issueType.value', {
-      is: (issueType) => issueType === 'missing_institute',
+      is: (issueType) => issueType === CUSTOMER_SUPPORT_TYPES.missing_institute,
       then: () =>
         yup
           .string()
-          .min(2, 'Institution must be at least 2 characters')
+          .min(1, 'Institution must be at least 1 character')
           .max(150, 'Institution must be 150 characters or less')
           .required('Institution is required'),
     }),
@@ -93,25 +94,12 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
   const dispatch = useDispatch();
 
   const onSubmit = (values) => {
-    const getMissingName = (type) => {
-      switch (type) {
-        case 'missing_skill':
-          return values.skill;
-        case 'missing_tool':
-          return values.tool;
-        case 'missing_institute':
-          return values.institute;
-        default:
-          return '';
-      }
-    };
-
     const postData = {
-      to_email: 'support@trumio.ai',
+      to_email: SUPPORT_EMAIL,
       cc_email: [userData?.email],
       description: values?.supportDetails,
       issue_type: values?.issueType?.value,
-      missing_name: getMissingName(values?.issueType?.value),
+      missing_name: getMissingName(values?.issueType?.value, values),
     };
 
     dispatch(customerSupport({ data: postData, onSuccess }));
@@ -121,7 +109,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
     let filteredIssueTypeOptions = issueTypeOptions;
 
     // If there are default selected options, filter the initial options based on them
-    if (defaultSelected && defaultSelected.length > 0) {
+    if (defaultSelected?.length > 0) {
       const normalizedDefaultSelected = Array.isArray(defaultSelected) ? defaultSelected : [defaultSelected];
       filteredIssueTypeOptions = issueTypeOptions.filter((option) => normalizedDefaultSelected.includes(option.value));
     }
@@ -197,7 +185,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
                   <Input
                     style={{ border: `1px solid ${theme.inputBorder}`, background: theme.inputBackground }}
                     disabled
-                    value="support@trumio.ai"
+                    value={SUPPORT_EMAIL}
                   />
                 </div>
               </Col>
@@ -243,7 +231,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
                 {errors.issueType && <FormFeedback>{errors.issueType?.label?.message}</FormFeedback>}
               </Col>
 
-              {issueType?.value === 'missing_skill' && (
+              {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_skill && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="skill">
                     Skill
@@ -267,7 +255,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
                   {errors.skill && <FormFeedback>{errors.skill.message}</FormFeedback>}
                 </Col>
               )}
-              {issueType?.value === 'missing_tool' && (
+              {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_tool && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="tool">
                     Tool
@@ -291,7 +279,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
                   {errors.tool && <FormFeedback>{errors.tool.message}</FormFeedback>}
                 </Col>
               )}
-              {issueType?.value === 'missing_institute' && (
+              {issueType?.value === CUSTOMER_SUPPORT_TYPES.missing_institute && (
                 <Col sm="12" md="12" lg="5">
                   <Label className="form-label" for="institute">
                     Institute

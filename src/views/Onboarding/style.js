@@ -268,14 +268,16 @@ export const ProfileFormContainer = styled.div`
 
   .info-banner {
     background: ${theme.infoBannerBg};
-    p {
+    p,
+    a {
       color: ${theme.activeNavPillText};
     }
   }
 
   .success-banner {
     background: ${theme.green}1f;
-    p {
+    p,
+    a {
       color: ${theme.green};
     }
   }
