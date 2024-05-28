@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import axios from 'axios';
 import { getItem, setItem } from '../../utility/localStorageControl';
 // eslint-disable-next-line import/no-cycle
@@ -132,6 +133,10 @@ client.interceptors.request.use(async (req) => {
   const accessToken = getItem('access_token');
   const accessTokenExpiry = getItem('access_token_expires');
   const refreshTokenExpiry = getItem('refresh_token_expires');
+  console.log('client.interceptors-called----');
+  console.log('API.auth', API.auth);
+  console.log('req?.url', req?.url);
+
   if (accessToken) {
     if (refreshTokenExpiry > new Date().valueOf()) {
       if (accessTokenExpiry < new Date().valueOf()) {
@@ -146,6 +151,7 @@ client.interceptors.request.use(async (req) => {
     }
     // send user back to login page if access token doesnt exist to avoid unnecessary unauthenticated requests
   } else if (!Object.values(API.auth).includes(req?.url) && !Object.values(API.static).includes(req?.url)) {
+    req.url = null;
     window.location.href = '/auth/login';
   }
 
