@@ -16,7 +16,7 @@ import {
   UncontrolledTooltip,
 } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info } from 'react-feather';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import InputPasswordToggle from '@components/input-password-toggle';
 import classNames from 'classnames';
@@ -27,7 +27,7 @@ import { selectThemeColors } from '@utils';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
-import { returnFilteredDropdownOptions } from '../../../../utility/Utils';
+import { filteredFormSchema, returnFilteredDropdownOptions } from '../../../../utility/Utils';
 import { countriesService } from '../../../../services/staticServices';
 import { getStates, getCities, getCountries } from '../../../../redux/actions/staticActions';
 import { getPaymentDetails, setupStripeAccount, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
@@ -39,18 +39,20 @@ import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardi
 
 import { usWFormsSchema } from '../Schema';
 import { TooltipWrapper } from '../../../styled';
+import { formData } from '../../../../redux/selectors/formDataSelectors';
+import { setFormData } from '../../../../redux/reducers/formData';
 
 const Step3 = ({ setStep }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const savedFormData = useSelector(formData);
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [pStatesOptions, setPStatesOptions] = useState(null);
   const [mStatesOptions, setMStatesOptions] = useState(null);
   const [pCitiesOptions, setPCitiesOptions] = useState(null);
   const [mCitiesOptions, setMCitiesOptions] = useState(null);
-  const [copyAddress, setCopyAddress] = useState(false);
+  const [copyAddress, setCopyAddress] = useState(savedFormData?.copyAddress || false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [paymentDetailsRes, setPaymentDetailsRes] = useState(null);
@@ -72,6 +74,8 @@ const Step3 = ({ setStep }) => {
     control,
     handleSubmit,
     watch,
+    reset,
+    trigger,
     formState: { errors },
     getValues,
     setValue,
@@ -79,22 +83,54 @@ const Step3 = ({ setStep }) => {
     mode: 'onChange',
     resolver: yupResolver(usWFormsSchema),
     defaultValues: {
-      fullName: '',
-      citizen: '',
-      pAddress: '',
-      pHouseNo: '',
-      pState: '',
-      pCountry: '',
-      pCity: '',
-      pZipCode: '',
-      mAddress: '',
-      mHouseNo: '',
-      mState: '',
-      mCountry: '',
-      mCity: '',
-      mZipCode: '',
+      fullName: savedFormData?.fullName || '',
+      citizen: savedFormData?.citizen || '',
+      pAddress: savedFormData?.pAddress || '',
+      pHouseNo: savedFormData?.pHouseNo || '',
+      pState: savedFormData?.pState || '',
+      pCountry: savedFormData?.pCountry || '',
+      pCity: savedFormData?.pCity || '',
+      pZipCode: savedFormData?.pZipCode || '',
+      mAddress: savedFormData?.mAddress || '',
+      mHouseNo: savedFormData?.mHouseNo || '',
+      mState: savedFormData?.mState || '',
+      mCountry: savedFormData?.mCountry || '',
+      mCity: savedFormData?.mCity || '',
+      mZipCode: savedFormData?.mZipCode || '',
     },
   });
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    const allData = {
+      ...savedFormData,
+      copyAddress,
+      mAddress: copyAddress ? savedFormData?.pAddress : '',
+      mHouseNo: copyAddress ? savedFormData?.pHouseNo : '',
+      mCountry: copyAddress ? savedFormData?.pCountry : '',
+      mState: copyAddress ? savedFormData?.pState : '',
+      mCity: copyAddress ? savedFormData?.pCity : '',
+      mZipCode: copyAddress ? savedFormData?.pZipCode : '',
+    };
+    dispatch(setFormData(allData));
+  }, [copyAddress]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: usWFormsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   useEffect(() => {
     if (watch('pCountry')) {
@@ -494,6 +530,7 @@ const Step3 = ({ setStep }) => {
                       <Select
                         isLoading={statesIsLoading}
                         options={pStatesOptions}
+                        isDisabled={!watch('pCountry')}
                         menuPosition="fixed"
                         classNamePrefix="select"
                         placeholder="Select your state"
@@ -522,6 +559,7 @@ const Step3 = ({ setStep }) => {
                     render={({ field }) => (
                       <Select
                         isLoading={citiesIsLoading}
+                        isDisabled={!watch('pState') || !watch('pCountry')}
                         menuPosition="fixed"
                         minMenuHeight={200}
                         options={pCitiesOptions}
@@ -647,7 +685,7 @@ const Step3 = ({ setStep }) => {
                     render={({ field }) => (
                       <Select
                         isLoading={statesIsLoading}
-                        isDisabled={copyAddress}
+                        isDisabled={copyAddress || !watch('mCountry')}
                         options={mStatesOptions}
                         menuPosition="fixed"
                         classNamePrefix="select"
@@ -679,7 +717,7 @@ const Step3 = ({ setStep }) => {
                         isLoading={citiesIsLoading}
                         menuPosition="fixed"
                         minMenuHeight={200}
-                        isDisabled={copyAddress}
+                        isDisabled={copyAddress || !watch('mCountry') || !watch('mState')}
                         options={mCitiesOptions}
                         classNamePrefix="select"
                         placeholder="Select your city"

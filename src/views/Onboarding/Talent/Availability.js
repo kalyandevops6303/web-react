@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -30,11 +30,13 @@ import timeOptions from '../../../utility/constants/TimeDropdownOptions';
 import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import { profileDetailsLoading, userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
-import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { currencies, currenciesLoading } from '../../../redux/selectors/staticSelectors';
 import { getCurrencies } from '../../../redux/actions/staticActions';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -120,25 +122,54 @@ const Availability = () => {
       .required('Hourly rate is required'),
   });
 
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(AvailabilitySchema),
     defaultValues: {
-      availabilityDays: [],
-      weekdays: [],
-      weekends: [],
+      preferredWorkingTimeZone: savedFormData?.preferredWorkingTimeZone || {},
+      availabilityDays: savedFormData?.availabilityDays || [],
+      weekdays: savedFormData?.weekdays || [],
+      weekends: savedFormData?.weekends || [],
+      weekdayStartTime: savedFormData?.weekends || {},
+      weekdayEndTime: savedFormData?.weekends || {},
+      weekendStartTime: savedFormData?.weekends || {},
+      weekendEndTime: savedFormData?.weekends || {},
+      currencyPreference: savedFormData?.currencyPreference || {},
+      hourlyRate: savedFormData?.hourlyRate || null,
     },
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: AvailabilitySchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const [timezonesOptions, setTimezonesOptions] = useState(null);
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
@@ -157,6 +188,7 @@ const Availability = () => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
@@ -165,6 +197,7 @@ const Availability = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/social-details`);
     } else {

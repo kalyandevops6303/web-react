@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-unsafe-optional-chaining */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -51,6 +51,7 @@ import {
   getFileSize,
   returnFilteredDropdownOptions,
   renderFilePreview,
+  filteredFormSchema,
 } from '../../../utility/Utils';
 import { maxFileSize, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
@@ -62,6 +63,8 @@ import { resumeUploadService } from '../../../services/talentOnboardingServices'
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 import TextEditor from '../../CreateProject/TextEditor';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -146,21 +149,32 @@ const Personal = () => {
       .transform((value) => (value === null ? undefined : value))
       .required('City is required'),
   });
-
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(PersonalSchema),
     defaultValues: {
-      tagline: '',
-      professionalIntroduction: '',
-      streetAddress: '',
-      houseNumber: '',
+      tagline: savedFormData?.tagline || '',
+      professionalIntroduction: savedFormData?.professionalIntroduction || '',
+      streetAddress: savedFormData?.streetAddress || '',
+      houseNumber: savedFormData?.houseNumber || '',
+      workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || undefined,
+      workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || undefined,
+      role: savedFormData?.role || undefined,
+      zipCode: savedFormData?.zipCode || undefined,
+      country: savedFormData?.country || null,
+      state: savedFormData?.state || null,
+      city: savedFormData?.city || null,
+      resume: savedFormData?.resume || null,
     },
   });
 
@@ -187,10 +201,32 @@ const Personal = () => {
   const languagesIsLoading = useSelector(languagesLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
 
+  const localFormData = useWatch({ control });
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: PersonalSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+    if (savedFormDocuments) {
+      setFiles(savedFormDocuments);
+    }
+  }, []);
+
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     setFiles([...filtered]);
+    dispatch(setFormDocuments(null));
   };
 
   const isFileValid = (file) => {
@@ -225,19 +261,50 @@ const Personal = () => {
       uploadData: response?.data?.data,
       isUploaded: false,
     };
+    dispatch(setFormDocuments(file));
 
     setFiles([fileWithUrl]);
 
     handleUploadFile(fileWithUrl);
   };
 
-  const handleFileChange = (e) => {
-    if (isFileValid(e.target.files[0])) {
-      fetchUploadUrl(e.target.files[0]);
+  const RefetchUploadUrl = async (file) => {
+    const response = await resumeUploadService(file.name);
+    const fileWithUrl = {
+      id: uuidv4(),
+      file,
+      uploadData: response?.data?.data,
+      isUploaded: false,
+    };
+    const allData = { ...savedFormData, resume: fileWithUrl };
+    dispatch(setFormData(allData));
+    setFiles([fileWithUrl]);
+    handleUploadFile(fileWithUrl);
+  };
+
+  const handleFileChange = async (e) => {
+    if (e.target.files) {
+      if (isFileValid(e.target.files[0])) {
+        await fetchUploadUrl(e.target.files[0]);
+
+        dispatch(setFormDocuments(e.target.files[0]));
+      }
     } else {
       e.target.value = '';
     }
   };
+
+  const filesRef = useRef();
+  useEffect(() => {
+    const fileReRender = async () => {
+      const filesData = await RefetchUploadUrl(savedFormDocuments);
+      const allData = { ...savedFormData, resume: filesData };
+      dispatch(setFormData(allData));
+      filesRef.current = files;
+      dispatch(setFormDocuments(savedFormDocuments));
+    };
+    fileReRender();
+  }, []);
 
   const formattedDate = new Date()
     .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -315,6 +382,8 @@ const Personal = () => {
   );
 
   useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData, country: watch('country') };
+    dispatch(setFormData(allData));
     if (watch('country')?.value !== userDetailsData?.talent_info?.current_residency?.country?._id) {
       setValue('state', null);
       setValue('city', null);
@@ -324,15 +393,31 @@ const Personal = () => {
       dispatch(getStates(watch('country').value));
       setCitiesOptions([]);
     }
+    if (savedFormData && savedFormData.country != null && savedFormData?.country?.value === watch('country').value) {
+      setValue('state', savedFormData?.state);
+      if (savedFormData && savedFormData?.state != null) {
+        setValue('city', savedFormData?.city);
+      }
+    }
   }, [watch('country')]);
 
   useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData, state: watch('state') };
+    dispatch(setFormData(allData));
     if (watch('state')?.value !== userDetailsData?.talent_info?.current_residency?.state?._id) {
       setValue('city', null);
     }
 
     if (watch('state')) {
       dispatch(getCities(watch('state').value));
+    }
+    if (
+      watch('state') != null &&
+      savedFormData &&
+      savedFormData.state != null &&
+      savedFormData?.state?.value === watch('state').value
+    ) {
+      setValue('city', savedFormData?.city);
     }
   }, [watch('state')]);
 
@@ -355,6 +440,7 @@ const Personal = () => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -363,6 +449,7 @@ const Personal = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -388,8 +475,8 @@ const Personal = () => {
       city,
     } = data;
 
-    const years = workExperienceYear || 0;
-    const months = workExperienceMonth || 0;
+    const years = parseInt(workExperienceYear, 10) || 0;
+    const months = parseInt(workExperienceMonth, 10) || 0;
 
     const work_experience = years * 12 + months;
     const professional_intro = professionalIntroduction;
@@ -723,11 +810,11 @@ const Personal = () => {
                     control={control}
                     render={({ field }) => (
                       <TextEditor
-                      name={field.name}
-                      onChange={field.onChange}
-                      value={field.value}
-                      placeholder="Describe in 500 characters."
-                    />
+                        name={field.name}
+                        onChange={field.onChange}
+                        value={field.value}
+                        placeholder="Describe in 500 characters."
+                      />
                     )}
                   />
                   {errors.professionalIntroduction && (
@@ -776,6 +863,7 @@ const Personal = () => {
                       control={control}
                       render={({ field }) => (
                         <Input
+                          ref={filesRef}
                           {...field}
                           id="resume"
                           type="file"
@@ -976,6 +1064,7 @@ const Personal = () => {
                   <Controller
                     id="state"
                     name="state"
+                    defaultValue={savedFormData?.state || null}
                     control={control}
                     invalid={errors.state && true}
                     value={watch('state')}

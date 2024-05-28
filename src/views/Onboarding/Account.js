@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -53,6 +53,9 @@ import { convertReferral } from '../../redux/actions/referralAndRewardActions';
 import { getItem, removeItem } from '../../utility/localStorageControl';
 import { convertReferralLoading } from '../../redux/selectors/referralAndRewardSelectors';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
+import { filteredFormSchema } from '../../utility/Utils';
 
 const Account = () => {
   const AccountDetailsSchema = yup.object().shape({
@@ -73,27 +76,48 @@ const Account = () => {
     email: yup.string().email().required(),
   });
 
+  const savedFormData = useSelector(formData);
+
   const {
     control,
     handleSubmit,
     setValue,
     watch,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(AccountDetailsSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      countryCode: '',
-      mobileNumber: '',
-      email: '',
+      firstName: savedFormData?.firstName || '',
+      lastName: savedFormData?.lastName || '',
+      countryCode: savedFormData?.countryCode || '',
+      mobileNumber: savedFormData?.mobileNumber ||  '',
+      email: savedFormData?.email || '',
     },
   });
-
+  const localFormData = useWatch({control});
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: AccountDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const userDetailsData = useSelector(userDetails);
   const talentAccountDetailsIsLoading = useSelector(talentAccountDetailsLoading);
@@ -121,6 +145,7 @@ const Account = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       userDetailsData?.user_type === 'TALENT'
         ? navigate(`/${userProfileEdit.talent}/personal-details`)

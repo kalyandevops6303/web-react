@@ -17,7 +17,7 @@ import {
   InputGroupText,
 } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info, Eye, EyeOff } from 'react-feather';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import * as Yup from 'yup';
@@ -32,20 +32,26 @@ import theme from '../../../../configs/themeVariables';
 import { getPaymentDetails, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
 import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardingActions';
 import AccountCreatedModal from '../../AccountCreatedModal';
-import { formatDate } from '../../../../utility/Utils';
+import { filteredFormSchema, formatDate } from '../../../../utility/Utils';
 import { TooltipWrapper } from '../../../styled';
+import { formData } from '../../../../redux/selectors/formDataSelectors';
+import { setFormData } from '../../../../redux/reducers/formData';
 
 // eslint-disable-next-line react/prop-types
 const Step2 = ({ setStep }) => {
+  const savedFormData = useSelector(formData);
   const [confirmSign, setConfirmSign] = useState({
-    checkbox1: false,
-    checkbox2: false,
+    checkbox1: savedFormData?.confirmSign?.checkbox1 || false,
+    checkbox2: savedFormData?.confirmSign?.checkbox2 || false,
   });
-  const [isDocumentConfirmed, setIsDocumentConfirmed] = useState(false);
+
+  const [isDocumentConfirmed, setIsDocumentConfirmed] = useState(savedFormData?.isDocumentConfirmed || false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
-  const [taxUserType, setTaxUserType] = useState('US');
+  const [taxUserType, setTaxUserType] = useState(savedFormData?.taxUserType || 'US');
   const [selectedTaxId] = useState('taxOption1');
-  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(
+    savedFormData?.isPaymentOnboardingDone || false,
+  );
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
@@ -84,19 +90,53 @@ const Step2 = ({ setStep }) => {
       otherwise: () => Yup.string().optional(),
     }),
   });
+
   const {
     control,
     handleSubmit,
     setValue,
+    reset,
+    trigger,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(taxIdentitySchema),
     defaultValues: {
-      taxName: '',
-      taxClass: '',
+      taxName: savedFormData?.taxName || '',
+      taxClass: savedFormData?.taxClass || '',
+      taxType: savedFormData?.taxType || '',
+      ssnTaxId: savedFormData?.ssnTaxId || null,
+      nsnTaxId: savedFormData?.nsnTaxId || null,
     },
   });
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: taxIdentitySchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
+
+  useEffect(() => {
+    const signs = {
+      checkbox1: confirmSign?.checkbox1,
+      checkbox2: confirmSign?.checkbox2,
+    };
+    const allData = { ...savedFormData, confirmSign: signs, isDocumentConfirmed, isPaymentOnboardingDone };
+    dispatch(setFormData(allData));
+  }, [confirmSign, isDocumentConfirmed, isPaymentOnboardingDone]);
 
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {

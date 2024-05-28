@@ -21,17 +21,20 @@ import OtpInput from '../../lib/otp-input';
 import ResendOTPComp from './components/ResendOTP';
 import LogoComp from './components/LogoComp';
 import SpeechEmoji from "../../assets/images/logo/speech_baloon.png";
+import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
+import { formData } from '../../redux/selectors/formDataSelectors';
 
 const VerifyEmail = () => {
   const dispatch = useDispatch();
   const [otpError, setOtpError] = useState(false);
   const navigate = useNavigate();
-  const [code, setCode] = useState('');
+  const savedFormData = useSelector(formData);
+  const [code, setCode] = useState((savedFormData && savedFormData.code) || '');
   const isEmailVerified = useSelector(selectIsEmailVerified);
   const userType = useSelector(selectUserType);
   const isLoading = useSelector(selectAuthLoading);
   const emailId = useSelector(selectEmail);
-
+  
   useEffect(() => {
     if (!userType || !emailId) {
       navigate('/auth');
@@ -42,12 +45,14 @@ const VerifyEmail = () => {
   }, [isEmailVerified, navigate]);
 
   const handleChange = (value) => {
+    dispatch(setFormData({code}));
     setCode(value);
     setOtpError(false);
   };
 
   const verifyOtp = () => {
     dispatch(verifyEmail({ email: emailId, user_type: userType, code }));
+    dispatch(clearAllFormData());
   };
 
   return (

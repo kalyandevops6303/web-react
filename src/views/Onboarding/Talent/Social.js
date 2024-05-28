@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row, Spinner } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Plus } from 'react-feather';
@@ -13,9 +13,11 @@ import { profileDetailsLoading, userDetailsLoading } from '../../../redux/select
 import AccountCreatedModal from '../AccountCreatedModal';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
+import { filteredFormSchema, formatUrl, isUrlWithoutProtocol, removeEmptyKeys } from '../../../utility/Utils';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -30,6 +32,7 @@ const Social = () => {
     ),
   });
 
+  const savedFormData = useSelector(formData);
   const defaultLink = {
     linkName: '',
     link: '',
@@ -40,15 +43,17 @@ const Social = () => {
     handleSubmit,
     watch,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(SocialSchema),
     defaultValues: {
-      linkedInLink: '',
-      twitterLink: '',
-      githubLink: '',
-      otherSocialLinks: [defaultLink],
+      linkedInLink: savedFormData?.linkedInLink || '',
+      twitterLink: savedFormData?.twitterLink || '',
+      githubLink: savedFormData?.githubLink || '',
+      otherSocialLinks: savedFormData?.otherSocialLinks || [defaultLink],
     },
   });
 
@@ -64,6 +69,25 @@ const Social = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: SocialSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
 
@@ -82,6 +106,7 @@ const Social = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/payment-details`);
     } else {
@@ -90,6 +115,7 @@ const Social = () => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/payment-details`);
     } else {
