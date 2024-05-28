@@ -22,10 +22,9 @@ import { userTypes } from '../../../utility/constants/Constant';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
 import { returnFormattedRating } from '../../../utility/Utils';
-import getTeamId from '../../../utility/commonUtils';
-
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
+import getTeamId from '../../../utility/commonUtils';
 
 const InvitedMemberComponent = () => {
   const inviteMembers = useSelector((state) => state.projectDetails.getInvitedMember);

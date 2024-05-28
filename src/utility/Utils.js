@@ -8,6 +8,8 @@ import toast from '../lib/toast';
 import round from '../lib/round';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
 import {
+  CUSTOMER_SUPPORT_TYPES,
+  SUPPORT_EMAIL,
   bidStatus,
   checkPoints,
   fileScanStatus,
@@ -690,7 +692,7 @@ export const getBidAction = (action) => {
 };
 
 export const handleEmailClick = () => {
-  const recipient = 'support@trumio.ai';
+  const recipient = SUPPORT_EMAIL;
   const subject = '';
   const body = '';
   const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -776,6 +778,18 @@ export const generateToolTipId = (projectName, name, title) =>
 
 export const roundOfAmount = (amount) => (amount ? round(amount, 2) : 0);
 
+export const getMissingName = (type, values) => {
+  switch (type) {
+    case CUSTOMER_SUPPORT_TYPES.missing_skill:
+      return values.skill;
+    case CUSTOMER_SUPPORT_TYPES.missing_tool:
+      return values.tool;
+    case CUSTOMER_SUPPORT_TYPES.missing_institute:
+      return values.institute;
+    default:
+      return '';
+  }
+};
 export const checkPointRedirection = ({ response, navigate }) => {
   if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
     navigate('/auth/register-phone');
