@@ -92,7 +92,7 @@ const Educational = () => {
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
-    defaultSelecteds: {
+    defaultValues: {
       educationDetails: [{}],
     },
   });
