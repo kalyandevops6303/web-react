@@ -66,6 +66,7 @@ import {
   checkAdminRequest,
   checkAdminSuccess,
   checkAdminFailure,
+  googleLoginRequest,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -80,7 +81,7 @@ import { clearTeamCardData } from '../reducers/myTeams';
 import { clearMarketplaceCardData } from '../reducers/marketPlace';
 import { clearProjectCardData } from '../reducers/project';
 import { registerClubEmailService } from '../../services/clubServices';
-import { getTeamId } from '../../utility/Utils';
+import getTeamId from '../../utility/commonUtils';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { getClubAdminAccess } from './inviteTalent';
 
@@ -128,6 +129,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
 const loginUserWithGoogle =
   ({ id_token, user_type, onError, onSuccess }) =>
   async (dispatch) => {
+    dispatch(googleLoginRequest());
     let res;
     try {
       if (user_type) {
@@ -150,7 +152,7 @@ const loginUserWithGoogle =
       }
       onSuccess(res.data.data);
     } catch (error) {
-      onError(error);
+      onError(error, id_token);
       errorHandler(error, loginFailure);
     }
   };

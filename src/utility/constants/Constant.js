@@ -1,6 +1,8 @@
 /* eslint-disable no-useless-escape */
 import { Box, Check, Watch } from 'react-feather';
 
+const SUPPORT_EMAIL = 'support@trumio.ai';
+
 const ERROR_CODES = {
   EC_401: 401,
   EC_404: 404,
@@ -174,6 +176,17 @@ const bidStages = {
   BID_SUBMITTED: 'BID_SUBMITTED',
   NO_STAGE: 'NO_STAGE',
 };
+
+const CUSTOMER_SUPPORT_TYPES = {
+  missing_institute: 'missing_institute',
+  missing_skill: 'missing_skill',
+  missing_tool: 'missing_tool',
+  missing_talent: 'missing_talent',
+  education: 'education',
+  tools_and_skills: 'tools_and_skills',
+  other: 'other',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -205,4 +218,6 @@ export {
   invitationUserStatus,
   CHECKOUT_STATUS,
   PAYMENT_TYPES,
+  SUPPORT_EMAIL,
+  CUSTOMER_SUPPORT_TYPES,
 };

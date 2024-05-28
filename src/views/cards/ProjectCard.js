@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
 import PropTypes from 'prop-types';
+import parse from "html-react-parser";
 import { useDispatch, useSelector } from 'react-redux';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
@@ -173,15 +174,17 @@ const ProjectCard = ({
                     className="my-div"
                     ref={divRef}
                     style={{ maxHeight: '6.1rem', overflow: 'hidden', whiteSpace: 'pre-line' }}
-                    dangerouslySetInnerHTML={{ __html: data?.details?.description }}
-                  />
+                 
+                  >
+                  {parse(data?.details?.description)}
+                  </div>
                 ) : (
                   <div
                     className="my-div"
                     ref={divRef}
-                    style={{ whiteSpace: 'pre-line' }}
-                    dangerouslySetInnerHTML={{ __html: data?.details?.description }}
-                  />
+                    style={{ whiteSpace: 'pre-line' }}>
+                  {parse(data?.details?.description)}
+                  </div>
                 )}
 
                 {isContentOverflowing && (

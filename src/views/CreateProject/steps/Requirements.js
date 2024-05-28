@@ -52,6 +52,7 @@ import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
+import TextEditor from '../TextEditor';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -751,16 +752,18 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       id="projectDescription"
                       name="projectDescription"
                       control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          type="textarea"
-                          placeholder="Add background and requirements"
-                          rows="5"
-                          invalid={errors.projectDescription && true}
-                        />
-                      )}
+                      render={({ field }) => {
+                        return (
+                          <TextEditor
+                            name={field.name}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Add background and requirements"
+                          />
+                        );
+                      }}
                     />
+
                     {errors.projectDescription && <FormFeedback>{errors.projectDescription.message}</FormFeedback>}
                   </Col>
                 </Row>
