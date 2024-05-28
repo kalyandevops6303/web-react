@@ -11,6 +11,7 @@ import {
   CUSTOMER_SUPPORT_TYPES,
   SUPPORT_EMAIL,
   bidStatus,
+  checkPoints,
   fileScanStatus,
   maxFileSize,
   timeDalayToRetryScanning,
@@ -787,5 +788,16 @@ export const getMissingName = (type, values) => {
       return values.institute;
     default:
       return '';
+  }
+};
+export const checkPointRedirection = ({ response, navigate }) => {
+  if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
+    navigate('/auth/register-phone');
+  } else if (response?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
+    navigate(`/${response.user_type.toLowerCase()}-onboarding/account-details`);
+  } else if (response?.checkpoint === checkPoints.PROFILE_DETAILS) {
+    navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
+  } else if (response?.checkpoint === checkPoints.COMPLETE) {
+    navigate('/dashboard');
   }
 };
