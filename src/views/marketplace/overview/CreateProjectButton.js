@@ -1,24 +1,36 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
-import { Button } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Button, Spinner } from 'reactstrap';
 import { profilePercentage, userData } from '../../../redux/selectors/dashboardSelectors';
 import CompleteProfileModal from '../../modals/CompleteProfileModal';
 import { DashboardHeaderWrapper } from '../../dashboard/overview/style';
+import { userTypes } from '../../../utility/constants/Constant';
+import { draftProjectsCheck } from '../../../redux/actions/createProjectActions';
+import { draftProjectsCheckLoading } from '../../../redux/selectors/createProjectSelectors';
+import SavedDraftsAvailableModal from '../../modals/SavedDraftsAvailableModal';
 
 const CreateProjectButton = () => {
   const userDetailsData = useSelector(userData);
   const profilePercentageData = useSelector(profilePercentage);
+  const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
   const [completeProfileModal, setCompleteProfileModal] = useState(null);
+  const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
 
   const toggleCompleteProfileModal = () => {
     setCompleteProfileModal(!completeProfileModal);
   };
 
-  const onCreateProjectClick = () => {
-    if (
+  const toggleSavedDraftsAvailableModal = () => setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
+
+  const onDraftProjectsCheckSuccess = (res) => {
+    if (res?.has_draft_project) {
+      setSavedDraftsAvailableModal(true);
+    } else if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute') ||
       profilePercentageData?.values_missing?.includes('availability')
@@ -27,6 +39,10 @@ const CreateProjectButton = () => {
     } else {
       navigate('/create-project');
     }
+  };
+
+  const onCreateProjectClick = () => {
+    dispatch(draftProjectsCheck(onDraftProjectsCheckSuccess));
   };
 
   return (
@@ -38,12 +54,53 @@ const CreateProjectButton = () => {
           toggleModal={toggleCompleteProfileModal}
         />
       )}
-
-      {userDetailsData?.user_type === 'CLIENT' && (
+      {savedDraftsAvailableModal && (
+        <SavedDraftsAvailableModal
+          modal={savedDraftsAvailableModal}
+          toggleModal={toggleSavedDraftsAvailableModal}
+          modalText="You have project(s) in draft mode. Would you like to continue where you left off?"
+          firstBtnText="Create New Project"
+          secondBtnText="View Drafts"
+          firstBtnAction={() => navigate('/create-project')}
+          secondBtnAction={() =>
+            navigate('/marketplace/my_listings', {
+              state: {
+                isDraftProjects: true,
+              },
+            })
+          }
+        />
+      )}
+      {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
-          <Button color="primary" onClick={onCreateProjectClick}>
-            Create Project
+          {location?.pathname?.includes('my_listings') && (
+            <Button
+              color="primary"
+              outline
+              className="me-1"
+              onClick={() =>
+                navigate('/marketplace/my_listings', {
+                  state: {
+                    isDraftProjects: true,
+                  },
+                })
+              }
+            >
+              View Draft
+            </Button>
+          )}
+          <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>
+            {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Create Project'}
           </Button>
+        </DashboardHeaderWrapper>
+      )}
+      {userDetailsData?.user_type !== userTypes.client && location?.pathname?.includes('my_bids') && (
+        <DashboardHeaderWrapper>
+          {location?.pathname?.includes('my_bids') && (
+            <Button color="primary" outline onClick={onCreateProjectClick}>
+              View Draft
+            </Button>
+          )}
         </DashboardHeaderWrapper>
       )}
     </div>

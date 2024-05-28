@@ -14,6 +14,15 @@ import {
   createProjectFailure,
   createProjectRequest,
   createProjectSuccess,
+  deleteDraftProjectFailure,
+  deleteDraftProjectRequest,
+  deleteDraftProjectSuccess,
+  draftProjectDetailsFailure,
+  draftProjectDetailsRequest,
+  draftProjectDetailsSuccess,
+  draftProjectsCheckFailure,
+  draftProjectsCheckRequest,
+  draftProjectsCheckSuccess,
   favoriteTalentsFailure,
   favoriteTalentsRequest,
   favoriteTalentsSuccess,
@@ -23,15 +32,22 @@ import {
   inviteTalentsFailure,
   inviteTalentsRequest,
   inviteTalentsSuccess,
+  saveDraftProjectFailure,
+  saveDraftProjectRequest,
+  saveDraftProjectSuccess,
 } from '../reducers/createProject';
 import {
   almaMaterTalentsService,
   bestTalentsService,
   createProjectAIService,
   createProjectService,
+  deleteDraftProjectService,
+  draftProjectDetailsService,
+  draftProjectsCheckService,
   favoriteTalentsService,
   favoriteTeamsService,
   inviteTalentsService,
+  saveDraftProjectService,
 } from '../../services/createProjectServices';
 import { skillsAIService, toolsAIService } from '../../services/staticServices';
 import {
@@ -92,30 +108,32 @@ const getAlmaMaterTalents = (projectId, searchText, page, pageSize, oldData) => 
   }
 };
 
-const createNewProject = (data, onSuccess) => async (dispatch) => {
-  dispatch(createProjectRequest());
-  try {
-    const handleCreateProject = async () => {
-      const res = await createProjectService(data);
-      dispatch(createProjectSuccess(res.data.data));
-      dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
-      ShowToastMessage(SUCCESS, res.data.data.message);
-      onSuccess();
-    };
-    if (data?.details?.documents?.length > 0) {
-      scanAndProcessFiles({
-        fileData: data?.details?.documents,
-        handleMainAPI: handleCreateProject,
-        onError: () => dispatch(createProjectFailure()),
-        isPrivate: true,
-      });
-    } else {
-      handleCreateProject();
+const createNewProject =
+  ({ projectId, data, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(createProjectRequest());
+    try {
+      const handleCreateProject = async () => {
+        const res = await createProjectService({ projectId, data });
+        dispatch(createProjectSuccess(res.data.data));
+        dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
+        ShowToastMessage(SUCCESS, res.data.data.message);
+        onSuccess();
+      };
+      if (data?.details?.documents?.length > 0) {
+        scanAndProcessFiles({
+          fileData: data?.details?.documents,
+          handleMainAPI: handleCreateProject,
+          onError: () => dispatch(createProjectFailure()),
+          isPrivate: true,
+        });
+      } else {
+        handleCreateProject();
+      }
+    } catch (error) {
+      errorHandler(error, createProjectFailure);
     }
-  } catch (error) {
-    errorHandler(error, createProjectFailure);
-  }
-};
+  };
 
 const createProjectDetailsFromAI = (data, onSuccess) => async (dispatch) => {
   dispatch(createProjectAIRequest());
@@ -161,6 +179,66 @@ const inviteTalents = (projectId, data, onSuccess) => async (dispatch) => {
   }
 };
 
+const saveDraftProject =
+  ({ projectId, data, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(saveDraftProjectRequest());
+    try {
+      const handleSaveDraftProject = async () => {
+        const res = await saveDraftProjectService({ projectId, data });
+        dispatch(saveDraftProjectSuccess(res.data.data.project_id));
+        ShowToastMessage(SUCCESS, res.data.data.message);
+        onSuccess();
+      };
+      if (data?.details?.documents?.length > 0) {
+        await scanAndProcessFiles({
+          fileData: data?.details?.documents,
+          handleMainAPI: handleSaveDraftProject,
+          onError: () => dispatch(saveDraftProjectFailure()),
+          isPrivate: true,
+        });
+      } else {
+        await handleSaveDraftProject();
+      }
+    } catch (error) {
+      errorHandler(error, saveDraftProjectFailure);
+    }
+  };
+
+const draftProjectsCheck = (onSuccess) => async (dispatch) => {
+  dispatch(draftProjectsCheckRequest());
+  try {
+    const res = await draftProjectsCheckService();
+    dispatch(draftProjectsCheckSuccess(res.data.data));
+    onSuccess(res.data.data);
+  } catch (error) {
+    errorHandler(error, draftProjectsCheckFailure);
+  }
+};
+
+const deleteDraftProject = (projectId, onSuccess) => async (dispatch) => {
+  dispatch(deleteDraftProjectRequest());
+  try {
+    const res = await deleteDraftProjectService(projectId);
+    dispatch(deleteDraftProjectSuccess(res.data.data));
+    ShowToastMessage(SUCCESS, res.data.data);
+    onSuccess();
+  } catch (error) {
+    errorHandler(error, deleteDraftProjectFailure);
+  }
+};
+
+const draftProjectDetails = (projectId, onSuccess) => async (dispatch) => {
+  dispatch(draftProjectDetailsRequest());
+  try {
+    const res = await draftProjectDetailsService(projectId);
+    dispatch(draftProjectDetailsSuccess(res.data.data));
+    onSuccess(res.data.data);
+  } catch (error) {
+    errorHandler(error, draftProjectDetailsFailure);
+  }
+};
+
 export {
   createNewProject,
   getBestTalents,
@@ -171,4 +249,8 @@ export {
   createProjectDetailsFromAI,
   filterAISkills,
   filterAITools,
+  saveDraftProject,
+  draftProjectsCheck,
+  deleteDraftProject,
+  draftProjectDetails,
 };

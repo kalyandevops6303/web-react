@@ -94,6 +94,9 @@ const newTagColor = '#093682';
 const darkGreyBorderColor = '#C2C2C2';
 const inputDisabledBg = '#efefef';
 const accordionHeaderActiveBg = '#F2F8FF';
+const draftStatusBadgeBg = '#E0E0E0';
+const draftStatusBadgeColor = '#424242';
+const modalLeftBorderColor = '#ebebeb';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -111,8 +114,8 @@ const theme = {
   bodyBgColor,
   inputBorderColor: themeInputBorderColor, // color for theme input borders
   textMuted: textMutedColor, // color for theme input borders
-  toastBacgroundColor,// color for notification toast background
-  toastBorderColor,// color for notification toast border
+  toastBacgroundColor, // color for notification toast background
+  toastBorderColor, // color for notification toast border
   uploadIconBackground: uploadIconBackgroundColor, // color for upload icon background
   white: whiteColor, // white color for all components
   checkboxShadow: checkboxShadowColor, // checkbox shadow color
@@ -194,5 +197,8 @@ const theme = {
   darkGreyBorderColor,
   inputDisabledBg,
   accordionHeaderActiveBg,
+  draftStatusBadgeBg,
+  draftStatusBadgeColor,
+  modalLeftBorderColor,
 };
 export default theme;

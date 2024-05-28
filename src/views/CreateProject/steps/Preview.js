@@ -1,4 +1,5 @@
 import Proptypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 import 'react-quill/dist/quill.snow.css';
@@ -8,8 +9,12 @@ import { TagsContainer, TimeWrapper } from '../style';
 import { convertTo12HourFormat, downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
-import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
-import { createNewProject } from '../../../redux/actions/createProjectActions';
+import {
+  createProjectLoading,
+  saveDraftProjectId,
+  saveDraftProjectLoading,
+} from '../../../redux/selectors/createProjectSelectors';
+import { createNewProject, saveDraftProject } from '../../../redux/actions/createProjectActions';
 import YouDidItModal from '../YouDidItModal';
 
 const Preview = ({
@@ -20,13 +25,17 @@ const Preview = ({
   youDidItModal,
   setYouDidItModal,
   toggleYouDidItModal,
+  setDraftSavedModal,
 }) => {
   const weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
   const weekends = ['SATURDAY', 'SUNDAY'];
 
   const dispatch = useDispatch();
+  const params = useParams();
 
   const createProjectIsLoading = useSelector(createProjectLoading);
+  const draftProjectId = useSelector(saveDraftProjectId);
+  const saveDraftProjectIsLoading = useSelector(saveDraftProjectLoading);
 
   const renderFormattedDate = (date) => {
     const formattedDate = date
@@ -245,7 +254,105 @@ const Preview = ({
       listing_details,
     };
 
-    dispatch(createNewProject(removeEmptyKeys(requiredData), onSuccess));
+    dispatch(
+      createNewProject({
+        projectId: params?.projectId || draftProjectId,
+        data: removeEmptyKeys(requiredData),
+        onSuccess,
+      }),
+    );
+  };
+
+  const onSaveDraftSuccess = () => setDraftSavedModal(true);
+
+  const handleSaveDraft = () => {
+    let details;
+
+    if (files.length > 0) {
+      const documents = files.map((file) => ({
+        file_name: file.file.name,
+        file_key: file.uploadData.file_key,
+      }));
+
+      details = {
+        name: projectDetails?.projectName.trim(),
+        description: projectDetails?.projectDescription,
+        expected_duration: {
+          duration: projectDetails?.expectedDuration,
+          duration_type: projectDetails?.expectedDurationPeriod?.value,
+        },
+        documents,
+      };
+    } else {
+      details = {
+        name: projectDetails?.projectName.trim(),
+        description: projectDetails?.projectDescription,
+        expected_duration: {
+          duration: projectDetails?.expectedDuration,
+          duration_type: projectDetails?.expectedDurationPeriod?.value,
+        },
+      };
+    }
+
+    const proficiency = {
+      skills: projectDetails?.skills.map((skill) => skill.value),
+      tools: projectDetails?.tools?.map((tool) => tool.value),
+    };
+    const availability = {
+      timezone: projectDetails?.preferredWorkingTimeZone.value._id,
+      time_overlap: projectDetails?.minTimeOverlapHr,
+      weekdays_avl: {
+        start_time: projectDetails?.availabilityDays?.includes('weekdays')
+          ? projectDetails?.weekdayStartTime?.value
+          : null,
+        end_time: projectDetails?.availabilityDays?.includes('weekdays') ? projectDetails?.weekdayEndTime?.value : null,
+        days: projectDetails?.availabilityDays?.includes('weekdays') ? projectDetails?.weekdays : null,
+      },
+      weekends_avl: {
+        start_time: projectDetails?.availabilityDays?.includes('weekends')
+          ? projectDetails?.weekendStartTime?.value
+          : null,
+        end_time: projectDetails?.availabilityDays?.includes('weekends') ? projectDetails?.weekendEndTime?.value : null,
+        days: projectDetails?.availabilityDays?.includes('weekends') ? projectDetails?.weekends : null,
+      },
+    };
+    const countries = {
+      included: projectDetails?.includedCountriesSelection?.map((country) => country.value),
+      excluded: projectDetails?.excludedCountriesSelection?.map((country) => country.value),
+    };
+    const pay_type = {
+      currency: projectDetails?.currencyType?.value?._id,
+      variable_cost: projectDetails?.projectPayType !== 'fixed-price',
+      fixed_cost: projectDetails?.projectPayType === 'fixed-price' ? parseInt(projectDetails?.projectFixedCost, 10) : 0,
+    };
+    const nda = {
+      is_nda: projectDetails?.nda === 'yes',
+    };
+    const start_date = Date.parse(listingDetails?.startDate);
+    const end_date = Date.parse(listingDetails?.endDate);
+
+    const listing_details = {
+      start_date,
+      end_date,
+    };
+
+    const requiredData = {
+      details,
+      proficiency,
+      availability,
+      countries,
+      pay_type,
+      nda,
+      listing_details,
+    };
+
+    dispatch(
+      saveDraftProject({
+        projectId: params?.projectId || draftProjectId,
+        data: removeEmptyKeys(requiredData),
+        onSuccess: onSaveDraftSuccess,
+      }),
+    );
   };
 
   return (
@@ -415,16 +522,27 @@ const Preview = ({
           </UploadIconContainer>
           <h5 className="fw-light mb-0 mx-75">Back</h5>
         </div>
-        <Button color="primary" disabled={createProjectIsLoading} onClick={() => setYouDidItModal(true)}>
-          {createProjectIsLoading ? (
-            <Spinner size="sm" />
-          ) : (
-            <>
-              <span className="me-50">Post</span>
-              <ChevronRight size={14} />
-            </>
-          )}
-        </Button>
+        <div className="d-flex">
+          <Button
+            color="primary"
+            className="me-2"
+            outline
+            disabled={saveDraftProjectIsLoading}
+            onClick={handleSaveDraft}
+          >
+            {saveDraftProjectIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+          </Button>
+          <Button color="primary" disabled={createProjectIsLoading} onClick={() => setYouDidItModal(true)}>
+            {createProjectIsLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span className="me-50">Post</span>
+                <ChevronRight size={14} />
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </>
   );
@@ -440,6 +558,7 @@ Preview.propTypes = {
   youDidItModal: Proptypes.bool,
   setYouDidItModal: Proptypes.func,
   toggleYouDidItModal: Proptypes.func,
+  setDraftSavedModal: Proptypes.func,
 };
 
 Preview.defaultProps = {
@@ -450,4 +569,5 @@ Preview.defaultProps = {
   youDidItModal: false,
   setYouDidItModal: () => {},
   toggleYouDidItModal: () => {},
+  setDraftSavedModal: () => {},
 };
