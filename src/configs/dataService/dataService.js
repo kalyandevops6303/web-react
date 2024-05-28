@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { getItem, setItem } from '../../utility/localStorageControl';
+// eslint-disable-next-line import/no-cycle
 import { getTeamId } from '../../utility/Utils';
 // eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
-import { apiAuthEndpoint } from '../api';
+import API, { apiAuthEndpoint } from '../api';
 
 const authHeader = () => ({
   Authorization: `Bearer ${getItem('access_token')}`,
@@ -143,6 +144,9 @@ client.interceptors.request.use(async (req) => {
     } else {
       req.headers.Authorization = `Bearer ${accessToken}`;
     }
+    // send user back to login page if access token doesnt exist to avoid unnecessary unauthenticated requests
+  } else if (!Object.values(API.auth).includes(req?.url) && !Object.values(API.static).includes(req?.url)) {
+    window.location.href = '/auth/login';
   }
 
   return req;
