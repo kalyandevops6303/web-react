@@ -120,7 +120,7 @@ const paymentText = {
   INITIATED: 'Initiated',
   PAID: 'Paid',
   FAILED: 'Failed',
-  PAYMENT_DUE: 'Payment Due',
+  PAYMENT_DUE: 'Payment Pending',
   PAYMENT_PROCESSING: 'Payment Processing',
   PAYMENT_SUCCESSFUL: 'Payment Successful',
   PAYMENT_FAILED: 'Payment Failed',
@@ -129,6 +129,14 @@ const paymentText = {
   PAYMENT_INITIATED: 'Payment Initiated',
   PROCESSING: 'Processing',
   SUCCESSFUL: 'Successful',
+  NOT_FUNDED: 'Not Funded',
+  RETRY_PAYMENT: 'Retry Payment',
+  FUNDED: 'Funded',
+};
+
+const PAYMENT_TYPES = {
+  CHECKOUT: 'CHECKOUT',
+  TRANSFER: 'TRANSFER',
 };
 
 const snapShotStatus = {
@@ -209,6 +217,7 @@ export {
   bidStages,
   invitationUserStatus,
   CHECKOUT_STATUS,
+  PAYMENT_TYPES,
   SUPPORT_EMAIL,
   CUSTOMER_SUPPORT_TYPES,
 };

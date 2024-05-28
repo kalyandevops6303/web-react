@@ -22,6 +22,7 @@ import { MakePaymentModalWrapper } from './style';
 import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
 import { PAYMENT_STATUS, paymentText } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
+import { CustomBadge } from '../styled';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAndDisabledPaymentId }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
@@ -51,19 +52,27 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
   }, []);
 
   const getTagSettings = (tag) => {
-    if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
-      return { theme: 'light-danger', text: paymentText.PAYMENT_FAILED };
+    const { payment_status = '', status = '' } = tag;
+    if (payment_status === PAYMENT_STATUS.PAYMENT_FAILED || payment_status === PAYMENT_STATUS.FAILED) {
+      return { theme: 'light-danger', text: paymentText.RETRY_PAYMENT };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
+    if (payment_status === PAYMENT_STATUS.PAYMENT_DUE || payment_status === PAYMENT_STATUS.PENDING) {
       return { theme: 'light-warning', text: paymentText.PAYMENT_DUE };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING || tag === PAYMENT_STATUS.INITIATED) {
+    if (payment_status === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: paymentText.PAYMENT_PROCESSING };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: paymentText.FUNDS_AVAILABLE };
+    if (payment_status === PAYMENT_STATUS.INITIATED) {
+      return { theme: 'light-primary', text: paymentText.PAYMENT_INITIATED };
     }
-    return { theme: 'light-primary', text: tag };
+    if (payment_status === PAYMENT_STATUS.PAID) {
+      return {
+        theme: 'light-success',
+        text: status !== 'COMPLETED' ? paymentText.FUNDED : paymentText.PAID,
+      };
+    }
+
+    return { theme: 'light-primary', text: payment_status };
   };
   const handleMilestoneSelect = (evt, id) => {
     const isSelected = selectedIds.find((item) => item === id);
@@ -158,9 +167,11 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
                         </div>
                       </Col>
                       <Col sm="12" md="5" lg="4">
-                        <Badge color={getTagSettings(item.payment_status).theme} className="payment-status-badge">
-                          {getTagSettings(item.payment_status).text}
-                        </Badge>
+                        <CustomBadge>
+                          <Badge className={`payment-status-badge ${item?.payment_status}`}>
+                            {getTagSettings(item).text}
+                          </Badge>
+                        </CustomBadge>
                       </Col>
                       <Col sm="12" md="5" lg="3">
                         <div
