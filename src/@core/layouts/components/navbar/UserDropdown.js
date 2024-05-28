@@ -56,6 +56,7 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
   const handleLogout = async () => {
     const onSuccess = async () => {
+      window.history.pushState(null, '', '/auth/login');
       navigate('/auth/login');
 
       // Fcm unsubscribe
