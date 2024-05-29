@@ -152,8 +152,8 @@ const loginUserWithGoogle =
       }
       onSuccess(res.data.data);
     } catch (error) {
+      dispatch(loginFailure());
       onError(error, id_token);
-      errorHandler(error, loginFailure);
     }
   };
 
