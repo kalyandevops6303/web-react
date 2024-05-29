@@ -73,9 +73,10 @@ function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, 
               >
                 {milestoneName}
               </Label>
-              <CustomBadge>
+              <CustomBadge bordered rounded>
                 <Badge
                   className={classnames({
+                    RETRY_PAYMENT: isClient && (paymentStatus === 'PAYMENT_FAILED' || paymentStatus === 'FAILED'),
                     FUNDED: paymentStatus === 'PAID' && milestoneStatus !== 'COMPLETED',
                     PAID_AMOUNT: paymentStatus === 'PAID' && milestoneStatus === 'COMPLETED',
                     [paymentStatus]: paymentStatus !== 'PAID',

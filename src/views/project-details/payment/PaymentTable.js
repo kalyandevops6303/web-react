@@ -342,9 +342,12 @@ const PaymentTable = () => {
                           <td>{item?.name}</td>
                           <td>{}</td>
                           <td className="statusCol">
-                            <CustomBadge>
+                            <CustomBadge rounded>
                               <Badge
                                 className={classnames({
+                                  RETRY_PAYMENT:
+                                    isClient &&
+                                    (item?.payment_status === 'PAYMENT_FAILED' || item?.payment_status === 'FAILED'),
                                   NOT_FUNDED: !isClient && !isPaymentDone(item),
                                   PAID_AMOUNT: item?.payment_status === 'PAID' && item?.status === 'COMPLETED',
                                   FUNDED: item?.payment_status === 'PAID' && item?.status !== 'COMPLETED',

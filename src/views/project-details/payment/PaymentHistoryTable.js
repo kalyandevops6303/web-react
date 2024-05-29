@@ -197,7 +197,7 @@ function PaymentHistoryTable() {
                   )}
                   <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Payment Deposited' : 'Pay Out'}</td>
                   <td>
-                    <CustomBadge>
+                    <CustomBadge rounded>
                       <Badge
                         className={classnames({
                           [`${item?.payment_type}_${item?.status}`]: item?.status === PAYMENT_STATUS.PAID,

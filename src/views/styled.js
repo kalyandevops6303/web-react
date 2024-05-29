@@ -31,6 +31,11 @@ const Header = styled.div`
 `;
 
 const CustomBadge = styled.span`
+  .badge {
+    border-radius: ${(props) => (props.rounded ? '10px !important' : 'none')};
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+  }
   .light-blue,
   .NEW,
   .ACTIVE {
@@ -93,55 +98,69 @@ const CustomBadge = styled.span`
   }
   .PENDING,
   .PAYMENT_DUE {
-    background: ${theme.pendingOrangeColor}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.pendingOrangeColor}1f`)} !important;
     color: ${theme.pendingOrangeColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.pendingOrangeColor}` : 'none')};
   }
   .INITIATED,
   .PAYMENT_INITIATED {
-    background: ${theme.royalBlueColor}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.royalBlueColor}1f`)} !important;
     color: ${theme.royalBlueColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.royalBlueColor}` : 'none')};
   }
   .CHECKOUT_PAID {
-    background: ${theme.fundedBlueColor}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.fundedBlueColor}1f`)} !important;
     color: ${theme.fundedBlueColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.fundedBlueColor}` : 'none')};
   }
   .TRANSFER_PAID {
-    background: ${theme.green}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.green}1f`)} !important;
     color: ${theme.green};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.green}` : 'none')};
   }
   .PAID_AMOUNT {
-    background: ${theme.green}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.green}1f`)} !important;
     color: ${theme.green};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.green}` : 'none')};
   }
   .FAILED,
-  .PAYMENT_FAILED,
-  .RETRY_PAYMENT {
-    background: ${theme.red}1f !important;
+  .PAYMENT_FAILED {
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.red}1f`)} !important;
     color: ${theme.red};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.red}` : 'none')};
+  }
+  .RETRY_PAYMENT {
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.darkRedColor}1f`)} !important;
+    color: ${theme.darkRedColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.darkRedColor}` : 'none')};
   }
 
   .PAYMENT_PROCESSING,
   .PROCESSING {
-    background: ${theme.purpleColor}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.purpleColor}1f`)} !important;
     color: ${theme.purpleColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.purpleColor}` : 'none')};
   }
   .PAYMENT_SUCCESSFUL,
   .SUCCESSFUL {
-    background: ${theme.succesGreenColor}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.succesGreenColor}1f`)} !important;
     color: ${theme.succesGreenColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.succesGreenColor}` : 'none')};
   }
   .FUNDS_AVAILABLE,
   .FUNDED {
-    background: ${theme.fundedBlueColor}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.fundedBlueColor}1f`)} !important;
     color: ${theme.fundedBlueColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.fundedBlueColor}` : 'none')};
   }
   .NOT_FUNDED {
-    background: ${theme.disabledGrayColor}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.disabledGrayColor}1f`)} !important;
     color: ${theme.disabledGrayColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.disabledGrayColor}` : 'none')};
   }
 
   .P {
-    background: ${theme.royalBlueColor}1f !important;
+    background: ${(props) => (props.bordered ? '#fff' : `${theme.royalBlueColor}1f`)} !important;
     color: ${theme.royalBlueColor};
   }
   .rounded-corner {

@@ -17,12 +17,14 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
+import classnames from 'classnames';
 import { PropTypes } from 'prop-types';
 import { MakePaymentModalWrapper } from './style';
 import { getApplicationFee, makeMilestonePayment } from '../../redux/actions/milestonePaymentActions';
-import { PAYMENT_STATUS, paymentText } from '../../utility/constants/Constant';
+import { PAYMENT_STATUS, paymentText, userTypes } from '../../utility/constants/Constant';
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { CustomBadge } from '../styled';
+import { selectAuthUserData } from '../../redux/selectors/authSelectors';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAndDisabledPaymentId }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
@@ -42,6 +44,9 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
   // eslint-disable-next-line no-unsafe-optional-chaining
   const trumioFee = (totalAmount * applicationFee?.percentage) / 100;
   const totalPending = totalAmount + trumioFee;
+
+  const user = useSelector(selectAuthUserData);
+  const isClient = user?.user_type === userTypes.client;
 
   const onGetApplicationFee = (data) => {
     setFeeStructure(data);
@@ -167,8 +172,17 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
                         </div>
                       </Col>
                       <Col sm="12" md="5" lg="4">
-                        <CustomBadge>
-                          <Badge className={`payment-status-badge ${item?.payment_status}`}>
+                        <CustomBadge bordered rounded>
+                          <Badge
+                            className={classnames({
+                              RETRY_PAYMENT:
+                                isClient &&
+                                (item?.payment_status === 'PAYMENT_FAILED' || item?.payment_status === 'FAILED'),
+                              PAID_AMOUNT: item?.payment_status === 'PAID' && item?.status === 'COMPLETED',
+                              FUNDED: item?.payment_status === 'PAID' && item?.status !== 'COMPLETED',
+                              [item?.payment_status]: item?.payment_status !== 'PAID',
+                            })}
+                          >
                             {getTagSettings(item).text}
                           </Badge>
                         </CustomBadge>
