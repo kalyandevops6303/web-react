@@ -80,11 +80,15 @@ const UserType = () => {
           <CardTitle tag="h2" className="card-title-onboard">
             Welcome! 👋🏻
           </CardTitle>
+
           {isAuthLoading ? (
             <ComponentSpinner className="mt-2" />
           ) : (
             <>
-              <UserTypeCard onClick={() => handleSelection(userTypes.talent)} className="mt-3 text-center">
+              <CardText className="mt-3 card-text">
+                Please <span className="fw-bolder">select</span> a user type
+              </CardText>
+              <UserTypeCard onClick={() => handleSelection(userTypes.talent)} className="mt-1 text-center">
                 <CardTitle color="primary" tag="h2" className="select-card-title">
                   Talent
                 </CardTitle>
