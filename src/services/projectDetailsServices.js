@@ -133,6 +133,8 @@ const getActiveStageService = ({ project_id }) =>
   DataService.get(`${API.projectDetails.getActiveStage}?project_id=${project_id}`);
 const getAppConfigService = () => DataService.get(`${API.projectDetails.getAppConfig}`);
 
+const downloadCertificateService = ({ project_id }) =>
+  DataService.get(`${API.projectDetails.downloadCertificate}?project_id=${project_id}`);
 export {
   extendDocValidityService,
   extendPaymentValidityService,
@@ -168,4 +170,5 @@ export {
   getBidSnapshotService,
   getActiveStageService,
   getAppConfigService,
+  downloadCertificateService,
 };

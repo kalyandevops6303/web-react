@@ -142,6 +142,7 @@ const API = {
     acceptBidChange: `${apiCreateProjectEndpoint}/api/v1/accept-bid-changes`,
     getBidTimeline: `${apiCreateProjectEndpoint}/api/v1/bid-timeline`,
     getBidSnapshot: `${apiCreateProjectEndpoint}/api/v1/bid-snapshot`,
+    downloadCertificate: `${apiCreateProjectEndpoint}/api/v1/project/certificate`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,

@@ -24,6 +24,7 @@ import { truncateSentence } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import MilestoneDetails from './milestones/MilestoneDetails';
 import ProjectDetailsNavbar from './overview/ProjectDetailsNavbar';
+import DownloadCertificate from './overview/DownloadCertificate';
 
 const ProjectDetailsWrapper = styled.div`
   .content-header-left {
@@ -188,6 +189,7 @@ const ProjectDetails = () => {
       <Row className="mt-3">
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
+          {projectDetailsData?.completed_certificates && <DownloadCertificate />}
           <LeftSidebarProjectDetails />
           {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>
