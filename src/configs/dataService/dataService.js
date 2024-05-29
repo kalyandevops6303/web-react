@@ -133,9 +133,6 @@ client.interceptors.request.use(async (req) => {
   const accessToken = getItem('access_token');
   const accessTokenExpiry = getItem('access_token_expires');
   const refreshTokenExpiry = getItem('refresh_token_expires');
-  console.log('client.interceptors-called----');
-  console.log('API.auth', API.auth);
-  console.log('req?.url', req?.url);
 
   if (accessToken) {
     if (refreshTokenExpiry > new Date().valueOf()) {
