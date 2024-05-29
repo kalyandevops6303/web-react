@@ -33,6 +33,25 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
   const [issueTypeOptions, setIssueTypeOptions] = useState(null);
   const isLoading = useSelector((state) => state.support.loading);
   const userData = useSelector(selectSavedUserData);
+  const talentOnboardingData = useSelector((state) => state.talentOnboarding.userDetails);
+
+  const getUserEmail = () => {
+    const path = window.location.pathname.split('/');
+    if (path.includes('talent-onboarding')) {
+      return talentOnboardingData?.email;
+    }
+    if (path.includes('client-onboarding')) {
+      // using same field for taking email of client and talent since it is stored like that
+      return talentOnboardingData?.email;
+    }
+    if (userData?.email) {
+      return userData?.email;
+    }
+    return '';
+  };
+
+  const userEmail = getUserEmail();
+
   const [defaultOption, setDefaultOption] = useState(null);
   const CustomerSupportSchema = yup.object().shape({
     issueType: yup
@@ -96,7 +115,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
   const onSubmit = (values) => {
     const postData = {
       to_email: SUPPORT_EMAIL,
-      cc_email: [userData?.email],
+      cc_email: [userEmail],
       description: values?.supportDetails,
       issue_type: values?.issueType?.value,
       missing_name: getMissingName(values?.issueType?.value, values),
@@ -197,7 +216,7 @@ const CustomerSupportModal = ({ modal, toggleModal, onSuccess, defaultSelected }
                   <Input
                     style={{ border: `1px solid ${theme.inputBorder}`, background: theme.inputBackground }}
                     disabled
-                    value={userData?.email}
+                    value={userEmail}
                   />
                 </div>
               </Col>
