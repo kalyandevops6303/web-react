@@ -151,7 +151,7 @@ client.interceptors.request.use(async (req) => {
     }
     // send user back to login page if access token doesnt exist to avoid unnecessary unauthenticated requests
   } else if (!Object.values(API.auth).includes(req?.url) && !Object.values(API.static).includes(req?.url)) {
-    req.url = null;
+    req.url = '';
     window.location.href = '/auth/login';
   }
 
