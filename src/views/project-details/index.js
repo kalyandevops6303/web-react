@@ -203,7 +203,7 @@ const ProjectDetails = () => {
       <Row className="mt-3">
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
-          {projectDetailsData?.completed_certificates && <DownloadCertificate />}
+          {projectDetailsData?.completed_certificates && !isClient && <DownloadCertificate />}
           <LeftSidebarProjectDetails />
           {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>
