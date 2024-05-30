@@ -40,6 +40,7 @@ import { DropzoneContainer } from '../../CreateProject/style';
 import {
   downloadFile,
   downloadUploadedFile,
+  filteredFormSchema,
   formatDateWithDash,
   getFileSize,
   renderFilePreview,
@@ -103,17 +104,22 @@ const FixedSimpleMilestoneView = () => {
     ),
   });
 
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
   const {
     control,
     handleSubmit,
     getValues,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(MilestoneDetailsSchema),
     defaultValues: {
-      milestones: [
+      estimatedStartDate: savedFormData?.estimatedStartDate || null,
+      milestones: savedFormData?.milestones || [
         {
           duration: undefined,
           talentCost: undefined,
@@ -145,10 +151,8 @@ const FixedSimpleMilestoneView = () => {
   const projectDetailsData = useSelector(projectDetails);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  const savedFormData = useSelector(formData);
-  const savedFormDocuments = useSelector(formDocuments);
 
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState(savedFormData?.files || []);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
   const [allWorkers, setAllWorkers] = useState([]);
@@ -166,6 +170,18 @@ const FixedSimpleMilestoneView = () => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
   }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: MilestoneDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const toggle = (id) => {
     if (open === id) {
@@ -529,7 +545,7 @@ const FixedSimpleMilestoneView = () => {
           isUploaded: true,
         }));
         setFiles(reqFiles);
-      } else if (savedFormDocuments?.length) {
+      } else if (savedFormDocuments?.length > 0) {
         setFiles(savedFormDocuments);
       }
       if (res?.workers?.length > 0) {

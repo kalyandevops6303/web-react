@@ -11,7 +11,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChangeBidTypeButton, TeamSectionWrapper } from '../style';
 import theme from '../../../configs/themeVariables';
-import { selectThemeColors } from '../../../utility/Utils';
+import { filteredFormSchema, selectThemeColors } from '../../../utility/Utils';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { UploadIconContainer } from '../../Onboarding/style';
@@ -48,18 +48,20 @@ const SimpleTeamView = () => {
       )
       .min(1, 'At least one role should be added'),
   });
-
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
     defaultValues: {
-      projectRolesDetails: [{}],
+      projectRolesDetails: savedFormData?.projectRolesDetails || [{}],
     },
   });
 
@@ -77,7 +79,6 @@ const SimpleTeamView = () => {
   const allTeamMembersData = useSelector(allTeamMembers);
   const setWorkersIsLoading = useSelector(setWorkersLoading);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
-  const savedFormData = useSelector(formData);
 
   const [bidData, setBidData] = useState(null);
   const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
@@ -100,6 +101,18 @@ const SimpleTeamView = () => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
   }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: EducationalSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const toggleChangeBidTypeConfirmationModal = () => {
     setChangeBidTypeConfirmationModal(!changeBidTypeConfirmationModal);

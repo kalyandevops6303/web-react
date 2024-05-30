@@ -69,6 +69,7 @@ const AdvanceTeamView = () => {
       .min(1, 'At least one role should be added'),
   });
 
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
@@ -81,7 +82,7 @@ const AdvanceTeamView = () => {
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
     defaultValues: {
-      projectRolesDetails: [{}],
+      projectRolesDetails: savedFormData?.projectRolesDetails || [{}],
     },
   });
 
@@ -99,7 +100,6 @@ const AdvanceTeamView = () => {
   const allTeamMembersData = useSelector(allTeamMembers);
   const setWorkersIsLoading = useSelector(setWorkersLoading);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
-  const savedFormData = useSelector(formData);
 
   const [bidData, setBidData] = useState(null);
   const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);

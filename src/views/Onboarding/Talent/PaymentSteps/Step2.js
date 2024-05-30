@@ -38,7 +38,7 @@ import { formData } from '../../../../redux/selectors/formDataSelectors';
 import { setFormData } from '../../../../redux/reducers/formData';
 
 // eslint-disable-next-line react/prop-types
-const Step2 = ({ setStep }) => {
+const Step2 = ({ setStep, step }) => {
   const savedFormData = useSelector(formData);
   const [confirmSign, setConfirmSign] = useState({
     checkbox1: savedFormData?.confirmSign?.checkbox1 || false,
@@ -91,6 +91,10 @@ const Step2 = ({ setStep }) => {
     }),
   });
 
+  useEffect(()=>{
+    dispatch(setFormData({...savedFormData,step}));
+  },[step]);
+
   const {
     control,
     handleSubmit,
@@ -128,7 +132,6 @@ const Step2 = ({ setStep }) => {
       trigger(keysWithValues);
     }
   }, []);
-
   useEffect(() => {
     const signs = {
       checkbox1: confirmSign?.checkbox1,
@@ -142,22 +145,22 @@ const Step2 = ({ setStep }) => {
     if (res) {
       if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.tax_user_type?.length > 0) {
-        setTaxUserType(res?.tax_user_type);
+        setTaxUserType(savedFormData?.taxType ? savedFormData?.taxType  : res?.tax_user_type);
       }
       if (res.tax_identification?.legal_name?.length > 0) {
-        setValue('taxName', res.tax_identification?.legal_name);
+        setValue('taxName', savedFormData?.taxName ? savedFormData?.taxName  : res.tax_identification?.legal_name);
       }
       if (res.tax_identification?.federal_tax_classification?.length > 0) {
         setValue('taxClass', {
           label: 'Individual',
-          value: res.tax_identification?.federal_tax_classification,
+          value: savedFormData?.taxClass ? savedFormData?.taxClass?.value  : res.tax_identification?.federal_tax_classification,
         });
       }
       if (res.tax_identification?.social_security_number?.length > 0 && res?.tax_user_type === 'US') {
-        setValue('ssnTaxId', res.tax_identification?.social_security_number, { shouldValidate: true });
+        setValue('ssnTaxId', savedFormData?.ssnTaxId ? savedFormData?.ssnTaxId  :  res.tax_identification?.social_security_number, { shouldValidate: true });
       }
       if (res.tax_identification?.national_taxpayer_number?.length > 0 && res?.tax_user_type === 'NON_US') {
-        setValue('nsnTaxId', res.tax_identification?.national_taxpayer_number, { shouldValidate: true });
+        setValue('nsnTaxId', savedFormData?.nsnTaxId ? savedFormData?.nsnTaxId  :  res.tax_identification?.national_taxpayer_number, { shouldValidate: true });
       }
       if (res?.tax_user_type) {
         setValue('taxType', res?.tax_user_type);
@@ -212,7 +215,6 @@ const Step2 = ({ setStep }) => {
     }
   };
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
-
   const onSubmit = (data) => {
     if (isPaymentOnboardingDone) {
       setStep(3);

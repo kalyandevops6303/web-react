@@ -180,19 +180,25 @@ const Social = () => {
     if (res) {
       if (res?.talent_info?.social_links.length > 0) {
         if (res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn')) {
-          setValue('linkedInLink', res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url, {
+          setValue('linkedInLink', savedFormData?.linkedInLink ?  savedFormData?.linkedInLink : res?.talent_info?.social_links.find((link) => link.platform === 'linkedIn').url, {
             shouldValidate: true,
           });
+        }else{
+          setValue('linkedInLink',savedFormData?.linkedInLink);
         }
         if (res?.talent_info?.social_links.find((link) => link.platform === 'twitter')) {
-          setValue('twitterLink', res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url, {
+          setValue('twitterLink', savedFormData?.twitterLink ?  savedFormData?.twitterLink : res?.talent_info?.social_links.find((link) => link.platform === 'twitter').url, {
             shouldValidate: true,
           });
+        }else{
+          setValue('twitterLink',savedFormData?.twitterLink);
         }
         if (res?.talent_info?.social_links.find((link) => link.platform === 'github')) {
-          setValue('githubLink', res?.talent_info?.social_links.find((link) => link.platform === 'github').url, {
+          setValue('githubLink', savedFormData?.githubLink ?  savedFormData?.githubLink : res?.talent_info?.social_links.find((link) => link.platform === 'github').url, {
             shouldValidate: true,
           });
+        }else{
+          setValue('githubLink',savedFormData?.githubLink);
         }
         if (
           res?.talent_info?.social_links.filter(
@@ -200,7 +206,7 @@ const Social = () => {
           ).length > 0
         ) {
           setValue(
-            'otherSocialLinks',
+            'otherSocialLinks', savedFormData?.otherSocialLinks ? savedFormData?.otherSocialLinks :
             res?.talent_info?.social_links
               .filter(
                 (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
@@ -211,6 +217,9 @@ const Social = () => {
               })),
             { shouldValidate: true },
           );
+        }
+        else{
+          setValue('otherSocialLinks',savedFormData?.otherSocialLinks);
         }
       }
     }

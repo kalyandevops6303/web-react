@@ -23,7 +23,7 @@ const Payment = () => {
   // eslint-disable-next-line no-nested-ternary
   const StepComp = step === 1 ? paymentSteps.step1 : step === 2 ? paymentSteps.step2 : step === 3 ? USW9Form : null;
 
-  return <StepComp setStep={setStep} />;
+  return <StepComp setStep={setStep} step={step} />;
 };
 
 export default Payment;

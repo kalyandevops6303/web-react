@@ -41,6 +41,7 @@ import { DropzoneContainer } from '../../CreateProject/style';
 import {
   downloadFile,
   downloadUploadedFile,
+  filteredFormSchema,
   formatDateWithDash,
   getFileSize,
   renderFilePreview,
@@ -133,18 +134,21 @@ const FixedAdvanceMilestoneView = () => {
     ),
   });
 
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
   const {
     control,
     handleSubmit,
     getValues,
     setValue,
+    reset,
     trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(MilestoneDetailsSchema),
     defaultValues: {
-      milestones: [
+      milestones: savedFormData?.milestones || [
         {
           milestoneId: uuidv4(),
           name: undefined,
@@ -176,8 +180,6 @@ const FixedAdvanceMilestoneView = () => {
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const projectDetailsData = useSelector(projectDetails);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  const savedFormData = useSelector(formData);
-  const savedFormDocuments = useSelector(formDocuments);
 
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
@@ -205,6 +207,18 @@ const FixedAdvanceMilestoneView = () => {
       setOpen(id);
     }
   };
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: MilestoneDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const toggleChangeBidTypeConfirmationModal = () => {
     setChangeBidTypeConfirmationModal(!changeBidTypeConfirmationModal);

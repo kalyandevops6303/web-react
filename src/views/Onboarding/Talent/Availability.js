@@ -139,10 +139,10 @@ const Availability = () => {
       availabilityDays: savedFormData?.availabilityDays || [],
       weekdays: savedFormData?.weekdays || [],
       weekends: savedFormData?.weekends || [],
-      weekdayStartTime: savedFormData?.weekends || {},
-      weekdayEndTime: savedFormData?.weekends || {},
-      weekendStartTime: savedFormData?.weekends || {},
-      weekendEndTime: savedFormData?.weekends || {},
+      weekdayStartTime: savedFormData?.weekdayStartTime || {},
+      weekdayEndTime: savedFormData?.weekdayEndTime || {},
+      weekendStartTime: savedFormData?.weekendStartTime || {},
+      weekendEndTime: savedFormData?.weekendEndTime || {},
       currencyPreference: savedFormData?.currencyPreference || {},
       hourlyRate: savedFormData?.hourlyRate || null,
     },
@@ -298,8 +298,12 @@ const Availability = () => {
           setValue(
             'preferredWorkingTimeZone',
             {
-              label: `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
-              value: res?.availability?.timezone,
+              label: savedFormData?.preferredWorkingTimeZone?.label
+                ? `${savedFormData?.preferredWorkingTimeZone?.label}`
+                : `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
+              value: savedFormData?.preferredWorkingTimeZone?.value
+                ? savedFormData?.preferredWorkingTimeZone?.value
+                : res?.availability?.timezone,
             },
             { shouldValidate: true },
           );
@@ -309,46 +313,75 @@ const Availability = () => {
 
         if ('days' in res?.availability?.weekdays_avl) {
           talentAvailabilityDays = [...talentAvailabilityDays, 'weekdays'];
-          setValue('weekdays', res?.availability?.weekdays_avl?.days, { shouldValidate: true });
+          setValue(
+            'weekdays',
+            savedFormData?.weekdays.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days,
+            { shouldValidate: true },
+          );
+       
           setValue(
             'weekdayStartTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
+            savedFormData?.weekdayStartTime?.length > 0
+              ? savedFormData?.weekdayStartTime
+              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekdayEndTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
+            savedFormData?.weekdayEndTime.length > 0
+              ? savedFormData?.weekdayEndTime
+              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
             { shouldValidate: true },
           );
         }
         if ('days' in res?.availability.weekends_avl) {
           talentAvailabilityDays = [...talentAvailabilityDays, 'weekends'];
-          setValue('weekends', res?.availability?.weekends_avl?.days, { shouldValidate: true });
+          setValue(
+            'weekends',
+            savedFormData?.weekends.length > 0 ? savedFormData?.weekends : res?.availability?.weekends_avl?.days,
+            { shouldValidate: true },
+          );
           setValue(
             'weekendStartTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
+            savedFormData?.weekendStartTime.length > 0
+              ? savedFormData?.weekendStartTime
+              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekendEndTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
+            savedFormData?.weekendEndTime.length > 0
+              ? savedFormData?.weekendEndTime
+              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
             { shouldValidate: true },
           );
         }
-        setValue('availabilityDays', talentAvailabilityDays, { shouldValidate: true });
+        setValue(
+          'availabilityDays',
+          savedFormData?.availabilityDays.length > 0 ? savedFormData?.availabilityDays : talentAvailabilityDays,
+          { shouldValidate: true },
+        );
       }
       if ('name' in res?.talent_info?.currency_preference) {
         setValue(
           'currencyPreference',
           {
-            label: res?.talent_info?.currency_preference?.name,
-            value: res?.talent_info?.currency_preference?._id,
+            label:
+              savedFormData?.currencyPreference?.length > 0
+                ? savedFormData?.currencyPreference?.label
+                : res?.talent_info?.currency_preference?.name,
+            value:
+              savedFormData?.currencyPreference?.length > 0
+                ? savedFormData?.currencyPreference?.value
+                : res?.talent_info?.currency_preference?._id,
           },
           { shouldValidate: true },
         );
       }
       if (res?.talent_info?.hourly_rate > 0) {
-        setValue('hourlyRate', res?.talent_info?.hourly_rate, { shouldValidate: true });
+        setValue('hourlyRate', savedFormData?.hourlyRate ? savedFormData?.hourlyRate : res?.talent_info?.hourly_rate, {
+          shouldValidate: true,
+        });
       }
     }
   };
@@ -520,7 +553,7 @@ const Availability = () => {
                                 )}
                               />
                               {errors.weekdayStartTime && (
-                                <FormFeedback>{errors.weekdayStartTime.label.message}</FormFeedback>
+                                <FormFeedback>{errors && errors.weekdayStartTime.label.message}</FormFeedback>
                               )}
                             </Col>
                             <Col sm="6" md="6" lg="3">

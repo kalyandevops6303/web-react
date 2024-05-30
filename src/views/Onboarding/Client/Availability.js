@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -30,13 +30,15 @@ import timeOptions from '../../../utility/constants/TimeDropdownOptions';
 import { saveProfileDetails } from '../../../redux/actions/clientOnboardingActions';
 import { profileDetailsLoading } from '../../../redux/selectors/clientOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
-import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import { currencies, currenciesLoading } from '../../../redux/selectors/staticSelectors';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -112,24 +114,51 @@ const Availability = () => {
       .required('Preferred currency is required'),
   });
 
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(AvailabilitySchema),
     defaultValues: {
-      availabilityDays: [],
-      weekdays: [],
-      weekends: [],
+      preferredWorkingTimeZone: savedFormData?.preferredWorkingTimeZone || {},
+      availabilityDays: savedFormData?.availabilityDays || [],
+      weekdays: savedFormData?.weekdays || [],
+      weekends: savedFormData?.weekends || [],
+      weekdayStartTime: savedFormData?.weekdayStartTime || null,
+      weekdayEndTime: savedFormData?.weekdayEndTime || null,
+      weekendStartTime: savedFormData?.weekendStartTime || null,
+      weekendEndTime: savedFormData?.weekendEndTime || null,
+      currencyPreference: savedFormData?.currencyPreference || null,
     },
   });
+  const localFormData = useWatch({ control });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: AvailabilitySchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const [timezonesOptions, setTimezonesOptions] = useState(null);
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
@@ -148,6 +177,7 @@ const Availability = () => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/social-details`);
     } else {
@@ -156,6 +186,7 @@ const Availability = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/social-details`);
     } else {
@@ -253,8 +284,12 @@ const Availability = () => {
           setValue(
             'preferredWorkingTimeZone',
             {
-              label: `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
-              value: res?.availability?.timezone,
+              label: savedFormData?.preferredWorkingTimeZone?.label
+                ? `${savedFormData?.preferredWorkingTimeZone?.label}`
+                : `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
+              value: savedFormData?.preferredWorkingTimeZone?.value
+                ? savedFormData?.preferredWorkingTimeZone?.value
+                : res?.availability?.timezone,
             },
             { shouldValidate: true },
           );
@@ -264,40 +299,52 @@ const Availability = () => {
 
         if ('days' in res?.availability?.weekdays_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
-          setValue('weekdays', res?.availability?.weekdays_avl?.days, { shouldValidate: true });
+          setValue('weekdays',   savedFormData?.weekdays.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days, { shouldValidate: true });
           setValue(
             'weekdayStartTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
+            savedFormData?.weekdayStartTime
+            ? savedFormData?.weekdayStartTime
+            :  timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekdayEndTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
+            savedFormData?.weekdayEndTime
+              ? savedFormData?.weekdayEndTime
+              :  timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
             { shouldValidate: true },
           );
         }
         if ('days' in res?.availability.weekends_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
-          setValue('weekends', res?.availability?.weekends_avl?.days, { shouldValidate: true });
+          setValue('weekends',  savedFormData?.weekends.length > 0 ? savedFormData?.weekends : res?.availability?.weekends_avl?.days, { shouldValidate: true });
           setValue(
             'weekendStartTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
+            savedFormData?.weekendStartTime
+              ? savedFormData?.weekendStartTime
+              :  timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekendEndTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
+            savedFormData?.weekendEndTime
+            ? savedFormData?.weekendEndTime
+            :   timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
             { shouldValidate: true },
           );
         }
-        setValue('availabilityDays', clientAvailabilityDays, { shouldValidate: true });
+        setValue('availabilityDays',  savedFormData?.availabilityDays.length > 0 ? savedFormData?.availabilityDays : clientAvailabilityDays, { shouldValidate: true });
       }
       if ('name' in res?.client_info?.currency_preference) {
         setValue(
           'currencyPreference',
           {
-            label: res?.client_info?.currency_preference?.name,
-            value: res?.client_info?.currency_preference?._id,
+            label: savedFormData?.currencyPreference?.length > 0
+            ? savedFormData?.currencyPreference?.label
+            : res?.client_info?.currency_preference?.name,
+            value: savedFormData?.currencyPreference?.length > 0
+            ? savedFormData?.currencyPreference?.value
+            :  res?.client_info?.currency_preference?._id,
           },
           { shouldValidate: true },
         );

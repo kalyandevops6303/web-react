@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import * as yup from 'yup';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -34,11 +34,13 @@ import {
 } from '../../../services/staticServices';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
-import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -80,29 +82,51 @@ const Educational = () => {
       .max(5, 'Maximum of five tools can be added'),
   });
 
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
     watch,
     setValue,
     getValues,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
     defaultValues: {
-      educationDetails: [{}],
+      educationDetails: savedFormData?.educationDetails || null,
+      area: savedFormData?.area || null,
+      skills: savedFormData?.skills || null,
+      tools: savedFormData?.tools || null,
     },
   });
+  const localFormData = useWatch({ control });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
 
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: EducationalSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'educationDetails',
   });
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const location = useLocation();
 
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [projectAreasOptions, setProjectAreasOptions] = useState(null);
@@ -121,6 +145,7 @@ const Educational = () => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/availability-details`);
     } else {
@@ -129,6 +154,7 @@ const Educational = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.client}/availability-details`);
     } else {
@@ -276,9 +302,10 @@ const Educational = () => {
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.client_info?.educational_institute.length > 0) {
+
         setValue(
           'educationDetails',
-          res?.client_info?.educational_institute.map((detail) => ({
+       savedFormData?.educationDetails ?   savedFormData?.educationDetails  : res?.client_info?.educational_institute.map((detail) => ({
             educationInstitution: { label: detail.institution.name, value: detail.institution._id },
           })),
           { shouldValidate: true },
@@ -287,7 +314,7 @@ const Educational = () => {
       if (res?.client_info?.project_area_of_interest?.tools.length > 0) {
         setValue(
           'tools',
-          res?.client_info?.project_area_of_interest?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          savedFormData?.tools ? savedFormData?.tools : res?.client_info?.project_area_of_interest?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
@@ -296,8 +323,8 @@ const Educational = () => {
         setValue(
           'area',
           {
-            label: res?.client_info?.project_area_of_interest?.area.name,
-            value: res?.client_info?.project_area_of_interest?.area._id,
+            label: savedFormData?.area ?  savedFormData?.area?.label : res?.client_info?.project_area_of_interest?.area.name,
+            value: savedFormData?.area ?  savedFormData?.area?.value : res?.client_info?.project_area_of_interest?.area._id,
           },
           { shouldValidate: true },
         );
@@ -305,7 +332,7 @@ const Educational = () => {
       if (res?.client_info?.project_area_of_interest?.skills.length > 0) {
         setValue(
           'skills',
-          res?.client_info?.project_area_of_interest?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          savedFormData?.skills ?  savedFormData?.skills :   res?.client_info?.project_area_of_interest?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }

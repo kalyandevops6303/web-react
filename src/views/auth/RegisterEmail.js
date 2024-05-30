@@ -63,8 +63,8 @@ const RegisterEmail = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: emailData || '',
-      agreeTerms: false,
+      email: savedFormData?.email || emailData || '',
+      agreeTerms: savedFormData?.agreeTerms || false,
     },
   });
   const localFormData = useWatch({ control });
@@ -201,7 +201,7 @@ const RegisterEmail = () => {
           <Label>
             <small>Already have an account?</small>
           </Label>
-          <Label tag={Link} to="/auth/login" className="primary">
+          <Label onClick={()=>dispatch(clearAllFormData())} tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>
           </Label>
         </div>

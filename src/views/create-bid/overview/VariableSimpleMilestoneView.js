@@ -102,6 +102,8 @@ const VariableSimpleMilestoneView = () => {
     ),
   });
 
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
   const {
     control,
     handleSubmit,
@@ -112,7 +114,7 @@ const VariableSimpleMilestoneView = () => {
     mode: 'onChange',
     resolver: yupResolver(MilestoneDetailsSchema),
     defaultValues: {
-      milestones: [
+      milestones: savedFormData?.milestones || [
         {
           duration: undefined,
           talentCost: undefined,
@@ -143,8 +145,6 @@ const VariableSimpleMilestoneView = () => {
   const selectUserDetailsData = useSelector(selectUserData);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
-  const savedFormData = useSelector(formData);
-  const savedFormDocuments = useSelector(formDocuments);
 
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);

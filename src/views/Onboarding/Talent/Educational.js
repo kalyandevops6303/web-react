@@ -305,7 +305,8 @@ const Educational = () => {
       if (res?.talent_info?.educational_institute.length > 0) {
         setValue(
           'educationDetails',
-          res?.talent_info?.educational_institute.map((detail) => ({
+          savedFormData?.educationDetails ?
+        savedFormData?.educationDetails :  res?.talent_info?.educational_institute.map((detail) => ({
             educationInstitution: { label: detail.institution.name, value: detail.institution._id },
             education: { label: detail.education.name, value: detail.education._id },
           })),
@@ -315,14 +316,16 @@ const Educational = () => {
       if (res?.talent_info?.expertise?.tools.length > 0) {
         setValue(
           'tools',
-          res?.talent_info?.expertise?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          savedFormData?.tools ?
+          savedFormData?.tools :    res?.talent_info?.expertise?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
       if (res?.talent_info?.expertise?.certificates.length > 0) {
         setValue(
           'certificates',
-          res?.talent_info?.expertise?.certificates.map((certificate) => ({
+          savedFormData?.certificates ?
+          savedFormData?.certificates :    res?.talent_info?.expertise?.certificates.map((certificate) => ({
             label: certificate.name,
             value: certificate._id,
           })),
@@ -332,7 +335,8 @@ const Educational = () => {
       if (res?.talent_info?.expertise?.skills.length > 0) {
         setValue(
           'skills',
-          res?.talent_info?.expertise?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          savedFormData?.skills ?
+          savedFormData?.skills :  res?.talent_info?.expertise?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }

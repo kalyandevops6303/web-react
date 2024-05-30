@@ -45,7 +45,7 @@ const VerifyEmail = () => {
   }, [isEmailVerified, navigate]);
 
   const handleChange = (value) => {
-    dispatch(setFormData({code}));
+    dispatch(setFormData({code:value}));
     setCode(value);
     setOtpError(false);
   };

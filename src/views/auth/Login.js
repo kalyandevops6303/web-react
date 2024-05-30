@@ -107,8 +107,8 @@ const Login = () => {
     mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
-      email: savedFormData?.email ||  '',
-      password: savedFormData?.email || '',
+      email: savedFormData?.email || '',
+      password: savedFormData?.password || '',
     },
   });
   const localFormData = useWatch({ control });
@@ -198,7 +198,8 @@ const Login = () => {
                   className="input-group-merge"
                   id="password"
                   placeholder="Enter your password"
-                  onCopy={(e) => {// disable copy from password field
+                  onCopy={(e) => {
+                    // disable copy from password field
                     e.preventDefault();
                     return false;
                   }}
@@ -238,7 +239,15 @@ const Login = () => {
           <Label>
             <small>New to Trumio?</small>
           </Label>
-          <Label tag={Link} to="/auth" className="primary" onClick={() => removeItem('isUserVisited')}>
+          <Label
+            tag={Link}
+            to="/auth"
+            className="primary"
+            onClick={() => {
+              removeItem('isUserVisited');
+              dispatch(clearAllFormData());
+            }}
+          >
             <small>Create an account</small>
           </Label>
         </div>

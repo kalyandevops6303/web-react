@@ -167,10 +167,10 @@ const Personal = () => {
       professionalIntroduction: savedFormData?.professionalIntroduction || '',
       streetAddress: savedFormData?.streetAddress || '',
       houseNumber: savedFormData?.houseNumber || '',
-      workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || undefined,
-      workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || undefined,
-      role: savedFormData?.role || undefined,
-      zipCode: savedFormData?.zipCode || undefined,
+      workExperienceMonth: parseInt(savedFormData?.workExperienceMonth, 10) || null,
+      workExperienceYear: parseInt(savedFormData?.workExperienceYear, 10) || null,
+      role: savedFormData?.role || null,
+      zipCode: savedFormData?.zipCode || null,
       country: savedFormData?.country || null,
       state: savedFormData?.state || null,
       city: savedFormData?.city || null,
@@ -188,7 +188,7 @@ const Personal = () => {
   const [statesOptions, setStatesOptions] = useState(null);
   const [citiesOptions, setCitiesOptions] = useState(null);
   const [uploadingFiles, setUploadingFiles] = useState([]);
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState(savedFormDocuments || []);
 
   const statesData = useSelector(states);
   const statesIsLoading = useSelector(statesLoading);
@@ -216,9 +216,6 @@ const Personal = () => {
       reset(requiredFields);
       const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
       trigger(keysWithValues);
-    }
-    if (savedFormDocuments) {
-      setFiles(savedFormDocuments);
     }
   }, []);
 
@@ -254,31 +251,15 @@ const Personal = () => {
 
   const fetchUploadUrl = async (file) => {
     const response = await resumeUploadService(file.name);
-
     const fileWithUrl = {
       id: uuidv4(),
       file,
       uploadData: response?.data?.data,
       isUploaded: false,
     };
-    dispatch(setFormDocuments(file));
-
+    dispatch(setFormDocuments([fileWithUrl]));
     setFiles([fileWithUrl]);
 
-    handleUploadFile(fileWithUrl);
-  };
-
-  const RefetchUploadUrl = async (file) => {
-    const response = await resumeUploadService(file.name);
-    const fileWithUrl = {
-      id: uuidv4(),
-      file,
-      uploadData: response?.data?.data,
-      isUploaded: false,
-    };
-    const allData = { ...savedFormData, resume: fileWithUrl };
-    dispatch(setFormData(allData));
-    setFiles([fileWithUrl]);
     handleUploadFile(fileWithUrl);
   };
 
@@ -286,8 +267,6 @@ const Personal = () => {
     if (e.target.files) {
       if (isFileValid(e.target.files[0])) {
         await fetchUploadUrl(e.target.files[0]);
-
-        dispatch(setFormDocuments(e.target.files[0]));
       }
     } else {
       e.target.value = '';
@@ -297,15 +276,18 @@ const Personal = () => {
   const filesRef = useRef();
   useEffect(() => {
     const fileReRender = async () => {
-      const filesData = await RefetchUploadUrl(savedFormDocuments);
-      const allData = { ...savedFormData, resume: filesData };
-      dispatch(setFormData(allData));
-      filesRef.current = files;
-      dispatch(setFormDocuments(savedFormDocuments));
+      // console.log(savedFormDocuments);
+      // const filesData = await RefetchUploadUrl(savedFormDocuments);
+      // const allData = { ...savedFormData, resume: filesData };
+      // dispatch(setFormData(allData));
+      if (savedFormDocuments != null) {
+        filesRef.current = files;
+        setFiles(savedFormDocuments);
+        dispatch(setFormDocuments(savedFormDocuments));
+      }
     };
     fileReRender();
-  }, []);
-
+  }, [savedFormDocuments]);
   const formattedDate = new Date()
     .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
     .replace(',', '')
@@ -590,39 +572,56 @@ const Personal = () => {
       return { options: [] };
     }
   };
-
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.talent_info?.tagline.length > 0) {
-        setValue('tagline', res?.talent_info?.tagline, { shouldValidate: true });
+        setValue('tagline', savedFormData?.tagline ? savedFormData?.tagline : res?.talent_info?.tagline, {
+          shouldValidate: true,
+        });
       }
       if (res?.talent_info?.work_experience > 0) {
         // eslint-disable-next-line no-unsafe-optional-chaining
-        const years = Math.floor(res?.talent_info?.work_experience / 12);
-        const months = res?.talent_info?.work_experience % 12;
+        const years = Math.floor(
+          savedFormData?.workExperienceYear
+            ? savedFormData?.workExperienceYear
+            : res?.talent_info?.work_experience / 12,
+        );
+        const months = savedFormData?.workExperienceMonth
+          ? savedFormData?.workExperienceMonth
+          : res?.talent_info?.work_experience % 12;
 
         setValue('workExperienceYear', years, { shouldValidate: true });
         setValue('workExperienceMonth', months, { shouldValidate: true });
       }
       if (res?.talent_info?.professional_intro.length > 0) {
-        setValue('professionalIntroduction', res?.talent_info?.professional_intro, { shouldValidate: true });
+        setValue(
+          'professionalIntroduction',
+          savedFormData?.professionalIntroduction
+            ? savedFormData?.professionalIntroduction
+            : res?.talent_info?.professional_intro,
+          { shouldValidate: true },
+        );
       }
       if ('name' in res?.talent_info?.role) {
         setValue(
           'role',
-          { label: res?.talent_info?.role?.name, value: res?.talent_info?.role?._id },
+          {
+            label: savedFormData?.role ? savedFormData?.role?.label : res?.talent_info?.role?.name,
+            value: savedFormData?.role ? savedFormData?.role?.value : res?.talent_info?.role?._id,
+          },
           { shouldValidate: true },
         );
       }
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
+        
         setFiles([
           {
             file: {
-              name: res?.talent_info?.resume?.file_name,
-              size: res?.talent_info?.resume?.size,
+              name:savedFormDocuments != null ?  savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
+              size: savedFormDocuments != null ?  savedFormDocuments[0]?.file?.size  : res?.talent_info?.resume?.size,
             },
             uploadData: {
-              file_key: res?.talent_info?.resume?.file_key,
+              file_key: savedFormDocuments != null ? savedFormDocuments[0]?.uploadData?.file_key : res?.talent_info?.resume?.file_key,
             },
             isUploaded: true,
           },
@@ -637,20 +636,38 @@ const Personal = () => {
         'city' in res?.talent_info?.current_residency
       ) {
         if (res?.talent_info?.current_residency?.street_address.length > 0) {
-          setValue('streetAddress', res?.talent_info?.current_residency?.street_address, { shouldValidate: true });
+          setValue(
+            'streetAddress',
+            savedFormData?.streetAddress
+              ? savedFormData?.streetAddress
+              : res?.talent_info?.current_residency?.street_address,
+            { shouldValidate: true },
+          );
         }
         if (res?.talent_info?.current_residency?.house_number.length > 0) {
-          setValue('houseNumber', res?.talent_info?.current_residency?.house_number, { shouldValidate: true });
+          setValue(
+            'houseNumber',
+            savedFormData?.houseNumber ? savedFormData?.houseNumber : res?.talent_info?.current_residency?.house_number,
+            { shouldValidate: true },
+          );
         }
         if (res?.talent_info?.current_residency?.zip_code > 0) {
-          setValue('zipCode', res?.talent_info?.current_residency?.zip_code, { shouldValidate: true });
+          setValue(
+            'zipCode',
+            savedFormData?.zipCode ? savedFormData?.zipCode : res?.talent_info?.current_residency?.zip_code,
+            { shouldValidate: true },
+          );
         }
         if ('country' in res?.talent_info?.current_residency) {
           setValue(
             'country',
             {
-              label: res?.talent_info?.current_residency.country.name,
-              value: res?.talent_info?.current_residency.country._id,
+              label: savedFormData?.country
+                ? savedFormData?.country?.label
+                : res?.talent_info?.current_residency.country.name,
+              value: savedFormData?.country
+                ? savedFormData?.country?.value
+                : res?.talent_info?.current_residency.country._id,
             },
             { shouldValidate: true },
           );
@@ -659,8 +676,10 @@ const Personal = () => {
           setValue(
             'state',
             {
-              label: res?.talent_info?.current_residency.state.name,
-              value: res?.talent_info?.current_residency.state._id,
+              label: savedFormData?.state
+                ? savedFormData?.state?.label
+                : res?.talent_info?.current_residency.state.name,
+              value: savedFormData?.state ? savedFormData?.state?.value : res?.talent_info?.current_residency.state._id,
             },
             { shouldValidate: true },
           );
@@ -669,8 +688,8 @@ const Personal = () => {
           setValue(
             'city',
             {
-              label: res?.talent_info?.current_residency.city.name,
-              value: res?.talent_info?.current_residency.city._id,
+              label: savedFormData?.city ? savedFormData?.city?.label : res?.talent_info?.current_residency.city.name,
+              value: savedFormData?.city ? savedFormData?.city?.value : res?.talent_info?.current_residency.city._id,
             },
             { shouldValidate: true },
           );

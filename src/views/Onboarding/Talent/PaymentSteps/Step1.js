@@ -21,7 +21,7 @@ import { formData } from '../../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../../redux/reducers/formData';
 
 // eslint-disable-next-line react/prop-types
-const Step1 = ({ setStep }) => {
+const Step1 = ({ setStep , step }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -30,11 +30,14 @@ const Step1 = ({ setStep }) => {
   const [isWorkingInUS, setIsWorkingInUS] = useState(savedFormData?.isWorkingInUS || false);
   const [taxUserType, setTaxUserType] = useState(savedFormData?.taxUserType || 'US');
   const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
-  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(savedFormData?.isPaymentOnboardingDone || false);
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
+  useEffect(()=>{
+    dispatch(setFormData({...savedFormData,step}));
+  },[step]);
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       if (res?.created_at) setIsTaxInfoExists(true);
@@ -69,6 +72,11 @@ const Step1 = ({ setStep }) => {
 
     setTaxUserType(e.target.name);
   };
+
+  useEffect(()=>{
+    const allData = {...savedFormData, isPaymentOnboardingDone };
+    dispatch(setFormData(allData));
+  },[isPaymentOnboardingDone]);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
