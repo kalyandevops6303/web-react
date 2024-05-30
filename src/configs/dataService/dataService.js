@@ -4,7 +4,7 @@ import { getItem, setItem } from '../../utility/localStorageControl';
 import getTeamId from '../../utility/commonUtils';
 // eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
-import API, { apiAuthEndpoint } from '../api';
+import { apiAuthEndpoint } from '../api';
 
 const authHeader = () => ({
   Authorization: `Bearer ${getItem('access_token')}`,
