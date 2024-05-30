@@ -18,10 +18,7 @@ const CreateProjectButton = () => {
   };
 
   const onCreateProjectClick = () => {
-    if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute')
-    ) {
+    if (profilePercentageData?.values_missing?.includes('company_name')) {
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');

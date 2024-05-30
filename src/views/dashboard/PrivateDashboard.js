@@ -95,10 +95,7 @@ const PrivateDashboard = () => {
   };
 
   const onCreateProjectClick = () => {
-    if (
-      profilePercentageData?.values_missing?.includes('company_name') ||
-      profilePercentageData?.values_missing?.includes('educational_institute')
-    ) {
+    if (profilePercentageData?.values_missing?.includes('company_name')) {
       setCompleteProfileModalInfoText('create project');
       setCompleteProfileModal(true);
     } else {
