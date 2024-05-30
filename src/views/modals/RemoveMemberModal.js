@@ -10,7 +10,7 @@ import { RemoveMemberModalWrapper } from './style';
 import { removeTeamMember } from '../../redux/actions/dashboardActions';
 import { switchProfile } from '../../redux/actions/authActions';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
-import { getTeamId } from '../../utility/Utils';
+import getTeamId from '../../utility/commonUtils';
 
 const RemoveMemberModal = ({ modal, toggleModal, data }) => {
   const dispatch = useDispatch();

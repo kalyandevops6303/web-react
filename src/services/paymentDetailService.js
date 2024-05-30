@@ -11,6 +11,7 @@ const applicationFeeService = () => DataService.get(API.payment.applicationFee);
 const transferFundService = (data) => DataService.post(API.payment.transferFunds, data);
 const spendingDetailService = () => DataService.get(API.payment.spendingDetails);
 const upcomingPaymentsService = () => DataService.get(API.payment.upcomingPayments);
+const updatePaymentStatusService = (data) => DataService.post(API.payment.updatePaymentStatus, data);
 
 export {
   createUserService,
@@ -23,4 +24,5 @@ export {
   transferFundService,
   spendingDetailService,
   upcomingPaymentsService,
+  updatePaymentStatusService,
 };

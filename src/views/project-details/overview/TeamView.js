@@ -21,9 +21,10 @@ import { selectSavedUserData, selectUserData } from '../../../redux/selectors/au
 import { userTypes } from '../../../utility/constants/Constant';
 import { inviteTalents } from '../../../redux/actions/inviteTalent';
 import theme from '../../../configs/themeVariables';
-import { getTeamId, returnFormattedRating } from '../../../utility/Utils';
+import { returnFormattedRating } from '../../../utility/Utils';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
+import getTeamId from '../../../utility/commonUtils';
 
 const InvitedMemberComponent = () => {
   const inviteMembers = useSelector((state) => state.projectDetails.getInvitedMember);

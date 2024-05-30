@@ -4,7 +4,7 @@ import { Card, CardBody, CardText } from 'reactstrap';
 import { PropTypes } from 'prop-types';
 
 import PaymentHistoryModal from './PaymentHistoryModal';
-import { formatDate } from '../../../utility/Utils';
+import { formatDate, roundOfAmount } from '../../../utility/Utils';
 
 const TeamPayments = ({ teamPayments, milestonesData, selectedMilestoneIndex = 0 }) => {
   const nextMileStoneDate = milestonesData[selectedMilestoneIndex + 1]?.start_date;
@@ -43,7 +43,7 @@ const TeamPayments = ({ teamPayments, milestonesData, selectedMilestoneIndex = 0
                   payments: item.payments,
                   name: `${item.first_name} ${item.last_name}`,
                   role: item.role,
-                  paidAmount,
+                  paidAmount: roundOfAmount(paidAmount),
                 });
               }}
               className="white-card mb-1 cursor-pointer px-1 medium-shadow py-16"

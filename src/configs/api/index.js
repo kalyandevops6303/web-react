@@ -41,6 +41,7 @@ const API = {
     services: `${apiAuthEndpoint}/api/v1/static/services/all`,
     disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
     ratingTags: `${apiAuthEndpoint}/api/v1/static/tags/filter`,
+    issueTypes: `${apiAuthEndpoint}/api/v1/support-issue-types`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -289,6 +290,7 @@ const API = {
     transferFunds: `${apiPaymentEndPoint}/api/v1/transfer-funds`,
     spendingDetails: `${apiOnboardingEndpoint}/api/v1/users/payments`,
     upcomingPayments: `${apiOnboardingEndpoint}/api/v1/users/upcoming-payments`,
+    updatePaymentStatus: `${apiPaymentEndPoint}/api/v1/checkout-session-cancel`,
   },
   referralAndReward: {
     createReferrals: `${apiAuthEndpoint}/api/v1/referrals`,
@@ -306,6 +308,10 @@ const API = {
   },
   fileUpload: {
     scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
+  },
+  support: {
+    create: `${apiAuthEndpoint}/api/v1/support-request`,
+    count: `${apiAuthEndpoint}/api/v1/support-request/count`,
   },
 };
 

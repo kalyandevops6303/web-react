@@ -26,16 +26,16 @@ export const resolveHorizontalNavMenuItemComponent = (item) => {
  * Check if nav-link is active
  * @param {Object} link nav-link object
  */
-export const isNavLinkActive = (link, currentURL, routerProps) => {
-  return (
+export const isNavLinkActive = (link, currentURL, routerProps) => 
+   (
     currentURL === link ||
     (routerProps &&
       routerProps.meta &&
       routerProps.meta.navLink &&
       routerProps.meta.navLink === link)
-  );
+  )
   // return currentURL === link
-};
+;
 
 /**
  * Check if the given item has the given url
@@ -51,6 +51,7 @@ export const hasActiveChild = (item, currentUrl) => {
     return false;
   }
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const child of children) {
     if (child.children) {
       if (hasActiveChild(child, currentUrl)) {
@@ -91,15 +92,13 @@ export const removeChildren = (children, openGroup, currentActiveGroup) => {
   });
 };
 
-const checkForVisibleChild = (arr, ability) => {
-  return arr.some((i) => {
+const checkForVisibleChild = (arr, ability) => arr.some((i) => {
     if (i.children) {
       return checkForVisibleChild(i.children, ability);
-    } else {
+    } 
       return ability.can(i.action, i.resource);
-    }
+    
   });
-};
 
 export const canViewMenuGroup = (item) => {
   const ability = useContext(AbilityContext);
