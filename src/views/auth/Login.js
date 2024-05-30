@@ -91,6 +91,7 @@ const Login = () => {
 
   useEffect(() => {
     dispatch(clearDataSuccess());
+    removeItem('google_id_token');
   }, []);
 
   const {
