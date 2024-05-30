@@ -91,6 +91,59 @@ const CustomBadge = styled.span`
     color: ${theme.purpleColor};
     background: ${theme.purpleColor}1f !important;
   }
+  .PENDING,
+  .PAYMENT_DUE {
+    background: ${theme.pendingOrangeColor}1f !important;
+    color: ${theme.pendingOrangeColor};
+  }
+  .INITIATED,
+  .PAYMENT_INITIATED {
+    background: ${theme.royalBlueColor}1f !important;
+    color: ${theme.royalBlueColor};
+  }
+  .CHECKOUT_PAID {
+    background: ${theme.fundedBlueColor}1f !important;
+    color: ${theme.fundedBlueColor};
+  }
+  .TRANSFER_PAID {
+    background: ${theme.green}1f !important;
+    color: ${theme.green};
+  }
+  .PAID_AMOUNT {
+    background: ${theme.green}1f !important;
+    color: ${theme.green};
+  }
+  .FAILED,
+  .PAYMENT_FAILED,
+  .RETRY_PAYMENT {
+    background: ${theme.red}1f !important;
+    color: ${theme.red};
+  }
+
+  .PAYMENT_PROCESSING,
+  .PROCESSING {
+    background: ${theme.purpleColor}1f !important;
+    color: ${theme.purpleColor};
+  }
+  .PAYMENT_SUCCESSFUL,
+  .SUCCESSFUL {
+    background: ${theme.succesGreenColor}1f !important;
+    color: ${theme.succesGreenColor};
+  }
+  .FUNDS_AVAILABLE,
+  .FUNDED {
+    background: ${theme.fundedBlueColor}1f !important;
+    color: ${theme.fundedBlueColor};
+  }
+  .NOT_FUNDED {
+    background: ${theme.disabledGrayColor}1f !important;
+    color: ${theme.disabledGrayColor};
+  }
+
+  .P {
+    background: ${theme.royalBlueColor}1f !important;
+    color: ${theme.royalBlueColor};
+  }
   .rounded-corner {
     border-radius: 1.0625rem;
     margin: 2px;

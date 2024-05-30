@@ -2,7 +2,7 @@
 import { handleFooterType } from "@store/layout";
 import { useDispatch, useSelector } from "react-redux";
 
-export const useFooterType = () => {
+const useFooterType = () => {
   // ** Hooks
   const dispatch = useDispatch();
   const store = useSelector((state) => state.layout);
@@ -13,3 +13,4 @@ export const useFooterType = () => {
 
   return { setFooterType, footerType: store.footerType };
 };
+export default useFooterType;

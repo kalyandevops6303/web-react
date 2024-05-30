@@ -10,15 +10,32 @@ import { CometChatMessageReactions } from '../Extensions';
 import { checkMessageForExtensionsData, getMessageFileMetadata } from '../../../util/common';
 import * as enums from '../../../util/enums.js';
 
+import { CometChatContext } from '../../../util/CometChatContext';
+
+import { theme } from '../../../resources/theme';
+import Translator from '../../../resources/localization/translator';
+
+import srcIcon from './resources/1px.png';
+import { getUserColor } from '../../../util/HelperFunctions.js';
+import { CometChatAvatar } from '../../Shared/index.js';
+
 import {
   messageContainerStyle,
   messageWrapperStyle,
   messageVideoWrapperStyle,
   messageInfoWrapperStyle,
   messageReactionsWrapperStyle,
+  messageImgWrapper,
+  nameWrapperStyle,
+  nameStyle,
+  messageDetailsStyle,
+  messageThumbnailStyle,
 } from './style';
 
 class CometChatSenderVideoMessageBubble extends React.Component {
+  static contextType = CometChatContext;
+  timer = null;
+
   constructor(props) {
     super(props);
 
@@ -92,9 +109,25 @@ class CometChatSenderVideoMessageBubble extends React.Component {
   };
 
   render() {
-    if (!Object.keys(this.state.fileData).length) {
-      return null;
-    }
+    let avatar = null,
+      name = null;
+
+    avatar = (
+      <div css={messageThumbnailStyle()} className="message__thumbnail">
+        <CometChatAvatar user={this.props.message.sender} />
+      </div>
+    );
+
+    const userColor = getUserColor(this.props.message.sender);
+    this.context.userColor = userColor;
+
+    name = (
+      <div css={nameWrapperStyle(avatar)} className="message__name__wrapper">
+        <span css={nameStyle(this.context)} className="message__name">
+          {this.props.message.sender.name}
+        </span>
+      </div>
+    );
 
     let messageReactions = null;
     const reactionsData = checkMessageForExtensionsData(this.props.message, 'reactions');
@@ -118,26 +151,32 @@ class CometChatSenderVideoMessageBubble extends React.Component {
     return (
       <div
         css={messageContainerStyle()}
-        className="sender__message__container message__video"
+        className="sender__message__container message__image"
         onMouseEnter={this.handleMouseHover}
         onMouseLeave={this.handleMouseHover}
       >
-        {toolTipView}
+        {avatar}
+        {/* Add name here in case required */}
 
-        <div css={messageWrapperStyle()} className="message__wrapper">
-          <div css={messageVideoWrapperStyle()} className="message__video__wrapper">
-            <video controls src={this.state.fileData?.fileUrl}></video>
+        <div css={messageDetailsStyle()} className="message__details">
+          {name}
+          {toolTipView}
+          <div css={messageWrapperStyle()} className="message__wrapper">
+            <div css={messageImgWrapper(this.context)} onClick={this.open} className="message__video__wrapper">
+              <video controls src={this.state.fileData?.fileUrl}
+              ></video>
+            </div>
           </div>
-        </div>
 
-        {messageReactions}
+          {messageReactions}
 
-        <div css={messageInfoWrapperStyle()} className="message__info__wrapper">
-          <CometChatThreadedMessageReplyCount
-            message={this.props.message}
-            actionGenerated={this.props.actionGenerated}
-          />
-          <CometChatReadReceipt message={this.props.message} />
+          <div css={messageInfoWrapperStyle()} className="message__info__wrapper">
+            <CometChatThreadedMessageReplyCount
+              message={this.props.message}
+              actionGenerated={this.props.actionGenerated}
+            />
+            <CometChatReadReceipt message={this.props.message} />
+          </div>
         </div>
       </div>
     );
@@ -146,7 +185,7 @@ class CometChatSenderVideoMessageBubble extends React.Component {
 
 // Specifies the default values for props:
 CometChatSenderVideoMessageBubble.defaultProps = {
-  actionGenerated: () => {},
+  actionGenerated: () => { },
 };
 
 CometChatSenderVideoMessageBubble.propTypes = {

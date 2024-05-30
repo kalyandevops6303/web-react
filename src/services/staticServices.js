@@ -42,6 +42,8 @@ const disputeTypesService = () => DataService.get(API.static.disputeTypes);
 
 const ratingTagsService = (userType) => DataService.get(`${API.static.ratingTags}?tag_for=${userType}`);
 
+const getIssueType = () => DataService.get(`${API.static.issueTypes}`);
+
 export {
   talentRolesService,
   languagesService,
@@ -63,4 +65,5 @@ export {
   ratingTagsService,
   skillsAIService,
   toolsAIService,
+  getIssueType,
 };

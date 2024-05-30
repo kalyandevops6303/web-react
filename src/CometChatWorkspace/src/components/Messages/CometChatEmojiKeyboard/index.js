@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Emojis } from './emojis';
 import { CometChatEmojiCategory } from './EmojiCategory';
@@ -29,7 +29,26 @@ import { CometChatListItem } from '../../Shared';
  */
 
 const CometChatEmojiKeyboard = (props) => {
-  const categoryRef = React.useRef([]);
+  const categoryRef = useRef([]);
+  const componentRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (componentRef.current && !componentRef.current.contains(event.target)) {
+        console.log('Clicked outside');
+        props.onClose()
+      }
+    };
+
+    // Attach the event listener when the component mounts
+    document.addEventListener('click', handleClickOutside, true);
+
+    // Detach the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  }, [])
+
   const handleEvent = (obj) => {
     props.onClick(obj);
   };
@@ -110,7 +129,7 @@ const CometChatEmojiKeyboard = (props) => {
     });
 
     return (
-      <div className="emoji__keyboard" style={emojiContainerStyle(props)}>
+      <div className="emoji__keyboard" style={emojiContainerStyle(props)} ref={componentRef}>
         <div className="emoji__list__items">{emojiJSX}</div>
         <div className="emoji__category" style={emojiTabLsitStyle(props)}>
           {emojiCategoryJSX}
@@ -125,7 +144,7 @@ const CometChatEmojiKeyboard = (props) => {
 // Specifies the default values for props:
 CometChatEmojiKeyboard.defaultProps = {
   hideSearch: false,
-  onClick: () => {},
+  onClick: () => { },
   style: {
     width: '100%',
     height: '250px',

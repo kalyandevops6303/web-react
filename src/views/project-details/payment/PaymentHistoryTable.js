@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Badge, Card, CardText, Table, UncontrolledTooltip } from 'reactstrap';
 import { Copy, Info } from 'react-feather';
+import classnames from 'classnames';
 import styled from 'styled-components';
 
 import {
@@ -11,9 +12,10 @@ import {
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 
 import { formatDate, roundOfAmount } from '../../../utility/Utils';
-import { PAYMENT_STATUS, paymentText, userTypes } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, PAYMENT_TYPES, paymentText, userTypes } from '../../../utility/constants/Constant';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import theme from '../../../configs/themeVariables';
+import { CustomBadge } from '../../styled';
 
 function PaymentHistoryTable() {
   const [transactions, setTransactions] = useState([]);
@@ -50,22 +52,29 @@ function PaymentHistoryTable() {
   }, [projectDetailsData?._id]);
 
   const getTagSettings = (tag) => {
-    if (tag === PAYMENT_STATUS.PAYMENT_FAILED || tag === PAYMENT_STATUS.FAILED) {
+    const { status = '', payment_type = '' } = tag;
+    if (status === PAYMENT_STATUS.PAYMENT_FAILED || status === PAYMENT_STATUS.FAILED) {
       return { theme: 'light-danger', text: 'Failed' };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_DUE || tag === PAYMENT_STATUS.PENDING) {
+    if (status === PAYMENT_STATUS.PAYMENT_DUE || status === PAYMENT_STATUS.PENDING) {
       return { theme: 'light-warning', text: isClient ? paymentText.PAYMENT_DUE : paymentText.FUNDS_UNAVAILABLE };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_PROCESSING) {
+    if (status === PAYMENT_STATUS.PAYMENT_PROCESSING) {
       return { theme: 'light-primary', text: paymentText.PROCESSING };
     }
-    if (tag === PAYMENT_STATUS.INITIATED) {
+    if (status === PAYMENT_STATUS.INITIATED) {
       return { theme: 'light-primary', text: paymentText.INITIATED };
     }
-    if (tag === PAYMENT_STATUS.PAYMENT_SUCCESSFUL || tag === PAYMENT_STATUS.PAID) {
-      return { theme: 'light-success', text: paymentText.SUCCESSFUL };
+    if (status === PAYMENT_STATUS.PAID) {
+      return {
+        theme: 'light-success',
+        text: payment_type === PAYMENT_TYPES.CHECKOUT ? paymentText.FUNDED : paymentText.PAID,
+      };
     }
-    return { theme: 'light-primary', text: tag };
+    if (status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL) {
+      return { theme: 'light-success', text: paymentText.FUNDED };
+    }
+    return { theme: 'light-primary', text: status };
   };
 
   const getTotalAmount = (payment) => {
@@ -76,11 +85,6 @@ function PaymentHistoryTable() {
       return payment.amount;
     }
     return 0;
-  };
-
-  const PAYMENT_TYPES = {
-    CHECKOUT: 'CHECKOUT',
-    TRANSFER: 'TRANSFER',
   };
 
   const handleCopyToClipboard = (text) => {
@@ -193,7 +197,16 @@ function PaymentHistoryTable() {
                   )}
                   <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Payment Deposited' : 'Pay Out'}</td>
                   <td>
-                    <Badge color={getTagSettings(item?.status).theme}>{getTagSettings(item?.status).text}</Badge>
+                    <CustomBadge>
+                      <Badge
+                        className={classnames({
+                          [`${item?.payment_type}_${item?.status}`]: item?.status === PAYMENT_STATUS.PAID,
+                          [item?.status]: true,
+                        })}
+                      >
+                        {getTagSettings(item).text}
+                      </Badge>
+                    </CustomBadge>
                   </td>
                   {isTalent || isTeam ? null : <td>{item?.application_fee ? `$ ${item?.application_fee}` : '-'}</td>}
                   <td>$ {roundOfAmount(getTotalAmount(item))}</td>
