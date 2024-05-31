@@ -63,7 +63,7 @@ const MilestoneListing = ({ milestonesData }) => {
         >
           <CardBody className="py-1 basic-title">
             <div className="d-flex align-items-center justify-content-between">
-              <CardText className="fw-bold mb-0">{mile.name}</CardText>
+              <CardText className="fw-bold mb-0">Milestone #{mile?.seq}</CardText>
               <div style={{ width: '60%' }} className="d-flex align-items-center justify-content-between">
                 <div className="me-2">
                   {mile.workers.length > 3 ? (

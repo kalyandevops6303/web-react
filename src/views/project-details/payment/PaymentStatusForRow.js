@@ -31,9 +31,9 @@ function PaymentStatusForRow({ isClient, milestoneTransactionDetails = [] }) {
 
   return (
     <div className="d-flex flex-column" style={{ gap: '60px' }}>
-      {milestoneTransactionDetails.map((item) => (
+      {milestoneTransactionDetails?.map((item) => (
         <div key={Math.random()}>
-          <CustomBadge>
+          <CustomBadge rounded>
             <Badge
               className={classnames({
                 [`${item?.payment_type}_${item?.status}`]: item?.status === PAYMENT_STATUS.PAID,

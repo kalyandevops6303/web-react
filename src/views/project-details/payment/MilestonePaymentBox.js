@@ -8,7 +8,7 @@ import PaymentTableWrapper from './style';
 import { userData } from '../../../redux/selectors/dashboardSelectors';
 import { CustomBadge } from '../../styled';
 
-function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, milestoneStatus, checked, onSelect }) {
+function MilestonePaymentBox({ milestone, id, payableAmount, paymentStatus, milestoneStatus, checked, onSelect }) {
   const user = useSelector(userData);
   const isClient = user?.user_type === userTypes.client;
   const getTagSettings = (tag) => {
@@ -71,11 +71,12 @@ function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, 
                   width: '150px',
                 }}
               >
-                {milestoneName}
+                Milestone #{milestone?.seq}
               </Label>
-              <CustomBadge>
+              <CustomBadge bordered rounded>
                 <Badge
                   className={classnames({
+                    RETRY_PAYMENT: isClient && (paymentStatus === 'PAYMENT_FAILED' || paymentStatus === 'FAILED'),
                     FUNDED: paymentStatus === 'PAID' && milestoneStatus !== 'COMPLETED',
                     PAID_AMOUNT: paymentStatus === 'PAID' && milestoneStatus === 'COMPLETED',
                     [paymentStatus]: paymentStatus !== 'PAID',
@@ -96,21 +97,21 @@ function MilestonePaymentBox({ id, milestoneName, payableAmount, paymentStatus, 
 
 MilestonePaymentBox.propTypes = {
   id: PropTypes.string.isRequired,
-  milestoneName: PropTypes.string.isRequired,
   payableAmount: PropTypes.string.isRequired,
   paymentStatus: PropTypes.string.isRequired,
   checked: PropTypes.bool.isRequired,
   onSelect: PropTypes.func.isRequired,
   milestoneStatus: PropTypes.string.isRequired,
+  milestone: PropTypes.object.isRequired,
 };
 MilestonePaymentBox.defaultValues = {
   id: '',
-  milestoneName: '',
   payableAmount: '',
   paymentStatus: '',
   checked: false,
   onSelect: () => {},
   milestoneStatus: '',
+  milestone: {},
 };
 
 export default MilestonePaymentBox;

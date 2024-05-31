@@ -265,6 +265,11 @@ const PaymentTable = () => {
     return <ComponentSpinner />;
   }
 
+  const getCardStyle = (isSelected) => ({
+    border: isSelected ? `1.5px solid ${theme.activeNavPillText}` : '',
+    background: isSelected ? theme.selectedBlugBg : '',
+  });
+
   return (
     <>
       {makePaymentModal && (
@@ -294,25 +299,24 @@ const PaymentTable = () => {
             <div className="shadow rounded" style={{ backgroundColor: 'white', width: '100%' }}>
               <PaymentTableWrapper>
                 <Table responsive className="w-100">
-                  <thead>
+                  <thead className="table-head">
                     <tr>
                       {/* {!isTeam ? <th className="checkboxCol"> </th> : null} */}
-                      <th style={{ minWidth: '12%' }} className="checkboxCol">
-                        {' '}
-                      </th>
-                      <th style={{ minWidth: '12%' }}>Milestone</th>
-                      <th style={{ minWidth: '10rem' }}>{}</th>
-                      <th style={{ minWidth: '12%' }}>Status</th>
-                      <th style={{ minWidth: '12%' }}>{}</th>
-                      <th style={{ minWidth: '12%' }}>Amount</th>
+                      <th className="checkboxCol"> </th>
+                      <th className="ps-0">Milestone</th>
+                      <th>{}</th>
+                      <th>Status</th>
+                      <th>{}</th>
+                      <th>Amount</th>
                       {/* {!isTeam ? <th> </th> : null} */}
-                      <th style={{ minWidth: '12%' }}>{}</th>
+                      <th>{}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {milestoneData?.map((item) => (
                       <>
                         <tr
+                          style={isClient ? getCardStyle(selectedPaymentId.includes(item?._id)) : {}}
                           className={
                             (isPaymentDone(item) && isClient) || (isPaymentDone(item) && item.status === 'COMPLETED')
                               ? 'cursor-pointer'
@@ -324,27 +328,41 @@ const PaymentTable = () => {
                           {isClient ? (
                             <td className="py-1">
                               <div className="form-check">
-                                <Input
-                                  type="checkbox"
-                                  checked={selectedPaymentId.includes(item?._id)}
-                                  name={item?._id}
-                                  onChange={(e) =>
-                                    !selectedAndDisabledPaymentId?.includes(item?._id) && handlePaymentSelect(e)
-                                  }
-                                  className="p-50 payment-form-control"
-                                  disabled={isDisabled(item.payment_status)}
-                                />
+                                {!isDisabled(item.payment_status) && (
+                                  <Input
+                                    type="checkbox"
+                                    checked={selectedPaymentId.includes(item?._id)}
+                                    name={item?._id}
+                                    onChange={(e) =>
+                                      !selectedAndDisabledPaymentId?.includes(item?._id) && handlePaymentSelect(e)
+                                    }
+                                    className="p-50 payment-form-control"
+                                    disabled={isDisabled(item.payment_status)}
+                                  />
+                                )}
                               </div>
                             </td>
                           ) : (
                             <td> </td>
                           )}
-                          <td>{item?.name}</td>
-                          <td>{}</td>
+                          <td colSpan={2} className="ps-0 pe-0">
+                            <span>Milestone #{item?.seq}</span>
+                            {isClient && !isDisabled(item.payment_status) && !selectedPaymentId.includes(item?._id) && (
+                              <span
+                                className="ms-2 select-cta"
+                                style={{ color: theme.navPillText, fontStyle: 'italic', fontSize: '0.8rem' }}
+                              >
+                                Select to make payment
+                              </span>
+                            )}
+                          </td>
                           <td className="statusCol">
-                            <CustomBadge>
+                            <CustomBadge rounded>
                               <Badge
                                 className={classnames({
+                                  RETRY_PAYMENT:
+                                    isClient &&
+                                    (item?.payment_status === 'PAYMENT_FAILED' || item?.payment_status === 'FAILED'),
                                   NOT_FUNDED: !isClient && !isPaymentDone(item),
                                   PAID_AMOUNT: item?.payment_status === 'PAID' && item?.status === 'COMPLETED',
                                   FUNDED: item?.payment_status === 'PAID' && item?.status !== 'COMPLETED',
@@ -369,28 +387,23 @@ const PaymentTable = () => {
                         {item?._id === open && isPaymentDone(item) ? (
                           milestoneTransactionLoading ? (
                             <tr>
-                              <td>{}</td>
-                              <td>{}</td>
-                              <td>{}</td>
+                              <td colSpan={3}>{}</td>
                               <td>Loading...</td>
-                              <td>{}</td>
-                              <td>{}</td>
-                              <td>{}</td>
+                              <td colSpan={3}>{}</td>
                             </tr>
                           ) : (
                             <>
                               {isClient ? (
                                 <tr style={{ borderBottom: '1px solid white' }}>
                                   <td>{}</td>
-                                  <td>
+                                  <td className="ps-0">
                                     <div className="d-flex flex-column">
                                       <span>Amount</span>
                                       <span>{`${applicationFee?.name}`}</span>
                                     </div>
                                   </td>
-                                  <td>{}</td>
-                                  <td>{}</td>
-                                  <td>{}</td>
+                                  <td colSpan={3}>{}</td>
+
                                   <td>
                                     <div className="d-flex flex-column">
                                       <span>
@@ -415,7 +428,7 @@ const PaymentTable = () => {
                               ) : null}
                               <tr>
                                 <td>{}</td>
-                                <td>
+                                <td className="ps-0">
                                   <TransactionTimeline transactionData={timelineData} />
                                 </td>
                                 <td>
