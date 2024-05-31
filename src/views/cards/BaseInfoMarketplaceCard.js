@@ -16,14 +16,14 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
-import { selectUserData } from '../../redux/selectors/authSelectors';
+// import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const BaseInfoMarketplaceCard = ({
   isSearchPage,
   data,
   setRelistConfirmationModal,
-  setDeleteDraftModal,
-  setDraftSavedModal,
+  // setDeleteDraftModal,
+  // setDraftSavedModal,
 }) => {
   const project = data?.project;
   const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
@@ -31,7 +31,7 @@ const BaseInfoMarketplaceCard = ({
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
-  const userData = useSelector(selectUserData);
+  // const userData = useSelector(selectUserData);
 
   const location = useLocation();
 
@@ -294,7 +294,7 @@ const BaseInfoMarketplaceCard = ({
           )}
         </BidsReceivedWrapper>
       )}
-      {location.pathname.split('/').includes('my_bids') && userData?.user_type !== userTypes.client && (
+      {/* {location.pathname.split('/').includes('my_bids') && userData?.user_type !== userTypes.client && (
         <BidsReceivedWrapper>
           <div className="d-flex justify-content-end mt-3">
             <Button
@@ -322,7 +322,7 @@ const BaseInfoMarketplaceCard = ({
             </div>
           </div>
         </BidsReceivedWrapper>
-      )}
+      )} */}
     </div>
   );
 };
@@ -331,15 +331,15 @@ BaseInfoMarketplaceCard.propTypes = {
   data: PropTypes.object,
   isSearchPage: PropTypes.bool,
   setRelistConfirmationModal: PropTypes.func,
-  setDeleteDraftModal: PropTypes.func,
-  setDraftSavedModal: PropTypes.func,
+  // setDeleteDraftModal: PropTypes.func,
+  // setDraftSavedModal: PropTypes.func,
 };
 
 BaseInfoMarketplaceCard.defaultProps = {
   data: {},
   isSearchPage: false,
   setRelistConfirmationModal: () => {},
-  setDeleteDraftModal: () => {},
-  setDraftSavedModal: () => {},
+  // setDeleteDraftModal: () => {},
+  // setDraftSavedModal: () => {},
 };
 export default BaseInfoMarketplaceCard;

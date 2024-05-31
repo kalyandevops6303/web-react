@@ -206,6 +206,8 @@ const CreateProject = () => {
     return () => {
       dispatch(clearCreateProjectData());
       dispatch(clearSaveDraftProjectId());
+      // window.alert('hey');
+      setDraftSavedModal(true);
     };
   }, []);
 
