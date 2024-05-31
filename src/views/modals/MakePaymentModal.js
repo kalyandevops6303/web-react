@@ -25,6 +25,7 @@ import { PAYMENT_STATUS, paymentText, userTypes } from '../../utility/constants/
 import ComponentSpinner from '../../@core/components/spinner/Loading-spinner';
 import { CustomBadge } from '../styled';
 import { selectAuthUserData } from '../../redux/selectors/authSelectors';
+import theme from '../../configs/themeVariables';
 
 function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAndDisabledPaymentId }) {
   const [selectedIds, setSelectedIds] = useState(selectedMilestoneIds);
@@ -129,6 +130,13 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
 
     return false;
   };
+
+  const getCardStyle = (isSelected) => ({
+    height: '55px',
+    backgroundColor: isSelected ? theme.selectedBlugBg : 'white',
+    border: isSelected ? `1.5px solid ${theme.activeNavPillText}` : '',
+    borderRadius: '5px',
+  });
   return (
     <Modal isOpen={modal} contentClassName="custom-modal-style" className="modal-dialog-centered modal-lg">
       <ModalHeader toggle={onClose} />
@@ -146,8 +154,8 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
             {milestoneData?.length > 0 &&
               milestoneData.map((item) => (
                 <Card
-                  style={{ height: '55px', backgroundColor: selectedIds.includes(item._id) ? '#0185E41F' : 'white' }}
-                  className="d-flex justify-content-center"
+                  style={getCardStyle(selectedIds.includes(item._id))}
+                  className="d-flex justify-content-center mb-1"
                   key={item._id}
                 >
                   <CardBody className="d-flex justify-content-between pe-0">
@@ -166,7 +174,7 @@ function MakePaymentModal({ toggleModal, modal, selectedMilestoneIds, selectedAn
                           />
                           <div className="d-flex flex-column w-100" style={{ marginTop: '-2px' }}>
                             <Label for={item._id} className="text-truncate truncated-milestone-name">
-                              {item.name}
+                              Milestone #{item?.seq}
                             </Label>
                           </div>
                         </div>

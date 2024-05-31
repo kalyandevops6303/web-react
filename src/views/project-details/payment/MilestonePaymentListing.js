@@ -131,6 +131,7 @@ function MilestonePaymentListing() {
           {milestoneData?.length > 0 &&
             milestoneData?.map((milestone) => (
               <MilestonePaymentBox
+                milestone={milestone}
                 key={milestone._id}
                 id={milestone._id}
                 milestoneName={milestone.name}

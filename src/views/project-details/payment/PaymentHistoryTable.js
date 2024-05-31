@@ -123,14 +123,14 @@ function PaymentHistoryTable() {
           <Table responsive className="shadow milestone-table w-100">
             <thead>
               <tr>
-                <th style={{ minWidth: '8%' }}>TRANSACTION ID</th>
+                <th>TRANSACTION ID</th>
                 <th>MILESTONE</th>
-                <th style={{ minWidth: '12%' }}>From</th>
-                {isTalent || isTeam ? null : <th style={{ minWidth: '12%' }}>To</th>}
-                <th style={{ minWidth: '12%' }}>Type</th>
-                <th style={{ minWidth: '12%' }}>Status</th>
-                {isTalent || isTeam ? null : <th style={{ minWidth: '12%' }}>Platform Fee</th>}
-                <th style={{ minWidth: '12%' }}>
+                <th>From</th>
+                {isTalent || isTeam ? null : <th>To</th>}
+                <th>Type</th>
+                <th>Status</th>
+                {isTalent || isTeam ? null : <th>Platform Fee</th>}
+                <th>
                   {isTalent || isTeam ? 'Amount' : 'Final Amount'}
                   {isTalent || isTeam ? (
                     ''
@@ -186,7 +186,7 @@ function PaymentHistoryTable() {
                       <span>{formatDate(item?.created_at)}</span>
                     </div>
                   </td>
-                  <td>{item?.milestone?.name}</td>
+                  <td>Milestone #{item?.milestone?.seq}</td>
                   <td>{item?.payment_type === PAYMENT_TYPES.CHECKOUT ? 'Client' : 'Trumio'}</td>
                   {isTalent || isTeam ? null : (
                     <td>

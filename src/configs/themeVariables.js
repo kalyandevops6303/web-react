@@ -96,6 +96,7 @@ const inputDisabledBg = '#efefef';
 const accordionHeaderActiveBg = '#F2F8FF';
 const pendingOrangeColor = '#FF5F05';
 const fundedBlueColor = '#00ACC1';
+const selectedBlugBg = '#EDF7FF';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -198,5 +199,6 @@ const theme = {
   accordionHeaderActiveBg,
   pendingOrangeColor,
   fundedBlueColor,
+  selectedBlugBg,
 };
 export default theme;

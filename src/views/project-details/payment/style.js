@@ -35,6 +35,10 @@ const PaymentTableWrapper = styled.div`
   .form-check-input:checked {
     border: 1.5px solid ${theme.activeNavPillText};
   }
+
+  .table-head {
+    border: 1.5px solid ${theme.tableHeaderColor};
+  }
 `;
 
 export default PaymentTableWrapper;
