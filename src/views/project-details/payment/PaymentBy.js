@@ -3,13 +3,9 @@ import PropTypes from 'prop-types';
 
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import Avatar from '@components/avatar';
+import { PAYMENT_TYPES } from '../../../utility/constants/Constant';
 
 function PaymentBy({ paymentBy = [] }) {
-  const PAYMENT_TYPES = {
-    CHECKOUT: 'CHECKOUT',
-    TRANSFER: 'TRANSFER',
-  };
-
   return (
     <div className="d-flex flex-column" style={{ gap: '50px' }}>
       {paymentBy?.map((item) => {

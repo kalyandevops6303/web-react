@@ -188,6 +188,8 @@
 	"DELETE": "Delete",
 	"DELETE_CONFIRM": "Are you sure you want to delete?",
 	"CANCEL": "Cancel",
+	"DISCARD": "Discard",
+	"SAVE": "Save",
 	"LEAVE_CONFIRM": "Are you sure you want to leave the group?",
 	"TRANSFER_CONFIRM": "You are the group owner, please transfer ownership to a member before leaving the group",
 	"ADDING": "Adding...",

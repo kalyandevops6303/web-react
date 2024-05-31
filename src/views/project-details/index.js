@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useState, memo } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumbs from '@components/breadcrumbs';
 import { Col, Row } from 'reactstrap';
 import { Route, Routes, useLocation, useParams } from 'react-router-dom';
@@ -19,11 +19,13 @@ import BidMilestone from './overview/BidMilestone';
 import PaymentTab from './payment/PaymentTab';
 import MilestonePaymentListing from './payment/MilestonePaymentListing';
 import { userData } from '../../redux/selectors/dashboardSelectors';
-import { userTypes } from '../../utility/constants/Constant';
+import { CHECKOUT_STATUS, userTypes } from '../../utility/constants/Constant';
 import { truncateSentence } from '../../utility/Utils';
 import theme from '../../configs/themeVariables';
 import MilestoneDetails from './milestones/MilestoneDetails';
 import ProjectDetailsNavbar from './overview/ProjectDetailsNavbar';
+import DownloadCertificate from './overview/DownloadCertificate';
+import { updatePaymentStatus } from '../../redux/actions/milestonePaymentActions';
 
 const ProjectDetailsWrapper = styled.div`
   .content-header-left {
@@ -45,6 +47,7 @@ const ProjectDetailsWrapper = styled.div`
 
 const ProjectDetails = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(location?.pathname?.split('/')?.[3]);
   const projectDetailsData = useSelector(projectDetails);
   const invitedByData = useSelector((state) => state.projectDetails.invitedBy);
@@ -65,6 +68,18 @@ const ProjectDetails = () => {
   useEffect(() => {
     window?.scrollTo(0, 0);
   }, []);
+
+  const queryParams = new URLSearchParams(window.location.search);
+
+  // Extract the checkout status
+  const checkoutStatus = queryParams.get('checkout_status');
+  const sessionId = queryParams.get('session_id');
+
+  useEffect(() => {
+    if (checkoutStatus === CHECKOUT_STATUS.CANCELLED) {
+      dispatch(updatePaymentStatus({ session_id: sessionId }));
+    }
+  }, [checkoutStatus]);
 
   const isInviteView = location?.pathname?.includes('project-invitation');
 
@@ -188,6 +203,7 @@ const ProjectDetails = () => {
       <Row className="mt-3">
         <Col lg="3">
           {isInviteView && invitedByData && <InviteMemberCard />}
+          {projectDetailsData?.completed_certificates && !isClient && <DownloadCertificate />}
           <LeftSidebarProjectDetails />
           {isMilestoneTab && isClient ? <MilestonePaymentListing /> : null}
         </Col>

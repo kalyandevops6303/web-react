@@ -10,7 +10,7 @@ import { switchProfile } from '../../redux/actions/authActions';
 import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { selectSavedUserData } from '../../redux/selectors/authSelectors';
-import { getTeamId } from '../../utility/Utils';
+import getTeamId from '../../utility/commonUtils';
 import { markNotificationAsRead } from '../../redux/actions/notificationsActions';
 
 const SwitchConfirmModal = ({ entity, navigateTo, switchTeamId, notificationId, modal, toggleModal }) => {

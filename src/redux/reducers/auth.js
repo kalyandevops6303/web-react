@@ -205,6 +205,13 @@ const authSlice = createSlice({
     }),
 
     // Login
+
+    googleLoginRequest: (state) => ({
+      ...state,
+      googleAuthLoading: true,
+      error: null,
+    }),
+
     loginRequest: (state) => ({
       ...state,
       loading: true,
@@ -213,12 +220,14 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => ({
       ...state,
       loading: false,
+      googleAuthLoading: false,
       isLoggedIn: action.payload !== false,
       // authData: action.payload,
     }),
     loginFailure: (state, action) => ({
       ...state,
       loading: false,
+      googleAuthLoading: false,
       error: action.payload,
     }),
 
@@ -368,6 +377,7 @@ export const {
   checkAdminRequest,
   checkAdminSuccess,
   checkAdminFailure,
+  googleLoginRequest,
 } = authSlice.actions;
 
 export default authSlice.reducer;

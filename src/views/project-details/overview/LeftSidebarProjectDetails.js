@@ -177,7 +177,6 @@ const LeftSidebarProjectDetails = () => {
             )}
           </div>
           <CardTitle className="title">{projectDetailsData?.details?.name}</CardTitle>
-
           {projectDetailsData?.worker_details?.entity_type && userData?.user_type === userTypes.client ? (
             <div className="d-flex">
               <Avatar

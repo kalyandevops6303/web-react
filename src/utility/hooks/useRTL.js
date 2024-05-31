@@ -1,4 +1,6 @@
-//** React Imports
+/* eslint-disable import/prefer-default-export */
+/* eslint-disable no-undef */
+//* * React Imports
 import { useEffect } from "react";
 
 // ** Store & Actions

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { handleSkin } from "@store/layout";
 import { useDispatch, useSelector } from "react-redux";
 
-export const useSkin = () => {
+const useSkin = () => {
   // ** Hooks
   const dispatch = useDispatch();
   const store = useSelector((state) => state.layout);
@@ -36,3 +36,5 @@ export const useSkin = () => {
 
   return { skin: store.skin, setSkin };
 };
+
+export default useSkin;

@@ -55,11 +55,21 @@ const Notifications = () => {
   const markAllNotificationAsReadIsLoading = useSelector(markAllNotificationAsReadLoading);
   const notificationsPollingData = useSelector(notificationsPolling);
 
+  const fetchNotifications = () => {
+    dispatch(getNotifications({ priority: selectedPriority?.value, page: 1, pageSize: 10, oldData: [] }));
+  };
+
   useEffect(() => {
-    dispatch(getNotifications({ priority: 0, page: 1, pageSize: 10, oldData: [] }));
+    fetchNotifications();
     setItem('baseRoute', 'notifications');
-    return () => dispatch(clearNotificationsData());
-  }, []);
+
+    const intervalId = setInterval(fetchNotifications, 30000);
+
+    return () => {
+      clearInterval(intervalId);
+      dispatch(clearNotificationsData());
+    };
+  }, [selectedPriority?.value]);
 
   const loadNewNotifications = () => {
     dispatch(
@@ -75,7 +85,6 @@ const Notifications = () => {
 
   const onPriorityChange = (option) => {
     setSelectedPriority(option);
-    dispatch(getNotifications({ priority: option.value, page: 1, pageSize: 10, oldData: [] }));
   };
 
   const handleNotificationClick = (path, notificationId) => {

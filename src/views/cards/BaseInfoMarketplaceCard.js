@@ -201,8 +201,8 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
               style={{ objectFit: 'cover' }}
             />
           )}
-          <div className="d-flex w-100 align-items-center">
-            <div onClick={(e) => handleNavigate(e)} className="flex-grow-1">
+          <div onClick={(e) => handleNavigate(e)} className="d-flex w-100 align-items-center">
+            <div className="flex-grow-1">
               <CardTitle className="marketplace-card-title mb-0 ms-25 fw-bolder">
                 <span>
                   {clientDetails?.first_name}&nbsp;

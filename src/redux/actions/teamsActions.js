@@ -47,7 +47,8 @@ const createTeam =
           isPrivate: false,
         });
       } else {
-        handleCreateTeam();
+      await handleCreateTeam();
+      await dispatch(getTeams({ onSuccess: () => {} }));
       }
     } catch (error) {
       onError();
@@ -72,7 +73,8 @@ const updateTeam = (data, onSuccess) => async (dispatch) => {
         isPrivate: false,
       });
     } else {
-      handleUpdateTeam();
+     await handleUpdateTeam();
+     await dispatch(getTeams({ onSuccess: () => {} }));
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);

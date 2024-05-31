@@ -6,7 +6,7 @@ import { Badge, Card, CardBody, CardHeader, CardText, CardTitle, Progress } from
 import { AlertCardWrapper } from './style';
 import { profilePercentage } from '../../../redux/selectors/dashboardSelectors';
 import { getProfilePercentage, getTeamProfilePercentage } from '../../../redux/actions/dashboardActions';
-import { getTeamId, giveProgressBarColorClassName } from '../../../utility/Utils';
+import { giveProgressBarColorClassName } from '../../../utility/Utils';
 import { returnCompleteProfileDetailsCta } from '../../../utility/constants/CompleteProfileDetailsCta';
 import { clubStatus, userTypes } from '../../../utility/constants/Constant';
 import SwitchConfirmModal from '../../modals/SwitchConfirm';
@@ -15,6 +15,7 @@ import { CustomBadge, Elevate } from '../../styled';
 import { setItemFromSession } from '../../../utility/sessesionStorageControl';
 import { notifications } from '../../../redux/selectors/notificationsSelectors';
 import { getAlertsNotifications, markNotificationAsRead } from '../../../redux/actions/notificationsActions';
+import getTeamId from '../../../utility/commonUtils';
 
 const Alerts = () => {
   const dispatch = useDispatch();

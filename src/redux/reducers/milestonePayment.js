@@ -95,6 +95,21 @@ const milestonePaymentSlice = createSlice({
       paymentFeeLoading: false,
     }),
 
+    updatePaymentStatusRequest: (state) => ({
+      ...state,
+      paymentStatusUpdating: true,
+      error: null,
+    }),
+    updatePaymentStatusSuccess: (state) => ({
+      ...state,
+      paymentStatusUpdating: false,
+    }),
+    updatePaymentStatusFailure: (state, action) => ({
+      ...state,
+      error: action.payload,
+      paymentStatusUpdating: false,
+    }),
+
     clearPaymentListingData: (state) => ({
       ...state,
       milestoneListDetails: null,
@@ -137,5 +152,8 @@ export const {
   paymentFeeFailure,
   paymentFeeRequest,
   paymentFeeSuccess,
+  updatePaymentStatusRequest,
+  updatePaymentStatusSuccess,
+  updatePaymentStatusFailure,
 } = milestonePaymentSlice.actions;
 export default milestonePaymentSlice.reducer;

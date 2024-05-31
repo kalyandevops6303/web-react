@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import axios from 'axios';
 import { getItem, setItem } from '../../utility/localStorageControl';
-// eslint-disable-next-line import/no-cycle
-import { getTeamId } from '../../utility/Utils';
+import getTeamId from '../../utility/commonUtils';
 // eslint-disable-next-line import/no-cycle
 import errorHandler from '../../utility/errorHandler';
 import { apiAuthEndpoint } from '../api';

@@ -23,19 +23,17 @@
     }
 
     .certificate {
-      background: url(./CertificateBackground.jpg);
+      background: url(./certificate-background.png);
       background-size: cover;
       background-repeat: no-repeat;
       padding: 10px;
-      /* background-color: white; */
-      /* border-width: 16px;
+      border-width: 16px;
       border-style: solid;
-      border-color: #414DFD; */
-      /*border-image: linear-gradient(#6834F9, #414DFD) 30;*/
-      /* border-radius: 20px; */
+      border-color: #414DFD;
+      border-radius: 20px; 
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
       width: 895px;
-      height: 626px;
+      /* height: 626px; */
       text-align: center;
       font-family: "IBM Plex Serif";
       font-style: normal;
@@ -229,6 +227,10 @@
       font-optical-sizing: auto;
       font-style: normal;
     }
+
+    .qr-code img{
+      height: 80px;
+    }
   </style>
 </head>
 
@@ -270,6 +272,9 @@
         <div class="logo">
           <img src="./Trumio-Horizontal_tagline-layout-PNG.png" alt="Trumio Logo" />
         </div>
+      </div>
+      <div class="qr-code">
+        <img src="./qr_code.png" alt="security qr code" />
       </div>
       <div class="right">
         <div class="signature">

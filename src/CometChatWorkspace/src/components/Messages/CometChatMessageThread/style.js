@@ -66,10 +66,11 @@ export const headerNameStyle = () => {
 export const headerCloseStyle = (img, context) => {
   return {
     cursor: 'pointer',
-    width: '24px',
-    height: '24px',
+    width: '10px',
+    height: '10px',
     mask: `url(${img}) center center no-repeat`,
-    backgroundColor: `${context.theme.primaryColor}`,
+    // backgroundColor: `${context.theme.primaryColor}`,
+    backgroundColor: "gray",
   };
 };
 

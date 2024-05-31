@@ -69,6 +69,6 @@
   },
   "env": {
     "jest": true,
-    "browser": true,
+    "browser": true
   }
 }
