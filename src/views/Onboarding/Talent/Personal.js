@@ -61,6 +61,7 @@ import uuidv4 from '../../../lib/uuidv4';
 import { resumeUploadService } from '../../../services/talentOnboardingServices';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
+import TextEditor from '../../CreateProject/TextEditor';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -721,13 +722,12 @@ const Personal = () => {
                     name="professionalIntroduction"
                     control={control}
                     render={({ field }) => (
-                      <Input
-                        {...field}
-                        type="textarea"
-                        placeholder="Describe in 500 characters"
-                        rows="5"
-                        invalid={errors.professionalIntroduction && true}
-                      />
+                      <TextEditor
+                      name={field.name}
+                      onChange={field.onChange}
+                      value={field.value}
+                      placeholder="Describe in 500 characters."
+                    />
                     )}
                   />
                   {errors.professionalIntroduction && (

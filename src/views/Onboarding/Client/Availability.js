@@ -40,14 +40,11 @@ import { currencies, currenciesLoading } from '../../../redux/selectors/staticSe
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
-    preferredWorkingTimeZone: yup
-      .object()
-      .shape({
-        label: yup.string().required('Preferred working time zone is required'),
-        value: yup.object().required('Preferred working time zone is required'),
-      })
-      .required('Preferred working time zone is required'),
-    availabilityDays: yup.array().min(1, 'Select at least one work day').required('Select at least one work day'),
+    preferredWorkingTimeZone: yup.object().shape({
+      label: yup.string(),
+      value: yup.object(),
+    }),
+    availabilityDays: yup.array(),
     weekdays: yup.array().when('availabilityDays', {
       is: (availabilityDays) => availabilityDays && availabilityDays.includes('weekdays'),
       then: () =>
@@ -130,7 +127,6 @@ const Availability = () => {
       weekends: [],
     },
   });
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -181,7 +177,7 @@ const Availability = () => {
     } = data;
 
     const availability = {
-      timezone: preferredWorkingTimeZone.value._id,
+      timezone: preferredWorkingTimeZone?.value?._id,
       weekdays_avl: {
         start_time: availabilityDays?.includes('weekdays') ? weekdayStartTime?.value : null,
         end_time: availabilityDays?.includes('weekdays') ? weekdayEndTime?.value : null,
@@ -341,7 +337,7 @@ const Availability = () => {
               <Row className="mb-1">
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="preferredWorkingTimeZone">
-                    Preferred time zone<span className="label-asterisk me-50">*</span>
+                    Preferred time zone
                   </Label>
                   <Controller
                     id="preferredWorkingTimeZone"
@@ -367,9 +363,7 @@ const Availability = () => {
                 </Col>
               </Row>
               <Row className="mt-2">
-                <h5 className="m-0">
-                  Days available<span className="label-asterisk me-50">*</span>
-                </h5>
+                <h5 className="m-0">Days available</h5>
               </Row>
               <Row className="custom-checkbox-border">
                 <Controller

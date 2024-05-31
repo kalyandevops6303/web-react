@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 // import { useSelector } from 'react-redux';
 import { CardText, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { PrivacyPolicyModalWrapper } from './style';
+import { SUPPORT_EMAIL } from '../../utility/constants/Constant';
 // import theme from '../../configs/themeVariables';
 // import { userTypes } from '../../utility/constants/Constant';
 // import { selectUserType } from '../../redux/selectors/authSelectors';
@@ -413,7 +414,7 @@ const TermsModal = ({ modal, toggleModal }) => (
               copyright owner, its agent, or the law; and (f) a statement that the information in the notification is
               accurate, and under penalty of perjury, that You are authorized to act on behalf of the owner of an
               exclusive right that is allegedly infringed. For this notification to be effective, You must provide it to
-              Company’s designated agent by mail and email at: support@trumio.ai. <br />
+              Company’s designated agent by mail and email at: {SUPPORT_EMAIL}. <br />
               <br /> UNDER FEDERAL LAW, IF YOU KNOWINGLY MISREPRESENT THAT ONLINE MATERIAL IS INFRINGING, YOU MAY BE
               SUBJECT TO CRIMINAL PROSECUTION FOR PERJURY AND CIVIL PENALTIES, INCLUDING MONETARY DAMAGES, COURT COSTS,
               AND ATTORNEYS' FEES.
@@ -635,12 +636,12 @@ const TermsModal = ({ modal, toggleModal }) => (
             <p>
               <span className="text-decoration-underline">Informal Dispute Resolution.</span> Before serving a demand
               for arbitration of a Claim, you and Company agree to first notify each other of the Claim. You agree to
-              notify Company of the Claim by email to support@trumio.ai, and Company agrees to provide to you a notice
-              at your email address on file (in each case, a “Notice”). You and Company then will seek informal
-              voluntary resolution of the Claim. Any Notice must include pertinent account information, a brief
-              description of the Claim, and contact information, so that you or Company, as applicable, may evaluate the
-              Claim and attempt to informally resolve it. Both you and Company will have 60 days from the date of the
-              receipt of the Notice to informally resolve the other party’s Claim and avoid the need for further action.
+              notify Company of the Claim by email to {SUPPORT_EMAIL}, and Company agrees to provide to you a notice at
+              your email address on file (in each case, a “Notice”). You and Company then will seek informal voluntary
+              resolution of the Claim. Any Notice must include pertinent account information, a brief description of the
+              Claim, and contact information, so that you or Company, as applicable, may evaluate the Claim and attempt
+              to informally resolve it. Both you and Company will have 60 days from the date of the receipt of the
+              Notice to informally resolve the other party’s Claim and avoid the need for further action.
             </p>
           </section>
           <section className="ms-3 d-flex justify-content-center">
@@ -768,7 +769,7 @@ const TermsModal = ({ modal, toggleModal }) => (
               Company at Attn: Tumio Support - Arbitration Opt Out that includes (a) your Account username, (b) your
               name, (c) your address, (d) your telephone number, (e) your email address, and (f) a statement indicating
               that you wish to opt out of the Arbitration Provision. Alternatively, you may send this written
-              notification to support@trumio.ai. <br />
+              notification to {SUPPORT_EMAIL}. <br />
               <br />
               Opting out of this Arbitration Provision will not affect any other terms of this Agreement. <br />
               <br />

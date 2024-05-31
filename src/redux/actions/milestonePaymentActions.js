@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import {
   milestoneTransactionsServiceForClient,
   milestoneTransactionsServiceForTeam,
@@ -31,6 +32,7 @@ import {
   updatePaymentStatusRequest,
   updatePaymentStatusSuccess,
 } from '../reducers/milestonePayment';
+import { ERROR_CODES } from '../../utility/constants/Constant';
 
 const getMilestonePaymentListing = (project_id, onSuccess) => async (dispatch) => {
   dispatch(milestoneListRequest());
@@ -77,7 +79,13 @@ const getMilestoneTransactions = (projectId, milestoneId, isClient) => async (di
       dispatch(milestoneTransactionSuccess(res.data.data.my_payments));
     }
   } catch (error) {
-    errorHandler(error, milestoneTransactionFailure);
+    // As per requirement one talent must not be view transaction of other talent, since showing relevent toast message
+    dispatch(milestoneTransactionFailure());
+    if (error?.response?.data?.errorData?.errorCode === ERROR_CODES.EC_404) {
+      toast.error('You are not part of this project team', {
+        position: 'top-center',
+      });
+    }
   }
 };
 

@@ -13,7 +13,7 @@ import theme from '../../../configs/themeVariables';
 import DateTime from '../../../lib/date-time';
 import RemoveProjectTeamMemberModal from '../../modals/RemoveProjectTeamMemberModal';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
-import { getTeamId } from '../../../utility/Utils';
+import getTeamId from '../../../utility/commonUtils';
 import { userTypes } from '../../../utility/constants/Constant';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 

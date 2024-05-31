@@ -48,6 +48,13 @@ import { getLanguages } from '../../redux/actions/staticActions';
 import { languages } from '../../redux/selectors/staticSelectors';
 import TeamCreatingModal from './TeamCreatingModal';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
+import TextEditor from '../CreateProject/TextEditor';
+import CustomerSupportCTA from '../Onboarding/CustomerSupportCTA';
+import { CUSTOMER_SUPPORT_TYPES } from '../../utility/constants/Constant';
+import { getCustomerSupportCount } from '../../redux/actions/supportActions';
+import NoteComponent from '../Onboarding/NoteComponent';
+import CustomerSupportModal from '../modals/CustomerSupportModal';
+import FeedbackForCustomerSupportModal from '../modals/CustomerSupportFeedbackModal';
 
 const Profile = () => {
   const ProfileSchema = yup.object().shape({
@@ -204,6 +211,7 @@ const Profile = () => {
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
   const languagesData = useSelector(languages);
+  const supportData = useSelector((state) => state.support.supportCount);
 
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
@@ -313,7 +321,7 @@ const Profile = () => {
     let reqData;
 
     if (location.pathname.includes('profile-edit')) {
-      const onApiSuccess = () => {
+      const onApiSuccess = async () => {
         navigate('/dashboard');
       };
 
@@ -330,7 +338,6 @@ const Profile = () => {
           skills: skillsSelected,
           availability,
         };
-
         dispatch(updateTeam(removeEmptyKeys(reqData), onApiSuccess));
       } else {
         reqData = {
@@ -657,6 +664,28 @@ const Profile = () => {
     setImageUrlRes(null);
   };
 
+  const [customerSupportModal, setCustomerSupportModal] = useState(false);
+  const [feedbackModal, setFeedbackSupportModal] = useState(false);
+  const [defaultSelected, setDefaultSelected] = useState([]);
+  const handleCustomerSupport = (value) => {
+    setCustomerSupportModal(true);
+    setDefaultSelected(value);
+  };
+
+  const toggleSupportModal = () => {
+    setCustomerSupportModal(!customerSupportModal);
+  };
+
+  const toggleFeedbackSupportModal = () => {
+    setFeedbackSupportModal(!feedbackModal);
+  };
+
+  const onCustomerSupportSuccess = () => {
+    setCustomerSupportModal(false);
+    setFeedbackSupportModal(true);
+    dispatch(getCustomerSupportCount());
+  };
+
   return (
     <ProfileFormContainer className="w-75">
       {teamCreatingModal && (
@@ -782,12 +811,11 @@ const Profile = () => {
                   name="teamIntroduction"
                   control={control}
                   render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="textarea"
-                      placeholder="Write your team introduction in 500 characters"
-                      rows="5"
-                      invalid={errors.teamIntroduction && true}
+                    <TextEditor
+                      name={field.name}
+                      onChange={field.onChange}
+                      value={field.value}
+                      placeholder="Add your team introduction in 500 characters."
                     />
                   )}
                 />
@@ -797,8 +825,12 @@ const Profile = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader>
+          <CardHeader className="align-items-end">
             <h4 className="m-0 mt-1">Service</h4>
+            <CustomerSupportCTA
+              type={CUSTOMER_SUPPORT_TYPES.tools_and_skills}
+              handleCustomerSupport={handleCustomerSupport}
+            />
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
@@ -907,6 +939,12 @@ const Profile = () => {
                 {errors.skills && <FormFeedback>{errors.skills.message}</FormFeedback>}
               </Col>
             </Row>
+            {supportData?.tools_and_skills?.pending_requests > 0 && (
+              <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
+            )}
+            {supportData?.tools_and_skills?.approved_requests > 0 && (
+              <NoteComponent type="success" requestCount={supportData?.tools_and_skills?.approved_requests} />
+            )}
           </CardBody>
         </Card>
         <Card>
@@ -1381,6 +1419,17 @@ const Profile = () => {
           </div>
         </div>
       </Form>
+      {customerSupportModal && (
+        <CustomerSupportModal
+          onSuccess={onCustomerSupportSuccess}
+          modal={customerSupportModal}
+          toggleModal={toggleSupportModal}
+          defaultSelected={defaultSelected}
+        />
+      )}
+      {feedbackModal && (
+        <FeedbackForCustomerSupportModal modal={feedbackModal} toggleModal={toggleFeedbackSupportModal} />
+      )}
     </ProfileFormContainer>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import Proptypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -480,7 +481,9 @@ const Preview = ({
           <h4 className="m-0 mt-1">Project Description</h4>
         </CardHeader>
         <hr className="m-0 card-header-border" />
-        <CardBody style={{ whiteSpace: 'pre-line' }}>{projectDetails?.projectDescription}</CardBody>
+        <CardBody style={{ whiteSpace: 'pre-line' }}>
+          <div dangerouslySetInnerHTML={{__html:projectDetails?.projectDescription}} />
+            </CardBody>
       </Card>
       {files && files.length > 0 && fileList()}
       <Card>

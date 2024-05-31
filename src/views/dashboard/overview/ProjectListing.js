@@ -19,7 +19,8 @@ import Slider from '../../../lib/slider';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useIsTab, returnDetailsForMarketPlace, getTeamId, calculateRemainingBidsCount } from '../../../utility/Utils';
+import { useIsTab, returnDetailsForMarketPlace, calculateRemainingBidsCount } from '../../../utility/Utils';
+import getTeamId from '../../../utility/commonUtils';
 
 import {
   activeProjectsForClient,

@@ -97,6 +97,9 @@ const accordionHeaderActiveBg = '#F2F8FF';
 const draftStatusBadgeBg = '#E0E0E0';
 const draftStatusBadgeColor = '#424242';
 const modalLeftBorderColor = '#ebebeb';
+const pendingOrangeColor = '#FF5F05';
+const fundedBlueColor = '#00ACC1';
+const selectedBlugBg = '#EDF7FF';
 
 const theme = {
   primary: primaryColor, // primary color for all components
@@ -200,5 +203,8 @@ const theme = {
   draftStatusBadgeBg,
   draftStatusBadgeColor,
   modalLeftBorderColor,
+  pendingOrangeColor,
+  fundedBlueColor,
+  selectedBlugBg,
 };
 export default theme;

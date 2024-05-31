@@ -61,6 +61,7 @@ import {
   saveDraftProjectLoading,
 } from '../../../redux/selectors/createProjectSelectors';
 import SaveForLaterModal from '../../modals/SaveForLaterModal';
+import TextEditor from '../TextEditor';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSavedModal, draftRequirementDetails }) => {
   const ProjectDetailsSchema = yup.object().shape({
@@ -912,16 +913,18 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
                       id="projectDescription"
                       name="projectDescription"
                       control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          type="textarea"
-                          placeholder="Add background and requirements"
-                          rows="5"
-                          invalid={errors.projectDescription && true}
-                        />
-                      )}
+                      render={({ field }) => {
+                        return (
+                          <TextEditor
+                            name={field.name}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Add background and requirements"
+                          />
+                        );
+                      }}
                     />
+
                     {errors.projectDescription && <FormFeedback>{errors.projectDescription.message}</FormFeedback>}
                   </Col>
                 </Row>
