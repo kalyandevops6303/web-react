@@ -8,6 +8,9 @@ import { selectUserType } from '../../../redux/selectors/authSelectors';
 import { ERROR_CODES, checkPoints } from '../../../utility/constants/Constant';
 import { setItem } from '../../../utility/localStorageControl';
 import { checkPointRedirection } from '../../../utility/Utils';
+import toast from 'react-hot-toast';
+import { Info } from 'react-feather';
+import theme from '../../../configs/themeVariables';
 
 const SigninWithGoogle = () => {
   const dispatch = useDispatch();
@@ -51,6 +54,11 @@ const SigninWithGoogle = () => {
     if (error.response.status === ERROR_CODES.EC_422) {
       setItem('google_id_token', id_token);
       navigate('/auth');
+
+      toast(() => <span>{error.response?.data?.errorData?.message}</span>, {
+        position: 'top-center',
+        icon: <Info size="20" color={theme.primary} />,
+      });
     }
   };
 
