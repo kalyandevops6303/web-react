@@ -17,21 +17,27 @@ import {
   updatePaymentDetails,
 } from '../../../../redux/actions/paymentActions';
 import { handleEmailClick } from '../../../../utility/Utils';
+import { formData } from '../../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../../redux/reducers/formData';
 
 // eslint-disable-next-line react/prop-types
-const Step1 = ({ setStep }) => {
+const Step1 = ({ setStep , step }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const savedFormData = useSelector(formData);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
-  const [isWorkingInUS, setIsWorkingInUS] = useState(false);
-  const [taxUserType, setTaxUserType] = useState('US');
+  const [isWorkingInUS, setIsWorkingInUS] = useState(savedFormData?.isWorkingInUS || false);
+  const [taxUserType, setTaxUserType] = useState(savedFormData?.taxUserType || 'US');
   const [isTaxinfoExists, setIsTaxInfoExists] = useState(false);
-  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
+  const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(savedFormData?.isPaymentOnboardingDone || false);
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
 
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
 
+  useEffect(()=>{
+    dispatch(setFormData({...savedFormData,step}));
+  },[step]);
   const onGetPaymentDetailsSuccess = (res) => {
     if (res) {
       if (res?.created_at) setIsTaxInfoExists(true);
@@ -58,14 +64,30 @@ const Step1 = ({ setStep }) => {
   };
 
   const handlePrePaymentChange = (e) => {
+    if (e.target.name === 'US' || e.target.name === 'OTHER') {
+      dispatch(setFormData({ taxUserType: e.target.name }));
+    } else {
+      dispatch(setFormData({ ...savedFormData, taxUserType: e.target.name }));
+    }
+
     setTaxUserType(e.target.name);
   };
+
+  useEffect(()=>{
+    const allData = {...savedFormData, isPaymentOnboardingDone };
+    dispatch(setFormData(allData));
+  },[isPaymentOnboardingDone]);
 
   const toggleAccountCreatedModal = () => setAccountCreatedModal(!accountCreatedModal);
 
   const handleWorkOptionChange = (e) => {
-    if (e.target.name === 'in_us') setIsWorkingInUS(true);
-    else setIsWorkingInUS(false);
+    if (e.target.name === 'in_us') {
+      dispatch(setFormData({ ...savedFormData, isWorkingInUS: true }));
+      setIsWorkingInUS(true);
+    } else {
+      dispatch(setFormData({ ...savedFormData, isWorkingInUS: false }));
+      setIsWorkingInUS(false);
+    }
   };
 
   const onSuccess = () => {
@@ -79,6 +101,7 @@ const Step1 = ({ setStep }) => {
     }
   };
   const handleNextClick = (e) => {
+    
     if (taxUserType === 'OTHER' || (taxUserType === 'NON_US' && isWorkingInUS)) {
       // email support
       handleEmailClick();
@@ -104,6 +127,7 @@ const Step1 = ({ setStep }) => {
   };
 
   const onSkipSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
@@ -112,6 +136,7 @@ const Step1 = ({ setStep }) => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {

@@ -9,6 +9,7 @@ import theme from '../../../configs/themeVariables';
 import { setActiveNavTab } from '../../../redux/reducers/activeNavTab';
 import { BackButtonContainer } from '../style';
 import { getItemFromSession, removeItemFromSession } from '../../../utility/sessesionStorageControl';
+import { clearAllFormData } from '../../../redux/reducers/formData';
 
 const ClientOnboarding = () => {
   const tabNames = {
@@ -60,6 +61,9 @@ const ClientOnboarding = () => {
   }, [location]);
 
   const onBackClick = () => {
+    if(location?.pathname.includes('/client-profile-edit/account-details')){
+      dispatch(clearAllFormData());
+    }
     navigate(getItemFromSession('backRouteForProfileEdit'));
     removeItemFromSession('backRouteForProfileEdit');
   };

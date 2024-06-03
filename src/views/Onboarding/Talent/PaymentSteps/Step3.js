@@ -16,7 +16,7 @@ import {
   UncontrolledTooltip,
 } from 'reactstrap';
 import { ChevronLeft, ChevronRight, Info } from 'react-feather';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import InputPasswordToggle from '@components/input-password-toggle';
 import classNames from 'classnames';
@@ -27,7 +27,7 @@ import { selectThemeColors } from '@utils';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ProfileFormContainer, UploadIconContainer } from '../../style';
 import theme from '../../../../configs/themeVariables';
-import { returnFilteredDropdownOptions } from '../../../../utility/Utils';
+import { filteredFormSchema, returnFilteredDropdownOptions } from '../../../../utility/Utils';
 import { countriesService } from '../../../../services/staticServices';
 import { getStates, getCities, getCountries } from '../../../../redux/actions/staticActions';
 import { getPaymentDetails, setupStripeAccount, updatePaymentDetails } from '../../../../redux/actions/paymentActions';
@@ -39,25 +39,27 @@ import { saveCheckpointComplete } from '../../../../redux/actions/talentOnboardi
 
 import { usWFormsSchema } from '../Schema';
 import { TooltipWrapper } from '../../../styled';
+import { formData } from '../../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../../redux/reducers/formData';
 
-const Step3 = ({ setStep }) => {
+const Step3 = ({ setStep, step }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const savedFormData = useSelector(formData);
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [pStatesOptions, setPStatesOptions] = useState(null);
   const [mStatesOptions, setMStatesOptions] = useState(null);
   const [pCitiesOptions, setPCitiesOptions] = useState(null);
   const [mCitiesOptions, setMCitiesOptions] = useState(null);
-  const [copyAddress, setCopyAddress] = useState(false);
-  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [copyAddress, setCopyAddress] = useState(savedFormData?.copyAddress || false);
+  const [isConfirmed, setIsConfirmed] = useState(savedFormData?.isConfirmed || false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
   const [paymentDetailsRes, setPaymentDetailsRes] = useState(null);
-  const [taxPayer, setTaxPayer] = useState('option1');
+  const [taxPayer, setTaxPayer] = useState(savedFormData?.taxPayer || 'option1');
 
   const isUsPerson = paymentDetailsRes?.tax_user_type === 'US';
-  const [isAgreed, setIsAgreed] = useState(!!isUsPerson);
+  const [isAgreed, setIsAgreed] = useState(savedFormData?.isAgreed || !!isUsPerson);
   const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
 
   const countriesData = useSelector(countries);
@@ -68,10 +70,15 @@ const Step3 = ({ setStep }) => {
   const paymentDetailsLoading = useSelector((state) => state.PaymentDetails?.loading);
   const stripeDetailsLoading = useSelector((state) => state?.stripeDetails?.loading);
 
+  useEffect(()=>{
+    dispatch(setFormData({...savedFormData,step}));
+  },[step]);
   const {
     control,
     handleSubmit,
     watch,
+    reset,
+    trigger,
     formState: { errors },
     getValues,
     setValue,
@@ -79,44 +86,177 @@ const Step3 = ({ setStep }) => {
     mode: 'onChange',
     resolver: yupResolver(usWFormsSchema),
     defaultValues: {
-      fullName: '',
-      citizen: '',
-      pAddress: '',
-      pHouseNo: '',
-      pState: '',
-      pCountry: '',
-      pCity: '',
-      pZipCode: '',
-      mAddress: '',
-      mHouseNo: '',
-      mState: '',
-      mCountry: '',
-      mCity: '',
-      mZipCode: '',
+      fullName: savedFormData?.fullName || '',
+      citizen: savedFormData?.citizen || '',
+      pAddress: savedFormData?.pAddress || '',
+      pHouseNo: savedFormData?.pHouseNo || '',
+      pState: savedFormData?.pState || '',
+      pCountry: savedFormData?.pCountry || '',
+      pCity: savedFormData?.pCity || '',
+      pZipCode: savedFormData?.pZipCode || '',
+      mAddress: savedFormData?.mAddress || '',
+      mHouseNo: savedFormData?.mHouseNo || '',
+      mState: savedFormData?.mState || '',
+      mCountry: savedFormData?.mCountry || '',
+      mCity: savedFormData?.mCity || '',
+      mZipCode: savedFormData?.mZipCode || '',
     },
   });
+  const localFormData = useWatch({ control });
 
   useEffect(() => {
-    if (watch('pCountry')) {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    dispatch(setFormData({ ...savedFormData, taxPayer }));
+  }, [taxPayer]);
+
+  useEffect(() => {
+    const allData = {
+      ...savedFormData,
+      copyAddress,
+      mAddress: copyAddress ? savedFormData?.pAddress : savedFormData?.mAddress,
+      mHouseNo: copyAddress ? savedFormData?.pHouseNo : savedFormData?.mHouseNo,
+      mCountry: copyAddress ? savedFormData?.pCountry : savedFormData?.mCountry,
+      mState: copyAddress ? savedFormData?.pState : savedFormData?.mState,
+      mCity: copyAddress ? savedFormData?.pCity : savedFormData?.mCity,
+      mZipCode: copyAddress ? savedFormData?.pZipCode : savedFormData?.mZipCode,
+    };
+    dispatch(setFormData(allData));
+  }, [copyAddress]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: usWFormsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
+
+  const [dataLoaded, setDataLoaded] = useState(false);
+  useEffect(() => {
+    if (dataLoaded && watch('pCountry')) {
+      setValue(
+        'pState',
+        savedFormData?.pCountry && savedFormData?.pCountry.label === watch('pCountry').label
+          ? savedFormData?.pState
+          : '',
+      );
+      setValue(
+        'pCity',
+        savedFormData?.pState && savedFormData?.pState.label === watch('pState').label ? savedFormData?.pCity : '',
+      );
+      if (copyAddress) {
+        setValue(
+          'mState',
+          savedFormData?.pCountry && savedFormData?.pCountry.label === watch('pCountry').label
+            ? savedFormData?.mState
+            : '',
+        );
+        setValue(
+          'mCity',
+          savedFormData?.pState && savedFormData?.pCountry.label === watch('pCountry').label
+            ? savedFormData?.mCity
+            : '',
+        );
+      }
+      if (copyAddress) setValue('mCountry', watch('pCountry'));
       dispatch(getStates(watch('pCountry').value));
     }
   }, [watch('pCountry')]);
 
   useEffect(() => {
-    if (watch('pState')) {
+    if (dataLoaded && watch('pState')) {
+      setValue('pCity', savedFormData?.pState.value === watch('pState').value ? savedFormData?.mCity : '');
+      if (copyAddress) setValue('mState', watch('pState'));
       dispatch(getCities(watch('pState').value));
     }
   }, [watch('pState')]);
 
   useEffect(() => {
-    if (watch('mCountry')) {
+    if (copyAddress) setValue('mCity', watch('pCity'));
+  }, [watch('pCity')]);
+
+  useEffect(() => {
+    if (dataLoaded && watch('mCountry')) {
+      setValue(
+        'mState',
+        savedFormData?.mCountry && savedFormData?.mCountry.label === watch('mCountry').label
+          ? savedFormData?.mState
+          : '',
+      );
+      setValue(
+        'mCity',
+        savedFormData?.mCountry && savedFormData?.mCountry.label === watch('mCountry').label
+          ? savedFormData?.mCity
+          : '',
+      );
       dispatch(getStates(watch('mCountry').value));
     }
   }, [watch('mCountry')]);
 
   useEffect(() => {
-    if (watch('mState')) {
+    if (dataLoaded && watch('mState')) {
+      setValue(
+        'mCity',
+        savedFormData?.mState && savedFormData?.mState.label === watch('mState').label ? savedFormData?.mCity : '',
+      );
       dispatch(getCities(watch('mState').value));
+    }
+  }, [watch('mState')]);
+
+  useEffect(() => {
+    const allData = {
+      ...savedFormData,
+      pAddress: watch('pAddress'),
+      pHouseNo: watch('pHouseNo'),
+      mAddress: copyAddress ? watch('pAddress') : watch('mAddress'),
+      mHouseNo: copyAddress ? watch('pHouseNo') : watch('mHouseNo'),
+      mZipCode: copyAddress ? watch('pZipCode') : watch('mZipCode'),
+    };
+    if (copyAddress) {
+      setValue('mAddress', watch('pAddress'));
+      setValue('mHouseNo', watch('pHouseNo'));
+      setValue('mZipCode', watch('pZipCode'));
+    }
+    dispatch(setFormData(allData));
+  }, [watch('pAddress'), watch('pHouseNo'), watch('pZipCode')]);
+
+  useEffect(() => {
+    if (location.pathname.includes('/talent-profile-edit')) {
+      if (watch('pCountry')) {
+        dispatch(getStates(watch('pCountry').value));
+      }
+    }
+  }, [watch('pCountry')]);
+
+  useEffect(() => {
+    if (location.pathname.includes('/talent-profile-edit')) {
+      if (watch('pState')) {
+        dispatch(getCities(watch('pState').value));
+      }
+    }
+  }, [watch('pState')]);
+
+  useEffect(() => {
+    if (location.pathname.includes('/talent-profile-edit')) {
+      if (watch('mCountry')) {
+        dispatch(getStates(watch('mCountry').value));
+      }
+    }
+  }, [watch('mCountry')]);
+
+  useEffect(() => {
+    if (location.pathname.includes('/talent-profile-edit')) {
+      if (watch('mState')) {
+        dispatch(getCities(watch('mState').value));
+      }
     }
   }, [watch('mState')]);
 
@@ -159,93 +299,169 @@ const Step3 = ({ setStep }) => {
       if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.w8bendetails && Object.keys(res?.w8bendetails)?.length > 0) {
         setValue('citizen', {
-          label: res?.w8bendetails?.country_of_citizenship,
-          value: res?.w8bendetails?.country_of_citizenship?.toUpperCase(),
+          label: savedFormData?.citizen ? savedFormData?.citizen?.label : res?.w8bendetails?.country_of_citizenship,
+          value: savedFormData?.citizen
+            ? savedFormData?.citizen?.value
+            : res?.w8bendetails?.country_of_citizenship?.toUpperCase(),
         });
-        setValue('fullName', res.w8bendetails.full_name);
-        setValue('refNo', res?.w8bendetails?.us_tax_id_reference_number);
-        setValue('dob', res?.w8bendetails?.dob);
+        setValue('fullName', savedFormData?.fullName ? savedFormData?.fullName : res.w8bendetails.full_name);
+        setValue('refNo', savedFormData?.refNo ? savedFormData?.refNo : res?.w8bendetails?.us_tax_id_reference_number);
+        setValue('dob', savedFormData?.dob ? savedFormData?.dob : res?.w8bendetails?.dob);
         setTaxPayer(res?.w8bendetails?.has_us_tax_id ? 'option1' : 'option2');
       }
       if (res?.w9details && Object.keys(res?.w9details)?.length > 0) {
         setValue('citizen', {
-          label: res?.w9details?.country_of_citizenship,
-          value: res?.w9details?.country_of_citizenship?.toUpperCase(),
+          label: savedFormData?.citizen ? savedFormData?.citizen?.label : res?.w9details?.country_of_citizenship,
+          value: savedFormData?.citizen
+            ? savedFormData?.citizen?.value
+            : res?.w9details?.country_of_citizenship?.toUpperCase(),
         });
-        setValue('fullName', res.w9details.full_name);
-        setValue('refNo', res?.w9details?.us_tax_id_reference_number);
-        setValue('dob', res?.w9details?.dob);
+        setValue('fullName', savedFormData?.fullName ? savedFormData?.fullName : res.w9details.full_name);
+        setValue('refNo', savedFormData?.refNo ? savedFormData?.refNo : res?.w9details?.us_tax_id_reference_number);
+        setValue('dob', savedFormData?.dob ? savedFormData?.dob : res?.w9details?.dob);
         setTaxPayer(res?.w9details?.has_us_tax_id ? 'option1' : 'option2');
       }
       if (res?.w9details?.permanent_residence) {
-        setValue('pCountry', {
-          label: res?.w9details?.permanent_residence?.country,
-          value: res?.w9details?.permanent_residence?.country?.toUpperCase(),
-        });
-        setValue('pState', {
-          label: res?.w9details?.permanent_residence?.state,
-          value: res?.w9details?.permanent_residence?.state?.toUpperCase(),
-        });
-        setValue('pCity', {
-          label: res?.w9details?.permanent_residence?.city,
-          value: res?.w9details?.permanent_residence?.city?.toUpperCase(),
-        });
-        setValue('pAddress', res?.w9details?.permanent_residence?.street_address);
-        setValue('pHouseNo', res?.w9details?.permanent_residence?.house_number);
-        setValue('pZipCode', res?.w9details?.permanent_residence?.zip_code);
+        const countryData = {
+          label: savedFormData?.pCountry
+            ? savedFormData?.pCountry?.label
+            : res?.w9details?.permanent_residence?.country,
+          value: savedFormData?.pCountry
+            ? savedFormData?.pCountry?.value
+            : res?.w9details?.permanent_residence?.country?.toUpperCase(),
+        };
+        setValue('pCountry', countryData);
+        dispatch(setFormData({ ...savedFormData, pCountry: countryData }));
+        const stateData = {
+          label: savedFormData?.pState ? savedFormData?.pState?.label : res?.w9details?.permanent_residence?.state,
+          value: savedFormData?.pState
+            ? savedFormData?.pState?.value
+            : res?.w9details?.permanent_residence?.state?.toUpperCase(),
+        };
+        setValue('pState', stateData);
+        dispatch(setFormData({ ...savedFormData, pState: stateData }));
+        const cityData = {
+          label: savedFormData?.pCity ? savedFormData?.pCity?.label : res?.w9details?.permanent_residence?.city,
+          value: savedFormData?.pCity
+            ? savedFormData?.pCity?.value
+            : res?.w9details?.permanent_residence?.city?.toUpperCase(),
+        };
+
+        setValue('pCity', cityData);
+        dispatch(setFormData({ ...savedFormData, pCity: cityData }));
+        setValue(
+          'pAddress',
+          savedFormData?.pAddress ? savedFormData?.pAddress : res?.w9details?.permanent_residence?.street_address,
+        );
+        setValue(
+          'pHouseNo',
+          savedFormData?.pHouseNo ? savedFormData?.pHouseNo : res?.w9details?.permanent_residence?.house_number,
+        );
+        setValue(
+          'pZipCode',
+          savedFormData?.pZipCode ? savedFormData?.pZipCode : res?.w9details?.permanent_residence?.zip_code,
+        );
       }
       if (res?.w8bendetails?.permanent_residence) {
         setValue('pCountry', {
-          label: res?.w8bendetails?.permanent_residence?.country,
-          value: res?.w8bendetails?.permanent_residence?.country?.toUpperCase(),
+          label: savedFormData?.pCountry
+            ? savedFormData?.pCountry?.label
+            : res?.w8bendetails?.permanent_residence?.country,
+          value: savedFormData?.pCountry
+            ? savedFormData?.pCountry?.value
+            : res?.w8bendetails?.permanent_residence?.country?.toUpperCase(),
         });
         setValue('pState', {
-          label: res?.w8bendetails?.permanent_residence?.state,
-          value: res?.w8bendetails?.permanent_residence?.state?.toUpperCase(),
+          label: savedFormData?.pState ? savedFormData?.pState?.label : res?.w8bendetails?.permanent_residence?.state,
+          value: savedFormData?.pState
+            ? savedFormData?.pState?.value
+            : res?.w8bendetails?.permanent_residence?.state?.toUpperCase(),
         });
         setValue('pCity', {
-          label: res?.w8bendetails?.permanent_residence?.city,
-          value: res?.w8bendetails?.permanent_residence?.city?.toUpperCase(),
+          label: savedFormData?.pCity ? savedFormData?.pCity?.label : res?.w8bendetails?.permanent_residence?.city,
+          value: savedFormData?.pCity
+            ? savedFormData?.pCity?.value
+            : res?.w8bendetails?.permanent_residence?.city?.toUpperCase(),
         });
-        setValue('pAddress', res?.w8bendetails?.permanent_residence?.street_address);
-        setValue('pHouseNo', res?.w8bendetails?.permanent_residence?.house_number);
-        setValue('pZipCode', res?.w8bendetails?.permanent_residence?.zip_code);
+        setValue(
+          'pAddress',
+          savedFormData?.pAddress ? savedFormData?.pAddress : res?.w8bendetails?.permanent_residence?.street_address,
+        );
+        setValue(
+          'pHouseNo',
+          savedFormData?.pHouseNo ? savedFormData?.pHouseNo : res?.w8bendetails?.permanent_residence?.house_number,
+        );
+        setValue(
+          'pZipCode',
+          savedFormData?.pZipCode ? savedFormData?.pZipCode : res?.w8bendetails?.permanent_residence?.zip_code,
+        );
       }
       if (res?.w9details?.mailing_address) {
         setValue('mCountry', {
-          label: res?.w9details?.mailing_address?.country,
-          value: res?.w9details?.mailing_address?.country?.toUpperCase(),
+          label: savedFormData?.mCountry ? savedFormData?.mCountry?.label : res?.w9details?.mailing_address?.country,
+          value: savedFormData?.mCountry
+            ? savedFormData?.mCountry?.value
+            : res?.w9details?.mailing_address?.country?.toUpperCase(),
         });
         setValue('mState', {
-          label: res?.w9details?.mailing_address?.state,
-          value: res?.w9details?.mailing_address?.state?.toUpperCase(),
+          label: savedFormData?.mState ? savedFormData?.mState?.label : res?.w9details?.mailing_address?.state,
+          value: savedFormData?.mState
+            ? savedFormData?.mState?.value
+            : res?.w9details?.mailing_address?.state?.toUpperCase(),
         });
         setValue('mCity', {
-          label: res?.w9details?.mailing_address?.city,
-          value: res?.w9details?.mailing_address?.city?.toUpperCase(),
+          label: savedFormData?.mCity ? savedFormData?.mCity?.label : res?.w9details?.mailing_address?.city,
+          value: savedFormData?.mCity
+            ? savedFormData?.mCity?.value
+            : res?.w9details?.mailing_address?.city?.toUpperCase(),
         });
-        setValue('mAddress', res?.w9details?.mailing_address?.street_address);
-        setValue('mHouseNo', res?.w9details?.mailing_address?.house_number);
-        setValue('mZipCode', res?.w9details?.mailing_address?.zip_code);
+        setValue(
+          'mAddress',
+          savedFormData?.mAddress ? savedFormData?.mAddress : res?.w9details?.mailing_address?.street_address,
+        );
+        setValue(
+          'mHouseNo',
+          savedFormData?.mHouseNo ? savedFormData?.mHouseNo : res?.w9details?.mailing_address?.house_number,
+        );
+        setValue(
+          'mZipCode',
+          savedFormData?.mZipCode ? savedFormData?.mZipCode : res?.w9details?.mailing_address?.zip_code,
+        );
       }
       if (res?.w8bendetails?.mailing_address) {
         setValue('mCountry', {
-          label: res?.w8bendetails?.mailing_address?.country,
-          value: res?.w8bendetails?.mailing_address?.country?.toUpperCase(),
+          label: savedFormData?.mCountry ? savedFormData?.mCountry?.label : res?.w8bendetails?.mailing_address?.country,
+          value: savedFormData?.mCountry
+            ? savedFormData?.mCountry?.value
+            : res?.w8bendetails?.mailing_address?.country?.toUpperCase(),
         });
         setValue('mState', {
-          label: res?.w8bendetails?.mailing_address?.state,
-          value: res?.w8bendetails?.mailing_address?.state?.toUpperCase(),
+          label: savedFormData?.mState ? savedFormData?.mState?.label : res?.w8bendetails?.mailing_address?.state,
+          value: savedFormData?.mState
+            ? savedFormData?.mState?.value
+            : res?.w8bendetails?.mailing_address?.state?.toUpperCase(),
         });
         setValue('mCity', {
-          label: res?.w8bendetails?.mailing_address?.city,
-          value: res?.w8bendetails?.mailing_address?.city?.toUpperCase(),
+          label: savedFormData?.mCity ? savedFormData?.mCity?.label : res?.w8bendetails?.mailing_address?.city,
+          value: savedFormData?.mCity
+            ? savedFormData?.mCity?.value
+            : res?.w8bendetails?.mailing_address?.city?.toUpperCase(),
         });
-        setValue('mAddress', res?.w8bendetails?.mailing_address?.street_address);
-        setValue('mHouseNo', res?.w8bendetails?.mailing_address?.house_number);
-        setValue('mZipCode', res?.w8bendetails?.mailing_address?.zip_code);
+        setValue(
+          'mAddress',
+          savedFormData?.mAddress ? savedFormData?.mAddress : res?.w8bendetails?.mailing_address?.street_address,
+        );
+        setValue(
+          'mHouseNo',
+          savedFormData?.mHouseNo ? savedFormData?.mHouseNo : res?.w8bendetails?.mailing_address?.house_number,
+        );
+        setValue(
+          'mZipCode',
+          savedFormData?.mZipCode ? savedFormData?.mZipCode : res?.w8bendetails?.mailing_address?.zip_code,
+        );
       }
     }
+    setDataLoaded(true);
   };
 
   useEffect(() => {
@@ -289,6 +505,7 @@ const Step3 = ({ setStep }) => {
   const currentURL = window.location.href;
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     const stripeAccountData = {
       refresh_url: currentURL,
       return_url: currentURL,
@@ -297,9 +514,21 @@ const Step3 = ({ setStep }) => {
   };
 
   useEffect(() => {
+    const {
+      pAddress,
+      pHouseNo,
+      pCountry,
+      pCity,
+      pState,
+      pZipCode,
+      mAddress,
+      mHouseNo,
+      mCountry,
+      mState,
+      mCity,
+      mZipCode,
+    } = getValues();
     if (copyAddress) {
-      const { pAddress, pHouseNo, pCountry, pCity, pState, pZipCode } = getValues();
-
       setValue('mAddress', pAddress);
       setValue('mHouseNo', pHouseNo);
       setValue('mCountry', pCountry);
@@ -307,16 +536,17 @@ const Step3 = ({ setStep }) => {
       setValue('mState', pState);
       setValue('mZipCode', pZipCode);
     } else {
-      setValue('mAddress', '');
-      setValue('mHouseNo', '');
-      setValue('mCountry', '');
-      setValue('mCity', '');
-      setValue('mState', '');
-      setValue('mZipCode', '');
+      setValue('mAddress', mAddress);
+      setValue('mHouseNo', mHouseNo);
+      setValue('mCountry', mCountry);
+      setValue('mCity', mCity);
+      setValue('mState', mState);
+      setValue('mZipCode', mZipCode);
     }
   }, [copyAddress]);
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate('/dashboard');
     } else {
@@ -494,6 +724,7 @@ const Step3 = ({ setStep }) => {
                       <Select
                         isLoading={statesIsLoading}
                         options={pStatesOptions}
+                        isDisabled={!watch('pCountry')}
                         menuPosition="fixed"
                         classNamePrefix="select"
                         placeholder="Select your state"
@@ -522,6 +753,7 @@ const Step3 = ({ setStep }) => {
                     render={({ field }) => (
                       <Select
                         isLoading={citiesIsLoading}
+                        isDisabled={!watch('pState') || !watch('pCountry')}
                         menuPosition="fixed"
                         minMenuHeight={200}
                         options={pCitiesOptions}
@@ -647,7 +879,7 @@ const Step3 = ({ setStep }) => {
                     render={({ field }) => (
                       <Select
                         isLoading={statesIsLoading}
-                        isDisabled={copyAddress}
+                        isDisabled={copyAddress || !watch('mCountry')}
                         options={mStatesOptions}
                         menuPosition="fixed"
                         classNamePrefix="select"
@@ -679,7 +911,7 @@ const Step3 = ({ setStep }) => {
                         isLoading={citiesIsLoading}
                         menuPosition="fixed"
                         minMenuHeight={200}
-                        isDisabled={copyAddress}
+                        isDisabled={copyAddress || !watch('mCountry') || !watch('mState')}
                         options={mCitiesOptions}
                         classNamePrefix="select"
                         placeholder="Select your city"
@@ -777,9 +1009,21 @@ const Step3 = ({ setStep }) => {
         </Card>
 
         {isUsPerson ? (
-          <CertificationUS isConfirmed={isConfirmed} onConfirm={() => setIsConfirmed(true)} />
+          <CertificationUS
+            isConfirmed={isConfirmed}
+            onConfirm={() => {
+              setIsConfirmed(true);
+              dispatch(setFormData({ ...savedFormData, isConfirmed: true }));
+            }}
+          />
         ) : (
-          <CertificationNonUs isAgreed={isAgreed} onChange={() => setIsAgreed(!isAgreed)} />
+          <CertificationNonUs
+            isAgreed={isAgreed}
+            onChange={() => {
+              setIsAgreed(!isAgreed);
+              dispatch(setFormData({ ...savedFormData, isAgreed: !isAgreed }));
+            }}
+          />
         )}
         <div className="d-flex justify-content-between align-items-center pb-2 mt-1 w-75">
           <div className="d-flex align-items-center upload-button cursor-pointer" onClick={onBackClick}>
@@ -814,10 +1058,12 @@ const Step3 = ({ setStep }) => {
 
 Step3.propTypes = {
   setStep: PropTypes.func,
+  step: PropTypes.number ,
 };
 
 Step3.defaultProps = {
   setStep: () => {},
+  step: 3,
 };
 
 export default Step3;

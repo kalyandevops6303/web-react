@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
@@ -30,11 +30,13 @@ import timeOptions from '../../../utility/constants/TimeDropdownOptions';
 import { getUserDetails, saveProfileDetails } from '../../../redux/actions/talentOnboardingActions';
 import { profileDetailsLoading, userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import { currenciesService, timezonesService } from '../../../services/staticServices';
-import { removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
+import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } from '../../../utility/Utils';
 import { userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { currencies, currenciesLoading } from '../../../redux/selectors/staticSelectors';
 import { getCurrencies } from '../../../redux/actions/staticActions';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
 const Availability = () => {
   const AvailabilitySchema = yup.object().shape({
@@ -120,25 +122,54 @@ const Availability = () => {
       .required('Hourly rate is required'),
   });
 
+  const savedFormData = useSelector(formData);
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(AvailabilitySchema),
     defaultValues: {
-      availabilityDays: [],
-      weekdays: [],
-      weekends: [],
+      preferredWorkingTimeZone: savedFormData?.preferredWorkingTimeZone || {},
+      availabilityDays: savedFormData?.availabilityDays || [],
+      weekdays: savedFormData?.weekdays || [],
+      weekends: savedFormData?.weekends || [],
+      weekdayStartTime: savedFormData?.weekdayStartTime || null,
+      weekdayEndTime: savedFormData?.weekdayEndTime || null,
+      weekendStartTime: savedFormData?.weekendStartTime || null,
+      weekendEndTime: savedFormData?.weekendEndTime || null,
+      currencyPreference: savedFormData?.currencyPreference || null,
+      hourlyRate: savedFormData?.hourlyRate || null,
     },
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: AvailabilitySchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const [timezonesOptions, setTimezonesOptions] = useState(null);
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
@@ -157,6 +188,7 @@ const Availability = () => {
   };
 
   const onSkipClick = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
@@ -165,6 +197,7 @@ const Availability = () => {
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/social-details`);
     } else {
@@ -265,8 +298,12 @@ const Availability = () => {
           setValue(
             'preferredWorkingTimeZone',
             {
-              label: `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
-              value: res?.availability?.timezone,
+              label: savedFormData?.preferredWorkingTimeZone?.label
+                ? `${savedFormData?.preferredWorkingTimeZone?.label}`
+                : `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
+              value: savedFormData?.preferredWorkingTimeZone?.value
+                ? savedFormData?.preferredWorkingTimeZone?.value
+                : res?.availability?.timezone,
             },
             { shouldValidate: true },
           );
@@ -276,46 +313,75 @@ const Availability = () => {
 
         if ('days' in res?.availability?.weekdays_avl) {
           talentAvailabilityDays = [...talentAvailabilityDays, 'weekdays'];
-          setValue('weekdays', res?.availability?.weekdays_avl?.days, { shouldValidate: true });
+          setValue(
+            'weekdays',
+            savedFormData?.weekdays.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days,
+            { shouldValidate: true },
+          );
+       
           setValue(
             'weekdayStartTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
+            savedFormData?.weekdayStartTime?.length > 0
+              ? savedFormData?.weekdayStartTime
+              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekdayEndTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
+            savedFormData?.weekdayEndTime.length > 0
+              ? savedFormData?.weekdayEndTime
+              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
             { shouldValidate: true },
           );
         }
         if ('days' in res?.availability.weekends_avl) {
           talentAvailabilityDays = [...talentAvailabilityDays, 'weekends'];
-          setValue('weekends', res?.availability?.weekends_avl?.days, { shouldValidate: true });
+          setValue(
+            'weekends',
+            savedFormData?.weekends.length > 0 ? savedFormData?.weekends : res?.availability?.weekends_avl?.days,
+            { shouldValidate: true },
+          );
           setValue(
             'weekendStartTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
+            savedFormData?.weekendStartTime.length > 0
+              ? savedFormData?.weekendStartTime
+              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekendEndTime',
-            timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
+            savedFormData?.weekendEndTime.length > 0
+              ? savedFormData?.weekendEndTime
+              : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
             { shouldValidate: true },
           );
         }
-        setValue('availabilityDays', talentAvailabilityDays, { shouldValidate: true });
+        setValue(
+          'availabilityDays',
+          savedFormData?.availabilityDays.length > 0 ? savedFormData?.availabilityDays : talentAvailabilityDays,
+          { shouldValidate: true },
+        );
       }
       if ('name' in res?.talent_info?.currency_preference) {
         setValue(
           'currencyPreference',
           {
-            label: res?.talent_info?.currency_preference?.name,
-            value: res?.talent_info?.currency_preference?._id,
+            label:
+              savedFormData?.currencyPreference?.length > 0
+                ? savedFormData?.currencyPreference?.label
+                : res?.talent_info?.currency_preference?.name,
+            value:
+              savedFormData?.currencyPreference?.length > 0
+                ? savedFormData?.currencyPreference?.value
+                : res?.talent_info?.currency_preference?._id,
           },
           { shouldValidate: true },
         );
       }
       if (res?.talent_info?.hourly_rate > 0) {
-        setValue('hourlyRate', res?.talent_info?.hourly_rate, { shouldValidate: true });
+        setValue('hourlyRate', savedFormData?.hourlyRate ? savedFormData?.hourlyRate : res?.talent_info?.hourly_rate, {
+          shouldValidate: true,
+        });
       }
     }
   };
@@ -487,7 +553,7 @@ const Availability = () => {
                                 )}
                               />
                               {errors.weekdayStartTime && (
-                                <FormFeedback>{errors.weekdayStartTime.label.message}</FormFeedback>
+                                <FormFeedback>{errors && errors.weekdayStartTime.label.message}</FormFeedback>
                               )}
                             </Col>
                             <Col sm="6" md="6" lg="3">

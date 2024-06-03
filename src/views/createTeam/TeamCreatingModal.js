@@ -7,6 +7,7 @@ import { Button, Modal, ModalBody, Spinner } from 'reactstrap';
 import TeamCreatingGif from '../../assets/images/gifs/teamCreating.gif';
 import { switchProfile } from '../../redux/actions/authActions';
 import { createTeam } from '../../redux/actions/teamsActions';
+import { clearAllFormData } from '../../redux/reducers/formData';
 
 const TeamCreatingModal = ({ teamCreateData, toggleModal, modal, setTeamData, setTeamCreatedModal }) => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const TeamCreatingModal = ({ teamCreateData, toggleModal, modal, setTeamData, se
   const onCreateTeamSuccess = (data) => {
     setTeamData(data);
     setIsLoading(false);
+    dispatch(clearAllFormData());
     const onSuccess = () => {
       toggleModal();
       setTeamCreatedModal(true);

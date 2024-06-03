@@ -4,7 +4,7 @@ import { AsyncPaginate, reduceGroupedOptions } from 'react-select-async-paginate
 import * as yup from 'yup';
 // import Select from 'react-select';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
 import {
@@ -27,7 +27,12 @@ import ShowToastMessage from '../../@core/components/toast';
 import { ERROR } from '../../utility/constants/ToastTypes';
 import { AccountImageContainer, ProfileFormContainer } from '../Onboarding/style';
 import theme from '../../configs/themeVariables';
-import { removeEmptyKeys, returnFilteredDropdownOptions, selectThemeColors } from '../../utility/Utils';
+import {
+  filteredFormSchema,
+  removeEmptyKeys,
+  returnFilteredDropdownOptions,
+  selectThemeColors,
+} from '../../utility/Utils';
 import {
   paginatedInstitutesService,
   projectAreasService,
@@ -45,6 +50,9 @@ import { getProjectAreas, getSkills, getTools } from '../../redux/actions/static
 import { projectAreas, skillsList, toolsList } from '../../redux/selectors/staticSelectors';
 import { CUSTOMER_SUPPORT_TYPES, userProfileEdit } from '../../utility/constants/Constant';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
+import { formData, formDocuments, formImage, isFormImageRemoved } from '../../redux/selectors/formDataSelectors';
+import { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
+import { clearClubCreateData } from '../../redux/reducers/clubs';
 import TextEditor from '../CreateProject/TextEditor';
 import CustomerSupportCTA from '../Onboarding/CustomerSupportCTA';
 import CustomerSupportModal from '../modals/CustomerSupportModal';
@@ -106,6 +114,8 @@ const Account = () => {
     control,
     handleSubmit,
     setValue,
+    reset,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -130,9 +140,20 @@ const Account = () => {
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
+  const savedFormImage = useSelector(formImage);
+  const savedIsFormImageRemoved = useSelector(isFormImageRemoved);
   const supportData = useSelector((state) => state.support.supportCount);
 
   const dispatch = useDispatch();
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   const isFileValid = (file) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -153,6 +174,7 @@ const Account = () => {
     const thumbnail = URL.createObjectURL(file);
     setSelectedImage(file);
     setSelectedImagePreview(thumbnail);
+    dispatch(setIsFormImageRemoved(false));
 
     try {
       setIsImageUploading(true);
@@ -205,8 +227,15 @@ const Account = () => {
   };
 
   useEffect(() => {
+    if (selectedImage) {
+      dispatch(setFormDocuments(selectedImage));
+    }
+  }, [selectedImage]);
+
+  useEffect(() => {
     if (imageUrlRes) {
       uploadImage(imageUrlRes.upload_url);
+      dispatch(setFormImage(imageUrlRes));
     }
   }, [imageUrlRes]);
 
@@ -245,6 +274,7 @@ const Account = () => {
             interests: interestsSelected,
             tools: toolsSelected,
             skills: skillsSelected,
+            selectedImagePreview,
           };
 
           const removeEmpty = removeEmptyKeys(reqData);
@@ -282,6 +312,7 @@ const Account = () => {
             tools: toolsSelected,
             skills: skillsSelected,
             education_institute: educationInstitution,
+            selectedImagePreview,
           };
 
           const removeEmpty = removeEmptyKeys(reqData);
@@ -414,7 +445,7 @@ const Account = () => {
     if (location.pathname.includes('profile-edit')) {
       getTeamDetails();
     } else {
-      dispatch(setClubCreateDataAction(null));
+      dispatch(clearClubCreateData());
     }
   }, []);
 
@@ -424,23 +455,69 @@ const Account = () => {
 
   useEffect(() => {
     if (clubCreateData) {
-      if (clubCreateData?.team_logo?.length > 0) {
-        setSelectedImage(clubCreateData.team_logo);
-        setSelectedImagePreview(clubCreateData.team_logo);
+      if (savedIsFormImageRemoved) {
+        dispatch(setIsFormImageRemoved(true));
+        setSelectedImage(null);
+        setSelectedImagePreview(null);
+      } else if (clubCreateData?.team_logo?.length > 0 && !savedFormDocuments) {
+        setSelectedImage(clubCreateData?.selectedImagePreview);
+        setSelectedImagePreview(clubCreateData?.selectedImagePreview);
+      } else if (savedFormDocuments) {
+        setSelectedImage(savedFormDocuments);
+        if (!location.pathname.includes('profile-edit')) {
+          setSelectedImagePreview(URL.createObjectURL(savedFormDocuments));
+          // setSelectedImagePreview(savedFormDocuments);
+        } else {
+          setSelectedImagePreview(savedFormDocuments);
+        }
       }
-      if (clubCreateData?.name?.length > 0) {
+      if (clubCreateData?.name?.length > 0 && !savedFormData?.clubName) {
         setValue('clubName', clubCreateData?.name, { shouldValidate: true });
+      } else if (savedFormData?.clubName) {
+        setValue('clubName', savedFormData?.clubName, { shouldValidate: true });
       }
-      if (clubCreateData?.tagline?.length > 0) {
+      if (clubCreateData?.tagline?.length > 0 && !savedFormData?.clubTagline) {
         setValue('clubTagline', clubCreateData?.tagline, { shouldValidate: true });
+      } else if (savedFormData?.clubTagline) {
+        setValue('clubTagline', savedFormData?.clubTagline, { shouldValidate: true });
       }
-      if (clubCreateData?.introduction?.length > 0) {
+      if (clubCreateData?.introduction?.length > 0 && !savedFormData?.clubIntroduction) {
         setValue('clubIntroduction', clubCreateData?.introduction, { shouldValidate: true });
+      } else if (savedFormData?.clubIntroduction) {
+        setValue('clubIntroduction', savedFormData?.clubIntroduction, { shouldValidate: true });
       }
-      if (clubCreateData?.education_institute) {
+      if (clubCreateData?.education_institute && !savedFormData?.educationInstitution) {
         setValue('educationInstitution', clubCreateData?.education_institute, { shouldValidate: true });
         setSelectedOption(clubCreateData?.education_institute);
+      } else if (savedFormData?.educationInstitution) {
+        setValue('educationInstitution', savedFormData?.educationInstitution, { shouldValidate: true });
+        setSelectedOption(savedFormData?.educationInstitution);
       }
+    } else if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: ProfileSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+
+      setSelectedOption(savedFormData?.educationInstitution);
+    }
+    if (savedIsFormImageRemoved) {
+      dispatch(setIsFormImageRemoved(true));
+      setSelectedImage(null);
+      setSelectedImagePreview(null);
+    } else if (savedFormDocuments && !clubCreateData?.team_logo?.length) {
+      setSelectedImage(savedFormDocuments);
+      if (!location.pathname.includes('profile-edit')) {
+        setSelectedImagePreview(URL.createObjectURL(savedFormDocuments));
+      } else {
+        setSelectedImagePreview(savedFormDocuments);
+      }
+    }
+    if (savedFormImage) {
+      setImageUrlRes(savedFormImage);
     }
   }, []);
 
@@ -517,7 +594,7 @@ const Account = () => {
   }, [clubDetails]);
 
   useEffect(() => {
-    if (clubCreateData?.interests?.length > 0 && projectAreasList?.length > 0) {
+    if (clubCreateData?.interests?.length > 0 && projectAreasList?.length > 0 && !savedFormData?.interests?.length) {
       const selectedInterests = clubCreateData?.interests.map((interest) => interest);
 
       setValue(
@@ -530,8 +607,10 @@ const Account = () => {
           })),
         { shouldValidate: true },
       );
+    } else if (savedFormData?.interests?.length) {
+      setValue('interests', savedFormData?.interests, { shouldValidate: true });
     }
-    if (clubCreateData?.tools?.length > 0 && allToolsList?.length > 0) {
+    if (clubCreateData?.tools?.length > 0 && allToolsList?.length > 0 && !savedFormData?.tools?.length) {
       const selectedTools = clubCreateData?.tools.map((tool) => tool);
       setValue(
         'tools',
@@ -543,8 +622,10 @@ const Account = () => {
           })),
         { shouldValidate: true },
       );
+    } else {
+      setValue('tools', savedFormData?.tools, { shouldValidate: true });
     }
-    if (clubCreateData?.skills?.length > 0 && allSkillsList?.length > 0) {
+    if (clubCreateData?.skills?.length > 0 && allSkillsList?.length > 0 && !savedFormData?.skills?.length) {
       const selectedSkills = clubCreateData?.skills.map((skill) => skill);
       setValue(
         'skills',
@@ -556,6 +637,8 @@ const Account = () => {
           })),
         { shouldValidate: true },
       );
+    } else if (savedFormData?.skills?.length) {
+      setValue('skills', savedFormData?.skills, { shouldValidate: true });
     }
   }, [allToolsList, allSkillsList, projectAreasList, clubCreateData]);
 
@@ -563,6 +646,9 @@ const Account = () => {
     setSelectedImage(null);
     setSelectedImagePreview(null);
     setImageUrlRes(null);
+    dispatch(setFormDocuments(null));
+    dispatch(setFormImage(null));
+    dispatch(setIsFormImageRemoved(true));
   };
 
   const formatGroupLabel = (data) => (

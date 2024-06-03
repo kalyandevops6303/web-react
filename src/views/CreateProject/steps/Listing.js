@@ -1,15 +1,20 @@
+import { useEffect } from 'react';
 import Proptypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import classNames from 'classnames';
 import { Label, Row, Col, Input, Form, Button, Card, CardHeader, CardBody, FormFeedback } from 'reactstrap';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RequirementsFormContainer } from '../style';
 import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { setFormData } from '../../../redux/reducers/formData';
+import { filteredFormSchema } from '../../../utility/Utils';
 
 const Listing = ({ stepper, setListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
@@ -43,12 +48,24 @@ const Listing = ({ stepper, setListingDetails }) => {
     resetField,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(ListingDetailsSchema),
     defaultValues: {},
   });
+
+  const savedFormData = useSelector(formData);
+
+  const dispatch = useDispatch();
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   const onSubmit = () => {
     if (!watch('listingOption')) {
@@ -88,6 +105,18 @@ const Listing = ({ stepper, setListingDetails }) => {
     }
   };
 
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: ListingDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
+
   return (
     <RequirementsFormContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -114,6 +143,8 @@ const Listing = ({ stepper, setListingDetails }) => {
                           clearErrors('endDate');
                           resetField('startDate');
                           resetField('endDate');
+                          setValue('startDate', undefined);
+                          setValue('endDate', undefined);
 
                           const isChecked = e.target.checked;
                           const value = 'enter-duration';

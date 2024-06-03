@@ -3,9 +3,9 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 
 // ** Reactstrap Imports
 import { CardTitle, Label, Form, Input, Button, FormGroup, FormFeedback, Spinner } from 'reactstrap';
@@ -19,15 +19,20 @@ import '@styles/react/pages/page-authentication.scss';
 import { registerPhone } from '../../redux/actions/authActions';
 import { selectAuthLoading, selectMobile } from '../../redux/selectors/authSelectors';
 import LogoComp from './components/LogoComp';
+import { formData } from '../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
+import { filteredFormSchema } from '../../utility/Utils';
 
 const RegisterPhone = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const savedFormData = useSelector(formData);
 
   const isLoading = useSelector(selectAuthLoading);
   const mobileData = useSelector(selectMobile);
 
   const [selectedCountry, setSelectedCountry] = useState(
+    savedFormData?.selectCountry ||
     mobileData?.selectedCountry || {
       label: 'United States',
       dial_code: '+1',
@@ -47,19 +52,41 @@ const RegisterPhone = () => {
     control,
     watch,
     clearErrors,
+    reset,
+    trigger,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      mobile: mobileData?.phone || '',
+      mobile:  savedFormData?.mobile || mobileData?.phone || '',
     },
   });
+  const localFormData = useWatch({ control });
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: {...schema.fields, selectedCountry},
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const handleCountryChange = (value) => {
+    const allData = { ...savedFormData, selectCountry:value };
+    dispatch(setFormData(allData));
     setSelectedCountry(value);
     clearErrors();
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     navigate('/auth/phone-verify');
   };
 

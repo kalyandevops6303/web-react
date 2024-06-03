@@ -778,6 +778,16 @@ export const generateToolTipId = (projectName, name, title) =>
 
 export const roundOfAmount = (amount) => (amount ? round(amount, 2) : 0);
 
+export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
+  const filteredObj = Object.fromEntries(
+    Object.keys(savedData) // Get all keys from savedData
+      .filter((key) => key in formSchemaFields) // Keep only keys that are in form schema
+      .map((key) => [key, savedData[key]]), // Map the key-value pairs for the new object
+  );
+
+  return filteredObj;
+};
+
 export const getMissingName = (type, values) => {
   switch (type) {
     case CUSTOMER_SUPPORT_TYPES.missing_skill:

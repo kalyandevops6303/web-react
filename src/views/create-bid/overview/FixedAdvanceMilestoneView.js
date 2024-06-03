@@ -41,6 +41,7 @@ import { DropzoneContainer } from '../../CreateProject/style';
 import {
   downloadFile,
   downloadUploadedFile,
+  filteredFormSchema,
   formatDateWithDash,
   getFileSize,
   renderFilePreview,
@@ -56,6 +57,8 @@ import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import ChangeBidTypeConfirmationModal from '../../modals/ChangeBidTypeConfirmationModal';
 import CreateBidModal from '../../modals/CreateBidModal';
 import capitalize from '../../../lib/capitalize';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 
 const FixedAdvanceMilestoneView = () => {
   const MilestoneDetailsSchema = yup.object().shape({
@@ -131,18 +134,21 @@ const FixedAdvanceMilestoneView = () => {
     ),
   });
 
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
   const {
     control,
     handleSubmit,
     getValues,
     setValue,
+    reset,
     trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
     resolver: yupResolver(MilestoneDetailsSchema),
     defaultValues: {
-      milestones: [
+      milestones: savedFormData?.milestones || [
         {
           milestoneId: uuidv4(),
           name: undefined,
@@ -187,6 +193,13 @@ const FixedAdvanceMilestoneView = () => {
   const [createBidModal, setCreateBidModal] = useState(null);
   const [bidData, setBidData] = useState(null);
 
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
+
   const toggle = (id) => {
     if (open === id) {
       setOpen();
@@ -194,6 +207,18 @@ const FixedAdvanceMilestoneView = () => {
       setOpen(id);
     }
   };
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: MilestoneDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+  }, []);
 
   const toggleChangeBidTypeConfirmationModal = () => {
     setChangeBidTypeConfirmationModal(!changeBidTypeConfirmationModal);
@@ -212,7 +237,7 @@ const FixedAdvanceMilestoneView = () => {
       .reduce((sum, worker) => sum + worker.duration * worker.hours, 0);
     const milestoneCost = allMilestones[milestoneIndex]?.workers
       ?.filter((worker) => worker.isChecked && worker.duration && worker.hours)
-      .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails.hourly_rate, 0);
+      .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
 
     return { milestoneDuration, milestoneHours, milestoneCost };
   };
@@ -242,7 +267,7 @@ const FixedAdvanceMilestoneView = () => {
       .map((milestone) => {
         const sumCost = milestone.workers
           .filter((worker) => worker.isChecked && worker.duration && worker.hours)
-          .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails.hourly_rate, 0);
+          .reduce((sum, worker) => sum + worker.duration * worker.hours * worker.otherDetails?.hourly_rate, 0);
 
         return sumCost;
       })
@@ -273,6 +298,7 @@ const FixedAdvanceMilestoneView = () => {
     });
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     navigate(`/create-bid/${params.projectId}/${params.bidType.toLowerCase()}/${params.bidId}/preview`);
   };
 
@@ -441,6 +467,7 @@ const FixedAdvanceMilestoneView = () => {
 
   useEffect(() => {
     filesRef.current = files;
+    dispatch(setFormDocuments(files));
   }, [files]);
 
   const handleUploadFile = async (file) => {
@@ -575,10 +602,12 @@ const FixedAdvanceMilestoneView = () => {
   const onGetBidDetailsSuccess = (res) => {
     if (res) {
       setBidData(res);
-      if (res?.project_start_date > 0) {
+      if (res?.project_start_date > 0 && !savedFormData?.estimatedStartDate) {
         setValue('estimatedStartDate', new Date(res?.project_start_date), { shouldValidate: true });
+      } else if (savedFormData?.estimatedStartDate) {
+        setValue('estimatedStartDate', new Date(savedFormData?.estimatedStartDate), { shouldValidate: true });
       }
-      if (res?.milestones?.length > 0) {
+      if (res?.milestones?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = res?.milestones?.map((milestone) => ({
           milestoneId: uuidv4(),
           name: milestone?.name,
@@ -610,7 +639,7 @@ const FixedAdvanceMilestoneView = () => {
 
         setValue('milestones', reqData, { shouldValidate: true });
         trigger('milestones');
-      } else if (res?.workers?.length > 0) {
+      } else if (res?.workers?.length > 0 && !savedFormData?.milestones?.length) {
         const reqData = [
           {
             milestoneId: uuidv4(),
@@ -629,8 +658,10 @@ const FixedAdvanceMilestoneView = () => {
         ];
 
         setValue('milestones', reqData, { shouldValidate: true });
+      } else {
+        setValue('milestones', savedFormData?.milestones, { shouldValidate: true });
       }
-      if (res?.documents?.length > 0) {
+      if (res?.documents?.length > 0 && !savedFormDocuments?.length) {
         const reqFiles = res?.documents?.map((file) => ({
           file,
           id: uuidv4(),
@@ -640,6 +671,8 @@ const FixedAdvanceMilestoneView = () => {
           isUploaded: true,
         }));
         setFiles(reqFiles);
+      } else if (savedFormDocuments?.length) {
+        setFiles(savedFormDocuments);
       }
       if (res?.workers?.length > 0) {
         setAllWorkers(res?.workers);
@@ -1297,7 +1330,7 @@ const FixedAdvanceMilestoneView = () => {
                     </div>
                   </UncontrolledTooltip>
                 </Label>
-                {files.length ? (
+                {files?.length ? (
                   <>
                     <div className="px-1 mt-50">{fileList()}</div>
                     <div {...getRootProps({ className: 'dropzone' })}>

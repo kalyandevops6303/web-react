@@ -12,6 +12,7 @@ import theme from '../../../configs/themeVariables';
 import { createProjectLoading } from '../../../redux/selectors/createProjectSelectors';
 import { createNewProject } from '../../../redux/actions/createProjectActions';
 import YouDidItModal from '../YouDidItModal';
+import { clearAllFormData } from '../../../redux/reducers/formData';
 
 const Preview = ({
   stepper,
@@ -159,6 +160,7 @@ const Preview = ({
   };
 
   const onSuccess = () => {
+    dispatch(clearAllFormData());
     toggleYouDidItModal();
     stepper.next();
   };

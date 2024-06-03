@@ -26,7 +26,7 @@ import {
   CardTitle,
 } from 'reactstrap';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useDropzone from '../../../lib/react-dropzone';
 import { DropzoneContainer, RequirementsFormContainer } from '../style';
@@ -51,7 +51,9 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
+import { downloadUploadedFile, filteredFormSchema, getFileSize, renderFilePreview } from '../../../utility/Utils';
+import { setFormData, setFormDocuments } from '../../../redux/reducers/formData';
+import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import TextEditor from '../TextEditor';
 
 const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
@@ -233,6 +235,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     setValue,
     clearErrors,
     trigger,
+    reset,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -259,8 +262,17 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const toolsFromAI = useSelector(toolsListAI);
   const currenciesData = useSelector(currencies);
   const currenciesIsLoading = useSelector(currenciesLoading);
+  const savedFormData = useSelector(formData);
+  const savedFormDocuments = useSelector(formDocuments);
 
   const dispatch = useDispatch();
+
+  const localFormData = useWatch({ control });
+
+  useEffect(() => {
+    const allData = { ...savedFormData, ...localFormData };
+    dispatch(setFormData(allData));
+  }, [localFormData]);
 
   useEffect(() => {
     clearErrors('expectedDuration');
@@ -457,6 +469,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
 
   useEffect(() => {
     filesRef.current = files;
+    dispatch(setFormDocuments(files));
   }, [files]);
 
   const handleUploadFile = async (file) => {
@@ -656,6 +669,21 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       setValue('currencyType', { label: currenciesData[0]?.name, value: currenciesData[0] }, { shouldValidate: true });
     }
   }, [currenciesData]);
+
+  useEffect(() => {
+    if (savedFormData) {
+      const requiredFields = filteredFormSchema({
+        savedData: savedFormData,
+        formSchemaFields: ProjectDetailsSchema.fields,
+      });
+      reset(requiredFields);
+      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+      trigger(keysWithValues);
+    }
+    if (savedFormDocuments) {
+      setFiles(savedFormDocuments);
+    }
+  }, []);
 
   return (
     <>
