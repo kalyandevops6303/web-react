@@ -9,6 +9,8 @@ const profileDetailsService = (data) => DataService.put(API.talentOnboarding.pro
 
 const resumeUploadService = (data) => DataService.get(`${API.talentOnboarding.profileResumeUpload}?filename=${data}`);
 
+const parsedResumeService = (data) => DataService.get(`${API.talentOnboarding.resumeParsedDetails}?file_key=${data}`);
+
 const checkpointCompleteService = () => DataService.post(API.talentOnboarding.checkpointComplete);
 
 const profileImageUploadService = (filename) =>
@@ -24,4 +26,5 @@ export {
   profileImageUploadService,
   profileImageUploadToAzureService,
   resumeUploadService,
+  parsedResumeService,
 };
