@@ -4,6 +4,7 @@ const initialState = {
   userDetails: null,
   resumeParsedDetails: null,
   userDetailsLoading: false,
+  resumeParsedDetailsLoading: false,
   accountDetailsLoading: false,
   profileDetailsLoading: false,
   checkpointCompleteLoading: false,
@@ -32,17 +33,17 @@ const talentOnboardingSlice = createSlice({
 
     resumeParsedDetailsRequest: (state) => ({
       ...state,
-      userDetailsLoading: true,
+      resumeParsedDetailsLoading: true,
       error: null,
     }),
     resumeParsedDetailsSuccess: (state, action) => ({
       ...state,
-      userDetailsLoading: false,
+      resumeParsedDetailsLoading: false,
       resumeParsedDetails: action.payload,
     }),
     resumeParsedDetailsFailure: (state, action) => ({
       ...state,
-      userDetailsLoading: false,
+      resumeParsedDetailsLoading: false,
       error: action.payload,
     }),
 

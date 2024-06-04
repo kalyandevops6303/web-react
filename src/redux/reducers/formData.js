@@ -4,6 +4,7 @@ const initialState = {
   formData: null,
   formDocuments: null,
   formImage: null,
+  parseResume: false,
   isFormImageRemoved: null,
 };
 
@@ -23,6 +24,10 @@ const formData = createSlice({
       ...state,
       formImage: action.payload,
     }),
+    setResumeParsed: (state,action) => ({
+      ...state,
+      parseResume: action.payload,
+    }),
     setIsFormImageRemoved: (state, action) => ({
       ...state,
       isFormImageRemoved: action.payload,
@@ -37,7 +42,7 @@ const formData = createSlice({
   },
 });
 
-export const { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved, clearAllFormData } =
+export const { setFormData, setFormDocuments, setFormImage, setResumeParsed, setIsFormImageRemoved, clearAllFormData } =
   formData.actions;
 
 export default formData.reducer;

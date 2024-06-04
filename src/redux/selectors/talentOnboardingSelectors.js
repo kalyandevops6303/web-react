@@ -11,6 +11,11 @@ export const userDetailsLoading = createSelector(
   (talentOnboarding) => talentOnboarding.userDetailsLoading,
 );
 
+export const resumeParsedDetailsLoading = createSelector(
+  talentOnboardingSelector,
+  (talentOnboarding) => talentOnboarding.resumeParsedDetailsLoading,
+);
+
 export const talentAccountDetailsLoading = createSelector(
   talentOnboardingSelector,
   (talentOnboarding) => talentOnboarding.accountDetailsLoading,

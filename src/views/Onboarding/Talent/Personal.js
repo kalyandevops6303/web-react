@@ -46,6 +46,7 @@ import {
 import {
   profileDetailsLoading,
   resumeParsedDetails,
+  resumeParsedDetailsLoading,
   // resumeParsedDetails,
   userDetails,
   userDetailsLoading,
@@ -71,8 +72,8 @@ import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 import TextEditor from '../../CreateProject/TextEditor';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
-import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
+import { formData, formDocuments, resumeParsed } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData, setFormDocuments, setResumeParsed } from '../../../redux/reducers/formData';
 
 const Personal = () => {
   const PersonalSchema = yup.object().shape({
@@ -159,6 +160,7 @@ const Personal = () => {
   });
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
+  const IsresumeParsed = useSelector(resumeParsed);
   const {
     control,
     handleSubmit,
@@ -183,6 +185,7 @@ const Personal = () => {
       state: savedFormData?.state || null,
       city: savedFormData?.city || null,
       resume: savedFormData?.resume || null,
+      parseResume: IsresumeParsed || false,
     },
   });
 
@@ -190,7 +193,7 @@ const Personal = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const [parseResume, setParseResume] = useState(false);
+  const [parseResume, setParseResume] = useState(IsresumeParsed || false);
   const [talentRolesOptions, setTalentRolesOptions] = useState(null);
   const [languagesOptions, setLanguagesOptions] = useState(null);
   const [countriesOptions, setCountriesOptions] = useState(null);
@@ -205,6 +208,7 @@ const Personal = () => {
   const citiesIsLoading = useSelector(citiesLoading);
   const profileDetailsIsLoading = useSelector(profileDetailsLoading);
   const userDetailsIsLoading = useSelector(userDetailsLoading);
+  const resumeParsedLoading = useSelector(resumeParsedDetailsLoading);
   const userDetailsData = useSelector(userDetails);
   const parsedResumeData = useSelector(resumeParsedDetails);
   const languagesData = useSelector(languages);
@@ -213,26 +217,36 @@ const Personal = () => {
 
   const localFormData = useWatch({ control });
   useEffect(() => {
-    const allData = { ...savedFormData, ...localFormData };
-    dispatch(setFormData(allData));
-  }, [localFormData]);
+    if (parseResume === false && resumeParsedLoading === false) {
+      const allData = { ...savedFormData, ...localFormData };
+      dispatch(setFormData(allData));
+    }
+  }, [localFormData, parseResume,resumeParsedLoading]);
 
   useEffect(() => {
-    if (savedFormData) {
-      const requiredFields = filteredFormSchema({
-        savedData: savedFormData,
-        formSchemaFields: PersonalSchema.fields,
-      });
-      reset(requiredFields);
-      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
-      trigger(keysWithValues);
+    dispatch(setResumeParsed(parseResume));
+  }, [parseResume]);
+
+  useEffect(() => {
+    if (parseResume === false) {
+      if (savedFormData) {
+        const requiredFields = filteredFormSchema({
+          savedData: savedFormData,
+          formSchemaFields: PersonalSchema.fields,
+        });
+        reset(requiredFields);
+        const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+        trigger(keysWithValues);
+      }
     }
-  }, []);
+  }, [parseResume]);
 
   const handleRemoveFile = (file) => {
     const uploadedFiles = files;
     const filtered = uploadedFiles.filter((i) => i.id !== file.id);
     setFiles([...filtered]);
+    setParseResume(false);
+    dispatch(setResumeParsed(false));
     dispatch(setFormDocuments(null));
   };
 
@@ -275,9 +289,12 @@ const Personal = () => {
       if (res?.professional_introduction && res?.professional_introduction.length > 0) {
         setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
       }
-      if ('name' in (res?.role && res?.role)) {
-        setValue('role', { label: res?.role?.name, value: res?.role?._id }, { shouldValidate: true });
+      if(res?.address && res?.address?.length > 0){
+        setValue('streetAddress', res?.address, { shouldValidate: true });
       }
+      // if ('name' in (res?.role && res?.role)) {
+      //   setValue('role', { label: res?.role?.name, value: res?.role?._id }, { shouldValidate: true });
+      // }
       // if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
       //   setFiles([
       //     {
@@ -292,55 +309,55 @@ const Personal = () => {
       //     },
       //   ]);
       // }
-      if (
-        res?.current_residency &&
-        ('streetAddress' in res?.current_residency ||
-          'houseNumber' in res?.current_residency ||
-          'zipCode' in res?.current_residency ||
-          'country' in res?.current_residency ||
-          'state' in res?.current_residency ||
-          'city' in res?.current_residency)
-      ) {
-        if (res?.current_residency?.street_address.length > 0) {
-          setValue('streetAddress', res?.current_residency?.street_address, { shouldValidate: true });
-        }
-        if (res?.talent_info?.current_residency?.house_number.length > 0) {
-          setValue('houseNumber', res?.talent_info?.current_residency?.house_number, { shouldValidate: true });
-        }
-        if (res?.talent_info?.current_residency?.zip_code > 0) {
-          setValue('zipCode', res?.talent_info?.current_residency?.zip_code, { shouldValidate: true });
-        }
-        if ('country' in res?.talent_info?.current_residency) {
-          setValue(
-            'country',
-            {
-              label: res?.talent_info?.current_residency.country.name,
-              value: res?.talent_info?.current_residency.country._id,
-            },
-            { shouldValidate: true },
-          );
-        }
-        if ('state' in res?.talent_info?.current_residency) {
-          setValue(
-            'state',
-            {
-              label: res?.talent_info?.current_residency.state.name,
-              value: res?.talent_info?.current_residency.state._id,
-            },
-            { shouldValidate: true },
-          );
-        }
-        if ('city' in res?.talent_info?.current_residency) {
-          setValue(
-            'city',
-            {
-              label: res?.talent_info?.current_residency.city.name,
-              value: res?.talent_info?.current_residency.city._id,
-            },
-            { shouldValidate: true },
-          );
-        }
-      }
+      // if (
+      //   res?.current_residency &&
+      //   ('streetAddress' in res?.current_residency ||
+      //     'houseNumber' in res?.current_residency ||
+      //     'zipCode' in res?.current_residency ||
+      //     'country' in res?.current_residency ||
+      //     'state' in res?.current_residency ||
+      //     'city' in res?.current_residency)
+      // ) {
+      //   if (res?.current_residency?.street_address.length > 0) {
+      //     setValue('streetAddress', res?.current_residency?.street_address, { shouldValidate: true });
+      //   }
+      //   if (res?.talent_info?.current_residency?.house_number.length > 0) {
+      //     setValue('houseNumber', res?.talent_info?.current_residency?.house_number, { shouldValidate: true });
+      //   }
+      //   if (res?.talent_info?.current_residency?.zip_code > 0) {
+      //     setValue('zipCode', res?.talent_info?.current_residency?.zip_code, { shouldValidate: true });
+      //   }
+      //   if ('country' in res?.talent_info?.current_residency) {
+      //     setValue(
+      //       'country',
+      //       {
+      //         label: res?.talent_info?.current_residency.country.name,
+      //         value: res?.talent_info?.current_residency.country._id,
+      //       },
+      //       { shouldValidate: true },
+      //     );
+      //   }
+      //   if ('state' in res?.talent_info?.current_residency) {
+      //     setValue(
+      //       'state',
+      //       {
+      //         label: res?.talent_info?.current_residency.state.name,
+      //         value: res?.talent_info?.current_residency.state._id,
+      //       },
+      //       { shouldValidate: true },
+      //     );
+      //   }
+      //   if ('city' in res?.talent_info?.current_residency) {
+      //     setValue(
+      //       'city',
+      //       {
+      //         label: res?.talent_info?.current_residency.city.name,
+      //         value: res?.talent_info?.current_residency.city._id,
+      //       },
+      //       { shouldValidate: true },
+      //     );
+      //   }
+      // }      
     }
   };
 
@@ -353,8 +370,10 @@ const Personal = () => {
       uploadData: response?.data?.data,
       isUploaded: false,
     };
+    dispatch(setFormDocuments([fileWithUrl]));
     setParseResume(true);
-    
+    dispatch(setResumeParsed(true));
+
     setFiles([fileWithUrl]);
 
     handleUploadFile(fileWithUrl);
@@ -364,6 +383,8 @@ const Personal = () => {
     if (e.target.files) {
       if (isFileValid(e.target.files[0])) {
         await fetchUploadUrl(e.target.files[0]);
+        setParseResume(true);
+        dispatch(setResumeParsed(true));
       }
     } else {
       e.target.value = '';
@@ -715,19 +736,22 @@ const Personal = () => {
         );
       }
       if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
-        
-        setFiles([
-          {
-            file: {
-              name:savedFormDocuments != null ?  savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
-              size: savedFormDocuments != null ?  savedFormDocuments[0]?.file?.size  : res?.talent_info?.resume?.size,
-            },
-            uploadData: {
-              file_key: savedFormDocuments != null ? savedFormDocuments[0]?.uploadData?.file_key : res?.talent_info?.resume?.file_key,
-            },
-            isUploaded: true,
+        const fileUrl = {
+          file: {
+            name: savedFormDocuments != null ? savedFormDocuments[0]?.file?.name : res?.talent_info?.resume?.file_name,
+            size: savedFormDocuments != null ? savedFormDocuments[0]?.file?.size : res?.talent_info?.resume?.size,
           },
-        ]);
+          uploadData: {
+            file_key:
+              savedFormDocuments != null
+                ? savedFormDocuments[0]?.uploadData?.file_key
+                : res?.talent_info?.resume?.file_key,
+          },
+          isUploaded: true,
+        };
+
+        setFiles([fileUrl]);
+        dispatch(setFormDocuments([fileUrl]));
       }
       if (
         'streetAddress' in res?.talent_info?.current_residency ||
@@ -831,23 +855,21 @@ const Personal = () => {
 
   useEffect(() => {
     if (parseResume) {
-      if(parsedResumeData != null){
-         setResumeParsedDetails(parsedResumeData);
-         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
-      }else{
+      if (parsedResumeData != null) {
+        setResumeParsedDetails(parsedResumeData);
+        dispatch(resumeParsedDetailsSuccess(parsedResumeData));
+      } else {
         dispatch(getResumeParsedDetails(setResumeParsedDetails, 'resumes/664ee4e20e2bd05f207fb34a/Anil Paul.pdf'));
-     
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
-
     dispatch(getLanguages());
-  }, [parseResume]);
+  }, [parseResume,parsedResumeData]);
 
   return (
     <ProfileFormContainer>
-      {userDetailsIsLoading || languagesIsLoading ? (
+      {( resumeParsed ? resumeParsedLoading : userDetailsIsLoading) || languagesIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
@@ -1274,6 +1296,7 @@ const Personal = () => {
                                 checked={parseResume}
                                 onClick={() => {
                                   setParseResume(!parseResume);
+                                  dispatch(setResumeParsed(!parseResume));
                                 }}
                               />
                             </FormGroup>
@@ -1298,6 +1321,7 @@ const Personal = () => {
                               render={({ field }) => (
                                 <Input
                                   {...field}
+                                  ref={filesRef}
                                   id="resume"
                                   type="file"
                                   max={1}
