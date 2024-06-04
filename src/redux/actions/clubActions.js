@@ -23,6 +23,7 @@ import {
 } from '../reducers/clubs';
 import { updateTeamFailure, updateTeamRequest, updateTeamSuccess } from '../reducers/team';
 import { scanAndProcessFiles } from '../../utility/Utils';
+import { getTeams } from './teamsActions';
 
 const getClubs =
   ({ filterData, metaData, onSuccess, onError }) =>
@@ -95,8 +96,10 @@ const createClub =
           isPrivate: false,
         });
       } else {
-        handleCreateClub();
+       await handleCreateClub();
+       await dispatch(getTeams({ onSuccess: () => {} }));
       }
+
     } catch (error) {
       errorHandler(error);
     }
@@ -127,7 +130,8 @@ const updateClub = (data, onSuccess) => async (dispatch) => {
         isPrivate: false,
       });
     } else {
-      handleUpdateClub();
+     await handleUpdateClub();
+     await dispatch(getTeams({ onSuccess: () => {} }));
     }
   } catch (error) {
     errorHandler(error, updateTeamFailure);

@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 const getItemFromSession = (key) => {
   const data = typeof window !== 'undefined' ? sessionStorage.getItem(key) : '';
-
   try {
     return JSON.parse(data);
   } catch (err) {

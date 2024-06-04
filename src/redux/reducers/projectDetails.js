@@ -556,6 +556,20 @@ const projectDetails = createSlice({
       error: action.payload,
       activeStage: null,
     }),
+    downloadCertificateRequest: (state) => ({
+      ...state,
+      downloadCertificateLoading: true,
+      error: null,
+    }),
+    downloadCertificateSuccess: (state) => ({
+      ...state,
+      downloadCertificateLoading: false,
+    }),
+    downloadCertificateFailure: (state, action) => ({
+      ...state,
+      downloadCertificateLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -654,6 +668,9 @@ export const {
   getAppConfigRequest,
   getAppConfigSuccess,
   getAppConfigFailure,
+  downloadCertificateRequest,
+  downloadCertificateSuccess,
+  downloadCertificateFailure,
 } = projectDetails.actions;
 
 export default projectDetails.reducer;

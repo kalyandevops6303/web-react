@@ -17,7 +17,7 @@ import AcceptMilestoneModal from '../../modals/AcceptMilestone';
 import FeedbackForAcceptModal from '../../modals/FeedbackForAcceptModal';
 import { accpetMilestone, getMilestoneDisputes, markComplete } from '../../../redux/actions/milestoneActions';
 
-const MilestoneOverview = ({ selectedMilestone }) => {
+const MilestoneOverview = ({ isPaymentDone, selectedMilestone }) => {
   const userData = useSelector(selectAuthUserData);
   const projectDetailsData = useSelector(projectDetails);
   const dispatch = useDispatch();
@@ -88,12 +88,12 @@ const MilestoneOverview = ({ selectedMilestone }) => {
               </Button>
               {selectedMilestone?.status === 'IN_REVIEW' && userData?.user_type === userTypes.client && (
                 <Button onClick={handleAccept} className="d-contents" color="primary">
-                  Accept
+                  Accept & Pay
                 </Button>
               )}
               {selectedMilestone?.status === 'ON_GOING' && userData?.user_type !== userTypes.client && (
                 <Button
-                  disabled={submissionHistory?.data?.length === 0}
+                  disabled={submissionHistory?.data?.length === 0 || !isPaymentDone}
                   onClick={() => setMarkCompleteModal(true)}
                   className="d-contents"
                   color="primary"
@@ -159,9 +159,11 @@ const MilestoneOverview = ({ selectedMilestone }) => {
 
 MilestoneOverview.propTypes = {
   selectedMilestone: Proptypes.object,
+  isPaymentDone: Proptypes.bool,
 };
 
 MilestoneOverview.defaultProps = {
   selectedMilestone: {},
+  isPaymentDone: false,
 };
 export default MilestoneOverview;

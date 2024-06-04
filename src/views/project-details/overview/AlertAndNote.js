@@ -127,7 +127,8 @@ const AlertAndNote = ({ documentExtention, paymentExtention }) => {
       </p>
     </div>
   );
-  if (document?.bid_validity === null) {
+  const currentDateTime = DateTime.now().toMillis();
+  if (document?.bid_validity === null || (paymentValidity > 0 && currentDateTime > paymentValidity)) {
     return '';
   }
 
