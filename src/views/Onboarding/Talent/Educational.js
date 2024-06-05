@@ -150,17 +150,22 @@ const Educational = () => {
   }, [localFormData, parseResume, resumeParsedLoading]);
 
   useEffect(() => {
-    if (savedFormData) {
-      const requiredFields = filteredFormSchema({
-        savedData: savedFormData,
-        formSchemaFields: EducationalSchema.fields,
-      });
-      reset(requiredFields);
-      const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
-      trigger(keysWithValues);
-    }
-  }, []);
+    dispatch(setResumeParsed(parseResume));
+  }, [parseResume]);
 
+  useEffect(() => {
+    if (parseResume === false) {
+      if (savedFormData) {
+        const requiredFields = filteredFormSchema({
+          savedData: savedFormData,
+          formSchemaFields: EducationalSchema.fields,
+        });
+        reset(requiredFields);
+        const keysWithValues = Object.keys(requiredFields).filter((key) => requiredFields[key]);
+        trigger(keysWithValues);
+      }
+    }
+  }, [parseResume]);
   const [educationsOptions, setEducationsOptions] = useState(null);
   const [toolsOptions, setToolsOptions] = useState(null);
   const [skillsOptions, setSkillsOptions] = useState(null);
@@ -415,30 +420,24 @@ const Educational = () => {
       if (res?.tools && res?.tools.length > 0) {
         setValue(
           'tools',
-          savedFormData?.tools
-            ? savedFormData?.tools
-            : res?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          res?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
       if (res?.certificates && res?.certificates.length > 0) {
         setValue(
           'certificates',
-          savedFormData?.certificates
-            ? savedFormData?.certificates
-            : res?.certificates.map((certificate) => ({
-                label: certificate.name,
-                value: certificate._id,
-              })),
+          res?.certificates.map((certificate) => ({
+            label: certificate.name,
+            value: certificate._id,
+          })),
           { shouldValidate: true },
         );
       }
       if (res?.skills && res?.skills.length > 0) {
         setValue(
           'skills',
-          savedFormData?.skills
-            ? savedFormData?.skills
-            : res?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          res?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }
@@ -483,7 +482,7 @@ const Educational = () => {
 
   return (
     <ProfileFormContainer>
-      {userDetailsIsLoading ? (
+      {(resumeParsed ? resumeParsedLoading : userDetailsIsLoading) ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
@@ -594,7 +593,7 @@ const Educational = () => {
                           )}
                       </Col>
                       <Col sm="12" md="12" lg="2">
-                        {getValues('educationDetails').length > 1 && (
+                        {getValues('educationDetails') && getValues('educationDetails').length > 1 && (
                           <Button
                             type="button"
                             color="flat-danger"

@@ -315,7 +315,7 @@ const Availability = () => {
           talentAvailabilityDays = [...talentAvailabilityDays, 'weekdays'];
           setValue(
             'weekdays',
-            savedFormData?.weekdays.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days,
+            savedFormData?.weekdays?.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days,
             { shouldValidate: true },
           );
        
@@ -328,7 +328,7 @@ const Availability = () => {
           );
           setValue(
             'weekdayEndTime',
-            savedFormData?.weekdayEndTime.length > 0
+            savedFormData?.weekdayEndTime?.length > 0
               ? savedFormData?.weekdayEndTime
               : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
             { shouldValidate: true },
@@ -338,19 +338,19 @@ const Availability = () => {
           talentAvailabilityDays = [...talentAvailabilityDays, 'weekends'];
           setValue(
             'weekends',
-            savedFormData?.weekends.length > 0 ? savedFormData?.weekends : res?.availability?.weekends_avl?.days,
+            savedFormData?.weekends?.length > 0 ? savedFormData?.weekends : res?.availability?.weekends_avl?.days,
             { shouldValidate: true },
           );
           setValue(
             'weekendStartTime',
-            savedFormData?.weekendStartTime.length > 0
+            savedFormData?.weekendStartTime?.length > 0
               ? savedFormData?.weekendStartTime
               : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekendEndTime',
-            savedFormData?.weekendEndTime.length > 0
+            savedFormData?.weekendEndTime?.length > 0
               ? savedFormData?.weekendEndTime
               : timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
             { shouldValidate: true },
@@ -358,7 +358,7 @@ const Availability = () => {
         }
         setValue(
           'availabilityDays',
-          savedFormData?.availabilityDays.length > 0 ? savedFormData?.availabilityDays : talentAvailabilityDays,
+          savedFormData?.availabilityDays?.length > 0 ? savedFormData?.availabilityDays : talentAvailabilityDays,
           { shouldValidate: true },
         );
       }
@@ -459,7 +459,7 @@ const Availability = () => {
                           type="checkbox"
                           {...field}
                           id="weekdays"
-                          checked={field.value.includes('weekdays')}
+                          checked={field && field.value.includes('weekdays')}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
                             const value = 'weekdays';
