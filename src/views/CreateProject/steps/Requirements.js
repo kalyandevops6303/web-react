@@ -53,7 +53,7 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
+import { downloadUploadedFile, getFileSize, removeEmptyKeys, renderFilePreview } from '../../../utility/Utils';
 import { saveDraftProject } from '../../../redux/actions/createProjectActions';
 import {
   draftProjectDetailsLoading,
@@ -414,55 +414,6 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSav
     } catch (error) {
       return { options: [] };
     }
-  };
-
-  const isEmpty = (value) => {
-    if (value === undefined || value === null) {
-      return true;
-    }
-
-    if (typeof value === 'string' || Array.isArray(value)) {
-      return value.length === 0;
-    }
-
-    if (typeof value === 'object') {
-      return Object.keys(value).length === 0;
-    }
-
-    return false;
-  };
-
-  const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
-
-  const removeEmptyKeys = (obj) => {
-    if (typeof obj !== 'object' || obj === null) {
-      return obj;
-    }
-
-    if (Array.isArray(obj)) {
-      const filteredArray = obj.filter((item) => typeof item !== 'object' || !hasEmptyKeys(item));
-
-      return filteredArray.map((item) => removeEmptyKeys(item));
-    }
-
-    const filteredObj = {};
-    Object.keys(obj).forEach((key) => {
-      const value = obj[key];
-      if (typeof value === 'object') {
-        const cleanedValue = removeEmptyKeys(value);
-        if (!isEmpty(cleanedValue)) {
-          filteredObj[key] = cleanedValue;
-        }
-      } else if (!isEmpty(value)) {
-        filteredObj[key] = value;
-      }
-    });
-
-    if (isEmpty(filteredObj)) {
-      return undefined;
-    }
-
-    return filteredObj;
   };
 
   const onSaveDraftSuccess = () => setDraftSavedModal(true);

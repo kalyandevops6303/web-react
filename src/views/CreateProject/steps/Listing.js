@@ -16,6 +16,7 @@ import theme from '../../../configs/themeVariables';
 import { UploadIconContainer } from '../../Onboarding/style';
 import { saveDraftProject } from '../../../redux/actions/createProjectActions';
 import { saveDraftProjectId, saveDraftProjectLoading } from '../../../redux/selectors/createProjectSelectors';
+import { removeEmptyKeys } from '../../../utility/Utils';
 
 const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetails, files, draftListingDetails }) => {
   const ListingDetailsSchema = yup.object().shape({
@@ -62,55 +63,6 @@ const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetail
 
   const draftProjectId = useSelector(saveDraftProjectId);
   const saveDraftProjectIsLoading = useSelector(saveDraftProjectLoading);
-
-  const isEmpty = (value) => {
-    if (value === undefined || value === null) {
-      return true;
-    }
-
-    if (typeof value === 'string' || Array.isArray(value)) {
-      return value.length === 0;
-    }
-
-    if (typeof value === 'object') {
-      return Object.keys(value).length === 0;
-    }
-
-    return false;
-  };
-
-  const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
-
-  const removeEmptyKeys = (obj) => {
-    if (typeof obj !== 'object' || obj === null) {
-      return obj;
-    }
-
-    if (Array.isArray(obj)) {
-      const filteredArray = obj.filter((item) => typeof item !== 'object' || !hasEmptyKeys(item));
-
-      return filteredArray.map((item) => removeEmptyKeys(item));
-    }
-
-    const filteredObj = {};
-    Object.keys(obj).forEach((key) => {
-      const value = obj[key];
-      if (typeof value === 'object') {
-        const cleanedValue = removeEmptyKeys(value);
-        if (!isEmpty(cleanedValue)) {
-          filteredObj[key] = cleanedValue;
-        }
-      } else if (!isEmpty(value)) {
-        filteredObj[key] = value;
-      }
-    });
-
-    if (isEmpty(filteredObj)) {
-      return undefined;
-    }
-
-    return filteredObj;
-  };
 
   const onSaveDraftSuccess = () => setDraftSavedModal(true);
 
