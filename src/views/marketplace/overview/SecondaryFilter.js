@@ -44,6 +44,7 @@ import ClientCard from '../../cards/ClientCard';
 import TalentCard from '../../cards/TalentCard';
 import { ResponsiveGrid } from '../../cards/style';
 import SearchResultsCount from '../../../@core/components/SearchResultsCount';
+import MarketPlaceDraftProjectCard from '../../cards/MarketplaceDraftProjectCard';
 
 const SecondaryFilters = ({ primaryFilter, userType }) => {
   const location = useLocation();
@@ -64,8 +65,19 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
   const selectCardData = useSelector((state) => state?.marketPlace?.cardData);
 
   const metaData = { page: 1, page_size: 10 };
+
+  const getStatusFromLocationState = () => {
+    if (location?.state?.isOpenListing) {
+      return [{ label: 'Open', value: 'OPEN' }];
+    }
+    if (location?.state?.isDraftProjects) {
+      return [{ label: 'Drafts', value: 'DRAFT' }];
+    }
+    return [];
+  };
+
   const [secondFilterState, setSecondFilterState] = useState({
-    statuses: location?.state?.isOpenListing ? [{ label: 'Open', value: 'OPEN' }] : [],
+    statuses: getStatusFromLocationState(),
     bid_statuses: [],
     project_types: [],
     skills: [],
@@ -120,7 +132,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
   }, [currentPreview]);
 
-  const getCardComp = () => {
+  const getCardComp = (projectStatus) => {
     if (primaryFilter === 'talents') {
       return TalentCard;
     }
@@ -129,6 +141,9 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
     }
     if (primaryFilter === 'teams') {
       return TeamCard;
+    }
+    if (primaryFilter === 'my_listings' && projectStatus === 'DRAFT') {
+      return MarketPlaceDraftProjectCard;
     }
     return ProjectCard;
   };
@@ -402,6 +417,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
         ...statusesOptions,
         { label: 'Expired', value: 'LISTING_EXPIRED' },
         { label: 'To Be Listed', value: 'TO_BE_LISTED' },
+        { label: 'Drafts', value: 'DRAFT' },
       ];
     } else {
       return statusesOptions;
@@ -703,7 +719,7 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
             }
           >
             {selectMarketPlaceData?.map((item) => {
-              const CardComponent = getCardComp();
+              const CardComponent = getCardComp(item?.project?.status);
 
               return (
                 <CardComponent

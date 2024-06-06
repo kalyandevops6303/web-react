@@ -55,6 +55,7 @@ const bidStatusesOptions = [
   { label: 'Reviewed', value: 'REVIEWED' },
   { label: 'Accepted', value: 'ACCEPTED' },
   { label: 'Closed', value: 'REJECTED' },
+  { label: 'Drafts', value: 'DRAFTS' },
 ];
 
 const statusesOptions = [
