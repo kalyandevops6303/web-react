@@ -35,7 +35,7 @@ const formData = createSlice({
     clearAllFormData: (state) => ({
       ...state,
       formData: null,
-      formDocuments: null,
+      // formDocuments: null,
       formImage: null,
       isFormImageRemoved: null,
     }),

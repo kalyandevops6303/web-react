@@ -221,7 +221,7 @@ const Personal = () => {
       const allData = { ...savedFormData, ...localFormData };
       dispatch(setFormData(allData));
     }
-  }, [localFormData, parseResume,resumeParsedLoading]);
+  }, [localFormData, parseResume, resumeParsedLoading]);
 
   useEffect(() => {
     dispatch(setResumeParsed(parseResume));
@@ -239,6 +239,7 @@ const Personal = () => {
         trigger(keysWithValues);
       }
     }
+    setFiles(savedFormDocuments);
   }, [parseResume]);
 
   const handleRemoveFile = (file) => {
@@ -289,8 +290,22 @@ const Personal = () => {
       if (res?.professional_introduction && res?.professional_introduction.length > 0) {
         setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
       }
-      if(res?.address && res?.address?.length > 0){
+      if (res?.address && res?.address?.length > 0) {
         setValue('streetAddress', res?.address, { shouldValidate: true });
+      }
+      if (savedFormDocuments) {
+        setFiles([
+          {
+            file: {
+              name: savedFormDocuments[0]?.file?.name,
+              size: savedFormDocuments[0]?.file?.size,
+            },
+            uploadData: {
+              file_key: savedFormDocuments[0]?.uploadData?.file_key,
+            },
+            isUploaded: true,
+          },
+        ]);
       }
       // if ('name' in (res?.role && res?.role)) {
       //   setValue('role', { label: res?.role?.name, value: res?.role?._id }, { shouldValidate: true });
@@ -357,13 +372,14 @@ const Personal = () => {
       //       { shouldValidate: true },
       //     );
       //   }
-      // }      
+      // }
     }
   };
 
   const fetchUploadUrl = async (file) => {
     const response = await resumeUploadService(file.name);
-    dispatch(getResumeParsedDetails(setResumeParsedDetails, 'resumes/664ee4e20e2bd05f207fb34a/Anil Paul.pdf'));
+    // dispatch(getResumeParsedDetails(setResumeParsedDetails, 'resumes/664ee4e20e2bd05f207fb34a/Anil Paul.pdf'));
+    dispatch(getResumeParsedDetails(setResumeParsedDetails, response?.data?.data?.file_key));
     const fileWithUrl = {
       id: uuidv4(),
       file,
@@ -382,6 +398,7 @@ const Personal = () => {
   const handleFileChange = async (e) => {
     if (e.target.files) {
       if (isFileValid(e.target.files[0])) {
+        dispatch(clearAllFormData());
         await fetchUploadUrl(e.target.files[0]);
         setParseResume(true);
         dispatch(setResumeParsed(true));
@@ -545,6 +562,7 @@ const Personal = () => {
 
   const onSkipClick = () => {
     dispatch(clearAllFormData());
+    dispatch(setFormDocuments(files));
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -554,6 +572,7 @@ const Personal = () => {
 
   const onSuccess = () => {
     dispatch(clearAllFormData());
+    dispatch(setFormDocuments(files));
     if (location.pathname.includes('profile-edit')) {
       navigate(`/${userProfileEdit.talent}/educational-details`);
     } else {
@@ -858,18 +877,45 @@ const Personal = () => {
       if (parsedResumeData != null) {
         setResumeParsedDetails(parsedResumeData);
         dispatch(resumeParsedDetailsSuccess(parsedResumeData));
+        if (savedFormDocuments) {
+          setFiles([
+            {
+              file: {
+                name: savedFormDocuments[0]?.file?.name,
+                size: savedFormDocuments[0]?.file?.size,
+              },
+              uploadData: {
+                file_key: savedFormDocuments[0]?.uploadData?.file_key,
+              },
+              isUploaded: true,
+            },
+          ]);
+        }
       } else {
-        dispatch(getResumeParsedDetails(setResumeParsedDetails, 'resumes/664ee4e20e2bd05f207fb34a/Anil Paul.pdf'));
+        // dispatch(getResumeParsedDetails(setResumeParsedDetails, 'resumes/664ee4e20e2bd05f207fb34a/Anil Paul.pdf'));
+        dispatch(getResumeParsedDetails(setResumeParsedDetails, savedFormDocuments[0]?.uploadData?.file_key));
+        setFiles([
+          {
+            file: {
+              name: savedFormDocuments[0]?.file?.name,
+              size: savedFormDocuments[0]?.file?.size,
+            },
+            uploadData: {
+              file_key: savedFormDocuments[0]?.uploadData?.file_key,
+            },
+            isUploaded: true,
+          },
+        ]);
       }
     } else {
       dispatch(getUserDetails(onGetUserDetailsSuccess));
     }
     dispatch(getLanguages());
-  }, [parseResume,parsedResumeData]);
+  }, [parseResume, parsedResumeData]);
 
   return (
     <ProfileFormContainer>
-      {( resumeParsed ? resumeParsedLoading : userDetailsIsLoading) || languagesIsLoading ? (
+      {(resumeParsed ? resumeParsedLoading : userDetailsIsLoading) || languagesIsLoading ? (
         <div className="w-75">
           <ComponentSpinner className="mt-5" />
         </div>
@@ -1285,11 +1331,11 @@ const Personal = () => {
                           <span style={{ color: '#004280' }}>
                             <span className="fw-bold">Auto Fill</span>
 
-                            {files.length === 0 && (
+                            {files && files.length === 0 && (
                               <span> - Upload your resume to auto fill your personal details</span>
                             )}
                           </span>
-                          {files?.length > 0 && (
+                          {files && files?.length > 0 && (
                             <FormGroup switch>
                               <Input
                                 type="switch"
@@ -1297,6 +1343,7 @@ const Personal = () => {
                                 onClick={() => {
                                   setParseResume(!parseResume);
                                   dispatch(setResumeParsed(!parseResume));
+                                  dispatch(setFormDocuments(files));
                                 }}
                               />
                             </FormGroup>
@@ -1337,7 +1384,7 @@ const Personal = () => {
                         )}
                       </Col>
                     </div>
-                    <Row>{files.length > 0 && <div className="px-1">{fileList()}</div>}</Row>
+                    <Row>{files && files.length > 0 && <div className="px-1">{fileList()}</div>}</Row>
                   </div>
                 </CardBody>
               </Card>
