@@ -1,27 +1,24 @@
 import React from 'react';
 import { CardText, CardTitle, Spinner } from 'reactstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import theme from '../../../configs/themeVariables';
 import downloadIcon from '../../../assets/images/Mask.svg';
 import { CertificateInfo } from '../style';
-import { downloadCertificate } from '../../../redux/actions/projectDetailsAction';
 import { projectDetails } from '../../../redux/selectors/projectDetailsSelectors';
 import { downloadFile } from '../../../utility/Utils';
 
-const DownloadCertificate = () => {
-  const dispatch = useDispatch();
+const DownloadCertificate = ({ downloadUrl }) => {
   const projectDetailsData = useSelector(projectDetails);
   const isDownloading = useSelector((state) => state.projectDetails.downloadCertificateLoading);
 
-  const onSuccess = (data) => {
+  const handleDownloadCertificate = () => {
     downloadFile({
-      data: { download_url: data },
+      data: { download_url: downloadUrl },
       file_name: `Trumio-project-${projectDetailsData?._id}-certificate.pdf`,
     });
   };
-  const handleDownloadCertificate = () => {
-    dispatch(downloadCertificate({ project_id: projectDetailsData?._id, onSuccess }));
-  };
+
   return (
     <CertificateInfo>
       <CardTitle className="title mb-75">Congratulation!</CardTitle>
@@ -45,6 +42,14 @@ const DownloadCertificate = () => {
       </div>
     </CertificateInfo>
   );
+};
+
+DownloadCertificate.defaultProps = {
+  downloadUrl: '',
+};
+
+DownloadCertificate.propTypes = {
+  downloadUrl: PropTypes.string,
 };
 
 export default DownloadCertificate;
