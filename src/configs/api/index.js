@@ -237,6 +237,7 @@ const API = {
     milestoneFileUpload: `${apiCreateProjectEndpoint}/api/v1/bid/file`,
     submitBid: `${apiCreateProjectEndpoint}/api/v1/bid/submit`,
     changeBidType: `${apiCreateProjectEndpoint}/api/v1/bid-type`,
+    deleteDraftBid: `${apiCreateProjectEndpoint}/api/v1/bid/remove`,
   },
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,

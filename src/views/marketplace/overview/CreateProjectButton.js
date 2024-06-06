@@ -93,15 +93,25 @@ const CreateProjectButton = () => {
           </Button>
         </DashboardHeaderWrapper>
       )}
-      {/* {userDetailsData?.user_type !== userTypes.client && location?.pathname?.includes('my_bids') && (
+      {userDetailsData?.user_type !== userTypes.client && location?.pathname?.includes('my_bids') && (
         <DashboardHeaderWrapper>
           {location?.pathname?.includes('my_bids') && (
-            <Button color="primary" outline>
+            <Button
+              color="primary"
+              outline
+              onClick={() =>
+                navigate('/marketplace/my_bids', {
+                  state: {
+                    isDraftBids: true,
+                  },
+                })
+              }
+            >
               View Draft
             </Button>
           )}
         </DashboardHeaderWrapper>
-      )} */}
+      )}
     </div>
   );
 };

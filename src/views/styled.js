@@ -61,9 +61,9 @@ const CustomBadge = styled.span`
   .REVIEWED,
   .IN_PROGRESS,
   .DRAFT {
-    background: ${theme.orangeColor}1f;
-    color: ${theme.orangeColor};
-    border: ${(props) => (props.bordered ? `1px solid ${theme.orangeColor}` : 'none')};
+    background: ${theme.draftStatusBadgeBg};
+    color: ${theme.draftStatusBadgeColor};
+    border: ${(props) => (props.bordered ? `1px solid ${theme.draftStatusBadgeColor}` : 'none')};
   }
   .IN_REVIEW {
     background: ${theme.orange}1f;

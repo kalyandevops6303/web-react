@@ -31,8 +31,8 @@ import { userTypes } from '../../utility/constants/Constant';
 import { getCheckBid } from '../../redux/actions/createBidActions';
 import { checkBidLoading } from '../../redux/selectors/createBidSelectors';
 import { selectSavedUserData, selectUserData } from '../../redux/selectors/authSelectors';
-import ShowToastMessage from '../../@core/components/toast';
-import { ERROR } from '../../utility/constants/ToastTypes';
+// import ShowToastMessage from '../../@core/components/toast';
+// import { ERROR } from '../../utility/constants/ToastTypes';
 import { downloadUrlLoading, profilePercentage } from '../../redux/selectors/dashboardSelectors';
 import { downloadFile, getFileSize, renderFilePreview } from '../../utility/Utils';
 import { getDownloadUrl } from '../../redux/actions/dashboardActions';
@@ -93,6 +93,7 @@ const ProjectModal = ({
   toggleCompleteProfileModal,
   setSwitchProfileModal,
   setRelistConfirmationModal,
+  setSavedDraftsAvailableModal,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -114,44 +115,54 @@ const ProjectModal = ({
     }
   }, []);
 
-  const onNoBidFound = () => {
-    toggleModal();
-    setCreateBidModal(true);
-  };
+  // const onNoBidFound = () => {
+  //   toggleModal();
+  //   setCreateBidModal(true);
+  // };
 
-  const onBidFound = (bidData) => {
-    const { bid_id, bid_type, project_type, entity, workers, milestones, status } = bidData;
+  // const onBidFound = (bidData) => {
+  //   const { bid_id, bid_type, project_type, entity, workers, milestones, status } = bidData;
 
-    if (status !== 'DRAFT') {
-      ShowToastMessage(ERROR, 'You have already submitted a bid for this project');
-    } else {
-      toggleModal();
-      if (entity === userTypes.talent) {
-        if (milestones) {
-          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
-        } else {
-          navigate(
-            `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
-          );
-        }
-      } else {
-        // eslint-disable-next-line no-lonely-if
-        if (milestones && workers) {
-          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
-        } else if (workers && !milestones) {
-          navigate(
-            `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
-          );
-        } else if (!workers && !milestones) {
-          navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`);
-        }
-      }
-    }
-  };
+  //   if (status !== 'DRAFT') {
+  //     ShowToastMessage(ERROR, 'You have already submitted a bid for this project');
+  //   } else {
+  //     toggleModal();
+  //     if (entity === userTypes.talent) {
+  //       if (milestones) {
+  //         navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
+  //       } else {
+  //         navigate(
+  //           `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
+  //         );
+  //       }
+  //     } else {
+  //       // eslint-disable-next-line no-lonely-if
+  //       if (milestones && workers) {
+  //         navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/preview`);
+  //       } else if (workers && !milestones) {
+  //         navigate(
+  //           `/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/milestone`,
+  //         );
+  //       } else if (!workers && !milestones) {
+  //         navigate(`/create-bid/${data._id}/${project_type.toLowerCase()}-${bid_type.toLowerCase()}/${bid_id}/team`);
+  //       }
+  //     }
+  //   }
+  // };
 
   const isViewable =
     location.pathname.split('/').includes('my_bids') || location.pathname.split('/').includes('my_listings');
   const isDashboard = location.pathname.split('/').includes('dashboard');
+
+  const onCheckBidSuccess = (res) => {
+    if (res?.has_bid_draft) {
+      toggleModal();
+      setSavedDraftsAvailableModal(true);
+    } else {
+      toggleModal();
+      setCreateBidModal(true);
+    }
+  };
 
   const handleCreateBid = () => {
     if (
@@ -161,7 +172,7 @@ const ProjectModal = ({
     ) {
       toggleCompleteProfileModal();
     } else {
-      dispatch(getCheckBid(data._id, onNoBidFound, onBidFound));
+      dispatch(getCheckBid(data._id, onCheckBidSuccess));
     }
   };
 
@@ -214,6 +225,7 @@ const ProjectModal = ({
         imgWidth: 33,
       }))
     : [];
+
   return (
     <Modal
       contentClassName="custom-modal-project-details"
@@ -486,6 +498,7 @@ ProjectModal.propTypes = {
   isActiveProject: Proptypes.bool,
   isUpcomingProject: Proptypes.bool,
   setRelistConfirmationModal: Proptypes.func,
+  setSavedDraftsAvailableModal: Proptypes.func,
 };
 
 ProjectModal.defaultProps = {
@@ -500,4 +513,5 @@ ProjectModal.defaultProps = {
   isActiveProject: false,
   isUpcomingProject: false,
   setRelistConfirmationModal: () => {},
+  setSavedDraftsAvailableModal: () => {},
 };
