@@ -20,6 +20,7 @@ import { selectUserData } from '../../redux/selectors/authSelectors';
 
 const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal, setDeleteDraftModal }) => {
   const project = data?.project;
+  const bid = data?.bid;
   const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -124,6 +125,22 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         imgWidth: 33,
       }))
     : [];
+
+  const onEditDraftClick = () => {
+    if (bid?.entity === userTypes.talent) {
+      navigate(
+        `/create-bid/${project?._id}/${project?.pay_type.toLowerCase()}-${bid?.bid_type.toLowerCase()}/${
+          bid?._id
+        }/milestone`,
+      );
+    } else {
+      navigate(
+        `/create-bid/${project?._id}/${project?.pay_type.toLowerCase()}-${bid?.bid_type.toLowerCase()}/${
+          bid?._id
+        }/team`,
+      );
+    }
+  };
 
   return (
     <div>
@@ -310,6 +327,7 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
                   className="relist-btn"
                   onClick={(e) => {
                     e.stopPropagation();
+                    onEditDraftClick();
                   }}
                 >
                   Edit Draft
