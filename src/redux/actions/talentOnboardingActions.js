@@ -37,14 +37,15 @@ const getUserDetails = (onGetUserDetailsSuccess) => async (dispatch) => {
   }
 };
 
-const getResumeParsedDetails = (setResumeParsedDetails,fileKey) => async(dispatch) =>{
+const getResumeParsedDetails = (setResumeParsedDetails, fileKey) => async (dispatch) => {
   dispatch(resumeParsedDetailsRequest());
-  try{
+  try {
     const res = await parsedResumeService(fileKey);
+    let resumeDetails = res.data.data.generated_info;
+    resumeDetails = { ...resumeDetails, _id: res.data.data._id, file_key: res.data.data?.file_key };
     setResumeParsedDetails(res.data.data.generated_info);
-    dispatch(resumeParsedDetailsSuccess(res.data.data.generated_info));
-  }
-  catch(error){
+    dispatch(resumeParsedDetailsSuccess(resumeDetails));
+  } catch (error) {
     errorHandler(error, resumeParsedDetailsFailure);
   }
 };

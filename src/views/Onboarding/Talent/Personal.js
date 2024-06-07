@@ -67,7 +67,7 @@ import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { projectFileUploadToAzureService } from '../../../services/createProjectServices';
 import uuidv4 from '../../../lib/uuidv4';
-import { resumeUploadService } from '../../../services/talentOnboardingServices';
+import { resumeUploadService, updateParsedResumeService } from '../../../services/talentOnboardingServices';
 import { getDownloadUrl } from '../../../redux/actions/dashboardActions';
 import { downloadUrlLoading } from '../../../redux/selectors/dashboardSelectors';
 import TextEditor from '../../CreateProject/TextEditor';
@@ -287,6 +287,36 @@ const Personal = () => {
         setValue('workExperienceYear', years, { shouldValidate: true });
         setValue('workExperienceMonth', months, { shouldValidate: true });
       }
+      if (res?.languages_read && res?.languages_read.length > 0) {
+        setValue(
+          'readLanguages',
+          res.languages_read?.map((language) => ({
+            label: language?.name,
+            value: language?._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.languages_speak && res?.languages_speak.length > 0) {
+        setValue(
+          'speakLanguages',
+          res.languages_speak?.map((language) => ({
+            label: language?.name,
+            value: language?._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
+      if (res?.languages_write && res?.languages_write.length > 0) {
+        setValue(
+          'writeLanguages',
+          res.languages_write?.map((language) => ({
+            label: language?.name,
+            value: language?._id,
+          })),
+          { shouldValidate: true },
+        );
+      }
       if (res?.professional_introduction && res?.professional_introduction.length > 0) {
         setValue('professionalIntroduction', res?.professional_introduction, { shouldValidate: true });
       }
@@ -307,78 +337,11 @@ const Personal = () => {
           },
         ]);
       }
-      // if ('name' in (res?.role && res?.role)) {
-      //   setValue('role', { label: res?.role?.name, value: res?.role?._id }, { shouldValidate: true });
-      // }
-      // if (res?.talent_info?.resume && 'file_name' in res?.talent_info?.resume) {
-      //   setFiles([
-      //     {
-      //       file: {
-      //         name: res?.talent_info?.resume?.file_name,
-      //         size: res?.talent_info?.resume?.size,
-      //       },
-      //       uploadData: {
-      //         file_key: res?.talent_info?.resume?.file_key,
-      //       },
-      //       isUploaded: true,
-      //     },
-      //   ]);
-      // }
-      // if (
-      //   res?.current_residency &&
-      //   ('streetAddress' in res?.current_residency ||
-      //     'houseNumber' in res?.current_residency ||
-      //     'zipCode' in res?.current_residency ||
-      //     'country' in res?.current_residency ||
-      //     'state' in res?.current_residency ||
-      //     'city' in res?.current_residency)
-      // ) {
-      //   if (res?.current_residency?.street_address.length > 0) {
-      //     setValue('streetAddress', res?.current_residency?.street_address, { shouldValidate: true });
-      //   }
-      //   if (res?.talent_info?.current_residency?.house_number.length > 0) {
-      //     setValue('houseNumber', res?.talent_info?.current_residency?.house_number, { shouldValidate: true });
-      //   }
-      //   if (res?.talent_info?.current_residency?.zip_code > 0) {
-      //     setValue('zipCode', res?.talent_info?.current_residency?.zip_code, { shouldValidate: true });
-      //   }
-      //   if ('country' in res?.talent_info?.current_residency) {
-      //     setValue(
-      //       'country',
-      //       {
-      //         label: res?.talent_info?.current_residency.country.name,
-      //         value: res?.talent_info?.current_residency.country._id,
-      //       },
-      //       { shouldValidate: true },
-      //     );
-      //   }
-      //   if ('state' in res?.talent_info?.current_residency) {
-      //     setValue(
-      //       'state',
-      //       {
-      //         label: res?.talent_info?.current_residency.state.name,
-      //         value: res?.talent_info?.current_residency.state._id,
-      //       },
-      //       { shouldValidate: true },
-      //     );
-      //   }
-      //   if ('city' in res?.talent_info?.current_residency) {
-      //     setValue(
-      //       'city',
-      //       {
-      //         label: res?.talent_info?.current_residency.city.name,
-      //         value: res?.talent_info?.current_residency.city._id,
-      //       },
-      //       { shouldValidate: true },
-      //     );
-      //   }
-      // }
     }
   };
 
   const fetchUploadUrl = async (file) => {
     const response = await resumeUploadService(file.name);
-    // dispatch(getResumeParsedDetails(setResumeParsedDetails, 'resumes/664ee4e20e2bd05f207fb34a/Anil Paul.pdf'));
     dispatch(getResumeParsedDetails(setResumeParsedDetails, response?.data?.data?.file_key));
     const fileWithUrl = {
       id: uuidv4(),
@@ -647,8 +610,29 @@ const Personal = () => {
         },
       };
     }
-
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    if (IsresumeParsed) {
+      const resumeUpdatedData = {
+        target_info: {
+          ...parsedResumeData,
+          languages_speak: speakLanguages?.map((language) => ({
+            name: language?.label,
+            _id: language?.value,
+          })),
+          languages_write: writeLanguages.map((language) => ({
+            name: language?.label,
+            _id: language?.value,
+          })),
+          languages_read: readLanguages.map((language) => ({
+            name: language?.label,
+            _id: language?.value,
+          })),
+          tagline,
+          professional_introduction: professionalIntroduction,
+        },
+      };
+      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+    }
   };
 
   const loadTalentRolesOptions = async (search) => {
@@ -844,7 +828,7 @@ const Personal = () => {
   };
 
   useEffect(() => {
-    if (languagesData?.length > 0) {
+    if (!IsresumeParsed && languagesData?.length > 0) {
       setValue(
         'speakLanguages',
         languagesData?.map((language) => ({
@@ -870,7 +854,7 @@ const Personal = () => {
         { shouldValidate: true },
       );
     }
-  }, [languagesData]);
+  }, [languagesData, IsresumeParsed]);
 
   useEffect(() => {
     if (parseResume) {

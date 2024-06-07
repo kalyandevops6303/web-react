@@ -41,6 +41,7 @@ import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner'
 import { formData, formDocuments, resumeParsed } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormDocuments, setResumeParsed } from '../../../redux/reducers/formData';
 import { resumeParsedDetailsSuccess } from '../../../redux/reducers/talentOnboarding';
+import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
 
 const Social = () => {
   const SocialSchema = yup.object().shape({
@@ -187,6 +188,17 @@ const Social = () => {
     };
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+
+    if (IsresumeParsed) {
+      const resumeUpdatedData = {
+        target_info: {
+          ...parsedResumeData,
+          social_links,
+        },
+      };
+
+      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+    }
   };
 
   const isValidURL = (url) => {
@@ -299,42 +311,40 @@ const Social = () => {
 
   const setResumeParsedDetails = (res) => {
     if (res) {
-      if (res?.linkedin_id?.length > 0) {
-        setValue('linkedInLink', res?.linkedin_id, {
-          shouldValidate: true,
-        });
-        if (res?.twitter_id?.length > 0) {
-          setValue('twitterLink', res?.twitter_id, {
+      if (res?.social_links.length > 0) {
+        if (res?.social_links.find((link) => link.platform === 'LinkedIn')) {
+          setValue('linkedInLink', res?.social_links.find((link) => link.platform === 'LinkedIn').url, {
             shouldValidate: true,
           });
         }
-        if (res?.github_id?.length > 0) {
-          setValue('githubLink', res?.github_id, {
+        if (res?.social_links.find((link) => link.platform === 'Twitter')) {
+          setValue('twitterLink', res?.social_links.find((link) => link.platform === 'Twitter').url, {
             shouldValidate: true,
           });
         }
-        // if (
-        //   res?.talent_info?.social_links.filter(
-        //     (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
-        //   ).length > 0
-        // ) {
-        //   setValue(
-        //     'otherSocialLinks',
-        //     savedFormData?.otherSocialLinks
-        //       ? savedFormData?.otherSocialLinks
-        //       : res?.talent_info?.social_links
-        //           .filter(
-        //             (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
-        //           )
-        //           .map((link) => ({
-        //             linkName: link.platform,
-        //             link: link.url,
-        //           })),
-        //     { shouldValidate: true },
-        //   );
-        // } else {
-        //   setValue('otherSocialLinks', savedFormData?.otherSocialLinks);
-        // }
+        if (res?.social_links.find((link) => link.platform === 'GitHub')) {
+          setValue('githubLink', res?.social_links.find((link) => link.platform === 'GitHub').url, {
+            shouldValidate: true,
+          });
+        }
+        if (
+          res?.talent_info?.social_links.filter(
+            (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+          ).length > 0
+        ) {
+          setValue(
+            'otherSocialLinks',
+            res?.social_links
+              .filter(
+                (link) => link.platform !== 'linkedIn' && link.platform !== 'twitter' && link.platform !== 'github',
+              )
+              .map((link) => ({
+                linkName: link.platform,
+                link: link.url,
+              })),
+            { shouldValidate: true },
+          );
+        }
       }
     }
   };

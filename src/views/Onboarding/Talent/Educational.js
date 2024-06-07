@@ -55,6 +55,7 @@ import { filteredFormSchema, removeEmptyKeys, returnFilteredDropdownOptions } fr
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
 import { formData, resumeParsed, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setResumeParsed, setFormDocuments } from '../../../redux/reducers/formData';
+import { updateParsedResumeService } from '../../../services/talentOnboardingServices';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
@@ -124,7 +125,7 @@ const Educational = () => {
     mode: 'onChange',
     resolver: yupResolver(EducationalSchema),
     defaultValues: {
-      educationDetails: savedFormData?.educationDetails || [{}],
+      educationDetails: savedFormData?.educationDetails || [],
       tools: savedFormData?.tools || null,
       certificates: savedFormData?.certificates || null,
       skills: savedFormData?.skills || null,
@@ -220,6 +221,31 @@ const Educational = () => {
     };
 
     dispatch(saveProfileDetails(removeEmptyKeys(reqData), onSuccess));
+    if (IsresumeParsed) {
+      const resumeUpdatedData = {
+        target_info: {
+          ...parsedResumeData,
+          educational_institute: educationDetails?.map((details) => ({
+            institution: { name: details.educationInstitution.label, _id: details.educationInstitution.value },
+            education: { name: details.education.label, _id: details.education.value },
+          })),
+          skills: skills?.map((skill) => ({
+            name: skill?.label,
+            _id: skill?.value,
+          })),
+          tools: tools?.map((tool) => ({
+            name: tool?.label,
+            _id: tool?.value,
+          })),
+          certificates: certificates?.map((certificate) => ({
+            name: certificate?.label,
+            _id: certificate?.value,
+          })),
+        },
+      };
+
+      dispatch(updateParsedResumeService(parsedResumeData?._id, resumeUpdatedData));
+    }
   };
 
   const loadInstitutesOptions = async (search, prevOptions, { page }) => {
@@ -344,8 +370,8 @@ const Educational = () => {
       if (res?.talent_info?.educational_institute.length > 0) {
         setValue(
           'educationDetails',
-          savedFormData?.educationDetails
-            ? savedFormData?.educationDetails
+          savedFormData?.educationDetails?.length > 0
+            ? savedFormData.educationDetails
             : res?.talent_info?.educational_institute.map((detail) => ({
                 educationInstitution: { label: detail.institution.name, value: detail.institution._id },
                 education: { label: detail.education.name, value: detail.education._id },
@@ -405,18 +431,18 @@ const Educational = () => {
 
   const setResumeParsedDetails = (res) => {
     if (res) {
-      // if (res?.talent_info?.educational_institute.length > 0) {
-      //   setValue(
-      //     'educationDetails',
-      //     savedFormData?.educationDetails
-      //       ? savedFormData?.educationDetails
-      //       : res?.talent_info?.educational_institute.map((detail) => ({
-      //           educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-      //           education: { label: detail.education.name, value: detail.education._id },
-      //         })),
-      //     { shouldValidate: true },
-      //   );
-      // }
+      if (res?.talent_info?.educational_institute?.length > 0) {
+        setValue(
+          'educationDetails',
+          res?.talent_info?.educational_institute.map((detail) => ({
+            educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+            education: { label: detail.education.name, value: detail.education._id },
+          })),
+          { shouldValidate: true },
+        );
+      } else {
+        setValue('educationDetails', [{}]);
+      }
       if (res?.tools && res?.tools.length > 0) {
         setValue(
           'tools',
