@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -115,7 +116,18 @@ const CreateProject = () => {
   ];
 
   const getDraftProjectDetailsSuccess = (res) => {
-    const documents = res?.details?.documents?.map((file) => ({
+    const { documents, name, expected_duration, description } = res?.details;
+    const { duration, duration_type } = expected_duration;
+    const { skills, tools } = res?.proficiency;
+    const { timezone, time_overlap, weekdays_avl, weekends_avl } = res?.availability;
+    const { name: timezoneName, abbreviation } = timezone;
+    const { days, start_time, end_time } = weekdays_avl;
+    const { days: weekendsDays, start_time: weekendsStartTime, end_time: weekendsEndTime } = weekends_avl;
+    const { excluded, included } = res?.countries;
+    const { currency, variable_cost, fixed_cost } = res?.pay_type;
+    const { is_nda } = res?.nda;
+
+    const docs = documents?.map((file) => ({
       id: uuidv4(),
       file: {
         name: file?.file_name,
@@ -124,78 +136,75 @@ const CreateProject = () => {
       uploadData: { file_key: file?.file_key },
     }));
 
-    setFiles(documents);
+    setFiles(docs);
 
     const projectRequirement = {
-      projectName: res?.details?.name,
-      expectedDuration: res?.details?.expected_duration?.duration,
+      projectName: name,
+      expectedDuration: duration,
       expectedDurationPeriod: {
-        label: `${capitalize(res?.details?.expected_duration?.duration_type)}s`,
-        value: res?.details?.expected_duration?.duration_type,
+        label: `${capitalize(duration_type)}s`,
+        value: duration_type,
       },
-      projectDescription: res?.details?.description,
-      skills: res?.proficiency?.skills?.map((skill) => ({
+      projectDescription: description,
+      skills: skills?.map((skill) => ({
         label: skill?.name,
         value: skill?._id,
       })),
-      tools: res?.proficiency?.tools?.map((tool) => ({
+      tools: tools?.map((tool) => ({
         label: tool?.name,
         value: tool?._id,
       })),
       preferredWorkingTimeZone: {
-        label: `${res?.availability?.timezone?.name} (${res?.availability?.timezone?.abbreviation})`,
-        value: res?.availability?.timezone,
+        label: `${timezoneName} (${abbreviation})`,
+        value: timezone,
       },
-      minTimeOverlapHr: res?.availability?.time_overlap,
-      weekdays: res?.availability?.weekdays_avl?.days?.length ? res?.availability?.weekdays_avl?.days : [],
-      weekdayStartTime: res?.availability?.weekdays_avl?.start_time
-        ? timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time)
+      minTimeOverlapHr: time_overlap,
+      weekdays: days?.length ? days : [],
+      weekdayStartTime: start_time ? timeOptions.find((time) => parseInt(time.value, 10) === start_time) : undefined,
+      weekdayEndTime: end_time ? timeOptions.find((time) => parseInt(time.value, 10) === end_time) : undefined,
+      weekends: weekendsDays?.length ? weekendsDays : [],
+      weekendStartTime: weekendsStartTime
+        ? timeOptions.find((time) => parseInt(time.value, 10) === weekendsStartTime)
         : undefined,
-      weekdayEndTime: res?.availability?.weekdays_avl?.end_time
-        ? timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time)
+      weekendEndTime: weekendsEndTime
+        ? timeOptions.find((time) => parseInt(time.value, 10) === weekendsEndTime)
         : undefined,
-      weekends: res?.availability?.weekends_avl?.days?.length ? res?.availability?.weekends_avl?.days : [],
-      weekendStartTime: res?.availability?.weekends_avl?.start_time
-        ? timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time)
-        : undefined,
-      weekendEndTime: res?.availability?.weekends_avl?.end_time
-        ? timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time)
-        : undefined,
-      availabilityDays: [
-        res?.availability?.weekdays_avl?.days?.length && 'weekdays',
-        res?.availability?.weekends_avl?.days?.length && 'weekends',
-      ],
+      availabilityDays: [days?.length && 'weekdays', weekendsDays?.length && 'weekends'],
       // eslint-disable-next-line no-nested-ternary
-      includeOrExcludeCountries: res?.countries?.excluded?.length
+      includeOrExcludeCountries: excluded?.length
         ? 'exclude-countries'
-        : res?.countries?.included?.length
+        : included?.length
         ? 'include-countries'
         : 'no-selection',
-      includedCountriesSelection: res?.countries?.included?.length
-        ? res?.countries?.included?.map((country) => ({
+      includedCountriesSelection: included?.length
+        ? included?.map((country) => ({
             label: country?.name,
             value: country?._id,
           }))
         : undefined,
-      excludedCountriesSelection: res?.countries?.excluded?.length
-        ? res?.countries?.excluded?.map((country) => ({
+      excludedCountriesSelection: excluded?.length
+        ? excluded?.map((country) => ({
             label: country?.name,
             value: country?._id,
           }))
         : undefined,
-      currencyType: { label: res?.pay_type?.currency?.name, value: res?.pay_type?.currency },
-      projectPayType: res?.pay_type?.variable_cost ? 'variable-price' : 'fixed-price',
-      projectFixedCost: !res?.pay_type?.variable_cost ? res?.pay_type?.fixed_cost : undefined,
-      nda: res?.nda?.is_nda ? 'yes' : 'no',
+      currencyType: { label: currency?.name, value: currency },
+      projectPayType: variable_cost ? 'variable-price' : 'fixed-price',
+      projectFixedCost: !variable_cost ? fixed_cost : undefined,
+      nda: is_nda ? 'yes' : 'no',
     };
     setDraftRequirementDetails(projectRequirement);
 
-    const projectListing = {
-      listingOption: 'listing_details' in res && 'select-duration',
-      startDate: [new Date(res?.listing_details?.start_date_epoch)],
-      endDate: [new Date(res?.listing_details?.end_date_epoch)],
-    };
-    setDraftListingDetails(projectListing);
+    if ('listing_details' in res) {
+      const { start_date_epoch, end_date_epoch } = res?.listing_details;
+
+      const projectListing = {
+        listingOption: 'listing_details' in res && 'select-duration',
+        startDate: [new Date(start_date_epoch)],
+        endDate: [new Date(end_date_epoch)],
+      };
+      setDraftListingDetails(projectListing);
+    }
   };
 
   useEffect(() => {
@@ -206,8 +215,6 @@ const CreateProject = () => {
     return () => {
       dispatch(clearCreateProjectData());
       dispatch(clearSaveDraftProjectId());
-      // window.alert('hey');
-      setDraftSavedModal(true);
     };
   }, []);
 

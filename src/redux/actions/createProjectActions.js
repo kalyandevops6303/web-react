@@ -116,8 +116,11 @@ const createNewProject =
       const handleCreateProject = async () => {
         const res = await createProjectService({ projectId, data });
         dispatch(createProjectSuccess(res.data.data));
-        dispatch(getBestTalents(res.data.data.project_id, '', 1, 10, []));
-        ShowToastMessage(SUCCESS, res.data.data.message);
+        const { project_id } = res.data.data;
+        const { message } = res.data.data;
+
+        dispatch(getBestTalents(project_id, '', 1, 10, []));
+        ShowToastMessage(SUCCESS, message);
         onSuccess();
       };
       if (data?.details?.documents?.length > 0) {
@@ -186,8 +189,11 @@ const saveDraftProject =
     try {
       const handleSaveDraftProject = async () => {
         const res = await saveDraftProjectService({ projectId, data });
-        dispatch(saveDraftProjectSuccess(res.data.data.project_id));
-        ShowToastMessage(SUCCESS, res.data.data.message);
+        const { project_id } = res.data.data;
+        const { message } = res.data.data;
+
+        dispatch(saveDraftProjectSuccess(project_id));
+        ShowToastMessage(SUCCESS, message);
         onSuccess();
       };
       if (data?.details?.documents?.length > 0) {

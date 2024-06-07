@@ -7,7 +7,13 @@ import 'react-quill/dist/quill.snow.css';
 import { ChevronLeft, ChevronRight } from 'react-feather';
 import { Card, CardHeader, CardBody, Row, Col, CardText, Button, Badge, Spinner } from 'reactstrap';
 import { TagsContainer, TimeWrapper } from '../style';
-import { convertTo12HourFormat, downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
+import {
+  convertTo12HourFormat,
+  downloadUploadedFile,
+  getFileSize,
+  removeEmptyKeys,
+  renderFilePreview,
+} from '../../../utility/Utils';
 import { UploadIconContainer } from '../../Onboarding/style';
 import theme from '../../../configs/themeVariables';
 import {
@@ -118,55 +124,6 @@ const Preview = ({
     </TagsContainer>
   );
 
-  const isEmpty = (value) => {
-    if (value === undefined || value === null) {
-      return true;
-    }
-
-    if (typeof value === 'string' || Array.isArray(value)) {
-      return value.length === 0;
-    }
-
-    if (typeof value === 'object') {
-      return Object.keys(value).length === 0;
-    }
-
-    return false;
-  };
-
-  const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
-
-  const removeEmptyKeys = (obj) => {
-    if (typeof obj !== 'object' || obj === null) {
-      return obj;
-    }
-
-    if (Array.isArray(obj)) {
-      const filteredArray = obj.filter((item) => typeof item !== 'object' || !hasEmptyKeys(item));
-
-      return filteredArray.map((item) => removeEmptyKeys(item));
-    }
-
-    const filteredObj = {};
-    Object.keys(obj).forEach((key) => {
-      const value = obj[key];
-      if (typeof value === 'object') {
-        const cleanedValue = removeEmptyKeys(value);
-        if (!isEmpty(cleanedValue)) {
-          filteredObj[key] = cleanedValue;
-        }
-      } else if (!isEmpty(value)) {
-        filteredObj[key] = value;
-      }
-    });
-
-    if (isEmpty(filteredObj)) {
-      return undefined;
-    }
-
-    return filteredObj;
-  };
-
   const onSuccess = () => {
     toggleYouDidItModal();
     stepper.next();
@@ -268,6 +225,28 @@ const Preview = ({
 
   const handleSaveDraft = () => {
     let details;
+    const {
+      projectName,
+      projectDescription,
+      expectedDuration,
+      expectedDurationPeriod,
+      skills,
+      tools,
+      preferredWorkingTimeZone,
+      minTimeOverlapHr,
+      availabilityDays,
+      weekdayStartTime,
+      weekdayEndTime,
+      weekendStartTime,
+      weekendEndTime,
+      includedCountriesSelection,
+      excludedCountriesSelection,
+      currencyType,
+      projectPayType,
+      projectFixedCost,
+      nda: ndaValue,
+    } = projectDetails;
+    const { startDate, endDate } = listingDetails;
 
     if (files.length > 0) {
       const documents = files.map((file) => ({
@@ -276,61 +255,57 @@ const Preview = ({
       }));
 
       details = {
-        name: projectDetails?.projectName.trim(),
-        description: projectDetails?.projectDescription,
+        name: projectName.trim(),
+        description: projectDescription,
         expected_duration: {
-          duration: projectDetails?.expectedDuration,
-          duration_type: projectDetails?.expectedDurationPeriod?.value,
+          duration: expectedDuration,
+          duration_type: expectedDurationPeriod?.value,
         },
         documents,
       };
     } else {
       details = {
-        name: projectDetails?.projectName.trim(),
-        description: projectDetails?.projectDescription,
+        name: projectName.trim(),
+        description: projectDescription,
         expected_duration: {
-          duration: projectDetails?.expectedDuration,
-          duration_type: projectDetails?.expectedDurationPeriod?.value,
+          duration: expectedDuration,
+          duration_type: expectedDurationPeriod?.value,
         },
       };
     }
 
     const proficiency = {
-      skills: projectDetails?.skills.map((skill) => skill.value),
-      tools: projectDetails?.tools?.map((tool) => tool.value),
+      skills: skills.map((skill) => skill.value),
+      tools: tools?.map((tool) => tool.value),
     };
     const availability = {
-      timezone: projectDetails?.preferredWorkingTimeZone.value._id,
-      time_overlap: projectDetails?.minTimeOverlapHr,
+      timezone: preferredWorkingTimeZone.value._id,
+      time_overlap: minTimeOverlapHr,
       weekdays_avl: {
-        start_time: projectDetails?.availabilityDays?.includes('weekdays')
-          ? projectDetails?.weekdayStartTime?.value
-          : null,
-        end_time: projectDetails?.availabilityDays?.includes('weekdays') ? projectDetails?.weekdayEndTime?.value : null,
-        days: projectDetails?.availabilityDays?.includes('weekdays') ? projectDetails?.weekdays : null,
+        start_time: availabilityDays?.includes('weekdays') ? weekdayStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekdays') ? weekdayEndTime?.value : null,
+        days: availabilityDays?.includes('weekdays') ? weekdays : null,
       },
       weekends_avl: {
-        start_time: projectDetails?.availabilityDays?.includes('weekends')
-          ? projectDetails?.weekendStartTime?.value
-          : null,
-        end_time: projectDetails?.availabilityDays?.includes('weekends') ? projectDetails?.weekendEndTime?.value : null,
-        days: projectDetails?.availabilityDays?.includes('weekends') ? projectDetails?.weekends : null,
+        start_time: availabilityDays?.includes('weekends') ? weekendStartTime?.value : null,
+        end_time: availabilityDays?.includes('weekends') ? weekendEndTime?.value : null,
+        days: availabilityDays?.includes('weekends') ? weekends : null,
       },
     };
     const countries = {
-      included: projectDetails?.includedCountriesSelection?.map((country) => country.value),
-      excluded: projectDetails?.excludedCountriesSelection?.map((country) => country.value),
+      included: includedCountriesSelection?.map((country) => country.value),
+      excluded: excludedCountriesSelection?.map((country) => country.value),
     };
     const pay_type = {
-      currency: projectDetails?.currencyType?.value?._id,
-      variable_cost: projectDetails?.projectPayType !== 'fixed-price',
-      fixed_cost: projectDetails?.projectPayType === 'fixed-price' ? parseInt(projectDetails?.projectFixedCost, 10) : 0,
+      currency: currencyType?.value?._id,
+      variable_cost: projectPayType !== 'fixed-price',
+      fixed_cost: projectPayType === 'fixed-price' ? parseInt(projectFixedCost, 10) : 0,
     };
     const nda = {
-      is_nda: projectDetails?.nda === 'yes',
+      is_nda: ndaValue === 'yes',
     };
-    const start_date = Date.parse(listingDetails?.startDate);
-    const end_date = Date.parse(listingDetails?.endDate);
+    const start_date = Date.parse(startDate);
+    const end_date = Date.parse(endDate);
 
     const listing_details = {
       start_date,
@@ -482,8 +457,8 @@ const Preview = ({
         </CardHeader>
         <hr className="m-0 card-header-border" />
         <CardBody style={{ whiteSpace: 'pre-line' }}>
-          <div dangerouslySetInnerHTML={{__html:projectDetails?.projectDescription}} />
-            </CardBody>
+          <div dangerouslySetInnerHTML={{ __html: projectDetails?.projectDescription }} />
+        </CardBody>
       </Card>
       {files && files.length > 0 && fileList()}
       <Card>

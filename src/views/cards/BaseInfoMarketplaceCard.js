@@ -353,4 +353,5 @@ BaseInfoMarketplaceCard.defaultProps = {
   setRelistConfirmationModal: () => {},
   setDeleteDraftModal: () => {},
 };
+
 export default BaseInfoMarketplaceCard;

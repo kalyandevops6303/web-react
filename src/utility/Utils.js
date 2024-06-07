@@ -200,7 +200,7 @@ const isEmpty = (value) => {
   return false;
 };
 
-const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
+export const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
 
 export const removeEmptyKeys = (obj) => {
   if (typeof obj !== 'object' || obj === null) {
