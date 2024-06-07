@@ -276,10 +276,6 @@ const Personal = () => {
   const filesRef = useRef();
   useEffect(() => {
     const fileReRender = async () => {
-      // console.log(savedFormDocuments);
-      // const filesData = await RefetchUploadUrl(savedFormDocuments);
-      // const allData = { ...savedFormData, resume: filesData };
-      // dispatch(setFormData(allData));
       if (savedFormDocuments != null) {
         filesRef.current = files;
         setFiles(savedFormDocuments);
@@ -393,13 +389,12 @@ const Personal = () => {
     if (watch('state')) {
       dispatch(getCities(watch('state').value));
     }
-    if (
-      watch('state') != null &&
-      savedFormData &&
-      savedFormData.state != null &&
-      savedFormData?.state?.value === watch('state').value
-    ) {
-      setValue('city', savedFormData?.city);
+    const state = watch('state');
+    const savedState = savedFormData?.state?.value;
+    const currentState = state?.value;
+
+    if (state && savedFormData && savedState === currentState) {
+      setValue('city', savedFormData?.city ?? '');
     }
   }, [watch('state')]);
 
