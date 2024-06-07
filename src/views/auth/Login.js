@@ -17,7 +17,7 @@ import InputPasswordToggle from '@components/input-password-toggle';
 // ** Styles
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
-import { filteredFormSchema, checkPointRedirection, validations } from '../../utility/Utils';
+import { checkPointRedirection, filteredFormSchema, validations } from '../../utility/Utils';
 import { loginUser, switchProfile } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';

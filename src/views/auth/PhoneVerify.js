@@ -27,6 +27,7 @@ import LogoComp from './components/LogoComp';
 import SpeechEmoji from "../../assets/images/logo/speech_baloon.png";
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { formData } from '../../redux/selectors/formDataSelectors';
+import { CITIZEN_TYPES } from '../../utility/constants/Constant';
 
 const VerifyPhone = () => {
   const dispatch = useDispatch();
@@ -60,7 +61,7 @@ const VerifyPhone = () => {
   const [selectedCountry, setSelectedCountry] = useState({
     label: 'United States',
     dial_code: '+1',
-    code: 'US',
+    code: CITIZEN_TYPES.US,
     _id: '6479c2071183add75cda4e37',
   });
 

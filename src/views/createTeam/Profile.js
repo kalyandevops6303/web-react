@@ -221,6 +221,7 @@ const Profile = () => {
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
   const languagesData = useSelector(languages);
+  const supportData = useSelector((state) => state.support.supportCount);
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const savedFormImage = useSelector(formImage);
@@ -232,8 +233,6 @@ const Profile = () => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
   }, [localFormData]);
-  const supportData = useSelector((state) => state.support.supportCount);
-
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
   };

@@ -122,6 +122,9 @@ const API = {
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
+    saveDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft/save`,
+    draftProjectsCheck: `${apiCreateProjectEndpoint}/api/v1/project/draft/check`,
+    deleteDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft`,
   },
   projectDetails: {
     getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,

@@ -318,7 +318,7 @@ const Availability = () => {
             savedFormData?.weekdays?.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days,
             { shouldValidate: true },
           );
-       
+
           setValue(
             'weekdayStartTime',
             savedFormData?.weekdayStartTime?.length > 0
@@ -379,7 +379,7 @@ const Availability = () => {
         );
       }
       if (res?.talent_info?.hourly_rate > 0) {
-        setValue('hourlyRate', savedFormData?.hourlyRate ? savedFormData?.hourlyRate : res?.talent_info?.hourly_rate, {
+        setValue('hourlyRate', savedFormData?.hourlyRate || res?.talent_info?.hourly_rate, {
           shouldValidate: true,
         });
       }

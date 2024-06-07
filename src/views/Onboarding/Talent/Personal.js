@@ -374,10 +374,6 @@ const Personal = () => {
   const filesRef = useRef();
   useEffect(() => {
     const fileReRender = async () => {
-      // console.log(savedFormDocuments);
-      // const filesData = await RefetchUploadUrl(savedFormDocuments);
-      // const allData = { ...savedFormData, resume: filesData };
-      // dispatch(setFormData(allData));
       if (savedFormDocuments != null) {
         filesRef.current = files;
         setFiles(savedFormDocuments);
@@ -495,13 +491,12 @@ const Personal = () => {
     if (watch('state')) {
       dispatch(getCities(watch('state').value));
     }
-    if (
-      watch('state') != null &&
-      savedFormData &&
-      savedFormData.state != null &&
-      savedFormData?.state?.value === watch('state').value
-    ) {
-      setValue('city', savedFormData?.city);
+    const state = watch('state');
+    const savedState = savedFormData?.state?.value;
+    const currentState = state?.value;
+
+    if (state && savedFormData && savedState === currentState) {
+      setValue('city', savedFormData?.city ?? '');
     }
   }, [watch('state')]);
 
@@ -701,20 +696,14 @@ const Personal = () => {
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.talent_info?.tagline.length > 0) {
-        setValue('tagline', savedFormData?.tagline ? savedFormData?.tagline : res?.talent_info?.tagline, {
+        setValue('tagline', savedFormData?.tagline || res?.talent_info?.tagline, {
           shouldValidate: true,
         });
       }
       if (res?.talent_info?.work_experience > 0) {
         // eslint-disable-next-line no-unsafe-optional-chaining
-        const years = Math.floor(
-          savedFormData?.workExperienceYear
-            ? savedFormData?.workExperienceYear
-            : res?.talent_info?.work_experience / 12,
-        );
-        const months = savedFormData?.workExperienceMonth
-          ? savedFormData?.workExperienceMonth
-          : res?.talent_info?.work_experience % 12;
+        const years = Math.floor(savedFormData?.workExperienceYear || res?.talent_info?.work_experience / 12);
+        const months = savedFormData?.workExperienceMonth || res?.talent_info?.work_experience % 12;
 
         setValue('workExperienceYear', years, { shouldValidate: true });
         setValue('workExperienceMonth', months, { shouldValidate: true });
@@ -722,9 +711,7 @@ const Personal = () => {
       if (res?.talent_info?.professional_intro.length > 0) {
         setValue(
           'professionalIntroduction',
-          savedFormData?.professionalIntroduction
-            ? savedFormData?.professionalIntroduction
-            : res?.talent_info?.professional_intro,
+          savedFormData?.professionalIntroduction || res?.talent_info?.professional_intro,
           { shouldValidate: true },
         );
       }
@@ -732,8 +719,8 @@ const Personal = () => {
         setValue(
           'role',
           {
-            label: savedFormData?.role ? savedFormData?.role?.label : res?.talent_info?.role?.name,
-            value: savedFormData?.role ? savedFormData?.role?.value : res?.talent_info?.role?._id,
+            label: savedFormData?.role?.label || res?.talent_info?.role?.name,
+            value: savedFormData?.role?.value || res?.talent_info?.role?._id,
           },
           { shouldValidate: true },
         );
@@ -767,36 +754,26 @@ const Personal = () => {
         if (res?.talent_info?.current_residency?.street_address.length > 0) {
           setValue(
             'streetAddress',
-            savedFormData?.streetAddress
-              ? savedFormData?.streetAddress
-              : res?.talent_info?.current_residency?.street_address,
+            savedFormData?.streetAddress || res?.talent_info?.current_residency?.street_address,
             { shouldValidate: true },
           );
         }
         if (res?.talent_info?.current_residency?.house_number.length > 0) {
-          setValue(
-            'houseNumber',
-            savedFormData?.houseNumber ? savedFormData?.houseNumber : res?.talent_info?.current_residency?.house_number,
-            { shouldValidate: true },
-          );
+          setValue('houseNumber', savedFormData?.houseNumber || res?.talent_info?.current_residency?.house_number, {
+            shouldValidate: true,
+          });
         }
         if (res?.talent_info?.current_residency?.zip_code > 0) {
-          setValue(
-            'zipCode',
-            savedFormData?.zipCode ? savedFormData?.zipCode : res?.talent_info?.current_residency?.zip_code,
-            { shouldValidate: true },
-          );
+          setValue('zipCode', savedFormData?.zipCode || res?.talent_info?.current_residency?.zip_code, {
+            shouldValidate: true,
+          });
         }
         if ('country' in res?.talent_info?.current_residency) {
           setValue(
             'country',
             {
-              label: savedFormData?.country
-                ? savedFormData?.country?.label
-                : res?.talent_info?.current_residency.country.name,
-              value: savedFormData?.country
-                ? savedFormData?.country?.value
-                : res?.talent_info?.current_residency.country._id,
+              label: savedFormData?.country?.label || res?.talent_info?.current_residency.country.name,
+              value: savedFormData?.country?.value || res?.talent_info?.current_residency.country._id,
             },
             { shouldValidate: true },
           );
@@ -805,10 +782,8 @@ const Personal = () => {
           setValue(
             'state',
             {
-              label: savedFormData?.state
-                ? savedFormData?.state?.label
-                : res?.talent_info?.current_residency.state.name,
-              value: savedFormData?.state ? savedFormData?.state?.value : res?.talent_info?.current_residency.state._id,
+              label: savedFormData?.state?.label || res?.talent_info?.current_residency.state.name,
+              value: savedFormData?.state?.value || res?.talent_info?.current_residency.state._id,
             },
             { shouldValidate: true },
           );
@@ -817,8 +792,8 @@ const Personal = () => {
           setValue(
             'city',
             {
-              label: savedFormData?.city ? savedFormData?.city?.label : res?.talent_info?.current_residency.city.name,
-              value: savedFormData?.city ? savedFormData?.city?.value : res?.talent_info?.current_residency.city._id,
+              label: savedFormData?.city?.label || res?.talent_info?.current_residency.city.name,
+              value: savedFormData?.city?.value || res?.talent_info?.current_residency.city._id,
             },
             { shouldValidate: true },
           );

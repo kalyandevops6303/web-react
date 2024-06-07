@@ -66,7 +66,6 @@ const rootReducer = combineReducers({
   milestone,
   favUnfav,
   support,
-
   formData,
   // Add more reducers if needed
 });

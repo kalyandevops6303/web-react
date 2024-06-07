@@ -36,6 +36,7 @@ import { filteredFormSchema, formatDate } from '../../../../utility/Utils';
 import { TooltipWrapper } from '../../../styled';
 import { formData } from '../../../../redux/selectors/formDataSelectors';
 import { setFormData } from '../../../../redux/reducers/formData';
+import { CITIZEN_TYPES } from '../../../../utility/constants/Constant';
 
 // eslint-disable-next-line react/prop-types
 const Step2 = ({ setStep, step }) => {
@@ -47,7 +48,7 @@ const Step2 = ({ setStep, step }) => {
 
   const [isDocumentConfirmed, setIsDocumentConfirmed] = useState(savedFormData?.isDocumentConfirmed || false);
   const [accountCreatedModal, setAccountCreatedModal] = useState(null);
-  const [taxUserType, setTaxUserType] = useState(savedFormData?.taxUserType || 'US');
+  const [taxUserType, setTaxUserType] = useState(savedFormData?.taxUserType || CITIZEN_TYPES.US);
   const [selectedTaxId] = useState('taxOption1');
   const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(
     savedFormData?.isPaymentOnboardingDone || false,
@@ -74,7 +75,7 @@ const Step2 = ({ setStep, step }) => {
       .required('This is required'),
     taxType: Yup.string(),
     ssnTaxId: Yup.number().when('taxType', {
-      is: (taxType) => taxType === 'US',
+      is: (taxType) => taxType === CITIZEN_TYPES.US,
       then: () =>
         Yup.number()
           .required('Tax Id is required')
@@ -91,9 +92,9 @@ const Step2 = ({ setStep, step }) => {
     }),
   });
 
-  useEffect(()=>{
-    dispatch(setFormData({...savedFormData,step}));
-  },[step]);
+  useEffect(() => {
+    dispatch(setFormData({ ...savedFormData, step }));
+  }, [step]);
 
   const {
     control,
@@ -145,22 +146,26 @@ const Step2 = ({ setStep, step }) => {
     if (res) {
       if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.tax_user_type?.length > 0) {
-        setTaxUserType(savedFormData?.taxType ? savedFormData?.taxType  : res?.tax_user_type);
+        setTaxUserType(savedFormData?.taxType || res?.tax_user_type);
       }
       if (res.tax_identification?.legal_name?.length > 0) {
-        setValue('taxName', savedFormData?.taxName ? savedFormData?.taxName  : res.tax_identification?.legal_name);
+        setValue('taxName', savedFormData?.taxName || res.tax_identification?.legal_name);
       }
       if (res.tax_identification?.federal_tax_classification?.length > 0) {
         setValue('taxClass', {
           label: 'Individual',
-          value: savedFormData?.taxClass ? savedFormData?.taxClass?.value  : res.tax_identification?.federal_tax_classification,
+          value: savedFormData?.taxClass?.value || res.tax_identification?.federal_tax_classification,
         });
       }
-      if (res.tax_identification?.social_security_number?.length > 0 && res?.tax_user_type === 'US') {
-        setValue('ssnTaxId', savedFormData?.ssnTaxId ? savedFormData?.ssnTaxId  :  res.tax_identification?.social_security_number, { shouldValidate: true });
+      if (res.tax_identification?.social_security_number?.length > 0 && res?.tax_user_type === CITIZEN_TYPES.US) {
+        setValue('ssnTaxId', savedFormData?.ssnTaxId || res.tax_identification?.social_security_number, {
+          shouldValidate: true,
+        });
       }
       if (res.tax_identification?.national_taxpayer_number?.length > 0 && res?.tax_user_type === 'NON_US') {
-        setValue('nsnTaxId', savedFormData?.nsnTaxId ? savedFormData?.nsnTaxId  :  res.tax_identification?.national_taxpayer_number, { shouldValidate: true });
+        setValue('nsnTaxId', savedFormData?.nsnTaxId || res.tax_identification?.national_taxpayer_number, {
+          shouldValidate: true,
+        });
       }
       if (res?.tax_user_type) {
         setValue('taxType', res?.tax_user_type);
@@ -225,7 +230,7 @@ const Step2 = ({ setStep, step }) => {
           federal_tax_classification: data?.taxClass?.value,
           social_security_number: data?.ssnTaxId || '',
           national_taxpayer_number: data?.nsnTaxId || '',
-          tax_payer_identification_type: taxUserType === 'US' ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
+          tax_payer_identification_type: taxUserType === CITIZEN_TYPES.US ? 'SOCIAL_SECURITY_NUMBER' : 'NATIONAL_TAXPAYER_NUMBER',
         },
       };
 
@@ -271,7 +276,7 @@ const Step2 = ({ setStep, step }) => {
                 <Input
                   type="radio"
                   checked={taxUserType === 'NON_US'}
-                  disabled={taxUserType === 'US'}
+                  disabled={taxUserType === CITIZEN_TYPES.US}
                   name="non_us_person"
                 />
                 <div>I am not a US person</div>
@@ -279,7 +284,7 @@ const Step2 = ({ setStep, step }) => {
               <Col className="d-flex gap-50 form-check">
                 <Input
                   type="radio"
-                  checked={taxUserType === 'US'}
+                  checked={taxUserType === CITIZEN_TYPES.US}
                   disabled={taxUserType === 'NON_US'}
                   name="us_person"
                 />
@@ -339,7 +344,7 @@ const Step2 = ({ setStep, step }) => {
               </Col>
             </Row>
             <Row className="mt-1 mb-1">
-              {taxUserType === 'US' && (
+              {taxUserType === CITIZEN_TYPES.US && (
                 <Col sm="12" md="12" lg="6">
                   <Label className="form-label" for="ssnTaxId">
                     SSN #<span className="label-asterisk me-25">*</span>
@@ -414,7 +419,7 @@ const Step2 = ({ setStep, step }) => {
           </CardBody>
         </Card>
 
-        {taxUserType === 'US' ? (
+        {taxUserType === CITIZEN_TYPES.US ? (
           <Card className="w-75">
             <CardHeader>
               <h4 className="m-0 mt-1">Tax certifications and confirmation of unchanged status</h4>
@@ -511,7 +516,7 @@ const Step2 = ({ setStep, step }) => {
               ) : (
                 <>
                   <span className="me-50">
-                    {taxUserType === 'US'
+                    {taxUserType === CITIZEN_TYPES.US
                       ? 'STEP 3 - US-W-9 form'
                       : taxUserType === 'NON_US' && selectedTaxId === 'taxOption2'
                       ? 'Email Customer Support'

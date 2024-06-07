@@ -55,6 +55,7 @@ const bidStatusesOptions = [
   { label: 'Reviewed', value: 'REVIEWED' },
   { label: 'Accepted', value: 'ACCEPTED' },
   { label: 'Closed', value: 'REJECTED' },
+  { label: 'Drafts', value: 'DRAFTS' },
 ];
 
 const statusesOptions = [
@@ -74,6 +75,16 @@ const sortingOptions = [
   { label: 'Recommended', value: 'RECOMMENDED' },
   { label: 'Favorite', value: 'FAVOURITE' },
 ];
+const projectStatusEnum = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  IN_REVIEW: 'IN_REVIEW',
+  ACTIVE: 'ACTIVE',
+  ON_GOING: 'ON_GOING',
+  CLOSED: 'CLOSED',
+  TERMINATED: 'TERMINATED',
+  COMPLETED: 'COMPLETED',
+};
 const disputeStatuses = {
   open: 'OPEN',
   underReview: 'UNDER_REVIEW',
@@ -187,6 +198,11 @@ const CUSTOMER_SUPPORT_TYPES = {
   other: 'other',
 };
 
+const CITIZEN_TYPES = {
+  US: 'US',
+  OTHER: 'OTHER',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -219,5 +235,7 @@ export {
   CHECKOUT_STATUS,
   PAYMENT_TYPES,
   SUPPORT_EMAIL,
+  projectStatusEnum,
   CUSTOMER_SUPPORT_TYPES,
+  CITIZEN_TYPES,
 };

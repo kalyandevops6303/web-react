@@ -299,52 +299,62 @@ const Availability = () => {
 
         if ('days' in res?.availability?.weekdays_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekdays'];
-          setValue('weekdays',   savedFormData?.weekdays.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days, { shouldValidate: true });
+          setValue(
+            'weekdays',
+            savedFormData?.weekdays.length > 0 ? savedFormData?.weekdays : res?.availability?.weekdays_avl?.days,
+            { shouldValidate: true },
+          );
           setValue(
             'weekdayStartTime',
-            savedFormData?.weekdayStartTime
-            ? savedFormData?.weekdayStartTime
-            :  timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
+            savedFormData?.weekdayStartTime ||
+              timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekdayEndTime',
-            savedFormData?.weekdayEndTime
-              ? savedFormData?.weekdayEndTime
-              :  timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
+            savedFormData?.weekdayEndTime ||
+              timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekdays_avl?.end_time),
             { shouldValidate: true },
           );
         }
         if ('days' in res?.availability.weekends_avl) {
           clientAvailabilityDays = [...clientAvailabilityDays, 'weekends'];
-          setValue('weekends',  savedFormData?.weekends.length > 0 ? savedFormData?.weekends : res?.availability?.weekends_avl?.days, { shouldValidate: true });
+          setValue(
+            'weekends',
+            savedFormData?.weekends.length > 0 ? savedFormData?.weekends : res?.availability?.weekends_avl?.days,
+            { shouldValidate: true },
+          );
           setValue(
             'weekendStartTime',
-            savedFormData?.weekendStartTime
-              ? savedFormData?.weekendStartTime
-              :  timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
+            savedFormData?.weekendStartTime ||
+              timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.start_time),
             { shouldValidate: true },
           );
           setValue(
             'weekendEndTime',
-            savedFormData?.weekendEndTime
-            ? savedFormData?.weekendEndTime
-            :   timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
+            savedFormData?.weekendEndTime ||
+              timeOptions.find((time) => parseInt(time.value, 10) === res?.availability?.weekends_avl?.end_time),
             { shouldValidate: true },
           );
         }
-        setValue('availabilityDays',  savedFormData?.availabilityDays.length > 0 ? savedFormData?.availabilityDays : clientAvailabilityDays, { shouldValidate: true });
+        setValue(
+          'availabilityDays',
+          savedFormData?.availabilityDays.length > 0 ? savedFormData?.availabilityDays : clientAvailabilityDays,
+          { shouldValidate: true },
+        );
       }
       if ('name' in res?.client_info?.currency_preference) {
         setValue(
           'currencyPreference',
           {
-            label: savedFormData?.currencyPreference?.length > 0
-            ? savedFormData?.currencyPreference?.label
-            : res?.client_info?.currency_preference?.name,
-            value: savedFormData?.currencyPreference?.length > 0
-            ? savedFormData?.currencyPreference?.value
-            :  res?.client_info?.currency_preference?._id,
+            label:
+              savedFormData?.currencyPreference?.length > 0
+                ? savedFormData?.currencyPreference?.label
+                : res?.client_info?.currency_preference?.name,
+            value:
+              savedFormData?.currencyPreference?.length > 0
+                ? savedFormData?.currencyPreference?.value
+                : res?.client_info?.currency_preference?._id,
           },
           { shouldValidate: true },
         );
@@ -423,7 +433,7 @@ const Availability = () => {
                           type="checkbox"
                           {...field}
                           id="weekdays"
-                          checked={field.value.includes('weekdays')}
+                          checked={field?.value?.includes('weekdays')}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
                             const value = 'weekdays';

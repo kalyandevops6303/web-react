@@ -382,30 +382,27 @@ const Educational = () => {
       if (res?.talent_info?.expertise?.tools.length > 0) {
         setValue(
           'tools',
-          savedFormData?.tools
-            ? savedFormData?.tools
-            : res?.talent_info?.expertise?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          savedFormData?.tools ||
+            res?.talent_info?.expertise?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
       if (res?.talent_info?.expertise?.certificates.length > 0) {
         setValue(
           'certificates',
-          savedFormData?.certificates
-            ? savedFormData?.certificates
-            : res?.talent_info?.expertise?.certificates.map((certificate) => ({
-                label: certificate.name,
-                value: certificate._id,
-              })),
+          savedFormData?.certificates ||
+            res?.talent_info?.expertise?.certificates.map((certificate) => ({
+              label: certificate.name,
+              value: certificate._id,
+            })),
           { shouldValidate: true },
         );
       }
       if (res?.talent_info?.expertise?.skills.length > 0) {
         setValue(
           'skills',
-          savedFormData?.skills
-            ? savedFormData?.skills
-            : res?.talent_info?.expertise?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          savedFormData?.skills ||
+            res?.talent_info?.expertise?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
           { shouldValidate: true },
         );
       }
@@ -619,7 +616,7 @@ const Educational = () => {
                           )}
                       </Col>
                       <Col sm="12" md="12" lg="2">
-                        {getValues('educationDetails') && getValues('educationDetails').length > 1 && (
+                        {getValues('educationDetails') && getValues('educationDetails')?.length > 1 && (
                           <Button
                             type="button"
                             color="flat-danger"

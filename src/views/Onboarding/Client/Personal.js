@@ -242,45 +242,38 @@ const Personal = () => {
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData, country: watch('country') };
     dispatch(setFormData(allData));
-     
-      if (watch('country')?.value !== userDetailsData?.client_info?.office_address?.country?._id) {
-        setValue('state', null);
-        setValue('city', null);
-      }
 
-      if (watch('country')) {
-        dispatch(getStates(watch('country').value));
-        setCitiesOptions([]);
+    if (watch('country')?.value !== userDetailsData?.client_info?.office_address?.country?._id) {
+      setValue('state', null);
+      setValue('city', null);
+    }
+
+    if (watch('country')) {
+      dispatch(getStates(watch('country').value));
+      setCitiesOptions([]);
+    }
+    if (savedFormData && savedFormData.country != null && savedFormData?.country?.label === watch('country').label) {
+      setValue('state', savedFormData?.state);
+      if (savedFormData && savedFormData?.state != null) {
+        setValue('city', savedFormData?.city);
       }
-      if (savedFormData && savedFormData.country != null && savedFormData?.country?.label === watch('country').label) {
-        setValue('state', savedFormData?.state);
-        if (savedFormData && savedFormData?.state != null) {
-          setValue('city', savedFormData?.city);
-        }
-      }
-    
+    }
   }, [watch('country')]);
 
   useEffect(() => {
     const allData = { ...savedFormData, ...localFormData, state: watch('state') };
     dispatch(setFormData(allData));
-    
-      if (watch('state')?.value !== userDetailsData?.client_info?.office_address?.state?._id) {
-        setValue('city', null);
-      }
 
-      if (watch('state')) {
-        dispatch(getCities(watch('state').value));
-      }
-      if (
-        watch('state') != null &&
-        savedFormData &&
-        savedFormData.state != null &&
-        savedFormData?.state?.label === watch('state').label
-      ) {
-        setValue('city', savedFormData?.city);
-      }
-    
+    if (watch('state')?.value !== userDetailsData?.client_info?.office_address?.state?._id) {
+      setValue('city', null);
+    }
+
+    if (watch('state')) {
+      dispatch(getCities(watch('state').value));
+    }
+    if (watch('state') != null && savedFormData && savedFormData?.state?.label === watch('state').label) {
+      setValue('city', savedFormData?.city);
+    }
   }, [watch('state')]);
 
   useEffect(() => {
@@ -420,46 +413,36 @@ const Personal = () => {
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.client_info?.company_logo.length > 0) {
-        setSelectedImage(savedFormData?.selectedImage ? savedFormData?.selectedImage : res.client_info?.company_logo);
-        setSelectedImagePreview(
-          savedFormData?.selectedImagePreview ? savedFormData?.selectedImagePreview : res.client_info?.company_logo,
-        );
+        setSelectedImage(savedFormData?.selectedImage || res.client_info?.company_logo);
+        setSelectedImagePreview(savedFormData?.selectedImagePreview || res.client_info?.company_logo);
       }
       if (res?.client_info?.company_name.length > 0) {
         setValue('companyName', res?.client_info?.company_name, { shouldValidate: true });
       }
       if (res?.client_info?.title.length > 0) {
-        setValue('title', savedFormData?.title ? savedFormData?.title : res?.client_info?.title, {
+        setValue('title', savedFormData?.title || res?.client_info?.title, {
           shouldValidate: true,
         });
       }
       if (res?.client_info?.company_tagline.length > 0) {
-        setValue(
-          'companyTagline',
-          savedFormData?.companyTagline ? savedFormData?.companyTagline : res?.client_info?.company_tagline,
-          { shouldValidate: true },
-        );
+        setValue('companyTagline', savedFormData?.companyTagline || res?.client_info?.company_tagline, {
+          shouldValidate: true,
+        });
       }
       if ('name' in res?.client_info?.company_industry) {
         setValue(
           'companyIndustry',
           {
-            label: savedFormData?.companyIndustry
-              ? savedFormData?.companyIndustry?.label
-              : res?.client_info?.company_industry?.name,
-            value: savedFormData?.companyIndustry
-              ? savedFormData?.companyIndustry?.value
-              : res?.client_info?.company_industry?._id,
+            label: savedFormData?.companyIndustry?.label || res?.client_info?.company_industry?.name,
+            value: savedFormData?.companyIndustry?.value || res?.client_info?.company_industry?._id,
           },
           { shouldValidate: true },
         );
       }
       if (res?.client_info?.company_strength > 0) {
-        setValue(
-          'totalStrength',
-          savedFormData?.totalStrength ? savedFormData?.totalStrength : res?.client_info?.company_strength,
-          { shouldValidate: true },
-        );
+        setValue('totalStrength', savedFormData?.totalStrength || res?.client_info?.company_strength, {
+          shouldValidate: true,
+        });
       }
       if (
         'streetAddress' in res?.client_info?.office_address ||
@@ -470,38 +453,26 @@ const Personal = () => {
         'city' in res?.client_info?.office_address
       ) {
         if (res?.client_info?.office_address?.street_address.length > 0) {
-          setValue(
-            'streetAddress',
-            savedFormData?.streetAddress
-              ? savedFormData?.streetAddress
-              : res?.client_info?.office_address?.street_address,
-            { shouldValidate: true },
-          );
+          setValue('streetAddress', savedFormData?.streetAddress || res?.client_info?.office_address?.street_address, {
+            shouldValidate: true,
+          });
         }
         if (res?.client_info?.office_address?.house_number.length > 0) {
-          setValue(
-            'houseNumber',
-            savedFormData?.houseNumber ? savedFormData?.houseNumber : res?.client_info?.office_address?.house_number,
-            { shouldValidate: true },
-          );
+          setValue('houseNumber', savedFormData?.houseNumber || res?.client_info?.office_address?.house_number, {
+            shouldValidate: true,
+          });
         }
         if (res?.client_info?.office_address?.zip_code > 0) {
-          setValue(
-            'zipCode',
-            savedFormData?.zipCode ? savedFormData?.zipCode : res?.client_info?.office_address?.zip_code,
-            { shouldValidate: true },
-          );
+          setValue('zipCode', savedFormData?.zipCode || res?.client_info?.office_address?.zip_code, {
+            shouldValidate: true,
+          });
         }
         if ('country' in res?.client_info?.office_address) {
           setValue(
             'country',
             {
-              label: savedFormData?.country
-                ? savedFormData?.country?.label
-                : res?.client_info?.office_address.country.name,
-              value: savedFormData?.country
-                ? savedFormData?.country?.value
-                : res?.client_info?.office_address.country._id,
+              label: savedFormData?.country?.label || res?.client_info?.office_address.country.name,
+              value: savedFormData?.country?.value || res?.client_info?.office_address.country._id,
             },
             { shouldValidate: true },
           );
@@ -510,8 +481,8 @@ const Personal = () => {
           setValue(
             'state',
             {
-              label: savedFormData?.state ? savedFormData?.state?.label : res?.client_info?.office_address.state.name,
-              value: savedFormData?.state ? savedFormData?.state?.value : res?.client_info?.office_address.state._id,
+              label: savedFormData?.state?.label || res?.client_info?.office_address.state.name,
+              value: savedFormData?.state?.value || res?.client_info?.office_address.state._id,
             },
             { shouldValidate: true },
           );
@@ -520,8 +491,8 @@ const Personal = () => {
           setValue(
             'city',
             {
-              label: savedFormData?.city ? savedFormData?.city?.label : res?.client_info?.office_address.city.name,
-              value: savedFormData?.city ? savedFormData?.city?.value : res?.client_info?.office_address.city._id,
+              label: savedFormData?.city?.label || res?.client_info?.office_address.city.name,
+              value: savedFormData?.city?.value || res?.client_info?.office_address.city._id,
             },
             { shouldValidate: true },
           );
