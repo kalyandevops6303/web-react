@@ -302,19 +302,20 @@ const Educational = () => {
   const onGetUserDetailsSuccess = (res) => {
     if (res) {
       if (res?.client_info?.educational_institute.length > 0) {
-
         setValue(
           'educationDetails',
-       savedFormData?.educationDetails ?   savedFormData?.educationDetails  : res?.client_info?.educational_institute.map((detail) => ({
-            educationInstitution: { label: detail.institution.name, value: detail.institution._id },
-          })),
+          savedFormData?.educationDetails ||
+            res?.client_info?.educational_institute.map((detail) => ({
+              educationInstitution: { label: detail.institution.name, value: detail.institution._id },
+            })),
           { shouldValidate: true },
         );
       }
       if (res?.client_info?.project_area_of_interest?.tools.length > 0) {
         setValue(
           'tools',
-          savedFormData?.tools ? savedFormData?.tools : res?.client_info?.project_area_of_interest?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
+          savedFormData?.tools ||
+            res?.client_info?.project_area_of_interest?.tools.map((tool) => ({ label: tool.name, value: tool._id })),
           { shouldValidate: true },
         );
       }
@@ -323,8 +324,8 @@ const Educational = () => {
         setValue(
           'area',
           {
-            label: savedFormData?.area ?  savedFormData?.area?.label : res?.client_info?.project_area_of_interest?.area.name,
-            value: savedFormData?.area ?  savedFormData?.area?.value : res?.client_info?.project_area_of_interest?.area._id,
+            label: savedFormData?.area?.label || res?.client_info?.project_area_of_interest?.area.name,
+            value: savedFormData?.area?.value || res?.client_info?.project_area_of_interest?.area._id,
           },
           { shouldValidate: true },
         );
@@ -332,7 +333,11 @@ const Educational = () => {
       if (res?.client_info?.project_area_of_interest?.skills.length > 0) {
         setValue(
           'skills',
-          savedFormData?.skills ?  savedFormData?.skills :   res?.client_info?.project_area_of_interest?.skills.map((skill) => ({ label: skill.name, value: skill._id })),
+          savedFormData?.skills ||
+            res?.client_info?.project_area_of_interest?.skills.map((skill) => ({
+              label: skill.name,
+              value: skill._id,
+            })),
           { shouldValidate: true },
         );
       }
