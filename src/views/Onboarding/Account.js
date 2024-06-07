@@ -142,9 +142,9 @@ const Account = () => {
     setResetPasswordModal(!resetPasswordModal);
   };
 
-   useEffect(()=>{
+  useEffect(() => {
     dispatch(setFormData({ ...savedFormData, resetPasswordModal }));
-   },[resetPasswordModal]);
+  }, [resetPasswordModal]);
 
   const onReferralConversionSuccess = () => {
     userDetailsData?.user_type === 'TALENT'
@@ -199,30 +199,26 @@ const Account = () => {
 
       if (res.checkpoint === checkPoints.ACCOUNT_DETAILS && res.oauth_type === 'google') {
         if (res.user_type === userTypes.talent) {
-          setSelectedImage(savedFormData?.selectedImage ? savedFormData?.selectedImage : res?.talent_info?.image_uri);
-          setSelectedImagePreview(
-            savedFormData?.selectedImagePreview ? savedFormData?.selectedImagePreview : res?.talent_info?.image_uri,
-          );
-          setValue('firstName', savedFormData?.firstName ? savedFormData?.firstName : res?.talent_info?.first_name, {
+          setSelectedImage(savedFormData?.selectedImage || res?.talent_info?.image_uri);
+          setSelectedImagePreview(savedFormData?.selectedImagePreview || res?.talent_info?.image_uri);
+          setValue('firstName', savedFormData?.firstName || res?.talent_info?.first_name, {
             shouldValidate: true,
           });
           if (res?.talent_info?.last_name !== '') {
-            setValue('lastName', savedFormData?.lastName ? savedFormData?.lastName : res?.talent_info?.last_name, {
+            setValue('lastName', savedFormData?.lastName || res?.talent_info?.last_name, {
               shouldValidate: true,
             });
           } else {
             setValue('lastName', savedFormData?.lastName);
           }
         } else if (res.user_type === userTypes.client) {
-          setSelectedImage(savedFormData?.selectedImage ? savedFormData?.selectedImage : res?.client_info?.image_uri);
-          setSelectedImagePreview(
-            savedFormData?.selectedImagePreview ? savedFormData?.selectedImagePreview : res?.client_info?.image_uri,
-          );
-          setValue('firstName', savedFormData?.firstName ? savedFormData?.firstName : res?.client_info?.first_name, {
+          setSelectedImage(savedFormData?.selectedImage || res?.client_info?.image_uri);
+          setSelectedImagePreview(savedFormData?.selectedImagePreview || res?.client_info?.image_uri);
+          setValue('firstName', savedFormData?.firstName || res?.client_info?.first_name, {
             shouldValidate: true,
           });
           if (res?.client_info?.last_name !== '') {
-            setValue('lastName', savedFormData?.lastName ? savedFormData?.lastName : res?.client_info?.last_name, {
+            setValue('lastName', savedFormData?.lastName || res?.client_info?.last_name, {
               shouldValidate: true,
             });
           } else {
@@ -231,27 +227,23 @@ const Account = () => {
         }
       } else if (res.checkpoint === checkPoints.PROFILE_DETAILS || res.checkpoint === checkPoints.COMPLETE) {
         if (res.user_type === userTypes.talent) {
-          setValue('firstName', savedFormData?.firstName ? savedFormData?.firstName : res.talent_info?.first_name, {
+          setValue('firstName', savedFormData?.firstName || res.talent_info?.first_name, {
             shouldValidate: true,
           });
-          setValue('lastName', savedFormData?.lastName ? savedFormData?.lastName : res.talent_info?.last_name, {
+          setValue('lastName', savedFormData?.lastName || res.talent_info?.last_name, {
             shouldValidate: true,
           });
-          setSelectedImage(savedFormData?.selectedImage ? savedFormData?.selectedImage : res.talent_info?.image_uri);
-          setSelectedImagePreview(
-            savedFormData?.selectedImagePreview ? savedFormData?.selectedImagePreview : res.talent_info?.image_uri,
-          );
+          setSelectedImage(savedFormData?.selectedImage || res.talent_info?.image_uri);
+          setSelectedImagePreview(savedFormData?.selectedImagePreview || res.talent_info?.image_uri);
         } else if (res.user_type === userTypes.client) {
-          setValue('firstName', savedFormData?.firstName ? savedFormData?.firstName : res.client_info?.first_name, {
+          setValue('firstName', savedFormData?.firstName || res.client_info?.first_name, {
             shouldValidate: true,
           });
-          setValue('lastName', savedFormData?.lastName ? savedFormData?.lastName : res.client_info?.last_name, {
+          setValue('lastName', savedFormData?.lastName || res.client_info?.last_name, {
             shouldValidate: true,
           });
-          setSelectedImage(savedFormData?.selectedImage ? savedFormData?.selectedImage : res.client_info?.image_uri);
-          setSelectedImagePreview(
-            savedFormData?.selectedImagePreview ? savedFormData?.selectedImagePreview : res.client_info?.image_uri,
-          );
+          setSelectedImage(savedFormData?.selectedImage || res.client_info?.image_uri);
+          setSelectedImagePreview(savedFormData?.selectedImagePreview || res.client_info?.image_uri);
         }
 
         setIsNextButtonDisabled(false);

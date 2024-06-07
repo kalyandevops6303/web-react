@@ -91,9 +91,9 @@ const Step2 = ({ setStep, step }) => {
     }),
   });
 
-  useEffect(()=>{
-    dispatch(setFormData({...savedFormData,step}));
-  },[step]);
+  useEffect(() => {
+    dispatch(setFormData({ ...savedFormData, step }));
+  }, [step]);
 
   const {
     control,
@@ -145,22 +145,26 @@ const Step2 = ({ setStep, step }) => {
     if (res) {
       if (res?.is_payment_gateway_onboarded) setIsPaymentOnboardingDone(res?.is_payment_gateway_onboarded);
       if (res?.tax_user_type?.length > 0) {
-        setTaxUserType(savedFormData?.taxType ? savedFormData?.taxType  : res?.tax_user_type);
+        setTaxUserType(savedFormData?.taxType || res?.tax_user_type);
       }
       if (res.tax_identification?.legal_name?.length > 0) {
-        setValue('taxName', savedFormData?.taxName ? savedFormData?.taxName  : res.tax_identification?.legal_name);
+        setValue('taxName', savedFormData?.taxName || res.tax_identification?.legal_name);
       }
       if (res.tax_identification?.federal_tax_classification?.length > 0) {
         setValue('taxClass', {
           label: 'Individual',
-          value: savedFormData?.taxClass ? savedFormData?.taxClass?.value  : res.tax_identification?.federal_tax_classification,
+          value: savedFormData?.taxClass?.value || res.tax_identification?.federal_tax_classification,
         });
       }
       if (res.tax_identification?.social_security_number?.length > 0 && res?.tax_user_type === 'US') {
-        setValue('ssnTaxId', savedFormData?.ssnTaxId ? savedFormData?.ssnTaxId  :  res.tax_identification?.social_security_number, { shouldValidate: true });
+        setValue('ssnTaxId', savedFormData?.ssnTaxId || res.tax_identification?.social_security_number, {
+          shouldValidate: true,
+        });
       }
       if (res.tax_identification?.national_taxpayer_number?.length > 0 && res?.tax_user_type === 'NON_US') {
-        setValue('nsnTaxId', savedFormData?.nsnTaxId ? savedFormData?.nsnTaxId  :  res.tax_identification?.national_taxpayer_number, { shouldValidate: true });
+        setValue('nsnTaxId', savedFormData?.nsnTaxId || res.tax_identification?.national_taxpayer_number, {
+          shouldValidate: true,
+        });
       }
       if (res?.tax_user_type) {
         setValue('taxType', res?.tax_user_type);
