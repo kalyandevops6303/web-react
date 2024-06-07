@@ -126,7 +126,6 @@ const CreateProject = () => {
     const { excluded, included } = res?.countries;
     const { currency, variable_cost, fixed_cost } = res?.pay_type;
     const { is_nda } = res?.nda;
-    const { start_date_epoch, end_date_epoch } = res?.listing_details;
 
     const docs = documents?.map((file) => ({
       id: uuidv4(),
@@ -196,12 +195,16 @@ const CreateProject = () => {
     };
     setDraftRequirementDetails(projectRequirement);
 
-    const projectListing = {
-      listingOption: 'listing_details' in res && 'select-duration',
-      startDate: [new Date(start_date_epoch)],
-      endDate: [new Date(end_date_epoch)],
-    };
-    setDraftListingDetails(projectListing);
+    if ('listing_details' in res) {
+      const { start_date_epoch, end_date_epoch } = res?.listing_details;
+
+      const projectListing = {
+        listingOption: 'listing_details' in res && 'select-duration',
+        startDate: [new Date(start_date_epoch)],
+        endDate: [new Date(end_date_epoch)],
+      };
+      setDraftListingDetails(projectListing);
+    }
   };
 
   useEffect(() => {
