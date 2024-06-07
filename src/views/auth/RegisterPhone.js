@@ -22,6 +22,7 @@ import LogoComp from './components/LogoComp';
 import { formData } from '../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
 import { filteredFormSchema } from '../../utility/Utils';
+import { CITIZEN_TYPES } from '../../utility/constants/Constant';
 
 const RegisterPhone = () => {
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ const RegisterPhone = () => {
     mobileData?.selectedCountry || {
       label: 'United States',
       dial_code: '+1',
-      code: 'US',
+      code: CITIZEN_TYPES.US,
       _id: '6479c2071183add75cda4e37',
     },
   );

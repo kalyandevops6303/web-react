@@ -41,6 +41,7 @@ import { usWFormsSchema } from '../Schema';
 import { TooltipWrapper } from '../../../styled';
 import { formData } from '../../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../../redux/reducers/formData';
+import { CITIZEN_TYPES } from '../../../../utility/constants/Constant';
 
 const Step3 = ({ setStep, step }) => {
   const dispatch = useDispatch();
@@ -58,7 +59,7 @@ const Step3 = ({ setStep, step }) => {
   const [paymentDetailsRes, setPaymentDetailsRes] = useState(null);
   const [taxPayer, setTaxPayer] = useState(savedFormData?.taxPayer || 'option1');
 
-  const isUsPerson = paymentDetailsRes?.tax_user_type === 'US';
+  const isUsPerson = paymentDetailsRes?.tax_user_type === CITIZEN_TYPES.US;
   const [isAgreed, setIsAgreed] = useState(savedFormData?.isAgreed || !!isUsPerson);
   const [isPaymentOnboardingDone, setIsPaymentOnboardingDone] = useState(false);
 
@@ -397,7 +398,7 @@ const Step3 = ({ setStep, step }) => {
   };
 
   useEffect(() => {
-    if (countriesData?.length > 0 && paymentDetailsRes && paymentDetailsRes?.tax_user_type === 'US') {
+    if (countriesData?.length > 0 && paymentDetailsRes && paymentDetailsRes?.tax_user_type === CITIZEN_TYPES.US) {
       const unitedStates = countriesData.find((country) => country.name === 'United States');
 
       setValue('citizen', {
