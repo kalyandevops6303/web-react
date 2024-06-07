@@ -14,6 +14,12 @@ const initialState = {
   almaMaterTalents: null,
   almaMaterTalentsLoading: false,
   inviteTalentsLoading: false,
+  saveDraftProjectLoading: false,
+  saveDraftProjectId: null,
+  draftProjectsCheckLoading: false,
+  deleteDraftProjectLoading: false,
+  draftProjectDetailsLoading: false,
+  draftProjectDetails: null,
   error: null,
 };
 
@@ -154,6 +160,68 @@ const createProjectSlice = createSlice({
       almaMaterTalents: null,
       almaMaterTalentsLoading: false,
     }),
+    saveDraftProjectRequest: (state) => ({
+      ...state,
+      saveDraftProjectLoading: true,
+      error: null,
+    }),
+    saveDraftProjectSuccess: (state, action) => ({
+      ...state,
+      saveDraftProjectLoading: false,
+      saveDraftProjectId: action.payload,
+    }),
+    saveDraftProjectFailure: (state, action) => ({
+      ...state,
+      saveDraftProjectLoading: false,
+      error: action.payload,
+    }),
+    clearSaveDraftProjectId: (state) => ({
+      ...state,
+      saveDraftProjectId: null,
+    }),
+    draftProjectsCheckRequest: (state) => ({
+      ...state,
+      draftProjectsCheckLoading: true,
+      error: null,
+    }),
+    draftProjectsCheckSuccess: (state) => ({
+      ...state,
+      draftProjectsCheckLoading: false,
+    }),
+    draftProjectsCheckFailure: (state, action) => ({
+      ...state,
+      draftProjectsCheckLoading: false,
+      error: action.payload,
+    }),
+    deleteDraftProjectRequest: (state) => ({
+      ...state,
+      deleteDraftProjectLoading: true,
+      error: null,
+    }),
+    deleteDraftProjectSuccess: (state) => ({
+      ...state,
+      deleteDraftProjectLoading: false,
+    }),
+    deleteDraftProjectFailure: (state, action) => ({
+      ...state,
+      deleteDraftProjectLoading: false,
+      error: action.payload,
+    }),
+    draftProjectDetailsRequest: (state) => ({
+      ...state,
+      draftProjectDetailsLoading: true,
+      error: null,
+    }),
+    draftProjectDetailsSuccess: (state, action) => ({
+      ...state,
+      draftProjectDetailsLoading: false,
+      draftProjectDetails: action.payload,
+    }),
+    draftProjectDetailsFailure: (state, action) => ({
+      ...state,
+      draftProjectDetailsLoading: false,
+      error: action.payload,
+    }),
   },
 });
 
@@ -181,6 +249,19 @@ export const {
   inviteTalentsSuccess,
   inviteTalentsFailure,
   clearModalData,
+  saveDraftProjectRequest,
+  saveDraftProjectSuccess,
+  saveDraftProjectFailure,
+  clearSaveDraftProjectId,
+  draftProjectsCheckRequest,
+  draftProjectsCheckSuccess,
+  draftProjectsCheckFailure,
+  deleteDraftProjectRequest,
+  deleteDraftProjectSuccess,
+  deleteDraftProjectFailure,
+  draftProjectDetailsRequest,
+  draftProjectDetailsSuccess,
+  draftProjectDetailsFailure,
 } = createProjectSlice.actions;
 
 export default createProjectSlice.reducer;

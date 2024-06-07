@@ -305,6 +305,37 @@ const RelistModalWrapper = styled.div`
   .note-text {
     line-height: 29.124px;
   }
+  .project-name-label {
+    color: ${theme.textMuted};
+  }
+  .project-name {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .modal-heading {
+    line-height: 38.832px;
+  }
+  .modal-sub-heading {
+    color: ${theme.bodyColor};
+    font-size: 18px;
+    line-height: 24px;
+  }
+  .details {
+    font-size: 16px;
+  }
+  .btns-container {
+    margin-top: -14px;
+  }
+  .left-border {
+    min-width: 105px;
+    border-left: 2px solid ${theme.modalLeftBorderColor};
+  }
+`;
+
+const FeedbackSupportModalWrapper = styled.div`
+  .note-text {
+    line-height: 29.124px;
+  }
 `;
 
 const ChangeRequestModalWrapper = styled.div`
@@ -350,6 +381,52 @@ const ChangeRequestModalWrapper = styled.div`
   }
 `;
 
+const SupportModalWrapper = styled.div`
+  .select__placeholder {
+    font-size: 12px;
+    color: ${theme.textMuted};
+  }
+  .select__indicator {
+    svg {
+      color: ${theme.textMuted};
+    }
+  }
+
+  .select__control {
+    border-color: ${theme.inputBorderColor};
+
+    svg {
+      color: ${theme.textMuted};
+    }
+
+    .select__placeholder {
+      color: ${theme.textMuted};
+    }
+  }
+
+  .upload-button {
+    width: fit-content;
+
+    h5 {
+      margin: 0 0 0 8px;
+      color: ${theme.activeNavPillText};
+    }
+  }
+
+  .form-check-label.form-label {
+    color: ${theme.checkboxLabel};
+  }
+
+  .info-bg {
+    background-color: ${theme.activeColor}1f;
+    border-radius: 0.375rem;
+    color: ${theme.activeColor};
+  }
+  .label-asterisk {
+    color: ${theme.red};
+  }
+`;
+
 const ViewFilesModalWrapper = styled.div`
   .modal-header,
   .modal-body {
@@ -377,4 +454,6 @@ export {
   ChangeRequestModalWrapper,
   ArtifactsModalWrap,
   ViewFilesModalWrapper,
+  SupportModalWrapper,
+  FeedbackSupportModalWrapper,
 };

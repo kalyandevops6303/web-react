@@ -54,3 +54,28 @@ export const inviteTalentsLoading = createSelector(
   createProjectSelector,
   (createProject) => createProject.inviteTalentsLoading,
 );
+
+export const saveDraftProjectLoading = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.saveDraftProjectLoading,
+);
+
+export const saveDraftProjectId = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.saveDraftProjectId,
+);
+
+export const draftProjectsCheckLoading = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.draftProjectsCheckLoading,
+);
+
+export const deleteDraftProjectLoading = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.deleteDraftProjectLoading,
+);
+
+export const draftProjectDetailsLoading = createSelector(
+  createProjectSelector,
+  (createProject) => createProject.draftProjectDetailsLoading,
+);

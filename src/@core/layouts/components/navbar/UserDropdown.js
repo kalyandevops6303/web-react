@@ -29,7 +29,9 @@ import { selectTeamData } from '../../../../redux/selectors/teamSelectors';
 import { CometChat } from '@cometchat-pro/chat';
 import { messaging } from '../../../../configs/api/firebase';
 import EditProfileAccordion from './EditProfileAccordion';
-import { DeclinedButton, InreviewButton } from './style';
+import { DeclinedButton, InreviewButton, UserDropDownWrapper } from './style';
+import CustomerSupportModal from '../../../../views/modals/CustomerSupportModal';
+import FeedbackForCustomerSupportModal from '../../../../views/modals/CustomerSupportFeedbackModal';
 
 const UserDropdown = ({ setNavBarLoading }) => {
   const userDetailsData = useSelector(selectUserData);
@@ -43,6 +45,8 @@ const UserDropdown = ({ setNavBarLoading }) => {
   const location = useLocation();
 
   const [isProfileSwitchLoading, setProfileSwitchLoading] = useState(false);
+  const [supportModal, setSupportModal] = useState(false);
+  const [feedbackSupportModal, setFeedbackSupportModal] = useState(false);
 
   const handleEdit = () => {
     const talentOrClientProfile =
@@ -56,6 +60,11 @@ const UserDropdown = ({ setNavBarLoading }) => {
 
   const handleLogout = async () => {
     const onSuccess = async () => {
+      window.history.pushState(null, '', '/auth/login');
+      window.addEventListener('popstate', function (event) {
+        history.pushState(null, '', '/auth/login');
+      });
+
       navigate('/auth/login');
 
       // Fcm unsubscribe
@@ -104,61 +113,29 @@ const UserDropdown = ({ setNavBarLoading }) => {
     }
   `;
 
-  const UserDropDownWrapper = styled.div`
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-    .isActive {
-      background: ${theme.primary}1f;
-      color: ${theme.primary};
-    }
-    .logout {
-      color: ${theme.red};
-      padding: 1rem 1.2rem;
-      display: block;
-      border-top: 1px solid ${theme.cardHeaderBorderColor};
-      margin-top: 1rem;
-    }
-    .edit {
-      color: ${theme.primary};
-      padding: 1rem 1.2rem;
-      display: block;
-      border-bottom: 1px solid ${theme.cardHeaderBorderColor};
-      &:active {
-        color: white;
-      }
-    }
-
-    .dropdown-item {
-      width: 100%;
-    }
-    .edit-accordion {
-      border-bottom: 1px solid ${theme.cardHeaderBorderColor};
-      margin-bottom: 1rem;
-    }
-    .accordion-button {
-      font-size: 14px !important;
-      font-weight: normal !important;
-    }
-    .accordion-body {
-      padding: 0;
-      margin-bottom: 1rem;
-    }
-    .edit-link {
-      padding: 1rem 1.2rem;
-    }
-  `;
-
   const handleShowModal = (selected) => {
     !selected && ShowToastMessage('success', `Profile switched successfully`);
     navigate('/dashboard');
   };
   const handleSwitch = (data, selected) => {
-    // if (userDetailsData?.user_type === userTypes.team) {
-    //   setNavBarLoading(true);
-    // }
     dispatch(switchProfile({ data, onSuccess: handleShowModal, selected }));
+  };
+
+  const handleCustomerSupport = () => {
+    setSupportModal(true);
+  };
+
+  const onCustomerSupportSuccess = () => {
+    setSupportModal(false);
+    setFeedbackSupportModal(true);
+  };
+
+  const toggleSupportModal = () => {
+    setSupportModal(!supportModal);
+  };
+
+  const toggleFeedbackSupportModal = () => {
+    setFeedbackSupportModal(!feedbackSupportModal);
   };
 
   const userName = isTeamLoggedIn
@@ -321,12 +298,25 @@ const UserDropdown = ({ setNavBarLoading }) => {
               </DropdownItem>
             ))}
           </div>
+          <DropdownItem onClick={handleCustomerSupport} className="w-100 customer-support">
+            <span className="align-middle ">Customer support</span>
+          </DropdownItem>
           <DropdownItem onClick={handleLogout} className="w-100 logout">
             <span className="align-middle ">Logout</span>
           </DropdownItem>
         </DropdownMenu>
       </UserDropDownWrapper>
       {isProfileSwitchLoading && <ProfileSwitchModal modal={isProfileSwitchLoading} />}
+      {supportModal && (
+        <CustomerSupportModal
+          onSuccess={onCustomerSupportSuccess}
+          modal={supportModal}
+          toggleModal={toggleSupportModal}
+        />
+      )}
+      {feedbackSupportModal && (
+        <FeedbackForCustomerSupportModal modal={feedbackSupportModal} toggleModal={toggleFeedbackSupportModal} />
+      )}
     </UncontrolledDropdown>
   );
 };

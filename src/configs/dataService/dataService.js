@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import axios from 'axios';
 import { getItem, setItem } from '../../utility/localStorageControl';
 import getTeamId from '../../utility/commonUtils';
@@ -131,6 +132,7 @@ client.interceptors.request.use(async (req) => {
   const accessToken = getItem('access_token');
   const accessTokenExpiry = getItem('access_token_expires');
   const refreshTokenExpiry = getItem('refresh_token_expires');
+
   if (accessToken) {
     if (refreshTokenExpiry > new Date().valueOf()) {
       if (accessTokenExpiry < new Date().valueOf()) {

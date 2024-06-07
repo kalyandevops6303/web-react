@@ -48,12 +48,17 @@ import { setClubCreateDataAction, updateClub } from '../../redux/actions/clubAct
 import { getTeamById } from '../../services/teamServices';
 import { getProjectAreas, getSkills, getTools } from '../../redux/actions/staticActions';
 import { projectAreas, skillsList, toolsList } from '../../redux/selectors/staticSelectors';
-import { userProfileEdit } from '../../utility/constants/Constant';
+import { CUSTOMER_SUPPORT_TYPES, userProfileEdit } from '../../utility/constants/Constant';
 import RemoveUploadedPicture from '../../@core/components/remove-uploaded-picture';
 import { formData, formDocuments, formImage, isFormImageRemoved } from '../../redux/selectors/formDataSelectors';
 import { setFormData, setFormDocuments, setFormImage, setIsFormImageRemoved } from '../../redux/reducers/formData';
 import { clearClubCreateData } from '../../redux/reducers/clubs';
 import TextEditor from '../CreateProject/TextEditor';
+import CustomerSupportCTA from '../Onboarding/CustomerSupportCTA';
+import CustomerSupportModal from '../modals/CustomerSupportModal';
+import FeedbackForCustomerSupportModal from '../modals/CustomerSupportFeedbackModal';
+import { getCustomerSupportCount } from '../../redux/actions/supportActions';
+import NoteComponent from '../Onboarding/NoteComponent';
 
 const Account = () => {
   const ProfileSchema = yup.object().shape({
@@ -135,6 +140,7 @@ const Account = () => {
   const userDetailsData = useSelector(userData);
   const updateTeamIsLoading = useSelector(updateTeamLoading);
   const clubCreateData = useSelector((state) => state.clubs.clubCreateData);
+  const supportData = useSelector((state) => state.support.supportCount);
   const savedFormData = useSelector(formData);
   const savedFormDocuments = useSelector(formDocuments);
   const savedFormImage = useSelector(formImage);
@@ -651,6 +657,28 @@ const Account = () => {
     </GroupLabelWrapper>
   );
 
+  const [customerSupportModal, setCustomerSupportModal] = useState(false);
+  const [feedbackModal, setFeedbackSupportModal] = useState(false);
+  const [defaultSelected, setDefaultSelected] = useState([]);
+  const handleCustomerSupport = (value) => {
+    setCustomerSupportModal(true);
+    setDefaultSelected(value);
+  };
+
+  const toggleSupportModal = () => {
+    setCustomerSupportModal(!customerSupportModal);
+  };
+
+  const toggleFeedbackSupportModal = () => {
+    setFeedbackSupportModal(!feedbackModal);
+  };
+
+  const onCustomerSupportSuccess = () => {
+    setCustomerSupportModal(false);
+    setFeedbackSupportModal(true);
+    dispatch(getCustomerSupportCount());
+  };
+
   return (
     <ProfileFormContainer className="w-75">
       {educationInstitutionModal && (
@@ -782,6 +810,12 @@ const Account = () => {
                 />
                 {errors.educationInstitution && <FormFeedback>{errors.educationInstitution.message}</FormFeedback>}
               </Col>
+              <Col sm="12" md="12" lg="6" className="mt-auto mb-50">
+                <CustomerSupportCTA
+                  type={CUSTOMER_SUPPORT_TYPES.education}
+                  handleCustomerSupport={handleCustomerSupport}
+                />
+              </Col>
             </Row>
             <Row className="mb-1">
               <Col sm="12" md="12" lg="12">
@@ -792,23 +826,33 @@ const Account = () => {
                   id="clubIntroduction"
                   name="clubIntroduction"
                   control={control}
-                  render={({ field }) =>(
+                  render={({ field }) => (
                     <TextEditor
-                    name={field.name}
-                    onChange={field.onChange}
-                    value={field.value}
-                    placeholder="Write your club introduction in 500 characters."
-                  />
+                      name={field.name}
+                      onChange={field.onChange}
+                      value={field.value}
+                      placeholder="Write your club introduction in 500 characters."
+                    />
                   )}
                 />
                 {errors.clubIntroduction && <FormFeedback>{errors.clubIntroduction.message}</FormFeedback>}
               </Col>
             </Row>
+            {supportData?.tools_and_skills?.pending_requests > 0 && (
+              <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
+            )}
+            {supportData?.tools_and_skills?.approved_requests > 0 && (
+              <NoteComponent type="success" requestCount={supportData?.tools_and_skills?.approved_requests} />
+            )}
           </CardBody>
         </Card>
         <Card>
-          <CardHeader>
+          <CardHeader className="align-items-end">
             <h4 className="m-0 mt-1">Area of Interests</h4>
+            <CustomerSupportCTA
+              type={CUSTOMER_SUPPORT_TYPES.tools_and_skills}
+              handleCustomerSupport={handleCustomerSupport}
+            />
           </CardHeader>
           <hr className="m-0 card-header-border" />
           <CardBody>
@@ -892,6 +936,13 @@ const Account = () => {
                 {errors.tools && <FormFeedback>{errors.tools.message}</FormFeedback>}
               </Col>
             </Row>
+
+            {supportData?.tools_and_skills?.pending_requests > 0 && (
+              <NoteComponent type="info" requestCount={supportData?.tools_and_skills?.pending_requests} />
+            )}
+            {supportData?.tools_and_skills?.approved_requests > 0 && (
+              <NoteComponent type="success" requestCount={supportData?.tools_and_skills?.approved_requests} />
+            )}
           </CardBody>
         </Card>
         <div className="d-flex justify-content-end align-items-center pb-2 mt-1">
@@ -914,6 +965,17 @@ const Account = () => {
           </div>
         </div>
       </Form>
+      {customerSupportModal && (
+        <CustomerSupportModal
+          onSuccess={onCustomerSupportSuccess}
+          modal={customerSupportModal}
+          toggleModal={toggleSupportModal}
+          defaultSelected={defaultSelected}
+        />
+      )}
+      {feedbackModal && (
+        <FeedbackForCustomerSupportModal modal={feedbackModal} toggleModal={toggleFeedbackSupportModal} />
+      )}
     </ProfileFormContainer>
   );
 };

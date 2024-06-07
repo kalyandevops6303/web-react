@@ -199,7 +199,7 @@ const RegisterEmail = () => {
 
         <div className="d-flex justify-content-center sign-info">
           <Label>
-            <small>Already have an account?</small>
+            <small>Already have a trumio account?</small>
           </Label>
           <Label onClick={()=>dispatch(clearAllFormData())} tag={Link} to="/auth/login" className="primary">
             <small>Sign in</small>

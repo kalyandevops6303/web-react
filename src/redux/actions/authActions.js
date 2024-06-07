@@ -66,6 +66,7 @@ import {
   checkAdminRequest,
   checkAdminSuccess,
   checkAdminFailure,
+  googleLoginRequest,
 } from '../reducers/auth';
 import { removeItem, setItem } from '../../utility/localStorageControl';
 import ShowToastMessage from '../../@core/components/toast';
@@ -128,6 +129,7 @@ const loginUser = (username, password, onSuccess) => async (dispatch) => {
 const loginUserWithGoogle =
   ({ id_token, user_type, onError, onSuccess }) =>
   async (dispatch) => {
+    dispatch(googleLoginRequest());
     let res;
     try {
       if (user_type) {
@@ -150,8 +152,8 @@ const loginUserWithGoogle =
       }
       onSuccess(res.data.data);
     } catch (error) {
-      onError(error);
-      errorHandler(error, loginFailure);
+      dispatch(loginFailure());
+      onError(error, id_token);
     }
   };
 

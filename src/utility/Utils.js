@@ -7,7 +7,16 @@ import DateTime from '../lib/date-time';
 import toast from '../lib/toast';
 import round from '../lib/round';
 import { CompleteProfileDetailsCta } from './constants/CompleteProfileDetailsCta';
-import { bidStatus, fileScanStatus, maxFileSize, timeDalayToRetryScanning, userTypes } from './constants/Constant';
+import {
+  CUSTOMER_SUPPORT_TYPES,
+  SUPPORT_EMAIL,
+  bidStatus,
+  checkPoints,
+  fileScanStatus,
+  maxFileSize,
+  timeDalayToRetryScanning,
+  userTypes,
+} from './constants/Constant';
 import ShowToastMessage from '../@core/components/toast';
 import { ERROR } from './constants/ToastTypes';
 import { AccordionName } from '../views/dashboard/overview/DashboardConstant';
@@ -191,7 +200,7 @@ const isEmpty = (value) => {
   return false;
 };
 
-const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
+export const hasEmptyKeys = (obj) => Object.values(obj).some((value) => isEmpty(value));
 
 export const removeEmptyKeys = (obj) => {
   if (typeof obj !== 'object' || obj === null) {
@@ -683,7 +692,7 @@ export const getBidAction = (action) => {
 };
 
 export const handleEmailClick = () => {
-  const recipient = 'support@trumio.ai';
+  const recipient = SUPPORT_EMAIL;
   const subject = '';
   const body = '';
   const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -768,6 +777,30 @@ export const generateToolTipId = (projectName, name, title) =>
   `${projectName ?? name}-${title}`.replace(/[^a-zA-Z0-9-]/g, '-');
 
 export const roundOfAmount = (amount) => (amount ? round(amount, 2) : 0);
+
+export const getMissingName = (type, values) => {
+  switch (type) {
+    case CUSTOMER_SUPPORT_TYPES.missing_skill:
+      return values.skill;
+    case CUSTOMER_SUPPORT_TYPES.missing_tool:
+      return values.tool;
+    case CUSTOMER_SUPPORT_TYPES.missing_institute:
+      return values.institute;
+    default:
+      return '';
+  }
+};
+export const checkPointRedirection = ({ response, navigate }) => {
+  if (response?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
+    navigate('/auth/register-phone');
+  } else if (response?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
+    navigate(`/${response.user_type.toLowerCase()}-onboarding/account-details`);
+  } else if (response?.checkpoint === checkPoints.PROFILE_DETAILS) {
+    navigate(`/${response.user_type.toLowerCase()}-onboarding/personal-details`);
+  } else if (response?.checkpoint === checkPoints.COMPLETE) {
+    navigate('/dashboard');
+  }
+};
 
 export const filteredFormSchema = ({ savedData, formSchemaFields }) => {
   const filteredObj = Object.fromEntries(

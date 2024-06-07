@@ -17,14 +17,13 @@ import InputPasswordToggle from '@components/input-password-toggle';
 // ** Styles
 import { OnBoardWrap } from './style';
 import '@styles/react/pages/page-authentication.scss';
-import { filteredFormSchema, validations } from '../../utility/Utils';
+import { checkPointRedirection, filteredFormSchema, validations } from '../../utility/Utils';
 import { loginUser, switchProfile } from '../../redux/actions/authActions';
 import SigninWithGoogle from './components/SigninWithGoogle';
 import { selectAuthLoading, selectIsLoggedIn } from '../../redux/selectors/authSelectors';
 import { clearDataSuccess } from '../../redux/reducers/auth';
 import LogoComp from './components/LogoComp';
 import { removeItem, setItem } from '../../utility/localStorageControl';
-import { checkPoints } from '../../utility/constants/Constant';
 import { validateUrl } from '../../redux/actions/dashboardActions';
 import { getItemFromSession, removeItemFromSession, setItemFromSession } from '../../utility/sessesionStorageControl';
 import { clearAllFormData, setFormData } from '../../redux/reducers/formData';
@@ -94,6 +93,7 @@ const Login = () => {
 
   useEffect(() => {
     dispatch(clearDataSuccess());
+    removeItem('google_id_token');
   }, []);
   const savedFormData = useSelector(formData);
   const {
@@ -131,15 +131,7 @@ const Login = () => {
 
   const onSuccess = (resp) => {
     dispatch(clearAllFormData());
-    if (resp?.checkpoint === checkPoints.MOBILE_VERIFICATION) {
-      navigate('/auth/register-phone');
-    } else if (resp?.checkpoint === checkPoints.ACCOUNT_DETAILS) {
-      navigate(`/${resp.user_type.toLowerCase()}-onboarding/account-details`);
-    } else if (resp?.checkpoint === checkPoints.PROFILE_DETAILS) {
-      navigate(`/${resp.user_type.toLowerCase()}-onboarding/personal-details`);
-    } else if (resp?.checkpoint === checkPoints.COMPLETE) {
-      navigate('/dashboard');
-    }
+    checkPointRedirection({ resp, navigate });
   };
 
   const onSubmit = (values) => {

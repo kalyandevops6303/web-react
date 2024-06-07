@@ -41,6 +41,7 @@ const API = {
     services: `${apiAuthEndpoint}/api/v1/static/services/all`,
     disputeTypes: `${apiAuthEndpoint}/api/v1/static/dispute-type/all`,
     ratingTags: `${apiAuthEndpoint}/api/v1/static/tags/filter`,
+    issueTypes: `${apiAuthEndpoint}/api/v1/support-issue-types`,
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
@@ -118,6 +119,9 @@ const API = {
     almaMaterTalents: `${apiCreateProjectEndpoint}/api/v1/project/alma-mater-talents`,
     inviteTalents: `${apiCreateProjectEndpoint}/api/v1/project/invite-talents`,
     projectFileUpload: `${apiCreateProjectEndpoint}/api/v1/project/file`,
+    saveDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft/save`,
+    draftProjectsCheck: `${apiCreateProjectEndpoint}/api/v1/project/draft/check`,
+    deleteDraftProject: `${apiCreateProjectEndpoint}/api/v1/project/draft`,
   },
   projectDetails: {
     getProjectDetails: `${apiCreateProjectEndpoint}/api/v1/common/project/info`,
@@ -142,6 +146,7 @@ const API = {
     acceptBidChange: `${apiCreateProjectEndpoint}/api/v1/accept-bid-changes`,
     getBidTimeline: `${apiCreateProjectEndpoint}/api/v1/bid-timeline`,
     getBidSnapshot: `${apiCreateProjectEndpoint}/api/v1/bid-snapshot`,
+    downloadCertificate: `${apiCreateProjectEndpoint}/api/v1/project/certificate`,
     // contract flow
     checkDocumentActivated: `${apiCreateProjectEndpoint}/api/v1/legal/document/check`,
     getDocument: `${apiCreateProjectEndpoint}/api/v1/legal/document`,
@@ -306,6 +311,10 @@ const API = {
   },
   fileUpload: {
     scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
+  },
+  support: {
+    create: `${apiAuthEndpoint}/api/v1/support-request`,
+    count: `${apiAuthEndpoint}/api/v1/support-request/count`,
   },
 };
 

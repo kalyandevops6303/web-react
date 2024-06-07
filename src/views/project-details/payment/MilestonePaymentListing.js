@@ -131,11 +131,13 @@ function MilestonePaymentListing() {
           {milestoneData?.length > 0 &&
             milestoneData?.map((milestone) => (
               <MilestonePaymentBox
+                milestone={milestone}
                 key={milestone._id}
                 id={milestone._id}
                 milestoneName={milestone.name}
                 payableAmount={milestone.estimated_cost}
                 paymentStatus={milestone.payment_status}
+                milestoneStatus={milestone.status}
                 checked={selectedMilestones.includes(milestone._id)}
                 onSelect={!selectedAndDisabledPaymentId?.includes(milestone?._id) && handleMilestoneSelect}
               />

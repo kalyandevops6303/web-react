@@ -1,6 +1,8 @@
 /* eslint-disable no-useless-escape */
 import { Box, Check, Watch } from 'react-feather';
 
+const SUPPORT_EMAIL = 'support@trumio.ai';
+
 const ERROR_CODES = {
   EC_401: 401,
   EC_404: 404,
@@ -53,6 +55,7 @@ const bidStatusesOptions = [
   { label: 'Reviewed', value: 'REVIEWED' },
   { label: 'Accepted', value: 'ACCEPTED' },
   { label: 'Closed', value: 'REJECTED' },
+  { label: 'Drafts', value: 'DRAFTS' },
 ];
 
 const statusesOptions = [
@@ -72,6 +75,16 @@ const sortingOptions = [
   { label: 'Recommended', value: 'RECOMMENDED' },
   { label: 'Favorite', value: 'FAVOURITE' },
 ];
+const projectStatusEnum = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  IN_REVIEW: 'IN_REVIEW',
+  ACTIVE: 'ACTIVE',
+  ON_GOING: 'ON_GOING',
+  CLOSED: 'CLOSED',
+  TERMINATED: 'TERMINATED',
+  COMPLETED: 'COMPLETED',
+};
 const disputeStatuses = {
   open: 'OPEN',
   underReview: 'UNDER_REVIEW',
@@ -118,7 +131,7 @@ const paymentText = {
   INITIATED: 'Initiated',
   PAID: 'Paid',
   FAILED: 'Failed',
-  PAYMENT_DUE: 'Payment Due',
+  PAYMENT_DUE: 'Payment Pending',
   PAYMENT_PROCESSING: 'Payment Processing',
   PAYMENT_SUCCESSFUL: 'Payment Successful',
   PAYMENT_FAILED: 'Payment Failed',
@@ -127,6 +140,14 @@ const paymentText = {
   PAYMENT_INITIATED: 'Payment Initiated',
   PROCESSING: 'Processing',
   SUCCESSFUL: 'Successful',
+  NOT_FUNDED: 'Not Funded',
+  RETRY_PAYMENT: 'Retry Payment',
+  FUNDED: 'Funded',
+};
+
+const PAYMENT_TYPES = {
+  CHECKOUT: 'CHECKOUT',
+  TRANSFER: 'TRANSFER',
 };
 
 const snapShotStatus = {
@@ -166,6 +187,17 @@ const bidStages = {
   BID_SUBMITTED: 'BID_SUBMITTED',
   NO_STAGE: 'NO_STAGE',
 };
+
+const CUSTOMER_SUPPORT_TYPES = {
+  missing_institute: 'missing_institute',
+  missing_skill: 'missing_skill',
+  missing_tool: 'missing_tool',
+  missing_talent: 'missing_talent',
+  education: 'education',
+  tools_and_skills: 'tools_and_skills',
+  other: 'other',
+};
+
 export {
   ERROR_CODES,
   checkPoints,
@@ -196,4 +228,8 @@ export {
   bidStages,
   invitationUserStatus,
   CHECKOUT_STATUS,
+  PAYMENT_TYPES,
+  SUPPORT_EMAIL,
+  projectStatusEnum,
+  CUSTOMER_SUPPORT_TYPES,
 };
