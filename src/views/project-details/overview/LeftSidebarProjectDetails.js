@@ -325,7 +325,8 @@ const LeftSidebarProjectDetails = () => {
               <div className="d-flex gap-1 mt-3 justify-content-center">
                 {(projectDetailsData?.status === 'OPEN' ||
                   projectDetailsData?.status === 'IN_REVIEW' ||
-                  projectDetailsData?.status === 'ACTIVE') && (
+                  projectDetailsData?.status === 'ACTIVE' ||
+                  projectDetailsData?.status === 'ON_GOING') && (
                   <Button className="w-50" color="danger" onClick={handleDelete}>
                     Terminate
                   </Button>
