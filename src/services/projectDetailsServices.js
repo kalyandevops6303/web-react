@@ -112,6 +112,9 @@ const extendPaymentValidityService = ({ project_id }) =>
 const terminateProjectService = ({ project_id }) =>
   DataService.put(`${API.projectDetails.terminateProject}?project_id=${project_id}`);
 
+const withdrawProjectServices = ({ project_id }) =>
+  DataService.put(`${API.projectDetails.withdrawProject}?project_id=${project_id}`);
+
 const relistProjectService = ({ project_id }) =>
   DataService.put(`${API.projectDetails.relistProject}?project_id=${project_id}`);
 
@@ -161,6 +164,7 @@ export {
   getCommonBidDetailsService,
   getUnassignedRoleService,
   terminateProjectService,
+  withdrawProjectServices,
   relistProjectService,
   relistProjectByDateService,
   requestChangeService,

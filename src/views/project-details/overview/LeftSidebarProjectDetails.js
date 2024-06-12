@@ -12,7 +12,7 @@ import RatingBadge from '../../../@core/components/rating-group/RatingBadge';
 import { CustomBadge } from '../../styled';
 import { projectDetails, projectDetailsLoading } from '../../../redux/selectors/projectDetailsSelectors';
 import DateTime from '../../../lib/date-time';
-import { getProjectDetails } from '../../../redux/actions/projectDetailsAction';
+import { getProjectDetails, withdrawProject } from '../../../redux/actions/projectDetailsAction';
 import ShowMoreLess from '../../../@core/components/show-more-less-comp';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
 import { userTypes } from '../../../utility/constants/Constant';
@@ -68,7 +68,51 @@ const LeftSidebarProjectDetails = () => {
     COMPLETED: 'COMPLETED',
     ACTIVE: 'Active',
   };
+  const statusDisplay = {
+    ACTIVE: {
+      state: 'Sign Contract',
+      bgcolor: 'light-blue',
+      text: 'light-blue'
 
+    },
+    ON_GOING: {
+      state: 'Milestone 1',
+      bgcolor: 'warning',
+      text: 'warning',
+    },
+
+    LISTING_EXPIRED: {
+      state: 'In Review',
+      bgcolor: 'warning',
+      text: 'danger'
+
+    },
+    WITHDRAWN: {
+      state: 'In Review',
+      bgcolor: 'warning',
+      text: 'danger'
+
+    },
+    TERMINATED: {
+      state: 'Sign Contract',
+      bgcolor: 'light-blue',
+      text: 'light-blue'
+
+    },
+    COMPLETED: {
+      state: 'COMPLERED',
+      bgcolor: 'success',
+      text: 'success'
+
+    },
+    ON_HOLD: {
+      state: 'COMPLERED',
+      bgcolor: 'success',
+      text: 'success'
+
+    },
+
+  };
   const isLoading = useSelector(projectDetailsLoading);
   const isBidView = location.pathname.startsWith('/project-details/') && location.pathname.endsWith('/bid');
 
@@ -106,6 +150,16 @@ const LeftSidebarProjectDetails = () => {
   const handleInvite = () => {
     setInviteModal(true);
     setInviteTalentToTeamModal(true);
+  };
+  const handleWithdraw = () => {
+    dispatch(
+      withdrawProject({
+        project_id: projectDetailsData?._id,
+        onSuccess: () => {
+          navigate('/marketplace/my_listings');
+        },
+      }),
+    );
   };
 
   const onMessageClick = () => {
@@ -185,8 +239,8 @@ const LeftSidebarProjectDetails = () => {
                   projectDetailsData?.worker_details?.entity_type === userTypes.talent
                     ? projectDetailsData?.worker_details?.image_uri || defaultAvatar
                     : projectDetailsData?.worker_details?.entity_type === userTypes.team
-                    ? projectDetailsData?.worker_details?.team_logo || defaultAvatar
-                    : defaultAvatar
+                      ? projectDetailsData?.worker_details?.team_logo || defaultAvatar
+                      : defaultAvatar
                 }
                 imgHeight="35"
                 imgWidth="35"
@@ -293,6 +347,19 @@ const LeftSidebarProjectDetails = () => {
             )}
           </div>
 
+          <div className='d-flex'>
+            {(projectDetailsData && projectDetailsData?.status !== 'OPEN' && projectDetailsData?.status !== 'TO_BE_LISTED') && (
+              <BadgeGroup
+                title="Status"
+                data={[
+                  ({ name: statusDisplay[projectDetailsData?.status].state || [] }),
+                ]}
+                color={statusDisplay[projectDetailsData?.status].bgcolor}
+                id={`tooltip-${projectDetailsData?._id}`}
+              />
+            )}
+
+          </div>
           <div className="d-flex">
             {(projectDetailsData?.proficiency?.skills || projectDetailsData?.proficiency?.tools) && (
               <BadgeGroup
@@ -323,14 +390,13 @@ const LeftSidebarProjectDetails = () => {
           {userData?.user_type === userTypes.client && (
             <div>
               <div className="d-flex gap-1 mt-3 justify-content-center">
-                {(projectDetailsData?.status === 'OPEN' ||
-                  projectDetailsData?.status === 'IN_REVIEW' ||
-                  projectDetailsData?.status === 'ACTIVE' ||
-                  projectDetailsData?.status === 'ON_GOING') && (
-                  <Button className="w-50" color="danger" onClick={handleDelete}>
-                    Terminate
-                  </Button>
-                )}
+                {(projectDetailsData?.status === 'ACTIVE' ||
+                  projectDetailsData?.status === 'ON_GOING' ||
+                  projectDetailsData?.status === 'COMPLETED') && (
+                    <Button className="w-50" color="danger" onClick={handleDelete}>
+                      Terminate
+                    </Button>
+                  )}
                 {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'IN_REVIEW') && (
                   <Button className="w-50" color="primary" onClick={handleInvite}>
                     Invite
@@ -339,6 +405,11 @@ const LeftSidebarProjectDetails = () => {
                 {(projectDetailsData?.status === 'ON_GOING' || projectDetailsData?.status === 'COMPLETED') && (
                   <Button className="w-50" outline color="primary" onClick={onMessageClick}>
                     Message
+                  </Button>
+                )}
+                {(projectDetailsData?.status === 'OPEN' || projectDetailsData?.status === 'TO_BE_LISTED') && (
+                  <Button className="w-50" color="danger" onClick={handleWithdraw}>
+                    Withdraw
                   </Button>
                 )}
               </div>
