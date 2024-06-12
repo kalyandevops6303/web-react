@@ -9,8 +9,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    #runs-on: [self-hosted, linux, X64, trumio-orgrunner]
+    #runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, X64, trumio-orgrunner]
     steps:
       - uses: actions/checkout@v3
       - name: Install Azure cli
@@ -39,16 +39,16 @@ jobs:
       - name: Upload to blob storage
         run: |
           today=$(date +%d-%m-%Y-%H.%M)
-          az storage blob upload-batch --account-name azusctruatwebsa --auth-mode login -d "uat-frontend-backup/frontend-$today" --source ./dist
+          az storage blob upload-batch --account-name azusctrqawebsa --auth-mode login -d "qa-frontend-backup/frontend-$today" --source ./dist
 
       - name: Delete blob storage
-        run: az storage blob delete-batch --account-name azusctruatwebsa --auth-mode login --source '$web' --pattern '*'
+        run: az storage blob delete-batch --account-name azusctrqawebsa --auth-mode login --source '$web' --pattern '*'
 
       - name: Upload to blob storage
-        run: az storage blob upload-batch --account-name azusctruatwebsa --auth-mode login -d '$web' --source ./dist
+        run: az storage blob upload-batch --account-name azusctrqawebsa --auth-mode login -d '$web' --source ./dist
 
       - name: Purge CDN endpoint
-        run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name trumiouatfdcdn --domains uat.trumio.ai --content-paths '/*'
+        run: az afd endpoint purge --resource-group azusctr-rg --profile-name azusctr-cdn --endpoint-name trumioqacdn --domains qa.trumio.ai --content-paths '/*'
 
       # Azure logout
       - name: logout
