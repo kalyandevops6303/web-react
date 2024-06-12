@@ -78,13 +78,16 @@ const SecondaryFilters = ({ primaryFilter, userType }) => {
 
   const [secondFilterState, setSecondFilterState] = useState({
     statuses: getStatusFromLocationState(),
-    bid_statuses: [],
+    bid_statuses: location?.state?.isDraftBids ? [{ label: 'Drafts', value: 'DRAFT' }] : [],
     project_types: [],
     skills: [],
     tools: [],
     sort_by: location?.state?.isRecommended ? [{ label: 'Recommended', value: 'RECOMMENDED' }] : [],
     industries: [],
     project_areas: [],
+    project_ids: location?.state?.draftBidProjectId
+      ? [{ label: location?.state?.draftBidProjectId, value: location?.state?.draftBidProjectId }]
+      : [],
   });
   const { sort_by } = secondFilterState;
 

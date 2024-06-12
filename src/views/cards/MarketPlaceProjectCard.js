@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import parse from "html-react-parser";
+import { useLocation, useNavigate } from 'react-router-dom';
+import parse from 'html-react-parser';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
@@ -23,7 +24,8 @@ import BaseInfoForBidReceived from './BaseInfoForBidReceived';
 import BaseInfoMarketplaceCard from './BaseInfoMarketplaceCard';
 import DeleteDraftModal from '../modals/DeleteDraftModal';
 import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
-import DraftSavedModal from '../modals/DraftSavedModal';
+import { deleteDraftBid } from '../../redux/actions/createBidActions';
+import { deleteDraftBidLoading } from '../../redux/selectors/createBidSelectors';
 
 const MarketPlaceProjectCard = ({
   primaryFilter,
@@ -35,20 +37,23 @@ const MarketPlaceProjectCard = ({
   isTeam,
 }) => {
   const project = data?.project;
+  const bid = data?.bid;
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showFullText, setShowFullText] = useState(isExpanded);
   const [showModal, setShowModal] = useState(false);
   const [isNewTag, setIsTagNew] = useState(project?.is_read === false);
   const userData = useSelector(selectUserData);
+  const deleteDraftBidIsLoading = useSelector(deleteDraftBidLoading);
   const dispatch = useDispatch();
-  const [completeProfileModal, setCompleteProfileModal] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
+  const [completeProfileModal, setCompleteProfileModal] = useState(null);
   const [relistConfirmationModal, setRelistConfirmationModal] = useState(null);
   const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
   const [projectRelistData, setProjectRelistData] = useState(null);
   const [deleteDraftModal, setDeleteDraftModal] = useState(null);
-  const [draftSavedModal, setDraftSavedModal] = useState(null);
   const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
 
   const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
@@ -58,8 +63,6 @@ const MarketPlaceProjectCard = ({
   const toggleRelistSuccessModal = () => setRelistSuccessModal(!relistSuccessModal);
 
   const toggleDeleteDraftModal = () => setDeleteDraftModal(!deleteDraftModal);
-
-  const toggleDraftSavedModal = () => setDraftSavedModal(!draftSavedModal);
 
   const toggleSavedDraftsAvailableModal = () => setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
 
@@ -141,14 +144,29 @@ const MarketPlaceProjectCard = ({
     }
   };
 
+  const onDeleteDraftBidSuccess = () => {
+    toggleDeleteDraftModal();
+    if (location?.state?.isDraftBids) {
+      navigate('/marketplace/my_bids', {
+        state: {
+          isDraftBids: true,
+        },
+      });
+    } else {
+      navigate('/marketplace/my_bids');
+    }
+  };
+
   return (
     <ProjectCardWrap>
-      {deleteDraftModal && <DeleteDraftModal modal={deleteDraftModal} toggleModal={toggleDeleteDraftModal} />}
-      {draftSavedModal && (
-        <DraftSavedModal
-          modal={draftSavedModal}
-          toggleModal={toggleDraftSavedModal}
-          path="Marketplace > My Bids > Drafts Or View Draft"
+      {deleteDraftModal && (
+        <DeleteDraftModal
+          modal={deleteDraftModal}
+          toggleModal={toggleDeleteDraftModal}
+          projectName={project?.details?.name ?? project?.name}
+          onDeleteDraft={() => dispatch(deleteDraftBid(bid?._id, onDeleteDraftBidSuccess))}
+          isDeleteDraftLoading={deleteDraftBidIsLoading}
+          bidAmount={null}
         />
       )}
       {savedDraftsAvailableModal && (
@@ -158,6 +176,18 @@ const MarketPlaceProjectCard = ({
           modalText="You have a bid in draft mode for this project. Would you like to continue where you left off?"
           firstBtnText="Create New Bid"
           secondBtnText="View Draft"
+          firstBtnAction={() => {
+            toggleSavedDraftsAvailableModal();
+            setCreateBidModal(true);
+          }}
+          secondBtnAction={() =>
+            navigate('/marketplace/my_bids', {
+              state: {
+                isDraftBids: true,
+                draftBidProjectId: project?._id,
+              },
+            })
+          }
         />
       )}
       {relistConfirmationModal && (
@@ -232,21 +262,13 @@ const MarketPlaceProjectCard = ({
                 </div>
 
                 {!showFullText ? (
-                  <div
-                    className="my-div"
-                    ref={divRef}
-                    style={{ maxHeight: '6.1rem', overflow: 'hidden' }}
-                  
-                  >
+                  <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
                     {parse(project?.details?.description ?? project?.description)}
-                    </div>
+                  </div>
                 ) : (
-                  <div
-                    className="my-div"
-                    ref={divRef}
-                  >
-                      {parse(project?.details?.description ?? project?.description)}
-                    </div>
+                  <div className="my-div" ref={divRef}>
+                    {parse(project?.details?.description ?? project?.description)}
+                  </div>
                 )}
 
                 {isContentOverflowing && (
@@ -268,8 +290,6 @@ const MarketPlaceProjectCard = ({
                     data={data}
                     setRelistConfirmationModal={setRelistConfirmationModal}
                     setDeleteDraftModal={setDeleteDraftModal}
-                    setDraftSavedModal={setDraftSavedModal}
-                    setSavedDraftsAvailableModal={setSavedDraftsAvailableModal}
                   />
                 )}
               </Col>
@@ -287,6 +307,7 @@ const MarketPlaceProjectCard = ({
           toggleCompleteProfileModal={toggleCompleteProfileModal}
           isMyTeam={isTeam}
           setRelistConfirmationModal={setRelistConfirmationModal}
+          setSavedDraftsAvailableModal={setSavedDraftsAvailableModal}
         />
       )}
       {createBidModal && (

@@ -16,14 +16,17 @@ import BadgeGroup from '../../@core/components/badge-group-dynamic-count';
 import { userTypes } from '../../utility/constants/Constant';
 import { BidsReceivedWrapper, IconWrapper } from './style';
 import selectFavUnfavLoading from '../../redux/selectors/favUnfavSelectors';
+import { selectUserData } from '../../redux/selectors/authSelectors';
 
-const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal }) => {
+const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModal, setDeleteDraftModal }) => {
   const project = data?.project;
+  const bid = data?.bid;
   const [isFavorite, setIsFavorite] = useState(project?.is_favourite);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clientDetails = data?.client ?? data?.client_details;
   const isFavUnfavLoading = useSelector(selectFavUnfavLoading);
+  const userData = useSelector(selectUserData);
 
   const location = useLocation();
 
@@ -122,6 +125,22 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
         imgWidth: 33,
       }))
     : [];
+
+  const onEditDraftClick = () => {
+    if (bid?.entity === userTypes.talent) {
+      navigate(
+        `/create-bid/${project?._id}/${project?.pay_type.toLowerCase()}-${bid?.bid_type.toLowerCase()}/${
+          bid?._id
+        }/milestone`,
+      );
+    } else {
+      navigate(
+        `/create-bid/${project?._id}/${project?.pay_type.toLowerCase()}-${bid?.bid_type.toLowerCase()}/${
+          bid?._id
+        }/team`,
+      );
+    }
+  };
 
   return (
     <div>
@@ -286,6 +305,37 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
           )}
         </BidsReceivedWrapper>
       )}
+      {location.pathname.split('/').includes('my_bids') &&
+        userData?.user_type !== userTypes.client &&
+        data?.bid?.status === 'DRAFT' && (
+          <BidsReceivedWrapper>
+            <div className="d-flex justify-content-end mt-3">
+              <Button
+                color="flat-danger"
+                className="me-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDeleteDraftModal(true);
+                }}
+              >
+                Delete Draft
+              </Button>
+              <div className="relist-btn-wrapper">
+                <Button
+                  color="primary"
+                  outline
+                  className="relist-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEditDraftClick();
+                  }}
+                >
+                  Edit Draft
+                </Button>
+              </div>
+            </div>
+          </BidsReceivedWrapper>
+        )}
     </div>
   );
 };
@@ -294,12 +344,14 @@ BaseInfoMarketplaceCard.propTypes = {
   data: PropTypes.object,
   isSearchPage: PropTypes.bool,
   setRelistConfirmationModal: PropTypes.func,
+  setDeleteDraftModal: PropTypes.func,
 };
 
 BaseInfoMarketplaceCard.defaultProps = {
   data: {},
   isSearchPage: false,
   setRelistConfirmationModal: () => {},
+  setDeleteDraftModal: () => {},
 };
 
 export default BaseInfoMarketplaceCard;
