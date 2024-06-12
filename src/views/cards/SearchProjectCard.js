@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import parse from "html-react-parser";
+import parse from 'html-react-parser';
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
@@ -126,6 +126,8 @@ const SearchProjectCard = ({
     }
   };
 
+  const descriptionToShow = data?.details?.description ?? data?.description;
+
   return (
     <ProjectCardWrap>
       {relistConfirmationModal && (
@@ -201,20 +203,19 @@ const SearchProjectCard = ({
                   </CardText>
                 </div>
 
-                {!showFullText ? (
-                  <div
-                    className="my-div"
-                    ref={divRef}
-                    style={{ maxHeight: '6.1rem', overflow: 'hidden' }}
-                  >
-                    {parse(data?.details?.description ?? data?.description)}
-                    </div>
-                ) : (
-                  <div
-                    className="my-div"
-                    ref={divRef}>
-                  {parse(data?.details?.description ?? data?.description)}
-                  </div>
+                {descriptionToShow && (
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                  <>
+                    {!showFullText ? (
+                      <div className="my-div" ref={divRef} style={{ maxHeight: '6.1rem', overflow: 'hidden' }}>
+                        {parse(descriptionToShow)}
+                      </div>
+                    ) : (
+                      <div className="my-div" ref={divRef}>
+                        {parse(descriptionToShow)}
+                      </div>
+                    )}
+                  </>
                 )}
 
                 {isContentOverflowing && (
