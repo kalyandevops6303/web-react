@@ -301,4 +301,5 @@ BaseInfoMarketplaceCard.defaultProps = {
   isSearchPage: false,
   setRelistConfirmationModal: () => {},
 };
+
 export default BaseInfoMarketplaceCard;

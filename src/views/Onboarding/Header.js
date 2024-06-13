@@ -6,7 +6,7 @@ const Header = () => (
   <HeaderContainer>
     <div className="logo-wrap">
       <img alt="logo" src={Logo} className="card-logo onboarding-header-logo" />
-      <span className="ms-25 version">v1.0.1</span>
+      <span className="ms-25 version">v1.1.2</span>
     </div>
   </HeaderContainer>
 );

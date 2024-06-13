@@ -10,7 +10,7 @@ import { TabWrapper } from './style';
 import SubmissionHistory from './SubmissionHistory';
 import TeamMembers from './TeamMembers';
 import Disputes from './Disputes';
-import { userTypes } from '../../../utility/constants/Constant';
+import { PAYMENT_STATUS, userTypes } from '../../../utility/constants/Constant';
 
 const MilestoneDetails = () => {
   const param = useParams();
@@ -27,9 +27,14 @@ const MilestoneDetails = () => {
   if (isLoading) {
     return <ComponentSpinner />;
   }
+
+  const isPaymentDone = () =>
+    currentMilestone?.payment_status === PAYMENT_STATUS.PAID ||
+    currentMilestone?.payment_status === PAYMENT_STATUS.PAYMENT_SUCCESSFUL;
+
   return (
     <div style={{ minHeight: '75rem' }}>
-      <MilestoneOverview selectedMilestone={currentMilestone} />
+      <MilestoneOverview isPaymentDone={isPaymentDone()} selectedMilestone={currentMilestone} />
       <TabWrapper>{currentMilestone && <MilestoneDetailsTab selectedMilestone={currentMilestone} />}</TabWrapper>
       <SubmissionHistory selectedMilestone={currentMilestone} />
       {currentMilestone?.milestone_by?.entity === userTypes.team && (

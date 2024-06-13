@@ -32,6 +32,7 @@ import paymentFullView from './reducers/paymentFullView';
 import milestone from './reducers/milestone';
 import favUnfav from './reducers/favUnfav';
 import assessments from './reducers/assessment';
+import support from './reducers/support';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -64,7 +65,9 @@ const rootReducer = combineReducers({
   paymentFullView,
   milestone,
   favUnfav,
-  assessments
+  assessments,
+  support,
+
   // Add more reducers if needed
 });
 

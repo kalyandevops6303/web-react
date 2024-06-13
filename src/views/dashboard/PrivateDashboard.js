@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Col, Row } from 'reactstrap';
+import { Button, Col, Row, Spinner } from 'reactstrap';
 import BreadCrumbs from '@components/breadcrumbs';
 import EarningCard from './overview/Earning';
 import RewardsCard from './overview/Reward';
@@ -33,10 +33,13 @@ import { setActiveNavTab } from '../../redux/reducers/activeNavTab';
 import CreateClubOrTeamModal from '../modals/CreateClubOrTeamModal';
 import ClubSection from './overview/ClubSection';
 import InviteClubMemberModal from '../modals/InviteClubMemberModal';
-import { getTeamId } from '../../utility/Utils';
+import getTeamId from '../../utility/commonUtils';
 import InviteListing from './overview/InviteListing';
 import PaymentListing from './overview/PaymentListing';
 import AssessmentsOverview from './overview/AssessmentsOverview';
+import { draftProjectsCheck } from '../../redux/actions/createProjectActions';
+import { draftProjectsCheckLoading } from '../../redux/selectors/createProjectSelectors';
+import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -56,6 +59,7 @@ const PrivateDashboard = () => {
 
   const [optionsModal, setOptionsModal] = useState(null);
   const [inviteClubMembersModal, setInviteClubMembersModal] = useState(false);
+  const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
 
   const query = useSelector((state) => state.search.query);
 
@@ -68,9 +72,12 @@ const PrivateDashboard = () => {
     dispatch(clearModalData());
   };
 
+  const toggleSavedDraftsAvailableModal = () => setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
+
   const userDetailsData = useSelector(selectUserData);
   const profilePercentageData = useSelector(profilePercentage);
   const checkBidsAcceptedData = useSelector(checkBidsAccepted);
+  const draftProjectsCheckIsLoading = useSelector(draftProjectsCheckLoading);
 
   const isClubAdmin = useSelector((state) => state.inviteTalent.isClubAdmin);
 
@@ -95,16 +102,21 @@ const PrivateDashboard = () => {
     setCompleteProfileModal(!completeProfileModal);
   };
 
-  const onCreateProjectClick = () => {
-    if (
+  const onDraftProjectsCheckSuccess = (res) => {
+    if (res?.has_draft_project) {
+      setSavedDraftsAvailableModal(true);
+    } else if (
       profilePercentageData?.values_missing?.includes('company_name') ||
       profilePercentageData?.values_missing?.includes('educational_institute')
     ) {
-      setCompleteProfileModalInfoText('create project');
       setCompleteProfileModal(true);
     } else {
       navigate('/create-project');
     }
+  };
+
+  const onCreateProjectClick = () => {
+    dispatch(draftProjectsCheck(onDraftProjectsCheckSuccess));
   };
 
   const onClubInvite = () => {
@@ -168,6 +180,23 @@ const PrivateDashboard = () => {
 
   return (
     <div>
+      {savedDraftsAvailableModal && (
+        <SavedDraftsAvailableModal
+          modal={savedDraftsAvailableModal}
+          toggleModal={toggleSavedDraftsAvailableModal}
+          modalText="You have project(s) in draft mode. Would you like to continue where you left off?"
+          firstBtnText="Create New Project"
+          secondBtnText="View Drafts"
+          firstBtnAction={() => navigate('/create-project')}
+          secondBtnAction={() =>
+            navigate('/marketplace/my_listings', {
+              state: {
+                isDraftProjects: true,
+              },
+            })
+          }
+        />
+      )}
       {completeProfileModal && (
         <CompleteProfileModal
           modal={completeProfileModal}
@@ -204,8 +233,8 @@ const PrivateDashboard = () => {
       <BreadCrumbs data={[{ title: 'Dashboard' }]} />
       {userDetailsData?.user_type === userTypes.client && (
         <DashboardHeaderWrapper>
-          <Button as="link" color="primary" onClick={onCreateProjectClick}>
-            Create Project
+          <Button color="primary" onClick={onCreateProjectClick} disabled={draftProjectsCheckIsLoading}>
+            {draftProjectsCheckIsLoading ? <Spinner size="sm" /> : 'Create Project'}
           </Button>
         </DashboardHeaderWrapper>
       )}

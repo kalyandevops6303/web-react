@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, CardText, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { PrivacyPolicyModalWrapper } from './style';
+import { SUPPORT_EMAIL } from '../../utility/constants/Constant';
 
 const PrivacyPolicyModal = ({ modal, toggleModal }) => (
   <Modal
@@ -507,7 +508,7 @@ const PrivacyPolicyModal = ({ modal, toggleModal }) => (
                 <span className="me-1">7.3&nbsp;</span>
                 ACCESS AND RECTIFICATION.&nbsp; You have the right to access and to rectify Your Personal Information
                 submitted to us, (in some circumstances, a fee may be payable to do so). You may do so by sending an
-                email to support@trumio.ai.
+                email to {SUPPORT_EMAIL}.
               </div>
             </div>
           </div>
@@ -669,7 +670,7 @@ const PrivacyPolicyModal = ({ modal, toggleModal }) => (
             <li>Restrict any automatic processing of your personal information; and</li>
             <li>Complain to the appropriate Supervisory Authority.</li>
           </ul>
-          To exercise any of these rights, please contact us at support@trumio.ai.
+          To exercise any of these rights, please contact us at {SUPPORT_EMAIL}.
         </section>
 
         <section className="mb-2">
@@ -764,7 +765,7 @@ const PrivacyPolicyModal = ({ modal, toggleModal }) => (
           <p>
             We do not engage in such activity; however, if you are a Nevada resident who has purchased or leased goods
             or services from us, you may submit a request to opt out of any potential future sales under Nevada law by
-            emailing support@trumio.ai. Please note we will take reasonable steps to verify your identity and the
+            emailing {SUPPORT_EMAIL}. Please note we will take reasonable steps to verify your identity and the
             authenticity of the request. Once verified, we will maintain your request in the event our practices change.
           </p>
         </section>
@@ -822,9 +823,9 @@ const PrivacyPolicyModal = ({ modal, toggleModal }) => (
             Certain information may be exempt from the rights described above under applicable law. If we deny your
             request in whole or in part, you may have the right to appeal the decision. In such circumstances, we will
             provide you with information regarding the appeals process. Depending on your location, you may also email
-            support@trumio.ai with the subject “Data Privacy Request Appeal” to provide us with details about why you
-            are appealing the decision. If you have an unresolved privacy or data use concern that we have not addressed
-            to your satisfaction, please contact our U.S.-based third-party dispute resolution provider free at
+            {SUPPORT_EMAIL} with the subject “Data Privacy Request Appeal” to provide us with details about why you are
+            appealing the decision. If you have an unresolved privacy or data use concern that we have not addressed to
+            your satisfaction, please contact our U.S.-based third-party dispute resolution provider free at
             https://feedback-form.truste.com/watchdog/request.
           </p>
         </section>
@@ -908,7 +909,7 @@ const PrivacyPolicyModal = ({ modal, toggleModal }) => (
           <h5>22. QUESTIONS OR COMMENTS</h5>
           <p>
             If You have any questions or comments relating to Our website or the privacy policy, send an e-mail to
-            support@trumio.ai.
+            {SUPPORT_EMAIL}.
           </p>
         </section>
         <div className="d-flex gap-1 justify-content-end px-1 py-2">

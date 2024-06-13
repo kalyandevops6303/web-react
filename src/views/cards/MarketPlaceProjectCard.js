@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Mpin from '@src/assets/images/map-pin.png';
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import parse from "html-react-parser";
 import DateTime from '../../lib/date-time';
 import { ProjectCardWrap } from './style';
 import { CustomBadge, Elevate } from '../styled';
@@ -21,6 +21,9 @@ import { updateCardStatus } from '../../redux/actions/dashboardActions';
 import { getModifiedProjectResponse, getReadType } from '../../utility/Utils';
 import BaseInfoForBidReceived from './BaseInfoForBidReceived';
 import BaseInfoMarketplaceCard from './BaseInfoMarketplaceCard';
+import DeleteDraftModal from '../modals/DeleteDraftModal';
+import SavedDraftsAvailableModal from '../modals/SavedDraftsAvailableModal';
+import DraftSavedModal from '../modals/DraftSavedModal';
 
 const MarketPlaceProjectCard = ({
   primaryFilter,
@@ -44,12 +47,21 @@ const MarketPlaceProjectCard = ({
   const [relistListingDetailsModal, setRelistListingDetailsModal] = useState(null);
   const [relistSuccessModal, setRelistSuccessModal] = useState(null);
   const [projectRelistData, setProjectRelistData] = useState(null);
+  const [deleteDraftModal, setDeleteDraftModal] = useState(null);
+  const [draftSavedModal, setDraftSavedModal] = useState(null);
+  const [savedDraftsAvailableModal, setSavedDraftsAvailableModal] = useState(null);
 
   const toggleRelistConfirmationModal = () => setRelistConfirmationModal(!relistConfirmationModal);
 
   const toggleRelistListingDetailsModal = () => setRelistListingDetailsModal(!relistListingDetailsModal);
 
   const toggleRelistSuccessModal = () => setRelistSuccessModal(!relistSuccessModal);
+
+  const toggleDeleteDraftModal = () => setDeleteDraftModal(!deleteDraftModal);
+
+  const toggleDraftSavedModal = () => setDraftSavedModal(!draftSavedModal);
+
+  const toggleSavedDraftsAvailableModal = () => setSavedDraftsAvailableModal(!savedDraftsAvailableModal);
 
   useEffect(() => {
     setShowFullText(isExpanded);
@@ -131,6 +143,23 @@ const MarketPlaceProjectCard = ({
 
   return (
     <ProjectCardWrap>
+      {deleteDraftModal && <DeleteDraftModal modal={deleteDraftModal} toggleModal={toggleDeleteDraftModal} />}
+      {draftSavedModal && (
+        <DraftSavedModal
+          modal={draftSavedModal}
+          toggleModal={toggleDraftSavedModal}
+          path="Marketplace > My Bids > Drafts Or View Draft"
+        />
+      )}
+      {savedDraftsAvailableModal && (
+        <SavedDraftsAvailableModal
+          modal={savedDraftsAvailableModal}
+          toggleModal={toggleSavedDraftsAvailableModal}
+          modalText="You have a bid in draft mode for this project. Would you like to continue where you left off?"
+          firstBtnText="Create New Bid"
+          secondBtnText="View Draft"
+        />
+      )}
       {relistConfirmationModal && (
         <RelistConfirmationModal
           modal={relistConfirmationModal}
@@ -207,14 +236,17 @@ const MarketPlaceProjectCard = ({
                     className="my-div"
                     ref={divRef}
                     style={{ maxHeight: '6.1rem', overflow: 'hidden' }}
-                    dangerouslySetInnerHTML={{ __html: project?.details?.description ?? project?.description }}
-                  />
+                  
+                  >
+                    {parse(project?.details?.description ?? project?.description)}
+                    </div>
                 ) : (
                   <div
                     className="my-div"
                     ref={divRef}
-                    dangerouslySetInnerHTML={{ __html: project?.details?.description ?? project?.description }}
-                  />
+                  >
+                      {parse(project?.details?.description ?? project?.description)}
+                    </div>
                 )}
 
                 {isContentOverflowing && (
@@ -235,6 +267,9 @@ const MarketPlaceProjectCard = ({
                     isSearchPage={isSearchPage}
                     data={data}
                     setRelistConfirmationModal={setRelistConfirmationModal}
+                    setDeleteDraftModal={setDeleteDraftModal}
+                    setDraftSavedModal={setDraftSavedModal}
+                    setSavedDraftsAvailableModal={setSavedDraftsAvailableModal}
                   />
                 )}
               </Col>

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { ChevronRight, Info, Minus, Upload } from 'react-feather';
 import 'react-quill/dist/quill.snow.css';
 import { AsyncPaginate } from 'react-select-async-paginate';
@@ -24,9 +25,10 @@ import {
   Badge,
   CardText,
   CardTitle,
+  Spinner,
 } from 'reactstrap';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useDropzone from '../../../lib/react-dropzone';
 import { DropzoneContainer, RequirementsFormContainer } from '../style';
@@ -51,9 +53,17 @@ import { currencies, currenciesLoading, skillsListAI, toolsListAI } from '../../
 import { clearAIToolsAndSkills } from '../../../redux/reducers/static';
 import { getCurrencies } from '../../../redux/actions/staticActions';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
-import { downloadUploadedFile, getFileSize, renderFilePreview } from '../../../utility/Utils';
+import { downloadUploadedFile, getFileSize, removeEmptyKeys, renderFilePreview } from '../../../utility/Utils';
+import { saveDraftProject } from '../../../redux/actions/createProjectActions';
+import {
+  draftProjectDetailsLoading,
+  saveDraftProjectId,
+  saveDraftProjectLoading,
+} from '../../../redux/selectors/createProjectSelectors';
+import SaveForLaterModal from '../../modals/SaveForLaterModal';
+import TextEditor from '../TextEditor';
 
-const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
+const Requirements = ({ stepper, setProjectDetails, files, setFiles, setDraftSavedModal, draftRequirementDetails }) => {
   const ProjectDetailsSchema = yup.object().shape({
     projectName: yup
       .string()
@@ -232,6 +242,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     setValue,
     clearErrors,
     trigger,
+    reset,
     formState: { errors, isValid },
   } = useForm({
     mode: 'onChange',
@@ -253,13 +264,22 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const [countriesOptions, setCountriesOptions] = useState(null);
   const [currenciesOptions, setCurrenciesOptions] = useState(null);
   const [tryAIModal, setTryAIModal] = useState(null);
+  const [saveForLaterModal, setSaveForLaterModal] = useState(null);
 
   const skillsFromAI = useSelector(skillsListAI);
   const toolsFromAI = useSelector(toolsListAI);
   const currenciesData = useSelector(currencies);
   const currenciesIsLoading = useSelector(currenciesLoading);
+  const saveDraftProjectIsLoading = useSelector(saveDraftProjectLoading);
+  const draftProjectId = useSelector(saveDraftProjectId);
+  const draftProjectDetailsIsLoading = useSelector(draftProjectDetailsLoading);
 
   const dispatch = useDispatch();
+  const params = useParams();
+
+  const localFormData = useWatch({ control });
+
+  const toggleSaveForLaterModal = () => setSaveForLaterModal(!saveForLaterModal);
 
   useEffect(() => {
     clearErrors('expectedDuration');
@@ -396,6 +416,92 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
     }
   };
 
+  const onSaveDraftSuccess = () => setDraftSavedModal(true);
+
+  const handleSaveDraft = () => {
+    setProjectDetails(localFormData);
+
+    let details;
+
+    if (files.length > 0) {
+      const documents = files.map((file) => ({
+        file_name: file.file.name,
+        file_key: file.uploadData.file_key,
+      }));
+
+      details = {
+        name: localFormData?.projectName.trim(),
+        description: localFormData?.projectDescription,
+        expected_duration: {
+          duration: localFormData?.expectedDuration,
+          duration_type: localFormData?.expectedDurationPeriod?.value,
+        },
+        documents,
+      };
+    } else {
+      details = {
+        name: localFormData?.projectName.trim(),
+        description: localFormData?.projectDescription,
+        expected_duration: {
+          duration: localFormData?.expectedDuration,
+          duration_type: localFormData?.expectedDurationPeriod?.value,
+        },
+      };
+    }
+
+    const proficiency = {
+      skills: localFormData?.skills.map((skill) => skill.value),
+      tools: localFormData?.tools?.map((tool) => tool.value),
+    };
+    const availability = {
+      timezone: localFormData?.preferredWorkingTimeZone.value._id,
+      time_overlap: localFormData?.minTimeOverlapHr,
+      weekdays_avl: {
+        start_time: localFormData?.availabilityDays?.includes('weekdays')
+          ? localFormData?.weekdayStartTime?.value
+          : null,
+        end_time: localFormData?.availabilityDays?.includes('weekdays') ? localFormData?.weekdayEndTime?.value : null,
+        days: localFormData?.availabilityDays?.includes('weekdays') ? localFormData?.weekdays : null,
+      },
+      weekends_avl: {
+        start_time: localFormData?.availabilityDays?.includes('weekends')
+          ? localFormData?.weekendStartTime?.value
+          : null,
+        end_time: localFormData?.availabilityDays?.includes('weekends') ? localFormData?.weekendEndTime?.value : null,
+        days: localFormData?.availabilityDays?.includes('weekends') ? localFormData?.weekends : null,
+      },
+    };
+    const countries = {
+      included: localFormData?.includedCountriesSelection?.map((country) => country.value),
+      excluded: localFormData?.excludedCountriesSelection?.map((country) => country.value),
+    };
+    const pay_type = {
+      currency: localFormData?.currencyType?.value?._id,
+      variable_cost: localFormData?.projectPayType !== 'fixed-price',
+      fixed_cost: localFormData?.projectPayType === 'fixed-price' ? parseInt(localFormData?.projectFixedCost, 10) : 0,
+    };
+    const nda = {
+      is_nda: localFormData?.nda === 'yes',
+    };
+
+    const requiredData = {
+      details,
+      proficiency,
+      availability,
+      countries,
+      pay_type,
+      nda,
+    };
+
+    dispatch(
+      saveDraftProject({
+        projectId: params?.projectId || draftProjectId,
+        data: removeEmptyKeys(requiredData),
+        onSuccess: onSaveDraftSuccess,
+      }),
+    );
+  };
+
   const onSubmit = (data) => {
     setProjectDetails(data);
     stepper.next();
@@ -421,6 +527,12 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       dispatch(clearAIToolsAndSkills());
     };
   }, []);
+
+  useEffect(() => {
+    if (params?.projectId) {
+      reset(draftRequirementDetails);
+    }
+  }, [draftRequirementDetails]);
 
   useEffect(() => {
     if (skillsFromAI && skillsFromAI?.length > 0) {
@@ -594,7 +706,7 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
   const userDetailsData = useSelector(userData);
 
   useEffect(() => {
-    if (userDetailsData) {
+    if (userDetailsData && !params?.projectId) {
       // eslint-disable-next-line no-unsafe-optional-chaining
       if ('timezone' in userDetailsData?.availability) {
         setValue(
@@ -661,8 +773,9 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
       {tryAIModal && (
         <TryAIModal modal={tryAIModal} toggleModal={() => setTryAIModal(!tryAIModal)} onSuccess={onSuccess} />
       )}
+      {saveForLaterModal && <SaveForLaterModal modal={saveForLaterModal} toggleModal={toggleSaveForLaterModal} />}
       <RequirementsFormContainer>
-        {currenciesIsLoading ? (
+        {currenciesIsLoading || draftProjectDetailsIsLoading ? (
           <ComponentSpinner className="mt-5" />
         ) : (
           <Form onSubmit={handleSubmit(onSubmit)}>
@@ -751,16 +864,18 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
                       id="projectDescription"
                       name="projectDescription"
                       control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          type="textarea"
-                          placeholder="Add background and requirements"
-                          rows="5"
-                          invalid={errors.projectDescription && true}
-                        />
-                      )}
+                      render={({ field }) => {
+                        return (
+                          <TextEditor
+                            name={field.name}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Add background and requirements"
+                          />
+                        );
+                      }}
                     />
+
                     {errors.projectDescription && <FormFeedback>{errors.projectDescription.message}</FormFeedback>}
                   </Col>
                 </Row>
@@ -1759,8 +1874,17 @@ const Requirements = ({ stepper, setProjectDetails, files, setFiles }) => {
               </CardBody>
             </Card>
             <div className="d-flex justify-content-end">
+              <Button
+                onClick={handleSaveDraft}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={uploadingFiles.length > 0 || !isValid || saveDraftProjectIsLoading}
+              >
+                {saveDraftProjectIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
               <Button onClick={handleSave} color="primary" disabled={uploadingFiles.length > 0 || !isValid}>
-                <span className="me-50">Save & Continue</span>
+                <span className="me-50">Continue</span>
                 <ChevronRight size={14} />
               </Button>
             </div>
@@ -1778,6 +1902,8 @@ Requirements.propTypes = {
   setProjectDetails: Proptypes.func,
   files: Proptypes.array,
   setFiles: Proptypes.func,
+  setDraftSavedModal: Proptypes.func,
+  draftRequirementDetails: Proptypes.object,
 };
 
 Requirements.defaultProps = {
@@ -1785,4 +1911,6 @@ Requirements.defaultProps = {
   setProjectDetails: () => {},
   files: [],
   setFiles: () => {},
+  setDraftSavedModal: () => {},
+  draftRequirementDetails: {},
 };

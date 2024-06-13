@@ -32,6 +32,7 @@ import {
   getBidSnapshotService,
   getActiveStageService,
   getAppConfigService,
+  downloadCertificateService,
 } from '../../services/projectDetailsServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
@@ -42,6 +43,9 @@ import {
   checkDocumentActivatedFailure,
   checkDocumentActivatedRequest,
   checkDocumentActivatedSuccess,
+  downloadCertificateFailure,
+  downloadCertificateRequest,
+  downloadCertificateSuccess,
   extendValidityFailure,
   extendValidityRequest,
   extendValiditySuccess,
@@ -594,6 +598,19 @@ const relistProjectByDate = (projectId, startDate, endDate, onSuccess) => async 
   }
 };
 
+const downloadCertificate =
+  ({ project_id, onSuccess }) =>
+  async (dispatch) => {
+    dispatch(downloadCertificateRequest());
+    try {
+      const res = await downloadCertificateService({ project_id });
+      dispatch(downloadCertificateSuccess());
+      onSuccess(res.data.data);
+    } catch (error) {
+      errorHandler(error, downloadCertificateFailure);
+    }
+  };
+
 export {
   extendValidity,
   terminateProject,
@@ -626,4 +643,5 @@ export {
   getNDATimeline,
   getContractTimeline,
   getAppConfig,
+  downloadCertificate,
 };
