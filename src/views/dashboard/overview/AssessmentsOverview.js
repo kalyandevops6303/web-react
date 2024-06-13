@@ -113,9 +113,9 @@ const AssessmentsOverview = () => {
               }
               <div className='d-flex justify-content-center'>
                 <Link to="/assessments">
-                  <Button color="transparent" className="text-primary border-primary mt-2">
+                  {getAssessmentsLeftCount(userAssessments) > 0 && <Button color="transparent" className="text-primary border-primary mt-2">
                     {getAssessmentsLeftCount(userAssessments)} Assessments Left
-                  </Button>
+                  </Button>}
                 </Link>
               </div>
             </CardBody>}
