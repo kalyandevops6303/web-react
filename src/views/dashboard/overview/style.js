@@ -2,6 +2,13 @@ import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
 import { CardWrapper } from '../../styled';
 
+const gradeColors = {
+  "Novice": "#0D99FF",
+  "Fundamental": "#FFCD29",
+  "Proficient": "#9747FF",
+  "Mastery": "#14AE5C"
+}
+
 const RewardCardWrapper = styled(CardWrapper)`
   .reward-body {
     padding: 0.5rem 1.5rem 1rem 1.8rem !important;
@@ -601,6 +608,17 @@ const DisputesChartContainer = styled.div`
   }
 `;
 
+const AssessmentResultIndicator = styled.div`
+  width: 4px;
+  border-radius: 6px;
+  background: ${({ grade }) => gradeColors[grade] || 'gray'};
+`
+
+const AssessmentResultText = styled.div`
+  text-transform: uppercase;
+  color: ${({ grade }) => gradeColors[grade] || 'gray'};
+`
+
 export {
   TagsWrap,
   CardWrapper,
@@ -618,4 +636,6 @@ export {
   DisputesChartContainer,
   InReviewButton,
   NewTagWrap,
+  AssessmentResultIndicator,
+  AssessmentResultText
 };

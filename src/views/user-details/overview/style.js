@@ -2,6 +2,13 @@ import { Card } from 'reactstrap';
 import styled from 'styled-components';
 import theme from '../../../configs/themeVariables';
 
+const gradeColors = {
+  "Novice": "#0D99FF",
+  "Fundamental": "#FFCD29",
+  "Proficient": "#9747FF",
+  "Mastery": "#14AE5C"
+}
+
 const getPadding = (props) => {
   if (props.time) {
     return '1.22rem';
@@ -398,6 +405,19 @@ const DetailsHeaderSection = styled.div`
     margin-top: 0.6rem;
   }
 `;
+
+const AssessedSkillGradeBar = styled.div`
+  width: 4px;
+  align-self: stretch;
+  border-radius: 6px;
+  background: ${({ grade }) => gradeColors[grade] || 'gray'};
+`
+
+const AssessmentResultText = styled.div`
+  text-transform: uppercase;
+  color: ${({ grade }) => gradeColors[grade] || 'gray'};
+`
+
 export {
   ActionButtonWrapper,
   StatboxWrap,
@@ -410,4 +430,6 @@ export {
   RecentProjectWrap,
   DetailsWrap,
   DetailsHeaderSection,
+  AssessedSkillGradeBar,
+  AssessmentResultText
 };

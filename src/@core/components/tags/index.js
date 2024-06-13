@@ -2,12 +2,12 @@
 import PropTypes from 'prop-types';
 import Tagwrapper from './style';
 
-const Tag = ({ count, hasNew }) => {
+const Tag = ({ count, hasNew, noMargin }) => {
   if (!count) {
     return '';
   }
   return (
-    <Tagwrapper>
+    <Tagwrapper noMargin={noMargin ? true : false}>
       <span className="tag">{count < 10 ? `0${count}` : count}</span>
       {hasNew ? <span className="dot" /> : null}
     </Tagwrapper>

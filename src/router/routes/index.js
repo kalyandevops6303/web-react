@@ -40,6 +40,7 @@ import CreateClub from '../../views/createClub';
 import ClubInvitation from '../../views/club-invitation';
 import PaymentFullView from '../../views/paymentFullView';
 import BidDetails from '../../views/project-details/BidDetails';
+import Assessments from '../../views/assessments';
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -204,6 +205,10 @@ const Routes = [
     path: '/payments',
     element: <PaymentFullView />,
   },
+  {
+    path: '/assessments',
+    element: <Assessments />
+  }
 ];
 
 // eslint-disable-next-line consistent-return

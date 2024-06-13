@@ -3,6 +3,7 @@ const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
 const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
 const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
+const apiAssessmentsEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 
 const API = {
   auth: {
@@ -307,6 +308,15 @@ const API = {
   fileUpload: {
     scan: `${apiCreateProjectEndpoint}/api/v1/file/scanning/status`,
   },
+  assessments: {
+    user_assessments: `${apiAssessmentsEndpoint}/api/v1/candidate/assessments`,
+    all_assessments: `${apiAssessmentsEndpoint}/api/v1/all/assessment/dropdown`,
+    delete_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment`,
+    toggle_assessment_hidden: `${apiAssessmentsEndpoint}/api/v1/candidate/hide/assessment`,
+    add_assessment: `${apiAssessmentsEndpoint}/api/v1/add/candidate/assessment/list`,
+    get_assessment_link: `${apiAssessmentsEndpoint}/api/v1/candidate/assessment/link`,
+    edit_assessment: `${apiAssessmentsEndpoint}/api/v1/candidate/edit/assessment`
+  }
 };
 
 export default API;

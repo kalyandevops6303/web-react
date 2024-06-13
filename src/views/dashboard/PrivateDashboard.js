@@ -36,6 +36,7 @@ import InviteClubMemberModal from '../modals/InviteClubMemberModal';
 import { getTeamId } from '../../utility/Utils';
 import InviteListing from './overview/InviteListing';
 import PaymentListing from './overview/PaymentListing';
+import AssessmentsOverview from './overview/AssessmentsOverview';
 
 const PrivateDashboard = () => {
   const navigate = useNavigate();
@@ -311,7 +312,7 @@ const PrivateDashboard = () => {
         </Col>
 
         <Col lg="4" sm="12">
-          {userDetailsData?.team_type !== userTypes.club && <AvailableTime />}
+          {userDetailsData?.team_type !== userTypes.club && <AssessmentsOverview />}
           {userDetailsData?.team_type === userTypes.club && getTeamId('team_id') && (
             <ClubSection
               modal={listingTeamMembersModal}
