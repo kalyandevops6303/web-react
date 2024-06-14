@@ -1,6 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-else-return */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Proptypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
@@ -46,8 +47,13 @@ import {
   getFileSize,
   renderFilePreview,
 } from '../../../utility/Utils';
-import { getBidDetails, saveSetMilestones } from '../../../redux/actions/createBidActions';
-import { bidDetailsLoading, projectDetails, setMilestonesLoading } from '../../../redux/selectors/createBidSelectors';
+import { getBidDetails, saveDraftSetMilestones, saveSetMilestones } from '../../../redux/actions/createBidActions';
+import {
+  bidDetailsLoading,
+  draftSetMilestonesLoading,
+  projectDetails,
+  setMilestonesLoading,
+} from '../../../redux/selectors/createBidSelectors';
 import uuidv4 from '../../../lib/uuidv4';
 import { milestoneFileUploadService, milestoneFileUploadToAzureService } from '../../../services/createBidServices';
 import { selectUserData } from '../../../redux/selectors/authSelectors';
@@ -60,7 +66,7 @@ import capitalize from '../../../lib/capitalize';
 import { formData, formDocuments } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData, setFormDocuments } from '../../../redux/reducers/formData';
 
-const FixedAdvanceMilestoneView = () => {
+const FixedAdvanceMilestoneView = ({ setDraftSavedModal }) => {
   const MilestoneDetailsSchema = yup.object().shape({
     estimatedStartDate: yup.date().typeError('Start date is required').required('Start date is required'),
     milestones: yup.array().of(
@@ -180,7 +186,9 @@ const FixedAdvanceMilestoneView = () => {
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
   const projectDetailsData = useSelector(projectDetails);
   const downloadUrlIsLoading = useSelector(downloadUrlLoading);
+  const draftSetMilestonesIsLoading = useSelector(draftSetMilestonesLoading);
 
+  const saveAsDraftClicked = useRef();
   const [files, setFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const [removedMilestoneIds, setRemovedMilestoneIds] = useState([]);
@@ -391,7 +399,16 @@ const FixedAdvanceMilestoneView = () => {
       removed_milestone_ids,
     };
 
-    dispatch(saveSetMilestones(params.projectId, params.bidId, reqData, onSuccess));
+    if (saveAsDraftClicked.current) {
+      dispatch(
+        saveDraftSetMilestones(params.projectId, params.bidId, reqData, () => {
+          saveAsDraftClicked.current = false;
+          setDraftSavedModal(true);
+        }),
+      );
+    } else {
+      dispatch(saveSetMilestones(params.projectId, params.bidId, reqData, onSuccess));
+    }
   };
 
   const handleAddDeliverable = (milestoneIndex, defaultValue = '') => {
@@ -1377,34 +1394,62 @@ const FixedAdvanceMilestoneView = () => {
               </UploadIconContainer>
               <h5 className="fw-bold">Back</h5>
             </div>
-            <Button
-              color="primary"
-              type="submit"
-              disabled={
-                totalCost > projectDetailsData?.pay_type?.fixed_cost ||
-                !isValid ||
-                setMilestonesIsLoading ||
-                uploadingFiles.length > 0 ||
-                !getValues('milestones').every(
-                  (milestone) =>
-                    milestone.name?.trim() !== '' &&
-                    milestone.workers.length > 0 &&
-                    milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
-                    milestone.workers
-                      .filter((worker) => worker.isChecked)
-                      .every((worker) => worker.duration > 0 && worker.hours > 0),
-                )
-              }
-            >
-              {setMilestonesIsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
+            <div className="d-flex justify-content-end">
+              <Button
+                onClick={() => {
+                  saveAsDraftClicked.current = true;
+                  handleSubmit(onSubmit)();
+                }}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={
+                  totalCost > projectDetailsData?.pay_type?.fixed_cost ||
+                  !isValid ||
+                  draftSetMilestonesIsLoading ||
+                  uploadingFiles.length > 0 ||
+                  !getValues('milestones').every(
+                    (milestone) =>
+                      milestone.name?.trim() !== '' &&
+                      milestone.workers.length > 0 &&
+                      milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
+                      milestone.workers
+                        .filter((worker) => worker.isChecked)
+                        .every((worker) => worker.duration > 0 && worker.hours > 0),
+                  )
+                }
+              >
+                {draftSetMilestonesIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
+              <Button
+                color="primary"
+                type="submit"
+                disabled={
+                  totalCost > projectDetailsData?.pay_type?.fixed_cost ||
+                  !isValid ||
+                  setMilestonesIsLoading ||
+                  uploadingFiles.length > 0 ||
+                  !getValues('milestones').every(
+                    (milestone) =>
+                      milestone.name?.trim() !== '' &&
+                      milestone.workers.length > 0 &&
+                      milestone.workers.filter((worker) => worker.isChecked).length > 0 &&
+                      milestone.workers
+                        .filter((worker) => worker.isChecked)
+                        .every((worker) => worker.duration > 0 && worker.hours > 0),
+                  )
+                }
+              >
+                {setMilestonesIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Continue</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </Form>
       )}
@@ -1413,3 +1458,11 @@ const FixedAdvanceMilestoneView = () => {
 };
 
 export default FixedAdvanceMilestoneView;
+
+FixedAdvanceMilestoneView.propTypes = {
+  setDraftSavedModal: Proptypes.func,
+};
+
+FixedAdvanceMilestoneView.defaultProps = {
+  setDraftSavedModal: () => {},
+};

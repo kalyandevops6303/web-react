@@ -85,10 +85,10 @@ export const OnBoardWrap = styled.div`
   .client-pic {
     margin-left: 2rem;
     margin-top: 4rem;
-    height: 78vh;
+    height: 58vh;
   }
-  .talent-pic {
-    height: 94vh;
+  .welcome-pic {
+    height: 54vh;
   }
 
   .logo-wrap {

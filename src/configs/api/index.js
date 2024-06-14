@@ -142,6 +142,7 @@ const API = {
     removeWorker: `${apiCreateProjectEndpoint}/api/v1/project-course/workers`,
     requests: `${apiAuthEndpoint}/api/v1/requests`,
     terminateProject: `${apiCreateProjectEndpoint}/api/v1/project/termination`,
+    withdrawProject: `${apiCreateProjectEndpoint}/api/v1/withdraw-project`,
     relistProject: `${apiCreateProjectEndpoint}/api/v1/project/relisting`,
     relistProjectByDate: `${apiCreateProjectEndpoint}/api/v1/project/relist-by-date`,
     requestChange: `${apiCreateProjectEndpoint}/api/v1/request-bid-changes`,
@@ -240,6 +241,7 @@ const API = {
     milestoneFileUpload: `${apiCreateProjectEndpoint}/api/v1/bid/file`,
     submitBid: `${apiCreateProjectEndpoint}/api/v1/bid/submit`,
     changeBidType: `${apiCreateProjectEndpoint}/api/v1/bid-type`,
+    deleteDraftBid: `${apiCreateProjectEndpoint}/api/v1/bid/remove`,
   },
   team: {
     getTeam: `${apiOnboardingEndpoint}/api/v1/talent/my-teams`,
