@@ -33,6 +33,7 @@ import {
   getActiveStageService,
   getAppConfigService,
   downloadCertificateService,
+  withdrawProjectServices,
 } from '../../services/projectDetailsServices';
 import { SUCCESS } from '../../utility/constants/ToastTypes';
 import errorHandler from '../../utility/errorHandler';
@@ -128,6 +129,9 @@ import {
   updateContractFailure,
   updateContractRequest,
   updateContractSuccess,
+  withdrawProjectFailure,
+  withdrawProjectRequest,
+  withdrawProjectSuccess,
 } from '../reducers/projectDetails';
 
 const getTeamMembers =
@@ -377,17 +381,17 @@ const updateInvitation =
 
 const removeWorkerFromProjectTeam =
   ({ projectId, teamId, role, workerId, onSuccess }) =>
-  async (dispatch) => {
-    dispatch(removeWorkerRequest());
-    try {
-      const res = await removeWorkerService(projectId, teamId, workerId, role);
-      dispatch(removeWorkerSuccess(res.data.data));
-      onSuccess();
-      ShowToastMessage(SUCCESS, res.data.data);
-    } catch (error) {
-      errorHandler(error, removeWorkerFailure);
-    }
-  };
+    async (dispatch) => {
+      dispatch(removeWorkerRequest());
+      try {
+        const res = await removeWorkerService(projectId, teamId, workerId, role);
+        dispatch(removeWorkerSuccess(res.data.data));
+        onSuccess();
+        ShowToastMessage(SUCCESS, res.data.data);
+      } catch (error) {
+        errorHandler(error, removeWorkerFailure);
+      }
+    };
 
 // Contract flow
 
@@ -521,6 +525,23 @@ const terminateProject =
     }
   };
 
+const withdrawProject =
+  ({ project_id, onSuccess }) =>
+    async (dispatch) => {
+      dispatch(withdrawProjectRequest());
+      try {
+        const res = await withdrawProjectServices({ project_id });
+
+        ShowToastMessage(SUCCESS, res.data.data);
+        dispatch(withdrawProjectSuccess());
+        onSuccess();
+
+      }
+      catch (error) {
+        errorHandler(error,withdrawProjectFailure);
+
+      }
+    };
 const relistProject =
   ({ project_id, onSuccess }) =>
   async (dispatch) => {
@@ -614,6 +635,7 @@ const downloadCertificate =
 export {
   extendValidity,
   terminateProject,
+  withdrawProject,
   relistProject,
   makeFavourite,
   removeFavourite,

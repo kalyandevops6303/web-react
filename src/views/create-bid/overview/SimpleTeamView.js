@@ -1,6 +1,7 @@
 /* eslint-disable no-else-return */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as yup from 'yup';
+import Proptypes from 'prop-types';
 import { useForm, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Badge, Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Row, Spinner } from 'reactstrap';
@@ -15,10 +16,11 @@ import { filteredFormSchema, selectThemeColors } from '../../../utility/Utils';
 import ShowToastMessage from '../../../@core/components/toast';
 import { ERROR } from '../../../utility/constants/ToastTypes';
 import { UploadIconContainer } from '../../Onboarding/style';
-import { getBidDetails, getRoles, saveSetWorkers } from '../../../redux/actions/createBidActions';
+import { getBidDetails, getRoles, saveDraftSetWorkers, saveSetWorkers } from '../../../redux/actions/createBidActions';
 import {
   allTeamMembers,
   bidDetailsLoading,
+  draftSetWorkersLoading,
   recommendedRoles,
   rolesLoading,
   setWorkersLoading,
@@ -29,7 +31,7 @@ import CreateBidModal from '../../modals/CreateBidModal';
 import { formData } from '../../../redux/selectors/formDataSelectors';
 import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
-const SimpleTeamView = () => {
+const SimpleTeamView = ({ setDraftSavedModal }) => {
   const EducationalSchema = yup.object().shape({
     projectRolesDetails: yup
       .array()
@@ -79,7 +81,9 @@ const SimpleTeamView = () => {
   const allTeamMembersData = useSelector(allTeamMembers);
   const setWorkersIsLoading = useSelector(setWorkersLoading);
   const bidDetailsIsLoading = useSelector(bidDetailsLoading);
+  const draftSetWorkersIsLoading = useSelector(draftSetWorkersLoading);
 
+  const saveAsDraftClicked = useRef();
   const [bidData, setBidData] = useState(null);
   const [changeBidTypeConfirmationModal, setChangeBidTypeConfirmationModal] = useState(null);
   const [createBidModal, setCreateBidModal] = useState(null);
@@ -158,7 +162,16 @@ const SimpleTeamView = () => {
         role: item?.role,
       }));
 
-      dispatch(saveSetWorkers(params.bidId, removeUndefinedKeysFromArray(requiredData), onSuccess));
+      if (saveAsDraftClicked.current) {
+        dispatch(
+          saveDraftSetWorkers(params.bidId, removeUndefinedKeysFromArray(requiredData), () => {
+            saveAsDraftClicked.current = false;
+            setDraftSavedModal(true);
+          }),
+        );
+      } else {
+        dispatch(saveSetWorkers(params.bidId, removeUndefinedKeysFromArray(requiredData), onSuccess));
+      }
     }
   };
 
@@ -509,25 +522,44 @@ const SimpleTeamView = () => {
               </UploadIconContainer>
               <h5 className="fw-bold">Back</h5>
             </div>
-            <Button
-              color="primary"
-              type="submit"
-              disabled={
-                !isValid ||
-                fields.length === 0 ||
-                !watch('projectRolesDetails').every((field) => field.role) ||
-                setWorkersIsLoading
-              }
-            >
-              {setWorkersIsLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <span className="me-50">Save & Continue</span>
-                  <ChevronRight size={14} />
-                </>
-              )}
-            </Button>
+            <div className="d-flex justify-content-end">
+              <Button
+                onClick={() => {
+                  saveAsDraftClicked.current = true;
+                  handleSubmit(onSubmit)();
+                }}
+                color="primary"
+                className="me-2"
+                outline
+                disabled={
+                  !isValid ||
+                  fields.length === 0 ||
+                  !watch('projectRolesDetails').every((field) => field.role) ||
+                  draftSetWorkersIsLoading
+                }
+              >
+                {draftSetWorkersIsLoading ? <Spinner size="sm" /> : <span>Save as Draft</span>}
+              </Button>
+              <Button
+                color="primary"
+                type="submit"
+                disabled={
+                  !isValid ||
+                  fields.length === 0 ||
+                  !watch('projectRolesDetails').every((field) => field.role) ||
+                  setWorkersIsLoading
+                }
+              >
+                {setWorkersIsLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <span className="me-50">Continue</span>
+                    <ChevronRight size={14} />
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </Form>
       )}
@@ -536,3 +568,11 @@ const SimpleTeamView = () => {
 };
 
 export default SimpleTeamView;
+
+SimpleTeamView.propTypes = {
+  setDraftSavedModal: Proptypes.func,
+};
+
+SimpleTeamView.defaultProps = {
+  setDraftSavedModal: () => {},
+};

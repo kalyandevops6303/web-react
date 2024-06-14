@@ -423,7 +423,21 @@ const projectDetails = createSlice({
       terminateProjectLoading: false,
       error: action.payload,
     }),
+    withdrawProjectRequest: (state) => ({
+      ...state,
+      withdrawProjectLoading: true,
+      error:null,
+    }),
 
+    withdrawProjectSuccess: (state) => ({
+      ...state,
+      withdrawProjectLoading: false,
+    }),
+    withdrawProjectFailure: (state, action) => ({
+      ...state,
+      withdrawProjectLoading: false,
+      error: action.payload,
+    }),  
     relistProjectRequest: (state) => ({
       ...state,
       relistProjectLoading: true,
@@ -638,6 +652,9 @@ export const {
   terminateProjectRequest,
   terminateProjectSuccess,
   terminateProjectFailure,
+  withdrawProjectRequest,
+  withdrawProjectSuccess,
+  withdrawProjectFailure,
   relistProjectRequest,
   relistProjectSuccess,
   relistProjectFailure,
