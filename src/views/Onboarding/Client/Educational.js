@@ -49,20 +49,14 @@ import CustomerSupportCTA from '../CustomerSupportCTA';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({
-    educationDetails: yup
-      .array()
-      .of(
-        yup.object().shape({
-          educationInstitution: yup
-            .object()
-            .shape({
-              label: yup.string().required('College or university is required'),
-              value: yup.string().required('College or university is required'),
-            })
-            .required('College or university is required'),
+    educationDetails: yup.array().of(
+      yup.object().shape({
+        educationInstitution: yup.object().shape({
+          label: yup.string(),
+          value: yup.string(),
         }),
-      )
-      .min(1, 'At least one degree should be added'),
+      }),
+    ),
     area: yup.object().shape({
       label: yup.string(),
       value: yup.string(),
@@ -399,9 +393,9 @@ const Educational = () => {
                 <Row key={item.id} className="mt-1">
                   <Col sm="12" md="12" lg="5">
                     <Label className="form-label" for={`educationDetails.${index}.educationInstitution`}>
-                      Name of College or University<span className="label-asterisk me-50">*</span>
+                      Name of College or University
                     </Label>
-                    <Info size={18} color={theme.infoIcon} id="college" />
+                    <Info className="ms-25" size={18} color={theme.infoIcon} id="college" />
                     <UncontrolledTooltip placement="right" target="college">
                       <div className="d-flex flex-column align-items-start">
                         Used to match to talent from your Alma Mater
