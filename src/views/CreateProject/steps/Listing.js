@@ -113,7 +113,7 @@ const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetail
       }));
 
       details = {
-        name: projectDetails?.projectName.trim(),
+        name: projectDetails?.projectName?.trim(),
         description: projectDetails?.projectDescription,
         expected_duration: {
           duration: projectDetails?.expectedDuration,
@@ -123,7 +123,7 @@ const Listing = ({ stepper, setListingDetails, setDraftSavedModal, projectDetail
       };
     } else {
       details = {
-        name: projectDetails?.projectName.trim(),
+        name: projectDetails?.projectName?.trim(),
         description: projectDetails?.projectDescription,
         expected_duration: {
           duration: projectDetails?.expectedDuration,

@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import LoginPic from '@src/assets/images/auth/loginpic.png';
 import { useSelector } from 'react-redux';
 import ClientPic from '@src/assets/images/auth/clientImage.png';
-import CreatePWPic from '@src/assets/images/auth/createPassword.png';
+import CreatePWPic from '@src/assets/images/auth/createPasswordImg.png';
 import WelcomePic from '@src/assets/images/auth/welcomepic.png';
 import VerificationPic from '@src/assets/images/auth/verificationImage.png';
 import TalentPic from '@src/assets/images/auth/talentImage.png';

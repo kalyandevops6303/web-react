@@ -127,18 +127,11 @@ const BaseInfoMarketplaceCard = ({ isSearchPage, data, setRelistConfirmationModa
     : [];
 
   const onEditDraftClick = () => {
+    const bidType = bid?.bid_type?.toLowerCase() || 'simple';
     if (bid?.entity === userTypes.talent) {
-      navigate(
-        `/create-bid/${project?._id}/${project?.pay_type.toLowerCase()}-${bid?.bid_type.toLowerCase()}/${
-          bid?._id
-        }/milestone`,
-      );
+      navigate(`/create-bid/${project?._id}/${project?.pay_type?.toLowerCase()}-${bidType}/${bid?._id}/milestone`);
     } else {
-      navigate(
-        `/create-bid/${project?._id}/${project?.pay_type.toLowerCase()}-${bid?.bid_type.toLowerCase()}/${
-          bid?._id
-        }/team`,
-      );
+      navigate(`/create-bid/${project?._id}/${project?.pay_type?.toLowerCase()}-${bidType}/${bid?._id}/team`);
     }
   };
 

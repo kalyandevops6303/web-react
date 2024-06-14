@@ -141,7 +141,7 @@ const Preview = ({
       }));
 
       details = {
-        name: projectDetails?.projectName.trim(),
+        name: projectDetails?.projectName?.trim(),
         description: projectDetails?.projectDescription,
         expected_duration: {
           duration: projectDetails?.expectedDuration,
@@ -151,7 +151,7 @@ const Preview = ({
       };
     } else {
       details = {
-        name: projectDetails?.projectName.trim(),
+        name: projectDetails?.projectName?.trim(),
         description: projectDetails?.projectDescription,
         expected_duration: {
           duration: projectDetails?.expectedDuration,
@@ -257,7 +257,7 @@ const Preview = ({
       }));
 
       details = {
-        name: projectName.trim(),
+        name: projectName?.trim(),
         description: projectDescription,
         expected_duration: {
           duration: expectedDuration,
@@ -267,7 +267,7 @@ const Preview = ({
       };
     } else {
       details = {
-        name: projectName.trim(),
+        name: projectName?.trim(),
         description: projectDescription,
         expected_duration: {
           duration: expectedDuration,

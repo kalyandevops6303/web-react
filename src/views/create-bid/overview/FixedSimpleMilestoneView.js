@@ -348,7 +348,7 @@ const FixedSimpleMilestoneView = ({ setDraftSavedModal }) => {
       (milestone) =>
         milestone.duration > 0 &&
         milestone.talentCost > 0 &&
-        milestone.name.trim() !== '' &&
+        milestone.name?.trim() !== '' &&
         milestone.deliverables.every((deliverable) => deliverable?.trim() !== '' && deliverable !== undefined),
     );
 
