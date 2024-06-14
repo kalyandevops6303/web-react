@@ -22,8 +22,20 @@ export const rolesLoading = createSelector(createBidSelector, (createBid) => cre
 
 export const setWorkersLoading = createSelector(createBidSelector, (createBid) => createBid.setWorkersLoading);
 
+export const draftSetWorkersLoading = createSelector(
+  createBidSelector,
+  (createBid) => createBid.draftSetWorkersLoading,
+);
+
 export const setMilestonesLoading = createSelector(createBidSelector, (createBid) => createBid.setMilestonesLoading);
+
+export const draftSetMilestonesLoading = createSelector(
+  createBidSelector,
+  (createBid) => createBid.draftSetMilestonesLoading,
+);
 
 export const submitBidLoading = createSelector(createBidSelector, (createBid) => createBid.submitBidLoading);
 
 export const changeBidTypeLoading = createSelector(createBidSelector, (createBid) => createBid.changeBidTypeLoading);
+
+export const deleteDraftBidLoading = createSelector(createBidSelector, (createBid) => createBid.deleteDraftBidLoading);

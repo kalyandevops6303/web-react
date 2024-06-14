@@ -27,6 +27,8 @@ const submitBidService = (bidId) => DataService.put(`${API.createBid.submitBid}?
 const changeBidTypeService = (bidId, bidType) =>
   DataService.put(`${API.createBid.changeBidType}?bid_id=${bidId}&bid_type=${bidType}`);
 
+const deleteDraftBidService = (bidId) => DataService.delete(`${API.createBid.deleteDraftBid}?bid_id=${bidId}`);
+
 export {
   checkBidService,
   createBidService,
@@ -39,4 +41,5 @@ export {
   milestoneFileUploadToAzureService,
   submitBidService,
   changeBidTypeService,
+  deleteDraftBidService,
 };

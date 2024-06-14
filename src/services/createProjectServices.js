@@ -1,7 +1,12 @@
 import API from '../configs/api';
 import DataService from '../configs/dataService/dataService';
 
-const createProjectService = (data) => DataService.post(API.createProject.createProject, data);
+const createProjectService = ({ projectId, data }) => {
+  if (projectId) {
+    return DataService.post(`${API.createProject.createProject}?project_id=${projectId}`, data);
+  }
+  return DataService.post(API.createProject.createProject, data);
+};
 
 const createProjectAIService = (data) => DataService.post(API.createProject.createProjectAI, data);
 
@@ -33,6 +38,21 @@ const projectFileUploadService = (filename) =>
 
 const projectFileUploadToAzureService = (url, data, headers) => DataService.putWithoutToken(url, data, headers);
 
+const saveDraftProjectService = ({ projectId, data }) => {
+  if (projectId) {
+    return DataService.post(`${API.createProject.saveDraftProject}?project_id=${projectId}`, data);
+  }
+  return DataService.post(API.createProject.saveDraftProject, data);
+};
+
+const draftProjectsCheckService = () => DataService.get(API.createProject.draftProjectsCheck);
+
+const deleteDraftProjectService = (projectId) =>
+  DataService.delete(`${API.createProject.deleteDraftProject}?project_id=${projectId}`);
+
+const draftProjectDetailsService = (projectId) =>
+  DataService.get(`${API.projectDetails.getProjectDetails}?project_id=${projectId}`);
+
 export {
   createProjectService,
   createProjectAIService,
@@ -43,4 +63,8 @@ export {
   inviteTalentsService,
   projectFileUploadService,
   projectFileUploadToAzureService,
+  saveDraftProjectService,
+  draftProjectsCheckService,
+  deleteDraftProjectService,
+  draftProjectDetailsService,
 };

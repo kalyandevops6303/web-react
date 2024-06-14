@@ -2,7 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   userDetails: null,
+  resumeParsedDetails: null,
   userDetailsLoading: false,
+  resumeParsedDetailsLoading: false,
   accountDetailsLoading: false,
   profileDetailsLoading: false,
   checkpointCompleteLoading: false,
@@ -26,6 +28,22 @@ const talentOnboardingSlice = createSlice({
     userDetailsFailure: (state, action) => ({
       ...state,
       userDetailsLoading: false,
+      error: action.payload,
+    }),
+
+    resumeParsedDetailsRequest: (state) => ({
+      ...state,
+      resumeParsedDetailsLoading: true,
+      error: null,
+    }),
+    resumeParsedDetailsSuccess: (state, action) => ({
+      ...state,
+      resumeParsedDetailsLoading: false,
+      resumeParsedDetails: action.payload,
+    }),
+    resumeParsedDetailsFailure: (state, action) => ({
+      ...state,
+      resumeParsedDetailsLoading: false,
       error: action.payload,
     }),
 
@@ -80,6 +98,9 @@ export const {
   userDetailsRequest,
   userDetailsSuccess,
   userDetailsFailure,
+  resumeParsedDetailsRequest,
+  resumeParsedDetailsSuccess,
+  resumeParsedDetailsFailure,
   accountDetailsRequest,
   accountDetailsSuccess,
   accountDetailsFailure,
