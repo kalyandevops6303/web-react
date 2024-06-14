@@ -39,13 +39,13 @@ import { getUserDetails } from '../../../redux/actions/talentOnboardingActions';
 import { CUSTOMER_SUPPORT_TYPES, userOnboarding, userProfileEdit } from '../../../utility/constants/Constant';
 import { userDetailsLoading } from '../../../redux/selectors/talentOnboardingSelectors';
 import ComponentSpinner from '../../../@core/components/spinner/Loading-spinner';
+import { formData } from '../../../redux/selectors/formDataSelectors';
+import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 import { getCustomerSupportCount } from '../../../redux/actions/supportActions';
 import CustomerSupportModal from '../../modals/CustomerSupportModal';
 import FeedbackForCustomerSupportModal from '../../modals/CustomerSupportFeedbackModal';
 import NoteComponent from '../NoteComponent';
 import CustomerSupportCTA from '../CustomerSupportCTA';
-import { formData } from '../../../redux/selectors/formDataSelectors';
-import { clearAllFormData, setFormData } from '../../../redux/reducers/formData';
 
 const Educational = () => {
   const EducationalSchema = yup.object().shape({

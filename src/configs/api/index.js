@@ -3,6 +3,7 @@ const apiOnboardingEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:3443`;
 const apiCreateProjectEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:2443`;
 const apiCreateProjectAIEndpoint = `${import.meta.env.VITE_API_ENDPOINT}:5443`;
 const apiPaymentEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:4443`;
+const apiParseResumeEndPoint = `${import.meta.env.VITE_API_ENDPOINT}:7443`;
 
 const API = {
   auth: {
@@ -45,6 +46,8 @@ const API = {
   },
   talentOnboarding: {
     userDetails: `${apiAuthEndpoint}/api/v1/user/details`,
+    resumeParsedDetails: `${apiParseResumeEndPoint}/api/v1/parse-resume`,
+    updateResumeParsedDetails: `${apiParseResumeEndPoint}/api/v1/parsed`,
     accountDetails: `${apiAuthEndpoint}/api/v1/talent/account-details`,
     profileDetails: `${apiAuthEndpoint}/api/v1/talent/profile-details`,
     checkpointComplete: `${apiAuthEndpoint}/api/v1/user/checkpoint/complete`,

@@ -459,7 +459,7 @@ const Availability = () => {
                           type="checkbox"
                           {...field}
                           id="weekdays"
-                          checked={field.value.includes('weekdays')}
+                          checked={field && field.value.includes('weekdays')}
                           onChange={(e) => {
                             const isChecked = e.target.checked;
                             const value = 'weekdays';

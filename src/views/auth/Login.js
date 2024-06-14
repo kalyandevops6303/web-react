@@ -191,6 +191,7 @@ const Login = () => {
                   id="password"
                   placeholder="Enter your password"
                   onCopy={(e) => {
+                    
                     // disable copy from password field
                     e.preventDefault();
                     return false;

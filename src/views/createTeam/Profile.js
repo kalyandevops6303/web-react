@@ -233,7 +233,6 @@ const Profile = () => {
     const allData = { ...savedFormData, ...localFormData };
     dispatch(setFormData(allData));
   }, [localFormData]);
-
   const toggleTeamCreatedModal = () => {
     setTeamCreatedModal(!teamCreatedModal);
   };
